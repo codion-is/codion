@@ -91,7 +91,7 @@ final class HttpEntityConnection implements EntityConnection {
   private final HttpHost targetHost;
   private final HttpClientContext httpContext;
 
-  private final Entities domain;
+  private final Entities entities;
 
   private boolean closed;
 
@@ -116,12 +116,12 @@ final class HttpEntityConnection implements EntityConnection {
     this.httpClient = createHttpClient(clientTypeId, clientId);
     this.targetHost = new HttpHost(serverHostName, serverPort, httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);
-    this.domain = initializeDomain();
+    this.entities = initializeDomain();
   }
 
   @Override
   public Entities getDomain() {
-    return domain;
+    return entities;
   }
 
   @Override

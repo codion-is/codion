@@ -17,14 +17,14 @@ public final class AbstractEntityConnectionProviderTest {
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
-  private static final Entities DOMAIN = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().getEntities();
 
   @Test
   public void connectDisconnect() {
     final EntityConnectionProvider provider = new TestProvider().setUser(UNIT_TEST_USER);
     assertEquals("description", provider.getDescription());
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.getConnectionType());
-    assertEquals(provider.getDomain(), DOMAIN);
+    assertEquals(provider.getDomain(), ENTITIES);
     assertEquals(UNIT_TEST_USER, provider.getUser());
 
     final EntityConnection connection1 = provider.getConnection();
@@ -68,7 +68,7 @@ public final class AbstractEntityConnectionProviderTest {
             case "equals":
               return TestProvider.this == args[0];
             case "getDomain":
-              return DOMAIN;
+              return ENTITIES;
             case "isConnected":
               return connected;
             case "disconnect": connected = false;

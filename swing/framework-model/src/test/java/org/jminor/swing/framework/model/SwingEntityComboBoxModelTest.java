@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityComboBoxModelTest {
 
-  private static final Entities DOMAIN = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().getEntities();
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -50,7 +50,7 @@ public final class SwingEntityComboBoxModelTest {
   public void editEvents() {
     comboBoxModel.refresh();
 
-    final Entity temp = DOMAIN.entity(TestDomain.T_EMP);
+    final Entity temp = ENTITIES.entity(TestDomain.T_EMP);
     temp.put(TestDomain.EMP_ID, -42);
     temp.put(TestDomain.EMP_NAME, "Noname");
 
@@ -171,7 +171,7 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel.setIncludeCondition(entity -> false);
     comboBoxModel.setSelectedEntityByKey(clark.getKey());
     assertEquals(clark, comboBoxModel.getSelectedValue());
-    final Entity.Key nobodyPK = DOMAIN.key(TestDomain.T_EMP, -1);
+    final Entity.Key nobodyPK = ENTITIES.key(TestDomain.T_EMP, -1);
     comboBoxModel.setSelectedEntityByKey(nobodyPK);
     assertEquals(clark, comboBoxModel.getSelectedValue());
   }
@@ -284,9 +284,9 @@ public final class SwingEntityComboBoxModelTest {
   @Test
   public void getEntity() {
     comboBoxModel.refresh();
-    final Entity.Key allenPK = DOMAIN.key(TestDomain.T_EMP, 1);
+    final Entity.Key allenPK = ENTITIES.key(TestDomain.T_EMP, 1);
     assertNotNull(comboBoxModel.getEntity(allenPK));
-    final Entity.Key nobodyPK = DOMAIN.key(TestDomain.T_EMP, -1);
+    final Entity.Key nobodyPK = ENTITIES.key(TestDomain.T_EMP, -1);
     assertNull(comboBoxModel.getEntity(nobodyPK));
   }
 }

@@ -29,12 +29,12 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
 
   private static final long serialVersionUID = 1;
 
-  private final Entities domain;
+  private final Entities entities;
   private final EntityObjectMapper mapper;
 
-  EntityDeserializer(final Entities domain, final EntityObjectMapper mapper) {
+  EntityDeserializer(final Entities entities, final EntityObjectMapper mapper) {
     super(Entity.class);
-    this.domain = domain;
+    this.entities = entities;
     this.mapper = mapper;
   }
 
@@ -43,7 +43,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     final JsonNode entityNode = parser.getCodec().readTree(parser);
 
     final String entityId = entityNode.get("entityId").asText();
-    final EntityDefinition definition = domain.getDefinition(entityId);
+    final EntityDefinition definition = entities.getDefinition(entityId);
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
   }

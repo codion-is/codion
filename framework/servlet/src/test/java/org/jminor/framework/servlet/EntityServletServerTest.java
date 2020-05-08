@@ -62,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServletServerTest {
 
-  private static final Entities DOMAIN = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().getEntities();
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -139,7 +139,7 @@ public class EntityServletServerTest {
     //test with missing authentication info
     URIBuilder uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
-    uriBuilder.addParameter("domainId", DOMAIN.getDomainId());
+    uriBuilder.addParameter("domainId", ENTITIES.getDomainId());
     CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
@@ -208,7 +208,7 @@ public class EntityServletServerTest {
     assertEquals(4, queryEntities.size());
     response.close();
 
-    final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, null);
     department.put(TestDomain.DEPARTMENT_ID, -42);
     department.put(TestDomain.DEPARTMENT_NAME, "Test");

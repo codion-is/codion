@@ -58,9 +58,9 @@ public class EntityConnectionProviderDemo {
     EntityConnection entityConnection =
             connectionProvider.getConnection();
 
-    Entities domain = entityConnection.getDomain();
+    Entities entities = entityConnection.getDomain();
 
-    Entity track = entityConnection.selectSingle(domain.key(Chinook.T_TRACK, 42L));
+    Entity track = entityConnection.selectSingle(entities.key(Chinook.T_TRACK, 42L));
 
     connectionProvider.disconnect();
     // end::remote[]
@@ -77,9 +77,9 @@ public class EntityConnectionProviderDemo {
 
     EntityConnection entityConnection = connectionProvider.getConnection();
 
-    Entities domain = entityConnection.getDomain();
+    Entities entities = entityConnection.getDomain();
 
-    entityConnection.selectSingle(domain.key(Chinook.T_TRACK, 42L));
+    entityConnection.selectSingle(entities.key(Chinook.T_TRACK, 42L));
 
     connectionProvider.disconnect();
     // end::http[]

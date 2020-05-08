@@ -34,7 +34,7 @@ public final class DefaultEntityLookupModelTest {
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
-  private static final Entities DOMAIN = new TestDomain().getEntities();
+  private static final Entities ENTITIES = new TestDomain().getEntities();
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
@@ -64,13 +64,13 @@ public final class DefaultEntityLookupModelTest {
   @Test
   public void constructorNonStringLookupProperty() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            singletonList(DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_COMMISSION))));
+            singletonList(ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_COMMISSION))));
   }
 
   @Test
   public void constructorIncorrectEntityLookupProperty() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            singletonList(DOMAIN.getDefinition(TestDomain.T_DEPARTMENT).getColumnProperty(TestDomain.DEPARTMENT_NAME))));
+            singletonList(ENTITIES.getDefinition(TestDomain.T_DEPARTMENT).getColumnProperty(TestDomain.DEPARTMENT_NAME))));
   }
 
   @Test
@@ -85,15 +85,15 @@ public final class DefaultEntityLookupModelTest {
   @Test
   public void setMultipleSelectionNotEnabled() {
     lookupModel.getMultipleSelectionEnabledValue().set(false);
-    final List<Entity> entities = asList(DOMAIN.entity(TestDomain.T_EMP), DOMAIN.entity(TestDomain.T_EMP));
+    final List<Entity> entities = asList(ENTITIES.entity(TestDomain.T_EMP), ENTITIES.entity(TestDomain.T_EMP));
     assertThrows(IllegalArgumentException.class, () -> lookupModel.setSelectedEntities(entities));
   }
 
   @Test
   public void setToStringProvider() {
-    final Property job = DOMAIN.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
+    final Property job = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
     lookupModel.setToStringProvider(entity -> entity.getAsString(job));
-    final Entity employee = DOMAIN.entity(TestDomain.T_EMP);
+    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, "Darri");
     employee.put(TestDomain.EMP_JOB, "CLERK");
     lookupModel.setSelectedEntities(singletonList(employee));
@@ -133,8 +133,8 @@ public final class DefaultEntityLookupModelTest {
     assertTrue(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    final ColumnProperty employeeNameProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME);
-    final ColumnProperty employeeJobProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
+    final ColumnProperty employeeNameProperty = ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME);
+    final ColumnProperty employeeJobProperty = ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
 
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(false);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);
@@ -215,8 +215,8 @@ public final class DefaultEntityLookupModelTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    lookupProperties = asList(DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME),
-            DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB));
+    lookupProperties = asList(ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME),
+            ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB));
     lookupModel = new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, lookupProperties);
 
     CONNECTION_PROVIDER.getConnection().beginTransaction();
@@ -239,12 +239,12 @@ public final class DefaultEntityLookupModelTest {
   }
 
   private static void setupData() throws Exception {
-    final Entity dept = DOMAIN.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     dept.put(TestDomain.DEPARTMENT_ID, 88);
     dept.put(TestDomain.DEPARTMENT_LOCATION, "TestLoc");
     dept.put(TestDomain.DEPARTMENT_NAME, "TestDept");
 
-    final Entity emp = DOMAIN.entity(TestDomain.T_EMP);
+    final Entity emp = ENTITIES.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp.put(TestDomain.EMP_COMMISSION, 1000d);
     emp.put(TestDomain.EMP_HIREDATE, LocalDate.now());
@@ -252,7 +252,7 @@ public final class DefaultEntityLookupModelTest {
     emp.put(TestDomain.EMP_NAME, "John");
     emp.put(TestDomain.EMP_SALARY, 1000d);
 
-    final Entity emp2 = DOMAIN.entity(TestDomain.T_EMP);
+    final Entity emp2 = ENTITIES.entity(TestDomain.T_EMP);
     emp2.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp2.put(TestDomain.EMP_COMMISSION, 1000d);
     emp2.put(TestDomain.EMP_HIREDATE, LocalDate.now());
@@ -260,7 +260,7 @@ public final class DefaultEntityLookupModelTest {
     emp2.put(TestDomain.EMP_NAME, "johnson");
     emp2.put(TestDomain.EMP_SALARY, 1000d);
 
-    final Entity emp3 = DOMAIN.entity(TestDomain.T_EMP);
+    final Entity emp3 = ENTITIES.entity(TestDomain.T_EMP);
     emp3.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp3.put(TestDomain.EMP_COMMISSION, 1000d);
     emp3.put(TestDomain.EMP_HIREDATE, LocalDate.now());
@@ -268,7 +268,7 @@ public final class DefaultEntityLookupModelTest {
     emp3.put(TestDomain.EMP_NAME, "Andy");
     emp3.put(TestDomain.EMP_SALARY, 1000d);
 
-    final Entity emp4 = DOMAIN.entity(TestDomain.T_EMP);
+    final Entity emp4 = ENTITIES.entity(TestDomain.T_EMP);
     emp4.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp4.put(TestDomain.EMP_COMMISSION, 1000d);
     emp4.put(TestDomain.EMP_HIREDATE, LocalDate.now());

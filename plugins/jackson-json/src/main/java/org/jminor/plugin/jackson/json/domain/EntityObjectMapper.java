@@ -23,21 +23,21 @@ public final class EntityObjectMapper extends ObjectMapper {
 
   private final EntitySerializer entitySerializer;
   private final EntityDeserializer entityDeserializer;
-  private final Entities domain;
+  private final Entities entities;
 
   /**
    * Instantiates a new EntityObjectMapper for the given domain
    * @param domain the Domain model
    */
-  public EntityObjectMapper(final Entities domain) {
-    this.domain = domain;
+  public EntityObjectMapper(final Entities entities) {
+    this.entities = entities;
     final SimpleModule module = new SimpleModule();
     entitySerializer = new EntitySerializer(this);
-    entityDeserializer = new EntityDeserializer(domain, this);
+    entityDeserializer = new EntityDeserializer(entities, this);
     module.addSerializer(Entity.class, entitySerializer);
     module.addDeserializer(Entity.class, entityDeserializer);
     module.addSerializer(Entity.Key.class, new EntityKeySerializer(this));
-    module.addDeserializer(Entity.Key.class, new EntityKeyDeserializer(domain, this));
+    module.addDeserializer(Entity.Key.class, new EntityKeyDeserializer(entities, this));
     module.addSerializer(LocalTime.class, new LocalTimeSerializer());
     module.addSerializer(LocalDate.class, new LocalDateSerializer());
     module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
@@ -49,7 +49,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return the underlying domain model
    */
   public Entities getDomain() {
-    return domain;
+    return entities;
   }
 
   /**

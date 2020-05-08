@@ -655,10 +655,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final TreeModel getDependencyTreeModel() {
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-    final Entities domain = applicationModel.getDomain();
-    for (final EntityDefinition definition : domain.getDefinitions()) {
+    final Entities entities = applicationModel.getDomain();
+    for (final EntityDefinition definition : entities.getDefinitions()) {
       if (definition.getForeignKeyProperties().isEmpty() || referencesOnlySelf(applicationModel.getDomain(), definition.getEntityId())) {
-        root.add(new EntityDependencyTreeNode(definition.getEntityId(), domain));
+        root.add(new EntityDependencyTreeNode(definition.getEntityId(), entities));
       }
     }
 
@@ -944,10 +944,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     final Comparator<String> comparator = Text.getSpaceAwareCollator();
-    final Entities domain = applicationModel.getDomain();
+    final Entities entities = applicationModel.getDomain();
     supportPanelBuilders.sort((ep1, ep2) -> {
-      final String thisCompare = ep1.getCaption() == null ? domain.getDefinition(ep1.getEntityId()).getCaption() : ep1.getCaption();
-      final String thatCompare = ep2.getCaption() == null ? domain.getDefinition(ep2.getEntityId()).getCaption() : ep2.getCaption();
+      final String thisCompare = ep1.getCaption() == null ? entities.getDefinition(ep1.getEntityId()).getCaption() : ep1.getCaption();
+      final String thatCompare = ep2.getCaption() == null ? entities.getDefinition(ep2.getEntityId()).getCaption() : ep2.getCaption();
 
       return comparator.compare(thisCompare, thatCompare);
     });
@@ -955,7 +955,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
     supportPanelBuilders.forEach(panelProvider -> controlSet.add(Controls.control(() -> displayEntityPanelDialog(panelProvider),
             panelProvider.getCaption() == null ?
-                    domain.getDefinition(panelProvider.getEntityId()).getCaption() : panelProvider.getCaption())));
+                    entities.getDefinition(panelProvider.getEntityId()).getCaption() : panelProvider.getCaption())));
 
     return controlSet;
   }
@@ -1545,18 +1545,18 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return username;
   }
 
-  private static boolean referencesOnlySelf(final Entities domain, final String entityId) {
-    return domain.getDefinition(entityId).getForeignKeyProperties().stream()
+  private static boolean referencesOnlySelf(final Entities entities, final String entityId) {
+    return entities.getDefinition(entityId).getForeignKeyProperties().stream()
             .allMatch(fkProperty -> fkProperty.getForeignEntityId().equals(entityId));
   }
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
 
-    private final Entities domain;
+    private final Entities entities;
 
-    private EntityDependencyTreeNode(final String entityId, final Entities domain) {
+    private EntityDependencyTreeNode(final String entityId, final Entities entities) {
       super(requireNonNull(entityId, "entityId"));
-      this.domain = domain;
+      this.entities = entities;
     }
 
     /**
@@ -1577,11 +1577,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     private List<EntityDependencyTreeNode> initializeChildren() {
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
-      for (final EntityDefinition definition : domain.getDefinitions()) {
+      for (final EntityDefinition definition : entities.getDefinitions()) {
         for (final ForeignKeyProperty fkProperty : definition.getForeignKeyProperties()) {
           if (fkProperty.getForeignEntityId().equals(getEntityId()) && !fkProperty.isSoftReference()
                   && !foreignKeyCycle(fkProperty.getForeignEntityId())) {
-            childrenList.add(new EntityDependencyTreeNode(definition.getEntityId(), domain));
+            childrenList.add(new EntityDependencyTreeNode(definition.getEntityId(), entities));
           }
         }
       }

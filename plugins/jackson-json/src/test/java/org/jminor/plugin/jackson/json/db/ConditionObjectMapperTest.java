@@ -26,15 +26,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class ConditionObjectMapperTest {
 
-  private final Entities domain = new TestDomain().getEntities();
+  private final Entities entities = new TestDomain().getEntities();
 
   @Test
   public void entityCondition() throws JsonProcessingException {
-    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(domain));
+    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
-    final Entity dept1 = domain.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept1 = entities.entity(TestDomain.T_DEPARTMENT);
     dept1.put(TestDomain.DEPARTMENT_ID, 1);
-    final Entity dept2 = domain.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept2 = entities.entity(TestDomain.T_DEPARTMENT);
     dept2.put(TestDomain.DEPARTMENT_ID, 2);
 
     final EntityCondition entityCondition = condition(TestDomain.T_EMP,
@@ -58,12 +58,12 @@ public final class ConditionObjectMapperTest {
     assertEquals(condition.getValues(), readCondition.getValues());
 
     assertEquals("(deptno not in (?, ?) and ename = ? and (empno >= ? and empno <= ?) and comm is not null)",
-            Conditions.whereCondition(entityCondition, domain.getDefinition(TestDomain.T_EMP)).getWhereClause());
+            Conditions.whereCondition(entityCondition, entities.getDefinition(TestDomain.T_EMP)).getWhereClause());
   }
 
   @Test
   public void nullCondition() throws JsonProcessingException {
-    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(domain));
+    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
     final EntityCondition entityCondition = condition(TestDomain.T_EMP,
             Conditions.propertyCondition(TestDomain.EMP_COMMISSION, Operator.NOT_LIKE, null));
 
@@ -80,7 +80,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   public void customCondition() throws JsonProcessingException {
-    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(domain));
+    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
     final CustomCondition condition = Conditions.customCondition(TestDomain.ENTITY_CONDITION_ID,
             asList(TestDomain.ENTITY_DECIMAL, TestDomain.ENTITY_DATE_TIME),

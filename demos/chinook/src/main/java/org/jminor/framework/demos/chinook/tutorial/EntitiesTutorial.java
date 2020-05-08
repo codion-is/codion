@@ -142,10 +142,10 @@ public final class EntitiesTutorial {
     EntityConnection connection = connectionProvider.getConnection();
 
     //this Domain object serves as a factory for Entity instances
-    Entities domain = connectionProvider.getDomain();
+    Entities entities = connectionProvider.getDomain();
 
     //lets create a new band
-    Entity myBand = domain.entity(T_ARTIST);
+    Entity myBand = entities.entity(T_ARTIST);
     //and give the band a name
     myBand.put(ARTIST_NAME, "My band name");
 
@@ -162,7 +162,7 @@ public final class EntitiesTutorial {
     connection.insert(myBand);
 
     //now for our first album
-    Entity album = domain.entity(T_ALBUM);
+    Entity album = entities.entity(T_ALBUM);
     //set the album artist by setting the artist foreign key to my band
     album.put(ALBUM_ARTIST_FK, myBand);
     //and set the title

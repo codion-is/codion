@@ -55,9 +55,9 @@ public final class EntityConnectionDemo {
 
   static void selectKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectKeys[]
-    Entities domain = connection.getDomain();
-    Entity.Key key42 = domain.key(T_ARTIST, 42L);
-    Entity.Key key43 = domain.key(T_ARTIST, 43L);
+    Entities entities = connection.getDomain();
+    Entity.Key key42 = entities.key(T_ARTIST, 42L);
+    Entity.Key key43 = entities.key(T_ARTIST, 43L);
 
     List<Entity> artists = connection.select(asList(key42, key43));
     // end::selectKeys[]
@@ -125,14 +125,14 @@ public final class EntityConnectionDemo {
 
   static void insert(EntityConnection connection) throws DatabaseException {
     // tag::insert[]
-    Entities domain = connection.getDomain();
+    Entities entities = connection.getDomain();
 
-    Entity myBand = domain.entity(T_ARTIST);
+    Entity myBand = entities.entity(T_ARTIST);
     myBand.put(ARTIST_NAME, "My Band");
 
     connection.insert(myBand);
 
-    Entity album = domain.entity(T_ALBUM);
+    Entity album = entities.entity(T_ALBUM);
     album.put(ALBUM_ARTIST_FK, myBand);
     album.put(ALBUM_TITLE, "First album");
 

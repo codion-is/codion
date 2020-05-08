@@ -276,7 +276,7 @@ public final class DomainEntities implements Entities {
    */
   @Override
   public Entities registerEntities() {
-    return registerDomain(this);
+    return registerEntities(this);
   }
 
   /**
@@ -287,12 +287,12 @@ public final class DomainEntities implements Entities {
    * @see #registerEntities()
    */
   public static Entities getDomain(final String domainId) {
-    final Entities domain = REGISTERED_ENTITIES.get(domainId);
-    if (domain == null) {
+    final Entities entities = REGISTERED_ENTITIES.get(domainId);
+    if (entities == null) {
       throw new IllegalArgumentException("Domain '" + domainId + "' has not been registered");
     }
 
-    return domain;
+    return entities;
   }
 
   /**
@@ -410,10 +410,10 @@ public final class DomainEntities implements Entities {
     }
   }
 
-  private static Entities registerDomain(final Entities domain) {
-    REGISTERED_ENTITIES.put(domain.getDomainId(), domain);
+  private static Entities registerEntities(final Entities entities) {
+    REGISTERED_ENTITIES.put(entities.getDomainId(), entities);
 
-    return domain;
+    return entities;
   }
 
   private static final class BeanProperty implements Serializable {

@@ -58,11 +58,11 @@ final class EntityPopupMenu extends JPopupMenu {
    */
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
                                          final EntityConnectionProvider connectionProvider, final Set<Entity> visitedEntities) {
-    final Entities domain = connectionProvider.getDomain();
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(domain.getDefinition(entity.getEntityId()).getPrimaryKeyProperties()));
-    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(domain.getDefinition(entity.getEntityId())
+    final Entities entities = connectionProvider.getDomain();
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityId()).getPrimaryKeyProperties()));
+    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(entities.getDefinition(entity.getEntityId())
             .getForeignKeyProperties()), visitedEntities);
-    populateValueMenu(rootMenu, entity, new ArrayList<>(domain.getDefinition(entity.getEntityId()).getProperties()), domain);
+    populateValueMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityId()).getProperties()), entities);
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<ColumnProperty> primaryKeyProperties) {
@@ -141,10 +141,10 @@ final class EntityPopupMenu extends JPopupMenu {
   }
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties,
-                                        final Entities domain) {
+                                        final Entities entities) {
     Text.collate(properties);
     final int maxValueLength = 20;
-    final EntityDefinition definition = domain.getDefinition(entity.getEntityId());
+    final EntityDefinition definition = entities.getDefinition(entity.getEntityId());
     final EntityValidator validator = definition.getValidator();
     for (final Property property : properties) {
       final boolean valid = isValid(validator, entity, definition, property);
