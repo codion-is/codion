@@ -36,7 +36,7 @@ import static org.jminor.common.Util.nullOrEmpty;
 public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
-   * @return the domin id
+   * @return the domain id
    */
   String getDomainId();
 
