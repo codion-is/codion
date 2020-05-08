@@ -73,7 +73,7 @@ public class EntityServerTest {
     //Fix side-effect from remoteEntityConnectionProvider() test,
     //which registers the entities received from the server
     //thus overwriting the entities containing the custom conditions
-    new TestDomain().getEntities().registerEntities();
+    new TestDomain().getEntities().register();
     final ConnectionRequest connectionRequestOne = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
             "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);

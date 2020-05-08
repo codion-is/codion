@@ -190,7 +190,13 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    */
   <V> Entity fromBean(V bean);
 
-  Entities registerEntities();
+  /**
+   * Registers this instance for lookup via {@link #getEntities(String)},
+   * required for serialization of entities.
+   * @return this Entities instance
+   * @see #getDomainId()
+   */
+  Entities register();
 
   /**
    * Returns true if the entity has a null primary key or a null original primary key,

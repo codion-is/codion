@@ -54,7 +54,7 @@ final class DomainOperations {
     return (DatabaseFunction<C, T>) operation;
   }
 
-  Map<String, ? extends DatabaseOperation> getOperations() {
+  Map<String, DatabaseOperation> getOperations() {
     return unmodifiableMap(operations);
   }
 

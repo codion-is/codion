@@ -6054,3 +6054,4 @@
   DomainEntities.getRegisteredEntities() removed, unused
   Entities.mapToOriginalPrimaryKey() moved to DefaultEntityEditModel
   Entities.equal() renamed valuesEqual()
+  Entities.registerEntities() renamed register(), some minor fixes

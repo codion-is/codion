@@ -664,7 +664,7 @@ public class DefaultEntityTest {
                 Properties.primaryKeyProperty("id"),
                 transientProperty);  }
     }
-    final Entities entities = new TestDomain().getEntities().registerEntities();
+    final Entities entities = new TestDomain().getEntities().register();
 
     final Entity entity = entities.entity("entityId");
     entity.put("id", 42);

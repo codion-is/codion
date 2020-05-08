@@ -267,14 +267,8 @@ public final class DomainEntities implements Entities {
     }
   }
 
-  /**
-   * Registers this instance for lookup via {@link #getEntities(String)},
-   * required for serialization of entities.
-   * @return this Entities instance
-   * @see #getDomainId()
-   */
   @Override
-  public Entities registerEntities() {
+  public Entities register() {
     REGISTERED_ENTITIES.put(domainId, this);
 
     return this;
@@ -285,7 +279,7 @@ public final class DomainEntities implements Entities {
    * @param domainId the id of the domain for which to retrieve the entity definitions
    * @return the Entities instance registered for the given domainId
    * @throws IllegalArgumentException in case the domain has not been registered
-   * @see #registerEntities()
+   * @see #register()
    */
   public static Entities getEntities(final String domainId) {
     final Entities entities = REGISTERED_ENTITIES.get(domainId);

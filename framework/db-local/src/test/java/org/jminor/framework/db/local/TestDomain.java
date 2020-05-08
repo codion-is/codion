@@ -56,7 +56,7 @@ public final class TestDomain extends Domain {
     joinedQuery();
     groupByQuery();
     noPkEntity();
-    getEntities().registerEntities();
+    getEntities().register();
     ReportWrapper.REPORT_PATH.set("path/to/reports");
     addReport(REPORT);
   }

@@ -413,13 +413,13 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     return domainModels.get(domainId);
   }
 
-  private Map<String, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
+  private static Map<String, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
     final Map<String, Domain> domains = new HashMap<>();
     try {
       for (final String className : domainModelClassNames) {
         LOG.info("Server loading and registering domain model class '" + className + " from classpath");
         final Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
-        domain.getEntities().registerEntities();
+        domain.getEntities().register();
         domains.put(domain.getDomainId(), domain);
       }
 
