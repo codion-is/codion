@@ -6055,3 +6055,4 @@
   Entities.mapToOriginalPrimaryKey() moved to DefaultEntityEditModel
   Entities.equal() renamed valuesEqual()
   Entities.registerEntities() renamed register(), some minor fixes
+  DomainReports and DomainOperations moved to Domain, renamed

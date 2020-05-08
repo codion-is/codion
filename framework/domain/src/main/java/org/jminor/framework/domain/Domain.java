@@ -6,6 +6,7 @@ package org.jminor.framework.domain;
 import org.jminor.common.db.operation.DatabaseFunction;
 import org.jminor.common.db.operation.DatabaseOperation;
 import org.jminor.common.db.operation.DatabaseProcedure;
+import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -13,6 +14,10 @@ import org.jminor.framework.domain.entity.EntityDefinitions;
 import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -22,8 +27,8 @@ import static java.util.Objects.requireNonNull;
 public class Domain implements EntityDefinition.Provider {
 
   private final DomainEntities entities;
-  private final DomainReports domainReports = new DomainReports();
-  private final DomainOperations domainOperations = new DomainOperations();
+  private final Reports reports = new Reports();
+  private final Operations operations = new Operations();
 
   /**
    * Instantiates a new Domain with the simple name of the class as domain id
@@ -66,15 +71,30 @@ public class Domain implements EntityDefinition.Provider {
   }
 
   public final boolean containsReport(final ReportWrapper reportWrapper) {
-   return domainReports.containsReport(reportWrapper);
+    return reports.containsReport(reportWrapper);
   }
 
+  /**
+   * Retrieves the procedure with the given id.
+   * @param <C> the type of the database connection this procedure requires
+   * @param procedureId the procedure id
+   * @return the procedure
+   * @throws IllegalArgumentException in case the procedure is not found
+   */
   public final <C> DatabaseProcedure<C> getProcedure(final String procedureId) {
-    return domainOperations.getProcedure(procedureId);
+    return operations.getProcedure(procedureId);
   }
 
+  /**
+   * Retrieves the function with the given id.
+   * @param <C> the type of the database connection this function requires
+   * @param <T> the result type
+   * @param functionId the function id
+   * @return the function
+   * @throws IllegalArgumentException in case the function is not found
+   */
   public final <C, T> DatabaseFunction<C, T> getFunction(final String functionId) {
-    return domainOperations.getFunction(functionId);
+    return operations.getFunction(functionId);
   }
 
   /**
@@ -103,15 +123,7 @@ public class Domain implements EntityDefinition.Provider {
    */
   protected final EntityDefinition.Builder define(final String entityId, final String tableName,
                                                   final Property.Builder... propertyBuilders) {
-    return addDefinition(EntityDefinitions.definition(entityId, tableName, propertyBuilders));
-  }
-
-  /**
-   * Adds the {@link EntityDefinition} supplied by the given {@link EntityDefinition.Builder} to this domain model.
-   * @param definitionBuilder the {@link EntityDefinition.Builder}
-   * @return the {@link EntityDefinition.Builder}
-   */
-  protected final EntityDefinition.Builder addDefinition(final EntityDefinition.Builder definitionBuilder) {
+    final EntityDefinition.Builder definitionBuilder = EntityDefinitions.definition(entityId, tableName, propertyBuilders);
     entities.addDefinition(definitionBuilder.domainId(getDomainId()).get());
 
     return definitionBuilder;
@@ -124,7 +136,7 @@ public class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case the report has already been added
    */
   protected final void addReport(final ReportWrapper reportWrapper) {
-    domainReports.addReport(reportWrapper);
+    reports.addReport(reportWrapper);
   }
 
   /**
@@ -133,7 +145,7 @@ public class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case an operation with the same id has already been added
    */
   protected final void addOperation(final DatabaseOperation operation) {
-    domainOperations.addOperation(operation);
+    operations.addOperation(operation);
   }
 
   /**
@@ -143,5 +155,61 @@ public class Domain implements EntityDefinition.Provider {
    */
   protected final void setStrictForeignKeys(final boolean strictForeignKeys) {
     entities.setStrictForeignKeys(strictForeignKeys);
+  }
+
+  private static final class Operations {
+
+    private final Map<String, DatabaseOperation> operations = new HashMap<>();
+
+    private void addOperation(final DatabaseOperation operation) {
+      requireNonNull(operation, "operation");
+      if (operations.containsKey(operation.getId())) {
+        throw new IllegalArgumentException("Operation already defined: " + operations.get(operation.getId()).getName());
+      }
+
+      operations.put(operation.getId(), operation);
+    }
+
+    private <C> DatabaseProcedure<C> getProcedure(final String procedureId) {
+      requireNonNull(procedureId, "procedureId");
+      final DatabaseOperation operation = operations.get(procedureId);
+      if (operation == null) {
+        throw new IllegalArgumentException("Procedure not found: " + procedureId);
+      }
+
+      return (DatabaseProcedure<C>) operation;
+    }
+
+    private <C, T> DatabaseFunction<C, T> getFunction(final String functionId) {
+      requireNonNull(functionId, "functionId");
+      final DatabaseOperation operation = operations.get(functionId);
+      if (operation == null) {
+        throw new IllegalArgumentException("Function not found: " + functionId);
+      }
+
+      return (DatabaseFunction<C, T>) operation;
+    }
+  }
+
+  private static final class Reports {
+
+    private final Set<ReportWrapper> reports = new HashSet<>();
+
+    private void addReport(final ReportWrapper report) {
+      if (containsReport(report)) {
+        throw new IllegalArgumentException("Report has already been added: " + report);
+      }
+      try {
+        report.loadReport();
+        reports.add(report);
+      }
+      catch (final ReportException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    private boolean containsReport(final ReportWrapper reportWrapper) {
+      return reports.contains(requireNonNull(reportWrapper, "reportWrapper"));
+    }
   }
 }
