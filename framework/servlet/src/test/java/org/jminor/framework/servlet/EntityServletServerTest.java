@@ -11,7 +11,7 @@ import org.jminor.common.rmi.server.RemoteClient;
 import org.jminor.common.rmi.server.ServerConfiguration;
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.EntityServer;
 import org.jminor.framework.server.EntityServerAdmin;
@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServletServerTest {
 
-  private static final Domain DOMAIN = new TestDomain();
+  private static final Entities ENTITIES = new TestDomain().getEntities();
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
@@ -149,7 +149,7 @@ public class EntityServletServerTest {
     List<Entity> queryEntities = Serializer.deserialize(response.body());
     assertEquals(4, queryEntities.size());
 
-    final Entity department = DOMAIN.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, null);
     department.put(TestDomain.DEPARTMENT_ID, -42);
     department.put(TestDomain.DEPARTMENT_NAME, "Test");

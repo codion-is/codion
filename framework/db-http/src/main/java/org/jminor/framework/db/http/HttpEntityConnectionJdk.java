@@ -16,7 +16,7 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import org.slf4j.Logger;
@@ -75,7 +75,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   private final User user;
   private final String baseurl;
   private final HttpClient httpClient;
-  private final Domain domain;
+  private final Entities entities;
   private final String[] headers;
 
   private boolean closed;
@@ -102,12 +102,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
             CONTENT_TYPE, APPLICATION_OCTET_STREAM,
             AUTHORIZATION, BASIC + Base64.getEncoder().encodeToString((user.getUsername() + ":" + String.valueOf(user.getPassword())).getBytes())
     };
-    this.domain = initializeDomain();
+    this.entities = initializeEntities();
   }
 
   @Override
-  public Domain getDomain() {
-    return domain;
+  public Entities getEntities() {
+    return entities;
   }
 
   @Override
@@ -459,9 +459,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     }
   }
 
-  private Domain initializeDomain() {
+  private Entities initializeEntities() {
     try {
-      return handleResponse(execute(createRequest("getDomain")));
+      return handleResponse(execute(createRequest("getEntities")));
     }
     catch (final RuntimeException e) {
       throw e;
