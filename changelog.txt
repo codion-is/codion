@@ -6040,7 +6040,7 @@
   HttpServerConfiguration.Secure enum added and used instead of boolean parameter
   KeyEvents.OnKeyRelease enum added and used instead of boolean parameter
   FlexibleGridLayout.FixRowHeights and FixColumnWidths enums added and used instead of boolean parameter
-0.14.12
+0.15.0
   Property.Builder.useNumberFormatGrouping() renamed to numberFormatGrouping()
   FilteredTable.findAndSelectNext() and findAndSelectPrevious() split from findNext() and findPrevious()
   DefaultProperty.defaultValueProvider renamed defaultValueSupplier, to fit the type
