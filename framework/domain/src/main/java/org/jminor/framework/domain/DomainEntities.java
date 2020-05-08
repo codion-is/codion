@@ -19,7 +19,6 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -268,15 +267,11 @@ public final class DomainEntities implements Entities {
     }
   }
 
-  /**
-   * Registers this instance for lookup via {@link DomainEntities#getEntities(String)}, required for serialization
-   * of domain objects, entities and related classes.
-   * @return this Domain instance
-   * @see #getDomainId()
-   */
   @Override
-  public Entities registerEntities() {
-    return registerEntities(this);
+  public Entities register() {
+    REGISTERED_ENTITIES.put(domainId, this);
+
+    return this;
   }
 
   /**
@@ -284,7 +279,7 @@ public final class DomainEntities implements Entities {
    * @param domainId the id of the domain for which to retrieve the entity definitions
    * @return the Entities instance registered for the given domainId
    * @throws IllegalArgumentException in case the domain has not been registered
-   * @see #registerEntities()
+   * @see #register()
    */
   public static Entities getEntities(final String domainId) {
     final Entities entities = REGISTERED_ENTITIES.get(domainId);
@@ -295,15 +290,8 @@ public final class DomainEntities implements Entities {
     return entities;
   }
 
-  /**
-   * @return all domains that have been registered via {@link #registerEntities()}
-   */
-  public static Collection<Entities> getRegisteredEntities() {
-    return Collections.unmodifiableCollection(REGISTERED_ENTITIES.values());
-  }
-
   void addDefinition(final EntityDefinition definition) {
-    if (entityDefinitions.containsKey(definition.getEntityId()) && !ENABLE_REDEFINE_ENTITY.get()) {
+    if (entityDefinitions.containsKey(definition.getEntityId())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
               definition.getEntityId() + ", for table: " + definition.getTableName());
     }
@@ -408,12 +396,6 @@ public final class DomainEntities implements Entities {
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private static Entities registerEntities(final Entities entities) {
-    REGISTERED_ENTITIES.put(entities.getDomainId(), entities);
-
-    return entities;
   }
 
   private static final class BeanProperty implements Serializable {

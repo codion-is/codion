@@ -279,8 +279,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   public final Value<Integer> integerValueSelector(final String propertyId) {
-    return integerValueSelector(propertyId, (entities, thePropertyId, value) ->
-            entities.stream().filter(entity ->
+    return integerValueSelector(propertyId, (theEntities, thePropertyId, value) ->
+            theEntities.stream().filter(entity ->
                     Objects.equals(value, entity.get(propertyId))).findFirst().orElse(null));
   }
 

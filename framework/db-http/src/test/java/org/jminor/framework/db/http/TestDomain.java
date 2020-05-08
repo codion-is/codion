@@ -43,7 +43,7 @@ public final class TestDomain extends Domain {
     employee();
     operations();
     addReport(REPORT);
-    getEntities().registerEntities();
+    getEntities().register();
   }
 
   public static final String DEPARTMENT_ID = "deptno";

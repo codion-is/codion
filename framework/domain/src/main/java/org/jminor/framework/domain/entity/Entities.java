@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.domain.entity;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.value.PropertyValue;
 import org.jminor.common.valuemap.ValueMap;
 import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -19,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -37,16 +34,8 @@ import static org.jminor.common.Util.nullOrEmpty;
  */
 public interface Entities extends EntityDefinition.Provider, Serializable {
 
-    /**
-   * Specifies whether to enable entities to be re-defined, that is,
-   * allow a new definition to replace an old one.
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  PropertyValue<Boolean> ENABLE_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.redefineEntityEnabled", false);
-
   /**
-   * @return the domin id
+   * @return the domain id
    */
   String getDomainId();
 
@@ -201,7 +190,13 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    */
   <V> Entity fromBean(V bean);
 
-  Entities registerEntities();
+  /**
+   * Registers this instance for lookup via {@link #getEntities(String)},
+   * required for serialization of entities.
+   * @return this Entities instance
+   * @see #getDomainId()
+   */
+  Entities register();
 
   /**
    * Returns true if the entity has a null primary key or a null original primary key,
@@ -374,7 +369,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @return the previous property values mapped to the primary key of the entity
    */
   static Map<Entity.Key, Object> put(final String propertyId, final Object value,
-                                            final Collection<Entity> entities) {
+                                     final Collection<Entity> entities) {
     requireNonNull(entities, "entities");
     final Map<Entity.Key, Object> previousValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
@@ -432,31 +427,13 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   }
 
   /**
-   * Maps the given entities and their updated counterparts to their original primary keys,
-   * assumes a single copy of each entity in the given lists.
-   * @param entitiesBeforeUpdate the entities before update
-   * @param entitiesAfterUpdate the entities after update
-   * @return the updated entities mapped to their respective original primary keys
-   */
-  static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(final List<Entity> entitiesBeforeUpdate,
-                                                                final List<Entity> entitiesAfterUpdate) {
-    final List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
-    final Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
-    for (final Entity entity : entitiesBeforeUpdate) {
-      keyMap.put(entity.getOriginalKey(), findAndRemove(entity.getKey(), entitiesAfterUpdateCopy.listIterator()));
-    }
-
-    return keyMap;
-  }
-
-  /**
    * Creates a two dimensional list containing the values of the given properties for the given entities in string format.
    * @param properties the properties
    * @param entities the entities
    * @return the values of the given properties from the given entities in a two dimensional list
    */
   static List<List<String>> getStringValueList(final List<? extends Property> properties,
-                                                      final List<Entity> entities) {
+                                               final List<Entity> entities) {
     final List<List<String>> data = new ArrayList<>();
     for (final Entity entity : entities) {
       final List<String> line = new ArrayList<>(properties.size());
@@ -501,7 +478,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param propertyIds the ids of the properties to use
    * @return true if the values of the given properties are equal in the given entities
    */
-  static boolean equal(final Entity entityOne, final Entity entityTwo, final String... propertyIds) {
+  static boolean valuesEqual(final Entity entityOne, final Entity entityTwo, final String... propertyIds) {
     requireNonNull(entityOne);
     requireNonNull(entityTwo);
     requireNonNull(propertyIds);
@@ -535,18 +512,5 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
     }
 
     return !Objects.equals(originalValue, comparisonValue);
-  }
-
-  static Entity findAndRemove(final Entity.Key primaryKey, final ListIterator<Entity> iterator) {
-    while (iterator.hasNext()) {
-      final Entity current = iterator.next();
-      if (current.getKey().equals(primaryKey)) {
-        iterator.remove();
-
-        return current;
-      }
-    }
-
-    return null;
   }
 }

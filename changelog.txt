@@ -6067,7 +6067,7 @@
   HttpServerConfiguration.Secure enum added and used instead of boolean parameter
   KeyEvents.OnKeyRelease enum added and used instead of boolean parameter
   FlexibleGridLayout.FixRowHeights and FixColumnWidths enums added and used instead of boolean parameter
-0.14.12
+0.15.0
   Property.Builder.useNumberFormatGrouping() renamed to numberFormatGrouping()
   FilteredTable.findAndSelectNext() and findAndSelectPrevious() split from findNext() and findPrevious()
   DefaultProperty.defaultValueProvider renamed defaultValueSupplier, to fit the type
@@ -6076,3 +6076,9 @@
   Entities variable/parameter renamed to entities
   getDomain() renamed getEntities() throughout
   Javadoc fixes and minor improvements
+  DefaultLocalEntityConnection no longer copies the domain object, Domain copy constructor removed
+  Entities.ENABLE_REDEFINE_ENTITY configuration value removed
+  DomainEntities.getRegisteredEntities() removed, unused
+  Entities.mapToOriginalPrimaryKey() moved to DefaultEntityEditModel
+  Entities.equal() renamed valuesEqual()
+  Entities.registerEntities() renamed register(), some minor fixes

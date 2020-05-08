@@ -41,18 +41,18 @@ public final class EntitiesTest {
     department2.put(TestDomain.DEPARTMENT_NAME, "name");
     department2.put(TestDomain.DEPARTMENT_LOCATION, "loc");
 
-    assertFalse(Entities.equal(department1, department2,
+    assertFalse(Entities.valuesEqual(department1, department2,
             TestDomain.DEPARTMENT_ID, TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION));
-    assertTrue(Entities.equal(department1, department2,
+    assertTrue(Entities.valuesEqual(department1, department2,
             TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION));
     department2.remove(TestDomain.DEPARTMENT_LOCATION);
-    assertFalse(Entities.equal(department1, department2,
+    assertFalse(Entities.valuesEqual(department1, department2,
             TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION));
     department1.remove(TestDomain.DEPARTMENT_LOCATION);
-    assertTrue(Entities.equal(department1, department2,
+    assertTrue(Entities.valuesEqual(department1, department2,
             TestDomain.DEPARTMENT_NAME, TestDomain.DEPARTMENT_LOCATION));
 
-    assertThrows(IllegalArgumentException.class, () -> Entities.equal(department1, department2));
+    assertThrows(IllegalArgumentException.class, () -> Entities.valuesEqual(department1, department2));
   }
 
   @Test
