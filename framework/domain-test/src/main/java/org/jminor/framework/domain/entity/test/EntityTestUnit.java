@@ -93,7 +93,7 @@ public class EntityTestUnit {
   }
 
   /**
-   * @return the domain model
+   * @return the domain entities
    */
   public final Entities getEntities() {
     if (entities == null) {
@@ -150,7 +150,7 @@ public class EntityTestUnit {
   }
 
   /**
-   * @param domain the domain model
+   * @param entities the domain model entities
    * @param entityId the entity ID
    * @param referenceEntities entities referenced by the given entity ID
    * @return a Entity instance containing randomized values, based on the property definitions
@@ -160,7 +160,7 @@ public class EntityTestUnit {
   }
 
   /**
-   * @param domain the domain model
+   * @param entities the domain model entities
    * @param entityId the entity ID
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
@@ -178,7 +178,7 @@ public class EntityTestUnit {
   /**
    * Randomizes the values in the given entity, note that if a foreign key entity is not provided
    * the respective foreign key value in not modified
-   * @param domain the domain model
+   * @param entities the domain model entities
    * @param entity the entity to randomize
    * @param foreignKeyEntities the entities referenced via foreign keys
    */

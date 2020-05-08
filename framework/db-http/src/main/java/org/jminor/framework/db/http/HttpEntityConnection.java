@@ -97,7 +97,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   /**
    * Instantiates a new {@link HttpEntityConnection} instance
-   * @param domain the entities entities
+   * @param domainId the id of the domain model
    * @param serverHostName the http server host name
    * @param serverPort the http server port
    * @param httpsEnabled if true then https is used
@@ -116,7 +116,7 @@ final class HttpEntityConnection implements EntityConnection {
     this.httpClient = createHttpClient(clientTypeId, clientId);
     this.targetHost = new HttpHost(serverHostName, serverPort, httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);
-    this.entities = initializeDomain();
+    this.entities = initializeEntities();
   }
 
   @Override
@@ -476,9 +476,9 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  private Entities initializeDomain() {
+  private Entities initializeEntities() {
     try {
-      return onResponse(execute(createHttpPost("getDomain")));
+      return onResponse(execute(createHttpPost("getEntities")));
     }
     catch (final RuntimeException e) {
       throw e;

@@ -80,7 +80,7 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
   StateObserver getConnectionValidObserver();
 
   /**
-   * @return the underlying domain model
+   * @return the underlying domain entities
    */
   Entities getEntities();
 

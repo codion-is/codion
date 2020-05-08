@@ -304,7 +304,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final String domainId = (String) stream.readObject();
     final String entityId = (String) stream.readObject();
-    definition = DomainEntities.getDomain(domainId).getDefinition(entityId);
+    definition = DomainEntities.getEntities(domainId).getDefinition(entityId);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
     }

@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -65,7 +66,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
 
   private final EntityServerConfiguration configuration;
-  private final Map<String, Domain> domainModels = new HashMap<>();
+  private final Map<String, Domain> domainModels;
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
@@ -92,9 +93,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       this.database = requireNonNull(configuration.getDatabase(), "database");
       this.registry = LocateRegistry.createRegistry(configuration.getRegistryPort());
       this.clientLoggingEnabled = configuration.getClientLoggingEnabled();
+      this.domainModels = loadDomainModels(configuration.getDomainModelClassNames());
       setConnectionTimeout(configuration.getConnectionTimeout());
       setClientTypeConnectionTimeouts(configuration.getClientSpecificConnectionTimeouts());
-      loadDomainModels(configuration.getDomainModelClassNames());
       initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getStartupPoolUsers());
       setConnectionLimit(configuration.getConnectionLimit());
       serverAdmin = initializeServerAdmin(configuration);
@@ -412,14 +413,17 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     return domainModels.get(domainId);
   }
 
-  private void loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
+  private Map<String, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
+    final Map<String, Domain> domains = new HashMap<>();
     try {
       for (final String className : domainModelClassNames) {
         LOG.info("Server loading and registering domain model class '" + className + " from classpath");
         final Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
         domain.getEntities().registerEntities();
-        domainModels.put(domain.getDomainId(), domain);
+        domains.put(domain.getDomainId(), domain);
       }
+
+      return unmodifiableMap(domains);
     }
     catch (final InvocationTargetException ite) {
       LOG.error("Exception while loading and registering domain model", ite);

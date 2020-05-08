@@ -53,7 +53,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private final EntityConnectionProvider connectionProvider;
 
   /**
-   * The domain model
+   * The domain model entities
    */
   private final Entities entities;
 

@@ -27,7 +27,7 @@ public final class EntityObjectMapper extends ObjectMapper {
 
   /**
    * Instantiates a new EntityObjectMapper for the given domain
-   * @param domain the Domain model
+   * @param entities the domain model entities
    */
   public EntityObjectMapper(final Entities entities) {
     this.entities = entities;
@@ -46,7 +46,7 @@ public final class EntityObjectMapper extends ObjectMapper {
   }
 
   /**
-   * @return the underlying domain model
+   * @return the underlying domain model entities
    */
   public Entities getEntities() {
     return entities;

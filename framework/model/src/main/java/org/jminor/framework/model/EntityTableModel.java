@@ -70,7 +70,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   EntityConnectionProvider getConnectionProvider();
 
   /**
-   * @return the underlying domain model
+   * @return the underlying domain entities
    */
   Entities getEntities();
 

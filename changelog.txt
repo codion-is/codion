@@ -6048,3 +6048,4 @@
   Domain, another major refactoring, Entities reintroduced as an interface, implemented by DomainEntities, Domain no longer trespassing in model layer
   Entities variable/parameter renamed to entities
   getDomain() renamed getEntities() throughout
+  Javadoc fixes and minor improvements

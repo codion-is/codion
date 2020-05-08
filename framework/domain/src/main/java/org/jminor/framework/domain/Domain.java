@@ -17,12 +17,13 @@ import java.util.Collection;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * Represents an application domain model, entities, reports and database operations.
  */
 public class Domain implements EntityDefinition.Provider {
 
   private final DomainEntities entities;
-  private final transient DomainReports domainReports = new DomainReports();
-  private final transient DomainOperations domainOperations = new DomainOperations();
+  private final DomainReports domainReports = new DomainReports();
+  private final DomainOperations domainOperations = new DomainOperations();
 
   /**
    * Instantiates a new Domain with the simple name of the class as domain id
@@ -71,27 +72,24 @@ public class Domain implements EntityDefinition.Provider {
   }
 
   @Override
-  public EntityDefinition getDefinition(final String entityId) {
+  public final EntityDefinition getDefinition(final String entityId) {
     return entities.getDefinition(entityId);
   }
 
   @Override
-  public Collection<EntityDefinition> getDefinitions() {
+  public final Collection<EntityDefinition> getDefinitions() {
     return entities.getDefinitions();
   }
 
   public final boolean containsReport(final ReportWrapper reportWrapper) {
-   checkIfDeserialized();
    return domainReports.containsReport(reportWrapper);
   }
 
   public final <C> DatabaseProcedure<C> getProcedure(final String procedureId) {
-    checkIfDeserialized();
     return domainOperations.getProcedure(procedureId);
   }
 
   public final <C, T> DatabaseFunction<C, T> getFunction(final String functionId) {
-    checkIfDeserialized();
     return domainOperations.getFunction(functionId);
   }
 
@@ -142,7 +140,6 @@ public class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case the report has already been added
    */
   protected final void addReport(final ReportWrapper reportWrapper) {
-    checkIfDeserialized();
     domainReports.addReport(reportWrapper);
   }
 
@@ -152,7 +149,6 @@ public class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case an operation with the same id has already been added
    */
   protected final void addOperation(final DatabaseOperation operation) {
-    checkIfDeserialized();
     domainOperations.addOperation(operation);
   }
 
@@ -163,14 +159,5 @@ public class Domain implements EntityDefinition.Provider {
    */
   protected final void setStrictForeignKeys(final boolean strictForeignKeys) {
     entities.setStrictForeignKeys(strictForeignKeys);
-  }
-
-  /**
-   * {@link #domainOperations} is transient and only null after deserialization.
-   */
-  private void checkIfDeserialized() {
-    if (domainOperations == null) {
-      throw new IllegalStateException("Operations and reports are not available in a deserialized Domain model");
-    }
   }
 }

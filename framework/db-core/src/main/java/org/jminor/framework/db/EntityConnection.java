@@ -34,7 +34,7 @@ import java.util.Map;
 public interface EntityConnection {
 
   /**
-   * @return the underlying domain model
+   * @return the underlying domain entities
    */
   Entities getEntities();
 

@@ -51,7 +51,7 @@ public final class EntityJSONParser {
   private int indentation = -1;
 
   /**
-   * @param domain the underlying domain model
+   * @param entities the domain model entities
    */
   public EntityJSONParser(final Entities entities) {
     this.entities = entities;

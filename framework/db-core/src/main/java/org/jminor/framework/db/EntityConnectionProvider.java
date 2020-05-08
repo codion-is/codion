@@ -55,8 +55,8 @@ public interface EntityConnectionProvider {
   PropertyValue<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("jminor.client.connectionType", CONNECTION_TYPE_LOCAL);
 
   /**
-   * Returns the domain model this connection is based on
-   * @return the underlying domain model
+   * Returns the domain entities this connection is based on
+   * @return the underlying domain entities
    */
   Entities getEntities();
 

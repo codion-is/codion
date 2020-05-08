@@ -26,7 +26,6 @@ final class EntityResultPacker implements ResultPacker<Entity> {
   private final List<ColumnProperty> columnProperties;
 
   /**
-   * @param definitionProvider the Domain model
    * @param definition the entity definition
    * @param columnProperties the column properties in the same order as they appear in the ResultSet
    */

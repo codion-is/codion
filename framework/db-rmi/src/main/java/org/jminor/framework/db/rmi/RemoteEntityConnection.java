@@ -25,7 +25,7 @@ import java.util.Map;
 public interface RemoteEntityConnection extends Remote {
 
   /**
-   * @return the underlying domain model
+   * @return the underlying domain entities
    * @throws RemoteException in case of an exception
    */
   Entities getEntities() throws RemoteException;

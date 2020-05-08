@@ -93,7 +93,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * @return a deep copy of the active entity
-   * @see org.jminor.framework.domain.Domain#copyEntity(Entity)
+   * @see org.jminor.framework.domain.entity.Entities#copyEntity(Entity)
    */
   Entity getEntityCopy();
 
@@ -194,7 +194,7 @@ public interface EntityEditModel extends Refreshable {
   <V> Value<V> value(String propertyId);
 
   /**
-   * @return the underlying domain model
+   * @return the underlying domain entities
    */
   Entities getEntities();
 

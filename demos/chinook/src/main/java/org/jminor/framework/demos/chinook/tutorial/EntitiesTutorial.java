@@ -141,7 +141,7 @@ public final class EntitiesTutorial {
   private static void modifyingEntities(EntityConnectionProvider connectionProvider) throws DatabaseException {
     EntityConnection connection = connectionProvider.getConnection();
 
-    //this Domain object serves as a factory for Entity instances
+    //this Entities object serves as a factory for Entity instances
     Entities entities = connectionProvider.getEntities();
 
     //lets create a new band

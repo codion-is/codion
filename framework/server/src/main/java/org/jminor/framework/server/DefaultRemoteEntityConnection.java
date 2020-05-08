@@ -30,6 +30,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /**
    * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
+   * @param domain the domain model
    * @param database the underlying database
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection
@@ -44,6 +45,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   /**
    * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
+   * @param domain the domain model
    * @param database the underlying database
    * @param remoteClient the client requesting the connection
    * @param port the port to use when exporting this remote connection

@@ -51,7 +51,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
 
   /**
    * Instantiates a new AbstractRemoteEntityConnection and exports it on the given port number
-   * @param domain the domain model entities
+   * @param domain the domain model
    * @param database defines the underlying database
    * @param remoteClient information about the client requesting the connection
    * @param port the port to use when exporting this remote connection

@@ -163,7 +163,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   Entity createToStringEntity(String entityId, String toStringValue);
 
   /**
-   * Transforms the given entities into beans according to the information found in this Domain model
+   * Transforms the given entities into beans according to the information found in this Entities instance
    * @param <V> the bean type
    * @param entities the entities to transform
    * @return a List containing the beans derived from the given entities, an empty List if {@code entities} is null or empty
@@ -173,7 +173,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   <V> List<V> toBeans(List<Entity> entities);
 
   /**
-   * Transforms the given entity into a bean according to the information found in this Domain model
+   * Transforms the given entity into a bean according to the information found in this Entities instance
    * @param <V> the bean type
    * @param entity the entity to transform
    * @return a bean derived from the given entity
@@ -183,7 +183,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   <V> V toBean(Entity entity);
 
   /**
-   * Transforms the given beans into a entities according to the information found in this Domain model
+   * Transforms the given beans into a entities according to the information found in this Entities instance
    * @param beans the beans to transform
    * @return a List containing the entities derived from the given beans, an empty List if {@code beans} is null or empty
    * @see EntityDefinition.Builder#beanClass(Class)
