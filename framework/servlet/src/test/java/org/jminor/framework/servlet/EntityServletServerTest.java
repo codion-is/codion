@@ -13,7 +13,7 @@ import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.common.value.Value;
 import org.jminor.common.value.Values;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.server.EntityServer;
 import org.jminor.framework.server.EntityServerAdmin;
@@ -62,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServletServerTest {
 
-  private static final Domain DOMAIN = new TestDomain();
+  private static final Entities DOMAIN = new TestDomain().getEntities();
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));

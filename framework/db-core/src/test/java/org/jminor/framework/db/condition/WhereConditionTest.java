@@ -6,6 +6,7 @@ package org.jminor.framework.db.condition;
 import org.jminor.common.Conjunction;
 import org.jminor.common.db.Operator;
 import org.jminor.framework.db.TestDomain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class WhereConditionTest {
 
-  private static final TestDomain DOMAIN = new TestDomain();
+  private static final Entities DOMAIN = new TestDomain().getEntities();
 
   @Test
   public void test() {

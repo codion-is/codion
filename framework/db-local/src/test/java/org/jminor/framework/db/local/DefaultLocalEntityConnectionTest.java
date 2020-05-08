@@ -57,6 +57,7 @@ public class DefaultLocalEntityConnectionTest {
   private DefaultLocalEntityConnection connection;
 
   private static final TestDomain DOMAIN = new TestDomain();
+  private static final Entities ENTITIES = DOMAIN.getEntities();
 
   @BeforeEach
   public void setup() throws ClassNotFoundException, DatabaseException {
@@ -72,7 +73,7 @@ public class DefaultLocalEntityConnectionTest {
   public void delete() throws Exception {
     try {
       connection.beginTransaction();
-      final Entity.Key key = DOMAIN.key(T_DEPARTMENT, 40);
+      final Entity.Key key = ENTITIES.key(T_DEPARTMENT, 40);
       assertEquals(0, connection.delete(new ArrayList<>()));
       assertTrue(connection.delete(key));
       try {
@@ -86,7 +87,7 @@ public class DefaultLocalEntityConnectionTest {
     }
     try {
       connection.beginTransaction();
-      final Entity.Key key = DOMAIN.key(T_DEPARTMENT, 40);
+      final Entity.Key key = ENTITIES.key(T_DEPARTMENT, 40);
       assertEquals(1, connection.delete(condition(key)));
       try {
         connection.selectSingle(key);
@@ -111,13 +112,13 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void deleteReferentialIntegrity() {
-    final Entity.Key key = DOMAIN.key(T_DEPARTMENT, 10);
+    final Entity.Key key = ENTITIES.key(T_DEPARTMENT, 10);
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(key));
   }
 
   @Test
   public void insertUniqueConstraint() {
-    final Entity department = DOMAIN.entity(T_DEPARTMENT);
+    final Entity department = ENTITIES.entity(T_DEPARTMENT);
     department.put(DEPARTMENT_ID, 1000);
     department.put(DEPARTMENT_NAME, "SALES");
     assertThrows(UniqueConstraintException.class, () -> connection.insert(department));
@@ -132,7 +133,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void insertNoParentKey() {
-    final Entity emp = DOMAIN.entity(T_EMP);
+    final Entity emp = ENTITIES.entity(T_EMP);
     emp.put(EMP_ID, -100);
     emp.put(EMP_NAME, "Testing");
     emp.put(EMP_DEPARTMENT, -1010);//not available
@@ -142,7 +143,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void insertNoPk() throws DatabaseException {
-    final Entity noPk = DOMAIN.entity(T_NO_PK);
+    final Entity noPk = ENTITIES.entity(T_NO_PK);
     noPk.put(NO_PK_COL1, 10);
     noPk.put(NO_PK_COL2, "10");
     noPk.put(NO_PK_COL3, "10");
@@ -284,8 +285,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectByKey() throws DatabaseException {
-    final Entity.Key deptKey = DOMAIN.key(T_DEPARTMENT, 10);
-    final Entity.Key empKey = DOMAIN.key(T_EMP, 8);
+    final Entity.Key deptKey = ENTITIES.key(T_DEPARTMENT, 10);
+    final Entity.Key empKey = ENTITIES.key(T_EMP, 8);
 
     final List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -384,7 +385,7 @@ public class DefaultLocalEntityConnectionTest {
   public void insertOnlyNullValues() throws DatabaseException {
     try {
       connection.beginTransaction();
-      final Entity department = DOMAIN.entity(T_DEPARTMENT);
+      final Entity department = ENTITIES.entity(T_DEPARTMENT);
       assertThrows(DatabaseException.class, () -> connection.insert(department));
     }
     finally {
@@ -409,7 +410,7 @@ public class DefaultLocalEntityConnectionTest {
     final Entity sales = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_NAME, "SALES");
     final double salary = 1500;
 
-    Entity emp = DOMAIN.entity(T_EMP);
+    Entity emp = ENTITIES.entity(T_EMP);
     emp.put(EMP_DEPARTMENT_FK, sales);
     emp.put(EMP_NAME, "Nobody");
     emp.put(EMP_SALARY, salary);
@@ -431,7 +432,7 @@ public class DefaultLocalEntityConnectionTest {
     final double salary = 1500;
     final double defaultCommission = 200;
 
-    Entity emp = DOMAIN.entity(T_EMP);
+    Entity emp = ENTITIES.entity(T_EMP);
     emp.put(EMP_DEPARTMENT_FK, sales);
     emp.put(EMP_NAME, name);
     emp.put(EMP_SALARY, salary);
@@ -773,12 +774,12 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void writeBlobIncorrectType() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> connection.writeBlob(DOMAIN.key(T_DEPARTMENT), DEPARTMENT_NAME, new byte[0]));
+    assertThrows(IllegalArgumentException.class, () -> connection.writeBlob(ENTITIES.key(T_DEPARTMENT), DEPARTMENT_NAME, new byte[0]));
   }
 
   @Test
   public void readBlobIncorrectType() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> connection.readBlob(DOMAIN.key(T_DEPARTMENT), DEPARTMENT_NAME));
+    assertThrows(IllegalArgumentException.class, () -> connection.readBlob(ENTITIES.key(T_DEPARTMENT), DEPARTMENT_NAME));
   }
 
   @Test
@@ -849,7 +850,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void testUUIDPrimaryKeyColumnWithDefaultValue() throws DatabaseException {
-    final Entity entity = DOMAIN.entity(T_UUID_TEST_DEFAULT);
+    final Entity entity = ENTITIES.entity(T_UUID_TEST_DEFAULT);
     entity.put(UUID_TEST_DEFAULT_DATA, "test");
     connection.insert(entity);
     assertNotNull(entity.get(UUID_TEST_DEFAULT_ID));
@@ -858,7 +859,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void testUUIDPrimaryKeyColumnWithoutDefaultValue() throws DatabaseException {
-    final Entity entity = DOMAIN.entity(T_UUID_TEST_NO_DEFAULT);
+    final Entity entity = ENTITIES.entity(T_UUID_TEST_NO_DEFAULT);
     entity.put(UUID_TEST_NO_DEFAULT_DATA, "test");
     connection.insert(entity);
     assertNotNull(entity.get(UUID_TEST_NO_DEFAULT_ID));

@@ -16,7 +16,7 @@ import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.exception.ValidationException;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -39,7 +39,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class DefaultEntityEditModelTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));private static final Domain DOMAIN = new TestDomain();
+          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+  private static final Entities DOMAIN = new TestDomain().getEntities();
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 

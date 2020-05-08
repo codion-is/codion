@@ -24,7 +24,7 @@ import org.jminor.common.version.Version;
 import org.jminor.common.version.Versions;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -655,7 +655,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final TreeModel getDependencyTreeModel() {
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-    final Domain domain = applicationModel.getDomain();
+    final Entities domain = applicationModel.getDomain();
     for (final EntityDefinition definition : domain.getDefinitions()) {
       if (definition.getForeignKeyProperties().isEmpty() || referencesOnlySelf(applicationModel.getDomain(), definition.getEntityId())) {
         root.add(new EntityDependencyTreeNode(definition.getEntityId(), domain));
@@ -944,7 +944,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     final Comparator<String> comparator = Text.getSpaceAwareCollator();
-    final Domain domain = applicationModel.getDomain();
+    final Entities domain = applicationModel.getDomain();
     supportPanelBuilders.sort((ep1, ep2) -> {
       final String thisCompare = ep1.getCaption() == null ? domain.getDefinition(ep1.getEntityId()).getCaption() : ep1.getCaption();
       final String thatCompare = ep2.getCaption() == null ? domain.getDefinition(ep2.getEntityId()).getCaption() : ep2.getCaption();
@@ -1545,16 +1545,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return username;
   }
 
-  private static boolean referencesOnlySelf(final Domain domain, final String entityId) {
+  private static boolean referencesOnlySelf(final Entities domain, final String entityId) {
     return domain.getDefinition(entityId).getForeignKeyProperties().stream()
             .allMatch(fkProperty -> fkProperty.getForeignEntityId().equals(entityId));
   }
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
 
-    private final Domain domain;
+    private final Entities domain;
 
-    private EntityDependencyTreeNode(final String entityId, final Domain domain) {
+    private EntityDependencyTreeNode(final String entityId, final Entities domain) {
       super(requireNonNull(entityId, "entityId"));
       this.domain = domain;
     }

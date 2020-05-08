@@ -14,7 +14,6 @@ import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -70,7 +69,7 @@ public class EntityTestUnit {
   private final User user;
 
   private EntityConnection connection;
-  private Domain domain;
+  private Entities domain;
 
   /**
    * Instantiates a new EntityTestUnit.
@@ -96,7 +95,7 @@ public class EntityTestUnit {
   /**
    * @return the domain model
    */
-  public final Domain getDomain() {
+  public final Entities getDomain() {
     if (domain == null) {
       domain = connection.getDomain();
     }
@@ -156,7 +155,7 @@ public class EntityTestUnit {
    * @param referenceEntities entities referenced by the given entity ID
    * @return a Entity instance containing randomized values, based on the property definitions
    */
-  public static Entity createRandomEntity(final Domain domain, final String entityId, final Map<String, Entity> referenceEntities) {
+  public static Entity createRandomEntity(final Entities domain, final String entityId, final Map<String, Entity> referenceEntities) {
     return createEntity(domain, entityId, property -> createRandomValue(property, referenceEntities));
   }
 
@@ -166,7 +165,7 @@ public class EntityTestUnit {
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
    */
-  public static Entity createEntity(final Domain domain, final String entityId, final Function<Property, Object> valueProvider) {
+  public static Entity createEntity(final Entities domain, final String entityId, final Function<Property, Object> valueProvider) {
     requireNonNull(domain);
     requireNonNull(entityId);
     final Entity entity = domain.entity(entityId);
@@ -183,7 +182,7 @@ public class EntityTestUnit {
    * @param entity the entity to randomize
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
-  public static void randomize(final Domain domain, final Entity entity, final Map<String, Entity> foreignKeyEntities) {
+  public static void randomize(final Entities domain, final Entity entity, final Map<String, Entity> foreignKeyEntities) {
     requireNonNull(domain);
     requireNonNull(entity);
     populateEntity(domain, entity,
@@ -433,7 +432,7 @@ public class EntityTestUnit {
     return Users.parseUser(testUser);
   }
 
-  private static void populateEntity(final Domain domain, final Entity entity, final Collection<ColumnProperty> properties,
+  private static void populateEntity(final Entities domain, final Entity entity, final Collection<ColumnProperty> properties,
                                      final Function<Property, Object> valueProvider) {
     requireNonNull(valueProvider, "valueProvider");
     for (final ColumnProperty property : properties) {

@@ -12,6 +12,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.StringProvider;
 import org.jminor.framework.domain.property.Property;
@@ -141,7 +142,7 @@ public final class EntitiesTutorial {
     EntityConnection connection = connectionProvider.getConnection();
 
     //this Domain object serves as a factory for Entity instances
-    Domain domain = connectionProvider.getDomain();
+    Entities domain = connectionProvider.getDomain();
 
     //lets create a new band
     Entity myBand = domain.entity(T_ARTIST);

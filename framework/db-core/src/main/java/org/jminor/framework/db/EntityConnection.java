@@ -11,6 +11,7 @@ import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -35,7 +36,7 @@ public interface EntityConnection {
   /**
    * @return the underlying domain model
    */
-  Domain getDomain();
+  Entities getDomain();
 
   /**
    * @return the user being used by this connection

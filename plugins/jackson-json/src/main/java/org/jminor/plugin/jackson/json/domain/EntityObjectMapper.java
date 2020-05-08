@@ -3,7 +3,7 @@
  */
 package org.jminor.plugin.jackson.json.domain;
 
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,13 +23,13 @@ public final class EntityObjectMapper extends ObjectMapper {
 
   private final EntitySerializer entitySerializer;
   private final EntityDeserializer entityDeserializer;
-  private final Domain domain;
+  private final Entities domain;
 
   /**
    * Instantiates a new EntityObjectMapper for the given domain
    * @param domain the Domain model
    */
-  public EntityObjectMapper(final Domain domain) {
+  public EntityObjectMapper(final Entities domain) {
     this.domain = domain;
     final SimpleModule module = new SimpleModule();
     entitySerializer = new EntitySerializer(this);
@@ -48,7 +48,7 @@ public final class EntityObjectMapper extends ObjectMapper {
   /**
    * @return the underlying domain model
    */
-  public Domain getDomain() {
+  public Entities getDomain() {
     return domain;
   }
 

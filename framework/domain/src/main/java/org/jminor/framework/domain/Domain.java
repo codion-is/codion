@@ -7,32 +7,20 @@ import org.jminor.common.db.operation.DatabaseFunction;
 import org.jminor.common.db.operation.DatabaseOperation;
 import org.jminor.common.db.operation.DatabaseProcedure;
 import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.EntityDefinitions;
 import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A repository specifying the {@link EntityDefinition}s for a given domain.
- * Factory for {@link Entity} and {@link Entity.Key} instances.
  */
-public class Domain implements DomainEntities {
+public class Domain implements EntityDefinition.Provider {
 
-  private static final long serialVersionUID = 1;
-
-  private static final Map<String, Domain> REGISTERED_DOMAINS = new HashMap<>();
-
-  private final String domainId;
-  private final DefaultDomainEntities domainEntities = new DefaultDomainEntities();
+  private final DomainEntities entities;
   private final transient DomainReports domainReports = new DomainReports();
   private final transient DomainOperations domainOperations = new DomainOperations();
 
@@ -41,7 +29,7 @@ public class Domain implements DomainEntities {
    * @see Class#getSimpleName()
    */
   public Domain() {
-    this.domainId = getClass().getSimpleName();
+    this.entities = new DomainEntities(getClass().getSimpleName());
   }
 
   /**
@@ -49,7 +37,7 @@ public class Domain implements DomainEntities {
    * @param domainId the domain identifier
    */
   public Domain(final String domainId) {
-    this.domainId = requireNonNull(domainId, "domainId");
+    this.entities = new DomainEntities(requireNonNull(domainId, "domainId"));
   }
 
   /**
@@ -58,8 +46,8 @@ public class Domain implements DomainEntities {
    * @param domain the domain to copy
    */
   public Domain(final Domain domain) {
-    this.domainId = requireNonNull(domain).domainId;
-    this.domainEntities.putAll(domain.domainEntities);
+    this.entities = new DomainEntities(requireNonNull(domain).getDomainId());
+    this.entities.putAll(domain.entities);
     if (domain.domainReports != null) {
       this.domainReports.addAll(domain.domainReports);
     }
@@ -72,102 +60,24 @@ public class Domain implements DomainEntities {
    * @return the domain Id
    */
   public final String getDomainId() {
-    return domainId;
+    return entities.getDomainId();
+  }
+
+  /**
+   * @return the Domain entities
+   */
+  public final Entities getEntities() {
+    return entities;
   }
 
   @Override
-  public final Entity entity(final String entityId) {
-    return domainEntities.entity(entityId);
+  public EntityDefinition getDefinition(final String entityId) {
+    return entities.getDefinition(entityId);
   }
 
   @Override
-  public final Entity entity(final Entity.Key key) {
-    return domainEntities.entity(key);
-  }
-
-  @Override
-  public final Entity.Key key(final String entityId) {
-    return domainEntities.key(entityId);
-  }
-
-  @Override
-  public final Entity.Key key(final String entityId, final Integer value) {
-    return domainEntities.key(entityId, value);
-  }
-
-  @Override
-  public final Entity.Key key(final String entityId, final Long value) {
-    return domainEntities.key(entityId, value);
-  }
-
-  @Override
-  public final List<Entity.Key> keys(final String entityId, final Integer... values) {
-    return domainEntities.keys(entityId, values);
-  }
-
-  @Override
-  public final List<Entity.Key> keys(final String entityId, final Long... values) {
-    return domainEntities.keys(entityId, values);
-  }
-
-  @Override
-  public final Entity defaultEntity(final String entityId, final Function<Property, Object> valueProvider) {
-    return domainEntities.defaultEntity(entityId, valueProvider);
-  }
-
-  @Override
-  public final <V> List<V> toBeans(final List<Entity> entities) {
-    return domainEntities.toBeans(entities);
-  }
-
-  @Override
-  public final <V> V toBean(final Entity entity) {
-    return domainEntities.toBean(entity);
-  }
-
-  @Override
-  public final List<Entity> fromBeans(final List beans) {
-    return domainEntities.fromBeans(beans);
-  }
-
-  @Override
-  public final <V> Entity fromBean(final V bean) {
-    return domainEntities.fromBean(bean);
-  }
-
-  @Override
-  public final List<Entity> deepCopyEntities(final List<Entity> entities) {
-    return domainEntities.deepCopyEntities(entities);
-  }
-
-  @Override
-  public final Entity copyEntity(final Entity entity) {
-    return domainEntities.copyEntity(entity);
-  }
-
-  @Override
-  public final Entity deepCopyEntity(final Entity entity) {
-    return domainEntities.deepCopyEntity(entity);
-  }
-
-  @Override
-  public final Entity.Key copyKey(final Entity.Key key) {
-    return domainEntities.copyKey(key);
-  }
-
-  @Override
-  public final EntityDefinition getDefinition(final String entityId) {
-    return domainEntities.getDefinition(entityId);
-  }
-
-  @Override
-  public final Collection<EntityDefinition> getDefinitions() {
-    return domainEntities.getDefinitions();
-  }
-
-  @Override
-  public final Entity createToStringEntity(final String entityId, final String toStringValue) {
-    return domainEntities.createToStringEntity(entityId, toStringValue);
+  public Collection<EntityDefinition> getDefinitions() {
+    return entities.getDefinitions();
   }
 
   public final boolean containsReport(final ReportWrapper reportWrapper) {
@@ -183,39 +93,6 @@ public class Domain implements DomainEntities {
   public final <C, T> DatabaseFunction<C, T> getFunction(final String functionId) {
     checkIfDeserialized();
     return domainOperations.getFunction(functionId);
-  }
-
-  /**
-   * Registers this instance for lookup via {@link Domain#getDomain(String)}, required for serialization
-   * of domain objects, entities and related classes.
-   * @return this Domain instance
-   * @see #getDomainId()
-   */
-  public final Domain registerDomain() {
-    return registerDomain(domainId, this);
-  }
-
-  /**
-   * Retrievs the Domain with the given id.
-   * @param domainId the id of the domain for which to retrieve the entity definitions
-   * @return the domain instance registered for the given domainId
-   * @throws IllegalArgumentException in case the domain has not been registered
-   * @see #registerDomain()
-   */
-  public static Domain getDomain(final String domainId) {
-    final Domain domain = REGISTERED_DOMAINS.get(domainId);
-    if (domain == null) {
-      throw new IllegalArgumentException("Domain '" + domainId + "' has not been registered");
-    }
-
-    return domain;
-  }
-
-  /**
-   * @return all domains that have been registered via {@link #registerDomain()}
-   */
-  public static Collection<Domain> getRegisteredDomains() {
-    return Collections.unmodifiableCollection(REGISTERED_DOMAINS.values());
   }
 
   /**
@@ -253,7 +130,7 @@ public class Domain implements DomainEntities {
    * @return the {@link EntityDefinition.Builder}
    */
   protected final EntityDefinition.Builder addDefinition(final EntityDefinition.Builder definitionBuilder) {
-    domainEntities.addDefinition(definitionBuilder.domainId(domainId).get());
+    entities.addDefinition(definitionBuilder.domainId(getDomainId()).get());
 
     return definitionBuilder;
   }
@@ -285,7 +162,7 @@ public class Domain implements DomainEntities {
    * @param strictForeignKeys true for strict foreign key validation
    */
   protected final void setStrictForeignKeys(final boolean strictForeignKeys) {
-    domainEntities.setStrictForeignKeys(strictForeignKeys);
+    entities.setStrictForeignKeys(strictForeignKeys);
   }
 
   /**
@@ -295,11 +172,5 @@ public class Domain implements DomainEntities {
     if (domainOperations == null) {
       throw new IllegalStateException("Operations and reports are not available in a deserialized Domain model");
     }
-  }
-
-  private static Domain registerDomain(final String domainId, final Domain domain) {
-    REGISTERED_DOMAINS.put(domainId, domain);
-
-    return domain;
   }
 }

@@ -12,7 +12,7 @@ import org.jminor.common.value.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Conditions;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.framework.model.EntityEditEvents;
@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityComboBoxModelTest {
 
-  private static final Domain DOMAIN = new TestDomain();
+  private static final Entities DOMAIN = new TestDomain().getEntities();
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));

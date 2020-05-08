@@ -8,7 +8,7 @@ import org.jminor.common.event.EventListener;
 import org.jminor.common.user.User;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.common.version.Version;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 
 import java.util.UUID;
 
@@ -58,7 +58,7 @@ public interface EntityConnectionProvider {
    * Returns the domain model this connection is based on
    * @return the underlying domain model
    */
-  Domain getDomain();
+  Entities getDomain();
 
   /**
    * Provides a EntityConnection object, is responsible for returning a healthy EntityConnection object,

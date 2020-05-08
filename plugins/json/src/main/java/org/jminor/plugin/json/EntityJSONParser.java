@@ -3,7 +3,7 @@
  */
 package org.jminor.plugin.json;
 
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -44,7 +44,7 @@ public final class EntityJSONParser {
   private final DateTimeFormatter jsonDateFormat = DateTimeFormatter.ofPattern(JSON_DATE_FORMAT);
   private final DateTimeFormatter jsonTimestampFormat = DateTimeFormatter.ofPattern(JSON_TIMESTAMP_FORMAT);
 
-  private final Domain domain;
+  private final Entities domain;
 
   private boolean includeForeignKeyValues = false;
   private boolean includeNullValues = true;
@@ -53,7 +53,7 @@ public final class EntityJSONParser {
   /**
    * @param domain the underlying domain model
    */
-  public EntityJSONParser(final Domain domain) {
+  public EntityJSONParser(final Entities domain) {
     this.domain = domain;
   }
 

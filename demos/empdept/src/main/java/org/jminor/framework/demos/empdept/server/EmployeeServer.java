@@ -23,10 +23,11 @@ import static org.jminor.framework.db.condition.Conditions.selectCondition;
 
 public final class EmployeeServer extends EntityServer {
 
-  private final Domain domain = new EmpDept().registerDomain();
+  private final Domain domain = new EmpDept();
 
   public EmployeeServer(final EntityServerConfiguration configuration) throws RemoteException {
     super(configuration);
+    domain.getEntities().registerEntities();
   }
 
   @Override

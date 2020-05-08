@@ -10,7 +10,7 @@ import org.jminor.common.user.User;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import java.rmi.Remote;
@@ -28,7 +28,7 @@ public interface RemoteEntityConnection extends Remote {
    * @return the underlying domain model
    * @throws RemoteException in case of an exception
    */
-  Domain getDomain() throws RemoteException;
+  Entities getDomain() throws RemoteException;
 
   /**
    * @return the user being used by this connection

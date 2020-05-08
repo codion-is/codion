@@ -3,7 +3,7 @@
  */
 package org.jminor.plugin.jasperreports.model;
 
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import net.sf.jasperreports.engine.JRField;
@@ -18,7 +18,7 @@ import static java.util.Collections.singletonList;
 
 public class JasperReportsDataSourceTest {
 
-  private static final Domain DOMAIN = new TestDomain();
+  private static final Entities DOMAIN = new TestDomain().getEntities();
 
   @Test
   public void iterator() throws Exception {

@@ -3,7 +3,7 @@
  */
 package org.jminor.plugin.json;
 
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import org.json.JSONException;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityJSONParserTest {
 
-  private static final Domain DOMAIN = new TestDomain();
+  private static final Entities DOMAIN = new TestDomain().getEntities();
 
   @Test
   public void key() throws Exception {

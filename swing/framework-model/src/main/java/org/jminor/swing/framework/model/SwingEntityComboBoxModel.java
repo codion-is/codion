@@ -13,7 +13,7 @@ import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.model.EntityComboBoxModel;
@@ -55,7 +55,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /**
    * The domain model
    */
-  private final Domain domain;
+  private final Entities domain;
 
   /**
    * true if the data should only be fetched once, unless {@code forceRefresh()} is called
@@ -396,7 +396,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
     @Override
     public void onEvent(final Map<Entity.Key, Entity> updated) {
-      final Domain domainModel = getConnectionProvider().getDomain();
+      final Entities domainModel = getConnectionProvider().getDomain();
       updated.forEach((key, entity) -> replaceItem(domainModel.entity(key), entity));
     }
   }

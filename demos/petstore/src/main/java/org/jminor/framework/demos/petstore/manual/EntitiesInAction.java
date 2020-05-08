@@ -9,7 +9,7 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.petstore.domain.Petstore;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public final class EntitiesInAction {
             .setClientTypeId("Manual")
             .setUser(Users.parseUser("scott:tiger"));
 
-    Domain store = connectionProvider.getDomain();
+    Entities store = connectionProvider.getDomain();
 
     EntityConnection connection = connectionProvider.getConnection();
 

@@ -12,8 +12,8 @@ import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.state.State;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.ColorProvider;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.EntityValidator;
@@ -72,7 +72,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the underlying domain model
    */
-  Domain getDomain();
+  Entities getDomain();
 
   /**
    * @return the definition of the underlying entity

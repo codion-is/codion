@@ -3,6 +3,7 @@
  */
 package org.jminor.plugin.jackson.json.domain;
 
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.plugin.jackson.json.TestDomain;
 
@@ -26,7 +27,7 @@ public final class EntityObjectMapperTest {
 
   private static final TypeReference<List<Entity>> ENTITY_LIST_TYPE_REF = new TypeReference<List<Entity>>() {};
 
-  private final TestDomain domain = new TestDomain();
+  private final Entities domain = new TestDomain().getEntities();
 
   @Test
   public void entity() throws JsonProcessingException {

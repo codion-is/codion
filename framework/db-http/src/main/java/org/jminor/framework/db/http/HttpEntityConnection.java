@@ -16,7 +16,7 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import org.apache.http.HttpHost;
@@ -91,7 +91,7 @@ final class HttpEntityConnection implements EntityConnection {
   private final HttpHost targetHost;
   private final HttpClientContext httpContext;
 
-  private final Domain domain;
+  private final Entities domain;
 
   private boolean closed;
 
@@ -120,7 +120,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public Domain getDomain() {
+  public Entities getDomain() {
     return domain;
   }
 
@@ -476,7 +476,7 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  private Domain initializeDomain() {
+  private Entities initializeDomain() {
     try {
       return onResponse(execute(createHttpPost("getDomain")));
     }

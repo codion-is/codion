@@ -16,7 +16,6 @@ import org.jminor.common.state.States;
 import org.jminor.common.value.AbstractValue;
 import org.jminor.common.value.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -179,7 +178,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Domain getDomain() {
+  public final Entities getDomain() {
     return connectionProvider.getDomain();
   }
 

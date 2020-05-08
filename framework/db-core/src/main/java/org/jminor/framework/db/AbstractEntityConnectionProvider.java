@@ -8,7 +8,7 @@ import org.jminor.common.event.EventListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.user.User;
 import org.jminor.common.version.Version;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +38,10 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private String clientTypeId;
 
   private EntityConnection entityConnection;
-  private Domain domain;
+  private Entities domain;
 
   @Override
-  public final Domain getDomain() {
+  public final Entities getDomain() {
     synchronized (lock) {
       if (domain == null) {
         doConnect();
@@ -245,7 +245,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       throw new IllegalStateException("User has not been set for this connection provider");
     }
     entityConnection = connect();
-    domain = entityConnection.getDomain().registerDomain();
+    domain = entityConnection.getDomain().registerEntities();
     onConnectEvent.onEvent();
   }
 }

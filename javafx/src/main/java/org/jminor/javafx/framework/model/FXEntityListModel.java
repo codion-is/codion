@@ -13,7 +13,6 @@ import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -105,7 +104,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final Domain getDomain() {
+  public final Entities getDomain() {
     return getConnectionProvider().getDomain();
   }
 

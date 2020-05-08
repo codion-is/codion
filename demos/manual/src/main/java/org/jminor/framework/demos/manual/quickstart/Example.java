@@ -12,6 +12,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.KeyGenerator;
 import org.jminor.framework.domain.entity.StringProvider;
@@ -233,19 +234,21 @@ public final class Example {
             LocalEntityConnections.createConnection(
                     domain, Databases.getInstance(), Users.parseUser("scott:tiger"));
 
-    Entity customer = domain.entity(T_CUSTOMER);
+    Entities entities = domain.getEntities();
+
+    Entity customer = entities.entity(T_CUSTOMER);
     customer.put(CUSTOMER_FIRST_NAME, "John");
     customer.put(CUSTOMER_LAST_NAME, "Doe");
 
     connection.insert(customer);
 
-    Entity address = domain.entity(T_ADDRESS);
+    Entity address = entities.entity(T_ADDRESS);
     address.put(ADDRESS_STREET, "Elm Street 321");
     address.put(ADDRESS_CITY, "Syracuse");
 
     connection.insert(address);
 
-    Entity customerAddress = domain.entity(T_CUSTOMER_ADDRESS);
+    Entity customerAddress = entities.entity(T_CUSTOMER_ADDRESS);
     customerAddress.put(CUSTOMER_ADDRESS_CUSTOMER_FK, customer);
     customerAddress.put(CUSTOMER_ADDRESS_ADDRESS_FK, address);
 

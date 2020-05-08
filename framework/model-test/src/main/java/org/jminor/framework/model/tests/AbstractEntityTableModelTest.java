@@ -10,7 +10,6 @@ import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.exception.ValidationException;
@@ -109,7 +108,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel deptModel = createDepartmentTableModel();
     deptModel.refresh();
 
-    final Domain domain = deptModel.getDomain();
+    final Entities domain = deptModel.getDomain();
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_BOTTOM);
     final Entity dept = domain.entity(TestDomain.T_DEPARTMENT);
     dept.put(TestDomain.DEPARTMENT_ID, -10);
@@ -148,7 +147,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
-    final Domain domain = tableModel.getDomain();
+    final Entities domain = tableModel.getDomain();
     final Entity.Key pk1 = domain.key(TestDomain.T_EMP, 1);
     final Entity.Key pk2 = domain.key(TestDomain.T_EMP, 2);
     try {
@@ -178,7 +177,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
-    final Domain domain = tableModel.getDomain();
+    final Entities domain = tableModel.getDomain();
     final Entity.Key pk1 = domain.key(TestDomain.T_EMP, 1);
     assertNotNull(tableModel.getEntityByKey(pk1));
 
@@ -295,7 +294,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void getEntitiesByKey() {
     testModel.refresh();
-    final Domain domain = testModel.getDomain();
+    final Entities domain = testModel.getDomain();
     Entity tmpEnt = domain.entity(TestDomain.T_DETAIL);
     tmpEnt.put(TestDomain.DETAIL_ID, 3L);
     assertEquals("c", testModel.getEntityByKey(tmpEnt.getKey()).get(TestDomain.DETAIL_STRING));
@@ -365,7 +364,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   protected abstract EditModel createDetailEditModel();
 
-  private static List<Entity> initTestEntities(final Domain domain) {
+  private static List<Entity> initTestEntities(final Entities domain) {
     final List<Entity> testEntities = new ArrayList<>(5);
     final String[] stringValues = new String[] {"a", "b", "c", "d", "e"};
     for (int i = 0; i < 5; i++) {

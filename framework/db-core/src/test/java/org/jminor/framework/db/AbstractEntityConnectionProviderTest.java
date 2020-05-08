@@ -2,6 +2,7 @@ package org.jminor.framework.db;
 
 import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
+import org.jminor.framework.domain.entity.Entities;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ public final class AbstractEntityConnectionProviderTest {
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
 
-  private static final TestDomain DOMAIN = new TestDomain();
+  private static final Entities DOMAIN = new TestDomain().getEntities();
 
   @Test
   public void connectDisconnect() {

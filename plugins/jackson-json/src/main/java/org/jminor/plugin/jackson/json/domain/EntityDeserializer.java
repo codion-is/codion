@@ -3,7 +3,7 @@
  */
 package org.jminor.plugin.jackson.json.domain;
 
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
@@ -29,10 +29,10 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
 
   private static final long serialVersionUID = 1;
 
-  private final Domain domain;
+  private final Entities domain;
   private final EntityObjectMapper mapper;
 
-  EntityDeserializer(final Domain domain, final EntityObjectMapper mapper) {
+  EntityDeserializer(final Entities domain, final EntityObjectMapper mapper) {
     super(Entity.class);
     this.domain = domain;
     this.mapper = mapper;

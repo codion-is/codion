@@ -65,6 +65,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
 
   private final EntityServerConfiguration configuration;
+  private final Map<String, Domain> domainModels = new HashMap<>();
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
@@ -257,7 +258,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    */
   final Map<String, String> getEntityDefinitions() {
     final Map<String, String> definitions = new HashMap<>();
-    for (final Domain domain : Domain.getRegisteredDomains()) {
+    for (final Domain domain : domainModels.values()) {
       for (final EntityDefinition definition : domain.getDefinitions()) {
         definitions.put(definition.getEntityId(), definition.getTableName());
       }
@@ -402,21 +403,22 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     return connection.hasBeenInactive(timeout);
   }
 
-  private static Domain getClientDomainModel(final RemoteClient remoteClient) {
+  private Domain getClientDomainModel(final RemoteClient remoteClient) {
     final String domainId = (String) remoteClient.getParameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID);
     if (domainId == null) {
       throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID + "' parameter not specified");
     }
 
-    return Domain.getDomain(domainId);
+    return domainModels.get(domainId);
   }
 
-  private static void loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
+  private void loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
     try {
       for (final String className : domainModelClassNames) {
         LOG.info("Server loading and registering domain model class '" + className + " from classpath");
         final Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
-        domain.registerDomain();
+        domain.getEntities().registerEntities();
+        domainModels.put(domain.getDomainId(), domain);
       }
     }
     catch (final InvocationTargetException ite) {

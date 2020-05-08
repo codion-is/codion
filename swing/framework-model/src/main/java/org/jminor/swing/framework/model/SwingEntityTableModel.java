@@ -16,7 +16,6 @@ import org.jminor.common.model.table.TableSortModel;
 import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -183,7 +182,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final Domain getDomain() {
+  public final Entities getDomain() {
     return connectionProvider.getDomain();
   }
 

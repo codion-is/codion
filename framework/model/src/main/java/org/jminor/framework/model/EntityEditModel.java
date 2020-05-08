@@ -13,7 +13,7 @@ import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.common.value.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.EntityValidator;
@@ -196,7 +196,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * @return the underlying domain model
    */
-  Domain getDomain();
+  Entities getDomain();
 
   /**
    * @return the definition of the underlying entity

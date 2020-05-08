@@ -22,7 +22,7 @@ public final class TestDomain extends Domain {
     detail();
     department();
     employee();
-    registerDomain();
+    getEntities().registerEntities();
   }
 
   public static final String T_MASTER = "domain.master_entity";

@@ -270,7 +270,7 @@ public class DefaultEntityDefinitionTest {
                 .colorProvider((entity1, property) -> colorBlue);
       }
     }
-    final Domain domain = new TestDomain();
+    final Entities domain = new TestDomain().getEntities();
 
     final Entity entity = domain.entity("entity");
     final EntityDefinition definition = domain.getDefinition("entity");
@@ -285,7 +285,7 @@ public class DefaultEntityDefinitionTest {
                 Properties.primaryKeyProperty("propertyId"));
       }
     }
-    final Domain domain = new TestDomain();
+    final Entities domain = new TestDomain().getEntities();
 
     final Entity entity = domain.entity("entityToString");
     entity.put("propertyId", 1);
@@ -312,7 +312,7 @@ public class DefaultEntityDefinitionTest {
 
       }
     }
-    final Domain domain = new TestDomain();
+    final Entities domain = new TestDomain().getEntities();
 
     final Entity entity = domain.entity("entityToString");
     assertEquals("test", entity.toString());

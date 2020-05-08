@@ -14,7 +14,7 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import net.sf.jasperreports.engine.JasperPrint;
@@ -55,7 +55,7 @@ public final class EntityConnectionDemo {
 
   static void selectKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectKeys[]
-    Domain domain = connection.getDomain();
+    Entities domain = connection.getDomain();
     Entity.Key key42 = domain.key(T_ARTIST, 42L);
     Entity.Key key43 = domain.key(T_ARTIST, 43L);
 
@@ -125,7 +125,7 @@ public final class EntityConnectionDemo {
 
   static void insert(EntityConnection connection) throws DatabaseException {
     // tag::insert[]
-    Domain domain = connection.getDomain();
+    Entities domain = connection.getDomain();
 
     Entity myBand = domain.entity(T_ARTIST);
     myBand.put(ARTIST_NAME, "My Band");

@@ -73,7 +73,7 @@ public class EntityServerTest {
     //Fix side-effect from remoteEntityConnectionProvider() test,
     //which registeres the domain received from the server
     //thus overwriting the domain containing the custom conditions
-    new TestDomain().registerDomain();
+    new TestDomain().getEntities().registerEntities();
     final ConnectionRequest connectionRequestOne = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
             "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
@@ -83,17 +83,6 @@ public class EntityServerTest {
 
     connection.select(Conditions.selectCondition(TestDomain.T_EMP, condition));
 
-    connection.disconnect();
-  }
-
-  @Test
-  public void remoteDomain() throws Exception {
-    final ConnectionRequest connectionRequestOne = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
-            "ClientTypeID", CONNECTION_PARAMS);
-    final RemoteEntityConnection connection = server.connect(connectionRequestOne);
-    final Domain domain = connection.getDomain();
-    assertThrows(IllegalStateException.class, () -> domain.getProcedure("id"));
-    assertThrows(IllegalStateException.class, () -> domain.getFunction("id"));
     connection.disconnect();
   }
 

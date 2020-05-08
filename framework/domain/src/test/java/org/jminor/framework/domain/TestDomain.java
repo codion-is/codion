@@ -34,7 +34,7 @@ public final class TestDomain extends Domain {
     department();
     employee();
     noPKEntity();
-    registerDomain();
+    getEntities().registerEntities();
   }
 
   public static final String T_COMPOSITE_MASTER = "domain.composite_master";

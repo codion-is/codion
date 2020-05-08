@@ -13,6 +13,7 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.rmi.RemoteEntityConnection;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import java.rmi.RemoteException;
@@ -60,7 +61,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Domain getDomain() {
+  public Entities getDomain() {
     synchronized (connectionProxy) {
       return connectionProxy.getDomain();
     }

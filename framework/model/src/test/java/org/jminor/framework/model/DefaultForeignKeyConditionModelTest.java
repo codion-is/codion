@@ -9,7 +9,7 @@ import org.jminor.common.user.User;
 import org.jminor.common.user.Users;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.model.tests.TestDomain;
 
@@ -32,7 +32,7 @@ public class DefaultForeignKeyConditionModelTest {
 
   @Test
   public void getSearchEntitiesLookupModel() throws DatabaseException {
-    final Domain domain = CONNECTION_PROVIDER.getDomain();
+    final Entities domain = CONNECTION_PROVIDER.getDomain();
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
             singletonList(CONNECTION_PROVIDER.getDomain().getDefinition(TestDomain.T_DEPARTMENT).getColumnProperty(TestDomain.DEPARTMENT_NAME)));
     final ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(

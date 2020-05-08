@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntitiesTest {
 
-  private final TestDomain domain = new TestDomain();
+  private final Entities domain = new TestDomain().getEntities();
 
   @Test
   public void equal() {
