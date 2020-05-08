@@ -472,7 +472,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param propertyIds the ids of the properties to use
    * @return true if the values of the given properties are equal in the given entities
    */
-  static boolean equal(final Entity entityOne, final Entity entityTwo, final String... propertyIds) {
+  static boolean valuesEqual(final Entity entityOne, final Entity entityTwo, final String... propertyIds) {
     requireNonNull(entityOne);
     requireNonNull(entityTwo);
     requireNonNull(propertyIds);

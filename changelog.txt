@@ -6053,3 +6053,4 @@
   Entities.ENABLE_REDEFINE_ENTITY configuration value removed
   DomainEntities.getRegisteredEntities() removed, unused
   Entities.mapToOriginalPrimaryKey() moved to DefaultEntityEditModel
+  Entities.equal() renamed valuesEqual()
