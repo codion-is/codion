@@ -17,13 +17,12 @@ import org.jminor.framework.domain.entity.Entity;
  * EntityConnection implementation based on a local JDBC connection.
  * <pre>
  * Domain domain = new Domain();
- * EntityConditions conditions = new EntityConditions(domain);
  * Database database = new H2Database("pathToDb");
  * User user = Users.parseUser("scott:tiger");
  *
  * EntityConnection connection = LocalEntityConnections.createConnection(domain, database, user);
  *
- * List&lt;Entity&gt; entities = connection.select(conditions.selectCondition(Domain.ENTITY_ID));
+ * List&lt;Entity&gt; entities = connection.select(Conditions.selectCondition(Domain.ENTITY_ID));
  *
  * connection.disconnect();
  * </pre>

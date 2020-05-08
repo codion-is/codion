@@ -23,10 +23,11 @@ import static org.jminor.framework.db.condition.Conditions.selectCondition;
 
 public final class EmployeeServer extends EntityServer {
 
-  private final Domain domain = new EmpDept().registerDomain();
+  private final Domain domain = new EmpDept();
 
   public EmployeeServer(final EntityServerConfiguration configuration) throws RemoteException {
     super(configuration);
+    domain.getEntities().registerEntities();
   }
 
   @Override
@@ -57,7 +58,7 @@ public final class EmployeeServer extends EntityServer {
       synchronized (connectionProxy) {
         final List<Entity> employees = connectionProxy.select(selectCondition(EmpDept.T_EMPLOYEE).setForeignKeyFetchDepthLimit(-1));
 
-        return connectionProxy.getDomain().toBeans(employees);
+        return connectionProxy.getEntities().toBeans(employees);
       }
     }
   }

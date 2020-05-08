@@ -8,7 +8,7 @@ import org.jminor.common.event.EventListener;
 import org.jminor.common.user.User;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.common.version.Version;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 
 import java.util.UUID;
 
@@ -55,10 +55,10 @@ public interface EntityConnectionProvider {
   PropertyValue<String> CLIENT_CONNECTION_TYPE = Configuration.stringValue("jminor.client.connectionType", CONNECTION_TYPE_LOCAL);
 
   /**
-   * Returns the domain model this connection is based on
-   * @return the underlying domain model
+   * Returns the domain entities this connection is based on
+   * @return the underlying domain entities
    */
-  Domain getDomain();
+  Entities getEntities();
 
   /**
    * Provides a EntityConnection object, is responsible for returning a healthy EntityConnection object,

@@ -3,6 +3,7 @@
  */
 package org.jminor.plugin.jackson.json.domain;
 
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.plugin.jackson.json.TestDomain;
 
@@ -26,13 +27,13 @@ public final class EntityObjectMapperTest {
 
   private static final TypeReference<List<Entity>> ENTITY_LIST_TYPE_REF = new TypeReference<List<Entity>>() {};
 
-  private final TestDomain domain = new TestDomain();
+  private final Entities entities = new TestDomain().getEntities();
 
   @Test
   public void entity() throws JsonProcessingException {
-    final EntityObjectMapper mapper = new EntityObjectMapper(domain);
+    final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
-    final Entity dept = domain.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept = entities.entity(TestDomain.T_DEPARTMENT);
     dept.put(TestDomain.DEPARTMENT_ID, 1);
     dept.put(TestDomain.DEPARTMENT_NAME, "Name");
     dept.put(TestDomain.DEPARTMENT_LOCATION, "Location");
@@ -45,7 +46,7 @@ public final class EntityObjectMapperTest {
     final Entity readDept = mapper.readValue(jsonString, Entity.class);
     assertTrue(dept.valuesEqual(readDept));
 
-    final Entity entity = domain.entity(TestDomain.T_ENTITY);
+    final Entity entity = entities.entity(TestDomain.T_ENTITY);
     entity.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
     entity.put(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
     entity.put(TestDomain.ENTITY_BLOB, logoBytes);
@@ -60,15 +61,15 @@ public final class EntityObjectMapperTest {
 
   @Test
   public void entityForeignKeys() throws JsonProcessingException {
-    final EntityObjectMapper mapper = new EntityObjectMapper(domain).setIncludeForeignKeyValues(true);
+    final EntityObjectMapper mapper = new EntityObjectMapper(entities).setIncludeForeignKeyValues(true);
 
-    final Entity dept = domain.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept = entities.entity(TestDomain.T_DEPARTMENT);
     dept.put(TestDomain.DEPARTMENT_ID, 1);
     dept.put(TestDomain.DEPARTMENT_NAME, "Name");
     dept.put(TestDomain.DEPARTMENT_LOCATION, "Location");
     dept.put(TestDomain.DEPARTMENT_LOCATION, "New Location");
 
-    final Entity emp = domain.entity(TestDomain.T_EMP);
+    final Entity emp = entities.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_ID, 2);
     emp.put(TestDomain.EMP_NAME, "Emp");
     emp.put(TestDomain.EMP_COMMISSION, 134.34);
@@ -85,9 +86,9 @@ public final class EntityObjectMapperTest {
 
   @Test
   public void key() throws JsonProcessingException {
-    final EntityObjectMapper mapper = new EntityObjectMapper(domain);
+    final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
-    final Entity.Key deptKey = domain.key(TestDomain.T_DEPARTMENT);
+    final Entity.Key deptKey = entities.key(TestDomain.T_DEPARTMENT);
     deptKey.put(TestDomain.DEPARTMENT_ID, 1);
 
     String jsonString = mapper.writeValueAsString(deptKey);
@@ -96,7 +97,7 @@ public final class EntityObjectMapperTest {
     assertEquals(TestDomain.T_DEPARTMENT, key.getEntityId());
     assertEquals(1, key.getFirstValue());
 
-    final Entity.Key entityKey = domain.key(TestDomain.T_ENTITY);
+    final Entity.Key entityKey = entities.key(TestDomain.T_ENTITY);
     entityKey.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
     entityKey.put(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
 
@@ -109,9 +110,9 @@ public final class EntityObjectMapperTest {
 
   @Test
   public void keyOld() throws Exception {
-    final EntityObjectMapper mapper = new EntityObjectMapper(domain);
+    final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
-    final Entity.Key key = domain.key(TestDomain.T_DEPARTMENT, 42);
+    final Entity.Key key = entities.key(TestDomain.T_DEPARTMENT, 42);
 
     final String keyJSON = mapper.writeValueAsString(singletonList(key));
     assertEquals("[{\"entityId\":\"scott.dept\",\"values\":{\"deptno\":42}}]", keyJSON);
@@ -123,12 +124,12 @@ public final class EntityObjectMapperTest {
 
   @Test
   public void entityOld() throws Exception {
-    final EntityObjectMapper mapper = new EntityObjectMapper(domain);
+    final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
     final DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     final LocalDate hiredate = LocalDate.parse("2001-12-20", format);
 
-    final Entity dept10 = domain.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept10 = entities.entity(TestDomain.T_DEPARTMENT);
     dept10.put(TestDomain.DEPARTMENT_ID, -10);
     dept10.put(TestDomain.DEPARTMENT_NAME, "DEPTNAME");
     dept10.put(TestDomain.DEPARTMENT_LOCATION, "LOCATION");
@@ -136,7 +137,7 @@ public final class EntityObjectMapperTest {
     String jsonString = mapper.writeValueAsString(singletonList(dept10));
     assertTrue(dept10.valuesEqual(mapper.readValue(jsonString, ENTITY_LIST_TYPE_REF).get(0)));
 
-    final Entity dept20 = domain.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept20 = entities.entity(TestDomain.T_DEPARTMENT);
     dept20.put(TestDomain.DEPARTMENT_ID, -20);
     dept20.put(TestDomain.DEPARTMENT_NAME, null);
     dept20.put(TestDomain.DEPARTMENT_LOCATION, "ALOC");
@@ -147,7 +148,7 @@ public final class EntityObjectMapperTest {
     final String twoDepts = mapper.writeValueAsString(asList(dept10, dept20));
     mapper.readValue(twoDepts, ENTITY_LIST_TYPE_REF);
 
-    final Entity mgr30 = domain.entity(TestDomain.T_EMP);
+    final Entity mgr30 = entities.entity(TestDomain.T_EMP);
     mgr30.put(TestDomain.EMP_COMMISSION, 500.5);
     mgr30.put(TestDomain.EMP_DEPARTMENT_FK, dept20);
     mgr30.put(TestDomain.EMP_HIREDATE, hiredate);
@@ -156,7 +157,7 @@ public final class EntityObjectMapperTest {
     mgr30.put(TestDomain.EMP_NAME, "MGR NAME");
     mgr30.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.5));
 
-    final Entity mgr50 = domain.entity(TestDomain.T_EMP);
+    final Entity mgr50 = entities.entity(TestDomain.T_EMP);
     mgr50.put(TestDomain.EMP_COMMISSION, 500.5);
     mgr50.put(TestDomain.EMP_DEPARTMENT_FK, dept20);
     mgr50.put(TestDomain.EMP_HIREDATE, hiredate);
@@ -165,7 +166,7 @@ public final class EntityObjectMapperTest {
     mgr50.put(TestDomain.EMP_NAME, "MGR2 NAME");
     mgr50.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.5));
 
-    final Entity emp1 = domain.entity(TestDomain.T_EMP);
+    final Entity emp1 = entities.entity(TestDomain.T_EMP);
     emp1.put(TestDomain.EMP_COMMISSION, 500.5);
     emp1.put(TestDomain.EMP_DEPARTMENT_FK, dept10);
     emp1.put(TestDomain.EMP_HIREDATE, hiredate);
@@ -210,7 +211,7 @@ public final class EntityObjectMapperTest {
     assertTrue(((Entity) emp1Deserialized.getOriginal(TestDomain.EMP_DEPARTMENT_FK)).valuesEqual(dept10));
     assertTrue(((Entity) emp1Deserialized.getOriginal(TestDomain.EMP_MGR_FK)).valuesEqual(mgr30));
 
-    final Entity emp2 = domain.entity(TestDomain.T_EMP);
+    final Entity emp2 = entities.entity(TestDomain.T_EMP);
     emp2.put(TestDomain.EMP_COMMISSION, 300.5);
     emp2.put(TestDomain.EMP_DEPARTMENT_FK, dept10);
     emp2.put(TestDomain.EMP_HIREDATE, hiredate);
@@ -230,9 +231,9 @@ public final class EntityObjectMapperTest {
       assertTrue(parsed.valuesEqual(entity));
     }
 
-    final List<Entity> entities = mapper.readValue(mapper.writeValueAsString(singletonList(emp1)), ENTITY_LIST_TYPE_REF);
-    assertEquals(1, entities.size());
-    final Entity parsedEntity = entities.iterator().next();
+    final List<Entity> readEntities = mapper.readValue(mapper.writeValueAsString(singletonList(emp1)), ENTITY_LIST_TYPE_REF);
+    assertEquals(1, readEntities.size());
+    final Entity parsedEntity = readEntities.iterator().next();
     assertTrue(emp1.valuesEqual(parsedEntity));
     assertTrue(parsedEntity.isModified());
     assertTrue(parsedEntity.isModified(TestDomain.EMP_COMMISSION));
@@ -243,7 +244,7 @@ public final class EntityObjectMapperTest {
     assertTrue(parsedEntity.isModified(TestDomain.EMP_SALARY));
     assertTrue(parsedEntity.isModified(TestDomain.EMP_HIREDATE));
 
-    final Entity emp3 = domain.entity(TestDomain.T_EMP);
+    final Entity emp3 = entities.entity(TestDomain.T_EMP);
     emp3.put(TestDomain.EMP_COMMISSION, 300.5);
     emp3.put(TestDomain.EMP_DEPARTMENT_FK, dept10);
     emp3.put(TestDomain.EMP_HIREDATE, null);

@@ -24,6 +24,7 @@ import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
 import org.jminor.framework.db.condition.WhereCondition;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.KeyGenerator;
@@ -134,8 +135,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Domain getDomain() {
-    return domain;
+  public Entities getEntities() {
+    return domain.getEntities();
   }
 
   @Override
@@ -838,7 +839,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       for (final Entity entity : entitiesByEntityIdEntry.getValue()) {
         final Entity current = currentEntitiesByKey.get(entity.getOriginalKey());
         if (current == null) {
-          final Entity original = domain.copyEntity(entity);
+          final Entity original = domain.getEntities().copyEntity(entity);
           original.revertAll();
 
           throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
@@ -929,7 +930,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (referencedEntity == null) {
       //if the referenced entity is not found (it's been deleted or has been filtered out of an underlying view for example),
       //we create an empty entity wrapping the primary key since that's the best we can do under the circumstances
-      referencedEntity = domain.entity(referencedPrimaryKey);
+      referencedEntity = domain.getEntities().entity(referencedPrimaryKey);
     }
 
     return referencedEntity;
@@ -1039,7 +1040,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private Collection<ForeignKeyProperty> getForeignKeyReferences(final String entityId) {
     return foreignKeyReferenceCache.computeIfAbsent(entityId, e -> {
       final List<ForeignKeyProperty> foreignKeyReferences = new ArrayList<>();
-      for (final EntityDefinition entityDefinition : domain.getDefinitions()) {
+      for (final EntityDefinition entityDefinition : domain.getEntities().getDefinitions()) {
         for (final ForeignKeyProperty foreignKeyProperty : entityDefinition.getForeignKeyProperties()) {
           if (foreignKeyProperty.getForeignEntityId().equals(entityId)) {
             foreignKeyReferences.add(foreignKeyProperty);
@@ -1203,7 +1204,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private EntityDefinition getEntityDefinition(final String entityId) {
-    return domain.getDefinition(entityId);
+    return domain.getEntities().getDefinition(entityId);
   }
 
   private static List createValueList(final Object... values) {

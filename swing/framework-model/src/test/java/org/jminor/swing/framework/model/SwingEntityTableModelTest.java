@@ -92,7 +92,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(0, employeeTableModel.getRowCount());
     final Entity accounting = getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_ID, 10);
-    final ForeignKeyProperty deptFkProperty = getConnectionProvider().getDomain().getDefinition(TestDomain.T_EMP)
+    final ForeignKeyProperty deptFkProperty = getConnectionProvider().getEntities().getDefinition(TestDomain.T_EMP)
             .getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
     employeeTableModel.setForeignKeyConditionValues(deptFkProperty,
             singletonList(accounting));
@@ -112,7 +112,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
             new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
     assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, getConnectionProvider(),
-            new SwingEntityTableSortModel(getConnectionProvider().getDomain(), TestDomain.T_EMP), conditionModel));
+            new SwingEntityTableSortModel(getConnectionProvider().getEntities(), TestDomain.T_EMP), conditionModel));
   }
 
   @Test
@@ -180,15 +180,15 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   public void testSortComparator() {
-    final Property masterFKProperty = getConnectionProvider().getDomain().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_MASTER_FK);
+    final Property masterFKProperty = getConnectionProvider().getEntities().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_MASTER_FK);
     final Comparator comparator = ((SwingEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
     //make sure we get the comparator from the entity referenced by the foreign key
-    assertEquals(comparator, getConnectionProvider().getDomain().getDefinition(TestDomain.T_MASTER).getComparator());
+    assertEquals(comparator, getConnectionProvider().getEntities().getDefinition(TestDomain.T_MASTER).getComparator());
   }
 
   @Test
   public void columnModel() {
-    final Property property = getConnectionProvider().getDomain().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_STRING);
+    final Property property = getConnectionProvider().getEntities().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_STRING);
     final TableColumn column = testModel.getColumnModel().getTableColumn(property);
     assertEquals(property, column.getIdentifier());
   }
@@ -212,10 +212,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.setSortingDirective(TestDomain.EMP_NAME, SortingDirective.ASCENDING);
     assertEquals(SortingDirective.ASCENDING, tableModel.getSortingState(TestDomain.EMP_NAME).getDirective());
 
-    final Entity.Key pk1 = getConnectionProvider().getDomain().key(TestDomain.T_EMP, 10);//ADAMS
+    final Entity.Key pk1 = getConnectionProvider().getEntities().key(TestDomain.T_EMP, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
 
-    final Entity.Key pk2 = getConnectionProvider().getDomain().key(TestDomain.T_EMP, -66);
+    final Entity.Key pk2 = getConnectionProvider().getEntities().key(TestDomain.T_EMP, -66);
     assertEquals(-1, tableModel.indexOf(pk2));
   }
 
@@ -224,9 +224,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     testModel.clearPreferences();
 
     final SwingEntityTableModel tableModel = createTestTableModel();
-    assertTrue(tableModel.getColumnModel().isColumnVisible(getConnectionProvider().getDomain().getDefinition(TestDomain.T_DETAIL).getColumnProperty(TestDomain.DETAIL_STRING)));
+    assertTrue(tableModel.getColumnModel().isColumnVisible(getConnectionProvider().getEntities().getDefinition(TestDomain.T_DETAIL).getColumnProperty(TestDomain.DETAIL_STRING)));
 
-    tableModel.getColumnModel().hideColumn(getConnectionProvider().getDomain().getDefinition(TestDomain.T_DETAIL).getColumnProperty(TestDomain.DETAIL_STRING));
+    tableModel.getColumnModel().hideColumn(getConnectionProvider().getEntities().getDefinition(TestDomain.T_DETAIL).getColumnProperty(TestDomain.DETAIL_STRING));
     tableModel.getColumnModel().moveColumn(1, 0);//double to 0, int to 1
     TableColumn column = tableModel.getColumnModel().getColumn(3);
     column.setWidth(150);//timestamp
@@ -236,7 +236,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.savePreferences();
 
     final SwingEntityTableModel model = createTestTableModel();
-    assertFalse(model.getColumnModel().isColumnVisible(getConnectionProvider().getDomain().getDefinition(TestDomain.T_DETAIL).getColumnProperty(TestDomain.DETAIL_STRING)));
+    assertFalse(model.getColumnModel().isColumnVisible(getConnectionProvider().getEntities().getDefinition(TestDomain.T_DETAIL).getColumnProperty(TestDomain.DETAIL_STRING)));
     assertEquals(0, model.getPropertyColumnIndex(TestDomain.DETAIL_DOUBLE));
     assertEquals(1, model.getPropertyColumnIndex(TestDomain.DETAIL_INT));
     column = model.getColumnModel().getColumn(3);

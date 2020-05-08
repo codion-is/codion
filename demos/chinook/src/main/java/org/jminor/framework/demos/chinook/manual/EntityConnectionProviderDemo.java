@@ -15,7 +15,7 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import java.sql.Connection;
@@ -58,9 +58,9 @@ public class EntityConnectionProviderDemo {
     EntityConnection entityConnection =
             connectionProvider.getConnection();
 
-    Domain domain = entityConnection.getDomain();
+    Entities entities = entityConnection.getEntities();
 
-    Entity track = entityConnection.selectSingle(domain.key(Chinook.T_TRACK, 42L));
+    Entity track = entityConnection.selectSingle(entities.key(Chinook.T_TRACK, 42L));
 
     connectionProvider.disconnect();
     // end::remote[]
@@ -77,9 +77,9 @@ public class EntityConnectionProviderDemo {
 
     EntityConnection entityConnection = connectionProvider.getConnection();
 
-    Domain domain = entityConnection.getDomain();
+    Entities entities = entityConnection.getEntities();
 
-    entityConnection.selectSingle(domain.key(Chinook.T_TRACK, 42L));
+    entityConnection.selectSingle(entities.key(Chinook.T_TRACK, 42L));
 
     connectionProvider.disconnect();
     // end::http[]

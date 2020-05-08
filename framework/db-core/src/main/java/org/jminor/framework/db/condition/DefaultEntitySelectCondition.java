@@ -28,7 +28,6 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
 
   /**
    * Instantiates a new {@link DefaultEntitySelectCondition}, which includes all the underlying entities
-   * @param domain the domain model
    * @param entityId the ID of the entity to select
    */
   DefaultEntitySelectCondition(final String entityId) {
@@ -37,7 +36,6 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
 
   /**
    * Instantiates a new {@link DefaultEntitySelectCondition}
-   * @param domain the domain model
    * @param entityId the ID of the entity to select
    * @param condition the Condition object
    * @see DefaultPropertyCondition

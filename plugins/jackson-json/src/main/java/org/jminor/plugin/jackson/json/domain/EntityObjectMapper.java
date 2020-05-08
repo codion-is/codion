@@ -3,7 +3,7 @@
  */
 package org.jminor.plugin.jackson.json.domain;
 
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,21 +23,21 @@ public final class EntityObjectMapper extends ObjectMapper {
 
   private final EntitySerializer entitySerializer;
   private final EntityDeserializer entityDeserializer;
-  private final Domain domain;
+  private final Entities entities;
 
   /**
    * Instantiates a new EntityObjectMapper for the given domain
-   * @param domain the Domain model
+   * @param entities the domain model entities
    */
-  public EntityObjectMapper(final Domain domain) {
-    this.domain = domain;
+  public EntityObjectMapper(final Entities entities) {
+    this.entities = entities;
     final SimpleModule module = new SimpleModule();
     entitySerializer = new EntitySerializer(this);
-    entityDeserializer = new EntityDeserializer(domain, this);
+    entityDeserializer = new EntityDeserializer(entities, this);
     module.addSerializer(Entity.class, entitySerializer);
     module.addDeserializer(Entity.class, entityDeserializer);
     module.addSerializer(Entity.Key.class, new EntityKeySerializer(this));
-    module.addDeserializer(Entity.Key.class, new EntityKeyDeserializer(domain, this));
+    module.addDeserializer(Entity.Key.class, new EntityKeyDeserializer(entities, this));
     module.addSerializer(LocalTime.class, new LocalTimeSerializer());
     module.addSerializer(LocalDate.class, new LocalDateSerializer());
     module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
@@ -46,10 +46,10 @@ public final class EntityObjectMapper extends ObjectMapper {
   }
 
   /**
-   * @return the underlying domain model
+   * @return the underlying domain model entities
    */
-  public Domain getDomain() {
-    return domain;
+  public Entities getEntities() {
+    return entities;
   }
 
   /**

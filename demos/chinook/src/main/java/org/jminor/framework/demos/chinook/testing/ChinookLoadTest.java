@@ -163,7 +163,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
               final Entity artist = artistModel.getTableModel().getSelectionModel().getSelectedItem();
               final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
               final EntityEditModel albumEditModel = albumModel.getEditModel();
-              final Entity album = application.getDomain().entity(T_ALBUM);
+              final Entity album = application.getEntities().entity(T_ALBUM);
               album.put(ALBUM_ARTIST_FK, artist);
               album.put(ALBUM_TITLE, "Title");
 

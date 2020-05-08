@@ -12,7 +12,7 @@ import org.jminor.common.state.StateObserver;
 import org.jminor.common.state.States;
 import org.jminor.common.user.User;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,8 +89,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   }
 
   @Override
-  public final Domain getDomain() {
-    return connectionProvider.getDomain();
+  public final Entities getEntities() {
+    return connectionProvider.getEntities();
   }
 
   @Override

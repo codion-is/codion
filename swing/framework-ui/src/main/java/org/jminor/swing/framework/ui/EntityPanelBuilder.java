@@ -394,7 +394,7 @@ public class EntityPanelBuilder {
         entityPanel = findModelConstructor(getPanelClass()).newInstance(entityModel);
       }
       entityPanel.setCaption(caption == null ? entityModel.getConnectionProvider()
-              .getDomain().getDefinition(entityModel.getEntityId()).getCaption() : caption);
+              .getEntities().getDefinition(entityModel.getEntityId()).getCaption() : caption);
 
       return entityPanel;
     }
@@ -523,7 +523,7 @@ public class EntityPanelBuilder {
       });
       final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
       final JDialog dialog = pane.createDialog(component, getCaption() == null ?
-              connectionProvider.getDomain().getDefinition(getEntityId()).getCaption() : getCaption());
+              connectionProvider.getEntities().getDefinition(getEntityId()).getCaption() : getCaption());
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       Components.addInitialFocusHack(editPanel, Controls.control(editPanel::requestInitialFocus));
       dialog.setVisible(true);

@@ -25,7 +25,7 @@ public final class TestDomain extends Domain {
     department();
     employee();
     operations();
-    registerDomain();
+    getEntities().registerEntities();
   }
 
   public static final String DEPARTMENT_ID = "deptno";

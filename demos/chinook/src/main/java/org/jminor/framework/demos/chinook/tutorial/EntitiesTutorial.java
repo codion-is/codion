@@ -12,6 +12,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.StringProvider;
 import org.jminor.framework.domain.property.Property;
@@ -140,11 +141,11 @@ public final class EntitiesTutorial {
   private static void modifyingEntities(EntityConnectionProvider connectionProvider) throws DatabaseException {
     EntityConnection connection = connectionProvider.getConnection();
 
-    //this Domain object serves as a factory for Entity instances
-    Domain domain = connectionProvider.getDomain();
+    //this Entities object serves as a factory for Entity instances
+    Entities entities = connectionProvider.getEntities();
 
     //lets create a new band
-    Entity myBand = domain.entity(T_ARTIST);
+    Entity myBand = entities.entity(T_ARTIST);
     //and give the band a name
     myBand.put(ARTIST_NAME, "My band name");
 
@@ -161,7 +162,7 @@ public final class EntitiesTutorial {
     connection.insert(myBand);
 
     //now for our first album
-    Entity album = domain.entity(T_ALBUM);
+    Entity album = entities.entity(T_ALBUM);
     //set the album artist by setting the artist foreign key to my band
     album.put(ALBUM_ARTIST_FK, myBand);
     //and set the title

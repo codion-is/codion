@@ -88,7 +88,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void insert() throws IOException, DatabaseException {
-    final Entity entity = connection.getDomain().entity(TestDomain.T_DEPARTMENT);
+    final Entity entity = connection.getEntities().entity(TestDomain.T_DEPARTMENT);
     entity.put(TestDomain.DEPARTMENT_ID, 33);
     entity.put(TestDomain.DEPARTMENT_NAME, "name");
     entity.put(TestDomain.DEPARTMENT_LOCATION, "loc");
@@ -99,15 +99,15 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectByKey() throws IOException, DatabaseException {
-    final Entity.Key key = connection.getDomain().key(TestDomain.T_DEPARTMENT, 10);
+    final Entity.Key key = connection.getEntities().key(TestDomain.T_DEPARTMENT, 10);
     final List<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
   @Test
   public void selectByKeyDifferentEntityIds() throws IOException, DatabaseException {
-    final Entity.Key deptKey = connection.getDomain().key(TestDomain.T_DEPARTMENT, 10);
-    final Entity.Key empKey = connection.getDomain().key(TestDomain.T_EMP, 8);
+    final Entity.Key deptKey = connection.getEntities().key(TestDomain.T_DEPARTMENT, 10);
+    final Entity.Key empKey = connection.getEntities().key(TestDomain.T_EMP, 8);
 
     final List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -170,8 +170,8 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void deleteByKeyDifferentEntityIds() throws IOException, DatabaseException {
-    final Entity.Key deptKey = connection.getDomain().key(TestDomain.T_DEPARTMENT, 40);
-    final Entity.Key empKey = connection.getDomain().key(TestDomain.T_EMP, 1);
+    final Entity.Key deptKey = connection.getEntities().key(TestDomain.T_DEPARTMENT, 40);
+    final Entity.Key empKey = connection.getEntities().key(TestDomain.T_EMP, 1);
     try {
       connection.beginTransaction();
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());

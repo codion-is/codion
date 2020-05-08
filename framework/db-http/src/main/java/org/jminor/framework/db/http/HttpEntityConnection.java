@@ -16,7 +16,7 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntityCondition;
 import org.jminor.framework.db.condition.EntitySelectCondition;
 import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 
 import org.apache.http.HttpHost;
@@ -91,13 +91,13 @@ final class HttpEntityConnection implements EntityConnection {
   private final HttpHost targetHost;
   private final HttpClientContext httpContext;
 
-  private final Domain domain;
+  private final Entities entities;
 
   private boolean closed;
 
   /**
    * Instantiates a new {@link HttpEntityConnection} instance
-   * @param domain the entities entities
+   * @param domainId the id of the domain model
    * @param serverHostName the http server host name
    * @param serverPort the http server port
    * @param httpsEnabled if true then https is used
@@ -116,12 +116,12 @@ final class HttpEntityConnection implements EntityConnection {
     this.httpClient = createHttpClient(clientTypeId, clientId);
     this.targetHost = new HttpHost(serverHostName, serverPort, httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);
-    this.domain = initializeDomain();
+    this.entities = initializeEntities();
   }
 
   @Override
-  public Domain getDomain() {
-    return domain;
+  public Entities getEntities() {
+    return entities;
   }
 
   @Override
@@ -476,9 +476,9 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  private Domain initializeDomain() {
+  private Entities initializeEntities() {
     try {
-      return onResponse(execute(createHttpPost("getDomain")));
+      return onResponse(execute(createHttpPost("getEntities")));
     }
     catch (final RuntimeException e) {
       throw e;

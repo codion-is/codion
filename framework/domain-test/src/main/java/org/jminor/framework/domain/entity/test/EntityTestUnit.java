@@ -14,7 +14,6 @@ import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -70,7 +69,7 @@ public class EntityTestUnit {
   private final User user;
 
   private EntityConnection connection;
-  private Domain domain;
+  private Entities entities;
 
   /**
    * Instantiates a new EntityTestUnit.
@@ -94,14 +93,14 @@ public class EntityTestUnit {
   }
 
   /**
-   * @return the domain model
+   * @return the domain entities
    */
-  public final Domain getDomain() {
-    if (domain == null) {
-      domain = connection.getDomain();
+  public final Entities getEntities() {
+    if (entities == null) {
+      entities = connection.getEntities();
     }
 
-    return domain;
+    return entities;
   }
 
   /**
@@ -134,7 +133,7 @@ public class EntityTestUnit {
       connection.beginTransaction();
       final Map<String, Entity> foreignKeyEntities = initializeReferencedEntities(entityId, new HashMap<>());
       Entity testEntity = null;
-      final EntityDefinition entityDefinition = getDomain().getDefinition(entityId);
+      final EntityDefinition entityDefinition = getEntities().getDefinition(entityId);
       if (!entityDefinition.isReadOnly()) {
         testEntity = testInsert(requireNonNull(initializeTestEntity(entityId, foreignKeyEntities), "test entity"));
         assertTrue(testEntity.getKey().isNotNull());
@@ -151,27 +150,27 @@ public class EntityTestUnit {
   }
 
   /**
-   * @param domain the domain model
+   * @param entities the domain model entities
    * @param entityId the entity ID
    * @param referenceEntities entities referenced by the given entity ID
    * @return a Entity instance containing randomized values, based on the property definitions
    */
-  public static Entity createRandomEntity(final Domain domain, final String entityId, final Map<String, Entity> referenceEntities) {
-    return createEntity(domain, entityId, property -> createRandomValue(property, referenceEntities));
+  public static Entity createRandomEntity(final Entities entities, final String entityId, final Map<String, Entity> referenceEntities) {
+    return createEntity(entities, entityId, property -> createRandomValue(property, referenceEntities));
   }
 
   /**
-   * @param domain the domain model
+   * @param entities the domain model entities
    * @param entityId the entity ID
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
    */
-  public static Entity createEntity(final Domain domain, final String entityId, final Function<Property, Object> valueProvider) {
-    requireNonNull(domain);
+  public static Entity createEntity(final Entities entities, final String entityId, final Function<Property, Object> valueProvider) {
+    requireNonNull(entities);
     requireNonNull(entityId);
-    final Entity entity = domain.entity(entityId);
-    populateEntity(domain, entity, domain.getDefinition(entityId).getWritableColumnProperties(
-            !domain.getDefinition(entityId).isKeyGenerated(), true), valueProvider);
+    final Entity entity = entities.entity(entityId);
+    populateEntity(entities, entity, entities.getDefinition(entityId).getWritableColumnProperties(
+            !entities.getDefinition(entityId).isKeyGenerated(), true), valueProvider);
 
     return entity;
   }
@@ -179,15 +178,15 @@ public class EntityTestUnit {
   /**
    * Randomizes the values in the given entity, note that if a foreign key entity is not provided
    * the respective foreign key value in not modified
-   * @param domain the domain model
+   * @param entities the domain model entities
    * @param entity the entity to randomize
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
-  public static void randomize(final Domain domain, final Entity entity, final Map<String, Entity> foreignKeyEntities) {
-    requireNonNull(domain);
+  public static void randomize(final Entities entities, final Entity entity, final Map<String, Entity> foreignKeyEntities) {
+    requireNonNull(entities);
     requireNonNull(entity);
-    populateEntity(domain, entity,
-            domain.getDefinition(entity.getEntityId()).getWritableColumnProperties(false, true),
+    populateEntity(entities, entity,
+            entities.getDefinition(entity.getEntityId()).getWritableColumnProperties(false, true),
             property -> createRandomValue(property, foreignKeyEntities));
   }
 
@@ -265,7 +264,7 @@ public class EntityTestUnit {
    * @return the entity instance to use for testing the entity type
    */
   protected Entity initializeTestEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
-    return createRandomEntity(getDomain(), entityId, foreignKeyEntities);
+    return createRandomEntity(getEntities(), entityId, foreignKeyEntities);
   }
 
   /**
@@ -275,7 +274,7 @@ public class EntityTestUnit {
    * @return a entity of the given type
    */
   protected Entity initializeReferenceEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
-    return createRandomEntity(getDomain(), entityId, foreignKeyEntities);
+    return createRandomEntity(getEntities(), entityId, foreignKeyEntities);
   }
 
   /**
@@ -284,7 +283,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
   protected void modifyEntity(final Entity testEntity, final Map<String, Entity> foreignKeyEntities) {
-    randomize(getDomain(), testEntity, foreignKeyEntities);
+    randomize(getEntities(), testEntity, foreignKeyEntities);
   }
 
   /**
@@ -297,7 +296,7 @@ public class EntityTestUnit {
    */
   private Map<String, Entity> initializeReferencedEntities(final String entityId, final Map<String, Entity> foreignKeyEntities)
           throws DatabaseException {
-    for (final ForeignKeyProperty foreignKeyProperty : getDomain().getDefinition(entityId).getForeignKeyProperties()) {
+    for (final ForeignKeyProperty foreignKeyProperty : getEntities().getDefinition(entityId).getForeignKeyProperties()) {
       final String foreignEntityId = foreignKeyProperty.getForeignEntityId();
       if (!foreignKeyEntities.containsKey(foreignEntityId)) {
         if (!Objects.equals(entityId, foreignEntityId)) {
@@ -362,7 +361,7 @@ public class EntityTestUnit {
 
     final Entity updated = connection.update(testEntity);
     assertEquals(testEntity.getKey(), updated.getKey());
-    for (final ColumnProperty property : getDomain().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
+    for (final ColumnProperty property : getEntities().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
       if (property.isUpdatable()) {
         final Object beforeUpdate = testEntity.get(property);
         final Object afterUpdate = updated.get(property);
@@ -433,7 +432,7 @@ public class EntityTestUnit {
     return Users.parseUser(testUser);
   }
 
-  private static void populateEntity(final Domain domain, final Entity entity, final Collection<ColumnProperty> properties,
+  private static void populateEntity(final Entities entities, final Entity entity, final Collection<ColumnProperty> properties,
                                      final Function<Property, Object> valueProvider) {
     requireNonNull(valueProvider, "valueProvider");
     for (final ColumnProperty property : properties) {
@@ -441,7 +440,7 @@ public class EntityTestUnit {
         entity.put(property, valueProvider.apply(property));
       }
     }
-    for (final ForeignKeyProperty property : domain.getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
+    for (final ForeignKeyProperty property : entities.getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
       final Object value = valueProvider.apply(property);
       if (value != null) {
         entity.put(property, value);

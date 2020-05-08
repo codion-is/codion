@@ -65,7 +65,7 @@ public final class EntityService extends Application {
   private static Server<RemoteEntityConnection, Remote> server;
 
   /**
-   * Returns the underlying domain model
+   * Returns the underlying domain entities
    * @param request the servlet request
    * @param headers the headers
    * @return a response
@@ -73,12 +73,12 @@ public final class EntityService extends Application {
   @POST
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @Path("getDomain")
-  public Response getDomain(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  @Path("getEntities")
+  public Response getEntities(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Serializer.serialize(connection.getDomain())).build();
+      return Response.ok(Serializer.serialize(connection.getEntities())).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

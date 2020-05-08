@@ -13,7 +13,7 @@ import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.common.value.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.EntityValidator;
@@ -93,7 +93,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * @return a deep copy of the active entity
-   * @see org.jminor.framework.domain.Domain#copyEntity(Entity)
+   * @see org.jminor.framework.domain.entity.Entities#copyEntity(Entity)
    */
   Entity getEntityCopy();
 
@@ -194,9 +194,9 @@ public interface EntityEditModel extends Refreshable {
   <V> Value<V> value(String propertyId);
 
   /**
-   * @return the underlying domain model
+   * @return the underlying domain entities
    */
-  Domain getDomain();
+  Entities getEntities();
 
   /**
    * @return the definition of the underlying entity

@@ -11,6 +11,7 @@ import org.jminor.common.event.EventListener;
 import org.jminor.framework.domain.entity.DefaultEntityValidator;
 import org.jminor.framework.domain.entity.Department;
 import org.jminor.framework.domain.entity.Employee;
+import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.StringProvider;
@@ -46,6 +47,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DomainTest {
 
   private final TestDomain domain = new TestDomain();
+  private final Entities entities = domain.getEntities();
 
   @Test
   public void defineTypes() {
@@ -208,7 +210,7 @@ public class DomainTest {
             Properties.primaryKeyProperty(propertyId2).primaryKeyIndex(1),
             Properties.primaryKeyProperty(propertyId3).primaryKeyIndex(2).nullable(true));
 
-    final Entity.Key key = domain.key(entityId);
+    final Entity.Key key = entities.key(entityId);
     assertEquals(0, key.hashCode());
     assertTrue(key.isCompositeKey());
     assertTrue(key.isNull());
@@ -236,19 +238,19 @@ public class DomainTest {
     assertTrue(key.isNotNull());
     assertEquals(43, key.hashCode());
 
-    assertThrows(NullPointerException.class, () -> domain.key(null));
+    assertThrows(NullPointerException.class, () -> entities.key(null));
 
-    final Entity.Key noPk = domain.key(TestDomain.T_NO_PK);
+    final Entity.Key noPk = entities.key(TestDomain.T_NO_PK);
     assertThrows(IllegalArgumentException.class, () -> noPk.put(TestDomain.NO_PK_COL1, 1));
     assertThrows(IllegalArgumentException.class, () -> noPk.get(TestDomain.NO_PK_COL1));
   }
 
    @Test
    public void keys() {
-    final List<Entity.Key> intKeys = domain.keys(TestDomain.T_EMP, 1, 2, 3, 4);
+    final List<Entity.Key> intKeys = entities.keys(TestDomain.T_EMP, 1, 2, 3, 4);
     assertEquals(4, intKeys.size());
     assertEquals(3, intKeys.get(2).getFirstValue());
-    final List<Entity.Key> longKeys = domain.keys(TestDomain.T_DETAIL, 1L, 2L, 3L, 4L);
+    final List<Entity.Key> longKeys = entities.keys(TestDomain.T_DETAIL, 1L, 2L, 3L, 4L);
     assertEquals(4, longKeys.size());
     assertEquals(3L, longKeys.get(2).getFirstValue());
    }
@@ -271,14 +273,14 @@ public class DomainTest {
 
   @Test
   public void entity() {
-    final Entity.Key key = domain.key(TestDomain.T_MASTER, 10L);
+    final Entity.Key key = entities.key(TestDomain.T_MASTER, 10L);
 
-    final Entity master = domain.entity(key);
+    final Entity master = entities.entity(key);
     assertEquals(TestDomain.T_MASTER, master.getEntityId());
     assertTrue(master.containsKey(TestDomain.MASTER_ID));
     assertEquals(10L, master.get(TestDomain.MASTER_ID));
 
-    assertThrows(NullPointerException.class, () -> domain.entity((String) null));
+    assertThrows(NullPointerException.class, () -> entities.entity((String) null));
   }
 
   @Test
@@ -335,9 +337,9 @@ public class DomainTest {
 
   @Test
   public void getDomainEntityIds() {
-    final Domain domain = Domain.getDomain(new TestDomain().getDomainId());
-    assertNotNull(domain.getDefinition(TestDomain.T_DEPARTMENT));
-    assertNotNull(domain.getDefinition(TestDomain.T_EMP));
+    final Entities entities = DomainEntities.getEntities(new TestDomain().getDomainId());
+    assertNotNull(entities.getDefinition(TestDomain.T_DEPARTMENT));
+    assertNotNull(entities.getDefinition(TestDomain.T_EMP));
   }
 
   @Test
@@ -394,16 +396,16 @@ public class DomainTest {
     final String entityId = "entityId2";
     domain.define(entityId, Properties.primaryKeyProperty("id"));
     assertEquals("id", domain.getDefinition(entityId).getPrimaryKeyProperties().get(0).getPropertyId());
-    Domain.ENABLE_REDEFINE_ENTITY.set(true);
+    Entities.ENABLE_REDEFINE_ENTITY.set(true);
     domain.define(entityId, Properties.primaryKeyProperty("id2"));
     assertEquals("id2", domain.getDefinition(entityId).getPrimaryKeyProperties().get(0).getPropertyId());
-    Domain.ENABLE_REDEFINE_ENTITY.set(false);
+    Entities.ENABLE_REDEFINE_ENTITY.set(false);
   }
 
   @Test
   public void nullValidation() {
     final EntityDefinition definition = domain.getDefinition(TestDomain.T_EMP);
-    final Entity emp = domain.entity(TestDomain.T_EMP);
+    final Entity emp = entities.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_NAME, "Name");
     emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
     emp.put(TestDomain.EMP_SALARY, 1200.0);
@@ -438,7 +440,7 @@ public class DomainTest {
   @Test
   public void maxLengthValidation() {
     final EntityDefinition definition = domain.getDefinition(TestDomain.T_EMP);
-    final Entity emp = domain.entity(TestDomain.T_EMP);
+    final Entity emp = entities.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_DEPARTMENT, 1);
     emp.put(TestDomain.EMP_NAME, "Name");
     emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
@@ -452,7 +454,7 @@ public class DomainTest {
   @Test
   public void rangeValidation() {
     final EntityDefinition definition = domain.getDefinition(TestDomain.T_EMP);
-    final Entity emp = domain.entity(TestDomain.T_EMP);
+    final Entity emp = entities.entity(TestDomain.T_EMP);
     emp.put(TestDomain.EMP_DEPARTMENT, 1);
     emp.put(TestDomain.EMP_NAME, "Name");
     emp.put(TestDomain.EMP_HIREDATE, LocalDateTime.now());
@@ -500,12 +502,12 @@ public class DomainTest {
 
   @Test
   public void stringProvider() {
-    final Entity department = domain.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, -10);
     department.put(TestDomain.DEPARTMENT_LOCATION, "Reykjavik");
     department.put(TestDomain.DEPARTMENT_NAME, "Sales");
 
-    final Entity employee = domain.entity(TestDomain.T_EMP);
+    final Entity employee = entities.entity(TestDomain.T_EMP);
     final LocalDateTime hiredate = LocalDateTime.now();
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
     employee.put(TestDomain.EMP_NAME, "Darri");
@@ -592,21 +594,21 @@ public class DomainTest {
 
   @Test
   public void validateTypeEntity() {
-    final Entity entity = domain.entity(TestDomain.T_DETAIL);
-    final Entity entity1 = domain.entity(TestDomain.T_DETAIL);
+    final Entity entity = entities.entity(TestDomain.T_DETAIL);
+    final Entity entity1 = entities.entity(TestDomain.T_DETAIL);
     assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.DETAIL_MASTER_FK, "hello"));
     assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.DETAIL_MASTER_FK, entity1));
   }
 
   @Test
   public void setValueDerived() {
-    final Entity entity = domain.entity(TestDomain.T_DETAIL);
+    final Entity entity = entities.entity(TestDomain.T_DETAIL);
     assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.DETAIL_INT_DERIVED, 10));
   }
 
   @Test
   public void setValueValueList() {
-    final Entity entity = domain.entity(TestDomain.T_DETAIL);
+    final Entity entity = entities.entity(TestDomain.T_DETAIL);
     assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.DETAIL_INT_VALUE_LIST, -10));
   }
 
@@ -632,7 +634,7 @@ public class DomainTest {
 
   @Test
   public void defaultEntity() {
-    final Entity detail = domain.defaultEntity(TestDomain.T_DETAIL, property -> null);
+    final Entity detail = entities.defaultEntity(TestDomain.T_DETAIL, property -> null);
     assertFalse(detail.containsKey(TestDomain.DETAIL_DOUBLE));//columnHasDefaultValue
     assertFalse(detail.containsKey(TestDomain.DETAIL_DATE));//columnHasDefaultValue
     assertTrue(detail.containsKey(TestDomain.DETAIL_BOOLEAN_NULLABLE));//columnHasDefaultValue && property.hasDefaultValue
@@ -659,20 +661,20 @@ public class DomainTest {
     final String deptLocation = "Location";
     final Boolean deptActive = true;
 
-    final Entity department = domain.entity(TestDomain.T_DEPARTMENT);
+    final Entity department = entities.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, deptNo);
     department.put(TestDomain.DEPARTMENT_NAME, deptName);
     department.put(TestDomain.DEPARTMENT_LOCATION, deptLocation);
     department.put(TestDomain.DEPARTMENT_ACTIVE, deptActive);
 
-    final List<Department> deptBeans = domain.toBeans(singletonList(department));
+    final List<Department> deptBeans = entities.toBeans(singletonList(department));
     final Department departmentBean = deptBeans.get(0);
     assertEquals(deptNo, departmentBean.getDeptNo());
     assertEquals(deptName, departmentBean.getName());
     assertEquals(deptLocation, departmentBean.getLocation());
     assertEquals(deptActive, departmentBean.getActive());
 
-    final Entity manager = domain.entity(TestDomain.T_EMP);
+    final Entity manager = entities.entity(TestDomain.T_EMP);
     manager.put(TestDomain.EMP_ID, 12);
 
     final Integer id = 42;
@@ -683,7 +685,7 @@ public class DomainTest {
     final String name = "John Doe";
     final Double salary = 1234.5;
 
-    final Entity employee = domain.entity(TestDomain.T_EMP);
+    final Entity employee = entities.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_ID, id);
     employee.put(TestDomain.EMP_COMMISSION, commission);
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
@@ -693,7 +695,7 @@ public class DomainTest {
     employee.put(TestDomain.EMP_NAME, name);
     employee.put(TestDomain.EMP_SALARY, salary);
 
-    final List<Employee> empBeans = domain.toBeans(singletonList(employee));
+    final List<Employee> empBeans = entities.toBeans(singletonList(employee));
     final Employee employeeBean = empBeans.get(0);
     assertEquals(id, employeeBean.getId());
     assertEquals(commission, employeeBean.getCommission());
@@ -706,7 +708,7 @@ public class DomainTest {
     assertEquals(name, employeeBean.getName());
     assertEquals(salary, employeeBean.getSalary());
 
-    final List<Object> empty = domain.toBeans(null);
+    final List<Object> empty = entities.toBeans(null);
     assertTrue(empty.isEmpty());
   }
 
@@ -725,7 +727,7 @@ public class DomainTest {
     departmentBean.setName(deptName);
     departmentBean.setActive(deptActive);
 
-    final List<Entity> departments = domain.fromBeans(singletonList(departmentBean));
+    final List<Entity> departments = entities.fromBeans(singletonList(departmentBean));
     final Entity department = departments.get(0);
     assertEquals(deptNo, department.get(TestDomain.DEPARTMENT_ID));
     assertEquals(deptName, department.get(TestDomain.DEPARTMENT_NAME));
@@ -755,7 +757,7 @@ public class DomainTest {
     employeeBean.setName(name);
     employeeBean.setSalary(salary);
 
-    final List<Entity> employees = domain.fromBeans(singletonList(employeeBean));
+    final List<Entity> employees = entities.fromBeans(singletonList(employeeBean));
     final Entity employee = employees.get(0);
     assertEquals(id, employee.get(TestDomain.EMP_ID));
     assertEquals(commission, employee.get(TestDomain.EMP_COMMISSION));
@@ -769,48 +771,48 @@ public class DomainTest {
     assertEquals(name, employee.get(TestDomain.EMP_NAME));
     assertEquals(salary, employee.get(TestDomain.EMP_SALARY));
 
-    final List<Entity> empty = domain.fromBeans(null);
+    final List<Entity> empty = entities.fromBeans(null);
     assertTrue(empty.isEmpty());
   }
 
   @Test
   public void testNullEntity() throws NoSuchMethodException, IllegalAccessException, InstantiationException,
           InvocationTargetException {
-    assertThrows(NullPointerException.class, () -> domain.toBean(null));
+    assertThrows(NullPointerException.class, () -> entities.toBean(null));
   }
 
   @Test
   public void testNullBean() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-    assertThrows(NullPointerException.class, () -> domain.fromBean(null));
+    assertThrows(NullPointerException.class, () -> entities.fromBean(null));
   }
 
   @Test
   public void copyEntities() {
-    final Entity dept1 = domain.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept1 = entities.entity(TestDomain.T_DEPARTMENT);
     dept1.put(TestDomain.DEPARTMENT_ID, 1);
     dept1.put(TestDomain.DEPARTMENT_LOCATION, "location");
     dept1.put(TestDomain.DEPARTMENT_NAME, "name");
-    final Entity dept2 = domain.entity(TestDomain.T_DEPARTMENT);
+    final Entity dept2 = entities.entity(TestDomain.T_DEPARTMENT);
     dept2.put(TestDomain.DEPARTMENT_ID, 2);
     dept2.put(TestDomain.DEPARTMENT_LOCATION, "location2");
     dept2.put(TestDomain.DEPARTMENT_NAME, "name2");
 
-    final List<Entity> copies = domain.deepCopyEntities(asList(dept1, dept2));
+    final List<Entity> copies = entities.deepCopyEntities(asList(dept1, dept2));
     assertNotSame(copies.get(0), dept1);
     assertTrue(copies.get(0).valuesEqual(dept1));
     assertNotSame(copies.get(1), dept2);
     assertTrue(copies.get(1).valuesEqual(dept2));
 
-    final Entity emp1 = domain.entity(TestDomain.T_EMP);
+    final Entity emp1 = entities.entity(TestDomain.T_EMP);
     emp1.put(TestDomain.EMP_DEPARTMENT_FK, dept1);
     emp1.put(TestDomain.EMP_NAME, "name");
     emp1.put(TestDomain.EMP_COMMISSION, 130.5);
 
-    Entity copy = domain.copyEntity(emp1);
+    Entity copy = entities.copyEntity(emp1);
     assertTrue(emp1.valuesEqual(copy));
     assertSame(emp1.get(TestDomain.EMP_DEPARTMENT_FK), copy.get(TestDomain.EMP_DEPARTMENT_FK));
 
-    copy = domain.deepCopyEntity(emp1);
+    copy = entities.deepCopyEntity(emp1);
     assertTrue(emp1.valuesEqual(copy));
     assertNotSame(emp1.get(TestDomain.EMP_DEPARTMENT_FK), copy.get(TestDomain.EMP_DEPARTMENT_FK));
   }

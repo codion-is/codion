@@ -422,6 +422,42 @@ public interface EntityDefinition extends Serializable {
   Entity.Key key(Long value);
 
   /**
+   * Returns the {@link BeanHelper} associated with this entity type.
+   * @param <V> the bean type
+   * @return the bean helper
+   */
+  <V> BeanHelper<V> getBeanHelper();
+
+  /**
+   * Helps with transforming from entities to beans and back. Called after the default
+   * transformation has finished.
+   * Use one of these if the default bean transformation is not enough.
+   * @param <V> the bean type
+   */
+  interface BeanHelper<V> extends Serializable {
+
+    /**
+     * Called after the default transformation has finished.
+     * @param entity the entity
+     * @param bean the bean
+     * @return the entity
+     */
+    default V toBean(final Entity entity, final V bean) {
+      return bean;
+    }
+
+    /**
+     * Called after the default transformation has finished.
+     * @param bean the bean
+     * @param entity the entity
+     * @return the bean
+     */
+    default Entity fromBean(final V bean, final Entity entity) {
+      return entity;
+    }
+  }
+
+  /**
    * Provides {@link EntityDefinition}s for a domain model.
    */
   interface Provider {
@@ -594,5 +630,14 @@ public interface EntityDefinition extends Serializable {
      * @return this {@link Builder} instance
      */
     Builder searchPropertyIds(String... searchPropertyIds);
+
+    /**
+     * Sets the {@link BeanHelper} instance to use when transforming between entities and beans.
+     * Called after the default transformation has finished.
+     * @param beanHelper the bean helper
+     * @param <V> the bean type
+     * @return this {@link Builder} instance
+     */
+    <V> Builder beanHelper(BeanHelper<V> beanHelper);
   }
 }

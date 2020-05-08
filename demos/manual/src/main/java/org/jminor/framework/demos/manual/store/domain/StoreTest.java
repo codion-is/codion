@@ -37,7 +37,7 @@ public class StoreTest extends EntityTestUnit {
                                              Map<String, Entity> foreignKeyEntities) {
     //see if the currently running test requires an ADDRESS entity
     if (entityId.equals(Store.T_ADDRESS)) {
-      Entity address = getDomain().entity(Store.T_ADDRESS);
+      Entity address = getEntities().entity(Store.T_ADDRESS);
       address.put(Store.ADDRESS_ID, 21);
       address.put(Store.ADDRESS_STREET, "One Way");
       address.put(Store.ADDRESS_CITY, "Sin City");
@@ -54,7 +54,7 @@ public class StoreTest extends EntityTestUnit {
     if (entityId.equals(Store.T_ADDRESS)) {
       //Initialize a entity representing the table STORE.ADDRESS,
       //which can be used for the testing
-      Entity address = getDomain().entity(Store.T_ADDRESS);
+      Entity address = getEntities().entity(Store.T_ADDRESS);
       address.put(Store.ADDRESS_ID, 42);
       address.put(Store.ADDRESS_STREET, "Street");
       address.put(Store.ADDRESS_CITY, "City");
@@ -64,7 +64,7 @@ public class StoreTest extends EntityTestUnit {
     else if (entityId.equals(Store.T_CUSTOMER)) {
       //Initialize a entity representing the table STORE.CUSTOMER,
       //which can be used for the testing
-      Entity customer = getDomain().entity(Store.T_CUSTOMER);
+      Entity customer = getEntities().entity(Store.T_CUSTOMER);
       customer.put(Store.CUSTOMER_ID, 42);
       customer.put(Store.CUSTOMER_FIRST_NAME, "Robert");
       customer.put(Store.CUSTOMER_LAST_NAME, "Ford");
@@ -73,7 +73,7 @@ public class StoreTest extends EntityTestUnit {
       return customer;
     }
     else if (entityId.equals(Store.T_CUSTOMER_ADDRESS)) {
-      Entity customerAddress = getDomain().entity(Store.T_CUSTOMER_ADDRESS);
+      Entity customerAddress = getEntities().entity(Store.T_CUSTOMER_ADDRESS);
       customerAddress.put(Store.CUSTOMER_ADDRESS_CUSTOMER_FK, foreignKeyEntities.get(Store.T_CUSTOMER));
       customerAddress.put(Store.CUSTOMER_ADDRESS_ADDRESS_FK, foreignKeyEntities.get(Store.T_ADDRESS));
 

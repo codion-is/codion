@@ -20,7 +20,7 @@ public final class TestDomain extends Domain {
   public TestDomain() {
     department();
     employee();
-    registerDomain();
+    getEntities().registerEntities();
   }
 
   public static final String DEPARTMENT_ID = "deptno";

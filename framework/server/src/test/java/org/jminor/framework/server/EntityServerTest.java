@@ -5,8 +5,6 @@ package org.jminor.framework.server;
 
 import org.jminor.common.MethodLogger;
 import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.operation.AbstractDatabaseProcedure;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.rmi.client.ConnectionRequest;
 import org.jminor.common.rmi.server.ClientLog;
@@ -73,9 +71,9 @@ public class EntityServerTest {
   @Test
   public void customCondition() throws Exception {
     //Fix side-effect from remoteEntityConnectionProvider() test,
-    //which registeres the domain received from the server
-    //thus overwriting the domain containing the custom conditions
-    new TestDomain().registerDomain();
+    //which registers the entities received from the server
+    //thus overwriting the entities containing the custom conditions
+    new TestDomain().getEntities().registerEntities();
     final ConnectionRequest connectionRequestOne = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
             "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
@@ -85,21 +83,6 @@ public class EntityServerTest {
 
     connection.select(Conditions.selectCondition(TestDomain.T_EMP, condition));
 
-    connection.disconnect();
-  }
-
-  @Test
-  public void remoteDomain() throws Exception {
-    final ConnectionRequest connectionRequestOne = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(),
-            "ClientTypeID", CONNECTION_PARAMS);
-    final RemoteEntityConnection connection = server.connect(connectionRequestOne);
-    final Domain domain = connection.getDomain();
-    assertThrows(IllegalStateException.class, () -> domain.addOperation(new AbstractDatabaseProcedure<EntityConnection>("id", "name") {
-      @Override
-      public void execute(final EntityConnection connection, final Object... arguments) throws DatabaseException {}
-    }));
-    assertThrows(IllegalStateException.class, () -> domain.getProcedure("id"));
-    assertThrows(IllegalStateException.class, () -> domain.getFunction("id"));
     connection.disconnect();
   }
 

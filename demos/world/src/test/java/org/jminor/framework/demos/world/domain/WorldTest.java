@@ -52,12 +52,12 @@ public final class WorldTest extends EntityTestUnit {
   protected Entity initializeReferenceEntity(String entityId, Map<String, Entity> foreignKeyEntities) {
     switch (entityId) {
       case World.T_COUNTRY:
-        Entity iceland = getDomain().entity(World.T_COUNTRY);
+        Entity iceland = getEntities().entity(World.T_COUNTRY);
         iceland.put(World.COUNTRY_CODE, "ISL");
 
         return iceland;
       case World.T_CITY:
-        Entity reykjavik = getDomain().entity(World.T_CITY);
+        Entity reykjavik = getEntities().entity(World.T_CITY);
         reykjavik.put(World.CITY_ID, 1449);
 
         return reykjavik;
