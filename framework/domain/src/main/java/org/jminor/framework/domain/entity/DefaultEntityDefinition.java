@@ -107,6 +107,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private EntityValidator validator = new DefaultEntityValidator();
 
   /**
+   * The bean helper
+   */
+  private BeanHelper beanHelper = new DefaultBeanHelper();
+
+  /**
    * The IDs of the properties to use when performing a string based lookup on this entity
    */
   private Collection<String> searchPropertyIds;
@@ -594,6 +599,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return new DefaultEntityKey(this, value);
   }
 
+  @Override
+  public <V> BeanHelper<V> getBeanHelper() {
+    return beanHelper;
+  }
+
   /**
    * @return a {@link EntityDefinition.Builder} for this definition instance
    */
@@ -935,5 +945,16 @@ final class DefaultEntityDefinition implements EntityDefinition {
       definition.validator = requireNonNull(validator, "validator");
       return this;
     }
+
+    @Override
+    public <V> Builder beanHelper(final BeanHelper<V> beanHelper) {
+      definition.beanHelper = requireNonNull(beanHelper, "beanHelper");
+      return this;
+    }
+  }
+
+  private static final class DefaultBeanHelper implements BeanHelper {
+
+    private static final long serialVersionUID = 1;
   }
 }

@@ -70,10 +70,12 @@ org.jminor.framework.db.condition.DefaultCustomCondition
 org.jminor.framework.db.condition.DefaultEntityCondition
 org.jminor.framework.db.condition.DefaultEntitySelectCondition
 org.jminor.framework.db.rmi.RemoteEntityConnection
+org.jminor.framework.domain.DefaultDomainEntities
 org.jminor.framework.domain.Domain
 org.jminor.framework.domain.Domain$DefaultEntityDefinitionProvider
 org.jminor.framework.domain.entity.DefaultEntity
 org.jminor.framework.domain.entity.DefaultEntityDefinition
+org.jminor.framework.domain.entity.DefaultEntityDefinition$DefaultBeanHelper
 org.jminor.framework.domain.entity.DefaultEntityValidator
 org.jminor.framework.domain.entity.DefaultOrderBy
 org.jminor.framework.domain.entity.DefaultOrderBy$DefaultOrderByProperty

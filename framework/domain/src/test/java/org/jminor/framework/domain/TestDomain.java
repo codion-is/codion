@@ -8,6 +8,7 @@ import org.jminor.common.item.Item;
 import org.jminor.framework.domain.entity.Department;
 import org.jminor.framework.domain.entity.Employee;
 import org.jminor.framework.domain.entity.Entity;
+import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.StringProvider;
 import org.jminor.framework.domain.property.ColumnProperty;
 
@@ -206,7 +207,7 @@ public final class TestDomain extends Domain {
                     .beanProperty("salary"),
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2)
-            .beanProperty("commission"),
+                    .beanProperty("commission"),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
                     (ColumnProperty.Builder) columnProperty(EMP_MGR)
                             .beanProperty("mgr"))
@@ -234,6 +235,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(EMP_NAME))
             .searchPropertyIds(EMP_NAME, EMP_JOB)
             .beanClass(Employee.class)
+            .beanHelper(new EntityToEmployee())
             .caption("Employee");
   }
 
@@ -249,13 +251,17 @@ public final class TestDomain extends Domain {
             columnProperty(NO_PK_COL3));
   }
 
-  @Override
-  public <V> V toBean(final Entity entity) {
-    final V bean = super.toBean(entity);
-    if (entity.is(T_EMP) && !entity.isNull(EMP_HIREDATE)) {
-      ((Employee) bean).setHiredate(entity.getTimestamp(EMP_HIREDATE).truncatedTo(ChronoUnit.DAYS));
-    }
+  private static final class EntityToEmployee implements EntityDefinition.BeanHelper<Employee> {
 
-    return bean;
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public Employee toBean(final Entity entity, final Employee bean) {
+      if (entity.isNotNull(EMP_HIREDATE)) {
+        bean.setHiredate(entity.getTimestamp(EMP_HIREDATE).truncatedTo(ChronoUnit.DAYS));
+      }
+
+      return bean;
+    }
   }
 }
