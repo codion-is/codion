@@ -41,7 +41,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private Entities entities;
 
   @Override
-  public final Entities getDomain() {
+  public final Entities getEntities() {
     synchronized (lock) {
       if (entities == null) {
         doConnect();
@@ -245,7 +245,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       throw new IllegalStateException("User has not been set for this connection provider");
     }
     entityConnection = connect();
-    entities = entityConnection.getDomain().registerEntities();
+    entities = entityConnection.getEntities().registerEntities();
     onConnectEvent.onEvent();
   }
 }

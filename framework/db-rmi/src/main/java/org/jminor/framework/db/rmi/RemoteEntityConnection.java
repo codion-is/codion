@@ -28,7 +28,7 @@ public interface RemoteEntityConnection extends Remote {
    * @return the underlying domain model
    * @throws RemoteException in case of an exception
    */
-  Entities getDomain() throws RemoteException;
+  Entities getEntities() throws RemoteException;
 
   /**
    * @return the user being used by this connection

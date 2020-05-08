@@ -82,7 +82,7 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
   /**
    * @return the underlying domain model
    */
-  Entities getDomain();
+  Entities getEntities();
 
   /**
    * Adds the given entity models to this model.

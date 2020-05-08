@@ -158,7 +158,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider) {
-    this(entityId, connectionProvider, connectionProvider.getDomain().getDefinition(entityId).getValidator());
+    this(entityId, connectionProvider, connectionProvider.getEntities().getDefinition(entityId).getValidator());
   }
 
   /**
@@ -169,7 +169,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    */
   public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider,
                                 final EntityValidator validator) {
-    this.entity = connectionProvider.getDomain().entity(entityId);
+    this.entity = connectionProvider.getEntities().entity(entityId);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.validator = validator;
     setReadOnly(getEntityDefinition().isReadOnly());
@@ -178,13 +178,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Entities getDomain() {
-    return connectionProvider.getDomain();
+  public final Entities getEntities() {
+    return connectionProvider.getEntities();
   }
 
   @Override
   public final EntityDefinition getEntityDefinition() {
-    return getDomain().getDefinition(entity.getEntityId());
+    return getEntities().getDefinition(entity.getEntityId());
   }
 
   @Override
@@ -327,7 +327,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity getEntityCopy() {
-    return getDomain().deepCopyEntity(getEntity());
+    return getEntities().deepCopyEntity(getEntity());
   }
 
   @Override
@@ -447,7 +447,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void validate(final Collection<Entity> entities) throws ValidationException {
     for (final Entity entityToValidate : entities) {
-      final EntityDefinition definition = getDomain().getDefinition(entityToValidate.getEntityId());
+      final EntityDefinition definition = getEntities().getDefinition(entityToValidate.getEntityId());
       if (definition.getEntityId().equals(getEntityId())) {
         validator.validate(entityToValidate, definition);
       }
@@ -611,7 +611,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public EntityLookupModel createForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty) {
-    final Collection<ColumnProperty> searchProperties = getDomain()
+    final Collection<ColumnProperty> searchProperties = getEntities()
             .getDefinition(foreignKeyProperty.getForeignEntityId()).getSearchProperties();
     if (searchProperties.isEmpty()) {
       throw new IllegalStateException("No search properties defined for entity: " + foreignKeyProperty.getForeignEntityId());
@@ -637,7 +637,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity getDefaultEntity() {
-    return getDomain().defaultEntity(entity.getEntityId(), defaultValueProvider);
+    return getEntities().defaultEntity(entity.getEntityId(), defaultValueProvider);
   }
 
   @Override

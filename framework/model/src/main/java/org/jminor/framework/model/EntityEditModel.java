@@ -196,7 +196,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * @return the underlying domain model
    */
-  Entities getDomain();
+  Entities getEntities();
 
   /**
    * @return the definition of the underlying entity

@@ -152,7 +152,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param connectionProvider the db provider
    */
   public SwingEntityTableModel(final String entityId, final EntityConnectionProvider connectionProvider) {
-    this(entityId, connectionProvider, new SwingEntityTableSortModel(connectionProvider.getDomain(), entityId),
+    this(entityId, connectionProvider, new SwingEntityTableSortModel(connectionProvider.getEntities(), entityId),
             new DefaultEntityTableConditionModel(entityId, connectionProvider,
                     new DefaultPropertyFilterModelProvider(), new SwingPropertyConditionModelProvider()));
   }
@@ -182,13 +182,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final Entities getDomain() {
-    return connectionProvider.getDomain();
+  public final Entities getEntities() {
+    return connectionProvider.getEntities();
   }
 
   @Override
   public final EntityDefinition getEntityDefinition() {
-    return getDomain().getDefinition(entityId);
+    return getEntities().getDefinition(entityId);
   }
 
   @Override
@@ -362,7 +362,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     if (!editable || isReadOnly() || !isUpdateEnabled()) {
       throw new IllegalStateException("This table model is readOnly or has disabled update");
     }
-    final Entity entity = getDomain().copyEntity(getItemAt(rowIndex));
+    final Entity entity = getEntities().copyEntity(getItemAt(rowIndex));
 
     entity.put(getColumnModel().getColumnIdentifier(modelColumnIndex), value);
     try {

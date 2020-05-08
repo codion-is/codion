@@ -58,7 +58,7 @@ public interface EntityConnectionProvider {
    * Returns the domain model this connection is based on
    * @return the underlying domain model
    */
-  Entities getDomain();
+  Entities getEntities();
 
   /**
    * Provides a EntityConnection object, is responsible for returning a healthy EntityConnection object,

@@ -89,17 +89,17 @@ public final class SwingEntityComboBoxModelTest {
   public void foreignKeyFilterComboBoxModel() throws Exception {
     final EntityConnectionProvider connectionProvider = comboBoxModel.getConnectionProvider();
     final SwingEntityComboBoxModel empBox = new SwingEntityComboBoxModel(TestDomain.T_EMP, connectionProvider);
-    empBox.setNullValue(connectionProvider.getDomain().createToStringEntity(TestDomain.T_EMP, "-"));
+    empBox.setNullValue(connectionProvider.getEntities().createToStringEntity(TestDomain.T_EMP, "-"));
     empBox.refresh();
     assertEquals(17, empBox.getSize());
     final SwingEntityComboBoxModel deptBox = empBox.createForeignKeyFilterComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     assertEquals(1, empBox.getSize());
-    final Entity.Key accountingKey = connectionProvider.getDomain().key(TestDomain.T_DEPARTMENT, 10);
+    final Entity.Key accountingKey = connectionProvider.getEntities().key(TestDomain.T_DEPARTMENT, 10);
     deptBox.setSelectedEntityByKey(accountingKey);
     assertEquals(8, empBox.getSize());
     deptBox.setSelectedItem(null);
     assertEquals(1, empBox.getSize());
-    final Entity.Key salesKey = connectionProvider.getDomain().key(TestDomain.T_DEPARTMENT, 30);
+    final Entity.Key salesKey = connectionProvider.getEntities().key(TestDomain.T_DEPARTMENT, 30);
     deptBox.setSelectedEntityByKey(salesKey);
     assertEquals(5, empBox.getSize());
     empBox.setSelectedItem(empBox.getVisibleItems().get(1));
@@ -186,7 +186,7 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel.refresh();
     final Value<Integer> empIdValue = comboBoxModel.integerValueSelector(TestDomain.EMP_ID);
     assertNull(empIdValue.get());
-    final Entity.Key jonesKey = comboBoxModel.getConnectionProvider().getDomain().key(TestDomain.T_EMP, 5);
+    final Entity.Key jonesKey = comboBoxModel.getConnectionProvider().getEntities().key(TestDomain.T_EMP, 5);
     comboBoxModel.setSelectedEntityByKey(jonesKey);
     assertEquals(5, empIdValue.get());
     comboBoxModel.setSelectedItem(null);

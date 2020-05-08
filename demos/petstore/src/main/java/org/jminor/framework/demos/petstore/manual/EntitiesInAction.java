@@ -25,7 +25,7 @@ public final class EntitiesInAction {
             .setClientTypeId("Manual")
             .setUser(Users.parseUser("scott:tiger"));
 
-    Entities store = connectionProvider.getDomain();
+    Entities store = connectionProvider.getEntities();
 
     EntityConnection connection = connectionProvider.getConnection();
 

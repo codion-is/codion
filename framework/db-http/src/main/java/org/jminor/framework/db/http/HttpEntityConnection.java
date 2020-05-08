@@ -120,7 +120,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public Entities getDomain() {
+  public Entities getEntities() {
     return entities;
   }
 

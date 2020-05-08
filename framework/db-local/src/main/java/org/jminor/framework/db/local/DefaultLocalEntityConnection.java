@@ -135,7 +135,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Entities getDomain() {
+  public Entities getEntities() {
     return domain.getEntities();
   }
 

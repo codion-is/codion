@@ -39,7 +39,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public SwingEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider) {
-    this(entityId, connectionProvider, connectionProvider.getDomain().getDefinition(entityId).getValidator());
+    this(entityId, connectionProvider, connectionProvider.getEntities().getDefinition(entityId).getValidator());
   }
 
   /**
@@ -146,7 +146,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     final SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(),
             getConnectionProvider());
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
-      model.setNullValue(getDomain().createToStringEntity(foreignKeyProperty.getForeignEntityId(),
+      model.setNullValue(getEntities().createToStringEntity(foreignKeyProperty.getForeignEntityId(),
               EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
     }
 

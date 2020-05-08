@@ -58,7 +58,7 @@ public class EntityConnectionProviderDemo {
     EntityConnection entityConnection =
             connectionProvider.getConnection();
 
-    Entities entities = entityConnection.getDomain();
+    Entities entities = entityConnection.getEntities();
 
     Entity track = entityConnection.selectSingle(entities.key(Chinook.T_TRACK, 42L));
 
@@ -77,7 +77,7 @@ public class EntityConnectionProviderDemo {
 
     EntityConnection entityConnection = connectionProvider.getConnection();
 
-    Entities entities = entityConnection.getDomain();
+    Entities entities = entityConnection.getEntities();
 
     entityConnection.selectSingle(entities.key(Chinook.T_TRACK, 42L));
 

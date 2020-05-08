@@ -79,7 +79,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Serializer.serialize(connection.getDomain())).build();
+      return Response.ok(Serializer.serialize(connection.getEntities())).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

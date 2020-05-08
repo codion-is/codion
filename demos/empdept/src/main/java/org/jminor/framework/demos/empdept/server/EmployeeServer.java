@@ -58,7 +58,7 @@ public final class EmployeeServer extends EntityServer {
       synchronized (connectionProxy) {
         final List<Entity> employees = connectionProxy.select(selectCondition(EmpDept.T_EMPLOYEE).setForeignKeyFetchDepthLimit(-1));
 
-        return connectionProxy.getDomain().toBeans(employees);
+        return connectionProxy.getEntities().toBeans(employees);
       }
     }
   }

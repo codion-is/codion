@@ -104,13 +104,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final Entities getDomain() {
-    return getConnectionProvider().getDomain();
+  public final Entities getEntities() {
+    return getConnectionProvider().getEntities();
   }
 
   @Override
   public final EntityDefinition getEntityDefinition() {
-    return getDomain().getDefinition(getEntityId());
+    return getEntities().getDefinition(getEntityId());
   }
 
   @Override

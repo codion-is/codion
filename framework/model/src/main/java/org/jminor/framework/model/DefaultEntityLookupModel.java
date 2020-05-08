@@ -91,7 +91,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
    * @see EntityDefinition#getSearchProperties()
    */
   public DefaultEntityLookupModel(final String entityId, final EntityConnectionProvider connectionProvider) {
-    this(entityId, connectionProvider, connectionProvider.getDomain().getDefinition(entityId).getSearchProperties());
+    this(entityId, connectionProvider, connectionProvider.getEntities().getDefinition(entityId).getSearchProperties());
   }
 
   /**
@@ -290,7 +290,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
     return selectCondition(entityId, additionalConditionProvider == null ? baseCondition :
             combination(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
-            .setOrderBy(connectionProvider.getDomain().getDefinition(entityId).getOrderBy());
+            .setOrderBy(connectionProvider.getEntities().getDefinition(entityId).getOrderBy());
   }
 
   private String prepareLookupText(final String rawLookupText, final LookupSettings lookupSettings) {

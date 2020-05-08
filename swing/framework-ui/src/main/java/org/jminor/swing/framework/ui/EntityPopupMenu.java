@@ -58,7 +58,7 @@ final class EntityPopupMenu extends JPopupMenu {
    */
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
                                          final EntityConnectionProvider connectionProvider, final Set<Entity> visitedEntities) {
-    final Entities entities = connectionProvider.getDomain();
+    final Entities entities = connectionProvider.getEntities();
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityId()).getPrimaryKeyProperties()));
     populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(entities.getDefinition(entity.getEntityId())
             .getForeignKeyProperties()), visitedEntities);
@@ -88,7 +88,7 @@ final class EntityPopupMenu extends JPopupMenu {
       if (!visitedEntities.contains(entity)) {
         visitedEntities.add(entity);
         Text.collate(fkProperties);
-        final EntityDefinition definition = connectionProvider.getDomain().getDefinition(entity.getEntityId());
+        final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entity.getEntityId());
         final EntityValidator validator = definition.getValidator();
         for (final ForeignKeyProperty property : fkProperties) {
           final boolean fkValueNull = entity.isForeignKeyNull(property);

@@ -92,7 +92,7 @@ public class EntityComponentValues {
    */
   protected ComponentValue<Entity, ?> createEntityComponentValue(final ForeignKeyProperty foreignKeyProperty,
                                                                  final SwingEntityEditModel editModel, final Entity initialValue) {
-    if (editModel.getConnectionProvider().getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
+    if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
       return new EntityComboBox.ComponentValue(editModel.createForeignKeyComboBoxModel(foreignKeyProperty), initialValue);
     }
 

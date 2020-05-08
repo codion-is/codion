@@ -19,9 +19,9 @@ public class SwingPropertyConditionModelProvider extends DefaultPropertyConditio
   @Override
   public ColumnConditionModel<Entity, ForeignKeyProperty> initializeForeignKeyConditionModel(
           final ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
-    if (connectionProvider.getDomain().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
+    if (connectionProvider.getEntities().getDefinition(foreignKeyProperty.getForeignEntityId()).isSmallDataset()) {
       final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(), connectionProvider);
-      comboBoxModel.setNullValue(connectionProvider.getDomain().createToStringEntity(foreignKeyProperty.getForeignEntityId(), ""));
+      comboBoxModel.setNullValue(connectionProvider.getEntities().createToStringEntity(foreignKeyProperty.getForeignEntityId(), ""));
 
       return new SwingForeignKeyConditionModel(foreignKeyProperty, comboBoxModel);
     }

@@ -563,7 +563,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       return;
     }
 
-    final List<Entity> selectedEntities = tableModel.getDomain().deepCopyEntities(tableModel.getSelectionModel().getSelectedItems());
+    final List<Entity> selectedEntities = tableModel.getEntities().deepCopyEntities(tableModel.getSelectionModel().getSelectedItems());
     final Collection values = Entities.getDistinctValues(propertyToUpdate.getPropertyId(), selectedEntities);
     final Object initialValue = values.size() == 1 ? values.iterator().next() : null;
     final ComponentValuePanel inputPanel = new ComponentValuePanel(propertyToUpdate.getCaption(),
@@ -1340,7 +1340,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final Entity selected = tableModel.getSelectionModel().getSelectedItem();
     if (selected != null) {
       final Point location = getPopupLocation(table);
-      new EntityPopupMenu(tableModel.getConnectionProvider().getDomain().copyEntity(selected),
+      new EntityPopupMenu(tableModel.getConnectionProvider().getEntities().copyEntity(selected),
               tableModel.getConnectionProvider()).show(this, location.x, location.y);
     }
   }
@@ -1398,7 +1398,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     for (final Map.Entry<String, Collection<Entity>> entry : dependencies.entrySet()) {
       final Collection<Entity> dependantEntities = entry.getValue();
       if (!dependantEntities.isEmpty()) {
-        tabPane.addTab(connectionProvider.getDomain().getDefinition(entry.getKey()).getCaption(),
+        tabPane.addTab(connectionProvider.getEntities().getDefinition(entry.getKey()).getCaption(),
                 createEntityTablePanel(dependantEntities, connectionProvider));
       }
     }

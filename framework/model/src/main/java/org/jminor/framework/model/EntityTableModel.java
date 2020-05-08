@@ -72,7 +72,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the underlying domain model
    */
-  Entities getDomain();
+  Entities getEntities();
 
   /**
    * @return the definition of the underlying entity

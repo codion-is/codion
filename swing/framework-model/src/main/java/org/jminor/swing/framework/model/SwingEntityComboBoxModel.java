@@ -110,7 +110,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     requireNonNull(connectionProvider, "connectionProvider");
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
-    this.entities = connectionProvider.getDomain();
+    this.entities = connectionProvider.getEntities();
     setStaticData(this.entities.getDefinition(entityId).isStaticData());
     setIncludeCondition(foreignKeyIncludeCondition);
     addEditEventListeners();
@@ -396,7 +396,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
     @Override
     public void onEvent(final Map<Entity.Key, Entity> updated) {
-      final Entities domainEntities = getConnectionProvider().getDomain();
+      final Entities domainEntities = getConnectionProvider().getEntities();
       updated.forEach((key, entity) -> replaceItem(domainEntities.entity(key), entity));
     }
   }

@@ -142,7 +142,7 @@ public final class EntitiesTutorial {
     EntityConnection connection = connectionProvider.getConnection();
 
     //this Domain object serves as a factory for Entity instances
-    Entities entities = connectionProvider.getDomain();
+    Entities entities = connectionProvider.getEntities();
 
     //lets create a new band
     Entity myBand = entities.entity(T_ARTIST);

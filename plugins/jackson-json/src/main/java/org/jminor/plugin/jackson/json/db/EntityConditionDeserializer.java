@@ -26,7 +26,7 @@ final class EntityConditionDeserializer extends StdDeserializer<EntityCondition>
   EntityConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
     super(EntityCondition.class);
     this.conditionDeserializer = new ConditionDeserializer(entityObjectMapper);
-    this.definitionProvider = entityObjectMapper.getDomain();
+    this.definitionProvider = entityObjectMapper.getEntities();
   }
 
   @Override

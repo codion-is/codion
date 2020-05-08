@@ -36,7 +36,7 @@ public interface EntityConnection {
   /**
    * @return the underlying domain model
    */
-  Entities getDomain();
+  Entities getEntities();
 
   /**
    * @return the user being used by this connection

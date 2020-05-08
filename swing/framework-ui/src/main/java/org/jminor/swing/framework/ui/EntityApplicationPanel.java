@@ -655,9 +655,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final TreeModel getDependencyTreeModel() {
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
-    final Entities entities = applicationModel.getDomain();
+    final Entities entities = applicationModel.getEntities();
     for (final EntityDefinition definition : entities.getDefinitions()) {
-      if (definition.getForeignKeyProperties().isEmpty() || referencesOnlySelf(applicationModel.getDomain(), definition.getEntityId())) {
+      if (definition.getForeignKeyProperties().isEmpty() || referencesOnlySelf(applicationModel.getEntities(), definition.getEntityId())) {
         root.add(new EntityDependencyTreeNode(definition.getEntityId(), entities));
       }
     }
@@ -944,7 +944,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     final Comparator<String> comparator = Text.getSpaceAwareCollator();
-    final Entities entities = applicationModel.getDomain();
+    final Entities entities = applicationModel.getEntities();
     supportPanelBuilders.sort((ep1, ep2) -> {
       final String thisCompare = ep1.getCaption() == null ? entities.getDefinition(ep1.getEntityId()).getCaption() : ep1.getCaption();
       final String thatCompare = ep2.getCaption() == null ? entities.getDefinition(ep2.getEntityId()).getCaption() : ep2.getCaption();
@@ -991,7 +991,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         }
       }
       final JDialog dialog = new JDialog(getParentWindow(), panelProvider.getCaption() == null ?
-              applicationModel.getDomain().getDefinition(panelProvider.getEntityId()).getCaption() : panelProvider.getCaption());
+              applicationModel.getEntities().getDefinition(panelProvider.getEntityId()).getCaption() : panelProvider.getCaption());
       dialog.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosed(final WindowEvent e) {

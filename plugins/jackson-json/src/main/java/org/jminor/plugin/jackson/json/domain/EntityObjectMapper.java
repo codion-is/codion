@@ -48,7 +48,7 @@ public final class EntityObjectMapper extends ObjectMapper {
   /**
    * @return the underlying domain model
    */
-  public Entities getDomain() {
+  public Entities getEntities() {
     return entities;
   }
 

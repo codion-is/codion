@@ -95,9 +95,9 @@ public class EntityTestUnit {
   /**
    * @return the domain model
    */
-  public final Entities getDomain() {
+  public final Entities getEntities() {
     if (entities == null) {
-      entities = connection.getDomain();
+      entities = connection.getEntities();
     }
 
     return entities;
@@ -133,7 +133,7 @@ public class EntityTestUnit {
       connection.beginTransaction();
       final Map<String, Entity> foreignKeyEntities = initializeReferencedEntities(entityId, new HashMap<>());
       Entity testEntity = null;
-      final EntityDefinition entityDefinition = getDomain().getDefinition(entityId);
+      final EntityDefinition entityDefinition = getEntities().getDefinition(entityId);
       if (!entityDefinition.isReadOnly()) {
         testEntity = testInsert(requireNonNull(initializeTestEntity(entityId, foreignKeyEntities), "test entity"));
         assertTrue(testEntity.getKey().isNotNull());
@@ -264,7 +264,7 @@ public class EntityTestUnit {
    * @return the entity instance to use for testing the entity type
    */
   protected Entity initializeTestEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
-    return createRandomEntity(getDomain(), entityId, foreignKeyEntities);
+    return createRandomEntity(getEntities(), entityId, foreignKeyEntities);
   }
 
   /**
@@ -274,7 +274,7 @@ public class EntityTestUnit {
    * @return a entity of the given type
    */
   protected Entity initializeReferenceEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
-    return createRandomEntity(getDomain(), entityId, foreignKeyEntities);
+    return createRandomEntity(getEntities(), entityId, foreignKeyEntities);
   }
 
   /**
@@ -283,7 +283,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
   protected void modifyEntity(final Entity testEntity, final Map<String, Entity> foreignKeyEntities) {
-    randomize(getDomain(), testEntity, foreignKeyEntities);
+    randomize(getEntities(), testEntity, foreignKeyEntities);
   }
 
   /**
@@ -296,7 +296,7 @@ public class EntityTestUnit {
    */
   private Map<String, Entity> initializeReferencedEntities(final String entityId, final Map<String, Entity> foreignKeyEntities)
           throws DatabaseException {
-    for (final ForeignKeyProperty foreignKeyProperty : getDomain().getDefinition(entityId).getForeignKeyProperties()) {
+    for (final ForeignKeyProperty foreignKeyProperty : getEntities().getDefinition(entityId).getForeignKeyProperties()) {
       final String foreignEntityId = foreignKeyProperty.getForeignEntityId();
       if (!foreignKeyEntities.containsKey(foreignEntityId)) {
         if (!Objects.equals(entityId, foreignEntityId)) {
@@ -361,7 +361,7 @@ public class EntityTestUnit {
 
     final Entity updated = connection.update(testEntity);
     assertEquals(testEntity.getKey(), updated.getKey());
-    for (final ColumnProperty property : getDomain().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
+    for (final ColumnProperty property : getEntities().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
       if (property.isUpdatable()) {
         final Object beforeUpdate = testEntity.get(property);
         final Object afterUpdate = updated.get(property);

@@ -61,9 +61,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Entities getDomain() {
+  public Entities getEntities() {
     synchronized (connectionProxy) {
-      return connectionProxy.getDomain();
+      return connectionProxy.getEntities();
     }
   }
 

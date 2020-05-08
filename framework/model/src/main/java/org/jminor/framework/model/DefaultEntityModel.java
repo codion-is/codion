@@ -267,7 +267,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
     else {
       detailModelForeignKeys.put(detailModel,
-              connectionProvider.getDomain().getDefinition(detailModel.getEntityId()).getForeignKeyProperty(foreignKeyPropertyId));
+              connectionProvider.getEntities().getDefinition(detailModel.getEntityId()).getForeignKeyProperty(foreignKeyPropertyId));
     }
   }
 
