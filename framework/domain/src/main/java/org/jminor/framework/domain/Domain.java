@@ -42,22 +42,6 @@ public class Domain implements EntityDefinition.Provider {
   }
 
   /**
-   * Instantiates a new domain and copies all the entity definitions
-   * and database operations from {@code domain}
-   * @param domain the domain to copy
-   */
-  public Domain(final Domain domain) {
-    this.entities = new DomainEntities(requireNonNull(domain).getDomainId());
-    this.entities.putAll(domain.entities);
-    if (domain.domainReports != null) {
-      this.domainReports.addAll(domain.domainReports);
-    }
-    if (domain.domainOperations != null) {
-      this.domainOperations.putAll(domain.domainOperations);
-    }
-  }
-
-  /**
    * @return the domain Id
    */
   public final String getDomainId() {

@@ -6049,3 +6049,4 @@
   Entities variable/parameter renamed to entities
   getDomain() renamed getEntities() throughout
   Javadoc fixes and minor improvements
+  DefaultLocalEntityConnection no longer copies the domain object, Domain copy constructor removed

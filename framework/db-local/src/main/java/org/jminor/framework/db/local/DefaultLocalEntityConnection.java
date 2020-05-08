@@ -100,7 +100,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */
   DefaultLocalEntityConnection(final Domain domain, final Database database, final User user) throws DatabaseException {
-    this.domain = new Domain(requireNonNull(domain, "domain"));
+    this.domain = requireNonNull(domain, "domain");
     this.connection = createConnection(database, user);
   }
 
@@ -114,7 +114,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @see Database#supportsIsValid()
    */
   DefaultLocalEntityConnection(final Domain domain, final Database database, final Connection connection) throws DatabaseException {
-    this.domain = new Domain(requireNonNull(domain, "domain"));
+    this.domain = requireNonNull(domain, "domain");
     this.connection = createConnection(database, connection);
   }
 
