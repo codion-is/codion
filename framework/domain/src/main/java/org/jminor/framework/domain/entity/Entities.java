@@ -205,6 +205,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @return true if this entity has not been persisted
    */
   static boolean isEntityNew(final Entity entity) {
+    requireNonNull(entity);
     final Entity.Key key = entity.getKey();
     final Entity.Key originalKey = entity.getOriginalKey();
 
@@ -218,6 +219,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @return true if any of the given entities has a modified primary key
    */
   static boolean isKeyModified(final EntityDefinition definition, final Collection<Entity> entities) {
+    requireNonNull(definition);
     if (nullOrEmpty(entities)) {
       return false;
     }
@@ -248,6 +250,8 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @see BlobProperty#isEagerlyLoaded()
    */
   static List<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
+    requireNonNull(entity);
+    requireNonNull(comparison);
     return comparison.keySet().stream().filter(property -> {
       final boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty) property).isUpdatable();
       final boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
@@ -368,8 +372,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities for which to set the value
    * @return the previous property values mapped to the primary key of the entity
    */
-  static Map<Entity.Key, Object> put(final String propertyId, final Object value,
-                                     final Collection<Entity> entities) {
+  static Map<Entity.Key, Object> put(final String propertyId, final Object value, final Collection<Entity> entities) {
     requireNonNull(entities, "entities");
     final Map<Entity.Key, Object> previousValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
@@ -432,8 +435,9 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities
    * @return the values of the given properties from the given entities in a two dimensional list
    */
-  static List<List<String>> getStringValueList(final List<? extends Property> properties,
-                                               final List<Entity> entities) {
+  static List<List<String>> getStringValueList(final List<? extends Property> properties, final List<Entity> entities) {
+    requireNonNull(properties);
+    requireNonNull(entities);
     final List<List<String>> data = new ArrayList<>();
     for (final Entity entity : entities) {
       final List<String> line = new ArrayList<>(properties.size());
@@ -453,6 +457,8 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @return the entities having the exact same property values as in the given value map
    */
   static List<Entity> getEntitiesByValue(final Collection<Entity> entities, final Map<String, Object> values) {
+    requireNonNull(entities);
+    requireNonNull(values);
     final List<Entity> result = new ArrayList<>();
     for (final Entity entity : requireNonNull(entities, "entities")) {
       boolean equal = true;
@@ -501,6 +507,9 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @return true if the value is missing or the original value differs from the one in the comparison entity
    */
   static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final Property property) {
+    requireNonNull(entity);
+    requireNonNull(comparison);
+    requireNonNull(property);
     if (!entity.containsKey(property)) {
       return true;
     }
