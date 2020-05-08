@@ -392,17 +392,6 @@ public class DomainTest {
   }
 
   @Test
-  public void redefineEnabled() {
-    final String entityId = "entityId2";
-    domain.define(entityId, Properties.primaryKeyProperty("id"));
-    assertEquals("id", domain.getDefinition(entityId).getPrimaryKeyProperties().get(0).getPropertyId());
-    Entities.ENABLE_REDEFINE_ENTITY.set(true);
-    domain.define(entityId, Properties.primaryKeyProperty("id2"));
-    assertEquals("id2", domain.getDefinition(entityId).getPrimaryKeyProperties().get(0).getPropertyId());
-    Entities.ENABLE_REDEFINE_ENTITY.set(false);
-  }
-
-  @Test
   public void nullValidation() {
     final EntityDefinition definition = domain.getDefinition(TestDomain.T_EMP);
     final Entity emp = entities.entity(TestDomain.T_EMP);

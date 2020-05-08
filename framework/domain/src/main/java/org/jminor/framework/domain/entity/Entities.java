@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.domain.entity;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.value.PropertyValue;
 import org.jminor.common.valuemap.ValueMap;
 import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
@@ -36,14 +34,6 @@ import static org.jminor.common.Util.nullOrEmpty;
  * Helper class for working with Entity instances and related classes
  */
 public interface Entities extends EntityDefinition.Provider, Serializable {
-
-    /**
-   * Specifies whether to enable entities to be re-defined, that is,
-   * allow a new definition to replace an old one.
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  PropertyValue<Boolean> ENABLE_REDEFINE_ENTITY = Configuration.booleanValue("jminor.domain.redefineEntityEnabled", false);
 
   /**
    * @return the domin id

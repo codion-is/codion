@@ -303,7 +303,7 @@ public final class DomainEntities implements Entities {
   }
 
   void addDefinition(final EntityDefinition definition) {
-    if (entityDefinitions.containsKey(definition.getEntityId()) && !ENABLE_REDEFINE_ENTITY.get()) {
+    if (entityDefinitions.containsKey(definition.getEntityId())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
               definition.getEntityId() + ", for table: " + definition.getTableName());
     }
