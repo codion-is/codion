@@ -460,7 +460,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   }
 
   /**
-   * Retrievs the procedure with the given id.
+   * Retrieves the procedure with the given id.
    * @param <C> the type of the database connection this procedure requires
    * @param procedureId the procedure id
    * @return the procedure
@@ -478,7 +478,7 @@ public class Domain implements EntityDefinition.Provider, Serializable {
   }
 
   /**
-   * Retrievs the function with the given id.
+   * Retrieves the function with the given id.
    * @param <C> the type of the database connection this function requires
    * @param <T> the result type
    * @param functionId the function id
