@@ -6052,3 +6052,4 @@
   DefaultLocalEntityConnection no longer copies the domain object, Domain copy constructor removed
   Entities.ENABLE_REDEFINE_ENTITY configuration value removed
   DomainEntities.getRegisteredEntities() removed, unused
+  Entities.mapToOriginalPrimaryKey() moved to DefaultEntityEditModel
