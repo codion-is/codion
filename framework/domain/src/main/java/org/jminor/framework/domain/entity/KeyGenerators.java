@@ -73,15 +73,15 @@ public final class KeyGenerators {
 
   private abstract static class AbstractQueriedKeyGenerator implements KeyGenerator {
 
-    protected final void queryAndPut(final Entity entity, final ColumnProperty keyProperty,
-                                     final DatabaseConnection connection) throws SQLException {
+    protected final void selectAndPut(final Entity entity, final ColumnProperty keyProperty,
+                                      final DatabaseConnection connection) throws SQLException {
       final Object value;
       switch (keyProperty.getColumnType()) {
         case Types.INTEGER:
-          value = connection.queryInteger(getQuery(connection.getDatabase()));
+          value = connection.selectInteger(getQuery(connection.getDatabase()));
           break;
         case Types.BIGINT:
-          value = connection.queryLong(getQuery(connection.getDatabase()));
+          value = connection.selectLong(getQuery(connection.getDatabase()));
           break;
         default:
           throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes", null, null);
@@ -105,7 +105,7 @@ public final class KeyGenerators {
                              final DatabaseConnection connection) throws SQLException {
       final ColumnProperty primaryKeyProperty = primaryKeyProperties.get(0);
       if (entity.isNull(primaryKeyProperty)) {
-        queryAndPut(entity, primaryKeyProperty, connection);
+        selectAndPut(entity, primaryKeyProperty, connection);
       }
     }
 
@@ -128,7 +128,7 @@ public final class KeyGenerators {
                              final DatabaseConnection connection) throws SQLException {
       final ColumnProperty primaryKeyProperty = primaryKeyProperties.get(0);
       if (entity.isNull(primaryKeyProperty)) {
-        queryAndPut(entity, primaryKeyProperty, connection);
+        selectAndPut(entity, primaryKeyProperty, connection);
       }
     }
 
@@ -154,7 +154,7 @@ public final class KeyGenerators {
     @Override
     public void afterInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
                             final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
-      queryAndPut(entity, primaryKeyProperties.get(0), connection);
+      selectAndPut(entity, primaryKeyProperties.get(0), connection);
     }
 
     @Override

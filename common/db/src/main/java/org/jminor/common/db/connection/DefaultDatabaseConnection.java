@@ -126,8 +126,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   @Override
-  public int queryInteger(final String sql) throws SQLException {
-    final List<Integer> integers = query(sql, INTEGER_RESULT_PACKER, -1);
+  public int selectInteger(final String sql) throws SQLException {
+    final List<Integer> integers = select(sql, INTEGER_RESULT_PACKER, -1);
     if (!integers.isEmpty()) {
       return integers.get(0);
     }
@@ -136,8 +136,8 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   @Override
-  public long queryLong(final String sql) throws SQLException {
-    final List<Long> longs = query(sql, LONG_RESULT_PACKER, -1);
+  public long selectLong(final String sql) throws SQLException {
+    final List<Long> longs = select(sql, LONG_RESULT_PACKER, -1);
     if (!longs.isEmpty()) {
       return longs.get(0);
     }
@@ -251,7 +251,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @return a List of records based on the given query
    * @throws SQLException thrown if anything goes wrong during the execution
    */
-  private <T> List<T> query(final String sql, final ResultPacker<T> resultPacker, final int fetchCount) throws SQLException {
+  private <T> List<T> select(final String sql, final ResultPacker<T> resultPacker, final int fetchCount) throws SQLException {
     requireNonNull(resultPacker, "resultPacker");
     database.countQuery(requireNonNull(sql, "sql"));
     Statement statement = null;

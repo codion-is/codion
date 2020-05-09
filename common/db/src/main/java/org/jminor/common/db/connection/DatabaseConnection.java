@@ -35,20 +35,20 @@ public interface DatabaseConnection extends AutoCloseable {
   void setConnection(Connection connection);
 
   /**
-   * Performs the given query and returns the result as an integer
+   * Selects a single integer value using the given query.
    * @param sql the query must select at least a single number column, any other subsequent columns are disregarded
    * @return the first record in the result as a integer
    * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
    */
-  int queryInteger(String sql) throws SQLException;
+  int selectInteger(String sql) throws SQLException;
 
   /**
-   * Performs the given query and returns the result as a long
+   * Selects a single long value using the given query.
    * @param sql the query must select at least a single number column, any other subsequent columns are disregarded
    * @return the first record in the result as a long
    * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
    */
-  long queryLong(String sql) throws SQLException;
+  long selectLong(String sql) throws SQLException;
 
   /**
    * Begins a transaction on this connection, to end the transaction use {@link #commitTransaction()} or {@link #rollbackTransaction()}.
@@ -103,12 +103,12 @@ public interface DatabaseConnection extends AutoCloseable {
   Database getDatabase();
 
   /**
-   * @param methodLogger the MethodLogger to use
+   * @param methodLogger the MethodLogger to use, null to disable method logging
    */
   void setMethodLogger(MethodLogger methodLogger);
 
   /**
-   * @return the MethodLogger being used
+   * @return the MethodLogger being used, possibly null
    */
   MethodLogger getMethodLogger();
 }

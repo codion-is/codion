@@ -351,7 +351,7 @@ public final class DomainEntities implements Entities {
       beanEntities = new HashMap<>();
     }
     if (!beanEntities.containsKey(beanClass)) {
-      final Optional<EntityDefinition> optionalDefinition = getDefinitions().stream()
+      final Optional<EntityDefinition> optionalDefinition = entityDefinitions.values().stream()
               .filter(entityDefinition -> Objects.equals(beanClass, entityDefinition.getBeanClass())).findFirst();
       if (!optionalDefinition.isPresent()) {
         throw new IllegalArgumentException("No entity associated with bean class: " + beanClass);

@@ -23,6 +23,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Represents an application domain model, entities, reports and database operations.
+ * Override to define a domain model.
+ * @see #define(String, Property.Builder...)
+ * @see #addReport(ReportWrapper)
+ * @see #addOperation(DatabaseOperation)
  */
 public class Domain implements EntityDefinition.Provider {
 
@@ -57,6 +61,16 @@ public class Domain implements EntityDefinition.Provider {
    * @return the Domain entities
    */
   public final Entities getEntities() {
+    return entities;
+  }
+
+  /**
+   * Registers the domain entities for serialization.
+   * @see Entities#register()
+   */
+  public final Entities registerEntities() {
+    entities.register();
+
     return entities;
   }
 
