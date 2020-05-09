@@ -16,7 +16,7 @@
 
 === Authentication
 
-The JMinor server does not perform any user authentication by default, it leaves that up the the underlying database. An authentication layer can be added by implementing a {url-javadoc}/org/jminor/common/rmi/LoginProxy.html[LoginProxy] and setting the following system property.
+The JMinor server does not perform any user authentication by default, it leaves that up the the underlying database. An authentication layer can be added by implementing a {url-javadoc}/org/jminor/common/rmi/server/LoginProxy.html[LoginProxy] and setting the following system property.
 
 [source]
 ----
@@ -56,7 +56,7 @@ No dynamic class loading is performed.
 
 === Serialization whitelist
 
-A {url-javadoc}/org/jminor/common/rmi/SerializationWhitelist.html[serialization whitelist] can be used by setting the following system property.
+A {url-javadoc}/org/jminor/common/rmi/server/SerializationWhitelist.html[serialization whitelist] can be used by setting the following system property.
 
 [source]
 ----

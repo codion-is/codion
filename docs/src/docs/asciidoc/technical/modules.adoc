@@ -208,12 +208,12 @@ image::modules/framework/model/build/reports/dependency-graph/dependency-graph.s
 ====
 
 [discrete]
-=== jminor-framework-model-tests
+=== jminor-framework-model-test
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/framework/model-tests/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/framework/model-test/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
