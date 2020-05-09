@@ -64,6 +64,16 @@ public class Domain implements EntityDefinition.Provider {
     return entities;
   }
 
+  /**
+   * Registers the domain entities for serialization.
+   * @see Entities#register()
+   */
+  public final Entities registerEntities() {
+    entities.register();
+
+    return entities;
+  }
+
   @Override
   public final EntityDefinition getDefinition(final String entityId) {
     return entities.getDefinition(entityId);

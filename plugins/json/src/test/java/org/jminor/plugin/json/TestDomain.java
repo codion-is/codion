@@ -18,7 +18,6 @@ public final class TestDomain extends Domain {
   public TestDomain() {
     department();
     employee();
-    getEntities().register();
   }
 
   public static final String DEPARTMENT_ID = "deptno";
