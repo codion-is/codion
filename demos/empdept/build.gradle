@@ -102,10 +102,7 @@ task runClientLocal(type: ModularJavaExec) {
     main = mainClass
     systemProperties = [
             'jminor.client.connectionType': 'local',
-            'jminor.db.type'              : 'h2',
-            'jminor.db.host'              : 'h2db',
-            'jminor.db.embedded'          : 'true',
-            'jminor.db.embeddedInMemory'  : 'true',
+            'jminor.db.url'               : 'jdbc:h2:mem:h2db',
             'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
@@ -173,10 +170,7 @@ task clientLocalScript(type: ModularCreateStartScripts) {
     applicationName = project.name + '-local'
     defaultJvmOpts = [
             '-Djminor.client.connectionType=local',
-            '-Djminor.db.type=h2',
-            '-Djminor.db.host=h2db',
-            '-Djminor.db.embedded=true',
-            '-Djminor.db.embeddedInMemory=true',
+            '-Djminor.db.url=jdbc:h2:mem:h2db',
             '-Djminor.db.initScript=../config/create_schema.sql',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
