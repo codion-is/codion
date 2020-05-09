@@ -5,8 +5,8 @@
 :dir-world-source: ../../../../../demos/world/src/main/java
 :url-javadoc: link:../api
 
-The domain model is based around three classes; {url-javadoc}/org/jminor/framework/domain/Entity.html[Entity], which represents a row in a table, {url-javadoc}/org/jminor/framework/domain/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such) and {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
-{url-javadoc}/org/jminor/framework/domain/Domain.html[Domain] class, which serves as a container for the domain entity definitions and as a factory for *Entity* and *Entity.Key* instances.
+The domain model is based around three classes; {url-javadoc}/org/jminor/framework/domain/entity/Entity.html[Entity], which represents a row in a table, {url-javadoc}/org/jminor/framework/domain/entity/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such) and {url-javadoc}/org/jminor/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
+{url-javadoc}/org/jminor/framework/domain/Domain.html[Domain] class, which in turn provides a {url-javadoc}/org/jminor/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}/org/jminor/framework/domain/Domain.html#getEntities[getEntities()], which serves as a container for the domain entity definitions and as a factory for *Entity* and *Entity.Key* instances.
 
 == Entities
 
@@ -180,11 +180,12 @@ NOTE: The property is not kept in sync if the value of the denormalized property
 
 [source,java]
 ----
-Domain domain = getDomain();
-Entity address = domain.entity(T_ADDRESS);
+Entities entities = getEntities();
+
+Entity address = entities.entity(T_ADDRESS);
 address.put(ADDRESS_CITY, "Syracuse");
 
-Entity customer = domain.entity(T_CUSTOMER);
+Entity customer = entities.entity(T_CUSTOMER);
 customer.put(CUSTOMER_ADDRESS_FK, address);
 
 customer.get(CUSTOMER_CITY);//returns "Syracuse"
@@ -242,7 +243,7 @@ include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[t
 [#_keygenerator]
 == KeyGenerator
 
-The framework provides implementations for most commonly used primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/org/jminor/framework/domain/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/org/jminor/framework/domain/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
+The framework provides implementations for most commonly used primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/org/jminor/framework/domain/entity/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/org/jminor/framework/domain/entity/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
 
 === Auto-increment
 
@@ -291,7 +292,7 @@ The framework can automatically increment the primary key value by selecting the
 
 === Custom
 
-You can provide a custom key generator strategy by implementing a {url-javadoc}/org/jminor/framework/domain/KeyGenerator.html[KeyGenerator].
+You can provide a custom key generator strategy by implementing a {url-javadoc}/org/jminor/framework/domain/entity/KeyGenerator.html[KeyGenerator].
 
 [source,java,indent=0]
 ----
@@ -300,7 +301,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[
 
 == StringProvider
 
-The {url-javadoc}/org/jminor/framework/domain/StringProvider.html[StringProvider] class is for providing *toString()* implementations for entities. This value is for example used when entities are displayed in a ComboBox or as a foreign key values in table views.
+The {url-javadoc}/org/jminor/framework/domain/entity/StringProvider.html[StringProvider] class is for providing *toString()* implementations for entities. This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
 
 [source,java,indent=0]
 ----
@@ -316,7 +317,7 @@ include::{dir-source}/org/jminor/framework/demos/manual/store/domain/Store.java[
 
 == ColorProvider
 
-{url-javadoc}/org/jminor/framework/domain/Entity.ColorProvider.html[Entity.ColorProvider] is used to provide colors for entity properties, used as background color in table cells for example.
+{url-javadoc}/org/jminor/framework/domain/entity/ColorProvider.html[ColorProvider] is used to provide colors for entity properties, used as background color in table cells for example.
 
 [source,java,indent=0]
 ----
@@ -325,7 +326,7 @@ include::{dir-world-source}/org/jminor/framework/demos/world/domain/World.java[t
 
 == Validation
 
-Custom validation of Entities is performed by implementing a {url-javadoc}/org/jminor/framework/domain/Entity.Validator.html[Entity.Validator].
+Custom validation of Entities is performed by implementing a {url-javadoc}/org/jminor/framework/domain/entity/EntityValidator.html[EntityValidator].
 
 The *DefaultEntityValidator* implementation provides basic range and null validation and can be extended to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access for example belongs in the application model or ui.
 
@@ -353,7 +354,7 @@ include::{dir-petstore-source}/org/jminor/framework/demos/petstore/manual/Entiti
 
 === Introduction
 
-To unit test the CRUD operations on the domain model extend {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html[EntityTestUnit].
+To unit test the CRUD operations on the domain model extend {url-javadoc}/org/jminor/framework/domain/entity/test/EntityTestUnit.html[EntityTestUnit].
 
 The unit tests are run within a single transaction which is rolled back after the test finishes, so these tests are pretty much guaranteed to leave no junk data behind.
 
@@ -361,9 +362,9 @@ The unit tests are run within a single transaction which is rolled back after th
 
 The following methods all have default implementations which are based on randomly created property values, based on the constraints set in the domain model, override if the default ones are not working.
 
-* {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#initializeReferenceEntity-java.lang.String-java.util.Map-[initializeReferenceEntity] should return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
-* {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#initializeTestEntity-java.lang.String-java.util.Map-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
-* {url-javadoc}/org/jminor/framework/domain/test/EntityTestUnit.html#modifyEntity-org.jminor.framework.domain.entity.Entity-java.util.Map-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
+* {url-javadoc}/org/jminor/framework/domain/entity/test/EntityTestUnit.html#initializeReferenceEntity-java.lang.String-java.util.Map-[initializeReferenceEntity] should return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
+* {url-javadoc}/org/jminor/framework/domain/entity/test/EntityTestUnit.html#initializeTestEntity-java.lang.String-java.util.Map-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
+* {url-javadoc}/org/jminor/framework/domain/entity/test/EntityTestUnit.html#modifyEntity-org.jminor.framework.domain.entity.Entity-java.util.Map-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
 
 To run the full CRUD test for a domain entity you need to call the *test(String entityId)* method with the id of the given entity as parameter. You can either create a single *testDomain()* method and call the *test* method in turn for each entityId or create a *entityName* method for each domain entity, as we do in the example below.
 

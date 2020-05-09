@@ -46,8 +46,9 @@ public final class ChinookImpl extends Domain implements Chinook {
     invoiceLine();
     playlist();
     playlistTrack();
-    dbOperations();
     addReport(CUSTOMER_REPORT);
+    addOperation(new UpdateTotalsProcedure());
+    addOperation(new RaisePriceFunction());
   }
 
   void artist() {
@@ -321,12 +322,8 @@ public final class ChinookImpl extends Domain implements Chinook {
             .caption("Playlist tracks");
   }
 
-  void dbOperations() {
-    addOperation(new UpdateTotalsProcedure());
-    addOperation(new RaisePriceFunction());
-  }
-
-  private static final class UpdateTotalsProcedure extends AbstractDatabaseProcedure<LocalEntityConnection> {
+  private static final class UpdateTotalsProcedure
+          extends AbstractDatabaseProcedure<LocalEntityConnection> {
 
     private UpdateTotalsProcedure() {
       super(P_UPDATE_TOTALS, "Update invoice totals");
@@ -357,7 +354,8 @@ public final class ChinookImpl extends Domain implements Chinook {
     }
   }
 
-  private static final class RaisePriceFunction extends AbstractDatabaseFunction<LocalEntityConnection, List<Entity>> {
+  private static final class RaisePriceFunction
+          extends AbstractDatabaseFunction<LocalEntityConnection, List<Entity>> {
 
     private RaisePriceFunction() {
       super(F_RAISE_PRICE, "Raise track prices");
@@ -365,7 +363,7 @@ public final class ChinookImpl extends Domain implements Chinook {
 
     @Override
     public List<Entity> execute(final LocalEntityConnection entityConnection,
-                        final Object... arguments) throws DatabaseException {
+                                final Object... arguments) throws DatabaseException {
       final List<Long> trackIds = (List<Long>) arguments[0];
       final BigDecimal priceIncrease = (BigDecimal) arguments[1];
       try {
@@ -392,7 +390,8 @@ public final class ChinookImpl extends Domain implements Chinook {
     }
   }
 
-  private static final class CoverArtImageProvider implements DerivedProperty.Provider {
+  private static final class CoverArtImageProvider
+          implements DerivedProperty.Provider {
 
     private static final long serialVersionUID = 1;
 
@@ -412,7 +411,8 @@ public final class ChinookImpl extends Domain implements Chinook {
     }
   }
 
-  private static final class CustomerStringProvider implements Function<Entity, String>, Serializable {
+  private static final class CustomerStringProvider
+          implements Function<Entity, String>, Serializable {
 
     private static final long serialVersionUID = 1;
 

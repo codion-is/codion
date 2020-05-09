@@ -104,8 +104,11 @@ public final class World extends Domain {
   );
 
   public World() {
-    //disable this default check so we can define a foreign key relation
-    //from city to country without having defined the country entity
+    //By default you can't define a foreign key referencing an entity which
+    //has not been defined, to prevent mistakes. But sometimes we have to
+    //deal with cyclical dependencies, such as here, where city references
+    //country and country references city. In these cases we can simply
+    //disable strict foreign keys.
     setStrictForeignKeys(false);
 
     city();
@@ -231,16 +234,16 @@ public final class World extends Domain {
                     .columnHasDefaultValue(true)
                     .nullable(false),
             // end::booleanProperty[]
-            columnProperty(COUNTRYLANGUAGE_PERCENTAGE, Types.DOUBLE, "Percentage")
-                    .nullable(false)
-                    .maximumFractionDigits(1)
-                    .minimumValue(0).maximumValue(100),
             // tag::derivedProperty[]
             derivedProperty(COUNTRYLANGUAGE_NO_OF_SPEAKERS, Types.INTEGER, "No. of speakers",
                     new NoOfSpeakersProvider(), COUNTRYLANGUAGE_COUNTRY_FK, COUNTRYLANGUAGE_PERCENTAGE)
-                    .numberFormatGrouping(true)
+                    .numberFormatGrouping(true),
             // end::derivedProperty[]
-    ).orderBy(orderBy().ascending(COUNTRYLANGUAGE_LANGUAGE).descending(COUNTRYLANGUAGE_PERCENTAGE))
+            columnProperty(COUNTRYLANGUAGE_PERCENTAGE, Types.DOUBLE, "Percentage")
+                    .nullable(false)
+                    .maximumFractionDigits(1)
+                    .minimumValue(0).maximumValue(100))
+            .orderBy(orderBy().ascending(COUNTRYLANGUAGE_LANGUAGE).descending(COUNTRYLANGUAGE_PERCENTAGE))
             .caption("Language");
   }
 
