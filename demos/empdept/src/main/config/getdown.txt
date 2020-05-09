@@ -19,4 +19,3 @@ jvmarg = -Djminor.client.connectionType=remote
 jvmarg = -Djminor.server.hostname=jminor.no-ip.org
 jvmarg = -Djavax.net.ssl.trustStore=jminor_truststore.jks
 jvmarg = -Djavax.net.ssl.trustStorePassword=crappypass
-jvmarg = -Djminor.report.path=reports/demos

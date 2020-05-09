@@ -19,7 +19,6 @@
     <property name="javax.net.ssl.trustStore" value="jminor_truststore.jks"/>
     <property name="javax.net.ssl.trustStorePassword" value="crappypass"/>
     <property name="jminor.server.hostname" value="jminor.no-ip.org" />
-    <property name="jminor.report.path" value="reports/demos" />
   </resources>
 
   <application-desc main-class="org.jminor.framework.demos.empdept.ui.EmpDeptAppPanel"/>
