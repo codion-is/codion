@@ -232,9 +232,6 @@ public final class ChinookImpl extends Domain implements Chinook {
   void invoice() {
     define(T_INVOICE, "chinook.invoice",
             primaryKeyProperty(INVOICE_INVOICEID, Types.BIGINT, "Invoice no."),
-            columnProperty(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
-                    .readOnly(true)
-                    .hidden(true),
             foreignKeyProperty(INVOICE_CUSTOMER_FK, "Customer", T_CUSTOMER,
                     columnProperty(INVOICE_CUSTOMERID, Types.BIGINT))
                     .nullable(false),
@@ -260,7 +257,6 @@ public final class ChinookImpl extends Domain implements Chinook {
             .keyGenerator(automatic("chinook.invoice"))
             .orderBy(orderBy().ascending(INVOICE_CUSTOMERID).descending(INVOICE_INVOICEDATE))
             .stringProvider(new StringProvider(INVOICE_INVOICEID))
-            .searchPropertyIds(INVOICE_INVOICEID_AS_STRING)
             .caption("Invoices");
   }
 
