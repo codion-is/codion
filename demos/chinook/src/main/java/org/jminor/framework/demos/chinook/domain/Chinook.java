@@ -99,7 +99,6 @@ public interface Chinook {
 
   String T_INVOICE = "invoice@chinook";
   String INVOICE_INVOICEID = "invoiceid";
-  String INVOICE_INVOICEID_AS_STRING = "invoiceid || ''";
   String INVOICE_CUSTOMERID = "customerid";
   String INVOICE_CUSTOMER_FK = "customer_fk";
   String INVOICE_INVOICEDATE = "invoicedate";

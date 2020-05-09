@@ -264,9 +264,12 @@ public final class Components {
    * @see #createEastFocusableButtonPanel(JComponent, Action)
    */
   public static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction) {
+    requireNonNull(centerComponent, "centerComponent");
+    requireNonNull(buttonAction, "buttonAction");
     final JPanel panel = new JPanel(new BorderLayout());
     final JButton button = new JButton(buttonAction);
     button.setPreferredSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
+    button.setFocusable(false);
     panel.add(centerComponent, BorderLayout.CENTER);
     panel.add(button, BorderLayout.EAST);
 
