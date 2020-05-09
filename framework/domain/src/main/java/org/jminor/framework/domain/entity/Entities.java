@@ -191,8 +191,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   <V> Entity fromBean(V bean);
 
   /**
-   * Registers this instance for lookup via {@link #getEntities(String)},
-   * required for serialization of entities.
+   * Registers this instance, required for serialization of entities.
    * @return this Entities instance
    * @see #getDomainId()
    */

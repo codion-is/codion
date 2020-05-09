@@ -66,6 +66,7 @@ public class Domain implements EntityDefinition.Provider {
 
   /**
    * Registers the domain entities for serialization.
+   * @return the Entities instance just registered.
    * @see Entities#register()
    */
   public final Entities registerEntities() {
