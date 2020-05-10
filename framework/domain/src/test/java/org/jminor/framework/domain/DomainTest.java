@@ -624,8 +624,8 @@ public class DomainTest {
   }
 
   @Test
-  public void defaultEntity() {
-    final Entity detail = entities.defaultEntity(TestDomain.T_DETAIL, property -> null);
+  public void entityWithValueProvider() {
+    final Entity detail = entities.entity(TestDomain.T_DETAIL, property -> null);
     assertFalse(detail.containsKey(TestDomain.DETAIL_DOUBLE));//columnHasDefaultValue
     assertFalse(detail.containsKey(TestDomain.DETAIL_DATE));//columnHasDefaultValue
     assertTrue(detail.containsKey(TestDomain.DETAIL_BOOLEAN_NULLABLE));//columnHasDefaultValue && property.hasDefaultValue

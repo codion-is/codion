@@ -8,6 +8,7 @@ import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
+import org.jminor.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -52,6 +53,20 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @return a new {@link Entity} instance
    */
   Entity entity(Entity.Key key);
+
+  /**
+   * Instantiates a new {@link Entity} of the given type using the values provided by {@code valueProvider}.
+   * Values are fetched for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty}
+   * and {@link TransientProperty} (excluding its descendants).
+   * If a {@link ColumnProperty}s underlying column has a default value the property is
+   * skipped unless the property itself has a default value, which then overrides the columns default value.
+   * @param entityId the entity id
+   * @param valueProvider provides the default value for a given property
+   * @return the populated entity
+   * @see ColumnProperty.Builder#columnHasDefaultValue(boolean)
+   * @see ColumnProperty.Builder#defaultValue(Object)
+   */
+  Entity entity(String entityId, Function<Property, Object> valueProvider);
 
   /**
    * Creates a new {@link Entity.Key} instance with the given entityId
@@ -99,20 +114,6 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws NullPointerException in case entityId or values is null
    */
   List<Entity.Key> keys(String entityId, Long... values);
-
-  /**
-   * Instantiates a new {@link Entity} of the given type using the values provided by {@code valueProvider}.
-   * Values are fetched for {@link org.jminor.framework.domain.property.ColumnProperty} and its descendants, {@link org.jminor.framework.domain.property.ForeignKeyProperty}
-   * and {@link org.jminor.framework.domain.property.TransientProperty} (excluding its descendants).
-   * If a {@link org.jminor.framework.domain.property.ColumnProperty}s underlying column has a default value the property is
-   * skipped unless the property itself has a default value, which then overrides the columns default value.
-   * @param entityId the entity id
-   * @param valueProvider provides the default value for a given property
-   * @return the populated entity
-   * @see org.jminor.framework.domain.property.ColumnProperty.Builder#columnHasDefaultValue(boolean)
-   * @see org.jminor.framework.domain.property.ColumnProperty.Builder#defaultValue(Object)
-   */
-  Entity defaultEntity(String entityId, Function<Property, Object> valueProvider);
 
   /**
    * Copies the given entities, with new copied instances of all foreign key value entities.

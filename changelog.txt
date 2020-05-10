@@ -6060,3 +6060,4 @@
   Domain.registerEntities() added, removed a bunch of redundant calls in test domains
   Components.createEastButtonPanel() bug fixed, button was focusable
   EntitySelectCondition.setForeignKeyFetchDepthLimit() renamed to setForeignKeyFetchDepth(), some documentation improvements
+  Entities.defaultEntity() renamed entity()
