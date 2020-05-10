@@ -232,22 +232,6 @@ public interface EntityDefinition extends Serializable {
   EntityDefinition getForeignDefinition(String foreignKeyPropertyId);
 
   /**
-   * Returns true if a entity definition has been associated with the given foreign key.
-   * @param foreignKeyPropertyId the foreign key property id
-   * @return true if the referenced entity definition has been set for the given foreign key property
-   */
-  boolean hasForeignDefinition(String foreignKeyPropertyId);
-
-  /**
-   * Associates the given definition with the given foreign key.
-   * @param foreignKeyPropertyId the foreign key property id
-   * @param definition the entity definition referenced by the given foreign key
-   * @throws IllegalStateException in case the foreign definition has already been set
-   * @throws IllegalArgumentException in case the definition does not match the foreign key
-   */
-  void setForeignDefinition(String foreignKeyPropertyId, EntityDefinition definition);
-
-  /**
    * @return true if this entity type has any denormalized properties
    */
   boolean hasDenormalizedProperties();

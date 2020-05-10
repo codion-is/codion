@@ -516,26 +516,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public boolean hasForeignDefinition(final String foreignKeyPropertyId) {
-    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
-    return foreignEntityDefinitions.containsKey(foreignKeyPropertyId);
-  }
-
-  @Override
-  public void setForeignDefinition(final String foreignKeyPropertyId, final EntityDefinition definition) {
-    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
-    requireNonNull(definition, "definition");
-    final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKeyPropertyId);
-    if (foreignEntityDefinitions.containsKey(foreignKeyPropertyId)) {
-      throw new IllegalStateException("Foreign definition has already been set for " + foreignKeyPropertyId);
-    }
-    if (!foreignKeyProperty.getForeignEntityId().equals(definition.getEntityId())) {
-      throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.getForeignEntityId() + " expected for " + foreignKeyPropertyId);
-    }
-    foreignEntityDefinitions.put(foreignKeyPropertyId, definition);
-  }
-
-  @Override
   public boolean hasDenormalizedProperties() {
     return hasDenormalizedProperties;
   }
@@ -628,6 +608,36 @@ final class DefaultEntityDefinition implements EntityDefinition {
   @Override
   public <V> BeanHelper<V> getBeanHelper() {
     return beanHelper;
+  }
+
+  /**
+   * Returns true if a entity definition has been associated with the given foreign key.
+   * @param foreignKeyPropertyId the foreign key property id
+   * @return true if the referenced entity definition has been set for the given foreign key property
+   */
+  boolean hasForeignDefinition(final String foreignKeyPropertyId) {
+    return foreignEntityDefinitions.containsKey(foreignKeyPropertyId);
+  }
+
+  /**
+   * Associates the given definition with the given foreign key.
+   * @param foreignKeyPropertyId the foreign key property id
+   * @param definition the entity definition referenced by the given foreign key
+   * @throws IllegalStateException in case the foreign definition has already been set
+   * @throws IllegalArgumentException in case the definition does not match the foreign key
+   */
+  void setForeignDefinition(final String foreignKeyPropertyId, final EntityDefinition definition) {
+    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
+    requireNonNull(definition, "definition");
+    final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKeyPropertyId);
+    if (foreignEntityDefinitions.containsKey(foreignKeyPropertyId)) {
+      throw new IllegalStateException("Foreign definition has already been set for " + foreignKeyPropertyId);
+    }
+    if (!foreignKeyProperty.getForeignEntityId().equals(definition.getEntityId())) {
+      throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.getForeignEntityId() +
+              " expected for " + foreignKeyPropertyId);
+    }
+    foreignEntityDefinitions.put(foreignKeyPropertyId, definition);
   }
 
   /**

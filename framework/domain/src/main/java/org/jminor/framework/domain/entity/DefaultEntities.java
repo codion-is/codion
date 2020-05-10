@@ -35,7 +35,7 @@ public abstract class DefaultEntities implements Entities {
   private static final Map<String, Entities> REGISTERED_ENTITIES = new HashMap<>();
 
   private final String domainId;
-  private final Map<String, EntityDefinition> entityDefinitions = new LinkedHashMap<>();
+  private final Map<String, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
   private Map<Class, EntityDefinition> beanEntities;
   private Map<String, Map<String, BeanProperty>> beanProperties;
@@ -217,7 +217,7 @@ public abstract class DefaultEntities implements Entities {
   public final <V> Entity fromBean(final V bean) {
     requireNonNull(bean, "bean");
     final Class beanClass = bean.getClass();
-    final EntityDefinition definition = getBeanEntity(beanClass);
+    final EntityDefinition definition = getBeanEntityDefinition(beanClass);
     final Entity entity = entity(definition.getEntityId());
     try {
       final Map<String, BeanProperty> beanPropertyMap = getBeanProperties(definition.getEntityId());
@@ -269,12 +269,12 @@ public abstract class DefaultEntities implements Entities {
                                                   final Property.Builder... propertyBuilders) {
     final EntityDefinition.Builder definitionBuilder =
             new DefaultEntityDefinition(entityId, tableName, propertyBuilders).builder();
-    addDefinition(definitionBuilder.domainId(domainId).get());
+    addDefinition((DefaultEntityDefinition) definitionBuilder.domainId(domainId).get());
 
     return definitionBuilder;
   }
 
-  private void addDefinition(final EntityDefinition definition) {
+  private void addDefinition(final DefaultEntityDefinition definition) {
     if (entityDefinitions.containsKey(definition.getEntityId())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
               definition.getEntityId() + ", for table: " + definition.getTableName());
@@ -309,7 +309,7 @@ public abstract class DefaultEntities implements Entities {
   }
 
   private void populateForeignDefinitions() {
-    for (final EntityDefinition definition : entityDefinitions.values()) {
+    for (final DefaultEntityDefinition definition : entityDefinitions.values()) {
       for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
         final String foreignKeyPropertyId = foreignKeyProperty.getPropertyId();
         final EntityDefinition foreignDefinition = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
@@ -320,12 +320,12 @@ public abstract class DefaultEntities implements Entities {
     }
   }
 
-  private EntityDefinition getBeanEntity(final Class beanClass) {
+  private EntityDefinition getBeanEntityDefinition(final Class beanClass) {
     if (beanEntities == null) {
       beanEntities = new HashMap<>();
     }
     if (!beanEntities.containsKey(beanClass)) {
-      final Optional<EntityDefinition> optionalDefinition = entityDefinitions.values().stream()
+      final Optional<DefaultEntityDefinition> optionalDefinition = entityDefinitions.values().stream()
               .filter(entityDefinition -> Objects.equals(beanClass, entityDefinition.getBeanClass())).findFirst();
       if (!optionalDefinition.isPresent()) {
         throw new IllegalArgumentException("No entity associated with bean class: " + beanClass);
