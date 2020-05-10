@@ -11,7 +11,6 @@ import org.jminor.common.db.reports.ReportWrapper;
 import org.jminor.framework.domain.entity.DefaultEntities;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.EntityDefinitions;
 import org.jminor.framework.domain.property.Property;
 
 import java.util.Collection;
@@ -139,10 +138,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    */
   protected final EntityDefinition.Builder define(final String entityId, final String tableName,
                                                   final Property.Builder... propertyBuilders) {
-    final EntityDefinition.Builder definitionBuilder = EntityDefinitions.definition(entityId, tableName, propertyBuilders);
-    entities.addDefinitionInternal(definitionBuilder.domainId(getDomainId()).get());
-
-    return definitionBuilder;
+    return entities.defineInternal(entityId, tableName, propertyBuilders);
   }
 
   /**
@@ -181,8 +177,9 @@ public abstract class Domain implements EntityDefinition.Provider {
       super(domainId);
     }
 
-    private void addDefinitionInternal(final EntityDefinition definition) {
-      super.addDefinition(definition);
+    protected EntityDefinition.Builder defineInternal(final String entityId, final String tableName,
+                                                      final Property.Builder... propertyBuilders) {
+      return super.define(entityId, tableName, propertyBuilders);
     }
 
     private void setStrictForeignKeysInternal(final boolean strictForeignKeys) {

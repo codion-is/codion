@@ -265,7 +265,16 @@ public abstract class DefaultEntities implements Entities {
     this.strictForeignKeys = strictForeignKeys;
   }
 
-  protected final void addDefinition(final EntityDefinition definition) {
+  protected final EntityDefinition.Builder define(final String entityId, final String tableName,
+                                                  final Property.Builder... propertyBuilders) {
+    final EntityDefinition.Builder definitionBuilder =
+            new DefaultEntityDefinition(entityId, tableName, propertyBuilders).builder();
+    addDefinition(definitionBuilder.domainId(domainId).get());
+
+    return definitionBuilder;
+  }
+
+  private void addDefinition(final EntityDefinition definition) {
     if (entityDefinitions.containsKey(definition.getEntityId())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
               definition.getEntityId() + ", for table: " + definition.getTableName());
