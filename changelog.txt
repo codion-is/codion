@@ -6095,3 +6095,4 @@
   EntityDefinition.setForeignDefinition() and hasForeignDefinition() removed
   ConnectionProvider added, related refactoring, allows for easy method of wrapping existing jdbc connections
   Sonarqube build task now removes -SNAPSHOT from version
+0.15.1
