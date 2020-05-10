@@ -396,11 +396,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return containsKey(definition.getProperty(propertyId));
   }
 
-  /**
-   * Returns true if any of the non-nullable properties involved in the given foreign key are null
-   * @param foreignKeyProperty the foreign key property
-   * @return true if the foreign key is null
-   */
   @Override
   public boolean isForeignKeyNull(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
@@ -469,8 +464,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   /**
-   * Called after a value has been changed.
-   * @param property the property of the value that is changing
+   * Fires notifications for a value change for the given property as well as for properties derived from it.
+   * @param property the property which value is changing
    * @param currentValue the new value
    * @param previousValue the previous value, if any
    * @param initialization true if the value is being initialized, that is, no previous value exists
@@ -778,6 +773,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   private static Map<Property, Object> createValueMap(final Key key) {
+    requireNonNull(key, "key");
     final List<ColumnProperty> properties = key.getProperties();
     final Map<Property, Object> values = new HashMap<>(properties.size());
     for (int i = 0; i < properties.size(); i++) {
