@@ -624,14 +624,6 @@ public class DomainTest {
   }
 
   @Test
-  public void entityWithValueProvider() {
-    final Entity detail = entities.entity(TestDomain.T_DETAIL, property -> null);
-    assertFalse(detail.containsKey(TestDomain.DETAIL_DOUBLE));//columnHasDefaultValue
-    assertFalse(detail.containsKey(TestDomain.DETAIL_DATE));//columnHasDefaultValue
-    assertTrue(detail.containsKey(TestDomain.DETAIL_BOOLEAN_NULLABLE));//columnHasDefaultValue && property.hasDefaultValue
-  }
-
-  @Test
   public void conditionProvider() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("nullConditionProvider1",
             Properties.primaryKeyProperty("id")).conditionProvider(null, (propertyIds, values) -> null));

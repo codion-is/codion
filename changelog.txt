@@ -6061,3 +6061,4 @@
   Components.createEastButtonPanel() bug fixed, button was focusable
   EntitySelectCondition.setForeignKeyFetchDepthLimit() renamed to setForeignKeyFetchDepth(), some documentation improvements
   Entities.defaultEntity() renamed entity()
+  Entities.entity(entityId, valueProvider) moved to EntityDefinition

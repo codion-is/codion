@@ -637,7 +637,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity getDefaultEntity() {
-    return getEntities().entity(entity.getEntityId(), defaultValueProvider);
+    return getEntityDefinition().entity(defaultValueProvider);
   }
 
   @Override

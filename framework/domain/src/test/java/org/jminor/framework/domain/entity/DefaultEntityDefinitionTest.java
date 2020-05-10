@@ -4,6 +4,7 @@
 package org.jminor.framework.domain.entity;
 
 import org.jminor.framework.domain.Domain;
+import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.Properties;
 
@@ -48,6 +49,16 @@ public class DefaultEntityDefinitionTest {
     assertEquals("name", definition.getGroupByClause());
     assertEquals(stringProvider, definition.getStringProvider());
     assertEquals(comparator, definition.getComparator());
+  }
+
+  @Test
+  public void entityWithValueProvider() {
+    final Domain domain = new TestDomain();
+    final EntityDefinition definition = domain.getDefinition(TestDomain.T_DETAIL);
+    final Entity detail = definition.entity(property -> null);
+    assertFalse(detail.containsKey(TestDomain.DETAIL_DOUBLE));//columnHasDefaultValue
+    assertFalse(detail.containsKey(TestDomain.DETAIL_DATE));//columnHasDefaultValue
+    assertTrue(detail.containsKey(TestDomain.DETAIL_BOOLEAN_NULLABLE));//columnHasDefaultValue && property.hasDefaultValue
   }
 
   @Test

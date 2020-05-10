@@ -7,11 +7,8 @@ import org.jminor.common.Util;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.DerivedProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -25,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
@@ -81,32 +77,6 @@ public final class DomainEntities implements Entities {
   @Override
   public Entity entity(final Entity.Key key) {
     return getDefinition(key.getEntityId()).entity(key);
-  }
-
-  @Override
-  public Entity entity(final String entityId, final Function<Property, Object> valueProvider) {
-    final EntityDefinition entityDefinition = getDefinition(entityId);
-    final Entity entity = entityDefinition.entity();
-    final Collection<ColumnProperty> columnProperties = entityDefinition.getColumnProperties();
-    for (final ColumnProperty property : columnProperties) {
-      if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
-              && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        entity.put(property, valueProvider.apply(property));
-      }
-    }
-    final Collection<TransientProperty> transientProperties = entityDefinition.getTransientProperties();
-    for (final TransientProperty transientProperty : transientProperties) {
-      if (!(transientProperty instanceof DerivedProperty)) {
-        entity.put(transientProperty, valueProvider.apply(transientProperty));
-      }
-    }
-    final Collection<ForeignKeyProperty> foreignKeyProperties = entityDefinition.getForeignKeyProperties();
-    for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      entity.put(foreignKeyProperty, valueProvider.apply(foreignKeyProperty));
-    }
-    entity.saveAll();
-
-    return entity;
   }
 
   @Override
