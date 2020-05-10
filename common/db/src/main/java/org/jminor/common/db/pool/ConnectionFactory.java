@@ -9,20 +9,20 @@ import org.jminor.common.user.User;
 import java.sql.Connection;
 
 /**
- * Provides {@link Connection} instances.
+ * Provides new {@link Connection} instances.
  */
-public interface ConnectionProvider {
+public interface ConnectionFactory {
 
   /**
-   * Returns the database url for this connection provider.
-   * @return the database url for this connection provider
+   * Returns the database url for this connection factory.
+   * @return the database url for this connection factory.
    */
   String getUrl();
 
   /**
    * Creates a connection for the given user.
    * @param user the user for which to create a connection
-   * @return a Connection
+   * @return a new JDBC connection
    * @throws DatabaseException in case of a connection error
    * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
    */

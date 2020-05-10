@@ -5,9 +5,9 @@ package org.jminor.common.db.database;
 
 import org.jminor.common.Configuration;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.pool.ConnectionFactory;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
-import org.jminor.common.db.pool.ConnectionProvider;
 import org.jminor.common.user.User;
 import org.jminor.common.value.PropertyValue;
 
@@ -20,7 +20,7 @@ import java.util.Collection;
 /**
  * Defines DBMS specific functionality as well as basic database configuration settings.
  */
-public interface Database extends ConnectionProvider {
+public interface Database extends ConnectionFactory {
 
   /**
    * The possible select for update support values.
@@ -205,6 +205,12 @@ public interface Database extends ConnectionProvider {
    * Closes and removes all available connection pools
    */
   void closeConnectionPools();
+
+  /**
+   * Sets the {@link ConnectionProvider} instance used when creating connections.
+   * @param connectionProvider the connection provider
+   */
+  void setConnectionProvider(ConnectionProvider connectionProvider);
 
   /**
    * Closes the given ResultSet instance, suppressing any SQLExceptions that may occur.
