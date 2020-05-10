@@ -15,6 +15,41 @@ NOTE: Static imports are used extensively in the examples, see <<#_full_example,
 
 == Selecting
 
+By default, when you select a row using {url-entity-connection}[EntityConnection] you receive an Entity instance along with a single level of foreign key references, that is a so-called fetch depth of one. This means that selecting a track you get all the entities referenced via foreign keys as well.
+
+.The N+1 problem
+
+This means that selecting tracks performs four queries, but that number of queries is the same whether you select one or a thousand tracks.
+
+The fetch depth can be configured on a foreign key basis when defining entities. A fetch depth of zero means that foreign key reference is not fetched and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached. A negative fetch depth means no limit. This limiting of foreign key fetch depth can be turned off, meaning the full reference graph is always fetched, via the *jminor.db.limitForeignKeyFetchDepth=false* system property or {url-javadoc}/org/jminor/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_FETCH_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.set(false)], or on a connection instance via {url-javadoc}/org/jminor/framework/db/local/LocalEntityConnection.html#setLimitForeignKeyFetchDepth-boolean-[connection.setLimitForeignKeyFetchDepth(false)].
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth0]
+----
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth2]
+----
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthEntity]
+----
+
+The fetch depth can also be configured on a query basis, either for the whole query or one or more foreign keys.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthCondition]
+----
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthConditionForeignKey]
+----
+
 === select
 
 For selecting one or more rows.
@@ -115,7 +150,7 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 === update
 
-For updating existing rows.
+For updating on or more entity instances. These methods throw an exception if the entities are not modified.
 
 ** {url-entity-connection}#update-org.jminor.framework.domain.entity.Entity-[update(Entity entity)]
 
@@ -125,6 +160,12 @@ For updating existing rows.
 ----
 include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=update]
 ----
+
+=== Optimistic locking
+
+The framework performs optimistic locking during updates of entity instances using the methods above, by selecting the entities being updated *for update* (when supported by the underlying database) and comparing all the original property values to the current row values, throwing an exception if any value differs or the record is missing. Optimistic locking can be turned off system wide using the *jminor.db.useOptimisticLocking=false* system property or {url-javadoc}/org/jminor/framework/db/local/LocalEntityConnection.html#USE_OPTIMISTIC_LOCKING[LocalEntityConnection.USE_OPTIMISTIC_LOCKING.set(false)], or on a connection instance via {url-javadoc}/org/jminor/framework/db/local/LocalEntityConnection.html#setOptimisticLockingEnabled-boolean-[connection.setOptimisticLockingEnabled(false)].
+
+For updating by where condition.
 
 ** {url-entity-connection}#update-org.jminor.framework.db.condition.EntityUpdateCondition-[update(EntityUpdateCondition condition)]
 

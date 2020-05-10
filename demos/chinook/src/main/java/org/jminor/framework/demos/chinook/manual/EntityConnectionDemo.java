@@ -53,6 +53,57 @@ public final class EntityConnectionDemo {
     // end::selectCondition[]
   }
 
+  static void fetchDepthEntity(EntityConnection connection) throws DatabaseException {
+    // tag::fetchDepthEntity[]
+    List<Entity> tracks = connection.select(T_TRACK, TRACK_NAME, "Bad%");
+
+    Entity track = tracks.get(0);
+
+    Entity genre = track.getForeignKey(TRACK_GENRE_FK);
+    Entity mediaType = track.getForeignKey(TRACK_MEDIATYPE_FK);
+    Entity album = track.getForeignKey(TRACK_ALBUM_FK);
+
+    //fetch depth for TRACK_ALBUM_FK is 2, which means two levels of
+    //references are fetched, so we have the artist here as well
+    Entity artist = album.getForeignKey(ALBUM_ARTIST_FK);
+    // end::fetchDepthEntity[]
+  }
+
+  static void fetchDepthCondition(EntityConnection connection) throws DatabaseException {
+    // tag::fetchDepthCondition[]
+    EntitySelectCondition selectCondition =
+            selectCondition(T_TRACK, TRACK_NAME, LIKE, "Bad%")
+                    .setForeignKeyFetchDepth(0);
+
+    List<Entity> tracks = connection.select(selectCondition);
+
+    Entity track = tracks.get(0);
+
+    //this 'genre' instance contains only the primary key, since the
+    //condition fetch depth limit prevented it from being selected
+    Entity genre = track.getForeignKey(TRACK_GENRE_FK);
+    // end::fetchDepthCondition[]
+  }
+
+  static void fetchDepthForeignKeyCondition(EntityConnection connection) throws DatabaseException {
+    // tag::fetchDepthConditionForeignKey[]
+    EntitySelectCondition selectCondition =
+            selectCondition(T_TRACK, TRACK_NAME, LIKE, "Bad%")
+                    .setForeignKeyFetchDepth(TRACK_ALBUM_FK, 0);
+
+    List<Entity> tracks = connection.select(selectCondition);
+
+    Entity track = tracks.get(0);
+
+    Entity genre = track.getForeignKey(TRACK_GENRE_FK);
+    Entity mediaType = track.getForeignKey(TRACK_MEDIATYPE_FK);
+
+    //this 'album' instance contains only the primary key, since the
+    //condition fetch depth limit prevented it from being selected
+    Entity album = track.getForeignKey(TRACK_ALBUM_FK);
+    // end::fetchDepthConditionForeignKey[]
+  }
+
   static void selectKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectKeys[]
     Entities entities = connection.getEntities();
@@ -227,6 +278,9 @@ public final class EntityConnectionDemo {
 
     EntityConnection connection = connectionProvider.getConnection();
     selectConditionDemo(connection);
+    fetchDepthEntity(connection);
+    fetchDepthCondition(connection);
+    fetchDepthForeignKeyCondition(connection);
     selectKeys(connection);
     selectValue(connection);
     selectSingleCondition(connection);

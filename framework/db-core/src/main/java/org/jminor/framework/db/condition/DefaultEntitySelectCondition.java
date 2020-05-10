@@ -16,11 +16,11 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
 
   private static final long serialVersionUID = 1;
 
-  private HashMap<String, Integer> foreignKeyFetchDepthLimits;
+  private HashMap<String, Integer> foreignKeyFetchDepths;
   private List<String> selectPropertyIds = emptyList();
 
   private OrderBy orderBy;
-  private Integer foreignKeyFetchDepthLimit;
+  private Integer foreignKeyFetchDepth;
   private int fetchCount = -1;
   private boolean forUpdate;
   private int limit;
@@ -90,26 +90,26 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setForeignKeyFetchDepthLimit(final String foreignKeyPropertyId, final int fetchDepthLimit) {
-    if (foreignKeyFetchDepthLimits == null) {
-      foreignKeyFetchDepthLimits = new HashMap<>();
+  public EntitySelectCondition setForeignKeyFetchDepth(final String foreignKeyPropertyId, final int fetchDepth) {
+    if (foreignKeyFetchDepths == null) {
+      foreignKeyFetchDepths = new HashMap<>();
     }
-    this.foreignKeyFetchDepthLimits.put(foreignKeyPropertyId, fetchDepthLimit);
+    this.foreignKeyFetchDepths.put(foreignKeyPropertyId, fetchDepth);
     return this;
   }
 
   @Override
-  public Integer getForeignKeyFetchDepthLimit(final String foreignKeyPropertyId) {
-    if (foreignKeyFetchDepthLimits != null && foreignKeyFetchDepthLimits.containsKey(foreignKeyPropertyId)) {
-      return foreignKeyFetchDepthLimits.get(foreignKeyPropertyId);
+  public Integer getForeignKeyFetchDepth(final String foreignKeyPropertyId) {
+    if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKeyPropertyId)) {
+      return foreignKeyFetchDepths.get(foreignKeyPropertyId);
     }
 
-    return foreignKeyFetchDepthLimit;
+    return foreignKeyFetchDepth;
   }
 
   @Override
-  public EntitySelectCondition setForeignKeyFetchDepthLimit(final int fetchDepthLimit) {
-    this.foreignKeyFetchDepthLimit = fetchDepthLimit;
+  public EntitySelectCondition setForeignKeyFetchDepth(final int fetchDepth) {
+    this.foreignKeyFetchDepth = fetchDepth;
     return this;
   }
 
