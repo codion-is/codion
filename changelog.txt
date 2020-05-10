@@ -6090,3 +6090,4 @@
   Entities.defaultEntity() renamed entity()
   Entities.entity(entityId, valueProvider) moved to EntityDefinition
   DomainEntities moved to entity package, renamed DefaultEntities, DomainEntities added to Domain
+  Domain now abstract, constructors protected

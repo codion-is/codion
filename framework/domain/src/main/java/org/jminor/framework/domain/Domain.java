@@ -29,7 +29,7 @@ import static java.util.Objects.requireNonNull;
  * @see #addReport(ReportWrapper)
  * @see #addOperation(DatabaseOperation)
  */
-public class Domain implements EntityDefinition.Provider {
+public abstract class Domain implements EntityDefinition.Provider {
 
   private final DomainEntities entities;
   private final Reports reports = new Reports();
@@ -39,7 +39,7 @@ public class Domain implements EntityDefinition.Provider {
    * Instantiates a new Domain with the simple name of the class as domain id
    * @see Class#getSimpleName()
    */
-  public Domain() {
+  protected Domain() {
     this.entities = new DomainEntities(getClass().getSimpleName());
   }
 
@@ -47,12 +47,12 @@ public class Domain implements EntityDefinition.Provider {
    * Instantiates a new Domain
    * @param domainId the domain identifier
    */
-  public Domain(final String domainId) {
+  protected Domain(final String domainId) {
     this.entities = new DomainEntities(requireNonNull(domainId, "domainId"));
   }
 
   /**
-   * @return the domain Id
+   * @return the domainId
    */
   public final String getDomainId() {
     return entities.getDomainId();
