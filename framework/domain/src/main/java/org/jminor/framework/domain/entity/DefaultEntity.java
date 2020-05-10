@@ -132,7 +132,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   /**
-   * @param propertyId the ID of the property for which to retrieve the value
+   * @param propertyId the id of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId}
    */
   @Override

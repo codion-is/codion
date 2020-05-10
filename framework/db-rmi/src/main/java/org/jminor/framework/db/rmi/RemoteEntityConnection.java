@@ -77,7 +77,7 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Executes the function with the given id
-   * @param functionId the function ID
+   * @param functionId the function id
    * @param arguments the arguments, if any
    * @param <T> the result type
    * @return the function return argument
@@ -88,7 +88,7 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Executes the procedure with the given id
-   * @param procedureId the procedure ID
+   * @param procedureId the procedure id
    * @param arguments the arguments, if any
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
@@ -183,7 +183,7 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Selects ordered and distinct non-null values of the given property
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @param condition the condition
    * @param <T> the value type
    * @return the values in the given column (Property)
@@ -198,7 +198,7 @@ public interface RemoteEntityConnection extends Remote {
   /**
    * Selects a single entity
    * @param entityId the entity type
-   * @param propertyId the ID of the property to use as a condition
+   * @param propertyId the id of the property to use as a condition
    * @param value the value to use in the condition
    * @return an entity of the type {@code entityId}, having the
    * value of {@code propertyId} as {@code value}
@@ -253,7 +253,7 @@ public interface RemoteEntityConnection extends Remote {
   /**
    * Selects entities according to one property ({@code propertyId}), using {@code values} as a condition
    * @param entityId the entity type
-   * @param propertyId the ID of the condition property
+   * @param propertyId the id of the condition property
    * @param values the property values to use as condition
    * @return entities of the type {@code entityId} according to {@code propertyId} and {@code values}
    * @throws DatabaseException in case of a db exception
@@ -298,7 +298,7 @@ public interface RemoteEntityConnection extends Remote {
    * Writes {@code blobData} in the blob field specified by the property identified by {@code propertyId}
    * for the given entity
    * @param primaryKey the primary key of the entity for which to write the blob field
-   * @param blobPropertyId the ID of the blob property
+   * @param blobPropertyId the id of the blob property
    * @param blobData the blob data
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
@@ -308,7 +308,7 @@ public interface RemoteEntityConnection extends Remote {
   /**
    * Reads the blob specified by the property identified by {@code propertyId} from the given entity
    * @param primaryKey the primary key of the entity
-   * @param blobPropertyId the ID of the blob property
+   * @param blobPropertyId the id of the blob property
    * @return a byte array containing the blob data
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception

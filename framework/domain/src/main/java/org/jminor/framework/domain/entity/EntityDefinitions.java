@@ -14,7 +14,7 @@ public final class EntityDefinitions {
 
   /**
    * Instantiates a {@link EntityDefinition} instance and returns a {@link EntityDefinition.Builder} for configuring it.
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param tableName the underlying table name
    * @param propertyBuilders the builders for the properties
    * @return a {@link EntityDefinition.Builder} instance

@@ -42,7 +42,7 @@ public final class EntityConnections {
    * @param destination the destination db
    * @param batchSize the number of records to copy between commits
    * @param includePrimaryKeys specifies whether primary key values should be included when copying
-   * @param entityIds the IDs of the entity types to copy
+   * @param entityIds the ids of the entity types to copy
    * @throws DatabaseException in case of a db exception
    * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */

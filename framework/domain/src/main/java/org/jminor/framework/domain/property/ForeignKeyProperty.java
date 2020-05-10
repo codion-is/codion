@@ -9,7 +9,7 @@ import java.util.List;
  * A wrapper property that represents a reference to another entity, typically but not necessarily based on a foreign key.
  * These do not map directly to a underlying table column, but wrap the actual column properties involved in the relation.
  * e.g.: Properties.foreignKeyProperty("reference_fk", Properties.columnProperty("reference_id")), where "reference_id" is the
- * actual name of the column involved in the reference, but "reference_fk" is simply a descriptive property ID
+ * actual name of the column involved in the reference, but "reference_fk" is simply a descriptive property id
  */
 public interface ForeignKeyProperty extends Property {
 

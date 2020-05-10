@@ -13,7 +13,7 @@ public abstract class AbstractDatabaseOperation implements DatabaseOperation {
 
   /**
    * Instantiates a new AbstractOperation
-   * @param id a unique operation ID
+   * @param id a unique operation id
    * @param name the operation name
    */
   public AbstractDatabaseOperation(final String id, final String name) {

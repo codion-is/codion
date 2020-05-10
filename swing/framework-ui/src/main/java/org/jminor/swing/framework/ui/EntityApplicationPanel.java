@@ -297,7 +297,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @return the first entity panel found based on the given entity type, null if none is found
    */
   public final EntityPanel getEntityPanel(final String entityId) {
@@ -1560,7 +1560,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     /**
-     * @return the ID of the entity this node represents
+     * @return the id of the entity this node represents
      */
     public String getEntityId() {
       return (String) getUserObject();

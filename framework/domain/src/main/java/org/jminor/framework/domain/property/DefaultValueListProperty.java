@@ -17,7 +17,7 @@ final class DefaultValueListProperty extends DefaultColumnProperty implements Va
   private final List<Item> items;
 
   /**
-   * @param propertyId the property ID
+   * @param  propertyId the propertyId
    * @param type the data type of this property
    * @param caption the property caption
    * @param items the allowed values for this property

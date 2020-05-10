@@ -24,7 +24,7 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
   private final Supplier<Collection<T>> valueProvider;
 
   /**
-   * @param entityId the ID of the underlying entity
+   * @param entityId the id of the underlying entity
    * @param connectionProvider a EntityConnectionProvider instance
    * @param property the underlying property
    * @param nullValue the value to use to represent a null value

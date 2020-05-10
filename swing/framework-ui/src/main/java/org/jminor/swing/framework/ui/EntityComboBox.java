@@ -47,7 +47,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   /**
    * Creates an Action which displays a dialog for filtering this combo box via a foreign key
-   * @param foreignKeyPropertyId the ID of the foreign key property on which to filter
+   * @param foreignKeyPropertyId the id of the foreign key property on which to filter
    * @return a Control for filtering this combo box
    */
   public Control createForeignKeyFilterControl(final String foreignKeyPropertyId) {
@@ -64,7 +64,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   /**
    * Creates a EntityComboBox for filtering this combo box via a foreign key
-   * @param foreignKeyPropertyId the ID of the foreign key property on which to filter
+   * @param foreignKeyPropertyId the id of the foreign key property on which to filter
    * @return an EntityComboBox for filtering this combo box
    */
   public EntityComboBox createForeignKeyFilterComboBox(final String foreignKeyPropertyId) {

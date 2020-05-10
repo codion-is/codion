@@ -28,9 +28,9 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   private final transient List<ColumnProperty.Builder> columnPropertyBuilders;
 
   /**
-   * @param propertyId the property ID
+   * @param  propertyId the propertyId
    * @param caption the caption
-   * @param foreignEntityId the ID of the entity referenced by this foreign key
+   * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnProperty the underlying column property comprising this foreign key
    */
   DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,
@@ -39,9 +39,9 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   }
 
   /**
-   * @param propertyId the property ID, note that this is not a column name
+   * @param  propertyId the propertyId, note that this is not a column name
    * @param caption the property caption
-   * @param foreignEntityId the ID of the entity referenced by this foreign key
+   * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnPropertyBuilders the underlying column properties comprising this foreign key
    */
   DefaultForeignKeyProperty(final String propertyId, final String caption, final String foreignEntityId,

@@ -17,7 +17,7 @@ class DefaultEntityCondition implements EntityCondition {
   /**
    * Instantiates a new empty {@link DefaultEntityCondition}.
    * Using an empty condition means all underlying records should be selected
-   * @param entityId the ID of the entity to select
+   * @param entityId the id of the entity to select
    */
   DefaultEntityCondition(final String entityId) {
     this(entityId, null);
@@ -25,7 +25,7 @@ class DefaultEntityCondition implements EntityCondition {
 
   /**
    * Instantiates a new {@link EntityCondition}
-   * @param entityId the ID of the entity to select
+   * @param entityId the id of the entity to select
    * @param condition the Condition object
    */
   DefaultEntityCondition(final String entityId, final Condition condition) {

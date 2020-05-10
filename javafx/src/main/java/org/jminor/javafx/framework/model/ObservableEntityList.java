@@ -67,7 +67,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   }
 
   /**
-   * @return the ID of the underlying entity
+   * @return the id of the underlying entity
    */
   public final String getEntityId() {
     return entityId;

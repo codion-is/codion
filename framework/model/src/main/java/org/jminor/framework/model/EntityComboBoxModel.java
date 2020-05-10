@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
-   * @return the ID of the entity this combo box model is based on
+   * @return the id of the entity this combo box model is based on
    */
   String getEntityId();
 
@@ -52,7 +52,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   Predicate<Entity> getForeignKeyIncludeCondition();
 
   /**
-   * @param foreignKeyPropertyId the ID of the foreign key property
+   * @param foreignKeyPropertyId the id of the foreign key property
    * @return the entity values currently used to filter the contents of this model
    */
   Collection<Entity> getForeignKeyFilterEntities(String foreignKeyPropertyId);
@@ -60,7 +60,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * Filters this combo box model so that only entities referencing the given foreign key entities
    * via the given foreign key property are shown.
-   * @param foreignKeyPropertyId the property ID
+   * @param foreignKeyPropertyId the property id
    * @param entities the entities
    */
   void setForeignKeyFilterEntities(String foreignKeyPropertyId, Collection<Entity> entities);
@@ -82,7 +82,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Returns a combo box model for selecting a foreign key value for filtering this model
-   * @param foreignKeyPropertyId the ID of the property with which values to create the combo box model
+   * @param foreignKeyPropertyId the id of the property with which values to create the combo box model
    * @return a combo box model for selecting a filtering value for this combo box model
    * @see #linkForeignKeyComboBoxModel(String, EntityComboBoxModel)
    */
@@ -91,7 +91,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * Links the given combo box model representing master entities to this combo box model
    * so that selection in the master model filters this model according to the selected master entity
-   * @param foreignKeyPropertyId the ID of the foreign key property
+   * @param foreignKeyPropertyId the id of the foreign key property
    * @param foreignKeyModel the combo box model to link
    */
   void linkForeignKeyComboBoxModel(String foreignKeyPropertyId, EntityComboBoxModel foreignKeyModel);
@@ -151,14 +151,14 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Creates a {@link Value} linked to the selected entity via the value of the given property.
-   * @param propertyId the property id
+   * @param  propertyId the propertyId
    * @return a {@link Value} for selecting items by integer property value
    */
   Value<Integer> integerValueSelector(String propertyId);
 
   /**
    * Creates a {@link Value} linked to the selected entity via the value of the given property.
-   * @param propertyId the property id
+   * @param  propertyId the propertyId
    * @param finder responsible for finding the entity by value
    * @return a {@link Value} for selecting items by integer property value
    */
@@ -184,7 +184,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
      * Returns the first Entity in the given list with {@code value} associated with
      * the given property. Only called for non-null {@code value}s.
      * @param entities the entities to search
-     * @param propertyId the property id
+     * @param  propertyId the propertyId
      * @param value the value to search for, never null
      * @return the first Entity in the given list with the given value.
      */

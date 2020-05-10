@@ -15,7 +15,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
 
   /**
    * Instantiates a new SwingEntityModel with default EntityEditModel and EntityTableModel implementations.
-   * @param entityId the ID of the Entity this DefaultEntityModel represents
+   * @param entityId the id of the Entity this DefaultEntityModel represents
    * @param connectionProvider a EntityConnectionProvider
    */
   public SwingEntityModel(final String entityId, final EntityConnectionProvider connectionProvider) {

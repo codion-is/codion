@@ -33,13 +33,13 @@ abstract class DefaultProperty implements Property {
   private static final Supplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
 
   /**
-   * The ID of the entity this property is associated with
+   * The id of the entity this property is associated with
    */
   private String entityId;
 
   /**
    * The property identifier, should be unique within an Entity.
-   * By default this ID serves as column name for database properties.
+   * By default this id serves as column name for database properties.
    * @see #getPropertyId()
    */
   private final String propertyId;
@@ -133,7 +133,7 @@ abstract class DefaultProperty implements Property {
   private transient DateTimeFormatter dateTimeFormatter;
 
   /**
-   * @param propertyId the property ID, this is used as the underlying column name
+   * @param  propertyId the propertyId, this is used as the underlying column name
    * @param type the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    * @param typeClass the type associated with this property

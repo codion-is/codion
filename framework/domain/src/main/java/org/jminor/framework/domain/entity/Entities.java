@@ -40,7 +40,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
    * Creates a new {@link Entity} instance with the given entityId
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @return a new {@link Entity} instance
    */
   Entity entity(String entityId);
@@ -54,14 +54,14 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
    * Creates a new {@link Entity.Key} instance with the given entityId
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @return a new {@link Entity.Key} instance
    */
   Entity.Key key(String entityId);
 
   /**
    * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param value the key value, assumes a single integer key
    * @return a new {@link Entity.Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
@@ -71,7 +71,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
    * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param value the key value, assumes a single long key
    * @return a new {@link Entity.Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
@@ -81,7 +81,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
    * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param values the key values, assumes a single integer key
    * @return new {@link Entity.Key} instances
    * @throws IllegalArgumentException in case the given primary key is a composite key
@@ -91,7 +91,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
    * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param values the key values, assumes a single integer key
    * @return new {@link Entity.Key} instances
    * @throws IllegalArgumentException in case the given primary key is a composite key

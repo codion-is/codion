@@ -54,7 +54,7 @@ public class EntityPanelBuilder {
 
   /**
    * Instantiates a new EntityPanelBuilder for the given entity type
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    */
   public EntityPanelBuilder(final String entityId) {
     this(new SwingEntityModelBuilder(entityId));
@@ -69,7 +69,7 @@ public class EntityPanelBuilder {
   }
 
   /**
-   * @return the entity ID
+   * @return the  entityId
    */
   public final String getEntityId() {
     return modelBuilder.getEntityId();

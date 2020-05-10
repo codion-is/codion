@@ -205,7 +205,7 @@ public final class EntityTableConditionPanel extends JPanel {
   }
 
   /**
-   * @param propertyId the property ID
+   * @param  propertyId the propertyId
    * @return the condition panel associated with the given property, null if none is specified
    */
   public ColumnConditionPanel getConditionPanel(final String propertyId) {

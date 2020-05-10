@@ -34,8 +34,8 @@ public class SwingEntityModelBuilder
   private Class<? extends SwingEntityTableModel> tableModelClass;
 
   /**
-   * Instantiates a new SwingeEntityModelBuilder based on the given entity ID
-   * @param entityId the entity ID
+   * Instantiates a new SwingeEntityModelBuilder based on the given  entityId
+   * @param entityId the  entityId
    */
   public SwingEntityModelBuilder(final String entityId) {
     this.entityId = requireNonNull(entityId, "entityId");

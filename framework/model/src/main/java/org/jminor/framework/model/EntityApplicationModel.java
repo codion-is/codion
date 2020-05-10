@@ -104,8 +104,8 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
   boolean containsEntityModel(Class<? extends M> modelClass);
 
   /**
-   * @param entityId the entity ID
-   * @return true if this model contains a EntityModel for the given entity ID
+   * @param entityId the  entityId
+   * @return true if this model contains a EntityModel for the given  entityId
    */
   boolean containsEntityModel(String entityId);
 
@@ -151,7 +151,7 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
   M getEntityModel(Class<? extends M> modelClass);
 
   /**
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @return the EntityModel based on the given entityId
    */
   M getEntityModel(String entityId);

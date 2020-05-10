@@ -60,7 +60,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   }
 
   /**
-   * @return the ID of the entity this table model is based on
+   * @return the id of the entity this table model is based on
    */
   String getEntityId();
 
@@ -108,7 +108,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * Sets {@code foreignKeyValues} as the search condition values for the given foreignKeyProperty
    * and refreshes this table model.
-   * @param foreignKeyProperty the ID of the foreign key property
+   * @param foreignKeyProperty the id of the foreign key property
    * @param foreignKeyValues the entities to use as condition values
    */
   void setForeignKeyConditionValues(ForeignKeyProperty foreignKeyProperty, Collection<Entity> foreignKeyValues);
@@ -117,7 +117,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * For every entity in this table model, replaces the foreign key instance bearing the primary
    * key with the corresponding entity from {@code foreignKeyValues}, useful when property
    * values have been changed in the referenced entity that must be reflected in the table model.
-   * @param foreignKeyEntityId the entity ID of the foreign key values
+   * @param foreignKeyEntityId the  entityId of the foreign key values
    * @param foreignKeyValues the foreign key entities
    */
   void replaceForeignKeyValues(String foreignKeyEntityId, Collection<Entity> foreignKeyValues);
@@ -217,8 +217,8 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * Returns the {@link ColumnSummaryModel} associated with the property identified by {@code propertyId}
-   * @param propertyId the ID of the property
-   * @return the {@link ColumnSummaryModel} for the given property ID
+   * @param propertyId the id of the property
+   * @return the {@link ColumnSummaryModel} for the given property id
    */
   ColumnSummaryModel getColumnSummaryModel(String propertyId);
 

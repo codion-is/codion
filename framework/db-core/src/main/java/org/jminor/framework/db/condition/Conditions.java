@@ -47,7 +47,7 @@ public final class Conditions {
   /**
    * Creates a {@link EntityCondition} instance specifying the entities of the type identified by {@code key},
    * using the given {@link Condition}
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @param condition the column condition
    * @return a condition based on the given column condition
    */
@@ -67,7 +67,7 @@ public final class Conditions {
 
   /**
    * Creates a {@link EntitySelectCondition} instance specifying all entities of the type identified by {@code entityId}
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @return a condition specifying all entities of the given type
    */
   public static EntityCondition condition(final String entityId) {
@@ -79,8 +79,8 @@ public final class Conditions {
    * with a where condition based on the property identified by {@code propertyId}, the operators based on
    * {@code operator} and {@code value}. Note that {@code value} may be a single value, a Collection
    * of values or null.
-   * @param entityId the entity ID
-   * @param propertyId the property ID
+   * @param entityId the  entityId
+   * @param  propertyId the propertyId
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return a condition based on the given value
@@ -112,7 +112,7 @@ public final class Conditions {
 
   /**
    * Creates a {@link EntitySelectCondition} instance for selecting all entities of the type identified by {@code entityId}
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @return a select condition encompassing all entities of the given type
    */
   public static EntitySelectCondition selectCondition(final String entityId) {
@@ -122,7 +122,7 @@ public final class Conditions {
   /**
    * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId},
    * using the given {@link Condition}
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @param condition the column condition
    * @return a select condition based on the given column condition
    */
@@ -135,8 +135,8 @@ public final class Conditions {
    * with a where condition based on the property identified by {@code propertyId}, the operators based on
    * {@code operator} and {@code value}. Note that {@code value} may be a single value, a Collection
    * of values or null.
-   * @param entityId the entity ID
-   * @param propertyId the property ID
+   * @param entityId the  entityId
+   * @param  propertyId the propertyId
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return a select condition based on the given value
@@ -148,7 +148,7 @@ public final class Conditions {
 
   /**
    * Creates a {@link EntityUpdateCondition} instance for updating all entities of the type identified by {@code entityId}
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @return an update condition encompassing all entities of the given type
    */
   public static EntityUpdateCondition updateCondition(final String entityId) {
@@ -160,8 +160,8 @@ public final class Conditions {
    * with a where condition based on the property identified by {@code propertyId}, the operators based on
    * {@code operator} and {@code value}. Note that {@code value} may be a single value, a Collection
    * of values or null.
-   * @param entityId the entity ID
-   * @param propertyId the property ID
+   * @param entityId the  entityId
+   * @param  propertyId the propertyId
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return an update condition based on the given value
@@ -174,7 +174,7 @@ public final class Conditions {
   /**
    * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityId},
    * using the given {@link Condition}
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @param condition the column condition
    * @return an update condition based on the given column condition
    */

@@ -35,7 +35,7 @@ public interface EntityDefinition extends Serializable {
   PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("jminor.domain.strictForeignKeys", true);
 
   /**
-   * @return the entity ID
+   * @return the  entityId
    */
   String getEntityId();
 
@@ -53,7 +53,7 @@ public interface EntityDefinition extends Serializable {
   ConditionProvider getConditionProvider(String conditionId);
 
   /**
-   * @return the ID of the domain this entity type belongs to
+   * @return the id of the domain this entity type belongs to
    */
   String getDomainId();
 
@@ -144,7 +144,7 @@ public interface EntityDefinition extends Serializable {
   Comparator<Entity> getComparator();
 
   /**
-   * @return a collection of property IDs identifying the properties to use when performing
+   * @return a collection of property ids identifying the properties to use when performing
    * a default lookup for this entity type
    */
   Collection<String> getSearchPropertyIds();
@@ -171,7 +171,7 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * Returns true if this entity contains properties which values are derived from the value of the given property
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @return true if any properties are derived from the given property
    */
   boolean hasDerivedProperties(String propertyId);
@@ -179,7 +179,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * Returns the properties which values are derived from the value of the given property,
    * an empty collection if no such derived properties exist
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @return a collection containing the properties which are derived from the given property
    */
   Collection<DerivedProperty> getDerivedProperties(String propertyId);
@@ -253,14 +253,14 @@ public interface EntityDefinition extends Serializable {
   boolean hasDenormalizedProperties();
 
   /**
-   * @param foreignKeyPropertyId the ID of the foreign key property
+   * @param foreignKeyPropertyId the id of the foreign key property
    * @return true if this entity type has any denormalized properties associated with the give foreign key
    */
   boolean hasDenormalizedProperties(String foreignKeyPropertyId);
 
   /**
    * Retrieves the denormalized properties which values originate from the entity referenced by the given foreign key property
-   * @param foreignKeyPropertyId the foreign key property ID
+   * @param foreignKeyPropertyId the foreign key property id
    * @return a list containing the denormalized properties which values originate from the entity
    * referenced by the given foreign key property
    */
@@ -274,21 +274,21 @@ public interface EntityDefinition extends Serializable {
   Collection<ColumnProperty> getSearchProperties();
 
   /**
-   * @param propertyId the property id
+   * @param  propertyId the propertyId
    * @return the column property identified by property id
    * @throws IllegalArgumentException in case the propertyId does not represent a {@link ColumnProperty}
    */
   ColumnProperty getColumnProperty(String propertyId);
 
   /**
-   * @param propertyId the property id
+   * @param  propertyId the propertyId
    * @return the property identified by {@code propertyId} in the entity identified by {@code entityId}
    * @throws IllegalArgumentException in case no such property exists
    */
   Property getProperty(String propertyId);
 
   /**
-   * @param propertyId the property id
+   * @param  propertyId the propertyId
    * @return the primary key property identified by {@code propertyId} in the entity identified by {@code entityId}
    * @throws IllegalArgumentException in case no such property exists
    */
@@ -303,7 +303,7 @@ public interface EntityDefinition extends Serializable {
   List<Property> getProperties(Collection<String> propertyIds);
 
   /**
-   * @param propertyId the property id
+   * @param  propertyId the propertyId
    * @return the column property identified by property id
    * @throws IllegalArgumentException in case the propertyId does not represent a {@link ColumnProperty}
    * or if it is not selectable
@@ -336,7 +336,7 @@ public interface EntityDefinition extends Serializable {
   List<ColumnProperty> getWritableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
 
   /**
-   * @return a list containing all updatable properties associated with the given entity id
+   * @return a list containing all updatable properties associated with the given  entityId
    */
   List<Property> getUpdatableProperties();
 
@@ -357,7 +357,7 @@ public interface EntityDefinition extends Serializable {
   List<ForeignKeyProperty> getForeignKeyReferences(String foreignEntityId);
 
   /**
-   * @param propertyId the property id
+   * @param  propertyId the propertyId
    * @return the Property.ForeignKeyProperty with the given propertyId
    * @throws IllegalArgumentException in case no such property exists
    */
@@ -638,8 +638,8 @@ public interface EntityDefinition extends Serializable {
     Builder comparator(Comparator<Entity> comparator);
 
     /**
-     * Sets the IDs of the properties to use when performing a default lookup for this entity type
-     * @param searchPropertyIds the search property IDs
+     * Sets the ids of the properties to use when performing a default lookup for this entity type
+     * @param searchPropertyIds the search property ids
      * @return this {@link Builder} instance
      */
     Builder searchPropertyIds(String... searchPropertyIds);

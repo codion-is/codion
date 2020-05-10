@@ -112,7 +112,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private BeanHelper beanHelper = new DefaultBeanHelper();
 
   /**
-   * The IDs of the properties to use when performing a string based lookup on this entity
+   * The ids of the properties to use when performing a string based lookup on this entity
    */
   private Collection<String> searchPropertyIds;
 
