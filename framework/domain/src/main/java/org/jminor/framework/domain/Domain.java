@@ -31,8 +31,8 @@ import static java.util.Objects.requireNonNull;
 public abstract class Domain implements EntityDefinition.Provider {
 
   private final DomainEntities entities;
-  private final Reports reports = new Reports();
-  private final Operations operations = new Operations();
+  private final DomainReports reports = new DomainReports();
+  private final DomainOperations operations = new DomainOperations();
 
   /**
    * Instantiates a new Domain with the simple name of the class as domain id
@@ -187,7 +187,7 @@ public abstract class Domain implements EntityDefinition.Provider {
     }
   }
 
-  private static final class Operations {
+  private static final class DomainOperations {
 
     private final Map<String, DatabaseOperation> operations = new HashMap<>();
 
@@ -221,7 +221,7 @@ public abstract class Domain implements EntityDefinition.Provider {
     }
   }
 
-  private static final class Reports {
+  private static final class DomainReports {
 
     private final Set<ReportWrapper> reports = new HashSet<>();
 
