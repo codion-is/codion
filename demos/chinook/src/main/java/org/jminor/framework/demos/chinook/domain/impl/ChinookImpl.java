@@ -197,10 +197,12 @@ public final class ChinookImpl extends Domain implements Chinook {
             denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUM_FK,
                     getDefinition(T_ALBUM).getProperty(ALBUM_ARTIST_FK), "Artist")
                     .preferredColumnWidth(160),
+            // tag::fetchDepth2[]
             foreignKeyProperty(TRACK_ALBUM_FK, "Album", T_ALBUM,
                     columnProperty(TRACK_ALBUMID, Types.BIGINT))
                     .fetchDepth(2)
                     .preferredColumnWidth(160),
+            // end::fetchDepth2[]
             columnProperty(TRACK_NAME, Types.VARCHAR, "Name")
                     .nullable(false)
                     .maximumLength(200)
@@ -264,10 +266,12 @@ public final class ChinookImpl extends Domain implements Chinook {
   void invoiceLine() {
     define(T_INVOICELINE, "chinook.invoiceline",
             primaryKeyProperty(INVOICELINE_INVOICELINEID, Types.BIGINT),
+            // tag::fetchDepth0[]
             foreignKeyProperty(INVOICELINE_INVOICE_FK, "Invoice", T_INVOICE,
                     columnProperty(INVOICELINE_INVOICEID, Types.BIGINT))
                     .fetchDepth(0)
                     .nullable(false),
+            // end::fetchDepth0[]
             foreignKeyProperty(INVOICELINE_TRACK_FK, "Track", T_TRACK,
                     columnProperty(INVOICELINE_TRACKID, Types.BIGINT))
                     .nullable(false)
@@ -336,7 +340,7 @@ public final class ChinookImpl extends Domain implements Chinook {
         entityConnection.beginTransaction();
         final EntitySelectCondition selectCondition = selectCondition(T_INVOICE);
         selectCondition.setForUpdate(true);
-        selectCondition.setForeignKeyFetchDepthLimit(0);
+        selectCondition.setForeignKeyFetchDepth(0);
         final List<Entity> invoices = entityConnection.select(selectCondition);
         for (final Entity invoice : invoices) {
           invoice.put(INVOICE_TOTAL, invoice.get(INVOICE_TOTAL_SUB));

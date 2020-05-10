@@ -3,4 +3,4 @@
 
 == Database layer
 
-The JMinor database layer is extremely thin, it doesn't perform any joins and provides no access to DBMS specific funtionality except primary key generation via <<{basedir}/manual/manual.adoc#_keygenerator, KeyGenerator>> strategies. The framework provides implementations for the most common strategies, sequences (with or without triggers) and auto increment columns.
+The JMinor database layer is extremely thin, it doesn't perform any joins and provides no access to DBMS specific functionality except primary key generation via <<{basedir}/manual/manual.adoc#_keygenerator, KeyGenerator>> strategies. The framework provides implementations for the most common strategies, sequences (with or without triggers) and auto increment columns. Note that you can always use the underlying JDBC connection directly as well.

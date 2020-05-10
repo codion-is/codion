@@ -53,7 +53,7 @@ public final class EntityConnections {
     requireNonNull(includePrimaryKeys, "includePrimaryKeys");
     requireNonNull(entityIds);
     for (final String entityId : entityIds) {
-      final List<Entity> entities = source.select(selectCondition(entityId).setForeignKeyFetchDepthLimit(0));
+      final List<Entity> entities = source.select(selectCondition(entityId).setForeignKeyFetchDepth(0));
       if (includePrimaryKeys == IncludePrimaryKeys.NO) {
         entities.forEach(Entity::clearKeyValues);
       }

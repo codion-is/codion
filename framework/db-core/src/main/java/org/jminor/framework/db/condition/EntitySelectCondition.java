@@ -77,22 +77,22 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param foreignKeyPropertyId the foreign key property ID
    * @return the number of levels of foreign key values to fetch
    */
-  Integer getForeignKeyFetchDepthLimit(String foreignKeyPropertyId);
+  Integer getForeignKeyFetchDepth(String foreignKeyPropertyId);
 
   /**
    * Limit the levels of foreign keys to fetch via the given foreign key property
    * @param foreignKeyPropertyId the property id
-   * @param fetchDepthLimit the foreign key fetch depth limit
+   * @param fetchDepth the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForeignKeyFetchDepthLimit(String foreignKeyPropertyId, int fetchDepthLimit);
+  EntitySelectCondition setForeignKeyFetchDepth(String foreignKeyPropertyId, int fetchDepth);
 
   /**
    * Limit the levels of foreign keys to fetch
-   * @param fetchDepthLimit the foreign key fetch depth limit
+   * @param fetchDepth the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForeignKeyFetchDepthLimit(int fetchDepthLimit);
+  EntitySelectCondition setForeignKeyFetchDepth(int fetchDepth);
 
   /**
    * Sets the properties to include in the resulting Entities,

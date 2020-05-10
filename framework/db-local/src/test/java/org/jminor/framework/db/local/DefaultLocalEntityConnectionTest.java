@@ -240,19 +240,19 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.getForeignKey(EMP_MGR_FK);
     assertFalse(emp.isLoaded(EMP_MGR_FK));
 
-    result = connection.select(condition.setForeignKeyFetchDepthLimit(EMP_DEPARTMENT_FK, 0));
+    result = connection.select(condition.setForeignKeyFetchDepth(EMP_DEPARTMENT_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EMP_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(EMP_MGR_FK));
 
-    result = connection.select(condition.setForeignKeyFetchDepthLimit(EMP_MGR_FK, 0));
+    result = connection.select(condition.setForeignKeyFetchDepth(EMP_MGR_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EMP_DEPARTMENT_FK));
     assertFalse(emp.isLoaded(EMP_MGR_FK));
 
-    result = connection.select(condition.setForeignKeyFetchDepthLimit(EMP_MGR_FK, 2));
+    result = connection.select(condition.setForeignKeyFetchDepth(EMP_MGR_FK, 2));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EMP_DEPARTMENT_FK));
@@ -260,7 +260,7 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.getForeignKey(EMP_MGR_FK);
     assertTrue(emp.isLoaded(EMP_MGR_FK));
 
-    result = connection.select(condition.setForeignKeyFetchDepthLimit(EMP_MGR_FK, -1));
+    result = connection.select(condition.setForeignKeyFetchDepth(EMP_MGR_FK, -1));
     assertEquals(1, result.size());
     emp = result.get(0);
     assertFalse(emp.isLoaded(EMP_DEPARTMENT_FK));
