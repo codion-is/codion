@@ -6093,3 +6093,4 @@
   Domain now abstract, constructors protected
   DefaultEntities.define() added, protected, Domain.DomainEntities.addDefinitionInternal() replaced with defineInternal(), EntityDefinitions removed
   EntityDefinition.setForeignDefinition() and hasForeignDefinition() removed
+  ConnectionProvider added, related refactoring, allows for easy method of wrapping existing jdbc connections

@@ -27,19 +27,19 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
    * The actual connection pool object
    */
   private T pool;
-  private final ConnectionProvider connectionProvider;
+  private final ConnectionFactory connectionFactory;
   private final User user;
   private final DataSource poolDataSource;
   private final DefaultConnectionPoolCounter counter;
 
   /**
    * Instantiates a new AbstractConnectionPool instance.
-   * @param connectionProvider the connection provider
+   * @param connectionFactory the connection factory
    * @param user the connection pool user
    * @param poolDataSource the DataSource
    */
-  public AbstractConnectionPool(final ConnectionProvider connectionProvider, final User user, final DataSource poolDataSource) {
-    this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+  public AbstractConnectionPool(final ConnectionFactory connectionFactory, final User user, final DataSource poolDataSource) {
+    this.connectionFactory = requireNonNull(connectionFactory, "connectionFactory");
     this.user = requireNonNull(user, "user");
     this.poolDataSource = (DataSource) newProxyInstance(DataSource.class.getClassLoader(),
             new Class[] {DataSource.class}, new DataSourceInvocationHandler(requireNonNull(poolDataSource, "poolDataSource")));
@@ -164,7 +164,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       if ("getConnection".equals(method.getName())) {
-        final Connection connection = connectionProvider.createConnection(user);
+        final Connection connection = connectionFactory.createConnection(user);
         counter.incrementConnectionsCreatedCounter();
 
         return newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class},

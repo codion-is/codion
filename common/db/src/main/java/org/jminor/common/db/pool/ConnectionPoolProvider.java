@@ -18,12 +18,12 @@ public interface ConnectionPoolProvider {
 
   /**
    * Creates a connection pool based on the given database and user.
-   * @param database the underlying database
+   * @param connectionFactory the connection factory
    * @param user the user to base the pooled connections on
    * @return a connection pool based on the given user
    * @throws DatabaseException in case of an exception
    */
-  ConnectionPool createConnectionPool(ConnectionProvider database, User user) throws DatabaseException;
+  ConnectionPool createConnectionPool(ConnectionFactory connectionFactory, User user) throws DatabaseException;
 
   /**
    * Returns the {@link ConnectionPoolProvider} implementation found by the {@link ServiceLoader}

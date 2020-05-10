@@ -19,12 +19,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.common.db.database.Database.closeSilently;
 
 /**
@@ -36,6 +34,8 @@ public abstract class AbstractDatabase implements Database {
   private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.get();
   private final QueryCounter queryCounter = new QueryCounter();
   private final String jdbcUrl;
+
+  private ConnectionProvider connectionProvider = new ConnectionProvider() {};
 
   /**
    * Instantiates a new AbstractDatabase.
@@ -52,15 +52,9 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public final Connection createConnection(final User user) throws DatabaseException {
-    if (nullOrEmpty(requireNonNull(user, "user").getUsername())) {
-      throw new IllegalArgumentException("Username must be specified");
-    }
-    final Properties connectionProperties = new Properties();
-    connectionProperties.put(USER_PROPERTY, user.getUsername());
-    connectionProperties.put(PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
     DriverManager.setLoginTimeout(getLoginTimeout());
     try {
-      return DriverManager.getConnection(getUrl(), connectionProperties);
+      return connectionProvider.getConnection(user, jdbcUrl);
     }
     catch (final SQLException e) {
       if (isAuthenticationException(e)) {
@@ -97,7 +91,7 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public final void initializeConnectionPool(final ConnectionPoolProvider connectionPoolProvider,
-                                       final User poolUser) throws DatabaseException {
+                                             final User poolUser) throws DatabaseException {
     requireNonNull(connectionPoolProvider, "connectionPoolProvider");
     requireNonNull(poolUser, "poolUser");
     if (connectionPools.containsKey(poolUser.getUsername())) {
@@ -129,6 +123,12 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public final Collection<String> getConnectionPoolUsernames() {
     return new ArrayList<>(connectionPools.keySet());
+  }
+
+  @Override
+  public final void setConnectionProvider(final ConnectionProvider connectionProvider) {
+    requireNonNull(connectionProvider, "connectionProvider");
+    this.connectionProvider = connectionProvider;
   }
 
   @Override
