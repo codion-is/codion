@@ -84,6 +84,32 @@ public final class DomainEntities implements Entities {
   }
 
   @Override
+  public Entity entity(final String entityId, final Function<Property, Object> valueProvider) {
+    final EntityDefinition entityDefinition = getDefinition(entityId);
+    final Entity entity = entityDefinition.entity();
+    final Collection<ColumnProperty> columnProperties = entityDefinition.getColumnProperties();
+    for (final ColumnProperty property : columnProperties) {
+      if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
+              && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
+        entity.put(property, valueProvider.apply(property));
+      }
+    }
+    final Collection<TransientProperty> transientProperties = entityDefinition.getTransientProperties();
+    for (final TransientProperty transientProperty : transientProperties) {
+      if (!(transientProperty instanceof DerivedProperty)) {
+        entity.put(transientProperty, valueProvider.apply(transientProperty));
+      }
+    }
+    final Collection<ForeignKeyProperty> foreignKeyProperties = entityDefinition.getForeignKeyProperties();
+    for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      entity.put(foreignKeyProperty, valueProvider.apply(foreignKeyProperty));
+    }
+    entity.saveAll();
+
+    return entity;
+  }
+
+  @Override
   public Entity.Key key(final String entityId) {
     return getDefinition(entityId).key();
   }
@@ -108,32 +134,6 @@ public final class DomainEntities implements Entities {
   public List<Entity.Key> keys(final String entityId, final Long... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> key(entityId, value)).collect(toList());
-  }
-
-  @Override
-  public Entity defaultEntity(final String entityId, final Function<Property, Object> valueProvider) {
-    final EntityDefinition entityDefinition = getDefinition(entityId);
-    final Entity entity = entityDefinition.entity();
-    final Collection<ColumnProperty> columnProperties = entityDefinition.getColumnProperties();
-    for (final ColumnProperty property : columnProperties) {
-      if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
-              && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        entity.put(property, valueProvider.apply(property));
-      }
-    }
-    final Collection<TransientProperty> transientProperties = entityDefinition.getTransientProperties();
-    for (final TransientProperty transientProperty : transientProperties) {
-      if (!(transientProperty instanceof DerivedProperty)) {
-        entity.put(transientProperty, valueProvider.apply(transientProperty));
-      }
-    }
-    final Collection<ForeignKeyProperty> foreignKeyProperties = entityDefinition.getForeignKeyProperties();
-    for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      entity.put(foreignKeyProperty, valueProvider.apply(foreignKeyProperty));
-    }
-    entity.saveAll();
-
-    return entity;
   }
 
   @Override
