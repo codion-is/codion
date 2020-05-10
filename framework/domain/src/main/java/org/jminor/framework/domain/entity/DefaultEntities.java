@@ -1,12 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package org.jminor.framework.domain.entity;
 
 import org.jminor.common.Util;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
 
@@ -31,7 +28,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * A default {@link Entities} implementation.
  */
-public final class DomainEntities implements Entities {
+public abstract class DefaultEntities implements Entities {
 
   private static final long serialVersionUID = 1;
 
@@ -45,17 +42,21 @@ public final class DomainEntities implements Entities {
 
   private transient boolean strictForeignKeys = EntityDefinition.STRICT_FOREIGN_KEYS.get();
 
-  DomainEntities(final String domainId) {
-    this.domainId = domainId;
+  /**
+   * Instantiates a new DefaultEntities for the given domainId
+   * @param domainId the domainId
+   */
+  protected DefaultEntities(final String domainId) {
+    this.domainId = requireNonNull(domainId, "domainId");
   }
 
   @Override
-  public String getDomainId() {
+  public final String getDomainId() {
     return domainId;
   }
 
   @Override
-  public EntityDefinition getDefinition(final String entityId) {
+  public final EntityDefinition getDefinition(final String entityId) {
     final EntityDefinition definition = entityDefinitions.get(requireNonNull(entityId, "entityId"));
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
@@ -65,56 +66,56 @@ public final class DomainEntities implements Entities {
   }
 
   @Override
-  public Collection<EntityDefinition> getDefinitions() {
+  public final Collection<EntityDefinition> getDefinitions() {
     return unmodifiableCollection(entityDefinitions.values());
   }
 
   @Override
-  public Entity entity(final String entityId) {
+  public final Entity entity(final String entityId) {
     return getDefinition(entityId).entity();
   }
 
   @Override
-  public Entity entity(final Entity.Key key) {
+  public final Entity entity(final Entity.Key key) {
     return getDefinition(key.getEntityId()).entity(key);
   }
 
   @Override
-  public Entity.Key key(final String entityId) {
+  public final Entity.Key key(final String entityId) {
     return getDefinition(entityId).key();
   }
 
   @Override
-  public Entity.Key key(final String entityId, final Integer value) {
+  public final Entity.Key key(final String entityId, final Integer value) {
     return getDefinition(entityId).key(value);
   }
 
   @Override
-  public Entity.Key key(final String entityId, final Long value) {
+  public final Entity.Key key(final String entityId, final Long value) {
     return getDefinition(entityId).key(value);
   }
 
   @Override
-  public List<Entity.Key> keys(final String entityId, final Integer... values) {
+  public final List<Entity.Key> keys(final String entityId, final Integer... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> key(entityId, value)).collect(toList());
   }
 
   @Override
-  public List<Entity.Key> keys(final String entityId, final Long... values) {
+  public final List<Entity.Key> keys(final String entityId, final Long... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> key(entityId, value)).collect(toList());
   }
 
   @Override
-  public List<Entity> deepCopyEntities(final List<Entity> entities) {
+  public final List<Entity> deepCopyEntities(final List<Entity> entities) {
     requireNonNull(entities, "entities");
 
     return entities.stream().map(this::deepCopyEntity).collect(toList());
   }
 
   @Override
-  public Entity copyEntity(final Entity entity) {
+  public final Entity copyEntity(final Entity entity) {
     requireNonNull(entity, "entity");
     final Entity copy = entity(entity.getEntityId());
     copy.setAs(entity);
@@ -123,7 +124,7 @@ public final class DomainEntities implements Entities {
   }
 
   @Override
-  public Entity deepCopyEntity(final Entity entity) {
+  public final Entity deepCopyEntity(final Entity entity) {
     requireNonNull(entity, "entity");
     final Entity copy = entity(entity.getEntityId());
     copy.setAs(entity);
@@ -138,7 +139,7 @@ public final class DomainEntities implements Entities {
   }
 
   @Override
-  public Entity.Key copyKey(final Entity.Key key) {
+  public final Entity.Key copyKey(final Entity.Key key) {
     requireNonNull(key, "key");
     final Entity.Key copy = key(key.getEntityId());
     copy.setAs(key);
@@ -147,7 +148,7 @@ public final class DomainEntities implements Entities {
   }
 
   @Override
-  public Entity createToStringEntity(final String entityId, final String toStringValue) {
+  public final Entity createToStringEntity(final String entityId, final String toStringValue) {
     final Entity entity = entity(entityId);
     return (Entity) Proxy.newProxyInstance(Entity.class.getClassLoader(), new Class[] {Entity.class}, (proxy, method, args) -> {
       if ("toString".equals(method.getName())) {
@@ -159,7 +160,7 @@ public final class DomainEntities implements Entities {
   }
 
   @Override
-  public <V> List<V> toBeans(final List<Entity> entities) {
+  public final <V> List<V> toBeans(final List<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
       return emptyList();
     }
@@ -172,7 +173,7 @@ public final class DomainEntities implements Entities {
   }
 
   @Override
-  public <V> V toBean(final Entity entity) {
+  public final <V> V toBean(final Entity entity) {
     requireNonNull(entity, "entity");
     final EntityDefinition definition = getDefinition(entity.getEntityId());
     final Class<V> beanClass = definition.getBeanClass();
@@ -200,7 +201,7 @@ public final class DomainEntities implements Entities {
   }
 
   @Override
-  public List<Entity> fromBeans(final List beans) {
+  public final List<Entity> fromBeans(final List beans) {
     if (Util.nullOrEmpty(beans)) {
       return emptyList();
     }
@@ -213,7 +214,7 @@ public final class DomainEntities implements Entities {
   }
 
   @Override
-  public <V> Entity fromBean(final V bean) {
+  public final <V> Entity fromBean(final V bean) {
     requireNonNull(bean, "bean");
     final Class beanClass = bean.getClass();
     final EntityDefinition definition = getBeanEntity(beanClass);
@@ -238,7 +239,7 @@ public final class DomainEntities implements Entities {
   }
 
   @Override
-  public Entities register() {
+  public final Entities register() {
     REGISTERED_ENTITIES.put(domainId, this);
 
     return this;
@@ -251,7 +252,7 @@ public final class DomainEntities implements Entities {
    * @throws IllegalArgumentException in case the domain has not been registered
    * @see #register()
    */
-  public static Entities getEntities(final String domainId) {
+  static Entities getEntities(final String domainId) {
     final Entities entities = REGISTERED_ENTITIES.get(domainId);
     if (entities == null) {
       throw new IllegalArgumentException("Entities for domain '" + domainId + "' have not been registered");
@@ -260,7 +261,11 @@ public final class DomainEntities implements Entities {
     return entities;
   }
 
-  void addDefinition(final EntityDefinition definition) {
+  protected final void setStrictForeignKeys(final boolean strictForeignKeys) {
+    this.strictForeignKeys = strictForeignKeys;
+  }
+
+  protected final void addDefinition(final EntityDefinition definition) {
     if (entityDefinitions.containsKey(definition.getEntityId())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
               definition.getEntityId() + ", for table: " + definition.getTableName());
@@ -268,16 +273,6 @@ public final class DomainEntities implements Entities {
     validateForeignKeyProperties(definition);
     entityDefinitions.put(definition.getEntityId(), definition);
     populateForeignDefinitions();
-  }
-
-  void putAll(final DomainEntities entities) {
-    this.entityDefinitions.putAll(entities.entityDefinitions);
-    this.beanEntities = entities.beanEntities;
-    this.beanProperties = entities.beanProperties;
-  }
-
-  void setStrictForeignKeys(final boolean strictForeignKeys) {
-    this.strictForeignKeys = strictForeignKeys;
   }
 
   private void validateForeignKeyProperties(final EntityDefinition definition) {
