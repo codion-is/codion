@@ -62,7 +62,7 @@ public interface EntityEditModel extends Refreshable {
   PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("jminor.client.editModelPostEditEvents", false);
 
   /**
-   * @return the ID of the entity this edit model is based on
+   * @return the id of the entity this edit model is based on
    */
   String getEntityId();
 
@@ -117,13 +117,13 @@ public interface EntityEditModel extends Refreshable {
   boolean containsUnsavedData();
 
   /**
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @return true if the value of the given property is null
    */
   boolean isNull(String propertyId);
 
   /**
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @return true if the value of the given property is not null
    */
   boolean isNotNull(String propertyId);
@@ -136,7 +136,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Sets the given value in the underlying Entity
-   * @param propertyId the ID of the property to associate the given value with
+   * @param propertyId the id of the property to associate the given value with
    * @param value the value to associate with the given property
    */
   void put(String propertyId, Object value);
@@ -150,7 +150,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Removes the given value from the underlying Entity
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @return the value, if any
    */
   Object remove(String propertyId);
@@ -164,7 +164,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Returns the value associated with the given property
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @return the value associated with the given property
    */
   Object get(String propertyId);
@@ -179,7 +179,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * Returns the value associated with the given propertyId assuming it
    * is an {@link Entity} instance
-   * @param foreignKeyPropertyId the ID of the property
+   * @param foreignKeyPropertyId the id of the property
    * @return the value assuming it is an {@link Entity}
    * @throws ClassCastException in case the value was not an {@link Entity}
    */
@@ -187,7 +187,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Instantiates a new Value based on the property identified by {@code propertyId} in this edit model
-   * @param propertyId the property id
+   * @param  propertyId the propertyId
    * @param <V> the value type
    * @return a Value based on the given edit model value
    */
@@ -289,13 +289,13 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key property
-   * @param foreignKeyPropertyId the ID of the property
+   * @param foreignKeyPropertyId the id of the property
    * @return true if a {@link EntityLookupModel} has been initialized for the given foreign key property
    */
   boolean containsLookupModel(String foreignKeyPropertyId);
 
   /**
-   * @param foreignKeyPropertyId the ID of the property for which to retrieve the {@link EntityLookupModel}
+   * @param foreignKeyPropertyId the id of the property for which to retrieve the {@link EntityLookupModel}
    * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
    * has been initialized for the given property, a new one is created, associated with the property and returned.
    */
@@ -335,7 +335,7 @@ public interface EntityEditModel extends Refreshable {
   boolean isPersistValue(Property property);
 
   /**
-   * @param propertyId the property ID
+   * @param  propertyId the propertyId
    * @param persistValue true if this model should persist the value of the given property on clear
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
@@ -540,7 +540,7 @@ public interface EntityEditModel extends Refreshable {
    * Adds a listener notified each time the value associated with the given property is edited via
    * {@link #put(Property, Object)} or {@link #remove(Property)}, note that this event is only fired
    * when the value actually changes.
-   * @param propertyId the ID of the property for which to monitor value edits
+   * @param propertyId the id of the property for which to monitor value edits
    * @param listener a listener notified each time the value of the given property is edited via this model
    */
   void addValueEditListener(String propertyId, EventDataListener<ValueChange> listener);
@@ -555,7 +555,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * Adds a listener notified each time the value associated with the given key changes, either
    * via editing or when the active entity is set.
-   * @param propertyId the ID of the property for which to monitor value changes
+   * @param propertyId the id of the property for which to monitor value changes
    * @param listener a listener notified each time the value of the property identified by {@code propertyId} changes
    * @see #setEntity(Entity)
    */
@@ -563,7 +563,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Removes the given listener.
-   * @param propertyId the ID of the property for which to remove the listener
+   * @param propertyId the id of the property for which to remove the listener
    * @param listener the listener to remove
    */
   void removeValueListener(String propertyId, EventDataListener<ValueChange> listener);

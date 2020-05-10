@@ -80,7 +80,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
 
   /**
-   * The entity ID
+   * The  entityId
    */
   private final String entityId;
 
@@ -148,7 +148,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /**
    * Instantiates a new DefaultEntityTableModel with default column and condition models.
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @param connectionProvider the db provider
    */
   public SwingEntityTableModel(final String entityId, final EntityConnectionProvider connectionProvider) {
@@ -159,7 +159,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /**
    * Instantiates a new DefaultEntityTableModel.
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @param connectionProvider the db provider
    * @param conditionModel the condition model
    * @param sortModel the sort model
@@ -375,7 +375,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /**
    * A convenience method for setting the sorting directive for the given property
-   * @param propertyId the property ID
+   * @param  propertyId the propertyId
    * @param directive the directive
    * @see TableSortModel#setSortingDirective(Object, SortingDirective)
    */
@@ -385,7 +385,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /**
    * A convenience method for setting the sorting directive for the given property
-   * @param propertyId the property ID
+   * @param  propertyId the propertyId
    * @param directive the directive
    * @see TableSortModel#addSortingDirective(Object, SortingDirective)
    */
@@ -396,7 +396,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * A convenience method for retrieving the sorting directive for the given property
    * from the underlying {@link TableSortModel}.
-   * @param propertyId the property id
+   * @param  propertyId the propertyId
    * @return the {@link TableSortModel.SortingState} associated with the given property
    */
   public final TableSortModel.SortingState getSortingState(final String propertyId) {

@@ -253,7 +253,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Adds a property panel for the given property to this panel
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @see #createPropertyPanel(String)
    */
   protected final void addPropertyPanel(final String propertyId) {
@@ -354,7 +354,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JTextArea component bound to the property identified by {@code propertyId}.
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyId) {
@@ -363,7 +363,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JTextArea component bound to the property identified by {@code propertyId}.
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
    * @return a JTextArea bound to the property
@@ -374,7 +374,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JTextArea component bound to the property identified by {@code propertyId}.
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
    * @param updateOn specifies when the underlying value should be updated
@@ -387,7 +387,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JTextArea component bound to the property identified by {@code propertyId}.
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
    * @param updateOn specifies when the underlying value should be updated
@@ -407,7 +407,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final String propertyId) {
@@ -416,7 +416,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a TextInputPanel bound to the property identified by {@code propertyId}.
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param updateOn specifies when the underlying value should be updated
    * @param buttonFocusable specifies whether the edit button should be focusable.
    * @return a TextInputPanel bound to the property
@@ -462,7 +462,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a new TemporalInputPanel using the default short date format, bound to the property
    * identified by {@code propertyId}.
-   * @param propertyId the ID of the property for which to create the panel
+   * @param propertyId the id of the property for which to create the panel
    * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
@@ -472,7 +472,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
-   * @param propertyId the ID of the property for which to create the panel
+   * @param propertyId the id of the property for which to create the panel
    * @param calendarButton if yes a button for visually editing the date is included
    * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
@@ -484,7 +484,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
-   * @param propertyId the ID of the property for which to create the panel
+   * @param propertyId the id of the property for which to create the panel
    * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a TemporalInputPanel bound to the property
@@ -496,7 +496,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a new TemporalInputPanel bound to the property identified by {@code propertyId}.
-   * @param propertyId the ID of the property for which to create the panel
+   * @param propertyId the id of the property for which to create the panel
    * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param updateOn specifies when the underlying value should be updated
@@ -573,7 +573,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final String propertyId) {
@@ -582,7 +582,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param updateOn specifies when the underlying value should be updated
    * @return a text field bound to the property
    */
@@ -592,7 +592,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param updateOn specifies when the underlying value should be updated
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @return a text field bound to the property
@@ -604,7 +604,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param updateOn specifies when the underlying value should be updated
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
@@ -617,7 +617,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JTextField bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param updateOn specifies when the underlying value should be updated
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
@@ -665,7 +665,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JTextField bound to the given property
-   * @param property the ID of the property to bind
+   * @param property the id of the property to bind
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param updateOn specifies when the underlying value should be updated
    * @param enabledState a state for controlling the enabled state of the component
@@ -708,7 +708,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JCheckBox bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @return a JCheckBox bound to the property
    */
   protected final JCheckBox createCheckBox(final String propertyId) {
@@ -717,7 +717,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JCheckBox bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a JCheckBox bound to the property
    */
@@ -727,7 +727,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a JCheckBox bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
    * @return a JCheckBox bound to the property
@@ -777,7 +777,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a NullableCheckBox bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @return a NullableCheckBox bound to the property
    */
   protected final NullableCheckBox createNullableCheckBox(final String propertyId) {
@@ -786,7 +786,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a NullableCheckBox bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a NullableCheckBox bound to the property
    */
@@ -796,7 +796,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a NullableCheckBox bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param includeCaption specifies whether or not the caption should be included
    * @return a NullableCheckBox bound to the property
@@ -847,7 +847,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Create a JComboBox for the property identified by {@code propertyId}, containing
    * values for the boolean values: true, false, null
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @return JComboBox for the given property
    */
   protected final JComboBox createBooleanComboBox(final String propertyId) {
@@ -857,7 +857,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Create a JComboBox for the property identified by {@code propertyId}, containing
    * values for the boolean values: true, false, null
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return JComboBox for the given property
    */
@@ -892,7 +892,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a SteppedComboBox bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
    * @return a SteppedComboBox bound the the property
@@ -905,7 +905,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a SteppedComboBox bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
    * @param enabledState a state for controlling the enabled state of the component
@@ -1065,7 +1065,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates an editable SteppedComboBox bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @return an editable SteppedComboBox bound the the property
    */
@@ -1075,7 +1075,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates an editable SteppedComboBox bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param enabledState a state for controlling the enabled state of the component
    * @return an editable SteppedComboBox bound the the property
@@ -1109,7 +1109,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a SteppedComboBox bound to the property identified by {@code propertyId}, the combo box
    * contains the underlying values of the property
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyId) {
@@ -1119,7 +1119,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a SteppedComboBox bound to the property identified by {@code propertyId}, the combo box
    * contains the underlying values of the property
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
@@ -1130,7 +1130,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a SteppedComboBox bound to the property identified by {@code propertyId}, the combo box
    * contains the underlying values of the property
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param editable yes if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
@@ -1185,7 +1185,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a EntityComboBox bound to the foreign key property identified by {@code foreignKeyPropertyId}
-   * @param foreignKeyPropertyId the ID of the property to bind
+   * @param foreignKeyPropertyId the id of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a EntityComboBox bound to the property
    */
@@ -1196,7 +1196,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates an EntityComboBox bound to the foreign key property identified by {@code foreignKeyPropertyId}
-   * @param foreignKeyPropertyId the ID of the foreign key property to bind
+   * @param foreignKeyPropertyId the id of the foreign key property to bind
    * combination used to create new instances of the entity this EntityComboBox is based on
    * EntityComboBox is focusable
    * @return an EntityComboBox bound to the property
@@ -1240,7 +1240,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates an EntityLookupField bound to the property identified by {@code foreignKeypropertyId}, the property
    * must be an Property.ForeignKeyProperty
-   * @param foreignKeyPropertyId the ID of the foreign key property to bind
+   * @param foreignKeyPropertyId the id of the foreign key property to bind
    * @return an EntityLookupField bound the property
    */
   protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyId) {
@@ -1250,7 +1250,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates an EntityLookupField bound to the property identified by {@code foreignKeypropertyId}, the property
    * must be an Property.ForeignKeyProperty
-   * @param foreignKeyPropertyId the ID of the foreign key property to bind
+   * @param foreignKeyPropertyId the id of the foreign key property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return an EntityLookupField bound the property
    */
@@ -1292,7 +1292,7 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates an uneditable JTextField bound to the property identified by {@code propertyId}
-   * @param propertyId the ID of the property to bind
+   * @param propertyId the id of the property to bind
    * @return an uneditable JTextField bound to the property
    */
   protected final JTextField createForeignKeyField(final String propertyId) {
@@ -1322,7 +1322,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a JLabel with a caption from the property identified by {@code propertyId}, if a input component exists
    * for the given property this label is associated with it via {@link JLabel#setLabelFor(Component)}.
-   * @param propertyId the ID of the property from which to retrieve the caption
+   * @param propertyId the id of the property from which to retrieve the caption
    * @return a JLabel for the given property
    */
   protected final JLabel createLabel(final String propertyId) {
@@ -1332,7 +1332,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a JLabel with a caption from the property identified by {@code propertyId}, if an input component exists
    * for the given property this label is associated with it via {@link JLabel#setLabelFor(Component)}.
-   * @param propertyId the ID of the property from which to retrieve the caption
+   * @param propertyId the id of the property from which to retrieve the caption
    * @param horizontalAlignment the horizontal text alignment
    * @return a JLabel for the given property
    */

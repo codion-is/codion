@@ -35,7 +35,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Instantiates a new {@link SwingEntityEditModel} based on the entity identified by {@code entityId}.
-   * @param entityId the ID of the entity to base this {@link DefaultEntityEditModel} on
+   * @param entityId the id of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public SwingEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider) {
@@ -44,7 +44,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Instantiates a new {@link SwingEntityEditModel} based on the entity identified by {@code entityId}.
-   * @param entityId the ID of the entity to base this {@link DefaultEntityEditModel} on
+   * @param entityId the id of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
@@ -77,7 +77,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Returns a {@link SwingEntityComboBoxModel} for the given foreign key property. If one does not exist it is created.
-   * @param foreignKeyPropertyId the ID of the foreign key property
+   * @param foreignKeyPropertyId the id of the foreign key property
    * @return a {@link SwingEntityComboBoxModel} based on the entity referenced by the given foreign key property
    * @see #createForeignKeyComboBoxModel(ForeignKeyProperty)
    */
@@ -105,7 +105,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Returns a {@link FilteredComboBoxModel} for the given property,
-   * @param propertyId the property ID
+   * @param  propertyId the propertyId
    * @return a {@link FilteredComboBoxModel} for the given property
    */
   public final FilteredComboBoxModel getComboBoxModel(final String propertyId) {
@@ -121,7 +121,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
-   * @param propertyId the ID of the property
+   * @param propertyId the id of the property
    * @return true if this edit model contains a combobox model for the property
    */
   public final boolean containsComboBoxModel(final String propertyId) {

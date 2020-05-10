@@ -60,7 +60,7 @@ public final class EntityEditEvents {
 
   /**
    * Removes the given listener
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param listener the listener to remove
    */
   public static void removeInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
@@ -69,7 +69,7 @@ public final class EntityEditEvents {
 
   /**
    * Removes the given listener
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param listener the listener to remove
    */
   public static void removeUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
@@ -78,7 +78,7 @@ public final class EntityEditEvents {
 
   /**
    * Removes the given listener
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param listener the listener to remove
    */
   public static void removeDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {

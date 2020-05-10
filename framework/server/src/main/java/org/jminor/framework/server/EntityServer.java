@@ -244,7 +244,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   /**
-   * @param clientTypeId the client type ID
+   * @param clientTypeId the client type id
    * @return all clients of the given type
    */
   final Collection<RemoteClient> getClients(final String clientTypeId) {
@@ -297,7 +297,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   /**
-   * @param clientId the client ID
+   * @param clientId the client id
    * @return true if logging is enabled for the given client
    */
   final boolean isLoggingEnabled(final UUID clientId) {
@@ -310,7 +310,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   /**
-   * @param clientId the client ID
+   * @param clientId the client id
    * @param loggingEnabled the new logging status
    */
   final void setLoggingEnabled(final UUID clientId, final boolean loggingEnabled) {

@@ -26,7 +26,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityId}.
-   * @param entityId the ID of the entity to base this {@link DefaultEntityEditModel} on
+   * @param entityId the id of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public FXEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider) {
@@ -35,7 +35,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityId}.
-   * @param entityId the ID of the entity to base this {@link FXEntityEditModel} on
+   * @param entityId the id of the entity to base this {@link FXEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
@@ -46,7 +46,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Returns a {@link FXEntityListModel} for the given foreign key property. If one does not exist it is created.
-   * @param foreignKeyPropertyId the ID of the foreign key property
+   * @param foreignKeyPropertyId the id of the foreign key property
    * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key property
    * @see #createForeignKeyListModel(ForeignKeyProperty)
    */

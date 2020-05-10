@@ -24,7 +24,7 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Pr
   /**
    * Instantiates a new DefaultEntityTableSortModel
    * @param definitionProvider the domain entity definition provider
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    */
   public SwingEntityTableSortModel(final EntityDefinition.Provider definitionProvider, final String entityId) {
     super(initializeColumns(definitionProvider.getDefinition(entityId).getVisibleProperties()));

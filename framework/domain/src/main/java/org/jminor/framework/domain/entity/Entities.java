@@ -8,7 +8,6 @@ import org.jminor.framework.domain.property.BlobProperty;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.ForeignKeyProperty;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -42,7 +40,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
    * Creates a new {@link Entity} instance with the given entityId
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @return a new {@link Entity} instance
    */
   Entity entity(String entityId);
@@ -55,29 +53,15 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   Entity entity(Entity.Key key);
 
   /**
-   * Instantiates a new {@link Entity} of the given type using the values provided by {@code valueProvider}.
-   * Values are fetched for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty}
-   * and {@link TransientProperty} (excluding its descendants).
-   * If a {@link ColumnProperty}s underlying column has a default value the property is
-   * skipped unless the property itself has a default value, which then overrides the columns default value.
-   * @param entityId the entity id
-   * @param valueProvider provides the default value for a given property
-   * @return the populated entity
-   * @see ColumnProperty.Builder#columnHasDefaultValue(boolean)
-   * @see ColumnProperty.Builder#defaultValue(Object)
-   */
-  Entity entity(String entityId, Function<Property, Object> valueProvider);
-
-  /**
    * Creates a new {@link Entity.Key} instance with the given entityId
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @return a new {@link Entity.Key} instance
    */
   Entity.Key key(String entityId);
 
   /**
    * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param value the key value, assumes a single integer key
    * @return a new {@link Entity.Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
@@ -87,7 +71,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
    * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param value the key value, assumes a single long key
    * @return a new {@link Entity.Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
@@ -97,7 +81,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
    * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param values the key values, assumes a single integer key
    * @return new {@link Entity.Key} instances
    * @throws IllegalArgumentException in case the given primary key is a composite key
@@ -107,7 +91,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
    * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
-   * @param entityId the entity id
+   * @param entityId the  entityId
    * @param values the key values, assumes a single integer key
    * @return new {@link Entity.Key} instances
    * @throws IllegalArgumentException in case the given primary key is a composite key

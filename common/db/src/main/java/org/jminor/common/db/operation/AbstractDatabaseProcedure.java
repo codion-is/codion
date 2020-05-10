@@ -11,7 +11,7 @@ public abstract class AbstractDatabaseProcedure<C> extends AbstractDatabaseOpera
 
   /**
    * Instantiates a new AbstractDatabaseProcedure
-   * @param id the procedure ID
+   * @param id the procedure id
    * @param name the procedure name
    */
   public AbstractDatabaseProcedure(final String id, final String name) {

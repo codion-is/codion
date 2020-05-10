@@ -38,7 +38,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
 
   /**
-   * A key for specifying the ID of the domain required by a remote client
+   * A key for specifying the id of the domain required by a remote client
    */
   public static final String REMOTE_CLIENT_DOMAIN_ID = "jminor.client.domainId";
 

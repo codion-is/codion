@@ -43,7 +43,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private final Event refreshDoneEvent = Events.event();
 
   /**
-   * the ID of the underlying entity
+   * the id of the underlying entity
    */
   private final String entityId;
 

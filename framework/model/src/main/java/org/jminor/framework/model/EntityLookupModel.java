@@ -23,7 +23,7 @@ import java.util.function.Function;
 public interface EntityLookupModel {
 
   /**
-   * @return the ID of the entity this lookup model is based on
+   * @return the id of the entity this lookup model is based on
    */
   String getEntityId();
 

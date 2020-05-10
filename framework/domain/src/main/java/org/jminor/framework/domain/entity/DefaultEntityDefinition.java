@@ -112,7 +112,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private BeanHelper beanHelper = new DefaultBeanHelper();
 
   /**
-   * The IDs of the properties to use when performing a string based lookup on this entity
+   * The ids of the properties to use when performing a string based lookup on this entity
    */
   private Collection<String> searchPropertyIds;
 
@@ -573,6 +573,32 @@ final class DefaultEntityDefinition implements EntityDefinition {
   @Override
   public Entity entity(final Entity.Key key) {
     return new DefaultEntity(this, key);
+  }
+
+  @Override
+  public Entity entity(final Function<Property, Object> valueProvider) {
+    requireNonNull(valueProvider);
+    final Entity entity = entity();
+    final Collection<ColumnProperty> columnProperties = getColumnProperties();
+    for (final ColumnProperty property : columnProperties) {
+      if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
+              && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
+        entity.put(property, valueProvider.apply(property));
+      }
+    }
+    final Collection<TransientProperty> transientProperties = getTransientProperties();
+    for (final TransientProperty transientProperty : transientProperties) {
+      if (!(transientProperty instanceof DerivedProperty)) {
+        entity.put(transientProperty, valueProvider.apply(transientProperty));
+      }
+    }
+    final Collection<ForeignKeyProperty> foreignKeyProperties = getForeignKeyProperties();
+    for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      entity.put(foreignKeyProperty, valueProvider.apply(foreignKeyProperty));
+    }
+    entity.saveAll();
+
+    return entity;
   }
 
   @Override

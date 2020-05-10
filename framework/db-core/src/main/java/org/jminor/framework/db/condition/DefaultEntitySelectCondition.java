@@ -28,7 +28,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
 
   /**
    * Instantiates a new {@link DefaultEntitySelectCondition}, which includes all the underlying entities
-   * @param entityId the ID of the entity to select
+   * @param entityId the id of the entity to select
    */
   DefaultEntitySelectCondition(final String entityId) {
     super(entityId);
@@ -36,7 +36,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
 
   /**
    * Instantiates a new {@link DefaultEntitySelectCondition}
-   * @param entityId the ID of the entity to select
+   * @param entityId the id of the entity to select
    * @param condition the Condition object
    * @see DefaultPropertyCondition
    * @see EntityKeyCondition

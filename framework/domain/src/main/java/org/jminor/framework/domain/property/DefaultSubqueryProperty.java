@@ -10,8 +10,8 @@ final class DefaultSubqueryProperty extends DefaultColumnProperty implements Sub
   private final transient String subquery;
 
   /**
-   * @param propertyId the property ID, since SubqueryProperties do not map to underlying table columns,
-   * the property ID should not be column name, only be unique for this entity
+   * @param  propertyId the propertyId, since SubqueryProperties do not map to underlying table columns,
+   * the property id should not be column name, only be unique for this entity
    * @param type the data type of this property
    * @param caption the caption of this property
    * @param subquery the sql query

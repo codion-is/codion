@@ -251,7 +251,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /**
    * Called when a value has changed, note that this default implementation does nothing, provided for subclasses.
-   * @param key the key of the value that was changed
+   * @param key the key of the value that changed
    * @param currentValue the new value
    * @param previousValue the previous value, if any
    * @param initialization true if the value was being initialized, that is, no previous value existed

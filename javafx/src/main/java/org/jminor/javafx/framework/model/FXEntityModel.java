@@ -16,7 +16,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
   /**
    * Instantiates a new {@link FXEntityModel} with default {@link FXEntityEditModel}
    * and {@link FXEntityListModel} implementations
-   * @param entityId the ID of the entity on which to base the model
+   * @param entityId the id of the entity on which to base the model
    * @param connectionProvider the connection provider
    */
   public FXEntityModel(final String entityId, final EntityConnectionProvider connectionProvider) {

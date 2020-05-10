@@ -74,7 +74,7 @@ public interface EntitySelectCondition extends EntityCondition {
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
    * should be fetched, -1 no limit and null unspecified (use default).
-   * @param foreignKeyPropertyId the foreign key property ID
+   * @param foreignKeyPropertyId the foreign key property id
    * @return the number of levels of foreign key values to fetch
    */
   Integer getForeignKeyFetchDepth(String foreignKeyPropertyId);

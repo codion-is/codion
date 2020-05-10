@@ -10,8 +10,8 @@ class DefaultTransientProperty extends DefaultProperty implements TransientPrope
   private boolean modifiesEntity = true;
 
   /**
-   * @param propertyId the property ID, since TransientProperties do not map to underlying table columns,
-   * the property ID should not be column name, only be unique for this entity
+   * @param  propertyId the propertyId, since TransientProperties do not map to underlying table columns,
+   * the property id should not be column name, only be unique for this entity
    * @param type the data type of this property
    * @param caption the caption of this property
    */

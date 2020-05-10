@@ -531,7 +531,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * Returns the detail panel for the given {@code entityId}, if one is available
-   * @param entityId the entity ID of the detail panel to retrieve
+   * @param entityId the  entityId of the detail panel to retrieve
    * @return the detail panel of the given type
    * @throws IllegalArgumentException in case the panel was not found
    */

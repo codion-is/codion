@@ -32,7 +32,7 @@ public interface ClientLog extends Serializable {
 
   /**
    * Instantiates a new ClientLog instance.
-   * @param clientId the ID of the client this log represents
+   * @param clientId the id of the client this log represents
    * @param connectionCreationDate the date and time this client connection was created
    * @param entries the log entries
    * @return a new ClientLog instance

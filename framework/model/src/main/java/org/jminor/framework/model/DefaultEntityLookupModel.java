@@ -50,7 +50,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   private final State searchStringRepresentsSelectedState = States.state(true);
 
   /**
-   * The ID of the entity this lookup model is based on
+   * The id of the entity this lookup model is based on
    */
   private final String entityId;
 
@@ -86,7 +86,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   /**
    * Instantiates a new EntityLookupModel, using the search properties for the given entity type
-   * @param entityId the ID of the entity to lookup
+   * @param entityId the id of the entity to lookup
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
    * @see EntityDefinition#getSearchProperties()
    */
@@ -96,7 +96,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   /**
    * Instantiates a new EntityLookupModel
-   * @param entityId the ID of the entity to lookup
+   * @param entityId the id of the entity to lookup
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
    * @param lookupProperties the properties to search by, these must be string based
    */

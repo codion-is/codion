@@ -14,8 +14,8 @@ final class DefaultDenormalizedProperty extends DefaultColumnProperty implements
   private final Property denormalizedProperty;
 
   /**
-   * @param propertyId the property ID
-   * @param foreignKeyPropertyId the ID of the foreign key property which references the entity which owns
+   * @param  propertyId the propertyId
+   * @param foreignKeyPropertyId the id of the foreign key property which references the entity which owns
    * the denormalized property
    * @param denormalizedProperty the property from which this property should get its value
    * @param caption the caption if this property

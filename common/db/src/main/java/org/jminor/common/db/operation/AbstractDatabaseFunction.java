@@ -12,7 +12,7 @@ public abstract class AbstractDatabaseFunction<C, T> extends AbstractDatabaseOpe
 
   /**
    * Instantiates a new AbstractDatabaseFunction.
-   * @param id the function ID
+   * @param id the function id
    * @param name the function name
    */
   public AbstractDatabaseFunction(final String id, final String name) {

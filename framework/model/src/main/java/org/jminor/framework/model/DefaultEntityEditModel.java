@@ -154,7 +154,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   /**
    * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by {@code entityId}.
-   * @param entityId the ID of the entity to base this {@link DefaultEntityEditModel} on
+   * @param entityId the id of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider) {
@@ -162,8 +162,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by {@code entityId}.
-   * @param entityId the ID of the entity to base this {@link DefaultEntityEditModel} on
+   * Instantiates a new {@link DefaultEntityEditModel} based on the  entityIdentified by {@code entityId}.
+   * @param entityId the id of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
@@ -637,7 +637,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity getDefaultEntity() {
-    return getEntities().entity(entity.getEntityId(), defaultValueProvider);
+    return getEntityDefinition().entity(defaultValueProvider);
   }
 
   @Override

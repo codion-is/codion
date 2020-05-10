@@ -336,15 +336,6 @@ public class DomainTest {
   }
 
   @Test
-  public void getDomainEntityIds() {
-    final TestDomain testDomain = new TestDomain();
-    testDomain.registerEntities();
-    final Entities entities = DomainEntities.getEntities(testDomain.getDomainId());
-    assertNotNull(entities.getDefinition(TestDomain.T_DEPARTMENT));
-    assertNotNull(entities.getDefinition(TestDomain.T_EMP));
-  }
-
-  @Test
   public void hasDerivedProperties() {
     final EntityDefinition definition = domain.getDefinition(TestDomain.T_DETAIL);
     assertFalse(definition.hasDerivedProperties(TestDomain.DETAIL_BOOLEAN));
@@ -621,14 +612,6 @@ public class DomainTest {
   @Test
   public void getProcedureNonExisting() {
     assertThrows(IllegalArgumentException.class, () -> domain.getProcedure("nonexistingprocedureid"));
-  }
-
-  @Test
-  public void entityWithValueProvider() {
-    final Entity detail = entities.entity(TestDomain.T_DETAIL, property -> null);
-    assertFalse(detail.containsKey(TestDomain.DETAIL_DOUBLE));//columnHasDefaultValue
-    assertFalse(detail.containsKey(TestDomain.DETAIL_DATE));//columnHasDefaultValue
-    assertTrue(detail.containsKey(TestDomain.DETAIL_BOOLEAN_NULLABLE));//columnHasDefaultValue && property.hasDefaultValue
   }
 
   @Test

@@ -8,7 +8,6 @@ import org.jminor.common.event.EventDataListener;
 import org.jminor.common.event.Events;
 import org.jminor.common.valuemap.DefaultValueMap;
 import org.jminor.common.valuemap.ValueMap;
-import org.jminor.framework.domain.DomainEntities;
 import org.jminor.framework.domain.property.ColumnProperty;
 import org.jminor.framework.domain.property.DenormalizedProperty;
 import org.jminor.framework.domain.property.DerivedProperty;
@@ -132,7 +131,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   /**
-   * @param propertyId the ID of the property for which to retrieve the value
+   * @param propertyId the id of the property for which to retrieve the value
    * @return the value of the property identified by {@code propertyId}
    */
   @Override
@@ -396,11 +395,6 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return containsKey(definition.getProperty(propertyId));
   }
 
-  /**
-   * Returns true if any of the non-nullable properties involved in the given foreign key are null
-   * @param foreignKeyProperty the foreign key property
-   * @return true if the foreign key is null
-   */
   @Override
   public boolean isForeignKeyNull(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
@@ -469,8 +463,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   /**
-   * Called after a value has been changed.
-   * @param property the property of the value that is changing
+   * Fires notifications for a value change for the given property as well as for properties derived from it.
+   * @param property the property which value is changing
    * @param currentValue the new value
    * @param previousValue the previous value, if any
    * @param initialization true if the value is being initialized, that is, no previous value exists
@@ -741,7 +735,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     final String domainId = (String) stream.readObject();
     final String entityId = (String) stream.readObject();
     final boolean isModified = stream.readBoolean();
-    definition = DomainEntities.getEntities(domainId).getDefinition(entityId);
+    definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
     }
@@ -778,6 +772,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   private static Map<Property, Object> createValueMap(final Key key) {
+    requireNonNull(key, "key");
     final List<ColumnProperty> properties = key.getProperties();
     final Map<Property, Object> values = new HashMap<>(properties.size());
     for (int i = 0; i < properties.size(); i++) {

@@ -11,7 +11,7 @@ import java.io.Serializable;
 public interface EntityCondition extends Serializable {
 
   /**
-   * @return the entity ID
+   * @return the  entityId
    */
   String getEntityId();
 

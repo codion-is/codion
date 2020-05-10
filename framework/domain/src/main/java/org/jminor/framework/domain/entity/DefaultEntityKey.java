@@ -4,7 +4,6 @@
 package org.jminor.framework.domain.entity;
 
 import org.jminor.common.valuemap.DefaultValueMap;
-import org.jminor.framework.domain.DomainEntities;
 import org.jminor.framework.domain.property.ColumnProperty;
 
 import java.io.IOException;
@@ -304,7 +303,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final String domainId = (String) stream.readObject();
     final String entityId = (String) stream.readObject();
-    definition = DomainEntities.getEntities(domainId).getDefinition(entityId);
+    definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
     }

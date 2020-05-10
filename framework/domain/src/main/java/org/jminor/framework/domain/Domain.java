@@ -8,6 +8,7 @@ import org.jminor.common.db.operation.DatabaseOperation;
 import org.jminor.common.db.operation.DatabaseProcedure;
 import org.jminor.common.db.reports.ReportException;
 import org.jminor.common.db.reports.ReportWrapper;
+import org.jminor.framework.domain.entity.DefaultEntities;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.EntityDefinition;
 import org.jminor.framework.domain.entity.EntityDefinitions;
@@ -139,7 +140,7 @@ public class Domain implements EntityDefinition.Provider {
   protected final EntityDefinition.Builder define(final String entityId, final String tableName,
                                                   final Property.Builder... propertyBuilders) {
     final EntityDefinition.Builder definitionBuilder = EntityDefinitions.definition(entityId, tableName, propertyBuilders);
-    entities.addDefinition(definitionBuilder.domainId(getDomainId()).get());
+    entities.addDefinitionInternal(definitionBuilder.domainId(getDomainId()).get());
 
     return definitionBuilder;
   }
@@ -169,7 +170,24 @@ public class Domain implements EntityDefinition.Provider {
    * @param strictForeignKeys true for strict foreign key validation
    */
   protected final void setStrictForeignKeys(final boolean strictForeignKeys) {
-    entities.setStrictForeignKeys(strictForeignKeys);
+    entities.setStrictForeignKeysInternal(strictForeignKeys);
+  }
+
+  private static final class DomainEntities extends DefaultEntities {
+
+    private static final long serialVersionUID = 1;
+
+    private DomainEntities(final String domainId) {
+      super(domainId);
+    }
+
+    private void addDefinitionInternal(final EntityDefinition definition) {
+      super.addDefinition(definition);
+    }
+
+    private void setStrictForeignKeysInternal(final boolean strictForeignKeys) {
+      super.setStrictForeignKeys(strictForeignKeys);
+    }
   }
 
   private static final class Operations {

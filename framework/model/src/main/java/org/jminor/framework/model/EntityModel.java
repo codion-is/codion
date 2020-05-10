@@ -43,7 +43,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
           "org.jminor.framework.model.EntityModel.useClientPreferences", Util.onClasspath("org.json.JSONObject"));
 
   /**
-   * @return the ID of the entity this entity model is based on
+   * @return the id of the entity this entity model is based on
    */
   String getEntityId();
 
@@ -92,7 +92,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Initializes this {@link EntityModel} according to the given foreign key entities.
    * It sets the value for the first available foreign key property representing the given entityId
    * in the {@link EntityEditModel} and sets the search values in the {@link EntityTableModel}.
-   * @param foreignKeyEntityId the ID of the master entity
+   * @param foreignKeyEntityId the id of the master entity
    * @param foreignKeyValues the master entities
    */
   void initialize(String foreignKeyEntityId, List<Entity> foreignKeyValues);
@@ -100,7 +100,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities,
    * sets the appropriate property value in the {@link EntityEditModel} and filters the {@link EntityTableModel}
-   * @param foreignKeyProperty the ID of the foreign key
+   * @param foreignKeyProperty the id of the foreign key
    * @param foreignKeyValues the foreign key values
    */
   void initialize(ForeignKeyProperty foreignKeyProperty, List<Entity> foreignKeyValues);
@@ -143,8 +143,8 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   boolean containsDetailModel(Class<? extends M> modelClass);
 
   /**
-   * @param entityId the entity ID
-   * @return true if this model contains a detail model for the given entity ID
+   * @param entityId the  entityId
+   * @return true if this model contains a detail model for the given  entityId
    */
   boolean containsDetailModel(String entityId);
 
@@ -164,7 +164,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
   /**
    * Returns a detail model of the given type
-   * @param entityId the entity ID of the required EntityModel
+   * @param entityId the  entityId of the required EntityModel
    * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case no detail model for the given entityId is found
    */
@@ -176,12 +176,12 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   Collection<M> getDetailModels();
 
   /**
-   * Indicates that the given detail model is based on the foreign key with the given ID, this becomes
+   * Indicates that the given detail model is based on the foreign key with the given id, this becomes
    * practical when a detail model is based on an entity which contains multiple foreign keys to the
    * same master entity. When initializing this detail model only the value for that foreignKeyProperty is set.
    * If {@code foreignKeyPropertyId} is null the association is removed.
    * @param detailModel the detail model
-   * @param foreignKeyPropertyId the foreign key property ID
+   * @param foreignKeyPropertyId the foreign key property id
    * @see #initialize(ForeignKeyProperty, java.util.List)
    * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
    */

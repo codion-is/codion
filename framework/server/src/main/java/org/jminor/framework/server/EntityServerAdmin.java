@@ -73,7 +73,7 @@ public interface EntityServerAdmin extends Remote {
   void setMaintenanceInterval(int interval) throws RemoteException;
 
   /**
-   * @param clientId the ID of the client for which to retrieve the log
+   * @param clientId the id of the client for which to retrieve the log
    * @return the log for the given connection
    * @throws RemoteException in case of a communication error
    */
@@ -81,7 +81,7 @@ public interface EntityServerAdmin extends Remote {
 
   /**
    * Returns true if logging is enabled for the given connection
-   * @param clientId the ID of the client
+   * @param clientId the id of the client
    * @return true if logging is on for the given connection
    * @throws RemoteException in case of a communication error
    */
@@ -89,7 +89,7 @@ public interface EntityServerAdmin extends Remote {
 
   /**
    * Sets the logging status for the given connection
-   * @param clientId the ID of the client
+   * @param clientId the id of the client
    * @param loggingEnabled the new logging status
    * @throws RemoteException in case of a communication error
    */
@@ -130,7 +130,7 @@ public interface EntityServerAdmin extends Remote {
   /**
    * Unregisters the connection from the server, if connection pooling is enabled
    * for the user the connection is pooled.
-   * @param clientId the ID of the client
+   * @param clientId the id of the client
    * @throws RemoteException in case of a communication error
    */
   void disconnect(UUID clientId) throws RemoteException;

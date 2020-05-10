@@ -9,7 +9,7 @@ package org.jminor.common.db.operation;
 public interface DatabaseOperation {
 
   /**
-   * @return this operations ID
+   * @return this operations id
    */
   String getId();
 

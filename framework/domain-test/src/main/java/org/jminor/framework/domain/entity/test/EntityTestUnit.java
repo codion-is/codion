@@ -125,7 +125,7 @@ public class EntityTestUnit {
 
   /**
    * Runs the insert/update/select/delete tests for the given entityId
-   * @param entityId the ID of the entity to test
+   * @param entityId the id of the entity to test
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
   public final void test(final String entityId) throws DatabaseException {
@@ -151,8 +151,8 @@ public class EntityTestUnit {
 
   /**
    * @param entities the domain model entities
-   * @param entityId the entity ID
-   * @param referenceEntities entities referenced by the given entity ID
+   * @param entityId the  entityId
+   * @param referenceEntities entities referenced by the given  entityId
    * @return a Entity instance containing randomized values, based on the property definitions
    */
   public static Entity createRandomEntity(final Entities entities, final String entityId, final Map<String, Entity> referenceEntities) {
@@ -161,7 +161,7 @@ public class EntityTestUnit {
 
   /**
    * @param entities the domain model entities
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
    */
@@ -269,7 +269,7 @@ public class EntityTestUnit {
 
   /**
    * Initializes a new Entity of the given type, by default this method creates a Entity filled with random values.
-   * @param entityId the entity ID
+   * @param entityId the  entityId
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return a entity of the given type
    */
@@ -288,7 +288,7 @@ public class EntityTestUnit {
 
   /**
    * Initializes the entities referenced by the entity identified by {@code entityId}
-   * @param entityId the ID of the entity for which to initialize the referenced entities
+   * @param entityId the id of the entity for which to initialize the referenced entities
    * @param foreignKeyEntities foreign key entities already created
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    * @see #initializeReferenceEntity(String, Map)
