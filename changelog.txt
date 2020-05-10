@@ -6092,3 +6092,4 @@
   DomainEntities moved to entity package, renamed DefaultEntities, DomainEntities added to Domain
   Domain now abstract, constructors protected
   DefaultEntities.define() added, protected, Domain.DomainEntities.addDefinitionInternal() replaced with defineInternal(), EntityDefinitions removed
+  EntityDefinition.setForeignDefinition() and hasForeignDefinition() removed
