@@ -4,6 +4,8 @@
 package org.jminor.swing.common.ui.textfield;
 
 import org.jminor.common.Formats;
+import org.jminor.common.event.EventDataListener;
+import org.jminor.swing.common.model.textfield.DocumentAdapter;
 
 import java.text.NumberFormat;
 
@@ -56,5 +58,13 @@ public final class LongField extends NumberField {
    */
   public void setLong(final Long value) {
     ((NumberDocument) getDocument()).setNumber(value);
+  }
+
+  /**
+   * @param listener a listener notified when the value changes
+   */
+  public void addLongListener(final EventDataListener<Long> listener) {
+    final NumberDocument document = (NumberDocument) getDocument();
+    document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getLong()));
   }
 }
