@@ -15,6 +15,8 @@ public interface Chinook {
   String T_ARTIST = "artist@chinook";
   String ARTIST_ARTISTID = "artistid";
   String ARTIST_NAME = "name";
+  String ARTIST_NR_OF_ALBUMS = "nr_of_albums";
+  String ARTIST_NR_OF_TRACKS = "nr_of_tracks";
 
   String T_ALBUM = "album@chinook";
   String ALBUM_ALBUMID = "albumid";
@@ -23,6 +25,7 @@ public interface Chinook {
   String ALBUM_ARTIST_FK = "artist_fk";
   String ALBUM_COVER = "cover";
   String ALBUM_COVER_IMAGE = "coverimage";
+  String ALBUM_NUMBER_OF_TRACKS = "nr_of_tracks";
 
   String T_EMPLOYEE = "employee@chinook";
   String EMPLOYEE_EMPLOYEEID = "employeeid";
@@ -91,10 +94,7 @@ public interface Chinook {
               return "";
             }
 
-            final int seconds = ((milliseconds / 1000) % 60);
-            final int minutes = ((milliseconds / 1000) / 60);
-
-            return minutes + " min " + seconds + " sec";
+            return getMinutes(milliseconds) + " min " + getSeconds(milliseconds) + " sec";
           };
 
   String T_INVOICE = "invoice@chinook";
@@ -145,4 +145,27 @@ public interface Chinook {
 
   String P_UPDATE_TOTALS = "chinook.update_totals_procedure";
   String F_RAISE_PRICE = "chinook.raise_price_function";
+
+  static Integer getMinutes(final Integer milliseconds) {
+    if (milliseconds == null) {
+      return null;
+    }
+
+    return milliseconds / 1000 / 60;
+  }
+
+  static Integer getSeconds(final Integer milliseconds) {
+    if (milliseconds == null) {
+      return null;
+    }
+
+    return milliseconds / 1000 % 60;
+  }
+
+  static Integer getMilliseconds(final Integer minutes, final Integer seconds) {
+    int milliseconds = minutes == null ? 0 : minutes * 60 * 1000;
+    milliseconds += seconds == null ? 0 : seconds * 1000;
+
+    return milliseconds == 0 ? null : milliseconds;
+  }
 }

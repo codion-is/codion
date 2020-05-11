@@ -16,6 +16,7 @@ import java.awt.Dimension;
 
 import static org.jminor.common.model.table.SortingDirective.ASCENDING;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
 
 public class InvoiceLineEditPanel extends EntityEditPanel {
 
@@ -41,7 +42,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
     KeyEvents.removeTransferFocusOnEnter(quantityField);//otherwise the action added below wont work
     quantityField.addActionListener(getSaveControl());
 
-    setLayout(new BorderLayout(5, 5));
+    setLayout(borderLayout());
     add(createPropertyPanel(INVOICELINE_TRACK_FK), BorderLayout.WEST);
     add(createPropertyPanel(INVOICELINE_QUANTITY), BorderLayout.CENTER);
     add(createPropertyPanel(new JLabel(" "), tableSearchField), BorderLayout.EAST);

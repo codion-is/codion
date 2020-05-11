@@ -57,7 +57,19 @@ public final class ChinookImpl extends Domain implements Chinook {
             columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
                     .nullable(false)
                     .maximumLength(120)
-                    .preferredColumnWidth(160))
+                    .preferredColumnWidth(160),
+            subqueryProperty(ARTIST_NR_OF_ALBUMS, Types.INTEGER, "Albums",
+                    "select count(*) " +
+                            "from chinook.album " +
+                            "where album.artistid = artist.artistid"),
+            subqueryProperty(ARTIST_NR_OF_TRACKS, Types.INTEGER, "Tracks",
+                    "select count(*) " +
+                            "from chinook.track " +
+                            "where track.albumid in (" +
+                            "  select albumid " +
+                            "  from chinook.album " +
+                            "  where album.artistid = artist.artistid" +
+                            ")"))
             .keyGenerator(automatic("chinook.artist"))
             .orderBy(orderBy().ascending(ARTIST_NAME))
             .stringProvider(new StringProvider(ARTIST_NAME))
@@ -79,7 +91,11 @@ public final class ChinookImpl extends Domain implements Chinook {
             blobProperty(ALBUM_COVER, "Cover")
                     .eagerlyLoaded(true),
             derivedProperty(ALBUM_COVER_IMAGE, Types.JAVA_OBJECT, null,
-                    new CoverArtImageProvider(), ALBUM_COVER))
+                    new CoverArtImageProvider(), ALBUM_COVER),
+            subqueryProperty(ALBUM_NUMBER_OF_TRACKS, Types.INTEGER, "Tracks",
+                    "select count(*) " +
+                            "from chinook.track " +
+                            "where track.albumid = album.albumid"))
             .keyGenerator(automatic("chinook.album"))
             .orderBy(orderBy().ascending(ALBUM_ARTISTID, ALBUM_TITLE))
             .stringProvider(new StringProvider(ALBUM_TITLE))

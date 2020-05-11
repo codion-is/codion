@@ -6,9 +6,8 @@ package org.jminor.framework.demos.chinook.ui;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
-import java.awt.GridLayout;
-
 import static org.jminor.framework.demos.chinook.domain.Chinook.MEDIATYPE_NAME;
+import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 
 public class MediaTypeEditPanel extends EntityEditPanel {
 
@@ -22,7 +21,7 @@ public class MediaTypeEditPanel extends EntityEditPanel {
 
     createTextField(MEDIATYPE_NAME).setColumns(12);
 
-    setLayout(new GridLayout(1, 1, 5, 5));
+    setLayout(gridLayout(1, 1));
     addPropertyPanel(MEDIATYPE_NAME);
   }
 }

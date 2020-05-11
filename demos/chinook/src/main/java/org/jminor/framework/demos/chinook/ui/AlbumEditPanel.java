@@ -8,9 +8,10 @@ import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
+import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 
 public class AlbumEditPanel extends EntityEditPanel {
 
@@ -25,13 +26,13 @@ public class AlbumEditPanel extends EntityEditPanel {
     createForeignKeyLookupField(ALBUM_ARTIST_FK).setColumns(18);
     createTextField(ALBUM_TITLE).setColumns(18);
 
-    final JPanel inputPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+    final JPanel inputPanel = new JPanel(gridLayout(2, 1));
     inputPanel.add(createPropertyPanel(ALBUM_ARTIST_FK));
     inputPanel.add(createPropertyPanel(ALBUM_TITLE));
 
-    setLayout(new BorderLayout(5, 5));
+    setLayout(borderLayout());
 
-    final JPanel inputBasePanel = new JPanel(new BorderLayout(5, 5));
+    final JPanel inputBasePanel = new JPanel(borderLayout());
     inputBasePanel.add(inputPanel, BorderLayout.NORTH);
 
     add(inputBasePanel, BorderLayout.WEST);

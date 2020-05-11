@@ -3,14 +3,18 @@
  */
 package org.jminor.framework.demos.chinook.ui;
 
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.TextFields;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static org.jminor.swing.common.ui.Components.setPreferredHeight;
+import static org.jminor.swing.common.ui.layout.Layouts.flexibleGridLayout;
+import static org.jminor.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 
 public class CustomerEditPanel extends EntityEditPanel {
+
+  public static final int TEXT_FIELD_COLUMNS = 12;
 
   public CustomerEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
@@ -20,20 +24,20 @@ public class CustomerEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(CUSTOMER_FIRSTNAME);
 
-    createTextField(CUSTOMER_FIRSTNAME).setColumns(16);
-    createTextField(CUSTOMER_LASTNAME).setColumns(16);
-    createTextField(CUSTOMER_COMPANY).setColumns(16);
-    createTextField(CUSTOMER_ADDRESS).setColumns(16);
-    createTextField(CUSTOMER_CITY).setColumns(16);
-    TextFields.makeUpperCase(createTextField(CUSTOMER_STATE)).setColumns(16);
-    createTextField(CUSTOMER_COUNTRY).setColumns(16);
-    createTextField(CUSTOMER_POSTALCODE).setColumns(16);
-    createTextField(CUSTOMER_PHONE).setColumns(16);
-    createTextField(CUSTOMER_FAX).setColumns(16);
-    createTextField(CUSTOMER_EMAIL).setColumns(16);
-    createForeignKeyComboBox(CUSTOMER_SUPPORTREP_FK);
+    createTextField(CUSTOMER_FIRSTNAME).setColumns(TEXT_FIELD_COLUMNS);
+    createTextField(CUSTOMER_LASTNAME).setColumns(TEXT_FIELD_COLUMNS);
+    createTextField(CUSTOMER_COMPANY).setColumns(TEXT_FIELD_COLUMNS);
+    createTextField(CUSTOMER_ADDRESS).setColumns(TEXT_FIELD_COLUMNS);
+    createTextField(CUSTOMER_CITY).setColumns(TEXT_FIELD_COLUMNS);
+    TextFields.makeUpperCase(createTextField(CUSTOMER_STATE)).setColumns(TEXT_FIELD_COLUMNS);
+    createTextField(CUSTOMER_COUNTRY).setColumns(TEXT_FIELD_COLUMNS);
+    createTextField(CUSTOMER_POSTALCODE).setColumns(TEXT_FIELD_COLUMNS);
+    createTextField(CUSTOMER_PHONE).setColumns(TEXT_FIELD_COLUMNS);
+    createTextField(CUSTOMER_FAX).setColumns(TEXT_FIELD_COLUMNS);
+    createTextField(CUSTOMER_EMAIL).setColumns(TEXT_FIELD_COLUMNS);
+    setPreferredHeight(createForeignKeyComboBox(CUSTOMER_SUPPORTREP_FK), getPreferredTextFieldHeight());
 
-    setLayout(new FlexibleGridLayout(4, 3, 5, 5));
+    setLayout(flexibleGridLayout(4, 3));
     addPropertyPanel(CUSTOMER_FIRSTNAME);
     addPropertyPanel(CUSTOMER_LASTNAME);
     addPropertyPanel(CUSTOMER_COMPANY);
