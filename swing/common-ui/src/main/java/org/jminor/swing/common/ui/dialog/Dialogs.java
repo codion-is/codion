@@ -408,7 +408,7 @@ public final class Dialogs {
     final JDialog dialog = new JDialog(dialogOwner, title, modal == Modal.YES ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS);
     if (enterAction != null) {
       KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, OnKeyRelease.YES, enterAction);
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, OnKeyRelease.NO, enterAction);
     }
 
     final Action disposeAction = new DisposeDialogAction(dialog);
