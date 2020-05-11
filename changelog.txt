@@ -6070,3 +6070,4 @@
   Sonarqube build task now removes -SNAPSHOT from version
 0.15.1
   docs folder renamed documentation
+  EntityApplicationPanel, support tables mnemonic changed from P to O, to prevent clash with print action
