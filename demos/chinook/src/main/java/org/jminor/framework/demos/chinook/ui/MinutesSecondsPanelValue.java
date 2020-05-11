@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.chinook.ui;
 
-import org.jminor.swing.common.model.textfield.DocumentAdapter;
 import org.jminor.swing.common.ui.textfield.IntegerField;
 import org.jminor.swing.common.ui.value.AbstractComponentValue;
 
@@ -21,8 +20,8 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
   MinutesSecondsPanelValue() {
     super(new MinutesSecondsPanel());
-    getComponent().minutesField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
-    getComponent().secondsField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+    getComponent().minutesField.addIntegerListener(minutes -> notifyValueChange());
+    getComponent().secondsField.addIntegerListener(seconds -> notifyValueChange());
   }
 
   @Override

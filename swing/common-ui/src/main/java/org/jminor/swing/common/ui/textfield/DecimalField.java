@@ -3,6 +3,9 @@
  */
 package org.jminor.swing.common.ui.textfield;
 
+import org.jminor.common.event.EventDataListener;
+import org.jminor.swing.common.model.textfield.DocumentAdapter;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
@@ -89,11 +92,28 @@ public final class DecimalField extends NumberField {
   }
 
   /**
-   *  Sets whether this field parses a BigDecimal
+   * Sets whether this field parses a BigDecimal
    * @param parseBigDecimal if true then this field parses a BigDecimal
    */
   public void setParseBigDecimal(final boolean parseBigDecimal) {
     ((DecimalFormat) ((DecimalDocument) getDocument()).getFormat()).setParseBigDecimal(parseBigDecimal);
+  }
+
+  /**
+   * @param listener a listener notified when the value changes
+   */
+  public void addDoubleListener(final EventDataListener<Double> listener) {
+    final NumberDocument document = (NumberDocument) getDocument();
+    document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getDouble()));
+  }
+
+  /**
+   * @param listener a listener notified when the value changes
+   * @see #setParseBigDecimal(boolean)
+   */
+  public void addBigDecimalListener(final EventDataListener<BigDecimal> listener) {
+    final NumberDocument document = (NumberDocument) getDocument();
+    document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getBigDecimal()));
   }
 
   private static DecimalFormat createDefaultFormat() {
