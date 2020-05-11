@@ -146,11 +146,11 @@ public final class EntityLookupField extends JTextField {
   }
 
   /**
-   * Sets the SelectionProvider, that is, the object responsible for providing the comnponent used
+   * Sets the SelectionProvider, that is, the object responsible for providing the component used
    * for selecting items from the lookup result.
    * @param selectionProvider the {@link SelectionProvider} implementation to use when presenting
    * a selection dialog to the user
-   * @throws NullPointerException in case {@code selectionProvier} is null
+   * @throws NullPointerException in case {@code selectionProvider} is null
    */
   public void setSelectionProvider(final SelectionProvider selectionProvider) {
     this.selectionProvider = requireNonNull(selectionProvider);
