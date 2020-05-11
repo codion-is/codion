@@ -5,15 +5,21 @@ package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
+import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.chinook.model.TrackTableModel;
+import org.jminor.framework.domain.property.Property;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.dialog.Modal;
 import org.jminor.swing.common.ui.textfield.DecimalField;
+import org.jminor.swing.common.ui.value.ComponentValue;
 import org.jminor.swing.common.ui.value.ComponentValuePanel;
 import org.jminor.swing.common.ui.value.NumericalValues;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
+import org.jminor.swing.framework.ui.EntityComponentValues;
+import org.jminor.swing.framework.ui.EntityTableConditionPanel;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import java.math.BigDecimal;
@@ -22,7 +28,7 @@ import java.util.List;
 public class TrackTablePanel extends EntityTablePanel {
 
   public TrackTablePanel(final SwingEntityTableModel tableModel) {
-    super(tableModel);
+    super(tableModel, new TrackComponentValues(), new EntityTableConditionPanel(tableModel));
   }
 
   @Override
@@ -52,5 +58,19 @@ public class TrackTablePanel extends EntityTablePanel {
     }
 
     throw new CancelException();
+  }
+
+  private static final class TrackComponentValues extends EntityComponentValues {
+
+    @Override
+    public ComponentValue createComponentValue(final Property property,
+                                               final SwingEntityEditModel editModel,
+                                               final Object initialValue) {
+      if (property.is(Chinook.TRACK_MILLISECONDS)) {
+        return new MinutesSecondsPanelValue();
+      }
+
+      return super.createComponentValue(property, editModel, initialValue);
+    }
   }
 }

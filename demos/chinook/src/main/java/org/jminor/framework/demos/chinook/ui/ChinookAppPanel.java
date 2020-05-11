@@ -75,26 +75,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   protected List<EntityPanel> initializeEntityPanels(final ChinookApplicationModel applicationModel) {
     final List<EntityPanel> panels = new ArrayList<>();
 
-    final SwingEntityModel artistModel = applicationModel.getEntityModel(T_ARTIST);
-    final EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
-    final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
-    final EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.getEditModel()));
-    final SwingEntityModel trackModel = albumModel.getDetailModel(T_TRACK);
-    final EntityPanel trackPanel = new EntityPanel(trackModel,
-            new TrackEditPanel(trackModel.getEditModel()), new TrackTablePanel(trackModel.getTableModel()));
-
-    albumPanel.addDetailPanel(trackPanel);
-    artistPanel.addDetailPanel(albumPanel);
-    panels.add(artistPanel);
-
-    final SwingEntityModel playlistModel = applicationModel.getEntityModel(T_PLAYLIST);
-    final EntityPanel playlistPanel = new EntityPanel(playlistModel, new PlaylistEditPanel(playlistModel.getEditModel()));
-    final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(T_PLAYLISTTRACK);
-    final EntityPanel playlistTrackPanel = new EntityPanel(playlistTrackModel, new PlaylistTrackEditPanel(playlistTrackModel.getEditModel()));
-
-    playlistPanel.addDetailPanel(playlistTrackPanel);
-    panels.add(playlistPanel);
-
     final SwingEntityModel customerModel = applicationModel.getEntityModel(T_CUSTOMER);
     final EntityPanel customerPanel = new EntityPanel(customerModel, new CustomerEditPanel(customerModel.getEditModel()),
             new CustomerTablePanel(customerModel.getTableModel()));
@@ -119,6 +99,26 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     invoicePanel.addDetailPanel(invoiceLinePanel);
     customerPanel.addDetailPanel(invoicePanel);
     panels.add(customerPanel);
+
+    final SwingEntityModel artistModel = applicationModel.getEntityModel(T_ARTIST);
+    final EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
+    final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
+    final EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.getEditModel()));
+    final SwingEntityModel trackModel = albumModel.getDetailModel(T_TRACK);
+    final EntityPanel trackPanel = new EntityPanel(trackModel,
+            new TrackEditPanel(trackModel.getEditModel()), new TrackTablePanel(trackModel.getTableModel()));
+
+    albumPanel.addDetailPanel(trackPanel);
+    artistPanel.addDetailPanel(albumPanel);
+    panels.add(artistPanel);
+
+    final SwingEntityModel playlistModel = applicationModel.getEntityModel(T_PLAYLIST);
+    final EntityPanel playlistPanel = new EntityPanel(playlistModel, new PlaylistEditPanel(playlistModel.getEditModel()));
+    final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(T_PLAYLISTTRACK);
+    final EntityPanel playlistTrackPanel = new EntityPanel(playlistTrackModel, new PlaylistTrackEditPanel(playlistTrackModel.getEditModel()));
+
+    playlistPanel.addDetailPanel(playlistTrackPanel);
+    panels.add(playlistPanel);
 
     return panels;
   }
@@ -156,6 +156,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
+    EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);

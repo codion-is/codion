@@ -26,9 +26,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.GridLayout;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
  * When running this make sure the chinook demo module directory is the
@@ -67,7 +67,7 @@ public final class ClientUI {
             JOptionPane.showMessageDialog(nameField,
                     "Inserted: " + insertedEntities.get(0)));
 
-    JPanel artistPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+    JPanel artistPanel = new JPanel(gridLayout(2, 1));
     artistPanel.add(new JLabel("Artist name"));
     artistPanel.add(nameField);
 
@@ -125,7 +125,7 @@ public final class ClientUI {
             JOptionPane.showMessageDialog(titleField,
                     "Inserted: " + insertedEntities.get(0)));
 
-    JPanel albumPanel = new JPanel(new GridLayout(4, 1, 5, 5));
+    JPanel albumPanel = new JPanel(gridLayout(4, 1));
     albumPanel.add(new JLabel("Artist"));
     albumPanel.add(artistComboBox);
     albumPanel.add(new JLabel("Title"));

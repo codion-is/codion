@@ -15,10 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 
 import static org.jminor.common.model.table.SortingDirective.ASCENDING;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
+import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 
 public class InvoiceEditPanel extends EntityEditPanel {
 
@@ -39,7 +40,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     configureCustomerLookup(customerField);
     customerField.setColumns(16);
     final TemporalInputPanel datePanel = createTemporalInputPanel(INVOICE_INVOICEDATE);
-    datePanel.getInputField().setColumns(16);
+    datePanel.getInputField().setColumns(12);
     final JTextField addressField = createTextField(INVOICE_BILLINGADDRESS);
     addressField.setColumns(16);
     final JTextField cityField = createTextField(INVOICE_BILLINGCITY);
@@ -53,7 +54,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     final JTextField totalField = createTextField(INVOICE_TOTAL_SUB);
     totalField.setColumns(16);
 
-    final JPanel centerPanel = new JPanel(new GridLayout(4, 2, 5, 5));
+    final JPanel centerPanel = new JPanel(gridLayout(4, 2));
     centerPanel.add(createPropertyPanel(INVOICE_CUSTOMER_FK));
     centerPanel.add(createPropertyPanel(INVOICE_INVOICEDATE));
     centerPanel.add(createPropertyPanel(INVOICE_BILLINGADDRESS));
@@ -63,12 +64,12 @@ public class InvoiceEditPanel extends EntityEditPanel {
     centerPanel.add(createPropertyPanel(INVOICE_BILLINGPOSTALCODE));
     centerPanel.add(createPropertyPanel(INVOICE_TOTAL_SUB));
 
-    final JPanel centerBasePanel = new JPanel(new BorderLayout(5, 5));
+    final JPanel centerBasePanel = new JPanel(borderLayout());
     centerBasePanel.add(centerPanel, BorderLayout.CENTER);
 
     invoiceLinePanel.setBorder(BorderFactory.createTitledBorder("Invoice lines"));
 
-    setLayout(new BorderLayout(5, 5));
+    setLayout(borderLayout());
     add(centerBasePanel, BorderLayout.CENTER);
     add(invoiceLinePanel, BorderLayout.EAST);
   }

@@ -18,7 +18,8 @@ import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.ui.EntityPanel;
 
 import javax.swing.JPanel;
-import java.awt.GridLayout;
+
+import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
  * Just a little demo showcasing how a single {@link SwingEntityModel} behaves
@@ -42,7 +43,7 @@ public final class MultiPanelDemo {
     SwingEntityModel employeeModel = new SwingEntityModel(Chinook.T_EMPLOYEE, connectionProvider);
     employeeModel.refresh();
 
-    JPanel basePanel = new JPanel(new GridLayout(2, 2, 5, 5));
+    JPanel basePanel = new JPanel(gridLayout(2, 2));
     for (int i = 0; i < 4; i++) {
       EntityPanel employeePanel = new EntityPanel(employeeModel, new EmployeeEditPanel(employeeModel.getEditModel()));
       employeePanel.getTablePanel().setConditionPanelVisible(true);

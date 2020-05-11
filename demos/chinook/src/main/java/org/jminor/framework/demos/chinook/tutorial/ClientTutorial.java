@@ -16,7 +16,6 @@ import org.jminor.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 
-import java.awt.GridLayout;
 import java.sql.Types;
 import java.util.List;
 
@@ -26,6 +25,7 @@ import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
 import static org.jminor.swing.common.ui.Components.setPreferredWidth;
 import static org.jminor.swing.common.ui.Windows.getScreenSizeRatio;
+import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
  * When running this make sure the chinook demo module directory is the
@@ -94,7 +94,7 @@ public final class ClientTutorial {
       setInitialFocusProperty(ALBUM_ARTIST_FK);
       setPreferredWidth(createForeignKeyComboBox(ALBUM_ARTIST_FK), 160);
       createTextField(ALBUM_TITLE).setColumns(15);
-      setLayout(new GridLayout(2, 1, 5, 5));
+      setLayout(gridLayout(2, 1));
       addPropertyPanel(ALBUM_ARTIST_FK);
       addPropertyPanel(ALBUM_TITLE);
     }

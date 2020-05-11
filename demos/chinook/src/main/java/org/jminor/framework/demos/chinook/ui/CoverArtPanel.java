@@ -14,12 +14,14 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+
+import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
+import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
  * A panel for displaying a cover image, based on a byte array.
@@ -33,7 +35,7 @@ final class CoverArtPanel extends JPanel {
    * @param imageBytesValue the image bytes value to base this panel on.
    */
   CoverArtPanel(final Value<byte[]> imageBytesValue) {
-    super(new BorderLayout());
+    super(borderLayout());
     this.imageBytesValue = imageBytesValue;
     this.imagePanel = createImagePanel();
     initializePanel();
@@ -41,11 +43,11 @@ final class CoverArtPanel extends JPanel {
   }
 
   private void initializePanel() {
-    final JPanel coverPanel = new JPanel(new BorderLayout());
+    final JPanel coverPanel = new JPanel(borderLayout());
     coverPanel.setBorder(BorderFactory.createTitledBorder("Cover"));
     coverPanel.add(imagePanel, BorderLayout.CENTER);
 
-    final JPanel coverButtonPanel = new JPanel(new GridLayout(1, 2, 5, 5));
+    final JPanel coverButtonPanel = new JPanel(gridLayout(1, 2));
     coverButtonPanel.add(new JButton(Controls.control(this::setCover, "Select cover...")));
     coverButtonPanel.add(new JButton(Controls.control(this::removeCover, "Remove cover")));
 
