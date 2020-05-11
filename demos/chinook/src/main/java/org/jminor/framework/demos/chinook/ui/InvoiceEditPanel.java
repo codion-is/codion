@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.chinook.ui;
 
-import org.jminor.common.model.table.SortingDirective;
 import org.jminor.swing.common.ui.time.TemporalInputPanel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
@@ -18,6 +17,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
+import static org.jminor.common.model.table.SortingDirective.ASCENDING;
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class InvoiceEditPanel extends EntityEditPanel {
@@ -78,7 +78,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
             new EntityLookupField.TableSelectionProvider(customerField.getModel());
     final SwingEntityTableModel tableModel = customerSelectionProvider.getTable().getModel();
     tableModel.setColumns(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME, CUSTOMER_EMAIL);
-    tableModel.setSortingDirective(CUSTOMER_LASTNAME, SortingDirective.ASCENDING);
+    tableModel.setSortingDirective(CUSTOMER_LASTNAME, ASCENDING);
     customerSelectionProvider.setPreferredSize(new Dimension(500, 300));
     customerField.setSelectionProvider(customerSelectionProvider);
   }
