@@ -58,8 +58,7 @@ public final class ClientTutorial {
               columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
                       .nullable(false).maximumLength(120),
               subqueryProperty(ARTIST_NR_OF_ALBUMS, Types.INTEGER, "Albums",
-                      "select count(*) " +
-                              "from chinook.album " +
+                      "select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid"))
               .keyGenerator(automatic(T_ARTIST))
               .stringProvider(new StringProvider(ARTIST_NAME))
