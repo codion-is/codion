@@ -13,7 +13,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
 /**
- * A utility class for layouts. All layouts created use the hgap and vgap according to {@link #HORIZONTAL_VERTICAL_GAP).
+ * A utility class for layouts. All layouts created use the centrally configured hgap and vgap.
+ * @see #HORIZONTAL_VERTICAL_GAP
  */
 public final class Layouts {
 

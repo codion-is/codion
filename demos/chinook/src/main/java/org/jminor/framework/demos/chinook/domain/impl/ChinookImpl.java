@@ -438,9 +438,13 @@ public final class ChinookImpl extends Domain implements Chinook {
 
     @Override
     public String apply(final Entity customer) {
-      final StringBuilder builder =
-              new StringBuilder(customer.getString(CUSTOMER_LASTNAME))
-                      .append(", ").append(customer.getString(CUSTOMER_FIRSTNAME));
+      final StringBuilder builder = new StringBuilder();
+      if (customer.isNotNull(CUSTOMER_LASTNAME)) {
+        builder.append(customer.getString(CUSTOMER_LASTNAME));
+      }
+      if (customer.isNotNull(CUSTOMER_FIRSTNAME)) {
+        builder.append(", ").append(customer.getString(CUSTOMER_FIRSTNAME));
+      }
       if (customer.isNotNull(CUSTOMER_EMAIL)) {
         builder.append(" <").append(customer.getString(CUSTOMER_EMAIL)).append(">");
       }

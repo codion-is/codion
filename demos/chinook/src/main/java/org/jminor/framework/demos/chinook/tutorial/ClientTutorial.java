@@ -14,8 +14,14 @@ import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 import org.jminor.swing.framework.ui.EntityEditPanel;
+import org.jminor.swing.framework.ui.EntityLookupField;
 import org.jminor.swing.framework.ui.EntityPanel;
+import org.jminor.swing.framework.ui.EntityTablePanel;
 
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import java.awt.Color;
 import java.sql.Types;
 import java.util.List;
 
@@ -23,7 +29,7 @@ import static java.util.Collections.singletonList;
 import static org.jminor.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
 import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
 import static org.jminor.framework.domain.property.Properties.*;
-import static org.jminor.swing.common.ui.Components.setPreferredWidth;
+import static org.jminor.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
 import static org.jminor.swing.common.ui.Windows.getScreenSizeRatio;
 import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
 
@@ -38,6 +44,7 @@ public final class ClientTutorial {
     public static final String T_ARTIST = "chinook.artist";
     public static final String ARTIST_ID = "artistid";
     public static final String ARTIST_NAME = "name";
+    public static final String ARTIST_NR_OF_ALBUMS = "nr_of_albums";
 
     public static final String T_ALBUM = "chinook.album";
     public static final String ALBUM_ALBUMID = "albumid";
@@ -49,10 +56,14 @@ public final class ClientTutorial {
       define(T_ARTIST,
               primaryKeyProperty(ARTIST_ID),
               columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
-                      .nullable(false).maximumLength(120))
+                      .nullable(false).maximumLength(120),
+              subqueryProperty(ARTIST_NR_OF_ALBUMS, Types.INTEGER, "Albums",
+                      "select count(*) " +
+                              "from chinook.album " +
+                              "where album.artistid = artist.artistid"))
               .keyGenerator(automatic(T_ARTIST))
               .stringProvider(new StringProvider(ARTIST_NAME))
-              .smallDataset(true)
+              .searchPropertyIds(ARTIST_NAME)
               .caption("Artists");
 
       define(T_ALBUM,
@@ -63,37 +74,42 @@ public final class ClientTutorial {
               columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
                       .nullable(false).maximumLength(160))
               .keyGenerator(automatic(T_ALBUM))
-              .stringProvider(new StringProvider()
-                      .addValue(ALBUM_ARTIST_FK).addText(" - ").addValue(ALBUM_TITLE))
+              .stringProvider(new StringProvider(ALBUM_ARTIST_FK)
+                      .addText(" - ").addValue(ALBUM_TITLE))
               .caption("Albums");
     }
   }
 
   private static final class ArtistEditPanel extends EntityEditPanel {
 
-    private ArtistEditPanel(final SwingEntityEditModel editModel) {
+    private ArtistEditPanel(SwingEntityEditModel editModel) {
       super(editModel);
     }
 
     @Override
     protected void initializeUI() {
       setInitialFocusProperty(ARTIST_NAME);
-      createTextField(ARTIST_NAME).setColumns(15);
+      JTextField nameField = createTextField(ARTIST_NAME);
+      nameField.setColumns(15);
       addPropertyPanel(ARTIST_NAME);
     }
   }
 
   private static final class AlbumEditPanel extends EntityEditPanel {
 
-    private AlbumEditPanel(final SwingEntityEditModel editModel) {
+    private AlbumEditPanel(SwingEntityEditModel editModel) {
       super(editModel);
     }
 
     @Override
     protected void initializeUI() {
       setInitialFocusProperty(ALBUM_ARTIST_FK);
-      setPreferredWidth(createForeignKeyComboBox(ALBUM_ARTIST_FK), 160);
-      createTextField(ALBUM_TITLE).setColumns(15);
+      EntityLookupField artistLookupField = createForeignKeyLookupField(ALBUM_ARTIST_FK);
+      artistLookupField.setColumns(15);
+      JTextField titleField = createTextField(ALBUM_TITLE);
+      removeTransferFocusOnEnter(titleField);
+      titleField.setAction(getInsertControl());
+      titleField.setColumns(15);
       setLayout(gridLayout(2, 1));
       addPropertyPanel(ALBUM_ARTIST_FK);
       addPropertyPanel(ALBUM_TITLE);
@@ -104,12 +120,12 @@ public final class ClientTutorial {
 
     @Override
     protected SwingEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
-      final SwingEntityModel artistModel = new SwingEntityModel(T_ARTIST, connectionProvider);
-      final SwingEntityModel albumModel = new SwingEntityModel(T_ALBUM, connectionProvider);
+      SwingEntityModel artistModel = new SwingEntityModel(T_ARTIST, connectionProvider);
+      SwingEntityModel albumModel = new SwingEntityModel(T_ALBUM, connectionProvider);
       artistModel.addDetailModel(albumModel);
       artistModel.refresh();
 
-      final SwingEntityApplicationModel applicationModel = new SwingEntityApplicationModel(connectionProvider);
+      SwingEntityApplicationModel applicationModel = new SwingEntityApplicationModel(connectionProvider);
       applicationModel.addEntityModel(artistModel);
 
       return applicationModel;
@@ -117,10 +133,10 @@ public final class ClientTutorial {
 
     @Override
     protected List<EntityPanel> initializeEntityPanels(final SwingEntityApplicationModel applicationModel) {
-      final SwingEntityModel artistModel = applicationModel.getEntityModel(T_ARTIST);
-      final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
-      final EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
-      final EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.getEditModel()));
+      SwingEntityModel artistModel = applicationModel.getEntityModel(T_ARTIST);
+      SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
+      EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
+      EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.getEditModel()));
       artistPanel.addDetailPanel(albumPanel);
 
       return singletonList(artistPanel);
@@ -131,6 +147,9 @@ public final class ClientTutorial {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Chinook.class.getName());
+    UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
+    EntityPanel.TOOLBAR_BUTTONS.set(true);
+    EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     new ApplicationPanel().startApplication("Artists and Albums", null, MaximizeFrame.NO,
             getScreenSizeRatio(0.5), Users.parseUser("scott:tiger"));
   }
