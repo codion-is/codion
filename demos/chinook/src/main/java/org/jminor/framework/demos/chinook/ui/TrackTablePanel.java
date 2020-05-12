@@ -8,7 +8,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.chinook.model.TrackTableModel;
 import org.jminor.framework.domain.property.Property;
-import org.jminor.swing.common.ui.control.ControlSet;
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.dialog.Modal;
@@ -32,8 +32,8 @@ public class TrackTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlSet getPopupControls(final List<ControlSet> additionalPopupControlSets) {
-    final ControlSet controls = super.getPopupControls(additionalPopupControlSets);
+  protected ControlList getPopupControls(final List<ControlList> additionalPopupControls) {
+    final ControlList controls = super.getPopupControls(additionalPopupControls);
     controls.addAt(0, Controls.control(this::raisePriceOfSelected, "Raise price...",
             getTableModel().getSelectionModel().getSelectionNotEmptyObserver()));
     controls.addSeparatorAt(1);

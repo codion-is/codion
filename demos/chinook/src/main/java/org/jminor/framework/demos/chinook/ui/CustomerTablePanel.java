@@ -5,7 +5,7 @@ package org.jminor.framework.demos.chinook.ui;
 
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.entity.Entities;
-import org.jminor.swing.common.ui.control.ControlSet;
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityReports;
@@ -26,12 +26,12 @@ public class CustomerTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlSet getPrintControls() {
-    final ControlSet printControlSet = super.getPrintControls();
-    printControlSet.add(Controls.control(this::viewCustomerReport, "Customer report",
+  protected ControlList getPrintControls() {
+    final ControlList printControls = super.getPrintControls();
+    printControls.add(Controls.control(this::viewCustomerReport, "Customer report",
             getTable().getModel().getSelectionModel().getSelectionNotEmptyObserver()));
 
-    return printControlSet;
+    return printControls;
   }
 
   private void viewCustomerReport() throws Exception {

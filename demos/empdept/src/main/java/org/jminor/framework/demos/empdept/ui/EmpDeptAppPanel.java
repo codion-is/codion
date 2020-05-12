@@ -13,7 +13,7 @@ import org.jminor.framework.demos.empdept.model.EmployeeEditModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.plugin.json.EntityJSONParser;
 import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.control.ControlSet;
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
@@ -66,15 +66,15 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
   // end::importJSON[]
 
-  // tag::getToolsControlSet[]
+  // tag::getToolsControls[]
   @Override
-  protected ControlSet getToolsControlSet() {
-    final ControlSet toolsSet = super.getToolsControlSet();
-    toolsSet.add(Controls.control(this::importJSON, "Import JSON"));
+  protected ControlList getToolsControls() {
+    final ControlList toolsControls = super.getToolsControls();
+    toolsControls.add(Controls.control(this::importJSON, "Import JSON"));
 
-    return toolsSet;
+    return toolsControls;
   }
-  // end::getToolsControlSet[]
+  // end::getToolsControls[]
 
   // tag::initializeApplicationModel[]
   @Override

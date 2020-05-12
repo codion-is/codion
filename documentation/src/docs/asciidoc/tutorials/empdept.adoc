@@ -178,11 +178,11 @@ Next we add a method for importing a JSON text file, which we'll call via an act
 include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=importJSON]
 ----
 
-We override *getToolsControlSet()* to add our import action to the Tools menu.
+We override *getToolsControls()* to add our import action to the Tools menu.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=getToolsControlSet]
+include::{dir-source}/org/jminor/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=getToolsControls]
 ----
 
 We implement *initializeApplicationModel()* by returning an instance of the *EmpDeptApplicationModel* class, which we'll define later.

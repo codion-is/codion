@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ControlProviderTest {
 
-  private ControlSet controlSet;
+  private ControlList controlList;
   private boolean booleanValue;
   private Object selectedValue;
 
@@ -43,10 +43,10 @@ public class ControlProviderTest {
 
   @BeforeEach
   public void setUp() {
-    controlSet = new ControlSet("hello");
-    controlSet.add(Controls.control(() -> {}, "one"));
-    controlSet.add(Controls.control(() -> {}, "two"));
-    controlSet.add(toggleControl(this, "booleanValue", "three", Events.event()));
+    controlList = new DefaultControlList("hello");
+    controlList.add(Controls.control(() -> {}, "one"));
+    controlList.add(Controls.control(() -> {}, "two"));
+    controlList.add(toggleControl(this, "booleanValue", "three", Events.event()));
   }
 
   @Test
@@ -65,8 +65,8 @@ public class ControlProviderTest {
 
   @Test
   public void createMenuBar() {
-    final ControlSet base = new ControlSet();
-    base.add(controlSet);
+    final ControlList base = new DefaultControlList();
+    base.add(controlList);
 
     final JMenuBar menu = ControlProvider.createMenuBar(base);
     assertEquals(1, menu.getMenuCount());
@@ -75,36 +75,36 @@ public class ControlProviderTest {
     assertEquals("two", menu.getMenu(0).getItem(1).getText());
     assertEquals("three", menu.getMenu(0).getItem(2).getText());
 
-    final List<ControlSet> sets = new ArrayList<>();
-    sets.add(controlSet);
-    sets.add(base);
-    ControlProvider.createMenuBar(sets);
+    final List<ControlList> lists = new ArrayList<>();
+    lists.add(controlList);
+    lists.add(base);
+    ControlProvider.createMenuBar(lists);
   }
 
   @Test
   public void createPopupMenu() {
-    final ControlSet base = new ControlSet();
-    base.add(controlSet);
+    final ControlList base = new DefaultControlList();
+    base.add(controlList);
 
     ControlProvider.createPopupMenu(base);
   }
 
   @Test
   public void createHorizontalButtonPanel() {
-    ControlProvider.createHorizontalButtonPanel(controlSet);
+    ControlProvider.createHorizontalButtonPanel(controlList);
     final JPanel base = new JPanel();
-    base.add(ControlProvider.createHorizontalButtonPanel(controlSet));
+    base.add(ControlProvider.createHorizontalButtonPanel(controlList));
   }
 
   @Test
   public void createVerticalButtonPanel() {
-    ControlProvider.createVerticalButtonPanel(controlSet);
+    ControlProvider.createVerticalButtonPanel(controlList);
     final JPanel base = new JPanel();
-    base.add(ControlProvider.createVerticalButtonPanel(controlSet));
+    base.add(ControlProvider.createVerticalButtonPanel(controlList));
   }
 
   @Test
   public void createToolBar() {
-    ControlProvider.createToolBar(controlSet, JToolBar.VERTICAL);
+    ControlProvider.createToolBar(controlList, JToolBar.VERTICAL);
   }
 }

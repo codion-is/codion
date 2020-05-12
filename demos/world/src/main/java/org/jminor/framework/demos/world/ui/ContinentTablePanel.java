@@ -1,6 +1,7 @@
 package org.jminor.framework.demos.world.ui;
 
-import org.jminor.swing.common.ui.control.ControlSet;
+import org.jminor.swing.common.ui.control.ControlList;
+import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
@@ -16,7 +17,7 @@ public final class ContinentTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlSet getPopupControls(List<ControlSet> additionalPopupControlSets) {
-    return new ControlSet(getRefreshControl());
+  protected ControlList getPopupControls(List<ControlList> additionalPopupControls) {
+    return Controls.controlList(getRefreshControl());
   }
 }

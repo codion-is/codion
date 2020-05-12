@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.server.monitor.ClientInstanceMonitor;
@@ -82,7 +82,7 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private JPopupMenu initializePopupMenu() {
-    final ControlSet controls = new ControlSet();
+    final ControlList controls = Controls.controlList();
     controls.add(Controls.control(() -> {
       for (final ClientInstanceMonitor clientMonitor : clientInstanceList.getSelectedValuesList()) {
         clientMonitor.disconnect();
