@@ -148,9 +148,11 @@ public final class ChinookImpl extends Domain implements Chinook {
     define(T_CUSTOMER, "chinook.customer",
             primaryKeyProperty(CUSTOMER_CUSTOMERID, Types.BIGINT),
             columnProperty(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(20),
             columnProperty(CUSTOMER_FIRSTNAME, Types.VARCHAR, "First name")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(40),
             columnProperty(CUSTOMER_COMPANY, Types.VARCHAR, "Company")
@@ -170,6 +172,7 @@ public final class ChinookImpl extends Domain implements Chinook {
             columnProperty(CUSTOMER_FAX, Types.VARCHAR, "Fax")
                     .maximumLength(24),
             columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(60),
             foreignKeyProperty(CUSTOMER_SUPPORTREP_FK, "Support rep", T_EMPLOYEE,
