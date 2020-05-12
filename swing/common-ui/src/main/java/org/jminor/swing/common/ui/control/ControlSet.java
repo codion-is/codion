@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * A set of Actions/Controls, includes separators.
  */
-public final class ControlSet extends Control {
+public final class ControlSet extends DefaultControl {
 
   private final List<Action> actions = new ArrayList<>();
 

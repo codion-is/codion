@@ -44,8 +44,8 @@ public class ControlProviderTest {
   @BeforeEach
   public void setUp() {
     controlSet = new ControlSet("hello");
-    controlSet.add(new Control("one"));
-    controlSet.add(new Control("two"));
+    controlSet.add(Controls.control(() -> {}, "one"));
+    controlSet.add(Controls.control(() -> {}, "two"));
     controlSet.add(toggleControl(this, "booleanValue", "three", Events.event()));
   }
 

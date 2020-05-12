@@ -5,7 +5,6 @@ package org.jminor.swing.common.ui.control;
 
 import org.jminor.common.event.Event;
 import org.jminor.common.event.EventObserver;
-import org.jminor.common.model.CancelException;
 import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.Nullable;
@@ -16,7 +15,6 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 
-import static java.util.Objects.requireNonNull;
 import static org.jminor.common.value.Values.propertyValue;
 
 /**
@@ -196,8 +194,8 @@ public final class Controls {
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
                                             final EventObserver<Boolean> changeEvent, final StateObserver enabledState,
                                             final Nullable nullable) {
-    return new ToggleControl(caption,
-            propertyValue(owner, beanPropertyName, nullable == Nullable.YES ? Boolean.class : boolean.class, changeEvent), enabledState);
+    return new DefaultToggleControl(caption, propertyValue(owner, beanPropertyName,
+            nullable == Nullable.YES ? Boolean.class : boolean.class, changeEvent), enabledState);
   }
 
   /**
@@ -287,7 +285,7 @@ public final class Controls {
    */
   public static ToggleControl toggleControl(final Value<Boolean> value, final String name, final StateObserver enabledState,
                                             final Icon icon) {
-    return (ToggleControl) new ToggleControl(name, value, enabledState).setIcon(icon);
+    return (ToggleControl) new DefaultToggleControl(name, value, enabledState).setIcon(icon);
   }
 
   /**
@@ -297,29 +295,5 @@ public final class Controls {
    */
   public static Control eventControl(final Event<ActionEvent> event) {
     return control(event::onEvent);
-  }
-
-  private static final class CommandControl extends Control {
-
-    private final Control.Command command;
-
-    private CommandControl(final Control.Command command, final String name, final StateObserver enabledObserver) {
-      super(name, enabledObserver);
-      this.command = requireNonNull(command);
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      try {
-        command.perform();
-      }
-      catch (final CancelException ce) {/*Operation cancelled*/}
-      catch (final RuntimeException re) {
-        throw re;
-      }
-      catch (final Exception ex) {
-        throw new RuntimeException(ex);
-      }
-    }
   }
 }
