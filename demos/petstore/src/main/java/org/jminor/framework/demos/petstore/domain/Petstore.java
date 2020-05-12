@@ -121,9 +121,9 @@ public final class Petstore extends Domain {
             primaryKeyProperty(SELLER_CONTACT_INFO_ID)
                     .columnName("contactinfoid"),
             columnProperty(SELLER_CONTACT_INFO_FIRST_NAME, Types.VARCHAR, SELLER_CONTACT_INFO_FIRST_NAME)
-                    .columnName("firstname").maximumLength(24).nullable(false),
+                    .searchProperty(true).columnName("firstname").maximumLength(24).nullable(false),
             columnProperty(SELLER_CONTACT_INFO_LAST_NAME, Types.VARCHAR, SELLER_CONTACT_INFO_LAST_NAME)
-                    .columnName("lastname").maximumLength(24).nullable(false),
+                    .searchProperty(true).columnName("lastname").maximumLength(24).nullable(false),
             columnProperty(SELLER_CONTACT_INFO_EMAIL, Types.VARCHAR, SELLER_CONTACT_INFO_EMAIL)
                     .columnName("email").maximumLength(24).nullable(false))
             .keyGenerator(increment("petstore.sellercontactinfo", "contactinfoid"))
@@ -131,7 +131,6 @@ public final class Petstore extends Domain {
                     .ascending(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME))
             .stringProvider(new StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
                     .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
-            .searchPropertyIds(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME)
             .caption("Seller info");
   }
 

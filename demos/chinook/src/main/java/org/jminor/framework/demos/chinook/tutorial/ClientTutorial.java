@@ -56,14 +56,12 @@ public final class ClientTutorial {
       define(T_ARTIST,
               primaryKeyProperty(ARTIST_ID),
               columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
-                      .nullable(false).maximumLength(120),
+                      .searchProperty(true).nullable(false).maximumLength(120),
               subqueryProperty(ARTIST_NR_OF_ALBUMS, Types.INTEGER, "Albums",
-                      "select count(*) " +
-                              "from chinook.album " +
+                      "select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid"))
               .keyGenerator(automatic(T_ARTIST))
               .stringProvider(new StringProvider(ARTIST_NAME))
-              .searchPropertyIds(ARTIST_NAME)
               .caption("Artists");
 
       define(T_ALBUM,

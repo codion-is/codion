@@ -55,6 +55,7 @@ public final class ChinookImpl extends Domain implements Chinook {
     define(T_ARTIST, "chinook.artist",
             primaryKeyProperty(ARTIST_ARTISTID, Types.BIGINT),
             columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160),
@@ -73,7 +74,6 @@ public final class ChinookImpl extends Domain implements Chinook {
             .keyGenerator(automatic("chinook.artist"))
             .orderBy(orderBy().ascending(ARTIST_NAME))
             .stringProvider(new StringProvider(ARTIST_NAME))
-            .searchPropertyIds(ARTIST_NAME)
             .caption("Artists");
   }
 
@@ -85,6 +85,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .nullable(false)
                     .preferredColumnWidth(160),
             columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(160)
                     .preferredColumnWidth(160),
@@ -99,7 +100,6 @@ public final class ChinookImpl extends Domain implements Chinook {
             .keyGenerator(automatic("chinook.album"))
             .orderBy(orderBy().ascending(ALBUM_ARTISTID, ALBUM_TITLE))
             .stringProvider(new StringProvider(ALBUM_TITLE))
-            .searchPropertyIds(ALBUM_TITLE)
             .caption("Albums");
   }
 
@@ -107,9 +107,11 @@ public final class ChinookImpl extends Domain implements Chinook {
     define(T_EMPLOYEE, "chinook.employee",
             primaryKeyProperty(EMPLOYEE_EMPLOYEEID, Types.BIGINT),
             columnProperty(EMPLOYEE_LASTNAME, Types.VARCHAR, "Last name")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(20),
             columnProperty(EMPLOYEE_FIRSTNAME, Types.VARCHAR, "First name")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(20),
             columnProperty(EMPLOYEE_TITLE, Types.VARCHAR, "Title")
@@ -133,12 +135,12 @@ public final class ChinookImpl extends Domain implements Chinook {
             columnProperty(EMPLOYEE_FAX, Types.VARCHAR, "Fax")
                     .maximumLength(24),
             columnProperty(EMPLOYEE_EMAIL, Types.VARCHAR, "Email")
+                    .searchProperty(true)
                     .maximumLength(60))
             .keyGenerator(automatic("chinook.employee"))
             .orderBy(orderBy().ascending(EMPLOYEE_LASTNAME, EMPLOYEE_FIRSTNAME))
             .stringProvider(new StringProvider(EMPLOYEE_LASTNAME)
                     .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
-            .searchPropertyIds(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
             .caption("Employees");
   }
 
@@ -175,7 +177,6 @@ public final class ChinookImpl extends Domain implements Chinook {
             .keyGenerator(automatic("chinook.customer"))
             .orderBy(orderBy().ascending(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME))
             .stringProvider(new CustomerStringProvider())
-            .searchPropertyIds(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
             .caption("Customers");
   }
 
@@ -183,13 +184,13 @@ public final class ChinookImpl extends Domain implements Chinook {
     define(T_GENRE, "chinook.genre",
             primaryKeyProperty(GENRE_GENREID, Types.BIGINT),
             columnProperty(GENRE_NAME, Types.VARCHAR, "Name")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160))
             .keyGenerator(automatic("chinook.genre"))
             .orderBy(orderBy().ascending(GENRE_NAME))
             .stringProvider(new StringProvider(GENRE_NAME))
-            .searchPropertyIds(GENRE_NAME)
             .smallDataset(true)
             .caption("Genres");
   }
@@ -220,6 +221,7 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .preferredColumnWidth(160),
             // end::fetchDepth2[]
             columnProperty(TRACK_NAME, Types.VARCHAR, "Name")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(200)
                     .preferredColumnWidth(160),
@@ -244,7 +246,6 @@ public final class ChinookImpl extends Domain implements Chinook {
             .keyGenerator(automatic("chinook.track"))
             .orderBy(orderBy().ascending(TRACK_NAME))
             .stringProvider(new StringProvider(TRACK_NAME))
-            .searchPropertyIds(TRACK_NAME)
             .caption("Tracks");
   }
 
@@ -308,13 +309,13 @@ public final class ChinookImpl extends Domain implements Chinook {
     define(T_PLAYLIST, "chinook.playlist",
             primaryKeyProperty(PLAYLIST_PLAYLISTID, Types.BIGINT),
             columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160))
             .keyGenerator(automatic("chinook.playlist"))
             .orderBy(orderBy().ascending(PLAYLIST_NAME))
             .stringProvider(new StringProvider(PLAYLIST_NAME))
-            .searchPropertyIds(PLAYLIST_NAME)
             .caption("Playlists");
   }
 

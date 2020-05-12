@@ -35,6 +35,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   private boolean insertable = true;
   private boolean updatable = true;
   private boolean foreignKeyProperty = false;
+  private boolean searchProperty = false;
 
   private final transient ResultPacker<?> resultPacker;
   private transient ValueFetcher<?> valueFetcher;
@@ -126,6 +127,11 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   @Override
   public final boolean isPrimaryKeyProperty() {
     return primaryKeyIndex >= 0;
+  }
+
+  @Override
+  public final boolean isSearchProperty() {
+    return searchProperty;
   }
 
   @Override
@@ -470,6 +476,15 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     public final ColumnProperty.Builder valueConverter(final ValueConverter<?, ?> valueConverter) {
       requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueConverter = (ValueConverter<Object, Object>) valueConverter;
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder searchProperty(final boolean searchProperty) {
+      if (searchProperty && columnProperty.columnType != Types.VARCHAR) {
+        throw new IllegalStateException("Search properties must be of type Types.VARCHAR");
+      }
+      columnProperty.searchProperty = searchProperty;
       return this;
     }
 

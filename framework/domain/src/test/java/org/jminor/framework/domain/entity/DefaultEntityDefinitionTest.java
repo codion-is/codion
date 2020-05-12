@@ -105,18 +105,6 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void setSearchPropertyIds() {
-    class TestDomain extends Domain {
-      public TestDomain() {
-        define("entityId", "tableName",
-                Properties.primaryKeyProperty("id"),
-                Properties.columnProperty("name", Types.VARCHAR)).searchPropertyIds("id");
-      }
-    }
-    assertThrows(IllegalArgumentException.class, () -> new TestDomain());
-  }
-
-  @Test
   public void derivedProperty() {
     class TestDomain extends Domain {
       public TestDomain() {

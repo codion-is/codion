@@ -144,12 +144,6 @@ public interface EntityDefinition extends Serializable {
   Comparator<Entity> getComparator();
 
   /**
-   * @return a collection of property ids identifying the properties to use when performing
-   * a default lookup for this entity type
-   */
-  Collection<String> getSearchPropertyIds();
-
-  /**
    * @return a unmodifiable list view of the properties
    */
   List<Property> getProperties();
@@ -251,9 +245,9 @@ public interface EntityDefinition extends Serializable {
   List<DenormalizedProperty> getDenormalizedProperties(String foreignKeyPropertyId);
 
   /**
-   * Returns the properties to search by when looking up entities of the type identified by {@code entityId}
-   * @return the properties to use when searching
-   * @see Builder#searchPropertyIds(String...)
+   * Returns the properties to search by when searching for entities of this type by a string value
+   * @return the properties to use when searching by string
+   * @see ColumnProperty.Builder#searchProperty(boolean)
    */
   Collection<ColumnProperty> getSearchProperties();
 
@@ -620,13 +614,6 @@ public interface EntityDefinition extends Serializable {
      * @return this {@link Builder} instance
      */
     Builder comparator(Comparator<Entity> comparator);
-
-    /**
-     * Sets the ids of the properties to use when performing a default lookup for this entity type
-     * @param searchPropertyIds the search property ids
-     * @return this {@link Builder} instance
-     */
-    Builder searchPropertyIds(String... searchPropertyIds);
 
     /**
      * Sets the {@link BeanHelper} instance to use when transforming between entities and beans.
