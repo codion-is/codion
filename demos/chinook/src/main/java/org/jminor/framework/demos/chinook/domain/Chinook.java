@@ -136,6 +136,7 @@ public interface Chinook {
   String PLAYLIST_NAME = "name";
 
   String T_PLAYLISTTRACK = "playlisttrack@chinook";
+  String PLAYLISTTRACK_ID = "playlisttrackid";
   String PLAYLISTTRACK_PLAYLISTID = "playlistid";
   String PLAYLISTTRACK_PLAYLIST_FK = "playlist_fk";
   String PLAYLISTTRACK_TRACKID = "trackid";

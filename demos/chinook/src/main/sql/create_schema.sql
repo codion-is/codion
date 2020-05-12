@@ -139,9 +139,11 @@ create table chinook.playlist
 
 create table chinook.playlisttrack
 (
+    playlisttrackid identity not null,
     playlistid integer not null,
     trackid integer not null,
-    constraint pk_playlisttrack primary key (playlistid, trackid),
+    constraint pk_playlisttrack primary key (playlisttrackid),
+    constraint uk_playlisttrack unique key (playlistid, trackid),
     constraint fk_track_playlisttrack foreign key (trackid) references chinook.track(trackid),
     constraint fk_playlist_playlisttrack foreign key (playlistid) references chinook.playlist(playlistid)
 );
