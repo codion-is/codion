@@ -428,7 +428,7 @@ public final class EntityLookupField extends JTextField {
   /**
    * A {@link SelectionProvider} implementation based on {@link JList}
    */
-  public static final class ListSelectionProvider implements SelectionProvider {
+  public static class ListSelectionProvider implements SelectionProvider {
 
     private final JList<Entity> list = new JList<>();
     private final JScrollPane scrollPane = new JScrollPane(list);
@@ -461,7 +461,7 @@ public final class EntityLookupField extends JTextField {
     }
 
     @Override
-    public JComponent getSelectionComponent(final List<Entity> entities) {
+    public final JComponent getSelectionComponent(final List<Entity> entities) {
       list.setListData(entities.toArray(new Entity[0]));
       list.removeSelectionInterval(0, list.getModel().getSize());
       list.scrollRectToVisible(list.getCellBounds(0, 0));
@@ -470,12 +470,12 @@ public final class EntityLookupField extends JTextField {
     }
 
     @Override
-    public void setPreferredSize(final Dimension preferredSize) {
+    public final void setPreferredSize(final Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
     }
 
     @Override
-    public Control getSelectControl() {
+    public final Control getSelectControl() {
       return selectControl;
     }
   }
@@ -483,7 +483,7 @@ public final class EntityLookupField extends JTextField {
   /**
    * A {@link SelectionProvider} implementation based on {@link EntityTablePanel}
    */
-  public static final class TableSelectionProvider implements SelectionProvider {
+  public static class TableSelectionProvider implements SelectionProvider {
 
     private final FilteredTable<Entity, Property, SwingEntityTableModel> table;
     private final JScrollPane scrollPane;
@@ -524,12 +524,12 @@ public final class EntityLookupField extends JTextField {
     /**
      * @return the underlying FilteredTablePanel
      */
-    public FilteredTable<Entity, Property, SwingEntityTableModel> getTable() {
+    public final FilteredTable<Entity, Property, SwingEntityTableModel> getTable() {
       return table;
     }
 
     @Override
-    public JComponent getSelectionComponent(final List<Entity> entities) {
+    public final JComponent getSelectionComponent(final List<Entity> entities) {
       table.getModel().clear();
       table.getModel().addEntitiesAt(0, entities);
       table.scrollRectToVisible(table.getCellRect(0, 0, true));
@@ -538,12 +538,12 @@ public final class EntityLookupField extends JTextField {
     }
 
     @Override
-    public void setPreferredSize(final Dimension preferredSize) {
+    public final void setPreferredSize(final Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
     }
 
     @Override
-    public Control getSelectControl() {
+    public final Control getSelectControl() {
       return selectControl;
     }
   }

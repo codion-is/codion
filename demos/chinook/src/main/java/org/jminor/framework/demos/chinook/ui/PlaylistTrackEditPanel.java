@@ -6,6 +6,7 @@ package org.jminor.framework.demos.chinook.ui;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
+import org.jminor.swing.framework.ui.EntityLookupField;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_PLAYLIST_FK;
 import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_TRACK_FK;
@@ -25,7 +26,9 @@ public class PlaylistTrackEditPanel extends EntityEditPanel {
 
     final EntityComboBox playlistComboBox = createForeignKeyComboBox(PLAYLISTTRACK_PLAYLIST_FK);
     setPreferredHeight(playlistComboBox, getPreferredTextFieldHeight());
-    createForeignKeyLookupField(PLAYLISTTRACK_TRACK_FK).setColumns(30);
+    final EntityLookupField trackLookupField = createForeignKeyLookupField(PLAYLISTTRACK_TRACK_FK);
+    trackLookupField.setSelectionProvider(new TrackSelectionProvider(trackLookupField.getModel()));
+    trackLookupField.setColumns(30);
 
     setLayout(gridLayout(2, 1));
     addPropertyPanel(PLAYLISTTRACK_PLAYLIST_FK);
