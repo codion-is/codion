@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.jminor.common.state.State;
 import org.jminor.common.state.StateObserver;
 
 import javax.swing.Action;
@@ -19,44 +18,8 @@ final class DefaultControlList extends DefaultControl implements ControlList {
 
   private final List<Action> actions = new ArrayList<>();
 
-  DefaultControlList() {
-    this("");
-  }
-
-  DefaultControlList(final String name) {
-    this(name, (char) -1);
-  }
-
-  DefaultControlList(final String name, final char mnemonic) {
-    this(name, mnemonic, (Icon) null);
-  }
-
-  DefaultControlList(final String name, final char mnemonic, final Icon icon) {
-    this(name, mnemonic, icon, null);
-  }
-
-  DefaultControlList(final String name, final char mnemonic, final Icon icon, final StateObserver enabledState) {
-    super(name, enabledState, icon);
-    setMnemonic(mnemonic);
-  }
-
-  DefaultControlList(final Control... controls) {
-    this(null, controls);
-  }
-
-  DefaultControlList(final String name, final Control... controls) {
-    this(name, (char) -1, controls);
-  }
-
-  DefaultControlList(final String name, final char mnemonic, final Control... controls) {
-    this(name, mnemonic, null, controls);
-  }
-
-  DefaultControlList(final String name, final char mnemonic, final State enabledState, final Control... controls) {
-    this(name, mnemonic, enabledState, null, controls);
-  }
-
-  DefaultControlList(final String name, final char mnemonic, final State enabledState, final Icon icon, final Control... controls) {
+  DefaultControlList(final String name, final char mnemonic, final StateObserver enabledState, final Icon icon,
+                     final Control... controls) {
     super(name, enabledState, icon);
     setMnemonic(mnemonic);
     for (final Control control : controls) {

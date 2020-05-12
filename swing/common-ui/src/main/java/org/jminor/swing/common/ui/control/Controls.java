@@ -332,19 +332,19 @@ public final class Controls {
    * @return a new ControlList instance.
    */
   public static ControlList controlList(final String name, final char mnemonic, final Icon icon) {
-    return controlList(name, mnemonic, icon, null);
+    return controlList(name, mnemonic, null, icon);
   }
 
   /**
    * Constructs a new ControlList
    * @param name the control list name
    * @param mnemonic the mnemonic to assign to this control list
-   * @param icon the icon
    * @param enabledState the state observer dictating the enable state of this control
+   * @param icon the icon
    * @return a new ControlList instance.
    */
-  public static ControlList controlList(final String name, final char mnemonic, final Icon icon, final StateObserver enabledState) {
-    return new DefaultControlList(name, mnemonic, icon, enabledState);
+  public static ControlList controlList(final String name, final char mnemonic, final StateObserver enabledState, final Icon icon) {
+    return controlList(name, mnemonic, enabledState, icon, new Control[0]);
   }
 
   /**
@@ -398,7 +398,7 @@ public final class Controls {
    * @param controls the controls to add to this list
    * @return a new ControlList instance.
    */
-  public static ControlList controlList(final String name, final char mnemonic, final State enabledState,
+  public static ControlList controlList(final String name, final char mnemonic, final StateObserver enabledState,
                                         final Icon icon, final Control... controls) {
     return new DefaultControlList(name, mnemonic, enabledState, icon, controls);
   }
