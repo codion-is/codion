@@ -36,7 +36,6 @@ import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
 import org.jminor.swing.common.ui.dialog.Modal;
-import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.common.ui.table.ColumnConditionPanel;
 import org.jminor.swing.common.ui.table.ColumnConditionPanelProvider;
 import org.jminor.swing.common.ui.table.FilteredTable;
@@ -56,6 +55,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
@@ -68,7 +68,6 @@ import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Window;
@@ -364,9 +363,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     if (conditionScrollPane != null) {
       conditionScrollPane.setVisible(visible);
-      if (refreshToolBar != null) {
-        refreshToolBar.setVisible(visible);
-      }
+      refreshToolBar.setVisible(visible);
       revalidate();
       conditionPanelVisibilityChangedEvent.onEvent(visible);
     }
@@ -887,19 +884,20 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return the south panel, or null if no south panel should be included
    */
   protected JPanel initializeSouthPanel() {
-    final JPanel centerPanel = new JPanel(Layouts.borderLayout());
-    final JPanel searchFieldPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    searchFieldPanel.add(table.getSearchField());
-    centerPanel.add(statusMessageLabel, BorderLayout.CENTER);
-    centerPanel.add(searchFieldPanel, BorderLayout.WEST);
-    final JPanel panel = new JPanel(new BorderLayout());
-    panel.add(centerPanel, BorderLayout.CENTER);
-    panel.setBorder(BorderFactory.createEtchedBorder());
-    if (refreshToolBar != null) {
-      panel.add(refreshToolBar, BorderLayout.WEST);
+    final JSplitPane southCenterSplitPane = new JSplitPane();
+    southCenterSplitPane.setContinuousLayout(true);
+    southCenterSplitPane.setTopComponent(table.getSearchField());
+    southCenterSplitPane.setBottomComponent(statusMessageLabel);
+    final JPanel southPanel = new JPanel(new BorderLayout());
+    southPanel.add(southCenterSplitPane, BorderLayout.CENTER);
+    southPanel.setBorder(BorderFactory.createEtchedBorder());
+    southPanel.add(refreshToolBar, BorderLayout.WEST);
+    final JToolBar southToolBar = initializeSouthToolBar();
+    if (southToolBar != null) {
+      southPanel.add(southToolBar, BorderLayout.EAST);
     }
 
-    return panel;
+    return southPanel;
   }
 
   /**
@@ -1099,7 +1097,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected void layoutPanel(final JPanel tablePanel, final JPanel southPanel) {
     setLayout(new BorderLayout());
     add(tablePanel, BorderLayout.CENTER);
-    if (southPanel != null) {
+    if (includeSouthPanel && southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
     }
   }
@@ -1185,19 +1183,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         });
       }
     }
-    JPanel southPanel = null;
-    if (includeSouthPanel) {
-      southPanel = new JPanel(Layouts.borderLayout());
-      final JPanel southPanelCenter = initializeSouthPanel();
-      if (southPanelCenter != null) {
-        final JToolBar southToolBar = initializeSouthToolBar();
-        if (southToolBar != null) {
-          southPanelCenter.add(southToolBar, BorderLayout.EAST);
-        }
-        southPanel.add(southPanelCenter, BorderLayout.CENTER);
-      }
-    }
-    layoutPanel(tablePanel, southPanel);
+    layoutPanel(tablePanel, initializeSouthPanel());
   }
 
   private FilteredTable<Entity, Property, SwingEntityTableModel> createFilteredTable() {
@@ -1231,8 +1217,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     toolBar.setFocusable(false);
     toolBar.setFloatable(false);
     toolBar.setRollover(true);
-
     toolBar.add(button);
+    //made visible when condition panel is visible
+    toolBar.setVisible(false);
 
     return toolBar;
   }
