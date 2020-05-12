@@ -6081,3 +6081,4 @@
   ComponentValuePanel escape action now triggered on key pressed
   EntityLookupField.ListSelectionProvider and TableSelectionProvider no longer final, but effectively final, quite convenient to be able to extend for customization, as per chinook demo
   EntityTablePanel bug fixed, wrong constraints on south center panel
+  EntityTablePanel bug fixed, refresh toolbar was visible at startup, visibility is now synced with condition panel, south panel refactored
