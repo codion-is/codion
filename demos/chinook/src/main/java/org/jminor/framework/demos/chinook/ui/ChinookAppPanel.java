@@ -154,7 +154,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
