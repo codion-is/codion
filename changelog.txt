@@ -6075,3 +6075,4 @@
   IntegerField, LongField, DecimalField, added addIntegerListener(), addLongListener(), addDecimalListener() and addBigIntegerListener() respectively
   Control and ToggleControl now interfaces
   ControlSet renamed ControlList, now interface
+  Some refactoring and cleanup after the last change

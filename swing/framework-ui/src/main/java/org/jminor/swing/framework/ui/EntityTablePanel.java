@@ -486,7 +486,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
     final StateObserver enabled = States.aggregateState(Conjunction.AND, selectionNotEmpty, updateEnabled);
     final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
-            (char) 0, frameworkIcons().edit(), enabled);
+            (char) 0, enabled, frameworkIcons().edit());
     controls.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getPropertyId())) {

@@ -43,7 +43,7 @@ public class ControlProviderTest {
 
   @BeforeEach
   public void setUp() {
-    controlList = new DefaultControlList("hello");
+    controlList = Controls.controlList("hello");
     controlList.add(Controls.control(() -> {}, "one"));
     controlList.add(Controls.control(() -> {}, "two"));
     controlList.add(toggleControl(this, "booleanValue", "three", Events.event()));
@@ -65,7 +65,7 @@ public class ControlProviderTest {
 
   @Test
   public void createMenuBar() {
-    final ControlList base = new DefaultControlList();
+    final ControlList base = Controls.controlList();
     base.add(controlList);
 
     final JMenuBar menu = ControlProvider.createMenuBar(base);
@@ -83,7 +83,7 @@ public class ControlProviderTest {
 
   @Test
   public void createPopupMenu() {
-    final ControlList base = new DefaultControlList();
+    final ControlList base = Controls.controlList();
     base.add(controlList);
 
     ControlProvider.createPopupMenu(base);

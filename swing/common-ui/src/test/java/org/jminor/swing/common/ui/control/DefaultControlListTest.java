@@ -14,17 +14,17 @@ public class DefaultControlListTest {
   public void test() {
     final Control one = Controls.control(() -> {}, "one");
     final Control two = Controls.control(() -> {}, "two");
-    final DefaultControlList list = new DefaultControlList("list", one, two);
+    final ControlList list = Controls.controlList("list", one, two);
     assertThrows(NullPointerException.class, () -> list.add(null));
     assertThrows(NullPointerException.class, () -> list.addAt(0, null));
     list.remove(null);
     assertFalse(nullOrEmpty(list.getName()));
     assertNull(list.getIcon());
     assertEquals("list", list.getName());
-    final DefaultControlList list1 = new DefaultControlList();
+    final ControlList list1 = Controls.controlList();
     assertTrue(nullOrEmpty(list1.getName()));
     assertEquals("", list1.getName());
-    final DefaultControlList list2 = new DefaultControlList(two);
+    final ControlList list2 = Controls.controlList(two);
     list2.setName("list");
     assertFalse(nullOrEmpty(list2.getName()));
     assertEquals("list", list2.getName());
