@@ -9,7 +9,6 @@ import org.jminor.common.event.EventObserver;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.KeyEvents.OnKeyRelease;
 import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
@@ -26,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import static java.util.Objects.requireNonNull;
+import static org.jminor.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_RELEASE;
 
 /**
  * A panel for presenting a ComponentValue. Provides OK and Cancel buttons
@@ -139,7 +139,7 @@ public final class ComponentValuePanel<V, C extends JComponent> extends JPanel {
     final JButton cancelButton = new JButton(cancelAction);
     final JPanel panel = new JPanel(new GridLayout(1, COLUMNS));
     panel.add(okButton);
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, OnKeyRelease.YES,
+    KeyEvents.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_RELEASE,
             new AbstractAction("cancelInput") {
               @Override
               public void actionPerformed(final ActionEvent e) {

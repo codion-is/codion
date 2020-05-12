@@ -10,7 +10,6 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.KeyEvents.OnKeyRelease;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.layout.Layouts;
 
@@ -54,6 +53,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.jminor.common.Util.nullOrEmpty;
+import static org.jminor.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 
 /**
  * A utility class for displaying Dialogs.
@@ -408,7 +408,7 @@ public final class Dialogs {
     final JDialog dialog = new JDialog(dialogOwner, title, modal == Modal.YES ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS);
     if (enterAction != null) {
       KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, OnKeyRelease.NO, enterAction);
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, ON_KEY_PRESSED, enterAction);
     }
 
     final Action disposeAction = new DisposeDialogAction(dialog);
@@ -416,7 +416,7 @@ public final class Dialogs {
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       if (disposeOnEscape == DisposeOnEscape.YES) {
         KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0,
-                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, OnKeyRelease.NO, new DisposeDialogOnEscapeAction(dialog));
+                JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, ON_KEY_PRESSED, new DisposeDialogOnEscapeAction(dialog));
       }
     }
     else {
@@ -523,9 +523,10 @@ public final class Dialogs {
   public static void prepareOkCancelDialog(final JDialog dialog, final JComponent dialogOwner, final JComponent component,
                                            final Action okAction, final Action cancelAction) {
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, cancelAction);
-    KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW,
-            OnKeyRelease.NO, okAction);
+    KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0,
+            JComponent.WHEN_IN_FOCUSED_WINDOW, cancelAction);
+    KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ENTER, 0,
+            JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED, okAction);
     dialog.setLayout(Layouts.borderLayout());
     dialog.add(component, BorderLayout.CENTER);
     final JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
