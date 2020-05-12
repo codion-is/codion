@@ -21,15 +21,15 @@ public final class KeyEvents {
   /**
    * Specifies whether a keystroke should represent a key release or key pressed.
    */
-  public enum OnKeyRelease {
+  public enum KeyTrigger {
     /**
      * Key release.
      */
-    YES,
+    ON_KEY_RELEASE,
     /**
      * Key pressed.
      */
-    NO
+    ON_KEY_PRESSED
   }
 
   private KeyEvents() {}
@@ -64,7 +64,7 @@ public final class KeyEvents {
 
   /**
    * Links the given action to the given key event on the given component via inputMap/actionMap, using the name
-   * of the action as key for the actionMap and true for onKeyRelease.
+   * of the action as key for the actionMap and {@link KeyTrigger#ON_KEY_RELEASE} as the action trigger.
    * @param component the component
    * @param keyEvent the key event
    * @param modifiers the modifiers
@@ -75,7 +75,7 @@ public final class KeyEvents {
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
                                  final Action action) {
-    addKeyEvent(component, keyEvent, modifiers, condition, OnKeyRelease.YES, action);
+    addKeyEvent(component, keyEvent, modifiers, condition, KeyTrigger.ON_KEY_RELEASE, action);
   }
 
   /**
@@ -85,23 +85,23 @@ public final class KeyEvents {
    * @param keyEvent the key event
    * @param modifiers the modifiers
    * @param condition the condition
-   * @param onKeyRelease if yes then key on key release otherwise on pressed
+   * @param keyTrigger specifies when the action is triggered
    * @param action the action, if null then the action binding is removed
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
-                                 final OnKeyRelease onKeyRelease, final Action action) {
+                                 final KeyTrigger keyTrigger, final Action action) {
     requireNonNull(component, "component");
     Object actionName = null;
     if (action != null) {
       actionName = action.getValue(Action.NAME);
       if (actionName == null) {
         actionName = component.getClass().getSimpleName() + keyEvent + modifiers +
-                (onKeyRelease == OnKeyRelease.YES ? "keyReleased" : "keyPressed");
+                (keyTrigger == KeyTrigger.ON_KEY_RELEASE ? "keyReleased" : "keyPressed");
       }
       component.getActionMap().put(actionName, action);
     }
-    component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease == OnKeyRelease.YES), actionName);
+    component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, keyTrigger == KeyTrigger.ON_KEY_RELEASE), actionName);
   }
 
   /**
@@ -114,9 +114,9 @@ public final class KeyEvents {
    */
   public static <T extends JComponent> T transferFocusOnEnter(final T component) {
     addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED,
-            OnKeyRelease.NO, new TransferFocusAction(component));
+            KeyTrigger.ON_KEY_PRESSED, new TransferFocusAction(component));
     addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED,
-            OnKeyRelease.NO, new TransferFocusAction(component, true));
+            KeyTrigger.ON_KEY_PRESSED, new TransferFocusAction(component, true));
 
     return component;
   }
@@ -128,8 +128,8 @@ public final class KeyEvents {
    * @return the component
    */
   public static <T extends JTextComponent> T removeTransferFocusOnEnter(final T component) {
-    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, OnKeyRelease.NO, null);
-    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, OnKeyRelease.NO, null);
+    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, KeyTrigger.ON_KEY_PRESSED, null);
+    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, KeyTrigger.ON_KEY_PRESSED, null);
 
     return component;
   }

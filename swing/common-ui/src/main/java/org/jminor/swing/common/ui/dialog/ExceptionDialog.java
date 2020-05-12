@@ -10,7 +10,6 @@ import org.jminor.common.state.State;
 import org.jminor.common.state.States;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.KeyEvents.OnKeyRelease;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlProvider;
@@ -43,6 +42,7 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
+import static org.jminor.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static org.jminor.swing.common.ui.layout.Layouts.*;
 
 /**
@@ -182,8 +182,8 @@ final class ExceptionDialog extends JDialog {
     final Control closeControl = Controls.control(this::dispose, Messages.get(Messages.CLOSE));
     closeControl.setDescription(MESSAGES.getString("close_dialog"));
     closeControl.setMnemonic(MESSAGES.getString("close_mnemonic").charAt(0));
-    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, OnKeyRelease.NO, closeControl);
-    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, OnKeyRelease.NO, closeControl);
+    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED, closeControl);
+    KeyEvents.addKeyEvent(getRootPane(), KeyEvent.VK_ENTER, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, ON_KEY_PRESSED, closeControl);
     final Control saveControl = Controls.control(() ->
                     Files.write(Dialogs.selectFileToSave(detailsArea, null, "error.txt").toPath(),
                             Arrays.asList(detailsArea.getText().split("\\r?\\n"))),

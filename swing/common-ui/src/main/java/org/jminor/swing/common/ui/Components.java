@@ -118,8 +118,7 @@ public final class Components {
     requireNonNull(component, "component");
     requireNonNull(property, "property");
     final Event<T> event = Events.event();
-    component.addPropertyChangeListener(property,
-            changeEvent -> event.onEvent((T) changeEvent.getNewValue()));
+    component.addPropertyChangeListener(property, changeEvent -> event.onEvent((T) changeEvent.getNewValue()));
 
     return event.getObserver();
   }
@@ -456,11 +455,11 @@ public final class Components {
    * requests have been retracted. Best used in try/finally block combinations.
    * <pre>
    try {
-   Components.showWaitCursor(component);
-   doSomething();
+     Components.showWaitCursor(component);
+     doSomething();
    }
    finally {
-   Components.hideWaitCursor(component);
+     Components.hideWaitCursor(component);
    }
    * </pre>
    * @param component the component
@@ -476,11 +475,11 @@ public final class Components {
    * requests have been retracted. Best used in try/finally block combinations.
    * <pre>
    try {
-   Components.showWaitCursor(component);
-   doSomething();
+     Components.showWaitCursor(component);
+     doSomething();
    }
    finally {
-   Components.hideWaitCursor(component);
+     Components.hideWaitCursor(component);
    }
    * </pre>
    * @param component the component
