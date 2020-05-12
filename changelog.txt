@@ -6077,3 +6077,5 @@
   ControlSet renamed ControlList, now interface
   Some refactoring and cleanup after the last change
   KeyEvents.OnKeyRelease renamed to KeyTrigger
+  EntityLookupField now uses KeyListener instead of adding key events, in order to consume the events to prevent further propagation
+  ComponentValuePanel escape action now triggered on key pressed

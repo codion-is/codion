@@ -3,13 +3,10 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.Conjunction;
 import org.jminor.common.event.Event;
 import org.jminor.common.event.Events;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.table.SortingDirective;
-import org.jminor.common.state.State;
-import org.jminor.common.state.States;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.framework.domain.entity.EntityDefinition;
@@ -54,7 +51,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -62,6 +58,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -74,7 +71,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
-import static org.jminor.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_RELEASE;
 import static org.jminor.swing.common.ui.control.Controls.control;
 
 /**
@@ -97,18 +93,12 @@ public final class EntityLookupField extends JTextField {
 
   private static final String LOOKUP_MODEL = "lookupModel";
   private static final int BORDER_SIZE = 15;
-  private static final int ENABLE_LOOKUP_DELAY = 250;
 
   private final EntityLookupModel model;
   private final TextFieldHint searchHint;
   private final SettingsPanel settingsPanel;
   private final Action transferFocusAction = KeyEvents.transferFocusForwardAction(this);
   private final Action transferFocusBackwardAction = KeyEvents.transferFocusBackwardAction(this);
-  /**
-   * A hack used to prevent the lookup being triggered by the closing of
-   * the "empty result" message, which happens on windows
-   */
-  private final State lookupEnabledState = States.state(true);
 
   private SelectionProvider selectionProvider;
 
@@ -131,10 +121,10 @@ public final class EntityLookupField extends JTextField {
     setToolTipText(lookupModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addFocusListener(initializeFocusListener());
+    addEnterListener();
     addEscapeListener();
     this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     updateColors();
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, initializeLookupControl());
     Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
     Components.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
   }
@@ -230,12 +220,12 @@ public final class EntityLookupField extends JTextField {
     model.addSelectedEntitiesListener(data -> setCaretPosition(0));
   }
 
+  private void addEnterListener() {
+    addKeyListener(new EnterKeyListener());
+  }
+
   private void addEscapeListener() {
-    final Control escapeControl = Controls.control(() -> {
-      getModel().refreshSearchText();
-      selectAll();
-    }, getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver());
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_ESCAPE, escapeControl);
+    addKeyListener(new EscapeKeyListener());
   }
 
   private FocusListener initializeFocusListener() {
@@ -262,12 +252,6 @@ public final class EntityLookupField extends JTextField {
   private void updateColors() {
     final boolean validBackground = model.searchStringRepresentsSelected() || (searchHint != null && searchHint.isHintTextVisible());
     setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
-  }
-
-  private Control initializeLookupControl() {
-    return Controls.control(() -> performLookup(true),
-            FrameworkMessages.get(FrameworkMessages.SEARCH), States.aggregateState(Conjunction.AND,
-                    getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver(), lookupEnabledState));
   }
 
   private void performLookup(final boolean promptUser) {
@@ -327,9 +311,9 @@ public final class EntityLookupField extends JTextField {
     final Event closeEvent = Events.event();
     final JButton okButton = new JButton(Controls.control(closeEvent::onEvent, Messages.get(Messages.OK)));
     KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED,
-            ON_KEY_RELEASE, Controls.control(okButton::doClick));
+            ON_KEY_PRESSED, Controls.control(okButton::doClick));
     KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_FOCUSED,
-            ON_KEY_RELEASE, Controls.control(closeEvent::onEvent));
+            ON_KEY_PRESSED, Controls.control(closeEvent::onEvent));
     final JPanel buttonPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
     buttonPanel.add(okButton);
     final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION));
@@ -337,22 +321,7 @@ public final class EntityLookupField extends JTextField {
     final JPanel messagePanel = new JPanel(Layouts.borderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     messagePanel.add(buttonPanel, BorderLayout.SOUTH);
-    disableLookup();
     Dialogs.displayInDialog(this, messagePanel, SwingMessages.get("OptionPane.messageDialogTitle"), closeEvent);
-    enableLookup();
-  }
-
-  private void disableLookup() {
-    lookupEnabledState.set(false);
-  }
-
-  /**
-   * @see #lookupEnabledState
-   */
-  private void enableLookup() {
-    final Timer timer = new Timer(ENABLE_LOOKUP_DELAY, e -> lookupEnabledState.set(true));
-    timer.setRepeats(false);
-    timer.start();
   }
 
   private static List<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
@@ -611,6 +580,27 @@ public final class EntityLookupField extends JTextField {
       lookupModel.setSelectedEntity(initialValue);
 
       return field;
+    }
+  }
+
+  private final class EnterKeyListener extends KeyAdapter {
+    @Override
+    public void keyPressed(final KeyEvent e) {
+      if (!model.searchStringRepresentsSelected() && e.getKeyCode() == KeyEvent.VK_ENTER) {
+        e.consume();
+        performLookup(true);
+      }
+    }
+  }
+
+  private final class EscapeKeyListener extends KeyAdapter {
+    @Override
+    public void keyPressed(final KeyEvent e) {
+      if (!model.searchStringRepresentsSelected() && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        e.consume();
+        model.refreshSearchText();
+        selectAll();
+      }
     }
   }
 }
