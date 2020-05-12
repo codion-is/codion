@@ -12,8 +12,8 @@ public class ControlSetTest {
 
   @Test
   public void test() {
-    final Control one = new Control("one");
-    final Control two = new Control("two");
+    final Control one = Controls.control(() -> {}, "one");
+    final Control two = Controls.control(() -> {}, "two");
     ControlSet set = new ControlSet("set", one, two);
     set.add(null);
     set.addAt(0, null);

@@ -6073,3 +6073,4 @@
   EntityApplicationPanel, support tables mnemonic changed from P to O, to prevent clash with print action
   Dialogs.displayInDialog() bug fixed, enterAction keyEvent is now OnKeyRelease.NO
   IntegerField, LongField, DecimalField, added addIntegerListener(), addLongListener(), addDecimalListener() and addBigIntegerListener() respectively
+  Control and ToggleControl now interfaces

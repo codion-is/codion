@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ControlTest {
+public class DefaultControlTest {
 
   @Test
   public void test() throws Exception {
-    final Control test = new Control();
+    final Control test = new DefaultControl();
     test.setName("test");
     assertEquals("test", test.toString());
     assertEquals("test", test.getName());
@@ -31,7 +31,7 @@ public class ControlTest {
   @Test
   public void setEnabled() {
     final State enabledState = States.state();
-    final Control control = new Control("control", enabledState.getObserver());
+    final Control control = new DefaultControl("control", enabledState.getObserver());
     assertEquals("control", control.getName());
     assertEquals(enabledState.getObserver(), control.getEnabledObserver());
     assertFalse(control.isEnabled());
@@ -43,7 +43,7 @@ public class ControlTest {
 
   @Test
   public void setEnabledViaMethod() {
-    final Control test = new Control();
+    final Control test = new DefaultControl();
     assertThrows(UnsupportedOperationException.class, () -> test.setEnabled(true));
   }
 }
