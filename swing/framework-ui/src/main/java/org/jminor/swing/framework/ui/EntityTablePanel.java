@@ -1194,7 +1194,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         if (southToolBar != null) {
           southPanelCenter.add(southToolBar, BorderLayout.EAST);
         }
-        southPanel.add(southPanelCenter, BorderLayout.SOUTH);
+        southPanel.add(southPanelCenter, BorderLayout.CENTER);
       }
     }
     layoutPanel(tablePanel, southPanel);

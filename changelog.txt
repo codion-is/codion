@@ -6107,3 +6107,4 @@
   EntityLookupField now uses KeyListener instead of adding key events, in order to consume the events to prevent further propagation
   ComponentValuePanel escape action now triggered on key pressed
   EntityLookupField.ListSelectionProvider and TableSelectionProvider no longer final, but effectively final, quite convenient to be able to extend for customization, as per chinook demo
+  EntityTablePanel bug fixed, wrong constraints on south center panel
