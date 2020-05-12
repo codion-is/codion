@@ -11,7 +11,6 @@ import org.jminor.common.version.Versions;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.model.ChinookApplicationModel;
 import org.jminor.framework.model.EntityEditModel;
-import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.icons.Icons;
@@ -162,6 +161,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.chinook.domain.impl.ChinookImpl");
     new ChinookAppPanel().startApplication("Chinook", null, MaximizeFrame.NO,
-            Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
+            new Dimension(1920, 1080), Users.parseUser("scott:tiger"));
   }
 }
