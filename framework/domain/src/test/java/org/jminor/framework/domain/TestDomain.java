@@ -151,6 +151,7 @@ public final class TestDomain extends Domain {
                     .updatable(true).nullable(false)
                     .beanProperty("deptNo"),
             columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
+                    .searchProperty(true)
                     .preferredColumnWidth(120).maximumLength(14).nullable(false)
                     .beanProperty("name"),
             columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
@@ -162,7 +163,6 @@ public final class TestDomain extends Domain {
             blobProperty(DEPARTMENT_DATA)
                     .eagerlyLoaded(false))
             .smallDataset(true)
-            .searchPropertyIds(DEPARTMENT_NAME)
             .orderBy(orderBy().ascending(DEPARTMENT_NAME))
             .stringProvider(new StringProvider(DEPARTMENT_NAME))
             .beanClass(Department.class)
@@ -190,6 +190,7 @@ public final class TestDomain extends Domain {
                     .columnName("empno")
                     .beanProperty("id"),
             columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
+                    .searchProperty(true)
                     .columnName("ename").maximumLength(10).nullable(false)
                     .beanProperty("name"),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
@@ -200,6 +201,7 @@ public final class TestDomain extends Domain {
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+                    .searchProperty(true)
                     .beanProperty("job"),
             columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2)
@@ -232,7 +234,6 @@ public final class TestDomain extends Domain {
             .keyGenerator(increment("scott.emp", "empno"))
             .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .stringProvider(new StringProvider(EMP_NAME))
-            .searchPropertyIds(EMP_NAME, EMP_JOB)
             .beanClass(Employee.class)
             .beanHelper(new EntityToEmployee())
             .caption("Employee");

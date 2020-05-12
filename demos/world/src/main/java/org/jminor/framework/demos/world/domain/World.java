@@ -123,6 +123,7 @@ public final class World extends Domain {
     define(T_CITY,
             primaryKeyProperty(CITY_ID),
             columnProperty(CITY_NAME, Types.VARCHAR, "Name")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(35),
             foreignKeyProperty(CITY_COUNTRY_FK, "Country", T_COUNTRY,
@@ -139,7 +140,6 @@ public final class World extends Domain {
             // end::sequence[]
             .validator(new CityValidator())
             .orderBy(orderBy().ascending(CITY_NAME))
-            .searchPropertyIds(CITY_NAME)
             .stringProvider(new StringProvider(CITY_NAME))
             .colorProvider(new CityColorProvider())
             .caption("City");
@@ -154,6 +154,7 @@ public final class World extends Domain {
                     .maximumLength(3),
             // end::primaryKey[]
             columnProperty(COUNTRY_NAME, Types.VARCHAR, "Name")
+                    .searchProperty(true)
                     .nullable(false)
                     .maximumLength(52),
             valueListProperty(COUNTRY_CONTINENT, Types.VARCHAR, "Continent", CONTINENTS)
@@ -212,7 +213,6 @@ public final class World extends Domain {
                     .nullable(false)
                     .maximumLength(2))
             .orderBy(orderBy().ascending(COUNTRY_NAME))
-            .searchPropertyIds(COUNTRY_NAME)
             .stringProvider(new StringProvider(COUNTRY_NAME))
             .caption("Country");
   }

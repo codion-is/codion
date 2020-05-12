@@ -29,14 +29,15 @@ public final class ClinicImpl extends Domain {
     define(T_VET,
             primaryKeyProperty(VET_ID),
             columnProperty(VET_FIRST_NAME, Types.VARCHAR, "First name")
+                    .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(VET_LAST_NAME, Types.VARCHAR, "Last name")
+                    .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false))
             .keyGenerator(automatic(T_VET))
             .caption("Vets")
-            .searchPropertyIds(VET_FIRST_NAME, VET_LAST_NAME)
             .stringProvider(new StringProvider(VET_LAST_NAME)
                     .addText(", ").addValue(VET_FIRST_NAME))
             .orderBy(orderBy().ascending(VET_LAST_NAME, VET_FIRST_NAME))
@@ -47,11 +48,11 @@ public final class ClinicImpl extends Domain {
     define(T_SPECIALTY,
             primaryKeyProperty(SPECIALTY_ID),
             columnProperty(SPECIALTY_NAME, Types.VARCHAR, "Name")
+                    .searchProperty(true)
                     .maximumLength(80)
                     .nullable(false))
             .keyGenerator(automatic(T_SPECIALTY))
             .caption("Specialties")
-            .searchPropertyIds(SPECIALTY_NAME)
             .stringProvider(new StringProvider(SPECIALTY_NAME))
             .smallDataset(true);
   }
@@ -75,11 +76,11 @@ public final class ClinicImpl extends Domain {
     define(T_PET_TYPE,
             primaryKeyProperty(PET_TYPE_ID),
             columnProperty(PET_TYPE_NAME, Types.VARCHAR, "Name")
+                    .searchProperty(true)
                     .maximumLength(80)
                     .nullable(false))
             .keyGenerator(automatic(T_PET_TYPE))
             .caption("Pet types")
-            .searchPropertyIds(PET_TYPE_NAME)
             .stringProvider(new StringProvider(PET_TYPE_NAME))
             .orderBy(orderBy().ascending(PET_TYPE_NAME))
             .smallDataset(true);
@@ -89,9 +90,11 @@ public final class ClinicImpl extends Domain {
     define(T_OWNER,
             primaryKeyProperty(OWNER_ID),
             columnProperty(OWNER_FIRST_NAME, Types.VARCHAR, "First name")
+                    .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(OWNER_LAST_NAME, Types.VARCHAR, "Last name")
+                    .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(OWNER_ADDRESS, Types.VARCHAR, "Address")
@@ -102,7 +105,6 @@ public final class ClinicImpl extends Domain {
                     .maximumLength(20))
             .keyGenerator(automatic(T_OWNER))
             .caption("Owners")
-            .searchPropertyIds(OWNER_FIRST_NAME, OWNER_LAST_NAME)
             .stringProvider(new StringProvider(OWNER_LAST_NAME).addText(", ")
                     .addValue(OWNER_FIRST_NAME))
             .orderBy(orderBy().ascending(OWNER_LAST_NAME, OWNER_FIRST_NAME));
@@ -112,6 +114,7 @@ public final class ClinicImpl extends Domain {
     define(T_PET,
             primaryKeyProperty(PET_ID),
             columnProperty(PET_NAME, Types.VARCHAR, "Name")
+                    .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(PET_BIRTH_DATE, Types.DATE, "Birth date"),
@@ -123,7 +126,6 @@ public final class ClinicImpl extends Domain {
                     .nullable(false))
             .keyGenerator(automatic(T_PET))
             .caption("Pets")
-            .searchPropertyIds(PET_NAME)
             .stringProvider(new StringProvider(PET_NAME))
             .orderBy(orderBy().ascending(PET_NAME));
   }

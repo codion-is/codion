@@ -191,4 +191,9 @@ public final class PropertiesTest {
   public void stringPropertyNegativeMaxLength() {
     assertThrows(IllegalArgumentException.class, () -> columnProperty("property", Types.VARCHAR).maximumLength(-4));
   }
+
+  @Test
+  public void searchPropertyNonVarchar() {
+    assertThrows(IllegalStateException.class, () -> columnProperty("property", Types.INTEGER).searchProperty(true));
+  }
 }

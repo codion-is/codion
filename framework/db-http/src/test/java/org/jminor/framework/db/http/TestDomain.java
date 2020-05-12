@@ -57,11 +57,10 @@ public final class TestDomain extends Domain {
             primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
-                    .preferredColumnWidth(120).maximumLength(14).nullable(false),
+                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
             columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
-            .searchPropertyIds(DEPARTMENT_NAME)
             .orderBy(orderBy().ascending(DEPARTMENT_NAME))
             .stringProvider(new StringProvider(DEPARTMENT_NAME))
             .caption("Department");
@@ -85,12 +84,13 @@ public final class TestDomain extends Domain {
     define(T_EMP,
             primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
             columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
-                    .maximumLength(10).nullable(false),
+                    .searchProperty(true).maximumLength(10).nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
                     columnProperty(EMP_DEPARTMENT))
                     .nullable(false),
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
-                    asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN"))),
+                    asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+                    .searchProperty(true),
             columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
@@ -105,7 +105,6 @@ public final class TestDomain extends Domain {
             columnProperty(EMP_DATA, Types.BLOB, "Data"))
             .stringProvider(new StringProvider(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
-            .searchPropertyIds(EMP_NAME, EMP_JOB)
             .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .caption("Employee");
   }

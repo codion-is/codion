@@ -33,7 +33,7 @@ import static org.jminor.framework.domain.property.Properties.*;
 /**
  * EmpDept minimal application demo
  */
-public class EmpDeptMinimalApp {
+public final class EmpDeptMinimalApp {
 
   /**
    * This class initializes the domain model based on the SCOTT schema
@@ -47,13 +47,13 @@ public class EmpDeptMinimalApp {
       define("scott.dept",
               primaryKeyProperty("deptno"),
               columnProperty("dname", Types.VARCHAR, "Department name")
+                      .searchProperty(true)
                       .nullable(false)
                       .maximumLength(14),
               columnProperty("loc", Types.VARCHAR, "Department location")
                       .maximumLength(13))
               .keyGenerator(increment("scott.dept", "deptno"))
               .caption("Departments")
-              .searchPropertyIds("dname")
               .stringProvider(new StringProvider("dname"));
       /*
        * We then define the entity based on the SCOTT.EMP table,
@@ -63,6 +63,7 @@ public class EmpDeptMinimalApp {
       define("scott.emp",
               primaryKeyProperty("empno"),
               columnProperty("ename", Types.VARCHAR, "Name")
+                      .searchProperty(true)
                       .nullable(false)
                       .maximumLength(10),
               foreignKeyProperty("dept_fk", "Department", "scott.dept",
@@ -83,7 +84,6 @@ public class EmpDeptMinimalApp {
                       .nullable(false))
               .keyGenerator(increment("scott.emp", "empno"))
               .caption("Employees")
-              .searchPropertyIds("ename")
               .stringProvider(new StringProvider("ename"));
     }
   }

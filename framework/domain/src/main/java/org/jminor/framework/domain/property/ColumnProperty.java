@@ -99,6 +99,11 @@ public interface ColumnProperty extends Property {
   boolean columnHasDefaultValue();
 
   /**
+   * @return true if this property should be included when searching by string
+   */
+  boolean isSearchProperty();
+
+  /**
    * Fetches a value for this property from a ResultSet
    * @param resultSet the ResultSet
    * @param index the index of the column to fetch
@@ -241,6 +246,15 @@ public interface ColumnProperty extends Property {
      * @return this instance
      */
     ColumnProperty.Builder valueConverter(ValueConverter<?, ?> valueConverter);
+
+    /**
+     * If true then this property is included when searching for an entity by a string value.
+     * Only applicable to properties of type {@link java.sql.Types#VARCHAR}.
+     * @param searchProperty if true then this becomes a default search property.
+     * @throws IllegalStateException in case this property is not of the type Types.VARCHAR
+     * @return this instance
+     */
+    ColumnProperty.Builder searchProperty(boolean searchProperty);
 
     /**
      * @param foreignKeyProperty true if this property is part of a foreign key

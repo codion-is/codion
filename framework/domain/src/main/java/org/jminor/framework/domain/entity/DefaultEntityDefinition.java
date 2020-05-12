@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -110,11 +109,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
    * The bean helper
    */
   private BeanHelper beanHelper = new DefaultBeanHelper();
-
-  /**
-   * The ids of the properties to use when performing a string based lookup on this entity
-   */
-  private Collection<String> searchPropertyIds;
 
   /**
    * The name of the underlying table
@@ -306,16 +300,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Collection<String> getSearchPropertyIds() {
-    if (searchPropertyIds == null) {
-      return emptyList();
-    }
-    return unmodifiableCollection(searchPropertyIds);
-  }
-
-  @Override
   public Collection<ColumnProperty> getSearchProperties() {
-    return getSearchPropertyIds().stream().map(this::getColumnProperty).collect(toList());
+    return columnProperties.stream().filter(ColumnProperty::isSearchProperty).collect(toList());
   }
 
   @Override
@@ -946,24 +932,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     @Override
     public Builder stringProvider(final Function<Entity, String> stringProvider) {
       definition.stringProvider = requireNonNull(stringProvider, "stringProvider");
-      return this;
-    }
-
-    @Override
-    public Builder searchPropertyIds(final String... searchPropertyIds) {
-      requireNonNull(searchPropertyIds, "searchPropertyIds");
-      for (final String propertyId : searchPropertyIds) {
-        final Property property = definition.propertyMap.get(propertyId);
-        if (property == null) {
-          throw new IllegalArgumentException("Property with ID '" + propertyId + "' not found in entity '" +
-                  definition.getEntityId() + "'");
-        }
-        if (!property.isString()) {
-          throw new IllegalArgumentException("Entity search property must be of type String: " +
-                  definition.propertyMap.get(propertyId));
-        }
-      }
-      definition.searchPropertyIds = asList(searchPropertyIds);
       return this;
     }
 

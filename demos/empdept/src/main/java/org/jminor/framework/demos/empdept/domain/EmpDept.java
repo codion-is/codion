@@ -96,7 +96,7 @@ public final class EmpDept extends Domain {
     define(T_EMPLOYEE,
             primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, "Employee no.").beanProperty("id"),
             columnProperty(EMPLOYEE_NAME, Types.VARCHAR, "Name")
-                    .maximumLength(10).nullable(false).beanProperty("name"),
+                    .searchProperty(true).maximumLength(10).nullable(false).beanProperty("name"),
             foreignKeyProperty(EMPLOYEE_DEPARTMENT_FK, "Department", T_DEPARTMENT,
                     columnProperty(EMPLOYEE_DEPARTMENT))
                     .nullable(false).beanProperty("department"),
@@ -114,7 +114,6 @@ public final class EmpDept extends Domain {
                     .preferredColumnWidth(100))
             .keyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID))
             .orderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))
-            .searchPropertyIds(EMPLOYEE_NAME)
             .stringProvider(new StringProvider(EMPLOYEE_NAME))
             .beanClass(Employee.class)
             .caption("Employee")

@@ -538,14 +538,6 @@ public class DomainTest {
   }
 
   @Test
-  public void setSearchPropertyIdsInvalidProperty() {
-    assertThrows(IllegalArgumentException.class, () -> domain.define("spids",
-            Properties.primaryKeyProperty("1"),
-            Properties.columnProperty("test"))
-            .searchPropertyIds("invalid"));
-  }
-
-  @Test
   public void hasSingleIntegerPrimaryKey() {
     String entityId = "hasSingleIntegerPrimaryKey";
     domain.define(entityId,
