@@ -42,7 +42,7 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
     private MinutesSecondsPanel() {
       super(borderLayout());
-      secondsField.setRange(0, 60);
+      secondsField.setRange(0, 59);
       transferFocusOnEnter(minutesField);
       transferFocusOnEnter(secondsField);
       selectAllOnFocusGained(minutesField);
