@@ -319,18 +319,16 @@ public final class ChinookImpl extends Domain implements Chinook {
 
   void playlistTrack() {
     define(T_PLAYLISTTRACK, "chinook.playlisttrack",
+            primaryKeyProperty(PLAYLISTTRACK_ID, Types.BIGINT),
             foreignKeyProperty(PLAYLISTTRACK_PLAYLIST_FK, "Playlist", T_PLAYLIST,
-                    primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID, Types.BIGINT)
-                            .updatable(true))
+                    columnProperty(PLAYLISTTRACK_PLAYLISTID, Types.BIGINT))
                     .nullable(false)
                     .preferredColumnWidth(120),
             denormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
                     getDefinition(T_ALBUM).getProperty(ALBUM_ARTIST_FK), "Artist")
                     .preferredColumnWidth(160),
             foreignKeyProperty(PLAYLISTTRACK_TRACK_FK, "Track", T_TRACK,
-                    primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.BIGINT)
-                            .primaryKeyIndex(1)
-                            .updatable(true))
+                    columnProperty(PLAYLISTTRACK_TRACKID, Types.BIGINT))
                     .fetchDepth(3)
                     .nullable(false)
                     .preferredColumnWidth(160),
