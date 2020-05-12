@@ -335,6 +335,7 @@ public final class ChinookImpl extends Domain implements Chinook {
             denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACK_FK,
                     getDefinition(T_TRACK).getProperty(TRACK_ALBUM_FK), "Album")
                     .preferredColumnWidth(160))
+            .keyGenerator(automatic("chinook.playlisttrack"))
             .stringProvider(new StringProvider(PLAYLISTTRACK_PLAYLIST_FK)
                     .addText(" - ").addValue(PLAYLISTTRACK_TRACK_FK))
             .caption("Playlist tracks");
