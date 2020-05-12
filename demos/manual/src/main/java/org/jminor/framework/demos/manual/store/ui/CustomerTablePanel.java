@@ -7,7 +7,7 @@ import org.jminor.framework.demos.manual.store.domain.Store;
 import org.jminor.framework.domain.entity.Entities;
 import org.jminor.framework.domain.entity.Entity;
 import org.jminor.plugin.jasperreports.model.JasperReports;
-import org.jminor.swing.common.ui.control.ControlSet;
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityReports;
@@ -28,8 +28,8 @@ public class CustomerTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlSet getPrintControls() {
-    ControlSet printControls = super.getPrintControls();
+  protected ControlList getPrintControls() {
+    ControlList printControls = super.getPrintControls();
     //add a Control which calls the viewCustomerReport method in this class
     //enabled only when the selection is not empty
     printControls.add(Controls.control(this::viewCustomerReport, "Customer report",

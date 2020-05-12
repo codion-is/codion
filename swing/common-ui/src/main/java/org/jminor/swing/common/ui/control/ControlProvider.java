@@ -37,46 +37,46 @@ public final class ControlProvider {
   private ControlProvider() {}
 
   /**
-   * Creates a vertically laid out panel of buttons from a control set
-   * @param controlSet the control set
+   * Creates a vertically laid out panel of buttons from a control list
+   * @param controls the control list
    * @return the button panel
    */
-  public static JPanel createVerticalButtonPanel(final ControlSet controlSet) {
+  public static JPanel createVerticalButtonPanel(final ControlList controls) {
     final JPanel panel = new JPanel(Layouts.gridLayout(0, 1));
-    controlSet.getActions().forEach(new ButtonControlHandler(panel, true));
+    controls.getActions().forEach(new ButtonControlHandler(panel, true));
 
     return panel;
   }
 
   /**
-   * Creates a horizontally laid out panel of buttons from a control set
-   * @param controlSet the control set
+   * Creates a horizontally laid out panel of buttons from a control list
+   * @param controls the control list
    * @return the button panel
    */
-  public static JPanel createHorizontalButtonPanel(final ControlSet controlSet) {
+  public static JPanel createHorizontalButtonPanel(final ControlList controls) {
     final JPanel panel = new JPanel(Layouts.gridLayout(1, 0));
-    controlSet.getActions().forEach(new ButtonControlHandler(panel, false));
+    controls.getActions().forEach(new ButtonControlHandler(panel, false));
 
     return panel;
   }
 
   /**
    * Creates a popup menu from the given controls
-   * @param controlSet the control set
+   * @param controls the control list
    * @return a popup menu based on the given controls
    */
-  public static JPopupMenu createPopupMenu(final ControlSet controlSet) {
-    return createMenu(controlSet).getPopupMenu();
+  public static JPopupMenu createPopupMenu(final ControlList controls) {
+    return createMenu(controls).getPopupMenu();
   }
 
   /**
    * Creates a menu from the given controls
-   * @param controlSet the control set
+   * @param controls the control list
    * @return a menu based on the given controls
    */
-  public static JMenu createMenu(final ControlSet controlSet) {
-    final MenuControlHandler controlHandler = new MenuControlHandler(controlSet);
-    controlSet.getActions().forEach(controlHandler);
+  public static JMenu createMenu(final ControlList controls) {
+    final MenuControlHandler controlHandler = new MenuControlHandler(controls);
+    controls.getActions().forEach(controlHandler);
 
     return controlHandler.menu;
   }
@@ -105,13 +105,13 @@ public final class ControlProvider {
 
   /**
    * Creates a JToolBar populated with the given controls.
-   * @param controlSet the controls
+   * @param controls the controls
    * @param orientation the toolbar orientation
    * @return a toolbar based on the given controls
    */
-  public static JToolBar createToolBar(final ControlSet controlSet, final int orientation) {
+  public static JToolBar createToolBar(final ControlList controls, final int orientation) {
     final JToolBar toolBar = new JToolBar(orientation);
-    populateToolBar(toolBar, controlSet);
+    populateToolBar(toolBar, controls);
 
     return toolBar;
   }
@@ -119,41 +119,41 @@ public final class ControlProvider {
   /**
    * Adds the given controls to the given tool bar.
    * @param toolBar the toolbar to add the controls to
-   * @param controlSet the controls
+   * @param controls the controls
    */
-  public static void populateToolBar(final JToolBar toolBar, final ControlSet controlSet) {
-    controlSet.getActions().forEach(new ToolBarControlHandler(toolBar));
+  public static void populateToolBar(final JToolBar toolBar, final ControlList controls) {
+    controls.getActions().forEach(new ToolBarControlHandler(toolBar));
   }
 
   /**
-   * @param controlSets the controls
+   * @param controls the controls
    * @return a menu bar based on the given controls
    */
-  public static JMenuBar createMenuBar(final List<ControlSet> controlSets) {
+  public static JMenuBar createMenuBar(final List<ControlList> controls) {
     final JMenuBar menuBar = new JMenuBar();
-    controlSets.forEach(controlSet -> populateMenuBar(menuBar, controlSet));
+    controls.forEach(controlList -> populateMenuBar(menuBar, controlList));
 
     return menuBar;
   }
 
   /**
-   * @param controlSet the controls
+   * @param controls the controls
    * @return a menu bar based on the given controls
    */
-  public static JMenuBar createMenuBar(final ControlSet controlSet) {
+  public static JMenuBar createMenuBar(final ControlList controls) {
     final JMenuBar menuBar = new JMenuBar();
-    controlSet.getControlSets().forEach(subControlSet -> populateMenuBar(menuBar, subControlSet));
+    controls.getControlLists().forEach(subControlList -> populateMenuBar(menuBar, subControlList));
 
     return menuBar;
   }
 
   /**
    * @param menuBar the menubar to add the controls to
-   * @param controlSet the controls
+   * @param controls the controls
    * @return the menu bar with the added controls
    */
-  public static JMenuBar populateMenuBar(final JMenuBar menuBar, final ControlSet controlSet) {
-    menuBar.add(createMenu(controlSet));
+  public static JMenuBar populateMenuBar(final JMenuBar menuBar, final ControlList controls) {
+    menuBar.add(createMenu(controls));
 
     return menuBar;
   }
@@ -193,8 +193,8 @@ public final class ControlProvider {
       if (action == null) {
         onSeparator();
       }
-      else if (action instanceof ControlSet) {
-        onControlSet((ControlSet) action);
+      else if (action instanceof ControlList) {
+        onControlList((ControlList) action);
       }
       else if (action instanceof Control) {
         onControl((Control) action);
@@ -216,10 +216,10 @@ public final class ControlProvider {
     abstract void onControl(Control control);
 
     /**
-     * Creates a component based on the given control set
-     * @param controlSet the control set
+     * Creates a component based on the given control list
+     * @param controls the control list
      */
-    abstract void onControlSet(ControlSet controlSet);
+    abstract void onControlList(ControlList controls);
 
     /**
      * Creates a component base on the given action
@@ -254,8 +254,8 @@ public final class ControlProvider {
     }
 
     @Override
-    public void onControlSet(final ControlSet controlSet) {
-      panel.add(vertical ? createVerticalButtonPanel(controlSet) : createHorizontalButtonPanel(controlSet));
+    public void onControlList(final ControlList controls) {
+      panel.add(vertical ? createVerticalButtonPanel(controls) : createHorizontalButtonPanel(controls));
     }
 
     @Override
@@ -268,22 +268,22 @@ public final class ControlProvider {
 
     private final JMenu menu;
 
-    private MenuControlHandler(final ControlSet controlSet) {
-      menu = new JMenu(controlSet.getName());
-      final String description = controlSet.getDescription();
+    private MenuControlHandler(final ControlList controls) {
+      menu = new JMenu(controls.getName());
+      final String description = controls.getDescription();
       if (description != null) {
         menu.setToolTipText(description);
       }
-      final StateObserver enabledObserver = controlSet.getEnabledObserver();
+      final StateObserver enabledObserver = controls.getEnabledObserver();
       if (enabledObserver != null) {
         menu.setEnabled(enabledObserver.get());
         enabledObserver.addListener(() -> menu.setEnabled(enabledObserver.get()));
       }
-      final Icon icon = controlSet.getIcon();
+      final Icon icon = controls.getIcon();
       if (icon != null) {
         menu.setIcon(icon);
       }
-      final int mnemonic = controlSet.getMnemonic();
+      final int mnemonic = controls.getMnemonic();
       if (mnemonic != -1) {
         menu.setMnemonic(mnemonic);
       }
@@ -305,9 +305,9 @@ public final class ControlProvider {
     }
 
     @Override
-    public void onControlSet(final ControlSet controlSet) {
-      final MenuControlHandler controlHandler = new MenuControlHandler(controlSet);
-      controlSet.getActions().forEach(controlHandler);
+    public void onControlList(final ControlList controls) {
+      final MenuControlHandler controlHandler = new MenuControlHandler(controls);
+      controls.getActions().forEach(controlHandler);
       menu.add(controlHandler.menu);
     }
 
@@ -341,8 +341,8 @@ public final class ControlProvider {
     }
 
     @Override
-    public void onControlSet(final ControlSet controlSet) {
-      controlSet.getActions().forEach(new ToolBarControlHandler(toolbar));
+    public void onControlList(final ControlList controls) {
+      controls.getActions().forEach(new ToolBarControlHandler(toolbar));
     }
 
     @Override

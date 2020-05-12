@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.layout.Layouts;
 import org.jminor.swing.framework.server.monitor.HostMonitor;
@@ -44,11 +44,8 @@ public final class HostMonitorPanel extends JPanel {
     initializeServerTabs();
   }
 
-  private ControlSet getControls() {
-    final ControlSet controlSet = new ControlSet();
-    controlSet.add(Controls.control(model::refresh, "Refresh"));
-
-    return controlSet;
+  private ControlList getControls() {
+    return Controls.controlList(Controls.control(model::refresh, "Refresh"));
   }
 
   private void bindEvents() {

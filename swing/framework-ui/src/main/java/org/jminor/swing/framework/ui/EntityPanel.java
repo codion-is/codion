@@ -9,7 +9,7 @@ import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.HierarchyPanel;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.ControlSet;
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
@@ -1203,7 +1203,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void initializeTablePanel() {
-    final ControlSet toolbarControls = new ControlSet("");
+    final ControlList toolbarControls = Controls.controlList();
     if (showToggleEditPanelControl && editPanel != null) {
       toolbarControls.add(getToggleEditPanelControl());
     }
@@ -1303,25 +1303,25 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Initializes a ControlSet containing a control for setting the state to {@code status} on each detail panel.
+   * Initializes a ControlList containing a control for setting the state to {@code status} on each detail panel.
    * @param status the status
-   * @return a ControlSet for controlling the state of the detail panels
+   * @return a ControlList for controlling the state of the detail panels
    */
-  private ControlSet getDetailPanelControls(final PanelState status) {
+  private ControlList getDetailPanelControls(final PanelState status) {
     if (detailEntityPanels.isEmpty()) {
       return null;
     }
 
-    final ControlSet controlSet = new ControlSet(MESSAGES.getString(MSG_DETAIL_TABLES), (char) 0,
+    final ControlList controls = Controls.controlList(MESSAGES.getString(MSG_DETAIL_TABLES), (char) 0,
             frameworkIcons().detail());
     for (final EntityPanel detailPanel : detailEntityPanels) {
-      controlSet.add(Controls.control(() -> {
+      controls.add(Controls.control(() -> {
         setDetailPanelState(status);
         detailPanel.activatePanel();
       }, detailPanel.getCaption()));
     }
 
-    return controlSet;
+    return controls;
   }
 
   //#############################################################################################

@@ -361,7 +361,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   /**
-   * @return a ControlSet for selecting the table selection mode (single or multiple)
+   * @return a ToggleControl for toggling the table selection mode (single or multiple)
    */
   public ToggleControl getSingleSelectionModeControl() {
     return Controls.toggleControl(tableModel.getSelectionModel().getSingleSelectionModeState(), MESSAGES.getString(SINGLE_SELECTION_MODE));

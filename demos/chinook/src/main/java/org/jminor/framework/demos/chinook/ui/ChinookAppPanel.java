@@ -12,7 +12,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.model.ChinookApplicationModel;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.control.ControlSet;
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.icons.Icons;
 import org.jminor.swing.framework.model.SwingEntityModel;
@@ -134,8 +134,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   @Override
-  protected ControlSet getToolsControlSet() {
-    final ControlSet tools = super.getToolsControlSet();
+  protected ControlList getToolsControls() {
+    final ControlList tools = super.getToolsControls();
     tools.addSeparator();
     tools.add(Controls.control(this::updateInvoiceTotals, "Update invoice totals"));
 

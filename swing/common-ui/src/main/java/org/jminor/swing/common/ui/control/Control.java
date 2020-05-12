@@ -34,7 +34,7 @@ public interface Control extends Action {
    * @param name the name of this Control instance
    * @return this Control instance
    */
-  Control setName(String test);
+  Control setName(String name);
 
   /**
    * @return the state which controls whether this Control instance is enabled
@@ -42,7 +42,7 @@ public interface Control extends Action {
   StateObserver getEnabledObserver();
 
   /**
-   * @param key the mnemonic to associate with this Control instance
+   * @param mnemonic the mnemonic to associate with this Control instance
    * @return this Control instance
    */
   Control setMnemonic(int mnemonic);

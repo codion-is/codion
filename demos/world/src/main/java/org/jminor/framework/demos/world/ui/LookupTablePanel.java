@@ -2,7 +2,7 @@ package org.jminor.framework.demos.world.ui;
 
 import org.jminor.framework.demos.world.model.LookupTableModel;
 import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.ControlSet;
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 
@@ -26,8 +26,8 @@ public final class LookupTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected ControlSet getPopupControls(List<ControlSet> additionalPopupControlSets) {
-    ControlSet controls = super.getPopupControls(additionalPopupControlSets);
+  protected ControlList getPopupControls(List<ControlList> additionalPopupControls) {
+    ControlList controls = super.getPopupControls(additionalPopupControls);
     controls.addSeparatorAt(2);
 
     Control exportControl = Controls.control(this::exportCSV, "Export CSV...");

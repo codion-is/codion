@@ -6,7 +6,7 @@ package org.jminor.framework.demos.empdept.ui;
 import org.jminor.common.state.StateObserver;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.entity.Entities;
-import org.jminor.swing.common.ui.control.ControlSet;
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityReports;
@@ -39,14 +39,14 @@ public class DepartmentTablePanel extends EntityTablePanel {
 
   // tag::getPrintControls[]
   @Override
-  protected ControlSet getPrintControls() {
-    final ControlSet printControlSet = super.getPrintControls();
+  protected ControlList getPrintControls() {
+    final ControlList printControls = super.getPrintControls();
     final StateObserver selectionNotEmptyObserver =
             getTableModel().getSelectionModel().getSelectionNotEmptyObserver();
-    printControlSet.add(Controls.control(this::viewEmployeeReport,
+    printControls.add(Controls.control(this::viewEmployeeReport,
             "Employee Report", selectionNotEmptyObserver));
 
-    return printControlSet;
+    return printControls;
   }
 }
 // end::getPrintControls[]

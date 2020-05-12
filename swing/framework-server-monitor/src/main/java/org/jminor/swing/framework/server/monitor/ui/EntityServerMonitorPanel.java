@@ -13,8 +13,8 @@ import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.UiManagerDefaults;
 import org.jminor.swing.common.ui.Windows;
 import org.jminor.swing.common.ui.control.Control;
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import org.jminor.swing.common.ui.dialog.Dialogs;
@@ -127,7 +127,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public void showFrame() {
     monitorFrame = new JFrame();
     monitorFrame.setIconImage(icons().logoRed().getImage());
-    monitorFrame.setJMenuBar(ControlProvider.createMenuBar(initializeMainMenuControlSets()));
+    monitorFrame.setJMenuBar(ControlProvider.createMenuBar(initializeMainMenuControls()));
     monitorFrame.setTitle("JMinor Server Monitor");
     monitorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     monitorFrame.getContentPane().add(this);
@@ -154,23 +154,23 @@ public final class EntityServerMonitorPanel extends JPanel {
     add(initializeSouthPanel(), BorderLayout.SOUTH);
   }
 
-  private ControlSet initializeMainMenuControlSets() {
-    final ControlSet controlSet = new ControlSet();
-    final ControlSet file = new ControlSet("File", 'F');
+  private ControlList initializeMainMenuControls() {
+    final ControlList controls = Controls.controlList();
+    final ControlList file = Controls.controlList("File", 'F');
     file.add(initializeExitControl());
-    controlSet.add(file);
-    final ControlSet view = new ControlSet("View", 'V');
+    controls.add(file);
+    final ControlList view = Controls.controlList("View", 'V');
     view.add(initializeRefreshControl());
     view.addSeparator();
     view.add(initializeAlwaysOnTopControl());
-    controlSet.add(view);
-    final ControlSet tools = new ControlSet("Tools", 'T');
+    controls.add(view);
+    final ControlList tools = Controls.controlList("Tools", 'T');
     tools.add(Controls.control(this::setUpdateInterval, "Chart update interval"));
     tools.add(initializeSetJDKDirControl());
     tools.add(initializeJConsoleControl());
-    controlSet.add(tools);
+    controls.add(tools);
 
-    return controlSet;
+    return controls;
   }
 
   private Control initializeRefreshControl() {

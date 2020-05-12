@@ -296,4 +296,110 @@ public final class Controls {
   public static Control eventControl(final Event<ActionEvent> event) {
     return control(event::onEvent);
   }
+
+  /**
+   * Constructs a new ControlList.
+   * @return a new ControlList instance.
+   */
+  public static ControlList controlList() {
+    return controlList("");
+  }
+
+  /**
+   * Constructs a new ControlList
+   * @param name the control list name
+   * @return a new ControlList instance.
+   */
+  public static ControlList controlList(final String name) {
+    return controlList(name, (char) -1);
+  }
+
+  /**
+   * Constructs a new ControlList
+   * @param name the control list name
+   * @param mnemonic the mnemonic to assign to this control list
+   * @return a new ControlList instance.
+   */
+  public static ControlList controlList(final String name, final char mnemonic) {
+    return controlList(name, mnemonic, (Icon) null);
+  }
+
+  /**
+   * Constructs a new ControlList
+   * @param name the control list name
+   * @param mnemonic the mnemonic to assign to this control list
+   * @param icon the icon
+   * @return a new ControlList instance.
+   */
+  public static ControlList controlList(final String name, final char mnemonic, final Icon icon) {
+    return controlList(name, mnemonic, icon, null);
+  }
+
+  /**
+   * Constructs a new ControlList
+   * @param name the control list name
+   * @param mnemonic the mnemonic to assign to this control list
+   * @param icon the icon
+   * @param enabledState the state observer dictating the enable state of this control
+   * @return a new ControlList instance.
+   */
+  public static ControlList controlList(final String name, final char mnemonic, final Icon icon, final StateObserver enabledState) {
+    return new DefaultControlList(name, mnemonic, icon, enabledState);
+  }
+
+  /**
+   * Constructs a new ControlList
+   * @param controls the controls to add to this set
+   * @return a new ControlList instance.
+   */
+  public static ControlList controlList(final Control... controls) {
+    return controlList(null, controls);
+  }
+
+  /**
+   * Constructs a new ControlList
+   * @param name the control list name
+   * @param controls the controls to add to this list
+   * @return a new ControlList instance.
+   */
+  public static ControlList controlList(final String name, final Control... controls) {
+    return controlList(name, (char) -1, controls);
+  }
+
+  /**
+   * Constructs a new ControlList
+   * @param name the control list name
+   * @param mnemonic the mnemonic to assign to this control list
+   * @param controls the controls to add to this list
+   * @return a new ControlList instance.
+   */
+  public static ControlList controlList(final String name, final char mnemonic, final Control... controls) {
+    return controlList(name, mnemonic, null, controls);
+  }
+
+  /**
+   * Constructs a new ControlList
+   * @param name the control list name
+   * @param mnemonic the mnemonic to assign to this control list
+   * @param enabledState the state observer dictating the enable state of this control
+   * @param controls the controls to add to this list
+   * @return a new ControlList instance.
+   */
+  public static ControlList controlList(final String name, final char mnemonic, final State enabledState, final Control... controls) {
+    return controlList(name, mnemonic, enabledState, null, controls);
+  }
+
+  /**
+   * Constructs a new ControlList
+   * @param name the control list name
+   * @param mnemonic the mnemonic to assign to this control list
+   * @param enabledState the state observer dictating the enable state of this control
+   * @param icon the icon
+   * @param controls the controls to add to this list
+   * @return a new ControlList instance.
+   */
+  public static ControlList controlList(final String name, final char mnemonic, final State enabledState,
+                                        final Icon icon, final Control... controls) {
+    return new DefaultControlList(name, mnemonic, enabledState, icon, controls);
+  }
 }

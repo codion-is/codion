@@ -5,8 +5,8 @@ package org.jminor.swing.common.ui.dialog;
 
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.Windows;
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.layout.Layouts;
 
 import javax.swing.BoundedRangeModel;
@@ -55,7 +55,7 @@ public class ProgressDialog extends JDialog {
    * @param buttonControls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
    */
   public ProgressDialog(final Window dialogOwner, final String title, final int maxProgress,
-                        final JPanel northPanel, final ControlSet buttonControls) {
+                        final JPanel northPanel, final ControlList buttonControls) {
     super(dialogOwner, ModalityType.APPLICATION_MODAL);
     setTitle(title);
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -75,7 +75,7 @@ public class ProgressDialog extends JDialog {
    * @param northPanel a panel to display at the {@link BorderLayout#NORTH} position
    * @param buttonControls if specified buttons based on these controls are added to this dialog
    */
-  protected void initializeUI(final JPanel northPanel, final ControlSet buttonControls) {
+  protected void initializeUI(final JPanel northPanel, final ControlList buttonControls) {
     setLayout(Layouts.borderLayout());
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
@@ -103,7 +103,7 @@ public class ProgressDialog extends JDialog {
     return bar;
   }
 
-  private static JPanel initializeButtonPanel(final ControlSet buttonControls) {
+  private static JPanel initializeButtonPanel(final ControlList buttonControls) {
     return ControlProvider.createHorizontalButtonPanel(buttonControls);
   }
 }

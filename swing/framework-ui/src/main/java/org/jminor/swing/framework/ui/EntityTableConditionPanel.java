@@ -17,7 +17,7 @@ import org.jminor.framework.model.ForeignKeyConditionModel;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.KeyEvents;
 import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.ControlSet;
+import org.jminor.swing.common.ui.control.ControlList;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.control.ToggleControl;
 import org.jminor.swing.common.ui.dialog.Dialogs;
@@ -190,18 +190,18 @@ public final class EntityTableConditionPanel extends JPanel {
   /**
    * @return the controls provided by this condition panel, for toggling the advanced mode and clearing the condition
    */
-  public ControlSet getControls() {
-    final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
-    controlSet.setIcon(frameworkIcons().filter());
+  public ControlList getControls() {
+    final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.SEARCH));
+    controls.setIcon(frameworkIcons().filter());
     if (canToggleAdvanced()) {
-      controlSet.add(Controls.toggleControl(this, "advanced",
+      controls.add(Controls.toggleControl(this, "advanced",
               FrameworkMessages.get(FrameworkMessages.ADVANCED), advancedChangedEvent));
     }
-    controlSet.add(Controls.control(conditionModel::clearPropertyConditionModels, FrameworkMessages.get(FrameworkMessages.CLEAR)));
-    controlSet.addSeparator();
-    controlSet.add(conditionRequiredControl);
+    controls.add(Controls.control(conditionModel::clearPropertyConditionModels, FrameworkMessages.get(FrameworkMessages.CLEAR)));
+    controls.addSeparator();
+    controls.add(conditionRequiredControl);
 
-    return controlSet;
+    return controls;
   }
 
   /**
