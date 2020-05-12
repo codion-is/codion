@@ -296,7 +296,8 @@ public final class ChinookImpl extends Domain implements Chinook {
                     getDefinition(T_TRACK).getProperty(TRACK_UNITPRICE), "Unit price")
                     .nullable(false),
             columnProperty(INVOICELINE_QUANTITY, Types.INTEGER, "Quantity")
-                    .nullable(false),
+                    .nullable(false)
+                    .defaultValue(1),
             derivedProperty(INVOICELINE_TOTAL, Types.DOUBLE, "Total", INVOICELINE_TOTAL_PROVIDER,
                     INVOICELINE_QUANTITY, INVOICELINE_UNITPRICE))
             .keyGenerator(automatic("chinook.invoiceline"))
