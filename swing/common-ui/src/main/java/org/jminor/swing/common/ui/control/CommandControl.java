@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
 
 import static java.util.Objects.requireNonNull;
 
-final class CommandControl extends DefaultControl {
+final class CommandControl extends AbstractControl {
 
   private final Command command;
 

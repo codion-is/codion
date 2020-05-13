@@ -6,12 +6,14 @@ package org.jminor.swing.common.ui.control;
 import org.jminor.common.state.StateObserver;
 import org.jminor.common.value.Value;
 
+import java.awt.event.ActionEvent;
+
 import static java.util.Objects.requireNonNull;
 
 /**
  * A default ToggleControl implementation.
  */
-class DefaultToggleControl extends DefaultControl implements ToggleControl {
+final class DefaultToggleControl extends AbstractControl implements ToggleControl {
 
   private final Value<Boolean> value;
 
@@ -29,4 +31,7 @@ class DefaultToggleControl extends DefaultControl implements ToggleControl {
   public Value<Boolean> getValue() {
     return value;
   }
+
+  @Override
+  public void actionPerformed(final ActionEvent e) {/*Not required*/}
 }

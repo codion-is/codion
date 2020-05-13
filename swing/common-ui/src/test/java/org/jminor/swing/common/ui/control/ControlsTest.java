@@ -133,4 +133,41 @@ public final class ControlsTest {
   public void eventControl() {
     Controls.eventControl(Events.event()).actionPerformed(null);
   }
+
+  @Test
+  public void basics() throws Exception {
+    final Control test = Controls.control(this::doNothing);
+    test.setName("test");
+    assertEquals("test", test.toString());
+    assertEquals("test", test.getName());
+    assertEquals(0, test.getMnemonic());
+    test.setMnemonic(10);
+    assertEquals(10, test.getMnemonic());
+    assertNull(test.getIcon());
+    test.setKeyStroke(null);
+    test.setDescription("description");
+    assertEquals("description", test.getDescription());
+    test.actionPerformed(null);
+  }
+
+  @Test
+  public void setEnabled() {
+    final State enabledState = States.state();
+    final Control control = Controls.control(this::doNothing, "control", enabledState.getObserver());
+    assertEquals("control", control.getName());
+    assertEquals(enabledState.getObserver(), control.getEnabledObserver());
+    assertFalse(control.isEnabled());
+    enabledState.set(true);
+    assertTrue(control.isEnabled());
+    enabledState.set(false);
+    assertFalse(control.isEnabled());
+  }
+
+  @Test
+  public void setEnabledViaMethod() {
+    final Control test = Controls.control(this::doNothing);
+    assertThrows(UnsupportedOperationException.class, () -> test.setEnabled(true));
+  }
+
+  private void doNothing() {}
 }
