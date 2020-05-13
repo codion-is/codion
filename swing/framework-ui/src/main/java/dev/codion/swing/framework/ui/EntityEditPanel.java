@@ -40,11 +40,11 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static dev.codion.swing.common.ui.Components.hideWaitCursor;
 import static dev.codion.swing.common.ui.Components.showWaitCursor;
 import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 /**
  * A UI component based on a {@link EntityEditModel}.

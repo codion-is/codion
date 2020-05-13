@@ -22,8 +22,8 @@ import dev.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 import java.util.List;
 import java.util.Locale;
 
-import static java.util.Collections.singletonList;
 import static dev.codion.framework.demos.petclinic.domain.Clinic.*;
+import static java.util.Collections.singletonList;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
 

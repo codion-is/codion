@@ -13,9 +13,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static dev.codion.common.db.Operator.LIKE;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static dev.codion.common.db.Operator.LIKE;
 
 /**
  * Encapsulates a query condition based on a single property with one or more values.

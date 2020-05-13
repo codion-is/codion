@@ -19,9 +19,9 @@ import dev.codion.framework.servlet.EntityServletServerProvider;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static dev.codion.common.user.Users.parseUser;
 import static dev.codion.framework.db.condition.Conditions.selectCondition;
+import static java.util.Collections.singletonList;
 
 public final class ClientServer {
 

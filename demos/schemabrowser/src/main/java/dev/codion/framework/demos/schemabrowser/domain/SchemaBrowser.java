@@ -12,9 +12,9 @@ import java.sql.Types;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static java.util.Arrays.asList;
 import static dev.codion.framework.domain.entity.OrderBy.orderBy;
 import static dev.codion.framework.domain.property.Properties.*;
+import static java.util.Arrays.asList;
 
 public final class SchemaBrowser extends Domain {
 

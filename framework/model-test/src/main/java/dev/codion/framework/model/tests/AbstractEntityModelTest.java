@@ -27,9 +27,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

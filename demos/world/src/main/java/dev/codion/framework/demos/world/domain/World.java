@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.Arrays.asList;
 import static dev.codion.common.Util.notNull;
 import static dev.codion.common.item.Items.item;
 import static dev.codion.framework.domain.entity.KeyGenerators.sequence;
 import static dev.codion.framework.domain.entity.OrderBy.orderBy;
 import static dev.codion.framework.domain.property.Properties.*;
+import static java.util.Arrays.asList;
 
 // tag::entityAndPropertyIds[]
 public final class World extends Domain {

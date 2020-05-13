@@ -35,12 +35,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import static dev.codion.common.rmi.server.AuxiliaryServerProvider.getAuxiliaryServerProvider;
 import static dev.codion.common.rmi.server.RemoteClient.remoteClient;
 import static dev.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
 import static dev.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
+import static java.util.Objects.requireNonNull;
+import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
 /**
  * A default Server implementation.

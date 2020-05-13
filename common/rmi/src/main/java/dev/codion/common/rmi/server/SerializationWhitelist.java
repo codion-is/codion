@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static dev.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * Implements a serialization whitelist for Java 8

@@ -38,9 +38,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static dev.codion.framework.domain.entity.ValueChanges.valueChange;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static dev.codion.framework.domain.entity.ValueChanges.valueChange;
 
 /**
  * A default {@link EntityEditModel} implementation

@@ -67,11 +67,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Util.nullOrEmpty;
 import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static dev.codion.swing.common.ui.control.Controls.control;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A UI component based on the EntityLookupModel.

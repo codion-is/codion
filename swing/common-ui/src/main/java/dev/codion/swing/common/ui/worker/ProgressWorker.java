@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Util.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A SwingWorker implementation which displays a progress bar in a modal dialog

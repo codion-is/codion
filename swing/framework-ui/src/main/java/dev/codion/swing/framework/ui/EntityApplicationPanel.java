@@ -102,9 +102,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Util.nullOrEmpty;
 import static dev.codion.swing.common.ui.icons.Icons.icons;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A central application panel class.

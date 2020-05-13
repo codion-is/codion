@@ -15,6 +15,7 @@ import dev.codion.framework.model.EntityApplicationModel;
 import dev.codion.framework.model.EntityEditModel;
 import dev.codion.framework.model.EntityModel;
 import dev.codion.framework.model.EntityTableModel;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

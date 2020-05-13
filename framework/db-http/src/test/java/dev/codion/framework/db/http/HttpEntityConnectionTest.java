@@ -39,9 +39,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import static dev.codion.framework.db.condition.Conditions.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static dev.codion.framework.db.condition.Conditions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class HttpEntityConnectionTest {

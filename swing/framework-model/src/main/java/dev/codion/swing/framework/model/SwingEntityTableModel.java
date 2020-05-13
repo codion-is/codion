@@ -49,11 +49,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A TableModel implementation for displaying and working with entities.

@@ -25,11 +25,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import static dev.codion.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.rejectNullOrEmpty;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static dev.codion.common.Util.nullOrEmpty;
-import static dev.codion.common.Util.rejectNullOrEmpty;
 
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.

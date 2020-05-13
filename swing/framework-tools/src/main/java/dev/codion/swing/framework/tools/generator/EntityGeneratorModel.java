@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static java.util.Arrays.asList;
 import static dev.codion.common.Util.nullOrEmpty;
+import static java.util.Arrays.asList;
 
 /**
  * A model class for generating entity definitions.

@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
 
 /**
  * An {@link ObservableList} based on a {@link Entity}

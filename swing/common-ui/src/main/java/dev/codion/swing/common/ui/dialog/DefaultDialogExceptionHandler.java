@@ -13,8 +13,8 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 
-import static java.util.Arrays.asList;
 import static dev.codion.common.Util.nullOrEmpty;
+import static java.util.Arrays.asList;
 
 /**
  * A default DialogExceptionHandler implementation

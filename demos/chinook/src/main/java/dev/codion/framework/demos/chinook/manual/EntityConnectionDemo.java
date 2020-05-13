@@ -25,12 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
 import static dev.codion.common.Conjunction.AND;
 import static dev.codion.common.db.Operator.LIKE;
 import static dev.codion.common.db.Operator.NOT_LIKE;
 import static dev.codion.framework.db.condition.Conditions.*;
 import static dev.codion.framework.demos.chinook.domain.Chinook.*;
+import static java.util.Arrays.asList;
 
 /**
  * When running this make sure the chinook demo module directory is the

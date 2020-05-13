@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.emptyList;
 import static dev.codion.common.Util.nullOrEmpty;
+import static java.util.Collections.emptyList;
 
 /**
  * A class responsible for serializing Entity related objects to and from the JSON format.

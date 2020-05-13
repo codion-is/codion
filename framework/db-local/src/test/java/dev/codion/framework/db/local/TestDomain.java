@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static java.util.Arrays.asList;
 import static dev.codion.common.item.Items.item;
 import static dev.codion.framework.domain.entity.KeyGenerators.increment;
 import static dev.codion.framework.domain.property.Properties.*;
+import static java.util.Arrays.asList;
 
 public final class TestDomain extends Domain {
 

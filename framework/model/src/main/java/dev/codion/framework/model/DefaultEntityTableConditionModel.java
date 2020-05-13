@@ -28,11 +28,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static dev.codion.framework.db.condition.Conditions.propertyCondition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
-import static dev.codion.framework.db.condition.Conditions.propertyCondition;
 
 /**
  * A default EntityTableConditionModel implementation

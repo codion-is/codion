@@ -50,9 +50,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.*;
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Util.nullOrEmpty;
 import static dev.codion.common.db.Operator.LIKE;
 import static dev.codion.common.db.Operator.NOT_LIKE;
@@ -61,6 +58,9 @@ import static dev.codion.common.db.database.Database.closeSilently;
 import static dev.codion.framework.db.condition.Conditions.*;
 import static dev.codion.framework.db.local.Queries.*;
 import static dev.codion.framework.domain.entity.Entities.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.*;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default LocalEntityConnection implementation

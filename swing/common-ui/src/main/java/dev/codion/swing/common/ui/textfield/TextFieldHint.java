@@ -10,8 +10,8 @@ import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Util.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Implements a hint text for text fields, that is, text that is shown

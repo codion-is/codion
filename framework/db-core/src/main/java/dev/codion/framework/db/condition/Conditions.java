@@ -18,15 +18,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Conjunction.AND;
 import static dev.codion.common.Conjunction.OR;
 import static dev.codion.common.Util.nullOrEmpty;
 import static dev.codion.common.db.Operator.LIKE;
 import static dev.codion.framework.domain.entity.Entities.getValues;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A factory class for {@link Condition} and it's descendants.

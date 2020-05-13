@@ -12,12 +12,12 @@ import java.awt.Color;
 import java.sql.Types;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static dev.codion.common.item.Items.item;
 import static dev.codion.framework.domain.entity.KeyGenerators.increment;
 import static dev.codion.framework.domain.entity.OrderBy.orderBy;
 import static dev.codion.framework.domain.property.Properties.*;
 import static dev.codion.plugin.jasperreports.model.JasperReports.classPathReport;
+import static java.util.Arrays.asList;
 
 // tag::departmentConstants[]
 /**

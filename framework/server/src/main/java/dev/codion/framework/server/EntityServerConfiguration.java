@@ -20,9 +20,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dev.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * Configuration values for a {@link EntityServer}.

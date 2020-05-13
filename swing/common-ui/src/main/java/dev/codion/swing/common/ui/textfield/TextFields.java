@@ -31,8 +31,8 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Util.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A utility class for TextFields.

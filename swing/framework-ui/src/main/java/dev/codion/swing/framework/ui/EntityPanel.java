@@ -52,13 +52,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static java.awt.event.InputEvent.*;
-import static java.awt.event.KeyEvent.*;
-import static java.util.Objects.requireNonNull;
 import static dev.codion.swing.common.ui.KeyEvents.addKeyEvent;
 import static dev.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static dev.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static java.awt.event.InputEvent.*;
+import static java.awt.event.KeyEvent.*;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.

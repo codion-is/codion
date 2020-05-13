@@ -55,9 +55,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServletServerTest {

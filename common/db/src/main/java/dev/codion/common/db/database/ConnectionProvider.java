@@ -10,8 +10,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Util.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Responsible for providing JDBC {@link Connection} instances. Usually this means a new connection,

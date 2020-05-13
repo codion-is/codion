@@ -21,10 +21,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 import static dev.codion.common.Util.map;
 import static dev.codion.common.Util.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A repository specifying the {@link EntityDefinition}s for a given domain.

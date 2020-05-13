@@ -10,8 +10,8 @@ import dev.codion.common.event.EventObserver;
 
 import java.lang.reflect.Method;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Util.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
 final class DefaultPropertyValue<V> implements PropertyValue<V> {
 

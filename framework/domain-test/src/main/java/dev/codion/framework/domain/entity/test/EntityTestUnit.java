@@ -42,9 +42,9 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
 
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
