@@ -19,11 +19,11 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = 'org.jminor.framework.demos.petstore.ui.PetstoreAppPanel'
+ext.mainClass = 'dev.codion.framework.demos.petstore.ui.PetstoreAppPanel'
 
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.petstore.domain.Petstore"
+    systemProperty "jminor.client.domainClass", "dev.codion.framework.demos.petstore.domain.Petstore"
 }
 
 startScripts {

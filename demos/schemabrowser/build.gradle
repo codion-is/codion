@@ -21,11 +21,11 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = 'org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+ext.mainClass = 'dev.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
 
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser"
+    systemProperty "jminor.client.domainClass", "dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser"
 }
 
 startScripts {

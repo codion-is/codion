@@ -720,7 +720,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * via the {@code setControl(String, Control) method, these can then be retrieved via the {@link #getControl(ControlCode)} method.
    * @param controlCodes the control codes for which controls should be initialized
    * @see dev.codion.swing.common.ui.control.Control
-   * @see #setControl(ControlCode, org.jminor.swing.common.ui.control.Control)
+   * @see #setControl(ControlCode, dev.codion.swing.common.ui.control.Control)
    * @see #getControl(ControlCode)
    * todo updateEnabled(false) þá vantar Insert control nema það sé tiltekið í smið
    */

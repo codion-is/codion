@@ -38,13 +38,13 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
   @Override
   protected String getApplicationIdentifier() {
-    return "org.jminor.demo.SchemaBrowser";
+    return "dev.codion.demo.SchemaBrowser";
   }
 
   public static void main(final String[] args) {
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.set(true);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser");
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.5), Users.parseUser("scott:tiger"));
   }

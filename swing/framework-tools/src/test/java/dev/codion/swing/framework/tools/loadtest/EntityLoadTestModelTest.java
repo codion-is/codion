@@ -139,7 +139,7 @@ public class EntityLoadTestModelTest {
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
     configuration.setClientSpecificConnectionTimeouts(Collections.singletonMap("ClientTypeID", 10000));
-    configuration.setDomainModelClassNames(Collections.singletonList("org.jminor.swing.framework.tools.loadtest.TestDomain"));
+    configuration.setDomainModelClassNames(Collections.singletonList("dev.codion.swing.framework.tools.loadtest.TestDomain"));
     configuration.setDatabase(Databases.getInstance());
     configuration.setSslEnabled(false);
 

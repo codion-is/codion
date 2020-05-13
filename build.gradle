@@ -59,13 +59,13 @@ configure(project.frameworkModules) {
                     "Sealed": "true",
                     "Specification-Title": project.name,
                     "Specification-Version": project.version,
-                    "Specification-Vendor": "JMinor",
+                    "Specification-Vendor": "Codion",
                     "Implementation-Title": project.name,
                     "Implementation-Version": project.version,
-                    "Implementation-Vendor": "JMinor",
-                    "Implementation-Vendor-Id": "org.jminor",
-                    "Implementation-URL": "https://jminor.org",
-                    "Automatic-Module-Name": "org." + project.name.replace('-', '.'),
+                    "Implementation-Vendor": "Codion",
+                    "Implementation-Vendor-Id": "dev.codion",
+                    "Implementation-URL": "https://codion.dev",
+                    "Automatic-Module-Name": "dev." + project.name.replace('-', '.'),
                     "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
                     "Built-By": System.getProperty("user.name"),
                     "Build-Date": java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()))
@@ -75,7 +75,7 @@ configure(project.frameworkModules) {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                groupId 'org.jminor.' + project.targetJdk
+                groupId 'dev.codion.' + project.targetJdk
                 from components.java
             }
         }

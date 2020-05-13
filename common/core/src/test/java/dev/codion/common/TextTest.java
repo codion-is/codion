@@ -86,7 +86,7 @@ public final class TextTest {
   @Test
   public void getTextFileContents() throws IOException {
     final String contents = "here is" + Util.LINE_SEPARATOR + "some text";
-    assertEquals(contents, Text.getTextFileContents("src/test/java/org/jminor/common/TextUtilTest.txt", Charset.defaultCharset()));
+    assertEquals(contents, Text.getTextFileContents("src/test/java/dev/codion/common/TextUtilTest.txt", Charset.defaultCharset()));
   }
 
   @Test

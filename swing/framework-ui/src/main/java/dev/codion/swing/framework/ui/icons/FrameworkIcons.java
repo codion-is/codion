@@ -16,7 +16,7 @@ import java.util.ServiceLoader;
  */
 public interface FrameworkIcons extends Icons {
 
-  PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("org.jminor.swing.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
+  PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("dev.codion.swing.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
 
   /**
    * @return icon for the 'add' action.

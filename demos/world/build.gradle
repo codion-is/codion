@@ -19,11 +19,11 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = 'org.jminor.framework.demos.world.ui.WorldAppPanel'
+ext.mainClass = 'dev.codion.framework.demos.world.ui.WorldAppPanel'
 
 test {
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.world.domain.World"
+    systemProperty "jminor.client.domainClass", "dev.codion.framework.demos.world.domain.World"
 }
 
 startScripts {
