@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.rmi.client;
+package dev.codion.common.rmi.client;
 
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.common.version.Versions;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.common.version.Versions;
 
 import org.junit.jupiter.api.Test;
 

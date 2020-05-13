@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.control;
+package dev.codion.swing.common.ui.control;
 
-import org.jminor.common.state.StateObserver;
-import org.jminor.common.value.Value;
-import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
-import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.common.ui.value.BooleanValues;
+import dev.codion.common.state.StateObserver;
+import dev.codion.common.value.Value;
+import dev.codion.swing.common.model.checkbox.NullableToggleButtonModel;
+import dev.codion.swing.common.ui.checkbox.NullableCheckBox;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.common.ui.value.BooleanValues;
 
 import javax.swing.Action;
 import javax.swing.ButtonModel;

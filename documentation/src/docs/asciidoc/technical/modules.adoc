@@ -9,9 +9,9 @@ Common classes used throughout the framework.
 [discrete]
 === jminor-common-core
 
-{url-javadoc}/org/jminor/common/event/package-summary.html[org.jminor.common.event]
-{url-javadoc}/org/jminor/common/state/package-summary.html[org.jminor.common.state]
-{url-javadoc}/org/jminor/common/value/package-summary.html[org.jminor.common.value]
+{url-javadoc}/dev/codion/common/event/package-summary.html[dev.codion.common.event]
+{url-javadoc}/dev/codion/common/state/package-summary.html[dev.codion.common.state]
+{url-javadoc}/dev/codion/common/value/package-summary.html[dev.codion.common.value]
 
 .Dependency graph
 [%collapsible]

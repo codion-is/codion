@@ -3,7 +3,7 @@
 :dir-tutorials: ../tutorials
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
-:url-entity-connection: {url-javadoc}/org/jminor/framework/db/EntityConnection.html
+:url-entity-connection: {url-javadoc}/dev/codion/framework/db/EntityConnection.html
 
 The JMinor database layer is extremely thin, it doesn't perform any joins and provides no access to DBMS specific funtionality except primary key generation via <<manual.adoc#_keygenerator, KeyGenerator>> strategies. The framework provides implementations for the most common strategies, sequences (with or without triggers) and auto increment columns.
 
@@ -21,94 +21,94 @@ By default, when you select a row using {url-entity-connection}[EntityConnection
 
 This means that selecting tracks performs four queries, but that number of queries is the same whether you select one or a thousand tracks.
 
-The fetch depth can be configured on a foreign key basis when defining entities. A fetch depth of zero means that foreign key reference is not fetched and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached. A negative fetch depth means no limit. This limiting of foreign key fetch depth can be turned off, meaning the full reference graph is always fetched, via the *jminor.db.limitForeignKeyFetchDepth=false* system property or {url-javadoc}/org/jminor/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_FETCH_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.set(false)], or on a connection instance via {url-javadoc}/org/jminor/framework/db/local/LocalEntityConnection.html#setLimitForeignKeyFetchDepth-boolean-[connection.setLimitForeignKeyFetchDepth(false)].
+The fetch depth can be configured on a foreign key basis when defining entities. A fetch depth of zero means that foreign key reference is not fetched and a value larger than one means that not only is the foreign key reference fetched but also its foreign key references, until the defined depth has been reached. A negative fetch depth means no limit. This limiting of foreign key fetch depth can be turned off, meaning the full reference graph is always fetched, via the *jminor.db.limitForeignKeyFetchDepth=false* system property or {url-javadoc}/dev/codion/framework/db/local/LocalEntityConnection.html#LIMIT_FOREIGN_KEY_FETCH_DEPTH[LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.set(false)], or on a connection instance via {url-javadoc}/dev/codion/framework/db/local/LocalEntityConnection.html#setLimitForeignKeyFetchDepth-boolean-[connection.setLimitForeignKeyFetchDepth(false)].
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth0]
-----
-
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth2]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth0]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthEntity]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/domain/impl/ChinookImpl.java[tags=fetchDepth2]
+----
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthEntity]
 ----
 
 The fetch depth can also be configured on a query basis, either for the whole query or one or more foreign keys.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthCondition]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthCondition]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthConditionForeignKey]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=fetchDepthConditionForeignKey]
 ----
 
 === select
 
 For selecting one or more rows.
 
-{url-entity-connection}#select-org.jminor.framework.db.condition.EntitySelectCondition-[select(EntitySelectCondition condition)]
+{url-entity-connection}#select-dev.codion.framework.db.condition.EntitySelectCondition-[select(EntitySelectCondition condition)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectCondition]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectCondition]
 ----
 
 {url-entity-connection}#select-java.util.List-[select(List<Entity.Key> keys)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKeys]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKeys]
 ----
 
 {url-entity-connection}#select-java.lang.String-java.lang.String-java.lang.Object...-[select(String entityId, String propertyId, Object... values)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValue]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValue]
 ----
 
 === selectSingle
 
 For selecting single rows.
 
-{url-entity-connection}#selectSingle-org.jminor.framework.db.condition.EntitySelectCondition-[selectSingle(EntitySelectCondition condition)]
+{url-entity-connection}#selectSingle-dev.codion.framework.db.condition.EntitySelectCondition-[selectSingle(EntitySelectCondition condition)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleCondition]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleCondition]
 ----
 
-{url-entity-connection}#selectSingle-org.jminor.framework.domain.entity.Entity.Key-[selectSingle(Entity.Key key)]
+{url-entity-connection}#selectSingle-dev.codion.framework.domain.entity.Entity.Key-[selectSingle(Entity.Key key)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleKeys]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleKeys]
 ----
 
 {url-entity-connection}#selectSingle-java.lang.String-java.lang.String-java.lang.Object...-[selectSingle(String entityId, String propertyId, Object... values)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleValue]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleValue]
 ----
 
 === selectValues
 
 For selecting the values of a single column.
 
-{url-entity-connection}#selectValues-java.lang.String-org.jminor.framework.db.condition.EntityCondition-[selectValues(String propertyId, EntityCondition condition)]
+{url-entity-connection}#selectValues-java.lang.String-dev.codion.framework.db.condition.EntityCondition-[selectValues(String propertyId, EntityCondition condition)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValues]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectValues]
 ----
 
 === selectDependencies
@@ -119,18 +119,18 @@ For selecting entities that depend on a set of entities via foreign keys.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectDependencies]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectDependencies]
 ----
 
 === selectRowCount
 
 For selecting the row count given a condition.
 
-{url-entity-connection}#selectRowCount-org.jminor.framework.db.condition.EntityCondition-[selectRowCount(EntityCondition condition)]
+{url-entity-connection}#selectRowCount-dev.codion.framework.db.condition.EntityCondition-[selectRowCount(EntityCondition condition)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectRowCount]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectRowCount]
 ----
 
 == Modifying
@@ -139,59 +139,59 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 For inserting rows.
 
-** {url-entity-connection}#insert-org.jminor.framework.domain.entity.Entity-[insert(Entity entity)]
+** {url-entity-connection}#insert-dev.codion.framework.domain.entity.Entity-[insert(Entity entity)]
 
 ** {url-entity-connection}#insert-java.util.List-[insert(List<Entity> entities)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=insert]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=insert]
 ----
 
 === update
 
 For updating on or more entity instances. These methods throw an exception if the entities are not modified.
 
-** {url-entity-connection}#update-org.jminor.framework.domain.entity.Entity-[update(Entity entity)]
+** {url-entity-connection}#update-dev.codion.framework.domain.entity.Entity-[update(Entity entity)]
 
 ** {url-entity-connection}#update-java.util.List-[update(List<Entity> entities)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=update]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=update]
 ----
 
 === Optimistic locking
 
-The framework performs optimistic locking during updates of entity instances using the methods above, by selecting the entities being updated *for update* (when supported by the underlying database) and comparing all the original property values to the current row values, throwing an exception if any value differs or the record is missing. Optimistic locking can be turned off system wide using the *jminor.db.useOptimisticLocking=false* system property or {url-javadoc}/org/jminor/framework/db/local/LocalEntityConnection.html#USE_OPTIMISTIC_LOCKING[LocalEntityConnection.USE_OPTIMISTIC_LOCKING.set(false)], or on a connection instance via {url-javadoc}/org/jminor/framework/db/local/LocalEntityConnection.html#setOptimisticLockingEnabled-boolean-[connection.setOptimisticLockingEnabled(false)].
+The framework performs optimistic locking during updates of entity instances using the methods above, by selecting the entities being updated *for update* (when supported by the underlying database) and comparing all the original property values to the current row values, throwing an exception if any value differs or the record is missing. Optimistic locking can be turned off system wide using the *jminor.db.useOptimisticLocking=false* system property or {url-javadoc}/dev/codion/framework/db/local/LocalEntityConnection.html#USE_OPTIMISTIC_LOCKING[LocalEntityConnection.USE_OPTIMISTIC_LOCKING.set(false)], or on a connection instance via {url-javadoc}/dev/codion/framework/db/local/LocalEntityConnection.html#setOptimisticLockingEnabled-boolean-[connection.setOptimisticLockingEnabled(false)].
 
 For updating by where condition.
 
-** {url-entity-connection}#update-org.jminor.framework.db.condition.EntityUpdateCondition-[update(EntityUpdateCondition condition)]
+** {url-entity-connection}#update-dev.codion.framework.db.condition.EntityUpdateCondition-[update(EntityUpdateCondition condition)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=updateCondition]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=updateCondition]
 ----
 
 === delete
 
 For deleting existing rows.
 
-** {url-entity-connection}#delete-org.jminor.framework.db.condition.EntityCondition-[delete(EntityCondition condition)]
+** {url-entity-connection}#delete-dev.codion.framework.db.condition.EntityCondition-[delete(EntityCondition condition)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteCondition]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteCondition]
 ----
 
-** {url-entity-connection}#delete-org.jminor.framework.domain.entity.Entity.Key-[delete(Entity.Key key)]
+** {url-entity-connection}#delete-dev.codion.framework.domain.entity.Entity.Key-[delete(Entity.Key key)]
 
 ** {url-entity-connection}#delete-java.util.List-[delete(List<Entity.Key> keys)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteKey]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=deleteKey]
 ----
 
 == Procedures & Functions
@@ -202,7 +202,7 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=procedure]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=procedure]
 ----
 
 === executeFunction
@@ -211,18 +211,18 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=function]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=function]
 ----
 
 == Reporting
 
 === fillReport
 
-** {url-entity-connection}#fillReport-org.jminor.common.db.reports.ReportWrapper-[fillReport(ReportWrapper reportWrapper)]
+** {url-entity-connection}#fillReport-dev.codion.common.db.reports.ReportWrapper-[fillReport(ReportWrapper reportWrapper)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report]
 ----
 
 [#_full_example]
@@ -233,7 +233,7 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 ====
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[lines=4..-1]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[lines=4..-1]
 ----
 ====
 
@@ -241,7 +241,7 @@ include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityCo
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/org/jminor/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transaction]
+include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=transaction]
 ----
 
 == LocalEntityConnection

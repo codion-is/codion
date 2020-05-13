@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.table;
+package dev.codion.common.model.table;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.db.Operator;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.state.StateObserver;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.common.value.Value;
+import dev.codion.common.Configuration;
+import dev.codion.common.db.Operator;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.EventObserver;
+import dev.codion.common.state.StateObserver;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.common.value.Value;
 
 import java.text.Format;
 

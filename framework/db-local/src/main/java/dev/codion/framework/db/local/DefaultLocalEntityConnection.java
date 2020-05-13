@@ -1,36 +1,36 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.local;
+package dev.codion.framework.db.local;
 
-import org.jminor.common.Conjunction;
-import org.jminor.common.MethodLogger;
-import org.jminor.common.db.connection.DatabaseConnection;
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.exception.MultipleRecordsFoundException;
-import org.jminor.common.db.exception.RecordModifiedException;
-import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.db.exception.ReferentialIntegrityException;
-import org.jminor.common.db.exception.UniqueConstraintException;
-import org.jminor.common.db.exception.UpdateException;
-import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.db.result.ResultIterator;
-import org.jminor.common.db.result.ResultPacker;
-import org.jminor.common.user.User;
-import org.jminor.framework.db.condition.EntityCondition;
-import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.db.condition.WhereCondition;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.KeyGenerator;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.Conjunction;
+import dev.codion.common.MethodLogger;
+import dev.codion.common.db.connection.DatabaseConnection;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.exception.MultipleRecordsFoundException;
+import dev.codion.common.db.exception.RecordModifiedException;
+import dev.codion.common.db.exception.RecordNotFoundException;
+import dev.codion.common.db.exception.ReferentialIntegrityException;
+import dev.codion.common.db.exception.UniqueConstraintException;
+import dev.codion.common.db.exception.UpdateException;
+import dev.codion.common.db.reports.ReportException;
+import dev.codion.common.db.reports.ReportWrapper;
+import dev.codion.common.db.result.ResultIterator;
+import dev.codion.common.db.result.ResultPacker;
+import dev.codion.common.user.User;
+import dev.codion.framework.db.condition.EntityCondition;
+import dev.codion.framework.db.condition.EntitySelectCondition;
+import dev.codion.framework.db.condition.EntityUpdateCondition;
+import dev.codion.framework.db.condition.WhereCondition;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.entity.KeyGenerator;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Property;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,14 +53,14 @@ import java.util.function.Predicate;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.common.db.Operator.LIKE;
-import static org.jminor.common.db.Operator.NOT_LIKE;
-import static org.jminor.common.db.connection.DatabaseConnections.createConnection;
-import static org.jminor.common.db.database.Database.closeSilently;
-import static org.jminor.framework.db.condition.Conditions.*;
-import static org.jminor.framework.db.local.Queries.*;
-import static org.jminor.framework.domain.entity.Entities.*;
+import static dev.codion.common.Util.nullOrEmpty;
+import static dev.codion.common.db.Operator.LIKE;
+import static dev.codion.common.db.Operator.NOT_LIKE;
+import static dev.codion.common.db.connection.DatabaseConnections.createConnection;
+import static dev.codion.common.db.database.Database.closeSilently;
+import static dev.codion.framework.db.condition.Conditions.*;
+import static dev.codion.framework.db.local.Queries.*;
+import static dev.codion.framework.domain.entity.Entities.*;
 
 /**
  * A default LocalEntityConnection implementation
@@ -97,7 +97,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param database the Database instance
    * @param user the user used for connecting to the database
    * @throws DatabaseException in case there is a problem connecting to the database
-   * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
+   * @throws dev.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
   DefaultLocalEntityConnection(final Domain domain, final Database database, final User user) throws DatabaseException {
     this.domain = requireNonNull(domain, "domain");

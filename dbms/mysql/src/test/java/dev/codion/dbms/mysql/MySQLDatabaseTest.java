@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.dbms.mysql;
+package dev.codion.dbms.mysql;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,8 +1,8 @@
-package org.jminor.framework.demos.world.ui;
+package dev.codion.framework.demos.world.ui;
 
-import org.jminor.framework.demos.world.model.ContinentModel;
-import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityTablePanel;
+import dev.codion.framework.demos.world.model.ContinentModel;
+import dev.codion.swing.framework.ui.EntityPanel;
+import dev.codion.swing.framework.ui.EntityTablePanel;
 
 import org.jfree.chart.ChartPanel;
 
@@ -12,9 +12,9 @@ import java.awt.Dimension;
 
 import static org.jfree.chart.ChartFactory.createBarChart;
 import static org.jfree.chart.ChartFactory.createPieChart;
-import static org.jminor.swing.common.ui.Components.setPreferredHeight;
-import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
-import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
+import static dev.codion.swing.common.ui.Components.setPreferredHeight;
+import static dev.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class ContinentPanel extends EntityPanel {
 

@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package dev.codion.framework.server;
 
 
-import org.jminor.common.Configuration;
-import org.jminor.common.Text;
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.rmi.server.ServerConfiguration;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.common.value.PropertyValue;
+import dev.codion.common.Configuration;
+import dev.codion.common.Text;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.rmi.server.ServerConfiguration;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.common.value.PropertyValue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * Configuration values for a {@link EntityServer}.
@@ -46,7 +46,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * the internal connection pool is used if necessary<br>
    * Value type: String<br>
    * Default value: none
-   * @see org.jminor.common.db.pool.ConnectionPoolProvider
+   * @see dev.codion.common.db.pool.ConnectionPoolProvider
    */
   PropertyValue<String> SERVER_CONNECTION_POOL_PROVIDER_CLASS = Configuration.stringValue(
           "jminor.server.pooling.poolProviderClass", null);

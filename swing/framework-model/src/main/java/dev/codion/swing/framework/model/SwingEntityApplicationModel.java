@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.model;
+package dev.codion.swing.framework.model;
 
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.model.DefaultEntityApplicationModel;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.model.DefaultEntityApplicationModel;
 
 /**
- * A Swing implementation of {@link org.jminor.framework.model.EntityApplicationModel}
+ * A Swing implementation of {@link dev.codion.framework.model.EntityApplicationModel}
  */
 public class SwingEntityApplicationModel extends DefaultEntityApplicationModel<SwingEntityModel> {
 

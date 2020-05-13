@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor.ui;
+package dev.codion.swing.framework.server.monitor.ui;
 
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.framework.server.monitor.HostMonitor;
-import org.jminor.swing.framework.server.monitor.ServerMonitor;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.ControlProvider;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.framework.server.monitor.HostMonitor;
+import dev.codion.swing.framework.server.monitor.ServerMonitor;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;

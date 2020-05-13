@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.javafx;
+package dev.codion.framework.demos.chinook.javafx;
 
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.javafx.framework.model.FXEntityApplicationModel;
-import org.jminor.javafx.framework.model.FXEntityModel;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.demos.chinook.domain.Chinook;
+import dev.codion.javafx.framework.model.FXEntityApplicationModel;
+import dev.codion.javafx.framework.model.FXEntityModel;
 
 public final class ChinookFXAppModel extends FXEntityApplicationModel {
 

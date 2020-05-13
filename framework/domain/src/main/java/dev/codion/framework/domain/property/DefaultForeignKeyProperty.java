@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.property;
+package dev.codion.framework.domain.property;
 
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.Entity;
 
 import java.sql.Types;
 import java.util.List;
@@ -13,7 +13,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 final class DefaultForeignKeyProperty extends DefaultProperty implements ForeignKeyProperty {
 

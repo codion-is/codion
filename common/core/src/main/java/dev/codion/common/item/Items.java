@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.item;
+package dev.codion.common.item;
 
 /**
  * Factory class for {@link Item} instances.

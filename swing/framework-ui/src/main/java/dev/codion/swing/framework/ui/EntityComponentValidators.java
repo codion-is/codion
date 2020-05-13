@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.model.EntityEditModel;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.model.EntityEditModel;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A factory class for adding validators to components.

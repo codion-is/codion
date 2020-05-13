@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.tools.generator;
+package dev.codion.swing.framework.tools.generator;
 
-import org.jminor.common.Util;
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.result.ResultPacker;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.common.user.User;
-import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
-import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
-import org.jminor.swing.common.model.table.AbstractTableSortModel;
+import dev.codion.common.Util;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.result.ResultPacker;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.model.table.DefaultColumnConditionModel;
+import dev.codion.common.user.User;
+import dev.codion.common.value.Value;
+import dev.codion.common.value.Values;
+import dev.codion.swing.common.model.table.AbstractFilteredTableModel;
+import dev.codion.swing.common.model.table.AbstractTableSortModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A model class for generating entity definitions.

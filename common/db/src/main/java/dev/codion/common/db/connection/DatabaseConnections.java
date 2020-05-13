@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.connection;
+package dev.codion.common.db.connection;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.user.User;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.user.User;
 
 import java.sql.Connection;
 

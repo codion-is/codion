@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.ui;
+package dev.codion.framework.demos.empdept.ui;
 
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.demos.empdept.model.EmployeeEditModel;
-import org.jminor.swing.framework.ui.test.EntityEditPanelTestUnit;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProviders;
+import dev.codion.framework.demos.empdept.domain.EmpDept;
+import dev.codion.framework.demos.empdept.model.EmployeeEditModel;
+import dev.codion.swing.framework.ui.test.EntityEditPanelTestUnit;
 
 import org.junit.jupiter.api.Test;
 

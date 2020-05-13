@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.dbms.derby;
+package dev.codion.dbms.derby;
 
-import org.jminor.common.db.database.AbstractDatabase;
+import dev.codion.common.db.database.AbstractDatabase;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;

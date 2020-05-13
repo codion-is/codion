@@ -1,30 +1,30 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package dev.codion.framework.domain;
 
-import org.jminor.common.DateFormats;
-import org.jminor.common.db.connection.DatabaseConnection;
-import org.jminor.common.db.operation.AbstractDatabaseProcedure;
-import org.jminor.common.db.operation.DatabaseOperation;
-import org.jminor.common.event.EventListener;
-import org.jminor.framework.domain.entity.DefaultEntityValidator;
-import org.jminor.framework.domain.entity.Department;
-import org.jminor.framework.domain.entity.Employee;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.StringProvider;
-import org.jminor.framework.domain.entity.exception.LengthValidationException;
-import org.jminor.framework.domain.entity.exception.NullValidationException;
-import org.jminor.framework.domain.entity.exception.RangeValidationException;
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.DenormalizedProperty;
-import org.jminor.framework.domain.property.DerivedProperty;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Properties;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.DateFormats;
+import dev.codion.common.db.connection.DatabaseConnection;
+import dev.codion.common.db.operation.AbstractDatabaseProcedure;
+import dev.codion.common.db.operation.DatabaseOperation;
+import dev.codion.common.event.EventListener;
+import dev.codion.framework.domain.entity.DefaultEntityValidator;
+import dev.codion.framework.domain.entity.Department;
+import dev.codion.framework.domain.entity.Employee;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.entity.StringProvider;
+import dev.codion.framework.domain.entity.exception.LengthValidationException;
+import dev.codion.framework.domain.entity.exception.NullValidationException;
+import dev.codion.framework.domain.entity.exception.RangeValidationException;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.DenormalizedProperty;
+import dev.codion.framework.domain.property.DerivedProperty;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Properties;
+import dev.codion.framework.domain.property.Property;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.randomizer;
+package dev.codion.swing.common.tools.randomizer;
 
-import org.jminor.common.event.EventListener;
+import dev.codion.common.event.EventListener;
 
 import org.junit.jupiter.api.Test;
 

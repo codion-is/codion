@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.ui;
+package dev.codion.framework.demos.chinook.ui;
 
-import org.jminor.framework.model.EntityLookupModel;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
-import org.jminor.swing.framework.ui.EntityLookupField;
+import dev.codion.framework.model.EntityLookupModel;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
+import dev.codion.swing.framework.ui.EntityLookupField;
 
 import java.awt.Dimension;
 
-import static org.jminor.common.model.table.SortingDirective.ASCENDING;
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static dev.codion.common.model.table.SortingDirective.ASCENDING;
+import static dev.codion.framework.demos.chinook.domain.Chinook.*;
 
 final class TrackSelectionProvider extends EntityLookupField.TableSelectionProvider {
 

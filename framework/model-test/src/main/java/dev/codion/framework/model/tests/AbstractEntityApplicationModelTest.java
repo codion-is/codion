@@ -1,21 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model.tests;
+package dev.codion.framework.model.tests;
 
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.model.DefaultEntityApplicationModel;
-import org.jminor.framework.model.DefaultEntityEditModel;
-import org.jminor.framework.model.DefaultEntityModel;
-import org.jminor.framework.model.EntityApplicationModel;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityModel;
-import org.jminor.framework.model.EntityTableModel;
-
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.local.LocalEntityConnectionProvider;
+import dev.codion.framework.model.DefaultEntityApplicationModel;
+import dev.codion.framework.model.DefaultEntityEditModel;
+import dev.codion.framework.model.DefaultEntityModel;
+import dev.codion.framework.model.EntityApplicationModel;
+import dev.codion.framework.model.EntityEditModel;
+import dev.codion.framework.model.EntityModel;
+import dev.codion.framework.model.EntityTableModel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.dialog;
+package dev.codion.swing.common.ui.dialog;
 
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.layout.Layouts;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.ControlProvider;
+import dev.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JDialog;

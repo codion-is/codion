@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petclinic.model;
+package dev.codion.framework.demos.petclinic.model;
 
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.swing.framework.model.SwingEntityApplicationModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.swing.framework.model.SwingEntityApplicationModel;
+import dev.codion.swing.framework.model.SwingEntityModel;
 
-import static org.jminor.framework.demos.petclinic.domain.Clinic.*;
+import static dev.codion.framework.demos.petclinic.domain.Clinic.*;
 
 public final class PetclinicAppModel extends SwingEntityApplicationModel {
 

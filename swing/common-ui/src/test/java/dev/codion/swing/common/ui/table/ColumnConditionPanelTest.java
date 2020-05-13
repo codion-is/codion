@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.table;
+package dev.codion.swing.common.ui.table;
 
-import org.jminor.common.db.Operator;
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
+import dev.codion.common.db.Operator;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.model.table.DefaultColumnConditionModel;
+import dev.codion.swing.common.ui.table.ColumnConditionPanel.ToggleAdvancedButton;
 
 import org.junit.jupiter.api.Test;
 

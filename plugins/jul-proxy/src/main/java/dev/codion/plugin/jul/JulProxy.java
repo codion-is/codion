@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.jul;
+package dev.codion.plugin.jul;
 
-import org.jminor.common.LoggerProxy;
+import dev.codion.common.LoggerProxy;
 
 import java.util.List;
 import java.util.logging.Level;

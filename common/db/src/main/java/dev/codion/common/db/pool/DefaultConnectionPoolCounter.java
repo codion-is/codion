@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.pool;
+package dev.codion.common.db.pool;
 
-import org.jminor.common.TaskScheduler;
+import dev.codion.common.TaskScheduler;
 
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;

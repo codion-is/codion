@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui.icons;
+package dev.codion.swing.framework.ui.icons;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.swing.common.ui.icons.Icons;
+import dev.codion.common.Configuration;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.swing.common.ui.icons.Icons;
 
 import javax.swing.ImageIcon;
 import java.util.Objects;

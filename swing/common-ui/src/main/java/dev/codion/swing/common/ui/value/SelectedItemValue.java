@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.value;
+package dev.codion.swing.common.ui.value;
 
-import org.jminor.common.item.Item;
-import org.jminor.common.item.Items;
-import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
-import org.jminor.swing.common.ui.combobox.MaximumMatch;
-import org.jminor.swing.common.ui.combobox.SteppedComboBox;
+import dev.codion.common.item.Item;
+import dev.codion.common.item.Items;
+import dev.codion.swing.common.model.combobox.ItemComboBoxModel;
+import dev.codion.swing.common.ui.combobox.MaximumMatch;
+import dev.codion.swing.common.ui.combobox.SteppedComboBox;
 
 import javax.swing.JComboBox;
 import java.awt.event.ItemEvent;

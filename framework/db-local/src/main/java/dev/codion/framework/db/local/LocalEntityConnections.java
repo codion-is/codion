@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.local;
+package dev.codion.framework.db.local;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.user.User;
-import org.jminor.framework.domain.Domain;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.user.User;
+import dev.codion.framework.domain.Domain;
 
 import java.sql.Connection;
 
@@ -24,7 +24,7 @@ public final class LocalEntityConnections {
    * @param user the user used for connecting to the database
    * @return a new LocalEntityConnection instance
    * @throws DatabaseException in case there is a problem connecting to the database
-   * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
+   * @throws dev.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
   public static LocalEntityConnection createConnection(final Domain domain, final Database database,
                                                        final User user) throws DatabaseException {

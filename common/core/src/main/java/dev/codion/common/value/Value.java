@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.value;
+package dev.codion.common.value;
 
 /**
  * A wrapper class for setting and getting a value

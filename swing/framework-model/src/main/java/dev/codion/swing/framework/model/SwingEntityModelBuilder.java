@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.model;
+package dev.codion.swing.framework.model;
 
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.model.EntityModelBuilder;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.model.EntityModelBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

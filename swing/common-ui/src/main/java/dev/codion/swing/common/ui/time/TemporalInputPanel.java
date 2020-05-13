@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.time;
+package dev.codion.swing.common.ui.time;
 
-import org.jminor.common.DateParser;
-import org.jminor.common.Util;
-import org.jminor.common.state.StateObserver;
-import org.jminor.swing.common.ui.Components;
+import dev.codion.common.DateParser;
+import dev.codion.common.Util;
+import dev.codion.common.state.StateObserver;
+import dev.codion.swing.common.ui.Components;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;

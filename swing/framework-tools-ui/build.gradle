@@ -1,19 +1,19 @@
 apply plugin: 'application'
 
 dependencies {
-    implementation project(':jminor-common-core')
-    implementation project(':jminor-common-db')
-    implementation project(':jminor-common-model')
+    implementation project(':codion-common-core')
+    implementation project(':codion-common-db')
+    implementation project(':codion-common-model')
 
-    implementation project(':jminor-swing-common-model')
-    implementation project(':jminor-swing-common-ui')
-    api project(':jminor-swing-framework-tools')
+    implementation project(':codion-swing-common-model')
+    implementation project(':codion-swing-common-ui')
+    api project(':codion-swing-framework-tools')
 
-    testRuntimeOnly project(':jminor-framework-db-local')
-    testRuntimeOnly project(':jminor-framework-db-rmi')
-    testRuntimeOnly project(':jminor-framework-server')
+    testRuntimeOnly project(':codion-framework-db-local')
+    testRuntimeOnly project(':codion-framework-db-rmi')
+    testRuntimeOnly project(':codion-framework-server')
 
-    testRuntimeOnly project(':jminor-dbms-h2database')
+    testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 

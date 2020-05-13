@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.javafx.framework.ui;
+package dev.codion.javafx.framework.ui;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.i18n.Messages;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.domain.property.Properties;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.javafx.framework.model.FXEntityListModel;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.i18n.Messages;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.domain.property.Properties;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.i18n.FrameworkMessages;
+import dev.codion.javafx.framework.model.FXEntityListModel;
 
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -41,7 +41,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A {@link TableView} extension based on entities

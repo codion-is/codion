@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.testing;
+package dev.codion.framework.demos.empdept.testing;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.demos.empdept.ui.EmpDeptAppPanel;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.test.EntityTestUnit;
-import org.jminor.framework.model.EntityApplicationModel;
-import org.jminor.framework.model.EntityModel;
-import org.jminor.swing.common.tools.loadtest.ScenarioException;
-import org.jminor.swing.common.tools.ui.loadtest.LoadTestPanel;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProviders;
+import dev.codion.framework.demos.empdept.domain.EmpDept;
+import dev.codion.framework.demos.empdept.ui.EmpDeptAppPanel;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.test.EntityTestUnit;
+import dev.codion.framework.model.EntityApplicationModel;
+import dev.codion.framework.model.EntityModel;
+import dev.codion.swing.common.tools.loadtest.ScenarioException;
+import dev.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import java.util.HashMap;

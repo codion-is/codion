@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.textfield;
+package dev.codion.swing.common.ui.textfield;
 
-import org.jminor.common.event.EventDataListener;
-import org.jminor.swing.common.model.textfield.DocumentAdapter;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.swing.common.model.textfield.DocumentAdapter;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;

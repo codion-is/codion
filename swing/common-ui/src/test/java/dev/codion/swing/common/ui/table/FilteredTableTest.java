@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.table;
+package dev.codion.swing.common.ui.table;
 
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
-import org.jminor.swing.common.model.table.AbstractTableSortModel;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.model.table.DefaultColumnConditionModel;
+import dev.codion.swing.common.model.table.AbstractFilteredTableModel;
+import dev.codion.swing.common.model.table.AbstractTableSortModel;
 
 import org.junit.jupiter.api.Test;
 

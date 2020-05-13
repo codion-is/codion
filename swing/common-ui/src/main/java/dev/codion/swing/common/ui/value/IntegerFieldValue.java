@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.value;
+package dev.codion.swing.common.ui.value;
 
-import org.jminor.common.value.Nullable;
-import org.jminor.swing.common.ui.textfield.IntegerField;
+import dev.codion.common.value.Nullable;
+import dev.codion.swing.common.ui.textfield.IntegerField;
 
 final class IntegerFieldValue extends AbstractTextComponentValue<Integer, IntegerField> {
 

@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petstore.ui;
+package dev.codion.framework.demos.petstore.ui;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.petstore.model.PetstoreAppModel;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.framework.ui.EntityApplicationPanel;
-import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelBuilder;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.demos.petstore.model.PetstoreAppModel;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.framework.ui.EntityApplicationPanel;
+import dev.codion.swing.framework.ui.EntityPanel;
+import dev.codion.swing.framework.ui.EntityPanelBuilder;
 
 import java.util.Locale;
 
-import static org.jminor.framework.demos.petstore.domain.Petstore.*;
+import static dev.codion.framework.demos.petstore.domain.Petstore.*;
 
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 

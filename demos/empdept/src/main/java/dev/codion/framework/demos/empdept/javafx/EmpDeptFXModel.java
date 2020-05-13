@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.javafx;
+package dev.codion.framework.demos.empdept.javafx;
 
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.javafx.framework.model.FXEntityApplicationModel;
-import org.jminor.javafx.framework.model.FXEntityEditModel;
-import org.jminor.javafx.framework.model.FXEntityListModel;
-import org.jminor.javafx.framework.model.FXEntityModel;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.demos.empdept.domain.EmpDept;
+import dev.codion.javafx.framework.model.FXEntityApplicationModel;
+import dev.codion.javafx.framework.model.FXEntityEditModel;
+import dev.codion.javafx.framework.model.FXEntityListModel;
+import dev.codion.javafx.framework.model.FXEntityModel;
 
 public final class EmpDeptFXModel extends FXEntityApplicationModel {
 

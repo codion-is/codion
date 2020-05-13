@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.property;
+package dev.codion.framework.domain.property;
 
-import org.jminor.common.item.Item;
-import org.jminor.common.valuemap.ValueMap;
+import dev.codion.common.item.Item;
+import dev.codion.common.valuemap.ValueMap;
 
 import java.sql.Types;
 import java.text.Collator;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.domain.property.AuditProperty.AuditAction.INSERT;
-import static org.jminor.framework.domain.property.AuditProperty.AuditAction.UPDATE;
+import static dev.codion.framework.domain.property.AuditProperty.AuditAction.INSERT;
+import static dev.codion.framework.domain.property.AuditProperty.AuditAction.UPDATE;
 
 /**
  * A Property factory class.

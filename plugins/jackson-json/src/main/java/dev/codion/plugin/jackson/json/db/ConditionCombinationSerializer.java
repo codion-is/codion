@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.jackson.json.db;
+package dev.codion.plugin.jackson.json.db;
 
-import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.db.condition.PropertyCondition;
+import dev.codion.framework.db.condition.Condition;
+import dev.codion.framework.db.condition.PropertyCondition;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 

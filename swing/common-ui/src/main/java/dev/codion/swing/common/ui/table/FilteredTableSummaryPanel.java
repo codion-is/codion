@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.table;
+package dev.codion.swing.common.ui.table;
 
-import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.common.model.table.FilteredTableModel;
-import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
-import org.jminor.swing.common.ui.Components;
+import dev.codion.common.model.table.ColumnSummaryModel;
+import dev.codion.common.model.table.FilteredTableModel;
+import dev.codion.swing.common.model.table.AbstractFilteredTableModel;
+import dev.codion.swing.common.ui.Components;
 
 import javax.swing.JPanel;
 import javax.swing.table.TableColumn;

@@ -1,23 +1,23 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.dialog;
+package dev.codion.swing.common.ui.dialog;
 
-import org.jminor.common.Util;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.i18n.Messages;
-import org.jminor.common.state.State;
-import org.jminor.common.state.States;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.control.ToggleControl;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
+import dev.codion.common.Util;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.i18n.Messages;
+import dev.codion.common.state.State;
+import dev.codion.common.state.States;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.KeyEvents;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.common.ui.control.Control;
+import dev.codion.swing.common.ui.control.ControlProvider;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.control.ToggleControl;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -42,8 +42,8 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
-import static org.jminor.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
-import static org.jminor.swing.common.ui.layout.Layouts.*;
+import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
+import static dev.codion.swing.common.ui.layout.Layouts.*;
 
 /**
  * A JDialog for displaying information on exceptions.

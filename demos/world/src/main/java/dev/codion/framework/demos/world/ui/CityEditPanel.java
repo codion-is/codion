@@ -1,11 +1,11 @@
-package org.jminor.framework.demos.world.ui;
+package dev.codion.framework.demos.world.ui;
 
-import org.jminor.framework.demos.world.domain.World;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.ui.EntityEditPanel;
+import dev.codion.framework.demos.world.domain.World;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.ui.EntityEditPanel;
 
-import static org.jminor.swing.common.ui.Components.setPreferredWidth;
-import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
+import static dev.codion.swing.common.ui.Components.setPreferredWidth;
+import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class CityEditPanel extends EntityEditPanel {
 

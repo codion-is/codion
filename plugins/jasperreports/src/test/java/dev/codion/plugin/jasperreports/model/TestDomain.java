@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.jasperreports.model;
+package dev.codion.plugin.jasperreports.model;
 
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.StringProvider;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.StringProvider;
 
 import java.sql.Types;
 
 import static java.util.Arrays.asList;
-import static org.jminor.common.item.Items.item;
-import static org.jminor.framework.domain.entity.KeyGenerators.increment;
-import static org.jminor.framework.domain.property.Properties.*;
-import static org.jminor.plugin.jasperreports.model.JasperReports.classPathReport;
-import static org.jminor.plugin.jasperreports.model.JasperReports.fileReport;
+import static dev.codion.common.item.Items.item;
+import static dev.codion.framework.domain.entity.KeyGenerators.increment;
+import static dev.codion.framework.domain.property.Properties.*;
+import static dev.codion.plugin.jasperreports.model.JasperReports.classPathReport;
+import static dev.codion.plugin.jasperreports.model.JasperReports.fileReport;
 
 public final class TestDomain extends Domain {
 

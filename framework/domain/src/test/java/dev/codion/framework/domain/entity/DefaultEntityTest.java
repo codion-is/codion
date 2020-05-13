@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.entity;
+package dev.codion.framework.domain.entity;
 
-import org.jminor.common.FileUtil;
-import org.jminor.common.Serializer;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.TestDomain;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Properties;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.TransientProperty;
+import dev.codion.common.FileUtil;
+import dev.codion.common.Serializer;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.TestDomain;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Properties;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.domain.property.TransientProperty;
 
 import org.junit.jupiter.api.Test;
 

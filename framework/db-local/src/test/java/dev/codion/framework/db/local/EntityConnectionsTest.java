@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.local;
+package dev.codion.framework.db.local;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.dbms.h2database.H2DatabaseProvider;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnections;
-import org.jminor.framework.db.EntityConnections.IncludePrimaryKeys;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.dbms.h2database.H2DatabaseProvider;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.EntityConnections;
+import dev.codion.framework.db.EntityConnections.IncludePrimaryKeys;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.Entity;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -25,8 +25,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
-import static org.jminor.framework.db.condition.Conditions.condition;
-import static org.jminor.framework.db.condition.Conditions.selectCondition;
+import static dev.codion.framework.db.condition.Conditions.condition;
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

@@ -1,25 +1,25 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model.tests;
+package dev.codion.framework.model.tests;
 
-import org.jminor.common.db.Operator;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.model.DefaultEntityEditModel;
-import org.jminor.framework.model.DefaultEntityModel;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityModel;
-import org.jminor.framework.model.EntityTableModel;
+import dev.codion.common.db.Operator;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.local.LocalEntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.model.DefaultEntityEditModel;
+import dev.codion.framework.model.DefaultEntityModel;
+import dev.codion.framework.model.EntityEditModel;
+import dev.codion.framework.model.EntityModel;
+import dev.codion.framework.model.EntityTableModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +29,7 @@ import java.util.Objects;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.selectCondition;
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**

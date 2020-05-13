@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.rmi.server;
+package dev.codion.common.rmi.server;
 
-import org.jminor.common.Util;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.rmi.client.ConnectionRequest;
-import org.jminor.common.rmi.server.exception.ConnectionNotAvailableException;
-import org.jminor.common.rmi.server.exception.ConnectionValidationException;
-import org.jminor.common.rmi.server.exception.LoginException;
-import org.jminor.common.rmi.server.exception.ServerAuthenticationException;
-import org.jminor.common.user.User;
+import dev.codion.common.Util;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.rmi.client.ConnectionRequest;
+import dev.codion.common.rmi.server.exception.ConnectionNotAvailableException;
+import dev.codion.common.rmi.server.exception.ConnectionValidationException;
+import dev.codion.common.rmi.server.exception.LoginException;
+import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
+import dev.codion.common.user.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +37,10 @@ import java.util.concurrent.ThreadFactory;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
-import static org.jminor.common.rmi.server.AuxiliaryServerProvider.getAuxiliaryServerProvider;
-import static org.jminor.common.rmi.server.RemoteClient.remoteClient;
-import static org.jminor.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
-import static org.jminor.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
+import static dev.codion.common.rmi.server.AuxiliaryServerProvider.getAuxiliaryServerProvider;
+import static dev.codion.common.rmi.server.RemoteClient.remoteClient;
+import static dev.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
+import static dev.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 
 /**
  * A default Server implementation.

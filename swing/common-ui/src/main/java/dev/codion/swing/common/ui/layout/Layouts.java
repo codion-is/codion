@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.layout;
+package dev.codion.swing.common.ui.layout;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.value.Value;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
+import dev.codion.common.Configuration;
+import dev.codion.common.value.Value;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

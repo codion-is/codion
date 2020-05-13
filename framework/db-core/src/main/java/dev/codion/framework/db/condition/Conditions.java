@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.condition;
+package dev.codion.framework.db.condition;
 
-import org.jminor.common.Conjunction;
-import org.jminor.common.db.Operator;
-import org.jminor.framework.domain.entity.ConditionProvider;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.Conjunction;
+import dev.codion.common.db.Operator;
+import dev.codion.framework.domain.entity.ConditionProvider;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Property;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,11 +22,11 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.Conjunction.AND;
-import static org.jminor.common.Conjunction.OR;
-import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.common.db.Operator.LIKE;
-import static org.jminor.framework.domain.entity.Entities.getValues;
+import static dev.codion.common.Conjunction.AND;
+import static dev.codion.common.Conjunction.OR;
+import static dev.codion.common.Util.nullOrEmpty;
+import static dev.codion.common.db.Operator.LIKE;
+import static dev.codion.framework.domain.entity.Entities.getValues;
 
 /**
  * A factory class for {@link Condition} and it's descendants.

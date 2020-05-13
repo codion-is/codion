@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.value;
+package dev.codion.swing.common.ui.value;
 
-import org.jminor.common.value.Nullable;
-import org.jminor.swing.common.ui.textfield.TextInputPanel;
+import dev.codion.common.value.Nullable;
+import dev.codion.swing.common.ui.textfield.TextInputPanel;
 
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import java.text.Format;
 
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * Utility class for text based {@link ComponentValue} instances.

@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.ui;
+package dev.codion.framework.demos.chinook.ui;
 
-import org.jminor.common.value.Value;
-import org.jminor.plugin.imagepanel.NavigableImagePanel;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.dialog.Dialogs;
+import dev.codion.common.value.Value;
+import dev.codion.plugin.imagepanel.NavigableImagePanel;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -20,8 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
-import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
+import static dev.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
  * A panel for displaying a cover image, based on a byte array.

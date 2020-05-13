@@ -1,4 +1,4 @@
-package org.jminor.plugin.imagepanel;
+package dev.codion.plugin.imagepanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;

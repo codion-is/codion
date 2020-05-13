@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.javafx.framework.ui;
+package dev.codion.javafx.framework.ui;
 
-import org.jminor.common.i18n.Messages;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.EntityLookupModel;
-import org.jminor.javafx.framework.ui.values.PropertyValues;
+import dev.codion.common.i18n.Messages;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.i18n.FrameworkMessages;
+import dev.codion.framework.model.EntityLookupModel;
+import dev.codion.javafx.framework.ui.values.PropertyValues;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -20,7 +20,7 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A {@link TextField} allowing entity lookup based on the text entered

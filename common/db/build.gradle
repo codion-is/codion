@@ -1,8 +1,8 @@
 dependencies {
-    api project(':jminor-common-core')
+    api project(':codion-common-core')
 
-    testRuntimeOnly project(':jminor-dbms-h2database')
+    testRuntimeOnly project(':codion-dbms-h2database')
 
-    testRuntimeOnly project(':jminor-plugin-hikari-pool')
+    testRuntimeOnly project(':codion-plugin-hikari-pool')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }

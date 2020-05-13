@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package dev.codion.framework.model;
 
-import org.jminor.framework.model.tests.AbstractEntityApplicationModelTest;
-import org.jminor.framework.model.tests.TestDomain;
+import dev.codion.framework.model.tests.AbstractEntityApplicationModelTest;
+import dev.codion.framework.model.tests.TestDomain;
 
 public final class DefaultEntityApplicationModelTest extends AbstractEntityApplicationModelTest<DefaultEntityModelTest.TestEntityModel,
         DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel> {

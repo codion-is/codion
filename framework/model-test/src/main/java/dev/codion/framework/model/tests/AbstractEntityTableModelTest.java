@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model.tests;
+package dev.codion.framework.model.tests;
 
-import org.jminor.common.Util;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityTableModel;
+import dev.codion.common.Util;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.local.LocalEntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.model.EntityEditModel;
+import dev.codion.framework.model.EntityTableModel;
 
 import org.junit.jupiter.api.Test;
 

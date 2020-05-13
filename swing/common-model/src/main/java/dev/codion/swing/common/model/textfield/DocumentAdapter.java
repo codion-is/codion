@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.textfield;
+package dev.codion.swing.common.model.textfield;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;

@@ -9,7 +9,7 @@
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/petstore/domain/Petstore.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/petstore/domain/Petstore.java[lines=4..-1]
 ----
 
 [#_domain_unit_test]
@@ -17,7 +17,7 @@ include::{dir-source}/org/jminor/framework/demos/petstore/domain/Petstore.java[l
 
 [source,java]
 ----
-include::{dir-test-source}/org/jminor/framework/demos/petstore/domain/PetstoreTest.java[lines=4..-1]
+include::{dir-test-source}/dev/codion/framework/demos/petstore/domain/PetstoreTest.java[lines=4..-1]
 ----
 
 == Model
@@ -26,44 +26,44 @@ include::{dir-test-source}/org/jminor/framework/demos/petstore/domain/PetstoreTe
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/petstore/model/PetstoreAppModel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/petstore/model/PetstoreAppModel.java[lines=4..-1]
 ----
 
 == UI
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/petstore/ui/AddressEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/petstore/ui/AddressEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/petstore/ui/CategoryEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/petstore/ui/CategoryEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/petstore/ui/ContactInfoEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/petstore/ui/ContactInfoEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/petstore/ui/ItemEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/petstore/ui/ItemEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/petstore/ui/ProductEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/petstore/ui/ProductEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/petstore/ui/TagItemEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/petstore/ui/TagItemEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/petstore/ui/TagEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/petstore/ui/TagEditPanel.java[lines=4..-1]
 ----
 
 [#_main_application_panel]
@@ -71,7 +71,7 @@ include::{dir-source}/org/jminor/framework/demos/petstore/ui/TagEditPanel.java[l
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/petstore/ui/PetstoreAppPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/petstore/ui/PetstoreAppPanel.java[lines=4..-1]
 ----
 
 [#_load_test]
@@ -79,5 +79,5 @@ include::{dir-source}/org/jminor/framework/demos/petstore/ui/PetstoreAppPanel.ja
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/petstore/testing/PetstoreLoadTest.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/petstore/testing/PetstoreLoadTest.java[lines=4..-1]
 ----

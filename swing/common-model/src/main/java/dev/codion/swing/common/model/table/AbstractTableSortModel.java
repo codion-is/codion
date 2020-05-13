@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.table;
+package dev.codion.swing.common.model.table;
 
-import org.jminor.common.Text;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.model.table.SortingDirective;
-import org.jminor.common.model.table.TableSortModel;
+import dev.codion.common.Text;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.model.table.SortingDirective;
+import dev.codion.common.model.table.TableSortModel;
 
 import javax.swing.table.TableColumn;
 import java.util.Collections;

@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package dev.codion.common;
 
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.Events;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.Events;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

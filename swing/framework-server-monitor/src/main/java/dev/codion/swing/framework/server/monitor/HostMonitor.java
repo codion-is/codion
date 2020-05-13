@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor;
+package dev.codion.swing.framework.server.monitor;
 
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.rmi.server.Server;
-import org.jminor.common.rmi.server.ServerConfiguration;
-import org.jminor.common.rmi.server.ServerInformation;
-import org.jminor.common.rmi.server.exception.ServerAuthenticationException;
-import org.jminor.common.user.User;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.rmi.server.Server;
+import dev.codion.common.rmi.server.ServerConfiguration;
+import dev.codion.common.rmi.server.ServerInformation;
+import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
+import dev.codion.common.user.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

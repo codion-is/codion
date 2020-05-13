@@ -1,55 +1,55 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.CredentialsProvider;
-import org.jminor.common.LoggerProxy;
-import org.jminor.common.Memory;
-import org.jminor.common.Text;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.i18n.Messages;
-import org.jminor.common.item.Item;
-import org.jminor.common.item.Items;
-import org.jminor.common.model.CancelException;
-import org.jminor.common.model.UserPreferences;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.common.version.Version;
-import org.jminor.common.version.Versions;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.EntityApplicationModel;
-import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.HierarchyPanel;
-import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.LoginPanel;
-import org.jminor.swing.common.ui.UiManagerDefaults;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.control.ToggleControl;
-import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.dialog.Modal;
-import org.jminor.swing.common.ui.images.Images;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.framework.model.SwingEntityApplicationModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityModelBuilder;
+import dev.codion.common.Configuration;
+import dev.codion.common.CredentialsProvider;
+import dev.codion.common.LoggerProxy;
+import dev.codion.common.Memory;
+import dev.codion.common.Text;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.i18n.Messages;
+import dev.codion.common.item.Item;
+import dev.codion.common.item.Items;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.model.UserPreferences;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.common.version.Version;
+import dev.codion.common.version.Versions;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.EntityConnectionProviders;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.i18n.FrameworkMessages;
+import dev.codion.framework.model.EntityApplicationModel;
+import dev.codion.swing.common.model.combobox.ItemComboBoxModel;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.HierarchyPanel;
+import dev.codion.swing.common.ui.KeyEvents;
+import dev.codion.swing.common.ui.LoginPanel;
+import dev.codion.swing.common.ui.UiManagerDefaults;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.common.ui.control.Control;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.ControlProvider;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.control.ToggleControl;
+import dev.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import dev.codion.swing.common.ui.dialog.DialogExceptionHandler;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.common.ui.dialog.Modal;
+import dev.codion.swing.common.ui.images.Images;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.framework.model.SwingEntityApplicationModel;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.model.SwingEntityModelBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,8 +103,8 @@ import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.swing.common.ui.icons.Icons.icons;
+import static dev.codion.common.Util.nullOrEmpty;
+import static dev.codion.swing.common.ui.icons.Icons.icons;
 
 /**
  * A central application panel class.
@@ -1471,7 +1471,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Looks up user credentials via a {@link org.jminor.common.CredentialsProvider} service using an authentication token
+   * Looks up user credentials via a {@link dev.codion.common.CredentialsProvider} service using an authentication token
    * found in the program arguments list. Useful for single sign on application launch.
    * <pre>javaws -open authenticationToken:123-123-123 http://jminor.org/demo/demo.jnlp</pre>
    * <pre>java -jar application/getdown-1.7.1.jar app_dir app_id authenticationToken:123-123-123</pre>

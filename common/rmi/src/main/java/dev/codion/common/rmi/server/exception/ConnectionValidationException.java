@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.rmi.server.exception;
+package dev.codion.common.rmi.server.exception;
 
 /**
  * An exception indicating that a connection validation has failed

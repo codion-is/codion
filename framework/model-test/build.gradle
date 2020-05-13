@@ -1,12 +1,12 @@
 dependencies {
-    api project(':jminor-common-core')
-    api project(':jminor-common-db')
-    api project(':jminor-common-model')
+    api project(':codion-common-core')
+    api project(':codion-common-db')
+    api project(':codion-common-model')
 
-    api project(':jminor-framework-domain')
-    api project(':jminor-framework-db-core')
-    api project(':jminor-framework-db-local')
-    api project(':jminor-framework-model')
+    api project(':codion-framework-domain')
+    api project(':codion-framework-db-core')
+    api project(':codion-framework-db-local')
+    api project(':codion-framework-model')
 
     api "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
 

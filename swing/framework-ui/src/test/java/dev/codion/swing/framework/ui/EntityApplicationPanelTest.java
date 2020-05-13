@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.model.EntityApplicationModel;
-import org.jminor.swing.framework.model.SwingEntityApplicationModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.ui.EntityApplicationPanel.DisplayFrame;
-import org.jminor.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.local.LocalEntityConnectionProvider;
+import dev.codion.framework.model.EntityApplicationModel;
+import dev.codion.swing.framework.model.SwingEntityApplicationModel;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.ui.EntityApplicationPanel.DisplayFrame;
+import dev.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

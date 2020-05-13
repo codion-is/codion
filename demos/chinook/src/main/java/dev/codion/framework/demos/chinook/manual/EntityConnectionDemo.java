@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.manual;
+package dev.codion.framework.demos.chinook.manual;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.reports.ReportException;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.condition.EntitySelectCondition;
+import dev.codion.framework.db.condition.EntityUpdateCondition;
+import dev.codion.framework.db.local.LocalEntityConnectionProvider;
+import dev.codion.framework.demos.chinook.domain.impl.ChinookImpl;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static org.jminor.common.Conjunction.AND;
-import static org.jminor.common.db.Operator.LIKE;
-import static org.jminor.common.db.Operator.NOT_LIKE;
-import static org.jminor.framework.db.condition.Conditions.*;
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static dev.codion.common.Conjunction.AND;
+import static dev.codion.common.db.Operator.LIKE;
+import static dev.codion.common.db.Operator.NOT_LIKE;
+import static dev.codion.framework.db.condition.Conditions.*;
+import static dev.codion.framework.demos.chinook.domain.Chinook.*;
 
 /**
  * When running this make sure the chinook demo module directory is the

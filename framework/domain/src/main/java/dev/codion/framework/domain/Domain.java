@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package dev.codion.framework.domain;
 
-import org.jminor.common.db.operation.DatabaseFunction;
-import org.jminor.common.db.operation.DatabaseOperation;
-import org.jminor.common.db.operation.DatabaseProcedure;
-import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.framework.domain.entity.DefaultEntities;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.db.operation.DatabaseFunction;
+import dev.codion.common.db.operation.DatabaseOperation;
+import dev.codion.common.db.operation.DatabaseProcedure;
+import dev.codion.common.db.reports.ReportException;
+import dev.codion.common.db.reports.ReportWrapper;
+import dev.codion.framework.domain.entity.DefaultEntities;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.HashMap;

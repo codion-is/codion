@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.local;
+package dev.codion.framework.db.local;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.framework.db.AbstractEntityConnectionProvider;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.domain.Domain;
+import dev.codion.common.Configuration;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.framework.db.AbstractEntityConnectionProvider;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.domain.Domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

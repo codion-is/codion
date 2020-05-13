@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db;
+package dev.codion.framework.db;
 
-import org.jminor.common.Util;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.Util;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.framework.domain.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.db.condition.Conditions.selectCondition;
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A static helper class for mass data manipulation.

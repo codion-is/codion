@@ -1,13 +1,13 @@
 dependencies {
-    api project(':jminor-common-core')
-    api project(':jminor-common-db')
-    api project(':jminor-common-model')
+    api project(':codion-common-core')
+    api project(':codion-common-db')
+    api project(':codion-common-model')
 
     api "org.jfree:jfreechart:${jfreeChartVersion}"
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
-    testRuntimeOnly project(':jminor-plugin-hikari-pool')
-    testRuntimeOnly project(':jminor-dbms-h2database')
+    testRuntimeOnly project(':codion-plugin-hikari-pool')
+    testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }

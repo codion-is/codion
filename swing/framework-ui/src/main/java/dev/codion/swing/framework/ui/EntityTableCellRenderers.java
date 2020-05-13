@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.framework.domain.entity.ColorProvider;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.ValueListProperty;
-import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
-import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
+import dev.codion.framework.domain.entity.ColorProvider;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.domain.property.ValueListProperty;
+import dev.codion.swing.common.model.checkbox.NullableToggleButtonModel;
+import dev.codion.swing.common.ui.checkbox.NullableCheckBox;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -216,7 +216,7 @@ public final class EntityTableCellRenderers {
 
     /**
      * @param value the value to set
-     * @see org.jminor.swing.framework.model.SwingEntityTableModel#getValue(Entity, Property)
+     * @see dev.codion.swing.framework.model.SwingEntityTableModel#getValue(Entity, Property)
      */
     @Override
     protected void setValue(final Object value) {

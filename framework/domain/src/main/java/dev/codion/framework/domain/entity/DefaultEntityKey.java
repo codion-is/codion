@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.entity;
+package dev.codion.framework.domain.entity;
 
-import org.jminor.common.valuemap.DefaultValueMap;
-import org.jminor.framework.domain.property.ColumnProperty;
+import dev.codion.common.valuemap.DefaultValueMap;
+import dev.codion.framework.domain.property.ColumnProperty;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

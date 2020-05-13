@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.control;
+package dev.codion.swing.common.ui.control;
 
-import org.jminor.common.event.Event;
-import org.jminor.common.event.Events;
-import org.jminor.common.state.State;
-import org.jminor.common.state.States;
-import org.jminor.common.value.Nullable;
-import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
-import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.Events;
+import dev.codion.common.state.State;
+import dev.codion.common.state.States;
+import dev.codion.common.value.Nullable;
+import dev.codion.common.value.Value;
+import dev.codion.common.value.Values;
+import dev.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 
 import org.junit.jupiter.api.Test;
 

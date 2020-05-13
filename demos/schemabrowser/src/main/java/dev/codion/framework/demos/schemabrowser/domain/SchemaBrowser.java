@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.schemabrowser.domain;
+package dev.codion.framework.demos.schemabrowser.domain;
 
-import org.jminor.common.db.database.DatabaseProvider;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.StringProvider;
+import dev.codion.common.db.database.DatabaseProvider;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.StringProvider;
 
 import java.sql.SQLException;
 import java.sql.Types;
@@ -13,8 +13,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.domain.entity.OrderBy.orderBy;
-import static org.jminor.framework.domain.property.Properties.*;
+import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static dev.codion.framework.domain.property.Properties.*;
 
 public final class SchemaBrowser extends Domain {
 

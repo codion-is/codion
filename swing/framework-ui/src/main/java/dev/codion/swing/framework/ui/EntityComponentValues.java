@@ -1,24 +1,24 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.item.Item;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.ValueListProperty;
-import org.jminor.swing.common.ui.time.LocalDateInputPanel;
-import org.jminor.swing.common.ui.time.LocalDateTimeInputPanel;
-import org.jminor.swing.common.ui.time.LocalTimeInputPanel;
-import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.common.ui.value.ComponentValue;
-import org.jminor.swing.common.ui.value.FileValues;
-import org.jminor.swing.common.ui.value.NumericalValues;
-import org.jminor.swing.common.ui.value.SelectedValues;
-import org.jminor.swing.common.ui.value.TemporalValues;
-import org.jminor.swing.common.ui.value.TextValues;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
+import dev.codion.common.item.Item;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.domain.property.ValueListProperty;
+import dev.codion.swing.common.ui.time.LocalDateInputPanel;
+import dev.codion.swing.common.ui.time.LocalDateTimeInputPanel;
+import dev.codion.swing.common.ui.time.LocalTimeInputPanel;
+import dev.codion.swing.common.ui.value.BooleanValues;
+import dev.codion.swing.common.ui.value.ComponentValue;
+import dev.codion.swing.common.ui.value.FileValues;
+import dev.codion.swing.common.ui.value.NumericalValues;
+import dev.codion.swing.common.ui.value.SelectedValues;
+import dev.codion.swing.common.ui.value.TemporalValues;
+import dev.codion.swing.common.ui.value.TextValues;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.math.BigDecimal;
 import java.sql.Types;

@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.value;
+package dev.codion.common.value;
 
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
 
 import static java.util.Objects.requireNonNull;
 

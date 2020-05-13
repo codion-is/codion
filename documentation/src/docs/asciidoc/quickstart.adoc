@@ -10,8 +10,8 @@ JMinor is primarily a Swing based framework, the Swing client is mature and stab
 |===
 |Client|Artifact
 
-|Swing|org.jminor.{jminor-jdk}:jminor-swing-framework.ui:{jminor-version}
-|JavaFX|org.jminor.{jminor-jdk}:jminor-javafx-framework:{jminor-version}
+|Swing|dev.codion.{jminor-jdk}:jminor-swing-framework.ui:{jminor-version}
+|JavaFX|dev.codion.{jminor-jdk}:jminor-javafx-framework:{jminor-version}
 |===
 
 == Database connectivity
@@ -21,9 +21,9 @@ A JMinor client has three ways of connecting to a database, directly via a local
 |===
 |DB Connection|Artifact
 
-|Local|org.jminor.{jminor-jdk}:jminor-framework-db-local:{jminor-version}
-|RMI|org.jminor.{jminor-jdk}:jminor-framework-db-rmi:{jminor-version}
-|HTTP|org.jminor.{jminor-jdk}:jminor-framework-db-http:{jminor-version}
+|Local|dev.codion.{jminor-jdk}:jminor-framework-db-local:{jminor-version}
+|RMI|dev.codion.{jminor-jdk}:jminor-framework-db-rmi:{jminor-version}
+|HTTP|dev.codion.{jminor-jdk}:jminor-framework-db-http:{jminor-version}
 |===
 
 == DBMS
@@ -39,15 +39,15 @@ The most used and tested DBMS modules are:
 |===
 |DBMS|Artifact
 
-|Derby|org.jminor.{jminor-jdk}:jminor-dbms-derby:{jminor-version}
-|H2 Database|org.jminor.{jminor-jdk}:jminor-dbms-h2database:{jminor-version}
-|HSQL|org.jminor.{jminor-jdk}:jminor-dbms-hsql:{jminor-version}
-|MariaDB|org.jminor.{jminor-jdk}:jminor-dbms-mariadb:{jminor-version}
-|MySQL|org.jminor.{jminor-jdk}:jminor-dbms-mysql:{jminor-version}
-|Oracle|org.jminor.{jminor-jdk}:jminor-dbms-oracle:{jminor-version}
-|Postgresql|org.jminor.{jminor-jdk}:jminor-dbms-postgresql:{jminor-version}
-|SQLite|org.jminor.{jminor-jdk}:jminor-dbms-sqlite:{jminor-version}
-|SQL Server|org.jminor.{jminor-jdk}:jminor-dbms-sqlserver:{jminor-version}
+|Derby|dev.codion.{jminor-jdk}:jminor-dbms-derby:{jminor-version}
+|H2 Database|dev.codion.{jminor-jdk}:jminor-dbms-h2database:{jminor-version}
+|HSQL|dev.codion.{jminor-jdk}:jminor-dbms-hsql:{jminor-version}
+|MariaDB|dev.codion.{jminor-jdk}:jminor-dbms-mariadb:{jminor-version}
+|MySQL|dev.codion.{jminor-jdk}:jminor-dbms-mysql:{jminor-version}
+|Oracle|dev.codion.{jminor-jdk}:jminor-dbms-oracle:{jminor-version}
+|Postgresql|dev.codion.{jminor-jdk}:jminor-dbms-postgresql:{jminor-version}
+|SQLite|dev.codion.{jminor-jdk}:jminor-dbms-sqlite:{jminor-version}
+|SQL Server|dev.codion.{jminor-jdk}:jminor-dbms-sqlserver:{jminor-version}
 |===
 
 == Logging
@@ -57,9 +57,9 @@ JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 |===
 |Logging|Artifact
 
-|Logback|org.jminor.{jminor-jdk}:jminor-plugin-logback-proxy:{jminor-version}
-|Log4j|org.jminor.{jminor-jdk}:jminor-plugin-log4j-proxy:{jminor-version}
-|Java Util Logging|org.jminor.{jminor-jdk}:jminor-plugin-jul-proxy:{jminor-version}
+|Logback|dev.codion.{jminor-jdk}:jminor-plugin-logback-proxy:{jminor-version}
+|Log4j|dev.codion.{jminor-jdk}:jminor-plugin-log4j-proxy:{jminor-version}
+|Java Util Logging|dev.codion.{jminor-jdk}:jminor-plugin-jul-proxy:{jminor-version}
 |===
 
 == Gradle
@@ -67,21 +67,21 @@ JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 ----
 dependencies {
     //Swing client UI module
-    implementation 'org.jminor.{jminor-jdk}:jminor-swing-framework-ui:{jminor-version}'
+    implementation 'dev.codion.{jminor-jdk}:jminor-swing-framework-ui:{jminor-version}'
 
     //JSON for persisting client preferences
-    runtimeOnly 'org.jminor.{jminor-jdk}:jminor-plugin-json:{jminor-version}'
+    runtimeOnly 'dev.codion.{jminor-jdk}:jminor-plugin-json:{jminor-version}'
     //Local JDBC connection module
-    runtimeOnly 'org.jminor.{jminor-jdk}:jminor-framework-db-local:{jminor-version}'
+    runtimeOnly 'dev.codion.{jminor-jdk}:jminor-framework-db-local:{jminor-version}'
     //H2 DBMS module
-    runtimeOnly 'org.jminor.{jminor-jdk}:jminor-dbms-h2database:{jminor-version}'
+    runtimeOnly 'dev.codion.{jminor-jdk}:jminor-dbms-h2database:{jminor-version}'
     //H2 JDBC driver
     runtimeOnly 'com.h2database:h2:1.4.200'
     //Logging with Logback
-    runtimeOnly 'org.jminor.{jminor-jdk}:jminor-plugin-logback-proxy:{jminor-version}'
+    runtimeOnly 'dev.codion.{jminor-jdk}:jminor-plugin-logback-proxy:{jminor-version}'
 
     //Domain model unit testing module
-    testImplementation 'org.jminor.{jminor-jdk}:jminor-framework-domain-test:{jminor-version}'
+    testImplementation 'dev.codion.{jminor-jdk}:jminor-framework-domain-test:{jminor-version}'
     //JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
@@ -102,7 +102,7 @@ The JMinor framework is based around the *Entity* class, a map-like structure, r
 [cols="2,4"]
 |===
 |Module|Artifact
-|org.jminor.framework.domain|org.jminor.{jminor-jdk}:jminor-framework-domain:{jminor-version}
+|dev.codion.framework.domain|dev.codion.{jminor-jdk}:jminor-framework-domain:{jminor-version}
 |===
 
 ==== Defining entities
@@ -127,21 +127,21 @@ NOTE: In this example the constants contain the actual table and column names, b
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=customer]
+include::{dir-source}/dev/codion/framework/demos/manual/quickstart/Example.java[tags=customer]
 ----
 
 Next we define a entity based on the table *store.address*.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=address]
+include::{dir-source}/dev/codion/framework/demos/manual/quickstart/Example.java[tags=address]
 ----
 
 And finally we define a entity based on the _many-to-many_ relationship table *store.customer_address*.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=customerAddress]
+include::{dir-source}/dev/codion/framework/demos/manual/quickstart/Example.java[tags=customerAddress]
 ----
 
 === UI
@@ -151,7 +151,7 @@ The *EntityPanel* class provides a Swing UI for viewing and editing entities. It
 [cols="2,4"]
 |===
 |Module|Artifact
-|org.jminor.swing.framework.ui|org.jminor.{jminor-jdk}:jminor-swing-framework-ui:{jminor-version}
+|dev.codion.swing.framework.ui|dev.codion.{jminor-jdk}:jminor-swing-framework-ui:{jminor-version}
 |===
 
 ==== Master
@@ -160,7 +160,7 @@ Here we extend a *EntityEditPanel* to provide the UI for editing a customer and 
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=customerPanel]
+include::{dir-source}/dev/codion/framework/demos/manual/quickstart/Example.java[tags=customerPanel]
 ----
 
 ==== Detail
@@ -169,7 +169,7 @@ Here we create a panel for viewing and editing customer addresses, much like the
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=detailPanel]
+include::{dir-source}/dev/codion/framework/demos/manual/quickstart/Example.java[tags=detailPanel]
 ----
 
 === Domain unit test
@@ -179,12 +179,12 @@ The *EntityTestUnit* class provides a way to unit test the domain model. The *te
 [cols="2,4"]
 |===
 |Module|Artifact
-|org.jminor.framework.domain.test|org.jminor.{jminor-jdk}:jminor-framework-domain-test:{jminor-version}
+|dev.codion.framework.domain.test|dev.codion.{jminor-jdk}:jminor-framework-domain-test:{jminor-version}
 |===
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=domainModelTest]
+include::{dir-source}/dev/codion/framework/demos/manual/quickstart/Example.java[tags=domainModelTest]
 ----
 
 === Persistance
@@ -194,22 +194,22 @@ The *EntityConnection* interface provides select, insert, update, and delete met
 [cols="2,4,2"]
 |===
 |Module|Artifact|Description
-|org.jminor.framework.db.core|org.jminor.{jminor-jdk}:jminor-framework-db-core:{jminor-version}|Database API
-|org.jminor.framework.db.local|org.jminor.{jminor-jdk}:jminor-framework-db-local:{jminor-version}|Local JDBC
+|dev.codion.framework.db.core|dev.codion.{jminor-jdk}:jminor-framework-db-core:{jminor-version}|Database API
+|dev.codion.framework.db.local|dev.codion.{jminor-jdk}:jminor-framework-db-local:{jminor-version}|Local JDBC
 |===
 
 ==== Selecting
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=select]
+include::{dir-source}/dev/codion/framework/demos/manual/quickstart/Example.java[tags=select]
 ----
 
 ==== Persisting
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tags=persist]
+include::{dir-source}/dev/codion/framework/demos/manual/quickstart/Example.java[tags=persist]
 ----
 
 .Full code
@@ -217,6 +217,6 @@ include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[
 ====
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/quickstart/Example.java[tag=**]
+include::{dir-source}/dev/codion/framework/demos/manual/quickstart/Example.java[tag=**]
 ----
 ====

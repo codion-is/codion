@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.value;
+package dev.codion.swing.common.ui.value;
 
-import org.jminor.swing.common.ui.time.TemporalInputPanel;
+import dev.codion.swing.common.ui.time.TemporalInputPanel;
 
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;

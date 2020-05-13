@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.javafx.framework.ui;
+package dev.codion.javafx.framework.ui;
 
-import org.jminor.common.value.Value;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.value.Value;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.property.Property;
 
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;

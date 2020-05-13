@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package dev.codion.framework.server;
 
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.rmi.client.ConnectionRequest;
-import org.jminor.common.rmi.server.RemoteClient;
-import org.jminor.common.rmi.server.Servers;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.rmi.RemoteEntityConnection;
-import org.jminor.framework.domain.Domain;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.rmi.client.ConnectionRequest;
+import dev.codion.common.rmi.server.RemoteClient;
+import dev.codion.common.rmi.server.Servers;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.db.condition.Conditions;
+import dev.codion.framework.db.condition.EntitySelectCondition;
+import dev.codion.framework.db.rmi.RemoteEntityConnection;
+import dev.codion.framework.domain.Domain;
 
 import org.junit.jupiter.api.Test;
 

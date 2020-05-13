@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.rmi.server;
+package dev.codion.common.rmi.server;
 
-import org.jminor.common.version.Version;
-import org.jminor.common.version.Versions;
+import dev.codion.common.version.Version;
+import dev.codion.common.version.Versions;
 
 import java.io.Serializable;
 import java.time.ZoneId;

@@ -1,23 +1,23 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.domain;
+package dev.codion.framework.demos.empdept.domain;
 
-import org.jminor.common.item.Item;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.StringProvider;
-import org.jminor.plugin.jasperreports.model.JasperReportWrapper;
+import dev.codion.common.item.Item;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.StringProvider;
+import dev.codion.plugin.jasperreports.model.JasperReportWrapper;
 
 import java.awt.Color;
 import java.sql.Types;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.jminor.common.item.Items.item;
-import static org.jminor.framework.domain.entity.KeyGenerators.increment;
-import static org.jminor.framework.domain.entity.OrderBy.orderBy;
-import static org.jminor.framework.domain.property.Properties.*;
-import static org.jminor.plugin.jasperreports.model.JasperReports.classPathReport;
+import static dev.codion.common.item.Items.item;
+import static dev.codion.framework.domain.entity.KeyGenerators.increment;
+import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static dev.codion.framework.domain.property.Properties.*;
+import static dev.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
 // tag::departmentConstants[]
 /**

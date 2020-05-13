@@ -1,12 +1,12 @@
 dependencies {
-    implementation project(':jminor-common-core')
-    implementation project(':jminor-common-db')
-    api project(':jminor-common-rmi')
-    api project(':jminor-common-http')
+    implementation project(':codion-common-core')
+    implementation project(':codion-common-db')
+    api project(':codion-common-rmi')
+    api project(':codion-common-http')
 
-    implementation project(':jminor-framework-domain')
-    implementation project(':jminor-framework-db-core')
-    implementation project(':jminor-framework-db-rmi')
+    implementation project(':codion-framework-domain')
+    implementation project(':codion-framework-db-core')
+    implementation project(':codion-framework-db-rmi')
 
     api 'javax.xml.bind:jaxb-api:2.3.0'
     api 'javax.activation:javax.activation-api:1.2.0'
@@ -16,12 +16,12 @@ dependencies {
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
-    testImplementation project(':jminor-framework-db-local')
-    testImplementation project(':jminor-framework-server')
+    testImplementation project(':codion-framework-db-local')
+    testImplementation project(':codion-framework-server')
 
     testImplementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"
 
-    testRuntimeOnly project(':jminor-plugin-hikari-pool')
-    testRuntimeOnly project(':jminor-dbms-h2database')
+    testRuntimeOnly project(':codion-plugin-hikari-pool')
+    testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }

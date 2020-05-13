@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.condition;
+package dev.codion.framework.db.condition;
 
-import org.jminor.common.db.Operator;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.SubqueryProperty;
+import dev.codion.common.db.Operator;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.SubqueryProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.db.Operator.LIKE;
+import static dev.codion.common.db.Operator.LIKE;
 
 /**
  * Encapsulates a query condition based on a single property with one or more values.

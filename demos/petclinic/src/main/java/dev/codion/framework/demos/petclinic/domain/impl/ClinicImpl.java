@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petclinic.domain.impl;
+package dev.codion.framework.demos.petclinic.domain.impl;
 
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.StringProvider;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.StringProvider;
 
 import java.sql.Types;
 
-import static org.jminor.framework.demos.petclinic.domain.Clinic.*;
-import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
-import static org.jminor.framework.domain.entity.OrderBy.orderBy;
-import static org.jminor.framework.domain.property.Properties.*;
+import static dev.codion.framework.demos.petclinic.domain.Clinic.*;
+import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
+import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static dev.codion.framework.domain.property.Properties.*;
 
 public final class ClinicImpl extends Domain {
 

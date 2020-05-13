@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.http.server;
+package dev.codion.common.http.server;
 
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.Events;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A simple Jetty based http file server

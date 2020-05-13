@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.rmi;
+package dev.codion.framework.db.rmi;
 
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.domain.Domain;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.EntityConnectionProviders;
+import dev.codion.framework.domain.Domain;
 
 import org.junit.jupiter.api.Test;
 

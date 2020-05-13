@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petclinic.ui;
+package dev.codion.framework.demos.petclinic.ui;
 
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
 
-import static org.jminor.framework.demos.petclinic.domain.Clinic.VET_FIRST_NAME;
-import static org.jminor.framework.demos.petclinic.domain.Clinic.VET_LAST_NAME;
+import static dev.codion.framework.demos.petclinic.domain.Clinic.VET_FIRST_NAME;
+import static dev.codion.framework.demos.petclinic.domain.Clinic.VET_LAST_NAME;
 
 public final class VetEditPanel extends EntityEditPanel {
 

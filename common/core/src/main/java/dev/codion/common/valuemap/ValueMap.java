@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.valuemap;
+package dev.codion.common.valuemap;
 
 import java.util.Collection;
 import java.util.Set;

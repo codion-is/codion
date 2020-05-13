@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package dev.codion.framework.server;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.rmi.server.RemoteClient;
-import org.jminor.framework.db.condition.EntityCondition;
-import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.db.rmi.RemoteEntityConnection;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.reports.ReportException;
+import dev.codion.common.db.reports.ReportWrapper;
+import dev.codion.common.rmi.server.RemoteClient;
+import dev.codion.framework.db.condition.EntityCondition;
+import dev.codion.framework.db.condition.EntitySelectCondition;
+import dev.codion.framework.db.condition.EntityUpdateCondition;
+import dev.codion.framework.db.rmi.RemoteEntityConnection;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;

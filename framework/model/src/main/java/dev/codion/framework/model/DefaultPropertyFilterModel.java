@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package dev.codion.framework.model;
 
-import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.model.table.DefaultColumnConditionModel;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.property.Property;
 
 /**
  * A class for filtering a set of entities based on a property.

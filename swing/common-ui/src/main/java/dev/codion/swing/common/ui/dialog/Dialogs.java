@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.dialog;
+package dev.codion.swing.common.ui.dialog;
 
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.model.CancelException;
-import org.jminor.common.state.State;
-import org.jminor.common.state.States;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.layout.Layouts;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventObserver;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.state.State;
+import dev.codion.common.state.States;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.KeyEvents;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -52,8 +52,8 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
+import static dev.codion.common.Util.nullOrEmpty;
+import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 
 /**
  * A utility class for displaying Dialogs.

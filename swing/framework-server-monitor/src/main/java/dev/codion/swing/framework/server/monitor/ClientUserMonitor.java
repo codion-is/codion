@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor;
+package dev.codion.swing.framework.server.monitor;
 
-import org.jminor.common.DateFormats;
-import org.jminor.common.TaskScheduler;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.event.Events;
-import org.jminor.common.rmi.server.RemoteClient;
-import org.jminor.common.user.User;
-import org.jminor.common.value.Value;
-import org.jminor.common.version.Version;
-import org.jminor.framework.server.EntityServerAdmin;
-import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
-import org.jminor.swing.common.model.table.AbstractTableSortModel;
+import dev.codion.common.DateFormats;
+import dev.codion.common.TaskScheduler;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventObserver;
+import dev.codion.common.event.Events;
+import dev.codion.common.rmi.server.RemoteClient;
+import dev.codion.common.user.User;
+import dev.codion.common.value.Value;
+import dev.codion.common.version.Version;
+import dev.codion.framework.server.EntityServerAdmin;
+import dev.codion.swing.common.model.table.AbstractFilteredTableModel;
+import dev.codion.swing.common.model.table.AbstractTableSortModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

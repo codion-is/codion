@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor.ui;
+package dev.codion.swing.framework.server.monitor.ui;
 
-import org.jminor.common.DateFormats;
-import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.value.Values;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.common.ui.textfield.TextFields;
-import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.framework.server.monitor.ConnectionPoolMonitor;
+import dev.codion.common.DateFormats;
+import dev.codion.common.db.pool.ConnectionPoolStatistics;
+import dev.codion.common.value.Values;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.common.ui.textfield.TextFields;
+import dev.codion.swing.common.ui.value.BooleanValues;
+import dev.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -37,8 +37,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import static javax.swing.SwingConstants.*;
-import static org.jminor.swing.common.ui.Components.createWestCenterPanel;
-import static org.jminor.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
+import static dev.codion.swing.common.ui.Components.createWestCenterPanel;
+import static dev.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 
 /**
  * A ConnectionPoolMonitorPanel

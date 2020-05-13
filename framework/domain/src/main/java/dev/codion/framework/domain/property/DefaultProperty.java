@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.property;
+package dev.codion.framework.domain.property;
 
-import org.jminor.common.Formats;
-import org.jminor.common.Util;
+import dev.codion.common.Formats;
+import dev.codion.common.Util;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

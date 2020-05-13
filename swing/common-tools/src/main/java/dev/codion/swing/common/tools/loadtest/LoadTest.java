@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.loadtest;
+package dev.codion.swing.common.tools.loadtest;
 
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.user.User;
-import org.jminor.swing.common.tools.randomizer.ItemRandomizer;
+import dev.codion.common.event.EventObserver;
+import dev.codion.common.user.User;
+import dev.codion.swing.common.tools.randomizer.ItemRandomizer;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;

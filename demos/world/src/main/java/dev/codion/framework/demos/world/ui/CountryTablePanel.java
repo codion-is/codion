@@ -1,11 +1,11 @@
-package org.jminor.framework.demos.world.ui;
+package dev.codion.framework.demos.world.ui;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.demos.world.model.CountryTableModel;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.dialog.Modal;
-import org.jminor.swing.framework.ui.EntityTablePanel;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.framework.demos.world.model.CountryTableModel;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.common.ui.dialog.Modal;
+import dev.codion.swing.framework.ui.EntityTablePanel;
 
 import org.jfree.chart.ChartPanel;
 

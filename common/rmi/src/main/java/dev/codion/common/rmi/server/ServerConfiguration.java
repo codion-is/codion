@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.rmi.server;
+package dev.codion.common.rmi.server;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.Text;
-import org.jminor.common.value.PropertyValue;
+import dev.codion.common.Configuration;
+import dev.codion.common.Text;
+import dev.codion.common.value.PropertyValue;
 
 import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
@@ -163,7 +163,7 @@ public interface ServerConfiguration {
   /**
    * Specifies a comma separated list of LoginProxy class names, which should be initialized on server startup,
    * these classes must be available on the server classpath and contain a parameterless constructor
-   * @see org.jminor.common.rmi.server.LoginProxy
+   * @see dev.codion.common.rmi.server.LoginProxy
    */
   PropertyValue<String> SERVER_LOGIN_PROXY_CLASSES = Configuration.stringValue("jminor.server.loginProxyClasses", null);
 

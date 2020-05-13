@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package dev.codion.framework.model;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.model.Refreshable;
-import org.jminor.common.state.State;
-import org.jminor.common.state.StateObserver;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.common.value.Value;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.EntityValidator;
-import org.jminor.framework.domain.entity.ValueChange;
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.Configuration;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.model.Refreshable;
+import dev.codion.common.state.State;
+import dev.codion.common.state.StateObserver;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.common.value.Value;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.entity.EntityValidator;
+import dev.codion.framework.domain.entity.ValueChange;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.List;
@@ -93,7 +93,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * @return a deep copy of the active entity
-   * @see org.jminor.framework.domain.entity.Entities#copyEntity(Entity)
+   * @see dev.codion.framework.domain.entity.Entities#copyEntity(Entity)
    */
   Entity getEntityCopy();
 
@@ -345,7 +345,7 @@ public interface EntityEditModel extends Refreshable {
    * Performs a insert on the active entity, sets the primary key values of the active entity
    * according to the primary key of the inserted entity
    * @return the inserted entity
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
+   * @throws dev.codion.common.db.exception.DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
    * @see EntityValidator#validate(Collection, EntityDefinition)
    */
@@ -355,7 +355,7 @@ public interface EntityEditModel extends Refreshable {
    * Performs an insert on the given entities, returns silently on receiving an empty list.
    * @param entities the entities to insert
    * @return a list containing the inserted entities
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
+   * @throws dev.codion.common.db.exception.DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
    * @see #addBeforeInsertListener(EventDataListener)
    * @see #addAfterInsertListener(EventDataListener)
@@ -366,10 +366,10 @@ public interface EntityEditModel extends Refreshable {
   /**
    * Performs a update on the active entity
    * @return the updated entity
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
+   * @throws dev.codion.common.db.exception.DatabaseException in case of a database exception
+   * @throws dev.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
-   * @throws org.jminor.common.db.exception.UpdateException in case the active entity is not modified
+   * @throws dev.codion.common.db.exception.UpdateException in case the active entity is not modified
    * @see EntityValidator#validate(Collection, EntityDefinition)
    */
   Entity update() throws DatabaseException, ValidationException;
@@ -378,8 +378,8 @@ public interface EntityEditModel extends Refreshable {
    * Updates the given entities. If the entities are unmodified or the list is empty this method returns silently.
    * @param entities the entities to update
    * @return the updated entities
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
+   * @throws dev.codion.common.db.exception.DatabaseException in case of a database exception
+   * @throws dev.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @see #addBeforeUpdateListener(EventDataListener)
    * @see #addAfterUpdateListener(EventDataListener)
@@ -390,7 +390,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * Deletes the active entity
    * @return the deleted entity
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
+   * @throws dev.codion.common.db.exception.DatabaseException in case of a database exception
    * @see #addBeforeDeleteListener(EventDataListener)
    * @see #addAfterDeleteListener(EventDataListener)
    */
@@ -400,7 +400,7 @@ public interface EntityEditModel extends Refreshable {
    * Deletes the given entities, returns silently on receiving an empty list
    * @param entities the entities to delete
    * @return the deleted entities
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
+   * @throws dev.codion.common.db.exception.DatabaseException in case of a database exception
    * @see #addBeforeDeleteListener(EventDataListener)
    * @see #addAfterDeleteListener(EventDataListener)
    */

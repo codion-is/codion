@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.loadtest;
+package dev.codion.swing.common.tools.loadtest;
 
-import org.jminor.common.Memory;
-import org.jminor.common.TaskScheduler;
-import org.jminor.common.Util;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.event.Events;
-import org.jminor.common.user.User;
-import org.jminor.swing.common.tools.randomizer.ItemRandomizer;
-import org.jminor.swing.common.tools.randomizer.ItemRandomizerModel;
+import dev.codion.common.Memory;
+import dev.codion.common.TaskScheduler;
+import dev.codion.common.Util;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.EventObserver;
+import dev.codion.common.event.Events;
+import dev.codion.common.user.User;
+import dev.codion.swing.common.tools.randomizer.ItemRandomizer;
+import dev.codion.swing.common.tools.randomizer.ItemRandomizerModel;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -445,7 +445,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   /**
    * @return an initialized application.
-   * @throws org.jminor.common.model.CancelException in case the initialization was cancelled
+   * @throws dev.codion.common.model.CancelException in case the initialization was cancelled
    */
   protected abstract T initializeApplication();
 

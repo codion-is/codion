@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.operation;
+package dev.codion.common.db.operation;
 
-import org.jminor.common.db.exception.DatabaseException;
+import dev.codion.common.db.exception.DatabaseException;
 
 /**
  * A database function

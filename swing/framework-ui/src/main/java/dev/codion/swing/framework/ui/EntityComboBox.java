@@ -1,27 +1,27 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.swing.common.ui.combobox.MaximumMatch;
-import org.jminor.swing.common.ui.combobox.SteppedComboBox;
-import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.textfield.IntegerField;
-import org.jminor.swing.common.ui.textfield.TextFields;
-import org.jminor.swing.common.ui.value.AbstractComponentValue;
-import org.jminor.swing.common.ui.value.NumericalValues;
-import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.i18n.FrameworkMessages;
+import dev.codion.framework.model.EntityComboBoxModel;
+import dev.codion.swing.common.ui.combobox.MaximumMatch;
+import dev.codion.swing.common.ui.combobox.SteppedComboBox;
+import dev.codion.swing.common.ui.control.Control;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.textfield.IntegerField;
+import dev.codion.swing.common.ui.textfield.TextFields;
+import dev.codion.swing.common.ui.value.AbstractComponentValue;
+import dev.codion.swing.common.ui.value.NumericalValues;
+import dev.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
-import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * A UI component based on the SwingEntityComboBoxModel.
@@ -109,7 +109,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   }
 
   /**
-   * A {@link org.jminor.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntityComboBox}.
+   * A {@link dev.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntityComboBox}.
    * @see SwingEntityComboBoxModel
    */
   public static final class ComponentValue extends AbstractComponentValue<Entity, EntityComboBox> {

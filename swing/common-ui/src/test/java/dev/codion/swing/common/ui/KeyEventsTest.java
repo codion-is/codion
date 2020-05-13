@@ -1,6 +1,6 @@
-package org.jminor.swing.common.ui;
+package dev.codion.swing.common.ui;
 
-import org.jminor.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.control.Controls;
 
 import org.junit.jupiter.api.Test;
 

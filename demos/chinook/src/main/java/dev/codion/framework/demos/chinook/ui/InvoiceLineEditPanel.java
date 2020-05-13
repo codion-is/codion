@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.ui;
+package dev.codion.framework.demos.chinook.ui;
 
-import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityLookupField;
+import dev.codion.swing.common.ui.KeyEvents;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.ui.EntityLookupField;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 
-import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_QUANTITY;
-import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_TRACK_FK;
-import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
+import static dev.codion.framework.demos.chinook.domain.Chinook.INVOICELINE_QUANTITY;
+import static dev.codion.framework.demos.chinook.domain.Chinook.INVOICELINE_TRACK_FK;
+import static dev.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 public class InvoiceLineEditPanel extends EntityEditPanel {
 

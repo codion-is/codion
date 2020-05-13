@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.Text;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.EntityValidator;
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.DenormalizedProperty;
-import org.jminor.framework.domain.property.DerivedProperty;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.Text;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.entity.EntityValidator;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.DenormalizedProperty;
+import dev.codion.framework.domain.property.DerivedProperty;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Property;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;

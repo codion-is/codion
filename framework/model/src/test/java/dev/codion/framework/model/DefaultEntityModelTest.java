@@ -1,27 +1,27 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package dev.codion.framework.model;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.common.model.table.FilteredTableColumnModel;
-import org.jminor.common.model.table.FilteredTableModel;
-import org.jminor.common.model.table.RowColumn;
-import org.jminor.common.model.table.SelectionModel;
-import org.jminor.common.model.table.TableSortModel;
-import org.jminor.common.state.State;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.model.tests.AbstractEntityModelTest;
-import org.jminor.framework.model.tests.TestDomain;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.model.table.ColumnSummaryModel;
+import dev.codion.common.model.table.FilteredTableColumnModel;
+import dev.codion.common.model.table.FilteredTableModel;
+import dev.codion.common.model.table.RowColumn;
+import dev.codion.common.model.table.SelectionModel;
+import dev.codion.common.model.table.TableSortModel;
+import dev.codion.common.state.State;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.model.tests.AbstractEntityModelTest;
+import dev.codion.framework.model.tests.TestDomain;
 
 import java.util.Collection;
 import java.util.Iterator;

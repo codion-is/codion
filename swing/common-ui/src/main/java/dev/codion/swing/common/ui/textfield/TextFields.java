@@ -1,9 +1,9 @@
-package org.jminor.swing.common.ui.textfield;
+package dev.codion.swing.common.ui.textfield;
 
-import org.jminor.common.DateFormats;
-import org.jminor.common.model.CancelException;
-import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.dialog.Dialogs;
+import dev.codion.common.DateFormats;
+import dev.codion.common.model.CancelException;
+import dev.codion.swing.common.ui.KeyEvents;
+import dev.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -32,7 +32,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A utility class for TextFields.

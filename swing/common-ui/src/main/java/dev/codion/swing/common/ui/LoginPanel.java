@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui;
+package dev.codion.swing.common.ui;
 
-import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.CancelException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.common.ui.textfield.TextFields;
+import dev.codion.common.i18n.Messages;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;

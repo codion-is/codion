@@ -1,4 +1,4 @@
-package org.jminor.swing.common.ui.combobox;
+package dev.codion.swing.common.ui.combobox;
 
 import javax.swing.JComboBox;
 import javax.swing.text.AttributeSet;

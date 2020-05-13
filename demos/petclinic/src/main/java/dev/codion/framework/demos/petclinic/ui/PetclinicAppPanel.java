@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petclinic.ui;
+package dev.codion.framework.demos.petclinic.ui;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.petclinic.model.PetclinicAppModel;
-import org.jminor.framework.demos.petclinic.model.VetSpecialtyEditModel;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityModelBuilder;
-import org.jminor.swing.framework.ui.EntityApplicationPanel;
-import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelBuilder;
-import org.jminor.swing.framework.ui.ReferentialIntegrityErrorHandling;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.demos.petclinic.model.PetclinicAppModel;
+import dev.codion.framework.demos.petclinic.model.VetSpecialtyEditModel;
+import dev.codion.framework.model.EntityEditModel;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.model.SwingEntityModelBuilder;
+import dev.codion.swing.framework.ui.EntityApplicationPanel;
+import dev.codion.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.ui.EntityPanel;
+import dev.codion.swing.framework.ui.EntityPanelBuilder;
+import dev.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
 import java.util.List;
 import java.util.Locale;
 
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.demos.petclinic.domain.Clinic.*;
+import static dev.codion.framework.demos.petclinic.domain.Clinic.*;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
 

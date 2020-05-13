@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.control;
+package dev.codion.swing.common.ui.control;
 
-import org.jminor.common.state.StateObserver;
-import org.jminor.common.state.States;
+import dev.codion.common.state.StateObserver;
+import dev.codion.common.state.States;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

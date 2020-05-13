@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.jackson.json.db;
+package dev.codion.plugin.jackson.json.db;
 
-import org.jminor.common.db.Operator;
-import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.db.condition.PropertyCondition;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.plugin.jackson.json.domain.EntityDeserializer;
-import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
+import dev.codion.common.db.Operator;
+import dev.codion.framework.db.condition.Conditions;
+import dev.codion.framework.db.condition.PropertyCondition;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.plugin.jackson.json.domain.EntityDeserializer;
+import dev.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

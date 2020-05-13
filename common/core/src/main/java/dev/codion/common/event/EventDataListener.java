@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.event;
+package dev.codion.common.event;
 
 /**
  * An event listener receiving some data on each event occurrence

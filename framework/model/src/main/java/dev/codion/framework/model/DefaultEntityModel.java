@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package dev.codion.framework.model;
 
-import org.jminor.common.Util;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
+import dev.codion.common.Util;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.Events;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

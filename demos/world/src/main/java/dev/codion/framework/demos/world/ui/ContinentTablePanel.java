@@ -1,9 +1,9 @@
-package org.jminor.framework.demos.world.ui;
+package dev.codion.framework.demos.world.ui;
 
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
-import org.jminor.swing.framework.ui.EntityTablePanel;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
+import dev.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
 import java.util.List;

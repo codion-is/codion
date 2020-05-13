@@ -1,20 +1,20 @@
-package org.jminor.framework.demos.world.ui;
+package dev.codion.framework.demos.world.ui;
 
-import org.jminor.framework.demos.world.domain.World;
-import org.jminor.framework.demos.world.model.CountryEditModel;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.swing.framework.ui.EntityComboBox;
-import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityInputComponents.Editable;
-import org.jminor.swing.framework.ui.EntityPanelBuilder;
+import dev.codion.framework.demos.world.domain.World;
+import dev.codion.framework.demos.world.model.CountryEditModel;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.swing.framework.ui.EntityComboBox;
+import dev.codion.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.ui.EntityInputComponents.Editable;
+import dev.codion.swing.framework.ui.EntityPanelBuilder;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import static org.jminor.swing.common.ui.Components.createEastButtonPanel;
-import static org.jminor.swing.common.ui.Components.setPreferredWidth;
-import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
-import static org.jminor.swing.common.ui.textfield.TextFields.makeUpperCase;
+import static dev.codion.swing.common.ui.Components.createEastButtonPanel;
+import static dev.codion.swing.common.ui.Components.setPreferredWidth;
+import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static dev.codion.swing.common.ui.textfield.TextFields.makeUpperCase;
 
 public final class CountryEditPanel extends EntityEditPanel {
 

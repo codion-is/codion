@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.value;
+package dev.codion.swing.common.ui.value;
 
-import org.jminor.common.value.Nullable;
-import org.jminor.swing.common.model.textfield.DocumentAdapter;
+import dev.codion.common.value.Nullable;
+import dev.codion.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.JTextComponent;

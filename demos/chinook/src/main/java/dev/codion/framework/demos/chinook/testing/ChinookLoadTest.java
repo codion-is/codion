@@ -1,25 +1,25 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.testing;
+package dev.codion.framework.demos.chinook.testing;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.demos.chinook.model.ChinookApplicationModel;
-import org.jminor.framework.demos.chinook.ui.ChinookAppPanel;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.swing.common.tools.loadtest.ScenarioException;
-import org.jminor.swing.common.tools.loadtest.UsageScenario;
-import org.jminor.swing.common.tools.ui.loadtest.LoadTestPanel;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
-import org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProviders;
+import dev.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import dev.codion.framework.demos.chinook.ui.ChinookAppPanel;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.model.EntityComboBoxModel;
+import dev.codion.framework.model.EntityEditModel;
+import dev.codion.swing.common.tools.loadtest.ScenarioException;
+import dev.codion.swing.common.tools.loadtest.UsageScenario;
+import dev.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
+import dev.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import java.math.BigDecimal;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Random;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static dev.codion.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicationModel> {
 

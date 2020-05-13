@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.ui;
+package dev.codion.framework.demos.chinook.ui;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.CancelException;
-import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.framework.demos.chinook.model.TrackTableModel;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.dialog.Modal;
-import org.jminor.swing.common.ui.textfield.DecimalField;
-import org.jminor.swing.common.ui.value.ComponentValue;
-import org.jminor.swing.common.ui.value.ComponentValuePanel;
-import org.jminor.swing.common.ui.value.NumericalValues;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
-import org.jminor.swing.framework.ui.EntityComponentValues;
-import org.jminor.swing.framework.ui.EntityTableConditionPanel;
-import org.jminor.swing.framework.ui.EntityTablePanel;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.model.CancelException;
+import dev.codion.framework.demos.chinook.domain.Chinook;
+import dev.codion.framework.demos.chinook.model.TrackTableModel;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.common.ui.dialog.Modal;
+import dev.codion.swing.common.ui.textfield.DecimalField;
+import dev.codion.swing.common.ui.value.ComponentValue;
+import dev.codion.swing.common.ui.value.ComponentValuePanel;
+import dev.codion.swing.common.ui.value.NumericalValues;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
+import dev.codion.swing.framework.ui.EntityComponentValues;
+import dev.codion.swing.framework.ui.EntityTableConditionPanel;
+import dev.codion.swing.framework.ui.EntityTablePanel;
 
 import java.math.BigDecimal;
 import java.util.List;

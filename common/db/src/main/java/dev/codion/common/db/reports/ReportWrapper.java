@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.reports;
+package dev.codion.common.db.reports;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.value.PropertyValue;
+import dev.codion.common.Configuration;
+import dev.codion.common.value.PropertyValue;
 
 import java.io.Serializable;
 import java.sql.Connection;
 
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A simple wrapper for a report

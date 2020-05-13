@@ -1,30 +1,30 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.javafx.framework.model;
+package dev.codion.javafx.framework.model;
 
-import org.jminor.common.Text;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.model.UserPreferences;
-import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.common.state.State;
-import org.jminor.common.state.States;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.OrderBy;
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.model.DefaultEntityTableConditionModel;
-import org.jminor.framework.model.EntityModel;
-import org.jminor.framework.model.EntityTableConditionModel;
-import org.jminor.framework.model.EntityTableModel;
-import org.jminor.javafx.framework.ui.EntityTableColumn;
+import dev.codion.common.Text;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.model.UserPreferences;
+import dev.codion.common.model.table.ColumnSummaryModel;
+import dev.codion.common.state.State;
+import dev.codion.common.state.States;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.entity.OrderBy;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.model.DefaultEntityTableConditionModel;
+import dev.codion.framework.model.EntityModel;
+import dev.codion.framework.model.EntityTableConditionModel;
+import dev.codion.framework.model.EntityTableModel;
+import dev.codion.javafx.framework.ui.EntityTableColumn;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.db.condition.Conditions.selectCondition;
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A JavaFX implementation of {@link EntityTableModel}.

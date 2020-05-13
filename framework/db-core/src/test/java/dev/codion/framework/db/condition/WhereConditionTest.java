@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.condition;
+package dev.codion.framework.db.condition;
 
-import org.jminor.common.Conjunction;
-import org.jminor.common.db.Operator;
-import org.jminor.framework.db.TestDomain;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.property.ColumnProperty;
+import dev.codion.common.Conjunction;
+import dev.codion.common.db.Operator;
+import dev.codion.framework.db.TestDomain;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.property.ColumnProperty;
 
 import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.*;
-import static org.jminor.framework.domain.entity.OrderBy.orderBy;
+import static dev.codion.framework.db.condition.Conditions.*;
+import static dev.codion.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class WhereConditionTest {

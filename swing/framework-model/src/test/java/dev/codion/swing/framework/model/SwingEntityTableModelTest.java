@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.model;
+package dev.codion.swing.framework.model;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.UserPreferences;
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.model.table.SortingDirective;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.model.DefaultEntityTableConditionModel;
-import org.jminor.framework.model.DefaultPropertyConditionModelProvider;
-import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
-import org.jminor.framework.model.EntityTableConditionModel;
-import org.jminor.framework.model.tests.AbstractEntityTableModelTest;
-import org.jminor.framework.model.tests.TestDomain;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.model.UserPreferences;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.model.table.SortingDirective;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.model.DefaultEntityTableConditionModel;
+import dev.codion.framework.model.DefaultPropertyConditionModelProvider;
+import dev.codion.framework.model.DefaultPropertyFilterModelProvider;
+import dev.codion.framework.model.EntityTableConditionModel;
+import dev.codion.framework.model.tests.AbstractEntityTableModelTest;
+import dev.codion.framework.model.tests.TestDomain;
 
 import org.junit.jupiter.api.Test;
 

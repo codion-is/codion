@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package dev.codion.common;
 
-import org.jminor.common.user.User;
+import dev.codion.common.user.User;
 
 import java.util.Arrays;
 import java.util.Iterator;

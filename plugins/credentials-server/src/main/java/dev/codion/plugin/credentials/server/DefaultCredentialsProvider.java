@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.credentials.server;
+package dev.codion.plugin.credentials.server;
 
-import org.jminor.common.CredentialsProvider;
-import org.jminor.common.rmi.server.Servers;
-import org.jminor.common.user.User;
+import dev.codion.common.CredentialsProvider;
+import dev.codion.common.rmi.server.Servers;
+import dev.codion.common.user.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

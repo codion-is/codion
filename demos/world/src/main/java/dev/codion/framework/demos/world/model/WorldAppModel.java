@@ -1,8 +1,8 @@
-package org.jminor.framework.demos.world.model;
+package dev.codion.framework.demos.world.model;
 
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.swing.framework.model.SwingEntityApplicationModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.swing.framework.model.SwingEntityApplicationModel;
+import dev.codion.swing.framework.model.SwingEntityModel;
 
 public final class WorldAppModel extends SwingEntityApplicationModel {
 

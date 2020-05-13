@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.ui;
+package dev.codion.framework.demos.empdept.ui;
 
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
-import org.jminor.swing.common.ui.textfield.TextFields;
-import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.ui.EntityEditPanel;
+import dev.codion.framework.demos.empdept.domain.EmpDept;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
+import dev.codion.swing.common.ui.textfield.TextFields;
+import dev.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;

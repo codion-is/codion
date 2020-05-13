@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.rmi.server;
+package dev.codion.common.rmi.server;
 
-import org.jminor.common.rmi.server.exception.LoginException;
+import dev.codion.common.rmi.server.exception.LoginException;
 
 /**
  * A login proxy.

@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petstore.domain;
+package dev.codion.framework.demos.petstore.domain;
 
-import org.jminor.framework.domain.entity.test.EntityTestUnit;
+import dev.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 
-import static org.jminor.framework.demos.petstore.domain.Petstore.*;
+import static dev.codion.framework.demos.petstore.domain.Petstore.*;
 
 public class PetstoreTest extends EntityTestUnit {
 

@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.table;
+package dev.codion.swing.common.ui.table;
 
-import org.jminor.common.Text;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.model.table.RowColumn;
-import org.jminor.common.model.table.SortingDirective;
-import org.jminor.common.model.table.TableSortModel;
-import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
-import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
-import org.jminor.swing.common.model.textfield.DocumentAdapter;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.control.ToggleControl;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.common.ui.textfield.TextFieldHint;
-import org.jminor.swing.common.ui.textfield.TextFields;
+import dev.codion.common.Text;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.i18n.Messages;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.model.table.RowColumn;
+import dev.codion.common.model.table.SortingDirective;
+import dev.codion.common.model.table.TableSortModel;
+import dev.codion.swing.common.model.table.AbstractFilteredTableModel;
+import dev.codion.swing.common.model.table.SwingFilteredTableColumnModel;
+import dev.codion.swing.common.model.textfield.DocumentAdapter;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.KeyEvents;
+import dev.codion.swing.common.ui.control.Control;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.control.ToggleControl;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.common.ui.textfield.TextFieldHint;
+import dev.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

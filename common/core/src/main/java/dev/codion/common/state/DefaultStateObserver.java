@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.state;
+package dev.codion.common.state;
 
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.event.Events;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.EventObserver;
+import dev.codion.common.event.Events;
 
 final class DefaultStateObserver implements StateObserver {
 

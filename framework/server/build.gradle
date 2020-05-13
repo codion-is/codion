@@ -7,37 +7,37 @@ configurations {
 }
 
 dependencies {
-    api project(':jminor-common-core')
-    api project(':jminor-common-db')
-    api project(':jminor-common-rmi')
+    api project(':codion-common-core')
+    api project(':codion-common-db')
+    api project(':codion-common-rmi')
 
-    api project(':jminor-framework-domain')
-    api project(':jminor-framework-db-core')
-    api project(':jminor-framework-db-local')
-    api project(':jminor-framework-db-rmi')
+    api project(':codion-framework-domain')
+    api project(':codion-framework-db-core')
+    api project(':codion-framework-db-local')
+    api project(':codion-framework-db-rmi')
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
-    testRuntimeOnly project(':jminor-plugin-hikari-pool')
-    testRuntimeOnly project(':jminor-dbms-h2database')
+    testRuntimeOnly project(':codion-plugin-hikari-pool')
+    testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 
-    serverRuntime project(':jminor-framework-server')
-    serverRuntime project(':jminor-framework-servlet')
-    serverRuntime project(':jminor-plugin-jasperreports')
-    serverRuntime project(':jminor-plugin-hikari-pool')
-    serverRuntime project(':jminor-plugin-logback-proxy')
+    serverRuntime project(':codion-framework-server')
+    serverRuntime project(':codion-framework-servlet')
+    serverRuntime project(':codion-plugin-jasperreports')
+    serverRuntime project(':codion-plugin-hikari-pool')
+    serverRuntime project(':codion-plugin-logback-proxy')
 
 //    runtimeOnly 'net.sourceforge.pro-grade:pro-grade:1.1.2-SNAPSHOT'
 
-    serverRuntime project(path: ':jminor-demos-empdept', configuration: 'domain')
-    serverRuntime project(path: ':jminor-demos-chinook', configuration: 'domain')
-    serverRuntime project(path: ':jminor-demos-petclinic', configuration: 'domain')
-    serverRuntime project(path: ':jminor-demos-petstore', configuration: 'domain')
-    serverRuntime project(path: ':jminor-demos-schemabrowser', configuration: 'domain')
-    serverRuntime project(path: ':jminor-demos-world', configuration: 'domain')
+    serverRuntime project(path: ':codion-demos-empdept', configuration: 'domain')
+    serverRuntime project(path: ':codion-demos-chinook', configuration: 'domain')
+    serverRuntime project(path: ':codion-demos-petclinic', configuration: 'domain')
+    serverRuntime project(path: ':codion-demos-petstore', configuration: 'domain')
+    serverRuntime project(path: ':codion-demos-schemabrowser', configuration: 'domain')
+    serverRuntime project(path: ':codion-demos-world', configuration: 'domain')
 
-    serverRuntime project(':jminor-dbms-h2database')
+    serverRuntime project(':codion-dbms-h2database')
     serverRuntime "com.h2database:h2:${h2Version}"
 }
 

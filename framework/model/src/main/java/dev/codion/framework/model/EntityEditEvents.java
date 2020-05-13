@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package dev.codion.framework.model;
 
-import org.jminor.common.event.EventDataListener;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.framework.domain.entity.Entity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.Util.map;
-import static org.jminor.framework.domain.entity.Entities.mapToEntityId;
+import static dev.codion.common.Util.map;
+import static dev.codion.framework.domain.entity.Entities.mapToEntityId;
 
 /**
  * A central event hub for listening for entity inserts, updates and deletes.

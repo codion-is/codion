@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.ui;
+package dev.codion.framework.demos.empdept.ui;
 
-import org.jminor.common.state.StateObserver;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
-import org.jminor.swing.framework.ui.EntityReports;
-import org.jminor.swing.framework.ui.EntityTablePanel;
+import dev.codion.common.state.StateObserver;
+import dev.codion.framework.demos.empdept.domain.EmpDept;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
+import dev.codion.swing.framework.ui.EntityReports;
+import dev.codion.swing.framework.ui.EntityTablePanel;
 
 import net.sf.jasperreports.swing.JRViewer;
 

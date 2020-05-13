@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package dev.codion.framework.server;
 
-import org.jminor.common.TaskScheduler;
-import org.jminor.common.Util;
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.exception.AuthenticationException;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.pool.ConnectionPoolProvider;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.rmi.client.Clients;
-import org.jminor.common.rmi.client.ConnectionRequest;
-import org.jminor.common.rmi.server.AbstractServer;
-import org.jminor.common.rmi.server.ClientLog;
-import org.jminor.common.rmi.server.RemoteClient;
-import org.jminor.common.rmi.server.Server;
-import org.jminor.common.rmi.server.Servers;
-import org.jminor.common.rmi.server.exception.ConnectionNotAvailableException;
-import org.jminor.common.rmi.server.exception.LoginException;
-import org.jminor.common.rmi.server.exception.ServerAuthenticationException;
-import org.jminor.common.user.User;
-import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.EntityDefinition;
+import dev.codion.common.TaskScheduler;
+import dev.codion.common.Util;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.exception.AuthenticationException;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.pool.ConnectionPoolProvider;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.rmi.client.Clients;
+import dev.codion.common.rmi.client.ConnectionRequest;
+import dev.codion.common.rmi.server.AbstractServer;
+import dev.codion.common.rmi.server.ClientLog;
+import dev.codion.common.rmi.server.RemoteClient;
+import dev.codion.common.rmi.server.Server;
+import dev.codion.common.rmi.server.Servers;
+import dev.codion.common.rmi.server.exception.ConnectionNotAvailableException;
+import dev.codion.common.rmi.server.exception.LoginException;
+import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
+import dev.codion.common.user.User;
+import dev.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.EntityDefinition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,28 +1,28 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.ui;
+package dev.codion.framework.demos.chinook.ui;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.user.Users;
-import org.jminor.common.version.Version;
-import org.jminor.common.version.Versions;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.chinook.model.ChinookApplicationModel;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.icons.Icons;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.ui.EntityApplicationPanel;
-import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelBuilder;
-import org.jminor.swing.framework.ui.EntityTablePanel;
-import org.jminor.swing.framework.ui.ReferentialIntegrityErrorHandling;
-import org.jminor.swing.framework.ui.icons.FrameworkIcons;
-import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
-import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.user.Users;
+import dev.codion.common.version.Version;
+import dev.codion.common.version.Versions;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import dev.codion.framework.model.EntityEditModel;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.icons.Icons;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.ui.EntityApplicationPanel;
+import dev.codion.swing.framework.ui.EntityPanel;
+import dev.codion.swing.framework.ui.EntityPanelBuilder;
+import dev.codion.swing.framework.ui.EntityTablePanel;
+import dev.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
+import dev.codion.swing.framework.ui.icons.FrameworkIcons;
+import dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
+import dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -32,8 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
-import static org.jminor.swing.common.ui.worker.ProgressWorker.runWithProgressBar;
+import static dev.codion.framework.demos.chinook.domain.Chinook.*;
+import static dev.codion.swing.common.ui.worker.ProgressWorker.runWithProgressBar;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
 

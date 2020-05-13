@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.combobox;
+package dev.codion.swing.common.model.combobox;
 
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

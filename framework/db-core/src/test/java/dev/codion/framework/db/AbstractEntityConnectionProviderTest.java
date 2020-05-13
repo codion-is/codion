@@ -1,8 +1,8 @@
-package org.jminor.framework.db;
+package dev.codion.framework.db;
 
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.domain.entity.Entities;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.domain.entity.Entities;
 
 import org.junit.jupiter.api.Test;
 

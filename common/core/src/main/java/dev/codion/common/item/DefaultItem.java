@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.item;
+package dev.codion.common.item;
 
-import org.jminor.common.Text;
+import dev.codion.common.Text;
 
 import java.util.Comparator;
 import java.util.Objects;

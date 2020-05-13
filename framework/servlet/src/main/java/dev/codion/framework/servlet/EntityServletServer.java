@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.servlet;
+package dev.codion.framework.servlet;
 
-import org.jminor.common.http.server.HttpServer;
-import org.jminor.common.http.server.HttpServerConfiguration;
-import org.jminor.common.rmi.server.AuxiliaryServer;
-import org.jminor.common.rmi.server.Server;
+import dev.codion.common.http.server.HttpServer;
+import dev.codion.common.http.server.HttpServerConfiguration;
+import dev.codion.common.rmi.server.AuxiliaryServer;
+import dev.codion.common.rmi.server.Server;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;

@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.manual.store.ui;
+package dev.codion.framework.demos.manual.store.ui;
 
-import org.jminor.framework.demos.manual.store.domain.Store;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.ui.EntityComboBox;
-import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanelBuilder;
+import dev.codion.framework.demos.manual.store.domain.Store;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.ui.EntityComboBox;
+import dev.codion.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.ui.EntityPanelBuilder;
 
 import javax.swing.Action;
 import javax.swing.JPanel;

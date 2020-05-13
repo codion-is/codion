@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
-import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.local.LocalEntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
+import dev.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
 
 import org.junit.jupiter.api.Test;
 

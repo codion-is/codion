@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package dev.codion.common;
 
 import java.io.BufferedReader;
 import java.io.EOFException;

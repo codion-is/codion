@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.exception;
+package dev.codion.common.db.exception;
 
 /**
  * Exception used when one record was expected but many were found.

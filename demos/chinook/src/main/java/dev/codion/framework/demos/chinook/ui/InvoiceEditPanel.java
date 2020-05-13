@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.ui;
+package dev.codion.framework.demos.chinook.ui;
 
-import org.jminor.swing.common.ui.time.TemporalInputPanel;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
-import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityLookupField;
-import org.jminor.swing.framework.ui.EntityPanel;
+import dev.codion.swing.common.ui.time.TemporalInputPanel;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
+import dev.codion.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.ui.EntityLookupField;
+import dev.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -16,10 +16,10 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import static org.jminor.common.model.table.SortingDirective.ASCENDING;
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
-import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
-import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
+import static dev.codion.common.model.table.SortingDirective.ASCENDING;
+import static dev.codion.framework.demos.chinook.domain.Chinook.*;
+import static dev.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public class InvoiceEditPanel extends EntityEditPanel {
 

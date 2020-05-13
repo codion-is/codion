@@ -1,48 +1,48 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.Conjunction;
-import org.jminor.common.Util;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.exception.ReferentialIntegrityException;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.i18n.Messages;
-import org.jminor.common.state.StateObserver;
-import org.jminor.common.state.States;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Properties;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityTableModel;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.dialog.Modal;
-import org.jminor.swing.common.ui.table.ColumnConditionPanel;
-import org.jminor.swing.common.ui.table.ColumnConditionPanelProvider;
-import org.jminor.swing.common.ui.table.FilteredTable;
-import org.jminor.swing.common.ui.table.FilteredTableSummaryPanel;
-import org.jminor.swing.common.ui.value.ComponentValuePanel;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
+import dev.codion.common.Configuration;
+import dev.codion.common.Conjunction;
+import dev.codion.common.Util;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.exception.ReferentialIntegrityException;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.i18n.Messages;
+import dev.codion.common.state.StateObserver;
+import dev.codion.common.state.States;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Properties;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.i18n.FrameworkMessages;
+import dev.codion.framework.model.EntityEditModel;
+import dev.codion.framework.model.EntityTableModel;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.KeyEvents;
+import dev.codion.swing.common.ui.control.Control;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.ControlProvider;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import dev.codion.swing.common.ui.dialog.DialogExceptionHandler;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.common.ui.dialog.Modal;
+import dev.codion.swing.common.ui.table.ColumnConditionPanel;
+import dev.codion.swing.common.ui.table.ColumnConditionPanelProvider;
+import dev.codion.swing.common.ui.table.FilteredTable;
+import dev.codion.swing.common.ui.table.FilteredTableSummaryPanel;
+import dev.codion.swing.common.ui.value.ComponentValuePanel;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,12 +83,12 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.swing.common.ui.Components.hideWaitCursor;
-import static org.jminor.swing.common.ui.Components.showWaitCursor;
-import static org.jminor.swing.common.ui.Windows.getParentWindow;
-import static org.jminor.swing.common.ui.control.Controls.control;
-import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static dev.codion.common.Util.nullOrEmpty;
+import static dev.codion.swing.common.ui.Components.hideWaitCursor;
+import static dev.codion.swing.common.ui.Components.showWaitCursor;
+import static dev.codion.swing.common.ui.Windows.getParentWindow;
+import static dev.codion.swing.common.ui.control.Controls.control;
+import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.

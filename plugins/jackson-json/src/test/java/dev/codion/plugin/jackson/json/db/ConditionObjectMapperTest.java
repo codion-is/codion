@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.jackson.json.db;
+package dev.codion.plugin.jackson.json.db;
 
-import org.jminor.common.Conjunction;
-import org.jminor.common.db.Operator;
-import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.db.condition.CustomCondition;
-import org.jminor.framework.db.condition.EntityCondition;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.plugin.jackson.json.TestDomain;
-import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
+import dev.codion.common.Conjunction;
+import dev.codion.common.db.Operator;
+import dev.codion.framework.db.condition.Condition;
+import dev.codion.framework.db.condition.Conditions;
+import dev.codion.framework.db.condition.CustomCondition;
+import dev.codion.framework.db.condition.EntityCondition;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.plugin.jackson.json.TestDomain;
+import dev.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.db.condition.Conditions.condition;
+import static dev.codion.framework.db.condition.Conditions.condition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class ConditionObjectMapperTest {

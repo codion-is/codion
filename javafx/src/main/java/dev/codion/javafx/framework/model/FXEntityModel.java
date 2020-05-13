@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.javafx.framework.model;
+package dev.codion.javafx.framework.model;
 
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.model.DefaultEntityModel;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.model.DefaultEntityModel;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A JavaFX {@link org.jminor.framework.model.EntityEditModel} implementation
+ * A JavaFX {@link dev.codion.framework.model.EntityEditModel} implementation
  */
 public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEditModel, FXEntityListModel> {
 

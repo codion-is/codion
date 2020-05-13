@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.condition;
+package dev.codion.framework.db.condition;
 
 /**
- * A Condition based on a custom {@link org.jminor.framework.domain.entity.ConditionProvider}
+ * A Condition based on a custom {@link dev.codion.framework.domain.entity.ConditionProvider}
  * associated with {@link CustomCondition#getConditionId()}
  */
 public interface CustomCondition extends Condition {

@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package dev.codion.framework.model;
 
-import org.jminor.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.EntityConnectionProvider;
 
 /**
  * Specifies a class which provides EntityModel, EntityTableModel and EntityEditModel instances for a given entityId.

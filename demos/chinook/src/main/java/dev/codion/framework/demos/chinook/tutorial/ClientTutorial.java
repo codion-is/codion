@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.tutorial;
+package dev.codion.framework.demos.chinook.tutorial;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.StringProvider;
-import org.jminor.swing.framework.model.SwingEntityApplicationModel;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.ui.EntityApplicationPanel;
-import org.jminor.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
-import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityLookupField;
-import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityTablePanel;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.StringProvider;
+import dev.codion.swing.framework.model.SwingEntityApplicationModel;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.ui.EntityApplicationPanel;
+import dev.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
+import dev.codion.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.ui.EntityLookupField;
+import dev.codion.swing.framework.ui.EntityPanel;
+import dev.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -26,12 +26,12 @@ import java.sql.Types;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
-import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
-import static org.jminor.framework.domain.property.Properties.*;
-import static org.jminor.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
-import static org.jminor.swing.common.ui.Windows.getScreenSizeRatio;
-import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
+import static dev.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
+import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
+import static dev.codion.framework.domain.property.Properties.*;
+import static dev.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
+import static dev.codion.swing.common.ui.Windows.getScreenSizeRatio;
+import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
  * When running this make sure the chinook demo module directory is the

@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.manual.store.domain;
+package dev.codion.framework.demos.manual.store.domain;
 
-import org.jminor.common.db.connection.DatabaseConnection;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.KeyGenerator;
-import org.jminor.framework.domain.entity.StringProvider;
-import org.jminor.framework.domain.property.ColumnProperty;
+import dev.codion.common.db.connection.DatabaseConnection;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.KeyGenerator;
+import dev.codion.framework.domain.entity.StringProvider;
+import dev.codion.framework.domain.property.ColumnProperty;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
-import static org.jminor.framework.domain.property.Properties.*;
+import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
+import static dev.codion.framework.domain.property.Properties.*;
 
 public final class Store extends Domain {
 

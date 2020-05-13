@@ -1,27 +1,27 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.manual.common;
+package dev.codion.framework.demos.manual.common;
 
-import org.jminor.common.item.Item;
-import org.jminor.common.value.Nullable;
-import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
-import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
-import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
-import org.jminor.swing.common.model.textfield.DocumentAdapter;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.textfield.DecimalField;
-import org.jminor.swing.common.ui.textfield.IntegerField;
-import org.jminor.swing.common.ui.textfield.LongField;
-import org.jminor.swing.common.ui.value.AbstractComponentValue;
-import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.common.ui.value.NumericalValues;
-import org.jminor.swing.common.ui.value.SelectedValues;
-import org.jminor.swing.common.ui.value.TemporalValues;
-import org.jminor.swing.common.ui.value.TextValues;
+import dev.codion.common.item.Item;
+import dev.codion.common.value.Nullable;
+import dev.codion.common.value.Value;
+import dev.codion.common.value.Values;
+import dev.codion.swing.common.model.checkbox.NullableToggleButtonModel;
+import dev.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import dev.codion.swing.common.model.textfield.DocumentAdapter;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.checkbox.NullableCheckBox;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.common.ui.textfield.DecimalField;
+import dev.codion.swing.common.ui.textfield.IntegerField;
+import dev.codion.swing.common.ui.textfield.LongField;
+import dev.codion.swing.common.ui.value.AbstractComponentValue;
+import dev.codion.swing.common.ui.value.BooleanValues;
+import dev.codion.swing.common.ui.value.NumericalValues;
+import dev.codion.swing.common.ui.value.SelectedValues;
+import dev.codion.swing.common.ui.value.TemporalValues;
+import dev.codion.swing.common.ui.value.TextValues;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;

@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petstore.testing;
+package dev.codion.framework.demos.petstore.testing;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.demos.petstore.domain.Petstore;
-import org.jminor.framework.demos.petstore.model.PetstoreAppModel;
-import org.jminor.swing.common.tools.loadtest.AbstractUsageScenario;
-import org.jminor.swing.common.tools.ui.loadtest.LoadTestPanel;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProviders;
+import dev.codion.framework.demos.petstore.domain.Petstore;
+import dev.codion.framework.demos.petstore.model.PetstoreAppModel;
+import dev.codion.swing.common.tools.loadtest.AbstractUsageScenario;
+import dev.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 

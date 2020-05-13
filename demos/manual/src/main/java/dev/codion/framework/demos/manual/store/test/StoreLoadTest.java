@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.manual.store.test;
+package dev.codion.framework.demos.manual.store.test;
 
-import org.jminor.common.user.User;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
-import org.jminor.framework.demos.manual.store.domain.Store;
-import org.jminor.framework.demos.manual.store.model.StoreAppModel;
-import org.jminor.framework.model.EntityModel;
-import org.jminor.swing.common.tools.loadtest.ScenarioException;
-import org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel;
+import dev.codion.common.user.User;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import dev.codion.framework.demos.manual.store.domain.Store;
+import dev.codion.framework.demos.manual.store.model.StoreAppModel;
+import dev.codion.framework.model.EntityModel;
+import dev.codion.swing.common.tools.loadtest.ScenarioException;
+import dev.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import java.util.Collections;
 import java.util.UUID;

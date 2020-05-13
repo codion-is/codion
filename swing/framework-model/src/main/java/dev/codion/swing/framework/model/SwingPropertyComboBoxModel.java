@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.model;
+package dev.codion.swing.framework.model;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static org.jminor.framework.db.condition.Conditions.condition;
+import static dev.codion.framework.db.condition.Conditions.condition;
 
 /**
  * A combo box model based on a single entity property.
