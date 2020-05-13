@@ -1,11 +1,11 @@
 /**
- * @provides org.jminor.common.db.database.Database
+ * @provides dev.codion.common.db.database.Database
  */
-module org.jminor.dbms.mariadb {
-  requires transitive org.jminor.common.db;
+module dev.codion.dbms.mariadb {
+  requires transitive dev.codion.common.db;
 
-  exports org.jminor.dbms.mariadb;
+  exports dev.codion.dbms.mariadb;
 
-  provides org.jminor.common.db.database.DatabaseProvider
-          with org.jminor.dbms.mariadb.MariaDbDatabaseProvider;
+  provides dev.codion.common.db.database.DatabaseProvider
+          with dev.codion.dbms.mariadb.MariaDbDatabaseProvider;
 }

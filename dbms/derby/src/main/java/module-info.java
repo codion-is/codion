@@ -1,11 +1,11 @@
 /**
- * @provides org.jminor.common.db.database.DatabaseProvider
+ * @provides dev.codion.common.db.database.DatabaseProvider
  */
-module org.jminor.dbms.derby {
-  requires transitive org.jminor.common.db;
+module dev.codion.dbms.derby {
+  requires transitive dev.codion.common.db;
 
-  exports org.jminor.dbms.derby;
+  exports dev.codion.dbms.derby;
 
-  provides org.jminor.common.db.database.DatabaseProvider
-          with org.jminor.dbms.derby.DerbyDatabaseProvider;
+  provides dev.codion.common.db.database.DatabaseProvider
+          with dev.codion.dbms.derby.DerbyDatabaseProvider;
 }

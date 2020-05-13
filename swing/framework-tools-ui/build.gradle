@@ -21,8 +21,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['org.jminor.common.db,org.jminor.common.model,org.jminor.swing.common.model']
-    testAddReads = ['org.jminor.swing.framework.tools.ui': 'org.jminor.common.db,org.jminor.common.model,org.jminor.swing.common.model']
+    testAddModules = ['dev.codion.common.db,dev.codion.common.model,dev.codion.swing.common.model']
+    testAddReads = ['dev.codion.swing.framework.tools.ui': 'dev.codion.common.db,dev.codion.common.model,dev.codion.swing.common.model']
 }
 
 compileTestJava {

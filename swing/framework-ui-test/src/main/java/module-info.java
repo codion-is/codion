@@ -1,5 +1,5 @@
-module org.jminor.swing.framework.ui.test {
-  requires org.jminor.swing.framework.ui;
+module dev.codion.swing.framework.ui.test {
+  requires dev.codion.swing.framework.ui;
 
-  exports org.jminor.swing.framework.ui.test;
+  exports dev.codion.swing.framework.ui.test;
 }

@@ -1,10 +1,10 @@
 /**
  * Non-ui specific application model classes.
  */
-module org.jminor.framework.model {
+module dev.codion.framework.model {
   requires org.slf4j;
-  requires transitive org.jminor.common.model;
-  requires transitive org.jminor.framework.db.core;
+  requires transitive dev.codion.common.model;
+  requires transitive dev.codion.framework.db.core;
 
-  exports org.jminor.framework.model;
+  exports dev.codion.framework.model;
 }

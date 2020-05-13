@@ -1,10 +1,10 @@
-module org.jminor.swing.common.tools {
+module dev.codion.swing.common.tools {
   requires org.slf4j;
   requires jfreechart;
   requires jdk.management;
   requires transitive java.desktop;
-  requires transitive org.jminor.common.model;
+  requires transitive dev.codion.common.model;
 
-  exports org.jminor.swing.common.tools.loadtest;
-  exports org.jminor.swing.common.tools.randomizer;
+  exports dev.codion.swing.common.tools.loadtest;
+  exports dev.codion.swing.common.tools.randomizer;
 }

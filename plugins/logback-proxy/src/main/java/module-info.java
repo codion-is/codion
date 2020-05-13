@@ -1,10 +1,10 @@
-module org.jminor.plugin.logback.proxy {
+module dev.codion.plugin.logback.proxy {
   requires org.slf4j;
   requires ch.qos.logback.classic;
-  requires org.jminor.common.core;
+  requires dev.codion.common.core;
 
-  exports org.jminor.plugin.logback;
+  exports dev.codion.plugin.logback;
 
-  provides org.jminor.common.LoggerProxy
-          with org.jminor.plugin.logback.LogbackProxy;
+  provides dev.codion.common.LoggerProxy
+          with dev.codion.plugin.logback.LogbackProxy;
 }

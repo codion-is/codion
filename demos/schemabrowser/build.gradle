@@ -27,10 +27,10 @@ dependencies {
 ext {
     mainClass = "$moduleName/org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel"
     loadTestMainClass = "$moduleName/org.jminor.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest"
-    testAddModules = ['org.jminor.framework.db.test']
-    testAddReads = ['org.jminor.framework.demos.schemabrowser': 'org.jminor.framework.db.test']
+    testAddModules = ['dev.codion.framework.db.test']
+    testAddReads = ['dev.codion.framework.demos.schemabrowser': 'dev.codion.framework.db.test']
     testAddExports = [
-            'org.jminor.framework.demos.schemabrowser/org.jminor.framework.demos.schemabrowser.domain': 'org.jminor.framework.db.local',
+            'dev.codion.framework.demos.schemabrowser/dev.codion.framework.demos.schemabrowser.domain': 'dev.codion.framework.db.local',
             'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
             'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
     ]

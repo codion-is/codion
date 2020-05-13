@@ -1,9 +1,9 @@
-module org.jminor.swing.common.model {
+module dev.codion.swing.common.model {
   requires transitive java.desktop;
-  requires transitive org.jminor.common.model;
+  requires transitive dev.codion.common.model;
 
-  exports org.jminor.swing.common.model.checkbox;
-  exports org.jminor.swing.common.model.combobox;
-  exports org.jminor.swing.common.model.table;
-  exports org.jminor.swing.common.model.textfield;
+  exports dev.codion.swing.common.model.checkbox;
+  exports dev.codion.swing.common.model.combobox;
+  exports dev.codion.swing.common.model.table;
+  exports dev.codion.swing.common.model.textfield;
 }

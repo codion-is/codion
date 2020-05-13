@@ -1,14 +1,14 @@
-module org.jminor.swing.framework.ui {
+module dev.codion.swing.framework.ui {
   requires org.slf4j;
-  requires transitive org.jminor.swing.framework.model;
-  requires transitive org.jminor.swing.common.ui;
+  requires transitive dev.codion.swing.framework.model;
+  requires transitive dev.codion.swing.common.ui;
 
-  exports org.jminor.swing.framework.ui;
-  exports org.jminor.swing.framework.ui.icons;
+  exports dev.codion.swing.framework.ui;
+  exports dev.codion.swing.framework.ui.icons;
 
-  uses org.jminor.common.CredentialsProvider;
-  uses org.jminor.swing.framework.ui.icons.FrameworkIcons;
+  uses dev.codion.common.CredentialsProvider;
+  uses dev.codion.swing.framework.ui.icons.FrameworkIcons;
 
-  provides org.jminor.swing.framework.ui.icons.FrameworkIcons
-          with org.jminor.swing.framework.ui.icons.DefaultFrameworkIcons;
+  provides dev.codion.swing.framework.ui.icons.FrameworkIcons
+          with dev.codion.swing.framework.ui.icons.DefaultFrameworkIcons;
 }

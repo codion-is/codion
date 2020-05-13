@@ -1,8 +1,8 @@
-module org.jminor.swing.common.tools.ui {
+module dev.codion.swing.common.tools.ui {
   requires jfreechart;
-  requires transitive org.jminor.swing.common.tools;
-  requires transitive org.jminor.swing.common.ui;
+  requires transitive dev.codion.swing.common.tools;
+  requires transitive dev.codion.swing.common.ui;
 
-  exports org.jminor.swing.common.tools.ui.loadtest;
-  exports org.jminor.swing.common.tools.ui.randomizer;
+  exports dev.codion.swing.common.tools.ui.loadtest;
+  exports dev.codion.swing.common.tools.ui.randomizer;
 }

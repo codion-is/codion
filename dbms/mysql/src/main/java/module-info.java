@@ -1,11 +1,11 @@
 /**
- * @provides org.jminor.common.db.database.DatabaseProvider
+ * @provides dev.codion.common.db.database.DatabaseProvider
  */
-module org.jminor.dbms.mysql {
-  requires transitive org.jminor.common.db;
+module dev.codion.dbms.mysql {
+  requires transitive dev.codion.common.db;
 
-  exports org.jminor.dbms.mysql;
+  exports dev.codion.dbms.mysql;
 
-  provides org.jminor.common.db.database.DatabaseProvider
-          with org.jminor.dbms.mysql.MySQLDatabaseProvider;
+  provides dev.codion.common.db.database.DatabaseProvider
+          with dev.codion.dbms.mysql.MySQLDatabaseProvider;
 }

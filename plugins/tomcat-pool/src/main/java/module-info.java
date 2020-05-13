@@ -1,10 +1,10 @@
-module org.jminor.plugin.tomcat.pool {
+module dev.codion.plugin.tomcat.pool {
   requires java.management;
   requires tomcat.jdbc;
-  requires org.jminor.common.db;
+  requires dev.codion.common.db;
 
-  exports org.jminor.plugin.tomcat.pool;
+  exports dev.codion.plugin.tomcat.pool;
 
-  provides org.jminor.common.db.pool.ConnectionPoolProvider
-          with org.jminor.plugin.tomcat.pool.TomcatConnectionPoolProvider;
+  provides dev.codion.common.db.pool.ConnectionPoolProvider
+          with dev.codion.plugin.tomcat.pool.TomcatConnectionPoolProvider;
 }

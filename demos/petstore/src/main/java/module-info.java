@@ -1,8 +1,8 @@
-module org.jminor.framework.demos.petstore {
-  requires org.jminor.swing.common.tools.ui;
-  requires org.jminor.swing.framework.tools;
-  requires org.jminor.swing.framework.ui;
+module dev.codion.framework.demos.petstore {
+  requires dev.codion.swing.common.tools.ui;
+  requires dev.codion.swing.framework.tools;
+  requires dev.codion.swing.framework.ui;
 
-  exports org.jminor.framework.demos.petstore.ui
-          to org.jminor.swing.framework.ui;
+  exports dev.codion.framework.demos.petstore.ui
+          to dev.codion.swing.framework.ui;
 }

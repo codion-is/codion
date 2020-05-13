@@ -1,13 +1,13 @@
 /**
  * Framework database connection classes for local JDBC connections.
- * @provides org.jminor.framework.db.EntityConnectionProvider
+ * @provides dev.codion.framework.db.EntityConnectionProvider
  */
-module org.jminor.framework.db.local {
+module dev.codion.framework.db.local {
   requires org.slf4j;
-  requires transitive org.jminor.framework.db.core;
+  requires transitive dev.codion.framework.db.core;
 
-  exports org.jminor.framework.db.local;
+  exports dev.codion.framework.db.local;
 
-  provides org.jminor.framework.db.EntityConnectionProvider
-          with org.jminor.framework.db.local.LocalEntityConnectionProvider;
+  provides dev.codion.framework.db.EntityConnectionProvider
+          with dev.codion.framework.db.local.LocalEntityConnectionProvider;
 }

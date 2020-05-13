@@ -2,21 +2,21 @@
  * Common classes used throughout.<br>
  * <br>
  * Configuration values:<br>
- * {@link org.jminor.common.Text#DEFAULT_COLLATOR_LANGUAGE}<br>
- * @uses org.jminor.common.LoggerProxy
- * @uses org.jminor.common.CredentialsProvider
+ * {@link dev.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}<br>
+ * @uses dev.codion.common.LoggerProxy
+ * @uses dev.codion.common.CredentialsProvider
  */
-module org.jminor.common.core {
-  exports org.jminor.common;
-  exports org.jminor.common.event;
-  exports org.jminor.common.item;
-  exports org.jminor.common.i18n;
-  exports org.jminor.common.state;
-  exports org.jminor.common.user;
-  exports org.jminor.common.value;
-  exports org.jminor.common.valuemap;
-  exports org.jminor.common.version;
+module dev.codion.common.core {
+  exports dev.codion.common;
+  exports dev.codion.common.event;
+  exports dev.codion.common.item;
+  exports dev.codion.common.i18n;
+  exports dev.codion.common.state;
+  exports dev.codion.common.user;
+  exports dev.codion.common.value;
+  exports dev.codion.common.valuemap;
+  exports dev.codion.common.version;
 
-  uses org.jminor.common.LoggerProxy;
-  uses org.jminor.common.CredentialsProvider;
+  uses dev.codion.common.LoggerProxy;
+  uses dev.codion.common.CredentialsProvider;
 }

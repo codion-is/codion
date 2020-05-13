@@ -1,7 +1,7 @@
-module org.jminor.plugin.nextreports {
+module dev.codion.plugin.nextreports {
   requires java.desktop;
   requires nextreports.engine;
-  requires org.jminor.common.db;
+  requires dev.codion.common.db;
 
-  exports org.jminor.plugin.nextreports.model;
+  exports dev.codion.plugin.nextreports.model;
 }

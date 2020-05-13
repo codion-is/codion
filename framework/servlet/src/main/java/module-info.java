@@ -1,18 +1,18 @@
 /**
  * Servlet application server.
- * @provides org.jminor.common.rmi.server.AuxiliaryServer
+ * @provides dev.codion.common.rmi.server.AuxiliaryServer
  */
-module org.jminor.framework.servlet {
+module dev.codion.framework.servlet {
   requires org.slf4j;
   requires java.ws.rs;
   requires javax.servlet.api;
   requires jersey.container.jetty.servlet;
   requires jersey.container.servlet.core;
-  requires org.jminor.common.http;
-  requires org.jminor.framework.db.rmi;
+  requires dev.codion.common.http;
+  requires dev.codion.framework.db.rmi;
 
-  exports org.jminor.framework.servlet;
+  exports dev.codion.framework.servlet;
 
-  provides org.jminor.common.rmi.server.AuxiliaryServerProvider
-          with org.jminor.framework.servlet.EntityServletServerProvider;
+  provides dev.codion.common.rmi.server.AuxiliaryServerProvider
+          with dev.codion.framework.servlet.EntityServletServerProvider;
 }

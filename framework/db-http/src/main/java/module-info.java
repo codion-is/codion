@@ -1,16 +1,16 @@
 /**
  * Framework database connection classes for connections via http.
- * @provides org.jminor.framework.db.EntityConnectionProvider
+ * @provides dev.codion.framework.db.EntityConnectionProvider
  */
-module org.jminor.framework.db.http {
+module dev.codion.framework.db.http {
   requires org.slf4j;
   requires java.net.http;
   requires org.apache.httpcomponents.httpcore;
   requires org.apache.httpcomponents.httpclient;
-  requires org.jminor.framework.db.core;
+  requires dev.codion.framework.db.core;
 
-  exports org.jminor.framework.db.http;
+  exports dev.codion.framework.db.http;
 
-  provides org.jminor.framework.db.EntityConnectionProvider
-          with org.jminor.framework.db.http.HttpEntityConnectionProvider;
+  provides dev.codion.framework.db.EntityConnectionProvider
+          with dev.codion.framework.db.http.HttpEntityConnectionProvider;
 }

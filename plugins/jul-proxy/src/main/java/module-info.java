@@ -1,9 +1,9 @@
-module org.jminor.plugin.log4j.proxy {
+module dev.codion.plugin.log4j.proxy {
   requires java.logging;
-  requires org.jminor.common.core;
+  requires dev.codion.common.core;
 
-  exports org.jminor.plugin.jul;
+  exports dev.codion.plugin.jul;
 
-  provides org.jminor.common.LoggerProxy
-          with org.jminor.plugin.jul.JulProxy;
+  provides dev.codion.common.LoggerProxy
+          with dev.codion.plugin.jul.JulProxy;
 }

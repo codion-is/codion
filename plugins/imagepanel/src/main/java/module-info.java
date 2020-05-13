@@ -1,5 +1,5 @@
-module org.jminor.plugin.imagepanel {
+module dev.codion.plugin.imagepanel {
   requires java.desktop;
 
-  exports org.jminor.plugin.imagepanel;
+  exports dev.codion.plugin.imagepanel;
 }

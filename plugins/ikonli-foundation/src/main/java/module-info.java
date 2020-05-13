@@ -1,13 +1,13 @@
-module org.jminor.swing.plugin.ikonli.foundation {
-  requires org.jminor.swing.common.ui;
-  requires org.jminor.swing.framework.ui;
+module dev.codion.swing.plugin.ikonli.foundation {
+  requires dev.codion.swing.common.ui;
+  requires dev.codion.swing.framework.ui;
   requires org.kordamp.ikonli.swing;
   requires org.kordamp.ikonli.foundation;
 
-  exports org.jminor.swing.plugin.ikonli.foundation;
+  exports dev.codion.swing.plugin.ikonli.foundation;
 
-  provides org.jminor.swing.common.ui.icons.Icons
-          with org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
-  provides org.jminor.swing.framework.ui.icons.FrameworkIcons
-          with org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
+  provides dev.codion.swing.common.ui.icons.Icons
+          with dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
+  provides dev.codion.swing.framework.ui.icons.FrameworkIcons
+          with dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
 }

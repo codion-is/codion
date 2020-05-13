@@ -25,10 +25,10 @@ dependencies {
 ext {
     mainClass = "$moduleName/org.jminor.framework.demos.petstore.ui.PetstoreAppPanel"
     loadTestMainClass = "$moduleName/org.jminor.framework.demos.petstore.testing.PetstoreLoadTest"
-    testAddModules = ['org.jminor.framework.db.test']
-    testAddReads = ['org.jminor.framework.demos.petstore': 'org.jminor.framework.db.test']
+    testAddModules = ['dev.codion.framework.db.test']
+    testAddReads = ['dev.codion.framework.demos.petstore': 'dev.codion.framework.db.test']
     testAddExports = [
-            'org.jminor.framework.demos.petstore/org.jminor.framework.demos.petstore.domain': 'org.jminor.framework.db.local',
+            'dev.codion.framework.demos.petstore/dev.codion.framework.demos.petstore.domain': 'dev.codion.framework.db.local',
             'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
             'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
     ]

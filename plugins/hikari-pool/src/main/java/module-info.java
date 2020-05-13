@@ -1,9 +1,9 @@
-module org.jminor.plugin.hikari.pool {
+module dev.codion.plugin.hikari.pool {
   requires com.zaxxer.hikari;
-  requires org.jminor.common.db;
+  requires dev.codion.common.db;
 
-  exports org.jminor.plugin.hikari.pool;
+  exports dev.codion.plugin.hikari.pool;
 
-  provides org.jminor.common.db.pool.ConnectionPoolProvider
-          with org.jminor.plugin.hikari.pool.HikariConnectionPoolProvider;
+  provides dev.codion.common.db.pool.ConnectionPoolProvider
+          with dev.codion.plugin.hikari.pool.HikariConnectionPoolProvider;
 }

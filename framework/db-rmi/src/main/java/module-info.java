@@ -1,14 +1,14 @@
 /**
  * Framework database connection classes for connection via RMI.
- * @provides org.jminor.framework.db.EntityConnectionProvider
+ * @provides dev.codion.framework.db.EntityConnectionProvider
  */
-module org.jminor.framework.db.rmi {
+module dev.codion.framework.db.rmi {
   requires org.slf4j;
-  requires transitive org.jminor.common.rmi;
-  requires transitive org.jminor.framework.db.core;
+  requires transitive dev.codion.common.rmi;
+  requires transitive dev.codion.framework.db.core;
 
-  exports org.jminor.framework.db.rmi;
+  exports dev.codion.framework.db.rmi;
 
-  provides org.jminor.framework.db.EntityConnectionProvider
-          with org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
+  provides dev.codion.framework.db.EntityConnectionProvider
+          with dev.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 }

@@ -1,11 +1,11 @@
 /**
  * http server classes.
  */
-module org.jminor.common.http {
+module dev.codion.common.http {
   requires org.slf4j;
   requires org.eclipse.jetty.server;
   requires org.eclipse.jetty.util;
-  requires org.jminor.common.core;
+  requires dev.codion.common.core;
 
-  exports org.jminor.common.http.server;
+  exports dev.codion.common.http.server;
 }

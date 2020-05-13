@@ -1,28 +1,28 @@
-module org.jminor.framework.demos.empdept {
+module dev.codion.framework.demos.empdept {
   requires jasperreports;
-  requires org.jminor.framework.db.http;
-  requires org.jminor.framework.db.local;
-  requires org.jminor.framework.db.rmi;
-  requires org.jminor.framework.db.test;
-  requires org.jminor.swing.common.tools.ui;
-  requires org.jminor.swing.framework.tools;
-  requires org.jminor.swing.framework.ui;
-  requires org.jminor.javafx.framework;
-  requires org.jminor.framework.server;
-  requires org.jminor.plugin.jasperreports;
-  requires org.jminor.plugin.json;
+  requires dev.codion.framework.db.http;
+  requires dev.codion.framework.db.local;
+  requires dev.codion.framework.db.rmi;
+  requires dev.codion.framework.db.test;
+  requires dev.codion.swing.common.tools.ui;
+  requires dev.codion.swing.framework.tools;
+  requires dev.codion.swing.framework.ui;
+  requires dev.codion.javafx.framework;
+  requires dev.codion.framework.server;
+  requires dev.codion.plugin.jasperreports;
+  requires dev.codion.plugin.json;
 
-  exports org.jminor.framework.demos.empdept.domain
-          to org.jminor.framework.domain, org.jminor.framework.db.local;
-  exports org.jminor.framework.demos.empdept.model
-          to org.jminor.swing.framework.model;
-  exports org.jminor.framework.demos.empdept.ui
-          to org.jminor.swing.framework.ui;
-  exports org.jminor.framework.demos.empdept.javafx
+  exports dev.codion.framework.demos.empdept.domain
+          to dev.codion.framework.domain, dev.codion.framework.db.local;
+  exports dev.codion.framework.demos.empdept.model
+          to dev.codion.swing.framework.model;
+  exports dev.codion.framework.demos.empdept.ui
+          to dev.codion.swing.framework.ui;
+  exports dev.codion.framework.demos.empdept.javafx
           to javafx.graphics;
-  exports org.jminor.framework.demos.empdept.server
+  exports dev.codion.framework.demos.empdept.server
           to java.rmi;
   //for loading of reports from classpath
-  opens org.jminor.framework.demos.empdept.domain
-          to org.jminor.plugin.jasperreports;
+  opens dev.codion.framework.demos.empdept.domain
+          to dev.codion.plugin.jasperreports;
 }

@@ -20,8 +20,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['org.jminor.dbms.h2database,org.jminor.framework.db.core,org.jminor.framework.db.local']
-    testAddReads = ['org.jminor.plugin.nextreports': 'org.jminor.dbms.h2database,org.jminor.framework.db.core,org.jminor.framework.db.local']
+    testAddModules = ['dev.codion.dbms.h2database,dev.codion.framework.db.core,dev.codion.framework.db.local']
+    testAddReads = ['dev.codion.plugin.nextreports': 'dev.codion.dbms.h2database,dev.codion.framework.db.core,dev.codion.framework.db.local']
 }
 
 compileTestJava {

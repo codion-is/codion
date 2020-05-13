@@ -1,6 +1,6 @@
-module org.jminor.plugin.jasperreports {
+module dev.codion.plugin.jasperreports {
   requires jasperreports;
-  requires org.jminor.common.db;
+  requires dev.codion.common.db;
 
-  exports org.jminor.plugin.jasperreports.model;
+  exports dev.codion.plugin.jasperreports.model;
 }

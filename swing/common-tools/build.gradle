@@ -13,8 +13,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['org.jminor.common.model']
-    testAddReads = ['org.jminor.swing.common.tools': 'org.jminor.common.model']
+    testAddModules = ['dev.codion.common.model']
+    testAddReads = ['dev.codion.swing.common.tools': 'dev.codion.common.model']
 }
 
 compileTestJava {

@@ -10,8 +10,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['org.jminor.dbms.h2database']
-    testAddReads = ['org.jminor.plugin.tomcat.pool': 'org.jminor.dbms.h2database']
+    testAddModules = ['dev.codion.dbms.h2database']
+    testAddReads = ['dev.codion.plugin.tomcat.pool': 'dev.codion.dbms.h2database']
 }
 
 compileTestJava {

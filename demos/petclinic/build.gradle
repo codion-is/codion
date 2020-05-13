@@ -23,11 +23,11 @@ dependencies {
 
 ext {
     mainClass = "$moduleName/org.jminor.framework.demos.petclinic.ui.PetclinicAppPanel"
-    testAddModules = ['org.jminor.framework.db.test', 'org.jminor.swing.framework.ui.test']
-    testAddReads = ['org.jminor.framework.demos.petclinic': 'org.jminor.framework.db.test,org.jminor.swing.framework.ui.test']
+    testAddModules = ['dev.codion.framework.db.test', 'dev.codion.swing.framework.ui.test']
+    testAddReads = ['dev.codion.framework.demos.petclinic': 'dev.codion.framework.db.test,dev.codion.swing.framework.ui.test']
     testAddExports = [
-            'org.jminor.framework.demos.petclinic/org.jminor.framework.demos.petclinic.ui': 'org.jminor.swing.framework.ui.test',
-            'org.jminor.framework.demos.petclinic/org.jminor.framework.demos.petclinic.domain': 'org.jminor.framework.db.local',
+            'dev.codion.framework.demos.petclinic/dev.codion.framework.demos.petclinic.ui': 'dev.codion.swing.framework.ui.test',
+            'dev.codion.framework.demos.petclinic/dev.codion.framework.demos.petclinic.domain': 'dev.codion.framework.db.local',
             'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
             'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
     ]

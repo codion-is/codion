@@ -1,11 +1,11 @@
 /**
- * @provides org.jminor.common.db.database.DatabaseProvider
+ * @provides dev.codion.common.db.database.DatabaseProvider
  */
-module org.jminor.dbms.hsqldb {
-  requires transitive org.jminor.common.db;
+module dev.codion.dbms.hsqldb {
+  requires transitive dev.codion.common.db;
 
-  exports org.jminor.dbms.hsqldb;
+  exports dev.codion.dbms.hsqldb;
 
-  provides org.jminor.common.db.database.DatabaseProvider
-          with org.jminor.dbms.hsqldb.HSQLDatabaseProvider;
+  provides dev.codion.common.db.database.DatabaseProvider
+          with dev.codion.dbms.hsqldb.HSQLDatabaseProvider;
 }

@@ -1,11 +1,11 @@
 /**
  * Non-ui applicaton model classes.
  */
-module org.jminor.common.model {
+module dev.codion.common.model {
   requires java.prefs;
-  requires transitive org.jminor.common.db;
+  requires transitive dev.codion.common.db;
 
-  exports org.jminor.common.model;
-  exports org.jminor.common.model.combobox;
-  exports org.jminor.common.model.table;
+  exports dev.codion.common.model;
+  exports dev.codion.common.model.combobox;
+  exports dev.codion.common.model.table;
 }

@@ -12,8 +12,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['org.jminor.dbms.h2database']
-    testAddReads = ['org.jminor.framework.db.local': 'org.jminor.dbms.h2database']
+    testAddModules = ['dev.codion.dbms.h2database']
+    testAddReads = ['dev.codion.framework.db.local': 'dev.codion.dbms.h2database']
 }
 
 compileTestJava {

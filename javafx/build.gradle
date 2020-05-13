@@ -26,10 +26,10 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['org.jminor.framework.db.local,org.jminor.framework.model,org.jminor.framework.model.tests']
+    testAddModules = ['dev.codion.framework.db.local,dev.codion.framework.model,dev.codion.framework.model.tests']
     testAddReads = [
-            'org.jminor.javafx.framework': 'org.jminor.framework.db.local,org.jminor.framework.model,org.jminor.framework.model.tests',
-            'org.jminor.framework.model': 'org.jminor.framework.db.local,org.junit.jupiter.api'
+            'dev.codion.javafx.framework': 'dev.codion.framework.db.local,dev.codion.framework.model,dev.codion.framework.model.tests',
+            'dev.codion.framework.model': 'dev.codion.framework.db.local,org.junit.jupiter.api'
     ]
 }
 

@@ -1,22 +1,22 @@
-module org.jminor.framework.demos.manual {
+module dev.codion.framework.demos.manual {
   requires java.desktop;
   requires jasperreports;
-  requires org.jminor.common.core;
-  requires org.jminor.common.http;
-  requires org.jminor.dbms.h2database;
-  requires org.jminor.framework.db.local;
-  requires org.jminor.framework.db.rmi;
-  requires org.jminor.framework.db.http;
-  requires org.jminor.framework.server;
-  requires org.jminor.framework.servlet;
-  requires org.jminor.swing.common.ui;
-  requires org.jminor.swing.framework.model;
-  requires org.jminor.swing.framework.tools;
-  requires org.jminor.swing.framework.ui;
-  requires org.jminor.plugin.jasperreports;
-  requires org.jminor.framework.db.test;
+  requires dev.codion.common.core;
+  requires dev.codion.common.http;
+  requires dev.codion.dbms.h2database;
+  requires dev.codion.framework.db.local;
+  requires dev.codion.framework.db.rmi;
+  requires dev.codion.framework.db.http;
+  requires dev.codion.framework.server;
+  requires dev.codion.framework.servlet;
+  requires dev.codion.swing.common.ui;
+  requires dev.codion.swing.framework.model;
+  requires dev.codion.swing.framework.tools;
+  requires dev.codion.swing.framework.ui;
+  requires dev.codion.plugin.jasperreports;
+  requires dev.codion.framework.db.test;
   requires org.junit.jupiter.api;
 
-  exports org.jminor.framework.demos.manual.store.domain;
-  exports org.jminor.framework.demos.manual.store.ui;
+  exports dev.codion.framework.demos.manual.store.domain;
+  exports dev.codion.framework.demos.manual.store.ui;
 }

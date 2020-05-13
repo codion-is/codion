@@ -1,7 +1,7 @@
-module org.jminor.framework.db.test {
+module dev.codion.framework.db.test {
   requires org.slf4j;
   requires org.junit.jupiter.api;
-  requires transitive org.jminor.framework.db.core;
+  requires transitive dev.codion.framework.db.core;
 
-  exports org.jminor.framework.domain.entity.test;
+  exports dev.codion.framework.domain.entity.test;
 }

@@ -1,6 +1,6 @@
-module org.jminor.plugin.json {
+module dev.codion.plugin.json {
   requires org.json;
-  requires org.jminor.framework.domain;
+  requires dev.codion.framework.domain;
 
-  exports org.jminor.plugin.json;
+  exports dev.codion.plugin.json;
 }
