@@ -7,7 +7,7 @@
 Common classes used throughout the framework.
 
 [discrete]
-=== jminor-common-core
+=== codion-common-core
 
 {url-javadoc}/dev/codion/common/event/package-summary.html[dev.codion.common.event]
 {url-javadoc}/dev/codion/common/state/package-summary.html[dev.codion.common.state]
@@ -20,7 +20,7 @@ image::modules/common/core/build/reports/dependency-graph/dependency-graph.svg[o
 ====
 
 [discrete]
-=== jminor-common-db
+=== codion-common-db
 
 .Dependency graph
 [%collapsible]
@@ -29,7 +29,7 @@ image::modules/common/db/build/reports/dependency-graph/dependency-graph.svg[opt
 ====
 
 [discrete]
-=== jminor-common-model
+=== codion-common-model
 
 .Dependency graph
 [%collapsible]
@@ -38,7 +38,7 @@ image::modules/common/model/build/reports/dependency-graph/dependency-graph.svg[
 ====
 
 [discrete]
-=== jminor-common-rmi
+=== codion-common-rmi
 
 .Dependency graph
 [%collapsible]
@@ -47,7 +47,7 @@ image::modules/common/rmi/build/reports/dependency-graph/dependency-graph.svg[op
 ====
 
 [discrete]
-=== jminor-common-http
+=== codion-common-http
 
 .Dependency graph
 [%collapsible]
@@ -60,7 +60,7 @@ image::modules/common/http/build/reports/dependency-graph/dependency-graph.svg[o
 Database specific implementation classes.
 
 [discrete]
-=== jminor-dbms-derby
+=== codion-dbms-derby
 
 .Dependency graph
 [%collapsible]
@@ -69,7 +69,7 @@ image::modules/dbms/derby/build/reports/dependency-graph/dependency-graph.svg[op
 ====
 
 [discrete]
-=== jminor-dbms-h2database
+=== codion-dbms-h2database
 
 .Dependency graph
 [%collapsible]
@@ -78,7 +78,7 @@ image::modules/dbms/h2database/build/reports/dependency-graph/dependency-graph.s
 ====
 
 [discrete]
-=== jminor-dbms-hsqldb
+=== codion-dbms-hsqldb
 
 .Dependency graph
 [%collapsible]
@@ -87,7 +87,7 @@ image::modules/dbms/hsqldb/build/reports/dependency-graph/dependency-graph.svg[o
 ====
 
 [discrete]
-=== jminor-dbms-mariadb
+=== codion-dbms-mariadb
 
 .Dependency graph
 [%collapsible]
@@ -96,7 +96,7 @@ image::modules/dbms/mariadb/build/reports/dependency-graph/dependency-graph.svg[
 ====
 
 [discrete]
-=== jminor-dbms-mysql
+=== codion-dbms-mysql
 
 .Dependency graph
 [%collapsible]
@@ -105,7 +105,7 @@ image::modules/dbms/mysql/build/reports/dependency-graph/dependency-graph.svg[op
 ====
 
 [discrete]
-=== jminor-dbms-oracle
+=== codion-dbms-oracle
 
 .Dependency graph
 [%collapsible]
@@ -114,7 +114,7 @@ image::modules/dbms/oracle/build/reports/dependency-graph/dependency-graph.svg[o
 ====
 
 [discrete]
-=== jminor-dbms-postgresql
+=== codion-dbms-postgresql
 
 .Dependency graph
 [%collapsible]
@@ -123,7 +123,7 @@ image::modules/dbms/postgresql/build/reports/dependency-graph/dependency-graph.s
 ====
 
 [discrete]
-=== jminor-dbms-sqlite
+=== codion-dbms-sqlite
 
 .Dependency graph
 [%collapsible]
@@ -132,7 +132,7 @@ image::modules/dbms/sqlite/build/reports/dependency-graph/dependency-graph.svg[o
 ====
 
 [discrete]
-=== jminor-dbms-sqlserver
+=== codion-dbms-sqlserver
 
 .Dependency graph
 [%collapsible]
@@ -145,7 +145,7 @@ image::modules/dbms/sqlserver/build/reports/dependency-graph/dependency-graph.sv
 The framework itself.
 
 [discrete]
-=== jminor-framework-domain
+=== codion-framework-domain
 
 .Dependency graph
 [%collapsible]
@@ -154,7 +154,7 @@ image::modules/framework/domain/build/reports/dependency-graph/dependency-graph.
 ====
 
 [discrete]
-=== jminor-framework-domain-test
+=== codion-framework-domain-test
 
 .Dependency graph
 [%collapsible]
@@ -163,7 +163,7 @@ image::modules/framework/domain-test/build/reports/dependency-graph/dependency-g
 ====
 
 [discrete]
-=== jminor-framework-db-core
+=== codion-framework-db-core
 
 .Dependency graph
 [%collapsible]
@@ -172,7 +172,7 @@ image::modules/framework/db-core/build/reports/dependency-graph/dependency-graph
 ====
 
 [discrete]
-=== jminor-framework-db-local
+=== codion-framework-db-local
 
 .Dependency graph
 [%collapsible]
@@ -181,7 +181,7 @@ image::modules/framework/db-local/build/reports/dependency-graph/dependency-grap
 ====
 
 [discrete]
-=== jminor-framework-db-rmi
+=== codion-framework-db-rmi
 
 .Dependency graph
 [%collapsible]
@@ -190,7 +190,7 @@ image::modules/framework/db-rmi/build/reports/dependency-graph/dependency-graph.
 ====
 
 [discrete]
-=== jminor-framework-db-http
+=== codion-framework-db-http
 
 .Dependency graph
 [%collapsible]
@@ -199,7 +199,7 @@ image::modules/framework/db-http/build/reports/dependency-graph/dependency-graph
 ====
 
 [discrete]
-=== jminor-framework-model
+=== codion-framework-model
 
 .Dependency graph
 [%collapsible]
@@ -208,7 +208,7 @@ image::modules/framework/model/build/reports/dependency-graph/dependency-graph.s
 ====
 
 [discrete]
-=== jminor-framework-model-test
+=== codion-framework-model-test
 
 .Dependency graph
 [%collapsible]
@@ -217,7 +217,7 @@ image::modules/framework/model-test/build/reports/dependency-graph/dependency-gr
 ====
 
 [discrete]
-=== jminor-framework-server
+=== codion-framework-server
 
 .Dependency graph
 [%collapsible]
@@ -226,7 +226,7 @@ image::modules/framework/server/build/reports/dependency-graph/dependency-graph.
 ====
 
 [discrete]
-=== jminor-framework-servlet
+=== codion-framework-servlet
 
 .Dependency graph
 [%collapsible]
@@ -239,7 +239,7 @@ image::modules/framework/servlet/build/reports/dependency-graph/dependency-graph
 Swing client implementation.
 
 [discrete]
-=== jminor-swing-common-model
+=== codion-swing-common-model
 
 .Dependency graph
 [%collapsible]
@@ -248,7 +248,7 @@ image::modules/swing/common-model/build/reports/dependency-graph/dependency-grap
 ====
 
 [discrete]
-=== jminor-swing-common-ui
+=== codion-swing-common-ui
 
 .Dependency graph
 [%collapsible]
@@ -257,7 +257,7 @@ image::modules/swing/common-ui/build/reports/dependency-graph/dependency-graph.s
 ====
 
 [discrete]
-=== jminor-swing-common-tools
+=== codion-swing-common-tools
 
 .Dependency graph
 [%collapsible]
@@ -266,7 +266,7 @@ image::modules/swing/common-tools/build/reports/dependency-graph/dependency-grap
 ====
 
 [discrete]
-=== jminor-swing-common-tools-ui
+=== codion-swing-common-tools-ui
 
 .Dependency graph
 [%collapsible]
@@ -275,7 +275,7 @@ image::modules/swing/common-tools-ui/build/reports/dependency-graph/dependency-g
 ====
 
 [discrete]
-=== jminor-swing-framework-model
+=== codion-swing-framework-model
 
 .Dependency graph
 [%collapsible]
@@ -284,7 +284,7 @@ image::modules/swing/framework-model/build/reports/dependency-graph/dependency-g
 ====
 
 [discrete]
-=== jminor-swing-framework-ui
+=== codion-swing-framework-ui
 
 .Dependency graph
 [%collapsible]
@@ -293,7 +293,7 @@ image::modules/swing/framework-ui/build/reports/dependency-graph/dependency-grap
 ====
 
 [discrete]
-=== jminor-swing-framework-ui-test
+=== codion-swing-framework-ui-test
 
 .Dependency graph
 [%collapsible]
@@ -302,7 +302,7 @@ image::modules/swing/framework-ui-test/build/reports/dependency-graph/dependency
 ====
 
 [discrete]
-=== jminor-swing-framework-tools
+=== codion-swing-framework-tools
 
 .Dependency graph
 [%collapsible]
@@ -311,7 +311,7 @@ image::modules/swing/framework-tools/build/reports/dependency-graph/dependency-g
 ====
 
 [discrete]
-=== jminor-swing-framework-tools-ui
+=== codion-swing-framework-tools-ui
 
 .Dependency graph
 [%collapsible]
@@ -320,7 +320,7 @@ image::modules/swing/framework-tools-ui/build/reports/dependency-graph/dependenc
 ====
 
 [discrete]
-=== jminor-swing-framework-server-monitor
+=== codion-swing-framework-server-monitor
 
 .Dependency graph
 [%collapsible]
@@ -333,7 +333,7 @@ image::modules/swing/framework-server-monitor/build/reports/dependency-graph/dep
 JavaFX client implementation (still quite experimental).
 
 [discrete]
-=== jminor-javafx-framework
+=== codion-javafx-framework
 
 .Dependency graph
 [%collapsible]
@@ -346,7 +346,7 @@ image::modules/javafx/build/reports/dependency-graph/dependency-graph.svg[opts=i
 === Logging
 
 [discrete]
-==== jminor-plugin-jul-proxy
+==== codion-plugin-jul-proxy
 
 .Dependency graph
 [%collapsible]
@@ -355,7 +355,7 @@ image::modules/plugins/jul-proxy/build/reports/dependency-graph/dependency-graph
 ====
 
 [discrete]
-==== jminor-plugin-log4j-proxy
+==== codion-plugin-log4j-proxy
 
 .Dependency graph
 [%collapsible]
@@ -364,7 +364,7 @@ image::modules/plugins/log4j-proxy/build/reports/dependency-graph/dependency-gra
 ====
 
 [discrete]
-==== jminor-plugin-logback-proxy
+==== codion-plugin-logback-proxy
 
 .Dependency graph
 [%collapsible]
@@ -375,7 +375,7 @@ image::modules/plugins/logback-proxy/build/reports/dependency-graph/dependency-g
 === Connection pools
 
 [discrete]
-==== jminor-plugin-hikari-pool
+==== codion-plugin-hikari-pool
 
 .Dependency graph
 [%collapsible]
@@ -384,7 +384,7 @@ image::modules/plugins/hikari-pool/build/reports/dependency-graph/dependency-gra
 ====
 
 [discrete]
-==== jminor-plugin-tomcat-pool
+==== codion-plugin-tomcat-pool
 
 .Dependency graph
 [%collapsible]
@@ -395,7 +395,7 @@ image::modules/plugins/tomcat-pool/build/reports/dependency-graph/dependency-gra
 === Reporting
 
 [discrete]
-==== jminor-plugin-jasperreports
+==== codion-plugin-jasperreports
 
 .Dependency graph
 [%collapsible]
@@ -404,7 +404,7 @@ image::modules/plugins/jasperreports/build/reports/dependency-graph/dependency-g
 ====
 
 [discrete]
-==== jminor-plugin-nextreports
+==== codion-plugin-nextreports
 
 .Dependency graph
 [%collapsible]
@@ -421,7 +421,7 @@ image::modules/plugins/jackson-json/build/reports/dependency-graph/dependency-gr
 ====
 
 [discrete]
-==== jminor-plugin-json
+==== codion-plugin-json
 
 .Dependency graph
 [%collapsible]
@@ -432,7 +432,7 @@ image::modules/plugins/json/build/reports/dependency-graph/dependency-graph.svg[
 === Other
 
 [discrete]
-==== jminor-plugin-credentials-server
+==== codion-plugin-credentials-server
 
 .Dependency graph
 [%collapsible]
@@ -441,7 +441,7 @@ image::modules/plugins/credentials-server/build/reports/dependency-graph/depende
 ====
 
 [discrete]
-==== jminor-plugin-ikonli-foundation
+==== codion-plugin-ikonli-foundation
 
 .Dependency graph
 [%collapsible]
@@ -450,7 +450,7 @@ image::modules/plugins/ikonli-foundation/build/reports/dependency-graph/dependen
 ====
 
 [discrete]
-==== jminor-plugin-imagepanel
+==== codion-plugin-imagepanel
 
 .Dependency graph
 [%collapsible]

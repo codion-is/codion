@@ -247,11 +247,11 @@ public final class HttpEntityConnectionTest {
 
   private static EntityServerConfiguration configure() {
     ServerConfiguration.SERVER_HOST_NAME.set("localhost");
-    ServerConfiguration.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
+    ServerConfiguration.TRUSTSTORE.set("../../framework/server/src/main/security/codion_truststore.jks");
     ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
     ReportWrapper.REPORT_PATH.set("report/path");
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/codion_keystore.jks");
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(true);

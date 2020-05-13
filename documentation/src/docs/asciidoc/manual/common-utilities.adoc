@@ -2,7 +2,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-JMinor provides a few classes with miscellanous utility functions.
+Codion provides a few classes with miscellanous utility functions.
 
 == Model
 

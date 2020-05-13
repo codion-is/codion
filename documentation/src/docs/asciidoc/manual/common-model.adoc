@@ -2,7 +2,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-The model layer in a JMinor application contains the business logic, most of the events and application state.
+The model layer in a Codion application contains the business logic, most of the events and application state.
 
 == Common classes
 
