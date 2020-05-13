@@ -65,7 +65,7 @@ public final class ChinookLoginProxy implements LoginProxy {
    */
   @Override
   public String getClientTypeId() {
-    return "org.jminor.framework.demos.chinook.ui.ChinookAppPanel";
+    return "dev.codion.framework.demos.chinook.ui.ChinookAppPanel";
   }
 
   @Override

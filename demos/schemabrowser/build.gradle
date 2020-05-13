@@ -25,8 +25,8 @@ dependencies {
 }
 
 ext {
-    mainClass = "$moduleName/org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel"
-    loadTestMainClass = "$moduleName/org.jminor.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest"
+    mainClass = "$moduleName/dev.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel"
+    loadTestMainClass = "$moduleName/dev.codion.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest"
     testAddModules = ['dev.codion.framework.db.test']
     testAddReads = ['dev.codion.framework.demos.schemabrowser': 'dev.codion.framework.db.test']
     testAddExports = [
@@ -50,7 +50,7 @@ test {
         addExports = testAddExports
     }
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser"
+    systemProperty "jminor.client.domainClass", "dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser"
 }
 
 task runClientLocal(type: ModularJavaExec) {

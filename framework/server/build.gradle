@@ -43,7 +43,7 @@ dependencies {
     serverRuntime "com.h2database:h2:${h2Version}"
 }
 
-mainClassName = "$moduleName/org.jminor.framework.server.EntityServer"
+mainClassName = "$moduleName/dev.codion.framework.server.EntityServer"
 
 distTar {
     dependsOn(':codion-demos-empdept:domainJar')
@@ -130,7 +130,7 @@ task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
             'jminor.server.http.secure'                 : 'false',
             'jminor.server.pooling.poolProviderClass'   : 'dev.codion.plugin.hikari.pool.HikariConnectionPoolProvider',
             'jminor.server.auxiliaryServerProviderClassNames'   : 'dev.codion.framework.servlet.EntityServletServerProvider',
-            'jminor.server.domain.classes'              : 'dev.codion.framework.demos.empdept.domain.EmpDept,org.jminor.framework.demos.chinook.domain.impl.ChinookImpl,org.jminor.framework.demos.petclinic.domain.impl.ClinicImpl,org.jminor.framework.demos.petstore.domain.Petstore,org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser,org.jminor.framework.demos.world.domain.World',
+            'jminor.server.domain.classes'              : 'dev.codion.framework.demos.empdept.domain.EmpDept,dev.codion.framework.demos.chinook.domain.impl.ChinookImpl,dev.codion.framework.demos.petclinic.domain.impl.ClinicImpl,dev.codion.framework.demos.petstore.domain.Petstore,dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser,dev.codion.framework.demos.world.domain.World',
             'jminor.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
             'jminor.server.serializationFilterDryRun'   : 'false',
             'jminor.server.loginProxyClasses'           : 'dev.codion.framework.demos.chinook.server.ChinookLoginProxy',

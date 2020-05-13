@@ -60,7 +60,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   public static void main(final String[] args) {
     Locale.setDefault(new Locale("en"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.petstore.domain.Petstore");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.petstore.domain.Petstore");
     new PetstoreAppPanel().startApplication("The Pet Store", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.8), Users.parseUser("scott:tiger"));
   }

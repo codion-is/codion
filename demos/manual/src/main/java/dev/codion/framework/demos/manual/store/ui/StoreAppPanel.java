@@ -65,7 +65,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.manual.store.domain.Store");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.manual.store.domain.Store");
     ReportWrapper.REPORT_PATH.set("http://test.io");
     new StoreAppPanel().startApplication("Store", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));

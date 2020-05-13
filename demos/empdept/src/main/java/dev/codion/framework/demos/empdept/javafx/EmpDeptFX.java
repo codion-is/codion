@@ -52,7 +52,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   }
 
   public static void main(final String[] args) {
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("org.jminor.framework.demos.empdept.domain.EmpDept");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.empdept.domain.EmpDept");
     launch(args);
   }
 }

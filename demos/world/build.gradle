@@ -23,7 +23,7 @@ dependencies {
 }
 
 ext {
-    mainClass = "$moduleName/org.jminor.framework.demos.world.ui.WorldAppPanel"
+    mainClass = "$moduleName/dev.codion.framework.demos.world.ui.WorldAppPanel"
     testAddModules = ['dev.codion.framework.db.test', 'dev.codion.swing.framework.ui.test']
     testAddReads = ['dev.codion.framework.demos.world': 'dev.codion.framework.db.test,dev.codion.swing.framework.ui.test']
     testAddExports = [
@@ -48,7 +48,7 @@ test {
         addExports = testAddExports;
     }
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.world.domain.World"
+    systemProperty "jminor.client.domainClass", "dev.codion.framework.demos.world.domain.World"
 }
 
 task runClientLocal(type: ModularJavaExec) {

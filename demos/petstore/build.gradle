@@ -23,8 +23,8 @@ dependencies {
 }
 
 ext {
-    mainClass = "$moduleName/org.jminor.framework.demos.petstore.ui.PetstoreAppPanel"
-    loadTestMainClass = "$moduleName/org.jminor.framework.demos.petstore.testing.PetstoreLoadTest"
+    mainClass = "$moduleName/dev.codion.framework.demos.petstore.ui.PetstoreAppPanel"
+    loadTestMainClass = "$moduleName/dev.codion.framework.demos.petstore.testing.PetstoreLoadTest"
     testAddModules = ['dev.codion.framework.db.test']
     testAddReads = ['dev.codion.framework.demos.petstore': 'dev.codion.framework.db.test']
     testAddExports = [
@@ -48,7 +48,7 @@ test {
         addExports = testAddExports
     }
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.petstore.domain.Petstore"
+    systemProperty "jminor.client.domainClass", "dev.codion.framework.demos.petstore.domain.Petstore"
 }
 
 task runClientLocal(type: ModularJavaExec) {

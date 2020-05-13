@@ -47,7 +47,7 @@ test {
         addExports = testAddExports;
     }
     systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.client.domainClass", "org.jminor.framework.demos.petclinic.domain.impl.PetclinicImpl"
+    systemProperty "jminor.client.domainClass", "dev.codion.framework.demos.petclinic.domain.impl.PetclinicImpl"
 }
 
 task runClientLocal(type: ModularJavaExec) {

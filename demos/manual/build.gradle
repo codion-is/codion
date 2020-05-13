@@ -24,7 +24,7 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = "$moduleName/org.jminor.framework.demos.manual.store.ui.StoreAppPanel"
+ext.mainClass = "$moduleName/dev.codion.framework.demos.manual.store.ui.StoreAppPanel"
 
 startScripts {
     mainClassName = mainClass

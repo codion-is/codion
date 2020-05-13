@@ -318,9 +318,9 @@ public class EntityServerTest {
     configuration.setDatabase(Databases.getInstance());
     configuration.setStartupPoolUsers(singletonList(UNIT_TEST_USER));
     configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));
-    configuration.setDomainModelClassNames(singletonList("org.jminor.framework.server.TestDomain"));
+    configuration.setDomainModelClassNames(singletonList("dev.codion.framework.server.TestDomain"));
     configuration.setClientLoggingEnabled(true);
-    configuration.setLoginProxyClassNames(singletonList("org.jminor.framework.server.TestLoginProxy"));
+    configuration.setLoginProxyClassNames(singletonList("dev.codion.framework.server.TestLoginProxy"));
     configuration.setSslEnabled(true);
     configuration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
 
