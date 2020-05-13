@@ -8,26 +8,26 @@ plugins {
 apply from: '../demos.gradle'
 
 dependencies {
-    implementation project(':jminor-framework-db-local')
-    implementation project(':jminor-framework-db-rmi')
-    implementation project(':jminor-framework-db-http')
-    implementation project(':jminor-framework-domain-test')
-    implementation project(':jminor-framework-server')
-    implementation project(':jminor-framework-servlet')
+    implementation project(':codion-framework-db-local')
+    implementation project(':codion-framework-db-rmi')
+    implementation project(':codion-framework-db-http')
+    implementation project(':codion-framework-domain-test')
+    implementation project(':codion-framework-server')
+    implementation project(':codion-framework-servlet')
 
-    implementation project(':jminor-swing-common-tools')
-    implementation project(':jminor-swing-common-tools-ui')
-    implementation project(':jminor-swing-framework-ui')
-    implementation project(':jminor-swing-framework-tools')
+    implementation project(':codion-swing-common-tools')
+    implementation project(':codion-swing-common-tools-ui')
+    implementation project(':codion-swing-framework-ui')
+    implementation project(':codion-swing-framework-tools')
 
-    implementation project(':jminor-javafx-framework')
+    implementation project(':codion-javafx-framework')
 
-    implementation project(':jminor-plugin-jasperreports')
-    implementation project(':jminor-plugin-json')
+    implementation project(':codion-plugin-jasperreports')
+    implementation project(':codion-plugin-json')
 
-    testImplementation project(':jminor-swing-framework-ui-test')
+    testImplementation project(':codion-swing-framework-ui-test')
 
-    runtimeOnly project(':jminor-plugin-logback-proxy')
+    runtimeOnly project(':codion-plugin-logback-proxy')
 
     implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
@@ -39,7 +39,7 @@ dependencies {
     runtimeOnly "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
     runtimeOnly "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
 
-    runtimeOnly project(':jminor-dbms-h2database')
+    runtimeOnly project(':codion-dbms-h2database')
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 

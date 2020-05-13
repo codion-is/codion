@@ -46,19 +46,19 @@ dependencies {
 mainClassName = "$moduleName/org.jminor.framework.server.EntityServer"
 
 distTar {
-    dependsOn(':jminor-demos-empdept:domainJar')
-    dependsOn(':jminor-demos-chinook:domainJar')
-    dependsOn(':jminor-demos-petstore:domainJar')
-    dependsOn(':jminor-demos-schemabrowser:domainJar')
-    dependsOn(':jminor-demos-world:domainJar')
+    dependsOn(':codion-demos-empdept:domainJar')
+    dependsOn(':codion-demos-chinook:domainJar')
+    dependsOn(':codion-demos-petstore:domainJar')
+    dependsOn(':codion-demos-schemabrowser:domainJar')
+    dependsOn(':codion-demos-world:domainJar')
 }
 
 distZip {
-    dependsOn(':jminor-demos-empdept:domainJar')
-    dependsOn(':jminor-demos-chinook:domainJar')
-    dependsOn(':jminor-demos-petstore:domainJar')
-    dependsOn(':jminor-demos-schemabrowser:domainJar')
-    dependsOn(':jminor-demos-world:domainJar')
+    dependsOn(':codion-demos-empdept:domainJar')
+    dependsOn(':codion-demos-chinook:domainJar')
+    dependsOn(':codion-demos-petstore:domainJar')
+    dependsOn(':codion-demos-schemabrowser:domainJar')
+    dependsOn(':codion-demos-world:domainJar')
 }
 
 startScripts {

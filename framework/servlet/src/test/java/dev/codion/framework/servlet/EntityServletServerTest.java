@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.servlet;
+package dev.codion.framework.servlet;
 
-import org.jminor.common.Serializer;
-import org.jminor.common.db.Operator;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.http.server.HttpServerConfiguration;
-import org.jminor.common.rmi.server.RemoteClient;
-import org.jminor.common.rmi.server.ServerConfiguration;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.server.EntityServer;
-import org.jminor.framework.server.EntityServerAdmin;
-import org.jminor.framework.server.EntityServerConfiguration;
+import dev.codion.common.Serializer;
+import dev.codion.common.db.Operator;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.http.server.HttpServerConfiguration;
+import dev.codion.common.rmi.server.RemoteClient;
+import dev.codion.common.rmi.server.ServerConfiguration;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.server.EntityServer;
+import dev.codion.framework.server.EntityServerAdmin;
+import dev.codion.framework.server.EntityServerConfiguration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,7 +37,7 @@ import java.util.UUID;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.selectCondition;
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServletServerTest {
