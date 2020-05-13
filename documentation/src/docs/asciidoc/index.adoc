@@ -2,7 +2,7 @@
 :docinfo: shared-head
 :imagesdir: images
 
-image::jminor_logo_medium.png[JMinor Logo,200]
+image::codion-logo.png[JMinor Logo,400]
 
 == <<quickstart.adoc#, Quickstart>>
 
