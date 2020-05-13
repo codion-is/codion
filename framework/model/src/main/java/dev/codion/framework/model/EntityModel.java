@@ -32,7 +32,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Default value: false
    */
   PropertyValue<Boolean> SEARCH_ON_MASTER_INSERT = Configuration.booleanValue(
-          "org.jminor.framework.model.EntityModel.searchOnMasterInsert", false);
+          "dev.codion.framework.model.EntityModel.searchOnMasterInsert", false);
 
   /**
    * Specifies whether or not the client should save and apply user preferences<br>
@@ -40,7 +40,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Default value: true if required JSON library is found on classpath, false otherwise
    */
   PropertyValue<Boolean> USE_CLIENT_PREFERENCES = Configuration.booleanValue(
-          "org.jminor.framework.model.EntityModel.useClientPreferences", Util.onClasspath("org.json.JSONObject"));
+          "dev.codion.framework.model.EntityModel.useClientPreferences", Util.onClasspath("org.json.JSONObject"));
 
   /**
    * @return the id of the entity this entity model is based on

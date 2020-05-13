@@ -130,7 +130,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: true
    */
   public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityTablePanel.allowColumnReordering", true);
+          "dev.codion.swing.framework.ui.EntityTablePanel.allowColumnReordering", true);
 
   /**
    * Specifies whether the table condition panels should be visible or not by default<br>
@@ -138,7 +138,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: false
    */
   public static final PropertyValue<Boolean> TABLE_CONDITION_PANEL_VISIBLE = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityTablePanel.tableConditionPanelVisible", false);
+          "dev.codion.swing.framework.ui.EntityTablePanel.tableConditionPanelVisible", false);
 
   /**
    * Specifies the default table column resize mode for tables in the application<br>
@@ -146,7 +146,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: JTable.AUTO_RESIZE_OFF
    */
   public static final PropertyValue<Integer> TABLE_AUTO_RESIZE_MODE = Configuration.integerValue(
-          "org.jminor.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
+          "dev.codion.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
 
   public static final String PRINT_TABLE = "printTable";
   public static final String DELETE_SELECTED = "deleteSelected";

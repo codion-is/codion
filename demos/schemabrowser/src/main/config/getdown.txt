@@ -11,7 +11,7 @@ ui.background_image = jminor-getdown.png
 code = schemabrowser.jar
 
 # The main entry point for the application
-class = org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel
+class = dev.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel
 
 allow_offline = true
 

@@ -11,7 +11,7 @@ ui.background_image = jminor-getdown.png
 code = world.jar
 
 # The main entry point for the application
-class = org.jminor.framework.demos.world.ui.WorldAppPanel
+class = dev.codion.framework.demos.world.ui.WorldAppPanel
 
 allow_offline = true
 

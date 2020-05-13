@@ -11,7 +11,7 @@ ui.background_image = jminor-getdown.png
 code = empdept.jar
 
 # The main entry point for the application
-class = org.jminor.framework.demos.empdept.ui.EmpDeptAppPanel
+class = dev.codion.framework.demos.empdept.ui.EmpDeptAppPanel
 
 allow_offline = true
 

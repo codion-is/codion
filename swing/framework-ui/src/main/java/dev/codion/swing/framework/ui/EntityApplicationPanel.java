@@ -198,9 +198,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     NO
   }
 
-  private static final String DEFAULT_USERNAME_PROPERTY = "org.jminor.swing.framework.ui.defaultUsername";
-  private static final String LOOK_AND_FEEL_PROPERTY = "org.jminor.swing.framework.ui.LookAndFeel";
-  private static final String FONT_SIZE_PROPERTY = "org.jminor.swing.framework.ui.FontSize";
+  private static final String DEFAULT_USERNAME_PROPERTY = "dev.codion.swing.framework.ui.defaultUsername";
+  private static final String LOOK_AND_FEEL_PROPERTY = "dev.codion.swing.framework.ui.LookAndFeel";
+  private static final String FONT_SIZE_PROPERTY = "dev.codion.swing.framework.ui.FontSize";
   private static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
   private static final Dimension MINIMUM_HELP_WINDOW_SIZE = new Dimension(600, 750);
   private static final double HELP_DIALOG_SCREEN_SIZE_RATIO = 0.1;
@@ -1473,7 +1473,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Looks up user credentials via a {@link dev.codion.common.CredentialsProvider} service using an authentication token
    * found in the program arguments list. Useful for single sign on application launch.
-   * <pre>javaws -open authenticationToken:123-123-123 http://jminor.org/demo/demo.jnlp</pre>
+   * <pre>javaws -open authenticationToken:123-123-123 http://codion.dev/demo/demo.jnlp</pre>
    * <pre>java -jar application/getdown-1.7.1.jar app_dir app_id authenticationToken:123-123-123</pre>
    * @param args the program arguments
    * @return the User credentials associated with the authentication token, null if no authentication token is found,

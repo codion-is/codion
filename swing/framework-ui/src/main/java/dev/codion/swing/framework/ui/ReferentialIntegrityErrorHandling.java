@@ -25,6 +25,6 @@ public enum ReferentialIntegrityErrorHandling {
    * Default value: {@link ReferentialIntegrityErrorHandling#ERROR}
    */
   public static final PropertyValue<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING = Configuration.value(
-          "org.jminor.swing.framework.ui.referentialIntegrityErrorHandling", ReferentialIntegrityErrorHandling.ERROR,
+          "dev.codion.swing.framework.ui.referentialIntegrityErrorHandling", ReferentialIntegrityErrorHandling.ERROR,
           ReferentialIntegrityErrorHandling::valueOf);
 }

@@ -3,7 +3,7 @@
 
   <information>
     <title>Petstore JMinor Demo</title>
-    <vendor>JMinor.org</vendor>
+    <vendor>codion.dev</vendor>
     <icon href="jminor.png"/>
   </information>
   <security>
@@ -21,5 +21,5 @@
     <property name="jminor.server.hostname" value="jminor.no-ip.org" />
   </resources>
 
-  <application-desc main-class="org.jminor.framework.demos.petstore.ui.PetstoreAppPanel"/>
+  <application-desc main-class="dev.codion.framework.demos.petstore.ui.PetstoreAppPanel"/>
 </jnlp>
