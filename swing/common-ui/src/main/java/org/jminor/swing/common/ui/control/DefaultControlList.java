@@ -7,6 +7,7 @@ import org.jminor.common.state.StateObserver;
 
 import javax.swing.Action;
 import javax.swing.Icon;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultControlList extends DefaultControl implements ControlList {
+final class DefaultControlList extends AbstractControl implements ControlList {
 
   private final List<Action> actions = new ArrayList<>();
 
@@ -94,4 +95,7 @@ final class DefaultControlList extends DefaultControl implements ControlList {
   public void addAll(final ControlList controls) {
     actions.addAll(requireNonNull(controls, "controls").getActions());
   }
+
+  @Override
+  public void actionPerformed(final ActionEvent e) {/*Not required*/}
 }

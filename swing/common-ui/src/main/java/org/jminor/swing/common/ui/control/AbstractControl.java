@@ -10,19 +10,18 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
-import java.awt.event.ActionEvent;
 
 /**
- * A default Control implementation.
+ * An abstrct Control implementation, implementing everything except actionPerformed().
  */
-class DefaultControl extends AbstractAction implements Control {
+abstract class AbstractControl extends AbstractAction implements Control {
 
   private final StateObserver enabledObserver;
 
   /**
    * Constructs a new Control.
    */
-  DefaultControl() {
+  AbstractControl() {
     this(null);
   }
 
@@ -30,7 +29,7 @@ class DefaultControl extends AbstractAction implements Control {
    * Constructs a new Control.
    * @param name the control name
    */
-  DefaultControl(final String name) {
+  AbstractControl(final String name) {
     this(name, null);
   }
 
@@ -39,7 +38,7 @@ class DefaultControl extends AbstractAction implements Control {
    * @param name the control name
    * @param enabledObserver the state observer controlling the enabled state of this control
    */
-  DefaultControl(final String name, final StateObserver enabledObserver) {
+  AbstractControl(final String name, final StateObserver enabledObserver) {
     this(name, enabledObserver, null);
   }
 
@@ -49,7 +48,7 @@ class DefaultControl extends AbstractAction implements Control {
    * @param enabledObserver the state observer controlling the enabled state of this control
    * @param icon the icon
    */
-  DefaultControl(final String name, final StateObserver enabledObserver, final Icon icon) {
+  AbstractControl(final String name, final StateObserver enabledObserver, final Icon icon) {
     super(name, icon);
     this.enabledObserver = enabledObserver == null ? States.state(true) : enabledObserver;
     this.enabledObserver.addDataListener(super::setEnabled);
@@ -64,15 +63,12 @@ class DefaultControl extends AbstractAction implements Control {
   /**
    * Unsupported, the enabled state of Controls is based on their {@code enabledObserver}
    * @throws UnsupportedOperationException always
-   * @see #DefaultControl(String, StateObserver)
+   * @see #AbstractControl(String, StateObserver)
    */
   @Override
   public final void setEnabled(final boolean newValue) {
     throw new UnsupportedOperationException();
   }
-
-  @Override
-  public void actionPerformed(final ActionEvent e) {/*Not required*/}
 
   @Override
   public final String getDescription() {

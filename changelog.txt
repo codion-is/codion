@@ -6111,3 +6111,4 @@
   EntityTablePanel bug fixed, refresh toolbar was visible at startup, visibility is now synced with condition panel, south panel refactored
   EntityDefinition.Builder.searchPropertyIds() removed, replaced with ColumnProperty.Builder.searchProperty()
   LocalEntityConnectionProvider, LocalEntityConnection, getDomain() added
+  DefaultControl now abstract, renamed AbstractControl
