@@ -11,6 +11,7 @@ import org.jminor.common.db.result.ResultIterator;
 import org.jminor.common.value.PropertyValue;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.condition.EntitySelectCondition;
+import org.jminor.framework.domain.Domain;
 import org.jminor.framework.domain.entity.Entity;
 
 /**
@@ -102,4 +103,9 @@ public interface LocalEntityConnection extends EntityConnection {
    * @see org.jminor.framework.db.condition.EntitySelectCondition#setForeignKeyFetchDepth(int)
    */
   LocalEntityConnection setLimitForeignKeyFetchDepth(boolean limitForeignKeyFetchDepth);
+
+  /**
+   * @return the underlying domain model
+   */
+  Domain getDomain();
 }

@@ -68,6 +68,18 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     return database.getName().toUpperCase();
   }
 
+  /**
+   * @return the underlying domain model
+   */
+  public Domain getDomain() {
+    try {
+      return initializeDomain();
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   @Override
   protected LocalEntityConnection connect() {
     try {
