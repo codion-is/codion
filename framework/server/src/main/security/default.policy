@@ -4,6 +4,6 @@ grant {
   permission java.io.FilePermission "../lib/-", "read";
   permission java.io.FilePermission "../config/-", "read";
   permission java.util.PropertyPermission "*", "read";
-  permission java.util.PropertyPermission "jminor.*", "write";
+  permission java.util.PropertyPermission "codion.*", "write";
   permission java.net.SocketPermission "127.0.0.1:*", "accept,resolve";
 };

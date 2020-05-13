@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 public class WorldAppPanelTest extends EntityApplicationPanelTestUnit {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   public WorldAppPanelTest() {
     super(WorldAppPanel.class, UNIT_TEST_USER);

@@ -22,7 +22,7 @@ dependencies {
 }
 
 ext {
-    mainClass = "$moduleName/org.jminor.framework.demos.petclinic.ui.PetclinicAppPanel"
+    mainClass = "$moduleName/dev.codion.framework.demos.petclinic.ui.PetclinicAppPanel"
     testAddModules = ['dev.codion.framework.db.test', 'dev.codion.swing.framework.ui.test']
     testAddReads = ['dev.codion.framework.demos.petclinic': 'dev.codion.framework.db.test,dev.codion.swing.framework.ui.test']
     testAddExports = [
@@ -46,17 +46,17 @@ test {
         addReads = testAddReads
         addExports = testAddExports;
     }
-    systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.client.domainClass", "dev.codion.framework.demos.petclinic.domain.impl.PetclinicImpl"
+    systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
+    systemProperty "codion.client.domainClass", "dev.codion.framework.demos.petclinic.domain.impl.PetclinicImpl"
 }
 
 task runClientLocal(type: ModularJavaExec) {
     group 'run'
     main = mainClass
     systemProperties = [
-            'jminor.client.connectionType': 'local',
-            'jminor.db.url'               : 'jdbc:h2:mem:h2db',
-            'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
+            'codion.client.connectionType': 'local',
+            'codion.db.url'               : 'jdbc:h2:mem:h2db',
+            'codion.db.initScript'        : 'src/main/sql/create_schema.sql',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
@@ -65,9 +65,9 @@ task runClientRMI(type: ModularJavaExec) {
     group 'run'
     main = mainClass
     systemProperties = [
-            'jminor.client.connectionType'    : 'remote',
-            'jminor.server.hostname'          : 'localhost',
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'codion.client.connectionType'    : 'remote',
+            'codion.server.hostname'          : 'localhost',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/codion_truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
     ]
@@ -77,9 +77,9 @@ task runClientHttp(type: ModularJavaExec) {
     group 'run'
     main = mainClass
     systemProperties = [
-            'jminor.client.connectionType': 'http',
-            'jminor.client.http.secure'   : 'false',
-            'jminor.client.http.hostname' : 'localhost',
+            'codion.client.connectionType': 'http',
+            'codion.client.http.secure'   : 'false',
+            'codion.client.http.hostname' : 'localhost',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
@@ -88,9 +88,9 @@ task clientLocalScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientLocal
     applicationName = project.name + '-local'
     defaultJvmOpts = [
-            '-Djminor.client.connectionType=local',
-            '-Djminor.db.url=jdbc:h2:mem:h2db',
-            '-Djminor.db.initScript=../config/create_schema.sql',
+            '-Dcodion.client.connectionType=local',
+            '-Dcodion.db.url=jdbc:h2:mem:h2db',
+            '-Dcodion.db.initScript=../config/create_schema.sql',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -99,9 +99,9 @@ task clientRMIScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientRMI
     applicationName = project.name + '-remote'
     defaultJvmOpts = [
-            '-Djminor.client.connectionType=remote',
-            '-Djminor.server.hostname=localhost',
-            '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
+            '-Dcodion.client.connectionType=remote',
+            '-Dcodion.server.hostname=localhost',
+            '-Djavax.net.ssl.trustStore=../config/codion_truststore.jks',
             '-Djavax.net.ssl.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
@@ -111,9 +111,9 @@ task clientHttpScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientHttp
     applicationName = project.name + '-http'
     defaultJvmOpts = [
-            '-Djminor.client.connectionType=http',
-            '-Djminor.client.http.secure=false',
-            '-Djminor.client.http.hostname=localhost',
+            '-Dcodion.client.connectionType=http',
+            '-Dcodion.client.http.secure=false',
+            '-Dcodion.client.http.hostname=localhost',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -121,7 +121,7 @@ task clientHttpScript(type: ModularCreateStartScripts) {
 applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
     from(files('src/main/resources/logback.xml'))
-    from(files('../../framework/server/src/main/security/jminor_truststore.jks'))
+    from(files('../../framework/server/src/main/security/codion_truststore.jks'))
 }
 
 applicationDistribution.into('bin') {

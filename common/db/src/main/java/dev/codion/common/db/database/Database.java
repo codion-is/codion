@@ -43,19 +43,19 @@ public interface Database extends ConnectionFactory {
   /**
    * Specifies the jdbc url of the database.
    */
-  PropertyValue<String> DATABASE_URL = Configuration.stringValue("jminor.db.url", null);
+  PropertyValue<String> DATABASE_URL = Configuration.stringValue("codion.db.url", null);
 
   /**
    * A comma separated list of paths to scripts to run when initializing the database, implementation specific
    */
-  PropertyValue<String> DATABASE_INIT_SCRIPT = Configuration.stringValue("jminor.db.initScript", null);
+  PropertyValue<String> DATABASE_INIT_SCRIPT = Configuration.stringValue("codion.db.initScript", null);
 
   /**
    * Specifies the timeout (in seconds) to use when checking if database connections are valid.
    * Value type: Integer<br>
    * Default value: 2
    */
-  PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("jminor.db.validityCheckTimeout", 2);
+  PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("codion.db.validityCheckTimeout", 2);
 
   /**
    * The constant used to denote the username value in the connection properties

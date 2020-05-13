@@ -1,1 +1,1 @@
-java -Xmx512m -Djminor.configurationFile=rest_load_test.config -cp empdept.jar:config dev.codion.framework.demos.empdept.servlet.EmpDeptServletLoadTest &
+java -Xmx512m -Dcodion.configurationFile=rest_load_test.config -cp empdept.jar:config dev.codion.framework.demos.empdept.servlet.EmpDeptServletLoadTest &

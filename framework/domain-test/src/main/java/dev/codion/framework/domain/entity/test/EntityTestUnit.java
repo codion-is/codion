@@ -57,7 +57,7 @@ public class EntityTestUnit {
   /**
    * Specifies the database user to use when running domain unit tests.
    */
-  public static final PropertyValue<String> TEST_USER = Configuration.stringValue("jminor.test.user", null);
+  public static final PropertyValue<String> TEST_USER = Configuration.stringValue("codion.test.user", null);
 
   private static final int MININUM_RANDOM_NUMBER = -10000000;
   private static final int MAXIMUM_RANDOM_NUMBER = 10000000;

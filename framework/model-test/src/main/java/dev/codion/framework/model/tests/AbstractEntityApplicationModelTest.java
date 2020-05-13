@@ -29,7 +29,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
         EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 

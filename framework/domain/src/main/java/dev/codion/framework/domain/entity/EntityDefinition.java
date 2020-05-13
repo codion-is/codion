@@ -32,7 +32,7 @@ public interface EntityDefinition extends Serializable {
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("jminor.domain.strictForeignKeys", true);
+  PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.strictForeignKeys", true);
 
   /**
    * @return the  entityId

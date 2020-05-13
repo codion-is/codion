@@ -1,11 +1,11 @@
 # The URL from which the client is downloaded
-appbase = http://jminor.no-ip.org/demos/world/
+appbase = http://codion.no-ip.org/demos/world/
 
-resource = jminor-getdown.png
+resource = codion-getdown.png
 
 # UI Configuration
-ui.name = World JMinor Demo
-ui.background_image = jminor-getdown.png
+ui.name = World Codion Demo
+ui.background_image = codion-getdown.png
 
 # Application jar files
 code = world.jar
@@ -15,7 +15,7 @@ class = dev.codion.framework.demos.world.ui.WorldAppPanel
 
 allow_offline = true
 
-jvmarg = -Djminor.client.connectionType=remote
-jvmarg = -Djminor.server.hostname=jminor.no-ip.org
-jvmarg = -Djavax.net.ssl.trustStore=jminor_truststore.jks
+jvmarg = -Dcodion.client.connectionType=remote
+jvmarg = -Dcodion.server.hostname=codion.no-ip.org
+jvmarg = -Djavax.net.ssl.trustStore=codion_truststore.jks
 jvmarg = -Djavax.net.ssl.trustStorePassword=crappypass

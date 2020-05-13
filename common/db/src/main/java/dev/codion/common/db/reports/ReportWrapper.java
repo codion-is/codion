@@ -22,14 +22,14 @@ public interface ReportWrapper<T, R, P> extends Serializable {
   /**
    * The report path used for file based report generation.
    */
-  PropertyValue<String> REPORT_PATH = Configuration.stringValue("jminor.report.path", null);
+  PropertyValue<String> REPORT_PATH = Configuration.stringValue("codion.report.path", null);
 
   /**
    * Specifies whether to cache reports when loaded from disk/network, this prevents "hot deploy" of reports.<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("jminor.report.cacheReports", true);
+  PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("codion.report.cacheReports", true);
 
   /**
    * Loads and fills the report using the given database connection

@@ -27,7 +27,7 @@ public final class EntityServerMonitor {
    * Value type: Integer<br>
    * Default value: 5
    */
-  public static final PropertyValue<Integer> SERVER_MONITOR_UPDATE_RATE = Configuration.integerValue("jminor.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
+  public static final PropertyValue<Integer> SERVER_MONITOR_UPDATE_RATE = Configuration.integerValue("codion.server.monitor.updateRate", DEFAULT_SERVER_MONITOR_UPDATE_RATE);
 
   private final Event<String> hostAddedEvent = Events.event();
 

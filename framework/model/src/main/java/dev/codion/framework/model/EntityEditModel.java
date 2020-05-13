@@ -36,7 +36,7 @@ public interface EntityEditModel extends Refreshable {
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> PERSIST_FOREIGN_KEY_VALUES = Configuration.booleanValue("jminor.client.persistForeignKeyValues", true);
+  PropertyValue<Boolean> PERSIST_FOREIGN_KEY_VALUES = Configuration.booleanValue("codion.client.persistForeignKeyValues", true);
 
   /**
    * Indicates whether the application should ask for confirmation when exiting if some data is unsaved<br>
@@ -44,7 +44,7 @@ public interface EntityEditModel extends Refreshable {
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue("jminor.client.warnAboutUnsavedData", false);
+  PropertyValue<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue("codion.client.warnAboutUnsavedData", false);
 
   /**
    * Specifies the value used by default to represent a null value in combo box models.
@@ -52,14 +52,14 @@ public interface EntityEditModel extends Refreshable {
    * Value type: String<br>
    * Default value: -
    */
-  PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("jminor.client.comboBoxNullValueItem", "-");
+  PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("codion.client.comboBoxNullValueItem", "-");
 
   /**
    * Specifies whether edit models post their insert, update and delete events to the {@link EntityEditEvents}<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("jminor.client.editModelPostEditEvents", false);
+  PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("codion.client.editModelPostEditEvents", false);
 
   /**
    * @return the id of the entity this edit model is based on

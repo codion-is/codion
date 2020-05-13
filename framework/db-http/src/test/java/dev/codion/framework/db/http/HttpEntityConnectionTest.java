@@ -48,7 +48,7 @@ public final class HttpEntityConnectionTest {
 
   private static final Integer WEB_SERVER_PORT_NUMBER = 8089;
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static EntityServer server;
 

@@ -21,7 +21,7 @@ import static java.util.Collections.singletonList;
 public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel> {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   public PetstoreLoadTest() {
     super(UNIT_TEST_USER, singletonList(new AbstractUsageScenario<PetstoreAppModel>("selectRecords") {

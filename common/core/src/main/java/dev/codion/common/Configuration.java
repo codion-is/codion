@@ -23,7 +23,7 @@ public final class Configuration {
    * Value type: String<br>
    * Default value: null
    */
-  public static final String CONFIGURATION_FILE = "jminor.configurationFile";
+  public static final String CONFIGURATION_FILE = "codion.configurationFile";
 
   /**
    * Specifies whether or not the application requires configuration file to run.<br>
@@ -32,12 +32,12 @@ public final class Configuration {
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final String CONFIGURATION_FILE_REQUIRED = "jminor.configurationFileRequired";
+  public static final String CONFIGURATION_FILE_REQUIRED = "codion.configurationFileRequired";
 
   private static final PropertyStore STORE;
 
   static {
-    final String configurationFile = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + "/jminor.config");
+    final String configurationFile = System.getProperty(CONFIGURATION_FILE, System.getProperty("user.home") + "/codion.config");
     try {
       final File file = new File(configurationFile);
       final boolean configurationFileRequired =

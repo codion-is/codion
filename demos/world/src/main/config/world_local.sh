@@ -1,1 +1,1 @@
-java -Xmx128m -Djminor.configurationFile=h2db.config -cp world.jar:config dev.codion.framework.demos.world.ui.WorldAppPanel &
+java -Xmx128m -Dcodion.configurationFile=h2db.config -cp world.jar:config dev.codion.framework.demos.world.ui.WorldAppPanel &

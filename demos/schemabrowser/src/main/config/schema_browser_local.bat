@@ -1,1 +1,1 @@
-java -Xmx128m -Djminor.configurationFile=mysql.config -cp schemabrowser.jar;config dev.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel
+java -Xmx128m -Dcodion.configurationFile=mysql.config -cp schemabrowser.jar;config dev.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel

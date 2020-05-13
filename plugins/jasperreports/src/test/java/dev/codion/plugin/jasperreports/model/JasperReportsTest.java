@@ -35,12 +35,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class JasperReportsTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final String REPORT_PATH = "build/resources/test";
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          new H2DatabaseProvider().createDatabase("jdbc:h2:mem:JasperReportsWrapperTest", System.getProperty("jminor.db.initScript")))
+          new H2DatabaseProvider().createDatabase("jdbc:h2:mem:JasperReportsWrapperTest", System.getProperty("codion.db.initScript")))
           .setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @AfterAll

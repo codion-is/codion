@@ -37,7 +37,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
     pp.setUrl(connectionFactory.getUrl());
     pp.setDefaultAutoCommit(false);
     pp.setName(user.getUsername());
-    //JMinor does not validate connections coming from a connection pool
+    //Codion does not validate connections coming from a connection pool
     pp.setTestOnBorrow(true);
     pp.setValidator(new ConnectionValidator(connectionFactory));
     pp.setMaxActive(ConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE.get());

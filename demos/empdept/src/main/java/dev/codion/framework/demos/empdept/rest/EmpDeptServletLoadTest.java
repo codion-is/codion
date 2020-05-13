@@ -27,7 +27,7 @@ import static dev.codion.framework.db.condition.Conditions.selectCondition;
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   public EmpDeptServletLoadTest(final User user) {
     super(user, asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),

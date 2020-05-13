@@ -27,12 +27,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class NextReportsTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
   public void fillReport() throws ReportException, IOException, DatabaseException {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
-            new H2DatabaseProvider().createDatabase("jdbc:h2:mem:h2db", System.getProperty("jminor.db.initScript")))
+            new H2DatabaseProvider().createDatabase("jdbc:h2:mem:h2db", System.getProperty("codion.db.initScript")))
             .setDomainClassName(NextDomain.class.getName()).setUser(UNIT_TEST_USER);
     ReportWrapper.REPORT_PATH.set("src/test/reports/");
     final LocalEntityConnection connection = (LocalEntityConnection) connectionProvider.getConnection();

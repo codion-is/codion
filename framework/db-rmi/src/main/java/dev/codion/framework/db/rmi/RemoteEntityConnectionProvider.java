@@ -40,7 +40,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   /**
    * A key for specifying the id of the domain required by a remote client
    */
-  public static final String REMOTE_CLIENT_DOMAIN_ID = "jminor.client.domainId";
+  public static final String REMOTE_CLIENT_DOMAIN_ID = "codion.client.domainId";
 
   private Server<RemoteEntityConnection, Remote> server;
   private ServerInformation serverInformation;

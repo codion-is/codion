@@ -129,14 +129,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue("jminor.swing.confirmExit", false);
+  public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue("codion.swing.confirmExit", false);
 
   /**
    * Specifies whether a startup dialog should be shown<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("jminor.swing.showStartupDialog", true);
+  public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("codion.swing.showStartupDialog", true);
 
   /**
    * Specifies if EntityPanels opened via the {@code EntityApplicationPanel.displayEntityPanelDialog} method
@@ -145,14 +145,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Default value: false
    * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanelBuilder)
    */
-  public static final PropertyValue<Boolean> PERSIST_ENTITY_PANELS = Configuration.booleanValue("jminor.swing.persistEntityPanels", false);
+  public static final PropertyValue<Boolean> PERSIST_ENTITY_PANELS = Configuration.booleanValue("codion.swing.persistEntityPanels", false);
 
   /**
    * Specifies the tab placement<br>
    * Value type: Integer (JTabbedPane.TOP, JTabbedPane.BOTTOM, JTabbedPane.LEFT, JTabbedPane.RIGHT)<br>
    * Default value: JTabbedPane.TOP
    */
-  public static final PropertyValue<Integer> TAB_PLACEMENT = Configuration.integerValue("jminor.swing.tabPlacement", JTabbedPane.TOP);
+  public static final PropertyValue<Integer> TAB_PLACEMENT = Configuration.integerValue("codion.swing.tabPlacement", JTabbedPane.TOP);
 
   /**
    * Specifies whether an application frame should be maximized on startup.
