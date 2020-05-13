@@ -84,7 +84,7 @@ public final class EntityInputComponents {
    * Value type:String<br>
    * Default value: {@link #COMPLETION_MODE_MAXIMUM_MATCH}
    */
-  public static final PropertyValue<String> COMBO_BOX_COMPLETION_MODE = Configuration.stringValue("jminor.swing.comboBoxCompletionMode", COMPLETION_MODE_MAXIMUM_MATCH);
+  public static final PropertyValue<String> COMBO_BOX_COMPLETION_MODE = Configuration.stringValue("codion.swing.comboBoxCompletionMode", COMPLETION_MODE_MAXIMUM_MATCH);
 
   /**
    * Identifies the completion mode AutoCompletion
@@ -96,7 +96,7 @@ public final class EntityInputComponents {
    * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)<br>
    * Default value: JLabel.LEFT
    */
-  public static final PropertyValue<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue("jminor.swing.labelTextAlignment", JLabel.LEFT);
+  public static final PropertyValue<Integer> LABEL_TEXT_ALIGNMENT = Configuration.integerValue("codion.swing.labelTextAlignment", JLabel.LEFT);
 
   /**
    * Specifies whether a component should include a caption.

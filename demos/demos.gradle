@@ -39,17 +39,17 @@ artifacts {
 
 test {
     useJUnitPlatform()
-    systemProperty "jminor.db.url", "jdbc:h2:mem:h2db"
-    systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.test.user", "scott:tiger"
+    systemProperty "codion.db.url", "jdbc:h2:mem:h2db"
+    systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
+    systemProperty "codion.test.user", "scott:tiger"
 }
 
 startScripts {
     applicationName = project.name + '-local'
     defaultJvmOpts = [
-            '-Djminor.client.connectionType=local',
-            '-Djminor.db.url=jdbc:h2:mem:h2db',
-            '-Djminor.db.initScript=../config/create_schema.sql',
+            '-Dcodion.client.connectionType=local',
+            '-Dcodion.db.url=jdbc:h2:mem:h2db',
+            '-Dcodion.db.initScript=../config/create_schema.sql',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -59,9 +59,9 @@ task clientRMIScript(type: CreateStartScripts) {
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
     defaultJvmOpts = [
-            '-Djminor.client.connectionType=remote',
-            '-Djminor.server.hostname=localhost',
-            '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
+            '-Dcodion.client.connectionType=remote',
+            '-Dcodion.server.hostname=localhost',
+            '-Djavax.net.ssl.trustStore=../config/codion_truststore.jks',
             '-Djavax.net.ssl.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
@@ -72,9 +72,9 @@ task clientHttpScript(type: CreateStartScripts) {
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
     defaultJvmOpts = [
-            '-Djminor.client.connectionType=http',
-            '-Djminor.client.http.secure=false',
-            '-Djminor.client.http.hostname=localhost',
+            '-Dcodion.client.connectionType=http',
+            '-Dcodion.client.http.secure=false',
+            '-Dcodion.client.http.hostname=localhost',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -85,9 +85,9 @@ task loadTestRMIScript(type: CreateStartScripts) {
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
     defaultJvmOpts = [
-            '-Djminor.client.connectionType=remote',
-            '-Djminor.server.hostname=localhost',
-            '-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks',
+            '-Dcodion.client.connectionType=remote',
+            '-Dcodion.server.hostname=localhost',
+            '-Djavax.net.ssl.trustStore=../config/codion_truststore.jks',
             '-Djavax.net.ssl.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
@@ -99,9 +99,9 @@ task loadTestHttpScript(type: CreateStartScripts) {
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
     defaultJvmOpts = [
-            '-Djminor.client.connectionType=http',
-            '-Djminor.client.http.secure=false',
-            '-Djminor.client.http.hostname=localhost',
+            '-Dcodion.client.connectionType=http',
+            '-Dcodion.client.http.secure=false',
+            '-Dcodion.client.http.hostname=localhost',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -109,7 +109,7 @@ task loadTestHttpScript(type: CreateStartScripts) {
 applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
     from(files('src/main/resources/logback.xml'))
-    from(files('../../framework/server/src/main/security/jminor_truststore.jks'))
+    from(files('../../framework/server/src/main/security/codion_truststore.jks'))
 }
 
 applicationDistribution.into('reports') {
@@ -128,9 +128,9 @@ task runClientLocal(type: JavaExec) {
     group 'run'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
-            'jminor.client.connectionType': 'local',
-            'jminor.db.url'               : 'jdbc:h2:mem:h2db',
-            'jminor.db.initScript'        : 'src/main/sql/create_schema.sql',
+            'codion.client.connectionType': 'local',
+            'codion.db.url'               : 'jdbc:h2:mem:h2db',
+            'codion.db.initScript'        : 'src/main/sql/create_schema.sql',
             'logback.configurationFile'   : 'src/main/resources/logback.xml',
             'sun.awt.disablegrab'         : 'true'
     ]
@@ -140,9 +140,9 @@ task runClientRMI(type: JavaExec) {
     group 'run'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
-            'jminor.client.connectionType'    : 'remote',
-            'jminor.server.hostname'          : 'localhost',
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'codion.client.connectionType'    : 'remote',
+            'codion.server.hostname'          : 'localhost',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/codion_truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml',
             'sun.awt.disablegrab'             : 'true'
@@ -153,9 +153,9 @@ task runClientHttp(type: JavaExec) {
     group 'run'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
-            'jminor.client.connectionType': 'http',
-            'jminor.client.http.secure'   : 'false',
-            'jminor.client.http.hostname' : 'localhost',
+            'codion.client.connectionType': 'http',
+            'codion.client.http.secure'   : 'false',
+            'codion.client.http.hostname' : 'localhost',
             'logback.configurationFile'   : 'src/main/config/logback.xml',
             'sun.awt.disablegrab'         : 'true'
     ]
@@ -165,9 +165,9 @@ task runLoadTestRMI(type: JavaExec) {
     group 'run'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
-            'jminor.client.connectionType'    : 'remote',
-            'jminor.server.hostname'          : 'localhost',
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'codion.client.connectionType'    : 'remote',
+            'codion.server.hostname'          : 'localhost',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/codion_truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
     ]
@@ -177,9 +177,9 @@ task runLoadTestHttp(type: JavaExec) {
     group 'run'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
-            'jminor.client.connectionType': 'http',
-            'jminor.client.http.secure'   : 'false',
-            'jminor.client.http.hostname' : 'localhost',
+            'codion.client.connectionType': 'http',
+            'codion.client.http.secure'   : 'false',
+            'codion.client.http.hostname' : 'localhost',
             'logback.configurationFile'   : 'src/main/config/logback.xml'
     ]
 }

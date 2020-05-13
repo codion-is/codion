@@ -40,7 +40,7 @@ public interface DatabaseProvider {
   static DatabaseProvider getInstance() throws SQLException {
     final String jdbcUrl = Database.DATABASE_URL.get();
     if (jdbcUrl == null) {
-      throw new IllegalStateException("jminor.db.url must be specified before discovering DatabaseProviders");
+      throw new IllegalStateException("codion.db.url must be specified before discovering DatabaseProviders");
     }
 
     return getInstance(jdbcUrl);

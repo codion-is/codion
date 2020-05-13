@@ -34,7 +34,7 @@ import static dev.codion.framework.demos.chinook.domain.Chinook.*;
 public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicationModel> {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final UsageScenario<ChinookApplicationModel> UPDATE_TOTALS =
           new AbstractEntityUsageScenario<ChinookApplicationModel>("updateTotals") {

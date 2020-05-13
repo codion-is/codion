@@ -40,7 +40,7 @@ public final class Text {
    * @see Locale#toLanguageTag()
    */
   public static final PropertyValue<String> DEFAULT_COLLATOR_LANGUAGE =
-          Configuration.stringValue("jminor.defaultCollatorLanguage", Locale.getDefault().getLanguage());
+          Configuration.stringValue("codion.defaultCollatorLanguage", Locale.getDefault().getLanguage());
 
   /**
    * Left or right alignment

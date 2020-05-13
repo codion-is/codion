@@ -44,19 +44,19 @@ dependencies {
 mainClassName = 'dev.codion.framework.server.EntityServer'
 
 distTar {
-    dependsOn(':jminor-demos-empdept:domainJar')
-    dependsOn(':jminor-demos-chinook:domainJar')
-    dependsOn(':jminor-demos-petstore:domainJar')
-    dependsOn(':jminor-demos-schemabrowser:domainJar')
-    dependsOn(':jminor-demos-world:domainJar')
+    dependsOn(':codion-demos-empdept:domainJar')
+    dependsOn(':codion-demos-chinook:domainJar')
+    dependsOn(':codion-demos-petstore:domainJar')
+    dependsOn(':codion-demos-schemabrowser:domainJar')
+    dependsOn(':codion-demos-world:domainJar')
 }
 
 distZip {
-    dependsOn(':jminor-demos-empdept:domainJar')
-    dependsOn(':jminor-demos-chinook:domainJar')
-    dependsOn(':jminor-demos-petstore:domainJar')
-    dependsOn(':jminor-demos-schemabrowser:domainJar')
-    dependsOn(':jminor-demos-world:domainJar')
+    dependsOn(':codion-demos-empdept:domainJar')
+    dependsOn(':codion-demos-chinook:domainJar')
+    dependsOn(':codion-demos-petstore:domainJar')
+    dependsOn(':codion-demos-schemabrowser:domainJar')
+    dependsOn(':codion-demos-world:domainJar')
 }
 
 startScripts {
@@ -70,9 +70,9 @@ distributions {
                 into("lib")
             }
             from(files(
-                    'src/main/security/jminor_keystore.jks',
-                    'src/main/security/jminor_truststore.jks',
-                    'src/main/security/jminor_server.policy',
+                    'src/main/security/codion_keystore.jks',
+                    'src/main/security/codion_truststore.jks',
+                    'src/main/security/codion_server.policy',
                     'src/main/security/all_permissions.policy',
                     'src/main/security/default.policy',
                     'src/main/security/serialization-whitelist.txt')) {
@@ -98,14 +98,14 @@ distributions {
 }
 applicationDefaultJvmArgs = [
         '-Xmx256m',
-        '-Djminor.configurationFile=../config/h2_embedded.config',
+        '-Dcodion.configurationFile=../config/h2_embedded.config',
         '-Dlogback.configurationFile=../config/logback.xml',
-        '-Djava.security.policy=../config/jminor_server.policy'
+        '-Djava.security.policy=../config/codion_server.policy'
 ]
 
 def applicationGenerateSecurityPolicyJvmArgs = [
         '-Xmx256m',
-        '-Djminor.configurationFile=../config/h2_embedded.config',
+        '-Dcodion.configurationFile=../config/h2_embedded.config',
         '-Dlogback.configurationFile=../config/logback.xml',
         '-Djava.security.manager=net.sourceforge.prograde.sm.PolicyFileGeneratorJSM',
         '-Djava.security.policy=../config/default.policy',
@@ -118,23 +118,23 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
     main = mainClassName
     maxHeapSize = '256m'
     systemProperties = [
-            'jminor.db.url'                             : 'jdbc:h2:mem:h2db',
-            'jminor.db.initScript'                      : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
-            'jminor.server.pooling.startupPoolUsers'    : 'scott:tiger',
-            'jminor.server.port'                        : '2222',
-            'jminor.server.admin.port'                  : '2223',
-            'jminor.server.admin.user'                  : 'scott:tiger',
-            'jminor.server.http.secure'                 : 'false',
-            'jminor.server.pooling.poolProviderClass'   : 'dev.codion.plugin.hikari.pool.HikariConnectionPoolProvider',
-            'jminor.server.auxiliaryServerProviderClassNames'   : 'dev.codion.framework.servlet.EntityServletServerProvider',
-            'jminor.server.domain.classes'              : 'dev.codion.framework.demos.empdept.domain.EmpDept,dev.codion.framework.demos.chinook.domain.impl.ChinookImpl,dev.codion.framework.demos.petclinic.domain.impl.ClinicImpl,dev.codion.framework.demos.petstore.domain.Petstore,dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser,dev.codion.framework.demos.world.domain.World',
-            'jminor.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
-            'jminor.server.serializationFilterDryRun'   : 'false',
-            'jminor.server.loginProxyClasses'           : 'dev.codion.framework.demos.chinook.server.ChinookLoginProxy',
-            'javax.net.ssl.keyStore'                    : 'src/main/security/jminor_keystore.jks',
+            'codion.db.url'                             : 'jdbc:h2:mem:h2db',
+            'codion.db.initScript'                      : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
+            'codion.server.pooling.startupPoolUsers'    : 'scott:tiger',
+            'codion.server.port'                        : '2222',
+            'codion.server.admin.port'                  : '2223',
+            'codion.server.admin.user'                  : 'scott:tiger',
+            'codion.server.http.secure'                 : 'false',
+            'codion.server.pooling.poolProviderClass'   : 'dev.codion.plugin.hikari.pool.HikariConnectionPoolProvider',
+            'codion.server.auxiliaryServerProviderClassNames'   : 'dev.codion.framework.servlet.EntityServletServerProvider',
+            'codion.server.domain.classes'              : 'dev.codion.framework.demos.empdept.domain.EmpDept,dev.codion.framework.demos.chinook.domain.impl.ChinookImpl,dev.codion.framework.demos.petclinic.domain.impl.ClinicImpl,dev.codion.framework.demos.petstore.domain.Petstore,dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser,dev.codion.framework.demos.world.domain.World',
+            'codion.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
+            'codion.server.serializationFilterDryRun'   : 'false',
+            'codion.server.loginProxyClasses'           : 'dev.codion.framework.demos.chinook.server.ChinookLoginProxy',
+            'javax.net.ssl.keyStore'                    : 'src/main/security/codion_keystore.jks',
             'javax.net.ssl.keyStorePassword'            : 'crappypass',
             'java.rmi.server.hostname'                  : 'localhost',
             'logback.configurationFile'                 : 'src/main/config/logback.xml',
-            'java.security.policy'                      : 'src/main/security/jminor_server.policy'
+            'java.security.policy'                      : 'src/main/security/codion_server.policy'
     ]
 }

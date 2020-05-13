@@ -33,7 +33,7 @@ grant {
     permission java.util.PropertyPermission "javax.net.ssl.trustStorePassword", "write";
     permission java.util.PropertyPermission "javax.net.ssl.trustStore", "write";
     permission java.util.PropertyPermission "jetty.git.hash", "write";
-    permission java.util.PropertyPermission "jminor.*", "write";
+    permission java.util.PropertyPermission "codion.*", "write";
     permission java.util.PropertyPermission "logback.configurationFile", "write";
     permission java.util.PropertyPermission "*", "read,write";
 };

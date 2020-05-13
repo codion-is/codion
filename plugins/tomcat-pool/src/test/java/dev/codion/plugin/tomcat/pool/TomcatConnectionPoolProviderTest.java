@@ -15,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TomcatConnectionPoolProviderTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
   public void test() throws Exception {
     final TomcatConnectionPoolProvider provider = new TomcatConnectionPoolProvider();
     final ConnectionPool pool = provider.createConnectionPool(new H2DatabaseProvider().createDatabase("jdbc:h2:mem:TomcatConnectionPoolProviderTest",
-            System.getProperty("jminor.db.initScript")), UNIT_TEST_USER);
+            System.getProperty("codion.db.initScript")), UNIT_TEST_USER);
     pool.setCollectSnapshotStatistics(true);
     assertTrue(pool.isCollectSnapshotStatistics());
     pool.getConnection(UNIT_TEST_USER).close();

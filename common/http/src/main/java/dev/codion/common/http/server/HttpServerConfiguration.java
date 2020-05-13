@@ -16,35 +16,35 @@ public interface HttpServerConfiguration {
    * Value type: Integer<br>
    * Default value: 8080
    */
-  PropertyValue<Integer> HTTP_SERVER_PORT = Configuration.integerValue("jminor.server.http.port", 8080);
+  PropertyValue<Integer> HTTP_SERVER_PORT = Configuration.integerValue("codion.server.http.port", 8080);
 
   /**
    * Specifies whether https should be used.<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("jminor.server.http.secure", true);
+  PropertyValue<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("codion.server.http.secure", true);
 
   /**
    * Specifies the keystore to use for securing http connections.<br>
    * Value type: String<br>
    * Default value: null
    */
-  PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("jminor.server.http.keyStore", null);
+  PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("codion.server.http.keyStore", null);
 
   /**
    * Specifies the password for the keystore used for securing http connections.<br>
    * Value type: String<br>
    * Default value: null
    */
-  PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("jminor.server.http.keyStorePassword", null);
+  PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("codion.server.http.keyStorePassword", null);
 
   /**
    * Specifies the document root for file serving<br>.
    * Value type: String<br>
    * Default value: null
    */
-  PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("jminor.server.http.documentRoot", null);
+  PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("codion.server.http.documentRoot", null);
 
   /**
    * Specifies whether a http server should use https.

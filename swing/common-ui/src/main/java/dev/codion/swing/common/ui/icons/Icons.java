@@ -28,12 +28,12 @@ public interface Icons {
   ImageIcon configure();
 
   /**
-   * @return icon for the jminor logo
+   * @return icon for the codion logo
    */
   ImageIcon logo();
 
   /**
-   * @return icon for the jminor logo in red
+   * @return icon for the codion logo in red
    */
   ImageIcon logoRed();
 

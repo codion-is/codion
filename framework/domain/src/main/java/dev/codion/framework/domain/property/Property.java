@@ -26,7 +26,7 @@ public interface Property extends Serializable {
    * Value type: Integer<br>
    * Default value: 10
    */
-  PropertyValue<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("jminor.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
+  PropertyValue<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("codion.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
 
   /**
    * Specifies the default rounding mode used for BigDecimal property values<br>
@@ -35,42 +35,42 @@ public interface Property extends Serializable {
    * @see #MAXIMUM_FRACTION_DIGITS
    * @see Property.Builder#bigDecimalRoundingMode(int)
    */
-  PropertyValue<Integer> BIG_DECIMAL_ROUNDING_MODE = Configuration.integerValue("jminor.domain.bigDecimalRoundingMode", BigDecimal.ROUND_HALF_EVEN);
+  PropertyValue<Integer> BIG_DECIMAL_ROUNDING_MODE = Configuration.integerValue("codion.domain.bigDecimalRoundingMode", BigDecimal.ROUND_HALF_EVEN);
 
   /**
    * The date format pattern to use when showing time values in tables and when creating default time input fields<br>
    * Value type: String<br>
    * Default value: HH:mm
    */
-  PropertyValue<String> TIME_FORMAT = Configuration.stringValue("jminor.domain.timeFormat", "HH:mm");
+  PropertyValue<String> TIME_FORMAT = Configuration.stringValue("codion.domain.timeFormat", "HH:mm");
 
   /**
    * The date format pattern to use when showing timestamp values in tables and when creating default timestamp input fields<br>
    * Value type: String<br>
    * Default value: dd-MM-yyyy HH:mm
    */
-  PropertyValue<String> TIMESTAMP_FORMAT = Configuration.stringValue("jminor.domain.timestampFormat", "dd-MM-yyyy HH:mm");
+  PropertyValue<String> TIMESTAMP_FORMAT = Configuration.stringValue("codion.domain.timestampFormat", "dd-MM-yyyy HH:mm");
 
   /**
    * The date format pattern to use when showing date values in tables and when creating default date input fields<br>
    * Value type: String<br>
    * Default value: dd-MM-yyyy
    */
-  PropertyValue<String> DATE_FORMAT = Configuration.stringValue("jminor.domain.dateFormat", "dd-MM-yyyy");
+  PropertyValue<String> DATE_FORMAT = Configuration.stringValue("codion.domain.dateFormat", "dd-MM-yyyy");
 
   /**
    * Specifies the default foreign key fetch depth<br>
    * Value type: Integer<br>
    * Default value: 1
    */
-  PropertyValue<Integer> FOREIGN_KEY_FETCH_DEPTH = Configuration.integerValue("jminor.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
+  PropertyValue<Integer> FOREIGN_KEY_FETCH_DEPTH = Configuration.integerValue("codion.domain.foreignKeyFetchDepth", DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
 
   /**
    * Specifies the wildcard character used by the framework<br>
    * Value type: String<br>
    * Default value: %
    */
-  PropertyValue<String> WILDCARD_CHARACTER = Configuration.stringValue("jminor.wildcardCharacter", "%");
+  PropertyValue<String> WILDCARD_CHARACTER = Configuration.stringValue("codion.wildcardCharacter", "%");
 
   /**
    * @return the id of the entity this property is associated with

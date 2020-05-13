@@ -24,16 +24,16 @@ dependencies {
 ext.mainClass = 'dev.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
 
 test {
-    systemProperty "jminor.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "jminor.client.domainClass", "dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser"
+    systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
+    systemProperty "codion.client.domainClass", "dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser"
 }
 
 startScripts {
     mainClassName = mainClass
     //overwrite the defaults to leave out initScript
     defaultJvmOpts = [
-            '-Djminor.client.connectionType=local',
-            '-Djminor.db.url=jdbc:h2:mem:h2db',
+            '-Dcodion.client.connectionType=local',
+            '-Dcodion.db.url=jdbc:h2:mem:h2db',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
@@ -50,8 +50,8 @@ runClientLocal {
     main = mainClass
     //overwrite the defaults to leave out initScript
     systemProperties = [
-            'jminor.client.connectionType': 'local',
-            'jminor.db.url'               : 'jdbc:h2:mem:h2db',
+            'codion.client.connectionType': 'local',
+            'codion.db.url'               : 'jdbc:h2:mem:h2db',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }

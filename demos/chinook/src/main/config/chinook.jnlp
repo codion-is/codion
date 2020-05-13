@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/demos/chinook" href="chinook.jnlp">
+<jnlp spec="1.0+" codebase="http://codion.no-ip.org/demos/chinook" href="chinook.jnlp">
 
   <information>
-    <title>Chinook JMinor Demo</title>
+    <title>Chinook Codion Demo</title>
     <vendor>codion.dev</vendor>
-    <icon href="jminor.png"/>
+    <icon href="codion.png"/>
   </information>
   <security>
     <all-permissions/>
@@ -15,10 +15,10 @@
 
     <jar href="chinook.jar" main="true" />
 
-    <property name="jminor.client.connectionType" value="remote"/>
-    <property name="javax.net.ssl.trustStore" value="jminor_truststore.jks"/>
+    <property name="codion.client.connectionType" value="remote"/>
+    <property name="javax.net.ssl.trustStore" value="codion_truststore.jks"/>
     <property name="javax.net.ssl.trustStorePassword" value="crappypass"/>
-    <property name="jminor.server.hostname" value="jminor.no-ip.org" />
+    <property name="codion.server.hostname" value="codion.no-ip.org" />
   </resources>
 
   <application-desc main-class="dev.codion.framework.demos.chinook.ui.ChinookAppPanel"/>

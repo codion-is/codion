@@ -1,1 +1,1 @@
-java -Xmx512m -Djminor.configurationFile=load_test.config -Djava.security.policy=config/all_permissions.policy -cp config;lib/* dev.codion.framework.demos.empdept.testing.EmpDeptLoadTest
+java -Xmx512m -Dcodion.configurationFile=load_test.config -Djava.security.policy=config/all_permissions.policy -cp config;lib/* dev.codion.framework.demos.empdept.testing.EmpDeptLoadTest

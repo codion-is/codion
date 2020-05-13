@@ -115,7 +115,7 @@ public final class LoadTestPanel extends JPanel {
   public JFrame showFrame() {
     final JFrame frame = new JFrame();
     frame.setIconImage(icons().logo().getImage());
-    final String title = "JMinor - " + loadTestModel.getTitle();
+    final String title = "Codion - " + loadTestModel.getTitle();
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
       @Override

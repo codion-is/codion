@@ -65,7 +65,7 @@ public class EntityServletServerTest {
   private static final Entities ENTITIES = new TestDomain().getEntities();
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
   private static final User ADMIN_USER = Users.parseUser("scott:tiger");

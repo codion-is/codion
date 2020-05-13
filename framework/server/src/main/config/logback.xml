@@ -3,7 +3,7 @@
   <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
     <discriminator>
       <key>logIdentifier</key>
-      <defaultValue>jminor_server</defaultValue>
+      <defaultValue>codion_server</defaultValue>
     </discriminator>
     <sift>
       <appender name="FILE-${logIdentifier}" class="ch.qos.logback.core.rolling.RollingFileAppender">

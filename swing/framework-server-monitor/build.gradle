@@ -29,7 +29,7 @@ dependencies {
 mainClassName = 'dev.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
 
 applicationDistribution.from(files(
-        '../../framework/server/src/main/security/jminor_truststore.jks',
+        '../../framework/server/src/main/security/codion_truststore.jks',
         '../../framework/server/src/main/security/all_permissions.policy',
         'src/main/config/logback.xml',
         'src/main/config/server_monitor.config')) {
@@ -37,10 +37,10 @@ applicationDistribution.from(files(
 }
 
 applicationDefaultJvmArgs = [
-        "-Djavax.net.ssl.trustStore=../config/jminor_truststore.jks",
+        "-Djavax.net.ssl.trustStore=../config/codion_truststore.jks",
         "-Djavax.net.ssl.trustStorePassword=crappypass",
         "-Djava.security.policy=../config/all_permissions.policy",
-        "-Djminor.configurationFile=../config/server_monitor.config"
+        "-Dcodion.configurationFile=../config/server_monitor.config"
 ]
 
 task runServerMonitor(type: JavaExec) {
@@ -48,9 +48,9 @@ task runServerMonitor(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'dev.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
     systemProperties = [
-            'jminor.server.hostname'          : 'localhost',
-            'jminor.server.admin.user'        : 'scott:tiger',
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/jminor_truststore.jks',
+            'codion.server.hostname'          : 'localhost',
+            'codion.server.admin.user'        : 'scott:tiger',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/codion_truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/config/logback.xml'
     ]

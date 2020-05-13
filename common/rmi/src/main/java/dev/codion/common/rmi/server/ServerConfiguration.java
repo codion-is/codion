@@ -52,7 +52,7 @@ public interface ServerConfiguration {
    * Value type: String<br>
    * Default value: localhost
    */
-  PropertyValue<String> SERVER_HOST_NAME = Configuration.stringValue("jminor.server.hostname", LOCALHOST);
+  PropertyValue<String> SERVER_HOST_NAME = Configuration.stringValue("codion.server.hostname", LOCALHOST);
 
   /**
    * Specifies the rmi server hostname<br>
@@ -63,11 +63,11 @@ public interface ServerConfiguration {
   PropertyValue<String> RMI_SERVER_HOSTNAME = Configuration.stringValue("java.rmi.server.hostname", LOCALHOST);
 
   /**
-   * Specifies the prefix used when exporting/looking up the JMinor server<br>
+   * Specifies the prefix used when exporting/looking up the Codion server<br>
    * Value type: String<br>
-   * Default value: JMinor Server
+   * Default value: Codion Server
    */
-  PropertyValue<String> SERVER_NAME_PREFIX = Configuration.stringValue("jminor.server.namePrefix", "JMinor Server");
+  PropertyValue<String> SERVER_NAME_PREFIX = Configuration.stringValue("codion.server.namePrefix", "Codion Server");
 
   /**
    * The port on which the server is made available to clients.<br>
@@ -76,14 +76,14 @@ public interface ServerConfiguration {
    * Value type: Integer<br>
    * Default value: none
    */
-  PropertyValue<Integer> SERVER_PORT = Configuration.integerValue("jminor.server.port", null);
+  PropertyValue<Integer> SERVER_PORT = Configuration.integerValue("codion.server.port", null);
 
   /**
    * The port on which to locate the server registry<br>
    * Value type: Integer<br>
    * Default value: Registry.REGISTRY_PORT (1099)
    */
-  PropertyValue<Integer> REGISTRY_PORT = Configuration.integerValue("jminor.server.registryPort", Registry.REGISTRY_PORT);
+  PropertyValue<Integer> REGISTRY_PORT = Configuration.integerValue("codion.server.registryPort", Registry.REGISTRY_PORT);
 
   /**
    * The rmi ssl keystore to use<br>
@@ -118,27 +118,27 @@ public interface ServerConfiguration {
    * Value type: Integer<br>
    * Default value: none
    */
-  PropertyValue<Integer> SERVER_ADMIN_PORT = Configuration.integerValue("jminor.server.admin.port", null);
+  PropertyValue<Integer> SERVER_ADMIN_PORT = Configuration.integerValue("codion.server.admin.port", null);
 
   /**
    * Specifies a username:password combination representing the server admin user<br>
    * Example: scott:tiger
    */
-  PropertyValue<String> SERVER_ADMIN_USER = Configuration.stringValue("jminor.server.admin.user", null);
+  PropertyValue<String> SERVER_ADMIN_USER = Configuration.stringValue("codion.server.admin.user", null);
 
   /**
    * Specifies whether the server should establish connections using a secure sockets layer, true (on) or false (off)<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> SERVER_CONNECTION_SSL_ENABLED = Configuration.booleanValue("jminor.server.connection.sslEnabled", true);
+  PropertyValue<Boolean> SERVER_CONNECTION_SSL_ENABLED = Configuration.booleanValue("codion.server.connection.sslEnabled", true);
 
   /**
    * Specifies the default client connection inactivity timeout in milliseconds.
    * Value type: Integer<br>
    * Default value: 120000ms (2 minutes)
    */
-  PropertyValue<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("jminor.server.connectionTimeout", DEFAULT_SERVER_CONNECTION_TIMEOUT);
+  PropertyValue<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("codion.server.connectionTimeout", DEFAULT_SERVER_CONNECTION_TIMEOUT);
 
   /**
    * A comma separated list of auxiliary server providers, providing servers to run alongside this Server<br>
@@ -147,25 +147,25 @@ public interface ServerConfiguration {
    * Default value: none
    * @see AuxiliaryServer
    */
-  PropertyValue<String> AUXILIARY_SERVER_CLASS_NAMES = Configuration.stringValue("jminor.server.auxiliaryServerProviderClassNames", null);
+  PropertyValue<String> AUXILIARY_SERVER_CLASS_NAMES = Configuration.stringValue("codion.server.auxiliaryServerProviderClassNames", null);
 
   /**
    * The serialization whitelist file to use if any
    */
-  PropertyValue<String> SERIALIZATION_FILTER_WHITELIST = Configuration.stringValue("jminor.server.serializationFilterWhitelist", null);
+  PropertyValue<String> SERIALIZATION_FILTER_WHITELIST = Configuration.stringValue("codion.server.serializationFilterWhitelist", null);
 
   /**
    * If true then the serialization whitelist specified by {@link #SERIALIZATION_FILTER_WHITELIST} is populated
    * with the names of all deserialized classes on server shutdown. Note this overwrites the file if it already exists.
    */
-  PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("jminor.server.serializationFilterDryRun", false);
+  PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("codion.server.serializationFilterDryRun", false);
 
   /**
    * Specifies a comma separated list of LoginProxy class names, which should be initialized on server startup,
    * these classes must be available on the server classpath and contain a parameterless constructor
    * @see dev.codion.common.rmi.server.LoginProxy
    */
-  PropertyValue<String> SERVER_LOGIN_PROXY_CLASSES = Configuration.stringValue("jminor.server.loginProxyClasses", null);
+  PropertyValue<String> SERVER_LOGIN_PROXY_CLASSES = Configuration.stringValue("codion.server.loginProxyClasses", null);
 
   /**
    * @return the server name

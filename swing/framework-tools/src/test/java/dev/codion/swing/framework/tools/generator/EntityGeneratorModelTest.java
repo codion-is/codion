@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class EntityGeneratorModelTest {
 
   private static final User UNIT_TEST_USER =
-          Users.parseUser(System.getProperty("jminor.test.user", "scott:tiger"));
+          Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final String ADDRESS_DEF;
   private static final String TAG_ITEM_DEF;

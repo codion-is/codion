@@ -37,7 +37,7 @@ public interface ConnectionRequest extends Serializable {
   Version getClientVersion();
 
   /**
-   * @return the version of JMinor the client is using
+   * @return the version of Codion the client is using
    */
   Version getFrameworkVersion();
 
