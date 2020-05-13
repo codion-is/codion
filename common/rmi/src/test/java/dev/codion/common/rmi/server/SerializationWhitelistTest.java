@@ -21,10 +21,10 @@ public final class SerializationWhitelistTest {
             "dev.codion.common.i18n.*"
     );
     final SerializationWhitelist.SerializationFilter filter = new SerializationWhitelist.SerializationFilter(whitelistItems);
-    assertEquals(filter.checkInput("dev.codion.common.value.Value"), sun.misc.ObjectInputFilter.Status.ALLOWED);
-    assertEquals(filter.checkInput("dev.codion.common.state.State"), sun.misc.ObjectInputFilter.Status.ALLOWED);
-    assertEquals(filter.checkInput("dev.codion.common.state.States"), sun.misc.ObjectInputFilter.Status.ALLOWED);
-    assertEquals(filter.checkInput("dev.codion.common.state.StateObserver"), sun.misc.ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("dev.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("dev.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("dev.codion.common.state.States"), ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("dev.codion.common.state.StateObserver"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("dev.codion.common.event.Event"), ObjectInputFilter.Status.REJECTED);
     assertEquals(filter.checkInput("dev.codion.common.i18n.Messages"), ObjectInputFilter.Status.ALLOWED);
   }
@@ -37,10 +37,10 @@ public final class SerializationWhitelistTest {
             "dev.codion.common.state.StateObserver"
     );
     final SerializationWhitelist.SerializationFilter filter = new SerializationWhitelist.SerializationFilter(whitelistItems);
-    assertEquals(filter.checkInput("dev.codion.common.value.Value"), sun.misc.ObjectInputFilter.Status.ALLOWED);
-    assertEquals(filter.checkInput("dev.codion.common.state.State"), sun.misc.ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("dev.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("dev.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("dev.codion.common.state.States"), ObjectInputFilter.Status.REJECTED);
-    assertEquals(filter.checkInput("dev.codion.common.state.StateObserver"), sun.misc.ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("dev.codion.common.state.StateObserver"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("dev.codion.common.event.Event"), ObjectInputFilter.Status.REJECTED);
     assertEquals(filter.checkInput("dev.codion.common.i18n.Messages"), ObjectInputFilter.Status.REJECTED);
   }
