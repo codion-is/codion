@@ -10,11 +10,11 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import static org.jfree.chart.ChartFactory.createBarChart;
-import static org.jfree.chart.ChartFactory.createPieChart;
 import static dev.codion.swing.common.ui.Components.setPreferredHeight;
 import static dev.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static org.jfree.chart.ChartFactory.createBarChart;
+import static org.jfree.chart.ChartFactory.createPieChart;
 
 public final class ContinentPanel extends EntityPanel {
 

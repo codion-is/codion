@@ -20,8 +20,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static java.util.Arrays.asList;
 import static dev.codion.framework.db.condition.Conditions.condition;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class ConditionObjectMapperTest {

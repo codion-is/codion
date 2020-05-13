@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.framework.db.condition.Conditions.selectCondition;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A static helper class for mass data manipulation.

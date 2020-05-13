@@ -13,11 +13,11 @@ import dev.codion.framework.domain.entity.StringProvider;
 import java.sql.Types;
 import java.util.List;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static dev.codion.common.item.Items.item;
 import static dev.codion.framework.domain.entity.KeyGenerators.increment;
 import static dev.codion.framework.domain.property.Properties.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 public final class TestDomain extends Domain {
 

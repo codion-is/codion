@@ -26,9 +26,9 @@ import java.awt.GridLayout;
 import java.sql.Types;
 import java.util.Locale;
 
-import static java.util.Arrays.asList;
 import static dev.codion.framework.domain.entity.KeyGenerators.increment;
 import static dev.codion.framework.domain.property.Properties.*;
+import static java.util.Arrays.asList;
 
 /**
  * EmpDept minimal application demo

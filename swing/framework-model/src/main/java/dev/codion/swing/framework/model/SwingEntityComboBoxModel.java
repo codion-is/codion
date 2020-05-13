@@ -30,10 +30,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.

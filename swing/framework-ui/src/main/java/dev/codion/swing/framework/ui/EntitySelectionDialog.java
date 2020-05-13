@@ -25,14 +25,14 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dev.codion.swing.common.ui.Windows.getParentWindow;
+import static dev.codion.swing.common.ui.control.Controls.control;
+import static dev.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
-import static dev.codion.swing.common.ui.Windows.getParentWindow;
-import static dev.codion.swing.common.ui.control.Controls.control;
-import static dev.codion.swing.common.ui.layout.Layouts.flowLayout;
 
 /**
  * A dialog for searching for and selecting one or more entities from a table model.

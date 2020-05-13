@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Util.map;
 import static dev.codion.framework.domain.entity.Entities.mapToEntityId;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A central event hub for listening for entity inserts, updates and deletes.

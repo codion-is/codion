@@ -8,8 +8,8 @@ import dev.codion.framework.db.TestDomain;
 
 import org.junit.jupiter.api.Test;
 
-import static java.util.Collections.emptyList;
 import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ConditionsTest {

@@ -59,10 +59,10 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static dev.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
-import static dev.codion.swing.common.ui.icons.Icons.icons;
 
 /**
  * A UI implementation for ColumnConditionModel

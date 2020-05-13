@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.db.database.Database.closeSilently;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default abstract implementation of the Database interface.

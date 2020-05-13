@@ -44,10 +44,10 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A JavaFX implementation of {@link EntityTableModel}.

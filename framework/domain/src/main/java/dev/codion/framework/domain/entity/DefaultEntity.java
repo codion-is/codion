@@ -32,9 +32,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static dev.codion.framework.domain.entity.ValueChanges.valueChange;
 import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
-import static dev.codion.framework.domain.entity.ValueChanges.valueChange;
 
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.

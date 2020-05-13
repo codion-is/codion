@@ -82,13 +82,13 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Util.nullOrEmpty;
 import static dev.codion.swing.common.ui.Components.hideWaitCursor;
 import static dev.codion.swing.common.ui.Components.showWaitCursor;
 import static dev.codion.swing.common.ui.Windows.getParentWindow;
 import static dev.codion.swing.common.ui.control.Controls.control;
 import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static java.util.Objects.requireNonNull;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.

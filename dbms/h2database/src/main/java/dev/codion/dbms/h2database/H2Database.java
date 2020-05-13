@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import static dev.codion.common.Util.nullOrEmpty;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A Database implementation based on the H2 database.

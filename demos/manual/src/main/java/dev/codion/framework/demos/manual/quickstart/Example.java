@@ -30,10 +30,10 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
-import static java.util.UUID.randomUUID;
 import static dev.codion.framework.demos.manual.quickstart.Example.Store.*;
 import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
 import static dev.codion.framework.domain.property.Properties.*;
+import static java.util.UUID.randomUUID;
 
 public final class Example {
 

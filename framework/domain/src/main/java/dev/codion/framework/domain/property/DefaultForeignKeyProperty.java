@@ -9,11 +9,11 @@ import java.sql.Types;
 import java.util.List;
 import java.util.Objects;
 
+import static dev.codion.common.Util.nullOrEmpty;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static dev.codion.common.Util.nullOrEmpty;
 
 final class DefaultForeignKeyProperty extends DefaultProperty implements ForeignKeyProperty {
 

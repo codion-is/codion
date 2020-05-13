@@ -18,7 +18,6 @@ import dev.codion.framework.domain.Domain;
 
 import java.sql.Types;
 
-import static java.lang.String.valueOf;
 import static dev.codion.common.Conjunction.AND;
 import static dev.codion.common.db.Operator.LIKE;
 import static dev.codion.common.db.pool.ConnectionPoolProvider.getConnectionPoolProvider;
@@ -28,6 +27,7 @@ import static dev.codion.framework.db.local.LocalEntityConnections.createConnect
 import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
 import static dev.codion.framework.domain.property.Properties.columnProperty;
 import static dev.codion.framework.domain.property.Properties.primaryKeyProperty;
+import static java.lang.String.valueOf;
 
 /**
  * A {@link dev.codion.common.LoggerProxy} implementation

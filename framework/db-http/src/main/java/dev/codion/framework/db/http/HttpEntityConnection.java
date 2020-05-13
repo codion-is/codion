@@ -54,10 +54,10 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A Http based {@link EntityConnection} implementation based on EntityService

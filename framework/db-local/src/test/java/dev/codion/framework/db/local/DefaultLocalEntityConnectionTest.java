@@ -41,12 +41,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static dev.codion.framework.db.condition.Conditions.*;
 import static dev.codion.framework.db.local.TestDomain.*;
 import static dev.codion.framework.domain.entity.Entities.getKeys;
 import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultLocalEntityConnectionTest {

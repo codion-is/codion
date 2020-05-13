@@ -47,8 +47,8 @@ import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static dev.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
+import static java.util.Arrays.asList;
 
 /**
  * A ServerMonitorPanel

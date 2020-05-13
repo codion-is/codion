@@ -19,10 +19,10 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import static dev.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
-import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A method call logger allowing logging of nested method calls.

@@ -5,8 +5,8 @@ package dev.codion.swing.common.model.combobox;
 
 import dev.codion.common.i18n.Messages;
 
-import static java.util.Arrays.asList;
 import static dev.codion.common.item.Items.item;
+import static java.util.Arrays.asList;
 
 /**
  * A ComboBoxModel for boolean values, true, false and null.

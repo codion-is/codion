@@ -10,9 +10,9 @@ import java.sql.Types;
 import java.text.Collator;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.framework.domain.property.AuditProperty.AuditAction.INSERT;
 import static dev.codion.framework.domain.property.AuditProperty.AuditAction.UPDATE;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A Property factory class.

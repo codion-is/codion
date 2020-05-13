@@ -33,11 +33,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static dev.codion.common.Util.nullOrEmpty;
+import static dev.codion.framework.db.condition.Conditions.*;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
-import static dev.codion.common.Util.nullOrEmpty;
-import static dev.codion.framework.db.condition.Conditions.*;
 
 /**
  * A default EntityLookupModel implementation

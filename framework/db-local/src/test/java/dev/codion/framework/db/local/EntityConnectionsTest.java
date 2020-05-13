@@ -24,9 +24,9 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static dev.codion.framework.db.condition.Conditions.condition;
 import static dev.codion.framework.db.condition.Conditions.selectCondition;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

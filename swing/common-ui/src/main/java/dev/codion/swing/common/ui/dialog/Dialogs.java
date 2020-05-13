@@ -48,12 +48,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static dev.codion.common.Util.nullOrEmpty;
+import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-import static dev.codion.common.Util.nullOrEmpty;
-import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 
 /**
  * A utility class for displaying Dialogs.

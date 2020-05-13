@@ -5,8 +5,8 @@ package dev.codion.framework.domain.property;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static dev.codion.common.Util.nullOrEmpty;
+import static java.util.Arrays.asList;
 
 final class DefaultDerivedProperty extends DefaultTransientProperty implements DerivedProperty {
 

@@ -24,8 +24,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A panel for presenting a ComponentValue. Provides OK and Cancel buttons

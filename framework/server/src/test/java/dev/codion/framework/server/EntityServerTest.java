@@ -36,9 +36,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
+import static dev.codion.framework.domain.entity.OrderBy.orderBy;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServerTest {

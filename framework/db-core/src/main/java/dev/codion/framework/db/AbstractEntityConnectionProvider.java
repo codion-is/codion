@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.common.Util.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract EntityConnectionProvider implementation.

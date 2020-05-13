@@ -20,7 +20,6 @@ import dev.codion.framework.domain.property.Property;
 import java.sql.Types;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static dev.codion.common.db.Operator.LIKE;
 import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static dev.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
@@ -28,6 +27,7 @@ import static dev.codion.framework.domain.entity.Entities.getKeys;
 import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
 import static dev.codion.framework.domain.entity.OrderBy.orderBy;
 import static dev.codion.framework.domain.property.Properties.*;
+import static java.util.Arrays.asList;
 
 /**
  * When running this make sure the chinook demo module directory is the

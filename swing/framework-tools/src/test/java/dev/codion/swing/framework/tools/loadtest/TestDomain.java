@@ -10,10 +10,10 @@ import java.awt.Color;
 import java.sql.Types;
 import java.util.Comparator;
 
-import static java.util.Arrays.asList;
 import static dev.codion.common.item.Items.item;
 import static dev.codion.framework.domain.entity.KeyGenerators.increment;
 import static dev.codion.framework.domain.property.Properties.*;
+import static java.util.Arrays.asList;
 
 public final class TestDomain extends Domain {
 

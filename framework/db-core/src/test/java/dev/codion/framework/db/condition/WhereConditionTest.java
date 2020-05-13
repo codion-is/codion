@@ -13,10 +13,10 @@ import dev.codion.framework.domain.property.ColumnProperty;
 
 import org.junit.jupiter.api.Test;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static dev.codion.framework.db.condition.Conditions.*;
 import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class WhereConditionTest {

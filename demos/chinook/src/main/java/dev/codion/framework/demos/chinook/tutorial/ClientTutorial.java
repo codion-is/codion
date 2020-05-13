@@ -25,13 +25,13 @@ import java.awt.Color;
 import java.sql.Types;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static dev.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
 import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
 import static dev.codion.framework.domain.property.Properties.*;
 import static dev.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
 import static dev.codion.swing.common.ui.Windows.getScreenSizeRatio;
 import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static java.util.Collections.singletonList;
 
 /**
  * When running this make sure the chinook demo module directory is the

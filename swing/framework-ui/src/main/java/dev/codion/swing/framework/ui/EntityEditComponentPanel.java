@@ -50,8 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.swing.common.ui.KeyEvents.transferFocusOnEnter;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A base class for entity edit panels, providing components for editing entities.

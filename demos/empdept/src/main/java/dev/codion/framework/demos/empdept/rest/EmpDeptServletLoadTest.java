@@ -21,8 +21,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
-import static java.util.Arrays.asList;
 import static dev.codion.framework.db.condition.Conditions.selectCondition;
+import static java.util.Arrays.asList;
 
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
 

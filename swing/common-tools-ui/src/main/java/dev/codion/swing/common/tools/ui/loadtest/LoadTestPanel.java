@@ -58,8 +58,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import static dev.codion.swing.common.ui.icons.Icons.icons;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default UI component for the LoadTestModel class.

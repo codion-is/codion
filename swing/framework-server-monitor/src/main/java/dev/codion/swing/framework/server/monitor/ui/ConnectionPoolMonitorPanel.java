@@ -36,9 +36,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-import static javax.swing.SwingConstants.*;
 import static dev.codion.swing.common.ui.Components.createWestCenterPanel;
 import static dev.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
+import static javax.swing.SwingConstants.*;
 
 /**
  * A ConnectionPoolMonitorPanel
