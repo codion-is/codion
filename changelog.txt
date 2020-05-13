@@ -6110,3 +6110,4 @@
   EntityTablePanel bug fixed, wrong constraints on south center panel
   EntityTablePanel bug fixed, refresh toolbar was visible at startup, visibility is now synced with condition panel, south panel refactored
   EntityDefinition.Builder.searchPropertyIds() removed, replaced with ColumnProperty.Builder.searchProperty()
+  LocalEntityConnectionProvider, LocalEntityConnection, getDomain() added

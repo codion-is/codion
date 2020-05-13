@@ -818,6 +818,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return this;
   }
 
+  @Override
+  public Domain getDomain() {
+    return domain;
+  }
+
   /**
    * Selects the given entities for update (if that is supported by the underlying dbms)
    * and checks if they have been modified by comparing the property values to the current values in the database.
