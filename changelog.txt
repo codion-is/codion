@@ -6112,3 +6112,4 @@
   EntityDefinition.Builder.searchPropertyIds() removed, replaced with ColumnProperty.Builder.searchProperty()
   LocalEntityConnectionProvider, LocalEntityConnection, getDomain() added
   DefaultControl now abstract, renamed AbstractControl
+  EntityServerMonitor, prevented NullPointerException on missing admin user credentials

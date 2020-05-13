@@ -9,6 +9,8 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.UserPreferences;
 import org.jminor.common.rmi.client.Clients;
 import org.jminor.common.rmi.server.ServerConfiguration;
+import org.jminor.common.user.User;
+import org.jminor.common.user.Users;
 import org.jminor.swing.common.ui.Components;
 import org.jminor.swing.common.ui.UiManagerDefaults;
 import org.jminor.swing.common.ui.Windows;
@@ -45,6 +47,7 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
+import static org.jminor.common.Util.nullOrEmpty;
 import static org.jminor.swing.common.ui.icons.Icons.icons;
 
 /**
@@ -68,7 +71,8 @@ public final class EntityServerMonitorPanel extends JPanel {
    * @throws RemoteException in case of an exception
    */
   public EntityServerMonitorPanel() throws RemoteException {
-    this(new EntityServerMonitor(ServerConfiguration.SERVER_HOST_NAME.get(), ServerConfiguration.REGISTRY_PORT.get()));
+    this(new EntityServerMonitor(ServerConfiguration.SERVER_HOST_NAME.get(),
+            ServerConfiguration.REGISTRY_PORT.get(), getAdminUser()));
     Thread.setDefaultUncaughtExceptionHandler((t, e) ->
             DefaultDialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(EntityServerMonitorPanel.this)));
   }
@@ -228,6 +232,15 @@ public final class EntityServerMonitorPanel extends JPanel {
     southPanel.add(Components.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS));
 
     return southPanel;
+  }
+
+  private static User getAdminUser() {
+    final String adminUser = ServerConfiguration.SERVER_ADMIN_USER.get();
+    if (nullOrEmpty(adminUser)) {
+      throw new IllegalStateException("Required configuration value missing: " + ServerConfiguration.SERVER_ADMIN_USER);
+    }
+
+    return Users.parseUser(adminUser);
   }
 
   public static void main(final String[] arguments) {
