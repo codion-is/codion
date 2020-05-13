@@ -3,7 +3,7 @@
 :basedir: ..
 :imagesdir: ../images
 
-The JMinor Server Monitor provides a way to monitor the JMinor remote server.
+The Codion Server Monitor provides a way to monitor the Codion remote server.
 
 Below are screenshots of the different server monitor tabs, after ~20 minutes of running the <<{basedir}/tutorials/chinook.adoc#_load_test, Chinook load test>> and the <<{basedir}/tutorials/empdept.adoc#_load_test, EmpDept load test>>, with ~10 minutes of ramping up.
 

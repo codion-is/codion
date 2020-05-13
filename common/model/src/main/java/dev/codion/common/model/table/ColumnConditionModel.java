@@ -28,7 +28,7 @@ public interface ColumnConditionModel<R, C> {
    * Default value: {@link AutomaticWildcard#NONE}
    */
   PropertyValue<AutomaticWildcard> AUTOMATIC_WILDCARD = Configuration.value(
-          "org.jminor.common.model.table.ColumnConditionModel.automaticWildard",
+          "dev.codion.common.model.table.ColumnConditionModel.automaticWildard",
           AutomaticWildcard.NONE, AutomaticWildcard::valueOf);
 
   /**
@@ -37,7 +37,7 @@ public interface ColumnConditionModel<R, C> {
    * Default value: true
    */
   PropertyValue<Boolean> CASE_SENSITIVE = Configuration.booleanValue(
-          "org.jminor.common.model.table.ColumnConditionModel.caseSensitive", true);
+          "dev.codion.common.model.table.ColumnConditionModel.caseSensitive", true);
 
   /**
    * The possible automatic wildcard types

@@ -65,7 +65,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityEditComponentPanel.transferFocusOnEnter", true);
+          "dev.codion.swing.framework.ui.EntityEditComponentPanel.transferFocusOnEnter", true);
 
   /**
    * The edit model these edit components are associated with

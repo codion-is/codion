@@ -1,1 +1,1 @@
-java -Xmx128m -Djminor.configurationFile=remote.config -cp world.jar:config org.jminor.framework.demos.world.ui.WorldAppPanel &
+java -Xmx128m -Djminor.configurationFile=remote.config -cp world.jar:config dev.codion.framework.demos.world.ui.WorldAppPanel &

@@ -90,7 +90,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @see dev.codion.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE
    */
   public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityPanel.useFocusActivation", true);
+          "dev.codion.swing.framework.ui.EntityPanel.useFocusActivation", true);
 
   /**
    * Indicates whether keyboard navigation will be enabled<br>
@@ -98,7 +98,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityPanel.useKeyboardNavigation", true);
+          "dev.codion.swing.framework.ui.EntityPanel.useKeyboardNavigation", true);
 
   /**
    * Indicates whether dialogs opened by child panels in the application should be centered
@@ -108,7 +108,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: false
    */
   public static final PropertyValue<Boolean> CENTER_APPLICATION_DIALOGS = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityPanel.centerApplicationDialogs", false);
+          "dev.codion.swing.framework.ui.EntityPanel.centerApplicationDialogs", false);
 
   /**
    * Indicates whether entity edit panel dialogs should be closed on escape<br>
@@ -116,7 +116,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape", true);
+          "dev.codion.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape", true);
 
   /**
    * Specifies whether or not a control for toggling the edit panel is available to the user<br>
@@ -124,7 +124,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> SHOW_TOGGLE_EDIT_PANEL_CONTROL = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityPanel.showToggleEditPanelControl", true);
+          "dev.codion.swing.framework.ui.EntityPanel.showToggleEditPanelControl", true);
 
   /**
    * Specifies whether or not actions to hide detail panels or show them in a dialog are available to the user<br>
@@ -132,7 +132,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> SHOW_DETAIL_PANEL_CONTROLS = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityPanel.showDetailPanelControls", true);
+          "dev.codion.swing.framework.ui.EntityPanel.showDetailPanelControls", true);
 
   /**
    * Specifies the default size of the divider for detail panel split panes.<br>
@@ -140,7 +140,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: 18<br>
    */
   public static final PropertyValue<Integer> SPLIT_PANE_DIVIDER_SIZE = Configuration.integerValue(
-          "org.jminor.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
+          "dev.codion.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
 
   /**
    * Indicates whether entity panels containing detail panels should by default be laid out in a compact manner<br>
@@ -148,7 +148,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> COMPACT_ENTITY_PANEL_LAYOUT = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityPanel.compactEntityPanelLayout", true);
+          "dev.codion.swing.framework.ui.EntityPanel.compactEntityPanelLayout", true);
 
   /**
    * Specifies whether the action buttons (Save, update, delete, clear, refresh) should be on a toolbar<br>
@@ -156,7 +156,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: false
    */
   public static final PropertyValue<Boolean> TOOLBAR_BUTTONS = Configuration.booleanValue(
-          "org.jminor.swing.framework.ui.EntityPanel.toolbarButtons", false);
+          "dev.codion.swing.framework.ui.EntityPanel.toolbarButtons", false);
 
   /**
    * The possible states of a detail panel.

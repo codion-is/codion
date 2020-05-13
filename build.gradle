@@ -126,24 +126,24 @@ configure(project.frameworkModules) {
     /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
     task createServerKeystore {
         def keystoreDir = "${rootDir}/framework/server/src/main/security/"
-        def keystore = keystoreDir + 'jminor_keystore.jks'
-        def truststore = keystoreDir + 'jminor_truststore.jks'
-        def certificate = keystoreDir + 'jminor_server.cer'
+        def keystore = keystoreDir + 'codion_keystore.jks'
+        def truststore = keystoreDir + 'codion_truststore.jks'
+        def certificate = keystoreDir + 'codion_server.cer'
         def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
 
         onlyIf {!file(keystore).exists()}
 
         doLast {
-            ant.genkey(alias: 'JMinorServer', keyalg: 'RSA', keystore: keystore,
+            ant.genkey(alias: 'CodionServer', keyalg: 'RSA', keystore: keystore,
                     storepass: 'crappypass', dname: 'CN=Dummy, OU=dummy, O=dummy.org, C=DU', storetype: 'pkcs12')
             exec {
                 executable = keyToolExecutable
                 args = ['-exportcert', '-keystore', keystore, '-storepass', 'crappypass',
-                        '-alias', 'JMinorServer', '-rfc', '-file', certificate]
+                        '-alias', 'CodionServer', '-rfc', '-file', certificate]
             }
             exec {
                 executable = keyToolExecutable
-                args = ['-import', '-alias', 'JMinorServer', '-storepass', 'crappypass', '-file', certificate,
+                args = ['-import', '-alias', 'CodionServer', '-storepass', 'crappypass', '-file', certificate,
                         '-keystore', truststore, '-noprompt', '-storetype', 'pkcs12']
             }
             ant.delete(file: certificate)

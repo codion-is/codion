@@ -1,7 +1,7 @@
 = Architecture
 :url-javadoc: link:../api
 
-The JMinor framework is based on a three tiered architecture.
+The Codion framework is based on a three tiered architecture.
 
 * Database layer
 * Model layer

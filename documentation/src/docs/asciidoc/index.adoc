@@ -1,4 +1,4 @@
-= JMinor Application Framework
+= Codion Application Framework
 :docinfo: shared-head
 :imagesdir: images
 

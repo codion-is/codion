@@ -15,7 +15,7 @@ import java.util.ServiceLoader;
  */
 public interface Icons {
 
-  PropertyValue<String> ICONS_CLASSNAME = Configuration.stringValue("org.jminor.swing.iconsClassName", DefaultIcons.class.getName());
+  PropertyValue<String> ICONS_CLASSNAME = Configuration.stringValue("dev.codion.swing.iconsClassName", DefaultIcons.class.getName());
 
   /**
    * @return icon for the 'filter' action.

@@ -4,26 +4,26 @@
 :dir-source-sql: ../../../../demos/manual/src/main/sql
 
 == Rich client
-JMinor is primarily a Swing based framework, the Swing client is mature and stable while the JavaFX client is quite rudimentary and still in the 'proof-of-concept' stage. The below artifacts pull in all required framework dependencies.
+Codion is primarily a Swing based framework, the Swing client is mature and stable while the JavaFX client is quite rudimentary and still in the 'proof-of-concept' stage. The below artifacts pull in all required framework dependencies.
 
 [cols="1,4"]
 |===
 |Client|Artifact
 
-|Swing|dev.codion.{jminor-jdk}:jminor-swing-framework.ui:{jminor-version}
-|JavaFX|dev.codion.{jminor-jdk}:jminor-javafx-framework:{jminor-version}
+|Swing|dev.codion.{codion-jdk}:codion-swing-framework.ui:{codion-version}
+|JavaFX|dev.codion.{codion-jdk}:codion-javafx-framework:{codion-version}
 |===
 
 == Database connectivity
-A JMinor client has three ways of connecting to a database, directly via a local JDBC connection or remotely via RMI or HTTP using the JMinor remote server.
+A Codion client has three ways of connecting to a database, directly via a local JDBC connection or remotely via RMI or HTTP using the Codion remote server.
 
 [cols="1,4"]
 |===
 |DB Connection|Artifact
 
-|Local|dev.codion.{jminor-jdk}:jminor-framework-db-local:{jminor-version}
-|RMI|dev.codion.{jminor-jdk}:jminor-framework-db-rmi:{jminor-version}
-|HTTP|dev.codion.{jminor-jdk}:jminor-framework-db-http:{jminor-version}
+|Local|dev.codion.{codion-jdk}:codion-framework-db-local:{codion-version}
+|RMI|dev.codion.{codion-jdk}:codion-framework-db-rmi:{codion-version}
+|HTTP|dev.codion.{codion-jdk}:codion-framework-db-http:{codion-version}
 |===
 
 == DBMS
@@ -39,27 +39,27 @@ The most used and tested DBMS modules are:
 |===
 |DBMS|Artifact
 
-|Derby|dev.codion.{jminor-jdk}:jminor-dbms-derby:{jminor-version}
-|H2 Database|dev.codion.{jminor-jdk}:jminor-dbms-h2database:{jminor-version}
-|HSQL|dev.codion.{jminor-jdk}:jminor-dbms-hsql:{jminor-version}
-|MariaDB|dev.codion.{jminor-jdk}:jminor-dbms-mariadb:{jminor-version}
-|MySQL|dev.codion.{jminor-jdk}:jminor-dbms-mysql:{jminor-version}
-|Oracle|dev.codion.{jminor-jdk}:jminor-dbms-oracle:{jminor-version}
-|Postgresql|dev.codion.{jminor-jdk}:jminor-dbms-postgresql:{jminor-version}
-|SQLite|dev.codion.{jminor-jdk}:jminor-dbms-sqlite:{jminor-version}
-|SQL Server|dev.codion.{jminor-jdk}:jminor-dbms-sqlserver:{jminor-version}
+|Derby|dev.codion.{codion-jdk}:codion-dbms-derby:{codion-version}
+|H2 Database|dev.codion.{codion-jdk}:codion-dbms-h2database:{codion-version}
+|HSQL|dev.codion.{codion-jdk}:codion-dbms-hsql:{codion-version}
+|MariaDB|dev.codion.{codion-jdk}:codion-dbms-mariadb:{codion-version}
+|MySQL|dev.codion.{codion-jdk}:codion-dbms-mysql:{codion-version}
+|Oracle|dev.codion.{codion-jdk}:codion-dbms-oracle:{codion-version}
+|Postgresql|dev.codion.{codion-jdk}:codion-dbms-postgresql:{codion-version}
+|SQLite|dev.codion.{codion-jdk}:codion-dbms-sqlite:{codion-version}
+|SQL Server|dev.codion.{codion-jdk}:codion-dbms-sqlserver:{codion-version}
 |===
 
 == Logging
-JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for your logging framework of choice to the classpath. If you use Logback or Log4J you can use one of the logging-proxy plugins below which will pull in the required dependencies and provide a main-menu action in the client for setting the logging level.
+Codion uses SLF4J throughout so all you need to do is add a SLF4J bridge for your logging framework of choice to the classpath. If you use Logback or Log4J you can use one of the logging-proxy plugins below which will pull in the required dependencies and provide a main-menu action in the client for setting the logging level.
 
 [cols="1,4"]
 |===
 |Logging|Artifact
 
-|Logback|dev.codion.{jminor-jdk}:jminor-plugin-logback-proxy:{jminor-version}
-|Log4j|dev.codion.{jminor-jdk}:jminor-plugin-log4j-proxy:{jminor-version}
-|Java Util Logging|dev.codion.{jminor-jdk}:jminor-plugin-jul-proxy:{jminor-version}
+|Logback|dev.codion.{codion-jdk}:codion-plugin-logback-proxy:{codion-version}
+|Log4j|dev.codion.{codion-jdk}:codion-plugin-log4j-proxy:{codion-version}
+|Java Util Logging|dev.codion.{codion-jdk}:codion-plugin-jul-proxy:{codion-version}
 |===
 
 == Gradle
@@ -67,21 +67,21 @@ JMinor uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 ----
 dependencies {
     //Swing client UI module
-    implementation 'dev.codion.{jminor-jdk}:jminor-swing-framework-ui:{jminor-version}'
+    implementation 'dev.codion.{codion-jdk}:codion-swing-framework-ui:{codion-version}'
 
     //JSON for persisting client preferences
-    runtimeOnly 'dev.codion.{jminor-jdk}:jminor-plugin-json:{jminor-version}'
+    runtimeOnly 'dev.codion.{codion-jdk}:codion-plugin-json:{codion-version}'
     //Local JDBC connection module
-    runtimeOnly 'dev.codion.{jminor-jdk}:jminor-framework-db-local:{jminor-version}'
+    runtimeOnly 'dev.codion.{codion-jdk}:codion-framework-db-local:{codion-version}'
     //H2 DBMS module
-    runtimeOnly 'dev.codion.{jminor-jdk}:jminor-dbms-h2database:{jminor-version}'
+    runtimeOnly 'dev.codion.{codion-jdk}:codion-dbms-h2database:{codion-version}'
     //H2 JDBC driver
     runtimeOnly 'com.h2database:h2:1.4.200'
     //Logging with Logback
-    runtimeOnly 'dev.codion.{jminor-jdk}:jminor-plugin-logback-proxy:{jminor-version}'
+    runtimeOnly 'dev.codion.{codion-jdk}:codion-plugin-logback-proxy:{codion-version}'
 
     //Domain model unit testing module
-    testImplementation 'dev.codion.{jminor-jdk}:jminor-framework-domain-test:{jminor-version}'
+    testImplementation 'dev.codion.{codion-jdk}:codion-framework-domain-test:{codion-version}'
     //JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
@@ -90,19 +90,19 @@ dependencies {
 
 == Code examples
 
-There are at minimum two steps involved in creating a JMinor application:
+There are at minimum two steps involved in creating a Codion application:
 
   * Defining a domain model based on the underlying tables.
   * Creating edit panels for tables requiring CRUD functionality.
 
 === Domain
 
-The JMinor framework is based around the *Entity* class, a map-like structure, representing a row in a table. The domain is modelled much like an E/R diagram, with an *EntityDefinition* per table, a *Property* for each column and a *ForeignKeyProperty* for each foreign key relationship.
+The Codion framework is based around the *Entity* class, a map-like structure, representing a row in a table. The domain is modelled much like an E/R diagram, with an *EntityDefinition* per table, a *Property* for each column and a *ForeignKeyProperty* for each foreign key relationship.
 
 [cols="2,4"]
 |===
 |Module|Artifact
-|dev.codion.framework.domain|dev.codion.{jminor-jdk}:jminor-framework-domain:{jminor-version}
+|dev.codion.framework.domain|dev.codion.{codion-jdk}:codion-framework-domain:{codion-version}
 |===
 
 ==== Defining entities
@@ -151,7 +151,7 @@ The *EntityPanel* class provides a Swing UI for viewing and editing entities. It
 [cols="2,4"]
 |===
 |Module|Artifact
-|dev.codion.swing.framework.ui|dev.codion.{jminor-jdk}:jminor-swing-framework-ui:{jminor-version}
+|dev.codion.swing.framework.ui|dev.codion.{codion-jdk}:codion-swing-framework-ui:{codion-version}
 |===
 
 ==== Master
@@ -179,7 +179,7 @@ The *EntityTestUnit* class provides a way to unit test the domain model. The *te
 [cols="2,4"]
 |===
 |Module|Artifact
-|dev.codion.framework.domain.test|dev.codion.{jminor-jdk}:jminor-framework-domain-test:{jminor-version}
+|dev.codion.framework.domain.test|dev.codion.{codion-jdk}:codion-framework-domain-test:{codion-version}
 |===
 
 [source,java,indent=0]
@@ -194,8 +194,8 @@ The *EntityConnection* interface provides select, insert, update, and delete met
 [cols="2,4,2"]
 |===
 |Module|Artifact|Description
-|dev.codion.framework.db.core|dev.codion.{jminor-jdk}:jminor-framework-db-core:{jminor-version}|Database API
-|dev.codion.framework.db.local|dev.codion.{jminor-jdk}:jminor-framework-db-local:{jminor-version}|Local JDBC
+|dev.codion.framework.db.core|dev.codion.{codion-jdk}:codion-framework-db-core:{codion-version}|Database API
+|dev.codion.framework.db.local|dev.codion.{codion-jdk}:codion-framework-db-local:{codion-version}|Local JDBC
 |===
 
 ==== Selecting

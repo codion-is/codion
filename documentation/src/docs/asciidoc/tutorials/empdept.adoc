@@ -73,9 +73,9 @@ include::{dir-test-source}/dev/codion/framework/demos/empdept/domain/EmpDeptTest
 
 Here is the parameter required for running the EmpDept test on the default H2 embedded database, assuming the database resides in the working directory.
 
--Djminor.db.url=jdbc:h2:mem:h2db
+-Dcodion.db.url=jdbc:h2:mem:h2db
 
-For further information on parameters required for running JMinor applications see <<{basedir}/technical/client.adoc#_client_configuration, client configuration>> and <<{basedir}/technical/server.adoc#_server_configuration, server configuration>>.
+For further information on parameters required for running Codion applications see <<{basedir}/technical/client.adoc#_client_configuration, client configuration>> and <<{basedir}/technical/server.adoc#_server_configuration, server configuration>>.
 
 == Model
 

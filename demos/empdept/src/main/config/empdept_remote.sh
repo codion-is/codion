@@ -1,1 +1,1 @@
-java -Xmx128m -Djminor.configurationFile=remote.config -cp empdept.jar:config org.jminor.framework.demos.empdept.ui.EmpDeptAppPanel &
+java -Xmx128m -Djminor.configurationFile=remote.config -cp empdept.jar:config dev.codion.framework.demos.empdept.ui.EmpDeptAppPanel &

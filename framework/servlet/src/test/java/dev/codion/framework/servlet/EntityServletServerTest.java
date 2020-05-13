@@ -275,10 +275,10 @@ public class EntityServletServerTest {
     System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
     ServerConfiguration.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
-    ServerConfiguration.TRUSTSTORE.set("../../framework/server/src/main/security/jminor_truststore.jks");
+    ServerConfiguration.TRUSTSTORE.set("../../framework/server/src/main/security/codion_truststore.jks");
     ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/jminor_keystore.jks");
+    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/codion_keystore.jks");
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
