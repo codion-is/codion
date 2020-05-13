@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.javafx.framework.model;
+package dev.codion.javafx.framework.model;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.model.FilteredModel;
-import org.jminor.common.model.Refreshable;
-import org.jminor.common.state.StateObserver;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.model.FilteredModel;
+import dev.codion.common.model.Refreshable;
+import dev.codion.common.state.StateObserver;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.condition.Condition;
+import dev.codion.framework.domain.entity.Entity;
 
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -29,7 +29,7 @@ import java.util.function.Predicate;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.db.condition.Conditions.selectCondition;
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 
 /**
  * An {@link ObservableList} based on a {@link Entity}

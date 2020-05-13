@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.javafx.framework.ui;
+package dev.codion.javafx.framework.ui;
 
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.javafx.framework.model.FXEntityApplicationModel;
-import org.jminor.javafx.framework.model.FXEntityEditModel;
-import org.jminor.javafx.framework.model.FXEntityListModel;
-import org.jminor.javafx.framework.model.FXEntityModel;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.local.LocalEntityConnectionProvider;
+import dev.codion.javafx.framework.model.FXEntityApplicationModel;
+import dev.codion.javafx.framework.model.FXEntityEditModel;
+import dev.codion.javafx.framework.model.FXEntityListModel;
+import dev.codion.javafx.framework.model.FXEntityModel;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

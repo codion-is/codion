@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.tomcat.pool;
+package dev.codion.plugin.tomcat.pool;
 
-import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.dbms.h2database.H2DatabaseProvider;
+import dev.codion.common.db.pool.ConnectionPool;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.dbms.h2database.H2DatabaseProvider;
 
 import org.junit.jupiter.api.Test;
 

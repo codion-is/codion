@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.condition;
+package dev.codion.framework.db.condition;
 
-import org.jminor.common.Conjunction;
+import dev.codion.common.Conjunction;
 
 import java.util.ArrayList;
 import java.util.Collection;

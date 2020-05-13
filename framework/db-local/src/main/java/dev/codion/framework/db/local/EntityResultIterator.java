@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.local;
+package dev.codion.framework.db.local;
 
-import org.jminor.common.db.result.ResultIterator;
-import org.jminor.common.db.result.ResultPacker;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.db.result.ResultIterator;
+import dev.codion.common.db.result.ResultPacker;
+import dev.codion.framework.domain.entity.Entity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.jminor.common.db.database.Database.closeSilently;
+import static dev.codion.common.db.database.Database.closeSilently;
 
 final class EntityResultIterator implements ResultIterator<Entity> {
 

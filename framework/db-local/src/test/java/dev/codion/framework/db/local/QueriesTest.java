@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.local;
+package dev.codion.framework.db.local;
 
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.OrderBy;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.entity.OrderBy;
 
 import org.junit.jupiter.api.Test;
 

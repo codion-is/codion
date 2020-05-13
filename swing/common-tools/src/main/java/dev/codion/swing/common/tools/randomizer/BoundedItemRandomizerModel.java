@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.randomizer;
+package dev.codion.swing.common.tools.randomizer;
 
 import java.util.Collection;
 import java.util.Iterator;

@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.textfield;
+package dev.codion.swing.common.ui.textfield;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.value.PropertyValue;
+import dev.codion.common.Configuration;
+import dev.codion.common.value.PropertyValue;
 
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;

@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.dialog;
+package dev.codion.swing.common.ui.dialog;
 
-import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.CancelException;
+import dev.codion.common.i18n.Messages;
+import dev.codion.common.model.CancelException;
 
 import java.awt.Window;
 import java.io.FileNotFoundException;
@@ -14,7 +14,7 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A default DialogExceptionHandler implementation

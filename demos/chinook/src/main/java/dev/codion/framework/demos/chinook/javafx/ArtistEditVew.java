@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.javafx;
+package dev.codion.framework.demos.chinook.javafx;
 
-import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.javafx.framework.model.FXEntityEditModel;
-import org.jminor.javafx.framework.ui.EntityEditView;
+import dev.codion.framework.demos.chinook.domain.Chinook;
+import dev.codion.javafx.framework.model.FXEntityEditModel;
+import dev.codion.javafx.framework.ui.EntityEditView;
 
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;

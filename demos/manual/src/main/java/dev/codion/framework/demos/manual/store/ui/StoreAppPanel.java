@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.manual.store.ui;
+package dev.codion.framework.demos.manual.store.ui;
 
-import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.manual.store.domain.Store;
-import org.jminor.framework.demos.manual.store.model.CustomerAddressModel;
-import org.jminor.framework.demos.manual.store.model.CustomerModel;
-import org.jminor.framework.demos.manual.store.model.StoreAppModel;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.framework.ui.EntityApplicationPanel;
-import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelBuilder;
-import org.jminor.swing.framework.ui.ReferentialIntegrityErrorHandling;
+import dev.codion.common.db.reports.ReportWrapper;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.demos.manual.store.domain.Store;
+import dev.codion.framework.demos.manual.store.model.CustomerAddressModel;
+import dev.codion.framework.demos.manual.store.model.CustomerModel;
+import dev.codion.framework.demos.manual.store.model.StoreAppModel;
+import dev.codion.framework.model.EntityEditModel;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.framework.ui.EntityApplicationPanel;
+import dev.codion.swing.framework.ui.EntityPanel;
+import dev.codion.swing.framework.ui.EntityPanelBuilder;
+import dev.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
 import java.util.Collections;
 import java.util.List;

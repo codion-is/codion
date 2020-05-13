@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.javafx.framework.ui;
+package dev.codion.javafx.framework.ui;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.EntityApplicationModel;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.EntityConnectionProviders;
+import dev.codion.framework.i18n.FrameworkMessages;
+import dev.codion.framework.model.EntityApplicationModel;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

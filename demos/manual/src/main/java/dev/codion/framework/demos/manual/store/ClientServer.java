@@ -1,27 +1,27 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.manual.store;
+package dev.codion.framework.demos.manual.store;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.http.server.HttpServerConfiguration;
-import org.jminor.dbms.h2database.H2DatabaseProvider;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.http.HttpEntityConnectionProvider;
-import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
-import org.jminor.framework.demos.manual.store.domain.Store;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.server.EntityServer;
-import org.jminor.framework.server.EntityServerConfiguration;
-import org.jminor.framework.servlet.EntityServletServerProvider;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.http.server.HttpServerConfiguration;
+import dev.codion.dbms.h2database.H2DatabaseProvider;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.db.http.HttpEntityConnectionProvider;
+import dev.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import dev.codion.framework.demos.manual.store.domain.Store;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.server.EntityServer;
+import dev.codion.framework.server.EntityServerConfiguration;
+import dev.codion.framework.servlet.EntityServletServerProvider;
 
 import java.rmi.RemoteException;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-import static org.jminor.common.user.Users.parseUser;
-import static org.jminor.framework.db.condition.Conditions.selectCondition;
+import static dev.codion.common.user.Users.parseUser;
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 
 public final class ClientServer {
 

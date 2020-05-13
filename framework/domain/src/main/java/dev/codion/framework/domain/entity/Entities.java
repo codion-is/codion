@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.entity;
+package dev.codion.framework.domain.entity;
 
-import org.jminor.common.valuemap.ValueMap;
-import org.jminor.framework.domain.property.BlobProperty;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.valuemap.ValueMap;
+import dev.codion.framework.domain.property.BlobProperty;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,8 +23,8 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static org.jminor.common.Util.map;
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.map;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A repository specifying the {@link EntityDefinition}s for a given domain.

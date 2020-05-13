@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.jasperreports.model;
+package dev.codion.plugin.jasperreports.model;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.http.server.HttpServer;
-import org.jminor.common.http.server.HttpServerConfiguration;
-import org.jminor.common.http.server.HttpServerConfiguration.Secure;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.dbms.h2database.H2DatabaseProvider;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnection;
-import org.jminor.framework.db.local.LocalEntityConnectionProvider;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.reports.ReportException;
+import dev.codion.common.db.reports.ReportWrapper;
+import dev.codion.common.http.server.HttpServer;
+import dev.codion.common.http.server.HttpServerConfiguration;
+import dev.codion.common.http.server.HttpServerConfiguration.Secure;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.dbms.h2database.H2DatabaseProvider;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.local.LocalEntityConnection;
+import dev.codion.framework.db.local.LocalEntityConnectionProvider;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;

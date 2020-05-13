@@ -30,12 +30,12 @@ image::tutorials/chinook/customers.png[]
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/domain/Chinook.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/domain/Chinook.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/domain/impl/ChinookImpl.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/domain/impl/ChinookImpl.java[lines=4..-1]
 ----
 
 [#_domain_unit_test]
@@ -43,103 +43,103 @@ include::{dir-source}/org/jminor/framework/demos/chinook/domain/impl/ChinookImpl
 
 [source,java]
 ----
-include::{dir-test-source}/org/jminor/framework/demos/chinook/domain/ChinookTest.java[lines=4..-1]
+include::{dir-test-source}/dev/codion/framework/demos/chinook/domain/ChinookTest.java[lines=4..-1]
 ----
 
 == Model
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/model/TrackTableModel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/model/TrackTableModel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/model/ChinookApplicationModel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/model/ChinookApplicationModel.java[lines=4..-1]
 ----
 
 === Model unit test
 
 [source,java]
 ----
-include::{dir-test-source}/org/jminor/framework/demos/chinook/model/TrackTableModelTest.java[lines=4..-1]
+include::{dir-test-source}/dev/codion/framework/demos/chinook/model/TrackTableModelTest.java[lines=4..-1]
 ----
 
 == UI
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/AlbumEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/AlbumEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/CoverArtPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/CoverArtPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/ArtistEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/ArtistEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/CustomerEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/CustomerEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/CustomerTablePanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/CustomerTablePanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/EmployeeEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/EmployeeEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/GenreEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/GenreEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/InvoiceLineEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/InvoiceLineEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/InvoiceEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/InvoiceEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/MediaTypeEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/MediaTypeEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/PlaylistEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/PlaylistEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/PlaylistTrackEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/PlaylistTrackEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/TrackEditPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/TrackEditPanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/TrackTablePanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/TrackTablePanel.java[lines=4..-1]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/TrackSelectionProvider.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/TrackSelectionProvider.java[lines=4..-1]
 ----
 
 [#_main_application_panel]
@@ -147,7 +147,7 @@ include::{dir-source}/org/jminor/framework/demos/chinook/ui/TrackSelectionProvid
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/ui/ChinookAppPanel.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/ui/ChinookAppPanel.java[lines=4..-1]
 ----
 
 [#_login_proxy]
@@ -155,7 +155,7 @@ include::{dir-source}/org/jminor/framework/demos/chinook/ui/ChinookAppPanel.java
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/server/ChinookLoginProxy.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/server/ChinookLoginProxy.java[lines=4..-1]
 ----
 
 [#_load_test]
@@ -163,5 +163,5 @@ include::{dir-source}/org/jminor/framework/demos/chinook/server/ChinookLoginProx
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/chinook/testing/ChinookLoadTest.java[lines=4..-1]
+include::{dir-source}/dev/codion/framework/demos/chinook/testing/ChinookLoadTest.java[lines=4..-1]
 ----

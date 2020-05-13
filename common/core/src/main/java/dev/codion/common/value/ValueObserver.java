@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.value;
+package dev.codion.common.value;
 
-import org.jminor.common.event.EventObserver;
+import dev.codion.common.event.EventObserver;
 
 /**
  * A read only value observer

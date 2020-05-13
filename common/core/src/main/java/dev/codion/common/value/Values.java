@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.value;
+package dev.codion.common.value;
 
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.state.State;
-import org.jminor.common.state.States;
+import dev.codion.common.event.EventObserver;
+import dev.codion.common.state.State;
+import dev.codion.common.state.States;
 
 import static java.util.Objects.requireNonNull;
 

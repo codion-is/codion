@@ -2,101 +2,101 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-The {url-javadoc}/org/jminor/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] contains the controls (text fields, combo boxes and such) for editing an entity instance.
+The {url-javadoc}/dev/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] contains the controls (text fields, combo boxes and such) for editing an entity instance.
 
-When extending an EntityEditPanel you must implement the *initializeUI()* method, which initializes the edit panel UI. The EntityEditPanel class exposes methods for creating input components and binding them with the underlying {url-javadoc}/org/jminor/framework/model/EntityEditModel.html[EntityEditModel] instance.
-
-[source,java,indent=0]
-----
-include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerEditPanel.java[tags=customerEditPanel]
-----
+When extending an EntityEditPanel you must implement the *initializeUI()* method, which initializes the edit panel UI. The EntityEditPanel class exposes methods for creating input components and binding them with the underlying {url-javadoc}/dev/codion/framework/model/EntityEditModel.html[EntityEditModel] instance.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/ui/AddressEditPanel.java[tags=addressEditPanel]
+include::{dir-source}/dev/codion/framework/demos/manual/store/ui/CustomerEditPanel.java[tags=customerEditPanel]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/ui/CustomerAddressEditPanel.java[tags=customerAddressEditPanel]
+include::{dir-source}/dev/codion/framework/demos/manual/store/ui/AddressEditPanel.java[tags=addressEditPanel]
+----
+
+[source,java,indent=0]
+----
+include::{dir-source}/dev/codion/framework/demos/manual/store/ui/CustomerAddressEditPanel.java[tags=customerAddressEditPanel]
 ----
 
 == Input controls
 
 === Boolean
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createBooleanComboBox-java.lang.String-[createBooleanComboBox(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createBooleanComboBox-java.lang.String-[createBooleanComboBox(propertyId)]
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createCheckBox-java.lang.String-[createCheckBox(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createCheckBox-java.lang.String-[createCheckBox(propertyId)]
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createNullableCheckBox-java.lang.String-[createNullableCheckBox(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createNullableCheckBox-java.lang.String-[createNullableCheckBox(propertyId)]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/framework/EntityEditPanels.java[tags=booleanValue]
+include::{dir-source}/dev/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=booleanValue]
 ----
 
 === Foreign key
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyComboBox-java.lang.String-[createForeignKeyComboBox(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyComboBox-java.lang.String-[createForeignKeyComboBox(propertyId)]
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyField-java.lang.String-[createForeignKeyField(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyField-java.lang.String-[createForeignKeyField(propertyId)]
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyLookupField-java.lang.String-[createForeignKeyLookupField(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyLookupField-java.lang.String-[createForeignKeyLookupField(propertyId)]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/framework/EntityEditPanels.java[tags=foreignKeyValue]
+include::{dir-source}/dev/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=foreignKeyValue]
 ----
 
 === Temporal
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createTemporalInputPanel-java.lang.String-[createTemporalInputPanel(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createTemporalInputPanel-java.lang.String-[createTemporalInputPanel(propertyId)]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/framework/EntityEditPanels.java[tags=temporalValue]
+include::{dir-source}/dev/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=temporalValue]
 ----
 
 === Numerical
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/framework/EntityEditPanels.java[tags=numericalValue]
+include::{dir-source}/dev/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=numericalValue]
 ----
 
 === Text
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/framework/EntityEditPanels.java[tags=textValue]
+include::{dir-source}/dev/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=textValue]
 ----
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createTextArea-java.lang.String-[createTextArea(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextArea-java.lang.String-[createTextArea(propertyId)]
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createTextField-java.lang.String-[createTextField(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextField-java.lang.String-[createTextField(propertyId)]
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createTextInputPanel-java.lang.String-[createTextInputPanel(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextInputPanel-java.lang.String-[createTextInputPanel(propertyId)]
 
 === Value list
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/framework/EntityEditPanels.java[tags=valueList]
+include::{dir-source}/dev/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=valueList]
 ----
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createValueListComboBox-java.lang.String-[createValueListComboBox(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createValueListComboBox-java.lang.String-[createValueListComboBox(propertyId)]
 
 == Panels & labels
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createLabel-java.lang.String-[createLabel(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createLabel-java.lang.String-[createLabel(propertyId)]
 
-{url-javadoc}/org/jminor/swing/framework/ui/EntityEditComponentPanel.html#createPropertyPanel-java.lang.String-[createPropertyPanel(propertyId)]
+{url-javadoc}/dev/codion/swing/framework/ui/EntityEditComponentPanel.html#createPropertyPanel-java.lang.String-[createPropertyPanel(propertyId)]
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/framework/EntityEditPanels.java[tags=panelLabel]
+include::{dir-source}/dev/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=panelLabel]
 ----
 
 == Custom actions
-The action mechanism used throughout the JMinor framework is based on the {url-javadoc}/org/jminor/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}/org/jminor/swing/common/ui/control/ControlList.html[ControlList] class which, as the name suggests, represents a list of controls. There are two static utility classes for creating and presenting controls, {url-javadoc}/org/jminor/swing/common/ui/control/Controls.html[Controls] and {url-javadoc}/org/jminor/swing/common/ui/control/ControlProvider.html[ControlProvider] respectively.
+The action mechanism used throughout the JMinor framework is based on the {url-javadoc}/dev/codion/swing/common/ui/control/Control.html[Control] class and its subclasses and the {url-javadoc}/dev/codion/swing/common/ui/control/ControlList.html[ControlList] class which, as the name suggests, represents a list of controls. There are two static utility classes for creating and presenting controls, {url-javadoc}/dev/codion/swing/common/ui/control/Controls.html[Controls] and {url-javadoc}/dev/codion/swing/common/ui/control/ControlProvider.html[ControlProvider] respectively.

@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.rmi;
+package dev.codion.framework.db.rmi;
 
-import org.jminor.framework.db.EntityConnection;
+import dev.codion.framework.db.EntityConnection;
 
 import org.junit.jupiter.api.Test;
 

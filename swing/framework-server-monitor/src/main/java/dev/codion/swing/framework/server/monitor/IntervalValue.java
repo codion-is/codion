@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor;
+package dev.codion.swing.framework.server.monitor;
 
-import org.jminor.common.TaskScheduler;
-import org.jminor.common.value.AbstractValue;
+import dev.codion.common.TaskScheduler;
+import dev.codion.common.value.AbstractValue;
 
 final class IntervalValue extends AbstractValue<Integer> {
 

@@ -1,24 +1,24 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.model;
+package dev.codion.swing.framework.model;
 
-import org.jminor.common.Util;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.value.AbstractValue;
-import org.jminor.common.value.Value;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.framework.model.EntityEditEvents;
-import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
+import dev.codion.common.Util;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.value.AbstractValue;
+import dev.codion.common.value.Value;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.condition.Condition;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.model.EntityComboBoxModel;
+import dev.codion.framework.model.EntityEditEvents;
+import dev.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.db.condition.Conditions.selectCondition;
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.

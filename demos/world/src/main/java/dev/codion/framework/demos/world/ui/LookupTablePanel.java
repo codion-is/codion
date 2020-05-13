@@ -1,10 +1,10 @@
-package org.jminor.framework.demos.world.ui;
+package dev.codion.framework.demos.world.ui;
 
-import org.jminor.framework.demos.world.model.LookupTableModel;
-import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.framework.ui.EntityTablePanel;
+import dev.codion.framework.demos.world.model.LookupTableModel;
+import dev.codion.swing.common.ui.control.Control;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.framework.ui.EntityTablePanel;
 
 import org.kordamp.ikonli.foundation.Foundation;
 import org.kordamp.ikonli.swing.FontIcon;
@@ -13,10 +13,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static org.jminor.swing.common.ui.dialog.Dialogs.selectFileToSave;
-import static org.jminor.swing.common.ui.worker.ProgressWorker.runWithProgressBar;
-import static org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationIcons.ICON_SIZE;
-import static org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationIcons.imageIcon;
+import static dev.codion.swing.common.ui.dialog.Dialogs.selectFileToSave;
+import static dev.codion.swing.common.ui.worker.ProgressWorker.runWithProgressBar;
+import static dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons.ICON_SIZE;
+import static dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons.imageIcon;
 
 public final class LookupTablePanel extends EntityTablePanel {
 

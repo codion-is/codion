@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.rmi.client;
+package dev.codion.common.rmi.client;
 
-import org.jminor.common.user.User;
-import org.jminor.common.version.Version;
-import org.jminor.common.version.Versions;
+import dev.codion.common.user.User;
+import dev.codion.common.version.Version;
+import dev.codion.common.version.Versions;
 
 import java.io.Serializable;
 import java.util.Map;

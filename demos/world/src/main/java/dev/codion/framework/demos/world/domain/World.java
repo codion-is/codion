@@ -1,15 +1,15 @@
-package org.jminor.framework.demos.world.domain;
+package dev.codion.framework.demos.world.domain;
 
-import org.jminor.common.item.Item;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.ColorProvider;
-import org.jminor.framework.domain.entity.DefaultEntityValidator;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.StringProvider;
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.domain.property.DerivedProperty;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.item.Item;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.ColorProvider;
+import dev.codion.framework.domain.entity.DefaultEntityValidator;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.entity.StringProvider;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.domain.property.DerivedProperty;
+import dev.codion.framework.domain.property.Property;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -18,11 +18,11 @@ import java.util.Map;
 import java.util.Objects;
 
 import static java.util.Arrays.asList;
-import static org.jminor.common.Util.notNull;
-import static org.jminor.common.item.Items.item;
-import static org.jminor.framework.domain.entity.KeyGenerators.sequence;
-import static org.jminor.framework.domain.entity.OrderBy.orderBy;
-import static org.jminor.framework.domain.property.Properties.*;
+import static dev.codion.common.Util.notNull;
+import static dev.codion.common.item.Items.item;
+import static dev.codion.framework.domain.entity.KeyGenerators.sequence;
+import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static dev.codion.framework.domain.property.Properties.*;
 
 // tag::entityAndPropertyIds[]
 public final class World extends Domain {

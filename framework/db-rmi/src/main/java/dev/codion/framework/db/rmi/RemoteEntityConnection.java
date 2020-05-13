@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.rmi;
+package dev.codion.framework.db.rmi;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.user.User;
-import org.jminor.framework.db.condition.EntityCondition;
-import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.reports.ReportException;
+import dev.codion.common.db.reports.ReportWrapper;
+import dev.codion.common.user.User;
+import dev.codion.framework.db.condition.EntityCondition;
+import dev.codion.framework.db.condition.EntitySelectCondition;
+import dev.codion.framework.db.condition.EntityUpdateCondition;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -124,8 +124,8 @@ public interface RemoteEntityConnection extends Remote {
    * @param entity the entity to update
    * @return the updated entity
    * @throws DatabaseException in case of a database exception
-   * @throws org.jminor.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
-   * @throws org.jminor.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
+   * @throws dev.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
+   * @throws dev.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
    * @throws RemoteException in case of a remote exception
    */
   Entity update(Entity entity) throws RemoteException, DatabaseException;
@@ -136,7 +136,7 @@ public interface RemoteEntityConnection extends Remote {
    * @param entities the entities to update
    * @return the updated entities
    * @throws DatabaseException in case of a db exception
-   * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
+   * @throws dev.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    * @throws RemoteException in case of a remote exception
    */
   List<Entity> update(List<Entity> entities) throws RemoteException, DatabaseException;
@@ -203,8 +203,8 @@ public interface RemoteEntityConnection extends Remote {
    * @return an entity of the type {@code entityId}, having the
    * value of {@code propertyId} as {@code value}
    * @throws DatabaseException in case of a db exception
-   * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
-   * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+   * @throws dev.codion.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws dev.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
   Entity selectSingle(String entityId, String propertyId, Object value) throws RemoteException, DatabaseException;
@@ -214,8 +214,8 @@ public interface RemoteEntityConnection extends Remote {
    * @param key the key of the entity to select
    * @return an entity having the key {@code key}
    * @throws DatabaseException in case of a db exception
-   * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
-   * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+   * @throws dev.codion.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws dev.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
   Entity selectSingle(Entity.Key key) throws RemoteException, DatabaseException;
@@ -226,8 +226,8 @@ public interface RemoteEntityConnection extends Remote {
    * @param condition the condition specifying the entity to select
    * @return the entities according to the given condition
    * @throws DatabaseException if an exception occurs
-   * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
-   * @throws org.jminor.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+   * @throws dev.codion.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws dev.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
   Entity selectSingle(EntitySelectCondition condition) throws RemoteException, DatabaseException;
@@ -288,9 +288,9 @@ public interface RemoteEntityConnection extends Remote {
    * @param <P> the report parameters type
    * @return the filled result object
    * @throws DatabaseException in case of a db exception
-   * @throws org.jminor.common.db.reports.ReportException in case of a report exception
+   * @throws dev.codion.common.db.reports.ReportException in case of a report exception
    * @throws RemoteException in case of a remote exception
-   * @see org.jminor.common.db.reports.ReportWrapper#fillReport(java.sql.Connection, Object)
+   * @see dev.codion.common.db.reports.ReportWrapper#fillReport(java.sql.Connection, Object)
    */
   <T, R, P> R fillReport(ReportWrapper<T, R, P> reportWrapper, P reportParameters) throws RemoteException, DatabaseException, ReportException;
 

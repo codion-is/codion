@@ -1,19 +1,19 @@
 dependencies {
-    api project(':jminor-common-core')
-    api project(':jminor-common-db')
-    api project(':jminor-common-model')
+    api project(':codion-common-core')
+    api project(':codion-common-db')
+    api project(':codion-common-model')
 
-    api project(':jminor-framework-domain')
-    api project(':jminor-framework-db-core')
+    api project(':codion-framework-domain')
+    api project(':codion-framework-db-core')
 
-    testImplementation project(':jminor-framework-db-local')
-    testImplementation project(':jminor-framework-model-test')
+    testImplementation project(':codion-framework-db-local')
+    testImplementation project(':codion-framework-model-test')
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
     runtimeOnly "org.json:json:${jsonVersion}"
 
-    testRuntimeOnly project(':jminor-dbms-h2database')
+    testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 

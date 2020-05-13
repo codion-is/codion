@@ -1,28 +1,28 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.manual.quickstart;
+package dev.codion.framework.demos.manual.quickstart;
 
-import org.jminor.common.db.connection.DatabaseConnection;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnections;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.KeyGenerator;
-import org.jminor.framework.domain.entity.StringProvider;
-import org.jminor.framework.domain.entity.test.EntityTestUnit;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanel;
+import dev.codion.common.db.connection.DatabaseConnection;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.local.LocalEntityConnectionProvider;
+import dev.codion.framework.db.local.LocalEntityConnections;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.KeyGenerator;
+import dev.codion.framework.domain.entity.StringProvider;
+import dev.codion.framework.domain.entity.test.EntityTestUnit;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.ui.EntityPanel;
 
 import org.junit.jupiter.api.Test;
 
@@ -31,9 +31,9 @@ import java.sql.Types;
 import java.util.List;
 
 import static java.util.UUID.randomUUID;
-import static org.jminor.framework.demos.manual.quickstart.Example.Store.*;
-import static org.jminor.framework.domain.entity.KeyGenerators.automatic;
-import static org.jminor.framework.domain.property.Properties.*;
+import static dev.codion.framework.demos.manual.quickstart.Example.Store.*;
+import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
+import static dev.codion.framework.domain.property.Properties.*;
 
 public final class Example {
 

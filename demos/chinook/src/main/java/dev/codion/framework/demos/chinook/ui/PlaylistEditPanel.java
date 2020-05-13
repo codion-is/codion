@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.ui;
+package dev.codion.framework.demos.chinook.ui;
 
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.ui.EntityEditPanel;
 
-import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLIST_NAME;
-import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
+import static dev.codion.framework.demos.chinook.domain.Chinook.PLAYLIST_NAME;
+import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public class PlaylistEditPanel extends EntityEditPanel {
 

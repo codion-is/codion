@@ -1,8 +1,8 @@
 /**
  * Package configuration values:<br>
- * {@link org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel#LOAD_TEST_REMOTE_HOSTNAME}<br>
- * {@link org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel#LOAD_TEST_THINKTIME}<br>
- * {@link org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel#LOAD_TEST_BATCH_SIZE}<br>
- * {@link org.jminor.swing.framework.tools.loadtest.EntityLoadTestModel#LOAD_TEST_LOGIN_DELAY}
+ * {@link dev.codion.swing.framework.tools.loadtest.EntityLoadTestModel#LOAD_TEST_REMOTE_HOSTNAME}<br>
+ * {@link dev.codion.swing.framework.tools.loadtest.EntityLoadTestModel#LOAD_TEST_THINKTIME}<br>
+ * {@link dev.codion.swing.framework.tools.loadtest.EntityLoadTestModel#LOAD_TEST_BATCH_SIZE}<br>
+ * {@link dev.codion.swing.framework.tools.loadtest.EntityLoadTestModel#LOAD_TEST_LOGIN_DELAY}
  */
-package org.jminor.swing.framework.tools.loadtest;
+package dev.codion.swing.framework.tools.loadtest;

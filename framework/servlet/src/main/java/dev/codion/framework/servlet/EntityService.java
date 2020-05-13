@@ -1,23 +1,23 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.servlet;
+package dev.codion.framework.servlet;
 
-import org.jminor.common.Serializer;
-import org.jminor.common.Util;
-import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.rmi.client.ConnectionRequest;
-import org.jminor.common.rmi.server.Server;
-import org.jminor.common.rmi.server.exception.ServerAuthenticationException;
-import org.jminor.common.rmi.server.exception.ServerException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.condition.EntityCondition;
-import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.db.rmi.RemoteEntityConnection;
-import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.Serializer;
+import dev.codion.common.Util;
+import dev.codion.common.db.reports.ReportWrapper;
+import dev.codion.common.rmi.client.ConnectionRequest;
+import dev.codion.common.rmi.server.Server;
+import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
+import dev.codion.common.rmi.server.exception.ServerException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.condition.EntityCondition;
+import dev.codion.framework.db.condition.EntitySelectCondition;
+import dev.codion.framework.db.condition.EntityUpdateCondition;
+import dev.codion.framework.db.rmi.RemoteEntityConnection;
+import dev.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

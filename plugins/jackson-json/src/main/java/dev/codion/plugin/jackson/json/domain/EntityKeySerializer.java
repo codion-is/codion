@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.jackson.json.domain;
+package dev.codion.plugin.jackson.json.domain;
 
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.property.ColumnProperty;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

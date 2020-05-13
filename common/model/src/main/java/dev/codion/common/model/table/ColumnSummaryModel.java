@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model.table;
+package dev.codion.common.model.table;
 
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
 
 import java.util.Collection;
 import java.util.List;

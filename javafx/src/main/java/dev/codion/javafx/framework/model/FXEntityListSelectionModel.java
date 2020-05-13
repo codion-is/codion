@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.javafx.framework.model;
+package dev.codion.javafx.framework.model;
 
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.model.table.SelectionModel;
-import org.jminor.common.state.State;
-import org.jminor.common.state.StateObserver;
-import org.jminor.common.state.States;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.model.table.SelectionModel;
+import dev.codion.common.state.State;
+import dev.codion.common.state.StateObserver;
+import dev.codion.common.state.States;
+import dev.codion.framework.domain.entity.Entity;
 
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.MultipleSelectionModel;

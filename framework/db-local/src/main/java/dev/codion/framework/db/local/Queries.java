@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.local;
+package dev.codion.framework.db.local;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.framework.db.condition.EntityCondition;
-import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.condition.WhereCondition;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.OrderBy;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.SubqueryProperty;
+import dev.codion.common.db.database.Database;
+import dev.codion.framework.db.condition.EntityCondition;
+import dev.codion.framework.db.condition.EntitySelectCondition;
+import dev.codion.framework.db.condition.WhereCondition;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.entity.OrderBy;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.SubqueryProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 final class Queries {
 

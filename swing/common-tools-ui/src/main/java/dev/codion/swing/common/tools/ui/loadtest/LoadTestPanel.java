@@ -1,31 +1,31 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.ui.loadtest;
+package dev.codion.swing.common.tools.ui.loadtest;
 
-import org.jminor.common.Util;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.common.value.Nullable;
-import org.jminor.common.value.Values;
-import org.jminor.swing.common.tools.loadtest.LoadTest;
-import org.jminor.swing.common.tools.loadtest.LoadTestModel;
-import org.jminor.swing.common.tools.loadtest.ScenarioException;
-import org.jminor.swing.common.tools.loadtest.UsageScenario;
-import org.jminor.swing.common.tools.randomizer.ItemRandomizer;
-import org.jminor.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.control.ToggleControl;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.common.ui.textfield.IntegerField;
-import org.jminor.swing.common.ui.textfield.TextFields;
-import org.jminor.swing.common.ui.value.NumericalValues;
+import dev.codion.common.Util;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.common.value.Nullable;
+import dev.codion.common.value.Values;
+import dev.codion.swing.common.tools.loadtest.LoadTest;
+import dev.codion.swing.common.tools.loadtest.LoadTestModel;
+import dev.codion.swing.common.tools.loadtest.ScenarioException;
+import dev.codion.swing.common.tools.loadtest.UsageScenario;
+import dev.codion.swing.common.tools.randomizer.ItemRandomizer;
+import dev.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.common.ui.control.ControlProvider;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.control.ToggleControl;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.common.ui.textfield.IntegerField;
+import dev.codion.swing.common.ui.textfield.TextFields;
+import dev.codion.swing.common.ui.value.NumericalValues;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -59,7 +59,7 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.swing.common.ui.icons.Icons.icons;
+import static dev.codion.swing.common.ui.icons.Icons.icons;
 
 /**
  * A default UI component for the LoadTestModel class.

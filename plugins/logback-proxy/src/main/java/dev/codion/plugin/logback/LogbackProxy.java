@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.logback;
+package dev.codion.plugin.logback;
 
-import org.jminor.common.LoggerProxy;
+import dev.codion.common.LoggerProxy;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;

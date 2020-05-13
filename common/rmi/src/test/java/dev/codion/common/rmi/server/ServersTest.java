@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2017, Björn Darri Sigurösson. All Rights Reserved.
  */
-package org.jminor.common.rmi.server;
+package dev.codion.common.rmi.server;
 
-import org.jminor.common.rmi.server.exception.ServerAuthenticationException;
-import org.jminor.common.user.User;
+import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
+import dev.codion.common.user.User;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

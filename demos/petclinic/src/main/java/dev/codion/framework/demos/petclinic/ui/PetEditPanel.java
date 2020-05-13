@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.petclinic.ui;
+package dev.codion.framework.demos.petclinic.ui;
 
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.ui.EntityComboBox;
-import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanelBuilder;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.ui.EntityComboBox;
+import dev.codion.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.ui.EntityPanelBuilder;
 
 import javax.swing.Action;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 
-import static org.jminor.framework.demos.petclinic.domain.Clinic.*;
+import static dev.codion.framework.demos.petclinic.domain.Clinic.*;
 
 public final class PetEditPanel extends EntityEditPanel {
 

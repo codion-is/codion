@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.domain;
+package dev.codion.framework.demos.empdept.domain;
 
 import java.io.Serializable;
 

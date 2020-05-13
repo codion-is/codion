@@ -1,30 +1,30 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.Conjunction;
-import org.jminor.common.db.exception.ReferentialIntegrityException;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.i18n.Messages;
-import org.jminor.common.state.State;
-import org.jminor.common.state.States;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import org.jminor.swing.common.ui.dialog.DialogExceptionHandler;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
+import dev.codion.common.Configuration;
+import dev.codion.common.Conjunction;
+import dev.codion.common.db.exception.ReferentialIntegrityException;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.i18n.Messages;
+import dev.codion.common.state.State;
+import dev.codion.common.state.States;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.i18n.FrameworkMessages;
+import dev.codion.framework.model.EntityEditModel;
+import dev.codion.swing.common.ui.KeyEvents;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.common.ui.control.Control;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.ControlProvider;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import dev.codion.swing.common.ui.dialog.DialogExceptionHandler;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +42,9 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.swing.common.ui.Components.hideWaitCursor;
-import static org.jminor.swing.common.ui.Components.showWaitCursor;
-import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static dev.codion.swing.common.ui.Components.hideWaitCursor;
+import static dev.codion.swing.common.ui.Components.showWaitCursor;
+import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * A UI component based on a {@link EntityEditModel}.
@@ -719,7 +719,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * control codes ({@link ControlCode#INSERT}, {@link ControlCode#UPDATE} etc)
    * via the {@code setControl(String, Control) method, these can then be retrieved via the {@link #getControl(ControlCode)} method.
    * @param controlCodes the control codes for which controls should be initialized
-   * @see org.jminor.swing.common.ui.control.Control
+   * @see dev.codion.swing.common.ui.control.Control
    * @see #setControl(ControlCode, org.jminor.swing.common.ui.control.Control)
    * @see #getControl(ControlCode)
    * todo updateEnabled(false) þá vantar Insert control nema það sé tiltekið í smið

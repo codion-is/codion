@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.value;
+package dev.codion.common.value;
 
-import org.jminor.common.event.Event;
-import org.jminor.common.event.Events;
-import org.jminor.common.state.State;
-import org.jminor.common.state.StateObserver;
-import org.jminor.common.state.States;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.Events;
+import dev.codion.common.state.State;
+import dev.codion.common.state.StateObserver;
+import dev.codion.common.state.States;
 
 import org.junit.jupiter.api.Test;
 

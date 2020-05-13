@@ -1,10 +1,10 @@
 dependencies {
-    api project(':jminor-common-core')
-    api project(':jminor-common-db')
+    api project(':codion-common-core')
+    api project(':codion-common-db')
 
     implementation 'com.zaxxer:HikariCP:3.4.2'
 
-    testImplementation project(':jminor-dbms-h2database')
+    testImplementation project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 

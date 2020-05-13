@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.javafx;
+package dev.codion.framework.demos.empdept.javafx;
 
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.model.EntityModel;
-import org.jminor.javafx.framework.model.FXEntityEditModel;
-import org.jminor.javafx.framework.model.FXEntityListModel;
-import org.jminor.javafx.framework.ui.EntityApplicationView;
-import org.jminor.javafx.framework.ui.EntityTableView;
-import org.jminor.javafx.framework.ui.EntityView;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.demos.empdept.domain.EmpDept;
+import dev.codion.framework.model.EntityModel;
+import dev.codion.javafx.framework.model.FXEntityEditModel;
+import dev.codion.javafx.framework.model.FXEntityListModel;
+import dev.codion.javafx.framework.ui.EntityApplicationView;
+import dev.codion.javafx.framework.ui.EntityTableView;
+import dev.codion.javafx.framework.ui.EntityView;
 
 public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 

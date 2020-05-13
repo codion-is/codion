@@ -1,6 +1,6 @@
 /**
  * Package configuration values:<br>
- * {@link org.jminor.common.model.table.ColumnConditionModel#AUTOMATIC_WILDCARD}<br>
- * {@link org.jminor.common.model.table.ColumnConditionModel#CASE_SENSITIVE}
+ * {@link dev.codion.common.model.table.ColumnConditionModel#AUTOMATIC_WILDCARD}<br>
+ * {@link dev.codion.common.model.table.ColumnConditionModel#CASE_SENSITIVE}
  */
-package org.jminor.common.model;
+package dev.codion.common.model;

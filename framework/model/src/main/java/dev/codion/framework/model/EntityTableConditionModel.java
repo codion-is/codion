@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package dev.codion.framework.model;
 
-import org.jminor.common.Conjunction;
-import org.jminor.common.db.Operator;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.state.StateObserver;
-import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.Conjunction;
+import dev.codion.common.db.Operator;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.EventObserver;
+import dev.codion.common.model.Refreshable;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.state.StateObserver;
+import dev.codion.framework.db.condition.Condition;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 

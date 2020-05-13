@@ -3,28 +3,28 @@ import org.javamodularity.moduleplugin.tasks.ModularJavaExec
 apply plugin: 'application'
 
 dependencies {
-    implementation project(':jminor-common-core')
-    implementation project(':jminor-common-db')
-    implementation project(':jminor-common-model')
-    implementation project(':jminor-common-rmi')
+    implementation project(':codion-common-core')
+    implementation project(':codion-common-db')
+    implementation project(':codion-common-model')
+    implementation project(':codion-common-rmi')
 
-    implementation project(':jminor-swing-common-model')
-    implementation project(':jminor-swing-common-ui')
+    implementation project(':codion-swing-common-model')
+    implementation project(':codion-swing-common-ui')
 
-    implementation project(':jminor-framework-server')
+    implementation project(':codion-framework-server')
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
     implementation "org.jfree:jcommon:${jcommonVersion}"
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
-    runtimeOnly project(':jminor-plugin-logback-proxy')
+    runtimeOnly project(':codion-plugin-logback-proxy')
 
-    testImplementation project(':jminor-framework-server')
-    testImplementation project(':jminor-framework-db-rmi')
-    testCompileOnly project(':jminor-framework-db-local')//for modules
-    testRuntimeOnly project(':jminor-plugin-hikari-pool')
-    testRuntimeOnly project(':jminor-dbms-h2database')
+    testImplementation project(':codion-framework-server')
+    testImplementation project(':codion-framework-db-rmi')
+    testCompileOnly project(':codion-framework-db-local')//for modules
+    testRuntimeOnly project(':codion-plugin-hikari-pool')
+    testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 

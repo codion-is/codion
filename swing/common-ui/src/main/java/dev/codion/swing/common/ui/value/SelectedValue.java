@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.value;
+package dev.codion.swing.common.ui.value;
 
-import org.jminor.common.item.Item;
-import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
+import dev.codion.common.item.Item;
+import dev.codion.common.model.combobox.FilteredComboBoxModel;
+import dev.codion.swing.common.model.combobox.ItemComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;

@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.model;
+package dev.codion.framework.demos.empdept.model;
 
-import org.jminor.common.db.Operator;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
+import dev.codion.common.db.Operator;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.condition.Conditions;
+import dev.codion.framework.demos.empdept.domain.EmpDept;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.swing.framework.model.SwingEntityComboBoxModel;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Objects;
 

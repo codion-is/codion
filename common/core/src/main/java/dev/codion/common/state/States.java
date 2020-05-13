@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.state;
+package dev.codion.common.state;
 
-import org.jminor.common.Conjunction;
+import dev.codion.common.Conjunction;
 
 /**
  * A factory class for {@link State} objects.

@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.hikari.pool;
+package dev.codion.plugin.hikari.pool;
 
-import org.jminor.common.db.pool.AbstractConnectionPool;
-import org.jminor.common.db.pool.ConnectionFactory;
-import org.jminor.common.db.pool.ConnectionPool;
-import org.jminor.common.db.pool.ConnectionPoolProvider;
-import org.jminor.common.user.User;
+import dev.codion.common.db.pool.AbstractConnectionPool;
+import dev.codion.common.db.pool.ConnectionFactory;
+import dev.codion.common.db.pool.ConnectionPool;
+import dev.codion.common.db.pool.ConnectionPoolProvider;
+import dev.codion.common.user.User;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.pool.HikariPool;

@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db;
+package dev.codion.framework.db;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.user.User;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.common.version.Version;
-import org.jminor.framework.domain.entity.Entities;
+import dev.codion.common.Configuration;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.user.User;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.common.version.Version;
+import dev.codion.framework.domain.entity.Entities;
 
 import java.util.UUID;
 

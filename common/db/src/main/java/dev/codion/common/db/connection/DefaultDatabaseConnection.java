@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.connection;
+package dev.codion.common.db.connection;
 
-import org.jminor.common.MethodLogger;
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.result.ResultPacker;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
+import dev.codion.common.MethodLogger;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.result.ResultPacker;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -44,7 +44,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @param database the database
    * @param user the user to base this database connection on
    * @throws DatabaseException in case there is a problem connecting to the database
-   * @throws org.jminor.common.db.exception.AuthenticationException in case of an authentication error
+   * @throws dev.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
   DefaultDatabaseConnection(final Database database, final User user) throws DatabaseException {
     this.database = requireNonNull(database, "database");

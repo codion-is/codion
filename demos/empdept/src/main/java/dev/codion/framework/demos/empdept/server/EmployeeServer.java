@@ -1,25 +1,25 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.server;
+package dev.codion.framework.demos.empdept.server;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.rmi.server.RemoteClient;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.demos.empdept.domain.Employee;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.server.AbstractRemoteEntityConnection;
-import org.jminor.framework.server.EntityServer;
-import org.jminor.framework.server.EntityServerConfiguration;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.rmi.server.RemoteClient;
+import dev.codion.framework.demos.empdept.domain.EmpDept;
+import dev.codion.framework.demos.empdept.domain.Employee;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.server.AbstractRemoteEntityConnection;
+import dev.codion.framework.server.EntityServer;
+import dev.codion.framework.server.EntityServerConfiguration;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.List;
 
-import static org.jminor.framework.db.condition.Conditions.selectCondition;
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 
 public final class EmployeeServer extends EntityServer {
 

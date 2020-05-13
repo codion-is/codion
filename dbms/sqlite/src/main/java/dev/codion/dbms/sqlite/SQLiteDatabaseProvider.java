@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.dbms.sqlite;
+package dev.codion.dbms.sqlite;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.DatabaseProvider;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.database.DatabaseProvider;
 
 import static java.util.Objects.requireNonNull;
 

@@ -1,5 +1,5 @@
 /**
  * Package configuration values:<br>
- * {@link org.jminor.framework.domain.entity.EntityDefinition#STRICT_FOREIGN_KEYS}
+ * {@link dev.codion.framework.domain.entity.EntityDefinition#STRICT_FOREIGN_KEYS}
  */
-package org.jminor.framework.domain.entity;
+package dev.codion.framework.domain.entity;

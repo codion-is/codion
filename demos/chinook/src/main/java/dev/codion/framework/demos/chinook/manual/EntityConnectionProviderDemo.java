@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.manual;
+package dev.codion.framework.demos.chinook.manual;
 
-import org.jminor.common.db.connection.DatabaseConnection;
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.http.HttpEntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnection;
-import org.jminor.framework.db.local.LocalEntityConnectionProvider;
-import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
-import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.framework.demos.chinook.domain.impl.ChinookImpl;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.db.connection.DatabaseConnection;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.db.http.HttpEntityConnectionProvider;
+import dev.codion.framework.db.local.LocalEntityConnection;
+import dev.codion.framework.db.local.LocalEntityConnectionProvider;
+import dev.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import dev.codion.framework.demos.chinook.domain.Chinook;
+import dev.codion.framework.demos.chinook.domain.impl.ChinookImpl;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
 
 import java.sql.Connection;
 

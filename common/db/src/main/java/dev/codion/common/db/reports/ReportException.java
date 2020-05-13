@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.reports;
+package dev.codion.common.db.reports;
 
 /**
  * An exception occurring during report generation.

@@ -1,8 +1,8 @@
-package org.jminor.framework.demos.world.model;
+package dev.codion.framework.demos.world.model;
 
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.world.domain.World;
-import org.jminor.swing.framework.model.SwingEntityModel;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.demos.world.domain.World;
+import dev.codion.swing.framework.model.SwingEntityModel;
 
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;

@@ -1,24 +1,24 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.HierarchyPanel;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.dialog.DisposeOnEscape;
-import org.jminor.swing.common.ui.dialog.Modal;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
+import dev.codion.common.Configuration;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.HierarchyPanel;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.common.ui.control.Control;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.common.ui.dialog.DisposeOnEscape;
+import dev.codion.swing.common.ui.dialog.Modal;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -55,10 +55,10 @@ import java.util.stream.Collectors;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.swing.common.ui.KeyEvents.addKeyEvent;
-import static org.jminor.swing.framework.ui.EntityPanel.Direction.*;
-import static org.jminor.swing.framework.ui.EntityPanel.PanelState.*;
-import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static dev.codion.swing.common.ui.KeyEvents.addKeyEvent;
+import static dev.codion.swing.framework.ui.EntityPanel.Direction.*;
+import static dev.codion.swing.framework.ui.EntityPanel.PanelState.*;
+import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
@@ -87,7 +87,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Indicates whether entity panels should be activated when the panel receives focus<br>
    * Value type: Boolean<br>
    * Default value: true
-   * @see org.jminor.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE
+   * @see dev.codion.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE
    */
   public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION = Configuration.booleanValue(
           "org.jminor.swing.framework.ui.EntityPanel.useFocusActivation", true);

@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.local;
+package dev.codion.framework.db.local;
 
-import org.jminor.common.db.result.ResultPacker;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.DerivedProperty;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.TransientProperty;
+import dev.codion.common.db.result.ResultPacker;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.DerivedProperty;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.domain.property.TransientProperty;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

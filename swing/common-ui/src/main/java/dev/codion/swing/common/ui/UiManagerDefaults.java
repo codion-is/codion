@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui;
+package dev.codion.swing.common.ui;
 
-import org.jminor.common.i18n.Messages;
+import dev.codion.common.i18n.Messages;
 
 import javax.swing.UIManager;
 import java.awt.Insets;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.textfield;
+package dev.codion.swing.common.ui.textfield;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;

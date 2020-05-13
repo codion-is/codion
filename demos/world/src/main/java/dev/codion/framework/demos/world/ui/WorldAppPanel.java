@@ -1,20 +1,20 @@
-package org.jminor.framework.demos.world.ui;
+package dev.codion.framework.demos.world.ui;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.world.domain.World;
-import org.jminor.framework.demos.world.model.CountryCustomModel;
-import org.jminor.framework.demos.world.model.CountryModel;
-import org.jminor.framework.demos.world.model.WorldAppModel;
-import org.jminor.swing.common.ui.icons.Icons;
-import org.jminor.swing.framework.model.SwingEntityModelBuilder;
-import org.jminor.swing.framework.ui.EntityApplicationPanel;
-import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelBuilder;
-import org.jminor.swing.framework.ui.icons.FrameworkIcons;
-import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
-import org.jminor.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.demos.world.domain.World;
+import dev.codion.framework.demos.world.model.CountryCustomModel;
+import dev.codion.framework.demos.world.model.CountryModel;
+import dev.codion.framework.demos.world.model.WorldAppModel;
+import dev.codion.swing.common.ui.icons.Icons;
+import dev.codion.swing.framework.model.SwingEntityModelBuilder;
+import dev.codion.swing.framework.ui.EntityApplicationPanel;
+import dev.codion.swing.framework.ui.EntityPanel;
+import dev.codion.swing.framework.ui.EntityPanelBuilder;
+import dev.codion.swing.framework.ui.icons.FrameworkIcons;
+import dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
+import dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 
 import javax.swing.UIManager;
 import java.awt.Color;

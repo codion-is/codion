@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.schemabrowser.client.ui;
+package dev.codion.framework.demos.schemabrowser.client.ui;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.framework.model.SwingEntityApplicationModel;
-import org.jminor.swing.framework.ui.EntityApplicationPanel;
-import org.jminor.swing.framework.ui.EntityPanelBuilder;
-import org.jminor.swing.framework.ui.EntityTablePanel;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.framework.model.SwingEntityApplicationModel;
+import dev.codion.swing.framework.ui.EntityApplicationPanel;
+import dev.codion.swing.framework.ui.EntityPanelBuilder;
+import dev.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
 

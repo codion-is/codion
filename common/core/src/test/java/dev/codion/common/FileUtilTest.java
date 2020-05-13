@@ -1,4 +1,4 @@
-package org.jminor.common;
+package dev.codion.common;
 
 import org.junit.jupiter.api.Test;
 

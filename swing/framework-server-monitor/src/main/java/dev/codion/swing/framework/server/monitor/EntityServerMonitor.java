@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor;
+package dev.codion.swing.framework.server.monitor;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.Events;
-import org.jminor.common.user.User;
-import org.jminor.common.value.PropertyValue;
+import dev.codion.common.Configuration;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.Events;
+import dev.codion.common.user.User;
+import dev.codion.common.value.PropertyValue;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.jminor.common.Util.nullOrEmpty;
+import static dev.codion.common.Util.nullOrEmpty;
 
 /**
  * A monitor for the EntityServer

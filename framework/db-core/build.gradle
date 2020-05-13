@@ -1,8 +1,8 @@
 dependencies {
-    api project(':jminor-common-core')
-    api project(':jminor-common-db')
+    api project(':codion-common-core')
+    api project(':codion-common-db')
     
-    api project(':jminor-framework-domain')
+    api project(':codion-framework-domain')
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 }

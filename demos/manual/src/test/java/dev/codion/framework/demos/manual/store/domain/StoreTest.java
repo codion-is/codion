@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.manual.store.domain;
+package dev.codion.framework.demos.manual.store.domain;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.domain.entity.test.EntityTestUnit;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 

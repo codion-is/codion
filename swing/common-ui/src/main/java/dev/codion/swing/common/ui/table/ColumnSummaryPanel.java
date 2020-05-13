@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.table;
+package dev.codion.swing.common.ui.table;
 
-import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.swing.common.ui.control.Controls;
+import dev.codion.common.model.table.ColumnSummaryModel;
+import dev.codion.swing.common.ui.control.Controls;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;

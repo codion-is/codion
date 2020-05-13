@@ -1,6 +1,6 @@
 dependencies {
-    implementation project(':jminor-swing-common-ui')
-    implementation project(':jminor-swing-framework-ui')
+    implementation project(':codion-swing-common-ui')
+    implementation project(':codion-swing-framework-ui')
 
     api 'org.kordamp.ikonli:ikonli-swing:11.4.0'
     api 'org.kordamp.ikonli:ikonli-foundation-pack:11.4.0'

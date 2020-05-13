@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package dev.codion.framework.server;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.rmi.server.ClientLog;
-import org.jminor.common.rmi.server.RemoteClient;
-import org.jminor.common.rmi.server.ServerInformation;
-import org.jminor.common.user.User;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.pool.ConnectionPoolStatistics;
+import dev.codion.common.rmi.server.ClientLog;
+import dev.codion.common.rmi.server.RemoteClient;
+import dev.codion.common.rmi.server.ServerInformation;
+import dev.codion.common.user.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

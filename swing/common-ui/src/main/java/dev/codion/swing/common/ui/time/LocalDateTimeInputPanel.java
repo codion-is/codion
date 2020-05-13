@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.time;
+package dev.codion.swing.common.ui.time;
 
-import org.jminor.common.DateFormats;
-import org.jminor.common.state.StateObserver;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.textfield.TextFields;
+import dev.codion.common.DateFormats;
+import dev.codion.common.state.StateObserver;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;

@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.ui.loadtest;
+package dev.codion.swing.common.tools.ui.loadtest;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.swing.common.tools.loadtest.LoadTestModel;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.swing.common.tools.loadtest.LoadTestModel;
 
 import org.junit.jupiter.api.Test;
 

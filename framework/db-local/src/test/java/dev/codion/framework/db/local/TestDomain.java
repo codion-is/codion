@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.local;
+package dev.codion.framework.db.local;
 
-import org.jminor.common.db.connection.DatabaseConnection;
-import org.jminor.common.db.operation.AbstractDatabaseFunction;
-import org.jminor.common.db.operation.AbstractDatabaseProcedure;
-import org.jminor.common.db.reports.AbstractReportWrapper;
-import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.KeyGenerator;
-import org.jminor.framework.domain.entity.StringProvider;
-import org.jminor.framework.domain.property.ColumnProperty;
+import dev.codion.common.db.connection.DatabaseConnection;
+import dev.codion.common.db.operation.AbstractDatabaseFunction;
+import dev.codion.common.db.operation.AbstractDatabaseProcedure;
+import dev.codion.common.db.reports.AbstractReportWrapper;
+import dev.codion.common.db.reports.ReportException;
+import dev.codion.common.db.reports.ReportWrapper;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.KeyGenerator;
+import dev.codion.framework.domain.entity.StringProvider;
+import dev.codion.framework.domain.property.ColumnProperty;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import static java.util.Arrays.asList;
-import static org.jminor.common.item.Items.item;
-import static org.jminor.framework.domain.entity.KeyGenerators.increment;
-import static org.jminor.framework.domain.property.Properties.*;
+import static dev.codion.common.item.Items.item;
+import static dev.codion.framework.domain.entity.KeyGenerators.increment;
+import static dev.codion.framework.domain.property.Properties.*;
 
 public final class TestDomain extends Domain {
 

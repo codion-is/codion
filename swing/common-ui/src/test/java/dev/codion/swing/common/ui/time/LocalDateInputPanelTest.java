@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.time;
+package dev.codion.swing.common.ui.time;
 
-import org.jminor.common.state.State;
-import org.jminor.common.state.States;
-import org.jminor.swing.common.ui.time.TemporalInputPanel.CalendarButton;
+import dev.codion.common.state.State;
+import dev.codion.common.state.States;
+import dev.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,9 +1,9 @@
 dependencies {
-    implementation project(':jminor-common-core')
-    implementation project(':jminor-common-db')
+    implementation project(':codion-common-core')
+    implementation project(':codion-common-db')
 
-    testImplementation project(':jminor-common-http')
-    testImplementation project(':jminor-framework-db-local')
+    testImplementation project(':codion-common-http')
+    testImplementation project(':codion-framework-db-local')
 
     implementation("net.sf.jasperreports:jasperreports:${jasperReportsVersion}") {
         transitive = false
@@ -15,7 +15,7 @@ dependencies {
     implementation "commons-beanutils:commons-beanutils:${commonsBeanUtilsVersion}"
     implementation "org.eclipse.jdt.core.compiler:ecj:${jdtCoreCompilerVersion}"
 
-    testImplementation project(':jminor-dbms-h2database')
+    testImplementation project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 

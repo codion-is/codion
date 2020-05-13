@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.javafx;
+package dev.codion.framework.demos.empdept.javafx;
 
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.javafx.framework.model.FXEntityEditModel;
-import org.jminor.javafx.framework.ui.EntityEditView;
+import dev.codion.framework.demos.empdept.domain.EmpDept;
+import dev.codion.javafx.framework.model.FXEntityEditModel;
+import dev.codion.javafx.framework.ui.EntityEditView;
 
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;

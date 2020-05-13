@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.tools.loadtest;
+package dev.codion.swing.framework.tools.loadtest;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.user.User;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.model.EntityApplicationModel;
-import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.framework.model.EntityTableModel;
-import org.jminor.swing.common.tools.loadtest.AbstractUsageScenario;
-import org.jminor.swing.common.tools.loadtest.LoadTestModel;
-import org.jminor.swing.common.tools.loadtest.UsageScenario;
+import dev.codion.common.Configuration;
+import dev.codion.common.user.User;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.model.EntityApplicationModel;
+import dev.codion.framework.model.EntityComboBoxModel;
+import dev.codion.framework.model.EntityTableModel;
+import dev.codion.swing.common.tools.loadtest.AbstractUsageScenario;
+import dev.codion.swing.common.tools.loadtest.LoadTestModel;
+import dev.codion.swing.common.tools.loadtest.UsageScenario;
 
 import java.util.ArrayList;
 import java.util.Collection;

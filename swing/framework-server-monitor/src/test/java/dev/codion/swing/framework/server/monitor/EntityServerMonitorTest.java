@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor;
+package dev.codion.swing.framework.server.monitor;
 
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.rmi.server.RemoteClient;
-import org.jminor.common.rmi.server.Server;
-import org.jminor.common.rmi.server.ServerConfiguration;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
-import org.jminor.framework.server.EntityServer;
-import org.jminor.framework.server.EntityServerAdmin;
-import org.jminor.framework.server.EntityServerConfiguration;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.rmi.server.RemoteClient;
+import dev.codion.common.rmi.server.Server;
+import dev.codion.common.rmi.server.ServerConfiguration;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import dev.codion.framework.server.EntityServer;
+import dev.codion.framework.server.EntityServerAdmin;
+import dev.codion.framework.server.EntityServerConfiguration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

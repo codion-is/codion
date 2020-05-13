@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package dev.codion.framework.server;
 
-import org.jminor.common.rmi.server.LoginProxy;
-import org.jminor.common.rmi.server.RemoteClient;
-import org.jminor.common.rmi.server.exception.ServerAuthenticationException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
+import dev.codion.common.rmi.server.LoginProxy;
+import dev.codion.common.rmi.server.RemoteClient;
+import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
 
 import java.util.Arrays;
 import java.util.HashMap;

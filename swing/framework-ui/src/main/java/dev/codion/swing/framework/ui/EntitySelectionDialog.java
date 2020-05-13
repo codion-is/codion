@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.CancelException;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
+import dev.codion.common.i18n.Messages;
+import dev.codion.common.model.CancelException;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.i18n.FrameworkMessages;
+import dev.codion.swing.common.ui.KeyEvents;
+import dev.codion.swing.common.ui.control.Control;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -30,9 +30,9 @@ import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 import static javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 import static javax.swing.ListSelectionModel.SINGLE_SELECTION;
-import static org.jminor.swing.common.ui.Windows.getParentWindow;
-import static org.jminor.swing.common.ui.control.Controls.control;
-import static org.jminor.swing.common.ui.layout.Layouts.flowLayout;
+import static dev.codion.swing.common.ui.Windows.getParentWindow;
+import static dev.codion.swing.common.ui.control.Controls.control;
+import static dev.codion.swing.common.ui.layout.Layouts.flowLayout;
 
 /**
  * A dialog for searching for and selecting one or more entities from a table model.

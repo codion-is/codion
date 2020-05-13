@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.ui;
+package dev.codion.framework.demos.chinook.ui;
 
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.ui.EntityComboBox;
-import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityLookupField;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.ui.EntityComboBox;
+import dev.codion.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.ui.EntityLookupField;
 
-import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_PLAYLIST_FK;
-import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_TRACK_FK;
-import static org.jminor.swing.common.ui.Components.setPreferredHeight;
-import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
-import static org.jminor.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
+import static dev.codion.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_PLAYLIST_FK;
+import static dev.codion.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_TRACK_FK;
+import static dev.codion.swing.common.ui.Components.setPreferredHeight;
+import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static dev.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
 
 public class PlaylistTrackEditPanel extends EntityEditPanel {
 

@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.property;
+package dev.codion.framework.domain.property;
 
-import org.jminor.common.DateFormats;
+import dev.codion.common.DateFormats;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.jminor.framework.domain.property.Properties.*;
+import static dev.codion.framework.domain.property.Properties.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class PropertiesTest {

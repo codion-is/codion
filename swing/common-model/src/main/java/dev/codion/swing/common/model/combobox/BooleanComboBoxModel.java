@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.combobox;
+package dev.codion.swing.common.model.combobox;
 
-import org.jminor.common.i18n.Messages;
+import dev.codion.common.i18n.Messages;
 
 import static java.util.Arrays.asList;
-import static org.jminor.common.item.Items.item;
+import static dev.codion.common.item.Items.item;
 
 /**
  * A ComboBoxModel for boolean values, true, false and null.

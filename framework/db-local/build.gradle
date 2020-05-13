@@ -1,13 +1,13 @@
 dependencies {
-    api project(':jminor-common-core')
-    api project(':jminor-common-db')
+    api project(':codion-common-core')
+    api project(':codion-common-db')
 
-    api project(':jminor-framework-domain')
-    api project(':jminor-framework-db-core')
+    api project(':codion-framework-domain')
+    api project(':codion-framework-db-core')
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
-    testImplementation project(':jminor-dbms-h2database')
+    testImplementation project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 

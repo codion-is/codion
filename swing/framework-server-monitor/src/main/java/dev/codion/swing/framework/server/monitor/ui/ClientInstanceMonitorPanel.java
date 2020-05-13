@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor.ui;
+package dev.codion.swing.framework.server.monitor.ui;
 
-import org.jminor.common.DateFormats;
-import org.jminor.common.MethodLogger;
-import org.jminor.common.rmi.server.ClientLog;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.framework.server.monitor.ClientInstanceMonitor;
+import dev.codion.common.DateFormats;
+import dev.codion.common.MethodLogger;
+import dev.codion.common.rmi.server.ClientLog;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;

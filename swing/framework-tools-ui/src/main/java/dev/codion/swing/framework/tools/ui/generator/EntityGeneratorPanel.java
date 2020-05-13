@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.tools.ui.generator;
+package dev.codion.swing.framework.tools.ui.generator;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.LoginPanel;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.common.ui.table.FilteredTable;
-import org.jminor.swing.common.ui.value.TextValues;
-import org.jminor.swing.framework.tools.generator.EntityGeneratorModel;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.swing.common.model.table.AbstractFilteredTableModel;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.LoginPanel;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.common.ui.table.FilteredTable;
+import dev.codion.swing.common.ui.value.TextValues;
+import dev.codion.swing.framework.tools.generator.EntityGeneratorModel;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -25,8 +25,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 
-import static org.jminor.common.Util.nullOrEmpty;
-import static org.jminor.swing.common.ui.icons.Icons.icons;
+import static dev.codion.common.Util.nullOrEmpty;
+import static dev.codion.swing.common.ui.icons.Icons.icons;
 
 /**
  * A UI class based on the EntityGeneratorModel.

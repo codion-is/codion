@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.property;
+package dev.codion.framework.domain.property;
 
-import org.jminor.common.db.result.ResultPacker;
+import dev.codion.common.db.result.ResultPacker;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

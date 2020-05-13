@@ -1,4 +1,4 @@
-package org.jminor.framework.demos.schemabrowser.domain;
+package dev.codion.framework.demos.schemabrowser.domain;
 
 import org.junit.jupiter.api.Test;
 

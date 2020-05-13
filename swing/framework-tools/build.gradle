@@ -1,26 +1,26 @@
 dependencies {
-    implementation project(':jminor-common-core')
-    implementation project(':jminor-common-db')
-    implementation project(':jminor-common-model')
+    implementation project(':codion-common-core')
+    implementation project(':codion-common-db')
+    implementation project(':codion-common-model')
 
-    implementation project(':jminor-framework-domain')
-    implementation project(':jminor-framework-db-core')
-    api project(':jminor-framework-model')
+    implementation project(':codion-framework-domain')
+    implementation project(':codion-framework-db-core')
+    api project(':codion-framework-model')
 
-    api project(':jminor-swing-common-model')
-    api project(':jminor-swing-common-tools')
+    api project(':codion-swing-common-model')
+    api project(':codion-swing-common-tools')
 
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
-    testImplementation project(':jminor-common-rmi')
-    testImplementation project(':jminor-framework-server')
-    testRuntimeOnly project(':jminor-framework-db-local')
-    testRuntimeOnly project(':jminor-framework-db-rmi')
+    testImplementation project(':codion-common-rmi')
+    testImplementation project(':codion-framework-server')
+    testRuntimeOnly project(':codion-framework-db-local')
+    testRuntimeOnly project(':codion-framework-db-rmi')
 
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
-    testRuntimeOnly project(':jminor-plugin-hikari-pool')
-    testRuntimeOnly project(':jminor-dbms-h2database')
+    testRuntimeOnly project(':codion-plugin-hikari-pool')
+    testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 

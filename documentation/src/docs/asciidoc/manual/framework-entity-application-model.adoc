@@ -7,5 +7,5 @@ When implementing this class you must provide a constructor with a single Entity
 
 [source,java,indent=0]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/StoreAppModel.java[tags=storeAppModel]
+include::{dir-source}/dev/codion/framework/demos/manual/store/model/StoreAppModel.java[tags=storeAppModel]
 ----

@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor;
+package dev.codion.swing.framework.server.monitor;
 
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.StringProvider;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.StringProvider;
 
 import java.awt.Color;
 import java.sql.Types;
 
 import static java.util.Arrays.asList;
-import static org.jminor.common.item.Items.item;
-import static org.jminor.framework.domain.entity.KeyGenerators.increment;
-import static org.jminor.framework.domain.property.Properties.*;
+import static dev.codion.common.item.Items.item;
+import static dev.codion.framework.domain.entity.KeyGenerators.increment;
+import static dev.codion.framework.domain.property.Properties.*;
 
 public final class TestDomain extends Domain {
 

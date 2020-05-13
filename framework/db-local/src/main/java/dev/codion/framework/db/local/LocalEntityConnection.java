@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.local;
+package dev.codion.framework.db.local;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.MethodLogger;
-import org.jminor.common.db.connection.DatabaseConnection;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.result.ResultIterator;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.Configuration;
+import dev.codion.common.MethodLogger;
+import dev.codion.common.db.connection.DatabaseConnection;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.result.ResultIterator;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.db.condition.EntitySelectCondition;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.Entity;
 
 /**
  * EntityConnection implementation based on a local JDBC connection.
@@ -100,7 +100,7 @@ public interface LocalEntityConnection extends EntityConnection {
   /**
    * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by condition
    * @return this LocalEntityConnection instance
-   * @see org.jminor.framework.db.condition.EntitySelectCondition#setForeignKeyFetchDepth(int)
+   * @see dev.codion.framework.db.condition.EntitySelectCondition#setForeignKeyFetchDepth(int)
    */
   LocalEntityConnection setLimitForeignKeyFetchDepth(boolean limitForeignKeyFetchDepth);
 

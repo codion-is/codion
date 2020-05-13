@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.entity;
+package dev.codion.framework.domain.entity;
 
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.valuemap.DefaultValueMap;
-import org.jminor.common.valuemap.ValueMap;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.DenormalizedProperty;
-import org.jminor.framework.domain.property.DerivedProperty;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.MirrorProperty;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.TransientProperty;
-import org.jminor.framework.domain.property.ValueListProperty;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.valuemap.DefaultValueMap;
+import dev.codion.common.valuemap.ValueMap;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.DenormalizedProperty;
+import dev.codion.framework.domain.property.DerivedProperty;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.MirrorProperty;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.domain.property.TransientProperty;
+import dev.codion.framework.domain.property.ValueListProperty;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -34,7 +34,7 @@ import java.util.Set;
 
 import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.domain.entity.ValueChanges.valueChange;
+import static dev.codion.framework.domain.entity.ValueChanges.valueChange;
 
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.

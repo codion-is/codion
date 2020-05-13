@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.tools.generator;
+package dev.codion.swing.framework.tools.generator;
 
-import org.jminor.common.Util;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.model.table.SortingDirective;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
+import dev.codion.common.Util;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.model.table.SortingDirective;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

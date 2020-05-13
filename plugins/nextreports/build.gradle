@@ -1,10 +1,10 @@
 dependencies {
-    implementation project(':jminor-common-core')
-    implementation project(':jminor-common-db')
+    implementation project(':codion-common-core')
+    implementation project(':codion-common-db')
 
-    implementation project(':jminor-framework-db-core')
+    implementation project(':codion-framework-db-core')
 
-    testImplementation project(':jminor-framework-db-local')
+    testImplementation project(':codion-framework-db-local')
 
     implementation('ro.nextreports:nextreports-engine:9.2') {
         transitive = false
@@ -15,7 +15,7 @@ dependencies {
     testRuntimeOnly 'commons-logging:commons-logging:1.2'
     testRuntimeOnly 'com.itextpdf:itextpdf:5.5.6'
 
-    testImplementation project(':jminor-dbms-h2database')
+    testImplementation project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 

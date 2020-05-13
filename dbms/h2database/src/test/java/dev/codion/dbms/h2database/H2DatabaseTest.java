@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.dbms.h2database;
+package dev.codion.dbms.h2database;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 

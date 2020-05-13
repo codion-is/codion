@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.value;
+package dev.codion.swing.common.ui.value;
 
-import org.jminor.common.model.CancelException;
-import org.jminor.swing.common.model.textfield.DocumentAdapter;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.common.ui.textfield.TextFields;
+import dev.codion.common.model.CancelException;
+import dev.codion.swing.common.model.textfield.DocumentAdapter;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;

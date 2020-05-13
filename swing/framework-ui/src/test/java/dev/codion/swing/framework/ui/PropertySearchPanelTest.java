@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.db.Operator;
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.db.Operator;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.model.table.DefaultColumnConditionModel;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.Property;
 
 import org.junit.jupiter.api.Test;
 

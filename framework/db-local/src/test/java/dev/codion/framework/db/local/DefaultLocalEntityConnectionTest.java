@@ -1,30 +1,30 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.local;
+package dev.codion.framework.db.local;
 
-import org.jminor.common.Conjunction;
-import org.jminor.common.DateFormats;
-import org.jminor.common.db.Operator;
-import org.jminor.common.db.database.Database;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.exception.MultipleRecordsFoundException;
-import org.jminor.common.db.exception.RecordModifiedException;
-import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.db.exception.ReferentialIntegrityException;
-import org.jminor.common.db.exception.UniqueConstraintException;
-import org.jminor.common.db.exception.UpdateException;
-import org.jminor.common.db.result.ResultIterator;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.Conjunction;
+import dev.codion.common.DateFormats;
+import dev.codion.common.db.Operator;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.exception.MultipleRecordsFoundException;
+import dev.codion.common.db.exception.RecordModifiedException;
+import dev.codion.common.db.exception.RecordNotFoundException;
+import dev.codion.common.db.exception.ReferentialIntegrityException;
+import dev.codion.common.db.exception.UniqueConstraintException;
+import dev.codion.common.db.exception.UpdateException;
+import dev.codion.common.db.result.ResultIterator;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.db.condition.Condition;
+import dev.codion.framework.db.condition.Conditions;
+import dev.codion.framework.db.condition.EntitySelectCondition;
+import dev.codion.framework.db.condition.EntityUpdateCondition;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,10 +43,10 @@ import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.*;
-import static org.jminor.framework.db.local.TestDomain.*;
-import static org.jminor.framework.domain.entity.Entities.getKeys;
-import static org.jminor.framework.domain.entity.OrderBy.orderBy;
+import static dev.codion.framework.db.condition.Conditions.*;
+import static dev.codion.framework.db.local.TestDomain.*;
+import static dev.codion.framework.domain.entity.Entities.getKeys;
+import static dev.codion.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultLocalEntityConnectionTest {

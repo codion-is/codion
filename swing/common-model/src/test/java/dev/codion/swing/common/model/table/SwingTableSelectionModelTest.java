@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.table;
+package dev.codion.swing.common.model.table;
 
 import org.junit.jupiter.api.Test;
 

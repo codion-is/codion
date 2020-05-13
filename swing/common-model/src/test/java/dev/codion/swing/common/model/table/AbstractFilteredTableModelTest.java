@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.table;
+package dev.codion.swing.common.model.table;
 
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.model.table.DefaultColumnConditionModel;
-import org.jminor.common.model.table.RowColumn;
-import org.jminor.common.model.table.SortingDirective;
-import org.jminor.common.model.table.TableSortModel;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.model.table.DefaultColumnConditionModel;
+import dev.codion.common.model.table.RowColumn;
+import dev.codion.common.model.table.SortingDirective;
+import dev.codion.common.model.table.TableSortModel;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

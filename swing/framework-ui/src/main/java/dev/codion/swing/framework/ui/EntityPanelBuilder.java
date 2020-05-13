@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.event.EventDataListener;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityModelBuilder;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.model.EntityComboBoxModel;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.KeyEvents;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.model.SwingEntityModelBuilder;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
-import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * A class providing EntityPanel instances.

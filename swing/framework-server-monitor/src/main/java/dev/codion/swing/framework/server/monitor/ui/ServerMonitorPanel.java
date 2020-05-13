@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor.ui;
+package dev.codion.swing.framework.server.monitor.ui;
 
-import org.jminor.common.state.State;
-import org.jminor.common.state.States;
-import org.jminor.common.value.Nullable;
-import org.jminor.common.value.Values;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.common.ui.textfield.IntegerField;
-import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.common.ui.value.NumericalValues;
-import org.jminor.swing.common.ui.value.SelectedValues;
-import org.jminor.swing.common.ui.value.TextValues;
-import org.jminor.swing.framework.server.monitor.ServerMonitor;
+import dev.codion.common.state.State;
+import dev.codion.common.state.States;
+import dev.codion.common.value.Nullable;
+import dev.codion.common.value.Values;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.common.ui.textfield.IntegerField;
+import dev.codion.swing.common.ui.value.BooleanValues;
+import dev.codion.swing.common.ui.value.NumericalValues;
+import dev.codion.swing.common.ui.value.SelectedValues;
+import dev.codion.swing.common.ui.value.TextValues;
+import dev.codion.swing.framework.server.monitor.ServerMonitor;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -48,7 +48,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.jminor.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
+import static dev.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 
 /**
  * A ServerMonitorPanel

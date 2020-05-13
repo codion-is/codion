@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package dev.codion.framework.server;
 
-import org.jminor.common.MethodLogger;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.i18n.Messages;
-import org.jminor.common.rmi.client.ConnectionRequest;
-import org.jminor.common.rmi.server.ClientLog;
-import org.jminor.common.rmi.server.RemoteClient;
-import org.jminor.common.rmi.server.Server;
-import org.jminor.common.rmi.server.ServerConfiguration;
-import org.jminor.common.rmi.server.exception.ConnectionNotAvailableException;
-import org.jminor.common.rmi.server.exception.LoginException;
-import org.jminor.common.rmi.server.exception.ServerAuthenticationException;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.rmi.RemoteEntityConnection;
-import org.jminor.framework.db.rmi.RemoteEntityConnectionProvider;
-import org.jminor.framework.domain.Domain;
+import dev.codion.common.MethodLogger;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.i18n.Messages;
+import dev.codion.common.rmi.client.ConnectionRequest;
+import dev.codion.common.rmi.server.ClientLog;
+import dev.codion.common.rmi.server.RemoteClient;
+import dev.codion.common.rmi.server.Server;
+import dev.codion.common.rmi.server.ServerConfiguration;
+import dev.codion.common.rmi.server.exception.ConnectionNotAvailableException;
+import dev.codion.common.rmi.server.exception.LoginException;
+import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.condition.Condition;
+import dev.codion.framework.db.condition.Conditions;
+import dev.codion.framework.db.condition.EntitySelectCondition;
+import dev.codion.framework.db.rmi.RemoteEntityConnection;
+import dev.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import dev.codion.framework.domain.Domain;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,7 +38,7 @@ import java.util.UUID;
 
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
-import static org.jminor.framework.domain.entity.OrderBy.orderBy;
+import static dev.codion.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServerTest {

@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor.ui;
+package dev.codion.swing.framework.server.monitor.ui;
 
-import org.jminor.swing.framework.server.monitor.ConnectionPoolMonitor;
-import org.jminor.swing.framework.server.monitor.PoolMonitor;
+import dev.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
+import dev.codion.swing.framework.server.monitor.PoolMonitor;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;

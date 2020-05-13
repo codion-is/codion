@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.plugin.ikonli.foundation;
+package dev.codion.swing.plugin.ikonli.foundation;
 
-import org.jminor.swing.framework.ui.icons.FrameworkIcons;
+import dev.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import org.kordamp.ikonli.foundation.Foundation;
 import org.kordamp.ikonli.swing.FontIcon;

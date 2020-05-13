@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.nextreports.model;
+package dev.codion.plugin.nextreports.model;
 
-import org.jminor.common.db.reports.ReportWrapper;
+import dev.codion.common.db.reports.ReportWrapper;
 
 import ro.nextreports.engine.Report;
 

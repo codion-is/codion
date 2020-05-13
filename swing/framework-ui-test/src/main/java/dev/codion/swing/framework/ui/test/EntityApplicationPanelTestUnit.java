@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui.test;
+package dev.codion.swing.framework.ui.test;
 
-import org.jminor.common.user.User;
-import org.jminor.framework.model.EntityApplicationModel;
-import org.jminor.swing.framework.ui.EntityApplicationPanel;
-import org.jminor.swing.framework.ui.EntityApplicationPanel.DisplayFrame;
-import org.jminor.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
+import dev.codion.common.user.User;
+import dev.codion.framework.model.EntityApplicationModel;
+import dev.codion.swing.framework.ui.EntityApplicationPanel;
+import dev.codion.swing.framework.ui.EntityApplicationPanel.DisplayFrame;
+import dev.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 
 import static java.util.Objects.requireNonNull;
 

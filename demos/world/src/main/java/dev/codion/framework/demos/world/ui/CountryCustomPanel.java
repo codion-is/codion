@@ -1,14 +1,14 @@
-package org.jminor.framework.demos.world.ui;
+package dev.codion.framework.demos.world.ui;
 
-import org.jminor.common.model.table.ColumnSummary;
-import org.jminor.framework.demos.world.domain.World;
-import org.jminor.framework.demos.world.model.CountryCustomModel;
-import org.jminor.framework.demos.world.model.CountryEditModel;
-import org.jminor.framework.demos.world.model.CountryTableModel;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.dialog.Modal;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.ui.EntityPanel;
+import dev.codion.common.model.table.ColumnSummary;
+import dev.codion.framework.demos.world.domain.World;
+import dev.codion.framework.demos.world.model.CountryCustomModel;
+import dev.codion.framework.demos.world.model.CountryEditModel;
+import dev.codion.framework.demos.world.model.CountryTableModel;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.dialog.Modal;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.ui.EntityPanel;
 
 import org.jfree.chart.ChartPanel;
 
@@ -20,9 +20,9 @@ import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import static org.jminor.swing.common.ui.dialog.Dialogs.displayInDialog;
-import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
-import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
+import static dev.codion.swing.common.ui.dialog.Dialogs.displayInDialog;
+import static dev.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class CountryCustomPanel extends EntityPanel {
 

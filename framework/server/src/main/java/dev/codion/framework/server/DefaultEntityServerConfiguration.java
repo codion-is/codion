@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server;
+package dev.codion.framework.server;
 
-import org.jminor.common.db.database.Database;
-import org.jminor.common.rmi.server.ServerConfiguration;
-import org.jminor.common.user.User;
-import org.jminor.common.version.Versions;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.rmi.server.ServerConfiguration;
+import dev.codion.common.user.User;
+import dev.codion.common.version.Versions;
 
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;

@@ -1,25 +1,25 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.http;
+package dev.codion.framework.db.http;
 
-import org.jminor.common.db.Operator;
-import org.jminor.common.db.database.Databases;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.exception.ReferentialIntegrityException;
-import org.jminor.common.db.reports.ReportException;
-import org.jminor.common.db.reports.ReportWrapper;
-import org.jminor.common.http.server.HttpServerConfiguration;
-import org.jminor.common.rmi.server.ServerConfiguration;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.condition.EntitySelectCondition;
-import org.jminor.framework.db.condition.EntityUpdateCondition;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.server.EntityServer;
-import org.jminor.framework.server.EntityServerConfiguration;
-import org.jminor.framework.servlet.EntityServletServerProvider;
+import dev.codion.common.db.Operator;
+import dev.codion.common.db.database.Databases;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.exception.ReferentialIntegrityException;
+import dev.codion.common.db.reports.ReportException;
+import dev.codion.common.db.reports.ReportWrapper;
+import dev.codion.common.http.server.HttpServerConfiguration;
+import dev.codion.common.rmi.server.ServerConfiguration;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.condition.EntitySelectCondition;
+import dev.codion.framework.db.condition.EntityUpdateCondition;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.server.EntityServer;
+import dev.codion.framework.server.EntityServerConfiguration;
+import dev.codion.framework.servlet.EntityServletServerProvider;
 
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -41,7 +41,7 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.jminor.framework.db.condition.Conditions.*;
+import static dev.codion.framework.db.condition.Conditions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class HttpEntityConnectionTest {

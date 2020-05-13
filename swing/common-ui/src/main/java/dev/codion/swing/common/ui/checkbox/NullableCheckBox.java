@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.checkbox;
+package dev.codion.swing.common.ui.checkbox;
 
-import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
+import dev.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;

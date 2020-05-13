@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.db.pool;
+package dev.codion.common.db.pool;
 
 /**
  * An interface encapsulating the state of a connection pool at a given time.

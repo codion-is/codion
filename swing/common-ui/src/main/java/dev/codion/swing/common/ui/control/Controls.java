@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.control;
+package dev.codion.swing.common.ui.control;
 
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.state.State;
-import org.jminor.common.state.StateObserver;
-import org.jminor.common.value.Nullable;
-import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventObserver;
+import dev.codion.common.state.State;
+import dev.codion.common.state.StateObserver;
+import dev.codion.common.value.Nullable;
+import dev.codion.common.value.Value;
+import dev.codion.common.value.Values;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
 
-import static org.jminor.common.value.Values.propertyValue;
+import static dev.codion.common.value.Values.propertyValue;
 
 /**
  * A factory class for Control objects.

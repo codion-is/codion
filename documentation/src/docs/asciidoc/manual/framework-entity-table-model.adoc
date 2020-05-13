@@ -3,14 +3,14 @@
 :dir-tutorials: ../tutorials
 :url-javadoc: link:../api
 
-The {url-javadoc}/org/jminor/framework/model/EntityTableModel.html[EntityTableModel] class provides a table representation of the underlying entities.
+The {url-javadoc}/dev/codion/framework/model/EntityTableModel.html[EntityTableModel] class provides a table representation of the underlying entities.
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
+include::{dir-source}/dev/codion/framework/demos/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
 ----
 
 [source,java]
 ----
-include::{dir-source}/org/jminor/framework/demos/manual/store/model/CustomerAddressTableModel.java[tags=customerAddressTableModel]
+include::{dir-source}/dev/codion/framework/demos/manual/store/model/CustomerAddressTableModel.java[tags=customerAddressTableModel]
 ----

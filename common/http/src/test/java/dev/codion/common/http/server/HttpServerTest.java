@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.http.server;
+package dev.codion.common.http.server;
 
-import org.jminor.common.http.server.HttpServerConfiguration.Secure;
+import dev.codion.common.http.server.HttpServerConfiguration.Secure;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

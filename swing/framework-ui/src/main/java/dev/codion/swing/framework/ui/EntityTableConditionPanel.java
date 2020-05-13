@@ -1,31 +1,31 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.ui;
+package dev.codion.swing.framework.ui;
 
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.value.Values;
-import org.jminor.framework.domain.property.Properties;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.EntityTableConditionModel;
-import org.jminor.framework.model.ForeignKeyConditionModel;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.KeyEvents;
-import org.jminor.swing.common.ui.control.Control;
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.control.ToggleControl;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.common.ui.layout.Layouts;
-import org.jminor.swing.common.ui.table.AbstractTableColumnSyncPanel;
-import org.jminor.swing.common.ui.table.ColumnConditionPanel;
-import org.jminor.swing.common.ui.value.TextValues;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.i18n.Messages;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.value.Values;
+import dev.codion.framework.domain.property.Properties;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.i18n.FrameworkMessages;
+import dev.codion.framework.model.EntityTableConditionModel;
+import dev.codion.framework.model.ForeignKeyConditionModel;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.KeyEvents;
+import dev.codion.swing.common.ui.control.Control;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.control.ToggleControl;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.common.ui.layout.Layouts;
+import dev.codion.swing.common.ui.table.AbstractTableColumnSyncPanel;
+import dev.codion.swing.common.ui.table.ColumnConditionPanel;
+import dev.codion.swing.common.ui.value.TextValues;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static org.jminor.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * A UI component based on the EntityTableConditionModel

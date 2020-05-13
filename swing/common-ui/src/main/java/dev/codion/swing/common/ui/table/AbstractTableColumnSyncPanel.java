@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.table;
+package dev.codion.swing.common.ui.table;
 
-import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import dev.codion.swing.common.model.table.SwingFilteredTableColumnModel;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.Box;
 import javax.swing.JPanel;

@@ -1,25 +1,25 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.model;
+package dev.codion.framework.model;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.EventListener;
-import org.jminor.common.model.FilteredModel;
-import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.common.model.table.SelectionModel;
-import org.jminor.common.state.State;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.entity.ColorProvider;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.EntityValidator;
-import org.jminor.framework.domain.entity.exception.ValidationException;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.EventListener;
+import dev.codion.common.model.FilteredModel;
+import dev.codion.common.model.Refreshable;
+import dev.codion.common.model.table.ColumnSummaryModel;
+import dev.codion.common.model.table.SelectionModel;
+import dev.codion.common.state.State;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.domain.entity.ColorProvider;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.entity.EntityValidator;
+import dev.codion.framework.domain.entity.exception.ValidationException;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -153,7 +153,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
    * @param index the index at which to add
    * @param entities the entities to add
-   * @see org.jminor.common.model.table.TableSortModel#isSortingEnabled()
+   * @see dev.codion.common.model.table.TableSortModel#isSortingEnabled()
    */
   void addEntitiesAtSorted(int index, List<Entity> entities);
 
@@ -255,8 +255,8 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * this method returns silently.
    * @param entities the entities to update
    * @throws DatabaseException in case of a database exception
-   * @throws org.jminor.common.model.CancelException in case the user cancels the operation
-   * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
+   * @throws dev.codion.common.model.CancelException in case the user cancels the operation
+   * @throws dev.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow updating
    * @see EntityValidator#validate(Collection, EntityDefinition)
@@ -266,7 +266,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * Deletes the selected entities
    * @throws DatabaseException in case of a database exception
-   * @throws org.jminor.common.model.CancelException in case the user cancels the operation
+   * @throws dev.codion.common.model.CancelException in case the user cancels the operation
    * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow deleting
    */
   void deleteSelected() throws DatabaseException;

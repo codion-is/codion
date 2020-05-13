@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.state;
+package dev.codion.common.state;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

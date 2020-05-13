@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.server.monitor;
+package dev.codion.swing.framework.server.monitor;
 
-import org.jminor.common.TaskScheduler;
-import org.jminor.common.db.database.Database;
-import org.jminor.common.value.Value;
-import org.jminor.framework.server.EntityServerAdmin;
+import dev.codion.common.TaskScheduler;
+import dev.codion.common.db.database.Database;
+import dev.codion.common.value.Value;
+import dev.codion.framework.server.EntityServerAdmin;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;

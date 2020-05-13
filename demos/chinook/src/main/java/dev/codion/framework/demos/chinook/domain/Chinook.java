@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.domain;
+package dev.codion.framework.demos.chinook.domain;
 
-import org.jminor.framework.domain.property.DerivedProperty;
-import org.jminor.plugin.jasperreports.model.JasperReportWrapper;
+import dev.codion.framework.domain.property.DerivedProperty;
+import dev.codion.plugin.jasperreports.model.JasperReportWrapper;
 
 import java.math.BigDecimal;
 
-import static org.jminor.plugin.jasperreports.model.JasperReports.classPathReport;
+import static dev.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public interface Chinook {
 

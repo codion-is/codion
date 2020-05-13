@@ -1,25 +1,25 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.minimal;
+package dev.codion.framework.demos.empdept.minimal;
 
-import org.jminor.common.db.Operator;
-import org.jminor.common.model.CancelException;
-import org.jminor.common.rmi.server.ServerConfiguration;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.domain.Domain;
-import org.jminor.framework.domain.entity.StringProvider;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.swing.framework.model.SwingEntityApplicationModel;
-import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
-import org.jminor.swing.framework.model.SwingEntityEditModel;
-import org.jminor.swing.framework.model.SwingEntityModelBuilder;
-import org.jminor.swing.framework.ui.EntityApplicationPanel;
-import org.jminor.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
-import org.jminor.swing.framework.ui.EntityEditPanel;
-import org.jminor.swing.framework.ui.EntityPanelBuilder;
+import dev.codion.common.db.Operator;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.rmi.server.ServerConfiguration;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.condition.Conditions;
+import dev.codion.framework.domain.Domain;
+import dev.codion.framework.domain.entity.StringProvider;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.swing.framework.model.SwingEntityApplicationModel;
+import dev.codion.swing.framework.model.SwingEntityComboBoxModel;
+import dev.codion.swing.framework.model.SwingEntityEditModel;
+import dev.codion.swing.framework.model.SwingEntityModelBuilder;
+import dev.codion.swing.framework.ui.EntityApplicationPanel;
+import dev.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
+import dev.codion.swing.framework.ui.EntityEditPanel;
+import dev.codion.swing.framework.ui.EntityPanelBuilder;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -27,8 +27,8 @@ import java.sql.Types;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
-import static org.jminor.framework.domain.entity.KeyGenerators.increment;
-import static org.jminor.framework.domain.property.Properties.*;
+import static dev.codion.framework.domain.entity.KeyGenerators.increment;
+import static dev.codion.framework.domain.property.Properties.*;
 
 /**
  * EmpDept minimal application demo

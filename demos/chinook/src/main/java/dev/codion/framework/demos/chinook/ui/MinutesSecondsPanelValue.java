@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.chinook.ui;
+package dev.codion.framework.demos.chinook.ui;
 
-import org.jminor.swing.common.ui.textfield.IntegerField;
-import org.jminor.swing.common.ui.value.AbstractComponentValue;
+import dev.codion.swing.common.ui.textfield.IntegerField;
+import dev.codion.swing.common.ui.value.AbstractComponentValue;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
-import static org.jminor.swing.common.ui.KeyEvents.transferFocusOnEnter;
-import static org.jminor.swing.common.ui.layout.Layouts.borderLayout;
-import static org.jminor.swing.common.ui.layout.Layouts.gridLayout;
-import static org.jminor.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
+import static dev.codion.framework.demos.chinook.domain.Chinook.*;
+import static dev.codion.swing.common.ui.KeyEvents.transferFocusOnEnter;
+import static dev.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static dev.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
 
 final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, MinutesSecondsPanelValue.MinutesSecondsPanel> {
 

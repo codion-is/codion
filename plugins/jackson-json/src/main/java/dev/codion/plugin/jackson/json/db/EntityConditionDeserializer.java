@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.plugin.jackson.json.db;
+package dev.codion.plugin.jackson.json.db;
 
-import org.jminor.framework.db.condition.Condition;
-import org.jminor.framework.db.condition.Conditions;
-import org.jminor.framework.db.condition.EntityCondition;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.plugin.jackson.json.domain.EntityObjectMapper;
+import dev.codion.framework.db.condition.Condition;
+import dev.codion.framework.db.condition.Conditions;
+import dev.codion.framework.db.condition.EntityCondition;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

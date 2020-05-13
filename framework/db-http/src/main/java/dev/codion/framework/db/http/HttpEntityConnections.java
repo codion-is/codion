@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.http;
+package dev.codion.framework.db.http;
 
-import org.jminor.common.user.User;
-import org.jminor.framework.db.EntityConnection;
+import dev.codion.common.user.User;
+import dev.codion.framework.db.EntityConnection;
 
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 

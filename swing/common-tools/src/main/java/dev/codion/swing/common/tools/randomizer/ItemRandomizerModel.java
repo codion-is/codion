@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.tools.randomizer;
+package dev.codion.swing.common.tools.randomizer;
 
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventObserver;
-import org.jminor.common.event.Events;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventObserver;
+import dev.codion.common.event.Events;
 
 import java.util.ArrayList;
 import java.util.List;

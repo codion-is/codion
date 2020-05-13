@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.value;
+package dev.codion.swing.common.ui.value;
 
-import org.jminor.common.DateParser;
+import dev.codion.common.DateParser;
 
 import javax.swing.JFormattedTextField;
 import java.time.format.DateTimeFormatter;

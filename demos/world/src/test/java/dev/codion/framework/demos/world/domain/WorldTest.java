@@ -1,8 +1,8 @@
-package org.jminor.framework.demos.world.domain;
+package dev.codion.framework.demos.world.domain;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.test.EntityTestUnit;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 

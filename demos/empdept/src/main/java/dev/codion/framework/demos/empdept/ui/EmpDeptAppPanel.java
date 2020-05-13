@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.ui;
+package dev.codion.framework.demos.empdept.ui;
 
-import org.jminor.common.Text;
-import org.jminor.common.model.CancelException;
-import org.jminor.common.model.table.ColumnSummary;
-import org.jminor.common.user.Users;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.demos.empdept.model.EmployeeEditModel;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.plugin.json.EntityJSONParser;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.control.ControlList;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.dialog.Dialogs;
-import org.jminor.swing.framework.model.SwingEntityApplicationModel;
-import org.jminor.swing.framework.model.SwingEntityModel;
-import org.jminor.swing.framework.model.SwingEntityModelBuilder;
-import org.jminor.swing.framework.model.SwingEntityTableModel;
-import org.jminor.swing.framework.ui.EntityApplicationPanel;
-import org.jminor.swing.framework.ui.EntityPanel;
-import org.jminor.swing.framework.ui.EntityPanelBuilder;
-import org.jminor.swing.framework.ui.EntityTablePanel;
+import dev.codion.common.Text;
+import dev.codion.common.model.CancelException;
+import dev.codion.common.model.table.ColumnSummary;
+import dev.codion.common.user.Users;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.demos.empdept.domain.EmpDept;
+import dev.codion.framework.demos.empdept.model.EmployeeEditModel;
+import dev.codion.framework.model.EntityEditModel;
+import dev.codion.plugin.json.EntityJSONParser;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.common.ui.control.ControlList;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.dialog.Dialogs;
+import dev.codion.swing.framework.model.SwingEntityApplicationModel;
+import dev.codion.swing.framework.model.SwingEntityModel;
+import dev.codion.swing.framework.model.SwingEntityModelBuilder;
+import dev.codion.swing.framework.model.SwingEntityTableModel;
+import dev.codion.swing.framework.ui.EntityApplicationPanel;
+import dev.codion.swing.framework.ui.EntityPanel;
+import dev.codion.swing.framework.ui.EntityPanelBuilder;
+import dev.codion.swing.framework.ui.EntityTablePanel;
 
 import java.io.File;
 import java.nio.charset.Charset;

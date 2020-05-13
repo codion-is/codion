@@ -1,37 +1,37 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.table;
+package dev.codion.swing.common.ui.table;
 
-import org.jminor.common.DateFormats;
-import org.jminor.common.db.Operator;
-import org.jminor.common.event.Event;
-import org.jminor.common.event.EventDataListener;
-import org.jminor.common.event.Events;
-import org.jminor.common.model.table.ColumnConditionModel;
-import org.jminor.common.state.State;
-import org.jminor.common.state.States;
-import org.jminor.common.value.Value;
-import org.jminor.common.value.Values;
-import org.jminor.swing.common.model.checkbox.NullableToggleButtonModel;
-import org.jminor.swing.common.ui.Components;
-import org.jminor.swing.common.ui.Windows;
-import org.jminor.swing.common.ui.checkbox.NullableCheckBox;
-import org.jminor.swing.common.ui.combobox.SteppedComboBox;
-import org.jminor.swing.common.ui.control.ControlProvider;
-import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import org.jminor.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
-import org.jminor.swing.common.ui.textfield.DecimalField;
-import org.jminor.swing.common.ui.textfield.IntegerField;
-import org.jminor.swing.common.ui.textfield.LongField;
-import org.jminor.swing.common.ui.textfield.TextFields;
-import org.jminor.swing.common.ui.value.BooleanValues;
-import org.jminor.swing.common.ui.value.NumericalValues;
-import org.jminor.swing.common.ui.value.SelectedValues;
-import org.jminor.swing.common.ui.value.TemporalValues;
-import org.jminor.swing.common.ui.value.TextValues;
+import dev.codion.common.DateFormats;
+import dev.codion.common.db.Operator;
+import dev.codion.common.event.Event;
+import dev.codion.common.event.EventDataListener;
+import dev.codion.common.event.Events;
+import dev.codion.common.model.table.ColumnConditionModel;
+import dev.codion.common.state.State;
+import dev.codion.common.state.States;
+import dev.codion.common.value.Value;
+import dev.codion.common.value.Values;
+import dev.codion.swing.common.model.checkbox.NullableToggleButtonModel;
+import dev.codion.swing.common.ui.Components;
+import dev.codion.swing.common.ui.Windows;
+import dev.codion.swing.common.ui.checkbox.NullableCheckBox;
+import dev.codion.swing.common.ui.combobox.SteppedComboBox;
+import dev.codion.swing.common.ui.control.ControlProvider;
+import dev.codion.swing.common.ui.control.Controls;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
+import dev.codion.swing.common.ui.textfield.DecimalField;
+import dev.codion.swing.common.ui.textfield.IntegerField;
+import dev.codion.swing.common.ui.textfield.LongField;
+import dev.codion.swing.common.ui.textfield.TextFields;
+import dev.codion.swing.common.ui.value.BooleanValues;
+import dev.codion.swing.common.ui.value.NumericalValues;
+import dev.codion.swing.common.ui.value.SelectedValues;
+import dev.codion.swing.common.ui.value.TemporalValues;
+import dev.codion.swing.common.ui.value.TextValues;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
@@ -62,7 +62,7 @@ import java.util.Collection;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.SwingConstants.CENTER;
-import static org.jminor.swing.common.ui.icons.Icons.icons;
+import static dev.codion.swing.common.ui.icons.Icons.icons;
 
 /**
  * A UI implementation for ColumnConditionModel

@@ -1,27 +1,27 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.entity.test;
+package dev.codion.framework.domain.entity.test;
 
-import org.jminor.common.Configuration;
-import org.jminor.common.Text;
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.item.Item;
-import org.jminor.common.user.User;
-import org.jminor.common.user.Users;
-import org.jminor.common.value.PropertyValue;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.domain.entity.Entities;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.property.BlobProperty;
-import org.jminor.framework.domain.property.ColumnProperty;
-import org.jminor.framework.domain.property.ForeignKeyProperty;
-import org.jminor.framework.domain.property.Property;
-import org.jminor.framework.domain.property.ValueListProperty;
+import dev.codion.common.Configuration;
+import dev.codion.common.Text;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.common.db.exception.RecordNotFoundException;
+import dev.codion.common.item.Item;
+import dev.codion.common.user.User;
+import dev.codion.common.user.Users;
+import dev.codion.common.value.PropertyValue;
+import dev.codion.framework.db.EntityConnection;
+import dev.codion.framework.db.EntityConnectionProvider;
+import dev.codion.framework.db.EntityConnectionProviders;
+import dev.codion.framework.domain.entity.Entities;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.property.BlobProperty;
+import dev.codion.framework.domain.property.ColumnProperty;
+import dev.codion.framework.domain.property.ForeignKeyProperty;
+import dev.codion.framework.domain.property.Property;
+import dev.codion.framework.domain.property.ValueListProperty;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,7 @@ import java.util.function.Function;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static org.jminor.framework.db.condition.Conditions.selectCondition;
+import static dev.codion.framework.db.condition.Conditions.selectCondition;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -126,7 +126,7 @@ public class EntityTestUnit {
   /**
    * Runs the insert/update/select/delete tests for the given entityId
    * @param entityId the id of the entity to test
-   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
+   * @throws dev.codion.common.db.exception.DatabaseException in case of an exception
    */
   public final void test(final String entityId) throws DatabaseException {
     try {
@@ -290,7 +290,7 @@ public class EntityTestUnit {
    * Initializes the entities referenced by the entity identified by {@code entityId}
    * @param entityId the id of the entity for which to initialize the referenced entities
    * @param foreignKeyEntities foreign key entities already created
-   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
+   * @throws dev.codion.common.db.exception.DatabaseException in case of an exception
    * @see #initializeReferenceEntity(String, Map)
    * @return the Entities to reference mapped to their respective foreign key propertyIds
    */
@@ -317,7 +317,7 @@ public class EntityTestUnit {
    * Tests inserting the given entity
    * @param testEntity the entity to test insert for
    * @return the same entity retrieved from the database after the insert
-   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
+   * @throws dev.codion.common.db.exception.DatabaseException in case of an exception
    */
   private Entity testInsert(final Entity testEntity) throws DatabaseException {
     final Entity.Key key = connection.insert(testEntity);
@@ -335,7 +335,7 @@ public class EntityTestUnit {
    * then selecting many entities is tested.
    * @param entityId the entityId in case {@code testEntity} is null
    * @param testEntity the entity to test selecting
-   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
+   * @throws dev.codion.common.db.exception.DatabaseException in case of an exception
    */
   private void testSelect(final String entityId, final Entity testEntity) throws DatabaseException {
     if (testEntity != null) {
@@ -351,7 +351,7 @@ public class EntityTestUnit {
    * Test updating the given entity, if the entity is not modified this test does nothing
    * @param testEntity the entity to test updating
    * @param foreignKeyEntities the entities referenced via foreign keys
-   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
+   * @throws dev.codion.common.db.exception.DatabaseException in case of an exception
    */
   private void testUpdate(final Entity testEntity, final Map<String, Entity> foreignKeyEntities) throws DatabaseException {
     modifyEntity(testEntity, foreignKeyEntities);
@@ -385,7 +385,7 @@ public class EntityTestUnit {
   /**
    * Test deleting the given entity
    * @param testEntity the entity to test deleting
-   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
+   * @throws dev.codion.common.db.exception.DatabaseException in case of an exception
    */
   private void testDelete(final Entity testEntity) throws DatabaseException {
     assertEquals(1, connection.delete(Entities.getKeys(singletonList(testEntity))));

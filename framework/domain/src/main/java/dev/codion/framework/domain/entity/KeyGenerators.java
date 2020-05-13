@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain.entity;
+package dev.codion.framework.domain.entity;
 
-import org.jminor.common.db.connection.DatabaseConnection;
-import org.jminor.common.db.database.Database;
-import org.jminor.framework.domain.property.ColumnProperty;
+import dev.codion.common.db.connection.DatabaseConnection;
+import dev.codion.common.db.database.Database;
+import dev.codion.framework.domain.property.ColumnProperty;
 
 import java.sql.SQLException;
 import java.sql.Statement;

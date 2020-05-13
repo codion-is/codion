@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.ui.value;
+package dev.codion.swing.common.ui.value;
 
-import org.jminor.common.value.Nullable;
-import org.jminor.swing.common.ui.textfield.DecimalField;
+import dev.codion.common.value.Nullable;
+import dev.codion.swing.common.ui.textfield.DecimalField;
 
 import java.math.BigDecimal;
 

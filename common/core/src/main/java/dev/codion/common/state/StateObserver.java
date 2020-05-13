@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.state;
+package dev.codion.common.state;
 
-import org.jminor.common.event.EventObserver;
+import dev.codion.common.event.EventObserver;
 
 /**
  * Specifies an observer for a {@link State} instance.

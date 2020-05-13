@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.demos.empdept.server;
+package dev.codion.framework.demos.empdept.server;
 
-import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.demos.empdept.domain.Employee;
-import org.jminor.framework.domain.entity.Entity;
+import dev.codion.common.db.exception.DatabaseException;
+import dev.codion.framework.demos.empdept.domain.Employee;
+import dev.codion.framework.domain.entity.Entity;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

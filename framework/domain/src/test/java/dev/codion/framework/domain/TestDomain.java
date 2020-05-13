@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.domain;
+package dev.codion.framework.domain;
 
-import org.jminor.common.DateFormats;
-import org.jminor.common.item.Item;
-import org.jminor.framework.domain.entity.Department;
-import org.jminor.framework.domain.entity.Employee;
-import org.jminor.framework.domain.entity.Entity;
-import org.jminor.framework.domain.entity.EntityDefinition;
-import org.jminor.framework.domain.entity.StringProvider;
-import org.jminor.framework.domain.property.ColumnProperty;
+import dev.codion.common.DateFormats;
+import dev.codion.common.item.Item;
+import dev.codion.framework.domain.entity.Department;
+import dev.codion.framework.domain.entity.Employee;
+import dev.codion.framework.domain.entity.Entity;
+import dev.codion.framework.domain.entity.EntityDefinition;
+import dev.codion.framework.domain.entity.StringProvider;
+import dev.codion.framework.domain.property.ColumnProperty;
 
 import java.sql.Types;
 import java.time.temporal.ChronoUnit;
@@ -18,11 +18,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.jminor.common.item.Items.item;
-import static org.jminor.framework.domain.entity.KeyGenerators.increment;
-import static org.jminor.framework.domain.entity.KeyGenerators.queried;
-import static org.jminor.framework.domain.entity.OrderBy.orderBy;
-import static org.jminor.framework.domain.property.Properties.*;
+import static dev.codion.common.item.Items.item;
+import static dev.codion.framework.domain.entity.KeyGenerators.increment;
+import static dev.codion.framework.domain.entity.KeyGenerators.queried;
+import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static dev.codion.framework.domain.property.Properties.*;
 
 public final class TestDomain extends Domain {
 

@@ -4,21 +4,21 @@ import org.javamodularity.moduleplugin.tasks.ModularJavaExec
 apply from: '../demos.gradle'
 
 dependencies {
-    implementation project(':jminor-swing-framework-ui')
-    implementation project(':jminor-plugin-ikonli-foundation')
+    implementation project(':codion-swing-framework-ui')
+    implementation project(':codion-plugin-ikonli-foundation')
 
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
 
-    testImplementation project(':jminor-framework-domain-test')
-    testImplementation project(':jminor-swing-framework-ui-test')
+    testImplementation project(':codion-framework-domain-test')
+    testImplementation project(':codion-swing-framework-ui-test')
 
-    runtimeOnly project(':jminor-plugin-logback-proxy')
+    runtimeOnly project(':codion-plugin-logback-proxy')
 
-    runtimeOnly project(':jminor-framework-db-local')
-    runtimeOnly project(':jminor-framework-db-rmi')
-    runtimeOnly project(':jminor-framework-db-http')
+    runtimeOnly project(':codion-framework-db-local')
+    runtimeOnly project(':codion-framework-db-rmi')
+    runtimeOnly project(':codion-framework-db-http')
 
-    runtimeOnly project(':jminor-dbms-h2database')
+    runtimeOnly project(':codion-dbms-h2database')
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
