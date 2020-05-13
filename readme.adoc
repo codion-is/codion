@@ -1,7 +1,7 @@
 = Codion Application Framework
 
-image::docs/src/docs/asciidoc/images/jminor_logo_medium.png[JMinor logo,250]
-image::https://github.com/bjorndarri/jminor/workflows/Java%20CI/badge.svg[CI]
+image::documentation/src/docs/asciidoc/images/codion-logo.png[Codion logo,350]
+image::https://github.com/bjorndarri/codion/workflows/Java%20CI/badge.svg[CI]
 
 Codion is a minimalistic full-stack Java rich client CRUD application framework based solely on link:++https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition++[Java SE] components, it includes:
 
