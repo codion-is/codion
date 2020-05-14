@@ -80,6 +80,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     final SwingEntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
     final EntityPanel invoicePanel = new EntityPanel(invoiceModel, new InvoiceEditPanel(invoiceModel.getEditModel()));
     invoicePanel.setIncludeDetailPanelTabPane(false);
+    invoicePanel.setShowDetailPanelControls(false);
 
     final SwingEntityModel invoiceLineModel = invoiceModel.getDetailModel(T_INVOICELINE);
     final EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel, new InvoiceLineEditPanel(invoiceLineModel.getEditModel()));
@@ -160,6 +161,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.chinook.domain.impl.ChinookImpl");
     new ChinookAppPanel().startApplication("Chinook", null, MaximizeFrame.NO,
-            new Dimension(1920, 1080), Users.parseUser("scott:tiger"));
+            new Dimension(1280, 720), Users.parseUser("scott:tiger"));
   }
 }
