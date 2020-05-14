@@ -35,7 +35,7 @@ public abstract class EntityApplicationView<M extends EntityApplicationModel> ex
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationView.class);
 
-  private static final String DEFAULT_ICON_FILE_NAME = "jminor_logo32.gif";
+  private static final String DEFAULT_ICON_FILE_NAME = "codion-logo-black-48x48.png";
 
   private final String applicationTitle;
   private final String iconFileName;
