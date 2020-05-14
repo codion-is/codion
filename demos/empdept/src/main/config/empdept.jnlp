@@ -16,7 +16,7 @@
     <jar href="empdept.jar" main="true" />
 
     <property name="codion.client.connectionType" value="remote"/>
-    <property name="javax.net.ssl.trustStore" value="codion_truststore.jks"/>
+    <property name="javax.net.ssl.trustStore" value="truststore.jks"/>
     <property name="javax.net.ssl.trustStorePassword" value="crappypass"/>
     <property name="codion.server.hostname" value="codion.no-ip.org" />
   </resources>

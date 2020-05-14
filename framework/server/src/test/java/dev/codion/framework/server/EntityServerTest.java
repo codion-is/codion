@@ -308,9 +308,9 @@ public class EntityServerTest {
   private static DefaultEntityServerConfiguration configure() {
     ServerConfiguration.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
-    ServerConfiguration.TRUSTSTORE.set("src/main/security/codion_truststore.jks");
+    ServerConfiguration.TRUSTSTORE.set("src/main/security/truststore.jks");
     ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
-    ServerConfiguration.KEYSTORE.set("src/main/security/codion_keystore.jks");
+    ServerConfiguration.KEYSTORE.set("src/main/security/keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
     final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(2223, 2221);
     configuration.setAdminPort(2223);
