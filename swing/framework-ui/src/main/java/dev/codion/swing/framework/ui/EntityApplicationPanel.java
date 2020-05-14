@@ -870,7 +870,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected JPanel getAboutPanel() {
     final JPanel panel = new JPanel(Layouts.borderLayout());
     final String versionString = Versions.getVersionAndBuildNumberString();
-    panel.add(new JLabel(icons().logoBlack()), BorderLayout.WEST);
+    panel.add(new JLabel(icons().logoTransparent()), BorderLayout.WEST);
     final JTextField versionMemoryField = new JTextField(versionString + " (" + Memory.getMemoryUsage() + ")");
     versionMemoryField.setEditable(false);
     versionMemoryField.setFocusable(false);
@@ -1386,7 +1386,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (!fontSize.equals(100)) {
       Components.setFontSize(fontSize / 100f);
     }
-    final ImageIcon applicationIcon = iconName != null ? Images.loadIcon(getClass(), iconName) : icons().logoBlack();
+    final ImageIcon applicationIcon = iconName != null ? Images.loadIcon(getClass(), iconName) : icons().logoTransparent();
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
       final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : Users.user("");

@@ -33,6 +33,11 @@ public interface Icons {
   ImageIcon logoBlack();
 
   /**
+   * @return icon for the codion logo
+   */
+  ImageIcon logoTransparent();
+
+  /**
    * @return icon for the codion logo in red
    */
   ImageIcon logoRed();
