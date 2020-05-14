@@ -3,7 +3,6 @@
  */
 package dev.codion.framework.demos.chinook.ui;
 
-import dev.codion.swing.common.ui.KeyEvents;
 import dev.codion.swing.framework.model.SwingEntityEditModel;
 import dev.codion.swing.framework.ui.EntityEditPanel;
 import dev.codion.swing.framework.ui.EntityLookupField;
@@ -14,7 +13,9 @@ import java.awt.BorderLayout;
 
 import static dev.codion.framework.demos.chinook.domain.Chinook.INVOICELINE_QUANTITY;
 import static dev.codion.framework.demos.chinook.domain.Chinook.INVOICELINE_TRACK_FK;
+import static dev.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
 import static dev.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static dev.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
 
 public class InvoiceLineEditPanel extends EntityEditPanel {
 
@@ -37,7 +38,8 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
     trackLookupField.setSelectionProvider(new TrackSelectionProvider(trackLookupField.getModel()));
     trackLookupField.setColumns(15);
     final JTextField quantityField = createTextField(INVOICELINE_QUANTITY);
-    KeyEvents.removeTransferFocusOnEnter(quantityField);//otherwise the action added below wont work
+    selectAllOnFocusGained(quantityField);
+    removeTransferFocusOnEnter(quantityField);//otherwise the action added below wont work
     quantityField.addActionListener(getSaveControl());
 
     setLayout(borderLayout());

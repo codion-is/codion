@@ -20,6 +20,7 @@ import static dev.codion.common.model.table.SortingDirective.ASCENDING;
 import static dev.codion.framework.demos.chinook.domain.Chinook.*;
 import static dev.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static dev.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
 
 public class InvoiceEditPanel extends EntityEditPanel {
 
@@ -42,14 +43,19 @@ public class InvoiceEditPanel extends EntityEditPanel {
     final TemporalInputPanel datePanel = createTemporalInputPanel(INVOICE_INVOICEDATE);
     datePanel.getInputField().setColumns(12);
     final JTextField addressField = createTextField(INVOICE_BILLINGADDRESS);
+    selectAllOnFocusGained(addressField);
     addressField.setColumns(16);
     final JTextField cityField = createTextField(INVOICE_BILLINGCITY);
+    selectAllOnFocusGained(cityField);
     cityField.setColumns(16);
     final JTextField stateField = createTextField(INVOICE_BILLINGSTATE);
+    selectAllOnFocusGained(stateField);
     stateField.setColumns(16);
     final JTextField countryField = createTextField(INVOICE_BILLINGCOUNTRY);
+    selectAllOnFocusGained(countryField);
     countryField.setColumns(16);
     final JTextField postalcodeField = createTextField(INVOICE_BILLINGPOSTALCODE);
+    selectAllOnFocusGained(postalcodeField);
     postalcodeField.setColumns(16);
     final JTextField totalField = createTextField(INVOICE_TOTAL_SUB);
     totalField.setColumns(16);
@@ -62,7 +68,6 @@ public class InvoiceEditPanel extends EntityEditPanel {
     centerPanel.add(createPropertyPanel(INVOICE_BILLINGSTATE));
     centerPanel.add(createPropertyPanel(INVOICE_BILLINGCOUNTRY));
     centerPanel.add(createPropertyPanel(INVOICE_BILLINGPOSTALCODE));
-    centerPanel.add(createPropertyPanel(INVOICE_TOTAL_SUB));
 
     final JPanel centerBasePanel = new JPanel(borderLayout());
     centerBasePanel.add(centerPanel, BorderLayout.CENTER);

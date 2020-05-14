@@ -16,7 +16,6 @@ import dev.codion.swing.common.model.table.AbstractFilteredTableModel;
 import dev.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 import dev.codion.swing.common.model.textfield.DocumentAdapter;
 import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.KeyEvents;
 import dev.codion.swing.common.ui.control.Control;
 import dev.codion.swing.common.ui.control.Controls;
 import dev.codion.swing.common.ui.control.ToggleControl;
@@ -54,7 +53,6 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -67,6 +65,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
+import static dev.codion.swing.common.ui.KeyEvents.addKeyEvent;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -431,6 +431,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final JTextField field = new JTextField();
     field.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
     field.setColumns(SEARCH_FIELD_COLUMNS);
+    TextFields.selectAllOnFocusGained(field);
     final TextFieldHint textFieldHint = TextFieldHint.enable(field, Messages.get(Messages.SEARCH_FIELD_HINT));
     field.getDocument().addDocumentListener((DocumentAdapter) e -> {
       if (!textFieldHint.isHintTextVisible()) {
@@ -438,8 +439,18 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
                 lastSearchResultCoordinate.getRow(), true, field.getText());
       }
     });
-    field.addKeyListener(new SearchFieldKeyListener(field));
-    TextFields.selectAllOnFocusGained(field);
+    final Control findNext = Controls.control(() -> findNext(field.getText()));
+    final Control findAndSelectNext = Controls.control(() -> findAndSelectNext(field.getText()));
+    final Control findPrevious = Controls.control(() -> findPrevious(field.getText()));
+    final Control findAndSelectPrevious = Controls.control(() -> findAndSelectPrevious(field.getText()));
+    final Control cancel = Controls.control(this::requestFocusInWindow);
+    addKeyEvent(field, KeyEvent.VK_ENTER, 0, 0, ON_KEY_PRESSED, findNext);
+    addKeyEvent(field, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, 0, ON_KEY_PRESSED, findAndSelectNext);
+    addKeyEvent(field, KeyEvent.VK_DOWN, 0, 0, ON_KEY_PRESSED, findNext);
+    addKeyEvent(field, KeyEvent.VK_DOWN, KeyEvent.SHIFT_DOWN_MASK, 0, ON_KEY_PRESSED, findAndSelectNext);
+    addKeyEvent(field, KeyEvent.VK_UP, 0, 0, ON_KEY_PRESSED, findPrevious);
+    addKeyEvent(field, KeyEvent.VK_UP, KeyEvent.SHIFT_DOWN_MASK, 0, ON_KEY_PRESSED, findAndSelectPrevious);
+    addKeyEvent(field, KeyEvent.VK_ESCAPE, 0, 0, ON_KEY_PRESSED, cancel);
 
     field.setComponentPopupMenu(initializeSearchFieldPopupMenu());
 
@@ -586,13 +597,13 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       }
     });
     tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK,
+    addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK,
             new ResizeSelectedColumnAction(this, false));
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK,
+    addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK,
             new ResizeSelectedColumnAction(this, true));
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
+    addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
             new MoveSelectedColumnAction(this, true));
-    KeyEvents.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
+    addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
             new MoveSelectedColumnAction(this, false));
   }
 
@@ -619,41 +630,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
 
   private static void setSelected(final List<JCheckBox> checkBoxes, final boolean selected) {
     checkBoxes.forEach(box -> SwingUtilities.invokeLater(() -> box.setSelected(selected)));
-  }
-
-  private final class SearchFieldKeyListener extends KeyAdapter {
-
-    private final JTextField field;
-
-    private SearchFieldKeyListener(final JTextField field) {
-      this.field = field;
-    }
-
-    @Override
-    public void keyReleased(final KeyEvent e) {
-      if (e.getModifiersEx() != 0) {
-        return;
-      }
-      if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
-        if (e.isShiftDown()) {
-          findAndSelectNext(field.getText());
-        }
-        else {
-          findNext(field.getText());
-        }
-      }
-      else if (e.getKeyCode() == KeyEvent.VK_UP) {
-        if (e.isShiftDown()) {
-          findAndSelectPrevious(field.getText());
-        }
-        else {
-          findPrevious(field.getText());
-        }
-      }
-      else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-        requestFocusInWindow();
-      }
-    }
   }
 
   private final class SortableHeaderRenderer implements TableCellRenderer {

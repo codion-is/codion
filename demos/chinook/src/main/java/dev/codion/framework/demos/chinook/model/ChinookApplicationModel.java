@@ -29,7 +29,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
     addEntityModel(playlistModel);
 
     final SwingEntityModel customerModel = new SwingEntityModel(T_CUSTOMER, connectionProvider);
-    final SwingEntityModel invoiceModel = new SwingEntityModel(T_INVOICE, connectionProvider);
+    final SwingEntityModel invoiceModel = new SwingEntityModel(new InvoiceEditModel(connectionProvider));
     final SwingEntityModel invoiceLineModel = new SwingEntityModel(T_INVOICELINE, connectionProvider);
     invoiceModel.addDetailModel(invoiceLineModel);
     invoiceModel.addLinkedDetailModel(invoiceLineModel);

@@ -50,6 +50,11 @@ include::{dir-test-source}/dev/codion/framework/demos/chinook/domain/ChinookTest
 
 [source,java]
 ----
+include::{dir-source}/dev/codion/framework/demos/chinook/model/InvoiceEditModel.java[lines=4..-1]
+----
+
+[source,java]
+----
 include::{dir-source}/dev/codion/framework/demos/chinook/model/TrackTableModel.java[lines=4..-1]
 ----
 
