@@ -57,8 +57,6 @@ public class InvoiceEditPanel extends EntityEditPanel {
     final JTextField postalcodeField = createTextField(INVOICE_BILLINGPOSTALCODE);
     selectAllOnFocusGained(postalcodeField);
     postalcodeField.setColumns(16);
-    final JTextField totalField = createTextField(INVOICE_TOTAL_SUB);
-    totalField.setColumns(16);
 
     final JPanel centerPanel = new JPanel(gridLayout(4, 2));
     centerPanel.add(createPropertyPanel(INVOICE_CUSTOMER_FK));

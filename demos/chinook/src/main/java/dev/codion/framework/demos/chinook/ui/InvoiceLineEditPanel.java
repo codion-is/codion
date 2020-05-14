@@ -39,8 +39,8 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
     trackLookupField.setColumns(15);
     final JTextField quantityField = createTextField(INVOICELINE_QUANTITY);
     selectAllOnFocusGained(quantityField);
-    removeTransferFocusOnEnter(quantityField);//otherwise the action added below wont work
-    quantityField.addActionListener(getSaveControl());
+    removeTransferFocusOnEnter(quantityField);//otherwise the action set below wont work
+    quantityField.setAction(getSaveControl());
 
     setLayout(borderLayout());
     add(createPropertyPanel(INVOICELINE_TRACK_FK), BorderLayout.WEST);
