@@ -114,7 +114,7 @@ public final class LoadTestPanel extends JPanel {
    */
   public JFrame showFrame() {
     final JFrame frame = new JFrame();
-    frame.setIconImage(icons().logo().getImage());
+    frame.setIconImage(icons().logoBlack().getImage());
     final String title = "Codion - " + loadTestModel.getTitle();
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {
