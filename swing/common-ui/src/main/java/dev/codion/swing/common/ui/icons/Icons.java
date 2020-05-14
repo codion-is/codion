@@ -30,7 +30,7 @@ public interface Icons {
   /**
    * @return icon for the codion logo
    */
-  ImageIcon logo();
+  ImageIcon logoBlack();
 
   /**
    * @return icon for the codion logo in red

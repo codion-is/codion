@@ -31,7 +31,7 @@ dependencies {
 mainClassName = "$moduleName/dev.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel"
 
 applicationDistribution.from(files(
-        '../../framework/server/src/main/security/codion_truststore.jks',
+        '../../framework/server/src/main/security/truststore.jks',
         '../../framework/server/src/main/security/all_permissions.policy',
         'src/main/config/logback.xml',
         'src/main/config/server_monitor.config')) {
@@ -39,11 +39,10 @@ applicationDistribution.from(files(
 }
 
 applicationDefaultJvmArgs = [
-        '-Djavax.net.ssl.trustStore=../config/codion_truststore.jks',
-        '-Djavax.net.ssl.trustStorePassword=crappypass',
-        '-Djava.security.policy=../config/all_permissions.policy',
-        '-Dlogback.configurationFile=../config/logback.xml',
-        '-Dcodion.configurationFile=../config/server_monitor.config'
+        "-Djavax.net.ssl.trustStore=../config/truststore.jks",
+        "-Djavax.net.ssl.trustStorePassword=crappypass",
+        "-Djava.security.policy=../config/all_permissions.policy",
+        "-Dcodion.configurationFile=../config/server_monitor.config"
 ]
 
 task runServerMonitor(type: ModularJavaExec) {
@@ -53,7 +52,7 @@ task runServerMonitor(type: ModularJavaExec) {
     systemProperties = [
             'codion.server.hostname'          : 'localhost',
             'codion.server.admin.user'        : 'scott:tiger',
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/codion_truststore.jks',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/config/logback.xml'
     ]
