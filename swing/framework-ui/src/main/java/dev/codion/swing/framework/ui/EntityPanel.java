@@ -1146,43 +1146,43 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   protected final void initializeResizing() {
-    addKeyEvent(this, VK_UP, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+    addKeyEvent(this, VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
-    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
-    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, ON_KEY_PRESSED, new ResizeHorizontallyAction(this, RIGHT));
-    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, ON_KEY_PRESSED, new ResizeHorizontallyAction(this, LEFT));
     if (containsEditPanel()) {
-      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));
-      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
-      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RIGHT));
-      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK | SHIFT_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, LEFT));
     }
   }
 
   protected final void initializeNavigation() {
-    addKeyEvent(this, VK_UP, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+    addKeyEvent(this, VK_UP, ALT_DOWN_MASK | CTRL_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, UP));
-    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+    addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK | CTRL_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, DOWN));
-    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+    addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK | CTRL_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, RIGHT));
-    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+    addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK | CTRL_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, LEFT));
     if (containsEditPanel()) {
-      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK | CTRL_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, UP));
-      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_DOWN, ALT_DOWN_MASK | CTRL_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, DOWN));
-      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_RIGHT, ALT_DOWN_MASK | CTRL_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, RIGHT));
-      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK + CTRL_DOWN_MASK,
+      addKeyEvent(editControlPanel, VK_LEFT, ALT_DOWN_MASK | CTRL_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, LEFT));
     }
   }

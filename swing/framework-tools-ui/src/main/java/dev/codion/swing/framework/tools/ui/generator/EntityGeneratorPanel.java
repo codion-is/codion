@@ -92,7 +92,7 @@ public class EntityGeneratorPanel extends JPanel {
         final EntityGeneratorModel generatorModel = new EntityGeneratorModel(user, schemaName);
         final EntityGeneratorPanel generatorPanel = new EntityGeneratorPanel(generatorModel);
         final JFrame frame = new JFrame("Codion Entity Generator");
-        frame.setIconImage(icons().logoBlack().getImage());
+        frame.setIconImage(icons().logoTransparent().getImage());
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.add(generatorPanel);
 

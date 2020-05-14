@@ -35,8 +35,13 @@ public class IkonliFoundationIcons implements Icons {
   }
 
   @Override
-  public final ImageIcon logoBlack() {
+  public ImageIcon logoBlack() {
     return defaultIcons.logoBlack();
+  }
+
+  @Override
+  public final ImageIcon logoTransparent() {
+    return defaultIcons.logoTransparent();
   }
 
   @Override

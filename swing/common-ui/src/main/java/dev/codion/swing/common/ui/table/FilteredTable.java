@@ -24,7 +24,6 @@ import dev.codion.swing.common.ui.layout.Layouts;
 import dev.codion.swing.common.ui.textfield.TextFieldHint;
 import dev.codion.swing.common.ui.textfield.TextFields;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -53,6 +52,7 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -91,7 +91,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
      */
     COLUMN,
     /**
-     * Centers the selected column, if possible.
+     * Centers the selected row, if possible.
      */
     ROW,
     /**
@@ -109,6 +109,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private static final int SELECT_COLUMNS_GRID_ROWS = 15;
   private static final int SEARCH_FIELD_COLUMNS = 8;
   private static final int SORT_ICON_SIZE = 5;
+  private static final int COLUMN_RESIZE_AMOUNT = 10;
   private static final RowColumn NULL_COORDINATE = RowColumn.rowColumn(-1, -1);
 
   /**
@@ -597,14 +598,41 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
       }
     });
     tableModel.getColumnModel().getAllColumns().forEach(this::bindFilterIndicatorEvents);
-    addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK,
-            new ResizeSelectedColumnAction(this, false));
-    addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK,
-            new ResizeSelectedColumnAction(this, true));
-    addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
-            new MoveSelectedColumnAction(this, true));
-    addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK,
-            new MoveSelectedColumnAction(this, false));
+    addKeyListener(new MoveResizeColumnKeyListener());
+  }
+
+  private void resizeSelectedColumn(final boolean enlarge) {
+    final int selectedColumnIndex = getSelectedColumn();
+    if (selectedColumnIndex != -1) {
+      final TableColumn column = getColumnModel().getColumn(selectedColumnIndex);
+      column.setPreferredWidth(column.getWidth() + (enlarge ? COLUMN_RESIZE_AMOUNT : -COLUMN_RESIZE_AMOUNT));
+    }
+  }
+
+  private void moveSelectedColumn(final boolean left) {
+    final int selectedColumnIndex = getSelectedColumn();
+    if (selectedColumnIndex != -1) {
+      final int columnCount = getColumnModel().getColumnCount();
+      final int newIndex;
+      if (left) {
+        if (selectedColumnIndex == 0) {
+          newIndex = columnCount - 1;
+        }
+        else {
+          newIndex = selectedColumnIndex - 1;
+        }
+      }
+      else {
+        if (selectedColumnIndex == columnCount - 1) {
+          newIndex = 0;
+        }
+        else {
+          newIndex = selectedColumnIndex + 1;
+        }
+      }
+      moveColumn(selectedColumnIndex, newIndex);
+      scrollRectToVisible(getCellRect(getSelectedRow(), newIndex, true));
+    }
   }
 
   /**
@@ -768,72 +796,16 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     }
   }
 
-  /**
-   * Resizes the selected table column by 10 pixels.
-   */
-  private static final class ResizeSelectedColumnAction extends AbstractAction {
-
-    private static final int RESIZE_AMOUNT = 10;
-    private final JTable table;
-    private final boolean enlarge;
-
-    private ResizeSelectedColumnAction(final JTable table, final boolean enlarge) {
-      super("FilteredTablePanel.column" + (enlarge ? "Larger" : "Smaller"));
-      this.table = table;
-      this.enlarge = enlarge;
-    }
-
+  private final class MoveResizeColumnKeyListener extends KeyAdapter {
     @Override
-    public void actionPerformed(final ActionEvent e) {
-      if (table.getAutoResizeMode() == JTable.AUTO_RESIZE_OFF) {
-        final int selectedColumnIndex = table.getSelectedColumn();
-        if (selectedColumnIndex != -1) {
-          final TableColumn column = table.getColumnModel().getColumn(selectedColumnIndex);
-          column.setPreferredWidth(column.getWidth() + (enlarge ? RESIZE_AMOUNT : -RESIZE_AMOUNT));
+    public void keyPressed(final KeyEvent e) {
+      if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        if (e.isAltDown() && e.isShiftDown()) {
+          moveSelectedColumn(e.getKeyCode() == KeyEvent.VK_LEFT);
         }
-      }
-    }
-  }
-
-  /**
-   * Moves the selected table column by one either left or right, with wrap around
-   */
-  private static final class MoveSelectedColumnAction extends AbstractAction {
-
-    private final JTable table;
-    private final boolean left;
-
-    private MoveSelectedColumnAction(final JTable table, final boolean left) {
-      super("FilteredTablePanel.column" + (left ? "Left" : "Right"));
-      this.table = table;
-      this.left = left;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final TableColumnModel columnModel = table.getColumnModel();
-      final int selectedColumnIndex = table.getSelectedColumn();
-      if (selectedColumnIndex != -1) {
-        final int columnCount = columnModel.getColumnCount();
-        final int newIndex;
-        if (left) {
-          if (selectedColumnIndex == 0) {
-            newIndex = columnCount - 1;
-          }
-          else {
-            newIndex = selectedColumnIndex - 1;
-          }
+        else if (e.isAltDown() && getAutoResizeMode() == JTable.AUTO_RESIZE_OFF) {
+          resizeSelectedColumn(e.getKeyCode() == KeyEvent.VK_RIGHT);
         }
-        else {
-          if (selectedColumnIndex == columnCount - 1) {
-            newIndex = 0;
-          }
-          else {
-            newIndex = selectedColumnIndex + 1;
-          }
-        }
-        table.moveColumn(selectedColumnIndex, newIndex);
-        table.scrollRectToVisible(table.getCellRect(table.getSelectedRow(), newIndex, true));
       }
     }
   }

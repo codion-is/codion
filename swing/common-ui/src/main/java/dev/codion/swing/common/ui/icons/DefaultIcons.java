@@ -10,12 +10,9 @@ public class DefaultIcons implements Icons {
 
   private static final String IMG_FILTER_16 = "Filter16.gif";
   private static final String IMG_PREFERENCES_16 = "Preferences16.gif";
-  private static final String IMG_CODION_LOGO_BLACK_32 = "codion-logo-black-32x32.png";
-  private static final String IMG_CODION_LOGO_BLACK_48 = "codion-logo-black-48x48.png";
-  private static final String IMG_CODION_LOGO_BLACK_256 = "codion-logo-black-256x256.png";
-  private static final String IMG_CODION_LOGO_RED_32 = "codion-logo-red-32x32.png";
-  private static final String IMG_CODION_LOGO_RED_48 = "codion-logo-red-48x48.png";
-  private static final String IMG_CODION_LOGO_RED_256 = "codion-logo-red-256x256.png";
+  private static final String CODION_LOGO_BLACK_48 = "codion-logo-rounded-black-48x48.png";
+  private static final String CODION_LOGO_TRANSPARENT_48 = "codion-logo-transparent-48x48.png";
+  private static final String CODION_LOGO_RED_48 = "codion-logo-rounded-red-48x48.png";
 
   @Override
   public final ImageIcon filter() {
@@ -29,12 +26,17 @@ public class DefaultIcons implements Icons {
 
   @Override
   public final ImageIcon logoBlack() {
-    return imageIcon(IMG_CODION_LOGO_BLACK_48);
+    return imageIcon(CODION_LOGO_BLACK_48);
+  }
+
+  @Override
+  public final ImageIcon logoTransparent() {
+    return imageIcon(CODION_LOGO_TRANSPARENT_48);
   }
 
   @Override
   public final ImageIcon logoRed() {
-    return imageIcon(IMG_CODION_LOGO_RED_48);
+    return imageIcon(CODION_LOGO_RED_48);
   }
 
   private static ImageIcon imageIcon(final String resourceName) {

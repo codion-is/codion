@@ -6118,3 +6118,4 @@
   FilteredTable, searchField bug fixed, did not work with SHIFT down, now uses key events instead of key listener
   EntityPanel, horizontal resizing now happens on key pressed, for faster resizing
   EntityTablePanel, southPanel, southCenterSplitPane resize weight set to a reasonable value, otherwise the search field tends to disappear
+  FilteredTable, bug fixed, move and resize column actions removed, key listener used instead and key events consumed
