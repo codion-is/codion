@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static dev.codion.swing.common.ui.KeyEvents.addKeyEvent;
 import static dev.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static dev.codion.swing.framework.ui.EntityPanel.PanelState.*;
@@ -1150,9 +1151,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     addKeyEvent(this, VK_DOWN, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, DOWN));
     addKeyEvent(this, VK_RIGHT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RIGHT));
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, ON_KEY_PRESSED, new ResizeHorizontallyAction(this, RIGHT));
     addKeyEvent(this, VK_LEFT, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
-            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, LEFT));
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, ON_KEY_PRESSED, new ResizeHorizontallyAction(this, LEFT));
     if (containsEditPanel()) {
       addKeyEvent(editControlPanel, VK_UP, ALT_DOWN_MASK + SHIFT_DOWN_MASK,
               WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, UP));

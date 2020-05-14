@@ -886,6 +886,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected JPanel initializeSouthPanel() {
     final JSplitPane southCenterSplitPane = new JSplitPane();
     southCenterSplitPane.setContinuousLayout(true);
+    southCenterSplitPane.setResizeWeight(0.35);
     southCenterSplitPane.setTopComponent(table.getSearchField());
     southCenterSplitPane.setBottomComponent(statusMessageLabel);
     final JPanel southPanel = new JPanel(new BorderLayout());
