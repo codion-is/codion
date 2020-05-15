@@ -150,7 +150,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === update
 
-For updating on or more entity instances. These methods throw an exception if the entities are not modified.
+For updating one or more entity instances. These methods throw an exception if the entities are not modified.
 
 ** {url-entity-connection}#update-is.codion.framework.domain.entity.Entity-[update(Entity entity)]
 
