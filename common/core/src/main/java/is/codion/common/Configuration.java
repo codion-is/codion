@@ -105,6 +105,17 @@ public final class Configuration {
   }
 
   /**
+   * Creates an enum configuration value
+   * @param key the configuration key
+   * @param enumClass the enum class
+   * @param defaultValue the default value, if any
+   * @return the configuration value
+   */
+  public static <T extends Enum<T>> PropertyValue<T> enumValue(final String key, final Class<T> enumClass, final T defaultValue) {
+    return value(key, defaultValue, value -> Enum.valueOf(enumClass, value.toUpperCase()));
+  }
+
+  /**
    * Creates a configuration value
    * @param key the configuration key
    * @param defaultValue the default value

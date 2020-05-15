@@ -8,7 +8,7 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.http.server.HttpServer;
 import is.codion.common.http.server.HttpServerConfiguration;
-import is.codion.common.http.server.HttpServerConfiguration.Secure;
+import is.codion.common.http.server.ServerHttps;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.dbms.h2database.H2DatabaseProvider;
@@ -95,7 +95,7 @@ public class JasperReportsTest {
   public void urlReport() throws Exception {
     ReportWrapper.CACHE_REPORTS.set(false);
     ReportWrapper.REPORT_PATH.set("http://localhost:1234");
-    final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(1234, Secure.NO);
+    final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(1234, ServerHttps.FALSE);
     configuration.setDocumentRoot(REPORT_PATH);
     final HttpServer server = new HttpServer(configuration);
     try {

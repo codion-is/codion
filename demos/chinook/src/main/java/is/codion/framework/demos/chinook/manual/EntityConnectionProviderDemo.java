@@ -9,6 +9,7 @@ import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.http.ClientHttps;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -69,7 +70,7 @@ public class EntityConnectionProviderDemo {
   static void httpConnectionProvider() throws DatabaseException {
     // tag::http[]
     HttpEntityConnectionProvider connectionProvider =
-            new HttpEntityConnectionProvider("localhost", 8080, false);
+            new HttpEntityConnectionProvider("localhost", 8080, ClientHttps.FALSE);
 
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());
     connectionProvider.setClientTypeId(EntityConnectionProviderDemo.class.getSimpleName());

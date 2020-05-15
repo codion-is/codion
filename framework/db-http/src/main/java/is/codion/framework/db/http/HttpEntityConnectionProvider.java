@@ -40,10 +40,10 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
 
   /**
    * Specifies whether https should be used.<br>
-   * Value types: Boolean<br>
+   * Value types: Https<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> HTTP_CLIENT_SECURE = Configuration.booleanValue("codion.client.http.secure", true);
+  public static final PropertyValue<ClientHttps> HTTP_CLIENT_SECURE = Configuration.enumValue("codion.client.http.secure", ClientHttps.class, ClientHttps.TRUE);
 
   private String serverHostName;
   private Integer serverPort;
@@ -60,10 +60,10 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    * @param serverPort the server port
    * @param https true if https should be used
    */
-  public HttpEntityConnectionProvider(final String serverHostName, final Integer serverPort, final Boolean https) {
+  public HttpEntityConnectionProvider(final String serverHostName, final Integer serverPort, final ClientHttps https) {
     this.serverHostName = requireNonNull(serverHostName, "serverHostName");
     this.serverPort = requireNonNull(serverPort, "serverPort");
-    this.https = requireNonNull(https, "https");
+    this.https = requireNonNull(https, "https").equals(ClientHttps.TRUE);
   }
 
   @Override
@@ -126,7 +126,7 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
 
   private Boolean getHttps() {
     if (https == null) {
-      https = HTTP_CLIENT_SECURE.get();
+      https = ClientHttps.TRUE.equals(HTTP_CLIENT_SECURE.get());
     }
 
     return https;

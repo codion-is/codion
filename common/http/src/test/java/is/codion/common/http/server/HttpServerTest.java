@@ -3,8 +3,6 @@
  */
 package is.codion.common.http.server;
 
-import is.codion.common.http.server.HttpServerConfiguration.Secure;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +16,7 @@ public class HttpServerTest {
 
   private static final int FILE_SERVER_PORT_NUMBER = 8089;
 
-  private final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(FILE_SERVER_PORT_NUMBER, Secure.NO);
+  private final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(FILE_SERVER_PORT_NUMBER, ServerHttps.FALSE);
   private final HttpServer httpServer;
 
   public HttpServerTest() {

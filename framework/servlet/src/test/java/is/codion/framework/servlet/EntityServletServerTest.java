@@ -7,6 +7,7 @@ import is.codion.common.Serializer;
 import is.codion.common.db.Operator;
 import is.codion.common.db.database.Databases;
 import is.codion.common.http.server.HttpServerConfiguration;
+import is.codion.common.http.server.ServerHttps;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
@@ -280,7 +281,7 @@ public class EntityServletServerTest {
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/keystore.jks");
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
-    HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
+    HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.TRUE);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
     final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(2223, 2221);
     configuration.setAdminPort(2223);
@@ -302,7 +303,7 @@ public class EntityServletServerTest {
     HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
-    HttpServerConfiguration.HTTP_SERVER_SECURE.set(false);
+    HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.FALSE);
     System.clearProperty("java.security.policy");
     System.clearProperty("jdk.internal.httpclient.disableHostnameVerification");
   }

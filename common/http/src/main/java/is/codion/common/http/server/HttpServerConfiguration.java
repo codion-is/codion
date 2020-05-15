@@ -20,10 +20,10 @@ public interface HttpServerConfiguration {
 
   /**
    * Specifies whether https should be used.<br>
-   * Value type: Boolean<br>
+   * Value types: Https<br>
    * Default value: true
    */
-  PropertyValue<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("codion.server.http.secure", true);
+  PropertyValue<ServerHttps> HTTP_SERVER_SECURE = Configuration.enumValue("codion.server.http.secure", ServerHttps.class, ServerHttps.TRUE);
 
   /**
    * Specifies the keystore to use for securing http connections.<br>
@@ -47,27 +47,13 @@ public interface HttpServerConfiguration {
   PropertyValue<String> DOCUMENT_ROOT = Configuration.stringValue("codion.server.http.documentRoot", null);
 
   /**
-   * Specifies whether a http server should use https.
-   */
-  enum Secure {
-    /**
-     * Https should be enabled.
-     */
-    YES,
-    /**
-     * Https should not be enabled.
-     */
-    NO
-  }
-
-  /**
    * Instantiates a new HttpServerConfiguration.
    * @param port the port on which to serve
-   * @param secure yes if https should be used
+   * @param https yes if https should be used
    * @return a default configuration
    */
-  static HttpServerConfiguration configuration(final int port, final Secure secure) {
-    return new DefaultHttpServerConfiguration(port, secure);
+  static HttpServerConfiguration configuration(final int port, final ServerHttps https) {
+    return new DefaultHttpServerConfiguration(port, https);
   }
 
   /**
@@ -77,7 +63,7 @@ public interface HttpServerConfiguration {
   static HttpServerConfiguration fromSystemProperties() {
     final DefaultHttpServerConfiguration configuration = new DefaultHttpServerConfiguration(
             HttpServerConfiguration.HTTP_SERVER_PORT.get(),
-            HttpServerConfiguration.HTTP_SERVER_SECURE.get() ? Secure.YES : Secure.NO);
+            HttpServerConfiguration.HTTP_SERVER_SECURE.get());
     configuration.setDocumentRoot(HttpServerConfiguration.DOCUMENT_ROOT.get());
     configuration.setKeystore(HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.get(), HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.get());
 

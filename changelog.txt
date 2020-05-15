@@ -6123,3 +6123,4 @@
   EntityTablePanel.INCLUDE_ENTITY_MENU configuration value added, default true
   DefaultEntity bug fixed, get() now handles MirrorProperty by returning the value for the property it mirrors, initializeAndCacheCompositeReferenceKey() also takes MirrorProperty into account
   TextFields.makeUpperCase() and makeLowerCase() renamed upperCase() and lowerCase() respectively
+  Configuration.enumValue() added
