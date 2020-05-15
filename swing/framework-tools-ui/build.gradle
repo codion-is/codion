@@ -44,7 +44,6 @@ task runEntityGenerator(type: JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     systemProperties = [
             'codion.db.url'             : 'jdbc:h2:mem:h2db',
-            'codion.db.embeddedInMemory': 'true',
             'codion.db.initScript'      : 'src/main/config/create_schema.sql',
             'logback.configurationFile' : 'src/main/config/logback.xml'
     ]

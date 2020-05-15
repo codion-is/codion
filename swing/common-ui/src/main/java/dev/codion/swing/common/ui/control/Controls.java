@@ -385,7 +385,8 @@ public final class Controls {
    * @param controls the controls to add to this list
    * @return a new ControlList instance.
    */
-  public static ControlList controlList(final String name, final char mnemonic, final State enabledState, final Control... controls) {
+  public static ControlList controlList(final String name, final char mnemonic, final StateObserver enabledState,
+                                        final Control... controls) {
     return controlList(name, mnemonic, enabledState, null, controls);
   }
 
