@@ -21,26 +21,60 @@ The domain model in Codion is based on concepts from entity relationship diagram
 We start by extending the *Domain* class, with a couple of convenient static imports (skipping the rest for brevity).
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/domain/StoreMinimal.java[tags=staticImports]
+import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.property.Properties.columnProperty;
+import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
+
+public class StoreMinimal extends Domain {
 ----
 
 Then we define string constants for the entity and its properties (referred to as *entityIds* and *propertyIds*), which are used whenever we need to refer to the entity type and its properties.
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/domain/StoreMinimal.java[tags=customerConstants]
+  public static final String T_CUSTOMER = "store.customer";
+  public static final String CUSTOMER_ID = "id";
+  public static final String CUSTOMER_FIRST_NAME = "first_name";
+  public static final String CUSTOMER_LAST_NAME = "last_name";
+  public static final String CUSTOMER_EMAIL = "email";
+  public static final String CUSTOMER_IS_ACTIVE = "is_active";
 ----
 
 And finally we define an entity using the *entityId* and *propertyIds*.
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/domain/StoreMinimal.java[tags=customer]
+  public StoreMinimal() {
+    define(T_CUSTOMER,
+            primaryKeyProperty(CUSTOMER_ID, Types.BIGINT),
+            columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")
+                    .nullable(false).maximumLength(40),
+            columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
+                    .nullable(false).maximumLength(40),
+            columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email"),
+            columnProperty(CUSTOMER_IS_ACTIVE, Types.BOOLEAN, "Is active")
+                    .defaultValue(true))
+            .keyGenerator(automatic("store.customer"))
+            .stringProvider(new StringProvider(CUSTOMER_LAST_NAME)
+                    .addText(", ").addValue(CUSTOMER_FIRST_NAME))
+            .caption("Customer");
+  }
+}
 ----
 
 Integrated JUnit testing harness for the domain model.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/domain/StoreMinimalTest.java[tags=storeTest]
+public class StoreMinimalTest extends EntityTestUnit {
+
+  public StoreMinimalTest() {
+    super(StoreMinimal.class.getName());
+  }
+
+  @Test
+  public void customer() throws Exception {
+    test(Store.T_CUSTOMER);
+  }
+}
 ----
 
 == Database access
@@ -49,7 +83,34 @@ The *EntityConnection* interface defines the database layer. There are three imp
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/db/StoreDatabase.java[tags=databaseAccess]
+Database database =
+        new H2DatabaseProvider().createDatabase("jdbc:h2:mem:h2db");
+EntityConnectionProvider connectionProvider =
+        new LocalEntityConnectionProvider(database)
+                .setDomainClassName(StoreMinimal.class.getName())
+                .setUser(Users.parseUser("scott:tiger"));
+
+EntityConnection connection = connectionProvider.getConnection();
+
+List<Entity> customersNamedJoe =
+        connection.select(T_CUSTOMER, CUSTOMER_FIRST_NAME, "Joe");
+
+List<Entity> customersWithoutEmail =
+        connection.select(selectCondition(T_CUSTOMER, CUSTOMER_EMAIL, LIKE, null));
+
+Entities domainEntities = connection.getEntities();
+
+Entity customer = domainEntities.entity(T_CUSTOMER);
+customer.put(CUSTOMER_FIRST_NAME, "Björn");
+customer.put(CUSTOMER_LAST_NAME, "Sigurðsson");
+
+Entity.Key customerKey = connection.insert(customer);
+
+customer.put(CUSTOMER_EMAIL, "valid@email.bla");
+
+customer = connection.update(customer);
+
+connection.delete(customerKey);
 ----
 
 link:https://codion.is[Web Site]
