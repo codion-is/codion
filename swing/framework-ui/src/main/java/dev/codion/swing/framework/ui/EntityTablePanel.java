@@ -148,6 +148,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public static final PropertyValue<Integer> TABLE_AUTO_RESIZE_MODE = Configuration.integerValue(
           "dev.codion.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
 
+  /**
+   * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU = Configuration.booleanValue(
+          "dev.codion.swing.framework.ui.EntityTablePanel.includeEntityMenu", true);
+
   public static final String PRINT_TABLE = "printTable";
   public static final String DELETE_SELECTED = "deleteSelected";
   public static final String VIEW_DEPENDENCIES = "viewDependencies";
@@ -1272,6 +1280,10 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (includePopupMenu) {
       addTablePopupMenu();
     }
+    if (INCLUDE_ENTITY_MENU.get()) {
+      KeyEvents.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
+              control(this::showEntityMenu,"EntityTablePanel.showEntityMenu"));
+    }
   }
 
   private void configureColumn(final TableColumn column) {
@@ -1297,8 +1309,6 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       final Point location = getPopupLocation(table);
       popupMenu.show(table, location.x, location.y);
     }, "EntityTablePanel.showPopupMenu"));
-    KeyEvents.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
-            control(this::showEntityMenu,"EntityTablePanel.showEntityMenu"));
   }
 
   private void checkIfInitialized() {
