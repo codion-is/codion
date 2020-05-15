@@ -60,7 +60,7 @@ And finally we define an entity using the *entityId* and *propertyIds*.
 }
 ----
 
-The *EntityTestUnit provides an integrated JUnit testing harness for the domain model. The *EntityTestUnit.test(entityId)* method runs insert, select, update and delete on the given entity, verifying the results.
+The *EntityTestUnit* class provides an integrated JUnit testing harness for the domain model. The *EntityTestUnit.test(entityId)* method runs insert, select, update and delete on the given entity, verifying the results.
 
 [source,java]
 ----
