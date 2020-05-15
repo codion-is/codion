@@ -1,11 +1,11 @@
 /**
- * @provides dev.codion.common.db.database.DatabaseProvider
+ * @provides is.codion.common.db.database.DatabaseProvider
  */
-module dev.codion.dbms.h2database {
-  requires transitive dev.codion.common.db;
+module is.codion.dbms.h2database {
+  requires transitive is.codion.common.db;
 
-  exports dev.codion.dbms.h2database;
+  exports is.codion.dbms.h2database;
 
-  provides dev.codion.common.db.database.DatabaseProvider
-          with dev.codion.dbms.h2database.H2DatabaseProvider;
+  provides is.codion.common.db.database.DatabaseProvider
+          with is.codion.dbms.h2database.H2DatabaseProvider;
 }

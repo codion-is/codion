@@ -1,11 +1,11 @@
 /**
- * @provides dev.codion.common.db.database.DatabaseProvider
+ * @provides is.codion.common.db.database.DatabaseProvider
  */
-module dev.codion.dbms.derby {
-  requires transitive dev.codion.common.db;
+module is.codion.dbms.derby {
+  requires transitive is.codion.common.db;
 
-  exports dev.codion.dbms.derby;
+  exports is.codion.dbms.derby;
 
-  provides dev.codion.common.db.database.DatabaseProvider
-          with dev.codion.dbms.derby.DerbyDatabaseProvider;
+  provides is.codion.common.db.database.DatabaseProvider
+          with is.codion.dbms.derby.DerbyDatabaseProvider;
 }

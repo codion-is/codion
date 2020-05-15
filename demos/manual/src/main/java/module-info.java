@@ -1,22 +1,22 @@
-module dev.codion.framework.demos.manual {
+module is.codion.framework.demos.manual {
   requires java.desktop;
   requires jasperreports;
-  requires dev.codion.common.core;
-  requires dev.codion.common.http;
-  requires dev.codion.dbms.h2database;
-  requires dev.codion.framework.db.local;
-  requires dev.codion.framework.db.rmi;
-  requires dev.codion.framework.db.http;
-  requires dev.codion.framework.server;
-  requires dev.codion.framework.servlet;
-  requires dev.codion.swing.common.ui;
-  requires dev.codion.swing.framework.model;
-  requires dev.codion.swing.framework.tools;
-  requires dev.codion.swing.framework.ui;
-  requires dev.codion.plugin.jasperreports;
-  requires dev.codion.framework.db.test;
+  requires is.codion.common.core;
+  requires is.codion.common.http;
+  requires is.codion.dbms.h2database;
+  requires is.codion.framework.db.local;
+  requires is.codion.framework.db.rmi;
+  requires is.codion.framework.db.http;
+  requires is.codion.framework.server;
+  requires is.codion.framework.servlet;
+  requires is.codion.swing.common.ui;
+  requires is.codion.swing.framework.model;
+  requires is.codion.swing.framework.tools;
+  requires is.codion.swing.framework.ui;
+  requires is.codion.plugin.jasperreports;
+  requires is.codion.framework.db.test;
   requires org.junit.jupiter.api;
 
-  exports dev.codion.framework.demos.manual.store.domain;
-  exports dev.codion.framework.demos.manual.store.ui;
+  exports is.codion.framework.demos.manual.store.domain;
+  exports is.codion.framework.demos.manual.store.ui;
 }

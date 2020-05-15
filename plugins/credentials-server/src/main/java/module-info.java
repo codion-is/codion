@@ -1,14 +1,14 @@
 /**
  * A CredentialsProvider implementation with a server component
- * @provides dev.codion.common.CredentialsProvider
+ * @provides is.codion.common.CredentialsProvider
  */
-module dev.codion.credentials.server {
+module is.codion.credentials.server {
   requires org.slf4j;
   requires transitive java.rmi;
-  requires transitive dev.codion.common.rmi;
+  requires transitive is.codion.common.rmi;
 
-  exports dev.codion.plugin.credentials.server;
+  exports is.codion.plugin.credentials.server;
 
-  provides dev.codion.common.CredentialsProvider
-          with dev.codion.plugin.credentials.server.DefaultCredentialsProvider;
+  provides is.codion.common.CredentialsProvider
+          with is.codion.plugin.credentials.server.DefaultCredentialsProvider;
 }

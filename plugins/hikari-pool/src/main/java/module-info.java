@@ -1,9 +1,9 @@
-module dev.codion.plugin.hikari.pool {
+module is.codion.plugin.hikari.pool {
   requires com.zaxxer.hikari;
-  requires dev.codion.common.db;
+  requires is.codion.common.db;
 
-  exports dev.codion.plugin.hikari.pool;
+  exports is.codion.plugin.hikari.pool;
 
-  provides dev.codion.common.db.pool.ConnectionPoolProvider
-          with dev.codion.plugin.hikari.pool.HikariConnectionPoolProvider;
+  provides is.codion.common.db.pool.ConnectionPoolProvider
+          with is.codion.plugin.hikari.pool.HikariConnectionPoolProvider;
 }

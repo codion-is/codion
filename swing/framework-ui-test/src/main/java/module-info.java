@@ -1,5 +1,5 @@
-module dev.codion.swing.framework.ui.test {
-  requires dev.codion.swing.framework.ui;
+module is.codion.swing.framework.ui.test {
+  requires is.codion.swing.framework.ui;
 
-  exports dev.codion.swing.framework.ui.test;
+  exports is.codion.swing.framework.ui.test;
 }

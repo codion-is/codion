@@ -1,6 +1,6 @@
-module dev.codion.plugin.json {
+module is.codion.plugin.json {
   requires org.json;
-  requires dev.codion.framework.domain;
+  requires is.codion.framework.domain;
 
-  exports dev.codion.plugin.json;
+  exports is.codion.plugin.json;
 }

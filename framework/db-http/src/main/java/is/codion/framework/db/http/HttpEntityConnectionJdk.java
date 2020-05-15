@@ -1,23 +1,23 @@
 /*
  * Copyright (c) 2004 - 2019, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.http;
+package is.codion.framework.db.http;
 
-import dev.codion.common.Serializer;
-import dev.codion.common.Util;
-import dev.codion.common.db.Operator;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.exception.MultipleRecordsFoundException;
-import dev.codion.common.db.exception.RecordNotFoundException;
-import dev.codion.common.db.reports.ReportException;
-import dev.codion.common.db.reports.ReportWrapper;
-import dev.codion.common.user.User;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.db.condition.EntityCondition;
-import dev.codion.framework.db.condition.EntitySelectCondition;
-import dev.codion.framework.db.condition.EntityUpdateCondition;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
+import is.codion.common.Serializer;
+import is.codion.common.Util;
+import is.codion.common.db.Operator;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.MultipleRecordsFoundException;
+import is.codion.common.db.exception.RecordNotFoundException;
+import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.user.User;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.condition.EntityCondition;
+import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ import java.util.concurrent.ThreadFactory;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A Http based {@link EntityConnection} implementation based on EntityService

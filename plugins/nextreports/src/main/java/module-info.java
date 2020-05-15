@@ -1,7 +1,7 @@
-module dev.codion.plugin.nextreports {
+module is.codion.plugin.nextreports {
   requires java.desktop;
   requires nextreports.engine;
-  requires dev.codion.common.db;
+  requires is.codion.common.db;
 
-  exports dev.codion.plugin.nextreports.model;
+  exports is.codion.plugin.nextreports.model;
 }

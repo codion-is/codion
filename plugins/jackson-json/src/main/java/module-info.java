@@ -1,8 +1,8 @@
-module dev.codion.plugin.jackson.json {
+module is.codion.plugin.jackson.json {
   requires com.fasterxml.jackson.databind;
-  requires dev.codion.framework.domain;
-  requires dev.codion.framework.db.core;
+  requires is.codion.framework.domain;
+  requires is.codion.framework.db.core;
 
-  exports dev.codion.plugin.jackson.json.domain;
-  exports dev.codion.plugin.jackson.json.db;
+  exports is.codion.plugin.jackson.json.domain;
+  exports is.codion.plugin.jackson.json.db;
 }

@@ -9,8 +9,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['dev.codion.dbms.h2database']
-    testAddReads = ['dev.codion.plugin.hikari.pool': 'dev.codion.dbms.h2database']
+    testAddModules = ['is.codion.dbms.h2database']
+    testAddReads = ['is.codion.plugin.hikari.pool': 'is.codion.dbms.h2database']
 }
 
 compileTestJava {

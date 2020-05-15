@@ -1,9 +1,9 @@
-module dev.codion.swing.framework.server.monitor {
+module is.codion.swing.framework.server.monitor {
   requires org.slf4j;
   requires jfreechart;
-  requires dev.codion.framework.server;
-  requires dev.codion.swing.common.ui;
+  requires is.codion.framework.server;
+  requires is.codion.swing.common.ui;
 
-  exports dev.codion.swing.framework.server.monitor;
-  exports dev.codion.swing.framework.server.monitor.ui;
+  exports is.codion.swing.framework.server.monitor;
+  exports is.codion.swing.framework.server.monitor.ui;
 }

@@ -7,8 +7,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['dev.codion.common.core,dev.codion.common.model']
-    testAddReads = ['dev.codion.swing.common.tools.ui': 'dev.codion.common.core,dev.codion.common.model']
+    testAddModules = ['is.codion.common.core,is.codion.common.model']
+    testAddReads = ['is.codion.swing.common.tools.ui': 'is.codion.common.core,is.codion.common.model']
 }
 
 compileTestJava {

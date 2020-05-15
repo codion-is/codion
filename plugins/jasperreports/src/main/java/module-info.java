@@ -1,6 +1,6 @@
-module dev.codion.plugin.jasperreports {
+module is.codion.plugin.jasperreports {
   requires jasperreports;
-  requires dev.codion.common.db;
+  requires is.codion.common.db;
 
-  exports dev.codion.plugin.jasperreports.model;
+  exports is.codion.plugin.jasperreports.model;
 }

@@ -1,10 +1,10 @@
-module dev.codion.framework.model.tests {
+module is.codion.framework.model.tests {
   requires org.slf4j;
   requires org.junit.jupiter.api;
-  requires dev.codion.framework.db.local;
-  requires transitive dev.codion.common.model;
-  requires transitive dev.codion.framework.db.core;
-  requires transitive dev.codion.framework.model;
+  requires is.codion.framework.db.local;
+  requires transitive is.codion.common.model;
+  requires transitive is.codion.framework.db.core;
+  requires transitive is.codion.framework.model;
 
-  exports dev.codion.framework.model.tests;
+  exports is.codion.framework.model.tests;
 }

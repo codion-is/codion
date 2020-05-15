@@ -1,9 +1,9 @@
-module dev.codion.plugin.log4j.proxy {
+module is.codion.plugin.log4j.proxy {
   requires java.logging;
-  requires dev.codion.common.core;
+  requires is.codion.common.core;
 
-  exports dev.codion.plugin.jul;
+  exports is.codion.plugin.jul;
 
-  provides dev.codion.common.LoggerProxy
-          with dev.codion.plugin.jul.JulProxy;
+  provides is.codion.common.LoggerProxy
+          with is.codion.plugin.jul.JulProxy;
 }

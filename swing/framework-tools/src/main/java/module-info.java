@@ -1,9 +1,9 @@
-module dev.codion.swing.framework.tools {
+module is.codion.swing.framework.tools {
   requires org.slf4j;
-  requires transitive dev.codion.framework.model;
-  requires transitive dev.codion.swing.common.tools;
-  requires transitive dev.codion.swing.common.model;
+  requires transitive is.codion.framework.model;
+  requires transitive is.codion.swing.common.tools;
+  requires transitive is.codion.swing.common.model;
 
-  exports dev.codion.swing.framework.tools.generator;
-  exports dev.codion.swing.framework.tools.loadtest;
+  exports is.codion.swing.framework.tools.generator;
+  exports is.codion.swing.framework.tools.loadtest;
 }

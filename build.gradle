@@ -56,7 +56,7 @@ configure(project.frameworkModules) {
         withSourcesJar()
     }
 
-    ext.moduleName = "dev." + project.name.replace('-', '.')
+    ext.moduleName = "is." + project.name.replace('-', '.')
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'

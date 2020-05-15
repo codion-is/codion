@@ -1,11 +1,11 @@
 /**
- * @provides dev.codion.common.db.database.Database
+ * @provides is.codion.common.db.database.Database
  */
-module dev.codion.dbms.mariadb {
-  requires transitive dev.codion.common.db;
+module is.codion.dbms.mariadb {
+  requires transitive is.codion.common.db;
 
-  exports dev.codion.dbms.mariadb;
+  exports is.codion.dbms.mariadb;
 
-  provides dev.codion.common.db.database.DatabaseProvider
-          with dev.codion.dbms.mariadb.MariaDbDatabaseProvider;
+  provides is.codion.common.db.database.DatabaseProvider
+          with is.codion.dbms.mariadb.MariaDbDatabaseProvider;
 }

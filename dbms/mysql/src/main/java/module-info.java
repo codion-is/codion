@@ -1,11 +1,11 @@
 /**
- * @provides dev.codion.common.db.database.DatabaseProvider
+ * @provides is.codion.common.db.database.DatabaseProvider
  */
-module dev.codion.dbms.mysql {
-  requires transitive dev.codion.common.db;
+module is.codion.dbms.mysql {
+  requires transitive is.codion.common.db;
 
-  exports dev.codion.dbms.mysql;
+  exports is.codion.dbms.mysql;
 
-  provides dev.codion.common.db.database.DatabaseProvider
-          with dev.codion.dbms.mysql.MySQLDatabaseProvider;
+  provides is.codion.common.db.database.DatabaseProvider
+          with is.codion.dbms.mysql.MySQLDatabaseProvider;
 }

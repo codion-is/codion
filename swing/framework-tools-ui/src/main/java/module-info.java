@@ -1,6 +1,6 @@
-module dev.codion.swing.framework.tools.ui {
-  requires dev.codion.swing.common.ui;
-  requires dev.codion.swing.framework.tools;
+module is.codion.swing.framework.tools.ui {
+  requires is.codion.swing.common.ui;
+  requires is.codion.swing.framework.tools;
 
-  exports dev.codion.swing.framework.tools.ui.generator;
+  exports is.codion.swing.framework.tools.ui.generator;
 }

@@ -12,8 +12,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['dev.codion.dbms.h2database']
-    testAddReads = ['dev.codion.framework.db.local': 'dev.codion.dbms.h2database']
+    testAddModules = ['is.codion.dbms.h2database']
+    testAddReads = ['is.codion.framework.db.local': 'is.codion.dbms.h2database']
 }
 
 compileTestJava {

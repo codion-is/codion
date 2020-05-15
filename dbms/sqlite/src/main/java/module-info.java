@@ -1,11 +1,11 @@
 /**
- * @provides dev.codion.common.db.database.DatabaseProvider
+ * @provides is.codion.common.db.database.DatabaseProvider
  */
-module dev.codion.dbms.sqlite {
-  requires transitive dev.codion.common.db;
+module is.codion.dbms.sqlite {
+  requires transitive is.codion.common.db;
 
-  exports dev.codion.dbms.sqlite;
+  exports is.codion.dbms.sqlite;
 
-  provides dev.codion.common.db.database.DatabaseProvider
-          with dev.codion.dbms.sqlite.SQLiteDatabaseProvider;
+  provides is.codion.common.db.database.DatabaseProvider
+          with is.codion.dbms.sqlite.SQLiteDatabaseProvider;
 }

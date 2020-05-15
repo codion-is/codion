@@ -1,11 +1,11 @@
 /**
- * @provides dev.codion.common.db.database.DatabaseProvider
+ * @provides is.codion.common.db.database.DatabaseProvider
  */
-module dev.codion.dbms.postgresql {
-  requires transitive dev.codion.common.db;
+module is.codion.dbms.postgresql {
+  requires transitive is.codion.common.db;
 
-  exports dev.codion.dbms.postgresql;
+  exports is.codion.dbms.postgresql;
 
-  provides dev.codion.common.db.database.DatabaseProvider
-          with dev.codion.dbms.postgresql.PostgreSQLDatabaseProvider;
+  provides is.codion.common.db.database.DatabaseProvider
+          with is.codion.dbms.postgresql.PostgreSQLDatabaseProvider;
 }

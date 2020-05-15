@@ -1,10 +1,10 @@
-module dev.codion.plugin.tomcat.pool {
+module is.codion.plugin.tomcat.pool {
   requires java.management;
   requires tomcat.jdbc;
-  requires dev.codion.common.db;
+  requires is.codion.common.db;
 
-  exports dev.codion.plugin.tomcat.pool;
+  exports is.codion.plugin.tomcat.pool;
 
-  provides dev.codion.common.db.pool.ConnectionPoolProvider
-          with dev.codion.plugin.tomcat.pool.TomcatConnectionPoolProvider;
+  provides is.codion.common.db.pool.ConnectionPoolProvider
+          with is.codion.plugin.tomcat.pool.TomcatConnectionPoolProvider;
 }

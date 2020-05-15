@@ -1,23 +1,23 @@
-module dev.codion.swing.common.ui {
+module is.codion.swing.common.ui {
   requires java.rmi;
-  requires transitive dev.codion.swing.common.model;
+  requires transitive is.codion.swing.common.model;
 
-  exports dev.codion.swing.common.ui;
-  exports dev.codion.swing.common.ui.checkbox;
-  exports dev.codion.swing.common.ui.combobox;
-  exports dev.codion.swing.common.ui.control;
-  exports dev.codion.swing.common.ui.dialog;
-  exports dev.codion.swing.common.ui.icons;
-  exports dev.codion.swing.common.ui.images;
-  exports dev.codion.swing.common.ui.layout;
-  exports dev.codion.swing.common.ui.table;
-  exports dev.codion.swing.common.ui.textfield;
-  exports dev.codion.swing.common.ui.time;
-  exports dev.codion.swing.common.ui.value;
-  exports dev.codion.swing.common.ui.worker;
+  exports is.codion.swing.common.ui;
+  exports is.codion.swing.common.ui.checkbox;
+  exports is.codion.swing.common.ui.combobox;
+  exports is.codion.swing.common.ui.control;
+  exports is.codion.swing.common.ui.dialog;
+  exports is.codion.swing.common.ui.icons;
+  exports is.codion.swing.common.ui.images;
+  exports is.codion.swing.common.ui.layout;
+  exports is.codion.swing.common.ui.table;
+  exports is.codion.swing.common.ui.textfield;
+  exports is.codion.swing.common.ui.time;
+  exports is.codion.swing.common.ui.value;
+  exports is.codion.swing.common.ui.worker;
 
-  uses dev.codion.swing.common.ui.icons.Icons;
+  uses is.codion.swing.common.ui.icons.Icons;
 
-  provides dev.codion.swing.common.ui.icons.Icons
-          with dev.codion.swing.common.ui.icons.DefaultIcons;
+  provides is.codion.swing.common.ui.icons.Icons
+          with is.codion.swing.common.ui.icons.DefaultIcons;
 }

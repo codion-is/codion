@@ -24,10 +24,10 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['dev.codion.framework.db.local,dev.codion.framework.model,dev.codion.framework.model.tests,dev.codion.swing.common.ui']
+    testAddModules = ['is.codion.framework.db.local,is.codion.framework.model,is.codion.framework.model.tests,is.codion.swing.common.ui']
     testAddReads = [
-            'dev.codion.swing.framework.model': 'dev.codion.framework.db.local,dev.codion.framework.model,dev.codion.framework.model.tests,dev.codion.swing.common.ui',
-            'dev.codion.framework.model': 'dev.codion.framework.db.local,org.junit.jupiter.api'
+            'is.codion.swing.framework.model': 'is.codion.framework.db.local,is.codion.framework.model,is.codion.framework.model.tests,is.codion.swing.common.ui',
+            'is.codion.framework.model': 'is.codion.framework.db.local,org.junit.jupiter.api'
     ]
 }
 

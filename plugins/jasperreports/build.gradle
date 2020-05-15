@@ -20,8 +20,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['dev.codion.common.http,dev.codion.dbms.h2database,dev.codion.framework.db.local']
-    testAddReads = ['dev.codion.plugin.jasperreports': 'dev.codion.common.http,dev.codion.dbms.h2database,dev.codion.framework.domain,dev.codion.framework.db.core,dev.codion.framework.db.local']
+    testAddModules = ['is.codion.common.http,is.codion.dbms.h2database,is.codion.framework.db.local']
+    testAddReads = ['is.codion.plugin.jasperreports': 'is.codion.common.http,is.codion.dbms.h2database,is.codion.framework.domain,is.codion.framework.db.core,is.codion.framework.db.local']
 }
 
 compileTestJava {

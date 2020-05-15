@@ -1,5 +1,5 @@
-module dev.codion.plugin.imagepanel {
+module is.codion.plugin.imagepanel {
   requires java.desktop;
 
-  exports dev.codion.plugin.imagepanel;
+  exports is.codion.plugin.imagepanel;
 }

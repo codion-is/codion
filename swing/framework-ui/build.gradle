@@ -24,8 +24,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['dev.codion.framework.db.local']
-    testAddReads = ['dev.codion.swing.framework.ui': 'dev.codion.framework.db.local']
+    testAddModules = ['is.codion.framework.db.local']
+    testAddReads = ['is.codion.swing.framework.ui': 'is.codion.framework.db.local']
 }
 
 compileTestJava {
