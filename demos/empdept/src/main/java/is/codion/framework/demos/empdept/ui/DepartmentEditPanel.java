@@ -26,8 +26,8 @@ public class DepartmentEditPanel extends EntityEditPanel {
 
     final JTextField departmentIdField = createTextField(EmpDept.DEPARTMENT_ID);
     departmentIdField.setColumns(10);
-    TextFields.makeUpperCase(createTextField(EmpDept.DEPARTMENT_NAME));
-    TextFields.makeUpperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
+    TextFields.upperCase(createTextField(EmpDept.DEPARTMENT_NAME));
+    TextFields.upperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
 
     //we don't allow editing of the department number since it's a primary key
     getEditModel().getPrimaryKeyNullObserver().addListener(() -> {

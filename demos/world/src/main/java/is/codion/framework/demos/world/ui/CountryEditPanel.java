@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import static is.codion.swing.common.ui.Components.createEastButtonPanel;
 import static is.codion.swing.common.ui.Components.setPreferredWidth;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static is.codion.swing.common.ui.textfield.TextFields.makeUpperCase;
+import static is.codion.swing.common.ui.textfield.TextFields.upperCase;
 
 public final class CountryEditPanel extends EntityEditPanel {
 
@@ -26,8 +26,8 @@ public final class CountryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(World.COUNTRY_CODE);
 
-    makeUpperCase(createTextField(World.COUNTRY_CODE)).setColumns(12);
-    makeUpperCase(createTextField(World.COUNTRY_CODE2)).setColumns(12);
+    upperCase(createTextField(World.COUNTRY_CODE)).setColumns(12);
+    upperCase(createTextField(World.COUNTRY_CODE2)).setColumns(12);
     createTextField(World.COUNTRY_NAME).setColumns(12);
     setPreferredWidth(createValueListComboBox(World.COUNTRY_CONTINENT), 120);
     setPreferredWidth(createPropertyComboBox(World.COUNTRY_REGION), 120);

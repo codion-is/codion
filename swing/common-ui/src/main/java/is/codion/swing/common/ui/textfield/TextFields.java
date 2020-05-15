@@ -116,7 +116,7 @@ public final class TextFields {
    * @param <T> the component type
    * @return the text component
    */
-  public static <T extends JTextComponent> T makeUpperCase(final T textComponent) {
+  public static <T extends JTextComponent> T upperCase(final T textComponent) {
     if (textComponent.getDocument() instanceof SizedDocument) {
       ((SizedDocument) textComponent.getDocument()).setDocumentCase(SizedDocument.DocumentCase.UPPERCASE);
     }
@@ -133,7 +133,7 @@ public final class TextFields {
    * @param <T> the component type
    * @return the text component
    */
-  public static <T extends JTextComponent> T makeLowerCase(final T textComponent) {
+  public static <T extends JTextComponent> T lowerCase(final T textComponent) {
     if (textComponent.getDocument() instanceof SizedDocument) {
       ((SizedDocument) textComponent.getDocument()).setDocumentCase(SizedDocument.DocumentCase.LOWERCASE);
     }

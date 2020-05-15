@@ -29,7 +29,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     createTextField(CUSTOMER_COMPANY).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(CUSTOMER_ADDRESS).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(CUSTOMER_CITY).setColumns(TEXT_FIELD_COLUMNS);
-    TextFields.makeUpperCase(createTextField(CUSTOMER_STATE)).setColumns(TEXT_FIELD_COLUMNS);
+    TextFields.upperCase(createTextField(CUSTOMER_STATE)).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(CUSTOMER_COUNTRY).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(CUSTOMER_POSTALCODE).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(CUSTOMER_PHONE).setColumns(TEXT_FIELD_COLUMNS);
