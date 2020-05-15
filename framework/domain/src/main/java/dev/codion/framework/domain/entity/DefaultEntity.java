@@ -152,6 +152,9 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   @Override
   public Object get(final Property property) {
     requireNonNull(property, "property");
+    if (property instanceof MirrorProperty) {
+      return get(definition.getProperty(property.getPropertyId()));
+    }
     if (property instanceof DerivedProperty) {
       return getDerivedValue((DerivedProperty) property);
     }
@@ -586,8 +589,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     final List<ColumnProperty> columnProperties = foreignKeyProperty.getColumnProperties();
     final Map<ColumnProperty, Object> values = new HashMap<>(columnProperties.size());
     for (int i = 0; i < columnProperties.size(); i++) {
+      ColumnProperty columnProperty = columnProperties.get(i);
+      if (columnProperty instanceof MirrorProperty) {
+        columnProperty = definition.getColumnProperty(columnProperty.getPropertyId());
+      }
       final ColumnProperty foreignColumnProperty = foreignProperties.get(i);
-      final Object value = super.get(columnProperties.get(i));
+      final Object value = super.get(columnProperty);
       if (value == null && !foreignColumnProperty.isNullable()) {
         return null;
       }

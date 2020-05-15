@@ -6119,3 +6119,6 @@
   EntityPanel, horizontal resizing now happens on key pressed, for faster resizing
   EntityTablePanel, southPanel, southCenterSplitPane resize weight set to a reasonable value, otherwise the search field tends to disappear
   FilteredTable, bug fixed, move and resize column actions removed, key listener used instead and key events consumed
+  Controls.control() bug fixed, wrong enabledState parameter type
+  EntityTablePanel.INCLUDE_ENTITY_MENU configuration value added, default true
+  DefaultEntity bug fixed, get() now handles MirrorProperty by returning the value for the property it mirrors, initializeAndCacheCompositeReferenceKey() also takes MirrorProperty into account
