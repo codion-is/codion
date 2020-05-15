@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.demos.manual.store.domain;
+package is.codion.framework.demos.manual.store.domain.minimal;
 
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.StringProvider;
@@ -12,7 +12,7 @@ import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 
-public class StoreMinimal extends Domain {
+public class Store extends Domain {
 // end::staticImports[]
 
   // tag::customerConstants[]
@@ -25,7 +25,7 @@ public class StoreMinimal extends Domain {
   // end::customerConstants[]
 
   // tag::customer[]
-  public StoreMinimal() {
+  public Store() {
     define(T_CUSTOMER,
             primaryKeyProperty(CUSTOMER_ID, Types.BIGINT),
             columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")

@@ -18,14 +18,14 @@ Codion is a minimalistic full-stack Java rich client CRUD application framework 
 == Domain model
 The domain model in Codion is based on concepts from entity relationship diagrams, *entities* and *properties*. Defining the domain model is done in plain Java code, no annotations or XML is involved.
 
-We start by extending the *Domain* class, with a couple of convenient static imports (skipping the rest for brevity).
+We start by extending the *Domain* class, with a few convenient static imports (skipping the rest of the imports for brevity).
 [source,java]
 ----
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 
-public class StoreMinimal extends Domain {
+public class Store extends Domain {
 ----
 
 Then we define string constants for the entity and its properties (referred to as *entityIds* and *propertyIds*), which are used whenever we need to refer to the entity type and its properties.
@@ -42,7 +42,7 @@ Then we define string constants for the entity and its properties (referred to a
 And finally we define an entity using the *entityId* and *propertyIds*.
 [source,java]
 ----
-  public StoreMinimal() {
+  public Store() {
     define(T_CUSTOMER,
             primaryKeyProperty(CUSTOMER_ID, Types.BIGINT),
             columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")
@@ -60,18 +60,18 @@ And finally we define an entity using the *entityId* and *propertyIds*.
 }
 ----
 
-Integrated JUnit testing harness for the domain model.
+The *EntityTestUnit provides an integrated JUnit testing harness for the domain model. The *EntityTestUnit.test(entityId)* method runs insert, select, update and delete on the given entity, verifying the results.
 
 [source,java]
 ----
-public class StoreMinimalTest extends EntityTestUnit {
+public class StoreTest extends EntityTestUnit {
 
-  public StoreMinimalTest() {
-    super(StoreMinimal.class.getName());
+  public StoreTest() {
+    super(Store.class.getName());
   }
 
   @Test
-  public void customer() throws Exception {
+  void customer() throws Exception {
     test(Store.T_CUSTOMER);
   }
 }
@@ -83,11 +83,11 @@ The *EntityConnection* interface defines the database layer. There are three imp
 
 [source,java]
 ----
-Database database =
-        new H2DatabaseProvider().createDatabase("jdbc:h2:mem:h2db");
+Database database = new H2DatabaseProvider().createDatabase("jdbc:h2:mem:h2db");
+
 EntityConnectionProvider connectionProvider =
         new LocalEntityConnectionProvider(database)
-                .setDomainClassName(StoreMinimal.class.getName())
+                .setDomainClassName(Store.class.getName())
                 .setUser(Users.parseUser("scott:tiger"));
 
 EntityConnection connection = connectionProvider.getConnection();
@@ -96,7 +96,7 @@ List<Entity> customersNamedJoe =
         connection.select(T_CUSTOMER, CUSTOMER_FIRST_NAME, "Joe");
 
 List<Entity> customersWithoutEmail =
-        connection.select(selectCondition(T_CUSTOMER, CUSTOMER_EMAIL, LIKE, null));
+        connection.select(selectCondition(T_CUSTOMER, CUSTOMER_EMAIL, Operator.LIKE, null));
 
 Entities domainEntities = connection.getEntities();
 

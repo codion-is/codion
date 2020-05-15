@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.manual.store.db;
 
+import is.codion.common.db.Operator;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.Users;
@@ -10,26 +11,25 @@ import is.codion.dbms.h2database.H2DatabaseProvider;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.demos.manual.store.domain.StoreMinimal;
+import is.codion.framework.demos.manual.store.domain.minimal.Store;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import static is.codion.common.db.Operator.LIKE;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
-import static is.codion.framework.demos.manual.store.domain.StoreMinimal.*;
+import static is.codion.framework.demos.manual.store.domain.minimal.Store.*;
 
 public class StoreDatabase {
 
   private static void storeEntityConnection() throws SQLException, DatabaseException {
     // tag::databaseAccess[]
-    Database database =
-            new H2DatabaseProvider().createDatabase("jdbc:h2:mem:h2db");
+    Database database = new H2DatabaseProvider().createDatabase("jdbc:h2:mem:h2db");
+
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(database)
-                    .setDomainClassName(StoreMinimal.class.getName())
+                    .setDomainClassName(Store.class.getName())
                     .setUser(Users.parseUser("scott:tiger"));
 
     EntityConnection connection = connectionProvider.getConnection();
@@ -38,7 +38,7 @@ public class StoreDatabase {
             connection.select(T_CUSTOMER, CUSTOMER_FIRST_NAME, "Joe");
 
     List<Entity> customersWithoutEmail =
-            connection.select(selectCondition(T_CUSTOMER, CUSTOMER_EMAIL, LIKE, null));
+            connection.select(selectCondition(T_CUSTOMER, CUSTOMER_EMAIL, Operator.LIKE, null));
 
     Entities domainEntities = connection.getEntities();
 
