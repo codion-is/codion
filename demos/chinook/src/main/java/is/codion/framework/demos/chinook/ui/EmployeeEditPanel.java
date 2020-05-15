@@ -11,7 +11,7 @@ import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.Components.setPreferredHeight;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
-import static is.codion.swing.common.ui.textfield.TextFields.makeUpperCase;
+import static is.codion.swing.common.ui.textfield.TextFields.upperCase;
 
 public class EmployeeEditPanel extends EntityEditPanel {
 
@@ -28,7 +28,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createTemporalInputPanel(EMPLOYEE_BIRTHDATE).getInputField().setColumns(16);
     createTextField(EMPLOYEE_ADDRESS).setColumns(16);
     createTextField(EMPLOYEE_CITY).setColumns(16);
-    makeUpperCase(createTextField(EMPLOYEE_STATE)).setColumns(16);
+    upperCase(createTextField(EMPLOYEE_STATE)).setColumns(16);
     createTextField(EMPLOYEE_COUNTRY).setColumns(16);
     createTextField(EMPLOYEE_POSTALCODE).setColumns(16);
     createTextField(EMPLOYEE_PHONE).setColumns(16);

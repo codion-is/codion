@@ -12,27 +12,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TextFieldsTest {
 
   @Test
-  public void makeUpperCase() {
-    JTextField textField = TextFields.makeUpperCase(new JTextField());
+  public void upperCase() {
+    JTextField textField = TextFields.upperCase(new JTextField());
     textField.setText("hello");
     assertEquals("HELLO", textField.getText());
 
     textField = new JTextField();
     textField.setDocument(new SizedDocument());
-    TextFields.makeUpperCase(textField);
+    TextFields.upperCase(textField);
     textField.setText("hello");
     assertEquals("HELLO", textField.getText());
   }
 
   @Test
-  public void makeLowerCase() {
-    JTextField textField = TextFields.makeLowerCase(new JTextField());
+  public void lowerCase() {
+    JTextField textField = TextFields.lowerCase(new JTextField());
     textField.setText("HELLO");
     assertEquals("hello", textField.getText());
 
     textField = new JTextField();
     textField.setDocument(new SizedDocument());
-    TextFields.makeLowerCase(textField);
+    TextFields.lowerCase(textField);
     textField.setText("HELLO");
     assertEquals("hello", textField.getText());
   }
