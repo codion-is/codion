@@ -25,7 +25,7 @@ distributions {
 
 applicationName = 'entity_generator'
 
-mainClassName = 'dev.codion.swing.framework.tools.ui.generator.EntityGeneratorPanel'
+mainClassName = 'is.codion.swing.framework.tools.ui.generator.EntityGeneratorPanel'
 
 applicationDefaultJvmArgs = [
         '-Dcodion.configurationFile=../config/entity_generator.config',

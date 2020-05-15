@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.server;
+package is.codion.framework.server;
 
-import dev.codion.common.MethodLogger;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.rmi.client.ConnectionRequest;
-import dev.codion.common.rmi.server.ClientLog;
-import dev.codion.common.rmi.server.RemoteClient;
-import dev.codion.common.rmi.server.Server;
-import dev.codion.common.rmi.server.ServerConfiguration;
-import dev.codion.common.rmi.server.exception.ConnectionNotAvailableException;
-import dev.codion.common.rmi.server.exception.LoginException;
-import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.condition.Condition;
-import dev.codion.framework.db.condition.Conditions;
-import dev.codion.framework.db.condition.EntitySelectCondition;
-import dev.codion.framework.db.rmi.RemoteEntityConnection;
-import dev.codion.framework.db.rmi.RemoteEntityConnectionProvider;
-import dev.codion.framework.domain.Domain;
+import is.codion.common.MethodLogger;
+import is.codion.common.db.database.Databases;
+import is.codion.common.i18n.Messages;
+import is.codion.common.rmi.client.ConnectionRequest;
+import is.codion.common.rmi.server.ClientLog;
+import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.Server;
+import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
+import is.codion.common.rmi.server.exception.LoginException;
+import is.codion.common.rmi.server.exception.ServerAuthenticationException;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.rmi.RemoteEntityConnection;
+import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.domain.Domain;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,7 +36,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.*;
@@ -318,9 +318,9 @@ public class EntityServerTest {
     configuration.setDatabase(Databases.getInstance());
     configuration.setStartupPoolUsers(singletonList(UNIT_TEST_USER));
     configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));
-    configuration.setDomainModelClassNames(singletonList("dev.codion.framework.server.TestDomain"));
+    configuration.setDomainModelClassNames(singletonList("is.codion.framework.server.TestDomain"));
     configuration.setClientLoggingEnabled(true);
-    configuration.setLoginProxyClassNames(singletonList("dev.codion.framework.server.TestLoginProxy"));
+    configuration.setLoginProxyClassNames(singletonList("is.codion.framework.server.TestLoginProxy"));
     configuration.setSslEnabled(true);
     configuration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
 

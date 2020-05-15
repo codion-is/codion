@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.server.monitor;
+package is.codion.swing.framework.server.monitor;
 
-import dev.codion.common.DateFormats;
-import dev.codion.common.TaskScheduler;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventObserver;
-import dev.codion.common.event.Events;
-import dev.codion.common.rmi.server.RemoteClient;
-import dev.codion.common.user.User;
-import dev.codion.common.value.Value;
-import dev.codion.common.version.Version;
-import dev.codion.framework.server.EntityServerAdmin;
-import dev.codion.swing.common.model.table.AbstractFilteredTableModel;
-import dev.codion.swing.common.model.table.AbstractTableSortModel;
+import is.codion.common.DateFormats;
+import is.codion.common.TaskScheduler;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
+import is.codion.common.event.Events;
+import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.user.User;
+import is.codion.common.value.Value;
+import is.codion.common.version.Version;
+import is.codion.framework.server.EntityServerAdmin;
+import is.codion.swing.common.model.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.table.AbstractTableSortModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

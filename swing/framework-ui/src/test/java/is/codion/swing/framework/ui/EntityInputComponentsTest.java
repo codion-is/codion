@@ -1,22 +1,22 @@
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.item.Items;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.common.value.Value;
-import dev.codion.common.value.Values;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.local.LocalEntityConnectionProvider;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.property.ValueListProperty;
-import dev.codion.framework.model.EntityEditModel;
-import dev.codion.swing.common.model.combobox.BooleanComboBoxModel;
-import dev.codion.swing.common.model.combobox.ItemComboBoxModel;
-import dev.codion.swing.common.ui.checkbox.NullableCheckBox;
-import dev.codion.swing.common.ui.combobox.SteppedComboBox;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
+import is.codion.common.db.database.Databases;
+import is.codion.common.item.Items;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.property.ValueListProperty;
+import is.codion.framework.model.EntityEditModel;
+import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
 
 import org.junit.jupiter.api.Test;
 

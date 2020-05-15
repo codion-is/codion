@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.local;
+package is.codion.framework.db.local;
 
-import dev.codion.framework.db.EntityConnectionProviders;
+import is.codion.framework.db.EntityConnectionProviders;
 
 import org.junit.jupiter.api.Test;
 

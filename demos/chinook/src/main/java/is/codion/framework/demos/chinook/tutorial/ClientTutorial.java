@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.tutorial;
+package is.codion.framework.demos.chinook.tutorial;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.StringProvider;
-import dev.codion.swing.framework.model.SwingEntityApplicationModel;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.model.SwingEntityModel;
-import dev.codion.swing.framework.ui.EntityApplicationPanel;
-import dev.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
-import dev.codion.swing.framework.ui.EntityEditPanel;
-import dev.codion.swing.framework.ui.EntityLookupField;
-import dev.codion.swing.framework.ui.EntityPanel;
-import dev.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.common.db.database.Database;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.StringProvider;
+import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
+import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityLookupField;
+import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -25,12 +25,12 @@ import java.awt.Color;
 import java.sql.Types;
 import java.util.List;
 
-import static dev.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
-import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
-import static dev.codion.framework.domain.property.Properties.*;
-import static dev.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
-import static dev.codion.swing.common.ui.Windows.getScreenSizeRatio;
-import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
+import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
+import static is.codion.swing.common.ui.Windows.getScreenSizeRatio;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Collections.singletonList;
 
 /**

@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.rmi.server;
+package is.codion.common.rmi.server;
 
-import dev.codion.common.Util;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.rmi.client.ConnectionRequest;
-import dev.codion.common.rmi.server.exception.ConnectionNotAvailableException;
-import dev.codion.common.rmi.server.exception.ConnectionValidationException;
-import dev.codion.common.rmi.server.exception.LoginException;
-import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
-import dev.codion.common.user.User;
+import is.codion.common.Util;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
+import is.codion.common.rmi.client.ConnectionRequest;
+import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
+import is.codion.common.rmi.server.exception.ConnectionValidationException;
+import is.codion.common.rmi.server.exception.LoginException;
+import is.codion.common.rmi.server.exception.ServerAuthenticationException;
+import is.codion.common.user.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +35,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 
-import static dev.codion.common.rmi.server.AuxiliaryServerProvider.getAuxiliaryServerProvider;
-import static dev.codion.common.rmi.server.RemoteClient.remoteClient;
-import static dev.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
-import static dev.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
+import static is.codion.common.rmi.server.AuxiliaryServerProvider.getAuxiliaryServerProvider;
+import static is.codion.common.rmi.server.RemoteClient.remoteClient;
+import static is.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
+import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 

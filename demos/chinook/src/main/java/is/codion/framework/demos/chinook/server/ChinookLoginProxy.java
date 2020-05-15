@@ -1,36 +1,36 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.server;
+package is.codion.framework.demos.chinook.server;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.pool.ConnectionPool;
-import dev.codion.common.rmi.server.LoginProxy;
-import dev.codion.common.rmi.server.RemoteClient;
-import dev.codion.common.rmi.server.exception.LoginException;
-import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.domain.Domain;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Databases;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.pool.ConnectionPool;
+import is.codion.common.rmi.server.LoginProxy;
+import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.exception.LoginException;
+import is.codion.common.rmi.server.exception.ServerAuthenticationException;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.domain.Domain;
 
 import java.sql.Types;
 
-import static dev.codion.common.Conjunction.AND;
-import static dev.codion.common.db.Operator.LIKE;
-import static dev.codion.common.db.pool.ConnectionPoolProvider.getConnectionPoolProvider;
-import static dev.codion.common.rmi.server.RemoteClient.remoteClient;
-import static dev.codion.framework.db.condition.Conditions.*;
-import static dev.codion.framework.db.local.LocalEntityConnections.createConnection;
-import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
-import static dev.codion.framework.domain.property.Properties.columnProperty;
-import static dev.codion.framework.domain.property.Properties.primaryKeyProperty;
+import static is.codion.common.Conjunction.AND;
+import static is.codion.common.db.Operator.LIKE;
+import static is.codion.common.db.pool.ConnectionPoolProvider.getConnectionPoolProvider;
+import static is.codion.common.rmi.server.RemoteClient.remoteClient;
+import static is.codion.framework.db.condition.Conditions.*;
+import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
+import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.property.Properties.columnProperty;
+import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 import static java.lang.String.valueOf;
 
 /**
- * A {@link dev.codion.common.LoggerProxy} implementation
+ * A {@link is.codion.common.LoggerProxy} implementation
  * authenticating via a user lookup table.
  */
 public final class ChinookLoginProxy implements LoginProxy {
@@ -65,7 +65,7 @@ public final class ChinookLoginProxy implements LoginProxy {
    */
   @Override
   public String getClientTypeId() {
-    return "dev.codion.framework.demos.chinook.ui.ChinookAppPanel";
+    return "is.codion.framework.demos.chinook.ui.ChinookAppPanel";
   }
 
   @Override

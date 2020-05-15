@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.checkbox;
+package is.codion.swing.common.ui.checkbox;
 
-import dev.codion.swing.common.model.checkbox.NullableToggleButtonModel;
+import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 
 import org.junit.jupiter.api.Test;
 

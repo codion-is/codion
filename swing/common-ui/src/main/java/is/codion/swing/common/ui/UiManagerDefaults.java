@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui;
+package is.codion.swing.common.ui;
 
-import dev.codion.common.i18n.Messages;
+import is.codion.common.i18n.Messages;
 
 import javax.swing.UIManager;
 import java.awt.Insets;

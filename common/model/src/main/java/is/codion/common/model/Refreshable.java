@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.model;
+package is.codion.common.model;
 
 /**
  * Specifies some sort of data container that can be refreshed and cleared.

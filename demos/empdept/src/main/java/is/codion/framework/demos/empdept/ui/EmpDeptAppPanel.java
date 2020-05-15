@@ -1,29 +1,29 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.empdept.ui;
+package is.codion.framework.demos.empdept.ui;
 
-import dev.codion.common.Text;
-import dev.codion.common.model.CancelException;
-import dev.codion.common.model.table.ColumnSummary;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.empdept.domain.EmpDept;
-import dev.codion.framework.demos.empdept.model.EmployeeEditModel;
-import dev.codion.framework.model.EntityEditModel;
-import dev.codion.plugin.json.EntityJSONParser;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.common.ui.control.ControlList;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.framework.model.SwingEntityApplicationModel;
-import dev.codion.swing.framework.model.SwingEntityModel;
-import dev.codion.swing.framework.model.SwingEntityModelBuilder;
-import dev.codion.swing.framework.model.SwingEntityTableModel;
-import dev.codion.swing.framework.ui.EntityApplicationPanel;
-import dev.codion.swing.framework.ui.EntityPanel;
-import dev.codion.swing.framework.ui.EntityPanelBuilder;
-import dev.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.common.Text;
+import is.codion.common.model.CancelException;
+import is.codion.common.model.table.ColumnSummary;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.model.EmployeeEditModel;
+import is.codion.framework.model.EntityEditModel;
+import is.codion.plugin.json.EntityJSONParser;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityModelBuilder;
+import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.EntityTablePanel;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -88,7 +88,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     EntityEditModel.POST_EDIT_EVENTS.set(true);
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityPanel.COMPACT_ENTITY_PANEL_LAYOUT.set(true);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.empdept.domain.EmpDept");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
   }

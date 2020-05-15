@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.textfield;
+package is.codion.swing.common.ui.textfield;
 
-import dev.codion.swing.common.model.textfield.DocumentAdapter;
+import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**

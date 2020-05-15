@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.plugin.tomcat.pool;
+package is.codion.plugin.tomcat.pool;
 
-import dev.codion.common.db.pool.AbstractConnectionPool;
-import dev.codion.common.db.pool.ConnectionFactory;
-import dev.codion.common.db.pool.ConnectionPool;
-import dev.codion.common.db.pool.ConnectionPoolProvider;
-import dev.codion.common.user.User;
+import is.codion.common.db.pool.AbstractConnectionPool;
+import is.codion.common.db.pool.ConnectionFactory;
+import is.codion.common.db.pool.ConnectionPool;
+import is.codion.common.db.pool.ConnectionPoolProvider;
+import is.codion.common.user.User;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;

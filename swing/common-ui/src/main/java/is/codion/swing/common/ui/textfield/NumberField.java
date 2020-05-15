@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.textfield;
+package is.codion.swing.common.ui.textfield;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.value.PropertyValue;
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
 
 import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;

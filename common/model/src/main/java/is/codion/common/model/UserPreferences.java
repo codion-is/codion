@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.model;
+package is.codion.common.model;
 
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;

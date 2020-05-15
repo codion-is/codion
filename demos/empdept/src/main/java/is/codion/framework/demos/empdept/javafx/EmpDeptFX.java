@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.empdept.javafx;
+package is.codion.framework.demos.empdept.javafx;
 
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.empdept.domain.EmpDept;
-import dev.codion.framework.model.EntityModel;
-import dev.codion.javafx.framework.model.FXEntityEditModel;
-import dev.codion.javafx.framework.model.FXEntityListModel;
-import dev.codion.javafx.framework.ui.EntityApplicationView;
-import dev.codion.javafx.framework.ui.EntityTableView;
-import dev.codion.javafx.framework.ui.EntityView;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.model.EntityModel;
+import is.codion.javafx.framework.model.FXEntityEditModel;
+import is.codion.javafx.framework.model.FXEntityListModel;
+import is.codion.javafx.framework.ui.EntityApplicationView;
+import is.codion.javafx.framework.ui.EntityTableView;
+import is.codion.javafx.framework.ui.EntityView;
 
 public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 
@@ -52,7 +52,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   }
 
   public static void main(final String[] args) {
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.empdept.domain.EmpDept");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
     launch(args);
   }
 }

@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.local;
+package is.codion.framework.db.local;
 
-import dev.codion.common.db.connection.DatabaseConnection;
-import dev.codion.common.db.operation.AbstractDatabaseFunction;
-import dev.codion.common.db.operation.AbstractDatabaseProcedure;
-import dev.codion.common.db.reports.AbstractReportWrapper;
-import dev.codion.common.db.reports.ReportException;
-import dev.codion.common.db.reports.ReportWrapper;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.KeyGenerator;
-import dev.codion.framework.domain.entity.StringProvider;
-import dev.codion.framework.domain.property.ColumnProperty;
+import is.codion.common.db.connection.DatabaseConnection;
+import is.codion.common.db.operation.AbstractDatabaseFunction;
+import is.codion.common.db.operation.AbstractDatabaseProcedure;
+import is.codion.common.db.reports.AbstractReportWrapper;
+import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportWrapper;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.KeyGenerator;
+import is.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.property.ColumnProperty;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static dev.codion.common.item.Items.item;
-import static dev.codion.framework.domain.entity.KeyGenerators.increment;
-import static dev.codion.framework.domain.property.Properties.*;
+import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends Domain {

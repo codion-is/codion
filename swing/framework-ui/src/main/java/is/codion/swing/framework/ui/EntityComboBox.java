@@ -1,27 +1,27 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.i18n.FrameworkMessages;
-import dev.codion.framework.model.EntityComboBoxModel;
-import dev.codion.swing.common.ui.combobox.MaximumMatch;
-import dev.codion.swing.common.ui.combobox.SteppedComboBox;
-import dev.codion.swing.common.ui.control.Control;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.textfield.IntegerField;
-import dev.codion.swing.common.ui.textfield.TextFields;
-import dev.codion.swing.common.ui.value.AbstractComponentValue;
-import dev.codion.swing.common.ui.value.NumericalValues;
-import dev.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.framework.model.EntityComboBoxModel;
+import is.codion.swing.common.ui.combobox.MaximumMatch;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.value.AbstractComponentValue;
+import is.codion.swing.common.ui.value.NumericalValues;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
-import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 
 /**
  * A UI component based on the SwingEntityComboBoxModel.
@@ -109,7 +109,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   }
 
   /**
-   * A {@link dev.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntityComboBox}.
+   * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a {@link EntityComboBox}.
    * @see SwingEntityComboBoxModel
    */
   public static final class ComponentValue extends AbstractComponentValue<Entity, EntityComboBox> {

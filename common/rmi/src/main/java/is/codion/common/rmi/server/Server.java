@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.rmi.server;
+package is.codion.common.rmi.server;
 
-import dev.codion.common.rmi.client.ConnectionRequest;
-import dev.codion.common.rmi.server.exception.ConnectionNotAvailableException;
-import dev.codion.common.rmi.server.exception.ConnectionValidationException;
-import dev.codion.common.rmi.server.exception.LoginException;
-import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
-import dev.codion.common.user.User;
+import is.codion.common.rmi.client.ConnectionRequest;
+import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
+import is.codion.common.rmi.server.exception.ConnectionValidationException;
+import is.codion.common.rmi.server.exception.LoginException;
+import is.codion.common.rmi.server.exception.ServerAuthenticationException;
+import is.codion.common.user.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

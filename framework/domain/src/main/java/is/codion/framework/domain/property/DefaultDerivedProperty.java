@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.property;
+package is.codion.framework.domain.property;
 
 import java.util.List;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
 
 final class DefaultDerivedProperty extends DefaultTransientProperty implements DerivedProperty {

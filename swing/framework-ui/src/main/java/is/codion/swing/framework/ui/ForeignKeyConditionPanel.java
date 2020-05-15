@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.db.Operator;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.model.ForeignKeyConditionModel;
-import dev.codion.swing.common.ui.combobox.MaximumMatch;
-import dev.codion.swing.common.ui.table.ColumnConditionPanel;
-import dev.codion.swing.common.ui.textfield.TextFields;
-import dev.codion.swing.framework.model.SwingEntityComboBoxModel;
-import dev.codion.swing.framework.model.SwingForeignKeyConditionModel;
+import is.codion.common.db.Operator;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.model.ForeignKeyConditionModel;
+import is.codion.swing.common.ui.combobox.MaximumMatch;
+import is.codion.swing.common.ui.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 
 import javax.swing.JComponent;
 

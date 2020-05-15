@@ -1,25 +1,25 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.tutorial;
+package is.codion.framework.demos.chinook.tutorial;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.local.LocalEntityConnectionProvider;
-import dev.codion.framework.demos.chinook.domain.Chinook;
-import dev.codion.framework.demos.chinook.domain.impl.ChinookImpl;
-import dev.codion.framework.demos.chinook.ui.EmployeeEditPanel;
-import dev.codion.framework.model.EntityEditModel;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.common.ui.dialog.DisposeOnEscape;
-import dev.codion.swing.common.ui.dialog.Modal;
-import dev.codion.swing.framework.model.SwingEntityModel;
-import dev.codion.swing.framework.ui.EntityPanel;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Databases;
+import is.codion.common.user.Users;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
+import is.codion.framework.demos.chinook.ui.EmployeeEditPanel;
+import is.codion.framework.model.EntityEditModel;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.DisposeOnEscape;
+import is.codion.swing.common.ui.dialog.Modal;
+import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JPanel;
 
-import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
  * Just a little demo showcasing how a single {@link SwingEntityModel} behaves

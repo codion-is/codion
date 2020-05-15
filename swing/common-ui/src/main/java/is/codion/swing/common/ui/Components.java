@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui;
+package is.codion.swing.common.ui;
 
-import dev.codion.common.Memory;
-import dev.codion.common.TaskScheduler;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventObserver;
-import dev.codion.common.event.Events;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.state.StateObserver;
-import dev.codion.swing.common.ui.layout.Layouts;
+import is.codion.common.Memory;
+import is.codion.common.TaskScheduler;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
+import is.codion.common.event.Events;
+import is.codion.common.i18n.Messages;
+import is.codion.common.state.StateObserver;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;

@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.property;
+package is.codion.framework.domain.property;
 
-import dev.codion.common.db.result.ResultPacker;
+import is.codion.common.db.result.ResultPacker;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

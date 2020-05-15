@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.model.table;
+package is.codion.swing.common.model.table;
 
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.model.table.DefaultColumnConditionModel;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.DefaultColumnConditionModel;
 
 import org.junit.jupiter.api.Test;
 

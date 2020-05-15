@@ -1,4 +1,4 @@
-rootProject.name = 'dev.codion'
+rootProject.name = 'is.codion'
 
 include 'codion-documentation'
 project(':codion-documentation').projectDir = file('documentation')

@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.model.table;
+package is.codion.common.model.table;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.db.Operator;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.EventObserver;
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.value.PropertyValue;
-import dev.codion.common.value.Value;
+import is.codion.common.Configuration;
+import is.codion.common.db.Operator;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.EventObserver;
+import is.codion.common.state.StateObserver;
+import is.codion.common.value.PropertyValue;
+import is.codion.common.value.Value;
 
 import java.text.Format;
 
@@ -28,7 +28,7 @@ public interface ColumnConditionModel<R, C> {
    * Default value: {@link AutomaticWildcard#NONE}
    */
   PropertyValue<AutomaticWildcard> AUTOMATIC_WILDCARD = Configuration.value(
-          "dev.codion.common.model.table.ColumnConditionModel.automaticWildard",
+          "is.codion.common.model.table.ColumnConditionModel.automaticWildard",
           AutomaticWildcard.NONE, AutomaticWildcard::valueOf);
 
   /**
@@ -37,7 +37,7 @@ public interface ColumnConditionModel<R, C> {
    * Default value: true
    */
   PropertyValue<Boolean> CASE_SENSITIVE = Configuration.booleanValue(
-          "dev.codion.common.model.table.ColumnConditionModel.caseSensitive", true);
+          "is.codion.common.model.table.ColumnConditionModel.caseSensitive", true);
 
   /**
    * The possible automatic wildcard types

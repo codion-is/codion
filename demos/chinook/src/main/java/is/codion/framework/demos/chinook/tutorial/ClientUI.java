@@ -1,34 +1,34 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.tutorial;
+package is.codion.framework.demos.chinook.tutorial;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.user.Users;
-import dev.codion.common.value.Value;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.local.LocalEntityConnectionProvider;
-import dev.codion.framework.demos.chinook.domain.impl.ChinookImpl;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.exception.ValidationException;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.KeyEvents;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.value.SelectedValues;
-import dev.codion.swing.common.ui.value.TextValues;
-import dev.codion.swing.framework.model.SwingEntityComboBoxModel;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityComboBox;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Databases;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.user.Users;
+import is.codion.common.value.Value;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.value.SelectedValues;
+import is.codion.swing.common.ui.value.TextValues;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityComboBox;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import static dev.codion.framework.demos.chinook.domain.Chinook.*;
-import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
  * When running this make sure the chinook demo module directory is the

@@ -1,37 +1,37 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.model;
+package is.codion.swing.framework.model;
 
-import dev.codion.common.Text;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.model.UserPreferences;
-import dev.codion.common.model.table.ColumnSummaryModel;
-import dev.codion.common.model.table.SortingDirective;
-import dev.codion.common.model.table.TableSortModel;
-import dev.codion.common.state.State;
-import dev.codion.common.state.States;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.entity.OrderBy;
-import dev.codion.framework.domain.entity.exception.ValidationException;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.domain.property.ValueListProperty;
-import dev.codion.framework.model.DefaultEntityTableConditionModel;
-import dev.codion.framework.model.DefaultPropertyFilterModelProvider;
-import dev.codion.framework.model.EntityModel;
-import dev.codion.framework.model.EntityTableConditionModel;
-import dev.codion.framework.model.EntityTableModel;
-import dev.codion.swing.common.model.table.AbstractFilteredTableModel;
-import dev.codion.swing.common.model.table.SwingFilteredTableColumnModel;
+import is.codion.common.Text;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
+import is.codion.common.model.UserPreferences;
+import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.common.model.table.SortingDirective;
+import is.codion.common.model.table.TableSortModel;
+import is.codion.common.state.State;
+import is.codion.common.state.States;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.ValueListProperty;
+import is.codion.framework.model.DefaultEntityTableConditionModel;
+import is.codion.framework.model.DefaultPropertyFilterModelProvider;
+import is.codion.framework.model.EntityModel;
+import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.framework.model.EntityTableModel;
+import is.codion.swing.common.model.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;

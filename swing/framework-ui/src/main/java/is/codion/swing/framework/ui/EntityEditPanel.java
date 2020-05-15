@@ -1,30 +1,30 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.Conjunction;
-import dev.codion.common.db.exception.ReferentialIntegrityException;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.state.State;
-import dev.codion.common.state.States;
-import dev.codion.common.value.PropertyValue;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.exception.ValidationException;
-import dev.codion.framework.i18n.FrameworkMessages;
-import dev.codion.framework.model.EntityEditModel;
-import dev.codion.swing.common.ui.KeyEvents;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.common.ui.control.Control;
-import dev.codion.swing.common.ui.control.ControlList;
-import dev.codion.swing.common.ui.control.ControlProvider;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import dev.codion.swing.common.ui.dialog.DialogExceptionHandler;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.common.Configuration;
+import is.codion.common.Conjunction;
+import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.i18n.Messages;
+import is.codion.common.state.State;
+import is.codion.common.state.States;
+import is.codion.common.value.PropertyValue;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.framework.model.EntityEditModel;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.ControlProvider;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +40,9 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 
-import static dev.codion.swing.common.ui.Components.hideWaitCursor;
-import static dev.codion.swing.common.ui.Components.showWaitCursor;
-import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static is.codion.swing.common.ui.Components.hideWaitCursor;
+import static is.codion.swing.common.ui.Components.showWaitCursor;
+import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -60,7 +60,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * @see EntityPanel#USE_FOCUS_ACTIVATION
    */
   public static final PropertyValue<Boolean> ALL_PANELS_ACTIVE = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityEditPanel.allPanelsActive", false);
+          "is.codion.swing.framework.ui.EntityEditPanel.allPanelsActive", false);
 
   /**
    * Specifies whether edit panels should include a SAVE button (insert or update, depending on selection) or just a INSERT button<br>
@@ -68,7 +68,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * Default value: true
    */
   public static final PropertyValue<Boolean> USE_SAVE_CONTROL = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityEditPanel.useSaveControl", true);
+          "is.codion.swing.framework.ui.EntityEditPanel.useSaveControl", true);
 
   /**
    * The standard controls available to the EditPanel
@@ -719,8 +719,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    * control codes ({@link ControlCode#INSERT}, {@link ControlCode#UPDATE} etc)
    * via the {@code setControl(String, Control) method, these can then be retrieved via the {@link #getControl(ControlCode)} method.
    * @param controlCodes the control codes for which controls should be initialized
-   * @see dev.codion.swing.common.ui.control.Control
-   * @see #setControl(ControlCode, dev.codion.swing.common.ui.control.Control)
+   * @see is.codion.swing.common.ui.control.Control
+   * @see #setControl(ControlCode, is.codion.swing.common.ui.control.Control)
    * @see #getControl(ControlCode)
    * todo updateEnabled(false) þá vantar Insert control nema það sé tiltekið í smið
    */

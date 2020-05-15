@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.javafx.framework.ui.values;
+package is.codion.javafx.framework.ui.values;
 
-import dev.codion.common.DateParser;
-import dev.codion.common.item.Item;
-import dev.codion.common.item.Items;
-import dev.codion.common.value.AbstractValue;
-import dev.codion.common.value.Value;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.model.EntityLookupModel;
+import is.codion.common.DateParser;
+import is.codion.common.item.Item;
+import is.codion.common.item.Items;
+import is.codion.common.value.AbstractValue;
+import is.codion.common.value.Value;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.model.EntityLookupModel;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
@@ -31,7 +31,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 import java.util.List;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 
 /**
  * A factory class for {@link Value} instances based on JavaFX models and properties

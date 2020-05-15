@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.model.DefaultEntityLookupModel;
-import dev.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.model.DefaultEntityLookupModel;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JComponent;
 import javax.swing.table.TableCellEditor;

@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.dialog;
+package is.codion.swing.common.ui.dialog;
 
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventObserver;
-import dev.codion.common.model.CancelException;
-import dev.codion.common.state.State;
-import dev.codion.common.state.States;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.KeyEvents;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.common.ui.layout.Layouts;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventObserver;
+import is.codion.common.model.CancelException;
+import is.codion.common.state.State;
+import is.codion.common.state.States;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -48,8 +48,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static dev.codion.common.Util.nullOrEmpty;
-import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
+import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;

@@ -1,11 +1,11 @@
-package dev.codion.framework.demos.world.ui;
+package is.codion.framework.demos.world.ui;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.framework.demos.world.model.CountryTableModel;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.common.ui.dialog.Modal;
-import dev.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.demos.world.model.CountryTableModel;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.Modal;
+import is.codion.swing.framework.ui.EntityTablePanel;
 
 import org.jfree.chart.ChartPanel;
 

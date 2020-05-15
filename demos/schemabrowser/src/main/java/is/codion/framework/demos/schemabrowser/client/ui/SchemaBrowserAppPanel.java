@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.schemabrowser.client.ui;
+package is.codion.framework.demos.schemabrowser.client.ui;
 
-import dev.codion.common.model.CancelException;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.framework.model.SwingEntityApplicationModel;
-import dev.codion.swing.framework.ui.EntityApplicationPanel;
-import dev.codion.swing.framework.ui.EntityPanelBuilder;
-import dev.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.common.model.CancelException;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
 
@@ -38,13 +38,13 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
   @Override
   protected String getApplicationIdentifier() {
-    return "dev.codion.demo.SchemaBrowser";
+    return "is.codion.demo.SchemaBrowser";
   }
 
   public static void main(final String[] args) {
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.TABLE_CONDITION_PANEL_VISIBLE.set(true);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser");
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.5), Users.parseUser("scott:tiger"));
   }

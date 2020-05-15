@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.javafx;
+package is.codion.framework.demos.chinook.javafx;
 
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.chinook.domain.Chinook;
-import dev.codion.javafx.framework.model.FXEntityModel;
-import dev.codion.javafx.framework.ui.EntityApplicationView;
-import dev.codion.javafx.framework.ui.EntityView;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.javafx.framework.model.FXEntityModel;
+import is.codion.javafx.framework.ui.EntityApplicationView;
+import is.codion.javafx.framework.ui.EntityView;
 
 public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
 
@@ -68,7 +68,7 @@ public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
   }
 
   public static void main(final String[] args) {
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.chinook.domain.impl.ChinookImpl");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.chinook.domain.impl.ChinookImpl");
     launch(args);
   }
 }

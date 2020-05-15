@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.i18n;
+package is.codion.framework.i18n;
 
 import java.util.ResourceBundle;
 

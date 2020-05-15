@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.tools.loadtest;
+package is.codion.swing.framework.tools.loadtest;
 
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.rmi.server.Server;
-import dev.codion.common.rmi.server.ServerConfiguration;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.EntityConnectionProviders;
-import dev.codion.framework.model.DefaultEntityApplicationModel;
-import dev.codion.framework.server.EntityServer;
-import dev.codion.framework.server.EntityServerAdmin;
-import dev.codion.framework.server.EntityServerConfiguration;
-import dev.codion.swing.common.tools.loadtest.ScenarioException;
+import is.codion.common.db.database.Databases;
+import is.codion.common.rmi.server.Server;
+import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnectionProviders;
+import is.codion.framework.model.DefaultEntityApplicationModel;
+import is.codion.framework.server.EntityServer;
+import is.codion.framework.server.EntityServerAdmin;
+import is.codion.framework.server.EntityServerConfiguration;
+import is.codion.swing.common.tools.loadtest.ScenarioException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -139,7 +139,7 @@ public class EntityLoadTestModelTest {
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
     configuration.setClientSpecificConnectionTimeouts(Collections.singletonMap("ClientTypeID", 10000));
-    configuration.setDomainModelClassNames(Collections.singletonList("dev.codion.swing.framework.tools.loadtest.TestDomain"));
+    configuration.setDomainModelClassNames(Collections.singletonList("is.codion.swing.framework.tools.loadtest.TestDomain"));
     configuration.setDatabase(Databases.getInstance());
     configuration.setSslEnabled(false);
 

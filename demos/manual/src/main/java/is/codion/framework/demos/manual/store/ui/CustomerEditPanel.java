@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.manual.store.ui;
+package is.codion.framework.demos.manual.store.ui;
 
-import dev.codion.framework.demos.manual.store.domain.Store;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityEditPanel;
-import dev.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
+import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
 
 import java.awt.GridLayout;
 

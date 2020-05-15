@@ -1,24 +1,24 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.model;
+package is.codion.swing.framework.model;
 
-import dev.codion.common.Util;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.value.AbstractValue;
-import dev.codion.common.value.Value;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.condition.Condition;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.model.EntityComboBoxModel;
-import dev.codion.framework.model.EntityEditEvents;
-import dev.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
+import is.codion.common.Util;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
+import is.codion.common.value.AbstractValue;
+import is.codion.common.value.Value;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.model.EntityComboBoxModel;
+import is.codion.framework.model.EntityEditEvents;
+import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;

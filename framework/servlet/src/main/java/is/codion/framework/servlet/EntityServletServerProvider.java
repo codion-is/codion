@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.servlet;
+package is.codion.framework.servlet;
 
-import dev.codion.common.rmi.server.AuxiliaryServerProvider;
-import dev.codion.common.rmi.server.Server;
+import is.codion.common.rmi.server.AuxiliaryServerProvider;
+import is.codion.common.rmi.server.Server;
 
 /**
  * Provides a {@link EntityServletServer} auxiliary server instance.

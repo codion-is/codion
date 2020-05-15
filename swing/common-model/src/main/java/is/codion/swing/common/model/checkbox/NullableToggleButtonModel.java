@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.model.checkbox;
+package is.codion.swing.common.model.checkbox;
 
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.value.Value;
-import dev.codion.common.value.Values;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
 
 import javax.swing.DefaultButtonModel;
 import java.awt.event.ItemEvent;

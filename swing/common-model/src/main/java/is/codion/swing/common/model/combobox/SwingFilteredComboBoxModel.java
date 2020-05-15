@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.model.combobox;
+package is.codion.swing.common.model.combobox;
 
-import dev.codion.common.Text;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.model.combobox.FilteredComboBoxModel;
+import is.codion.common.Text;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
+import is.codion.common.model.combobox.FilteredComboBoxModel;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataEvent;

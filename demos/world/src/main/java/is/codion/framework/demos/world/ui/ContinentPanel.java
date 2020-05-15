@@ -1,8 +1,8 @@
-package dev.codion.framework.demos.world.ui;
+package is.codion.framework.demos.world.ui;
 
-import dev.codion.framework.demos.world.model.ContinentModel;
-import dev.codion.swing.framework.ui.EntityPanel;
-import dev.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.framework.demos.world.model.ContinentModel;
+import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntityTablePanel;
 
 import org.jfree.chart.ChartPanel;
 
@@ -10,9 +10,9 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import static dev.codion.swing.common.ui.Components.setPreferredHeight;
-import static dev.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.swing.common.ui.Components.setPreferredHeight;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static org.jfree.chart.ChartFactory.createBarChart;
 import static org.jfree.chart.ChartFactory.createPieChart;
 

@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.schemabrowser.domain;
+package is.codion.framework.demos.schemabrowser.domain;
 
-import dev.codion.common.db.database.DatabaseProvider;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.StringProvider;
+import is.codion.common.db.database.DatabaseProvider;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.StringProvider;
 
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
-import static dev.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
 public final class SchemaBrowser extends Domain {

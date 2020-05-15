@@ -1,32 +1,32 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.tutorial;
+package is.codion.framework.demos.chinook.tutorial;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.condition.EntitySelectCondition;
-import dev.codion.framework.db.local.LocalEntityConnectionProvider;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.StringProvider;
-import dev.codion.framework.domain.property.Property;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Databases;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.property.Property;
 
 import java.sql.Types;
 import java.util.List;
 
-import static dev.codion.common.db.Operator.LIKE;
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
-import static dev.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
-import static dev.codion.framework.domain.entity.Entities.getKeys;
-import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
-import static dev.codion.framework.domain.property.Properties.*;
+import static is.codion.common.db.Operator.LIKE;
+import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
+import static is.codion.framework.domain.entity.Entities.getKeys;
+import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
 /**

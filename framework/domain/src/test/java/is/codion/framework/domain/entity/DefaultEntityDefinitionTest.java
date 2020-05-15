@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.entity;
+package is.codion.framework.domain.entity;
 
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.TestDomain;
-import dev.codion.framework.domain.property.DerivedProperty;
-import dev.codion.framework.domain.property.Properties;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.TestDomain;
+import is.codion.framework.domain.property.DerivedProperty;
+import is.codion.framework.domain.property.Properties;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +14,8 @@ import java.sql.Types;
 import java.util.Collection;
 import java.util.Comparator;
 
-import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityDefinitionTest {

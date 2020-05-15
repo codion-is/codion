@@ -1,27 +1,27 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.common.Conjunction;
-import dev.codion.common.db.Operator;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.state.State;
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.state.States;
-import dev.codion.common.value.Value;
-import dev.codion.common.value.Values;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.condition.Condition;
-import dev.codion.framework.db.condition.EntitySelectCondition;
-import dev.codion.framework.db.condition.PropertyCondition;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.Property;
+import is.codion.common.Conjunction;
+import is.codion.common.db.Operator;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.Events;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
+import is.codion.common.state.States;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.PropertyCondition;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import static dev.codion.common.Util.nullOrEmpty;
-import static dev.codion.framework.db.condition.Conditions.*;
+import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.framework.db.condition.Conditions.*;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;

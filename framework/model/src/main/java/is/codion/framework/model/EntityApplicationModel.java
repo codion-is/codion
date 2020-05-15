@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.model.Refreshable;
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.user.User;
-import dev.codion.common.value.PropertyValue;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entities;
+import is.codion.common.Configuration;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.model.Refreshable;
+import is.codion.common.state.StateObserver;
+import is.codion.common.user.User;
+import is.codion.common.value.PropertyValue;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entities;
 
 import java.util.List;
 

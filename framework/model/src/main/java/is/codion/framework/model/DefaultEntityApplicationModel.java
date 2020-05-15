@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.common.TaskScheduler;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.state.State;
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.state.States;
-import dev.codion.common.user.User;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entities;
+import is.codion.common.TaskScheduler;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.Events;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
+import is.codion.common.state.States;
+import is.codion.common.user.User;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entities;
 
 import java.util.ArrayList;
 import java.util.Collection;

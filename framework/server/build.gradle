@@ -41,7 +41,7 @@ dependencies {
     serverRuntime "com.h2database:h2:${h2Version}"
 }
 
-mainClassName = 'dev.codion.framework.server.EntityServer'
+mainClassName = 'is.codion.framework.server.EntityServer'
 
 distTar {
     dependsOn(':codion-demos-empdept:domainJar')
@@ -125,12 +125,12 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'codion.server.admin.port'                  : '2223',
             'codion.server.admin.user'                  : 'scott:tiger',
             'codion.server.http.secure'                 : 'false',
-            'codion.server.pooling.poolProviderClass'   : 'dev.codion.plugin.hikari.pool.HikariConnectionPoolProvider',
-            'codion.server.auxiliaryServerProviderClassNames'   : 'dev.codion.framework.servlet.EntityServletServerProvider',
-            'codion.server.domain.classes'              : 'dev.codion.framework.demos.empdept.domain.EmpDept,dev.codion.framework.demos.chinook.domain.impl.ChinookImpl,dev.codion.framework.demos.petclinic.domain.impl.ClinicImpl,dev.codion.framework.demos.petstore.domain.Petstore,dev.codion.framework.demos.schemabrowser.domain.SchemaBrowser,dev.codion.framework.demos.world.domain.World',
+            'codion.server.pooling.poolProviderClass'   : 'is.codion.plugin.hikari.pool.HikariConnectionPoolProvider',
+            'codion.server.auxiliaryServerProviderClassNames'   : 'is.codion.framework.servlet.EntityServletServerProvider',
+            'codion.server.domain.classes'              : 'is.codion.framework.demos.empdept.domain.EmpDept,is.codion.framework.demos.chinook.domain.impl.ChinookImpl,is.codion.framework.demos.petclinic.domain.impl.ClinicImpl,is.codion.framework.demos.petstore.domain.Petstore,is.codion.framework.demos.schemabrowser.domain.SchemaBrowser,is.codion.framework.demos.world.domain.World',
             'codion.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
             'codion.server.serializationFilterDryRun'   : 'false',
-            'codion.server.loginProxyClasses'           : 'dev.codion.framework.demos.chinook.server.ChinookLoginProxy',
+            'codion.server.loginProxyClasses'           : 'is.codion.framework.demos.chinook.server.ChinookLoginProxy',
             'javax.net.ssl.keyStore'                    : 'src/main/security/keystore.jks',
             'javax.net.ssl.keyStorePassword'            : 'crappypass',
             'java.rmi.server.hostname'                  : 'localhost',

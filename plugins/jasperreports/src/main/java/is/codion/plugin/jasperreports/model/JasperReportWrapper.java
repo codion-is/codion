@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.plugin.jasperreports.model;
+package is.codion.plugin.jasperreports.model;
 
-import dev.codion.common.db.reports.ReportWrapper;
+import is.codion.common.db.reports.ReportWrapper;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;

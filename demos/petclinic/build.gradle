@@ -18,11 +18,11 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = 'dev.codion.framework.demos.petclinic.ui.PetclinicAppPanel'
+ext.mainClass = 'is.codion.framework.demos.petclinic.ui.PetclinicAppPanel'
 
 test {
     systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "dev.codion.framework.demos.petstore.domain.impl.PetclinicImpl"
+    systemProperty "codion.client.domainClass", "is.codion.framework.demos.petstore.domain.impl.PetclinicImpl"
 }
 
 startScripts {

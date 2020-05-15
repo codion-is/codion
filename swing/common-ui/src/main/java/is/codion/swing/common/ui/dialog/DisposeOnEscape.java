@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.dialog;
+package is.codion.swing.common.ui.dialog;
 
 /**
  * Specifies if a dialog should be closed on Esc key press.

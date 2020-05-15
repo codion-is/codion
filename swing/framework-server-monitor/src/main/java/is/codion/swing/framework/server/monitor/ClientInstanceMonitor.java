@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.server.monitor;
+package is.codion.swing.framework.server.monitor;
 
-import dev.codion.common.MethodLogger;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.Events;
-import dev.codion.common.rmi.server.ClientLog;
-import dev.codion.common.rmi.server.RemoteClient;
-import dev.codion.common.value.Values;
-import dev.codion.framework.server.EntityServerAdmin;
-import dev.codion.swing.common.ui.value.BooleanValues;
+import is.codion.common.MethodLogger;
+import is.codion.common.event.Event;
+import is.codion.common.event.Events;
+import is.codion.common.rmi.server.ClientLog;
+import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.value.Values;
+import is.codion.framework.server.EntityServerAdmin;
+import is.codion.swing.common.ui.value.BooleanValues;
 
 import javax.swing.ButtonModel;
 import javax.swing.JToggleButton;

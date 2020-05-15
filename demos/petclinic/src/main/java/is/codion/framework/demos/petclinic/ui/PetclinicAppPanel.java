@@ -1,28 +1,28 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.petclinic.ui;
+package is.codion.framework.demos.petclinic.ui;
 
-import dev.codion.common.model.CancelException;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.petclinic.model.PetclinicAppModel;
-import dev.codion.framework.demos.petclinic.model.VetSpecialtyEditModel;
-import dev.codion.framework.model.EntityEditModel;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.framework.model.SwingEntityModel;
-import dev.codion.swing.framework.model.SwingEntityModelBuilder;
-import dev.codion.swing.framework.ui.EntityApplicationPanel;
-import dev.codion.swing.framework.ui.EntityEditPanel;
-import dev.codion.swing.framework.ui.EntityPanel;
-import dev.codion.swing.framework.ui.EntityPanelBuilder;
-import dev.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
+import is.codion.common.model.CancelException;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.petclinic.model.PetclinicAppModel;
+import is.codion.framework.demos.petclinic.model.VetSpecialtyEditModel;
+import is.codion.framework.model.EntityEditModel;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityModelBuilder;
+import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
 import java.util.List;
 import java.util.Locale;
 
-import static dev.codion.framework.demos.petclinic.domain.Clinic.*;
+import static is.codion.framework.demos.petclinic.domain.Clinic.*;
 import static java.util.Collections.singletonList;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
@@ -88,7 +88,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.petclinic.domain.impl.ClinicImpl");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.impl.ClinicImpl");
     new PetclinicAppPanel().startApplication("Petclinic", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
   }

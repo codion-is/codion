@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.petstore.domain;
+package is.codion.framework.demos.petstore.domain;
 
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.StringProvider;
 
 import java.sql.Types;
 
-import static dev.codion.framework.domain.entity.KeyGenerators.increment;
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
-import static dev.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.property.Properties.*;
 
 public final class Petstore extends Domain {
 

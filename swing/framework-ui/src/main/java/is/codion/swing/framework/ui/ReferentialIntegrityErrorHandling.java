@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.value.PropertyValue;
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
 
 /**
  * The possible actions to take on a referential integrity error.
@@ -25,6 +25,6 @@ public enum ReferentialIntegrityErrorHandling {
    * Default value: {@link ReferentialIntegrityErrorHandling#ERROR}
    */
   public static final PropertyValue<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING = Configuration.value(
-          "dev.codion.swing.framework.ui.referentialIntegrityErrorHandling", ReferentialIntegrityErrorHandling.ERROR,
+          "is.codion.swing.framework.ui.referentialIntegrityErrorHandling", ReferentialIntegrityErrorHandling.ERROR,
           ReferentialIntegrityErrorHandling::valueOf);
 }

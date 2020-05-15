@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.model;
+package is.codion.swing.framework.model;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static dev.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Conditions.condition;
 
 /**
  * A combo box model based on a single entity property.

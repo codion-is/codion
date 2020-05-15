@@ -1,7 +1,7 @@
 /**
  * Package configuration values:<br>
- * {@link dev.codion.common.db.database.Database#DATABASE_URL}<br>
- * {@link dev.codion.common.db.database.Database#DATABASE_INIT_SCRIPT}<br>
- * {@link dev.codion.common.db.database.Database#CONNECTION_VALIDITY_CHECK_TIMEOUT}
+ * {@link is.codion.common.db.database.Database#DATABASE_URL}<br>
+ * {@link is.codion.common.db.database.Database#DATABASE_INIT_SCRIPT}<br>
+ * {@link is.codion.common.db.database.Database#CONNECTION_VALIDITY_CHECK_TIMEOUT}
  */
-package dev.codion.common.db.database;
+package is.codion.common.db.database;

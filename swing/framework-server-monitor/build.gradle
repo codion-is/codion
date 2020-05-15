@@ -26,7 +26,7 @@ dependencies {
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 
-mainClassName = 'dev.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
+mainClassName = 'is.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
 
 applicationDistribution.from(files(
         '../../framework/server/src/main/security/truststore.jks',
@@ -46,7 +46,7 @@ applicationDefaultJvmArgs = [
 task runServerMonitor(type: JavaExec) {
     group 'run'
     classpath = sourceSets.main.runtimeClasspath
-    main = 'dev.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
+    main = 'is.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel'
     systemProperties = [
             'codion.server.hostname'          : 'localhost',
             'codion.server.admin.user'        : 'scott:tiger',

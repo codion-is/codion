@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.manual.store.ui;
+package is.codion.framework.demos.manual.store.ui;
 
-import dev.codion.framework.demos.manual.store.domain.Store;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.plugin.jasperreports.model.JasperReports;
-import dev.codion.swing.common.ui.control.ControlList;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.framework.model.SwingEntityTableModel;
-import dev.codion.swing.framework.ui.EntityReports;
-import dev.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.plugin.jasperreports.model.JasperReports;
+import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityReports;
+import is.codion.swing.framework.ui.EntityTablePanel;
 
 import net.sf.jasperreports.swing.JRViewer;
 

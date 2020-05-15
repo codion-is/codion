@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.entity.exception;
+package is.codion.framework.domain.entity.exception;
 
 /**
  * An exception used to indicate that a value associated with

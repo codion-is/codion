@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.dbms.postgresql;
+package is.codion.dbms.postgresql;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.database.DatabaseProvider;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.DatabaseProvider;
 
 import static java.util.Objects.requireNonNull;
 

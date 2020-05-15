@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.model.table;
+package is.codion.common.model.table;
 
 /**
  * Holds a row/column coordinate

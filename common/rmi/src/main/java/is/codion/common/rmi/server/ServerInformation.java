@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.rmi.server;
+package is.codion.common.rmi.server;
 
-import dev.codion.common.version.Version;
+import is.codion.common.version.Version;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

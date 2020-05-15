@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.entity;
+package is.codion.framework.domain.entity;
 
-import dev.codion.common.Text;
-import dev.codion.framework.domain.property.BlobProperty;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.DenormalizedProperty;
-import dev.codion.framework.domain.property.DerivedProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.MirrorProperty;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.domain.property.TransientProperty;
+import is.codion.common.Text;
+import is.codion.framework.domain.property.BlobProperty;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.DenormalizedProperty;
+import is.codion.framework.domain.property.DerivedProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.MirrorProperty;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.TransientProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import static dev.codion.common.Util.nullOrEmpty;
-import static dev.codion.common.Util.rejectNullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.rejectNullOrEmpty;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;

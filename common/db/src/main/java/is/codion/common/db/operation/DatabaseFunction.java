@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.db.operation;
+package is.codion.common.db.operation;
 
-import dev.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.DatabaseException;
 
 /**
  * A database function

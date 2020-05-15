@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.item;
+package is.codion.common.item;
 
-import dev.codion.common.Serializer;
+import is.codion.common.Serializer;
 
 import org.junit.jupiter.api.Test;
 

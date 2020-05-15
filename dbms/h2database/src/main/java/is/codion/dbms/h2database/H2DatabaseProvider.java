@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.dbms.h2database;
+package is.codion.dbms.h2database;
 
-import dev.codion.common.Text;
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.database.DatabaseProvider;
+import is.codion.common.Text;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.DatabaseProvider;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

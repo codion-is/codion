@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.ui;
+package is.codion.framework.demos.chinook.ui;
 
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityComboBox;
-import dev.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityComboBox;
+import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static dev.codion.framework.demos.chinook.domain.Chinook.*;
-import static dev.codion.swing.common.ui.Components.setPreferredHeight;
-import static dev.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
-import static dev.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
-import static dev.codion.swing.common.ui.textfield.TextFields.makeUpperCase;
+import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.swing.common.ui.Components.setPreferredHeight;
+import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
+import static is.codion.swing.common.ui.textfield.TextFields.getPreferredTextFieldHeight;
+import static is.codion.swing.common.ui.textfield.TextFields.makeUpperCase;
 
 public class EmployeeEditPanel extends EntityEditPanel {
 

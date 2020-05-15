@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.model.combobox;
+package is.codion.common.model.combobox;
 
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.model.FilteredModel;
-import dev.codion.common.model.Refreshable;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.model.FilteredModel;
+import is.codion.common.model.Refreshable;
 
 import java.util.Collection;
 import java.util.Comparator;

@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.framework.domain.entity.ColorProvider;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.domain.property.ValueListProperty;
-import dev.codion.swing.common.model.checkbox.NullableToggleButtonModel;
-import dev.codion.swing.common.ui.checkbox.NullableCheckBox;
-import dev.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.framework.domain.entity.ColorProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.ValueListProperty;
+import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
+import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -216,7 +216,7 @@ public final class EntityTableCellRenderers {
 
     /**
      * @param value the value to set
-     * @see dev.codion.swing.framework.model.SwingEntityTableModel#getValue(Entity, Property)
+     * @see is.codion.swing.framework.model.SwingEntityTableModel#getValue(Entity, Property)
      */
     @Override
     protected void setValue(final Object value) {

@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.plugin.nextreports.model;
+package is.codion.plugin.nextreports.model;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.reports.ReportException;
-import dev.codion.common.db.reports.ReportWrapper;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.dbms.h2database.H2DatabaseProvider;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.local.LocalEntityConnection;
-import dev.codion.framework.db.local.LocalEntityConnectionProvider;
-import dev.codion.framework.domain.Domain;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.dbms.h2database.H2DatabaseProvider;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.Domain;
 
 import org.junit.jupiter.api.Test;
 import ro.nextreports.engine.ReportRunner;

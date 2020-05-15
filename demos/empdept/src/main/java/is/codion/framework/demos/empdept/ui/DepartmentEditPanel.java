@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.empdept.ui;
+package is.codion.framework.demos.empdept.ui;
 
-import dev.codion.framework.demos.empdept.domain.EmpDept;
-import dev.codion.swing.common.ui.textfield.TextFields;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;

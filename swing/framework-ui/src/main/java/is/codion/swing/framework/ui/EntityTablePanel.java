@@ -1,48 +1,48 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.Conjunction;
-import dev.codion.common.Util;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.exception.ReferentialIntegrityException;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.state.States;
-import dev.codion.common.value.PropertyValue;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Properties;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.i18n.FrameworkMessages;
-import dev.codion.framework.model.EntityEditModel;
-import dev.codion.framework.model.EntityTableModel;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.KeyEvents;
-import dev.codion.swing.common.ui.control.Control;
-import dev.codion.swing.common.ui.control.ControlList;
-import dev.codion.swing.common.ui.control.ControlProvider;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import dev.codion.swing.common.ui.dialog.DialogExceptionHandler;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.common.ui.dialog.Modal;
-import dev.codion.swing.common.ui.table.ColumnConditionPanel;
-import dev.codion.swing.common.ui.table.ColumnConditionPanelProvider;
-import dev.codion.swing.common.ui.table.FilteredTable;
-import dev.codion.swing.common.ui.table.FilteredTableSummaryPanel;
-import dev.codion.swing.common.ui.value.ComponentValuePanel;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.common.Configuration;
+import is.codion.common.Conjunction;
+import is.codion.common.Util;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
+import is.codion.common.i18n.Messages;
+import is.codion.common.state.StateObserver;
+import is.codion.common.state.States;
+import is.codion.common.value.PropertyValue;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Properties;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.framework.model.EntityEditModel;
+import is.codion.framework.model.EntityTableModel;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.ControlProvider;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.Modal;
+import is.codion.swing.common.ui.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.table.ColumnConditionPanelProvider;
+import is.codion.swing.common.ui.table.FilteredTable;
+import is.codion.swing.common.ui.table.FilteredTableSummaryPanel;
+import is.codion.swing.common.ui.value.ComponentValuePanel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,12 +82,12 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import static dev.codion.common.Util.nullOrEmpty;
-import static dev.codion.swing.common.ui.Components.hideWaitCursor;
-import static dev.codion.swing.common.ui.Components.showWaitCursor;
-import static dev.codion.swing.common.ui.Windows.getParentWindow;
-import static dev.codion.swing.common.ui.control.Controls.control;
-import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.Components.hideWaitCursor;
+import static is.codion.swing.common.ui.Components.showWaitCursor;
+import static is.codion.swing.common.ui.Windows.getParentWindow;
+import static is.codion.swing.common.ui.control.Controls.control;
+import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -130,7 +130,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: true
    */
   public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityTablePanel.allowColumnReordering", true);
+          "is.codion.swing.framework.ui.EntityTablePanel.allowColumnReordering", true);
 
   /**
    * Specifies whether the table condition panels should be visible or not by default<br>
@@ -138,7 +138,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: false
    */
   public static final PropertyValue<Boolean> TABLE_CONDITION_PANEL_VISIBLE = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityTablePanel.tableConditionPanelVisible", false);
+          "is.codion.swing.framework.ui.EntityTablePanel.tableConditionPanelVisible", false);
 
   /**
    * Specifies the default table column resize mode for tables in the application<br>
@@ -146,7 +146,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: JTable.AUTO_RESIZE_OFF
    */
   public static final PropertyValue<Integer> TABLE_AUTO_RESIZE_MODE = Configuration.integerValue(
-          "dev.codion.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
+          "is.codion.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
 
   /**
    * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
@@ -154,7 +154,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Default value: true
    */
   public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityTablePanel.includeEntityMenu", true);
+          "is.codion.swing.framework.ui.EntityTablePanel.includeEntityMenu", true);
 
   public static final String PRINT_TABLE = "printTable";
   public static final String DELETE_SELECTED = "deleteSelected";

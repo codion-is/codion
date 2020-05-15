@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.server.monitor.ui;
+package is.codion.swing.framework.server.monitor.ui;
 
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.framework.server.monitor.DatabaseMonitor;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.framework.server.monitor.DatabaseMonitor;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -23,7 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 
-import static dev.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
+import static is.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 
 /**
  * A DatabaseMonitorPanel

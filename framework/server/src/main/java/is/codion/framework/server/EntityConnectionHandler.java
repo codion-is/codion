@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.server;
+package is.codion.framework.server;
 
-import dev.codion.common.MethodLogger;
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.pool.ConnectionPool;
-import dev.codion.common.rmi.server.ClientLog;
-import dev.codion.common.rmi.server.RemoteClient;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.db.local.LocalEntityConnection;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.property.ColumnProperty;
+import is.codion.common.MethodLogger;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.pool.ConnectionPool;
+import is.codion.common.rmi.server.ClientLog;
+import is.codion.common.rmi.server.RemoteClient;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.ColumnProperty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static dev.codion.framework.db.local.LocalEntityConnections.createConnection;
+import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
 
 final class EntityConnectionHandler implements InvocationHandler {
 

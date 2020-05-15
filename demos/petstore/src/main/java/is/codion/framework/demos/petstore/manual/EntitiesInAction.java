@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.petstore.manual;
+package is.codion.framework.demos.petstore.manual;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.EntityConnectionProviders;
-import dev.codion.framework.demos.petstore.domain.Petstore;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnectionProviders;
+import is.codion.framework.demos.petstore.domain.Petstore;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 
 import java.util.List;
 
-import static dev.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.framework.demos.petstore.domain.Petstore.*;
 
 public final class EntitiesInAction {
 

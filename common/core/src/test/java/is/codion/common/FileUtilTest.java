@@ -1,4 +1,4 @@
-package dev.codion.common;
+package is.codion.common;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.framework.domain.entity.exception.ValidationException;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.model.EntityEditModel;
+import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.model.EntityEditModel;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 
 /**
  * A factory class for adding validators to components.

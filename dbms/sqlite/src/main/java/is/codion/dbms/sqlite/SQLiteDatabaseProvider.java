@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.dbms.sqlite;
+package is.codion.dbms.sqlite;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.database.DatabaseProvider;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.DatabaseProvider;
 
 import static java.util.Objects.requireNonNull;
 

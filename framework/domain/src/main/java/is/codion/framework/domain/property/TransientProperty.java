@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.property;
+package is.codion.framework.domain.property;
 
 /**
  * A property that does not map to an underlying database column. The value of a transient property

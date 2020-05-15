@@ -1,9 +1,9 @@
-package dev.codion.swing.common.ui.textfield;
+package is.codion.swing.common.ui.textfield;
 
-import dev.codion.common.DateFormats;
-import dev.codion.common.model.CancelException;
-import dev.codion.swing.common.ui.KeyEvents;
-import dev.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.common.DateFormats;
+import is.codion.common.model.CancelException;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**

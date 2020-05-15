@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.property;
+package is.codion.framework.domain.property;
 
-import dev.codion.common.item.Item;
-import dev.codion.common.valuemap.ValueMap;
+import is.codion.common.item.Item;
+import is.codion.common.valuemap.ValueMap;
 
 import java.sql.Types;
 import java.text.Collator;
 import java.util.List;
 
-import static dev.codion.framework.domain.property.AuditProperty.AuditAction.INSERT;
-import static dev.codion.framework.domain.property.AuditProperty.AuditAction.UPDATE;
+import static is.codion.framework.domain.property.AuditProperty.AuditAction.INSERT;
+import static is.codion.framework.domain.property.AuditProperty.AuditAction.UPDATE;
 import static java.util.Objects.requireNonNull;
 
 /**

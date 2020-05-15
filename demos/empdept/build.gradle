@@ -37,18 +37,18 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = 'dev.codion.framework.demos.empdept.ui.EmpDeptAppPanel'
-ext.loadTestMainClass = 'dev.codion.framework.demos.empdept.testing.EmpDeptLoadTest'
+ext.mainClass = 'is.codion.framework.demos.empdept.ui.EmpDeptAppPanel'
+ext.loadTestMainClass = 'is.codion.framework.demos.empdept.testing.EmpDeptLoadTest'
 
 test {
     systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "dev.codion.framework.demos.empdept.domain.EmpDept"
+    systemProperty "codion.client.domainClass", "is.codion.framework.demos.empdept.domain.EmpDept"
 }
 
 task buildReports(dependsOn: 'compileJava') {
     group 'build'
     def jasperSourceDir = file('src/main/reports')
-    def jasperTargetDir = file(sourceSets.main.output.resourcesDir.toString() + '/dev/codion/framework/demos/empdept/domain')
+    def jasperTargetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/empdept/domain')
     inputs.dir jasperSourceDir
     outputs.dir jasperTargetDir
     doLast {
@@ -90,7 +90,7 @@ runClientLocal {
 
 task runClientLocalFX(type: JavaExec) {
     group 'run'
-    main = 'dev.codion.framework.demos.empdept.javafx.EmpDeptFX'
+    main = 'is.codion.framework.demos.empdept.javafx.EmpDeptFX'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
             'codion.client.connectionType': 'local',

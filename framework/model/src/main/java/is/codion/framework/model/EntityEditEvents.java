@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.common.event.EventDataListener;
-import dev.codion.framework.domain.entity.Entity;
+import is.codion.common.event.EventDataListener;
+import is.codion.framework.domain.entity.Entity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static dev.codion.common.Util.map;
-import static dev.codion.framework.domain.entity.Entities.mapToEntityId;
+import static is.codion.common.Util.map;
+import static is.codion.framework.domain.entity.Entities.mapToEntityId;
 import static java.util.Objects.requireNonNull;
 
 /**

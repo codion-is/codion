@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.common.Conjunction;
-import dev.codion.common.db.Operator;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.condition.Conditions;
-import dev.codion.framework.db.local.LocalEntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.model.tests.TestDomain;
+import is.codion.common.Conjunction;
+import is.codion.common.db.Operator;
+import is.codion.common.db.database.Databases;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.EventListener;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.model.tests.TestDomain;
 
 import org.junit.jupiter.api.Test;
 

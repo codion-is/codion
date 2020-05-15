@@ -1,30 +1,30 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.javafx.framework.ui;
+package is.codion.javafx.framework.ui;
 
-import dev.codion.common.Util;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.item.Item;
-import dev.codion.common.model.CancelException;
-import dev.codion.common.state.State;
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.state.States;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.common.value.Value;
-import dev.codion.common.value.Values;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.domain.property.ValueListProperty;
-import dev.codion.framework.model.EntityLookupModel;
-import dev.codion.javafx.framework.model.FXEntityEditModel;
-import dev.codion.javafx.framework.model.FXEntityListModel;
-import dev.codion.javafx.framework.model.ObservableEntityList;
-import dev.codion.javafx.framework.ui.values.PropertyValues;
-import dev.codion.javafx.framework.ui.values.StringValue;
+import is.codion.common.Util;
+import is.codion.common.i18n.Messages;
+import is.codion.common.item.Item;
+import is.codion.common.model.CancelException;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
+import is.codion.common.state.States;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.ValueListProperty;
+import is.codion.framework.model.EntityLookupModel;
+import is.codion.javafx.framework.model.FXEntityEditModel;
+import is.codion.javafx.framework.model.FXEntityListModel;
+import is.codion.javafx.framework.model.ObservableEntityList;
+import is.codion.javafx.framework.ui.values.PropertyValues;
+import is.codion.javafx.framework.ui.values.StringValue;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;

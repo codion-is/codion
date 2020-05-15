@@ -1,10 +1,10 @@
-package dev.codion.framework.demos.world.model;
+package is.codion.framework.demos.world.model;
 
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.world.domain.World;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.swing.framework.model.SwingEntityComboBoxModel;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.world.domain.World;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Objects;
 

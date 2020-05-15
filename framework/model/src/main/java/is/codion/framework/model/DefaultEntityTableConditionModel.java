@@ -1,34 +1,34 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.common.Conjunction;
-import dev.codion.common.Util;
-import dev.codion.common.db.Operator;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.EventObserver;
-import dev.codion.common.event.Events;
-import dev.codion.common.model.Refreshable;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.state.State;
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.state.States;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.condition.Condition;
-import dev.codion.framework.db.condition.Conditions;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
+import is.codion.common.Conjunction;
+import is.codion.common.Util;
+import is.codion.common.db.Operator;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.EventObserver;
+import is.codion.common.event.Events;
+import is.codion.common.model.Refreshable;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
+import is.codion.common.state.States;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static dev.codion.framework.db.condition.Conditions.propertyCondition;
+import static is.codion.framework.db.condition.Conditions.propertyCondition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;

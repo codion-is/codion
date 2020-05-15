@@ -11,7 +11,7 @@ ui.background_image = codion-getdown.png
 code = petstore.jar
 
 # The main entry point for the application
-class = dev.codion.framework.demos.petstore.ui.PetstoreAppPanel
+class = is.codion.framework.demos.petstore.ui.PetstoreAppPanel
 
 allow_offline = true
 

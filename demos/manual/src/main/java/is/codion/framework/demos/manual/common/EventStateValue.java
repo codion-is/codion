@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.manual.common;
+package is.codion.framework.demos.manual.common;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventObserver;
-import dev.codion.common.event.Events;
-import dev.codion.common.state.State;
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.state.States;
-import dev.codion.common.value.Value;
-import dev.codion.common.value.Values;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.textfield.IntegerField;
-import dev.codion.swing.common.ui.value.ComponentValue;
-import dev.codion.swing.common.ui.value.NumericalValues;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
+import is.codion.common.event.Events;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
+import is.codion.common.state.States;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.NumericalValues;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

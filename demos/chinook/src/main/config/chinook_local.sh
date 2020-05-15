@@ -1,1 +1,1 @@
-java -Xmx128m -Dcodion.configurationFile=h2db.config -cp chinook.jar:config dev.codion.framework.demos.chinook.ui.ChinookAppPanel &
+java -Xmx128m -Dcodion.configurationFile=h2db.config -cp chinook.jar:config is.codion.framework.demos.chinook.ui.ChinookAppPanel &

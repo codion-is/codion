@@ -81,7 +81,7 @@ task clientHttpScript(type: CreateStartScripts) {
 
 task loadTestRMIScript(type: CreateStartScripts) {
     applicationName = project.name + '-loadtest-remote'
-    mainClassName = 'dev.codion.framework.demos.DummyLoadTest'
+    mainClassName = 'is.codion.framework.demos.DummyLoadTest'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
     defaultJvmOpts = [
@@ -95,7 +95,7 @@ task loadTestRMIScript(type: CreateStartScripts) {
 
 task loadTestHttpScript(type: CreateStartScripts) {
     applicationName = project.name + '-loadtest-http'
-    mainClassName = 'dev.codion.framework.demos.DummyLoadTest'
+    mainClassName = 'is.codion.framework.demos.DummyLoadTest'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
     defaultJvmOpts = [

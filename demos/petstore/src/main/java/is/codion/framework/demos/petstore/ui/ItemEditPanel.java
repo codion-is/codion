@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.petstore.ui;
+package is.codion.framework.demos.petstore.ui;
 
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.layout.FlexibleGridLayout;
-import dev.codion.swing.common.ui.textfield.TextFields;
-import dev.codion.swing.common.ui.textfield.TextInputPanel;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityComboBox;
-import dev.codion.swing.framework.ui.EntityEditPanel;
-import dev.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
-import dev.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.textfield.TextInputPanel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityComboBox;
+import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
+import is.codion.swing.framework.ui.EntityPanelBuilder;
 
-import static dev.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.framework.demos.petstore.domain.Petstore.*;
 
 public class ItemEditPanel extends EntityEditPanel {
 

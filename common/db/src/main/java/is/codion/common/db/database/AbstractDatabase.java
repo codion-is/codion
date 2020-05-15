@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.db.database;
+package is.codion.common.db.database;
 
-import dev.codion.common.db.exception.AuthenticationException;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.pool.ConnectionPool;
-import dev.codion.common.db.pool.ConnectionPoolProvider;
-import dev.codion.common.user.User;
+import is.codion.common.db.exception.AuthenticationException;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.pool.ConnectionPool;
+import is.codion.common.db.pool.ConnectionPoolProvider;
+import is.codion.common.user.User;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static dev.codion.common.db.database.Database.closeSilently;
+import static is.codion.common.db.database.Database.closeSilently;
 import static java.util.Objects.requireNonNull;
 
 /**

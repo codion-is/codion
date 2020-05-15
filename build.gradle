@@ -63,9 +63,9 @@ configure(project.frameworkModules) {
                     "Implementation-Title": project.name,
                     "Implementation-Version": project.version,
                     "Implementation-Vendor": "Codion",
-                    "Implementation-Vendor-Id": "dev.codion",
-                    "Implementation-URL": "https://codion.dev",
-                    "Automatic-Module-Name": "dev." + project.name.replace('-', '.'),
+                    "Implementation-Vendor-Id": "is.codion",
+                    "Implementation-URL": "https://codion.is",
+                    "Automatic-Module-Name": "is." + project.name.replace('-', '.'),
                     "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
                     "Built-By": System.getProperty("user.name"),
                     "Build-Date": java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()))
@@ -75,7 +75,7 @@ configure(project.frameworkModules) {
     publishing {
         publications {
             mavenJava(MavenPublication) {
-                groupId 'dev.codion.' + project.targetJdk
+                groupId 'is.codion.' + project.targetJdk
                 from components.java
             }
         }
@@ -99,8 +99,8 @@ configure(project.frameworkModules) {
         System.setProperty("sonar.login", "${sonarLogin}")
         System.setProperty("sonar.password", "${sonarPassword}")
         properties {
-            property "sonar.projectName", "dev." + project.name.replace('-', '.')
-            property "sonar.projectKey", "dev.codion:codion"
+            property "sonar.projectName", "is." + project.name.replace('-', '.')
+            property "sonar.projectKey", "is.codion:codion"
             property "sonar.projectVersion", project.version.replace('-SNAPSHOT', '')
             property "sonar.java.source", "1.8"
             property "sonar.sourceEncoding", "UTF-8"

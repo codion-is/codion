@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.combobox;
+package is.codion.swing.common.ui.combobox;
 
 /**
  * Specifies whether to normalize accented characters in a String.

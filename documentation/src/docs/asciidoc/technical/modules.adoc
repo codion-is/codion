@@ -9,9 +9,9 @@ Common classes used throughout the framework.
 [discrete]
 === codion-common-core
 
-{url-javadoc}/dev/codion/common/event/package-summary.html[dev.codion.common.event]
-{url-javadoc}/dev/codion/common/state/package-summary.html[dev.codion.common.state]
-{url-javadoc}/dev/codion/common/value/package-summary.html[dev.codion.common.value]
+{url-javadoc}/is/codion/common/event/package-summary.html[is.codion.common.event]
+{url-javadoc}/is/codion/common/state/package-summary.html[is.codion.common.state]
+{url-javadoc}/is/codion/common/value/package-summary.html[is.codion.common.value]
 
 .Dependency graph
 [%collapsible]

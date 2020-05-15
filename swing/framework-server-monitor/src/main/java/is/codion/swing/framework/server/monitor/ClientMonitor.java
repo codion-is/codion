@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.server.monitor;
+package is.codion.swing.framework.server.monitor;
 
-import dev.codion.common.rmi.server.RemoteClient;
-import dev.codion.common.user.User;
-import dev.codion.framework.server.EntityServerAdmin;
+import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.user.User;
+import is.codion.framework.server.EntityServerAdmin;
 
 import javax.swing.DefaultListModel;
 import java.rmi.RemoteException;

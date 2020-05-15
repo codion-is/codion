@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.dbms.oracle;
+package is.codion.dbms.oracle;
 
 import org.junit.jupiter.api.Test;
 

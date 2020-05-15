@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.control;
+package is.codion.swing.common.ui.control;
 
-import dev.codion.common.event.Events;
+import is.codion.common.event.Events;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import javax.swing.JToolBar;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.codion.swing.common.ui.control.Controls.toggleControl;
+import static is.codion.swing.common.ui.control.Controls.toggleControl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ControlProviderTest {

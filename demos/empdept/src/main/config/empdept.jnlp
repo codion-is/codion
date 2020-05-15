@@ -3,7 +3,7 @@
 
   <information>
     <title>EmpDept Codion Demo</title>
-    <vendor>codion.dev</vendor>
+    <vendor>codion.is</vendor>
     <icon href="codion.png"/>
   </information>
   <security>
@@ -21,5 +21,5 @@
     <property name="codion.server.hostname" value="codion.no-ip.org" />
   </resources>
 
-  <application-desc main-class="dev.codion.framework.demos.empdept.ui.EmpDeptAppPanel"/>
+  <application-desc main-class="is.codion.framework.demos.empdept.ui.EmpDeptAppPanel"/>
 </jnlp>

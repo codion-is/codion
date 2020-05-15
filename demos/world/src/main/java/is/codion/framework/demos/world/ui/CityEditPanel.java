@@ -1,11 +1,11 @@
-package dev.codion.framework.demos.world.ui;
+package is.codion.framework.demos.world.ui;
 
-import dev.codion.framework.demos.world.domain.World;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.framework.demos.world.domain.World;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static dev.codion.swing.common.ui.Components.setPreferredWidth;
-import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.swing.common.ui.Components.setPreferredWidth;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class CityEditPanel extends EntityEditPanel {
 

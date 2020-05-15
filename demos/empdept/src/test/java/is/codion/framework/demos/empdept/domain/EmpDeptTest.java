@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.empdept.domain;
+package is.codion.framework.demos.empdept.domain;
 
-import dev.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 
-import static dev.codion.framework.demos.empdept.domain.EmpDept.T_DEPARTMENT;
-import static dev.codion.framework.demos.empdept.domain.EmpDept.T_EMPLOYEE;
+import static is.codion.framework.demos.empdept.domain.EmpDept.T_DEPARTMENT;
+import static is.codion.framework.demos.empdept.domain.EmpDept.T_EMPLOYEE;
 
 // tag::domainTest[]
 public class EmpDeptTest extends EntityTestUnit {

@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.value;
+package is.codion.swing.common.ui.value;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.Events;
-import dev.codion.common.item.Item;
-import dev.codion.common.value.Value;
-import dev.codion.common.value.Values;
-import dev.codion.swing.common.model.checkbox.NullableToggleButtonModel;
-import dev.codion.swing.common.model.combobox.BooleanComboBoxModel;
+import is.codion.common.event.Event;
+import is.codion.common.event.Events;
+import is.codion.common.item.Item;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
+import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
+import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 
 import org.junit.jupiter.api.Test;
 

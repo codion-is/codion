@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain;
+package is.codion.framework.domain;
 
-import dev.codion.common.db.operation.DatabaseFunction;
-import dev.codion.common.db.operation.DatabaseOperation;
-import dev.codion.common.db.operation.DatabaseProcedure;
-import dev.codion.common.db.reports.ReportException;
-import dev.codion.common.db.reports.ReportWrapper;
-import dev.codion.framework.domain.entity.DefaultEntities;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.property.Property;
+import is.codion.common.db.operation.DatabaseFunction;
+import is.codion.common.db.operation.DatabaseOperation;
+import is.codion.common.db.operation.DatabaseProcedure;
+import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportWrapper;
+import is.codion.framework.domain.entity.DefaultEntities;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.HashMap;

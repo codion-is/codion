@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.plugin.log4j;
+package is.codion.plugin.log4j;
 
-import dev.codion.common.LoggerProxy;
+import is.codion.common.LoggerProxy;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;

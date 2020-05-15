@@ -1,1 +1,1 @@
-java -Xmx512m -Dcodion.configurationFile=h2_embedded.config -Djava.security.policy=config/all_permissions.policy -cp config;lib/* dev.codion.framework.server.EntityServer %1
+java -Xmx512m -Dcodion.configurationFile=h2_embedded.config -Djava.security.policy=config/all_permissions.policy -cp config;lib/* is.codion.framework.server.EntityServer %1

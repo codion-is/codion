@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.item.Item;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.StringProvider;
+import is.codion.common.item.Item;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.StringProvider;
 
 import java.awt.Color;
 import java.sql.Types;
 import java.util.Comparator;
 import java.util.List;
 
-import static dev.codion.common.item.Items.item;
-import static dev.codion.framework.domain.entity.KeyGenerators.increment;
-import static dev.codion.framework.domain.property.Properties.*;
+import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends Domain {

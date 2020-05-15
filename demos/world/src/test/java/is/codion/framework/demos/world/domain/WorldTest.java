@@ -1,8 +1,8 @@
-package dev.codion.framework.demos.world.domain;
+package is.codion.framework.demos.world.domain;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 

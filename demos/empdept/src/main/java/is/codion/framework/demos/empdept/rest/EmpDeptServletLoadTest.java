@@ -1,27 +1,27 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.empdept.rest;
+package is.codion.framework.demos.empdept.rest;
 
-import dev.codion.common.Text;
-import dev.codion.common.model.CancelException;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.http.HttpEntityConnectionProvider;
-import dev.codion.framework.demos.empdept.domain.EmpDept;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.swing.common.tools.loadtest.AbstractUsageScenario;
-import dev.codion.swing.common.tools.loadtest.LoadTestModel;
-import dev.codion.swing.common.tools.loadtest.ScenarioException;
-import dev.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
+import is.codion.common.Text;
+import is.codion.common.model.CancelException;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.http.HttpEntityConnectionProvider;
+import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.tools.loadtest.AbstractUsageScenario;
+import is.codion.swing.common.tools.loadtest.LoadTestModel;
+import is.codion.swing.common.tools.loadtest.ScenarioException;
+import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Arrays.asList;
 
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {

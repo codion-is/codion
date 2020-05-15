@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.property;
+package is.codion.framework.domain.property;
 
-import dev.codion.common.item.Item;
+import is.codion.common.item.Item;
 
 import java.util.List;
 import java.util.Objects;

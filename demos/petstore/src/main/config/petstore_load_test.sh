@@ -1,1 +1,1 @@
-java -Xmx128m -Dcodion.configurationFile=load_test.config -cp petstore.jar:config dev.codion.framework.demos.petstore.testing.PetstoreLoadTest &
+java -Xmx128m -Dcodion.configurationFile=load_test.config -cp petstore.jar:config is.codion.framework.demos.petstore.testing.PetstoreLoadTest &

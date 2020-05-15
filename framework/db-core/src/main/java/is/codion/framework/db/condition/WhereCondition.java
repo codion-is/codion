@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.condition;
+package is.codion.framework.db.condition;
 
-import dev.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ColumnProperty;
 
 import java.util.List;
 

@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.javafx.framework.model;
+package is.codion.javafx.framework.model;
 
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.model.DefaultPropertyConditionModelProvider;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.model.DefaultPropertyConditionModelProvider;
 
 /**
  * Provides foreign key condition models based on {@link ObservableEntityList} for

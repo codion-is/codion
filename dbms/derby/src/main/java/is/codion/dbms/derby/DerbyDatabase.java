@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.dbms.derby;
+package is.codion.dbms.derby;
 
-import dev.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.database.AbstractDatabase;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;

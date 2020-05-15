@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.model;
+package is.codion.swing.framework.model;
 
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.model.DefaultForeignKeyConditionModel;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.model.DefaultForeignKeyConditionModel;
 
 import java.util.Collection;
 import java.util.Objects;
 
 /**
- * A {@link dev.codion.framework.model.ForeignKeyConditionModel} based around a {@link SwingEntityComboBoxModel}
+ * A {@link is.codion.framework.model.ForeignKeyConditionModel} based around a {@link SwingEntityComboBoxModel}
  */
 public final class SwingForeignKeyConditionModel extends DefaultForeignKeyConditionModel {
 

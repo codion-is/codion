@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.tools.generator;
+package is.codion.swing.framework.tools.generator;
 
-import dev.codion.common.Util;
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.result.ResultPacker;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.model.table.DefaultColumnConditionModel;
-import dev.codion.common.user.User;
-import dev.codion.common.value.Value;
-import dev.codion.common.value.Values;
-import dev.codion.swing.common.model.table.AbstractFilteredTableModel;
-import dev.codion.swing.common.model.table.AbstractTableSortModel;
+import is.codion.common.Util;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Databases;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.result.ResultPacker;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
+import is.codion.common.model.table.DefaultColumnConditionModel;
+import is.codion.common.user.User;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
+import is.codion.swing.common.model.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.table.AbstractTableSortModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
 
 /**
@@ -84,7 +84,7 @@ public final class EntityGeneratorModel {
   public EntityGeneratorModel(final Database database, final User user, final String schema) throws DatabaseException {
     try {
       this.schema = schema;
-      this.catalog = database.getClass().getName().equals("dev.codion.dbms.mysql.MySQLDatabase") ? schema : null;
+      this.catalog = database.getClass().getName().equals("is.codion.dbms.mysql.MySQLDatabase") ? schema : null;
       this.connection = database.createConnection(user);
       this.metaData = connection.getMetaData();
       this.tableModel = initializeTableModel();

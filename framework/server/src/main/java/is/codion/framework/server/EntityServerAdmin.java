@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.server;
+package is.codion.framework.server;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.pool.ConnectionPoolStatistics;
-import dev.codion.common.rmi.server.ClientLog;
-import dev.codion.common.rmi.server.RemoteClient;
-import dev.codion.common.rmi.server.ServerInformation;
-import dev.codion.common.user.User;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.pool.ConnectionPoolStatistics;
+import is.codion.common.rmi.server.ClientLog;
+import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.ServerInformation;
+import is.codion.common.user.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

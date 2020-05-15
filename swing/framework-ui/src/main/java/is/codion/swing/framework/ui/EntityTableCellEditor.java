@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.value.Value;
-import dev.codion.common.value.Values;
-import dev.codion.framework.domain.property.Property;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
+import is.codion.framework.domain.property.Property;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JCheckBox;

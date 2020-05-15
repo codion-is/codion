@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.petstore.ui;
+package is.codion.framework.demos.petstore.ui;
 
-import dev.codion.swing.common.ui.layout.FlexibleGridLayout;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static dev.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.framework.demos.petstore.domain.Petstore.*;
 
 public class CategoryEditPanel extends EntityEditPanel {
 

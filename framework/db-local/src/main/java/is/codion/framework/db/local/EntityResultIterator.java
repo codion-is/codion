@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.local;
+package is.codion.framework.db.local;
 
-import dev.codion.common.db.result.ResultIterator;
-import dev.codion.common.db.result.ResultPacker;
-import dev.codion.framework.domain.entity.Entity;
+import is.codion.common.db.result.ResultIterator;
+import is.codion.common.db.result.ResultPacker;
+import is.codion.framework.domain.entity.Entity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static dev.codion.common.db.database.Database.closeSilently;
+import static is.codion.common.db.database.Database.closeSilently;
 
 final class EntityResultIterator implements ResultIterator<Entity> {
 

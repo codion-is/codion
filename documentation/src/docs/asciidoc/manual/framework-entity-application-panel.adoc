@@ -6,7 +6,7 @@
 
 [source,java]
 ----
-include::{dir-source}/dev/codion/framework/demos/manual/store/ui/StoreAppPanel.java[tags=storeAppPanel]
+include::{dir-source}/is/codion/framework/demos/manual/store/ui/StoreAppPanel.java[tags=storeAppPanel]
 ----
 
 == Examples

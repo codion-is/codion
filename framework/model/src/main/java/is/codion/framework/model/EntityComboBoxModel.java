@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.common.event.EventListener;
-import dev.codion.common.model.combobox.FilteredComboBoxModel;
-import dev.codion.common.value.Value;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.condition.Condition;
-import dev.codion.framework.domain.entity.Entity;
+import is.codion.common.event.EventListener;
+import is.codion.common.model.combobox.FilteredComboBoxModel;
+import is.codion.common.value.Value;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.domain.entity.Entity;
 
 import java.util.Collection;
 import java.util.List;

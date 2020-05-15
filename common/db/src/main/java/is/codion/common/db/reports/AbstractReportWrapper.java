@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.db.reports;
+package is.codion.common.db.reports;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

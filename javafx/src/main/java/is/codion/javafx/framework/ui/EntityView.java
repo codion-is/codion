@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.javafx.framework.ui;
+package is.codion.javafx.framework.ui;
 
-import dev.codion.framework.model.EntityModel;
-import dev.codion.javafx.framework.model.FXEntityListModel;
+import is.codion.framework.model.EntityModel;
+import is.codion.javafx.framework.model.FXEntityListModel;
 
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;

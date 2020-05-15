@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.model.combobox;
+package is.codion.swing.common.model.combobox;
 
-import dev.codion.common.i18n.Messages;
+import is.codion.common.i18n.Messages;
 
-import static dev.codion.common.item.Items.item;
+import static is.codion.common.item.Items.item;
 import static java.util.Arrays.asList;
 
 /**

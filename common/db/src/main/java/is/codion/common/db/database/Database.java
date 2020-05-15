@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.db.database;
+package is.codion.common.db.database;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.pool.ConnectionFactory;
-import dev.codion.common.db.pool.ConnectionPool;
-import dev.codion.common.db.pool.ConnectionPoolProvider;
-import dev.codion.common.user.User;
-import dev.codion.common.value.PropertyValue;
+import is.codion.common.Configuration;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.pool.ConnectionFactory;
+import is.codion.common.db.pool.ConnectionPool;
+import is.codion.common.db.pool.ConnectionPoolProvider;
+import is.codion.common.user.User;
+import is.codion.common.value.PropertyValue;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

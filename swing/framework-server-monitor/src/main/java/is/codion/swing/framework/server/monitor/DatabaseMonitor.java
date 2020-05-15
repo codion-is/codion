@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.server.monitor;
+package is.codion.swing.framework.server.monitor;
 
-import dev.codion.common.TaskScheduler;
-import dev.codion.common.db.database.Database;
-import dev.codion.common.value.Value;
-import dev.codion.framework.server.EntityServerAdmin;
+import is.codion.common.TaskScheduler;
+import is.codion.common.db.database.Database;
+import is.codion.common.value.Value;
+import is.codion.framework.server.EntityServerAdmin;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;

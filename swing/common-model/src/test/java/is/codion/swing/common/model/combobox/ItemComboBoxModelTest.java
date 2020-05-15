@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.model.combobox;
+package is.codion.swing.common.model.combobox;
 
-import dev.codion.common.item.Item;
+import is.codion.common.item.Item;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static dev.codion.common.item.Items.item;
+import static is.codion.common.item.Items.item;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

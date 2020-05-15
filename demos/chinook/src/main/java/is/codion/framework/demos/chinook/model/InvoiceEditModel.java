@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.model;
+package is.codion.framework.demos.chinook.model;
 
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.ValueChange;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.ValueChange;
+import is.codion.framework.domain.property.Property;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.time.LocalDateTime;
 
-import static dev.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.framework.demos.chinook.domain.Chinook.*;
 
 public final class InvoiceEditModel extends SwingEntityEditModel {
 
