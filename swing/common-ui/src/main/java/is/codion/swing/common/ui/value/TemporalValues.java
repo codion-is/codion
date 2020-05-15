@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.value;
+package is.codion.swing.common.ui.value;
 
-import dev.codion.swing.common.ui.time.TemporalInputPanel;
+import is.codion.swing.common.ui.time.TemporalInputPanel;
 
 import javax.swing.JFormattedTextField;
 import java.time.LocalDate;

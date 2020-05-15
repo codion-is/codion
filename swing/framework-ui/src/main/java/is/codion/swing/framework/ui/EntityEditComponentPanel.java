@@ -1,38 +1,38 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.value.AbstractValue;
-import dev.codion.common.value.PropertyValue;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Properties;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.domain.property.ValueListProperty;
-import dev.codion.framework.model.EntityEditModel;
-import dev.codion.swing.common.ui.checkbox.NullableCheckBox;
-import dev.codion.swing.common.ui.combobox.MaximumMatch;
-import dev.codion.swing.common.ui.combobox.SteppedComboBox;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
-import dev.codion.swing.common.ui.textfield.TextInputPanel;
-import dev.codion.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
-import dev.codion.swing.common.ui.time.LocalDateInputPanel;
-import dev.codion.swing.common.ui.time.LocalDateTimeInputPanel;
-import dev.codion.swing.common.ui.time.TemporalInputPanel;
-import dev.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
-import dev.codion.swing.common.ui.value.TextValues;
-import dev.codion.swing.common.ui.value.UpdateOn;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityInputComponents.Editable;
-import dev.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
-import dev.codion.swing.framework.ui.EntityInputComponents.Sorted;
+import is.codion.common.Configuration;
+import is.codion.common.i18n.Messages;
+import is.codion.common.state.StateObserver;
+import is.codion.common.value.AbstractValue;
+import is.codion.common.value.PropertyValue;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Properties;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.ValueListProperty;
+import is.codion.framework.model.EntityEditModel;
+import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.combobox.MaximumMatch;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
+import is.codion.swing.common.ui.textfield.TextInputPanel;
+import is.codion.swing.common.ui.textfield.TextInputPanel.ButtonFocusable;
+import is.codion.swing.common.ui.time.LocalDateInputPanel;
+import is.codion.swing.common.ui.time.LocalDateTimeInputPanel;
+import is.codion.swing.common.ui.time.TemporalInputPanel;
+import is.codion.swing.common.ui.time.TemporalInputPanel.CalendarButton;
+import is.codion.swing.common.ui.value.TextValues;
+import is.codion.swing.common.ui.value.UpdateOn;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityInputComponents.Editable;
+import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
+import is.codion.swing.framework.ui.EntityInputComponents.Sorted;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
@@ -50,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static dev.codion.swing.common.ui.KeyEvents.transferFocusOnEnter;
+import static is.codion.swing.common.ui.KeyEvents.transferFocusOnEnter;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -65,7 +65,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> TRANSFER_FOCUS_ON_ENTER = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityEditComponentPanel.transferFocusOnEnter", true);
+          "is.codion.swing.framework.ui.EntityEditComponentPanel.transferFocusOnEnter", true);
 
   /**
    * The edit model these edit components are associated with
@@ -896,7 +896,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
    * @return a SteppedComboBox bound the the property
-   * @see dev.codion.swing.common.ui.combobox.MaximumMatch
+   * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
   protected final SteppedComboBox createComboBox(final String propertyId, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch) {
@@ -910,7 +910,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param maximumMatch true if maximum match should be used
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound the the property
-   * @see dev.codion.swing.common.ui.combobox.MaximumMatch
+   * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
   protected final SteppedComboBox createComboBox(final String propertyId, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final StateObserver enabledState) {
@@ -924,7 +924,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
    * @return a SteppedComboBox bound the the property
-   * @see dev.codion.swing.common.ui.combobox.MaximumMatch
+   * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
   protected final SteppedComboBox createComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch) {
@@ -938,7 +938,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param maximumMatch true if maximum match should be used
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound the the property
-   * @see dev.codion.swing.common.ui.combobox.MaximumMatch
+   * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
   protected final SteppedComboBox createComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final StateObserver enabledState) {

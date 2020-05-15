@@ -1,31 +1,31 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.tools.ui.loadtest;
+package is.codion.swing.common.tools.ui.loadtest;
 
-import dev.codion.common.Util;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.common.value.Nullable;
-import dev.codion.common.value.Values;
-import dev.codion.swing.common.tools.loadtest.LoadTest;
-import dev.codion.swing.common.tools.loadtest.LoadTestModel;
-import dev.codion.swing.common.tools.loadtest.ScenarioException;
-import dev.codion.swing.common.tools.loadtest.UsageScenario;
-import dev.codion.swing.common.tools.randomizer.ItemRandomizer;
-import dev.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.common.ui.control.ControlProvider;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.control.ToggleControl;
-import dev.codion.swing.common.ui.layout.FlexibleGridLayout;
-import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.common.ui.textfield.IntegerField;
-import dev.codion.swing.common.ui.textfield.TextFields;
-import dev.codion.swing.common.ui.value.NumericalValues;
+import is.codion.common.Util;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.common.value.Nullable;
+import is.codion.common.value.Values;
+import is.codion.swing.common.tools.loadtest.LoadTest;
+import is.codion.swing.common.tools.loadtest.LoadTestModel;
+import is.codion.swing.common.tools.loadtest.ScenarioException;
+import is.codion.swing.common.tools.loadtest.UsageScenario;
+import is.codion.swing.common.tools.randomizer.ItemRandomizer;
+import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.ControlProvider;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.value.NumericalValues;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -58,7 +58,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-import static dev.codion.swing.common.ui.icons.Icons.icons;
+import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 
 /**

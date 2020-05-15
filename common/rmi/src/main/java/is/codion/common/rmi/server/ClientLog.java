@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.rmi.server;
+package is.codion.common.rmi.server;
 
-import dev.codion.common.MethodLogger;
+import is.codion.common.MethodLogger;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

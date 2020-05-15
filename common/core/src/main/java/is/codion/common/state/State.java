@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.state;
+package is.codion.common.state;
 
-import dev.codion.common.Conjunction;
+import is.codion.common.Conjunction;
 
 /**
  * A class encapsulating a boolean state.

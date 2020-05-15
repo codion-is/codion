@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.version;
+package is.codion.common.version;
 
 import java.io.Serializable;
 

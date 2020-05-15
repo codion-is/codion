@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.local;
+package is.codion.framework.db.local;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.framework.db.condition.EntityCondition;
-import dev.codion.framework.db.condition.EntitySelectCondition;
-import dev.codion.framework.db.condition.WhereCondition;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.entity.OrderBy;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.SubqueryProperty;
+import is.codion.common.db.database.Database;
+import is.codion.framework.db.condition.EntityCondition;
+import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.WhereCondition;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.SubqueryProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 
 final class Queries {
 

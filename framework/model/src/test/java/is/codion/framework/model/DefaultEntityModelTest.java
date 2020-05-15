@@ -1,27 +1,27 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.model.table.ColumnSummaryModel;
-import dev.codion.common.model.table.FilteredTableColumnModel;
-import dev.codion.common.model.table.FilteredTableModel;
-import dev.codion.common.model.table.RowColumn;
-import dev.codion.common.model.table.SelectionModel;
-import dev.codion.common.model.table.TableSortModel;
-import dev.codion.common.state.State;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.entity.exception.ValidationException;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.model.tests.AbstractEntityModelTest;
-import dev.codion.framework.model.tests.TestDomain;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.common.model.table.FilteredTableColumnModel;
+import is.codion.common.model.table.FilteredTableModel;
+import is.codion.common.model.table.RowColumn;
+import is.codion.common.model.table.SelectionModel;
+import is.codion.common.model.table.TableSortModel;
+import is.codion.common.state.State;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.model.tests.AbstractEntityModelTest;
+import is.codion.framework.model.tests.TestDomain;
 
 import java.util.Collection;
 import java.util.Iterator;

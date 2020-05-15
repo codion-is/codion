@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.domain.impl;
+package is.codion.framework.demos.chinook.domain.impl;
 
-import dev.codion.common.db.Operator;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.operation.AbstractDatabaseFunction;
-import dev.codion.common.db.operation.AbstractDatabaseProcedure;
-import dev.codion.framework.db.condition.EntitySelectCondition;
-import dev.codion.framework.db.local.LocalEntityConnection;
-import dev.codion.framework.demos.chinook.domain.Chinook;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.StringProvider;
-import dev.codion.framework.domain.property.DerivedProperty;
+import is.codion.common.db.Operator;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.operation.AbstractDatabaseFunction;
+import is.codion.common.db.operation.AbstractDatabaseProcedure;
+import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.property.DerivedProperty;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
-import static dev.codion.framework.domain.entity.Entities.getModifiedEntities;
-import static dev.codion.framework.domain.entity.KeyGenerators.automatic;
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
-import static dev.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.domain.entity.Entities.getModifiedEntities;
+import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.property.Properties.*;
 
 public final class ChinookImpl extends Domain implements Chinook {
 

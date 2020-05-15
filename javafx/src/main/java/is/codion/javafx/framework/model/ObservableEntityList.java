@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.javafx.framework.model;
+package is.codion.javafx.framework.model;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.model.FilteredModel;
-import dev.codion.common.model.Refreshable;
-import dev.codion.common.state.StateObserver;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.condition.Condition;
-import dev.codion.framework.domain.entity.Entity;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
+import is.codion.common.model.FilteredModel;
+import is.codion.common.model.Refreshable;
+import is.codion.common.state.StateObserver;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.domain.entity.Entity;
 
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;

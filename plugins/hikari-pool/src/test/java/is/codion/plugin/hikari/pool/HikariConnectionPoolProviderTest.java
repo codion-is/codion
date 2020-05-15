@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.plugin.hikari.pool;
+package is.codion.plugin.hikari.pool;
 
-import dev.codion.common.db.pool.ConnectionPool;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.dbms.h2database.H2DatabaseProvider;
+import is.codion.common.db.pool.ConnectionPool;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.dbms.h2database.H2DatabaseProvider;
 
 import org.junit.jupiter.api.Test;
 

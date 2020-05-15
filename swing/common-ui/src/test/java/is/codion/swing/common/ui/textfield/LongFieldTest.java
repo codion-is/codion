@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.textfield;
+package is.codion.swing.common.ui.textfield;
 
 import org.junit.jupiter.api.Test;
 

@@ -2,7 +2,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-The {url-javadoc}/dev/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] provides a table view of entities.
+The {url-javadoc}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel] provides a table view of entities.
 
 [#_adding_a_print_action]
 == Adding a print action
@@ -11,5 +11,5 @@ The most common place to add a custom control is the table popup menu, i.e. an a
 
 [source,java]
 ----
-include::{dir-source}/dev/codion/framework/demos/manual/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
+include::{dir-source}/is/codion/framework/demos/manual/store/ui/CustomerTablePanel.java[tags=customerTablePanel]
 ----

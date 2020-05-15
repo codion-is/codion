@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.empdept.model;
+package is.codion.framework.demos.empdept.model;
 
-import dev.codion.common.db.Operator;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.condition.Conditions;
-import dev.codion.framework.demos.empdept.domain.EmpDept;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.swing.framework.model.SwingEntityComboBoxModel;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.common.db.Operator;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Objects;
 

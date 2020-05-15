@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.model.table;
+package is.codion.common.model.table;
 
-import dev.codion.common.db.Operator;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.EventObserver;
-import dev.codion.common.event.Events;
-import dev.codion.common.state.State;
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.state.States;
-import dev.codion.common.value.Value;
-import dev.codion.common.value.Values;
+import is.codion.common.db.Operator;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.EventObserver;
+import is.codion.common.event.Events;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
+import is.codion.common.state.States;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
 
 import java.text.Format;
 import java.util.Collection;

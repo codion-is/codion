@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.control;
+package is.codion.swing.common.ui.control;
 
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.value.Value;
-import dev.codion.swing.common.model.checkbox.NullableToggleButtonModel;
-import dev.codion.swing.common.ui.checkbox.NullableCheckBox;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.common.ui.value.BooleanValues;
+import is.codion.common.state.StateObserver;
+import is.codion.common.value.Value;
+import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
+import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.value.BooleanValues;
 
 import javax.swing.Action;
 import javax.swing.ButtonModel;

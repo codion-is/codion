@@ -1,33 +1,33 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.empdept.minimal;
+package is.codion.framework.demos.empdept.minimal;
 
-import dev.codion.common.db.Operator;
-import dev.codion.common.model.CancelException;
-import dev.codion.common.rmi.server.ServerConfiguration;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.condition.Conditions;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.StringProvider;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.swing.framework.model.SwingEntityApplicationModel;
-import dev.codion.swing.framework.model.SwingEntityComboBoxModel;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.model.SwingEntityModelBuilder;
-import dev.codion.swing.framework.ui.EntityApplicationPanel;
-import dev.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
-import dev.codion.swing.framework.ui.EntityEditPanel;
-import dev.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.common.db.Operator;
+import is.codion.common.model.CancelException;
+import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityModelBuilder;
+import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
+import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityPanelBuilder;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.sql.Types;
 import java.util.Locale;
 
-import static dev.codion.framework.domain.entity.KeyGenerators.increment;
-import static dev.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
 /**

@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.icons;
+package is.codion.swing.common.ui.icons;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.value.PropertyValue;
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
 
 import javax.swing.ImageIcon;
 import java.util.Objects;
@@ -15,7 +15,7 @@ import java.util.ServiceLoader;
  */
 public interface Icons {
 
-  PropertyValue<String> ICONS_CLASSNAME = Configuration.stringValue("dev.codion.swing.iconsClassName", DefaultIcons.class.getName());
+  PropertyValue<String> ICONS_CLASSNAME = Configuration.stringValue("is.codion.swing.iconsClassName", DefaultIcons.class.getName());
 
   /**
    * @return icon for the 'filter' action.

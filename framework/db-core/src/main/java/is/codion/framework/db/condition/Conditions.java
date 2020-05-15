@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.condition;
+package is.codion.framework.db.condition;
 
-import dev.codion.common.Conjunction;
-import dev.codion.common.db.Operator;
-import dev.codion.framework.domain.entity.ConditionProvider;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
+import is.codion.common.Conjunction;
+import is.codion.common.db.Operator;
+import is.codion.framework.domain.entity.ConditionProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,11 +18,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
-import static dev.codion.common.Conjunction.AND;
-import static dev.codion.common.Conjunction.OR;
-import static dev.codion.common.Util.nullOrEmpty;
-import static dev.codion.common.db.Operator.LIKE;
-import static dev.codion.framework.domain.entity.Entities.getValues;
+import static is.codion.common.Conjunction.AND;
+import static is.codion.common.Conjunction.OR;
+import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.db.Operator.LIKE;
+import static is.codion.framework.domain.entity.Entities.getValues;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common;
+package is.codion.common;
 
 import org.junit.jupiter.api.Test;
 
@@ -86,7 +86,7 @@ public final class TextTest {
   @Test
   public void getTextFileContents() throws IOException {
     final String contents = "here is" + Util.LINE_SEPARATOR + "some text";
-    assertEquals(contents, Text.getTextFileContents("src/test/java/dev/codion/common/TextUtilTest.txt", Charset.defaultCharset()));
+    assertEquals(contents, Text.getTextFileContents("src/test/java/is/codion/common/TextUtilTest.txt", Charset.defaultCharset()));
   }
 
   @Test

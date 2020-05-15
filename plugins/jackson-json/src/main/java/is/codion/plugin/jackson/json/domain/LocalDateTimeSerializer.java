@@ -1,4 +1,4 @@
-package dev.codion.plugin.jackson.json.domain;
+package is.codion.plugin.jackson.json.domain;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.db.Operator;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.swing.common.ui.table.ColumnConditionPanel;
+import is.codion.common.db.Operator;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.swing.common.ui.table.ColumnConditionPanel;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;

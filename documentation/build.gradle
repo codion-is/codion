@@ -83,7 +83,7 @@ artifacts {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId 'dev.codion.' + project.targetJdk
+            groupId 'is.codion.' + project.targetJdk
             artifact documentationZip
         }
     }

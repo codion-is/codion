@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.entity;
+package is.codion.framework.domain.entity;
 
-import dev.codion.common.valuemap.ValueMap;
-import dev.codion.framework.domain.property.BlobProperty;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
+import is.codion.common.valuemap.ValueMap;
+import is.codion.framework.domain.property.BlobProperty;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static dev.codion.common.Util.map;
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.map;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 

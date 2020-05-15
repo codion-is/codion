@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.http.server;
+package is.codion.common.http.server;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
 
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
@@ -20,7 +20,7 @@ import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**

@@ -5,8 +5,8 @@
 :dir-world-source: ../../../../../demos/world/src/main/java
 :url-javadoc: link:../api
 
-The domain model is based around three classes; {url-javadoc}/dev/codion/framework/domain/entity/Entity.html[Entity], which represents a row in a table, {url-javadoc}/dev/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such) and {url-javadoc}/dev/codion/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
-{url-javadoc}/dev/codion/framework/domain/Domain.html[Domain] class, which in turn provides a {url-javadoc}/dev/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}/dev/codion/framework/domain/Domain.html#getEntities[getEntities()], which serves as a container for the domain entity definitions and as a factory for *Entity* and *Entity.Key* instances.
+The domain model is based around three classes; {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity], which represents a row in a table, {url-javadoc}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such) and {url-javadoc}/is/codion/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
+{url-javadoc}/is/codion/framework/domain/Domain.html[Domain] class, which in turn provides a {url-javadoc}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}/is/codion/framework/domain/Domain.html#getEntities[getEntities()], which serves as a container for the domain entity definitions and as a factory for *Entity* and *Entity.Key* instances.
 
 == Entities
 
@@ -16,7 +16,7 @@ NOTE: Typically the *entityId* constant contains the underlying table name, but 
 
 == Properties
 
-Each column in a table is represented by the {url-javadoc}/dev/codion/framework/domain/property/Property.html[Property] class or one of its subclasses. The {url-javadoc}/dev/codion/framework/domain/property/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is identified by a *propertyId*, a String, unique within the Entity.
+Each column in a table is represented by the {url-javadoc}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses. The {url-javadoc}/is/codion/framework/domain/property/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is identified by a *propertyId*, a String, unique within the Entity.
 
 NOTE: Typically the *propertyId* contains the underlying column name, but as with the *entityId* you can use whatever value you want and specify the column name via *setColumnName()* when instantiating the Property.
 
@@ -26,7 +26,7 @@ String constants for the Entities and Properties in the World demo, here the *en
 
 [source,java]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=entityAndPropertyIds]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=entityAndPropertyIds]
 ----
 
 === Supported data types
@@ -47,7 +47,7 @@ The following data types are supported:
 
 === Property
 
-{url-javadoc}/dev/codion/framework/domain/property/Property.html[Property] and its subclasses are used to represent entity properties, these can be transient or based on table columns.
+{url-javadoc}/is/codion/framework/domain/property/Property.html[Property] and its subclasses are used to represent entity properties, these can be transient or based on table columns.
 
 === Primary key
 
@@ -59,42 +59,42 @@ If no primary key properties are specified the entity is somewhat restricted, it
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=primaryKey]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=primaryKey]
 ----
 
 In case of composite primary keys you create a ColumnProperty and specify the primary key index. Note that in the example below the column with primary key index 0 is a foreign key column and wrapped in a foreignKeyProperty(), which are discussed a bit later.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=compositePrimaryKey]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=compositePrimaryKey]
 ----
 
 === ColumnProperty
 
-{url-javadoc}/dev/codion/framework/domain/property/ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
+{url-javadoc}/is/codion/framework/domain/property/ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=columnProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=columnProperty]
 ----
 
 === BlobProperty
 
-{url-javadoc}/dev/codion/framework/domain/property/BlobProperty.html[BlobProperty] is a specific ColumnProperty for the Types.BLOB type which provides lazy loading for BLOB values. Using a standard ColumnProperty with a Types.BLOB works fine, but for lazy loading you have to use BlobProperty.
+{url-javadoc}/is/codion/framework/domain/property/BlobProperty.html[BlobProperty] is a specific ColumnProperty for the Types.BLOB type which provides lazy loading for BLOB values. Using a standard ColumnProperty with a Types.BLOB works fine, but for lazy loading you have to use BlobProperty.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=blobProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=blobProperty]
 ----
 
 [#_foreignkeyproperty]
 === ForeignKeyProperty
 
-{url-javadoc}/dev/codion/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to represent a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.
+{url-javadoc}/is/codion/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to represent a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=foreignKeyPropertyCapital]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=foreignKeyPropertyCapital]
 ----
 
 Referring to an entity with composite primary key.
@@ -127,7 +127,7 @@ For databases supporting *Types.BOOLEAN* you simply use *Properties.columnProper
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=booleanProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=booleanProperty]
 ----
 
 For databases lacking native boolean support we use the *Properties.booleanProperty* method, specifying the underlying true/false values.
@@ -163,12 +163,12 @@ An entity can include a property value from a entity referenced via foreign key,
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=denormalizedViewProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=denormalizedViewProperty]
 ----
 
 === DenormalizedProperty
 
-{url-javadoc}/dev/codion/framework/domain/property/DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the column in the referenced table when the corresponding reference property value is set.
+{url-javadoc}/is/codion/framework/domain/property/DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the column in the referenced table when the corresponding reference property value is set.
 
 [source,java]
 ----
@@ -200,38 +200,38 @@ customer.get(CUSTOMER_CITY);//now this returns "Canastota"
 
 === SubqueryProperty
 
-{url-javadoc}/dev/codion/framework/domain/property/SubqueryProperty.html[SubqueryProperty] is used to represent a property which gets its value from a subquery returning a single value. Note that in the example below *reference_id* must be available when the query is run, that is, the entity must include that column as a property.
+{url-javadoc}/is/codion/framework/domain/property/SubqueryProperty.html[SubqueryProperty] is used to represent a property which gets its value from a subquery returning a single value. Note that in the example below *reference_id* must be available when the query is run, that is, the entity must include that column as a property.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=subqueryProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=subqueryProperty]
 ----
 
 === TransientProperty
 
-{url-javadoc}/dev/codion/framework/domain/property/TransientProperty.html[TransientProperty] is used to represent a property which is not based on an underlying column, these properties all have a default value of null and can be set and retrieved just like normal properties.
+{url-javadoc}/is/codion/framework/domain/property/TransientProperty.html[TransientProperty] is used to represent a property which is not based on an underlying column, these properties all have a default value of null and can be set and retrieved just like normal properties.
 
 === DerivedProperty
 
-{url-javadoc}/dev/codion/framework/domain/property/DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}/dev/codion/framework/domain/property/DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
+{url-javadoc}/is/codion/framework/domain/property/DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}/is/codion/framework/domain/property/DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=derivedProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=derivedProperty]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=derivedPropertyProvider]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=derivedPropertyProvider]
 ----
 
 == Domain
 
-Each entity type is defined by calling {url-javadoc}/dev/codion/framework/domain/Domain.html#define-java.lang.String-dev.codion.framework.domain.property.Property.Builder...-[Domain.define]. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
+Each entity type is defined by calling {url-javadoc}/is/codion/framework/domain/Domain.html#define-java.lang.String-is.codion.framework.domain.property.Property.Builder...-[Domain.define]. The framework assumes the *entityId* is the table name, unless the *tableName* parameter is specified.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=defineCity]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=defineCity]
 ----
 
 === Examples
@@ -243,7 +243,7 @@ include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[t
 [#_keygenerator]
 == KeyGenerator
 
-The framework provides implementations for most commonly used primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/dev/codion/framework/domain/entity/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/dev/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
+The framework provides implementations for most commonly used primary key generation strategies, sequence (with or without trigger) and auto-increment columns. The {url-javadoc}/is/codion/framework/domain/entity/KeyGenerators.html[KeyGenerators] class serves as a factory for {url-javadoc}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator] implementations. Static imports are assumed in the below examples.
 
 === Auto-increment
 
@@ -265,7 +265,7 @@ When sequences are used without triggers the framework can fetch the value from 
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=sequence]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=sequence]
 ----
 
 === Queried
@@ -292,47 +292,47 @@ The framework can automatically increment the primary key value by selecting the
 
 === Custom
 
-You can provide a custom key generator strategy by implementing a {url-javadoc}/dev/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator].
+You can provide a custom key generator strategy by implementing a {url-javadoc}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator].
 
 [source,java,indent=0]
 ----
-include::{dir-source}/dev/codion/framework/demos/manual/store/domain/Store.java[tags=keyGenerator]
+include::{dir-source}/is/codion/framework/demos/manual/store/domain/Store.java[tags=keyGenerator]
 ----
 
 == StringProvider
 
-The {url-javadoc}/dev/codion/framework/domain/entity/StringProvider.html[StringProvider] class is for providing *toString()* implementations for entities. This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
+The {url-javadoc}/is/codion/framework/domain/entity/StringProvider.html[StringProvider] class is for providing *toString()* implementations for entities. This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/dev/codion/framework/demos/manual/store/domain/Store.java[tags=address]
+include::{dir-source}/is/codion/framework/demos/manual/store/domain/Store.java[tags=address]
 ----
 
 For more complex toString() implementations you can implement a custom *Function<Entity, String>*.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/dev/codion/framework/demos/manual/store/domain/Store.java[tags=toString]
+include::{dir-source}/is/codion/framework/demos/manual/store/domain/Store.java[tags=toString]
 ----
 
 == ColorProvider
 
-{url-javadoc}/dev/codion/framework/domain/entity/ColorProvider.html[ColorProvider] is used to provide colors for entity properties, used as background color in table cells for example.
+{url-javadoc}/is/codion/framework/domain/entity/ColorProvider.html[ColorProvider] is used to provide colors for entity properties, used as background color in table cells for example.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=colorProvider]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=colorProvider]
 ----
 
 == Validation
 
-Custom validation of Entities is performed by implementing a {url-javadoc}/dev/codion/framework/domain/entity/EntityValidator.html[EntityValidator].
+Custom validation of Entities is performed by implementing a {url-javadoc}/is/codion/framework/domain/entity/EntityValidator.html[EntityValidator].
 
 The *DefaultEntityValidator* implementation provides basic range and null validation and can be extended to provide further validations. Note that validation is performed quite often so it should not perform expensive operations. Validation requiring database access for example belongs in the application model or ui.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/dev/codion/framework/demos/world/domain/World.java[tags=validator]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=validator]
 ----
 
 == Examples
@@ -347,14 +347,14 @@ Using the Entity class is rather straight forward.
 
 [source,java,indent=0]
 ----
-include::{dir-petstore-source}/dev/codion/framework/demos/petstore/manual/EntitiesInAction.java[tags=entitiesInAction]
+include::{dir-petstore-source}/is/codion/framework/demos/petstore/manual/EntitiesInAction.java[tags=entitiesInAction]
 ----
 
 == Unit Testing
 
 === Introduction
 
-To unit test the CRUD operations on the domain model extend {url-javadoc}/dev/codion/framework/domain/entity/test/EntityTestUnit.html[EntityTestUnit].
+To unit test the CRUD operations on the domain model extend {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html[EntityTestUnit].
 
 The unit tests are run within a single transaction which is rolled back after the test finishes, so these tests are pretty much guaranteed to leave no junk data behind.
 
@@ -362,15 +362,15 @@ The unit tests are run within a single transaction which is rolled back after th
 
 The following methods all have default implementations which are based on randomly created property values, based on the constraints set in the domain model, override if the default ones are not working.
 
-* {url-javadoc}/dev/codion/framework/domain/entity/test/EntityTestUnit.html#initializeReferenceEntity-java.lang.String-java.util.Map-[initializeReferenceEntity] should return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
-* {url-javadoc}/dev/codion/framework/domain/entity/test/EntityTestUnit.html#initializeTestEntity-java.lang.String-java.util.Map-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
-* {url-javadoc}/dev/codion/framework/domain/entity/test/EntityTestUnit.html#modifyEntity-dev.codion.framework.domain.entity.Entity-java.util.Map-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
+* {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeReferenceEntity-java.lang.String-java.util.Map-[initializeReferenceEntity] should return an instance of the given entity type to use for a foreign key reference required for inserting the entity being tested.
+* {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeTestEntity-java.lang.String-java.util.Map-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
+* {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html#modifyEntity-is.codion.framework.domain.entity.Entity-java.util.Map-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
 
 To run the full CRUD test for a domain entity you need to call the *test(String entityId)* method with the id of the given entity as parameter. You can either create a single *testDomain()* method and call the *test* method in turn for each entityId or create a *entityName* method for each domain entity, as we do in the example below.
 
 [source,java]
 ----
-include::{dir-source}/dev/codion/framework/demos/manual/store/domain/StoreTest.java[tags=storeTest]
+include::{dir-source}/is/codion/framework/demos/manual/store/domain/StoreTest.java[tags=storeTest]
 ----
 
 === Examples

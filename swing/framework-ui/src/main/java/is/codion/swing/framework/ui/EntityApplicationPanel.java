@@ -1,55 +1,55 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.CredentialsProvider;
-import dev.codion.common.LoggerProxy;
-import dev.codion.common.Memory;
-import dev.codion.common.Text;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.item.Item;
-import dev.codion.common.item.Items;
-import dev.codion.common.model.CancelException;
-import dev.codion.common.model.UserPreferences;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.common.value.PropertyValue;
-import dev.codion.common.version.Version;
-import dev.codion.common.version.Versions;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.EntityConnectionProviders;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.i18n.FrameworkMessages;
-import dev.codion.framework.model.EntityApplicationModel;
-import dev.codion.swing.common.model.combobox.ItemComboBoxModel;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.HierarchyPanel;
-import dev.codion.swing.common.ui.KeyEvents;
-import dev.codion.swing.common.ui.LoginPanel;
-import dev.codion.swing.common.ui.UiManagerDefaults;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.common.ui.control.Control;
-import dev.codion.swing.common.ui.control.ControlList;
-import dev.codion.swing.common.ui.control.ControlProvider;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.control.ToggleControl;
-import dev.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import dev.codion.swing.common.ui.dialog.DialogExceptionHandler;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.common.ui.dialog.Modal;
-import dev.codion.swing.common.ui.images.Images;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.framework.model.SwingEntityApplicationModel;
-import dev.codion.swing.framework.model.SwingEntityModel;
-import dev.codion.swing.framework.model.SwingEntityModelBuilder;
+import is.codion.common.Configuration;
+import is.codion.common.CredentialsProvider;
+import is.codion.common.LoggerProxy;
+import is.codion.common.Memory;
+import is.codion.common.Text;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
+import is.codion.common.i18n.Messages;
+import is.codion.common.item.Item;
+import is.codion.common.item.Items;
+import is.codion.common.model.CancelException;
+import is.codion.common.model.UserPreferences;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.common.value.PropertyValue;
+import is.codion.common.version.Version;
+import is.codion.common.version.Versions;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnectionProviders;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.framework.model.EntityApplicationModel;
+import is.codion.swing.common.model.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.HierarchyPanel;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.LoginPanel;
+import is.codion.swing.common.ui.UiManagerDefaults;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.ControlProvider;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.Modal;
+import is.codion.swing.common.ui.images.Images;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityModelBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,8 +102,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
-import static dev.codion.common.Util.nullOrEmpty;
-import static dev.codion.swing.common.ui.icons.Icons.icons;
+import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -198,9 +198,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     NO
   }
 
-  private static final String DEFAULT_USERNAME_PROPERTY = "dev.codion.swing.framework.ui.defaultUsername";
-  private static final String LOOK_AND_FEEL_PROPERTY = "dev.codion.swing.framework.ui.LookAndFeel";
-  private static final String FONT_SIZE_PROPERTY = "dev.codion.swing.framework.ui.FontSize";
+  private static final String DEFAULT_USERNAME_PROPERTY = "is.codion.swing.framework.ui.defaultUsername";
+  private static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
+  private static final String FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
   private static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
   private static final Dimension MINIMUM_HELP_WINDOW_SIZE = new Dimension(600, 750);
   private static final double HELP_DIALOG_SCREEN_SIZE_RATIO = 0.1;
@@ -1471,9 +1471,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Looks up user credentials via a {@link dev.codion.common.CredentialsProvider} service using an authentication token
+   * Looks up user credentials via a {@link is.codion.common.CredentialsProvider} service using an authentication token
    * found in the program arguments list. Useful for single sign on application launch.
-   * <pre>javaws -open authenticationToken:123-123-123 http://codion.dev/demo/demo.jnlp</pre>
+   * <pre>javaws -open authenticationToken:123-123-123 http://codion.is/demo/demo.jnlp</pre>
    * <pre>java -jar application/getdown-1.7.1.jar app_dir app_id authenticationToken:123-123-123</pre>
    * @param args the program arguments
    * @return the User credentials associated with the authentication token, null if no authentication token is found,

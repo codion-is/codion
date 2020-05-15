@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.server.monitor;
+package is.codion.swing.framework.server.monitor;
 
-import dev.codion.common.TaskScheduler;
-import dev.codion.common.db.pool.ConnectionPool;
-import dev.codion.common.db.pool.ConnectionPoolState;
-import dev.codion.common.db.pool.ConnectionPoolStatistics;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventObserver;
-import dev.codion.common.event.Events;
-import dev.codion.common.value.Value;
+import is.codion.common.TaskScheduler;
+import is.codion.common.db.pool.ConnectionPool;
+import is.codion.common.db.pool.ConnectionPoolState;
+import is.codion.common.db.pool.ConnectionPoolStatistics;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventObserver;
+import is.codion.common.event.Events;
+import is.codion.common.value.Value;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;

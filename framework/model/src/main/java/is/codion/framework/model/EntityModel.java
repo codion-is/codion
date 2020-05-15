@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.Util;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.model.Refreshable;
-import dev.codion.common.value.PropertyValue;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.common.Configuration;
+import is.codion.common.Util;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.model.Refreshable;
+import is.codion.common.value.PropertyValue;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,7 +32,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Default value: false
    */
   PropertyValue<Boolean> SEARCH_ON_MASTER_INSERT = Configuration.booleanValue(
-          "dev.codion.framework.model.EntityModel.searchOnMasterInsert", false);
+          "is.codion.framework.model.EntityModel.searchOnMasterInsert", false);
 
   /**
    * Specifies whether or not the client should save and apply user preferences<br>
@@ -40,7 +40,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Default value: true if required JSON library is found on classpath, false otherwise
    */
   PropertyValue<Boolean> USE_CLIENT_PREFERENCES = Configuration.booleanValue(
-          "dev.codion.framework.model.EntityModel.useClientPreferences", Util.onClasspath("org.json.JSONObject"));
+          "is.codion.framework.model.EntityModel.useClientPreferences", Util.onClasspath("org.json.JSONObject"));
 
   /**
    * @return the id of the entity this entity model is based on

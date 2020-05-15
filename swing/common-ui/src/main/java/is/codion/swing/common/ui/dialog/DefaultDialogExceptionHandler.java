@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.dialog;
+package is.codion.swing.common.ui.dialog;
 
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.model.CancelException;
+import is.codion.common.i18n.Messages;
+import is.codion.common.model.CancelException;
 
 import java.awt.Window;
 import java.io.FileNotFoundException;
@@ -13,7 +13,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
 
 /**

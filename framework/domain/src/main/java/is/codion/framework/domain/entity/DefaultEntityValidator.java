@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.entity;
+package is.codion.framework.domain.entity;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
-import dev.codion.framework.domain.entity.exception.LengthValidationException;
-import dev.codion.framework.domain.entity.exception.NullValidationException;
-import dev.codion.framework.domain.entity.exception.RangeValidationException;
-import dev.codion.framework.domain.entity.exception.ValidationException;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
+import is.codion.framework.domain.entity.exception.LengthValidationException;
+import is.codion.framework.domain.entity.exception.NullValidationException;
+import is.codion.framework.domain.entity.exception.RangeValidationException;
+import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.Objects;

@@ -1,25 +1,25 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.model.FilteredModel;
-import dev.codion.common.model.Refreshable;
-import dev.codion.common.model.table.ColumnSummaryModel;
-import dev.codion.common.model.table.SelectionModel;
-import dev.codion.common.state.State;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.ColorProvider;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.entity.EntityValidator;
-import dev.codion.framework.domain.entity.exception.ValidationException;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.model.FilteredModel;
+import is.codion.common.model.Refreshable;
+import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.common.model.table.SelectionModel;
+import is.codion.common.state.State;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.ColorProvider;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -153,7 +153,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
    * @param index the index at which to add
    * @param entities the entities to add
-   * @see dev.codion.common.model.table.TableSortModel#isSortingEnabled()
+   * @see is.codion.common.model.table.TableSortModel#isSortingEnabled()
    */
   void addEntitiesAtSorted(int index, List<Entity> entities);
 
@@ -255,8 +255,8 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * this method returns silently.
    * @param entities the entities to update
    * @throws DatabaseException in case of a database exception
-   * @throws dev.codion.common.model.CancelException in case the user cancels the operation
-   * @throws dev.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
+   * @throws is.codion.common.model.CancelException in case the user cancels the operation
+   * @throws is.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow updating
    * @see EntityValidator#validate(Collection, EntityDefinition)
@@ -266,7 +266,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * Deletes the selected entities
    * @throws DatabaseException in case of a database exception
-   * @throws dev.codion.common.model.CancelException in case the user cancels the operation
+   * @throws is.codion.common.model.CancelException in case the user cancels the operation
    * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow deleting
    */
   void deleteSelected() throws DatabaseException;

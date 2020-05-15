@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.local;
+package is.codion.framework.db.local;
 
-import dev.codion.common.db.result.ResultPacker;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.DerivedProperty;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.domain.property.TransientProperty;
+import is.codion.common.db.result.ResultPacker;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.DerivedProperty;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.TransientProperty;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

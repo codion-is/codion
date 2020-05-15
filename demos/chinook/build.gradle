@@ -45,10 +45,10 @@ dependencies {
 }
 
 ext {
-    mainClass = "$moduleName/dev.codion.framework.demos.chinook.ui.ChinookAppPanel"
-    loadTestMainClass = "$moduleName/dev.codion.framework.demos.chinook.testing.ChinookLoadTest"
-    testAddModules = ['dev.codion.framework.db.test']
-    testAddReads = ['dev.codion.framework.demos.chinook': 'dev.codion.framework.db.test']
+    mainClass = "$moduleName/is.codion.framework.demos.chinook.ui.ChinookAppPanel"
+    loadTestMainClass = "$moduleName/is.codion.framework.demos.chinook.testing.ChinookLoadTest"
+    testAddModules = ['is.codion.framework.db.test']
+    testAddReads = ['is.codion.framework.demos.chinook': 'is.codion.framework.db.test']
 }
 
 javafx {
@@ -69,13 +69,13 @@ test {
         addReads = testAddReads
     }
     systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "dev.codion.framework.demos.chinook.domain.impl.ChinookImpl"
+    systemProperty "codion.client.domainClass", "is.codion.framework.demos.chinook.domain.impl.ChinookImpl"
 }
 
 task buildReports(dependsOn: 'compileJava') {
     group 'build'
     def jasperSourceDir = file('src/main/reports')
-    def jasperTargetDir = file(sourceSets.main.output.resourcesDir.toString() + '/dev/codion/framework/demos/chinook/domain')
+    def jasperTargetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/chinook/domain')
     inputs.dir jasperSourceDir
     outputs.dir jasperTargetDir
     doLast {

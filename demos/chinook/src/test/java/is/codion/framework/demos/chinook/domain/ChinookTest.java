@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.domain;
+package is.codion.framework.demos.chinook.domain;
 
-import dev.codion.framework.demos.chinook.domain.impl.ChinookImpl;
-import dev.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
+import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 
-import static dev.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.framework.demos.chinook.domain.Chinook.*;
 
 public class ChinookTest extends EntityTestUnit {
 

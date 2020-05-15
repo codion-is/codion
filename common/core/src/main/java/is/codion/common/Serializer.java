@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common;
+package is.codion.common;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

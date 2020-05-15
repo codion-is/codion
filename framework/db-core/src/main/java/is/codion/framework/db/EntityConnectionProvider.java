@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db;
+package is.codion.framework.db;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.user.User;
-import dev.codion.common.value.PropertyValue;
-import dev.codion.common.version.Version;
-import dev.codion.framework.domain.entity.Entities;
+import is.codion.common.Configuration;
+import is.codion.common.event.EventListener;
+import is.codion.common.user.User;
+import is.codion.common.value.PropertyValue;
+import is.codion.common.version.Version;
+import is.codion.framework.domain.entity.Entities;
 
 import java.util.UUID;
 

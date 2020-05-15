@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.model;
+package is.codion.swing.framework.model;
 
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.model.combobox.FilteredComboBoxModel;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.local.LocalEntityConnectionProvider;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.model.EntityComboBoxModel;
-import dev.codion.framework.model.tests.TestDomain;
+import is.codion.common.db.database.Databases;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.model.combobox.FilteredComboBoxModel;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.model.EntityComboBoxModel;
+import is.codion.framework.model.tests.TestDomain;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.condition;
+package is.codion.framework.db.condition;
 
-import dev.codion.common.db.Operator;
-import dev.codion.framework.db.TestDomain;
-import dev.codion.framework.domain.property.ColumnProperty;
+import is.codion.common.db.Operator;
+import is.codion.framework.db.TestDomain;
+import is.codion.framework.domain.property.ColumnProperty;
 
 import org.junit.jupiter.api.Test;
 

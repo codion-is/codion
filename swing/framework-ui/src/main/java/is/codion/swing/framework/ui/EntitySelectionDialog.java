@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.model.CancelException;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.i18n.FrameworkMessages;
-import dev.codion.swing.common.ui.KeyEvents;
-import dev.codion.swing.common.ui.control.Control;
-import dev.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.common.i18n.Messages;
+import is.codion.common.model.CancelException;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -25,9 +25,9 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.codion.swing.common.ui.Windows.getParentWindow;
-import static dev.codion.swing.common.ui.control.Controls.control;
-import static dev.codion.swing.common.ui.layout.Layouts.flowLayout;
+import static is.codion.swing.common.ui.Windows.getParentWindow;
+import static is.codion.swing.common.ui.control.Controls.control;
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;

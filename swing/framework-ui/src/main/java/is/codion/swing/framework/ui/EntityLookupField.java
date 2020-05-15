@@ -1,39 +1,39 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.Events;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.model.table.SortingDirective;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.i18n.FrameworkMessages;
-import dev.codion.framework.model.DefaultEntityLookupModel;
-import dev.codion.framework.model.EntityLookupModel;
-import dev.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.KeyEvents;
-import dev.codion.swing.common.ui.SwingMessages;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.common.ui.control.Control;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.common.ui.dialog.Modal;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.common.ui.table.FilteredTable;
-import dev.codion.swing.common.ui.textfield.SizedDocument;
-import dev.codion.swing.common.ui.textfield.TextFieldHint;
-import dev.codion.swing.common.ui.value.AbstractComponentValue;
-import dev.codion.swing.common.ui.value.BooleanValues;
-import dev.codion.swing.common.ui.value.ComponentValuePanel;
-import dev.codion.swing.common.ui.value.TextValues;
-import dev.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.common.event.Event;
+import is.codion.common.event.Events;
+import is.codion.common.i18n.Messages;
+import is.codion.common.model.table.SortingDirective;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.framework.model.DefaultEntityLookupModel;
+import is.codion.framework.model.EntityLookupModel;
+import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.SwingMessages;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.Modal;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.table.FilteredTable;
+import is.codion.swing.common.ui.textfield.SizedDocument;
+import is.codion.swing.common.ui.textfield.TextFieldHint;
+import is.codion.swing.common.ui.value.AbstractComponentValue;
+import is.codion.swing.common.ui.value.BooleanValues;
+import is.codion.swing.common.ui.value.ComponentValuePanel;
+import is.codion.swing.common.ui.value.TextValues;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -67,9 +67,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static dev.codion.common.Util.nullOrEmpty;
-import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
-import static dev.codion.swing.common.ui.control.Controls.control;
+import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
+import static is.codion.swing.common.ui.control.Controls.control;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -549,7 +549,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   /**
-   * A {@link dev.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a EntityLookupField.
+   * A {@link is.codion.swing.common.ui.value.ComponentValue} implementation for Entity values based on a EntityLookupField.
    * @see EntityLookupField
    */
   public static final class ComponentValue extends AbstractComponentValue<Entity, EntityLookupField> {

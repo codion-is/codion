@@ -1,20 +1,20 @@
-package dev.codion.framework.demos.world.ui;
+package is.codion.framework.demos.world.ui;
 
-import dev.codion.common.model.CancelException;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.world.domain.World;
-import dev.codion.framework.demos.world.model.CountryCustomModel;
-import dev.codion.framework.demos.world.model.CountryModel;
-import dev.codion.framework.demos.world.model.WorldAppModel;
-import dev.codion.swing.common.ui.icons.Icons;
-import dev.codion.swing.framework.model.SwingEntityModelBuilder;
-import dev.codion.swing.framework.ui.EntityApplicationPanel;
-import dev.codion.swing.framework.ui.EntityPanel;
-import dev.codion.swing.framework.ui.EntityPanelBuilder;
-import dev.codion.swing.framework.ui.icons.FrameworkIcons;
-import dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
-import dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
+import is.codion.common.model.CancelException;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.world.domain.World;
+import is.codion.framework.demos.world.model.CountryCustomModel;
+import is.codion.framework.demos.world.model.CountryModel;
+import is.codion.framework.demos.world.model.WorldAppModel;
+import is.codion.swing.common.ui.icons.Icons;
+import is.codion.swing.framework.model.SwingEntityModelBuilder;
+import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
+import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
+import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -68,7 +68,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.world.domain.World");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.World");
     new WorldAppPanel().startApplication("World", null, MaximizeFrame.NO,
             new Dimension(1024, 720), Users.parseUser("scott:tiger"));
   }

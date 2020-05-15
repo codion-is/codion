@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.tools.ui.randomizer;
+package is.codion.swing.common.tools.ui.randomizer;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.value.AbstractValue;
-import dev.codion.swing.common.tools.randomizer.ItemRandomizer;
-import dev.codion.swing.common.tools.randomizer.ItemRandomizerModel;
-import dev.codion.swing.common.ui.layout.Layouts;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.Events;
+import is.codion.common.value.AbstractValue;
+import is.codion.swing.common.tools.randomizer.ItemRandomizer;
+import is.codion.swing.common.tools.randomizer.ItemRandomizerModel;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.ButtonModel;
 import javax.swing.DefaultListModel;

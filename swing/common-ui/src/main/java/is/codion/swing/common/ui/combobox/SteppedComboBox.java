@@ -1,4 +1,4 @@
-package dev.codion.swing.common.ui.combobox;
+package is.codion.swing.common.ui.combobox;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;

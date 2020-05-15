@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.http.server;
+package is.codion.common.http.server;
 
-import dev.codion.common.http.server.HttpServerConfiguration.Secure;
+import is.codion.common.http.server.HttpServerConfiguration.Secure;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

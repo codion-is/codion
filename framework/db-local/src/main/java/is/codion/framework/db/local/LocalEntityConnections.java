@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.local;
+package is.codion.framework.db.local;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.user.User;
-import dev.codion.framework.domain.Domain;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.user.User;
+import is.codion.framework.domain.Domain;
 
 import java.sql.Connection;
 
@@ -24,7 +24,7 @@ public final class LocalEntityConnections {
    * @param user the user used for connecting to the database
    * @return a new LocalEntityConnection instance
    * @throws DatabaseException in case there is a problem connecting to the database
-   * @throws dev.codion.common.db.exception.AuthenticationException in case of an authentication error
+   * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
   public static LocalEntityConnection createConnection(final Domain domain, final Database database,
                                                        final User user) throws DatabaseException {

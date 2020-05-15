@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.http;
+package is.codion.framework.db.http;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.value.PropertyValue;
-import dev.codion.framework.db.AbstractEntityConnectionProvider;
-import dev.codion.framework.db.EntityConnection;
+import is.codion.common.Configuration;
+import is.codion.common.i18n.Messages;
+import is.codion.common.value.PropertyValue;
+import is.codion.framework.db.AbstractEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

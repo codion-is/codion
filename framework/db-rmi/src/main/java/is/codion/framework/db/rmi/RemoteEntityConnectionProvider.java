@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.rmi;
+package is.codion.framework.db.rmi;
 
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.rmi.client.Clients;
-import dev.codion.common.rmi.client.ConnectionRequest;
-import dev.codion.common.rmi.server.Server;
-import dev.codion.common.rmi.server.ServerConfiguration;
-import dev.codion.common.rmi.server.ServerInformation;
-import dev.codion.common.rmi.server.Servers;
-import dev.codion.framework.db.AbstractEntityConnectionProvider;
-import dev.codion.framework.db.EntityConnection;
+import is.codion.common.i18n.Messages;
+import is.codion.common.rmi.client.Clients;
+import is.codion.common.rmi.client.ConnectionRequest;
+import is.codion.common.rmi.server.Server;
+import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.rmi.server.ServerInformation;
+import is.codion.common.rmi.server.Servers;
+import is.codion.framework.db.AbstractEntityConnectionProvider;
+import is.codion.framework.db.EntityConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

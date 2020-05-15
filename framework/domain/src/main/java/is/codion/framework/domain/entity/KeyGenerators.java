@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.entity;
+package is.codion.framework.domain.entity;
 
-import dev.codion.common.db.connection.DatabaseConnection;
-import dev.codion.common.db.database.Database;
-import dev.codion.framework.domain.property.ColumnProperty;
+import is.codion.common.db.connection.DatabaseConnection;
+import is.codion.common.db.database.Database;
+import is.codion.framework.domain.property.ColumnProperty;
 
 import java.sql.SQLException;
 import java.sql.Statement;

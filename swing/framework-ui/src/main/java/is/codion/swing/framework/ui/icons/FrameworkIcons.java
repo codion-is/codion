@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui.icons;
+package is.codion.swing.framework.ui.icons;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.value.PropertyValue;
-import dev.codion.swing.common.ui.icons.Icons;
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
+import is.codion.swing.common.ui.icons.Icons;
 
 import javax.swing.ImageIcon;
 import java.util.Objects;
@@ -16,7 +16,7 @@ import java.util.ServiceLoader;
  */
 public interface FrameworkIcons extends Icons {
 
-  PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("dev.codion.swing.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
+  PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("is.codion.swing.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
 
   /**
    * @return icon for the 'add' action.

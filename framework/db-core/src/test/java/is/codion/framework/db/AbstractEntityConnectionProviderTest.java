@@ -1,8 +1,8 @@
-package dev.codion.framework.db;
+package is.codion.framework.db;
 
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.domain.entity.Entities;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.domain.entity.Entities;
 
 import org.junit.jupiter.api.Test;
 

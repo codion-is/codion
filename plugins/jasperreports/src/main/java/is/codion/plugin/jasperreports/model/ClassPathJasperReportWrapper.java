@@ -1,6 +1,6 @@
-package dev.codion.plugin.jasperreports.model;
+package is.codion.plugin.jasperreports.model;
 
-import dev.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportException;
 
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;

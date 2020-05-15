@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.ui;
+package is.codion.framework.demos.chinook.ui;
 
-import dev.codion.swing.common.ui.time.TemporalInputPanel;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.model.SwingEntityTableModel;
-import dev.codion.swing.framework.ui.EntityEditPanel;
-import dev.codion.swing.framework.ui.EntityLookupField;
-import dev.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.common.ui.time.TemporalInputPanel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityLookupField;
+import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -16,11 +16,11 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import static dev.codion.common.model.table.SortingDirective.ASCENDING;
-import static dev.codion.framework.demos.chinook.domain.Chinook.*;
-import static dev.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static dev.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
+import static is.codion.common.model.table.SortingDirective.ASCENDING;
+import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
 
 public class InvoiceEditPanel extends EntityEditPanel {
 

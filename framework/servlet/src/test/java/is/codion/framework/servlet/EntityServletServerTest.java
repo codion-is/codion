@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.servlet;
+package is.codion.framework.servlet;
 
-import dev.codion.common.Serializer;
-import dev.codion.common.db.Operator;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.http.server.HttpServerConfiguration;
-import dev.codion.common.rmi.server.RemoteClient;
-import dev.codion.common.rmi.server.ServerConfiguration;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.server.EntityServer;
-import dev.codion.framework.server.EntityServerAdmin;
-import dev.codion.framework.server.EntityServerConfiguration;
+import is.codion.common.Serializer;
+import is.codion.common.db.Operator;
+import is.codion.common.db.database.Databases;
+import is.codion.common.http.server.HttpServerConfiguration;
+import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.server.EntityServer;
+import is.codion.framework.server.EntityServerAdmin;
+import is.codion.framework.server.EntityServerConfiguration;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,7 +35,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;

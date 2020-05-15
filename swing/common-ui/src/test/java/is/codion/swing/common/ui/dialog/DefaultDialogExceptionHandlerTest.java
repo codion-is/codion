@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.dialog;
+package is.codion.swing.common.ui.dialog;
 
-import dev.codion.common.model.CancelException;
+import is.codion.common.model.CancelException;
 
 import org.junit.jupiter.api.Test;
 

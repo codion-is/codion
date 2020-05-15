@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.db.reports;
+package is.codion.common.db.reports;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.value.PropertyValue;
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
 
 import java.io.Serializable;
 import java.sql.Connection;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 
 /**
  * A simple wrapper for a report

@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.model.table;
+package is.codion.swing.common.model.table;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.model.table.FilteredTableColumnModel;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.Events;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.FilteredTableColumnModel;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;

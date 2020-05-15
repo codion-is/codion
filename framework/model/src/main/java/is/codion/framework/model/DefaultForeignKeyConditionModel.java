@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.common.model.table.DefaultColumnConditionModel;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
+import is.codion.common.model.table.DefaultColumnConditionModel;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
 
 import java.util.ArrayList;
 import java.util.Collection;

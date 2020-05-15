@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.plugin.jul;
+package is.codion.plugin.jul;
 
-import dev.codion.common.LoggerProxy;
+import is.codion.common.LoggerProxy;
 
 import java.util.List;
 import java.util.logging.Level;

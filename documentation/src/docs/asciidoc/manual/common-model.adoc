@@ -6,46 +6,46 @@ The model layer in a Codion application contains the business logic, most of the
 
 == Common classes
 
-Three common classes used throughout the framework are the {url-javadoc}/dev/codion/common/event/Event.html[Event], {url-javadoc}/dev/codion/common/state/State.html[State] and {url-javadoc}/dev/codion/common/value/Value.html[Value] classes, their respective observers {url-javadoc}/dev/codion/common/event/EventObserver.html[EventObserver] and {url-javadoc}/dev/codion/common/state/StateObserver.html[StateObserver] and listeners {url-javadoc}/dev/codion/common/event/EventListener.html[EventListener] and {url-javadoc}/dev/codion/common/event/EventDataListener.html[EventDataListener].
+Three common classes used throughout the framework are the {url-javadoc}/is/codion/common/event/Event.html[Event], {url-javadoc}/is/codion/common/state/State.html[State] and {url-javadoc}/is/codion/common/value/Value.html[Value] classes, their respective observers {url-javadoc}/is/codion/common/event/EventObserver.html[EventObserver] and {url-javadoc}/is/codion/common/state/StateObserver.html[StateObserver] and listeners {url-javadoc}/is/codion/common/event/EventListener.html[EventListener] and {url-javadoc}/is/codion/common/event/EventDataListener.html[EventDataListener].
 
 === Event
 
-The {url-javadoc}/dev/codion/common/event/Event.html[Event] class is a simple synchronous event implementation used throughout the framework. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *onEvent()* method, with or without a *data* parameter.
+The {url-javadoc}/is/codion/common/event/Event.html[Event] class is a simple synchronous event implementation used throughout the framework. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *onEvent()* method, with or without a *data* parameter.
 
-Events are instantiated via the {url-javadoc}/dev/codion/common/event/Events.html[Events] factory class.
+Events are instantiated via the {url-javadoc}/is/codion/common/event/Events.html[Events] factory class.
 
-To listen to Events you use the {url-javadoc}/dev/codion/common/event/EventListener.html[EventListener] or {url-javadoc}/dev/codion/common/event/EventDataListener.html[EventDataListener] interfaces.
+To listen to Events you use the {url-javadoc}/is/codion/common/event/EventListener.html[EventListener] or {url-javadoc}/is/codion/common/event/EventDataListener.html[EventDataListener] interfaces.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/dev/codion/framework/demos/manual/common/EventStateValue.java[tags=event]
+include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=event]
 ----
 
 === State
 
-The {url-javadoc}/dev/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}/dev/codion/common/state/StateObserver.html[StateObserver].
+The {url-javadoc}/is/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}/is/codion/common/state/StateObserver.html[StateObserver].
 
-States are instantiated via the {url-javadoc}/dev/codion/common/state/States.html[States] factory class.
+States are instantiated via the {url-javadoc}/is/codion/common/state/States.html[States] factory class.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/dev/codion/framework/demos/manual/common/EventStateValue.java[tags=state]
+include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=state]
 ----
 
 Any *Action* object can be linked to a *State* object via the *Components.linkToEnabledState* method, where the action's *enabled* status is updated according to the state.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/dev/codion/framework/demos/manual/common/EventStateValue.java[tags=action]
+include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=action]
 ----
 
 === Value
 
-The {url-javadoc}/dev/codion/common/value/Value.html[Value] interface is a value wrapper with a change listener.
+The {url-javadoc}/is/codion/common/value/Value.html[Value] interface is a value wrapper with a change listener.
 
-Values are instantiated via the {url-javadoc}/dev/codion/common/value/Values.html[Values] factory class.
+Values are instantiated via the {url-javadoc}/is/codion/common/value/Values.html[Values] factory class.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/dev/codion/framework/demos/manual/common/EventStateValue.java[tags=value]
+include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=value]
 ----

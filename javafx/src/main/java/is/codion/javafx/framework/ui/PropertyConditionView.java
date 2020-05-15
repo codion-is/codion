@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.javafx.framework.ui;
+package is.codion.javafx.framework.ui;
 
-import dev.codion.common.db.Operator;
-import dev.codion.common.item.Item;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.state.State;
-import dev.codion.common.state.States;
-import dev.codion.common.value.Values;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.model.DefaultForeignKeyConditionModel;
-import dev.codion.javafx.framework.model.FXForeignKeyConditionListModel;
+import is.codion.common.db.Operator;
+import is.codion.common.item.Item;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.state.State;
+import is.codion.common.state.States;
+import is.codion.common.value.Values;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.model.DefaultForeignKeyConditionModel;
+import is.codion.javafx.framework.model.FXForeignKeyConditionListModel;
 
 import javafx.collections.FXCollections;
 import javafx.scene.control.CheckBox;
@@ -28,7 +28,7 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static dev.codion.common.item.Items.item;
+import static is.codion.common.item.Items.item;
 
 /**
  * A View for configuring a query condition for a single property

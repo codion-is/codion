@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.value;
+package is.codion.common.value;
 
-import dev.codion.common.Util;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.EventObserver;
+import is.codion.common.Util;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.EventObserver;
 
 import java.lang.reflect.Method;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultPropertyValue<V> implements PropertyValue<V> {

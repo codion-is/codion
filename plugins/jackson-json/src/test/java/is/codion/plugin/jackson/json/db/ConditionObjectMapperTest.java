@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.plugin.jackson.json.db;
+package is.codion.plugin.jackson.json.db;
 
-import dev.codion.common.Conjunction;
-import dev.codion.common.db.Operator;
-import dev.codion.framework.db.condition.Condition;
-import dev.codion.framework.db.condition.Conditions;
-import dev.codion.framework.db.condition.CustomCondition;
-import dev.codion.framework.db.condition.EntityCondition;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.plugin.jackson.json.TestDomain;
-import dev.codion.plugin.jackson.json.domain.EntityObjectMapper;
+import is.codion.common.Conjunction;
+import is.codion.common.db.Operator;
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.CustomCondition;
+import is.codion.framework.db.condition.EntityCondition;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.plugin.jackson.json.TestDomain;
+import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static dev.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

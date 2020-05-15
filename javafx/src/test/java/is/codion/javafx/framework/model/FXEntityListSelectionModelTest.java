@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.javafx.framework.model;
+package is.codion.javafx.framework.model;
 
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.local.LocalEntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.model.tests.TestDomain;
-import dev.codion.javafx.framework.ui.EntityTableView;
+import is.codion.common.db.database.Databases;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.model.tests.TestDomain;
+import is.codion.javafx.framework.ui.EntityTableView;
 
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.SelectionMode;

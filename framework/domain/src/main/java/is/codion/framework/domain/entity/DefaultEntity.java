@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.entity;
+package is.codion.framework.domain.entity;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.valuemap.DefaultValueMap;
-import dev.codion.common.valuemap.ValueMap;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.DenormalizedProperty;
-import dev.codion.framework.domain.property.DerivedProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.MirrorProperty;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.domain.property.TransientProperty;
-import dev.codion.framework.domain.property.ValueListProperty;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.Events;
+import is.codion.common.valuemap.DefaultValueMap;
+import is.codion.common.valuemap.ValueMap;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.DenormalizedProperty;
+import is.codion.framework.domain.property.DerivedProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.MirrorProperty;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.TransientProperty;
+import is.codion.framework.domain.property.ValueListProperty;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static dev.codion.framework.domain.entity.ValueChanges.valueChange;
+import static is.codion.framework.domain.entity.ValueChanges.valueChange;
 import static java.util.Collections.singletonMap;
 import static java.util.Objects.requireNonNull;
 

@@ -1,24 +1,24 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.value.PropertyValue;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.HierarchyPanel;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.common.ui.control.Control;
-import dev.codion.swing.common.ui.control.ControlList;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.common.ui.dialog.DisposeOnEscape;
-import dev.codion.swing.common.ui.dialog.Modal;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.model.SwingEntityModel;
-import dev.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.HierarchyPanel;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.DisposeOnEscape;
+import is.codion.swing.common.ui.dialog.Modal;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -52,11 +52,11 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
-import static dev.codion.swing.common.ui.KeyEvents.addKeyEvent;
-import static dev.codion.swing.framework.ui.EntityPanel.Direction.*;
-import static dev.codion.swing.framework.ui.EntityPanel.PanelState.*;
-import static dev.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
+import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
+import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
+import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
+import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
+import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
@@ -88,10 +88,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Indicates whether entity panels should be activated when the panel receives focus<br>
    * Value type: Boolean<br>
    * Default value: true
-   * @see dev.codion.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE
+   * @see is.codion.swing.framework.ui.EntityEditPanel#ALL_PANELS_ACTIVE
    */
   public static final PropertyValue<Boolean> USE_FOCUS_ACTIVATION = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityPanel.useFocusActivation", true);
+          "is.codion.swing.framework.ui.EntityPanel.useFocusActivation", true);
 
   /**
    * Indicates whether keyboard navigation will be enabled<br>
@@ -99,7 +99,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> USE_KEYBOARD_NAVIGATION = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityPanel.useKeyboardNavigation", true);
+          "is.codion.swing.framework.ui.EntityPanel.useKeyboardNavigation", true);
 
   /**
    * Indicates whether dialogs opened by child panels in the application should be centered
@@ -109,7 +109,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: false
    */
   public static final PropertyValue<Boolean> CENTER_APPLICATION_DIALOGS = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityPanel.centerApplicationDialogs", false);
+          "is.codion.swing.framework.ui.EntityPanel.centerApplicationDialogs", false);
 
   /**
    * Indicates whether entity edit panel dialogs should be closed on escape<br>
@@ -117,7 +117,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> DISPOSE_EDIT_DIALOG_ON_ESCAPE = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape", true);
+          "is.codion.swing.framework.ui.EntityPanel.disposeEditDialogOnEscape", true);
 
   /**
    * Specifies whether or not a control for toggling the edit panel is available to the user<br>
@@ -125,7 +125,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> SHOW_TOGGLE_EDIT_PANEL_CONTROL = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityPanel.showToggleEditPanelControl", true);
+          "is.codion.swing.framework.ui.EntityPanel.showToggleEditPanelControl", true);
 
   /**
    * Specifies whether or not actions to hide detail panels or show them in a dialog are available to the user<br>
@@ -133,7 +133,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> SHOW_DETAIL_PANEL_CONTROLS = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityPanel.showDetailPanelControls", true);
+          "is.codion.swing.framework.ui.EntityPanel.showDetailPanelControls", true);
 
   /**
    * Specifies the default size of the divider for detail panel split panes.<br>
@@ -141,7 +141,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: 18<br>
    */
   public static final PropertyValue<Integer> SPLIT_PANE_DIVIDER_SIZE = Configuration.integerValue(
-          "dev.codion.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
+          "is.codion.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
 
   /**
    * Indicates whether entity panels containing detail panels should by default be laid out in a compact manner<br>
@@ -149,7 +149,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: true
    */
   public static final PropertyValue<Boolean> COMPACT_ENTITY_PANEL_LAYOUT = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityPanel.compactEntityPanelLayout", true);
+          "is.codion.swing.framework.ui.EntityPanel.compactEntityPanelLayout", true);
 
   /**
    * Specifies whether the action buttons (Save, update, delete, clear, refresh) should be on a toolbar<br>
@@ -157,7 +157,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Default value: false
    */
   public static final PropertyValue<Boolean> TOOLBAR_BUTTONS = Configuration.booleanValue(
-          "dev.codion.swing.framework.ui.EntityPanel.toolbarButtons", false);
+          "is.codion.swing.framework.ui.EntityPanel.toolbarButtons", false);
 
   /**
    * The possible states of a detail panel.

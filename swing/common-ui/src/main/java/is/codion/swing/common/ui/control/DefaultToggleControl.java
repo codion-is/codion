@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.control;
+package is.codion.swing.common.ui.control;
 
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.value.Value;
+import is.codion.common.state.StateObserver;
+import is.codion.common.value.Value;
 
 import java.awt.event.ActionEvent;
 

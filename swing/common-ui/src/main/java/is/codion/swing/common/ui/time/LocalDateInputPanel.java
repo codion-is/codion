@@ -1,23 +1,23 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.time;
+package is.codion.swing.common.ui.time;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.Events;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.state.State;
-import dev.codion.common.state.StateObserver;
-import dev.codion.common.state.States;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.KeyEvents;
-import dev.codion.swing.common.ui.control.Control;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.common.ui.dialog.DisposeOnEscape;
-import dev.codion.swing.common.ui.dialog.Modal;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.common.ui.textfield.TextFields;
+import is.codion.common.event.Event;
+import is.codion.common.event.Events;
+import is.codion.common.i18n.Messages;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
+import is.codion.common.state.States;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.dialog.DisposeOnEscape;
+import is.codion.swing.common.ui.dialog.Modal;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;

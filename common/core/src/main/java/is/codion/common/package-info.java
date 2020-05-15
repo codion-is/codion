@@ -1,5 +1,5 @@
 /**
  * Package configuration values:<br>
- * {@link dev.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}<br>
+ * {@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}<br>
  */
-package dev.codion.common;
+package is.codion.common;

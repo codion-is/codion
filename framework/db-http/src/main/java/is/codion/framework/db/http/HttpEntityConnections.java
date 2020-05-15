@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.http;
+package is.codion.framework.db.http;
 
-import dev.codion.common.user.User;
-import dev.codion.framework.db.EntityConnection;
+import is.codion.common.user.User;
+import is.codion.framework.db.EntityConnection;
 
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 

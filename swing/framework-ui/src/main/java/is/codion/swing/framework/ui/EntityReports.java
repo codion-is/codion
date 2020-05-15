@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.reports.ReportComponentProvider;
-import dev.codion.common.db.reports.ReportException;
-import dev.codion.common.db.reports.ReportWrapper;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.Windows;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.reports.ReportComponentProvider;
+import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportWrapper;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.Windows;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;

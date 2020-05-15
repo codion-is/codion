@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.plugin.nextreports.model;
+package is.codion.plugin.nextreports.model;
 
-import dev.codion.common.db.reports.AbstractReportWrapper;
-import dev.codion.common.db.reports.ReportException;
-import dev.codion.common.db.reports.ReportWrapper;
+import is.codion.common.db.reports.AbstractReportWrapper;
+import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportWrapper;
 
 import ro.nextreports.engine.FluentReportRunner;
 import ro.nextreports.engine.Report;

@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.petstore.ui;
+package is.codion.framework.demos.petstore.ui;
 
-import dev.codion.common.model.CancelException;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.petstore.model.PetstoreAppModel;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.framework.ui.EntityApplicationPanel;
-import dev.codion.swing.framework.ui.EntityPanel;
-import dev.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.common.model.CancelException;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.petstore.model.PetstoreAppModel;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntityPanelBuilder;
 
 import java.util.Locale;
 
-import static dev.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.framework.demos.petstore.domain.Petstore.*;
 
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 
@@ -60,7 +60,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   public static void main(final String[] args) {
     Locale.setDefault(new Locale("en"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.petstore.domain.Petstore");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petstore.domain.Petstore");
     new PetstoreAppPanel().startApplication("The Pet Store", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.8), Users.parseUser("scott:tiger"));
   }

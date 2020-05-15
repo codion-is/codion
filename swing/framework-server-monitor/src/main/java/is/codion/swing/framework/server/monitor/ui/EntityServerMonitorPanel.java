@@ -1,31 +1,31 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.server.monitor.ui;
+package is.codion.swing.framework.server.monitor.ui;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.Events;
-import dev.codion.common.model.CancelException;
-import dev.codion.common.model.UserPreferences;
-import dev.codion.common.rmi.client.Clients;
-import dev.codion.common.rmi.server.ServerConfiguration;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.UiManagerDefaults;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.common.ui.control.Control;
-import dev.codion.swing.common.ui.control.ControlList;
-import dev.codion.swing.common.ui.control.ControlProvider;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.common.ui.textfield.IntegerField;
-import dev.codion.swing.common.ui.value.ComponentValue;
-import dev.codion.swing.common.ui.value.NumericalValues;
-import dev.codion.swing.framework.server.monitor.EntityServerMonitor;
-import dev.codion.swing.framework.server.monitor.HostMonitor;
+import is.codion.common.event.Event;
+import is.codion.common.event.Events;
+import is.codion.common.model.CancelException;
+import is.codion.common.model.UserPreferences;
+import is.codion.common.rmi.client.Clients;
+import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.UiManagerDefaults;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.ControlProvider;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.NumericalValues;
+import is.codion.swing.framework.server.monitor.EntityServerMonitor;
+import is.codion.swing.framework.server.monitor.HostMonitor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +47,8 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
-import static dev.codion.common.Util.nullOrEmpty;
-import static dev.codion.swing.common.ui.icons.Icons.icons;
+import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.icons.Icons.icons;
 
 /**
  * A UI based on the EntityServerMonitor model

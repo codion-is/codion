@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.value;
+package is.codion.swing.common.ui.value;
 
-import dev.codion.common.Formats;
-import dev.codion.common.event.EventObserver;
-import dev.codion.common.value.Nullable;
-import dev.codion.common.value.Value;
-import dev.codion.common.value.Values;
-import dev.codion.swing.common.ui.textfield.DecimalField;
-import dev.codion.swing.common.ui.textfield.IntegerField;
-import dev.codion.swing.common.ui.textfield.LongField;
+import is.codion.common.Formats;
+import is.codion.common.event.EventObserver;
+import is.codion.common.value.Nullable;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
+import is.codion.swing.common.ui.textfield.DecimalField;
+import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.textfield.LongField;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.SpinnerNumberModel;

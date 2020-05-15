@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.condition;
+package is.codion.framework.db.condition;
 
-import dev.codion.common.db.Operator;
-import dev.codion.framework.db.TestDomain;
+import is.codion.common.db.Operator;
+import is.codion.framework.db.TestDomain;
 
 import org.junit.jupiter.api.Test;
 
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 

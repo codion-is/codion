@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.world.ui;
+package is.codion.framework.demos.world.ui;
 
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.swing.framework.ui.test.EntityApplicationPanelTestUnit;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.swing.framework.ui.test.EntityApplicationPanelTestUnit;
 
 import org.junit.jupiter.api.Test;
 

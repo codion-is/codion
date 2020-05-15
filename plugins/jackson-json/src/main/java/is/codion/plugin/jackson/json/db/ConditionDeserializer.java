@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.plugin.jackson.json.db;
+package is.codion.plugin.jackson.json.db;
 
-import dev.codion.framework.db.condition.Condition;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.plugin.jackson.json.domain.EntityObjectMapper;
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

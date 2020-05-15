@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common;
+package is.codion.common;
 
-import dev.codion.common.value.PropertyValue;
+import is.codion.common.value.PropertyValue;
 
 import java.io.File;
 import java.io.FileNotFoundException;

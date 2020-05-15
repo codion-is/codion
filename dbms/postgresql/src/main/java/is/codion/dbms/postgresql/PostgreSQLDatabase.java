@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.dbms.postgresql;
+package is.codion.dbms.postgresql;
 
-import dev.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.database.AbstractDatabase;
 
 import java.sql.SQLException;
 

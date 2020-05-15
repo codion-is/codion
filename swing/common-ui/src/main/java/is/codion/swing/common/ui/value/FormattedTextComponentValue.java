@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.value;
+package is.codion.swing.common.ui.value;
 
-import dev.codion.common.Formats;
-import dev.codion.common.value.Nullable;
+import is.codion.common.Formats;
+import is.codion.common.value.Nullable;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.text.JTextComponent;
 import java.text.Format;
 import java.text.ParseException;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 
 class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractTextComponentValue<V, C> {
 

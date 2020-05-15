@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.db.connection;
+package is.codion.common.db.connection;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.user.User;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.user.User;
 
 import java.sql.Connection;
 

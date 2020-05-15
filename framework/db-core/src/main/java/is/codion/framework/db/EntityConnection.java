@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db;
+package is.codion.framework.db;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.reports.ReportException;
-import dev.codion.common.db.reports.ReportWrapper;
-import dev.codion.common.user.User;
-import dev.codion.framework.db.condition.EntityCondition;
-import dev.codion.framework.db.condition.EntitySelectCondition;
-import dev.codion.framework.db.condition.EntityUpdateCondition;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.user.User;
+import is.codion.framework.db.condition.EntityCondition;
+import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;
 import java.util.List;
@@ -120,8 +120,8 @@ public interface EntityConnection {
    * @param entity the entity to update
    * @return the updated entity
    * @throws DatabaseException in case of a database exception
-   * @throws dev.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
-   * @throws dev.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
+   * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
+   * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
    */
   Entity update(Entity entity) throws DatabaseException;
 
@@ -132,8 +132,8 @@ public interface EntityConnection {
    * @param entities the entities to update
    * @return the updated entities, in no particular order
    * @throws DatabaseException in case of a database exception
-   * @throws dev.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
-   * @throws dev.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
+   * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
+   * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    */
   List<Entity> update(List<Entity> entities) throws DatabaseException;
 
@@ -194,8 +194,8 @@ public interface EntityConnection {
    * @return an entity of the type {@code entityId}, having the
    * value of {@code propertyId} as {@code value}
    * @throws DatabaseException in case of a database exception
-   * @throws dev.codion.common.db.exception.RecordNotFoundException in case the entity was not found
-   * @throws dev.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+   * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
   Entity selectSingle(String entityId, String propertyId, Object value) throws DatabaseException;
 
@@ -204,8 +204,8 @@ public interface EntityConnection {
    * @param key the key of the entity to select
    * @return an entity having the key {@code key}
    * @throws DatabaseException in case of a database exception
-   * @throws dev.codion.common.db.exception.RecordNotFoundException in case the entity was not found
-   * @throws dev.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+   * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
   Entity selectSingle(Entity.Key key) throws DatabaseException;
 
@@ -215,8 +215,8 @@ public interface EntityConnection {
    * @param condition the condition specifying the entity to select
    * @return the entities according to the given condition
    * @throws DatabaseException in case of a database exception
-   * @throws dev.codion.common.db.exception.RecordNotFoundException in case the entity was not found
-   * @throws dev.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+   * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
   Entity selectSingle(EntitySelectCondition condition) throws DatabaseException;
 
@@ -272,8 +272,8 @@ public interface EntityConnection {
    * @param <P> the report parameters type
    * @return the filled result object
    * @throws DatabaseException in case of a database exception
-   * @throws dev.codion.common.db.reports.ReportException in case of a report exception
-   * @see dev.codion.common.db.reports.ReportWrapper#fillReport(java.sql.Connection, Object)
+   * @throws is.codion.common.db.reports.ReportException in case of a report exception
+   * @see is.codion.common.db.reports.ReportWrapper#fillReport(java.sql.Connection, Object)
    */
   <T, R, P> R fillReport(ReportWrapper<T, R, P> reportWrapper, P reportParameters) throws DatabaseException, ReportException;
 
@@ -283,7 +283,7 @@ public interface EntityConnection {
    * @param primaryKey the primary key of the entity for which to write the blob field
    * @param blobPropertyId the id of the blob property
    * @param blobData the blob data
-   * @throws dev.codion.common.db.exception.UpdateException in case multiple rows were affected
+   * @throws is.codion.common.db.exception.UpdateException in case multiple rows were affected
    * @throws DatabaseException in case of a database exception
    */
   void writeBlob(Entity.Key primaryKey, String blobPropertyId, byte[] blobData) throws DatabaseException;

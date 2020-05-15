@@ -1,10 +1,10 @@
-package dev.codion.framework.demos.world.model;
+package is.codion.framework.demos.world.model;
 
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.world.domain.World;
-import dev.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.world.domain.World;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.io.File;
 import java.io.IOException;

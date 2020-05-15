@@ -1,13 +1,13 @@
-package dev.codion.framework.demos.world.model;
+package is.codion.framework.demos.world.model;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.world.domain.World;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.world.domain.World;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;

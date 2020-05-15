@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.model;
+package is.codion.swing.framework.model;
 
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.model.EntityModelBuilder;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.model.EntityModelBuilder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

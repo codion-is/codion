@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.manual.framework;
+package is.codion.framework.demos.manual.framework;
 
-import dev.codion.swing.common.ui.checkbox.NullableCheckBox;
-import dev.codion.swing.common.ui.combobox.SteppedComboBox;
-import dev.codion.swing.common.ui.textfield.DecimalField;
-import dev.codion.swing.common.ui.textfield.IntegerField;
-import dev.codion.swing.common.ui.textfield.LongField;
-import dev.codion.swing.common.ui.textfield.TextInputPanel;
-import dev.codion.swing.common.ui.time.TemporalInputPanel;
-import dev.codion.swing.common.ui.value.UpdateOn;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityComboBox;
-import dev.codion.swing.framework.ui.EntityEditPanel;
-import dev.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
-import dev.codion.swing.framework.ui.EntityLookupField;
+import is.codion.swing.common.ui.checkbox.NullableCheckBox;
+import is.codion.swing.common.ui.combobox.SteppedComboBox;
+import is.codion.swing.common.ui.textfield.DecimalField;
+import is.codion.swing.common.ui.textfield.IntegerField;
+import is.codion.swing.common.ui.textfield.LongField;
+import is.codion.swing.common.ui.textfield.TextInputPanel;
+import is.codion.swing.common.ui.time.TemporalInputPanel;
+import is.codion.swing.common.ui.value.UpdateOn;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityComboBox;
+import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
+import is.codion.swing.framework.ui.EntityLookupField;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;

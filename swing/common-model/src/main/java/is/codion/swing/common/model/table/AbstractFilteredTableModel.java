@@ -1,18 +1,18 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.model.table;
+package is.codion.swing.common.model.table;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.model.table.ColumnSummaryModel;
-import dev.codion.common.model.table.DefaultColumnSummaryModel;
-import dev.codion.common.model.table.FilteredTableModel;
-import dev.codion.common.model.table.RowColumn;
-import dev.codion.common.model.table.TableSortModel;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.common.model.table.DefaultColumnSummaryModel;
+import is.codion.common.model.table.FilteredTableModel;
+import is.codion.common.model.table.RowColumn;
+import is.codion.common.model.table.TableSortModel;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;

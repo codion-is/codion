@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.condition;
+package is.codion.framework.db.condition;
 
-import dev.codion.common.db.Operator;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.SubqueryProperty;
+import is.codion.common.db.Operator;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.SubqueryProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static dev.codion.common.db.Operator.LIKE;
+import static is.codion.common.db.Operator.LIKE;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 

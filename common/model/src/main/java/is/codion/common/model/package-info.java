@@ -1,6 +1,6 @@
 /**
  * Package configuration values:<br>
- * {@link dev.codion.common.model.table.ColumnConditionModel#AUTOMATIC_WILDCARD}<br>
- * {@link dev.codion.common.model.table.ColumnConditionModel#CASE_SENSITIVE}
+ * {@link is.codion.common.model.table.ColumnConditionModel#AUTOMATIC_WILDCARD}<br>
+ * {@link is.codion.common.model.table.ColumnConditionModel#CASE_SENSITIVE}
  */
-package dev.codion.common.model;
+package is.codion.common.model;

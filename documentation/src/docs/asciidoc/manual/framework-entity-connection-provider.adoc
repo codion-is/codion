@@ -2,7 +2,7 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
-In most cases *EntityConnections* are retrieved from a {url-javadoc}/dev/codion/framework/db/EntityConnectionProvider.html[EntityConnectionProvider], which is responsible for establishing a connection to the underlying database. The *EntityConnectionProvider* class is central to the framework and is a common constructor parameter in classes requiring database access.
+In most cases *EntityConnections* are retrieved from a {url-javadoc}/is/codion/framework/db/EntityConnectionProvider.html[EntityConnectionProvider], which is responsible for establishing a connection to the underlying database. The *EntityConnectionProvider* class is central to the framework and is a common constructor parameter in classes requiring database access.
 
 The *EntityConnectionProvider* manages a single connection, that is, the one returned by *getConnection()*. If a connection becomes invalid, i.e. due to a network outage or a server restart the *EntityConnectionProvider* is responsible for reconnecting and returning a new valid connection. If the *EntityConnectionProvider* is unable to connect to the underlying database or server *getConnection()* throws an exception.
 
@@ -10,33 +10,33 @@ A reference to the *EntityConnection* instance returned by *getConnection()* sho
 
 == LocalEntityConnectionProvider
 
-{url-javadoc}/dev/codion/framework/db/local/LocalEntityConnectionProvider.html[LocalEntityConnectionProvider]
+{url-javadoc}/is/codion/framework/db/local/LocalEntityConnectionProvider.html[LocalEntityConnectionProvider]
 
 Provides a connection based on a local JDBC connection.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=local]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=local]
 ----
 
 == RemoteEntityConnectionProvider
 
-{url-javadoc}/dev/codion/framework/db/rmi/RemoteEntityConnectionProvider.html[RemoteEntityConnectionProvider]
+{url-javadoc}/is/codion/framework/db/rmi/RemoteEntityConnectionProvider.html[RemoteEntityConnectionProvider]
 
 Provides a connection based on a remote RMI connection.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=remote]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=remote]
 ----
 
 == HttpEntityConnectionProvider
 
-{url-javadoc}/dev/codion/framework/db/http/HttpEntityConnectionProvider.html[HttpEntityConnectionProvider]
+{url-javadoc}/is/codion/framework/db/http/HttpEntityConnectionProvider.html[HttpEntityConnectionProvider]
 
 Provides a connection based on a remote HTTP connection.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/dev/codion/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=http]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionProviderDemo.java[tags=http]
 ----

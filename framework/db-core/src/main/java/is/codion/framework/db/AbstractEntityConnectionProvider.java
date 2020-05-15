@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db;
+package is.codion.framework.db;
 
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.user.User;
-import dev.codion.common.version.Version;
-import dev.codion.framework.domain.entity.Entities;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventListener;
+import is.codion.common.event.Events;
+import is.codion.common.user.User;
+import is.codion.common.version.Version;
+import is.codion.framework.domain.entity.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**

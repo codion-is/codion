@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.manual;
+package is.codion.framework.demos.chinook.manual;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.reports.ReportException;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.condition.EntitySelectCondition;
-import dev.codion.framework.db.condition.EntityUpdateCondition;
-import dev.codion.framework.db.local.LocalEntityConnectionProvider;
-import dev.codion.framework.demos.chinook.domain.impl.ChinookImpl;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Databases;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.reports.ReportException;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
@@ -25,11 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static dev.codion.common.Conjunction.AND;
-import static dev.codion.common.db.Operator.LIKE;
-import static dev.codion.common.db.Operator.NOT_LIKE;
-import static dev.codion.framework.db.condition.Conditions.*;
-import static dev.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.common.Conjunction.AND;
+import static is.codion.common.db.Operator.LIKE;
+import static is.codion.common.db.Operator.NOT_LIKE;
+import static is.codion.framework.db.condition.Conditions.*;
+import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static java.util.Arrays.asList;
 
 /**

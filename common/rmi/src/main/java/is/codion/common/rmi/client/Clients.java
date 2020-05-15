@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.rmi.client;
+package is.codion.common.rmi.client;
 
-import dev.codion.common.Util;
-import dev.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.Util;
+import is.codion.common.rmi.server.ServerConfiguration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 
 /**
  * Utility methods for remote clients

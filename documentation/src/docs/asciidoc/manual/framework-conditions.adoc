@@ -3,26 +3,26 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
-The {url-javadoc}/dev/codion/framework/db/condition/Conditions.html[Conditions] class is a factory for conditions, used when querying entities.
+The {url-javadoc}/is/codion/framework/db/condition/Conditions.html[Conditions] class is a factory for conditions, used when querying entities.
 
 The <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>> is used in the examples below.
 
 == Condition
 
-{url-javadoc}/dev/codion/framework/db/condition/Condition.html[Condition] represents a where clause element.
+{url-javadoc}/is/codion/framework/db/condition/Condition.html[Condition] represents a where clause element.
 
 == Condition.Combination
 
-{url-javadoc}/dev/codion/framework/db/condition/Condition.Combination.html[Condition.Combination] represents a combination of Conditions, which are either AND'ed or OR'ed together. These can be nested and combined with other condition combinations.
+{url-javadoc}/is/codion/framework/db/condition/Condition.Combination.html[Condition.Combination] represents a combination of Conditions, which are either AND'ed or OR'ed together. These can be nested and combined with other condition combinations.
 
 == EntityCondition
 
-{url-javadoc}/dev/codion/framework/db/condition/EntityCondition.html[EntityCondition] represents a where clause for a entity type.
+{url-javadoc}/is/codion/framework/db/condition/EntityCondition.html[EntityCondition] represents a where clause for a entity type.
 
 == EntitySelectCondition
 
-{url-javadoc}/dev/codion/framework/db/condition/EntitySelectCondition.html[EntitySelectCondition] represents a where clause for a entity type specifically for selecting.
+{url-javadoc}/is/codion/framework/db/condition/EntitySelectCondition.html[EntitySelectCondition] represents a where clause for a entity type specifically for selecting.
 
 == EntityUpdateCondition
 
-{url-javadoc}/dev/codion/framework/db/condition/EntityUpdateCondition.html[EntityUpdateCondition] represents a where clause and values for updating one or more entities.
+{url-javadoc}/is/codion/framework/db/condition/EntityUpdateCondition.html[EntityUpdateCondition] represents a where clause and values for updating one or more entities.

@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.ui;
+package is.codion.framework.demos.chinook.ui;
 
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static dev.codion.framework.demos.chinook.domain.Chinook.GENRE_NAME;
-import static dev.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.framework.demos.chinook.domain.Chinook.GENRE_NAME;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public class GenreEditPanel extends EntityEditPanel {
 

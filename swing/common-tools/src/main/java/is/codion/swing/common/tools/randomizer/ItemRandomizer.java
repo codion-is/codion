@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.tools.randomizer;
+package is.codion.swing.common.tools.randomizer;
 
-import dev.codion.common.event.EventObserver;
+import is.codion.common.event.EventObserver;
 
 import java.util.Collection;
 

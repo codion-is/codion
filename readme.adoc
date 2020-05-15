@@ -13,4 +13,4 @@ Codion is a minimalistic full-stack Java rich client CRUD application framework 
 * Integrated JasperReports support.
 * ...and much more.
 
-link:https://codion.dev[Web Site]
+link:https://codion.is[Web Site]

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.dbms.hsqldb;
+package is.codion.dbms.hsqldb;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package dev.codion.plugin.imagepanel;
+package is.codion.plugin.imagepanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;

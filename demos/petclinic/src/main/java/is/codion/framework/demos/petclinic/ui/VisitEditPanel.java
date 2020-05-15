@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.petclinic.ui;
+package is.codion.framework.demos.petclinic.ui;
 
-import dev.codion.swing.framework.model.SwingEntityEditModel;
-import dev.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
-import static dev.codion.framework.demos.petclinic.domain.Clinic.*;
+import static is.codion.framework.demos.petclinic.domain.Clinic.*;
 
 public final class VisitEditPanel extends EntityEditPanel {
 

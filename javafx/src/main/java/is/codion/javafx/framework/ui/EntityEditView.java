@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.javafx.framework.ui;
+package is.codion.javafx.framework.ui;
 
-import dev.codion.common.Conjunction;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.item.Item;
-import dev.codion.common.state.State;
-import dev.codion.common.state.States;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.exception.ValidationException;
-import dev.codion.framework.domain.property.Properties;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.domain.property.ValueListProperty;
-import dev.codion.framework.i18n.FrameworkMessages;
-import dev.codion.javafx.framework.model.FXEntityEditModel;
+import is.codion.common.Conjunction;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.i18n.Messages;
+import is.codion.common.item.Item;
+import is.codion.common.state.State;
+import is.codion.common.state.States;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.Properties;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.ValueListProperty;
+import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.javafx.framework.model.FXEntityEditModel;
 
 import javafx.scene.Node;
 import javafx.scene.control.Alert;

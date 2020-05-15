@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.rmi.server;
+package is.codion.common.rmi.server;
 
-import dev.codion.common.rmi.client.ConnectionRequest;
-import dev.codion.common.user.User;
+import is.codion.common.rmi.client.ConnectionRequest;
+import is.codion.common.user.User;
 
 /**
  * Contains basic information about a remote client

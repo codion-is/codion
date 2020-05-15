@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui;
+package is.codion.swing.common.ui;
 
-import dev.codion.common.event.EventObserver;
-import dev.codion.common.state.State;
-import dev.codion.common.state.States;
+import is.codion.common.event.EventObserver;
+import is.codion.common.state.State;
+import is.codion.common.state.States;
 
 import org.junit.jupiter.api.Test;
 

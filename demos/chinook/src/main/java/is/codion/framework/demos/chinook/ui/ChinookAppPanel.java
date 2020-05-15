@@ -1,28 +1,28 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.chinook.ui;
+package is.codion.framework.demos.chinook.ui;
 
-import dev.codion.common.model.CancelException;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.user.Users;
-import dev.codion.common.version.Version;
-import dev.codion.common.version.Versions;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.chinook.model.ChinookApplicationModel;
-import dev.codion.framework.model.EntityEditModel;
-import dev.codion.swing.common.ui.control.ControlList;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.icons.Icons;
-import dev.codion.swing.framework.model.SwingEntityModel;
-import dev.codion.swing.framework.ui.EntityApplicationPanel;
-import dev.codion.swing.framework.ui.EntityPanel;
-import dev.codion.swing.framework.ui.EntityPanelBuilder;
-import dev.codion.swing.framework.ui.EntityTablePanel;
-import dev.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
-import dev.codion.swing.framework.ui.icons.FrameworkIcons;
-import dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
-import dev.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
+import is.codion.common.model.CancelException;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.user.Users;
+import is.codion.common.version.Version;
+import is.codion.common.version.Versions;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import is.codion.framework.model.EntityEditModel;
+import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.icons.Icons;
+import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
+import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationFrameworkIcons;
+import is.codion.swing.plugin.ikonli.foundation.IkonliFoundationIcons;
 
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -32,8 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static dev.codion.framework.demos.chinook.domain.Chinook.*;
-import static dev.codion.swing.common.ui.worker.ProgressWorker.runWithProgressBar;
+import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.swing.common.ui.worker.ProgressWorker.runWithProgressBar;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
 
@@ -159,7 +159,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.chinook.domain.impl.ChinookImpl");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.chinook.domain.impl.ChinookImpl");
     new ChinookAppPanel().startApplication("Chinook", null, MaximizeFrame.NO,
             new Dimension(1280, 720), Users.parseUser("scott:tiger"));
   }

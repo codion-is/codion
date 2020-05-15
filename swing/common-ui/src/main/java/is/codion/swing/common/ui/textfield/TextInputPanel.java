@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.textfield;
+package is.codion.swing.common.ui.textfield;
 
-import dev.codion.common.i18n.Messages;
-import dev.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.common.i18n.Messages;
+import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

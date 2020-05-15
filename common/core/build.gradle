@@ -1,6 +1,6 @@
 task writeVersion {
     group 'build'
-    def versionFile = file(sourceSets.main.output.resourcesDir.getAbsolutePath() + '/dev/codion/common/version/version.properties')
+    def versionFile = file(sourceSets.main.output.resourcesDir.getAbsolutePath() + '/is/codion/common/version/version.properties')
     inputs.property("version", project.version)
     outputs.file(versionFile)
 

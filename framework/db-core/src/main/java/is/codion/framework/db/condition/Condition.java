@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.condition;
+package is.codion.framework.db.condition;
 
-import dev.codion.common.Conjunction;
+import is.codion.common.Conjunction;
 
 import java.io.Serializable;
 import java.util.List;

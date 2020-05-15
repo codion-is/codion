@@ -28,7 +28,7 @@ dependencies {
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 
-mainClassName = "$moduleName/dev.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel"
+mainClassName = "$moduleName/is.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel"
 
 applicationDistribution.from(files(
         '../../framework/server/src/main/security/truststore.jks',

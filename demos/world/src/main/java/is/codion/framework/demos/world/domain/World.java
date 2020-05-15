@@ -1,15 +1,15 @@
-package dev.codion.framework.demos.world.domain;
+package is.codion.framework.demos.world.domain;
 
-import dev.codion.common.item.Item;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.ColorProvider;
-import dev.codion.framework.domain.entity.DefaultEntityValidator;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.entity.StringProvider;
-import dev.codion.framework.domain.entity.exception.ValidationException;
-import dev.codion.framework.domain.property.DerivedProperty;
-import dev.codion.framework.domain.property.Property;
+import is.codion.common.item.Item;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.ColorProvider;
+import is.codion.framework.domain.entity.DefaultEntityValidator;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.DerivedProperty;
+import is.codion.framework.domain.property.Property;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static dev.codion.common.Util.notNull;
-import static dev.codion.common.item.Items.item;
-import static dev.codion.framework.domain.entity.KeyGenerators.sequence;
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
-import static dev.codion.framework.domain.property.Properties.*;
+import static is.codion.common.Util.notNull;
+import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.KeyGenerators.sequence;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
 // tag::entityAndPropertyIds[]

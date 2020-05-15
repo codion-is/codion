@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.condition;
+package is.codion.framework.db.condition;
 
-import dev.codion.common.Conjunction;
-import dev.codion.common.db.Operator;
-import dev.codion.framework.db.TestDomain;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.property.ColumnProperty;
+import is.codion.common.Conjunction;
+import is.codion.common.db.Operator;
+import is.codion.framework.db.TestDomain;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.ColumnProperty;
 
 import org.junit.jupiter.api.Test;
 
-import static dev.codion.framework.db.condition.Conditions.*;
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.db.condition.Conditions.*;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;

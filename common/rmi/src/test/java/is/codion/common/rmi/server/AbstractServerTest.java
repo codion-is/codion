@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.rmi.server;
+package is.codion.common.rmi.server;
 
-import dev.codion.common.rmi.client.ConnectionRequest;
-import dev.codion.common.rmi.server.exception.ConnectionNotAvailableException;
-import dev.codion.common.rmi.server.exception.ServerAuthenticationException;
-import dev.codion.common.rmi.server.exception.ServerException;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
+import is.codion.common.rmi.client.ConnectionRequest;
+import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
+import is.codion.common.rmi.server.exception.ServerAuthenticationException;
+import is.codion.common.rmi.server.exception.ServerException;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
 
 import org.junit.jupiter.api.Test;
 

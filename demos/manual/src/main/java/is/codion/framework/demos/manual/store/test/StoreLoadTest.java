@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.manual.store.test;
+package is.codion.framework.demos.manual.store.test;
 
-import dev.codion.common.user.User;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.rmi.RemoteEntityConnectionProvider;
-import dev.codion.framework.demos.manual.store.domain.Store;
-import dev.codion.framework.demos.manual.store.model.StoreAppModel;
-import dev.codion.framework.model.EntityModel;
-import dev.codion.swing.common.tools.loadtest.ScenarioException;
-import dev.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
+import is.codion.common.user.User;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.demos.manual.store.model.StoreAppModel;
+import is.codion.framework.model.EntityModel;
+import is.codion.swing.common.tools.loadtest.ScenarioException;
+import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import java.util.Collections;
 import java.util.UUID;

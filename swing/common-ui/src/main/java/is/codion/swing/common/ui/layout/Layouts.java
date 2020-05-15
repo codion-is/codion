@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.layout;
+package is.codion.swing.common.ui.layout;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.value.Value;
-import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
-import dev.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
+import is.codion.common.Configuration;
+import is.codion.common.value.Value;
+import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
+import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

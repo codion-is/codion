@@ -1,24 +1,24 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui;
+package is.codion.swing.framework.ui;
 
-import dev.codion.common.item.Item;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.domain.property.ValueListProperty;
-import dev.codion.swing.common.ui.time.LocalDateInputPanel;
-import dev.codion.swing.common.ui.time.LocalDateTimeInputPanel;
-import dev.codion.swing.common.ui.time.LocalTimeInputPanel;
-import dev.codion.swing.common.ui.value.BooleanValues;
-import dev.codion.swing.common.ui.value.ComponentValue;
-import dev.codion.swing.common.ui.value.FileValues;
-import dev.codion.swing.common.ui.value.NumericalValues;
-import dev.codion.swing.common.ui.value.SelectedValues;
-import dev.codion.swing.common.ui.value.TemporalValues;
-import dev.codion.swing.common.ui.value.TextValues;
-import dev.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.common.item.Item;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.ValueListProperty;
+import is.codion.swing.common.ui.time.LocalDateInputPanel;
+import is.codion.swing.common.ui.time.LocalDateTimeInputPanel;
+import is.codion.swing.common.ui.time.LocalTimeInputPanel;
+import is.codion.swing.common.ui.value.BooleanValues;
+import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.FileValues;
+import is.codion.swing.common.ui.value.NumericalValues;
+import is.codion.swing.common.ui.value.SelectedValues;
+import is.codion.swing.common.ui.value.TemporalValues;
+import is.codion.swing.common.ui.value.TextValues;
+import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.math.BigDecimal;
 import java.sql.Types;

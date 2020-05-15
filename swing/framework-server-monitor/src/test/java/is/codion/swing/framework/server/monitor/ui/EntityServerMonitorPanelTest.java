@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.server.monitor.ui;
+package is.codion.swing.framework.server.monitor.ui;
 
-import dev.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
-import dev.codion.swing.framework.server.monitor.DatabaseMonitor;
-import dev.codion.swing.framework.server.monitor.EntityServerMonitor;
-import dev.codion.swing.framework.server.monitor.EntityServerMonitorTest;
-import dev.codion.swing.framework.server.monitor.ServerMonitor;
+import is.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
+import is.codion.swing.framework.server.monitor.DatabaseMonitor;
+import is.codion.swing.framework.server.monitor.EntityServerMonitor;
+import is.codion.swing.framework.server.monitor.EntityServerMonitorTest;
+import is.codion.swing.framework.server.monitor.ServerMonitor;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

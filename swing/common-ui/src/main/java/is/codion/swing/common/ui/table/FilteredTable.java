@@ -1,28 +1,28 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.table;
+package is.codion.swing.common.ui.table;
 
-import dev.codion.common.Text;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.Events;
-import dev.codion.common.i18n.Messages;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.model.table.RowColumn;
-import dev.codion.common.model.table.SortingDirective;
-import dev.codion.common.model.table.TableSortModel;
-import dev.codion.swing.common.model.table.AbstractFilteredTableModel;
-import dev.codion.swing.common.model.table.SwingFilteredTableColumnModel;
-import dev.codion.swing.common.model.textfield.DocumentAdapter;
-import dev.codion.swing.common.ui.Components;
-import dev.codion.swing.common.ui.control.Control;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.control.ToggleControl;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.common.ui.textfield.TextFieldHint;
-import dev.codion.swing.common.ui.textfield.TextFields;
+import is.codion.common.Text;
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.Events;
+import is.codion.common.i18n.Messages;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.RowColumn;
+import is.codion.common.model.table.SortingDirective;
+import is.codion.common.model.table.TableSortModel;
+import is.codion.swing.common.model.table.AbstractFilteredTableModel;
+import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
+import is.codion.swing.common.model.textfield.DocumentAdapter;
+import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.textfield.TextFieldHint;
+import is.codion.swing.common.ui.textfield.TextFields;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -65,8 +65,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static dev.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
-import static dev.codion.swing.common.ui.KeyEvents.addKeyEvent;
+import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
+import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
 import static java.util.Objects.requireNonNull;
 
 /**

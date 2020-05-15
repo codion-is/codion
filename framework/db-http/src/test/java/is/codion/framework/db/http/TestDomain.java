@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.http;
+package is.codion.framework.db.http;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.operation.AbstractDatabaseFunction;
-import dev.codion.common.db.operation.AbstractDatabaseProcedure;
-import dev.codion.common.db.reports.AbstractReportWrapper;
-import dev.codion.common.db.reports.ReportException;
-import dev.codion.common.db.reports.ReportWrapper;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.domain.Domain;
-import dev.codion.framework.domain.entity.StringProvider;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.operation.AbstractDatabaseFunction;
+import is.codion.common.db.operation.AbstractDatabaseProcedure;
+import is.codion.common.db.reports.AbstractReportWrapper;
+import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportWrapper;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.StringProvider;
 
 import java.sql.Connection;
 import java.sql.Types;
 import java.util.List;
 
-import static dev.codion.common.item.Items.item;
-import static dev.codion.framework.domain.entity.KeyGenerators.increment;
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
-import static dev.codion.framework.domain.property.Properties.*;
+import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 

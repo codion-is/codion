@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.model;
+package is.codion.swing.framework.model;
 
-import dev.codion.common.model.Refreshable;
-import dev.codion.common.model.combobox.FilteredComboBoxModel;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityValidator;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.domain.property.Property;
-import dev.codion.framework.model.DefaultEntityEditModel;
-import dev.codion.framework.model.EntityEditModel;
+import is.codion.common.model.Refreshable;
+import is.codion.common.model.combobox.FilteredComboBoxModel;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Property;
+import is.codion.framework.model.DefaultEntityEditModel;
+import is.codion.framework.model.EntityEditModel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +29,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Holds the ComboBoxModels used by this {@link EntityEditModel},
-   * @see dev.codion.common.model.Refreshable
+   * @see is.codion.common.model.Refreshable
    */
   private final Map<String, FilteredComboBoxModel> comboBoxModels = new HashMap<>();
 

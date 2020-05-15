@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui.icons;
+package is.codion.swing.common.ui.icons;
 
 import javax.swing.ImageIcon;
 import java.awt.Toolkit;

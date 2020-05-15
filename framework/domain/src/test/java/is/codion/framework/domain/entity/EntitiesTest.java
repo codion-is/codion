@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.entities.entity;
+package is.codion.framework.entities.entity;
 
-import dev.codion.framework.domain.TestDomain;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityDefinition;
-import dev.codion.framework.domain.property.ColumnProperty;
-import dev.codion.framework.domain.property.Property;
+import is.codion.framework.domain.TestDomain;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.Property;
 
 import org.junit.jupiter.api.Test;
 

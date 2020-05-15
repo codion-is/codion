@@ -1,20 +1,20 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.empdept.server;
+package is.codion.framework.demos.empdept.server;
 
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.rmi.server.Server;
-import dev.codion.common.rmi.server.ServerConfiguration;
-import dev.codion.common.rmi.server.Servers;
-import dev.codion.common.rmi.server.exception.ConnectionNotAvailableException;
-import dev.codion.common.rmi.server.exception.ConnectionValidationException;
-import dev.codion.common.rmi.server.exception.LoginException;
-import dev.codion.common.user.Users;
-import dev.codion.framework.demos.empdept.domain.Employee;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.server.EntityServerConfiguration;
+import is.codion.common.db.database.Databases;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.rmi.server.Server;
+import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.rmi.server.Servers;
+import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
+import is.codion.common.rmi.server.exception.ConnectionValidationException;
+import is.codion.common.rmi.server.exception.LoginException;
+import is.codion.common.user.Users;
+import is.codion.framework.demos.empdept.domain.Employee;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.server.EntityServerConfiguration;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
 
-import static dev.codion.common.rmi.client.ConnectionRequest.connectionRequest;
+import static is.codion.common.rmi.client.ConnectionRequest.connectionRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class EmployeeServerTest {

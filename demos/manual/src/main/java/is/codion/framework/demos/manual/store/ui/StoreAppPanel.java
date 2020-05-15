@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.manual.store.ui;
+package is.codion.framework.demos.manual.store.ui;
 
-import dev.codion.common.db.reports.ReportWrapper;
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.demos.manual.store.domain.Store;
-import dev.codion.framework.demos.manual.store.model.CustomerAddressModel;
-import dev.codion.framework.demos.manual.store.model.CustomerModel;
-import dev.codion.framework.demos.manual.store.model.StoreAppModel;
-import dev.codion.framework.model.EntityEditModel;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.framework.ui.EntityApplicationPanel;
-import dev.codion.swing.framework.ui.EntityPanel;
-import dev.codion.swing.framework.ui.EntityPanelBuilder;
-import dev.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
+import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.demos.manual.store.model.CustomerAddressModel;
+import is.codion.framework.demos.manual.store.model.CustomerModel;
+import is.codion.framework.demos.manual.store.model.StoreAppModel;
+import is.codion.framework.model.EntityEditModel;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.EntityPanelBuilder;
+import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +65,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("dev.codion.framework.demos.manual.store.domain.Store");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.manual.store.domain.Store");
     ReportWrapper.REPORT_PATH.set("http://test.io");
     new StoreAppPanel().startApplication("Store", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));

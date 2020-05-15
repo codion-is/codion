@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.javafx.framework.model;
+package is.codion.javafx.framework.model;
 
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.EntityValidator;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.model.DefaultEntityEditModel;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.model.DefaultEntityEditModel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A JavaFX implementation of {@link dev.codion.framework.model.EntityEditModel}
+ * A JavaFX implementation of {@link is.codion.framework.model.EntityEditModel}
  */
 public class FXEntityEditModel extends DefaultEntityEditModel {
 

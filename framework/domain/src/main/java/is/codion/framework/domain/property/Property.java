@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.property;
+package is.codion.framework.domain.property;
 
-import dev.codion.common.Configuration;
-import dev.codion.common.value.PropertyValue;
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

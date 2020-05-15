@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.manual.store;
+package is.codion.framework.demos.manual.store;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.db.EntityConnectionProviders;
-import dev.codion.framework.demos.manual.store.domain.Store;
-import dev.codion.framework.demos.manual.store.model.CustomerEditModel;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnectionProviders;
+import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.demos.manual.store.model.CustomerEditModel;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
 
 public final class Misc {
 

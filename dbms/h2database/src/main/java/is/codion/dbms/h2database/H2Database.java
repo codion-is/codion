@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.dbms.h2database;
+package is.codion.dbms.h2database;
 
-import dev.codion.common.db.database.AbstractDatabase;
+import is.codion.common.db.database.AbstractDatabase;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 

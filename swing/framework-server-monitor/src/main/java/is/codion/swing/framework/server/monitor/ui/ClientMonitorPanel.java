@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.server.monitor.ui;
+package is.codion.swing.framework.server.monitor.ui;
 
-import dev.codion.swing.common.ui.control.ControlList;
-import dev.codion.swing.common.ui.control.ControlProvider;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.framework.server.monitor.ClientInstanceMonitor;
-import dev.codion.swing.framework.server.monitor.ClientMonitor;
+import is.codion.swing.common.ui.control.ControlList;
+import is.codion.swing.common.ui.control.ControlProvider;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
+import is.codion.swing.framework.server.monitor.ClientMonitor;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;

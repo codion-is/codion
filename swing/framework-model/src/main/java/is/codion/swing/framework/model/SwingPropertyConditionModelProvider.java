@@ -1,14 +1,14 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.model;
+package is.codion.swing.framework.model;
 
-import dev.codion.common.model.table.ColumnConditionModel;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.property.ForeignKeyProperty;
-import dev.codion.framework.model.DefaultPropertyConditionModelProvider;
-import dev.codion.framework.model.PropertyConditionModelProvider;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.model.DefaultPropertyConditionModelProvider;
+import is.codion.framework.model.PropertyConditionModelProvider;
 
 /**
  * A Swing {@link PropertyConditionModelProvider} implementation

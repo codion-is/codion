@@ -1,25 +1,25 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.http;
+package is.codion.framework.db.http;
 
-import dev.codion.common.db.Operator;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.exception.ReferentialIntegrityException;
-import dev.codion.common.db.reports.ReportException;
-import dev.codion.common.db.reports.ReportWrapper;
-import dev.codion.common.http.server.HttpServerConfiguration;
-import dev.codion.common.rmi.server.ServerConfiguration;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.condition.EntitySelectCondition;
-import dev.codion.framework.db.condition.EntityUpdateCondition;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.server.EntityServer;
-import dev.codion.framework.server.EntityServerConfiguration;
-import dev.codion.framework.servlet.EntityServletServerProvider;
+import is.codion.common.db.Operator;
+import is.codion.common.db.database.Databases;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.http.server.HttpServerConfiguration;
+import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.server.EntityServer;
+import is.codion.framework.server.EntityServerConfiguration;
+import is.codion.framework.servlet.EntityServletServerProvider;
 
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import static dev.codion.framework.db.condition.Conditions.*;
+import static is.codion.framework.db.condition.Conditions.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;

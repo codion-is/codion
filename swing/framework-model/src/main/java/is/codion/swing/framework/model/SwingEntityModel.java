@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.model;
+package is.codion.swing.framework.model;
 
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.model.DefaultEntityModel;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.model.DefaultEntityModel;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * A Swing implementation of {@link dev.codion.framework.model.EntityModel}
+ * A Swing implementation of {@link is.codion.framework.model.EntityModel}
  */
 public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 

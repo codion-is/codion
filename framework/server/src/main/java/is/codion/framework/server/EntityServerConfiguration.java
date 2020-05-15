@@ -1,17 +1,17 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.server;
+package is.codion.framework.server;
 
 
-import dev.codion.common.Configuration;
-import dev.codion.common.Text;
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.rmi.server.ServerConfiguration;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.common.value.PropertyValue;
+import is.codion.common.Configuration;
+import is.codion.common.Text;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Databases;
+import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.common.value.PropertyValue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -46,14 +46,14 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * the internal connection pool is used if necessary<br>
    * Value type: String<br>
    * Default value: none
-   * @see dev.codion.common.db.pool.ConnectionPoolProvider
+   * @see is.codion.common.db.pool.ConnectionPoolProvider
    */
   PropertyValue<String> SERVER_CONNECTION_POOL_PROVIDER_CLASS = Configuration.stringValue(
           "codion.server.pooling.poolProviderClass", null);
 
   /**
    * Specifies the default client connection timeout (ms) in a comma separated list.
-   * Example: dev.codion.demos.empdept.client.ui.EmpDeptAppPanel:60000,dev.codion.demos.chinook.ui.ChinookAppPanel:120000
+   * Example: is.codion.demos.empdept.client.ui.EmpDeptAppPanel:60000,is.codion.demos.chinook.ui.ChinookAppPanel:120000
    * Value type: String<br>
    * Default value: none
    */

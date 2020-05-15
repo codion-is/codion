@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.domain.entity;
+package is.codion.framework.domain.entity;
 
-import dev.codion.framework.domain.TestDomain;
+import is.codion.framework.domain.TestDomain;
 
 import org.junit.jupiter.api.Test;
 

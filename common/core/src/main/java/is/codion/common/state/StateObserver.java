@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.state;
+package is.codion.common.state;
 
-import dev.codion.common.event.EventObserver;
+import is.codion.common.event.EventObserver;
 
 /**
  * Specifies an observer for a {@link State} instance.

@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.plugin.nextreports.model;
+package is.codion.plugin.nextreports.model;
 
-import dev.codion.common.Util;
+import is.codion.common.Util;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.model.table;
+package is.codion.common.model.table;
 
-import dev.codion.common.event.EventDataListener;
-import dev.codion.common.event.EventListener;
-import dev.codion.common.state.State;
-import dev.codion.common.state.StateObserver;
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.model;
+package is.codion.swing.framework.model;
 
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.framework.db.EntityConnectionProvider;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.domain.entity.exception.ValidationException;
-import dev.codion.framework.model.EntityComboBoxModel;
-import dev.codion.framework.model.tests.AbstractEntityModelTest;
-import dev.codion.framework.model.tests.TestDomain;
-import dev.codion.swing.common.ui.value.SelectedValues;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.model.EntityComboBoxModel;
+import is.codion.framework.model.tests.AbstractEntityModelTest;
+import is.codion.framework.model.tests.TestDomain;
+import is.codion.swing.common.ui.value.SelectedValues;
 
 import org.junit.jupiter.api.Test;
 

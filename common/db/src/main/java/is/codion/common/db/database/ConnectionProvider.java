@@ -1,22 +1,22 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.db.database;
+package is.codion.common.db.database;
 
-import dev.codion.common.user.User;
+import is.codion.common.user.User;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import static dev.codion.common.Util.nullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
  * Responsible for providing JDBC {@link Connection} instances. Usually this means a new connection,
  * but in some cases, for example when wrapping existing connections, an existing connection may be returned.
- * Note that when used in conjunction with a {@link dev.codion.common.db.pool.ConnectionPool} a new
+ * Note that when used in conjunction with a {@link is.codion.common.db.pool.ConnectionPool} a new
  * connection must be returned.
  */
 public interface ConnectionProvider {

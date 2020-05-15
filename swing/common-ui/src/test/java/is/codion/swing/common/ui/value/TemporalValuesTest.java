@@ -1,13 +1,13 @@
-package dev.codion.swing.common.ui.value;
+package is.codion.swing.common.ui.value;
 
-import dev.codion.common.DateFormats;
-import dev.codion.common.event.Event;
-import dev.codion.common.event.Events;
-import dev.codion.common.value.Value;
-import dev.codion.common.value.Values;
-import dev.codion.swing.common.ui.textfield.TextFields;
-import dev.codion.swing.common.ui.time.LocalDateInputPanel;
-import dev.codion.swing.common.ui.time.TemporalInputPanel;
+import is.codion.common.DateFormats;
+import is.codion.common.event.Event;
+import is.codion.common.event.Events;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
+import is.codion.swing.common.ui.textfield.TextFields;
+import is.codion.swing.common.ui.time.LocalDateInputPanel;
+import is.codion.swing.common.ui.time.TemporalInputPanel;
 
 import org.junit.jupiter.api.Test;
 

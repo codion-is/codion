@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.common.http.server;
+package is.codion.common.http.server;
 
 final class DefaultHttpServerConfiguration implements HttpServerConfiguration {
 

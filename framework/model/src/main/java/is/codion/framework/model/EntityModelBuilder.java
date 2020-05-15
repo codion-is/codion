@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.EntityConnectionProvider;
 
 /**
  * Specifies a class which provides EntityModel, EntityTableModel and EntityEditModel instances for a given entityId.

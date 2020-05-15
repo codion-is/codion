@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.model;
+package is.codion.framework.model;
 
-import dev.codion.framework.model.tests.AbstractEntityApplicationModelTest;
-import dev.codion.framework.model.tests.TestDomain;
+import is.codion.framework.model.tests.AbstractEntityApplicationModelTest;
+import is.codion.framework.model.tests.TestDomain;
 
 public final class DefaultEntityApplicationModelTest extends AbstractEntityApplicationModelTest<DefaultEntityModelTest.TestEntityModel,
         DefaultEntityModelTest.TestEntityEditModel, DefaultEntityModelTest.TestEntityTableModel> {

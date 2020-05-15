@@ -1,26 +1,26 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.demos.manual.store;
+package is.codion.framework.demos.manual.store;
 
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.http.server.HttpServerConfiguration;
-import dev.codion.dbms.h2database.H2DatabaseProvider;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.db.http.HttpEntityConnectionProvider;
-import dev.codion.framework.db.rmi.RemoteEntityConnectionProvider;
-import dev.codion.framework.demos.manual.store.domain.Store;
-import dev.codion.framework.domain.entity.Entity;
-import dev.codion.framework.server.EntityServer;
-import dev.codion.framework.server.EntityServerConfiguration;
-import dev.codion.framework.servlet.EntityServletServerProvider;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.http.server.HttpServerConfiguration;
+import is.codion.dbms.h2database.H2DatabaseProvider;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.http.HttpEntityConnectionProvider;
+import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.server.EntityServer;
+import is.codion.framework.server.EntityServerConfiguration;
+import is.codion.framework.servlet.EntityServletServerProvider;
 
 import java.rmi.RemoteException;
 import java.util.List;
 
-import static dev.codion.common.user.Users.parseUser;
-import static dev.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.common.user.Users.parseUser;
+import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Collections.singletonList;
 
 public final class ClientServer {

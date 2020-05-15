@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.common.ui;
+package is.codion.swing.common.ui;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;

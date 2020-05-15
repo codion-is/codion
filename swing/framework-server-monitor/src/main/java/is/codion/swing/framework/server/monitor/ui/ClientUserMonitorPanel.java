@@ -1,16 +1,16 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.server.monitor.ui;
+package is.codion.swing.framework.server.monitor.ui;
 
-import dev.codion.common.i18n.Messages;
-import dev.codion.swing.common.ui.Windows;
-import dev.codion.swing.common.ui.control.Controls;
-import dev.codion.swing.common.ui.dialog.Dialogs;
-import dev.codion.swing.common.ui.layout.Layouts;
-import dev.codion.swing.common.ui.table.FilteredTable;
-import dev.codion.swing.framework.server.monitor.ClientMonitor;
-import dev.codion.swing.framework.server.monitor.ClientUserMonitor;
+import is.codion.common.i18n.Messages;
+import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.table.FilteredTable;
+import is.codion.swing.framework.server.monitor.ClientMonitor;
+import is.codion.swing.framework.server.monitor.ClientUserMonitor;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -30,7 +30,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 
-import static dev.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
+import static is.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 
 /**
  * A ClientUserMonitorPanel

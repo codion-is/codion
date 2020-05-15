@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.swing.framework.ui.test;
+package is.codion.swing.framework.ui.test;
 
-import dev.codion.common.user.User;
-import dev.codion.framework.model.EntityApplicationModel;
-import dev.codion.swing.framework.ui.EntityApplicationPanel;
-import dev.codion.swing.framework.ui.EntityApplicationPanel.DisplayFrame;
-import dev.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
+import is.codion.common.user.User;
+import is.codion.framework.model.EntityApplicationModel;
+import is.codion.swing.framework.ui.EntityApplicationPanel;
+import is.codion.swing.framework.ui.EntityApplicationPanel.DisplayFrame;
+import is.codion.swing.framework.ui.EntityApplicationPanel.MaximizeFrame;
 
 import static java.util.Objects.requireNonNull;
 

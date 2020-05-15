@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.javafx.framework.model;
+package is.codion.javafx.framework.model;
 
-import dev.codion.framework.model.tests.AbstractEntityModelTest;
-import dev.codion.framework.model.tests.TestDomain;
-import dev.codion.javafx.framework.ui.EntityTableView;
+import is.codion.framework.model.tests.AbstractEntityModelTest;
+import is.codion.framework.model.tests.TestDomain;
+import is.codion.javafx.framework.ui.EntityTableView;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.testfx.api.FxToolkit;

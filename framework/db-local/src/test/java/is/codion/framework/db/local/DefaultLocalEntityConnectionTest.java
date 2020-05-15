@@ -1,30 +1,30 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package dev.codion.framework.db.local;
+package is.codion.framework.db.local;
 
-import dev.codion.common.Conjunction;
-import dev.codion.common.DateFormats;
-import dev.codion.common.db.Operator;
-import dev.codion.common.db.database.Database;
-import dev.codion.common.db.database.Databases;
-import dev.codion.common.db.exception.DatabaseException;
-import dev.codion.common.db.exception.MultipleRecordsFoundException;
-import dev.codion.common.db.exception.RecordModifiedException;
-import dev.codion.common.db.exception.RecordNotFoundException;
-import dev.codion.common.db.exception.ReferentialIntegrityException;
-import dev.codion.common.db.exception.UniqueConstraintException;
-import dev.codion.common.db.exception.UpdateException;
-import dev.codion.common.db.result.ResultIterator;
-import dev.codion.common.user.User;
-import dev.codion.common.user.Users;
-import dev.codion.framework.db.EntityConnection;
-import dev.codion.framework.db.condition.Condition;
-import dev.codion.framework.db.condition.Conditions;
-import dev.codion.framework.db.condition.EntitySelectCondition;
-import dev.codion.framework.db.condition.EntityUpdateCondition;
-import dev.codion.framework.domain.entity.Entities;
-import dev.codion.framework.domain.entity.Entity;
+import is.codion.common.Conjunction;
+import is.codion.common.DateFormats;
+import is.codion.common.db.Operator;
+import is.codion.common.db.database.Database;
+import is.codion.common.db.database.Databases;
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.MultipleRecordsFoundException;
+import is.codion.common.db.exception.RecordModifiedException;
+import is.codion.common.db.exception.RecordNotFoundException;
+import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.db.exception.UniqueConstraintException;
+import is.codion.common.db.exception.UpdateException;
+import is.codion.common.db.result.ResultIterator;
+import is.codion.common.user.User;
+import is.codion.common.user.Users;
+import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,10 +41,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static dev.codion.framework.db.condition.Conditions.*;
-import static dev.codion.framework.db.local.TestDomain.*;
-import static dev.codion.framework.domain.entity.Entities.getKeys;
-import static dev.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.db.condition.Conditions.*;
+import static is.codion.framework.db.local.TestDomain.*;
+import static is.codion.framework.domain.entity.Entities.getKeys;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;

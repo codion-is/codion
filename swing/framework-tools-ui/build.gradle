@@ -21,8 +21,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['dev.codion.common.db,dev.codion.common.model,dev.codion.swing.common.model']
-    testAddReads = ['dev.codion.swing.framework.tools.ui': 'dev.codion.common.db,dev.codion.common.model,dev.codion.swing.common.model']
+    testAddModules = ['is.codion.common.db,is.codion.common.model,is.codion.swing.common.model']
+    testAddReads = ['is.codion.swing.framework.tools.ui': 'is.codion.common.db,is.codion.common.model,is.codion.swing.common.model']
 }
 
 compileTestJava {
@@ -47,7 +47,7 @@ distributions {
 
 applicationName = 'entity_generator'
 
-mainClassName = '$moduleName/dev.codion.swing.framework.tools.ui.generator.EntityGeneratorPanel'
+mainClassName = '$moduleName/is.codion.swing.framework.tools.ui.generator.EntityGeneratorPanel'
 
 applicationDefaultJvmArgs = [
         '-Dcodion.configurationFile=../config/entity_generator.config',
