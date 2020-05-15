@@ -6,8 +6,10 @@ package is.codion.framework.demos.manual.store;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.http.server.HttpServerConfiguration;
+import is.codion.common.http.server.ServerHttps;
 import is.codion.dbms.h2database.H2DatabaseProvider;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.http.ClientHttps;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store;
@@ -68,12 +70,12 @@ public final class ClientServer {
     configuration.setAuxiliaryServerProviderClassNames(singletonList(EntityServletServerProvider.class.getName()));
 
     HttpServerConfiguration.HTTP_SERVER_PORT.set(HTTP_PORT);
-    HttpServerConfiguration.HTTP_SERVER_SECURE.set(false);
+    HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.FALSE);
 
     EntityServer server = EntityServer.startServer(configuration);
 
     HttpEntityConnectionProvider connectionProvider =
-            new HttpEntityConnectionProvider("localhost", HTTP_PORT, /*https*/false);
+            new HttpEntityConnectionProvider("localhost", HTTP_PORT, ClientHttps.FALSE);
     connectionProvider.setDomainClassName(Store.class.getName());
     connectionProvider.setUser(parseUser("scott:tiger"));
     connectionProvider.setClientTypeId("ClientServer");

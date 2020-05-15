@@ -30,7 +30,7 @@ public final class HttpEntityConnections {
   public static HttpEntityConnection createConnection(final String domainId, final String serverHostName,
                                                       final int serverPort, final User user,
                                                       final String clientTypeId, final UUID clientId) {
-    return new HttpEntityConnection(domainId, serverHostName, serverPort, false, user, clientTypeId, clientId,
+    return new HttpEntityConnection(domainId, serverHostName, serverPort, ClientHttps.FALSE, user, clientTypeId, clientId,
             new BasicHttpClientConnectionManager());
   }
 
@@ -47,7 +47,7 @@ public final class HttpEntityConnections {
   public static HttpEntityConnection createSecureConnection(final String domainId, final String serverHostName,
                                                             final int serverPort, final User user,
                                                             final String clientTypeId, final UUID clientId) {
-    return new HttpEntityConnection(domainId, serverHostName, serverPort, true, user, clientTypeId, clientId,
+    return new HttpEntityConnection(domainId, serverHostName, serverPort, ClientHttps.TRUE, user, clientTypeId, clientId,
             new BasicHttpClientConnectionManager());
   }
 }

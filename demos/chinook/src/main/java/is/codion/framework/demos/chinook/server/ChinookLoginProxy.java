@@ -30,7 +30,7 @@ import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 import static java.lang.String.valueOf;
 
 /**
- * A {@link is.codion.common.LoggerProxy} implementation
+ * A {@link is.codion.common.rmi.server.LoginProxy} implementation
  * authenticating via a user lookup table.
  */
 public final class ChinookLoginProxy implements LoginProxy {
