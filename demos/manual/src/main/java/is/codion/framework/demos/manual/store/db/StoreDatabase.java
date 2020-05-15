@@ -53,6 +53,8 @@ public class StoreDatabase {
     customer = connection.update(customer);
 
     connection.delete(customerKey);
+
+    connection.disconnect();
     // end::databaseAccess[]
   }
 }

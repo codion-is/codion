@@ -111,6 +111,8 @@ customer.put(CUSTOMER_EMAIL, "valid@email.bla");
 customer = connection.update(customer);
 
 connection.delete(customerKey);
+
+connection.disconnect();
 ----
 
 link:https://codion.is[Web Site]
