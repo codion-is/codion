@@ -1,4 +1,6 @@
 = Codion Application Framework
+:dir-source: demos/manual/src/main/java
+:dir-chinook-source: demos/chinook/src/main/java
 
 image::documentation/src/docs/asciidoc/images/codion-logo.png[Codion logo,350]
 image::https://github.com/bjorndarri/codion/workflows/Java%20CI/badge.svg[CI]
@@ -12,5 +14,42 @@ Codion is a minimalistic full-stack Java rich client CRUD application framework 
 * Clients are run with either a local JDBC connection or served by a featherweight RMI server.
 * Integrated JasperReports support.
 * ...and much more.
+
+== Domain model
+The domain model in Codion is based on concepts from entity relationship diagrams, *entities* and *properties*. Defining the domain model is done in plain Java code, no annotations or XML is involved. All domain models extend the Domain class,
+
+We start by extending the *Domain* class, with a couple of convenient static imports (skipping the rest for brevity).
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/manual/store/domain/StoreMinimal.java[tags=staticImports]
+----
+
+Then we define string constants for the entity and its properties (referred to as *entityIds* and *propertyIds*), which are used whenever we need to refer to the entity type and its properties.
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/manual/store/domain/StoreMinimal.java[tags=customerConstants]
+----
+
+And finally we define an entity using the *entityId* and *propertyIds*.
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/manual/store/domain/StoreMinimal.java[tags=customer]
+----
+
+Integrated JUnit testing harness for the domain model.
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/manual/store/domain/StoreMinimalTest.java[tags=storeTest]
+----
+
+== Database access
+
+The *EntityConnection* interface defines the database layer. There are three implementations available; local, which is based on a direct JDBC connection (used below), RMI and HTTP which are both served by the Codion EntityServer.
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/manual/store/db/StoreDatabase.java[tags=databaseAccess]
+----
 
 link:https://codion.is[Web Site]
