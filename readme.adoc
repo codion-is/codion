@@ -16,7 +16,7 @@ Codion is a minimalistic full-stack Java rich client CRUD application framework 
 * ...and much more.
 
 == Domain model
-The domain model in Codion is based on concepts from entity relationship diagrams, *entities* and *properties*. Defining the domain model is done in plain Java code, no annotations or XML is involved. All domain models extend the Domain class,
+The domain model in Codion is based on concepts from entity relationship diagrams, *entities* and *properties*. Defining the domain model is done in plain Java code, no annotations or XML is involved.
 
 We start by extending the *Domain* class, with a couple of convenient static imports (skipping the rest for brevity).
 [source,java]
