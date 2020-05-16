@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.demos.manual.store.domain.minimal;
+package is.codion.framework.demos.manual.store.minimal.domain;
 
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 
