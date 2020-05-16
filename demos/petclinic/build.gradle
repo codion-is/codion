@@ -67,7 +67,7 @@ task runClientRMI(type: ModularJavaExec) {
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : 'localhost',
-            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/codion_truststore.jks',
+            'javax.net.ssl.trustStore'        : '../../framework/server/src/main/security/truststore.jks',
             'javax.net.ssl.trustStorePassword': 'crappypass',
             'logback.configurationFile'       : 'src/main/config/logback.xml'
     ]
@@ -101,7 +101,7 @@ task clientRMIScript(type: ModularCreateStartScripts) {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=remote',
             '-Dcodion.server.hostname=localhost',
-            '-Djavax.net.ssl.trustStore=../config/codion_truststore.jks',
+            '-Djavax.net.ssl.trustStore=../config/truststore.jks',
             '-Djavax.net.ssl.trustStorePassword=crappypass',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
@@ -121,7 +121,7 @@ task clientHttpScript(type: ModularCreateStartScripts) {
 applicationDistribution.into('config') {
     from(files('src/main/sql/create_schema.sql'))
     from(files('src/main/resources/logback.xml'))
-    from(files('../../framework/server/src/main/security/codion_truststore.jks'))
+    from(files('../../framework/server/src/main/security/truststore.jks'))
 }
 
 applicationDistribution.into('bin') {
