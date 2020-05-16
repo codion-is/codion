@@ -11,7 +11,7 @@ import is.codion.dbms.h2database.H2DatabaseProvider;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.demos.manual.store.domain.minimal.Store;
+import is.codion.framework.demos.manual.store.minimal.domain.Store;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 
@@ -19,13 +19,15 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
-import static is.codion.framework.demos.manual.store.domain.minimal.Store.*;
+import static is.codion.framework.demos.manual.store.minimal.domain.Store.*;
 
 public class StoreDatabase {
 
   private static void storeEntityConnection() throws SQLException, DatabaseException {
     // tag::databaseAccess[]
-    Database database = new H2DatabaseProvider().createDatabase("jdbc:h2:mem:h2db");
+    Database database = new H2DatabaseProvider()
+            .createDatabase("jdbc:h2:mem:h2db",
+                    "src/main/sql/create_schema.sql");
 
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(database)

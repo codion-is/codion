@@ -5,20 +5,33 @@
 image::documentation/src/docs/asciidoc/images/codion-logo.png[Codion logo,350]
 image::https://github.com/bjorndarri/codion/workflows/Java%20CI/badge.svg[CI]
 
-Codion is a minimalistic full-stack Java rich client CRUD application framework based solely on link:++https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition++[Java SE] components, it includes:
+== Introduction
+
+Codion is a minimalistic full-stack Java rich client CRUD application framework based solely on https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition[Java SE] components, it includes:
 
 * Simple domain modelling in plain Java code.
 * Integrated JUnit testing of the domain model.
 * A minimal but complete JDBC abstraction layer.
 * A straight forward and simple way of wiring together a rich Swing client on top of the domain model, all done in plain Java code.
-* Clients are run with either a local JDBC connection or served by a featherweight RMI server.
+* Clients use either a local JDBC connection or are served by a featherweight RMI/HTTP server.
 * Integrated JasperReports support.
 * ...and much more.
 
-== Domain model
-The domain model in Codion is based on concepts from entity relationship diagrams, *entities* and *properties*. Defining the domain model is done in plain Java code, no annotations or XML is involved.
+== Motivation
 
-We start by extending the *Domain* class, with a few convenient static imports (skipping the rest of the imports for brevity).
+I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was about to become all the rage in the world of CRUD applications. I've been developing and using Codion professionally for the last ~16 years, always with the aim of open sourcing it.
+
+== Rich Swing Client
+
+Here's the Chinook demo client UI (included in the project), a rather typical Codion client. Nothing spectecular here, it's just Swing after all.
+
+image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
+
+== Domain model
+Codion is not an ORM framework, instead the domain model is based on concepts from entity relationship diagrams, *entities* and *properties*. You define the domain model in plain Java code, no annotations or XML is involved.
+
+We start by extending the *Domain* class, with a few convenient static imports (skipping the rest of the imports for brevity). We then define string constants for the entity and its properties (referred to as *entityIds* and *propertyIds*), which are used whenever we need to refer to the entity type and its properties. And finally we define an entity using the *entityId* and *propertyIds*.
+
 [source,java]
 ----
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
@@ -26,30 +39,23 @@ import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 
 public class Store extends Domain {
-----
 
-Then we define string constants for the entity and its properties (referred to as *entityIds* and *propertyIds*), which are used whenever we need to refer to the entity type and its properties.
-[source,java]
-----
   public static final String T_CUSTOMER = "store.customer";
   public static final String CUSTOMER_ID = "id";
   public static final String CUSTOMER_FIRST_NAME = "first_name";
   public static final String CUSTOMER_LAST_NAME = "last_name";
   public static final String CUSTOMER_EMAIL = "email";
   public static final String CUSTOMER_IS_ACTIVE = "is_active";
-----
 
-And finally we define an entity using the *entityId* and *propertyIds*.
-[source,java]
-----
   public Store() {
     define(T_CUSTOMER,
-            primaryKeyProperty(CUSTOMER_ID, Types.BIGINT),
+            primaryKeyProperty(CUSTOMER_ID, Types.INTEGER),
             columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")
                     .nullable(false).maximumLength(40),
             columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
                     .nullable(false).maximumLength(40),
-            columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email"),
+            columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email")
+                    .maximumLength(100),
             columnProperty(CUSTOMER_IS_ACTIVE, Types.BOOLEAN, "Is active")
                     .defaultValue(true))
             .keyGenerator(automatic("store.customer"))
@@ -77,13 +83,78 @@ public class StoreTest extends EntityTestUnit {
 }
 ----
 
+== User interface
+
+We extend an *EntityEditPanel*, which, as the name suggests, provides a way to edit an entity instance. In the *main* method we assemble and run a tiny client based on the above.
+
+[source,java]
+----
+public class CustomerEditPanel extends EntityEditPanel {
+
+  public CustomerEditPanel(final SwingEntityEditModel editModel) {
+    super(editModel);
+  }
+
+  @Override
+  protected void initializeUI() {
+    setInitialFocusProperty(CUSTOMER_FIRST_NAME);
+
+    createTextField(CUSTOMER_FIRST_NAME).setColumns(12);
+    createTextField(CUSTOMER_LAST_NAME).setColumns(12);
+    createTextField(CUSTOMER_EMAIL).setColumns(12);
+    createCheckBox(CUSTOMER_IS_ACTIVE, null, IncludeCaption.NO);
+
+    setLayout(gridLayout(2, 2));
+
+    addPropertyPanel(CUSTOMER_FIRST_NAME);
+    addPropertyPanel(CUSTOMER_LAST_NAME);
+    addPropertyPanel(CUSTOMER_EMAIL);
+    addPropertyPanel(CUSTOMER_IS_ACTIVE);
+  }
+
+  public static void main(String[] args) {
+    Database database = new H2DatabaseProvider()
+            .createDatabase("jdbc:h2:mem:h2db",
+                    "src/main/sql/create_schema_minimal.sql");
+
+    EntityConnectionProvider connectionProvider =
+            new LocalEntityConnectionProvider(database)
+                    .setDomainClassName(Store.class.getName())
+                    .setUser(Users.parseUser("scott:tiger"));
+
+    SwingEntityModel customerModel =
+            new SwingEntityModel(T_CUSTOMER, connectionProvider);
+
+    EntityPanel customerPanel =
+            new EntityPanel(customerModel,
+                    new CustomerEditPanel(customerModel.getEditModel()));
+
+    customerPanel.getTablePanel().getTable().setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
+    customerPanel.getTablePanel().setConditionPanelVisible(true);
+
+    customerModel.refresh();
+    customerPanel.initializePanel();
+
+    Dialogs.displayInDialog(null, customerPanel, "Customers");
+
+    connectionProvider.disconnect();
+  }
+}
+----
+
+...and the result, all in all around 100 lines of code.
+
+image::documentation/src/docs/asciidoc/images/customers.png[align="center"]
+
 == Database access
 
 The *EntityConnection* interface defines the database layer. There are three implementations available; local, which is based on a direct JDBC connection (used below), RMI and HTTP which are both served by the Codion EntityServer.
 
 [source,java]
 ----
-Database database = new H2DatabaseProvider().createDatabase("jdbc:h2:mem:h2db");
+Database database = new H2DatabaseProvider()
+        .createDatabase("jdbc:h2:mem:h2db",
+                "src/main/sql/create_schema_minimal.sql");
 
 EntityConnectionProvider connectionProvider =
         new LocalEntityConnectionProvider(database)
@@ -115,4 +186,4 @@ connection.delete(customerKey);
 connection.disconnect();
 ----
 
-link:https://codion.is[Web Site]
+Continue reading on the link:https://codion.is[Codion Web Site].
