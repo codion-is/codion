@@ -6098,3 +6098,4 @@
   TextFields.makeUpperCase() and makeLowerCase() renamed upperCase() and lowerCase() respectively
   Configuration.enumValue() added
   HttpServerConfiguration, HttpEntityConnectionProvider now use enum values for configuring https
+  EntityGenerator improved, no longer based on a single schema

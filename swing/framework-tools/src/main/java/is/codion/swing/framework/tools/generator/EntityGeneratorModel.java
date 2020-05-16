@@ -36,11 +36,12 @@ import java.util.Set;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 /**
  * A model class for generating entity definitions.
  */
-public final class EntityGeneratorModel {
+public class EntityGeneratorModel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityGeneratorModel.class);
 
@@ -55,11 +56,11 @@ public final class EntityGeneratorModel {
   static final Integer SCHEMA_COLUMN_ID = 0;
   static final Integer TABLE_COLUMN_ID = 1;
 
+  private final Database database;
   private final Connection connection;
-  private final String schema;
-  private final String catalog;
   private final DatabaseMetaData metaData;
-  private final AbstractFilteredTableModel<Table, Integer> tableModel;
+  private final SchemaModel schemaModel;
+  private final TableModel tableModel;
   private final Value<String> definitionTextValue = Values.value();
   private final Event refreshStartedEvent = Events.event();
   private final Event refreshEndedEvent = Events.event();
@@ -67,28 +68,26 @@ public final class EntityGeneratorModel {
   /**
    * Instantiates a new EntityGeneratorModel.
    * @param user the user
-   * @param schema the schema name
    * @throws DatabaseException in case of an exception while connecting to the database
    */
-  public EntityGeneratorModel(final User user, final String schema) throws DatabaseException {
-    this(Databases.getInstance(), user, schema);
+  public EntityGeneratorModel(final User user) throws DatabaseException {
+    this(Databases.getInstance(), user);
   }
 
   /**
    * Instantiates a new EntityGeneratorModel.
    * @param database the database
    * @param user the user
-   * @param schema the schema name
    * @throws DatabaseException in case of an exception while connecting to the database
    */
-  public EntityGeneratorModel(final Database database, final User user, final String schema) throws DatabaseException {
+  public EntityGeneratorModel(final Database database, final User user) throws DatabaseException {
     try {
-      this.schema = schema;
-      this.catalog = database.getClass().getName().equals("is.codion.dbms.mysql.MySQLDatabase") ? schema : null;
+      this.database = database;
       this.connection = database.createConnection(user);
       this.metaData = connection.getMetaData();
+      this.schemaModel = initializeSchemaModel();
       this.tableModel = initializeTableModel();
-      this.tableModel.refresh();
+      this.schemaModel.refresh();
       bindEvents();
     }
     catch (final SQLException e) {
@@ -97,52 +96,71 @@ public final class EntityGeneratorModel {
   }
 
   /**
+   * @return a table model containing the database schemas
+   */
+  public final AbstractFilteredTableModel<Schema, Integer> getSchemaModel() {
+    return schemaModel;
+  }
+
+  /**
    * @return a table model containing the tables from the generator schema
    */
-  public AbstractFilteredTableModel<Table, Integer> getTableModel() {
+  public final AbstractFilteredTableModel<Table, Integer> getTableModel() {
     return tableModel;
   }
 
   /**
    * @return the entity definition text value
    */
-  public Value<String> getDefinitionTextValue() {
+  public final Value<String> getDefinitionTextValue() {
     return definitionTextValue;
   }
 
   /**
    * @param listener a listener notified each time a refresh has started
    */
-  public void addRefreshStartedListener(final EventListener listener) {
+  public final void addRefreshStartedListener(final EventListener listener) {
     refreshStartedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeRefreshStartedListener(final EventListener listener) {
+  public final void removeRefreshStartedListener(final EventListener listener) {
     refreshStartedEvent.removeListener(listener);
   }
 
   /**
    * @param listener a listener notified each time a refresh has ended
    */
-  public void addRefreshDoneListener(final EventListener listener) {
+  public final void addRefreshDoneListener(final EventListener listener) {
     refreshEndedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeRefreshDoneListener(final EventListener listener) {
+  public final void removeRefreshDoneListener(final EventListener listener) {
     refreshEndedEvent.removeListener(listener);
   }
 
   /**
    * Closes the connection to the database
    */
-  public void exit() {
+  public final void exit() {
     Database.closeSilently(connection);
+  }
+
+  public static final String getEntityId(final Table table) {
+    return table.getSchema() + "." + table.getTableName();
+  }
+
+  private SchemaModel initializeSchemaModel() {
+    final TableColumn schemaColumn = new TableColumn(SCHEMA_COLUMN_ID);
+    schemaColumn.setIdentifier(SCHEMA_COLUMN_ID);
+    schemaColumn.setHeaderValue("Schema");
+
+    return new SchemaModel(schemaColumn, metaData);
   }
 
   private TableModel initializeTableModel() {
@@ -153,10 +171,11 @@ public final class EntityGeneratorModel {
     tableColumn.setIdentifier(TABLE_COLUMN_ID);
     tableColumn.setHeaderValue("Table");
 
-    return new TableModel(asList(schemaColumn, tableColumn), metaData, schema, catalog);
+    return new TableModel(asList(schemaColumn, tableColumn), database, metaData);
   }
 
   private void bindEvents() {
+    schemaModel.getSelectionModel().addSelectedItemsListener(tableModel::setSchemas);
     tableModel.getSelectionModel().addSelectedItemsListener(selected -> {
       try {
         refreshStartedEvent.onEvent();
@@ -193,7 +212,7 @@ public final class EntityGeneratorModel {
 
   private static void appendEntityDefinition(final StringBuilder builder, final Table table) {
     builder.append("void " + getDefineMethodName(table) + "() {").append(Util.LINE_SEPARATOR);
-    builder.append("  define(").append(getEntityID(table)).append(",").append(Util.LINE_SEPARATOR);
+    builder.append("  define(").append(getEntityIdConstant(table)).append(",").append(Util.LINE_SEPARATOR);
     for (final Column column : table.columns) {
       builder.append("  ").append(getPropertyDefinition(table, column))
               .append(table.columns.indexOf(column) < table.columns.size() - 1 ? "," : "").append(Util.LINE_SEPARATOR);
@@ -219,15 +238,15 @@ public final class EntityGeneratorModel {
   }
 
   private static String getConstants(final Table table) {
-    final String schemaName = table.getSchemaName();
-    final StringBuilder builder = new StringBuilder(PUBLIC_STATIC_FINAL_STRING).append(getEntityID(table))
+    final String schemaName = table.getSchema().getName();
+    final StringBuilder builder = new StringBuilder(PUBLIC_STATIC_FINAL_STRING).append(getEntityIdConstant(table))
             .append(EQUALS).append(schemaName.toLowerCase()).append(".").append(table.getTableName().toLowerCase())
             .append("\";").append(Util.LINE_SEPARATOR);
     for (final Column column : table.columns) {
-      builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyId(table, column, false))
+      builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyIdConstant(table, column, false))
               .append(EQUALS).append(column.getColumnName().toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
       if (column.foreignKeyColumn != null) {
-        builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyId(table, column, true))
+        builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyIdConstant(table, column, true))
                 .append(EQUALS).append(column.getColumnName().toLowerCase())
                 .append(FOREIGN_KEY_PROPERTY_SUFFIX.toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
       }
@@ -247,10 +266,10 @@ public final class EntityGeneratorModel {
   private static String getForeignKeyPropertyDefinition(final Table table, final Column column) {
     final String columnPropertyDefinition = getColumnPropertyDefinition(table, column, true);
     final StringBuilder builder = new StringBuilder();
-    final String foreignKeyId = getPropertyId(table, column, true);
+    final String foreignKeyId = getPropertyIdConstant(table, column, true);
     final String caption = getCaption(column);
     builder.append("        foreignKeyProperty(").append(foreignKeyId).append(", \"").append(caption)
-            .append("\", ").append(getEntityID(column.getForeignKeyColumn().getReferencedTable()))
+            .append("\", ").append(getEntityIdConstant(column.getForeignKeyColumn().getReferencedTable()))
             .append(",").append(Util.LINE_SEPARATOR);
     builder.append("        ").append(columnPropertyDefinition).append(")");
 
@@ -285,7 +304,7 @@ public final class EntityGeneratorModel {
 
   private static void addPropertyDefinition(final StringBuilder builder, final Table table, final Column column,
                                             final boolean foreignKeyColumn) {
-    final String propertyId = getPropertyId(table, column, false);
+    final String propertyId = getPropertyIdConstant(table, column, false);
     final String caption = getCaption(column);
     if (column.getKeySeq() != -1) {
       if (TYPES_INTEGER.equals(column.getColumnTypeName())) {
@@ -314,16 +333,16 @@ public final class EntityGeneratorModel {
     }
   }
 
-  private static String getEntityID(final Table table) {
+  private static String getEntityIdConstant(final Table table) {
     return ENTITY_ID_PREFIX + table.getTableName().toUpperCase();
   }
 
-  private static String getPropertyId(final Table table, final Column column, final boolean isForeignKey) {
+  private static String getPropertyIdConstant(final Table table, final Column column, final boolean isForeignKey) {
     return table.getTableName().toUpperCase() + "_" + column.getColumnName().toUpperCase()
             + (isForeignKey ? FOREIGN_KEY_PROPERTY_SUFFIX : "");
   }
 
-  private static String getCaption(final Column column) {
+  protected static String getCaption(final Column column) {
     final String columnName = column.getColumnName().toLowerCase().replaceAll("_", " ");
 
     return columnName.substring(0, 1).toUpperCase() + columnName.substring(1);
@@ -336,53 +355,33 @@ public final class EntityGeneratorModel {
     return builder.toString();
   }
 
-  private static final class TableModel extends AbstractFilteredTableModel<Table, Integer> {
+  private static final class SchemaModel extends AbstractFilteredTableModel<Schema, Integer> {
 
     private final DatabaseMetaData metaData;
-    private final String schema;
-    private final String catalog;
 
-    private TableModel(final List<TableColumn> columns, final DatabaseMetaData metaData,
-                       final String schema, final String catalog) {
-      super(new AbstractTableSortModel<Table, Integer>(columns) {
+    private SchemaModel(final TableColumn column, final DatabaseMetaData metaData) {
+      super(new AbstractTableSortModel<Schema, Integer>(singletonList(column)) {
         @Override
         public Class getColumnClass(final Integer columnIdentifier) {
-          return String.class;
+          return Schema.class;
         }
 
         @Override
-        protected Comparable getComparable(final Table row, final Integer columnIdentifier) {
-          if (columnIdentifier.equals(SCHEMA_COLUMN_ID)) {
-            return row.getSchemaName();
-          }
-          else {
-            return row.getTableName();
-          }
+        protected Comparable getComparable(final Schema row, final Integer columnIdentifier) {
+          return row.getName();
         }
-      }, asList(new DefaultColumnConditionModel<>(0, String.class, "%"),
-              new DefaultColumnConditionModel<>(1, String.class, "%")));
+      }, singletonList(new DefaultColumnConditionModel<>(0, Schema.class, "%")));
       this.metaData = metaData;
-      this.schema = schema;
-      this.catalog = catalog;
     }
 
     @Override
     protected void doRefresh() {
       try {
         clear();
-        final Set<Table> items = new HashSet<>();
-        final ResultSet resultSet = metaData.getTables(catalog, schema, null, null);
-        final List<Table> tables = new TablePacker(schema).pack(resultSet, -1);
+        final ResultSet resultSet = metaData.getSchemas();
+        final List<Schema> schemas = new SchemaPacker().pack(resultSet, -1);
         resultSet.close();
-        for (final Table table : tables) {
-          populateTable(table);
-          for (final ForeignKeyColumn foreignKeyColumn : table.foreignKeys) {
-            final Table referencedTable = foreignKeyColumn.getReferencedTable();
-            populateTable(referencedTable);
-            items.add(referencedTable);
-          }
-        }
-        items.addAll(tables);
+        final Set<Schema> items = new HashSet<>(schemas);
         addItemsAt(0, new ArrayList<>(items));
       }
       catch (final SQLException e) {
@@ -391,14 +390,90 @@ public final class EntityGeneratorModel {
       }
     }
 
-    private void populateTable(final Table table) throws SQLException {
-      ResultSet resultSet = metaData.getImportedKeys(catalog, table.getSchemaName(), table.getTableName());
+    @Override
+    public Object getValueAt(final int rowIndex, final int columnIndex) {
+      return getItemAt(rowIndex);
+    }
+  }
+
+  private static final class TableModel extends AbstractFilteredTableModel<Table, Integer> {
+
+    private final Database database;
+    private final DatabaseMetaData metaData;
+    private final List<Schema> schemas = new ArrayList<>();
+
+    private TableModel(final List<TableColumn> columns, final Database database, final DatabaseMetaData metaData) {
+      super(new AbstractTableSortModel<Table, Integer>(columns) {
+        @Override
+        public Class getColumnClass(final Integer columnIdentifier) {
+          if (columnIdentifier.equals(SCHEMA_COLUMN_ID)) {
+            return Schema.class;
+          }
+
+          return String.class;
+        }
+
+        @Override
+        protected Comparable getComparable(final Table row, final Integer columnIdentifier) {
+          if (columnIdentifier.equals(SCHEMA_COLUMN_ID)) {
+            return row.getSchema().getName();
+          }
+          else {
+            return row.getTableName();
+          }
+        }
+      }, asList(new DefaultColumnConditionModel<>(0, Schema.class, "%"),
+              new DefaultColumnConditionModel<>(1, String.class, "%")));
+      this.database = database;
+      this.metaData = metaData;
+    }
+
+    public void setSchemas(final List<Schema> schemas) {
+      this.schemas.clear();
+      this.schemas.addAll(schemas);
+      refresh();
+    }
+
+    @Override
+    protected void doRefresh() {
+      try {
+        clear();
+        if (schemas.isEmpty()) {
+          return;
+        }
+        final Set<Table> items = new HashSet<>();
+        for (final Schema schema : schemas) {
+          final String catalog = database.getClass().getName().equals("is.codion.dbms.mysql.MySQLDatabase") ? schema.getName() : null;
+          final ResultSet resultSet = metaData.getTables(catalog, schema.getName(), null, null);
+          final List<Table> tables = new TablePacker(schema.getName()).pack(resultSet, -1);
+          resultSet.close();
+          for (final Table table : tables) {
+            populateTable(catalog, table);
+            for (final ForeignKeyColumn foreignKeyColumn : table.foreignKeys) {
+              final Table referencedTable = foreignKeyColumn.getReferencedTable();
+              populateTable(catalog, referencedTable);
+              items.add(referencedTable);
+            }
+          }
+
+          items.addAll(tables);
+        }
+        addItemsAt(0, new ArrayList<>(items));
+      }
+      catch (final SQLException e) {
+        LOG.error(e.getMessage(), e);
+        throw new RuntimeException(e);
+      }
+    }
+
+    private void populateTable(final String catalog, final Table table) throws SQLException {
+      ResultSet resultSet = metaData.getImportedKeys(catalog, table.getSchema().getName(), table.getTableName());
       table.foreignKeys = new ForeignKeyColumnPacker().pack(resultSet, -1);
       resultSet.close();
-      resultSet = metaData.getPrimaryKeys(catalog, table.getSchemaName(), table.getTableName());
+      resultSet = metaData.getPrimaryKeys(catalog, table.getSchema().getName(), table.getTableName());
       table.primaryKeyColumns = new PrimaryKeyColumnPacker().pack(resultSet, -1);
       resultSet.close();
-      resultSet = metaData.getColumns(catalog, table.getSchemaName(), table.getTableName(), null);
+      resultSet = metaData.getColumns(catalog, table.getSchema().getName(), table.getTableName(), null);
       table.columns = new ColumnPacker(table).pack(resultSet, -1);
       resultSet.close();
     }
@@ -407,11 +482,47 @@ public final class EntityGeneratorModel {
     public Object getValueAt(final int rowIndex, final int columnIndex) {
       final Table table = getItemAt(rowIndex);
       if (columnIndex == 0) {
-        return table.getSchemaName();
+        return table.getSchema();
       }
       else {
         return table.getTableName();
       }
+    }
+  }
+
+  public static final class Schema {
+
+    private final String name;
+
+    public Schema(final String name) {
+      this.name = name;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    @Override
+    public String toString() {
+      return name;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+      if (this == object) {
+        return true;
+      }
+      if (object == null || getClass() != object.getClass()) {
+        return false;
+      }
+      final Schema schema = (Schema) object;
+
+      return name.equals(schema.name);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(name);
     }
   }
 
@@ -420,15 +531,20 @@ public final class EntityGeneratorModel {
    */
   public static final class Table {
 
-    private final String schemaName;
+    private final Schema schema;
     private final String tableName;
     private List<Column> columns;
     private Collection<ForeignKeyColumn> foreignKeys;
     private Collection<PrimaryKeyColumn> primaryKeyColumns;
 
-    public Table(final String schemaName, final String tableName) {
-      this.schemaName = schemaName;
+    public Table(final Schema schema, final String tableName) {
+      this.schema = schema;
       this.tableName = tableName;
+    }
+
+    @Override
+    public String toString() {
+      return schema + "." + tableName;
     }
 
     @Override
@@ -442,12 +558,12 @@ public final class EntityGeneratorModel {
 
       final Table table = (Table) o;
 
-      return Objects.equals(schemaName, table.getSchemaName()) && Objects.equals(tableName, table.getTableName());
+      return Objects.equals(schema, table.getSchema()) && Objects.equals(tableName, table.getTableName());
     }
 
     @Override
     public int hashCode() {
-      int result = schemaName != null ? schemaName.hashCode() : 0;
+      int result = schema != null ? schema.getName().hashCode() : 0;
       result = result + (tableName != null ? tableName.hashCode() : 0);
 
       return result;
@@ -457,12 +573,16 @@ public final class EntityGeneratorModel {
       return tableName;
     }
 
-    public String getSchemaName() {
-      return schemaName;
+    public Schema getSchema() {
+      return schema;
+    }
+
+    public List<Column> getColumns() {
+      return columns;
     }
   }
 
-  private static final class Column {
+  protected static final class Column {
 
     private final String columnName;
     private final int columnType;
@@ -529,6 +649,11 @@ public final class EntityGeneratorModel {
     public ForeignKeyColumn getForeignKeyColumn() {
       return foreignKeyColumn;
     }
+
+    @Override
+    public String toString() {
+      return columnName;
+    }
   }
 
   private static final class PrimaryKeyColumn {
@@ -548,9 +673,14 @@ public final class EntityGeneratorModel {
     public int getKeySeq() {
       return keySeq;
     }
+
+    @Override
+    public String toString() {
+      return columnName;
+    }
   }
 
-  private static final class ForeignKeyColumn {
+  protected static final class ForeignKeyColumn {
 
     private final String pkSchemaName;
     private final String pkTableName;
@@ -566,7 +696,7 @@ public final class EntityGeneratorModel {
     }
 
     public Table getReferencedTable() {
-      return new Table(pkSchemaName, pkTableName);
+      return new Table(new Schema(pkSchemaName), pkTableName);
     }
 
     public String getFkTableName() {
@@ -578,23 +708,35 @@ public final class EntityGeneratorModel {
     }
   }
 
+  private static final class SchemaPacker implements ResultPacker<Schema> {
+
+    @Override
+    public Schema fetch(final ResultSet resultSet) throws SQLException {
+      return new Schema(resultSet.getString("TABLE_SCHEM"));
+    }
+  }
+
   private static final class TablePacker implements ResultPacker<Table> {
 
-    private final String schema;
+    private final Schema schema;
 
-    private TablePacker(final String schema) {
-      this.schema = schema;
+    private TablePacker(final String schemaName) {
+      this.schema = new Schema(schemaName);
     }
 
     @Override
     public Table fetch(final ResultSet resultSet) throws SQLException {
       final String tableName = resultSet.getString("TABLE_NAME");
-      String dbSchema = resultSet.getString(TABLE_SCHEMA);
-      if (dbSchema == null) {
-        dbSchema = this.schema;
+      final Schema schema;
+      final String dbSchemaName = resultSet.getString(TABLE_SCHEMA);
+      if (dbSchemaName == null) {
+        schema = this.schema;
+      }
+      else {
+        schema = new Schema(dbSchemaName);
       }
 
-      return new Table(dbSchema, tableName);
+      return new Table(schema, tableName);
     }
   }
 
