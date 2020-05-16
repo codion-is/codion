@@ -6124,3 +6124,5 @@
   DefaultEntity bug fixed, get() now handles MirrorProperty by returning the value for the property it mirrors, initializeAndCacheCompositeReferenceKey() also takes MirrorProperty into account
   TextFields.makeUpperCase() and makeLowerCase() renamed upperCase() and lowerCase() respectively
   Configuration.enumValue() added
+  HttpServerConfiguration, HttpEntityConnectionProvider now use enum values for configuring https
+  EntityGenerator improved, no longer based on a single schema

@@ -5,7 +5,6 @@ package is.codion.swing.framework.tools.ui.generator;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.LoginPanel;
@@ -16,16 +15,13 @@ import is.codion.swing.common.ui.value.TextValues;
 import is.codion.swing.framework.tools.generator.EntityGeneratorModel;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 
-import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.icons.Icons.icons;
 
 /**
@@ -44,13 +40,23 @@ public class EntityGeneratorPanel extends JPanel {
    */
   public EntityGeneratorPanel(final EntityGeneratorModel generatorModel) {
     this.model = generatorModel;
+    final FilteredTable<EntityGeneratorModel.Schema, Integer,
+            AbstractFilteredTableModel<EntityGeneratorModel.Schema, Integer>> schema =
+            new FilteredTable<>(generatorModel.getSchemaModel());
+    final JScrollPane schemaScroller = new JScrollPane(schema);
+
     final FilteredTable<EntityGeneratorModel.Table, Integer,
             AbstractFilteredTableModel<EntityGeneratorModel.Table, Integer>> table =
             new FilteredTable<>(generatorModel.getTableModel());
-    final JScrollPane scroller = new JScrollPane(table);
+    final JScrollPane tableScroller = new JScrollPane(table);
+
+    final JSplitPane schemaTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+    schemaTableSplitPane.setResizeWeight(RESIZE_WEIGHT);
+    schemaTableSplitPane.setTopComponent(schemaScroller);
+    schemaTableSplitPane.setBottomComponent(tableScroller);
 
     final JSplitPane splitPane = new JSplitPane();
-    splitPane.setLeftComponent(scroller);
+    splitPane.setLeftComponent(schemaTableSplitPane);
 
     final JTextArea textArea = new JTextArea(40, 60);
     textArea.setEditable(false);
@@ -76,34 +82,21 @@ public class EntityGeneratorPanel extends JPanel {
    * @param arguments no arguments required
    */
   public static void main(final String[] arguments) {
-    SwingUtilities.invokeLater(new Starter());
-  }
+    try {
+      final User user = new LoginPanel().showLoginPanel(null);
+      final EntityGeneratorPanel generatorPanel = new EntityGeneratorPanel(new EntityGeneratorModel(user));
+      final JFrame frame = new JFrame("Codion Entity Generator");
+      frame.setIconImage(icons().logoTransparent().getImage());
+      frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+      frame.add(generatorPanel);
 
-  private static final class Starter implements Runnable {
-    @Override
-    public void run() {
-      try {
-        final String schemaName = JOptionPane.showInputDialog("Schema name");
-        if (nullOrEmpty(schemaName)) {
-          return;
-        }
-
-        final User user = new LoginPanel(Users.user(schemaName)).showLoginPanel(null);
-        final EntityGeneratorModel generatorModel = new EntityGeneratorModel(user, schemaName);
-        final EntityGeneratorPanel generatorPanel = new EntityGeneratorPanel(generatorModel);
-        final JFrame frame = new JFrame("Codion Entity Generator");
-        frame.setIconImage(icons().logoTransparent().getImage());
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.add(generatorPanel);
-
-        frame.pack();
-        Windows.centerWindow(frame);
-        frame.setVisible(true);
-      }
-      catch (final CancelException ignored) {/*ignored*/}
-      catch (final Exception e) {
-        throw new RuntimeException(e);
-      }
+      frame.pack();
+      Windows.centerWindow(frame);
+      frame.setVisible(true);
     }
+    catch (final CancelException ignored) {/*ignored*/}
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    };
   }
 }

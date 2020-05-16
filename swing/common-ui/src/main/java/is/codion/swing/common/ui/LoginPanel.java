@@ -46,7 +46,14 @@ public final class LoginPanel extends JPanel {
 
   /**
    * Instantiates a new LoginPanel
-   * @param defaultUser the default user
+   */
+  public LoginPanel() {
+    this(null);
+  }
+
+  /**
+   * Instantiates a new LoginPanel
+   * @param defaultUser the default user credentials to display
    */
   public LoginPanel(final User defaultUser) {
     initializeUI(defaultUser);

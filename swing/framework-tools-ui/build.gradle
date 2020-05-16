@@ -20,6 +20,12 @@ dependencies {
     testRuntimeOnly "com.h2database:h2:${h2Version}"
 }
 
+test {
+    systemProperty "codion.db.url", "jdbc:h2:mem:h2db"
+    systemProperty "codion.db.initScript", "src/main/config/create_schema.sql"
+    systemProperty "codion.test.user", "scott:tiger"
+}
+
 ext {
     testAddModules = ['is.codion.common.db,is.codion.common.model,is.codion.swing.common.model']
     testAddReads = ['is.codion.swing.framework.tools.ui': 'is.codion.common.db,is.codion.common.model,is.codion.swing.common.model']
@@ -66,7 +72,11 @@ task runEntityGenerator(type: ModularJavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     systemProperties = [
             'codion.db.url'             : 'jdbc:h2:mem:h2db',
-            'codion.db.initScript'      : 'src/main/config/create_schema.sql',
-            'logback.configurationFile' : 'src/main/config/logback.xml'
+            'codion.db.initScript'      :
+                    '../../demos/chinook/src/main/sql/create_schema.sql,' +
+                    '../../demos/empdept/src/main/sql/create_schema.sql,' +
+                    '../../demos/petclinic/src/main/sql/create_schema.sql,' +
+                    '../../demos/petstore/src/main/sql/create_schema.sql,' +
+                    '../../demos/world/src/main/sql/create_schema.sql'
     ]
 }
