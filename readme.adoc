@@ -15,7 +15,7 @@ Some highlights.
 * Wiring together a rich Swing client based on the domain model is very straight forward.
 * Clients use either a local JDBC connection or are served by a featherweight RMI/HTTP server.
 * Integrated JasperReports support.
-* Super-fast client prototyping.
+* Extremely rapid prototyping.
 * Excellent replacement for legacy https://en.wikipedia.org/wiki/Oracle_Forms[Oracle Forms] applications.
 
 == Motivation
@@ -251,7 +251,7 @@ image::documentation/src/docs/asciidoc/images/customers.png[align="center"]
 [cols="2,4,2"]
 |===
 |Module|Artifact|Description
-|is.codion.framework.db.core|is.codion.jdk11:codion-framework-db-core:{version}|API
+|is.codion.framework.db.core|is.codion.jdk11:codion-framework-db-core:{version}|Core
 |is.codion.framework.db.local|is.codion.jdk11:codion-framework-db-local:{version}|JDBC
 |is.codion.framework.db.rmi|is.codion.jdk11:codion-framework-db-rmi:{version}|RMI
 |is.codion.framework.db.http|is.codion.jdk11:codion-framework-db-http:{version}|HTTP
