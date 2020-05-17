@@ -1,33 +1,42 @@
 = Codion Application Framework
-:dir-source: demos/manual/src/main/java
-:dir-chinook-source: demos/chinook/src/main/java
 
 image::documentation/src/docs/asciidoc/images/codion-logo.png[Codion logo,350]
 image::https://github.com/bjorndarri/codion/workflows/Java%20CI/badge.svg[CI]
 
 == Introduction
 
-Codion is a minimalistic full-stack Java rich client CRUD application framework based solely on https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition[Java Standard Edition] components, it includes:
+Codion is a minimalistic full-stack Java rich client CRUD application framework based solely on https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition[Java Standard Edition] components.
 
-* Simple domain modelling in plain Java code.
+Some highlights.
+
+* Simple domain modelling in plain Java code (no XML, no annotations).
 * Integrated JUnit testing of the domain model.
 * A minimal but complete JDBC abstraction layer.
-* A straight forward and simple way of wiring together a rich Swing client on top of the domain model, all done in plain Java code.
+* Wiring together a rich Swing client based on the domain model is very straight forward.
 * Clients use either a local JDBC connection or are served by a featherweight RMI/HTTP server.
 * Integrated JasperReports support.
-* ...and much more.
+* Super-fast client prototyping.
+* Excellent replacement for legacy https://en.wikipedia.org/wiki/Oracle_Forms[Oracle Forms] applications.
 
 == Motivation
 
-I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was about to become (to my astonishment) all the rage in the world of CRUD applications. I've been developing and using Codion professionally for the last ~($currentYear - 2004) years, always with the aim of eventually open sourcing it.
+I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was about to become (to my astonishment) all the rage in the world of CRUD applications. I've been developing and using Codion professionally for the last ($currentYear-2004) years, always with the aim of eventually open sourcing it.
 
 == Framework or library?
 
 Both actually. Codion is highly modular, so you can use as much or as little as you want.
 
+== License
+
+Codion is dual-licensed under the Open Source https://en.wikipedia.org/wiki/Affero_General_Public_License[AGPLv3] license and a commercial license.
+
+I realize this choice of license will turn quite a few people off, but keep in mind that you can freely use the AGPL licensed version to create closed-source applications for personal or internal company use, since it only kicks in when the application is distributed.
+
+See http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic[GPL FAQ]
+
 == Dependencies
 
-Codion uses a very limited set of 3d party libraries, a simple CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
+Codion uses a very limited set of third-party libraries, a simple CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
 
 * *com.toedter:jcalendar* for date input
 * *org.json:json* for persisting client preferences
@@ -43,6 +52,10 @@ Here is a screenshot of the Chinook demo client (included in the project), a rat
 
 image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 
+//And here's a video demonstrating basic client functionality (keep your music on, it's silent).
+
+//video::VIDEOID[youtube]
+
 == Domain model
 
 [cols="2,4"]
@@ -51,9 +64,9 @@ image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 |is.codion.framework.domain|is.codion.jdk11:codion-framework-domain:{version}
 |===
 
-Codion is not an ORM framework, instead the domain model is based on concepts from entity relationship diagrams, *entities* and *properties*. You define the domain model in plain Java code, no annotations or XML is involved.
+Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[ORM] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities* and *properties*. This simplifies a lot of things and completely eliminates the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
 
-Here we start by extending the *Domain* class, with a few convenient static imports (skipping the rest of the imports for brevity). We then define string constants for the entities and their respective properties (referred to as *entityIds* and *propertyIds*), which are used whenever we need to refer to the entity type and its properties. And finally we use these *entityIds* and *propertyIds* to define two entities.
+In the following example we start by extending the *Domain* class, with two convenient static imports (skipping the rest of the imports for brevity). We then define string constants for the entities and their respective properties (referred to as *entityIds* and *propertyIds*), which are used whenever we need to refer to the entity type and its properties. Finally we use these *entityIds* and *propertyIds* to define and configure two entities, with a master-detail relationship.
 
 [source,java]
 ----
@@ -147,7 +160,7 @@ public class StoreTest extends EntityTestUnit {
 |is.codion.swing.framework.ui|is.codion.jdk11:codion-swing-framework-ui:{version}
 |===
 
-In the following example we implement a *CustomerEditPanel* and *AddressEditPanel* by extending *EntityEditPanel*. These edit panels, as the name suggests, provide the UI for editing entity instances. In the *main* method we use these building blocks to assemble and display a client.
+In the following example, we use the domain model from above and implement a *CustomerEditPanel* and *AddressEditPanel* by extending *EntityEditPanel*. These edit panels, as the name suggests, provide the UI for editing entity instances. In the *main* method we use these building blocks to assemble and display a client.
 
 [source,java]
 ----
