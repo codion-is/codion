@@ -19,7 +19,7 @@ Codion is a minimalistic full-stack Java rich client CRUD application framework 
 
 == Motivation
 
-I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was about to become (to my astonishment) all the rage in the world of CRUD applications. I've been developing and using Codion professionally for the last ~($currentYear - 2004) years, always with the aim of eventually open sourcing it.
+I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was about to become (to my astonishment) all the rage in the world of CRUD applications. I've been developing and using Codion professionally for the last ($currentYear - 2004) years, always with the aim of eventually open sourcing it.
 
 == Framework or library?
 
@@ -27,7 +27,7 @@ Both actually. Codion is highly modular, so you can use as much or as little as 
 
 == Dependencies
 
-Codion uses a very limited set of 3d party libraries, a simple CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
+Codion uses a very limited set of third-party libraries, a simple CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
 
 * *com.toedter:jcalendar* for date input
 * *org.json:json* for persisting client preferences
@@ -53,7 +53,7 @@ image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 
 Codion is not an ORM framework, instead the domain model is based on concepts from entity relationship diagrams, *entities* and *properties*. You define the domain model in plain Java code, no annotations or XML is involved.
 
-Here we start by extending the *Domain* class, with a few convenient static imports (skipping the rest of the imports for brevity). We then define string constants for the entities and their respective properties (referred to as *entityIds* and *propertyIds*), which are used whenever we need to refer to the entity type and its properties. And finally we use these *entityIds* and *propertyIds* to define two entities.
+Here we start by extending the *Domain* class, with two convenient static imports (skipping the rest of the imports for brevity). We then define string constants for the entities and their respective properties (referred to as *entityIds* and *propertyIds*), which are used whenever we need to refer to the entity type and its properties. And finally we use these *entityIds* and *propertyIds* to define two entities.
 
 [source,java]
 ----
