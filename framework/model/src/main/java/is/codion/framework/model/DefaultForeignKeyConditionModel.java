@@ -79,6 +79,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
     entityLookupModel.addSelectedEntitiesListener(selectedEntities -> {
       try {
         setUpdatingModel(true);
+        setUpperBound(null);//todo this is a hack, otherwise super.conditionChangedEvent doesn't get triggered
         setUpperBound(selectedEntities.isEmpty() ? null : selectedEntities);
       }
       finally {
