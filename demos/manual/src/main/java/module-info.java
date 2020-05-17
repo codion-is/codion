@@ -18,5 +18,6 @@ module is.codion.framework.demos.manual {
   requires org.junit.jupiter.api;
 
   exports is.codion.framework.demos.manual.store.domain;
+  exports is.codion.framework.demos.manual.store.minimal.domain;
   exports is.codion.framework.demos.manual.store.ui;
 }
