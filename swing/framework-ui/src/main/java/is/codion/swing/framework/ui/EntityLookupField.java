@@ -282,6 +282,7 @@ public final class EntityLookupField extends JTextField {
                 selectEntities(queryResult);
               }
             }
+            selectAll();
           }
           catch (final Exception e) {
             DefaultDialogExceptionHandler.getInstance().displayException(e, Windows.getParentWindow(this));
