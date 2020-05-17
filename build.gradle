@@ -27,7 +27,7 @@ allprojects {
         jcenter()
     }
 
-    apply plugin: "com.github.hierynomus.license"
+//    apply plugin: "com.github.hierynomus.license"
 
     license {
         header rootProject.file('LICENSE')
