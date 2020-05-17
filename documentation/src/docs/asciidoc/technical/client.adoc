@@ -159,7 +159,7 @@ include::{dir-source}/chinook/src/main/config/h2db.config[]
 ==== Table panel
 
 * kbd:[Del] Delete selected
-* kbd:[Shift + Alt + &#x2190;] Move column left
-* kbd:[Shift + Alt + &#x2192;] Move column right
-* kbd:[Alt + &#x2190;] Resize column left
-* kbd:[Alt + &#x2192;] Resize column right
+* kbd:[Shift + Alt + &#x2190;] Move selected column left
+* kbd:[Shift + Alt + &#x2192;] Move selected column right
+* kbd:[Ctrl + &#x002B;] Increase selected column size
+* kbd:[Ctrl + &#x2212;] Decrease selected column size

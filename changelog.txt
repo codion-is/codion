@@ -6100,3 +6100,4 @@
   HttpServerConfiguration, HttpEntityConnectionProvider now use enum values for configuring https
   EntityGenerator improved, no longer based on a single schema
   Properties.columnProperty() and primaryKeyProperty() methods without type parameter (defaulting to Types.INTEGER) removed, better to be explicit
+  FilteredTable, key combination to resize column now Ctrl - +/-, to prevent clashes
