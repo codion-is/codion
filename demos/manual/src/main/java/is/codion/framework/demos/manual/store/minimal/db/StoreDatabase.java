@@ -51,7 +51,6 @@ public class StoreDatabase {
     Entity customer = entities.entity(T_CUSTOMER);
     customer.put(CUSTOMER_FIRST_NAME, "Björn");
     customer.put(CUSTOMER_LAST_NAME, "Sigurðsson");
-    customer.put(CUSTOMER_IS_ACTIVE, true);
 
     Entity.Key customerKey = connection.insert(customer);
     //select to get generated and default column values
