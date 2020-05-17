@@ -109,6 +109,7 @@ public final class Configuration {
    * @param key the configuration key
    * @param enumClass the enum class
    * @param defaultValue the default value, if any
+   * @param <T> the enum type
    * @return the configuration value
    */
   public static <T extends Enum<T>> PropertyValue<T> enumValue(final String key, final Class<T> enumClass, final T defaultValue) {

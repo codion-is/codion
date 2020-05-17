@@ -7,7 +7,6 @@ import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 
-// tag::storeTest[]
 public class StoreTest extends EntityTestUnit {
 
   public StoreTest() {
@@ -16,7 +15,11 @@ public class StoreTest extends EntityTestUnit {
 
   @Test
   void customer() throws Exception {
-    test(is.codion.framework.demos.manual.store.domain.Store.T_CUSTOMER);
+    test(Store.T_CUSTOMER);
+  }
+
+  @Test
+  void address() throws Exception {
+    test(Store.T_ADDRESS);
   }
 }
-// end::storeTest[]

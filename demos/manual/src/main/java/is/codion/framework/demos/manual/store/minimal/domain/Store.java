@@ -9,8 +9,7 @@ import is.codion.framework.domain.entity.StringProvider;
 import java.sql.Types;
 
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
-import static is.codion.framework.domain.property.Properties.columnProperty;
-import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
+import static is.codion.framework.domain.property.Properties.*;
 
 public class Store extends Domain {
 
@@ -20,6 +19,13 @@ public class Store extends Domain {
   public static final String CUSTOMER_LAST_NAME = "last_name";
   public static final String CUSTOMER_EMAIL = "email";
   public static final String CUSTOMER_IS_ACTIVE = "is_active";
+
+  public static final String T_ADDRESS = "store.address";
+  public static final String ADDRESS_ID = "id";
+  public static final String ADDRESS_CUSTOMER_FK = "customer_fk";
+  public static final String ADDRESS_CUSTOMER_ID = "customer_id";
+  public static final String ADDRESS_STREET = "street";
+  public static final String ADDRESS_CITY = "city";
 
   public Store() {
     define(T_CUSTOMER,
@@ -36,5 +42,19 @@ public class Store extends Domain {
             .stringProvider(new StringProvider(CUSTOMER_LAST_NAME)
                     .addText(", ").addValue(CUSTOMER_FIRST_NAME))
             .caption("Customer");
+
+    define(T_ADDRESS,
+            primaryKeyProperty(ADDRESS_ID, Types.INTEGER),
+            foreignKeyProperty(ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
+                    columnProperty(ADDRESS_CUSTOMER_ID))
+                    .nullable(false),
+            columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street")
+                    .nullable(false).maximumLength(100),
+            columnProperty(ADDRESS_CITY, Types.VARCHAR, "City")
+                    .nullable(false).maximumLength(50))
+            .keyGenerator(automatic("store.address"))
+            .stringProvider(new StringProvider(ADDRESS_STREET)
+                    .addText(", ").addValue(ADDRESS_CITY))
+            .caption("Address");
   }
 }
