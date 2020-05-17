@@ -52,11 +52,7 @@ Here is a screenshot of the Chinook demo client (included in the project), a rat
 
 image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 
-And here's a ~1 min. video demonstrating some basic client functionality (keep your music on, it's silent).
-
-++++
-<iframe width="1280" height="720" src="https://www.youtube.com/embed/HeZocS89QkE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-++++
+And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic client functionality] (keep your music on, it's silent).
 
 == Domain model
 
