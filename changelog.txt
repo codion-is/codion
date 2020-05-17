@@ -6102,3 +6102,4 @@
   Properties.columnProperty() and primaryKeyProperty() methods without type parameter (defaulting to Types.INTEGER) removed, better to be explicit
   FilteredTable, key combination to resize column now Ctrl - +/-, to prevent clashes
   DefaultForeignKeyConditionModel, hacky bug fix, changing selected entities did not trigger condition changed event, thus preventing refresh with Enter key
+  EntityLookupField now selects all after entities are set
