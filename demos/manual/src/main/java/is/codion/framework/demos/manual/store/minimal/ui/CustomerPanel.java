@@ -22,13 +22,13 @@ import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
 
 public class CustomerPanel extends EntityPanel {
 
-  private CustomerPanel(final SwingEntityModel customerModel) {
+  private CustomerPanel(SwingEntityModel customerModel) {
     super(customerModel, new CustomerEditPanel(customerModel.getEditModel()));
   }
 
   private static class CustomerEditPanel extends EntityEditPanel {
 
-    private CustomerEditPanel(final SwingEntityEditModel editModel) {
+    private CustomerEditPanel(SwingEntityEditModel editModel) {
       super(editModel);
     }
 
@@ -49,16 +49,18 @@ public class CustomerPanel extends EntityPanel {
 
   private static class AddressEditPanel extends EntityEditPanel {
 
-    private AddressEditPanel(final SwingEntityEditModel addressEditModel) {
+    private AddressEditPanel(SwingEntityEditModel addressEditModel) {
       super(addressEditModel);
     }
 
     @Override
     protected void initializeUI() {
       setInitialFocusProperty(ADDRESS_STREET);
+      createForeignKeyComboBox(ADDRESS_CUSTOMER_FK);
       createTextField(ADDRESS_STREET).setColumns(12);
       createTextField(ADDRESS_CITY).setColumns(12);
-      setLayout(gridLayout(2, 1));
+      setLayout(gridLayout(3, 1));
+      addPropertyPanel(ADDRESS_CUSTOMER_FK);
       addPropertyPanel(ADDRESS_STREET);
       addPropertyPanel(ADDRESS_CITY);
     }
