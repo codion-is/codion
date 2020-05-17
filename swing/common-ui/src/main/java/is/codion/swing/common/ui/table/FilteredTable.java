@@ -799,13 +799,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private final class MoveResizeColumnKeyListener extends KeyAdapter {
     @Override
     public void keyPressed(final KeyEvent e) {
-      if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-        if (e.isAltDown() && e.isShiftDown()) {
-          moveSelectedColumn(e.getKeyCode() == KeyEvent.VK_LEFT);
-        }
-        else if (e.isAltDown() && getAutoResizeMode() == JTable.AUTO_RESIZE_OFF) {
-          resizeSelectedColumn(e.getKeyCode() == KeyEvent.VK_RIGHT);
-        }
+      if (e.isControlDown() && e.isShiftDown() && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT)) {
+        moveSelectedColumn(e.getKeyCode() == KeyEvent.VK_LEFT);
+        e.consume();
+      }
+      else if (e.isControlDown() && (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_ADD
+              || e.getKeyCode() == KeyEvent.VK_MINUS || e.getKeyCode() == KeyEvent.VK_SUBTRACT)) {
+        resizeSelectedColumn(e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_ADD);
+        e.consume();
       }
     }
   }
