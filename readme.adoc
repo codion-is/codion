@@ -150,9 +150,11 @@ public class CustomerPanel extends EntityPanel {
     @Override
     protected void initializeUI() {
       setInitialFocusProperty(ADDRESS_STREET);
+      createForeignKeyComboBox(ADDRESS_CUSTOMER_FK);
       createTextField(ADDRESS_STREET).setColumns(12);
       createTextField(ADDRESS_CITY).setColumns(12);
-      setLayout(gridLayout(2, 1));
+      setLayout(gridLayout(3, 1));
+      addPropertyPanel(ADDRESS_CUSTOMER_FK);
       addPropertyPanel(ADDRESS_STREET);
       addPropertyPanel(ADDRESS_CITY);
     }
