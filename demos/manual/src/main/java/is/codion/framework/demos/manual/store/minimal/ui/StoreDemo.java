@@ -20,11 +20,7 @@ import static is.codion.framework.demos.manual.store.minimal.domain.Store.*;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
 
-public class CustomerPanel extends EntityPanel {
-
-  private CustomerPanel(SwingEntityModel customerModel) {
-    super(customerModel, new CustomerEditPanel(customerModel.getEditModel()));
-  }
+public class StoreDemo {
 
   private static class CustomerEditPanel extends EntityEditPanel {
 
@@ -83,7 +79,8 @@ public class CustomerPanel extends EntityPanel {
     customerModel.addDetailModel(addressModel);
 
     EntityPanel customerPanel =
-            new CustomerPanel(customerModel);
+            new EntityPanel(customerModel,
+                    new CustomerEditPanel(customerModel.getEditModel()));
     EntityPanel addressPanel =
             new EntityPanel(addressModel,
                     new AddressEditPanel(addressModel.getEditModel()));
