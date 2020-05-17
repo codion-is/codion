@@ -7,7 +7,7 @@ image::https://github.com/bjorndarri/codion/workflows/Java%20CI/badge.svg[CI]
 
 == Introduction
 
-Codion is a minimalistic full-stack Java rich client CRUD application framework based solely on https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition[Java SE] components, it includes:
+Codion is a minimalistic full-stack Java rich client CRUD application framework based solely on https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition[Java Standard Edition] components, it includes:
 
 * Simple domain modelling in plain Java code.
 * Integrated JUnit testing of the domain model.
@@ -21,6 +21,22 @@ Codion is a minimalistic full-stack Java rich client CRUD application framework 
 
 I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was about to become all the rage in the world of CRUD applications. I've been developing and using Codion professionally for the last ~($currentYear - 2004) years, always with the aim of eventually open sourcing it.
 
+== Framework or library?
+
+Both actually. Codion is highly modular, so you can use as much or as little as you want.
+
+== Dependencies
+
+Codion uses a very limited set of 3d party libraries, a simple CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
+
+* *com.toedter:jcalendar* for date input
+* *org.json:json* for persisting client preferences
+* *org.slf4j:slf4j-api* for your logging framework of choice
+* *jdbc driver*
+* *logging framework*
+
+A simple CRUD client pulls in ~15 Codion modules totalling ~1MB, so the combined weight of the Pet Clinic demo client for example is ~1.3MB (excluding the JDBC driver and logging framework).
+
 == Rich Swing Client
 
 Here's a screenshot of the Chinook demo client (included in the project), a rather typical Codion client. Nothing spectacular here, it's just a Swing client after all.
@@ -28,6 +44,7 @@ Here's a screenshot of the Chinook demo client (included in the project), a rath
 image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 
 == Domain model
+
 Codion is not an ORM framework, instead the domain model is based on concepts from entity relationship diagrams, *entities* and *properties*. You define the domain model in plain Java code, no annotations or XML is involved.
 
 Here we start by extending the *Domain* class, with a few convenient static imports (skipping the rest of the imports for brevity). We then define string constants for the entities and their respective properties (referred to as *entityIds* and *propertyIds*), which are used whenever we need to refer to the entity type and its properties. And finally we use these *entityIds* and *propertyIds* to define two entities.
