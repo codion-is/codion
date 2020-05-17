@@ -89,7 +89,7 @@ public class Store extends Domain {
     define(T_ADDRESS,
             primaryKeyProperty(ADDRESS_ID, Types.INTEGER),
             foreignKeyProperty(ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
-                    columnProperty(ADDRESS_CUSTOMER_ID))
+                    columnProperty(ADDRESS_CUSTOMER_ID, Types.INTEGER))
                     .nullable(false),
             columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street")
                     .nullable(false).maximumLength(100),

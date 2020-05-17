@@ -42,8 +42,8 @@ public final class TestDomain extends Domain {
 
   void compositeMaster() {
     define(T_COMPOSITE_MASTER,
-            columnProperty(COMPOSITE_MASTER_ID).primaryKeyIndex(0).nullable(true),
-            columnProperty(COMPOSITE_MASTER_ID_2).primaryKeyIndex(1));
+            columnProperty(COMPOSITE_MASTER_ID, Types.INTEGER).primaryKeyIndex(0).nullable(true),
+            columnProperty(COMPOSITE_MASTER_ID_2, Types.INTEGER).primaryKeyIndex(1));
   }
 
   public static final String T_COMPOSITE_DETAIL = "domain.composite_detail";
@@ -54,8 +54,8 @@ public final class TestDomain extends Domain {
   void compositeDetail() {
     define(T_COMPOSITE_DETAIL,
             foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
-                    asList(columnProperty(COMPOSITE_DETAIL_MASTER_ID).primaryKeyIndex(0),
-                            columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1))));
+                    asList(columnProperty(COMPOSITE_DETAIL_MASTER_ID, Types.INTEGER).primaryKeyIndex(0),
+                            columnProperty(COMPOSITE_DETAIL_MASTER_ID_2, Types.INTEGER).primaryKeyIndex(1))));
   }
 
   public static final String T_MASTER = "domain.master_entity";
@@ -194,7 +194,7 @@ public final class TestDomain extends Domain {
                     .columnName("ename").maximumLength(10).nullable(false)
                     .beanProperty("name"),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
-                    (ColumnProperty.Builder) columnProperty(EMP_DEPARTMENT)
+                    (ColumnProperty.Builder) columnProperty(EMP_DEPARTMENT, Types.INTEGER)
                             .beanProperty("deptno"))
                     .beanProperty("department")
                     .nullable(false),
@@ -210,7 +210,7 @@ public final class TestDomain extends Domain {
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2)
                     .beanProperty("commission"),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
-                    (ColumnProperty.Builder) columnProperty(EMP_MGR)
+                    (ColumnProperty.Builder) columnProperty(EMP_MGR, Types.INTEGER)
                             .beanProperty("mgr"))
                     .beanProperty("manager"),
             columnProperty(EMP_HIREDATE, Types.TIMESTAMP, EMP_HIREDATE)
@@ -246,9 +246,9 @@ public final class TestDomain extends Domain {
 
   void noPKEntity() {
     define(T_NO_PK,
-            columnProperty(NO_PK_COL1),
-            columnProperty(NO_PK_COL2),
-            columnProperty(NO_PK_COL3));
+            columnProperty(NO_PK_COL1, Types.INTEGER),
+            columnProperty(NO_PK_COL2, Types.INTEGER),
+            columnProperty(NO_PK_COL3, Types.INTEGER));
   }
 
   private static final class EntityToEmployee implements EntityDefinition.BeanHelper<Employee> {

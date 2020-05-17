@@ -54,7 +54,7 @@ public final class ClientTutorial {
 
     public Chinook() {
       define(T_ARTIST,
-              primaryKeyProperty(ARTIST_ID),
+              primaryKeyProperty(ARTIST_ID, Types.INTEGER),
               columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
                       .searchProperty(true).nullable(false).maximumLength(120),
               subqueryProperty(ARTIST_NR_OF_ALBUMS, Types.INTEGER, "Albums",
@@ -65,9 +65,9 @@ public final class ClientTutorial {
               .caption("Artists");
 
       define(T_ALBUM,
-              primaryKeyProperty(ALBUM_ALBUMID),
+              primaryKeyProperty(ALBUM_ALBUMID, Types.INTEGER),
               foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
-                      columnProperty(ALBUM_ARTISTID))
+                      columnProperty(ALBUM_ARTISTID, Types.INTEGER))
                       .nullable(false),
               columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
                       .nullable(false).maximumLength(160))

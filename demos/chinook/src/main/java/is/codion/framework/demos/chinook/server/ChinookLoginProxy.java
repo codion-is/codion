@@ -124,7 +124,7 @@ public final class ChinookLoginProxy implements LoginProxy {
 
     private Authentication() {
       define(T_USER,
-              primaryKeyProperty(USER_USERID),
+              primaryKeyProperty(USER_USERID, Types.INTEGER),
               columnProperty(USER_USERNAME, Types.VARCHAR)
                       .nullable(false)
                       .maximumLength(20),

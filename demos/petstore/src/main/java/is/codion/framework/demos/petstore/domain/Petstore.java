@@ -36,7 +36,7 @@ public final class Petstore extends Domain {
 
   void address() {
     define(T_ADDRESS, "petstore.address",
-            primaryKeyProperty(ADDRESS_ID)
+            primaryKeyProperty(ADDRESS_ID, Types.INTEGER)
                     .columnName("addressid"),
             columnProperty(ADDRESS_STREET_1, Types.VARCHAR, ADDRESS_STREET_1)
                     .columnName("street1").maximumLength(55).nullable(false),
@@ -68,7 +68,7 @@ public final class Petstore extends Domain {
 
   void category() {
     define(T_CATEGORY, "petstore.category",
-            primaryKeyProperty(CATEGORY_ID)
+            primaryKeyProperty(CATEGORY_ID, Types.INTEGER)
                     .columnName("categoryid"),
             columnProperty(CATEGORY_NAME, Types.VARCHAR, CATEGORY_NAME)
                     .columnName("name").maximumLength(25).nullable(false),
@@ -92,10 +92,10 @@ public final class Petstore extends Domain {
 
   void product() {
     define(T_PRODUCT, "petstore.product",
-            primaryKeyProperty(PRODUCT_ID)
+            primaryKeyProperty(PRODUCT_ID, Types.INTEGER)
                     .columnName("productid"),
             foreignKeyProperty(PRODUCT_CATEGORY_FK, PRODUCT_CATEGORY_FK, T_CATEGORY,
-                    columnProperty(PRODUCT_CATEGORY_ID)
+                    columnProperty(PRODUCT_CATEGORY_ID, Types.INTEGER)
                             .columnName("categoryid")).nullable(false),
             columnProperty(PRODUCT_NAME, Types.VARCHAR, PRODUCT_NAME)
                     .columnName("name").maximumLength(25).nullable(false),
@@ -118,7 +118,7 @@ public final class Petstore extends Domain {
 
   void sellerContactInfo() {
     define(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
-            primaryKeyProperty(SELLER_CONTACT_INFO_ID)
+            primaryKeyProperty(SELLER_CONTACT_INFO_ID, Types.INTEGER)
                     .columnName("contactinfoid"),
             columnProperty(SELLER_CONTACT_INFO_FIRST_NAME, Types.VARCHAR, SELLER_CONTACT_INFO_FIRST_NAME)
                     .searchProperty(true).columnName("firstname").maximumLength(24).nullable(false),
@@ -151,10 +151,10 @@ public final class Petstore extends Domain {
 
   void item() {
     define(T_ITEM, "petstore.item",
-            primaryKeyProperty(ITEM_ID)
+            primaryKeyProperty(ITEM_ID, Types.INTEGER)
                     .columnName("itemid"),
             foreignKeyProperty(ITEM_PRODUCT_FK, ITEM_PRODUCT_FK, T_PRODUCT,
-                    columnProperty(ITEM_PRODUCT_ID)
+                    columnProperty(ITEM_PRODUCT_ID, Types.INTEGER)
                             .columnName("productid"))
                     .fetchDepth(2).nullable(false),
             columnProperty(ITEM_NAME, Types.VARCHAR, ITEM_NAME)
@@ -168,10 +168,10 @@ public final class Petstore extends Domain {
             columnProperty(ITEM_PRICE, Types.DECIMAL, ITEM_PRICE)
                     .columnName("price").nullable(false).maximumFractionDigits(2),
             foreignKeyProperty(ITEM_C0NTACT_INFO_FK, ITEM_C0NTACT_INFO_FK, T_SELLER_CONTACT_INFO,
-                    columnProperty(ITEM_C0NTACT_INFO_ID).columnName("contactinfo_contactinfoid"))
+                    columnProperty(ITEM_C0NTACT_INFO_ID, Types.INTEGER).columnName("contactinfo_contactinfoid"))
                     .nullable(false),
             foreignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
-                    columnProperty(ITEM_ADDRESS_ID).columnName("address_addressid"))
+                    columnProperty(ITEM_ADDRESS_ID, Types.INTEGER).columnName("address_addressid"))
                     .nullable(false),
             booleanProperty(ITEM_DISABLED, Types.INTEGER, ITEM_DISABLED, 1, 0)
                     .columnName("disabled").defaultValue(false))
@@ -189,7 +189,7 @@ public final class Petstore extends Domain {
 
   void tag() {
     define(T_TAG, "petstore.tag",
-            primaryKeyProperty(TAG_ID)
+            primaryKeyProperty(TAG_ID, Types.INTEGER)
                     .columnName("tagid"),
             columnProperty(TAG_TAG, Types.VARCHAR, TAG_TAG)
                     .columnName("tag").maximumLength(30).nullable(false),
@@ -212,11 +212,11 @@ public final class Petstore extends Domain {
   void tagItem() {
     define(T_TAG_ITEM, "petstore.tag_item",
             foreignKeyProperty(TAG_ITEM_ITEM_FK, TAG_ITEM_ITEM_FK, T_ITEM,
-                    primaryKeyProperty(TAG_ITEM_ITEM_ID)
+                    primaryKeyProperty(TAG_ITEM_ITEM_ID, Types.INTEGER)
                             .columnName("itemid").primaryKeyIndex(0))
                     .nullable(false),
             foreignKeyProperty(TAG_ITEM_TAG_FK, TAG_ITEM_TAG_FK, T_TAG,
-                    primaryKeyProperty(TAG_ITEM_TAG_ID)
+                    primaryKeyProperty(TAG_ITEM_TAG_ID, Types.INTEGER)
                             .columnName("tagid").primaryKeyIndex(1))
                     .nullable(false))
             .stringProvider(new StringProvider(TAG_ITEM_ITEM_FK)

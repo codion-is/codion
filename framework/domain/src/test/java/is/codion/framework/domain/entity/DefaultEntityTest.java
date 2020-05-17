@@ -661,7 +661,7 @@ public class DefaultEntityTest {
       public TestDomain() {
         super("transient");
         define("entityId",
-                Properties.primaryKeyProperty("id"),
+                Properties.primaryKeyProperty("id", Types.INTEGER),
                 transientProperty);  }
     }
     final Entities entities = new TestDomain().registerEntities();

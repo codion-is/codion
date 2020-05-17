@@ -54,7 +54,7 @@ public final class EntitiesTutorial {
 
     public Chinook() {
       //create properties for the columns in the table 'chinook.artist'
-      Property.Builder artistId = primaryKeyProperty(ARTIST_ID);
+      Property.Builder artistId = primaryKeyProperty(ARTIST_ID, Types.INTEGER);
       Property.Builder artistName = columnProperty(ARTIST_NAME, Types.VARCHAR, "Name");
       artistName.nullable(false).maximumLength(120);
 
@@ -67,14 +67,14 @@ public final class EntitiesTutorial {
               .caption("Artist");
 
       //create properties for the columns in the table 'chinook.album'
-      Property.Builder albumId = primaryKeyProperty(ALBUM_ALBUMID);
+      Property.Builder albumId = primaryKeyProperty(ALBUM_ALBUMID, Types.INTEGER);
       Property.Builder albumTitle = columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title");
       albumTitle.nullable(false).maximumLength(160);
       //we wrap the actual 'artistid' column property in a foreign key
       //referencing the entity identified by T_ARTIST
       Property.Builder albumArtist =
               foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
-                      columnProperty(ALBUM_ARTISTID));
+                      columnProperty(ALBUM_ARTISTID, Types.INTEGER));
       albumArtist.nullable(false);
 
       //define an entity based on the table 'chinook.album',

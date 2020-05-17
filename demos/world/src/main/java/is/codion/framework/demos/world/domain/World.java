@@ -121,7 +121,7 @@ public final class World extends Domain {
   // tag::defineCity[]
   void city() {
     define(T_CITY,
-            primaryKeyProperty(CITY_ID),
+            primaryKeyProperty(CITY_ID, Types.INTEGER),
             columnProperty(CITY_NAME, Types.VARCHAR, "Name")
                     .searchProperty(true)
                     .nullable(false)
@@ -192,7 +192,7 @@ public final class World extends Domain {
                     .maximumLength(60),
             // tag::foreignKeyPropertyCapital[]
             foreignKeyProperty(COUNTRY_CAPITAL_FK, "Capital", T_CITY,
-                    columnProperty(COUNTRY_CAPITAL)),
+                    columnProperty(COUNTRY_CAPITAL, Types.INTEGER)),
             // end::foreignKeyPropertyCapital[]
             // tag::denormalizedViewProperty[]
             denormalizedViewProperty(COUNTRY_CAPITAL_POPULATION, COUNTRY_CAPITAL_FK,
@@ -268,7 +268,7 @@ public final class World extends Domain {
             columnProperty(LOOKUP_COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state"),
             blobProperty(LOOKUP_COUNTRY_FLAG, "Flag"),
             columnProperty(LOOKUP_COUNTRY_CODE2, Types.VARCHAR, "Code2"),
-            columnProperty(LOOKUP_CITY_ID),
+            columnProperty(LOOKUP_CITY_ID, Types.INTEGER),
             columnProperty(LOOKUP_CITY_NAME, Types.VARCHAR, "City"),
             columnProperty(LOOKUP_CITY_DISTRICT, Types.VARCHAR, "District"),
             columnProperty(LOOKUP_CITY_POPULATION, Types.INTEGER, "City population")

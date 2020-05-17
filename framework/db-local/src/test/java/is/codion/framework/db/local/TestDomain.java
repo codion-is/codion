@@ -117,7 +117,7 @@ public final class TestDomain extends Domain {
             columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
                     .searchProperty(true).maximumLength(10).nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
-                    columnProperty(EMP_DEPARTMENT))
+                    columnProperty(EMP_DEPARTMENT, Types.INTEGER))
                     .nullable(false),
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
@@ -127,7 +127,7 @@ public final class TestDomain extends Domain {
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
-                    columnProperty(EMP_MGR))
+                    columnProperty(EMP_MGR, Types.INTEGER))
                     //not really soft, just for testing purposes
                     .softReference(true),
             columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
@@ -231,7 +231,7 @@ public final class TestDomain extends Domain {
 
   private void joinedQuery() {
     define(JOINED_QUERY_ENTITY_ID,
-            primaryKeyProperty("e.empno"),
+            primaryKeyProperty("e.empno", Types.INTEGER),
             columnProperty("d.deptno", Types.INTEGER))
             .selectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
             .conditionProvider(JOINED_QUERY_CONDITION_ID, (propertyIds, values) -> "d.deptno = 10");
