@@ -27,7 +27,7 @@ public final class ClinicImpl extends Domain {
 
   private void vet() {
     define(T_VET,
-            primaryKeyProperty(VET_ID),
+            primaryKeyProperty(VET_ID, Types.INTEGER),
             columnProperty(VET_FIRST_NAME, Types.VARCHAR, "First name")
                     .searchProperty(true)
                     .maximumLength(30)
@@ -46,7 +46,7 @@ public final class ClinicImpl extends Domain {
 
   private void specialty() {
     define(T_SPECIALTY,
-            primaryKeyProperty(SPECIALTY_ID),
+            primaryKeyProperty(SPECIALTY_ID, Types.INTEGER),
             columnProperty(SPECIALTY_NAME, Types.VARCHAR, "Name")
                     .searchProperty(true)
                     .maximumLength(80)
@@ -60,11 +60,11 @@ public final class ClinicImpl extends Domain {
   private void vetSpecialty() {
     define(T_VET_SPECIALTY,
             foreignKeyProperty(VET_SPECIALTY_VET_FK, "Vet", T_VET,
-                    columnProperty(VET_SPECIALTY_VET)
+                    columnProperty(VET_SPECIALTY_VET, Types.INTEGER)
                             .primaryKeyIndex(0))
                     .nullable(false),
             foreignKeyProperty(VET_SPECIALTY_SPECIALTY_FK, "Specialty", T_SPECIALTY,
-                    primaryKeyProperty(VET_SPECIALTY_SPECIALTY)
+                    primaryKeyProperty(VET_SPECIALTY_SPECIALTY, Types.INTEGER)
                             .primaryKeyIndex(1))
                     .nullable(false))
             .caption("Vet specialties")
@@ -74,7 +74,7 @@ public final class ClinicImpl extends Domain {
 
   private void petType() {
     define(T_PET_TYPE,
-            primaryKeyProperty(PET_TYPE_ID),
+            primaryKeyProperty(PET_TYPE_ID, Types.INTEGER),
             columnProperty(PET_TYPE_NAME, Types.VARCHAR, "Name")
                     .searchProperty(true)
                     .maximumLength(80)
@@ -88,7 +88,7 @@ public final class ClinicImpl extends Domain {
 
   private void owner() {
     define(T_OWNER,
-            primaryKeyProperty(OWNER_ID),
+            primaryKeyProperty(OWNER_ID, Types.INTEGER),
             columnProperty(OWNER_FIRST_NAME, Types.VARCHAR, "First name")
                     .searchProperty(true)
                     .maximumLength(30)
@@ -112,17 +112,17 @@ public final class ClinicImpl extends Domain {
 
   private void pet() {
     define(T_PET,
-            primaryKeyProperty(PET_ID),
+            primaryKeyProperty(PET_ID, Types.INTEGER),
             columnProperty(PET_NAME, Types.VARCHAR, "Name")
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(PET_BIRTH_DATE, Types.DATE, "Birth date"),
             foreignKeyProperty(PET_PET_TYPE_FK, "Pet type", T_PET_TYPE,
-                    columnProperty(PET_PET_TYPE_ID))
+                    columnProperty(PET_PET_TYPE_ID, Types.INTEGER))
                     .nullable(false),
             foreignKeyProperty(PET_OWNER_FK, "Owner", T_OWNER,
-                    columnProperty(PET_OWNER_ID))
+                    columnProperty(PET_OWNER_ID, Types.INTEGER))
                     .nullable(false))
             .keyGenerator(automatic(T_PET))
             .caption("Pets")
@@ -132,9 +132,9 @@ public final class ClinicImpl extends Domain {
 
   private void visit() {
     define(T_VISIT,
-            primaryKeyProperty(VISIT_ID),
+            primaryKeyProperty(VISIT_ID, Types.INTEGER),
             foreignKeyProperty(VISIT_PET_FK, "Pet", T_PET,
-                    columnProperty(VISIT_PET_ID))
+                    columnProperty(VISIT_PET_ID, Types.INTEGER))
                     .nullable(false),
             columnProperty(VISIT_DATE, Types.DATE, "Date")
                     .nullable(false),

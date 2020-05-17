@@ -86,12 +86,12 @@ public final class Store extends Domain {
   private void customerAddress() {
     // tag::customerAddress[]
     define(T_CUSTOMER_ADDRESS,
-            primaryKeyProperty(CUSTOMER_ADDRESS_ID),
+            primaryKeyProperty(CUSTOMER_ADDRESS_ID, Types.INTEGER),
             foreignKeyProperty(CUSTOMER_ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
                     columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID, Types.VARCHAR))
                     .nullable(false),
             foreignKeyProperty(CUSTOMER_ADDRESS_ADDRESS_FK, "Address", T_ADDRESS,
-                    columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID))
+                    columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID, Types.INTEGER))
                     .nullable(false))
             .keyGenerator(automatic(T_CUSTOMER_ADDRESS))
             .caption("Customer address");

@@ -31,7 +31,7 @@ public final class TestDomain extends Domain {
 
   void superEntity() {
     define(T_SUPER,
-            primaryKeyProperty(SUPER_ID));
+            primaryKeyProperty(SUPER_ID, Types.INTEGER));
   }
 
   public static final String T_MASTER = "db.master_entity";
@@ -44,10 +44,10 @@ public final class TestDomain extends Domain {
 
   void master() {
     define(T_MASTER,
-            columnProperty(MASTER_ID_1).primaryKeyIndex(0),
-            columnProperty(MASTER_ID_2).primaryKeyIndex(1),
+            columnProperty(MASTER_ID_1, Types.INTEGER).primaryKeyIndex(0),
+            columnProperty(MASTER_ID_2, Types.INTEGER).primaryKeyIndex(1),
             foreignKeyProperty(MASTER_SUPER_FK, "Super", T_SUPER,
-                    columnProperty(MASTER_SUPER_ID)),
+                    columnProperty(MASTER_SUPER_ID, Types.INTEGER)),
             columnProperty(MASTER_NAME, Types.VARCHAR),
             columnProperty(MASTER_CODE, Types.INTEGER))
             .comparator(Comparator.comparing(o -> o.getInteger(MASTER_CODE)))
@@ -92,8 +92,8 @@ public final class TestDomain extends Domain {
             columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE)
                     .defaultValue(true),
             foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK, T_MASTER,
-                    asList(columnProperty(DETAIL_MASTER_ID_1),
-                            columnProperty(DETAIL_MASTER_ID_2))),
+                    asList(columnProperty(DETAIL_MASTER_ID_1, Types.INTEGER),
+                            columnProperty(DETAIL_MASTER_ID_2, Types.INTEGER))),
             denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK,
                     getDefinition(T_MASTER).getProperty(MASTER_NAME), DETAIL_MASTER_NAME),
             denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK,
@@ -163,7 +163,7 @@ public final class TestDomain extends Domain {
             columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
                     .searchProperty(true).columnName("ename").maximumLength(10).nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
-                    columnProperty(EMP_DEPARTMENT))
+                    columnProperty(EMP_DEPARTMENT, Types.INTEGER))
                     .nullable(false),
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
@@ -173,7 +173,7 @@ public final class TestDomain extends Domain {
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
-                    columnProperty(EMP_MGR)),
+                    columnProperty(EMP_MGR, Types.INTEGER)),
             columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,

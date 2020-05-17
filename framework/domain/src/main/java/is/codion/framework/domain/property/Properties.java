@@ -24,15 +24,6 @@ public final class Properties {
   /**
    * Creates a new {@link ColumnProperty.Builder} instance.
    * @param  propertyId the propertyId
-   * @return a new {@link ColumnProperty.Builder}
-   */
-  public static ColumnProperty.Builder columnProperty(final String propertyId) {
-    return columnProperty(propertyId, Types.INTEGER);
-  }
-
-  /**
-   * Creates a new {@link ColumnProperty.Builder} instance.
-   * @param  propertyId the propertyId
    * @param type the property sql data type
    * @return a new {@link ColumnProperty.Builder}
    */
@@ -49,16 +40,6 @@ public final class Properties {
    */
   public static ColumnProperty.Builder columnProperty(final String propertyId, final int type, final String caption) {
     return new DefaultColumnProperty(propertyId, type, caption).builder();
-  }
-
-  /**
-   * A convenience method for creating a new {@link ColumnProperty.Builder} instance,
-   * with the primary key index set to 0.
-   * @param  propertyId the propertyId
-   * @return a new {@link ColumnProperty.Builder} with primary key index 0
-   */
-  public static ColumnProperty.Builder primaryKeyProperty(final String propertyId) {
-    return primaryKeyProperty(propertyId, Types.INTEGER);
   }
 
   /**
@@ -354,7 +335,7 @@ public final class Properties {
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, for use in a foreign key,
    * mirroring a property which already exists as part of a different foreign key.
-   * @param  propertyId the propertyId
+   * @param  propertyId the propertyId of the mirrored property
    * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder mirrorProperty(final String propertyId) {

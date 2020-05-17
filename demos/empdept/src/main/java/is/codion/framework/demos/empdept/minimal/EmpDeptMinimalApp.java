@@ -45,7 +45,7 @@ public final class EmpDeptMinimalApp {
        * We start by defining the entity based on the SCOTT.DEPT table
        */
       define("scott.dept",
-              primaryKeyProperty("deptno"),
+              primaryKeyProperty("deptno", Types.INTEGER),
               columnProperty("dname", Types.VARCHAR, "Department name")
                       .searchProperty(true)
                       .nullable(false)
@@ -61,13 +61,13 @@ public final class EmpDeptMinimalApp {
        * department as well as the manager
        */
       define("scott.emp",
-              primaryKeyProperty("empno"),
+              primaryKeyProperty("empno", Types.INTEGER),
               columnProperty("ename", Types.VARCHAR, "Name")
                       .searchProperty(true)
                       .nullable(false)
                       .maximumLength(10),
               foreignKeyProperty("dept_fk", "Department", "scott.dept",
-                      columnProperty("deptno"))
+                      columnProperty("deptno", Types.INTEGER))
                       .nullable(false),
               columnProperty("job", Types.VARCHAR, "Job")
                       .nullable(false)
@@ -79,7 +79,7 @@ public final class EmpDeptMinimalApp {
               columnProperty("comm", Types.DOUBLE, "Commission")
                       .maximumFractionDigits(2),
               foreignKeyProperty("mgr_fk", "Manager", "scott.emp",
-                      columnProperty("mgr")),
+                      columnProperty("mgr", Types.INTEGER)),
               columnProperty("hiredate", Types.DATE, "Hiredate")
                       .nullable(false))
               .keyGenerator(increment("scott.emp", "empno"))

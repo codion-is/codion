@@ -26,7 +26,7 @@ public final class PropertiesTest {
   @Test
   public void foreignKeyPropertyNonUniqueReferencePropertyId() {
     final String propertyId = "propertyId";
-    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(propertyId, "caption", "referencedEntityId", columnProperty(propertyId)));
+    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(propertyId, "caption", "referencedEntityId", columnProperty(propertyId, Types.INTEGER)));
   }
 
   @Test
@@ -36,7 +36,7 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyWithoutReferenceEntityId() {
-    assertThrows(NullPointerException.class, () -> foreignKeyProperty("propertyId", "caption", null, columnProperty("col")));
+    assertThrows(NullPointerException.class, () -> foreignKeyProperty("propertyId", "caption", null, columnProperty("col", Types.INTEGER)));
   }
 
   @Test
@@ -100,38 +100,38 @@ public final class PropertiesTest {
 
   @Test
   public void setColumnName() {
-    assertEquals("hello", columnProperty("propertyId").columnName("hello").get().getColumnName());
+    assertEquals("hello", columnProperty("propertyId", Types.INTEGER).columnName("hello").get().getColumnName());
   }
 
   @Test
   public void setColumnNameNull() {
-    assertThrows(NullPointerException.class, () -> columnProperty("propertyId").columnName(null));
+    assertThrows(NullPointerException.class, () -> columnProperty("propertyId", Types.INTEGER).columnName(null));
   }
 
   @Test
   public void description() {
     final String description = "Here is a description";
-    final Property property = columnProperty("propertyId").description(description).get();
+    final Property property = columnProperty("propertyId", Types.INTEGER).description(description).get();
     assertEquals(description, property.getDescription());
   }
 
   @Test
   public void mnemonic() {
     final Character mnemonic = 'M';
-    final Property property = columnProperty("propertyId").mnemonic(mnemonic).get();
+    final Property property = columnProperty("propertyId", Types.INTEGER).mnemonic(mnemonic).get();
     assertEquals(mnemonic, property.getMnemonic());
   }
 
   @Test
   public void setEntityIdAlreadySet() {
-    final Property.Builder property = columnProperty("propertyId").entityId("entityId");
+    final Property.Builder property = columnProperty("propertyId", Types.INTEGER).entityId("entityId");
     assertThrows(IllegalStateException.class, () -> property.entityId("test"));
   }
 
   @Test
   public void foreignKeyPropertyNullable() {
-    final ColumnProperty.Builder columnProperty = columnProperty("propertyId");
-    final ColumnProperty.Builder columnProperty2 = columnProperty("propertyId2");
+    final ColumnProperty.Builder columnProperty = columnProperty("propertyId", Types.INTEGER);
+    final ColumnProperty.Builder columnProperty2 = columnProperty("propertyId2", Types.INTEGER);
     final ForeignKeyProperty.Builder foreignKeyProperty =
             foreignKeyProperty("fkPropertyID", "fk", "referenceEntityID",
                     Arrays.asList(columnProperty, columnProperty2));
@@ -143,8 +143,8 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyUpdatable() {
-    final ColumnProperty.Builder updatableReferenceProperty = columnProperty("propertyId");
-    final ColumnProperty.Builder nonUpdatableReferenceProperty = columnProperty("propertyId").updatable(false);
+    final ColumnProperty.Builder updatableReferenceProperty = columnProperty("propertyId", Types.INTEGER);
+    final ColumnProperty.Builder nonUpdatableReferenceProperty = columnProperty("propertyId", Types.INTEGER).updatable(false);
 
     final ForeignKeyProperty.Builder updatableForeignKeyProperty = foreignKeyProperty("fkProperty", "test",
             "referencedEntityID", updatableReferenceProperty);

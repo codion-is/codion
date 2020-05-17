@@ -60,7 +60,7 @@ public final class TestDomain extends Domain {
             columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
                     .searchProperty(true).maximumLength(10).nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
-                    columnProperty(EMP_DEPARTMENT))
+                    columnProperty(EMP_DEPARTMENT, Types.INTEGER))
                     .nullable(false),
             valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB,
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
@@ -70,7 +70,7 @@ public final class TestDomain extends Domain {
             columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
-                    columnProperty(EMP_MGR)),
+                    columnProperty(EMP_MGR, Types.INTEGER)),
             columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,

@@ -98,7 +98,7 @@ public final class EmpDept extends Domain {
             columnProperty(EMPLOYEE_NAME, Types.VARCHAR, "Name")
                     .searchProperty(true).maximumLength(10).nullable(false).beanProperty("name"),
             foreignKeyProperty(EMPLOYEE_DEPARTMENT_FK, "Department", T_DEPARTMENT,
-                    columnProperty(EMPLOYEE_DEPARTMENT))
+                    columnProperty(EMPLOYEE_DEPARTMENT, Types.INTEGER))
                     .nullable(false).beanProperty("department"),
             valueListProperty(EMPLOYEE_JOB, Types.VARCHAR, "Job", JOB_VALUES).beanProperty("job"),
             columnProperty(EMPLOYEE_SALARY, Types.DECIMAL, "Salary")
@@ -106,7 +106,7 @@ public final class EmpDept extends Domain {
             columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, "Commission")
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2).beanProperty("commission"),
             foreignKeyProperty(EMPLOYEE_MGR_FK, "Manager", T_EMPLOYEE,
-                    columnProperty(EMPLOYEE_MGR)).beanProperty("manager"),
+                    columnProperty(EMPLOYEE_MGR, Types.INTEGER)).beanProperty("manager"),
             columnProperty(EMPLOYEE_HIREDATE, Types.DATE, "Hiredate")
                     .nullable(false).beanProperty("hiredate"),
             denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
