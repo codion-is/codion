@@ -6103,3 +6103,4 @@
   FilteredTable, key combination to resize column now Ctrl - +/-, to prevent clashes
   DefaultForeignKeyConditionModel, hacky bug fix, changing selected entities did not trigger condition changed event, thus preventing refresh with Enter key
   EntityLookupField now selects all after entities are set
+0.16.1
