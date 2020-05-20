@@ -32,7 +32,6 @@ public final class FrameworkMessages {
   public static final String DELETE = "delete";
   public static final String DELETE_MNEMONIC = "delete_mnemonic";
   public static final String DELETE_TIP = "delete_tip";
-  public static final String UPDATE_SELECTED = "update_selected";
   public static final String UPDATE_SELECTED_RECORD = "update_selected_record";
   public static final String UPDATE_SELECTED_TIP = "update_selected_tip";
   public static final String REFRESH = "refresh";

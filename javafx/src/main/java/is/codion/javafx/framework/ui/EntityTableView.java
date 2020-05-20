@@ -218,7 +218,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private Menu createUpdateSelectedItem() {
-    final Menu updateSelected = new Menu(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED));
+    final Menu updateSelected = new Menu(FrameworkMessages.get(FrameworkMessages.UPDATE));
     FXUiUtil.link(updateSelected.disableProperty(), listModel.getSelectionEmptyObserver());
     Properties.sort(getListModel().getEntityDefinition().getUpdatableProperties()).stream().filter(
             this::includeUpdateSelectedProperty).forEach(property -> {
