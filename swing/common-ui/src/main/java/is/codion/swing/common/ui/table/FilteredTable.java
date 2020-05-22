@@ -601,40 +601,6 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     addKeyListener(new MoveResizeColumnKeyListener());
   }
 
-  private void resizeSelectedColumn(final boolean enlarge) {
-    final int selectedColumnIndex = getSelectedColumn();
-    if (selectedColumnIndex != -1) {
-      final TableColumn column = getColumnModel().getColumn(selectedColumnIndex);
-      column.setPreferredWidth(column.getWidth() + (enlarge ? COLUMN_RESIZE_AMOUNT : -COLUMN_RESIZE_AMOUNT));
-    }
-  }
-
-  private void moveSelectedColumn(final boolean left) {
-    final int selectedColumnIndex = getSelectedColumn();
-    if (selectedColumnIndex != -1) {
-      final int columnCount = getColumnModel().getColumnCount();
-      final int newIndex;
-      if (left) {
-        if (selectedColumnIndex == 0) {
-          newIndex = columnCount - 1;
-        }
-        else {
-          newIndex = selectedColumnIndex - 1;
-        }
-      }
-      else {
-        if (selectedColumnIndex == columnCount - 1) {
-          newIndex = 0;
-        }
-        else {
-          newIndex = selectedColumnIndex + 1;
-        }
-      }
-      moveColumn(selectedColumnIndex, newIndex);
-      scrollRectToVisible(getCellRect(getSelectedRow(), newIndex, true));
-    }
-  }
-
   /**
    * Initialize the MouseListener for the table component handling double click.
    * Double clicking invokes the action returned by {@link #getDoubleClickAction()}
@@ -807,6 +773,40 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
               || e.getKeyCode() == KeyEvent.VK_MINUS || e.getKeyCode() == KeyEvent.VK_SUBTRACT)) {
         resizeSelectedColumn(e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_ADD);
         e.consume();
+      }
+    }
+
+    private void moveSelectedColumn(final boolean left) {
+      final int selectedColumnIndex = getSelectedColumn();
+      if (selectedColumnIndex != -1) {
+        final int columnCount = getColumnModel().getColumnCount();
+        final int newIndex;
+        if (left) {
+          if (selectedColumnIndex == 0) {
+            newIndex = columnCount - 1;
+          }
+          else {
+            newIndex = selectedColumnIndex - 1;
+          }
+        }
+        else {
+          if (selectedColumnIndex == columnCount - 1) {
+            newIndex = 0;
+          }
+          else {
+            newIndex = selectedColumnIndex + 1;
+          }
+        }
+        moveColumn(selectedColumnIndex, newIndex);
+        scrollRectToVisible(getCellRect(getSelectedRow(), newIndex, true));
+      }
+    }
+
+    private void resizeSelectedColumn(final boolean enlarge) {
+      final int selectedColumnIndex = getSelectedColumn();
+      if (selectedColumnIndex != -1) {
+        final TableColumn column = getColumnModel().getColumn(selectedColumnIndex);
+        column.setPreferredWidth(column.getWidth() + (enlarge ? COLUMN_RESIZE_AMOUNT : -COLUMN_RESIZE_AMOUNT));
       }
     }
   }

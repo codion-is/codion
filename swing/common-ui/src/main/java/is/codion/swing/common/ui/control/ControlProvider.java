@@ -186,7 +186,7 @@ public final class ControlProvider {
     return buttonModel;
   }
 
-  private static abstract class ControlHandler implements Consumer<Action> {
+  private abstract static class ControlHandler implements Consumer<Action> {
 
     @Override
     public final void accept(final Action action) {

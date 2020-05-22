@@ -28,6 +28,8 @@ import java.util.Map;
  */
 final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection implements RemoteEntityConnection {
 
+  private static final long serialVersionUID = 1;
+
   /**
    * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
    * @param domain the domain model

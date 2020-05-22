@@ -369,7 +369,7 @@ public final class EntityInputComponents {
                                                               final EntityLookupModel lookupModel, final StateObserver enabledState) {
     requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     requireNonNull(lookupModel, "lookupModel");
-    requireNonNull(value, "value");
+    requireNonNull(value, VALUE_PARAM_NAME);
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
     value.link(new LookupUIValue(lookupField.getModel()));
     linkToEnabledState(enabledState, lookupField);
