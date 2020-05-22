@@ -7,7 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.Format;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
@@ -30,12 +30,12 @@ public interface Property extends Serializable {
 
   /**
    * Specifies the default rounding mode used for BigDecimal property values<br>
-   * Value type: Integer<br>
-   * Default value: BigDecimal.ROUND_HALF_EVEN<br>
+   * Value type: {@link RoundingMode}<br>
+   * Default value: {@link RoundingMode#HALF_EVEN}<br>
    * @see #MAXIMUM_FRACTION_DIGITS
-   * @see Property.Builder#bigDecimalRoundingMode(int)
+   * @see Property.Builder#bigDecimalRoundingMode(RoundingMode)
    */
-  PropertyValue<Integer> BIG_DECIMAL_ROUNDING_MODE = Configuration.integerValue("codion.domain.bigDecimalRoundingMode", BigDecimal.ROUND_HALF_EVEN);
+  PropertyValue<RoundingMode> BIG_DECIMAL_ROUNDING_MODE = Configuration.enumValue("codion.domain.bigDecimalRoundingMode", RoundingMode.class, RoundingMode.HALF_EVEN);
 
   /**
    * The date format pattern to use when showing time values in tables and when creating default time input fields<br>
@@ -260,7 +260,7 @@ public interface Property extends Serializable {
    * @return the rounding mode to use when working with BigDecimal
    * @see #BIG_DECIMAL_ROUNDING_MODE
    */
-  int getBigDecimalRoundingMode();
+  RoundingMode getBigDecimalRoundingMode();
 
   /**
    * @return the preferred column width of this property in pixels when presented in a table, 0 if none has been specified
@@ -370,7 +370,7 @@ public interface Property extends Serializable {
      * @param bigDecimalRoundingMode the rounding mode
      * @return this instance
      */
-    Property.Builder bigDecimalRoundingMode(int bigDecimalRoundingMode);
+    Property.Builder bigDecimalRoundingMode(RoundingMode bigDecimalRoundingMode);
 
     /**
      * Specifies whether to use number grouping when presenting the value associated with this property.

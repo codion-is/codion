@@ -6132,3 +6132,4 @@
   EntityLookupField now selects all after entities are set
 0.16.1
   FrameworkMessages.UPDATE_SELECTED removed, UPDATE used instead
+  DefaultProperty.bigDecimalRoundingMode is now based on RoundingMode enum, instead of deprecated int constant, along with Property.BIG_DECIMAL_ROUNDING_MODE configuration value
