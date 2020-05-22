@@ -8,6 +8,7 @@ import is.codion.common.Util;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.Format;
@@ -125,7 +126,7 @@ abstract class DefaultProperty implements Property {
   /**
    * The rounding mode to use when working with BigDecimal
    */
-  private int bigDecimalRoundingMode = BIG_DECIMAL_ROUNDING_MODE.get();
+  private RoundingMode bigDecimalRoundingMode = BIG_DECIMAL_ROUNDING_MODE.get();
 
   /**
    * The DateTimeFormatter to use, based on dateTimeFormatPattern
@@ -339,7 +340,7 @@ abstract class DefaultProperty implements Property {
   }
 
   @Override
-  public final int getBigDecimalRoundingMode() {
+  public final RoundingMode getBigDecimalRoundingMode() {
     return bigDecimalRoundingMode;
   }
 
@@ -633,6 +634,7 @@ abstract class DefaultProperty implements Property {
 
     @Override
     public final Property.Builder dateTimeFormatPattern(final String dateTimeFormatPattern) {
+      requireNonNull(dateTimeFormatPattern, "dateTimeFormatPattern");
       if (!property.isTemporal()) {
         throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to temporal properties: " + property.propertyId);
       }
@@ -651,8 +653,8 @@ abstract class DefaultProperty implements Property {
     }
 
     @Override
-    public final Property.Builder bigDecimalRoundingMode(final int bigDecimalRoundingMode) {
-      property.bigDecimalRoundingMode = bigDecimalRoundingMode;
+    public final Property.Builder bigDecimalRoundingMode(final RoundingMode roundingMode) {
+      property.bigDecimalRoundingMode = requireNonNull(roundingMode, "roundingMode");
       return this;
     }
   }
