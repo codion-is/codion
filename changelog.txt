@@ -6133,3 +6133,7 @@
 0.16.1
   FrameworkMessages.UPDATE_SELECTED removed, UPDATE used instead
   DefaultProperty.bigDecimalRoundingMode is now based on RoundingMode enum, instead of deprecated int constant, along with Property.BIG_DECIMAL_ROUNDING_MODE configuration value
+  SwingEntityTableModel.doRefresh() bug fixed, did not use addEntitiesSorted() so any initial sorting state was disregarded
+  AbstractTableSortModel.getSortingState() error message on column not found improved
+  AbstractTableSortModel.setSortingDirective() null handling improved
+  DefaultEntityDefinition.EntityProperties added

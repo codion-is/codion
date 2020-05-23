@@ -97,6 +97,6 @@ public class EntityGeneratorPanel extends JPanel {
     catch (final CancelException ignored) {/*ignored*/}
     catch (final Exception e) {
       throw new RuntimeException(e);
-    };
+    }
   }
 }
