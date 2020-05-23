@@ -101,6 +101,8 @@ public final class Store extends Domain {
   // tag::toString[]
   private static final class CustomerToString implements Function<Entity, String>, Serializable {
 
+    private static final long serialVersionUID = 1;
+
     @Override
     public String apply(final Entity customer) {
       StringBuilder builder =
