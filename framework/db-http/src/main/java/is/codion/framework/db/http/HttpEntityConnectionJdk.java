@@ -42,10 +42,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
+import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static is.codion.framework.db.condition.Conditions.selectCondition;
 
 /**
  * A Http based {@link EntityConnection} implementation based on EntityService
@@ -484,12 +484,6 @@ final class HttpEntityConnectionJdk implements EntityConnection {
     }
   }
 
-  private HttpClient createHttpClient() {
-    return HttpClient.newBuilder().executor(EXECUTOR)
-            .cookieHandler(new CookieManager())
-            .connectTimeout(Duration.ofSeconds(2)).build();
-  }
-
   private HttpRequest createRequest(final String path) throws IOException {
     return createRequest(path, null);
   }
@@ -499,6 +493,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
             .uri(URI.create(baseurl + path))
             .POST(data == null ? HttpRequest.BodyPublishers.noBody() : HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(data)))
             .headers(headers).build();
+  }
+
+  private static HttpClient createHttpClient() {
+    return HttpClient.newBuilder().executor(EXECUTOR)
+            .cookieHandler(new CookieManager())
+            .connectTimeout(Duration.ofSeconds(2)).build();
   }
 
   private static <T> T handleResponse(final HttpResponse response) throws Exception {
