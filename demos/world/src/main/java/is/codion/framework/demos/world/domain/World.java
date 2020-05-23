@@ -201,7 +201,7 @@ public final class World extends Domain {
             // end::denormalizedViewProperty[]
             // tag::subqueryProperty[]
             subqueryProperty(COUNTRY_NO_OF_CITIES, Types.INTEGER, "No. of cities",
-                    "select count(*) from world.city where countrycode = code"),
+                    "select count(*) from world.city where city.countrycode = country.code"),
             // end::subqueryProperty[]
             subqueryProperty(COUNTRY_NO_OF_LANGUAGES, Types.INTEGER, "No. of languages",
                     "select count(*) from world.countrylanguage where countrycode = code"),

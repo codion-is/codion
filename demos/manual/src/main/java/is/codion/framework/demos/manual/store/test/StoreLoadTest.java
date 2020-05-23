@@ -12,14 +12,15 @@ import is.codion.framework.model.EntityModel;
 import is.codion.swing.common.tools.loadtest.ScenarioException;
 import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
-import java.util.Collections;
 import java.util.UUID;
+
+import static java.util.Collections.singletonList;
 
 // tag::storeLoadTest[]
 public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
 
   public StoreLoadTest(User user) {
-    super(user, Collections.singletonList(new Scenario()));
+    super(user, singletonList(new UsageScenario()));
   }
 
   @Override
@@ -33,7 +34,7 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
     return new StoreAppModel(connectionProvider);
   }
 
-  private static class Scenario extends
+  private static class UsageScenario extends
           EntityLoadTestModel.AbstractEntityUsageScenario<StoreAppModel> {
 
     @Override
