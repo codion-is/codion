@@ -226,7 +226,7 @@ public final class EntityInputComponents {
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a boolean property
    */
-  public static JCheckBox createCheckBox(final Property property, final Value value) {
+  public static JCheckBox createCheckBox(final Property property, final Value<Boolean> value) {
     return createCheckBox(property, value, null);
   }
 
@@ -238,7 +238,7 @@ public final class EntityInputComponents {
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a boolean property
    */
-  public static JCheckBox createCheckBox(final Property property, final Value value,
+  public static JCheckBox createCheckBox(final Property property, final Value<Boolean> value,
                                          final StateObserver enabledState) {
     return createCheckBox(property, value, enabledState, IncludeCaption.YES);
   }
@@ -252,7 +252,7 @@ public final class EntityInputComponents {
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a boolean property
    */
-  public static JCheckBox createCheckBox(final Property property, final Value value, final StateObserver enabledState,
+  public static JCheckBox createCheckBox(final Property property, final Value<Boolean> value, final StateObserver enabledState,
                                          final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
@@ -273,7 +273,7 @@ public final class EntityInputComponents {
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a nullable boolean property
    */
-  public static NullableCheckBox createNullableCheckBox(final Property property, final Value value, final StateObserver enabledState,
+  public static NullableCheckBox createNullableCheckBox(final Property property, final Value<Boolean> value, final StateObserver enabledState,
                                                         final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
@@ -291,7 +291,7 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @return a SteppedComboBox based on the given boolean property
    */
-  public static SteppedComboBox createBooleanComboBox(final Property property, final Value value) {
+  public static SteppedComboBox createBooleanComboBox(final Property property, final Value<Boolean> value) {
     return createBooleanComboBox(property, value, null);
   }
 
@@ -302,7 +302,7 @@ public final class EntityInputComponents {
    * @param enabledState the state controlling the enabled state of the combobox
    * @return a SteppedComboBox based on the given boolean property
    */
-  public static SteppedComboBox createBooleanComboBox(final Property property, final Value value,
+  public static SteppedComboBox createBooleanComboBox(final Property property, final Value<Boolean> value,
                                                       final StateObserver enabledState) {
     final SteppedComboBox box = createComboBox(property, value, new BooleanComboBoxModel(), enabledState);
     box.setPopupWidth(BOOLEAN_COMBO_BOX_POPUP_WIDTH);
@@ -318,7 +318,7 @@ public final class EntityInputComponents {
    * @return a SwingEntityComboBox based on the given foreign key property
    */
   public static EntityComboBox createForeignKeyComboBox(final ForeignKeyProperty foreignKeyProperty,
-                                                        final Value value, final SwingEntityComboBoxModel comboBoxModel) {
+                                                        final Value<Entity> value, final SwingEntityComboBoxModel comboBoxModel) {
     return createForeignKeyComboBox(foreignKeyProperty, value, comboBoxModel, null);
   }
 
@@ -331,7 +331,7 @@ public final class EntityInputComponents {
    * @return a EntityComboBox based on the given foreign key property
    */
   public static EntityComboBox createForeignKeyComboBox(final ForeignKeyProperty foreignKeyProperty,
-                                                        final Value value, final SwingEntityComboBoxModel comboBoxModel,
+                                                        final Value<Entity> value, final SwingEntityComboBoxModel comboBoxModel,
                                                         final StateObserver enabledState) {
     requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     requireNonNull(comboBoxModel, "comboBoxModel");
@@ -353,7 +353,7 @@ public final class EntityInputComponents {
    * @return a lookup model based on the given foreign key property
    */
   public static EntityLookupField createForeignKeyLookupField(final ForeignKeyProperty foreignKeyProperty,
-                                                              final Value value, final EntityLookupModel lookupModel) {
+                                                              final Value<Entity> value, final EntityLookupModel lookupModel) {
     return createForeignKeyLookupField(foreignKeyProperty, value, lookupModel, null);
   }
 
@@ -365,7 +365,7 @@ public final class EntityInputComponents {
    * @param enabledState the state controlling the enabled state of the lookup field
    * @return a lookup model based on the given foreign key property
    */
-  public static EntityLookupField createForeignKeyLookupField(final ForeignKeyProperty foreignKeyProperty, final Value value,
+  public static EntityLookupField createForeignKeyLookupField(final ForeignKeyProperty foreignKeyProperty, final Value<Entity> value,
                                                               final EntityLookupModel lookupModel, final StateObserver enabledState) {
     requireNonNull(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     requireNonNull(lookupModel, "lookupModel");
@@ -525,7 +525,7 @@ public final class EntityInputComponents {
    * @param buttonFocusable if yes then the dialog button is focusable
    * @return a text input panel
    */
-  public static TextInputPanel createTextInputPanel(final Property property, final Value value,
+  public static TextInputPanel createTextInputPanel(final Property property, final Value<String> value,
                                                     final UpdateOn updateOn, final ButtonFocusable buttonFocusable) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
@@ -543,7 +543,7 @@ public final class EntityInputComponents {
    * @param updateOn specifies when the underlying value should be updated
    * @return a text area
    */
-  public static JTextArea createTextArea(final Property property, final Value value, final UpdateOn updateOn) {
+  public static JTextArea createTextArea(final Property property, final Value<String> value, final UpdateOn updateOn) {
     return createTextArea(property, value, -1, -1, updateOn);
   }
 
@@ -556,7 +556,7 @@ public final class EntityInputComponents {
    * @param updateOn specifies when the underlying value should be updated
    * @return a text area
    */
-  public static JTextArea createTextArea(final Property property, final Value value,
+  public static JTextArea createTextArea(final Property property, final Value<String> value,
                                          final int rows, final int columns, final UpdateOn updateOn) {
     return createTextArea(property, value, rows, columns, updateOn, null);
   }
@@ -571,7 +571,7 @@ public final class EntityInputComponents {
    * @param enabledState a state indicating when the text area should be enabled
    * @return a text area
    */
-  public static JTextArea createTextArea(final Property property, final Value value,
+  public static JTextArea createTextArea(final Property property, final Value<String> value,
                                          final int rows, final int columns, final UpdateOn updateOn,
                                          final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
@@ -798,7 +798,7 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JCheckBox initializeCheckBox(final Property property, final Value value,
+  private static JCheckBox initializeCheckBox(final Property property, final Value<Boolean> value,
                                               final StateObserver enabledState, final JCheckBox checkBox) {
     value.link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
     linkToEnabledState(enabledState, checkBox);
