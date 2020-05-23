@@ -28,8 +28,6 @@ import javax.swing.JTextField;
 public final class EntityEditPanels {
 
   private static final class Domain {
-    static final String T_MASTER = "master";
-    static final String T_DETAIL = "detail";
     static final String BOOLEAN_PROPERTY = "boolean";
     static final String FOREIGN_KEY_PROPERTY = "foreign_key";
     static final String LOCAL_DATE_PROPERTY = "local_date";
