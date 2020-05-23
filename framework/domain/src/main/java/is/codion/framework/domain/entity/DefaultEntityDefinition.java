@@ -13,6 +13,7 @@ import is.codion.framework.domain.property.MirrorProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -86,7 +87,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private boolean keyGenerated;
 
   /**
-   * The Entity.ToString instance used when toString() is called for this entity type
+   * The {@link Function} to use when toString() is called for this entity type
    */
   private Function<Entity, String> stringProvider = new DefaultStringProvider();
 
@@ -147,27 +148,23 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private transient boolean selectQueryContainsWhereClause = false;
 
   /**
-   * The {@link ConditionProvider}s
-   * mapped to their respective conditionIds
+   * The {@link ConditionProvider}s mapped to their respective conditionIds
    */
   private transient Map<String, ConditionProvider> conditionProviders;
 
-  private final Map<String, Property> propertyMap;
-  private final List<Property> properties;
-  private final Set<Property> propertySet;
-  private final List<Property> visibleProperties;
-  private final List<ColumnProperty> columnProperties;
-  private final List<ColumnProperty> lazyLoadedBlobProperties;
-  private final List<ColumnProperty> selectableColumnProperties;
-  private final List<ColumnProperty> primaryKeyProperties;
-  private final Map<String, ColumnProperty> primaryKeyPropertyMap;
-  private final List<ForeignKeyProperty> foreignKeyProperties;
-  private final Map<String, ForeignKeyProperty> foreignKeyPropertyMap;
-  private final Map<String, List<ForeignKeyProperty>> columnPropertyForeignKeyProperties;
+  /**
+   * Maps the definition of a referenced entity to its foreign key propertyId.
+   */
   private final Map<String, EntityDefinition> foreignEntityDefinitions = new HashMap<>();
-  private final Map<String, Set<DerivedProperty>> derivedProperties;
-  private final List<TransientProperty> transientProperties;
-  private final Map<String, List<DenormalizedProperty>> denormalizedProperties;
+
+  /**
+   * The properties associated with this entity.
+   */
+  private final EntityProperties entityProperties;
+
+  /**
+   * True if this entity type contains one or more denormalized properties.
+   */
   private final boolean hasDenormalizedProperties;
 
   /**
@@ -176,24 +173,10 @@ final class DefaultEntityDefinition implements EntityDefinition {
   DefaultEntityDefinition(final String entityId, final String tableName, final Property.Builder... propertyBuilders) {
     this.entityId = rejectNullOrEmpty(entityId, "entityId");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
+    this.entityProperties = new EntityProperties(entityId, propertyBuilders);
+    this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
+    this.groupByClause = initializeGroupByClause();
     this.caption = entityId;
-    this.propertyMap = initializePropertyMap(entityId, propertyBuilders);
-    this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
-    this.propertySet = new HashSet<>(propertyMap.values());
-    this.visibleProperties = unmodifiableList(getVisibleProperties(propertyMap.values()));
-    this.columnProperties = unmodifiableList(getColumnProperties(propertyMap.values()));
-    this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties(columnProperties);
-    this.selectableColumnProperties = unmodifiableList(getSelectableProperties(columnProperties, lazyLoadedBlobProperties));
-    this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties(propertyMap.values()));
-    this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
-    this.foreignKeyProperties = unmodifiableList(getForeignKeyProperties(propertyMap.values()));
-    this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap(foreignKeyProperties);
-    this.columnPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties(foreignKeyProperties);
-    this.derivedProperties = initializeDerivedProperties(propertyMap.values());
-    this.transientProperties = unmodifiableList(getTransientProperties(propertyMap.values()));
-    this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties(propertyMap.values()));
-    this.groupByClause = initializeGroupByClause(columnProperties);
-    this.hasDenormalizedProperties = !denormalizedProperties.isEmpty();
   }
 
   @Override
@@ -301,7 +284,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public Collection<ColumnProperty> getSearchProperties() {
-    return columnProperties.stream().filter(ColumnProperty::isSearchProperty).collect(toList());
+    return entityProperties.columnProperties.stream().filter(ColumnProperty::isSearchProperty).collect(toList());
   }
 
   @Override
@@ -317,7 +300,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   @Override
   public Property getProperty(final String propertyId) {
     requireNonNull(propertyId, "propertyId");
-    final Property property = propertyMap.get(propertyId);
+    final Property property = entityProperties.propertyMap.get(propertyId);
     if (property == null) {
       throw new IllegalArgumentException("Property '" + propertyId + "' not found in entity: " + entityId);
     }
@@ -327,7 +310,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public ColumnProperty getPrimaryKeyProperty(final String propertyId) {
-    final ColumnProperty property = primaryKeyPropertyMap.get(propertyId);
+    final ColumnProperty property = entityProperties.primaryKeyPropertyMap.get(propertyId);
     if (property == null) {
       throw new IllegalArgumentException("Primary key property " + propertyId + " not found in entity: " + entityId);
     }
@@ -365,13 +348,13 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public boolean hasSingleIntegerPrimaryKey() {
-    return primaryKeyProperties.size() == 1 && primaryKeyProperties.get(0).isInteger();
+    return entityProperties.primaryKeyProperties.size() == 1 && entityProperties.primaryKeyProperties.get(0).isInteger();
   }
 
   @Override
   public List<ColumnProperty> getWritableColumnProperties(final boolean includePrimaryKeyProperties,
                                                           final boolean includeNonUpdatable) {
-    return columnProperties.stream()
+    return entityProperties.columnProperties.stream()
             .filter(property -> property.isInsertable() &&
                     (includeNonUpdatable || property.isUpdatable()) &&
                     (includePrimaryKeyProperties || !property.isPrimaryKeyProperty()))
@@ -383,7 +366,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     final List<ColumnProperty> writableColumnProperties = getWritableColumnProperties(!isKeyGenerated(), false);
     writableColumnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
     final List<Property> updatable = new ArrayList<>(writableColumnProperties);
-    for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+    for (final ForeignKeyProperty foreignKeyProperty : entityProperties.foreignKeyProperties) {
       if (foreignKeyProperty.isUpdatable()) {
         updatable.add(foreignKeyProperty);
       }
@@ -410,7 +393,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public ForeignKeyProperty getForeignKeyProperty(final String propertyId) {
-    final ForeignKeyProperty property = foreignKeyPropertyMap.get(propertyId);
+    final ForeignKeyProperty property = entityProperties.foreignKeyPropertyMap.get(propertyId);
     if (property == null) {
       throw new IllegalArgumentException("Foreign key property with id: " + propertyId + " not found in entity of type: " + entityId);
     }
@@ -420,74 +403,74 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public List<ForeignKeyProperty> getForeignKeyProperties(final String columnPropertyId) {
-    return columnPropertyForeignKeyProperties.computeIfAbsent(columnPropertyId, propertyId -> Collections.emptyList());
+    return entityProperties.columnPropertyForeignKeyProperties.computeIfAbsent(columnPropertyId, propertyId -> Collections.emptyList());
   }
 
   @Override
   public List<Property> getProperties() {
-    return properties;
+    return entityProperties.properties;
   }
 
   @Override
   public Set<Property> getPropertySet() {
-    return propertySet;
+    return entityProperties.propertySet;
   }
 
   @Override
   public boolean hasPrimaryKey() {
-    return !primaryKeyProperties.isEmpty();
+    return !entityProperties.primaryKeyProperties.isEmpty();
   }
 
   @Override
   public boolean hasDerivedProperties() {
-    return !derivedProperties.isEmpty();
+    return !entityProperties.derivedProperties.isEmpty();
   }
 
   @Override
   public boolean hasDerivedProperties(final String propertyId) {
-    return derivedProperties.containsKey(propertyId);
+    return entityProperties.derivedProperties.containsKey(propertyId);
   }
 
   @Override
   public Collection<DerivedProperty> getDerivedProperties(final String property) {
-    final Collection<DerivedProperty> derived = derivedProperties.get(property);
+    final Collection<DerivedProperty> derived = entityProperties.derivedProperties.get(property);
 
     return derived == null ? emptyList() : derived;
   }
 
   @Override
   public List<ColumnProperty> getPrimaryKeyProperties() {
-    return primaryKeyProperties;
+    return entityProperties.primaryKeyProperties;
   }
 
   @Override
   public List<Property> getVisibleProperties() {
-    return visibleProperties;
+    return entityProperties.visibleProperties;
   }
 
   @Override
   public List<ColumnProperty> getColumnProperties() {
-    return columnProperties;
+    return entityProperties.columnProperties;
   }
 
   @Override
   public List<ColumnProperty> getSelectableColumnProperties() {
-    return selectableColumnProperties;
+    return entityProperties.selectableColumnProperties;
   }
 
   @Override
   public List<ColumnProperty> getLazyLoadedBlobProperties() {
-    return lazyLoadedBlobProperties;
+    return entityProperties.lazyLoadedBlobProperties;
   }
 
   @Override
   public List<TransientProperty> getTransientProperties() {
-    return transientProperties;
+    return entityProperties.transientProperties;
   }
 
   @Override
   public List<ForeignKeyProperty> getForeignKeyProperties() {
-    return foreignKeyProperties;
+    return entityProperties.foreignKeyProperties;
   }
 
   @Override
@@ -508,12 +491,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public boolean hasDenormalizedProperties(final String foreignKeyPropertyId) {
-    return hasDenormalizedProperties && denormalizedProperties.containsKey(foreignKeyPropertyId);
+    return hasDenormalizedProperties && entityProperties.denormalizedProperties.containsKey(foreignKeyPropertyId);
   }
 
   @Override
   public List<DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyId) {
-    return denormalizedProperties.get(foreignKeyPropertyId);
+    return entityProperties.denormalizedProperties.get(foreignKeyPropertyId);
   }
 
   @Override
@@ -545,18 +528,18 @@ final class DefaultEntityDefinition implements EntityDefinition {
   public Entity entity(final Function<Property, Object> valueProvider) {
     requireNonNull(valueProvider);
     final Entity entity = entity();
-    for (final ColumnProperty property : columnProperties) {
+    for (final ColumnProperty property : entityProperties.columnProperties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
         entity.put(property, valueProvider.apply(property));
       }
     }
-    for (final TransientProperty transientProperty : transientProperties) {
+    for (final TransientProperty transientProperty : entityProperties.transientProperties) {
       if (!(transientProperty instanceof DerivedProperty)) {
         entity.put(transientProperty, valueProvider.apply(transientProperty));
       }
     }
-    for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+    for (final ForeignKeyProperty foreignKeyProperty : entityProperties.foreignKeyProperties) {
       entity.put(foreignKeyProperty, valueProvider.apply(foreignKeyProperty));
     }
     entity.saveAll();
@@ -630,156 +613,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return new DefaultBuilder(this);
   }
 
-  private Map<String, ColumnProperty> initializePrimaryKeyPropertyMap() {
-    final Map<String, ColumnProperty> map = new HashMap<>(this.primaryKeyProperties.size());
-    this.primaryKeyProperties.forEach(property -> map.put(property.getPropertyId(), property));
-
-    return unmodifiableMap(map);
-  }
-
-  private static Map<String, Property> initializePropertyMap(final String entityId, final Property.Builder... propertyBuilders) {
-    final Map<String, Property> propertyMap = new LinkedHashMap<>(propertyBuilders.length);
-    for (final Property.Builder propertyBuilder : propertyBuilders) {
-      validateAndAddProperty(propertyBuilder, entityId, propertyMap);
-      if (propertyBuilder instanceof ForeignKeyProperty.Builder) {
-        initializeForeignKeyProperty(entityId, propertyMap, (ForeignKeyProperty.Builder) propertyBuilder);
-      }
-    }
-    validatePrimaryKeyProperties(propertyMap);
-
-    return unmodifiableMap(propertyMap);
-  }
-
-  private static void initializeForeignKeyProperty(final String entityId, final Map<String, Property> propertyMap,
-                                                   final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
-    for (final ColumnProperty.Builder propertyBuilder : foreignKeyPropertyBuilder.getColumnPropertyBuilders()) {
-      if (!(propertyBuilder.get() instanceof MirrorProperty)) {
-        validateAndAddProperty(propertyBuilder, entityId, propertyMap);
-      }
-    }
-  }
-
-  private static void validateAndAddProperty(final Property.Builder propertyBuilder, final String entityId,
-                                             final Map<String, Property> propertyMap) {
-    final Property property = propertyBuilder.get();
-    checkIfUniquePropertyId(property, entityId, propertyMap);
-    propertyBuilder.entityId(entityId);
-    propertyMap.put(property.getPropertyId(), property);
-  }
-
-  private static void checkIfUniquePropertyId(final Property property, final String entityId,
-                                              final Map<String, Property> propertyMap) {
-    if (propertyMap.containsKey(property.getPropertyId())) {
-      throw new IllegalArgumentException("Property with id " + property.getPropertyId()
-              + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
-              + " has already been defined as: " + propertyMap.get(property.getPropertyId()) + " in entity: " + entityId);
-    }
-  }
-
-  private static void validatePrimaryKeyProperties(final Map<String, Property> propertyMap) {
-    final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
-    boolean primaryKeyPropertyFound = false;
-    for (final Property property : propertyMap.values()) {
-      if (property instanceof ColumnProperty && ((ColumnProperty) property).isPrimaryKeyProperty()) {
-        final Integer index = ((ColumnProperty) property).getPrimaryKeyIndex();
-        if (usedPrimaryKeyIndexes.contains(index)) {
-          throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
-        }
-        usedPrimaryKeyIndexes.add(index);
-        primaryKeyPropertyFound = true;
-      }
-    }
-    if (primaryKeyPropertyFound) {
-      return;
-    }
-  }
-
-  private static List<ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> property instanceof ForeignKeyProperty)
-            .map(property -> (ForeignKeyProperty) property).collect(toList());
-  }
-
-  private static List<ColumnProperty> getColumnProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> property instanceof ColumnProperty)
-            .map(property -> (ColumnProperty) property).collect(toList());
-  }
-
-  private static List<TransientProperty> getTransientProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> property instanceof TransientProperty)
-            .map(property -> (TransientProperty) property).collect(toList());
-  }
-
-  private static List<ColumnProperty> initializeLazyLoadedBlobProperties(final List<ColumnProperty> columnProperties) {
-    return columnProperties.stream().filter(Property::isBlob).filter(property ->
-            !(property instanceof BlobProperty) || !((BlobProperty) property).isEagerlyLoaded()).collect(toList());
-  }
-
-  private static Map<String, List<DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
-    final Map<String, List<DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
-    for (final Property property : properties) {
-      if (property instanceof DenormalizedProperty) {
-        final DenormalizedProperty denormalizedProperty = (DenormalizedProperty) property;
-        final Collection<DenormalizedProperty> denormalizedProperties =
-                denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getForeignKeyPropertyId(), k -> new ArrayList<>());
-        denormalizedProperties.add(denormalizedProperty);
-      }
-    }
-
-    return denormalizedPropertiesMap;
-  }
-
-  private static Map<String, Set<DerivedProperty>> initializeDerivedProperties(final Collection<Property> properties) {
-    final Map<String, Set<DerivedProperty>> derivedProperties = new HashMap<>();
-    for (final Property property : properties) {
-      if (property instanceof DerivedProperty) {
-        final Collection<String> sourcePropertyIds = ((DerivedProperty) property).getSourcePropertyIds();
-        if (!nullOrEmpty(sourcePropertyIds)) {
-          for (final String sourcePropertyId : sourcePropertyIds) {
-            linkProperties(derivedProperties, sourcePropertyId, (DerivedProperty) property);
-          }
-        }
-      }
-    }
-
-    return derivedProperties;
-  }
-
-  private static void linkProperties(final Map<String, Set<DerivedProperty>> derivedProperties,
-                                     final String sourcePropertyId, final DerivedProperty derivedProperty) {
-    if (!derivedProperties.containsKey(sourcePropertyId)) {
-      derivedProperties.put(sourcePropertyId, new HashSet<>());
-    }
-    derivedProperties.get(sourcePropertyId).add(derivedProperty);
-  }
-
-  private static List<ColumnProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> property instanceof ColumnProperty
-            && ((ColumnProperty) property).isPrimaryKeyProperty()).map(property -> (ColumnProperty) property)
-            .sorted((pk1, pk2) -> {
-              final Integer index1 = pk1.getPrimaryKeyIndex();
-              final Integer index2 = pk2.getPrimaryKeyIndex();
-
-              return index1.compareTo(index2);
-            }).collect(toList());
-  }
-
-  private static List<ColumnProperty> getSelectableProperties(final List<ColumnProperty> columnProperties,
-                                                              final List<ColumnProperty> lazyLoadedBlobProperties) {
-    return columnProperties.stream().filter(property ->
-            !lazyLoadedBlobProperties.contains(property)).filter(ColumnProperty::isSelectable).collect(toList());
-  }
-
-  private static List<Property> getVisibleProperties(final Collection<Property> properties) {
-    return properties.stream().filter(property -> !property.isHidden()).collect(toList());
-  }
-
   /**
-   * @param columnProperties the column properties
    * @return a list of grouping columns separated with a comma, to serve as a group by clause,
    * null if no grouping properties are defined
    */
-  private static String initializeGroupByClause(final List<ColumnProperty> columnProperties) {
-    final List<String> groupingColumnNames = columnProperties.stream().filter(ColumnProperty::isGroupingColumn)
+  private String initializeGroupByClause() {
+    final List<String> groupingColumnNames = entityProperties.columnProperties.stream().filter(ColumnProperty::isGroupingColumn)
             .map(ColumnProperty::getColumnName).collect(toList());
     if (groupingColumnNames.isEmpty()) {
       return null;
@@ -788,22 +627,204 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return String.join(", ", groupingColumnNames);
   }
 
-  private static Map<String, ForeignKeyProperty> initializeForeignKeyPropertyMap(final List<ForeignKeyProperty> foreignKeyProperties) {
-    final Map<String, ForeignKeyProperty> foreignKeyMap = new HashMap<>(foreignKeyProperties.size());
-    foreignKeyProperties.forEach(foreignKeyProperty ->
-            foreignKeyMap.put(foreignKeyProperty.getPropertyId(), foreignKeyProperty));
+  private static final class EntityProperties implements Serializable {
 
-    return foreignKeyMap;
-  }
+    private static final long serialVersionUID = 1;
 
-  private static Map<String, List<ForeignKeyProperty>> initializeColumnPropertyForeignKeyProperties(final List<ForeignKeyProperty> foreignKeyProperties) {
-    final Map<String, List<ForeignKeyProperty>> foreignKeyMap = new HashMap<>();
-    foreignKeyProperties.forEach(foreignKeyProperty ->
-            foreignKeyProperty.getColumnProperties().forEach(columnProperty ->
-                    foreignKeyMap.computeIfAbsent(columnProperty.getPropertyId(),
-                            columnPropertyId -> new ArrayList<>()).add(foreignKeyProperty)));
+    private final String entityId;
 
-    return foreignKeyMap;
+    private final Map<String, Property> propertyMap;
+    private final List<Property> properties;
+    private final Set<Property> propertySet;
+    private final List<Property> visibleProperties;
+    private final List<ColumnProperty> columnProperties;
+    private final List<ColumnProperty> lazyLoadedBlobProperties;
+    private final List<ColumnProperty> selectableColumnProperties;
+    private final List<ColumnProperty> primaryKeyProperties;
+    private final Map<String, ColumnProperty> primaryKeyPropertyMap;
+    private final List<ForeignKeyProperty> foreignKeyProperties;
+    private final Map<String, ForeignKeyProperty> foreignKeyPropertyMap;
+    private final Map<String, List<ForeignKeyProperty>> columnPropertyForeignKeyProperties;
+    private final Map<String, Set<DerivedProperty>> derivedProperties;
+    private final List<TransientProperty> transientProperties;
+    private final Map<String, List<DenormalizedProperty>> denormalizedProperties;
+
+    private EntityProperties(final String entityId, final Property.Builder... propertyBuilders) {
+      this.entityId = entityId;
+      this.propertyMap = initializePropertyMap(propertyBuilders);
+      this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
+      this.propertySet = new HashSet<>(propertyMap.values());
+      this.visibleProperties = unmodifiableList(getVisibleProperties());
+      this.columnProperties = unmodifiableList(getColumnProperties());
+      this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties();
+      this.selectableColumnProperties = unmodifiableList(getSelectableProperties());
+      this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties());
+      this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
+      this.foreignKeyProperties = unmodifiableList(getForeignKeyProperties());
+      this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap();
+      this.columnPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties();
+      this.derivedProperties = initializeDerivedProperties();
+      this.transientProperties = unmodifiableList(getTransientProperties());
+      this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties());
+    }
+
+    private Map<String, Property> initializePropertyMap(final Property.Builder... propertyBuilders) {
+      final Map<String, Property> propertyMap = new LinkedHashMap<>(propertyBuilders.length);
+      for (final Property.Builder propertyBuilder : propertyBuilders) {
+        validateAndAddProperty(propertyBuilder, propertyMap);
+        if (propertyBuilder instanceof ForeignKeyProperty.Builder) {
+          initializeForeignKeyProperty(propertyMap, (ForeignKeyProperty.Builder) propertyBuilder);
+        }
+      }
+      validatePrimaryKeyProperties(propertyMap);
+
+      return unmodifiableMap(propertyMap);
+    }
+
+    private void validatePrimaryKeyProperties(final Map<String, Property> propertyMap) {
+      final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
+      boolean primaryKeyPropertyFound = false;
+      for (final Property property : propertyMap.values()) {
+        if (property instanceof ColumnProperty && ((ColumnProperty) property).isPrimaryKeyProperty()) {
+          final Integer index = ((ColumnProperty) property).getPrimaryKeyIndex();
+          if (usedPrimaryKeyIndexes.contains(index)) {
+            throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
+          }
+          usedPrimaryKeyIndexes.add(index);
+          primaryKeyPropertyFound = true;
+        }
+      }
+      if (primaryKeyPropertyFound) {
+        return;
+      }
+    }
+
+    private void initializeForeignKeyProperty(final Map<String, Property> propertyMap,
+                                              final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
+      for (final ColumnProperty.Builder propertyBuilder : foreignKeyPropertyBuilder.getColumnPropertyBuilders()) {
+        if (!(propertyBuilder.get() instanceof MirrorProperty)) {
+          validateAndAddProperty(propertyBuilder, propertyMap);
+        }
+      }
+    }
+
+    private void validateAndAddProperty(final Property.Builder propertyBuilder, final Map<String, Property> propertyMap) {
+      final Property property = propertyBuilder.get();
+      checkIfUniquePropertyId(property, propertyMap);
+      propertyBuilder.entityId(entityId);
+      propertyMap.put(property.getPropertyId(), property);
+    }
+
+    private void checkIfUniquePropertyId(final Property property, final Map<String, Property> propertyMap) {
+      if (propertyMap.containsKey(property.getPropertyId())) {
+        throw new IllegalArgumentException("Property with id " + property.getPropertyId()
+                + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
+                + " has already been defined as: " + propertyMap.get(property.getPropertyId()) + " in entity: " + entityId);
+      }
+    }
+
+    private Map<String, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
+      final Map<String, ForeignKeyProperty> foreignKeyMap = new HashMap<>(foreignKeyProperties.size());
+      foreignKeyProperties.forEach(foreignKeyProperty ->
+              foreignKeyMap.put(foreignKeyProperty.getPropertyId(), foreignKeyProperty));
+
+      return foreignKeyMap;
+    }
+
+    private Map<String, List<ForeignKeyProperty>> initializeColumnPropertyForeignKeyProperties() {
+      final Map<String, List<ForeignKeyProperty>> foreignKeyMap = new HashMap<>();
+      foreignKeyProperties.forEach(foreignKeyProperty ->
+              foreignKeyProperty.getColumnProperties().forEach(columnProperty ->
+                      foreignKeyMap.computeIfAbsent(columnProperty.getPropertyId(),
+                              columnPropertyId -> new ArrayList<>()).add(foreignKeyProperty)));
+
+      return foreignKeyMap;
+    }
+
+    private Map<String, ColumnProperty> initializePrimaryKeyPropertyMap() {
+      final Map<String, ColumnProperty> map = new HashMap<>(this.primaryKeyProperties.size());
+      this.primaryKeyProperties.forEach(property -> map.put(property.getPropertyId(), property));
+
+      return unmodifiableMap(map);
+    }
+
+    private List<Property> getVisibleProperties() {
+      return properties.stream().filter(property -> !property.isHidden()).collect(toList());
+    }
+
+    private List<ForeignKeyProperty> getForeignKeyProperties() {
+      return properties.stream().filter(property -> property instanceof ForeignKeyProperty)
+              .map(property -> (ForeignKeyProperty) property).collect(toList());
+    }
+
+    private List<ColumnProperty> getColumnProperties() {
+      return properties.stream().filter(property -> property instanceof ColumnProperty)
+              .map(property -> (ColumnProperty) property).collect(toList());
+    }
+
+    private List<TransientProperty> getTransientProperties() {
+      return properties.stream().filter(property -> property instanceof TransientProperty)
+              .map(property -> (TransientProperty) property).collect(toList());
+    }
+
+    private List<ColumnProperty> initializeLazyLoadedBlobProperties() {
+      return columnProperties.stream().filter(Property::isBlob).filter(property ->
+              !(property instanceof BlobProperty) || !((BlobProperty) property).isEagerlyLoaded()).collect(toList());
+    }
+
+    private Map<String, List<DenormalizedProperty>> getDenormalizedProperties() {
+      final Map<String, List<DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
+      for (final Property property : properties) {
+        if (property instanceof DenormalizedProperty) {
+          final DenormalizedProperty denormalizedProperty = (DenormalizedProperty) property;
+          final Collection<DenormalizedProperty> denormalizedProperties =
+                  denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getForeignKeyPropertyId(), k -> new ArrayList<>());
+          denormalizedProperties.add(denormalizedProperty);
+        }
+      }
+
+      return denormalizedPropertiesMap;
+    }
+
+    private Map<String, Set<DerivedProperty>> initializeDerivedProperties() {
+      final Map<String, Set<DerivedProperty>> derivedProperties = new HashMap<>();
+      for (final Property property : properties) {
+        if (property instanceof DerivedProperty) {
+          final Collection<String> sourcePropertyIds = ((DerivedProperty) property).getSourcePropertyIds();
+          if (!nullOrEmpty(sourcePropertyIds)) {
+            for (final String sourcePropertyId : sourcePropertyIds) {
+              linkProperties(derivedProperties, sourcePropertyId, (DerivedProperty) property);
+            }
+          }
+        }
+      }
+
+      return derivedProperties;
+    }
+
+    private void linkProperties(final Map<String, Set<DerivedProperty>> derivedProperties,
+                                final String sourcePropertyId, final DerivedProperty derivedProperty) {
+      if (!derivedProperties.containsKey(sourcePropertyId)) {
+        derivedProperties.put(sourcePropertyId, new HashSet<>());
+      }
+      derivedProperties.get(sourcePropertyId).add(derivedProperty);
+    }
+
+    private List<ColumnProperty> getPrimaryKeyProperties() {
+      return properties.stream().filter(property -> property instanceof ColumnProperty
+              && ((ColumnProperty) property).isPrimaryKeyProperty()).map(property -> (ColumnProperty) property)
+              .sorted((pk1, pk2) -> {
+                final Integer index1 = pk1.getPrimaryKeyIndex();
+                final Integer index2 = pk2.getPrimaryKeyIndex();
+
+                return index1.compareTo(index2);
+              }).collect(toList());
+    }
+
+    private List<ColumnProperty> getSelectableProperties() {
+      return columnProperties.stream().filter(property ->
+              !lazyLoadedBlobProperties.contains(property)).filter(ColumnProperty::isSelectable).collect(toList());
+    }
   }
 
   private static final class DefaultBuilder implements Builder {
