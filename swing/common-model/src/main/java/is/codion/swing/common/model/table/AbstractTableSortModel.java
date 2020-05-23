@@ -129,6 +129,8 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
 
   private void setSortingDirective(final C columnIdentifier, final SortingDirective directive,
                                    final boolean addColumnToSort) {
+    requireNonNull(columnIdentifier, "columnIdentifier");
+    requireNonNull(directive, "directive");
     if (!addColumnToSort) {
       resetSortingStates();
     }
