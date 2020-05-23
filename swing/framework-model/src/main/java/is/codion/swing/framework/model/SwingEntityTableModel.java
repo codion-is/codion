@@ -602,7 +602,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       LOG.debug("{} refreshing", this);
       final List<Entity> queryResult = performQuery();
       clear();
-      addEntities(queryResult);
+      addEntitiesSorted(queryResult);
       conditionModel.rememberCondition();
       refreshEvent.onEvent();
     }
