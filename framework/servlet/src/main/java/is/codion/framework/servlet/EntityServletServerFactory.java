@@ -3,13 +3,13 @@
  */
 package is.codion.framework.servlet;
 
-import is.codion.common.rmi.server.AuxiliaryServerProvider;
+import is.codion.common.rmi.server.AuxiliaryServerFactory;
 import is.codion.common.rmi.server.Server;
 
 /**
  * Provides a {@link EntityServletServer} auxiliary server instance.
  */
-public final class EntityServletServerProvider implements AuxiliaryServerProvider<EntityServletServer> {
+public final class EntityServletServerFactory implements AuxiliaryServerFactory<EntityServletServer> {
 
   @Override
   public EntityServletServer createServer(final Server server) {

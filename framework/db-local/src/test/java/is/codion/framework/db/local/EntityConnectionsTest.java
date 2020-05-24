@@ -9,7 +9,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
-import is.codion.dbms.h2database.H2DatabaseProvider;
+import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnections;
@@ -43,7 +43,7 @@ public class EntityConnectionsTest {
   @BeforeAll
   public static void setUp() {
     try {
-      final Database destinationDatabase = new H2DatabaseProvider().createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
+      final Database destinationDatabase = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
       DESTINATION_CONNECTION = LocalEntityConnections.createConnection(DOMAIN, destinationDatabase, Users.user("sa"));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
       DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));

@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Provides {@link Database} implementations
  */
-public interface DatabaseProvider {
+public interface DatabaseFactory {
 
   /**
    * @param driverClassName the driver class name
@@ -33,14 +33,14 @@ public interface DatabaseProvider {
   Database createDatabase(String jdbcUrl);
 
   /**
-   * @return a {@link DatabaseProvider} implementation for {@link Database#DATABASE_URL}
+   * @return a {@link DatabaseFactory} implementation for {@link Database#DATABASE_URL}
    * @throws IllegalArgumentException in case no such implementation is found
    * @throws SQLException in case loading of the database driver failed
    */
-  static DatabaseProvider getInstance() throws SQLException {
+  static DatabaseFactory getInstance() throws SQLException {
     final String jdbcUrl = Database.DATABASE_URL.get();
     if (jdbcUrl == null) {
-      throw new IllegalStateException("codion.db.url must be specified before discovering DatabaseProviders");
+      throw new IllegalStateException("codion.db.url must be specified before discovering DatabaseFactories");
     }
 
     return getInstance(jdbcUrl);
@@ -48,20 +48,20 @@ public interface DatabaseProvider {
 
   /**
    * @param jdbcUrl the jdbc url
-   * @return a {@link DatabaseProvider} implementation for the given jdbc url
+   * @return a {@link DatabaseFactory} implementation for the given jdbc url
    * @throws IllegalArgumentException in case no such implementation is found
    * @throws SQLException in case loading of database driver failed
    */
-  static DatabaseProvider getInstance(final String jdbcUrl) throws SQLException {
+  static DatabaseFactory getInstance(final String jdbcUrl) throws SQLException {
     final String driver = getDriverClassName(jdbcUrl);
-    final ServiceLoader<DatabaseProvider> loader = ServiceLoader.load(DatabaseProvider.class);
-    for (final DatabaseProvider provider : loader) {
-      if (provider.isDriverCompatible(driver)) {
-        return provider;
+    final ServiceLoader<DatabaseFactory> loader = ServiceLoader.load(DatabaseFactory.class);
+    for (final DatabaseFactory factory : loader) {
+      if (factory.isDriverCompatible(driver)) {
+        return factory;
       }
     }
 
-    throw new IllegalArgumentException("No DatabaseProvider implementation available for driver: " + driver);
+    throw new IllegalArgumentException("No DatabaseFactory implementation available for driver: " + driver);
   }
 
   /**

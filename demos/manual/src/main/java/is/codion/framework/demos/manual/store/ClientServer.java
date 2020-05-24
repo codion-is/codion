@@ -7,7 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
-import is.codion.dbms.h2database.H2DatabaseProvider;
+import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.http.ClientHttps;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
@@ -16,7 +16,7 @@ import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
-import is.codion.framework.servlet.EntityServletServerProvider;
+import is.codion.framework.servlet.EntityServletServerFactory;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -33,7 +33,9 @@ public final class ClientServer {
 
   private static void runServer() throws RemoteException, DatabaseException {
     // tag::runServer[]
-    Database database = new H2DatabaseProvider().createDatabase("jdbc:h2:mem:testdb", "src/main/sql/create_schema.sql");
+    Database database = new H2DatabaseFactory()
+            .createDatabase("jdbc:h2:mem:testdb",
+                    "src/main/sql/create_schema.sql");
 
     EntityServerConfiguration configuration = EntityServerConfiguration.configuration(SERVER_PORT, REGISTRY_PORT);
     configuration.setDomainModelClassNames(singletonList(Store.class.getName()));
@@ -61,13 +63,15 @@ public final class ClientServer {
 
   private static void runServerWithHttp() throws RemoteException, DatabaseException {
     // tag::runServerWithHttp[]
-    Database database = new H2DatabaseProvider().createDatabase("jdbc:h2:mem:testdb", "src/main/sql/create_schema.sql");
+    Database database = new H2DatabaseFactory()
+            .createDatabase("jdbc:h2:mem:testdb",
+                    "src/main/sql/create_schema.sql");
 
     EntityServerConfiguration configuration = EntityServerConfiguration.configuration(SERVER_PORT, REGISTRY_PORT);
     configuration.setDomainModelClassNames(singletonList(Store.class.getName()));
     configuration.setDatabase(database);
     configuration.setSslEnabled(false);
-    configuration.setAuxiliaryServerProviderClassNames(singletonList(EntityServletServerProvider.class.getName()));
+    configuration.setAuxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()));
 
     HttpServerConfiguration.HTTP_SERVER_PORT.set(HTTP_PORT);
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.FALSE);

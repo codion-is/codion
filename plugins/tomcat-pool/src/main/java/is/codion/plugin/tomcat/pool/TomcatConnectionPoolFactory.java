@@ -6,7 +6,7 @@ package is.codion.plugin.tomcat.pool;
 import is.codion.common.db.pool.AbstractConnectionPool;
 import is.codion.common.db.pool.ConnectionFactory;
 import is.codion.common.db.pool.ConnectionPool;
-import is.codion.common.db.pool.ConnectionPoolProvider;
+import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.user.User;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -17,9 +17,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * A Tomcat connection pool based ConnectionPoolProvider implementation
+ * A Tomcat connection pool based {@link ConnectionPoolFactory} implementation
  */
-public final class TomcatConnectionPoolProvider implements ConnectionPoolProvider {
+public final class TomcatConnectionPoolFactory implements ConnectionPoolFactory {
 
   /**
    * Creates a Tomcat based connection pool

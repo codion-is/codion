@@ -403,7 +403,7 @@ public class EntityServletServerTest {
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
     configuration.setDatabase(Databases.getInstance());
     configuration.setSslEnabled(false);
-    configuration.setAuxiliaryServerProviderClassNames(singletonList(EntityServletServerProvider.class.getName()));
+    configuration.setAuxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()));
 
     return configuration;
   }
@@ -413,7 +413,7 @@ public class EntityServletServerTest {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set(null);
     ServerConfiguration.TRUSTSTORE.set(null);
     ServerConfiguration.TRUSTSTORE_PASSWORD.set(null);
-    ServerConfiguration.AUXILIARY_SERVER_CLASS_NAMES.set(null);
+    ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.set(null);
     HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);

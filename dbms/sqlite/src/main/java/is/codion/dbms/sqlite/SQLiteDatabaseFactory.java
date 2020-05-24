@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.dbms.postgresql;
+package is.codion.dbms.sqlite;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseProvider;
+import is.codion.common.db.database.DatabaseFactory;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * Provides postgresql database implementations
+ * Provides sqlite database implementations
  */
-public final class PostgreSQLDatabaseProvider implements DatabaseProvider {
+public final class SQLiteDatabaseFactory implements DatabaseFactory {
 
-  private static final String DRIVER_PACKAGE = "org.postgresql";
+  private static final String DRIVER_PACKAGE = "org.sqlite";
 
   @Override
   public boolean isDriverCompatible(final String driverClassName) {
@@ -22,11 +22,11 @@ public final class PostgreSQLDatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isDatabaseCompatible(final Database database) {
-    return database instanceof PostgreSQLDatabase;
+    return database instanceof SQLiteDatabase;
   }
 
   @Override
   public Database createDatabase(final String jdbcUrl) {
-    return new PostgreSQLDatabase(jdbcUrl);
+    return new SQLiteDatabase(jdbcUrl);
   }
 }

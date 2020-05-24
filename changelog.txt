@@ -6111,3 +6111,4 @@
   AbstractTableSortModel.setSortingDirective() null handling improved
   DefaultEntityDefinition.EntityProperties added
   AbstractUsageScenario.performScenario() renamed to perform()
+  DatabaseProvider, ConnectionPoolProvider, AuxiliaryServerProvider renamed, are now factories instead of providers, seems more fitting since they create new instances, some minor related renamings

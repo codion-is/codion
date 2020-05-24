@@ -5,7 +5,7 @@ package is.codion.framework.demos.manual.store.minimal.ui;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.user.Users;
-import is.codion.dbms.h2database.H2DatabaseProvider;
+import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.minimal.domain.Store;
@@ -63,7 +63,7 @@ public class StoreDemo {
   }
 
   public static void main(String[] args) {
-    Database database = new H2DatabaseProvider()
+    Database database = new H2DatabaseFactory()
             .createDatabase("jdbc:h2:mem:h2db",
                     "src/main/sql/create_schema_minimal.sql");
 

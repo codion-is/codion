@@ -5,7 +5,7 @@ package is.codion.dbms.h2database;
 
 import is.codion.common.Text;
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseProvider;
+import is.codion.common.db.database.DatabaseFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Provides h2 database implementations
  */
-public final class H2DatabaseProvider implements DatabaseProvider {
+public final class H2DatabaseFactory implements DatabaseFactory {
 
   private static final String DRIVER_PACKAGE = "org.h2";
   private static final String RUN_TOOL_CLASS_NAME = "org.h2.tools.RunScript";

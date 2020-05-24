@@ -8,7 +8,7 @@ import is.codion.common.Util;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.pool.ConnectionPoolProvider;
+import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.event.EventListener;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
@@ -435,18 +435,18 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
   }
 
-  private static void initializeConnectionPools(final Database database, final String connectionPoolProviderClassName,
+  private static void initializeConnectionPools(final Database database, final String connectionPoolFactoryClassName,
                                                 final Collection<User> startupPoolUsers) throws DatabaseException {
     if (!startupPoolUsers.isEmpty()) {
-      final ConnectionPoolProvider poolProvider;
-      if (Util.nullOrEmpty(connectionPoolProviderClassName)) {
-        poolProvider = ConnectionPoolProvider.getConnectionPoolProvider();
+      final ConnectionPoolFactory poolFactory;
+      if (Util.nullOrEmpty(connectionPoolFactoryClassName)) {
+        poolFactory = ConnectionPoolFactory.getInstance();
       }
       else {
-        poolProvider = ConnectionPoolProvider.getConnectionPoolProvider(connectionPoolProviderClassName);
+        poolFactory = ConnectionPoolFactory.getInstance(connectionPoolFactoryClassName);
       }
       for (final User user : startupPoolUsers) {
-        database.initializeConnectionPool(poolProvider, user);
+        database.initializeConnectionPool(poolFactory, user);
       }
     }
   }
