@@ -107,7 +107,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
     }
     try {
       prepare(application);
-      performScenario(application);
+      perform(application);
       successfulRunCount.incrementAndGet();
     }
     catch (final ScenarioException e) {
@@ -141,7 +141,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
    * @param application the application
    * @throws ScenarioException in case of an exception
    */
-  protected abstract void performScenario(T application) throws ScenarioException;
+  protected abstract void perform(T application) throws ScenarioException;
 
   /**
    * Called before this scenario is run, override to prepare the application for each run

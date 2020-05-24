@@ -109,7 +109,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
      * @throws ScenarioException in case of an exception during the scenario run
      */
     @Override
-    protected final void performScenario(final QueryApplication application) throws ScenarioException {
+    protected final void perform(final QueryApplication application) throws ScenarioException {
       Connection connection = null;
       PreparedStatement statement = null;
       ResultSet resultSet = null;

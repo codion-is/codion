@@ -59,10 +59,10 @@ public class EntityLoadTestModelTest {
     public TestLoadTestModel() {
       super(UNIT_TEST_USER, asList(new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("1") {
         @Override
-        protected void performScenario(final DefaultEntityApplicationModel application) throws ScenarioException {}
+        protected void perform(final DefaultEntityApplicationModel application) throws ScenarioException {}
       }, new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("2") {
         @Override
-        protected void performScenario(final DefaultEntityApplicationModel application) throws ScenarioException {}
+        protected void perform(final DefaultEntityApplicationModel application) throws ScenarioException {}
       }));
     }
 

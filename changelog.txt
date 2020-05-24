@@ -6110,3 +6110,4 @@
   AbstractTableSortModel.getSortingState() error message on column not found improved
   AbstractTableSortModel.setSortingDirective() null handling improved
   DefaultEntityDefinition.EntityProperties added
+  AbstractUsageScenario.performScenario() renamed to perform()

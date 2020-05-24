@@ -39,7 +39,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
   private static final UsageScenario<ChinookApplicationModel> UPDATE_TOTALS =
           new AbstractEntityUsageScenario<ChinookApplicationModel>("updateTotals") {
             @Override
-            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
+            protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 final SwingEntityModel customerModel = application.getEntityModel(T_CUSTOMER);
                 customerModel.getTableModel().refresh();
@@ -63,7 +63,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
   private static final UsageScenario<ChinookApplicationModel> VIEW_GENRE =
           new AbstractEntityUsageScenario<ChinookApplicationModel>("viewGenre") {
             @Override
-            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
+            protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 final SwingEntityModel genreModel = application.getEntityModel(T_GENRE);
                 genreModel.getTableModel().refresh();
@@ -86,7 +86,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
   private static final UsageScenario<ChinookApplicationModel> VIEW_CUSTOMER_REPORT =
           new AbstractEntityUsageScenario<ChinookApplicationModel>("viewCustomerReport") {
             @Override
-            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
+            protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 final SwingEntityTableModel customerModel = application.getEntityModel(T_CUSTOMER).getTableModel();
                 customerModel.refresh();
@@ -112,7 +112,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
   private static final UsageScenario<ChinookApplicationModel> VIEW_INVOICE =
           new AbstractEntityUsageScenario<ChinookApplicationModel>("viewInvoice") {
             @Override
-            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
+            protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 final SwingEntityModel customerModel = application.getEntityModel(T_CUSTOMER);
                 customerModel.getTableModel().refresh();
@@ -134,7 +134,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
   private static final UsageScenario<ChinookApplicationModel> VIEW_ALBUM =
           new AbstractEntityUsageScenario<ChinookApplicationModel>("viewAlbum") {
             @Override
-            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
+            protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 final SwingEntityModel artistModel = application.getEntityModel(T_ARTIST);
                 artistModel.getTableModel().refresh();
@@ -156,7 +156,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
   private static final UsageScenario<ChinookApplicationModel> INSERT_DELETE_ALBUM =
           new AbstractEntityUsageScenario<ChinookApplicationModel>("insertDeleteAlbum") {
             @Override
-            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
+            protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               final SwingEntityModel artistModel = application.getEntityModel(T_ARTIST);
               artistModel.getTableModel().refresh();
               selectRandomRow(artistModel.getTableModel());
@@ -207,7 +207,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
           new AbstractEntityUsageScenario<ChinookApplicationModel>("logoutLogin") {
             final Random random = new Random();
             @Override
-            protected void performScenario(final ChinookApplicationModel application) throws ScenarioException {
+            protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
                 application.getConnectionProvider().disconnect();
                 Thread.sleep(random.nextInt(1500));

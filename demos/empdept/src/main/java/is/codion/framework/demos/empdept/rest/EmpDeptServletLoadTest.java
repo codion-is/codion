@@ -66,7 +66,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     }
 
     @Override
-    protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
+    protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
         final List<Entity> departments = client.getConnection().select(selectCondition(EmpDept.T_DEPARTMENT));
         final Entity entity = departments.get(new Random().nextInt(departments.size()));
@@ -87,7 +87,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     }
 
     @Override
-    protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
+    protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
         client.getConnection().select(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
       }
@@ -105,7 +105,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     }
 
     @Override
-    protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
+    protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
         final List<Entity> departments = client.getConnection().select(selectCondition(EmpDept.T_DEPARTMENT));
 
@@ -126,7 +126,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     }
 
     @Override
-    protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
+    protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
         final int deptNo = new Random().nextInt(5000);
         final Entity department = client.getEntities().entity(EmpDept.T_DEPARTMENT);
@@ -152,7 +152,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     }
 
     @Override
-    protected void performScenario(final EntityConnectionProvider client) throws ScenarioException {
+    protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
         final List<Entity> departments = client.getConnection().select(selectCondition(EmpDept.T_DEPARTMENT));
         final Entity department = departments.get(random.nextInt(departments.size()));
