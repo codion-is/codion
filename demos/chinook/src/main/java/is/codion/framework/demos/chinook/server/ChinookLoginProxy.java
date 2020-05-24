@@ -7,6 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPool;
+import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.rmi.server.LoginProxy;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.exception.LoginException;
@@ -20,7 +21,6 @@ import java.sql.Types;
 
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.db.Operator.LIKE;
-import static is.codion.common.db.pool.ConnectionPoolProvider.getConnectionPoolProvider;
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.framework.db.condition.Conditions.*;
 import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
@@ -57,7 +57,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   private final ConnectionPool connectionPool;
 
   public ChinookLoginProxy() throws DatabaseException {
-    connectionPool = getConnectionPoolProvider().createConnectionPool(database, databaseUser);
+    connectionPool = ConnectionPoolFactory.getInstance().createConnectionPool(database, databaseUser);
   }
 
   /**

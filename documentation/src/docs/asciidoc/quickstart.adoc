@@ -33,7 +33,7 @@ The most used and tested DBMS modules are:
 
 1. Oracle
 2. H2 Database
-3. Postgresql
+3. PostgreSQL
 
 [cols="1,4"]
 |===
@@ -45,7 +45,7 @@ The most used and tested DBMS modules are:
 |MariaDB|is.codion.{codion-jdk}:codion-dbms-mariadb:{codion-version}
 |MySQL|is.codion.{codion-jdk}:codion-dbms-mysql:{codion-version}
 |Oracle|is.codion.{codion-jdk}:codion-dbms-oracle:{codion-version}
-|Postgresql|is.codion.{codion-jdk}:codion-dbms-postgresql:{codion-version}
+|PostgreSQL|is.codion.{codion-jdk}:codion-dbms-postgresql:{codion-version}
 |SQLite|is.codion.{codion-jdk}:codion-dbms-sqlite:{codion-version}
 |SQL Server|is.codion.{codion-jdk}:codion-dbms-sqlserver:{codion-version}
 |===

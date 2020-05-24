@@ -7,7 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionFactory;
 import is.codion.common.db.pool.ConnectionPool;
-import is.codion.common.db.pool.ConnectionPoolProvider;
+import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
 
@@ -178,11 +178,11 @@ public interface Database extends ConnectionFactory {
 
   /**
    * Initializes a connection pool for the given user in this database.
-   * @param connectionPoolProvider the ConnectionPoolProvider implementation to use
+   * @param connectionPoolFactory the ConnectionPoolFactory implementation to use
    * @param poolUser the user to initialize connection pool for
    * @throws DatabaseException in case of a database exception
    */
-  void initializeConnectionPool(ConnectionPoolProvider connectionPoolProvider, User poolUser) throws DatabaseException;
+  void initializeConnectionPool(ConnectionPoolFactory connectionPoolFactory, User poolUser) throws DatabaseException;
 
   /**
    * @param username the username

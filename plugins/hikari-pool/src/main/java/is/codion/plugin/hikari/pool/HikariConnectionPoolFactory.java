@@ -6,7 +6,7 @@ package is.codion.plugin.hikari.pool;
 import is.codion.common.db.pool.AbstractConnectionPool;
 import is.codion.common.db.pool.ConnectionFactory;
 import is.codion.common.db.pool.ConnectionPool;
-import is.codion.common.db.pool.ConnectionPoolProvider;
+import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.user.User;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -18,9 +18,9 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * A HikariCP connection pool based ConnectionPoolProvider implementation
+ * A HikariCP connection pool based {@link ConnectionPoolFactory} implementation
  */
-public final class HikariConnectionPoolProvider implements ConnectionPoolProvider {
+public final class HikariConnectionPoolFactory implements ConnectionPoolFactory {
 
   /**
    * Creates a HikariCP based connection pool

@@ -26,7 +26,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
   private static final UsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> SCENARIO
           = new AbstractEntityUsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel>() {
     @Override
-    protected void performScenario(final SchemaBrowserAppPanel.SchemaBrowserApplicationModel application) {
+    protected void perform(final SchemaBrowserAppPanel.SchemaBrowserApplicationModel application) {
       final SwingEntityModel schemaModel = application.getEntityModels().iterator().next();
       schemaModel.getTableModel().refresh();
       selectRandomRow(schemaModel.getTableModel());

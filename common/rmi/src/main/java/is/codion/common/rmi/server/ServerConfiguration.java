@@ -141,13 +141,13 @@ public interface ServerConfiguration {
   PropertyValue<Integer> SERVER_CONNECTION_TIMEOUT = Configuration.integerValue("codion.server.connectionTimeout", DEFAULT_SERVER_CONNECTION_TIMEOUT);
 
   /**
-   * A comma separated list of auxiliary server providers, providing servers to run alongside this Server<br>
-   * Those must extend {@link AuxiliaryServerProvider}.<br>
+   * A comma separated list of auxiliary server factories, providing servers to run alongside this Server<br>
+   * Those must extend {@link AuxiliaryServerFactory}.<br>
    * Value type: String<br>
    * Default value: none
    * @see AuxiliaryServer
    */
-  PropertyValue<String> AUXILIARY_SERVER_CLASS_NAMES = Configuration.stringValue("codion.server.auxiliaryServerProviderClassNames", null);
+  PropertyValue<String> AUXILIARY_SERVER_FACTORY_CLASS_NAMES = Configuration.stringValue("codion.server.auxiliaryServerFactoryClassNames", null);
 
   /**
    * The serialization whitelist file to use if any
@@ -189,9 +189,9 @@ public interface ServerConfiguration {
   Collection<String> getLoginProxyClassNames();
 
   /**
-   * @return the class names of auxiliary server providers, providing the servers to run alongside this server
+   * @return the class names of auxiliary server factories, providing the servers to run alongside this server
    */
-  Collection<String> getAuxiliaryServerProviderClassNames();
+  Collection<String> getAuxiliaryServerFactoryClassNames();
 
   /**
    * @return true if ssl is enabled
@@ -239,10 +239,10 @@ public interface ServerConfiguration {
   void setLoginProxyClassNames(Collection<String> loginProxyClassNames);
 
   /**
-   * @param auxiliaryServerProviderClassNames the class names of auxiliary server providers,
+   * @param auxiliaryServerFactoryClassNames the class names of auxiliary server factories,
    * providing the servers to run alongside this server
    */
-  void setAuxiliaryServerProviderClassNames(Collection<String> auxiliaryServerProviderClassNames);
+  void setAuxiliaryServerFactoryClassNames(Collection<String> auxiliaryServerFactoryClassNames);
 
   /**
    * When set to true this also sets the rmi client/server socket factories.
@@ -286,7 +286,7 @@ public interface ServerConfiguration {
   static ServerConfiguration fromSystemProperties() {
     final DefaultServerConfiguration configuration =
             new DefaultServerConfiguration(requireNonNull(SERVER_PORT.get(), SERVER_PORT.getProperty()));
-    configuration.setAuxiliaryServerProviderClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_CLASS_NAMES.get()));
+    configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
     configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {

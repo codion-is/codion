@@ -7,7 +7,7 @@ import is.codion.common.db.Operator;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.Users;
-import is.codion.dbms.h2database.H2DatabaseProvider;
+import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -25,7 +25,7 @@ import static java.util.Arrays.asList;
 public class StoreDatabase {
 
   static void storeEntityConnection() throws SQLException, DatabaseException {
-    Database database = new H2DatabaseProvider()
+    Database database = new H2DatabaseFactory()
             .createDatabase("jdbc:h2:mem:store",
                     "src/main/sql/create_schema_minimal.sql");
 

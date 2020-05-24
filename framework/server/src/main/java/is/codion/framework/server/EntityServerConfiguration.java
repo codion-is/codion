@@ -8,6 +8,7 @@ import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
+import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
@@ -42,14 +43,12 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   PropertyValue<Integer> SERVER_CONNECTION_LIMIT = Configuration.integerValue("codion.server.connectionLimit", DEFAULT_SERVER_CONNECTION_LIMIT);
 
   /**
-   * Specifies the class name of the connection pool provider to user, if none is specified
-   * the internal connection pool is used if necessary<br>
+   * Specifies the class name of the connection pool factory to user.<br>
    * Value type: String<br>
    * Default value: none
-   * @see is.codion.common.db.pool.ConnectionPoolProvider
+   * @see ConnectionPoolFactory
    */
-  PropertyValue<String> SERVER_CONNECTION_POOL_PROVIDER_CLASS = Configuration.stringValue(
-          "codion.server.pooling.poolProviderClass", null);
+  PropertyValue<String> SERVER_CONNECTION_POOL_FACTORY_CLASS = Configuration.stringValue("codion.server.pooling.poolFactoryClass", null);
 
   /**
    * Specifies the default client connection timeout (ms) in a comma separated list.
@@ -200,7 +199,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(
             requireNonNull(SERVER_PORT.get(), SERVER_PORT.getProperty()),
             requireNonNull(REGISTRY_PORT.get(), REGISTRY_PORT.toString()));
-    configuration.setAuxiliaryServerProviderClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_CLASS_NAMES.get()));
+    configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
     configuration.setSslEnabled(SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {

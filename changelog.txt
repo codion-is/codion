@@ -4168,7 +4168,7 @@
   EntityUtil, renamed a few methods in accordance with recent changes
   Properties.booleaProperty(propertyID, columnType) added
   InputProviderPanel, ESC key now works like clicking the cancel button
-  InpurProviderPanel generified and improved a bit
+  InputProviderPanel generified and improved a bit
   NumberField bug fixed, field did not accept the minus sign
   SizedDocument no longer allows use of setDocumentFilter(), setDocumentFilterInternal() added for subclasses
   SizedDocument now uses DocumentCase enum for controlling case conversion
@@ -5907,7 +5907,7 @@
   EntityTablePanel bug fixed, refresh via F5 did not work when toolbar or condition panel had focus, only when the table itself had focus
   EntityTablePanel, toolbar button size increased from 20 to 24
   EntityPanel, EntityTablePanel added a couple of icons
-  Removed try/catch from ServerLoader.load() calls
+  Removed try/catch from ServiceLoader.load() calls
   RemoteEntityConnectionProvider, minor refactoring, some undo
   ColumnConditionPanel, increased Operator combobox font size, center alignment, Operator removed spaces, minor refactoring
   framework-server project dependencies changed from api to implementation rolled back, module problems
@@ -5923,7 +5923,7 @@
   EntityEditObserver, notify methods removed
   DefaultEntityEditModel now initializes persistent values in constructor, some refactoring
   DefaultEntityEditModel.removeForeignKeyValues() now clears all related references, as per todo
-  DefaultEntityEditModel, insert, update and delete now start by throwing exceptions is action is not enabled
+  DefaultEntityEditModel, insert, update and delete now start by throwing exceptions if action is not enabled
   DefaultEntityEditModel bug fixed, validation now only uses edit model validator for the underlying entity type, uses the one from the domain model for other types
   EntityEditObserver removed
   NextReports, JasperReports, some dependency cleanup
@@ -6137,3 +6137,5 @@
   AbstractTableSortModel.getSortingState() error message on column not found improved
   AbstractTableSortModel.setSortingDirective() null handling improved
   DefaultEntityDefinition.EntityProperties added
+  AbstractUsageScenario.performScenario() renamed to perform()
+  DatabaseProvider, ConnectionPoolProvider, AuxiliaryServerProvider renamed, are now factories instead of providers, seems more fitting since they create new instances, some minor related renamings

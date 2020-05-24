@@ -7,7 +7,7 @@ import is.codion.common.Util;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPool;
-import is.codion.common.db.pool.ConnectionPoolProvider;
+import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.user.User;
 
 import java.sql.Connection;
@@ -39,7 +39,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    */
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws DatabaseException {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE);
-    final ConnectionPoolProvider poolProvider = ConnectionPoolProvider.getConnectionPoolProvider();
+    final ConnectionPoolFactory poolProvider = ConnectionPoolFactory.getInstance();
     this.pool = poolProvider.createConnectionPool(database, user);
     addShutdownListener(pool::close);
   }
@@ -109,7 +109,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
      * @throws ScenarioException in case of an exception during the scenario run
      */
     @Override
-    protected final void performScenario(final QueryApplication application) throws ScenarioException {
+    protected final void perform(final QueryApplication application) throws ScenarioException {
       Connection connection = null;
       PreparedStatement statement = null;
       ResultSet resultSet = null;

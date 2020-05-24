@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.schemabrowser.domain;
 
-import is.codion.common.db.database.DatabaseProvider;
+import is.codion.common.db.database.DatabaseFactory;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.StringProvider;
 
@@ -30,9 +30,9 @@ public final class SchemaBrowser extends Domain {
 
   static {
     try {
-      final String databaseProviderClassName = DatabaseProvider.getInstance().getClass().getName();
+      final String databaseFactoryClassName = DatabaseFactory.getInstance().getClass().getName();
       bundle = ResourceBundle.getBundle(SchemaBrowser.class.getName(),
-              new Locale(databaseProviderClassName.substring(databaseProviderClassName.lastIndexOf('.') + 1)));
+              new Locale(databaseFactoryClassName.substring(databaseFactoryClassName.lastIndexOf('.') + 1)));
     }
     catch (final SQLException e) {
       throw new RuntimeException(e);

@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.dbms.oracle;
+package is.codion.dbms.derby;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseProvider;
+import is.codion.common.db.database.DatabaseFactory;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * Provides oracle database implementations
+ * Provides derby database implementations
  */
-public final class OracleDatabaseProvider implements DatabaseProvider {
+public final class DerbyDatabaseFactory implements DatabaseFactory {
 
-  private static final String DRIVER_PACKAGE = "oracle.jdbc";
+  private static final String DRIVER_PACKAGE = "org.apache.derby.jdbc";
 
   @Override
   public boolean isDriverCompatible(final String driverClassName) {
@@ -22,11 +22,11 @@ public final class OracleDatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isDatabaseCompatible(final Database database) {
-    return database instanceof OracleDatabase;
+    return database instanceof DerbyDatabase;
   }
 
   @Override
   public Database createDatabase(final String jdbcUrl) {
-    return new OracleDatabase(jdbcUrl);
+    return new DerbyDatabase(jdbcUrl);
   }
 }

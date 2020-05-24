@@ -1,19 +1,19 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.dbms.hsqldb;
+package is.codion.dbms.postgresql;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.database.DatabaseProvider;
+import is.codion.common.db.database.DatabaseFactory;
 
 import static java.util.Objects.requireNonNull;
 
 /**
- * Provides hsql database implementations
+ * Provides postgresql database implementations
  */
-public final class HSQLDatabaseProvider implements DatabaseProvider {
+public final class PostgreSQLDatabaseFactory implements DatabaseFactory {
 
-  private static final String DRIVER_PACKAGE = "org.hsqldb";
+  private static final String DRIVER_PACKAGE = "org.postgresql";
 
   @Override
   public boolean isDriverCompatible(final String driverClassName) {
@@ -22,11 +22,11 @@ public final class HSQLDatabaseProvider implements DatabaseProvider {
 
   @Override
   public boolean isDatabaseCompatible(final Database database) {
-    return database instanceof HSQLDatabase;
+    return database instanceof PostgreSQLDatabase;
   }
 
   @Override
   public Database createDatabase(final String jdbcUrl) {
-    return new HSQLDatabase(jdbcUrl);
+    return new PostgreSQLDatabase(jdbcUrl);
   }
 }

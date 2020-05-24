@@ -6,7 +6,7 @@ package is.codion.common.db.database;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPool;
-import is.codion.common.db.pool.ConnectionPoolProvider;
+import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.user.User;
 
 import java.io.Serializable;
@@ -90,14 +90,14 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final void initializeConnectionPool(final ConnectionPoolProvider connectionPoolProvider,
+  public final void initializeConnectionPool(final ConnectionPoolFactory connectionPoolFactory,
                                              final User poolUser) throws DatabaseException {
-    requireNonNull(connectionPoolProvider, "connectionPoolProvider");
+    requireNonNull(connectionPoolFactory, "connectionPoolFactory");
     requireNonNull(poolUser, "poolUser");
     if (connectionPools.containsKey(poolUser.getUsername())) {
       throw new IllegalStateException("Connection pool for user " + poolUser.getUsername() + " has already been initialized");
     }
-    connectionPools.put(poolUser.getUsername().toLowerCase(), connectionPoolProvider.createConnectionPool(this, poolUser));
+    connectionPools.put(poolUser.getUsername().toLowerCase(), connectionPoolFactory.createConnectionPool(this, poolUser));
   }
 
   @Override

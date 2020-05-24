@@ -38,7 +38,7 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
           EntityLoadTestModel.AbstractEntityUsageScenario<StoreAppModel> {
 
     @Override
-    protected void performScenario(StoreAppModel application)
+    protected void perform(StoreAppModel application)
             throws ScenarioException {
       try {
         EntityModel customerModel = application.getEntityModel(Store.T_CUSTOMER);

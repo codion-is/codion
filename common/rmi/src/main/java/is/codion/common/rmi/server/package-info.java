@@ -13,7 +13,7 @@
  * {@link is.codion.common.rmi.server.ServerConfiguration#SERVER_ADMIN_USER}<br>
  * {@link is.codion.common.rmi.server.ServerConfiguration#SERVER_CONNECTION_SSL_ENABLED}<br>
  * {@link is.codion.common.rmi.server.ServerConfiguration#SERVER_CONNECTION_TIMEOUT}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#AUXILIARY_SERVER_CLASS_NAMES}<br>
+ * {@link is.codion.common.rmi.server.ServerConfiguration#AUXILIARY_SERVER_FACTORY_CLASS_NAMES}<br>
  * {@link is.codion.common.rmi.server.ServerConfiguration#SERIALIZATION_FILTER_WHITELIST}<br>
  * {@link is.codion.common.rmi.server.ServerConfiguration#SERIALIZATION_FILTER_DRYRUN}<br>
  * {@link is.codion.common.rmi.server.ServerConfiguration#SERVER_LOGIN_PROXY_CLASSES}<br>

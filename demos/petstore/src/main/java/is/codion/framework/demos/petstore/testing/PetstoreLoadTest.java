@@ -26,7 +26,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
   public PetstoreLoadTest() {
     super(UNIT_TEST_USER, singletonList(new AbstractUsageScenario<PetstoreAppModel>("selectRecords") {
       @Override
-      protected void performScenario(final PetstoreAppModel application) {
+      protected void perform(final PetstoreAppModel application) {
         final SwingEntityModel categoryModel = application.getEntityModels().iterator().next();
         categoryModel.getTableModel().getSelectionModel().clearSelection();
         categoryModel.refresh();

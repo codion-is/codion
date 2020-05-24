@@ -34,7 +34,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 
-import static is.codion.common.rmi.server.AuxiliaryServerProvider.getAuxiliaryServerProvider;
+import static is.codion.common.rmi.server.AuxiliaryServerFactory.getAuxiliaryServerProvider;
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
@@ -73,7 +73,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
     this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
             configuration.getServerPort(), ZonedDateTime.now());
     configureSerializationWhitelist(configuration);
-    startAuxiliaryServers(configuration.getAuxiliaryServerProviderClassNames());
+    startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());
     try {
       sharedLoginProxies.addAll(loadSharedLoginProxies(configuration.getSharedLoginProxyClassNames()));
       loginProxies.putAll(loadLoginProxies(configuration.getLoginProxyClassNames()));
@@ -279,8 +279,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
   private void startAuxiliaryServers(final Collection<String> auxiliaryServerProviderClassNames) {
     try {
       for (final String auxiliaryServerProviderClassName : auxiliaryServerProviderClassNames) {
-        final AuxiliaryServerProvider auxiliaryServerProvider = getAuxiliaryServerProvider(auxiliaryServerProviderClassName);
-        final AuxiliaryServer auxiliaryServer = auxiliaryServerProvider.createServer(this);
+        final AuxiliaryServerFactory auxiliaryServerFactory = getAuxiliaryServerProvider(auxiliaryServerProviderClassName);
+        final AuxiliaryServer auxiliaryServer = auxiliaryServerFactory.createServer(this);
         auxiliaryServers.add(auxiliaryServer);
         newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
                 startAuxiliaryServer(auxiliaryServer)).get();

@@ -20,7 +20,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
-import is.codion.framework.servlet.EntityServletServerProvider;
+import is.codion.framework.servlet.EntityServletServerFactory;
 
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -263,7 +263,7 @@ public final class HttpEntityConnectionTest {
     configuration.setDatabase(Databases.getInstance());
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
     configuration.setSslEnabled(false);
-    configuration.setAuxiliaryServerProviderClassNames(singletonList(EntityServletServerProvider.class.getName()));
+    configuration.setAuxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()));
 
     return configuration;
   }

@@ -22,10 +22,10 @@ public final class Databases {
    */
   public static synchronized Database getInstance() {
     try {
-      final DatabaseProvider provider = DatabaseProvider.getInstance();
-      if (instance == null || !provider.isDatabaseCompatible(instance)) {
+      final DatabaseFactory factory = DatabaseFactory.getInstance();
+      if (instance == null || !factory.isDatabaseCompatible(instance)) {
         //refresh the instance
-        instance = provider.createDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
+        instance = factory.createDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
       }
 
       return instance;

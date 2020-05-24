@@ -7,37 +7,37 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class MariaDbDatabaseTest {
+public class MariaDBDatabaseTest {
 
   private static final String URL = "jdbc:mariadb://host:1234/sid";
 
   @Test
   public void getName() {
-    MariaDbDatabase database = new MariaDbDatabase("jdbc:mariadb://host.com:1234/dbname");
+    MariaDBDatabase database = new MariaDBDatabase("jdbc:mariadb://host.com:1234/dbname");
     assertEquals("dbname", database.getName());
-    database = new MariaDbDatabase("jdbc:mariadb://host.com:1234/dbname;option=true;option2=false");
+    database = new MariaDBDatabase("jdbc:mariadb://host.com:1234/dbname;option=true;option2=false");
     assertEquals("dbname", database.getName());
   }
 
   @Test
   public void getSequenceQuery() {
-    assertThrows(UnsupportedOperationException.class, () -> new MariaDbDatabase(URL).getSequenceQuery("seq"));
+    assertThrows(UnsupportedOperationException.class, () -> new MariaDBDatabase(URL).getSequenceQuery("seq"));
   }
 
   @Test
   public void supportsIsValid() {
-    final MariaDbDatabase db = new MariaDbDatabase(URL);
+    final MariaDBDatabase db = new MariaDBDatabase(URL);
     assertTrue(db.supportsIsValid());
   }
 
   @Test
   public void getAutoIncrementQuery() {
-    final MariaDbDatabase db = new MariaDbDatabase(URL);
-    assertEquals(MariaDbDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
+    final MariaDBDatabase db = new MariaDBDatabase(URL);
+    assertEquals(MariaDBDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementQuery(null));
   }
 
   @Test
   public void constructorNullUrl() {
-    assertThrows(NullPointerException.class, () -> new MariaDbDatabase(null));
+    assertThrows(NullPointerException.class, () -> new MariaDBDatabase(null));
   }
 }

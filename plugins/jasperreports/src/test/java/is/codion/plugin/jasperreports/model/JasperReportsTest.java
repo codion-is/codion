@@ -11,7 +11,7 @@ import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
-import is.codion.dbms.h2database.H2DatabaseProvider;
+import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -40,7 +40,7 @@ public class JasperReportsTest {
   private static final String REPORT_PATH = "build/resources/test";
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          new H2DatabaseProvider().createDatabase("jdbc:h2:mem:JasperReportsWrapperTest", System.getProperty("codion.db.initScript")))
+          new H2DatabaseFactory().createDatabase("jdbc:h2:mem:JasperReportsWrapperTest", System.getProperty("codion.db.initScript")))
           .setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @AfterAll

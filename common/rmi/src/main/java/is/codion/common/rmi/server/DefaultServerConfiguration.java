@@ -22,7 +22,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private final int serverPort;
   private final Collection<String> sharedLoginProxyClassNames = new ArrayList<>();
   private final Collection<String> loginProxyClassNames = new HashSet<>();
-  private final Collection<String> auxiliaryServerClassNames = new HashSet<>();
+  private final Collection<String> auxiliaryServerFactoryClassNames = new HashSet<>();
   private boolean sslEnabled = true;
   private String serverName;
   private Supplier<String> serverNameProvider = () -> serverName;
@@ -60,8 +60,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public Collection<String> getAuxiliaryServerProviderClassNames() {
-    return auxiliaryServerClassNames;
+  public Collection<String> getAuxiliaryServerFactoryClassNames() {
+    return auxiliaryServerFactoryClassNames;
   }
 
   @Override
@@ -110,8 +110,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public void setAuxiliaryServerProviderClassNames(final Collection<String> auxiliaryServerProviderClassNames) {
-    this.auxiliaryServerClassNames.addAll(requireNonNull(auxiliaryServerProviderClassNames));
+  public void setAuxiliaryServerFactoryClassNames(final Collection<String> auxiliaryServerFactoryClassNames) {
+    this.auxiliaryServerFactoryClassNames.addAll(requireNonNull(auxiliaryServerFactoryClassNames));
   }
 
   @Override

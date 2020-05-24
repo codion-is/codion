@@ -58,7 +58,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   private static final class SelectDepartment extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {
     @Override
-    protected void performScenario(final EmpDeptAppPanel.EmpDeptApplicationModel application) {
+    protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) {
       selectRandomRow(application.getEntityModel(EmpDept.T_DEPARTMENT).getTableModel());
     }
     @Override
@@ -72,7 +72,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     private final Random random = new Random();
 
     @Override
-    protected void performScenario(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws ScenarioException {
+    protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws ScenarioException {
       try {
         final SwingEntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
@@ -113,7 +113,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   private static final class InsertEmployee extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {
     @Override
-    protected void performScenario(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws ScenarioException {
+    protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws ScenarioException {
       try {
         final SwingEntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
@@ -135,7 +135,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   private static final class InsertDepartment extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {
     @Override
-    protected void performScenario(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws ScenarioException {
+    protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws ScenarioException {
       try {
         final SwingEntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
         departmentModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(application.getEntities(), EmpDept.T_DEPARTMENT, null));
@@ -150,7 +150,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
   private static final class LoginLogout extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {
     final Random random = new Random();
     @Override
-    protected void performScenario(final EmpDeptAppPanel.EmpDeptApplicationModel application) {
+    protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) {
       try {
         application.getConnectionProvider().disconnect();
         Thread.sleep(random.nextInt(1500));

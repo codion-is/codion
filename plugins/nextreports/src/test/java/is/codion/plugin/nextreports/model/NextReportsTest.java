@@ -8,7 +8,7 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
-import is.codion.dbms.h2database.H2DatabaseProvider;
+import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -32,7 +32,7 @@ public class NextReportsTest {
   @Test
   public void fillReport() throws ReportException, IOException, DatabaseException {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
-            new H2DatabaseProvider().createDatabase("jdbc:h2:mem:h2db", System.getProperty("codion.db.initScript")))
+            new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", System.getProperty("codion.db.initScript")))
             .setDomainClassName(NextDomain.class.getName()).setUser(UNIT_TEST_USER);
     ReportWrapper.REPORT_PATH.set("src/test/reports/");
     final LocalEntityConnection connection = (LocalEntityConnection) connectionProvider.getConnection();
