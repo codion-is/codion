@@ -4,7 +4,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventListener;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
@@ -26,11 +26,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
   protected static final String IS_CONNECTED = "isConnected";
   private final Object lock = new Object();
-  private final Event onConnectEvent = Events.event();
+  private final Event<EntityConnection> onConnectEvent = Events.event();
 
-  /**
-   * The user used by this connection provider when connecting to the database server
-   */
   private User user;
   private String domainClassName;
   private UUID clientId = UUID.randomUUID();
@@ -174,13 +171,13 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public void addOnConnectListener(final EventListener listener) {
-    onConnectEvent.addListener(listener);
+  public void addOnConnectListener(final EventDataListener<EntityConnection> listener) {
+    onConnectEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeOnConnectListener(final EventListener listener) {
-    onConnectEvent.removeListener(listener);
+  public void removeOnConnectListener(final EventDataListener<EntityConnection> listener) {
+    onConnectEvent.removeDataListener(listener);
   }
 
   @Override
@@ -246,6 +243,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
     entityConnection = connect();
     entities = entityConnection.getEntities().register();
-    onConnectEvent.onEvent();
+    onConnectEvent.onEvent(entityConnection);
   }
 }

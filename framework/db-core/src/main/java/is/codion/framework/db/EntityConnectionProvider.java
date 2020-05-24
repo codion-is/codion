@@ -4,7 +4,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.Configuration;
-import is.codion.common.event.EventListener;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.version.Version;
@@ -92,15 +92,15 @@ public interface EntityConnectionProvider {
 
   /**
    * Adds a listener notified each time this connection provider establishes a connection to the database
-   * @param listener a listener notified each time the underlying connection is connected
+   * @param listener a listener notified when a connection is established
    */
-  void addOnConnectListener(EventListener listener);
+  void addOnConnectListener(EventDataListener<EntityConnection> listener);
 
   /**
    * Removes the given listener
    * @param listener the listener to remove
    */
-  void removeOnConnectListener(EventListener listener);
+  void removeOnConnectListener(EventDataListener<EntityConnection> listener);
 
   /**
    * Logs out, disconnects and performs cleanup if required
