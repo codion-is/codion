@@ -5,6 +5,6 @@ module is.codion.plugin.tomcat.pool {
 
   exports is.codion.plugin.tomcat.pool;
 
-  provides is.codion.common.db.pool.ConnectionPoolProvider
-          with is.codion.plugin.tomcat.pool.TomcatConnectionPoolProvider;
+  provides is.codion.common.db.pool.ConnectionPoolFactory
+          with is.codion.plugin.tomcat.pool.TomcatConnectionPoolFactory;
 }

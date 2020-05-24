@@ -4,6 +4,6 @@ module is.codion.plugin.hikari.pool {
 
   exports is.codion.plugin.hikari.pool;
 
-  provides is.codion.common.db.pool.ConnectionPoolProvider
-          with is.codion.plugin.hikari.pool.HikariConnectionPoolProvider;
+  provides is.codion.common.db.pool.ConnectionPoolFactory
+          with is.codion.plugin.hikari.pool.HikariConnectionPoolFactory;
 }

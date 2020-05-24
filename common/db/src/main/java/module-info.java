@@ -1,8 +1,8 @@
 /**
  * Classes concerned with database connectivity via JDBC.
- * @uses is.codion.common.db.database.DatabaseProvider
- * @uses is.codion.common.db.pool.ConnectionPoolProvider
- * @provides is.codion.common.db.pool.ConnectionPoolProvider
+ * @uses is.codion.common.db.database.DatabaseFactory
+ * @uses is.codion.common.db.pool.ConnectionPoolFactory
+ * @provides is.codion.common.db.pool.ConnectionPoolFactory
  */
 module is.codion.common.db {
   requires transitive java.sql;
@@ -17,6 +17,6 @@ module is.codion.common.db {
   exports is.codion.common.db.result;
   exports is.codion.common.db;
 
-  uses is.codion.common.db.database.DatabaseProvider;
-  uses is.codion.common.db.pool.ConnectionPoolProvider;
+  uses is.codion.common.db.database.DatabaseFactory;
+  uses is.codion.common.db.pool.ConnectionPoolFactory;
 }

@@ -1,6 +1,6 @@
 /**
  * Servlet application server.
- * @provides is.codion.common.rmi.server.AuxiliaryServer
+ * @provides is.codion.common.rmi.server.AuxiliaryServerFactory
  */
 module is.codion.framework.servlet {
   requires org.slf4j;
@@ -13,6 +13,6 @@ module is.codion.framework.servlet {
 
   exports is.codion.framework.servlet;
 
-  provides is.codion.common.rmi.server.AuxiliaryServerProvider
-          with is.codion.framework.servlet.EntityServletServerProvider;
+  provides is.codion.common.rmi.server.AuxiliaryServerFactory
+          with is.codion.framework.servlet.EntityServletServerFactory;
 }
