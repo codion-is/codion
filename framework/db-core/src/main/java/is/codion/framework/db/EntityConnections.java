@@ -62,7 +62,8 @@ public final class EntityConnections {
   }
 
   /**
-   * Inserts the given entities, performing a commit after each {@code batchSize} number of inserts.
+   * Inserts the given entities, performing a commit after each {@code batchSize} number of inserts,
+   * unless the connection has an open transaction.
    * @param connection the entity connection to use when inserting
    * @param entities the entities to insert
    * @param batchSize the commit batch size

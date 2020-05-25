@@ -867,7 +867,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     try (final ResultIterator<Entity> iterator = entityIterator(condition)) {
       result = packResult(iterator);
     }
-    if (!condition.isForUpdate()) {
+    if (!condition.isForUpdate() && !result.isEmpty()) {
       setForeignKeys(result, condition, currentForeignKeyFetchDepth);
     }
 
@@ -887,9 +887,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   private void setForeignKeys(final List<Entity> entities, final EntitySelectCondition condition,
                               final int currentForeignKeyFetchDepth) throws SQLException {
-    if (nullOrEmpty(entities)) {
-      return;
-    }
     final List<ForeignKeyProperty> foreignKeyProperties =
             getEntityDefinition(entities.get(0).getEntityId()).getForeignKeyProperties();
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
@@ -986,6 +983,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     finally {
       logExit("executeStatement", exception);
       countQuery(query);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(query, statementValues, exception));
+      }
     }
   }
 

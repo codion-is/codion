@@ -6,6 +6,7 @@ package is.codion.framework.db.local;
 import is.codion.common.Configuration;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
@@ -73,7 +74,11 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    */
   public Domain getDomain() {
     try {
-      return initializeDomain();
+      if (domain == null) {
+        domain = (Domain) Class.forName(getDomainClassName()).getConstructor().newInstance();
+      }
+
+      return domain;
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -84,9 +89,9 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   protected LocalEntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return LocalEntityConnections.createConnection(initializeDomain(), getDatabase(), getUser());
+      return LocalEntityConnections.createConnection(getDomain(), getDatabase(), getUser());
     }
-    catch (final Exception e) {
+    catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -105,13 +110,5 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     }
 
     return database;
-  }
-
-  private Domain initializeDomain() throws Exception {
-    if (domain == null) {
-      domain = (Domain) Class.forName(getDomainClassName()).getConstructor().newInstance();
-    }
-
-    return domain;
   }
 }
