@@ -1007,6 +1007,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     finally {
       logExit("executeStatement", exception);
       countQuery(query);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(query, whereCondition.getValues(), exception));
+      }
     }
   }
 
