@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.common.Util.rejectNullOrEmpty;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -681,24 +680,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
       return unmodifiableMap(propertyMap);
     }
 
-    private void validatePrimaryKeyProperties(final Map<String, Property> propertyMap) {
-      final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
-      boolean primaryKeyPropertyFound = false;
-      for (final Property property : propertyMap.values()) {
-        if (property instanceof ColumnProperty && ((ColumnProperty) property).isPrimaryKeyProperty()) {
-          final Integer index = ((ColumnProperty) property).getPrimaryKeyIndex();
-          if (usedPrimaryKeyIndexes.contains(index)) {
-            throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
-          }
-          usedPrimaryKeyIndexes.add(index);
-          primaryKeyPropertyFound = true;
-        }
-      }
-      if (primaryKeyPropertyFound) {
-        return;
-      }
-    }
-
     private void initializeForeignKeyProperty(final Map<String, Property> propertyMap,
                                               final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
       for (final ColumnProperty.Builder propertyBuilder : foreignKeyPropertyBuilder.getColumnPropertyBuilders()) {
@@ -787,27 +768,16 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     private Map<String, Set<DerivedProperty>> initializeDerivedProperties() {
-      final Map<String, Set<DerivedProperty>> derivedProperties = new HashMap<>();
+      final Map<String, Set<DerivedProperty>> derivedPropertyMap = new HashMap<>();
       for (final Property property : properties) {
         if (property instanceof DerivedProperty) {
-          final Collection<String> sourcePropertyIds = ((DerivedProperty) property).getSourcePropertyIds();
-          if (!nullOrEmpty(sourcePropertyIds)) {
-            for (final String sourcePropertyId : sourcePropertyIds) {
-              linkProperties(derivedProperties, sourcePropertyId, (DerivedProperty) property);
-            }
+          for (final String sourcePropertyId : ((DerivedProperty) property).getSourcePropertyIds()) {
+            derivedPropertyMap.computeIfAbsent(sourcePropertyId, propertyId -> new HashSet<>()).add((DerivedProperty) property);
           }
         }
       }
 
-      return derivedProperties;
-    }
-
-    private void linkProperties(final Map<String, Set<DerivedProperty>> derivedProperties,
-                                final String sourcePropertyId, final DerivedProperty derivedProperty) {
-      if (!derivedProperties.containsKey(sourcePropertyId)) {
-        derivedProperties.put(sourcePropertyId, new HashSet<>());
-      }
-      derivedProperties.get(sourcePropertyId).add(derivedProperty);
+      return derivedPropertyMap;
     }
 
     private List<ColumnProperty> getPrimaryKeyProperties() {
@@ -824,6 +794,19 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private List<ColumnProperty> getSelectableProperties() {
       return columnProperties.stream().filter(property ->
               !lazyLoadedBlobProperties.contains(property)).filter(ColumnProperty::isSelectable).collect(toList());
+    }
+  }
+
+  private static void validatePrimaryKeyProperties(final Map<String, Property> propertyMap) {
+    final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
+    for (final Property property : propertyMap.values()) {
+      if (property instanceof ColumnProperty && ((ColumnProperty) property).isPrimaryKeyProperty()) {
+        final Integer index = ((ColumnProperty) property).getPrimaryKeyIndex();
+        if (usedPrimaryKeyIndexes.contains(index)) {
+          throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
+        }
+        usedPrimaryKeyIndexes.add(index);
+      }
     }
   }
 
