@@ -183,10 +183,10 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   private static final class RemoteEntityConnectionHandler implements InvocationHandler {
 
     private final Map<Method, Method> methodCache = new HashMap<>();
-    private final RemoteEntityConnection remote;
+    private final RemoteEntityConnection remoteConnection;
 
-    private RemoteEntityConnectionHandler(final RemoteEntityConnection remote) {
-      this.remote = remote;
+    private RemoteEntityConnectionHandler(final RemoteEntityConnection remoteConnection) {
+      this.remoteConnection = remoteConnection;
     }
 
     @Override
@@ -198,7 +198,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
       final Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::getRemoteMethod);
       try {
-        return remoteMethod.invoke(remote, args);
+        return remoteMethod.invoke(remoteConnection, args);
       }
       catch (final InvocationTargetException e) {
         LOG.error(e.getMessage(), e);
@@ -212,7 +212,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
     private Object isConnected() throws RemoteException {
       try {
-        return remote.isConnected();
+        return remoteConnection.isConnected();
       }
       catch (final NoSuchObjectException e) {
         return false;

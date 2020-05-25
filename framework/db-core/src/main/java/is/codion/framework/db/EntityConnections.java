@@ -3,13 +3,12 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.entity.Entity;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
@@ -57,40 +56,45 @@ public final class EntityConnections {
       if (includePrimaryKeys == IncludePrimaryKeys.NO) {
         entities.forEach(Entity::clearKeyValues);
       }
-      batchInsert(destination, entities, batchSize, null);
+      batchInsert(destination, entities.iterator(), batchSize, null, null);
     }
   }
 
   /**
-   * Inserts the given entities, performing a commit after each {@code batchSize} number of inserts.
+   * Inserts the given entities, performing a commit after each {@code batchSize} number of inserts,
+   * unless the connection has an open transaction.
    * @param connection the entity connection to use when inserting
    * @param entities the entities to insert
    * @param batchSize the commit batch size
    * @param progressReporter if specified this will be used to report batch progress
-   * @return the primary keys of successfully inserted entities
+   * @param onInsertBatchListener notified each time a batch is inserted, providing the inserted keys
    * @throws DatabaseException in case of an exception
    * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */
-  public static List<Entity.Key> batchInsert(final EntityConnection connection, final List<Entity> entities,
-                                             final int batchSize, final EventDataListener<Integer> progressReporter)
+  public static void batchInsert(final EntityConnection connection, final Iterator<Entity> entities, final int batchSize,
+                                 final EventDataListener<Integer> progressReporter,
+                                 final EventDataListener<List<Entity.Key>> onInsertBatchListener)
           throws DatabaseException {
     requireNonNull(connection, "connection");
     requireNonNull(entities, "entities");
     if (batchSize <= 0) {
       throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
     }
-    if (Util.nullOrEmpty(entities)) {
-      return Collections.emptyList();
-    }
-    final List<Entity.Key> insertedKeys = new ArrayList<>();
-    for (int i = 0; i < entities.size(); i += batchSize) {
-      final List<Entity> insertBatch = entities.subList(i, Math.min(i + batchSize, entities.size()));
-      insertedKeys.addAll(connection.insert(insertBatch));
+    final List<Entity> batch = new ArrayList<>(batchSize);
+    int progress = 0;
+    while (entities.hasNext()) {
+      while (batch.size() < batchSize && entities.hasNext()) {
+        batch.add(entities.next());
+      }
+      final List<Entity.Key> insertedKeys = connection.insert(batch);
+      progress += insertedKeys.size();
+      batch.clear();
       if (progressReporter != null) {
-        progressReporter.onEvent(insertedKeys.size());
+        progressReporter.onEvent(progress);
+      }
+      if (onInsertBatchListener != null) {
+        onInsertBatchListener.onEvent(insertedKeys);
       }
     }
-
-    return insertedKeys;
   }
 }
