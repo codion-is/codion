@@ -50,7 +50,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     this.connectionProvider = connectionProvider;
     if (SCHEDULE_CONNECTION_VALIDATION.get()) {
       validityCheckScheduler.start();
-      connectionProvider.addOnConnectListener(() -> {
+      connectionProvider.addOnConnectListener(connection -> {
         connectionValidState.set(true);
         validityCheckScheduler.start();
       });

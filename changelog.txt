@@ -6139,3 +6139,4 @@
   DefaultEntityDefinition.EntityProperties added
   AbstractUsageScenario.performScenario() renamed to perform()
   DatabaseProvider, ConnectionPoolProvider, AuxiliaryServerProvider renamed, are now factories instead of providers, seems more fitting since they create new instances, some minor related renamings
+  EntityConnectionProvider.addOnConnectListener() now takes EventDataListener receiving the newly established connection as data
