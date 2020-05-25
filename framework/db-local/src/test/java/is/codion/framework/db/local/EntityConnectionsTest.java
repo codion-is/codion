@@ -22,11 +22,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
-import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -81,18 +81,17 @@ public class EntityConnectionsTest {
     final List<Entity> source = sourceConnection.select(selectCondition(TestDomain.T_DEPARTMENT));
 
     final EventDataListener<Integer> progressReporter = currentProgress -> {};
-    final List<Entity.Key> dest = EntityConnections.batchInsert(DESTINATION_CONNECTION, source, 2, progressReporter);
+    EntityConnections.batchInsert(DESTINATION_CONNECTION, source.iterator(), 2, progressReporter, null);
     assertEquals(sourceConnection.selectRowCount(condition(TestDomain.T_DEPARTMENT)),
             DESTINATION_CONNECTION.selectRowCount(condition(TestDomain.T_DEPARTMENT)));
-    assertEquals(4, dest.size());
 
-    EntityConnections.batchInsert(DESTINATION_CONNECTION, emptyList(), 10, null);
+    EntityConnections.batchInsert(DESTINATION_CONNECTION, Collections.emptyIterator(), 10, null, null);
     DESTINATION_CONNECTION.delete(condition(TestDomain.T_DEPARTMENT));
   }
 
   @Test
   public void batchInsertNegativeBatchSize() throws DatabaseException {
     assertThrows(IllegalArgumentException.class, () -> EntityConnections.batchInsert(CONNECTION_PROVIDER.getConnection(),
-            emptyList(), -6, null));
+            Collections.emptyIterator(), -6, null, null));
   }
 }
