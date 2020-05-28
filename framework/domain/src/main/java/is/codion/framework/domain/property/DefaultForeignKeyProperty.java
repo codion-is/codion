@@ -28,24 +28,24 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   private final transient List<ColumnProperty.Builder> columnPropertyBuilders;
 
   /**
-   * @param  propertyId the propertyId
+   * @param propertyId the propertyId
    * @param caption the caption
    * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnProperty the underlying column property comprising this foreign key
    */
-  DefaultForeignKeyProperty(final Attribute<?> propertyId, final String caption, final String foreignEntityId,
-                            final ColumnProperty.Builder columnProperty) {
+  DefaultForeignKeyProperty(final Attribute<? extends ForeignKeyValue> propertyId, final String caption,
+                            final String foreignEntityId, final ColumnProperty.Builder columnProperty) {
     this(propertyId, caption, foreignEntityId, singletonList(columnProperty));
   }
 
   /**
-   * @param  propertyId the propertyId, note that this is not a column name
+   * @param propertyId the propertyId, note that this is not a column name
    * @param caption the property caption
    * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnPropertyBuilders the underlying column properties comprising this foreign key
    */
-  DefaultForeignKeyProperty(final Attribute<?> propertyId, final String caption, final String foreignEntityId,
-                            final List<ColumnProperty.Builder> columnPropertyBuilders) {
+  DefaultForeignKeyProperty(final Attribute<? extends ForeignKeyValue> propertyId, final String caption,
+                            final String foreignEntityId, final List<ColumnProperty.Builder> columnPropertyBuilders) {
     super(propertyId, Types.OTHER, caption, Entity.class);
     requireNonNull(foreignEntityId, "foreignEntityId");
     validateParameters(propertyId, foreignEntityId, columnPropertyBuilders);

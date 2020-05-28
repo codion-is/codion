@@ -7,8 +7,8 @@ import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.ForeignKeyValue;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.PropertyValueProvider;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * Represents a row in a database table.
  */
-public interface Entity extends PropertyValueProvider, Comparable<Entity>, Serializable {
+public interface Entity extends ForeignKeyValue, Comparable<Entity>, Serializable {
 
   /**
    * @return the  entityId

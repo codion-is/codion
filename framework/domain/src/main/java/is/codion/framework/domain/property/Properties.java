@@ -83,8 +83,8 @@ public final class Properties {
    * column property comprising this foreign key relation
    * @return a new {@link ForeignKeyProperty.Builder}
    */
-  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<?> propertyId, final String caption,
-                                                              final String foreignEntityId,
+  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<? extends ForeignKeyValue> propertyId,
+                                                              final String caption, final String foreignEntityId,
                                                               final ColumnProperty.Builder columnPropertyBuilder) {
     return new DefaultForeignKeyProperty(propertyId, caption, foreignEntityId, columnPropertyBuilder).builder();
   }
@@ -99,8 +99,8 @@ public final class Properties {
    * they reference appear in the the referenced entities primary key
    * @return a new {@link ForeignKeyProperty.Builder}
    */
-  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<?> propertyId, final String caption,
-                                                              final String foreignEntityId,
+  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<? extends ForeignKeyValue> propertyId,
+                                                              final String caption, final String foreignEntityId,
                                                               final List<ColumnProperty.Builder> columnPropertyBuilders) {
     return new DefaultForeignKeyProperty(propertyId, caption, foreignEntityId, columnPropertyBuilders).builder();
   }
@@ -114,10 +114,11 @@ public final class Properties {
    * @param caption the caption of this property
    * @return a new {@link TransientProperty.Builder}
    */
-  public static TransientProperty.Builder denormalizedViewProperty(final Attribute<?> propertyId, final Attribute<?> foreignKeyPropertyId,
+  public static TransientProperty.Builder denormalizedViewProperty(final Attribute<?> propertyId,
+                                                                   final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId,
                                                                    final Property property, final String caption) {
     final DerivedProperty.Provider valueProvider = linkedValues -> {
-      final PropertyValueProvider foreignKeyValue = (PropertyValueProvider) linkedValues.get(foreignKeyPropertyId);
+      final ForeignKeyValue foreignKeyValue = (ForeignKeyValue) linkedValues.get(foreignKeyPropertyId);
 
       return foreignKeyValue == null ? null : foreignKeyValue.get(property);
     };
@@ -150,7 +151,8 @@ public final class Properties {
    * @param denormalizedProperty the property from which this property should get its value
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder denormalizedProperty(final Attribute<?> propertyId, final Attribute<?> foreignKeyPropertyId,
+  public static ColumnProperty.Builder denormalizedProperty(final Attribute<?> propertyId,
+                                                            final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId,
                                                             final Property denormalizedProperty) {
     return denormalizedProperty(propertyId, foreignKeyPropertyId, denormalizedProperty, null);
   }
@@ -164,7 +166,8 @@ public final class Properties {
    * @param caption the property caption
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder denormalizedProperty(final Attribute<?> propertyId, final Attribute<?> foreignKeyPropertyId,
+  public static ColumnProperty.Builder denormalizedProperty(final Attribute<?> propertyId,
+                                                            final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId,
                                                             final Property denormalizedProperty, final String caption) {
     return new DefaultDenormalizedProperty(propertyId, foreignKeyPropertyId, denormalizedProperty, caption).builder();
   }

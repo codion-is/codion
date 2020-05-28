@@ -4,9 +4,9 @@
 package is.codion.framework.domain.property;
 
 /**
- * Provides values associated with a {@link Property}.
+ * A value associated with a {@link ForeignKeyProperty}.
  */
-public interface PropertyValueProvider {
+public interface ForeignKeyValue {
 
   /**
    * Returns the value associated with the given property.

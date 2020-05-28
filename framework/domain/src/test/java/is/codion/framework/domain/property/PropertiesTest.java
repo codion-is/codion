@@ -25,7 +25,7 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyNonUniqueReferencePropertyId() {
-    final Attribute<?> propertyId = attribute("propertyId");
+    final Attribute<ForeignKeyValue> propertyId = attribute("propertyId");
     assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(propertyId, "caption", "referencedEntityId", columnProperty(propertyId, Types.INTEGER)));
   }
 
