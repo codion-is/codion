@@ -6141,3 +6141,4 @@
   DatabaseProvider, ConnectionPoolProvider, AuxiliaryServerProvider renamed, are now factories instead of providers, seems more fitting since they create new instances, some minor related renamings
   EntityConnectionProvider.addOnConnectListener() now takes EventDataListener receiving the newly established connection as data
   EntityConnections.insertBatch(), entities parameter is now Iterator, no longer returns the inserted keys, onInsertBatchListener parameter added instead
+0.16.2
