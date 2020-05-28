@@ -8,6 +8,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
 import is.codion.common.valuemap.DefaultValueMap;
 import is.codion.common.valuemap.ValueMap;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -20,10 +21,6 @@ import is.codion.framework.domain.property.ValueListProperty;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -52,7 +49,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   /**
    * Caches the result of {@link #getReferencedKey} method
    */
-  private Map<String, Key> referencedKeyCache;
+  private Map<Attribute<?>, Key> referencedKeyCache;
 
   /**
    * Keep a reference to this frequently referenced object
@@ -126,8 +123,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   @Override
-  public Object put(final String propertyId, final Object value) {
-    return super.put(definition.getProperty(propertyId), value);
+  public <T> T put(final Attribute<T> propertyId, final T value) {
+    return (T) super.put(definition.getProperty(propertyId), value);
   }
 
   /**
@@ -135,8 +132,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
    * @return the value of the property identified by {@code propertyId}
    */
   @Override
-  public Object get(final String propertyId) {
-    return get(definition.getProperty(propertyId));
+  public <T> T get(final Attribute<T> propertyId) {
+    return (T) get(definition.getProperty(propertyId));
   }
 
   /**
@@ -163,12 +160,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   @Override
-  public boolean isNull(final String propertyId) {
+  public boolean isNull(final Attribute<?> propertyId) {
     return isNull(definition.getProperty(propertyId));
   }
 
   @Override
-  public boolean isNotNull(final String propertyId) {
+  public boolean isNotNull(final Attribute<?> propertyId) {
     return !isNull(propertyId);
   }
 
@@ -188,12 +185,12 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   @Override
-  public boolean isModified(final String propertyId) {
+  public boolean isModified(final Attribute<?> propertyId) {
     return isModified(definition.getProperty(propertyId));
   }
 
   @Override
-  public Entity getForeignKey(final String foreignKeyPropertyId) {
+  public Entity getForeignKey(final Attribute<Entity> foreignKeyPropertyId) {
     return getForeignKey(definition.getForeignKeyProperty(foreignKeyPropertyId));
   }
 
@@ -211,63 +208,8 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   @Override
-  public boolean isLoaded(final String foreignKeyPropertyId) {
+  public boolean isLoaded(final Attribute<?> foreignKeyPropertyId) {
     return super.get(definition.getForeignKeyProperty(foreignKeyPropertyId)) != null;
-  }
-
-  @Override
-  public LocalTime getTime(final String propertyId) {
-    return (LocalTime) get(propertyId);
-  }
-
-  @Override
-  public LocalDate getDate(final String propertyId) {
-    return (LocalDate) get(propertyId);
-  }
-
-  @Override
-  public LocalDateTime getTimestamp(final String propertyId) {
-    return (LocalDateTime) get(propertyId);
-  }
-
-  @Override
-  public String getString(final String propertyId) {
-    return (String) get(propertyId);
-  }
-
-  @Override
-  public Integer getInteger(final String propertyId) {
-    return (Integer) get(propertyId);
-  }
-
-  @Override
-  public Long getLong(final String propertyId) {
-    return (Long) get(propertyId);
-  }
-
-  @Override
-  public Boolean getBoolean(final String propertyId) {
-    return (Boolean) get(propertyId);
-  }
-
-  @Override
-  public Character getCharacter(final String propertyId) {
-    return (Character) get(propertyId);
-  }
-
-  @Override
-  public Double getDouble(final String propertyId) {
-    return (Double) get(propertyId);
-  }
-
-  @Override
-  public BigDecimal getBigDecimal(final String propertyId) {
-    return (BigDecimal) get(propertyId);
-  }
-
-  @Override
-  public byte[] getBlob(final String propertyId) {
-    return (byte[]) get(propertyId);
   }
 
   @Override
@@ -286,7 +228,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   @Override
-  public String getAsString(final String propertyId) {
+  public String getAsString(final Attribute<?> propertyId) {
     return getAsString(definition.getProperty(propertyId));
   }
 
@@ -300,23 +242,23 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   @Override
-  public Object getOriginal(final String propertyId) {
-    return getOriginal(definition.getProperty(propertyId));
+  public <T> T getOriginal(final Attribute<T> propertyId) {
+    return (T) getOriginal(definition.getProperty(propertyId));
   }
 
   @Override
-  public void save(final String propertyId) {
+  public void save(final Attribute<?> propertyId) {
     save(definition.getProperty(propertyId));
   }
 
   @Override
-  public void revert(final String propertyId) {
+  public void revert(final Attribute<?> propertyId) {
     revert(definition.getProperty(propertyId));
   }
 
   @Override
-  public Object remove(final String propertyId) {
-    return remove(definition.getProperty(propertyId));
+  public <T> T remove(final Attribute<T> propertyId) {
+    return (T) remove(definition.getProperty(propertyId));
   }
 
   @Override
@@ -394,7 +336,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
   }
 
   @Override
-  public boolean containsKey(final String propertyId) {
+  public boolean containsKey(final Attribute<?> propertyId) {
     return containsKey(definition.getProperty(propertyId));
   }
 
@@ -615,7 +557,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
             new DefaultEntityKey(definition.getForeignDefinition(foreignKeyProperty.getPropertyId()), value));
   }
 
-  private Key cacheReferencedKey(final String foreignKeyPropertyId, final Key referencedPrimaryKey) {
+  private Key cacheReferencedKey(final Attribute<?> foreignKeyPropertyId, final Key referencedPrimaryKey) {
     if (referencedKeyCache == null) {
       referencedKeyCache = new HashMap<>();
     }
@@ -624,7 +566,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return referencedPrimaryKey;
   }
 
-  private Key getCachedReferencedKey(final String fkPropertyId) {
+  private Key getCachedReferencedKey(final Attribute<?> fkPropertyId) {
     if (referencedKeyCache == null) {
       return null;
     }
@@ -632,7 +574,7 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return referencedKeyCache.get(fkPropertyId);
   }
 
-  private void removeCachedReferencedKey(final String fkPropertyId) {
+  private void removeCachedReferencedKey(final Attribute<?> fkPropertyId) {
     if (referencedKeyCache != null) {
       referencedKeyCache.remove(fkPropertyId);
       if (referencedKeyCache.isEmpty()) {
@@ -668,16 +610,16 @@ final class DefaultEntity extends DefaultValueMap<Property, Object> implements E
     return derivedProperty.getValueProvider().getValue(getSourceValues(derivedProperty.getSourcePropertyIds()));
   }
 
-  private Map<String, Object> getSourceValues(final List<String> sourcePropertyIds) {
+  private Map<Attribute<?>, Object> getSourceValues(final List<Attribute<?>> sourcePropertyIds) {
     if (sourcePropertyIds.size() == 1) {
-      final String sourcePropertyId = sourcePropertyIds.get(0);
+      final Attribute<?> sourcePropertyId = sourcePropertyIds.get(0);
 
       return singletonMap(sourcePropertyId, get(sourcePropertyId));
     }
     else {
-      final Map<String, Object> values = new HashMap<>(sourcePropertyIds.size());
+      final Map<Attribute<?>, Object> values = new HashMap<>(sourcePropertyIds.size());
       for (int i = 0; i < sourcePropertyIds.size(); i++) {
-        final String sourcePropertyId = sourcePropertyIds.get(i);
+        final Attribute<?> sourcePropertyId = sourcePropertyIds.get(i);
         values.put(sourcePropertyId, get(sourcePropertyId));
       }
 

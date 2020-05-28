@@ -3,6 +3,8 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.domain.property.Attribute;
+
 import java.util.Map;
 
 /**
@@ -17,10 +19,10 @@ public interface EntityUpdateCondition extends EntityCondition {
    * @param value the new value
    * @return this {@link EntityUpdateCondition} instance
    */
-  EntityUpdateCondition set(String propertyId, Object value);
+  EntityUpdateCondition set(Attribute<?> propertyId, Object value);
 
   /**
    * @return the new values mapped to their respective propertyIds
    */
-  Map<String, Object> getPropertyValues();
+  Map<Attribute<?>, Object> getPropertyValues();
 }

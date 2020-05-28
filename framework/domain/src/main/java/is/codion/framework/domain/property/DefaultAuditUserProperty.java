@@ -10,7 +10,7 @@ public final class DefaultAuditUserProperty extends DefaultAuditProperty
 
   private static final long serialVersionUID = 1;
 
-  DefaultAuditUserProperty(final String propertyId, final AuditAction auditAction, final String caption) {
+  DefaultAuditUserProperty(final Attribute<?> propertyId, final AuditAction auditAction, final String caption) {
     super(propertyId, Types.VARCHAR, auditAction, caption);
   }
 }

@@ -11,6 +11,7 @@ import is.codion.common.model.Refreshable;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;
@@ -185,7 +186,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @see #initialize(ForeignKeyProperty, java.util.List)
    * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
    */
-  void setDetailModelForeignKey(M detailModel, String foreignKeyPropertyId);
+  void setDetailModelForeignKey(M detailModel, Attribute<Entity> foreignKeyPropertyId);
 
   /**
    * @param detailModel the detail model

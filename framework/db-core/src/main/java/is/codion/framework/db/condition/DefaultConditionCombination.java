@@ -4,6 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
+import is.codion.framework.domain.property.Attribute;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,8 +54,8 @@ final class DefaultConditionCombination implements Condition.Combination {
   }
 
   @Override
-  public List<String> getPropertyIds() {
-    final List<String> propertyIds = new ArrayList<>();
+  public List<Attribute<?>> getPropertyIds() {
+    final List<Attribute<?>> propertyIds = new ArrayList<>();
     for (int i = 0; i < conditions.size(); i++) {
       propertyIds.addAll(conditions.get(i).getPropertyIds());
     }

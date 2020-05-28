@@ -22,7 +22,7 @@ final class DefaultValueListProperty extends DefaultColumnProperty implements Va
    * @param caption the property caption
    * @param items the allowed values for this property
    */
-  DefaultValueListProperty(final String propertyId, final int type, final String caption, final List<Item> items) {
+  DefaultValueListProperty(final Attribute<?> propertyId, final int type, final String caption, final List<Item> items) {
     super(propertyId, type, caption);
     this.items = unmodifiableList(items);
   }

@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity.exception;
 
+import is.codion.framework.domain.property.Attribute;
+
 /**
  * An exception used to indicate that a value associated with
  * a key which not fall within the allowed range of values.
@@ -15,7 +17,7 @@ public class RangeValidationException extends ValidationException {
    * @param value the value that is out of range
    * @param message the message
    */
-  public RangeValidationException(final String propertyId, final Object value, final String message) {
+  public RangeValidationException(final Attribute<?> propertyId, final Object value, final String message) {
     super(propertyId, value, message);
   }
 }

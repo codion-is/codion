@@ -5,6 +5,7 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.SubqueryProperty;
 
@@ -31,7 +32,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
   /**
    * The property used in this condition
    */
-  private final String propertyId;
+  private final Attribute<?> propertyId;
 
   /**
    * The values used in this condition
@@ -59,7 +60,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
    * @param operator the condition operator
    * @param value the value, can be a Collection
    */
-  DefaultPropertyCondition(final String propertyId, final Operator operator, final Object value) {
+  DefaultPropertyCondition(final Attribute<?> propertyId, final Operator operator, final Object value) {
     requireNonNull(propertyId, "propertyId");
     requireNonNull(operator, "operator");
     this.propertyId = propertyId;
@@ -81,7 +82,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
   }
 
   @Override
-  public List<String> getPropertyIds() {
+  public List<Attribute<?>> getPropertyIds() {
     if (nullCondition) {
       return emptyList();
     }//null condition, uses 'x is null', not 'x = ?'
@@ -90,7 +91,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
   }
 
   @Override
-  public String getPropertyId() {
+  public Attribute<?> getPropertyId() {
     return propertyId;
   }
 

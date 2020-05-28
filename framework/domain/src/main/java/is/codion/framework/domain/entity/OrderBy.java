@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.property.Attribute;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,14 +18,14 @@ public interface OrderBy extends Serializable {
    * @param propertyIds the property ids
    * @return this OrderBy instance
    */
-  OrderBy ascending(String... propertyIds);
+  OrderBy ascending(Attribute<?>... propertyIds);
 
     /**
    * Adds a 'descending' order by for the given properties
    * @param propertyIds the property ids
    * @return this OrderBy instance
    */
-  OrderBy descending(String... propertyIds);
+  OrderBy descending(Attribute<?>... propertyIds);
 
   /**
    * @return the order by properties comprising this order by clause
@@ -38,7 +40,7 @@ public interface OrderBy extends Serializable {
     /**
      * @return the id of the property to order by
      */
-    String getPropertyId();
+    Attribute<?> getPropertyId();
 
     /**
      * @return true if the order is ascending, false for descending

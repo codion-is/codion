@@ -9,7 +9,7 @@ class DefaultAuditProperty extends DefaultColumnProperty implements AuditPropert
 
   private final AuditAction auditAction;
 
-  DefaultAuditProperty(final String propertyId, final int type, final AuditAction auditAction, final String caption) {
+  DefaultAuditProperty(final Attribute<?> propertyId, final int type, final AuditAction auditAction, final String caption) {
     super(propertyId, type, caption);
     this.auditAction = auditAction;
     super.setInsertable(false);

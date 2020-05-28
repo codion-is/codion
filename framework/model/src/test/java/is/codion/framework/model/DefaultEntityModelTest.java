@@ -18,6 +18,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.tests.AbstractEntityModelTest;
@@ -237,7 +238,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void savePreferences() {}
     @Override
-    public void setColumns(final String... propertyIds) {}
+    public void setColumns(final Attribute<?>... propertyIds) {}
     @Override
     public String getTableDataAsDelimitedString(final char delimiter) {return null;}
     @Override

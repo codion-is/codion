@@ -3,6 +3,8 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.domain.property.Attribute;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +15,10 @@ final class DefaultCustomCondition implements CustomCondition {
   private static final long serialVersionUID = 1;
 
   private final String conditionId;
-  private final ArrayList<String> propertyIds;
+  private final ArrayList<Attribute<?>> propertyIds;
   private final ArrayList values;
 
-  DefaultCustomCondition(final String conditionId, final List<String> propertyIds, final List values) {
+  DefaultCustomCondition(final String conditionId, final List<Attribute<?>> propertyIds, final List values) {
     this.conditionId = requireNonNull(conditionId, "conditionId");
     this.propertyIds = new ArrayList<>(requireNonNull(propertyIds, "propertyIds"));
     this.values = new ArrayList(requireNonNull(values, "values"));
@@ -28,7 +30,7 @@ final class DefaultCustomCondition implements CustomCondition {
   }
 
   @Override
-  public List<String> getPropertyIds() {
+  public List<Attribute<?>> getPropertyIds() {
     return propertyIds;
   }
 

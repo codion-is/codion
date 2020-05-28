@@ -4,6 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Util;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -38,7 +39,7 @@ public abstract class DefaultEntities implements Entities {
   private final Map<String, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
   private Map<Class, EntityDefinition> beanEntities;
-  private Map<String, Map<String, BeanProperty>> beanProperties;
+  private Map<String, Map<Attribute<?>, BeanProperty>> beanProperties;
 
   private transient boolean strictForeignKeys = EntityDefinition.STRICT_FOREIGN_KEYS.get();
 
@@ -180,10 +181,10 @@ public abstract class DefaultEntities implements Entities {
     if (beanClass == null) {
       throw new IllegalArgumentException("No bean class defined for entityId: " + definition.getEntityId());
     }
-    final Map<String, BeanProperty> beanPropertyMap = getBeanProperties(definition.getEntityId());
+    final Map<Attribute<?>, BeanProperty> beanPropertyMap = getBeanProperties(definition.getEntityId());
     try {
       final V bean = beanClass.getConstructor().newInstance();
-      for (final Map.Entry<String, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
+      for (final Map.Entry<Attribute<?>, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = definition.getProperty(propertyEntry.getKey());
         Object value = entity.get(property);
         if (property instanceof ForeignKeyProperty && value != null) {
@@ -220,8 +221,8 @@ public abstract class DefaultEntities implements Entities {
     final EntityDefinition definition = getBeanEntityDefinition(beanClass);
     final Entity entity = entity(definition.getEntityId());
     try {
-      final Map<String, BeanProperty> beanPropertyMap = getBeanProperties(definition.getEntityId());
-      for (final Map.Entry<String, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
+      final Map<Attribute<?>, BeanProperty> beanPropertyMap = getBeanProperties(definition.getEntityId());
+      for (final Map.Entry<Attribute<?>, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = definition.getProperty(propertyEntry.getKey());
         Object value = propertyEntry.getValue().getter.invoke(bean);
         if (property instanceof ForeignKeyProperty && value != null) {
@@ -311,7 +312,7 @@ public abstract class DefaultEntities implements Entities {
   private void populateForeignDefinitions() {
     for (final DefaultEntityDefinition definition : entityDefinitions.values()) {
       for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
-        final String foreignKeyPropertyId = foreignKeyProperty.getPropertyId();
+        final Attribute<?> foreignKeyPropertyId = foreignKeyProperty.getPropertyId();
         final EntityDefinition foreignDefinition = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
         if (foreignDefinition != null && !definition.hasForeignDefinition(foreignKeyPropertyId)) {
           definition.setForeignDefinition(foreignKeyPropertyId, foreignDefinition);
@@ -336,7 +337,7 @@ public abstract class DefaultEntities implements Entities {
     return beanEntities.get(beanClass);
   }
 
-  private Map<String, BeanProperty> getBeanProperties(final String entityId) {
+  private Map<Attribute<?>, BeanProperty> getBeanProperties(final String entityId) {
     if (beanProperties == null) {
       beanProperties = new HashMap<>();
     }
@@ -344,14 +345,14 @@ public abstract class DefaultEntities implements Entities {
     return beanProperties.computeIfAbsent(entityId, this::initializeBeanProperties);
   }
 
-  private Map<String, BeanProperty> initializeBeanProperties(final String entityId) {
+  private Map<Attribute<?>, BeanProperty> initializeBeanProperties(final String entityId) {
     final EntityDefinition entityDefinition = getDefinition(entityId);
     final Class beanClass = entityDefinition.getBeanClass();
     if (beanClass == null) {
       throw new IllegalArgumentException("No bean class specified for entity: " + entityId);
     }
     try {
-      final Map<String, BeanProperty> map = new HashMap<>();
+      final Map<Attribute<?>, BeanProperty> map = new HashMap<>();
       for (final Property property : entityDefinition.getProperties()) {
         final String beanProperty = property.getBeanProperty();
         Class typeClass = property.getTypeClass();

@@ -4,6 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
+import is.codion.framework.domain.property.Attribute;
 
 import java.io.Serializable;
 import java.util.List;
@@ -26,7 +27,7 @@ public interface Condition extends Serializable {
    * order as their respective values appear in the condition clause.
    * An empty list is returned in case no values are specified.
    */
-  List<String> getPropertyIds();
+  List<Attribute<?>> getPropertyIds();
 
   /**
    * An interface encapsulating a combination of Condition objects,
@@ -75,7 +76,7 @@ public interface Condition extends Serializable {
     }
 
     @Override
-    public List<String> getPropertyIds() {
+    public List<Attribute<?>> getPropertyIds() {
       return emptyList();
     }
   }

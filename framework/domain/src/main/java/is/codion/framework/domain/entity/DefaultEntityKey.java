@@ -4,6 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.valuemap.DefaultValueMap;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import java.io.IOException;
@@ -109,13 +110,13 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   }
 
   @Override
-  public Object put(final String propertyId, final Object value) {
-    return super.put(definition.getPrimaryKeyProperty(propertyId), value);
+  public <T> T put(final Attribute<T> propertyId, final T value) {
+    return (T) super.put(definition.getPrimaryKeyProperty(propertyId), value);
   }
 
   @Override
-  public Object get(final String propertyId) {
-    return super.get(definition.getPrimaryKeyProperty(propertyId));
+  public <T> T get(final Attribute<T> propertyId) {
+    return (T) super.get(definition.getPrimaryKeyProperty(propertyId));
   }
 
   @Override
@@ -197,12 +198,12 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   }
 
   @Override
-  public boolean isNull(final String propertyId) {
+  public boolean isNull(final Attribute<?> propertyId) {
     return super.isNull(definition.getPrimaryKeyProperty(propertyId));
   }
 
   @Override
-  public boolean isNotNull(final String propertyId) {
+  public boolean isNotNull(final Attribute<?> propertyId) {
     return !isNull(propertyId);
   }
 

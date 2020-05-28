@@ -1,5 +1,6 @@
 [B
 [C
+[Lis.codion.framework.domain.property.Attribute;
 [Ljava.lang.Object;
 [Ljava.lang.String;
 [Ljava.util.Map$Entry;
@@ -91,6 +92,7 @@ is.codion.framework.domain.entity.DefaultEntity
 is.codion.framework.domain.entity.DefaultEntityKey
 is.codion.framework.domain.entity.DefaultOrderBy
 is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByProperty
+is.codion.framework.domain.property.DefaultAttribute
 is.codion.framework.demos.chinook.domain.Chinook
 is.codion.framework.demos.empdept.domain.EmpDept
 is.codion.plugin.jasperreports.model.AbstractJasperReportWrapper

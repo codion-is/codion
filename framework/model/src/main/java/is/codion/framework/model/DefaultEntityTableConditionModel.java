@@ -19,6 +19,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -45,8 +46,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   private final String entityId;
   private final EntityConnectionProvider connectionProvider;
-  private final Map<String, ColumnConditionModel<Entity, Property>> propertyFilterModels = new LinkedHashMap<>();
-  private final Map<String, ColumnConditionModel<Entity, ? extends Property>> propertyConditionModels = new HashMap<>();
+  private final Map<Attribute<?>, ColumnConditionModel<Entity, Property>> propertyFilterModels = new LinkedHashMap<>();
+  private final Map<Attribute<?>, ColumnConditionModel<Entity, ? extends Property>> propertyConditionModels = new HashMap<>();
   private Condition.Provider additionalConditionProvider;
   private Conjunction conjunction = Conjunction.AND;
   private String rememberedCondition = "";
@@ -91,7 +92,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public ColumnConditionModel<Entity, Property> getPropertyFilterModel(final String propertyId) {
+  public ColumnConditionModel<Entity, Property> getPropertyFilterModel(final Attribute<?> propertyId) {
     if (propertyFilterModels.containsKey(propertyId)) {
       return propertyFilterModels.get(propertyId);
     }
@@ -135,12 +136,12 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public boolean containsPropertyConditionModel(final String propertyId) {
+  public boolean containsPropertyConditionModel(final Attribute<?> propertyId) {
     return propertyConditionModels.containsKey(propertyId);
   }
 
   @Override
-  public ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(final String propertyId) {
+  public ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(final Attribute<?> propertyId) {
     if (propertyConditionModels.containsKey(propertyId)) {
       return propertyConditionModels.get(propertyId);
     }
@@ -154,19 +155,19 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public boolean isEnabled(final String propertyId) {
+  public boolean isEnabled(final Attribute<?> propertyId) {
     return containsPropertyConditionModel(propertyId) && getPropertyConditionModel(propertyId).isEnabled();
   }
 
   @Override
-  public boolean isFilterEnabled(final String propertyId) {
+  public boolean isFilterEnabled(final Attribute<?> propertyId) {
     final ColumnConditionModel<Entity, Property> propertyFilterModel = getPropertyFilterModel(propertyId);
 
     return propertyFilterModel != null && propertyFilterModel.isEnabled();
   }
 
   @Override
-  public boolean setConditionValues(final String propertyId, final Collection values) {
+  public <T> boolean setConditionValues(final Attribute<T> propertyId, final Collection<T> values) {
     final String conditionsString = getConditionsString();
     if (containsPropertyConditionModel(propertyId)) {
       final ColumnConditionModel conditionModel = getPropertyConditionModel(propertyId);
@@ -178,7 +179,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public void setFilterValue(final String propertyId, final Comparable value) {
+  public <T> void setFilterValue(final Attribute<T> propertyId, final Comparable<T> value) {
     final ColumnConditionModel<Entity, Property> filterModel = getPropertyFilterModel(propertyId);
     if (filterModel != null) {
       filterModel.setLikeValue(value);
@@ -248,14 +249,14 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public void enable(final String propertyId) {
+  public void enable(final Attribute<?> propertyId) {
     if (containsPropertyConditionModel(propertyId)) {
       getPropertyConditionModel(propertyId).setEnabled(true);
     }
   }
 
   @Override
-  public void disable(final String propertyId) {
+  public void disable(final Attribute<?> propertyId) {
     if (containsPropertyConditionModel(propertyId)) {
       getPropertyConditionModel(propertyId).setEnabled(false);
     }
@@ -363,7 +364,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   private static String toString(final ColumnConditionModel<Entity, ? extends Property> conditionModel) {
-    final StringBuilder stringBuilder = new StringBuilder(conditionModel.getColumnIdentifier().getPropertyId());
+    final StringBuilder stringBuilder = new StringBuilder(conditionModel.getColumnIdentifier().getPropertyId().getId());
     if (conditionModel.isEnabled()) {
       stringBuilder.append(conditionModel.getOperator());
       stringBuilder.append(boundToString(conditionModel.getUpperBound()));

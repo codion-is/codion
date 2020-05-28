@@ -13,6 +13,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
@@ -35,14 +36,14 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param values the search condition values
    * @return true if the search state changed as a result of this method call, false otherwise
    */
-  boolean setConditionValues(String propertyId, Collection values);
+  <T> boolean setConditionValues(Attribute<T> propertyId, Collection<T> values);
 
   /**
    * Sets the condition value of the PropertyFilterModel associated with the property identified by {@code propertyId}.
    * @param propertyId the id of the property
    * @param value the condition value
    */
-  void setFilterValue(String propertyId, Comparable value);
+  <T> void setFilterValue(Attribute<T> propertyId, Comparable<T> value);
 
   /**
    * @return the current condition based on the state of the underlying condition models
@@ -69,19 +70,19 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param propertyId the column propertyId
    * @return true if the {@link ColumnConditionModel} behind column with index {@code columnIndex} is enabled
    */
-  boolean isEnabled(String propertyId);
+  boolean isEnabled(Attribute<?> propertyId);
 
   /**
    * Enables the search for the given property
    * @param propertyId the id of the property for which to enable the search
    */
-  void enable(String propertyId);
+  void enable(Attribute<?> propertyId);
 
   /**
    * Disables the search for the given property
    * @param propertyId the id of the property for which to disable the search
    */
-  void disable(String propertyId);
+  void disable(Attribute<?> propertyId);
 
   /**
    * Remembers the current condition model state, any subsequent changes to condition
@@ -118,7 +119,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @return true if this EntityTableConditionModel contains a {@link ColumnConditionModel} associated
    * with the property identified by {@code propertyId}
    */
-  boolean containsPropertyConditionModel(String propertyId);
+  boolean containsPropertyConditionModel(Attribute<?> propertyId);
 
   /**
    * @return a Collection containing the PropertyConditionModels available in this table condition model
@@ -132,7 +133,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @throws IllegalArgumentException in case no condition model is found
    * @see #containsPropertyConditionModel(String)
    */
-  ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(String propertyId);
+  ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(Attribute<?> propertyId);
 
   /**
    * Clears the search state of all PropertyConditionModels, disables them and
@@ -150,13 +151,13 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param propertyId the id of the property for which to retrieve the PropertyFilterModel
    * @return the PropertyFilterModel for the property with id {@code propertyId}, null if none is found
    */
-  ColumnConditionModel<Entity, Property> getPropertyFilterModel(String propertyId);
+  ColumnConditionModel<Entity, Property> getPropertyFilterModel(Attribute<?> propertyId);
 
   /**
    * @param propertyId column propertyId
    * @return true if the PropertyFilterModel behind column with index {@code columnIndex} is enabled
    */
-  boolean isFilterEnabled(String propertyId);
+  boolean isFilterEnabled(Attribute<?> propertyId);
 
   /**
    * @return the text used when performing a simple search

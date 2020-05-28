@@ -4,6 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.valuemap.ValueMap;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -316,7 +317,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities from which to retrieve the property value
    * @return a List containing the non-null values of the property with the given id from the given entities
    */
-  static <T> List<T> getValues(final String propertyId, final Collection<Entity> entities) {
+  static <T> List<T> getValues(final Attribute<T> propertyId, final Collection<Entity> entities) {
     requireNonNull(propertyId, "propertyId");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> (T) entity.get(propertyId)).collect(toList());
@@ -329,7 +330,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities from which to retrieve the values
    * @return a List containing the distinct non-null property values
    */
-  static <T> List<T> getDistinctValues(final String propertyId, final Collection<Entity> entities) {
+  static <T> List<T> getDistinctValues(final Attribute<T> propertyId, final Collection<Entity> entities) {
     requireNonNull(propertyId, "propertyId");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> (T) entity.get(propertyId)).distinct().filter(Objects::nonNull).collect(toList());
@@ -342,7 +343,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities from which to retrieve the values
    * @return a List containing the distinct property values
    */
-  static <T> List<T> getDistinctValuesIncludingNull(final String propertyId, final Collection<Entity> entities) {
+  static <T> List<T> getDistinctValuesIncludingNull(final Attribute<T> propertyId, final Collection<Entity> entities) {
     requireNonNull(propertyId, "propertyId");
     requireNonNull(entities, "entities");
     return entities.stream().map(entity -> (T) entity.get(propertyId)).distinct().collect(toList());
@@ -356,9 +357,9 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities for which to set the value
    * @return the previous property values mapped to the primary key of the entity
    */
-  static Map<Entity.Key, Object> put(final String propertyId, final Object value, final Collection<Entity> entities) {
+  static <T> Map<Entity.Key, T> put(final Attribute<T> propertyId, final T value, final Collection<Entity> entities) {
     requireNonNull(entities, "entities");
-    final Map<Entity.Key, Object> previousValues = new HashMap<>(entities.size());
+    final Map<Entity.Key, T> previousValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
       previousValues.put(entity.getKey(), entity.put(propertyId, value));
     }
@@ -389,7 +390,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities to map by property value
    * @return a Map of entities mapped to property value
    */
-  static <K> LinkedHashMap<K, List<Entity>> mapToValue(final String propertyId, final Collection<Entity> entities) {
+  static <K> LinkedHashMap<K, List<Entity>> mapToValue(final Attribute<K> propertyId, final Collection<Entity> entities) {
     return map(entities, value -> (K) value.get(propertyId));
   }
 
@@ -440,14 +441,14 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param values the property values to use as condition mapped to their respective propertyIds
    * @return the entities having the exact same property values as in the given value map
    */
-  static List<Entity> getEntitiesByValue(final Collection<Entity> entities, final Map<String, Object> values) {
+  static List<Entity> getEntitiesByValue(final Collection<Entity> entities, final Map<Attribute<?>, Object> values) {
     requireNonNull(entities);
     requireNonNull(values);
     final List<Entity> result = new ArrayList<>();
     for (final Entity entity : requireNonNull(entities, "entities")) {
       boolean equal = true;
-      for (final Map.Entry<String, Object> entries : values.entrySet()) {
-        final String propertyId = entries.getKey();
+      for (final Map.Entry<Attribute<?>, Object> entries : values.entrySet()) {
+        final Attribute<?> propertyId = entries.getKey();
         if (!entity.get(propertyId).equals(entries.getValue())) {
           equal = false;
           break;
@@ -468,14 +469,14 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param propertyIds the ids of the properties to use
    * @return true if the values of the given properties are equal in the given entities
    */
-  static boolean valuesEqual(final Entity entityOne, final Entity entityTwo, final String... propertyIds) {
+  static boolean valuesEqual(final Entity entityOne, final Entity entityTwo, final Attribute<?>... propertyIds) {
     requireNonNull(entityOne);
     requireNonNull(entityTwo);
     requireNonNull(propertyIds);
     if (propertyIds.length == 0) {
       throw new IllegalArgumentException("No properties provided for equality check");
     }
-    for (final String propertyId : propertyIds) {
+    for (final Attribute<?> propertyId : propertyIds) {
       if (!Objects.equals(entityOne.get(propertyId), entityTwo.get(propertyId))) {
         return false;
       }

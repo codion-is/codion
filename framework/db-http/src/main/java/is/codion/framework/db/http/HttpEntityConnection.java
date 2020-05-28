@@ -18,6 +18,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
@@ -322,12 +323,12 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> List<T> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
+  public <T> List<T> selectValues(final Attribute<T> propertyId, final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(propertyId);
     Objects.requireNonNull(condition);
     try {
       return onResponse(execute(createHttpPost(createURIBuilder("values")
-              .addParameter("propertyId", propertyId), condition)));
+              .addParameter("propertyId", propertyId.getId()), condition)));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -339,7 +340,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
+  public <T> Entity selectSingle(final String entityId, final Attribute<T> propertyId, final T value) throws DatabaseException {
     return selectSingle(selectCondition(entityId, propertyId, Operator.LIKE, value));
   }
 
@@ -392,7 +393,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public List<Entity> select(final String entityId, final String propertyId, final Object... values)
+  public <T> List<Entity> select(final String entityId, final Attribute<T> propertyId, final T... values)
           throws DatabaseException {
     return select(selectCondition(entityId, propertyId, Operator.LIKE, asList(values)));
   }
@@ -443,13 +444,13 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData)
+  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobPropertyId, final byte[] blobData)
           throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobPropertyId, "blobPropertyId");
     Objects.requireNonNull(blobData, "blobData");
     try {
-      onResponse(execute(createHttpPost("writeBlob", asList(primaryKey, blobPropertyId, blobData))));
+      onResponse(execute(createHttpPost("writeBlob", asList(primaryKey, blobPropertyId.getId(), blobData))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -461,11 +462,11 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException {
+  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobPropertyId) throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobPropertyId, "blobPropertyId");
     try {
-      return onResponse(execute(createHttpPost("readBlob", asList(primaryKey, blobPropertyId))));
+      return onResponse(execute(createHttpPost("readBlob", asList(primaryKey, blobPropertyId.getId()))));
     }
     catch (final DatabaseException e) {
       throw e;

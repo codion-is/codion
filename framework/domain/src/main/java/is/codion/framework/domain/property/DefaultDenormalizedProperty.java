@@ -10,7 +10,7 @@ final class DefaultDenormalizedProperty extends DefaultColumnProperty implements
 
   private static final long serialVersionUID = 1;
 
-  private final String foreignKeyPropertyId;
+  private final Attribute<?> foreignKeyPropertyId;
   private final Property denormalizedProperty;
 
   /**
@@ -20,7 +20,7 @@ final class DefaultDenormalizedProperty extends DefaultColumnProperty implements
    * @param denormalizedProperty the property from which this property should get its value
    * @param caption the caption if this property
    */
-  DefaultDenormalizedProperty(final String propertyId, final String foreignKeyPropertyId,
+  DefaultDenormalizedProperty(final Attribute<?> propertyId, final Attribute<?> foreignKeyPropertyId,
                               final Property denormalizedProperty, final String caption) {
     super(propertyId, denormalizedProperty.getType(), caption);
     this.foreignKeyPropertyId = foreignKeyPropertyId;
@@ -28,7 +28,7 @@ final class DefaultDenormalizedProperty extends DefaultColumnProperty implements
   }
 
   @Override
-  public String getForeignKeyPropertyId() {
+  public Attribute<?> getForeignKeyPropertyId() {
     return foreignKeyPropertyId;
   }
 

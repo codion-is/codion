@@ -10,6 +10,7 @@ import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import org.slf4j.Logger;
@@ -256,7 +257,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void setDetailModelForeignKey(final M detailModel, final String foreignKeyPropertyId) {
+  public final void setDetailModelForeignKey(final M detailModel, final Attribute<Entity> foreignKeyPropertyId) {
     requireNonNull(detailModel, "detailModel");
     if (!containsDetailModel(detailModel)) {
       throw new IllegalArgumentException(this + " does not contain detail model: " + detailModel);

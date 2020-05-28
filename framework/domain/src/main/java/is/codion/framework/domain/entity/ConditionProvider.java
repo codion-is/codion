@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.property.Attribute;
+
 import java.util.List;
 
 /**
@@ -16,5 +18,5 @@ public interface ConditionProvider {
    * @param values the values
    * @return a query condition string
    */
-  String getConditionString(List<String> propertyIds, List values);
+  String getConditionString(List<Attribute<?>> propertyIds, List<?> values);
 }

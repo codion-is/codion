@@ -82,7 +82,7 @@ public interface Property extends Serializable {
    * By default this id serves as column name for database properties.
    * @return the id of this property
    */
-  String getPropertyId();
+  Attribute<?> getPropertyId();
 
   /**
    * @return the caption
@@ -130,10 +130,10 @@ public interface Property extends Serializable {
   String formatValue(Object value);
 
   /**
-   * @param  propertyId the propertyId
+   * @param propertyId the propertyId
    * @return true if this property is of the given type
    */
-  boolean is(String propertyId);
+  boolean is(Attribute<?> propertyId);
 
   /**
    * @param property the property

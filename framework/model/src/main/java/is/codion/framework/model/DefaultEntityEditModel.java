@@ -22,6 +22,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ValueChange;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -102,7 +103,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Contains true if values should persist for the given property when the model is cleared
    */
-  private final Map<String, Boolean> persistentValues = new HashMap<>();
+  private final Map<Attribute<?>, Boolean> persistentValues = new HashMap<>();
 
   /**
    * Fired when the active entity is set.
@@ -123,12 +124,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds events signaling value changes made via {@link #put(Property, Object)} or {@link #remove(Property)}
    */
-  private final Map<String, Event<ValueChange>> valueEditEventMap = new HashMap<>();
+  private final Map<Attribute<?>, Event<ValueChange>> valueEditEventMap = new HashMap<>();
 
   /**
    * Holds events signaling value changes in the underlying {@link Entity}
    */
-  private final Map<String, Event<ValueChange>> valueChangeEventMap = new HashMap<>();
+  private final Map<Attribute<?>, Event<ValueChange>> valueChangeEventMap = new HashMap<>();
 
   /**
    * A state indicating whether the entity being edited is new
@@ -237,7 +238,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setPersistValue(final String propertyId, final boolean persistValue) {
+  public final void setPersistValue(final Attribute<?> propertyId, final boolean persistValue) {
     persistentValues.put(propertyId, persistValue);
   }
 
@@ -331,7 +332,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Entity getForeignKey(final String foreignKeyPropertyId) {
+  public final Entity getForeignKey(final Attribute<Entity> foreignKeyPropertyId) {
     return (Entity) get(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
   }
 
@@ -363,18 +364,18 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Object get(final String propertyId) {
+  public final <T> T get(final Attribute<T> propertyId) {
     return entity.get(propertyId);
   }
 
   @Override
-  public final void put(final String propertyId, final Object value) {
+  public final <T> void put(final Attribute<T> propertyId, final T value) {
     put(getEntityDefinition().getProperty(propertyId), value);
   }
 
   @Override
-  public final Object remove(final String propertyId) {
-    return remove(getEntityDefinition().getProperty(propertyId));
+  public final <T> T remove(final Attribute<T> propertyId) {
+    return (T) remove(getEntityDefinition().getProperty(propertyId));
   }
 
   @Override
@@ -410,12 +411,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isNull(final String propertyId) {
+  public final boolean isNull(final Attribute<?> propertyId) {
     return entity.isNull(propertyId);
   }
 
   @Override
-  public final boolean isNotNull(final String propertyId) {
+  public final boolean isNotNull(final Attribute<?> propertyId) {
     return !entity.isNull(propertyId);
   }
 
@@ -605,7 +606,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean containsLookupModel(final String foreignKeyPropertyId) {
+  public final boolean containsLookupModel(final Attribute<Entity> foreignKeyPropertyId) {
     return entityLookupModels.containsKey(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
   }
 
@@ -624,7 +625,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyId) {
+  public final EntityLookupModel getForeignKeyLookupModel(final Attribute<Entity> foreignKeyPropertyId) {
     requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
     return getForeignKeyLookupModel(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
   }
@@ -641,7 +642,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <V> Value<V> value(final String propertyId) {
+  public final <V> Value<V> value(final Attribute<V> propertyId) {
     return new EditModelValue<>(this, propertyId);
   }
 
@@ -677,26 +678,26 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void removeValueEditListener(final String propertyId, final EventDataListener<ValueChange> listener) {
+  public final void removeValueEditListener(final Attribute<?> propertyId, final EventDataListener<ValueChange> listener) {
     if (valueEditEventMap.containsKey(propertyId)) {
       valueEditEventMap.get(propertyId).removeDataListener(listener);
     }
   }
 
   @Override
-  public final void addValueEditListener(final String propertyId, final EventDataListener<ValueChange> listener) {
+  public final void addValueEditListener(final Attribute<?> propertyId, final EventDataListener<ValueChange> listener) {
     getValueEditEvent(propertyId).addDataListener(listener);
   }
 
   @Override
-  public final void removeValueListener(final String propertyId, final EventDataListener<ValueChange> listener) {
+  public final void removeValueListener(final Attribute<?> propertyId, final EventDataListener<ValueChange> listener) {
     if (valueChangeEventMap.containsKey(propertyId)) {
       valueChangeEventMap.get(propertyId).removeDataListener(listener);
     }
   }
 
   @Override
-  public final void addValueListener(final String propertyId, final EventDataListener<ValueChange> listener) {
+  public final void addValueListener(final Attribute<?> propertyId, final EventDataListener<ValueChange> listener) {
     getValueChangeEvent(propertyId).addDataListener(listener);
   }
 
@@ -873,7 +874,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param values the foreign key entities
    */
   protected void replaceForeignKey(final ForeignKeyProperty foreignKeyProperty, final List<Entity> values) {
-    final Entity currentForeignKeyValue = getForeignKey(foreignKeyProperty.getPropertyId());
+    final Entity currentForeignKeyValue = getForeignKey((Attribute<Entity>) foreignKeyProperty.getPropertyId());
     if (currentForeignKeyValue != null) {
       for (final Entity replacementValue : values) {
         if (currentForeignKeyValue.equals(replacementValue)) {
@@ -975,11 +976,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return !Objects.equals(get(property), getDefaultValue(property));
   }
 
-  private Event<ValueChange> getValueEditEvent(final String propertyId) {
+  private Event<ValueChange> getValueEditEvent(final Attribute<?> propertyId) {
     return valueEditEventMap.computeIfAbsent(propertyId, k -> Events.event());
   }
 
-  private Event<ValueChange> getValueChangeEvent(final String propertyId) {
+  private Event<ValueChange> getValueChangeEvent(final Attribute<?> propertyId) {
     return valueChangeEventMap.computeIfAbsent(propertyId, k -> Events.event());
   }
 
@@ -1041,9 +1042,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private static final class EditModelValue<V> extends AbstractValue<V> {
 
     private final EntityEditModel editModel;
-    private final String propertyId;
+    private final Attribute<V> propertyId;
 
-    private EditModelValue(final EntityEditModel editModel, final String propertyId) {
+    private EditModelValue(final EntityEditModel editModel, final Attribute<V> propertyId) {
       this.editModel = editModel;
       this.propertyId = propertyId;
       this.editModel.addValueListener(propertyId, valueChange -> notifyValueChange());

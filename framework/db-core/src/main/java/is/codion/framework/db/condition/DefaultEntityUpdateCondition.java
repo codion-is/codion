@@ -3,6 +3,8 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.domain.property.Attribute;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -13,7 +15,7 @@ final class DefaultEntityUpdateCondition extends DefaultEntityCondition implemen
 
   private static final long serialVersionUID = 1;
 
-  private final Map<String, Object> propertyValues = new LinkedHashMap<>();
+  private final Map<Attribute<?>, Object> propertyValues = new LinkedHashMap<>();
 
   DefaultEntityUpdateCondition(final String entityId) {
     super(entityId);
@@ -24,7 +26,7 @@ final class DefaultEntityUpdateCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntityUpdateCondition set(final String propertyId, final Object value) {
+  public EntityUpdateCondition set(final Attribute<?> propertyId, final Object value) {
     requireNonNull(propertyId, "propertyId");
     if (propertyValues.containsKey(propertyId)) {
       throw new IllegalArgumentException("Update condition already contains a value for property: " + propertyId);
@@ -35,7 +37,7 @@ final class DefaultEntityUpdateCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public Map<String, Object> getPropertyValues() {
+  public Map<Attribute<?>, Object> getPropertyValues() {
     return unmodifiableMap(propertyValues);
   }
 }

@@ -28,6 +28,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.KeyGenerator;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -85,7 +86,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<String, List<ColumnProperty>> insertablePropertiesCache = new HashMap<>();
   private final Map<String, List<ColumnProperty>> updatablePropertiesCache = new HashMap<>();
   private final Map<String, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
-  private final Map<String, String[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
+  private final Map<String, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
   private final Map<String, String> allColumnsClauseCache = new HashMap<>();
 
   private boolean optimisticLockingEnabled = true;
@@ -344,7 +345,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         final List<ColumnProperty> statementProperties = new ArrayList<>();
         final EntityDefinition entityDefinition = getEntityDefinition(updateCondition.getEntityId());
-        for (final Map.Entry<String, Object> propertyValue : updateCondition.getPropertyValues().entrySet()) {
+        for (final Map.Entry<Attribute<?>, Object> propertyValue : updateCondition.getPropertyValues().entrySet()) {
           final ColumnProperty columnProperty = entityDefinition.getColumnProperty(propertyValue.getKey());
           if (!columnProperty.isUpdatable()) {
             throw new IllegalArgumentException("Property is not updatable: " + columnProperty.getPropertyId());
@@ -448,7 +449,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
+  public <T> Entity selectSingle(final String entityId, final Attribute<T> propertyId, final T value) throws DatabaseException {
     return selectSingle(selectCondition(entityId, propertyId, LIKE, value));
   }
 
@@ -495,7 +496,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public List<Entity> select(final String entityId, final String propertyId, final Object... values) throws DatabaseException {
+  public <T> List<Entity> select(final String entityId, final Attribute<T> propertyId, final T... values) throws DatabaseException {
     return select(selectCondition(entityId, propertyId, LIKE, createValueList(values)));
   }
 
@@ -519,7 +520,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> List<T> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
+  public <T> List<T> selectValues(final Attribute<T> propertyId, final EntityCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
     final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
     if (entityDefinition.getSelectQuery() != null) {
@@ -688,7 +689,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException {
+  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobPropertyId, final byte[] blobData) throws DatabaseException {
     requireNonNull(blobData, "blobData");
     final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
     checkIfReadOnly(entityDefinition.getEntityId());
@@ -734,7 +735,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException {
+  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobPropertyId) throws DatabaseException {
     final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
     final ColumnProperty blobProperty = entityDefinition.getColumnProperty(blobPropertyId);
     if (blobProperty.getColumnType() != Types.BLOB) {
@@ -1091,7 +1092,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entityDefinition.getWritableColumnProperties(true, false));
   }
 
-  private String[] getPrimaryKeyAndWritableColumnPropertyIds(final String entityId) {
+  private Attribute<?>[] getPrimaryKeyAndWritableColumnPropertyIds(final String entityId) {
     return primaryKeyAndWritableColumnPropertiesCache.computeIfAbsent(entityId, e -> {
       final EntityDefinition entityDefinition = getEntityDefinition(entityId);
       final List<ColumnProperty> writableAndPrimaryKeyProperties =
@@ -1102,11 +1103,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
       });
 
-      return writableAndPrimaryKeyProperties.stream().map(Property::getPropertyId).toArray(String[]::new);
+      return writableAndPrimaryKeyProperties.stream().map(Property::getPropertyId).toArray(Attribute<?>[]::new);
     });
   }
 
-  private String columnsClause(final String entityId, final List<String> selectPropertyIds,
+  private String columnsClause(final String entityId, final List<Attribute<?>> selectPropertyIds,
                                final List<ColumnProperty> propertiesToSelect) {
     if (selectPropertyIds.isEmpty()) {
       return allColumnsClauseCache.computeIfAbsent(entityId, eId -> Queries.columnsClause(propertiesToSelect));

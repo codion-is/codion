@@ -15,7 +15,7 @@ public interface DerivedProperty extends TransientProperty {
   /**
    * @return the ids of properties this property derives from.
    */
-  List<String> getSourcePropertyIds();
+  List<Attribute<?>> getSourcePropertyIds();
 
   /**
    * @return the value provider, providing the derived value
@@ -31,6 +31,6 @@ public interface DerivedProperty extends TransientProperty {
      * @param sourceValues the source values, mapped to their respective propertyIds
      * @return the derived value
      */
-    Object getValue(Map<String, Object> sourceValues);
+    Object getValue(Map<Attribute<?>, Object> sourceValues);
   }
 }

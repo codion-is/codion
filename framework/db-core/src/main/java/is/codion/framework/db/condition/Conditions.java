@@ -8,6 +8,7 @@ import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.ConditionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -80,12 +81,12 @@ public final class Conditions {
    * {@code operator} and {@code value}. Note that {@code value} may be a single value, a Collection
    * of values or null.
    * @param entityId the  entityId
-   * @param  propertyId the propertyId
+   * @param propertyId the propertyId
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return a condition based on the given value
    */
-  public static EntityCondition condition(final String entityId, final String propertyId,
+  public static EntityCondition condition(final String entityId, final Attribute<?> propertyId,
                                           final Operator operator, final Object value) {
     return new DefaultEntityCondition(entityId, propertyCondition(propertyId, operator, value));
   }
@@ -141,7 +142,7 @@ public final class Conditions {
    * @param value the condition value, can be a Collection of values
    * @return a select condition based on the given value
    */
-  public static EntitySelectCondition selectCondition(final String entityId, final String propertyId,
+  public static EntitySelectCondition selectCondition(final String entityId, final Attribute<?> propertyId,
                                                       final Operator operator, final Object value) {
     return selectCondition(entityId, propertyCondition(propertyId, operator, value));
   }
@@ -166,8 +167,8 @@ public final class Conditions {
    * @param value the condition value, can be a Collection of values
    * @return an update condition based on the given value
    */
-  public static EntityUpdateCondition updateCondition(final String entityId, final String propertyId,
-                                                      final Operator operator, final Object value) {
+  public static <T> EntityUpdateCondition updateCondition(final String entityId, final Attribute<T> propertyId,
+                                                          final Operator operator, final T value) {
     return updateCondition(entityId, propertyCondition(propertyId, operator, value));
   }
 
@@ -231,7 +232,7 @@ public final class Conditions {
    * @throws NullPointerException in case any of the parameters are null
    * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
    */
-  public static CustomCondition customCondition(final String conditionId, final List<String> propertyIds, final List values) {
+  public static CustomCondition customCondition(final String conditionId, final List<Attribute<?>> propertyIds, final List values) {
     return new DefaultCustomCondition(conditionId, propertyIds, values);
   }
 
@@ -243,7 +244,7 @@ public final class Conditions {
    * @param value the condition value, can be a Collection of values
    * @return a property condition based on the given value
    */
-  public static PropertyCondition propertyCondition(final String propertyId, final Operator operator,
+  public static PropertyCondition propertyCondition(final Attribute<?> propertyId, final Operator operator,
                                                     final Object value) {
     return new DefaultPropertyCondition(propertyId, operator, value);
   }
@@ -291,7 +292,7 @@ public final class Conditions {
   }
 
   private static Condition compositeKeyCondition(final List<Entity.Key> keys, final List<ColumnProperty> properties,
-                                                final Operator operator) {
+                                                 final Operator operator) {
     if (keys.size() == 1) {
       return singleCompositeCondition(properties, operator, keys.get(0));
     }

@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.property.Attribute;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +17,13 @@ final class DefaultOrderBy implements OrderBy {
   private final List<OrderByProperty> orderByProperties = new ArrayList<>(1);
 
   @Override
-  public OrderBy ascending(final String... propertyIds) {
+  public OrderBy ascending(final Attribute<?>... propertyIds) {
     add(true, propertyIds);
     return this;
   }
 
   @Override
-  public OrderBy descending(final String... propertyIds) {
+  public OrderBy descending(final Attribute<?>... propertyIds) {
     add(false, propertyIds);
     return this;
   }
@@ -31,9 +33,9 @@ final class DefaultOrderBy implements OrderBy {
     return orderByProperties;
   }
 
-  private void add(final boolean ascending, final String... propertyIds) {
+  private void add(final boolean ascending, final Attribute<?>... propertyIds) {
     requireNonNull(propertyIds, "propertyIds");
-    for (final String propertyId : propertyIds) {
+    for (final Attribute<?> propertyId : propertyIds) {
       final DefaultOrderByProperty property = new DefaultOrderByProperty(propertyId, ascending);
       if (orderByProperties.contains(property)) {
         throw new IllegalArgumentException("Order by already contains property: " + propertyId);
@@ -46,16 +48,16 @@ final class DefaultOrderBy implements OrderBy {
 
     private static final long serialVersionUID = 1;
 
-    private final String propertyId;
+    private final Attribute<?> propertyId;
     private final boolean ascending;
 
-    private DefaultOrderByProperty(final String propertyId, final boolean ascending) {
+    private DefaultOrderByProperty(final Attribute<?> propertyId, final boolean ascending) {
       this.propertyId = requireNonNull(propertyId, "propertyId");
       this.ascending = ascending;
     }
 
     @Override
-    public String getPropertyId() {
+    public Attribute<?> getPropertyId() {
       return propertyId;
     }
 

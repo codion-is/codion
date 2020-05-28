@@ -5,7 +5,6 @@ package is.codion.framework.domain.property;
 
 import java.util.List;
 
-import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
 
 final class DefaultDerivedProperty extends DefaultTransientProperty implements DerivedProperty {
@@ -13,13 +12,13 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
   private static final long serialVersionUID = 1;
 
   private final Provider valueProvider;
-  private final List<String> sourcePropertyIds;
+  private final List<Attribute<?>> sourcePropertyIds;
 
-  DefaultDerivedProperty(final String propertyId, final int type, final String caption,
-                         final Provider valueProvider, final String... sourcePropertyIds) {
+  DefaultDerivedProperty(final Attribute<?> propertyId, final int type, final String caption,
+                         final Provider valueProvider, final Attribute<?>... sourcePropertyIds) {
     super(propertyId, type, caption);
     this.valueProvider = valueProvider;
-    if (nullOrEmpty(sourcePropertyIds)) {
+    if (sourcePropertyIds == null || sourcePropertyIds.length == 0) {
       throw new IllegalArgumentException("No source propertyIds, a derived property must be derived from one or more existing properties");
     }
     this.sourcePropertyIds = asList(sourcePropertyIds);
@@ -31,7 +30,7 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
   }
 
   @Override
-  public List<String> getSourcePropertyIds() {
+  public List<Attribute<?>> getSourcePropertyIds() {
     return sourcePropertyIds;
   }
 

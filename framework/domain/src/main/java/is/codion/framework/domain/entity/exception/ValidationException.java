@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity.exception;
 
+import is.codion.framework.domain.property.Attribute;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -10,7 +12,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class ValidationException extends Exception {
 
-  private final String propertyId;
+  private final Attribute<?> propertyId;
   private final Object value;
 
   /**
@@ -19,7 +21,7 @@ public class ValidationException extends Exception {
    * @param value the value
    * @param message the exception message
    */
-  public ValidationException(final String propertyId, final Object value, final String message) {
+  public ValidationException(final Attribute<?> propertyId, final Object value, final String message) {
     super(message);
     this.propertyId = requireNonNull(propertyId, "propertyId");
     this.value = value;
@@ -28,7 +30,7 @@ public class ValidationException extends Exception {
   /**
    * @return the value property id
    */
-  public final String getPropertyId() {
+  public final Attribute<?> getPropertyId() {
     return propertyId;
   }
 

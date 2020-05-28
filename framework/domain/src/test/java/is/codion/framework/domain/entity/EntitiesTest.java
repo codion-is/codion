@@ -7,6 +7,7 @@ import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -187,10 +188,9 @@ public final class EntitiesTest {
       values.add(i);
       entityList.add(entity);
     }
-    final Property property = entities.getDefinition(TestDomain.T_DEPARTMENT).getProperty(TestDomain.DEPARTMENT_ID);
     Collection<Integer> propertyValues = Entities.getValues(TestDomain.DEPARTMENT_ID, entityList);
     assertTrue(propertyValues.containsAll(values));
-    propertyValues = Entities.getValues(property.getPropertyId(), entityList);
+    propertyValues = Entities.getValues(TestDomain.DEPARTMENT_ID, entityList);
     assertTrue(propertyValues.containsAll(values));
     assertTrue(Entities.getValues(TestDomain.DEPARTMENT_ID, emptyList()).isEmpty());
   }
@@ -278,7 +278,7 @@ public final class EntitiesTest {
     collection.add(entities.entity(TestDomain.T_DEPARTMENT));
     Entities.put(TestDomain.DEPARTMENT_ID, 1, collection);
     for (final Entity entity : collection) {
-      assertEquals(Integer.valueOf(1), entity.getInteger(TestDomain.DEPARTMENT_ID));
+      assertEquals(Integer.valueOf(1), entity.get(TestDomain.DEPARTMENT_ID));
     }
     Entities.put(TestDomain.DEPARTMENT_ID, null, collection);
     for (final Entity entity : collection) {
@@ -380,7 +380,7 @@ public final class EntitiesTest {
 
     final List<Entity> entities = asList(one, two, three);
 
-    final Map<String, Object> values = new HashMap<>();
+    final Map<Attribute<?>, Object> values = new HashMap<>();
     values.put(TestDomain.DETAIL_STRING, "b");
     assertEquals(1, Entities.getEntitiesByValue(entities, values).size());
     values.put(TestDomain.DETAIL_STRING, "zz");

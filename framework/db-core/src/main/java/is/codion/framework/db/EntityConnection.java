@@ -13,6 +13,7 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
@@ -184,7 +185,7 @@ public interface EntityConnection {
    * @throws IllegalArgumentException in case the given property is not a column based property
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  <T> List<T> selectValues(String propertyId, EntityCondition condition) throws DatabaseException;
+  <T> List<T> selectValues(Attribute<T> propertyId, EntityCondition condition) throws DatabaseException;
 
   /**
    * Selects a single entity
@@ -197,7 +198,7 @@ public interface EntityConnection {
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  Entity selectSingle(String entityId, String propertyId, Object value) throws DatabaseException;
+  <T> Entity selectSingle(String entityId, Attribute<T> propertyId, T value) throws DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -244,7 +245,7 @@ public interface EntityConnection {
    * @return entities of the type {@code entityId} according to {@code propertyId} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> select(String entityId, String propertyId, Object... values) throws DatabaseException;
+  <T> List<Entity> select(String entityId, Attribute<T> propertyId, T... values) throws DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityIds
@@ -286,7 +287,7 @@ public interface EntityConnection {
    * @throws is.codion.common.db.exception.UpdateException in case multiple rows were affected
    * @throws DatabaseException in case of a database exception
    */
-  void writeBlob(Entity.Key primaryKey, String blobPropertyId, byte[] blobData) throws DatabaseException;
+  void writeBlob(Entity.Key primaryKey, Attribute<byte[]> blobPropertyId, byte[] blobData) throws DatabaseException;
 
   /**
    * Reads the blob specified by the property identified by {@code propertyId} from the given entity,
@@ -296,5 +297,5 @@ public interface EntityConnection {
    * @return a byte array containing the blob data or null if no blob data is found
    * @throws DatabaseException in case of a database exception
    */
-  byte[] readBlob(Entity.Key primaryKey, String blobPropertyId) throws DatabaseException;
+  byte[] readBlob(Entity.Key primaryKey, Attribute<byte[]> blobPropertyId) throws DatabaseException;
 }

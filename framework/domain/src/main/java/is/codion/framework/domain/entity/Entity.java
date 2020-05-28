@@ -5,15 +5,12 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.common.valuemap.ValueMap;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -45,126 +42,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @param propertyId the id of the property for which to retrieve the value
    * @return the value of the given property
    */
-  Object get(String propertyId);
+  <T> T get(Attribute<T> propertyId);
 
   /**
    * Returns the original value associated with the property identified by {@code propertyId}.
    * @param propertyId the id of the property for which to retrieve the original value
    * @return the original value of the given property
    */
-  Object getOriginal(String propertyId);
-
-  /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * assuming it is a String.
-   * @param propertyId the id of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId},
-   * assuming it is a String
-   * @throws ClassCastException if the value is not a String instance
-   */
-  String getString(String propertyId);
-
-  /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * assuming it is an Integer.
-   * @param propertyId the id of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId},
-   * assuming it is an Integer
-   * @throws ClassCastException if the value is not a Integer instance
-   */
-  Integer getInteger(String propertyId);
-
-  /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * assuming it is a Long.
-   * @param propertyId the id of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId},
-   * assuming it is a Long
-   * @throws ClassCastException if the value is not a Integer instance
-   */
-  Long getLong(String propertyId);
-
-  /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * assuming it is a Character.
-   * @param propertyId the id of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId},
-   * assuming it is a Character
-   * @throws ClassCastException if the value is not a Character instance
-   */
-  Character getCharacter(String propertyId);
-
-  /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * assuming it is a Double.
-   * @param propertyId the id of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId},
-   * assuming it is a Double.
-   * @throws ClassCastException if the value is not a Double instance
-   * @see Property#getMaximumFractionDigits()
-   */
-  Double getDouble(String propertyId);
-
-  /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * assuming it is a BigDecimal.
-   * @param propertyId the id of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId},
-   * assuming it is a BigDecimal.
-   * @throws ClassCastException if the value is not a BigDecimal instance
-   * @see Property#getMaximumFractionDigits()
-   */
-  BigDecimal getBigDecimal(String propertyId);
-
-  /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * assuming it is a LocalTime.
-   * @param propertyId the id of the date property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId},
-   * assuming it is a LocalTime
-   * @throws ClassCastException if the value is not a LocalTime instance
-   */
-  LocalTime getTime(String propertyId);
-
-  /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * assuming it is a LocalDate.
-   * @param propertyId the id of the date property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId},
-   * assuming it is a LocalDate
-   * @throws ClassCastException if the value is not a LocalDate instance
-   */
-  LocalDate getDate(String propertyId);
-
-  /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * assuming it is a LocalDateTime.
-   * @param propertyId the id of the date property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId},
-   * assuming it is a LocalDatetime
-   * @throws ClassCastException if the value is not a LocalDateTime instance
-   */
-  LocalDateTime getTimestamp(String propertyId);
-
-  /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * assuming it is a Boolean.
-   * @param propertyId the id of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId},
-   * assuming it is a Boolean
-   * @throws ClassCastException if the value is not a Boolean instance
-   */
-  Boolean getBoolean(String propertyId);
-
-  /**
-   * Returns the value associated with the property identified by {@code propertyId},
-   * assuming it is a byte array.
-   * @param propertyId the id of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId},
-   * assuming it is a byte array
-   * @throws ClassCastException if the value is not a byte array instance
-   */
-  byte[] getBlob(String propertyId);
+  <T> T getOriginal(Attribute<T> propertyId);
 
   /**
    * This method returns a String representation of the value associated with the given property,
@@ -172,7 +57,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @param propertyId the id of the property for which to retrieve the value
    * @return a String representation of the value of {@code property}
    */
-  String getAsString(String propertyId);
+  String getAsString(Attribute<?> propertyId);
 
   /**
    * Retrieves a string representation of the value mapped to the given property, an empty string is returned
@@ -194,7 +79,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @throws IllegalArgumentException if the property is not a foreign key property
    * @see #isLoaded(String)
    */
-  Entity getForeignKey(String foreignKeyPropertyId);
+  Entity getForeignKey(Attribute<Entity> foreignKeyPropertyId);
 
   /**
    * Returns the Entity instance referenced by the given foreign key property.
@@ -231,13 +116,13 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @return the previous value
    * @throws IllegalArgumentException in case the value type does not fit the property
    */
-  Object put(String propertyId, Object value);
+  <T> T put(Attribute<T> propertyId, T value);
 
   /**
    * @param propertyId the propertyId
    * @return true if the value associated with the given property has been modified
    */
-  boolean isModified(String propertyId);
+  boolean isModified(Attribute<?> propertyId);
 
   /**
    * Clears the primary key values from this entity,
@@ -262,7 +147,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @param foreignKeyPropertyId the property id
    * @return true if the reference entity has been loaded
    */
-  boolean isLoaded(String foreignKeyPropertyId);
+  boolean isLoaded(Attribute<?> foreignKeyPropertyId);
 
   /**
    * @param property the property for which to retrieve the color
@@ -275,14 +160,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * If the value has not been modified then calling this method has no effect.
    * @param propertyId the id of the property for which to revert the value
    */
-  void revert(String propertyId);
+  void revert(Attribute<?> propertyId);
 
   /**
    * Saves the value associated with the given key, that is, removes the original value.
    * If no original value exists calling this method has no effect.
    * @param propertyId the id of the property for which to save the value
    */
-  void save(String propertyId);
+  void save(Attribute<?> propertyId);
 
   /**
    * Returns true if a null value is mapped to the given property or if no mapping is found.
@@ -290,7 +175,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @param propertyId the id of the property
    * @return true if the value mapped to the given property is null or no value is mapped
    */
-  boolean isNull(String propertyId);
+  boolean isNull(Attribute<?> propertyId);
 
   /**
    * Returns true if a this Entity contains a non-null value mapped to the given property
@@ -298,14 +183,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @param propertyId the id of the property
    * @return true if a non-null value is mapped to the given property
    */
-  boolean isNotNull(String propertyId);
+  boolean isNotNull(Attribute<?> propertyId);
 
   /**
    * Returns true if this Entity contains a value for the given property, that value can be null.
    * @param propertyId the propertyId
    * @return true if a value is mapped to this property
    */
-  boolean containsKey(String propertyId);
+  boolean containsKey(Attribute<?> propertyId);
 
   /**
    * Removes the given property and value from this Entity along with the original value if any.
@@ -313,7 +198,7 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
    * @param propertyId the id of the property to remove
    * @return the previous value mapped to the given key
    */
-  Object remove(String propertyId);
+  <T> T remove(Attribute<T> propertyId);
 
   /**
    * Adds a listener notified each time a value changes
@@ -359,14 +244,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param propertyId the propertyId
      * @return true if the value mapped to the given property is null or none exists
      */
-    boolean isNull(String propertyId);
+    boolean isNull(Attribute<?> propertyId);
 
     /**
      * Returns true if a non-null value is mapped to the given property.
      * @param propertyId the propertyId
      * @return true if a non-null value is mapped to the given property
      */
-    boolean isNotNull(String propertyId);
+    boolean isNotNull(Attribute<?> propertyId);
 
     /**
      * @return true if this primary key is based on a single integer column
@@ -393,12 +278,12 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
      * @param value the value to associate with the property
      * @return the previous value
      */
-    Object put(String propertyId, Object value);
+    <T> T put(Attribute<T> propertyId, T value);
 
     /**
      * @param propertyId the propertyId
      * @return the value associated with the given property
      */
-    Object get(String propertyId);
+    <T> T get(Attribute<T> propertyId);
   }
 }

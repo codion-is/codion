@@ -230,7 +230,7 @@ public final class DefaultEntityLookupModelTest {
 
   private static boolean contains(final List<Entity> result, final String employeeName) {
     for (final Entity entity : result) {
-      if (entity.getString(TestDomain.EMP_NAME).equals(employeeName)) {
+      if (entity.get(TestDomain.EMP_NAME).equals(employeeName)) {
         return true;
       }
     }

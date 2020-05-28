@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.property.Attribute;
+
 import java.io.Serializable;
 import java.text.Format;
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
    * Instantiates a new {@link StringProvider} instance
    * @param propertyId the id of the property which value should be used for a string representation
    */
-  public StringProvider(final String propertyId) {
+  public StringProvider(final Attribute<?> propertyId) {
     addValue(propertyId);
   }
 
@@ -73,7 +75,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
    * @param propertyId the id of the property which value should be added to the string representation
    * @return this {@link StringProvider} instance
    */
-  public StringProvider addValue(final String propertyId) {
+  public StringProvider addValue(final Attribute<?> propertyId) {
     Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
     valueProviders.add(new StringValueProvider(propertyId));
     return this;
@@ -85,7 +87,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
    * @param format the Format to use when appending the value
    * @return this {@link StringProvider} instance
    */
-  public StringProvider addFormattedValue(final String propertyId, final Format format) {
+  public StringProvider addFormattedValue(final Attribute<?> propertyId, final Format format) {
     Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
     requireNonNull(format, "format");
     valueProviders.add(new FormattedValueProvider(propertyId, format));
@@ -99,7 +101,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
    * @param propertyId the id of the property in the referenced entity to use
    * @return this {@link StringProvider} instance
    */
-  public StringProvider addForeignKeyValue(final String foreignKeyPropertyId, final String propertyId) {
+  public StringProvider addForeignKeyValue(final Attribute<Entity> foreignKeyPropertyId, final Attribute<?> propertyId) {
     requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
     Objects.requireNonNull(propertyId, PROPERTY_ID_PARAM);
     valueProviders.add(new ForeignKeyValueProvider(foreignKeyPropertyId, propertyId));
@@ -120,10 +122,10 @@ public final class StringProvider implements Function<Entity, String>, Serializa
 
     private static final long serialVersionUID = 1;
 
-    private final String propertyId;
+    private final Attribute<?> propertyId;
     private final Format format;
 
-    private FormattedValueProvider(final String propertyId, final Format format) {
+    private FormattedValueProvider(final Attribute<?> propertyId, final Format format) {
       this.propertyId = propertyId;
       this.format = format;
     }
@@ -142,10 +144,10 @@ public final class StringProvider implements Function<Entity, String>, Serializa
 
     private static final long serialVersionUID = 1;
 
-    private final String foreignKeyPropertyId;
-    private final String propertyId;
+    private final Attribute<Entity> foreignKeyPropertyId;
+    private final Attribute<?> propertyId;
 
-    private ForeignKeyValueProvider(final String foreignKeyPropertyId, final String propertyId) {
+    private ForeignKeyValueProvider(final Attribute<Entity> foreignKeyPropertyId, final Attribute<?> propertyId) {
       this.foreignKeyPropertyId = foreignKeyPropertyId;
       this.propertyId = propertyId;
     }
@@ -164,9 +166,9 @@ public final class StringProvider implements Function<Entity, String>, Serializa
 
     private static final long serialVersionUID = 1;
 
-    private final String propertyId;
+    private final Attribute<?> propertyId;
 
-    private StringValueProvider(final String propertyId) {
+    private StringValueProvider(final Attribute<?> propertyId) {
       this.propertyId = propertyId;
     }
 

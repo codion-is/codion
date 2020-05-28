@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static is.codion.framework.domain.property.Properties.attribute;
+
 /**
  * A service for dealing with entities
  */
@@ -335,7 +337,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Serializer.serialize(connection.selectValues(propertyId, deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.selectValues(attribute(propertyId), deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -513,7 +515,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List parameters = deserialize(request);
-      connection.writeBlob((Entity.Key) parameters.get(0), (String) parameters.get(1), (byte[]) parameters.get(2));
+      connection.writeBlob((Entity.Key) parameters.get(0), attribute((String) parameters.get(1)), (byte[]) parameters.get(2));
 
       return Response.ok().build();
     }
@@ -538,7 +540,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List parameters = deserialize(request);
 
-      return Response.ok(Serializer.serialize(connection.readBlob((Entity.Key) parameters.get(0), (String) parameters.get(1)))).build();
+      return Response.ok(Serializer.serialize(connection.readBlob((Entity.Key) parameters.get(0), attribute((String) parameters.get(1))))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

@@ -4,6 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.property.Attribute;
 
 import java.util.List;
 
@@ -77,7 +78,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param foreignKeyPropertyId the foreign key property id
    * @return the number of levels of foreign key values to fetch
    */
-  Integer getForeignKeyFetchDepth(String foreignKeyPropertyId);
+  Integer getForeignKeyFetchDepth(Attribute<?> foreignKeyPropertyId);
 
   /**
    * Limit the levels of foreign keys to fetch via the given foreign key property
@@ -85,7 +86,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param fetchDepth the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForeignKeyFetchDepth(String foreignKeyPropertyId, int fetchDepth);
+  EntitySelectCondition setForeignKeyFetchDepth(Attribute<?> foreignKeyPropertyId, int fetchDepth);
 
   /**
    * Limit the levels of foreign keys to fetch
@@ -104,11 +105,11 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param propertyIds the ids of the column properties to include
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setSelectPropertyIds(String... propertyIds);
+  EntitySelectCondition setSelectPropertyIds(Attribute<?>... propertyIds);
 
   /**
    * @return the ids of the properties to include in the query result,
    * an empty list if all should be included
    */
-  List<String> getSelectPropertyIds();
+  List<Attribute<?>> getSelectPropertyIds();
 }

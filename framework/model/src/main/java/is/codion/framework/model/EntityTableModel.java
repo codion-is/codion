@@ -18,6 +18,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -342,7 +343,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Arranges the column model so that only the given columns are visible and in the given order
    * @param propertyIds the column identifiers
    */
-  void setColumns(String... propertyIds);
+  void setColumns(Attribute<?>... propertyIds);
 
   /**
    * @param delimiter the delimiter

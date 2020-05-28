@@ -8,6 +8,7 @@ import is.codion.common.Serializer;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.TestDomain;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
@@ -68,7 +69,7 @@ public class DefaultEntityTest {
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final Property invalid = Properties.columnProperty("invalid", Types.INTEGER).entityId(TestDomain.T_MASTER).get();
+    final Property invalid = Properties.columnProperty(Properties.attribute("invalid"), Types.INTEGER).entityId(TestDomain.T_MASTER).get();
     final Map<Property, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
 
@@ -380,57 +381,6 @@ public class DefaultEntityTest {
   }
 
   @Test
-  public void putStringValueInt() {
-    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, 1));
-  }
-
-  @Test
-  public void putStringValueDouble() {
-    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, 1d));
-  }
-
-  @Test
-  public void putStringValueBoolean() {
-    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, false));
-  }
-
-  @Test
-  public void putStringValueChar() {
-    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, 'c'));
-  }
-
-  @Test
-  public void putStringValueEntity() {
-    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    department.put(TestDomain.DEPARTMENT_ID, -10);
-
-    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, department));
-  }
-
-  @Test
-  public void putStringValueDate() {
-    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, LocalDate.now()));
-  }
-
-  @Test
-  public void putStringValueTimestamp() {
-    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_NAME, LocalDateTime.now()));
-  }
-
-  @Test
-  public void putDoubleValueString() {
-    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> employee.put(TestDomain.EMP_SALARY, "test"));
-  }
-
-  @Test
   public void putDenormalizedViewValue() {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
@@ -442,13 +392,6 @@ public class DefaultEntityTest {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertThrows(IllegalArgumentException.class, () -> testEntity.put(TestDomain.DETAIL_MASTER_CODE, 2));
-  }
-
-  @Test
-  public void putIntegerKeyString() {
-    final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
-            detailString, detailDate, detailTimestamp, detailBoolean, null);
-    assertThrows(IllegalArgumentException.class, () -> testEntity.put(TestDomain.DETAIL_ID, "hello"));
   }
 
   @Test
@@ -505,11 +448,11 @@ public class DefaultEntityTest {
     final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_ID, -10);
 
-    assertNull(employee.getDouble(TestDomain.EMP_SALARY));
+    assertNull(employee.get(TestDomain.EMP_SALARY));
 
     final double salary = 1000.1234;
     employee.put(TestDomain.EMP_SALARY, salary);
-    assertEquals(Double.valueOf(1000.12), employee.getDouble(TestDomain.EMP_SALARY));
+    assertEquals(Double.valueOf(1000.12), employee.get(TestDomain.EMP_SALARY));
   }
 
   @Test
@@ -535,22 +478,11 @@ public class DefaultEntityTest {
     final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, "ename");
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
-    assertEquals("ename - dname", employee.getString(TestDomain.EMP_NAME_DEPARTMENT));
+    assertEquals("ename - dname", employee.get(TestDomain.EMP_NAME_DEPARTMENT));
 
     final Entity detail = ENTITIES.entity(TestDomain.T_DETAIL);
     detail.put(TestDomain.DETAIL_INT, 42);
     assertEquals("420", detail.getAsString(TestDomain.DETAIL_INT_DERIVED));
-  }
-
-  @Test
-  public void getForeignKeyValueNonFKProperty() {
-    final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
-    department.put(TestDomain.DEPARTMENT_ID, -10);
-    final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
-    employee.put(TestDomain.EMP_ID, -10);
-    employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
-
-    assertThrows(IllegalArgumentException.class, () -> employee.getForeignKey(TestDomain.EMP_COMMISSION));
   }
 
   @Test
@@ -561,7 +493,7 @@ public class DefaultEntityTest {
     employee.put(TestDomain.EMP_ID, -10);
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
     assertNotNull(employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK));
-    assertEquals(Integer.valueOf(-10), employee.getInteger(TestDomain.EMP_DEPARTMENT));
+    assertEquals(Integer.valueOf(-10), employee.get(TestDomain.EMP_DEPARTMENT));
 
     employee.remove(TestDomain.EMP_DEPARTMENT_FK);
     assertNull(employee.get(TestDomain.EMP_DEPARTMENT_FK));
@@ -656,29 +588,31 @@ public class DefaultEntityTest {
 
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
-    final TransientProperty.Builder transientProperty = Properties.transientProperty("trans", Types.INTEGER);
+    final Attribute<Integer> trans = Properties.attribute("trans");
+    final Attribute<Integer> id = Properties.attribute("id");
+    final TransientProperty.Builder transientProperty = Properties.transientProperty(trans, Types.INTEGER);
     class TestDomain extends Domain {
       public TestDomain() {
         super("transient");
         define("entityId",
-                Properties.primaryKeyProperty("id", Types.INTEGER),
+                Properties.primaryKeyProperty(id, Types.INTEGER),
                 transientProperty);  }
     }
     final Entities entities = new TestDomain().registerEntities();
 
     final Entity entity = entities.entity("entityId");
-    entity.put("id", 42);
-    entity.put("trans", null);
+    entity.put(id, 42);
+    entity.put(trans, null);
     entity.saveAll();
 
-    entity.put("trans", 1);
+    entity.put(trans, 1);
     assertTrue(entity.isModified());
 
     transientProperty.modifiesEntity(false);
     assertFalse(entity.isModified());
 
     final Entity deserialized = Serializer.deserialize(Serializer.serialize(entity));
-    assertTrue(deserialized.isModified("trans"));
+    assertTrue(deserialized.isModified(trans));
   }
 
   @Test
@@ -688,7 +622,7 @@ public class DefaultEntityTest {
     dept.put(TestDomain.DEPARTMENT_ID, 1);
     dept.put(TestDomain.DEPARTMENT_NAME, "Name1");
     emp.put(TestDomain.EMP_DEPARTMENT_FK, dept);
-    assertEquals(1, emp.getInteger(TestDomain.EMP_DEPARTMENT));
+    assertEquals(1, emp.get(TestDomain.EMP_DEPARTMENT));
     emp.put(TestDomain.EMP_DEPARTMENT, 2);
     assertNull(emp.get(TestDomain.EMP_DEPARTMENT_FK));
     assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));

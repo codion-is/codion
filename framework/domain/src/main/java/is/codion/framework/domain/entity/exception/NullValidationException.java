@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity.exception;
 
+import is.codion.framework.domain.property.Attribute;
+
 /**
  * An exception used to indicate that a null value was being associated with
  * a key which does not allow null values.
@@ -14,7 +16,7 @@ public class NullValidationException extends ValidationException {
    * @param propertyId the propertyId with which the null value is associated
    * @param message the message
    */
-  public NullValidationException(final String propertyId, final String message) {
+  public NullValidationException(final Attribute<?> propertyId, final String message) {
     super(propertyId, null, message);
   }
 }

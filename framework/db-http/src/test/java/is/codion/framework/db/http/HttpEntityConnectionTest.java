@@ -126,7 +126,7 @@ public final class HttpEntityConnectionTest {
     department.put(TestDomain.DEPARTMENT_NAME, "TEstING");
     connection.update(department);
     department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, department.get(TestDomain.DEPARTMENT_ID));
-    assertEquals("TEstING", department.getString(TestDomain.DEPARTMENT_NAME));
+    assertEquals("TEstING", department.get(TestDomain.DEPARTMENT_NAME));
   }
 
   @Test
@@ -146,8 +146,8 @@ public final class HttpEntityConnectionTest {
       assertEquals(0, connection.selectRowCount(selectCondition));
       final List<Entity> afterUpdate = connection.select(Entities.getKeys(entities));
       for (final Entity entity : afterUpdate) {
-        assertEquals(500d, entity.getDouble(TestDomain.EMP_COMMISSION));
-        assertEquals(4200d, entity.getDouble(TestDomain.EMP_SALARY));
+        assertEquals(500d, entity.get(TestDomain.EMP_COMMISSION));
+        assertEquals(4200d, entity.get(TestDomain.EMP_SALARY));
       }
     }
     finally {

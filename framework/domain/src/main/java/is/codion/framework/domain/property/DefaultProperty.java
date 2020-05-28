@@ -43,7 +43,7 @@ abstract class DefaultProperty implements Property {
    * By default this id serves as column name for database properties.
    * @see #getPropertyId()
    */
-  private final String propertyId;
+  private final Attribute<?> propertyId;
 
   /**
    * The property type, java.sql.Types
@@ -139,7 +139,7 @@ abstract class DefaultProperty implements Property {
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    * @param typeClass the type associated with this property
    */
-  DefaultProperty(final String propertyId, final int type, final String caption,
+  DefaultProperty(final Attribute<?> propertyId, final int type, final String caption,
                   final Class typeClass) {
     requireNonNull(propertyId, "propertyId");
     this.propertyId = propertyId;
@@ -157,7 +157,7 @@ abstract class DefaultProperty implements Property {
   }
 
   @Override
-  public final boolean is(final String propertyId) {
+  public final boolean is(final Attribute<?> propertyId) {
     return this.propertyId.equals(propertyId);
   }
 
@@ -237,7 +237,7 @@ abstract class DefaultProperty implements Property {
   }
 
   @Override
-  public final String getPropertyId() {
+  public final Attribute<?> getPropertyId() {
     return propertyId;
   }
 
@@ -346,7 +346,7 @@ abstract class DefaultProperty implements Property {
 
   @Override
   public final String getCaption() {
-    return caption == null ? propertyId : caption;
+    return caption == null ? propertyId.getId() : caption;
   }
 
   @Override

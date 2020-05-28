@@ -4,6 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.property.Attribute;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +17,8 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
 
   private static final long serialVersionUID = 1;
 
-  private HashMap<String, Integer> foreignKeyFetchDepths;
-  private List<String> selectPropertyIds = emptyList();
+  private HashMap<Attribute<?>, Integer> foreignKeyFetchDepths;
+  private List<Attribute<?>> selectPropertyIds = emptyList();
 
   private OrderBy orderBy;
   private Integer foreignKeyFetchDepth;
@@ -90,7 +91,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setForeignKeyFetchDepth(final String foreignKeyPropertyId, final int fetchDepth) {
+  public EntitySelectCondition setForeignKeyFetchDepth(final Attribute<?> foreignKeyPropertyId, final int fetchDepth) {
     if (foreignKeyFetchDepths == null) {
       foreignKeyFetchDepths = new HashMap<>();
     }
@@ -99,7 +100,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public Integer getForeignKeyFetchDepth(final String foreignKeyPropertyId) {
+  public Integer getForeignKeyFetchDepth(final Attribute<?> foreignKeyPropertyId) {
     if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKeyPropertyId)) {
       return foreignKeyFetchDepths.get(foreignKeyPropertyId);
     }
@@ -114,13 +115,13 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setSelectPropertyIds(final String... propertyIds) {
+  public EntitySelectCondition setSelectPropertyIds(final Attribute<?>... propertyIds) {
     this.selectPropertyIds = new ArrayList<>(asList(propertyIds));
     return this;
   }
 
   @Override
-  public List<String> getSelectPropertyIds() {
+  public List<Attribute<?>> getSelectPropertyIds() {
     return selectPropertyIds;
   }
 

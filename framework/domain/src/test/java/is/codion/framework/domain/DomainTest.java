@@ -19,6 +19,7 @@ import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static is.codion.framework.domain.property.Properties.attribute;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -80,15 +82,15 @@ public class DomainTest {
 
     //assert captions
     assertNotNull(definition.getProperty(TestDomain.DETAIL_ID).getCaption());
-    assertEquals(definition.getProperty(TestDomain.DETAIL_INT).getCaption(), TestDomain.DETAIL_INT);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_DOUBLE).getCaption(), TestDomain.DETAIL_DOUBLE);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_INT).getCaption(), TestDomain.DETAIL_INT.getId());
+    assertEquals(definition.getProperty(TestDomain.DETAIL_DOUBLE).getCaption(), TestDomain.DETAIL_DOUBLE.getId());
     assertEquals(definition.getProperty(TestDomain.DETAIL_STRING).getCaption(), "Detail string");
-    assertEquals(definition.getProperty(TestDomain.DETAIL_DATE).getCaption(), TestDomain.DETAIL_DATE);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_TIMESTAMP).getCaption(), TestDomain.DETAIL_TIMESTAMP);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_BOOLEAN).getCaption(), TestDomain.DETAIL_BOOLEAN);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_FK).getCaption(), TestDomain.DETAIL_MASTER_FK);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_NAME).getCaption(), TestDomain.DETAIL_MASTER_NAME);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_CODE).getCaption(), TestDomain.DETAIL_MASTER_CODE);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_DATE).getCaption(), TestDomain.DETAIL_DATE.getId());
+    assertEquals(definition.getProperty(TestDomain.DETAIL_TIMESTAMP).getCaption(), TestDomain.DETAIL_TIMESTAMP.getId());
+    assertEquals(definition.getProperty(TestDomain.DETAIL_BOOLEAN).getCaption(), TestDomain.DETAIL_BOOLEAN.getId());
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_FK).getCaption(), TestDomain.DETAIL_MASTER_FK.getId());
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_NAME).getCaption(), TestDomain.DETAIL_MASTER_NAME.getId());
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_CODE).getCaption(), TestDomain.DETAIL_MASTER_CODE.getId());
 
     //assert hidden status
     assertTrue(definition.getProperty(TestDomain.DETAIL_ID).isHidden());
@@ -111,7 +113,7 @@ public class DomainTest {
 
   @Test
   public void getWritableColumnProperties() {
-    List<String> writable = domain.getDefinition(TestDomain.T_DEPARTMENT)
+    List<Attribute<?>> writable = domain.getDefinition(TestDomain.T_DEPARTMENT)
             .getWritableColumnProperties(true, true)
             .stream().map(Property::getPropertyId).collect(Collectors.toList());
     assertTrue(writable.contains(TestDomain.DEPARTMENT_ID));
@@ -185,7 +187,7 @@ public class DomainTest {
 
   @Test
   public void getSelectedProperties() {
-    final List<String> propertyIds = new ArrayList<>();
+    final List<Attribute<?>> propertyIds = new ArrayList<>();
     propertyIds.add(TestDomain.DEPARTMENT_ID);
     propertyIds.add(TestDomain.DEPARTMENT_NAME);
 
@@ -202,9 +204,9 @@ public class DomainTest {
   @Test
   public void key() {
     final String entityId = "DomainTest.key";
-    final String propertyId1 = "id1";
-    final String propertyId2 = "id2";
-    final String propertyId3 = "id3";
+    final Attribute<Integer> propertyId1 = attribute("id1");
+    final Attribute<Integer> propertyId2 = attribute("id2");
+    final Attribute<Integer> propertyId3 = attribute("id3");
     domain.define(entityId,
             Properties.primaryKeyProperty(propertyId1, Types.INTEGER),
             Properties.primaryKeyProperty(propertyId2, Types.INTEGER).primaryKeyIndex(1),
@@ -258,17 +260,17 @@ public class DomainTest {
   @Test
   public void keyWithSameIndex() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("keyWithSameIndex",
-            Properties.primaryKeyProperty("1", Types.INTEGER).primaryKeyIndex(0),
-            Properties.primaryKeyProperty("2", Types.INTEGER).primaryKeyIndex(1),
-            Properties.primaryKeyProperty("3", Types.INTEGER).primaryKeyIndex(1)));
+            Properties.primaryKeyProperty(attribute("1"), Types.INTEGER).primaryKeyIndex(0),
+            Properties.primaryKeyProperty(attribute("2"), Types.INTEGER).primaryKeyIndex(1),
+            Properties.primaryKeyProperty(attribute("3"), Types.INTEGER).primaryKeyIndex(1)));
   }
 
   @Test
   public void keyWithSameIndex2() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("keyWithSameIndex2",
-            Properties.primaryKeyProperty("1", Types.INTEGER),
-            Properties.primaryKeyProperty("2", Types.INTEGER),
-            Properties.primaryKeyProperty("3", Types.INTEGER)));
+            Properties.primaryKeyProperty(attribute("1"), Types.INTEGER),
+            Properties.primaryKeyProperty(attribute("2"), Types.INTEGER),
+            Properties.primaryKeyProperty(attribute("3"), Types.INTEGER)));
   }
 
   @Test
@@ -312,7 +314,7 @@ public class DomainTest {
   @Test
   public void getPropertyInvalid() {
     assertThrows(IllegalArgumentException.class, () -> domain.getDefinition(TestDomain.T_MASTER)
-            .getProperty("unknown property"));
+            .getProperty(attribute("unknown property")));
   }
 
   @Test
@@ -332,7 +334,7 @@ public class DomainTest {
 
   @Test
   public void getForeignKeyPropertyInvalid() {
-    assertThrows(IllegalArgumentException.class, () -> domain.getDefinition(TestDomain.T_DETAIL).getForeignKeyProperty("bla bla"));
+    assertThrows(IllegalArgumentException.class, () -> domain.getDefinition(TestDomain.T_DETAIL).getForeignKeyProperty(attribute("bla bla")));
   }
 
   @Test
@@ -354,7 +356,6 @@ public class DomainTest {
 
   @Test
   public void hasDenormalizedProperties() {
-    assertFalse(domain.getDefinition(TestDomain.T_DEPARTMENT).hasDenormalizedProperties(TestDomain.T_DEPARTMENT));
     assertTrue(domain.getDefinition(TestDomain.T_DETAIL).hasDenormalizedProperties());
     assertTrue(domain.getDefinition(TestDomain.T_DETAIL).hasDenormalizedProperties(TestDomain.DETAIL_MASTER_FK));
   }
@@ -380,9 +381,10 @@ public class DomainTest {
   @Test
   public void redefine() {
     final String entityId = "entityId";
-    domain.define(entityId, Properties.primaryKeyProperty("propertyId", Types.INTEGER));
+    final Attribute<Object> propertyId = attribute("propertyId");
+    domain.define(entityId, Properties.primaryKeyProperty(propertyId, Types.INTEGER));
     assertThrows(IllegalArgumentException.class, () -> domain.define(entityId, Properties.primaryKeyProperty(
-            "propertyId", Types.INTEGER)));
+            propertyId, Types.INTEGER)));
   }
 
   @Test
@@ -523,18 +525,18 @@ public class DomainTest {
   @Test
   public void foreignKeyReferencingUndefinedEntity() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("test.entity",
-            Properties.primaryKeyProperty("id", Types.INTEGER),
-            Properties.foreignKeyProperty("fk_id_fk", "caption", "test.referenced_entity",
-                    Properties.columnProperty("fk_id", Types.INTEGER))));
+            Properties.primaryKeyProperty(attribute("id"), Types.INTEGER),
+            Properties.foreignKeyProperty(attribute("fk_id_fk"), "caption", "test.referenced_entity",
+                    Properties.columnProperty(attribute("fk_id"), Types.INTEGER))));
   }
 
   @Test
   public void foreignKeyReferencingUndefinedEntityNonStrict() {
     domain.setStrictForeignKeys(false);
     domain.define("test.entity",
-            Properties.primaryKeyProperty("id", Types.INTEGER),
-            Properties.foreignKeyProperty("fk_id_fk", "caption", "test.referenced_entity",
-                    Properties.columnProperty("fk_id", Types.INTEGER)));
+            Properties.primaryKeyProperty(attribute("id"), Types.INTEGER),
+            Properties.foreignKeyProperty(attribute("fk_id_fk"), "caption", "test.referenced_entity",
+                    Properties.columnProperty(attribute("fk_id"), Types.INTEGER)));
     domain.setStrictForeignKeys(true);
   }
 
@@ -542,19 +544,19 @@ public class DomainTest {
   public void hasSingleIntegerPrimaryKey() {
     String entityId = "hasSingleIntegerPrimaryKey";
     domain.define(entityId,
-            Properties.columnProperty("test", Types.INTEGER)
+            Properties.columnProperty(attribute("test"), Types.INTEGER)
                     .primaryKeyIndex(0));
     assertTrue(domain.getDefinition(entityId).hasSingleIntegerPrimaryKey());
     entityId = "hasSingleIntegerPrimaryKey2";
     domain.define(entityId,
-            Properties.columnProperty("test", Types.INTEGER)
+            Properties.columnProperty(attribute("test"), Types.INTEGER)
                     .primaryKeyIndex(0),
-            Properties.columnProperty("test2", Types.INTEGER)
+            Properties.columnProperty(attribute("test2"), Types.INTEGER)
                     .primaryKeyIndex(1));
     assertFalse(domain.getDefinition(entityId).hasSingleIntegerPrimaryKey());
     entityId = "hasSingleIntegerPrimaryKey3";
     domain.define(entityId,
-            Properties.columnProperty("test", Types.VARCHAR)
+            Properties.columnProperty(attribute("test"), Types.VARCHAR)
                     .primaryKeyIndex(0));
     assertFalse(domain.getDefinition(entityId).hasSingleIntegerPrimaryKey());
   }
@@ -563,7 +565,7 @@ public class DomainTest {
   public void havingClause() {
     final String havingClause = "p1 > 1";
     domain.define("entityId3",
-            Properties.primaryKeyProperty("p0", Types.INTEGER)).havingClause(havingClause);
+            Properties.primaryKeyProperty(attribute("p0"), Types.INTEGER)).havingClause(havingClause);
     assertEquals(havingClause, domain.getDefinition("entityId3").getHavingClause());
   }
 
@@ -571,7 +573,6 @@ public class DomainTest {
   public void validateTypeEntity() {
     final Entity entity = entities.entity(TestDomain.T_DETAIL);
     final Entity entity1 = entities.entity(TestDomain.T_DETAIL);
-    assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.DETAIL_MASTER_FK, "hello"));
     assertThrows(IllegalArgumentException.class, () -> entity.put(TestDomain.DETAIL_MASTER_FK, entity1));
   }
 
@@ -610,11 +611,11 @@ public class DomainTest {
   @Test
   public void conditionProvider() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("nullConditionProvider1",
-            Properties.primaryKeyProperty("id", Types.INTEGER)).conditionProvider(null, (propertyIds, values) -> null));
+            Properties.primaryKeyProperty(attribute("id"), Types.INTEGER)).conditionProvider(null, (propertyIds, values) -> null));
     assertThrows(NullPointerException.class, () -> domain.define("nullConditionProvider2",
-            Properties.primaryKeyProperty("id", Types.INTEGER)).conditionProvider("id", null));
+            Properties.primaryKeyProperty(attribute("id"), Types.INTEGER)).conditionProvider("id", null));
     assertThrows(IllegalStateException.class, () -> domain.define("nullConditionProvider3",
-            Properties.primaryKeyProperty("id", Types.INTEGER))
+            Properties.primaryKeyProperty(attribute("id"), Types.INTEGER))
             .conditionProvider("id", (propertyIds, values) -> null)
             .conditionProvider("id", (propertyIds, values) -> null));
   }
@@ -730,11 +731,11 @@ public class DomainTest {
     assertEquals(commission, employee.get(TestDomain.EMP_COMMISSION));
     assertEquals(deptNo, employee.get(TestDomain.EMP_DEPARTMENT));
     assertEquals(deptNo, employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK)
-            .getInteger(TestDomain.DEPARTMENT_ID));
+            .get(TestDomain.DEPARTMENT_ID));
     assertEquals(hiredate, employee.get(TestDomain.EMP_HIREDATE));
     assertEquals(job, employee.get(TestDomain.EMP_JOB));
     assertEquals(mgr, employee.get(TestDomain.EMP_MGR));
-    assertEquals(12, employee.getForeignKey(TestDomain.EMP_MGR_FK).getInteger(TestDomain.EMP_ID));
+    assertEquals(12, employee.getForeignKey(TestDomain.EMP_MGR_FK).get(TestDomain.EMP_ID));
     assertEquals(name, employee.get(TestDomain.EMP_NAME));
     assertEquals(salary, employee.get(TestDomain.EMP_SALARY));
 
