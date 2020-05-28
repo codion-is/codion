@@ -116,7 +116,7 @@ public final class EntityConnectionDemo {
 
   static void selectValue(EntityConnection connection) throws DatabaseException {
     // tag::selectValue[]
-    List<Entity> aliceInChains = connection.select(T_ARTIST, ARTIST_NAME, "Alice In Chains");
+    Entity aliceInChains = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Alice In Chains");
 
     List<Entity> albums = connection.select(T_ALBUM, ALBUM_ARTIST_FK, aliceInChains);
     // end::selectValue[]

@@ -13,6 +13,7 @@ import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.DerivedProperty;
 
 import javax.imageio.ImageIO;
@@ -400,7 +401,7 @@ public final class ChinookImpl extends Domain implements Chinook {
         final List<Entity> tracks = entityConnection.select(selectCondition);
         tracks.forEach(track ->
                 track.put(TRACK_UNITPRICE,
-                        track.getBigDecimal(TRACK_UNITPRICE).add(priceIncrease)));
+                        track.get(TRACK_UNITPRICE).add(priceIncrease)));
         final List<Entity> updatedTracks = entityConnection.update(tracks);
 
         entityConnection.commitTransaction();
@@ -420,7 +421,7 @@ public final class ChinookImpl extends Domain implements Chinook {
     private static final long serialVersionUID = 1;
 
     @Override
-    public Object getValue(final Map<String, Object> sourceValues) {
+    public Object getValue(final Map<Attribute<?>, Object> sourceValues) {
       final byte[] bytes = (byte[]) sourceValues.get(ALBUM_COVER);
       if (bytes == null) {
         return null;
@@ -444,13 +445,13 @@ public final class ChinookImpl extends Domain implements Chinook {
     public String apply(final Entity customer) {
       final StringBuilder builder = new StringBuilder();
       if (customer.isNotNull(CUSTOMER_LASTNAME)) {
-        builder.append(customer.getString(CUSTOMER_LASTNAME));
+        builder.append(customer.get(CUSTOMER_LASTNAME));
       }
       if (customer.isNotNull(CUSTOMER_FIRSTNAME)) {
-        builder.append(", ").append(customer.getString(CUSTOMER_FIRSTNAME));
+        builder.append(", ").append(customer.get(CUSTOMER_FIRSTNAME));
       }
       if (customer.isNotNull(CUSTOMER_EMAIL)) {
-        builder.append(" <").append(customer.getString(CUSTOMER_EMAIL)).append(">");
+        builder.append(" <").append(customer.get(CUSTOMER_EMAIL)).append(">");
       }
 
       return builder.toString();

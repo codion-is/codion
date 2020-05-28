@@ -298,7 +298,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final ColumnSummaryModel getColumnSummaryModel(final String propertyId) {
+  public final ColumnSummaryModel getColumnSummaryModel(final Attribute<?> propertyId) {
     throw new UnsupportedOperationException();
   }
 
@@ -308,7 +308,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final int getPropertyColumnIndex(final String propertyId) {
+  public final int getPropertyColumnIndex(final Attribute<?> propertyId) {
     throw new UnsupportedOperationException();
   }
 

@@ -15,6 +15,7 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Property;
 
 import java.sql.Types;
@@ -38,19 +39,19 @@ public final class EntitiesTutorial {
   /** The domain class, which contains the domain model definition */
   public static final class Chinook extends Domain {
 
-    //string constants for the table entityId ('T_' prefix)
-    //and a propertyId for each column
+    //string constant for the table entityId ('T_' prefix)
+    //and a Attribute for each column
     public static final String T_ARTIST = "chinook.artist";
-    public static final String ARTIST_ID = "artistid";
-    public static final String ARTIST_NAME = "name";
+    public static final Attribute<Integer> ARTIST_ID = attribute("artistid");
+    public static final Attribute<String> ARTIST_NAME = attribute("name");
 
     //string constants for the table entityId ('T_' prefix),
-    //and a propertyId for each column and one for the foreign key relation
+    //and a Attribute for each column and one for the foreign key relation
     public static final String T_ALBUM = "chinook.album";
-    public static final String ALBUM_ALBUMID = "albumid";
-    public static final String ALBUM_TITLE = "title";
-    public static final String ALBUM_ARTISTID = "artistid";
-    public static final String ALBUM_ARTIST_FK = "artist_fk";
+    public static final Attribute<Integer> ALBUM_ALBUMID = attribute("albumid");
+    public static final Attribute<String> ALBUM_TITLE = attribute("title");
+    public static final Attribute<Integer> ALBUM_ARTISTID = attribute("artistid");
+    public static final Attribute<Entity> ALBUM_ARTIST_FK = attribute("artist_fk");
 
     public Chinook() {
       //create properties for the columns in the table 'chinook.artist'

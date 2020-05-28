@@ -7,7 +7,9 @@ import is.codion.common.db.database.Database;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -42,15 +44,15 @@ public final class ClientTutorial {
   public static final class Chinook extends Domain {
 
     public static final String T_ARTIST = "chinook.artist";
-    public static final String ARTIST_ID = "artistid";
-    public static final String ARTIST_NAME = "name";
-    public static final String ARTIST_NR_OF_ALBUMS = "nr_of_albums";
+    public static final Attribute<Integer> ARTIST_ID = attribute("artistid");
+    public static final Attribute<String> ARTIST_NAME = attribute("name");
+    public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = attribute("nr_of_albums");
 
     public static final String T_ALBUM = "chinook.album";
-    public static final String ALBUM_ALBUMID = "albumid";
-    public static final String ALBUM_TITLE = "title";
-    public static final String ALBUM_ARTISTID = "artistid";
-    public static final String ALBUM_ARTIST_FK = "artist_fk";
+    public static final Attribute<Integer> ALBUM_ALBUMID = attribute("albumid");
+    public static final Attribute<String> ALBUM_TITLE = attribute("title");
+    public static final Attribute<Integer> ALBUM_ARTISTID = attribute("artistid");
+    public static final Attribute<Entity> ALBUM_ARTIST_FK = attribute("artist_fk");
 
     public Chinook() {
       define(T_ARTIST,

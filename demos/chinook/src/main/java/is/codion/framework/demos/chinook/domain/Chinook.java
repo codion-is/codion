@@ -3,89 +3,95 @@
  */
 package is.codion.framework.demos.chinook.domain;
 
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.plugin.jasperreports.model.JasperReportWrapper;
 
+import java.awt.Image;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import static is.codion.framework.domain.property.Properties.attribute;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public interface Chinook {
 
   String T_ARTIST = "artist@chinook";
-  String ARTIST_ARTISTID = "artistid";
-  String ARTIST_NAME = "name";
-  String ARTIST_NR_OF_ALBUMS = "nr_of_albums";
-  String ARTIST_NR_OF_TRACKS = "nr_of_tracks";
+  Attribute<Long> ARTIST_ARTISTID = attribute("artistid");
+  Attribute<String> ARTIST_NAME = attribute("name");
+  Attribute<Integer> ARTIST_NR_OF_ALBUMS = attribute("nr_of_albums");
+  Attribute<Integer> ARTIST_NR_OF_TRACKS = attribute("nr_of_tracks");
 
   String T_ALBUM = "album@chinook";
-  String ALBUM_ALBUMID = "albumid";
-  String ALBUM_TITLE = "title";
-  String ALBUM_ARTISTID = "artistid";
-  String ALBUM_ARTIST_FK = "artist_fk";
-  String ALBUM_COVER = "cover";
-  String ALBUM_COVER_IMAGE = "coverimage";
-  String ALBUM_NUMBER_OF_TRACKS = "nr_of_tracks";
+  Attribute<Long> ALBUM_ALBUMID = attribute("albumid");
+  Attribute<String> ALBUM_TITLE = attribute("title");
+  Attribute<Long> ALBUM_ARTISTID = attribute("artistid");
+  Attribute<Entity> ALBUM_ARTIST_FK = attribute("artist_fk");
+  Attribute<byte[]> ALBUM_COVER = attribute("cover");
+  Attribute<Image> ALBUM_COVER_IMAGE = attribute("coverimage");
+  Attribute<Integer> ALBUM_NUMBER_OF_TRACKS = attribute("nr_of_tracks");
 
   String T_EMPLOYEE = "employee@chinook";
-  String EMPLOYEE_EMPLOYEEID = "employeeid";
-  String EMPLOYEE_LASTNAME = "lastname";
-  String EMPLOYEE_FIRSTNAME = "firstname";
-  String EMPLOYEE_TITLE = "title";
-  String EMPLOYEE_REPORTSTO = "reportsto";
-  String EMPLOYEE_REPORTSTO_FK = "reportsto_fk";
-  String EMPLOYEE_BIRTHDATE = "birthdate";
-  String EMPLOYEE_HIREDATE = "hiredate";
-  String EMPLOYEE_ADDRESS = "address";
-  String EMPLOYEE_CITY = "city";
-  String EMPLOYEE_STATE = "state";
-  String EMPLOYEE_COUNTRY = "country";
-  String EMPLOYEE_POSTALCODE = "postalcode";
-  String EMPLOYEE_PHONE = "phone";
-  String EMPLOYEE_FAX = "fax";
-  String EMPLOYEE_EMAIL = "email";
+  Attribute<Long> EMPLOYEE_EMPLOYEEID = attribute("employeeid");
+  Attribute<String> EMPLOYEE_LASTNAME = attribute("lastname");
+  Attribute<String> EMPLOYEE_FIRSTNAME = attribute("firstname");
+  Attribute<String> EMPLOYEE_TITLE = attribute("title");
+  Attribute<Long> EMPLOYEE_REPORTSTO = attribute("reportsto");
+  Attribute<Entity> EMPLOYEE_REPORTSTO_FK = attribute("reportsto_fk");
+  Attribute<LocalDate> EMPLOYEE_BIRTHDATE = attribute("birthdate");
+  Attribute<LocalDate> EMPLOYEE_HIREDATE = attribute("hiredate");
+  Attribute<String> EMPLOYEE_ADDRESS = attribute("address");
+  Attribute<String> EMPLOYEE_CITY = attribute("city");
+  Attribute<String> EMPLOYEE_STATE = attribute("state");
+  Attribute<String> EMPLOYEE_COUNTRY = attribute("country");
+  Attribute<String> EMPLOYEE_POSTALCODE = attribute("postalcode");
+  Attribute<String> EMPLOYEE_PHONE = attribute("phone");
+  Attribute<String> EMPLOYEE_FAX = attribute("fax");
+  Attribute<String> EMPLOYEE_EMAIL = attribute("email");
 
   String T_CUSTOMER = "customer@chinook";
-  String CUSTOMER_CUSTOMERID = "customerid";
-  String CUSTOMER_FIRSTNAME = "firstname";
-  String CUSTOMER_LASTNAME = "lastname";
-  String CUSTOMER_COMPANY = "company";
-  String CUSTOMER_ADDRESS = "address";
-  String CUSTOMER_CITY = "city";
-  String CUSTOMER_STATE = "state";
-  String CUSTOMER_COUNTRY = "country";
-  String CUSTOMER_POSTALCODE = "postalcode";
-  String CUSTOMER_PHONE = "phone";
-  String CUSTOMER_FAX = "fax";
-  String CUSTOMER_EMAIL = "email";
-  String CUSTOMER_SUPPORTREPID = "supportrepid";
-  String CUSTOMER_SUPPORTREP_FK = "supportrep_fk";
+  Attribute<Long> CUSTOMER_CUSTOMERID = attribute("customerid");
+  Attribute<String> CUSTOMER_FIRSTNAME = attribute("firstname");
+  Attribute<String> CUSTOMER_LASTNAME = attribute("lastname");
+  Attribute<String> CUSTOMER_COMPANY = attribute("company");
+  Attribute<String> CUSTOMER_ADDRESS = attribute("address");
+  Attribute<String> CUSTOMER_CITY = attribute("city");
+  Attribute<String> CUSTOMER_STATE = attribute("state");
+  Attribute<String> CUSTOMER_COUNTRY = attribute("country");
+  Attribute<String> CUSTOMER_POSTALCODE = attribute("postalcode");
+  Attribute<String> CUSTOMER_PHONE = attribute("phone");
+  Attribute<String> CUSTOMER_FAX = attribute("fax");
+  Attribute<String> CUSTOMER_EMAIL = attribute("email");
+  Attribute<String> CUSTOMER_SUPPORTREPID = attribute("supportrepid");
+  Attribute<Entity> CUSTOMER_SUPPORTREP_FK = attribute("supportrep_fk");
 
   JasperReportWrapper CUSTOMER_REPORT = classPathReport(Chinook.class, "customer_report.jasper");
 
   String T_GENRE = "genre@chinook";
-  String GENRE_GENREID = "genreid";
-  String GENRE_NAME = "name";
+  Attribute<Long> GENRE_GENREID = attribute("genreid");
+  Attribute<String> GENRE_NAME = attribute("name");
 
   String T_MEDIATYPE = "mediatype@chinook";
-  String MEDIATYPE_MEDIATYPEID = "mediatypeid";
-  String MEDIATYPE_NAME = "name";
+  Attribute<Long> MEDIATYPE_MEDIATYPEID = attribute("mediatypeid");
+  Attribute<String> MEDIATYPE_NAME = attribute("name");
 
   String T_TRACK = "track@chinook";
-  String TRACK_TRACKID = "trackid";
-  String TRACK_NAME = "name";
-  String TRACK_ARTIST_DENORM = "artist_denorm";
-  String TRACK_ALBUMID = "albumid";
-  String TRACK_ALBUM_FK = "album_fk";
-  String TRACK_MEDIATYPEID = "mediatypeid";
-  String TRACK_MEDIATYPE_FK = "mediatype_fk";
-  String TRACK_GENREID = "genreid";
-  String TRACK_GENRE_FK = "genre_fk";
-  String TRACK_COMPOSER = "composer";
-  String TRACK_MILLISECONDS = "milliseconds";
-  String TRACK_MINUTES_SECONDS_DERIVED = "minutes_seconds_transient";
-  String TRACK_BYTES = "bytes";
-  String TRACK_UNITPRICE = "unitprice";
+  Attribute<Long> TRACK_TRACKID = attribute("trackid");
+  Attribute<String> TRACK_NAME = attribute("name");
+  Attribute<Entity> TRACK_ARTIST_DENORM = attribute("artist_denorm");
+  Attribute<Long> TRACK_ALBUMID = attribute("albumid");
+  Attribute<Entity> TRACK_ALBUM_FK = attribute("album_fk");
+  Attribute<Long> TRACK_MEDIATYPEID = attribute("mediatypeid");
+  Attribute<Entity> TRACK_MEDIATYPE_FK = attribute("mediatype_fk");
+  Attribute<Long> TRACK_GENREID = attribute("genreid");
+  Attribute<Entity> TRACK_GENRE_FK = attribute("genre_fk");
+  Attribute<String> TRACK_COMPOSER = attribute("composer");
+  Attribute<Integer> TRACK_MILLISECONDS = attribute("milliseconds");
+  Attribute<String> TRACK_MINUTES_SECONDS_DERIVED = attribute("minutes_seconds_transient");
+  Attribute<Integer> TRACK_BYTES = attribute("bytes");
+  Attribute<BigDecimal> TRACK_UNITPRICE = attribute("unitprice");
 
   DerivedProperty.Provider TRACK_MIN_SEC_PROVIDER =
           linkedValues -> {
@@ -98,27 +104,27 @@ public interface Chinook {
           };
 
   String T_INVOICE = "invoice@chinook";
-  String INVOICE_INVOICEID = "invoiceid";
-  String INVOICE_CUSTOMERID = "customerid";
-  String INVOICE_CUSTOMER_FK = "customer_fk";
-  String INVOICE_INVOICEDATE = "invoicedate";
-  String INVOICE_BILLINGADDRESS = "billingaddress";
-  String INVOICE_BILLINGCITY = "billingcity";
-  String INVOICE_BILLINGSTATE = "billingstate";
-  String INVOICE_BILLINGCOUNTRY = "billingcountry";
-  String INVOICE_BILLINGPOSTALCODE = "billingpostalcode";
-  String INVOICE_TOTAL = "total";
-  String INVOICE_TOTAL_SUB = "total_sub";
+  Attribute<Long> INVOICE_INVOICEID = attribute("invoiceid");
+  Attribute<Long> INVOICE_CUSTOMERID = attribute("customerid");
+  Attribute<Entity> INVOICE_CUSTOMER_FK = attribute("customer_fk");
+  Attribute<LocalDateTime> INVOICE_INVOICEDATE = attribute("invoicedate");
+  Attribute<String> INVOICE_BILLINGADDRESS = attribute("billingaddress");
+  Attribute<String> INVOICE_BILLINGCITY = attribute("billingcity");
+  Attribute<String> INVOICE_BILLINGSTATE = attribute("billingstate");
+  Attribute<String> INVOICE_BILLINGCOUNTRY = attribute("billingcountry");
+  Attribute<String> INVOICE_BILLINGPOSTALCODE = attribute("billingpostalcode");
+  Attribute<BigDecimal> INVOICE_TOTAL = attribute("total");
+  Attribute<BigDecimal> INVOICE_TOTAL_SUB = attribute("total_sub");
 
   String T_INVOICELINE = "invoiceline@chinook";
-  String INVOICELINE_INVOICELINEID = "invoicelineid";
-  String INVOICELINE_INVOICEID = "invoiceid";
-  String INVOICELINE_INVOICE_FK = "invoice_fk";
-  String INVOICELINE_TRACKID = "trackid";
-  String INVOICELINE_TRACK_FK = "track_fk";
-  String INVOICELINE_UNITPRICE = "unitprice";
-  String INVOICELINE_QUANTITY = "quantity";
-  String INVOICELINE_TOTAL = "total";
+  Attribute<Long> INVOICELINE_INVOICELINEID = attribute("invoicelineid");
+  Attribute<Long> INVOICELINE_INVOICEID = attribute("invoiceid");
+  Attribute<Entity> INVOICELINE_INVOICE_FK = attribute("invoice_fk");
+  Attribute<Long> INVOICELINE_TRACKID = attribute("trackid");
+  Attribute<Entity> INVOICELINE_TRACK_FK = attribute("track_fk");
+  Attribute<BigDecimal> INVOICELINE_UNITPRICE = attribute("unitprice");
+  Attribute<Integer> INVOICELINE_QUANTITY = attribute("quantity");
+  Attribute<Double> INVOICELINE_TOTAL = attribute("total");
 
   DerivedProperty.Provider INVOICELINE_TOTAL_PROVIDER =
           linkedValues -> {
@@ -132,17 +138,17 @@ public interface Chinook {
           };
 
   String T_PLAYLIST = "playlist@chinook";
-  String PLAYLIST_PLAYLISTID = "playlistid";
-  String PLAYLIST_NAME = "name";
+  Attribute<Long> PLAYLIST_PLAYLISTID = attribute("playlistid");
+  Attribute<String> PLAYLIST_NAME = attribute("name");
 
   String T_PLAYLISTTRACK = "playlisttrack@chinook";
-  String PLAYLISTTRACK_ID = "playlisttrackid";
-  String PLAYLISTTRACK_PLAYLISTID = "playlistid";
-  String PLAYLISTTRACK_PLAYLIST_FK = "playlist_fk";
-  String PLAYLISTTRACK_TRACKID = "trackid";
-  String PLAYLISTTRACK_TRACK_FK = "track_fk";
-  String PLAYLISTTRACK_ALBUM_DENORM = "album_denorm";
-  String PLAYLISTTRACK_ARTIST_DENORM = "artist_denorm";
+  Attribute<Long> PLAYLISTTRACK_ID = attribute("playlisttrackid");
+  Attribute<Long> PLAYLISTTRACK_PLAYLISTID = attribute("playlistid");
+  Attribute<Entity> PLAYLISTTRACK_PLAYLIST_FK = attribute("playlist_fk");
+  Attribute<Long> PLAYLISTTRACK_TRACKID = attribute("trackid");
+  Attribute<Entity> PLAYLISTTRACK_TRACK_FK = attribute("track_fk");
+  Attribute<Entity> PLAYLISTTRACK_ALBUM_DENORM = attribute("album_denorm");
+  Attribute<Entity> PLAYLISTTRACK_ARTIST_DENORM = attribute("artist_denorm");
 
   String P_UPDATE_TOTALS = "chinook.update_totals_procedure";
   String F_RAISE_PRICE = "chinook.raise_price_function";
