@@ -6115,3 +6115,7 @@
   EntityConnectionProvider.addOnConnectListener() now takes EventDataListener receiving the newly established connection as data
   EntityConnections.insertBatch(), entities parameter is now Iterator, no longer returns the inserted keys, onInsertBatchListener parameter added instead
 0.16.2
+  is.codion.framework.domain.property.Attribute added for type safe value access
+  Entity no longer extends ValueMap
+  Entity.Key no longer extends ValueMap
+  ValueMap removed

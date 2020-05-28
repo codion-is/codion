@@ -7,7 +7,6 @@ import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
-import is.codion.common.valuemap.ValueMap;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -35,7 +34,7 @@ import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
+ * Represents a row in a database table.
  */
 final class DefaultEntity implements Entity {
 

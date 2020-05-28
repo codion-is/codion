@@ -4,7 +4,6 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.common.valuemap.ValueMap;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
+ * Represents a row in a database table.
  */
 public interface Entity extends PropertyValueProvider, Comparable<Entity>, Serializable {
 
