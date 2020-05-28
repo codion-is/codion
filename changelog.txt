@@ -6125,3 +6125,4 @@
   JavaFX module updated according to the latest changes
   Swing Framework Model module updated according to the latest changes
   Swing Framework UI module updated according to the latest changes
+  Swing Framework Tools module updated according to the latest changes
