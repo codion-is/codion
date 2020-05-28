@@ -534,14 +534,12 @@ public class DefaultEntityTest {
   @Test
   public void keyGetCopy() {
     final Entity.Key empKey1 = ENTITIES.key(TestDomain.T_EMP, 1);
-    final Entity.Key copy = ENTITIES.copyKey(empKey1);
+    Entity.Key copy = ENTITIES.copyKey(empKey1);
     assertEquals(empKey1, copy);
 
     empKey1.put(TestDomain.EMP_ID, 2);
-    final Entity.Key originalCopy = ENTITIES.copyKey(empKey1);
-    originalCopy.revertAll();
-    final Entity.Key originalCreated = ENTITIES.key(TestDomain.T_EMP, 1);
-    assertEquals(originalCopy, originalCreated);
+    copy = ENTITIES.copyKey(empKey1);
+    assertEquals(empKey1, copy);
   }
 
   @Test

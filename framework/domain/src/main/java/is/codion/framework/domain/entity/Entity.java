@@ -230,6 +230,13 @@ public interface Entity extends PropertyValueProvider, Comparable<Entity>, Seria
   void saveAll();
 
   /**
+   * Reverts all value modifications that have been made.
+   * This entity will be unmodified after a call to this method.
+   * If no modifications have been made then calling this method has no effect.
+   */
+  void revertAll();
+
+  /**
    * Returns true if a null value is mapped to the given property or if no mapping is found.
    * In case of foreign key properties the value of the underlying reference property is checked.
    * @param propertyId the id of the property
@@ -325,7 +332,7 @@ public interface Entity extends PropertyValueProvider, Comparable<Entity>, Seria
   /**
    * A class representing a primary key.
    */
-  interface Key extends ValueMap<ColumnProperty, Object>, Serializable {
+  interface Key extends Serializable {
 
     /**
      * @return the  entityId
@@ -390,8 +397,34 @@ public interface Entity extends PropertyValueProvider, Comparable<Entity>, Seria
 
     /**
      * @param propertyId the propertyId
+     * @param value the value to associate with the property
+     * @return the previous value
+     */
+    Object put(ColumnProperty property, Object value);
+
+    /**
+     * @param propertyId the propertyId
      * @return the value associated with the given property
      */
     <T> T get(Attribute<T> propertyId);
+
+    /**
+     * @param property the property
+     * @return the value associated with the given property
+     */
+    Object get(ColumnProperty property);
+
+    /**
+     * After a call to this method this ValueMap contains the same values and original values as the source map.
+     * A null argument to this method clears the destination map of all values and original values.
+     * Value change events for affected keys are fired after all values have been set, in no particular order.
+     * @param sourceKey the key to copy or null for clearing the destination map
+     */
+    void setAs(Key sourceKey);
+
+    /**
+     * @return the number of values in this key
+     */
+    int size();
   }
 }

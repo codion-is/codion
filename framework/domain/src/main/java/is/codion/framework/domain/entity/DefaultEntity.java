@@ -328,6 +328,13 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
+  public void revertAll() {
+    for (final Property property : keySet()) {
+      revert(property);
+    }
+  }
+
+  @Override
   public <T> T remove(final Attribute<T> propertyId) {
     return (T) remove(definition.getProperty(propertyId));
   }

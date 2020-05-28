@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.valuemap.DefaultValueMap;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 
@@ -18,9 +17,14 @@ import java.util.Objects;
 /**
  * A class representing a primary key for entities.
  */
-final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> implements Entity.Key {
+final class DefaultEntityKey implements Entity.Key {
 
   private static final long serialVersionUID = 1;
+
+  /**
+   * Holds the values contained in this key.
+   */
+  private Map<ColumnProperty, Object> values;
 
   /**
    * true if this key consists of a single integer value
@@ -56,6 +60,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
     if (definition.hasPrimaryKey()) {
       throw new IllegalArgumentException("Can not create an empty key for entity '" + definition.getEntityId() + "'");
     }
+    this.values = new HashMap<>();
     this.definition = definition;
     this.cachedHashCode = 0;
     this.hashCodeDirty = false;
@@ -68,7 +73,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
    * @throws IllegalArgumentException in case this key is a composite key or if the entity has no primary key
    */
   DefaultEntityKey(final EntityDefinition definition, final Object value) {
-    super(createSingleValueMap(definition, value), null);
+    this.values = createSingleValueMap(definition, value);
     this.definition = definition;
     this.singleIntegerKey = definition.getPrimaryKeyProperties().get(0).isInteger();
   }
@@ -79,7 +84,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
    * @throws IllegalArgumentException in case the entity has no primary key
    */
   DefaultEntityKey(final EntityDefinition definition, final Map<ColumnProperty, Object> values) {
-    super(values, null);
+    this.values = values == null ? new HashMap<>() : new HashMap<>(values);
     final List<ColumnProperty> properties = definition.getPrimaryKeyProperties();
     if (properties.isEmpty()) {
       throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
@@ -106,17 +111,31 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
 
   @Override
   public Object getFirstValue() {
-    return super.get(getFirstProperty());
+    return values.get(getFirstProperty());
   }
 
   @Override
   public <T> T put(final Attribute<T> propertyId, final T value) {
-    return (T) super.put(definition.getPrimaryKeyProperty(propertyId), value);
+    return (T) put(definition.getPrimaryKeyProperty(propertyId), value);
+  }
+
+  @Override
+  public Object put(final ColumnProperty property, final Object value) {
+    final Object newValue = property.prepareValue(property.validateType(value));
+    final Object previousValue = values.put(property, newValue);
+    onValuePut(property, newValue, previousValue);
+
+    return newValue;
   }
 
   @Override
   public <T> T get(final Attribute<T> propertyId) {
-    return (T) super.get(definition.getPrimaryKeyProperty(propertyId));
+    return (T) values.get(definition.getPrimaryKeyProperty(propertyId));
+  }
+
+  @Override
+  public Object get(final ColumnProperty property) {
+    return values.get(property);
   }
 
   @Override
@@ -125,7 +144,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
     final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
       final ColumnProperty property = primaryKeyProperties.get(i);
-      stringBuilder.append(property.getPropertyId()).append(":").append(super.get(property));
+      stringBuilder.append(property.getPropertyId()).append(":").append(values.get(property));
       if (i < getPropertyCount() - 1) {
         stringBuilder.append(",");
       }
@@ -158,11 +177,11 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
     if (!definition.hasPrimaryKey()) {
       return false;
     }
-    if (obj instanceof Entity.Key) {
+    if (obj instanceof DefaultEntityKey) {
       final String entityId = definition.getEntityId();
-      final Entity.Key otherKey = (Entity.Key) obj;
+      final DefaultEntityKey otherKey = (DefaultEntityKey) obj;
       if (compositeKey) {
-        return otherKey.isCompositeKey() && entityId.equals(otherKey.getEntityId()) && super.equals(otherKey);
+        return otherKey.isCompositeKey() && entityId.equals(otherKey.getEntityId()) && this.values.equals(otherKey.values);
       }
       if (singleIntegerKey) {
         return otherKey.isSingleIntegerKey() && isNull() == otherKey.isNull()
@@ -199,7 +218,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
 
   @Override
   public boolean isNull(final Attribute<?> propertyId) {
-    return super.isNull(definition.getPrimaryKeyProperty(propertyId));
+    return values.get(definition.getPrimaryKeyProperty(propertyId)) == null;
   }
 
   @Override
@@ -208,19 +227,25 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
   }
 
   @Override
+  public void setAs(final Entity.Key sourceKey) {
+    clear();
+    for (final ColumnProperty property : sourceKey.getProperties()) {
+      put(property, sourceKey.get(property));
+    }
+  }
+
+  @Override
+  public int size() {
+    return values.size();
+  }
+
   protected void clear() {
-    super.clear();
+    values.clear();
     cachedHashCode = null;
     hashCodeDirty = true;
   }
 
-  @Override
-  protected Object validateAndPrepareForPut(final ColumnProperty property, final Object value) {
-    return property.prepareValue(property.validateType(value));
-  }
-
-  @Override
-  protected void onValuePut(final ColumnProperty property, final Object value, final Object previousValue) {
+  private void onValuePut(final ColumnProperty property, final Object value, final Object previousValue) {
     if (singleIntegerKey) {
       setHashCode((Integer) value);
     }
@@ -260,7 +285,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
     final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
       final ColumnProperty property = primaryKeyProperties.get(i);
-      final Object value = super.get(property);
+      final Object value = values.get(property);
       if (!property.isNullable() && value == null) {
         return null;
       }
@@ -297,7 +322,7 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
     stream.writeObject(definition.getEntityId());
     final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
-      stream.writeObject(super.get(primaryKeyProperties.get(i)));
+      stream.writeObject(values.get(primaryKeyProperties.get(i)));
     }
   }
 
@@ -308,12 +333,13 @@ final class DefaultEntityKey extends DefaultValueMap<ColumnProperty, Object> imp
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
     }
+    values = new HashMap<>();
     final List<ColumnProperty> properties = definition.getPrimaryKeyProperties();
     compositeKey = properties.size() > 1;
     singleIntegerKey = !compositeKey && properties.get(0).isInteger();
     for (int i = 0; i < properties.size(); i++) {
       final ColumnProperty property = properties.get(i);
-      super.put(property, property.validateType(stream.readObject()));
+      values.put(property, property.validateType(stream.readObject()));
     }
   }
 
