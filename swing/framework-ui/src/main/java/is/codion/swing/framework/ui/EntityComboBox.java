@@ -4,6 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.ui.combobox.MaximumMatch;
@@ -50,7 +51,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @param foreignKeyPropertyId the id of the foreign key property on which to filter
    * @return a Control for filtering this combo box
    */
-  public Control createForeignKeyFilterControl(final String foreignKeyPropertyId) {
+  public Control createForeignKeyFilterControl(final Attribute<Entity> foreignKeyPropertyId) {
     return Controls.control(() -> {
       final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKeyPropertyId);
       final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKeyPropertyId),
@@ -67,7 +68,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @param foreignKeyPropertyId the id of the foreign key property on which to filter
    * @return an EntityComboBox for filtering this combo box
    */
-  public EntityComboBox createForeignKeyFilterComboBox(final String foreignKeyPropertyId) {
+  public EntityComboBox createForeignKeyFilterComboBox(final Attribute<Entity> foreignKeyPropertyId) {
     final EntityComboBox comboBox = new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKeyPropertyId));
     MaximumMatch.enable(comboBox);
 
@@ -79,7 +80,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @param propertyId the property
    * @return a {@link IntegerField} bound to the selected value
    */
-  public IntegerField integerFieldSelector(final String propertyId) {
+  public IntegerField integerFieldSelector(final Attribute<Integer> propertyId) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
     NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(propertyId));
@@ -93,7 +94,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @param finder responsible for finding the item to select by value
    * @return a {@link IntegerField} bound to the selected value
    */
-  public IntegerField integerFieldSelector(final String propertyId, final EntityComboBoxModel.Finder<Integer> finder) {
+  public IntegerField integerFieldSelector(final Attribute<Integer> propertyId, final EntityComboBoxModel.Finder<Integer> finder) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
     NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(propertyId, finder));

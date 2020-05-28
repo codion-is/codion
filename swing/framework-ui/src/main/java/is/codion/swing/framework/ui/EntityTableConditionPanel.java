@@ -9,6 +9,7 @@ import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.value.Values;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -208,7 +209,7 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param  propertyId the propertyId
    * @return the condition panel associated with the given property, null if none is specified
    */
-  public ColumnConditionPanel getConditionPanel(final String propertyId) {
+  public ColumnConditionPanel getConditionPanel(final Attribute<?> propertyId) {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       for (final TableColumn column : columns) {
         final Property property = (Property) column.getIdentifier();

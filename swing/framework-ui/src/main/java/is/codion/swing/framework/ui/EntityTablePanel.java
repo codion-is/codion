@@ -19,6 +19,7 @@ import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
@@ -217,7 +218,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final List<ControlList> additionalPopupControls = new ArrayList<>();
   private final List<ControlList> additionalToolBarControls = new ArrayList<>();
-  private final Set<String> excludeFromUpdateMenu = new HashSet<>();
+  private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
 
   /**
    * specifies whether to include the south panel
@@ -303,7 +304,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param propertyId the id of the property to exclude from the update menu
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void excludeFromUpdateMenu(final String propertyId) {
+  public final void excludeFromUpdateMenu(final Attribute<?> propertyId) {
     checkIfInitialized();
     getTableModel().getEntityDefinition().getProperty(propertyId);//just validating that the property exists
     excludeFromUpdateMenu.add(propertyId);
@@ -495,7 +496,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     controls.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getPropertyId())) {
-        final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
+        final String caption = property.getCaption() == null ? property.getPropertyId().getId() : property.getCaption();
         controls.add(control(() -> updateSelectedEntities(property), caption, enabled));
       }
     });

@@ -353,11 +353,11 @@ public final class EntityLookupField extends JTextField {
       for (final Map.Entry<ColumnProperty, EntityLookupModel.LookupSettings> entry :
               lookupModel.getPropertyLookupSettings().entrySet()) {
         propertyComboBoxModel.addItem(entry.getKey());
-        propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getPropertyId());
+        propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getPropertyId().getId());
       }
       if (propertyComboBoxModel.getSize() > 0) {
         propertyComboBoxModel.addSelectionListener(selected ->
-                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getPropertyId()));
+                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getPropertyId().getId()));
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 

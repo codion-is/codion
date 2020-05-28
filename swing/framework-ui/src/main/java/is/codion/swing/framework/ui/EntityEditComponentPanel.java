@@ -9,6 +9,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
@@ -75,12 +76,12 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Input components mapped to their respective propertyIds
    */
-  private final Map<String, JComponent> components = new HashMap<>();
+  private final Map<Attribute<?>, JComponent> components = new HashMap<>();
 
   /**
    * Properties that should be excluded when presenting the component selection
    */
-  private final Set<String> excludeFromSelection = new HashSet<>();
+  private final Set<Attribute<?>> excludeFromSelection = new HashSet<>();
 
   /**
    * The component that should receive focus when the UI is initialized
@@ -90,7 +91,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * The propertyId for which component should receive the focus when the UI is prepared
    */
-  private String initialFocusPropertyId;
+  private Attribute<?> initialFocusPropertyId;
 
   /**
    * The component that should receive focus when the UI is prepared after insert
@@ -100,7 +101,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * The propertyId for which component should receive the focus when the UI is prepared after insert
    */
-  private String afterInsertFocusPropertyId;
+  private Attribute<?> afterInsertFocusPropertyId;
 
   /**
    * Instantiates a new EntityEditComponentPanel
@@ -120,7 +121,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * @return the propertyIds that have been associated with components.
    */
-  public final List<String> getComponentPropertyIds() {
+  public final List<Attribute<?>> getComponentPropertyIds() {
     return new ArrayList<>(components.keySet());
   }
 
@@ -129,7 +130,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return the component associated with the given propertyId, null if no component has been
    * associated with the given propertyId
    */
-  public final JComponent getComponent(final String propertyId) {
+  public final JComponent getComponent(final Attribute<?> propertyId) {
     return components.get(propertyId);
   }
 
@@ -138,7 +139,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return the propertyId the given component is associated with, null if the component has not been
    * associated with a propertyId
    */
-  public final String getComponentPropertyId(final JComponent component) {
+  public final Attribute<?> getComponentPropertyId(final JComponent component) {
     return components.entrySet().stream().filter(entry -> entry.getValue() == component)
             .findFirst().map(Map.Entry::getKey).orElse(null);
   }
@@ -161,7 +162,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the component propertyId
    * @see #setInitialFocusComponent(javax.swing.JComponent)
    */
-  public final void setInitialFocusProperty(final String propertyId) {
+  public final void setInitialFocusProperty(final Attribute<?> propertyId) {
     this.initialFocusPropertyId = propertyId;
   }
 
@@ -183,7 +184,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the component propertyId
    * @see #setAfterInsertFocusComponent(JComponent)
    */
-  public final void setAfterInsertFocusProperty(final String propertyId) {
+  public final void setAfterInsertFocusProperty(final Attribute<?> propertyId) {
     this.afterInsertFocusPropertyId = propertyId;
   }
 
@@ -206,7 +207,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Request focus for the component associated with the given propertyId
    * @param propertyId the propertyId of the component to select
    */
-  public final void requestComponentFocus(final String propertyId) {
+  public final void requestComponentFocus(final Attribute<?> propertyId) {
     final JComponent component = getComponent(propertyId);
     if (component != null) {
       component.requestFocus();
@@ -220,7 +221,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @see #requestComponentFocus(String)
    */
   public void selectInputComponent() {
-    final List<String> propertyIds = getSelectComponentPropertyIds();
+    final List<Attribute<?>> propertyIds = getSelectComponentPropertyIds();
     final List<Property> properties = Properties.sort(getEditModel().getEntityDefinition().getProperties(propertyIds));
     final Property property = properties.size() == 1 ?  properties.get(0) :
             Dialogs.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
@@ -233,7 +234,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Specifies that the given property should be excluded when presenting a component selection list.
    * @param propertyId the id of the property to exclude from selection
    */
-  public final void excludeComponentFromSelection(final String propertyId) {
+  public final void excludeComponentFromSelection(final Attribute<?> propertyId) {
     getEditModel().getEntityDefinition().getProperty(propertyId);//just validating that the property exists
     excludeFromSelection.add(propertyId);
   }
@@ -243,7 +244,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the propertyId
    * @param component the input component
    */
-  protected final void setComponent(final String propertyId, final JComponent component) {
+  protected final void setComponent(final Attribute<?> propertyId, final JComponent component) {
     getEditModel().getEntityDefinition().getProperty(propertyId);
     if (components.containsKey(propertyId)) {
       throw new IllegalStateException("Component already set for propertyId: " + propertyId);
@@ -256,7 +257,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the id of the property
    * @see #createPropertyPanel(String)
    */
-  protected final void addPropertyPanel(final String propertyId) {
+  protected final void addPropertyPanel(final Attribute<?> propertyId) {
     add(createPropertyPanel(propertyId));
   }
 
@@ -268,7 +269,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a panel containing a label and a component
    * @throws IllegalArgumentException in case no component has been associated with the given property
    */
-  protected final JPanel createPropertyPanel(final String propertyId) {
+  protected final JPanel createPropertyPanel(final Attribute<?> propertyId) {
     final JComponent component = getComponent(propertyId);
     if (component == null) {
       throw new IllegalArgumentException("No component associated with property: " + propertyId);
@@ -285,7 +286,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param inputComponent a component bound to the property with id {@code propertyId}
    * @return a panel containing a label and a component
    */
-  protected final JPanel createPropertyPanel(final String propertyId, final JComponent inputComponent) {
+  protected final JPanel createPropertyPanel(final Attribute<?> propertyId, final JComponent inputComponent) {
     return createPropertyPanel(propertyId, inputComponent, BorderLayout.NORTH);
   }
 
@@ -298,7 +299,7 @@ public class EntityEditComponentPanel extends JPanel {
    * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
    * @return a panel containing a label and a component
    */
-  protected final JPanel createPropertyPanel(final String propertyId, final JComponent inputComponent,
+  protected final JPanel createPropertyPanel(final Attribute<?> propertyId, final JComponent inputComponent,
                                              final String labelBorderLayoutConstraints) {
     return createPropertyPanel(propertyId, inputComponent, labelBorderLayoutConstraints, JLabel.LEADING);
   }
@@ -313,7 +314,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param labelAlignment the label alignment
    * @return a panel containing a label and a component
    */
-  protected final JPanel createPropertyPanel(final String propertyId, final JComponent inputComponent,
+  protected final JPanel createPropertyPanel(final Attribute<?> propertyId, final JComponent inputComponent,
                                              final String labelBorderLayoutConstraints, final int labelAlignment) {
     return createPropertyPanel(createLabel(propertyId, labelAlignment), inputComponent, labelBorderLayoutConstraints);
   }
@@ -357,7 +358,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the id of the property to bind
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyId) {
+  protected final JTextArea createTextArea(final Attribute<?> propertyId) {
     return createTextArea(propertyId, -1, -1);
   }
 
@@ -368,7 +369,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param columns the number of columns in the text area
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns) {
+  protected final JTextArea createTextArea(final Attribute<?> propertyId, final int rows, final int columns) {
     return createTextArea(propertyId, rows, columns, UpdateOn.KEYSTROKE);
   }
 
@@ -380,7 +381,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns,
+  protected final JTextArea createTextArea(final Attribute<?> propertyId, final int rows, final int columns,
                                            final UpdateOn updateOn) {
     return createTextArea(propertyId, rows, columns, updateOn, null);
   }
@@ -394,7 +395,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state indicating when this text area should be enabled
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyId, final int rows, final int columns,
+  protected final JTextArea createTextArea(final Attribute<?> propertyId, final int rows, final int columns,
                                            final UpdateOn updateOn, final StateObserver enabledState) {
     final Property property = getEditModel().getEntityDefinition().getProperty(propertyId);
     final JTextArea textArea = EntityInputComponents.createTextArea(property,
@@ -410,7 +411,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the id of the property to bind
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final String propertyId) {
+  protected final TextInputPanel createTextInputPanel(final Attribute<?> propertyId) {
     return createTextInputPanel(propertyId, UpdateOn.KEYSTROKE, ButtonFocusable.YES);
   }
 
@@ -421,7 +422,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param buttonFocusable specifies whether the edit button should be focusable.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final String propertyId, final UpdateOn updateOn,
+  protected final TextInputPanel createTextInputPanel(final Attribute<?> propertyId, final UpdateOn updateOn,
                                                       final ButtonFocusable buttonFocusable) {
     return createTextInputPanel(getEditModel().getEntityDefinition().getProperty(propertyId),
             updateOn, buttonFocusable);
@@ -466,7 +467,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId) {
+  protected final TemporalInputPanel createTemporalInputPanel(final Attribute<?> propertyId) {
     return createTemporalInputPanel(propertyId, CalendarButton.YES);
   }
 
@@ -477,7 +478,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final CalendarButton calendarButton) {
+  protected final TemporalInputPanel createTemporalInputPanel(final Attribute<?> propertyId, final CalendarButton calendarButton) {
     final Property property = getEditModel().getEntityDefinition().getProperty(propertyId);
     return createTemporalInputPanel(property, calendarButton, null);
   }
@@ -489,7 +490,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final CalendarButton calendarButton,
+  protected final TemporalInputPanel createTemporalInputPanel(final Attribute<?> propertyId, final CalendarButton calendarButton,
                                                               final StateObserver enabledState) {
     return createTemporalInputPanel(propertyId, calendarButton, enabledState, UpdateOn.KEYSTROKE);
   }
@@ -502,7 +503,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final String propertyId, final CalendarButton calendarButton,
+  protected final TemporalInputPanel createTemporalInputPanel(final Attribute<?> propertyId, final CalendarButton calendarButton,
                                                               final StateObserver enabledState, final UpdateOn updateOn) {
     return createTemporalInputPanel(getEditModel().getEntityDefinition().getProperty(propertyId),
             calendarButton, enabledState, updateOn);
@@ -576,7 +577,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the id of the property to bind
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId) {
+  protected final JTextField createTextField(final Attribute<?> propertyId) {
     return createTextField(propertyId, UpdateOn.KEYSTROKE);
   }
 
@@ -586,7 +587,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final UpdateOn updateOn) {
+  protected final JTextField createTextField(final Attribute<?> propertyId, final UpdateOn updateOn) {
     return createTextField(propertyId, updateOn, null);
   }
 
@@ -597,7 +598,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final UpdateOn updateOn,
+  protected final JTextField createTextField(final Attribute<?> propertyId, final UpdateOn updateOn,
                                              final String maskString) {
     return createTextField(propertyId, updateOn, maskString, null);
   }
@@ -610,7 +611,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final UpdateOn updateOn,
+  protected final JTextField createTextField(final Attribute<?> propertyId, final UpdateOn updateOn,
                                              final String maskString, final StateObserver enabledState) {
     return createTextField(propertyId, updateOn, maskString, enabledState, ValueContainsLiterals.NO);
   }
@@ -625,7 +626,7 @@ public class EntityEditComponentPanel extends JPanel {
    * associated with a the format mask, only applicable if {@code maskString} is specified
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyId, final UpdateOn updateOn,
+  protected final JTextField createTextField(final Attribute<?> propertyId, final UpdateOn updateOn,
                                              final String maskString, final StateObserver enabledState,
                                              final ValueContainsLiterals valueContainsLiterals) {
     return createTextField(getEditModel().getEntityDefinition().getProperty(propertyId),
@@ -711,7 +712,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the id of the property to bind
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final String propertyId) {
+  protected final JCheckBox createCheckBox(final Attribute<?> propertyId) {
     return createCheckBox(propertyId, null);
   }
 
@@ -721,7 +722,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final String propertyId, final StateObserver enabledState) {
+  protected final JCheckBox createCheckBox(final Attribute<?> propertyId, final StateObserver enabledState) {
     return createCheckBox(propertyId, enabledState, IncludeCaption.YES);
   }
 
@@ -732,7 +733,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param includeCaption specifies whether or not the caption should be included
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final String propertyId, final StateObserver enabledState,
+  protected final JCheckBox createCheckBox(final Attribute<?> propertyId, final StateObserver enabledState,
                                            final IncludeCaption includeCaption) {
     return createCheckBox(getEditModel().getEntityDefinition().getProperty(propertyId), enabledState, includeCaption);
   }
@@ -780,7 +781,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the id of the property to bind
    * @return a NullableCheckBox bound to the property
    */
-  protected final NullableCheckBox createNullableCheckBox(final String propertyId) {
+  protected final NullableCheckBox createNullableCheckBox(final Attribute<?> propertyId) {
     return createNullableCheckBox(propertyId, null);
   }
 
@@ -790,7 +791,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a NullableCheckBox bound to the property
    */
-  protected final NullableCheckBox createNullableCheckBox(final String propertyId, final StateObserver enabledState) {
+  protected final NullableCheckBox createNullableCheckBox(final Attribute<?> propertyId, final StateObserver enabledState) {
     return createNullableCheckBox(propertyId, enabledState, IncludeCaption.YES);
   }
 
@@ -801,7 +802,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param includeCaption specifies whether or not the caption should be included
    * @return a NullableCheckBox bound to the property
    */
-  protected final NullableCheckBox createNullableCheckBox(final String propertyId, final StateObserver enabledState,
+  protected final NullableCheckBox createNullableCheckBox(final Attribute<?> propertyId, final StateObserver enabledState,
                                                           final IncludeCaption includeCaption) {
     return createNullableCheckBox(getEditModel().getEntityDefinition().getProperty(propertyId), enabledState, includeCaption);
   }
@@ -850,7 +851,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the id of the property to bind
    * @return JComboBox for the given property
    */
-  protected final JComboBox createBooleanComboBox(final String propertyId) {
+  protected final JComboBox createBooleanComboBox(final Attribute<?> propertyId) {
     return createBooleanComboBox(propertyId, null);
   }
 
@@ -861,7 +862,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return JComboBox for the given property
    */
-  protected final JComboBox createBooleanComboBox(final String propertyId, final StateObserver enabledState) {
+  protected final JComboBox createBooleanComboBox(final Attribute<?> propertyId, final StateObserver enabledState) {
     return createBooleanComboBox(getEditModel().getEntityDefinition().getProperty(propertyId), enabledState);
   }
 
@@ -898,7 +899,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound the the property
    * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
-  protected final SteppedComboBox createComboBox(final String propertyId, final ComboBoxModel comboBoxModel,
+  protected final SteppedComboBox createComboBox(final Attribute<?> propertyId, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch) {
     return createComboBox(propertyId, comboBoxModel, maximumMatch, null);
   }
@@ -912,7 +913,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound the the property
    * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
-  protected final SteppedComboBox createComboBox(final String propertyId, final ComboBoxModel comboBoxModel,
+  protected final SteppedComboBox createComboBox(final Attribute<?> propertyId, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final StateObserver enabledState) {
     return createComboBox(getEditModel().getEntityDefinition().getProperty(propertyId),
             comboBoxModel, maximumMatch, enabledState);
@@ -963,7 +964,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyId) {
+  protected final SteppedComboBox createValueListComboBox(final Attribute<?> propertyId) {
     return createValueListComboBox(propertyId, Sorted.YES);
   }
 
@@ -975,7 +976,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyId, final Sorted sorted) {
+  protected final SteppedComboBox createValueListComboBox(final Attribute<?> propertyId, final Sorted sorted) {
     return createValueListComboBox(propertyId, sorted, null);
   }
 
@@ -987,7 +988,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyId, final StateObserver enabledState) {
+  protected final SteppedComboBox createValueListComboBox(final Attribute<?> propertyId, final StateObserver enabledState) {
     return createValueListComboBox(propertyId, Sorted.YES, enabledState);
   }
 
@@ -1000,7 +1001,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final String propertyId, final Sorted sorted,
+  protected final SteppedComboBox createValueListComboBox(final Attribute<?> propertyId, final Sorted sorted,
                                                           final StateObserver enabledState) {
     final Property property = getEditModel().getEntityDefinition().getProperty(propertyId);
     if (!(property instanceof ValueListProperty)) {
@@ -1069,7 +1070,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param comboBoxModel the ComboBoxModel
    * @return an editable SteppedComboBox bound the the property
    */
-  protected final SteppedComboBox createEditableComboBox(final String propertyId, final ComboBoxModel comboBoxModel) {
+  protected final SteppedComboBox createEditableComboBox(final Attribute<?> propertyId, final ComboBoxModel comboBoxModel) {
     return createEditableComboBox(propertyId, comboBoxModel, null);
   }
 
@@ -1080,7 +1081,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return an editable SteppedComboBox bound the the property
    */
-  protected final SteppedComboBox createEditableComboBox(final String propertyId, final ComboBoxModel comboBoxModel,
+  protected final SteppedComboBox createEditableComboBox(final Attribute<?> propertyId, final ComboBoxModel comboBoxModel,
                                                          final StateObserver enabledState) {
     return createEditableComboBox(getEditModel().getEntityDefinition().getProperty(propertyId),
             comboBoxModel, enabledState);
@@ -1112,7 +1113,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the id of the property to bind
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final String propertyId) {
+  protected final SteppedComboBox createPropertyComboBox(final Attribute<?> propertyId) {
     return createPropertyComboBox(propertyId, null);
   }
 
@@ -1123,7 +1124,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final String propertyId, final StateObserver enabledState) {
+  protected final SteppedComboBox createPropertyComboBox(final Attribute<?> propertyId, final StateObserver enabledState) {
     return createPropertyComboBox(propertyId, enabledState, Editable.NO);
   }
 
@@ -1135,7 +1136,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param editable yes if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final String propertyId, final StateObserver enabledState,
+  protected final SteppedComboBox createPropertyComboBox(final Attribute<?> propertyId, final StateObserver enabledState,
                                                          final Editable editable) {
     return createPropertyComboBox(getEditModel().getEntityDefinition().getColumnProperty(propertyId),
             enabledState, editable);
@@ -1189,7 +1190,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a EntityComboBox bound to the property
    */
-  protected final EntityComboBox createForeignKeyComboBox(final String foreignKeyPropertyId, final StateObserver enabledState) {
+  protected final EntityComboBox createForeignKeyComboBox(final Attribute<Entity> foreignKeyPropertyId, final StateObserver enabledState) {
     return createForeignKeyComboBox((ForeignKeyProperty)
             getEditModel().getEntityDefinition().getProperty(foreignKeyPropertyId), enabledState);
   }
@@ -1201,7 +1202,7 @@ public class EntityEditComponentPanel extends JPanel {
    * EntityComboBox is focusable
    * @return an EntityComboBox bound to the property
    */
-  protected final EntityComboBox createForeignKeyComboBox(final String foreignKeyPropertyId) {
+  protected final EntityComboBox createForeignKeyComboBox(final Attribute<Entity> foreignKeyPropertyId) {
     return createForeignKeyComboBox(getEditModel().getEntityDefinition().getForeignKeyProperty(
             foreignKeyPropertyId), null);
   }
@@ -1243,7 +1244,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param foreignKeyPropertyId the id of the foreign key property to bind
    * @return an EntityLookupField bound the property
    */
-  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyId) {
+  protected final EntityLookupField createForeignKeyLookupField(final Attribute<Entity> foreignKeyPropertyId) {
     return createForeignKeyLookupField(foreignKeyPropertyId, null);
   }
 
@@ -1254,7 +1255,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return an EntityLookupField bound the property
    */
-  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyId,
+  protected final EntityLookupField createForeignKeyLookupField(final Attribute<Entity> foreignKeyPropertyId,
                                                                 final StateObserver enabledState) {
     final ForeignKeyProperty fkProperty =
             getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId);
@@ -1295,7 +1296,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the id of the property to bind
    * @return an uneditable JTextField bound to the property
    */
-  protected final JTextField createForeignKeyField(final String propertyId) {
+  protected final JTextField createForeignKeyField(final Attribute<Entity> propertyId) {
     return createForeignKeyField(getEditModel().getEntityDefinition().getForeignKeyProperty(propertyId));
   }
 
@@ -1325,7 +1326,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param propertyId the id of the property from which to retrieve the caption
    * @return a JLabel for the given property
    */
-  protected final JLabel createLabel(final String propertyId) {
+  protected final JLabel createLabel(final Attribute<?> propertyId) {
     return createLabel(propertyId, JLabel.LEFT);
   }
 
@@ -1336,7 +1337,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param horizontalAlignment the horizontal text alignment
    * @return a JLabel for the given property
    */
-  protected final JLabel createLabel(final String propertyId, final int horizontalAlignment) {
+  protected final JLabel createLabel(final Attribute<?> propertyId, final int horizontalAlignment) {
     return setLabelForComponent(EntityInputComponents.createLabel(getEditModel().getEntityDefinition()
             .getProperty(propertyId), horizontalAlignment), getComponent(propertyId));
   }
@@ -1391,8 +1392,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @see #excludeComponentFromSelection(String)
    * @see #setComponent(String, javax.swing.JComponent)
    */
-  private List<String> getSelectComponentPropertyIds() {
-    final List<String> propertyIds = getComponentPropertyIds();
+  private List<Attribute<?>> getSelectComponentPropertyIds() {
+    final List<Attribute<?>> propertyIds = getComponentPropertyIds();
     propertyIds.removeIf(propertyId -> {
       final JComponent component = getComponent(propertyId);
 
@@ -1414,9 +1415,9 @@ public class EntityEditComponentPanel extends JPanel {
   private static final class ForeignKeyModelValue extends AbstractValue<String> {
 
     private final EntityEditModel editModel;
-    private final String foreignKeyPropertyId;
+    private final Attribute<Entity> foreignKeyPropertyId;
 
-    private ForeignKeyModelValue(final EntityEditModel editModel, final String foreignKeyPropertyId) {
+    private ForeignKeyModelValue(final EntityEditModel editModel, final Attribute<Entity> foreignKeyPropertyId) {
       this.editModel = editModel;
       this.foreignKeyPropertyId = foreignKeyPropertyId;
       editModel.addValueListener(foreignKeyPropertyId, valueChange -> notifyValueChange());
