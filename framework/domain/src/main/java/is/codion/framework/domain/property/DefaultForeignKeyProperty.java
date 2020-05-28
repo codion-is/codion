@@ -58,11 +58,6 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   }
 
   @Override
-  public Attribute<? extends ForeignKeyValue> getPropertyId() {
-    return (Attribute<? extends ForeignKeyValue>) super.getPropertyId();
-  }
-
-  @Override
   public boolean isInsertable() {
     return columnProperties.stream().allMatch(ColumnProperty::isInsertable);
   }

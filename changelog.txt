@@ -6121,3 +6121,4 @@
   ValueMap removed
   PropertyValueProvider renamed ForeignKeyValue, ForeignKeyProperty now based on that
   ForeignKeyProperty now overrides Property.getPropertyId()
+  Property.getAttribute() now with generic type parameter, ForeignKeyProperty generics improved a bit

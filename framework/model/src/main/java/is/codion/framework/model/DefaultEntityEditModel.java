@@ -874,7 +874,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param values the foreign key entities
    */
   protected void replaceForeignKey(final ForeignKeyProperty foreignKeyProperty, final List<Entity> values) {
-    final Entity currentForeignKeyValue = getForeignKey((Attribute<Entity>) foreignKeyProperty.getPropertyId());
+    final Entity currentForeignKeyValue = getForeignKey(foreignKeyProperty.getPropertyId());
     if (currentForeignKeyValue != null) {
       for (final Entity replacementValue : values) {
         if (currentForeignKeyValue.equals(replacementValue)) {

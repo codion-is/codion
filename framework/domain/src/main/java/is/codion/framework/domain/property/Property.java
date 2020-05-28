@@ -80,9 +80,10 @@ public interface Property extends Serializable {
   /**
    * The property identifier, should be unique within an Entity.
    * By default this id serves as column name for database properties.
+   * @param <T> the attribute type
    * @return the id of this property
    */
-  Attribute<?> getPropertyId();
+  <T> Attribute<T> getPropertyId();
 
   /**
    * @return the caption

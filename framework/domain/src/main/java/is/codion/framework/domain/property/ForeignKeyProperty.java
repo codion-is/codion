@@ -14,13 +14,6 @@ import java.util.List;
 public interface ForeignKeyProperty extends Property {
 
   /**
-   * The property identifier, should be unique within an Entity.
-   * By default this id serves as column name for database properties.
-   * @return the id of this property
-   */
-  Attribute<? extends ForeignKeyValue> getPropertyId();
-
-  /**
    * @return true if all reference properties comprising this foreign key property are insertable
    */
   boolean isInsertable();
