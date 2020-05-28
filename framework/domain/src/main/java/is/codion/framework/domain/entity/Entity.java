@@ -9,14 +9,16 @@ import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.PropertyValueProvider;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
  */
-public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, Serializable {
+public interface Entity extends PropertyValueProvider, Comparable<Entity>, Serializable {
 
   /**
    * @return the  entityId
@@ -45,11 +47,25 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   <T> T get(Attribute<T> propertyId);
 
   /**
+   * Retrieves the value mapped to the given property
+   * @param property the property
+   * @return the value mapped to the given property, null if no such mapping exists
+   */
+  Object get(Property property);
+
+  /**
    * Returns the original value associated with the property identified by {@code propertyId}.
    * @param propertyId the id of the property for which to retrieve the original value
    * @return the original value of the given property
    */
   <T> T getOriginal(Attribute<T> propertyId);
+
+  /**
+   * Returns the original value associated with the given property or the current value if it has not been modified.
+   * @param property the property for which to retrieve the original value
+   * @return the original value
+   */
+  Object getOriginal(Property property);
 
   /**
    * This method returns a String representation of the value associated with the given property,
@@ -119,6 +135,22 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   <T> T put(Attribute<T> propertyId, T value);
 
   /**
+   * Maps the given value to the given property, returning the old value if any.
+   * @param property the property
+   * @param value the value
+   * @return the previous value mapped to the given property
+   */
+  Object put(Property property, Object value);
+
+  /**
+   * Removes the given property and value from this value map along with the original value if any.
+   * If no value is mapped to the given property, this method has no effect.
+   * @param property the property to remove
+   * @return the value that was removed, null if no value was found
+   */
+  Object remove(Property property);
+
+  /**
    * @param propertyId the propertyId
    * @return true if the value associated with the given property has been modified
    */
@@ -143,6 +175,14 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   boolean valuesEqual(Entity entity);
 
   /**
+   * After a call to this method this Entity contains the same values and original values as the source entity.
+   * A null argument to this method clears the destination entity of all values and original values.
+   * Value change events for affected properties are fired after all values have been set, in no particular order.
+   * @param entity the entity to copy or null for clearing the destination map
+   */
+  void setAs(Entity entity);
+
+  /**
    * Returns true if the entity referenced via the given foreign key property has been loaded
    * @param foreignKeyPropertyId the property id
    * @return true if the reference entity has been loaded
@@ -163,11 +203,31 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   void revert(Attribute<?> propertyId);
 
   /**
+   * Reverts the value associated with the given property to its original value.
+   * If the value has not been modified or the property is not found then calling this method has no effect.
+   * @param property the property for which to revert the value
+   */
+  void revert(Property property);
+
+  /**
    * Saves the value associated with the given key, that is, removes the original value.
    * If no original value exists calling this method has no effect.
    * @param propertyId the id of the property for which to save the value
    */
   void save(Attribute<?> propertyId);
+
+  /**
+   * Saves the value associated with the given property, that is, removes the original value.
+   * If no original value exists calling this method has no effect.
+   * @param property the property for which to save the value
+   */
+  void save(Property property);
+
+  /**
+   * Saves all the value modifications that have been made.
+   * This value map will be unmodified after a call to this method.
+   */
+  void saveAll();
 
   /**
    * Returns true if a null value is mapped to the given property or if no mapping is found.
@@ -178,12 +238,26 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   boolean isNull(Attribute<?> propertyId);
 
   /**
+   * Returns true if a null value is mapped to the given property or the property is not found.
+   * @param property the property
+   * @return true if the value mapped to the given property is null
+   */
+  boolean isNull(Property property);
+
+  /**
    * Returns true if a this Entity contains a non-null value mapped to the given property
    * In case of foreign key properties the value of the underlying reference property is checked.
    * @param propertyId the id of the property
    * @return true if a non-null value is mapped to the given property
    */
   boolean isNotNull(Attribute<?> propertyId);
+
+  /**
+   * Returns true if a this ValueMap contains a non-null value mapped to the given property
+   * @param property the property
+   * @return true if the value mapped to the given property is not null
+   */
+  boolean isNotNull(Property property);
 
   /**
    * Returns true if this Entity contains a value for the given property, that value can be null.
@@ -193,12 +267,46 @@ public interface Entity extends ValueMap<Property, Object>, Comparable<Entity>, 
   boolean containsKey(Attribute<?> propertyId);
 
   /**
+   * Returns true if this ValueMap contains a value for the given property, that value can be null.
+   * @param property the property
+   * @return true if a value is mapped to this property
+   */
+  boolean containsKey(Property property);
+
+  /**
+   * @return an unmodifiable view of the keys mapping the values in this Entity
+   */
+  Set<Property> keySet();
+
+  /**
+   * @return an unmodifiable view of the keys mapping the original values in this Entity
+   */
+  Set<Property> originalKeySet();
+
+  /**
+   * @return the number of values in this map
+   */
+  int size();
+
+  /**
    * Removes the given property and value from this Entity along with the original value if any.
    * If no value is mapped to the given property, this method has no effect.
    * @param propertyId the id of the property to remove
    * @return the previous value mapped to the given key
    */
   <T> T remove(Attribute<T> propertyId);
+
+  /**
+   * @return true if one or more values have been modified.
+   */
+  boolean isModified();
+
+  /**
+   * Returns true if the value associated with the given property has been modified..
+   * @param property the property
+   * @return true if the value has changed
+   */
+  boolean isModified(Property property);
 
   /**
    * Adds a listener notified each time a value changes

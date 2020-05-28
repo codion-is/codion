@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.valuemap.ValueMap;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -222,7 +221,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   static List<Entity> getModifiedEntities(final Collection<Entity> entities) {
     requireNonNull(entities, "entities");
 
-    return entities.stream().filter(ValueMap::isModified).collect(toList());
+    return entities.stream().filter(Entity::isModified).collect(toList());
   }
 
   /**

@@ -4,7 +4,6 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.item.Item;
-import is.codion.common.valuemap.ValueMap;
 
 import java.sql.Types;
 import java.text.Collator;
@@ -118,7 +117,7 @@ public final class Properties {
   public static TransientProperty.Builder denormalizedViewProperty(final Attribute<?> propertyId, final Attribute<?> foreignKeyPropertyId,
                                                                    final Property property, final String caption) {
     final DerivedProperty.Provider valueProvider = linkedValues -> {
-      final ValueMap foreignKeyValue = (ValueMap) linkedValues.get(foreignKeyPropertyId);
+      final PropertyValueProvider foreignKeyValue = (PropertyValueProvider) linkedValues.get(foreignKeyPropertyId);
 
       return foreignKeyValue == null ? null : foreignKeyValue.get(property);
     };
