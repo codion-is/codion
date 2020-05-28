@@ -6123,3 +6123,4 @@
   ForeignKeyProperty now overrides Property.getPropertyId()
   Property.getAttribute() now with generic type parameter, ForeignKeyProperty generics improved a bit
   JavaFX module updated according to the latest changes
+  Swing Framework Model module updated according to the latest changes

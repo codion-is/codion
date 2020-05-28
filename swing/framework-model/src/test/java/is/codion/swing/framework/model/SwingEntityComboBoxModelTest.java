@@ -64,7 +64,7 @@ public final class SwingEntityComboBoxModelTest {
     updated.put(temp.getKey(), temp);
 
     EntityEditEvents.notifyUpdated(updated);
-    assertEquals("Newname", comboBoxModel.getEntity(temp.getKey()).getString(TestDomain.EMP_NAME));
+    assertEquals("Newname", comboBoxModel.getEntity(temp.getKey()).get(TestDomain.EMP_NAME));
 
     EntityEditEvents.notifyDeleted(singletonList(temp));
     assertFalse(comboBoxModel.isVisible(temp));
@@ -192,7 +192,7 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel.setSelectedItem(null);
     assertNull(empIdValue.get());
     empIdValue.set(10);
-    assertEquals("ADAMS", comboBoxModel.getSelectedValue().getString(TestDomain.EMP_NAME));
+    assertEquals("ADAMS", comboBoxModel.getSelectedValue().get(TestDomain.EMP_NAME));
     empIdValue.set(null);
     assertNull(comboBoxModel.getSelectedValue());
   }
@@ -242,7 +242,7 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel.refresh();
     comboBoxModel.setSelectedItem(comboBoxModel.getElementAt(0));
     comboBoxModel.setSelectedItem("SCOTT");
-    assertEquals(comboBoxModel.getSelectedItem().getString(TestDomain.EMP_NAME), "SCOTT");
+    assertEquals(comboBoxModel.getSelectedItem().get(TestDomain.EMP_NAME), "SCOTT");
   }
 
   @Test

@@ -21,6 +21,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -319,7 +320,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final int getPropertyColumnIndex(final String propertyId) {
+  public final int getPropertyColumnIndex(final Attribute<?> propertyId) {
     return getColumnModel().getColumnIndex(getEntityDefinition().getProperty(propertyId));
   }
 
@@ -379,7 +380,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param directive the directive
    * @see TableSortModel#setSortingDirective(Object, SortingDirective)
    */
-  public final void setSortingDirective(final String propertyId, final SortingDirective directive) {
+  public final void setSortingDirective(final Attribute<?> propertyId, final SortingDirective directive) {
     getSortModel().setSortingDirective(getEntityDefinition().getProperty(propertyId), directive);
   }
 
@@ -389,7 +390,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param directive the directive
    * @see TableSortModel#addSortingDirective(Object, SortingDirective)
    */
-  public final void addSortingDirective(final String propertyId, final SortingDirective directive) {
+  public final void addSortingDirective(final Attribute<?> propertyId, final SortingDirective directive) {
     getSortModel().addSortingDirective(getEntityDefinition().getProperty(propertyId), directive);
   }
 
@@ -399,7 +400,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param  propertyId the propertyId
    * @return the {@link TableSortModel.SortingState} associated with the given property
    */
-  public final TableSortModel.SortingState getSortingState(final String propertyId) {
+  public final TableSortModel.SortingState getSortingState(final Attribute<?> propertyId) {
     return getSortModel().getSortingState(getEntityDefinition().getProperty(propertyId));
   }
 
@@ -529,7 +530,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final ColumnSummaryModel getColumnSummaryModel(final String propertyId) {
+  public final ColumnSummaryModel getColumnSummaryModel(final Attribute<?> propertyId) {
     return getColumnSummaryModel(getEntityDefinition().getProperty(propertyId));
   }
 
@@ -539,7 +540,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final void setColumns(final String... propertyIds) {
+  public final void setColumns(final Attribute<?>... propertyIds) {
     getColumnModel().setColumns(getEntityDefinition().getProperties(asList(propertyIds)).toArray(new Property[0]));
   }
 
@@ -789,7 +790,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
       columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? getColumnModel().getColumnIndex(property) : -1);
-      columnPreferencesRoot.put(property.getPropertyId(), columnObject);
+      columnPreferencesRoot.put(property.getPropertyId().getId(), columnObject);
     }
 
     return columnPreferencesRoot;
@@ -815,7 +816,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       final Property property = (Property) column.getIdentifier();
       if (columnModel.containsColumn(property)) {
         try {
-          final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getPropertyId());
+          final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getPropertyId().getId());
           column.setPreferredWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
           if (columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
             final int index = Math.min(columnModel.getColumnCount() - 1, columnPreferences.getInt(PREFERENCES_COLUMN_INDEX));

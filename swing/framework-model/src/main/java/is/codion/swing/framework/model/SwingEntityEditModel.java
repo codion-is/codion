@@ -9,6 +9,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -31,7 +32,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * Holds the ComboBoxModels used by this {@link EntityEditModel},
    * @see is.codion.common.model.Refreshable
    */
-  private final Map<String, FilteredComboBoxModel> comboBoxModels = new HashMap<>();
+  private final Map<Attribute<?>, FilteredComboBoxModel> comboBoxModels = new HashMap<>();
 
   /**
    * Instantiates a new {@link SwingEntityEditModel} based on the entity identified by {@code entityId}.
@@ -81,7 +82,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @return a {@link SwingEntityComboBoxModel} based on the entity referenced by the given foreign key property
    * @see #createForeignKeyComboBoxModel(ForeignKeyProperty)
    */
-  public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(final String foreignKeyPropertyId) {
+  public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(final Attribute<Entity> foreignKeyPropertyId) {
     requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
     return getForeignKeyComboBoxModel(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
   }
@@ -108,7 +109,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param  propertyId the propertyId
    * @return a {@link FilteredComboBoxModel} for the given property
    */
-  public final FilteredComboBoxModel getComboBoxModel(final String propertyId) {
+  public final FilteredComboBoxModel getComboBoxModel(final Attribute<?> propertyId) {
     requireNonNull(propertyId, "propertyId");
     FilteredComboBoxModel comboBoxModel = comboBoxModels.get(propertyId);
     if (comboBoxModel == null) {
@@ -124,7 +125,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param propertyId the id of the property
    * @return true if this edit model contains a combobox model for the property
    */
-  public final boolean containsComboBoxModel(final String propertyId) {
+  public final boolean containsComboBoxModel(final Attribute<?> propertyId) {
     return comboBoxModels.containsKey(propertyId);
   }
 

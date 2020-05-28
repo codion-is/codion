@@ -174,7 +174,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.setEditable(true);
     tableModel.setValueAt("newname", 0, 1);
     final Entity entity = tableModel.getItemAt(0);
-    assertEquals("newname", entity.getString(TestDomain.EMP_NAME));
+    assertEquals("newname", entity.get(TestDomain.EMP_NAME));
     assertThrows(RuntimeException.class, () -> tableModel.setValueAt("newname", 0, 0));
   }
 

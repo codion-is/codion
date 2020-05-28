@@ -9,6 +9,7 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
 
 import java.util.Collection;
 import java.util.List;
@@ -55,7 +56,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKeyPropertyId the id of the foreign key property
    * @return the entity values currently used to filter the contents of this model
    */
-  Collection<Entity> getForeignKeyFilterEntities(String foreignKeyPropertyId);
+  Collection<Entity> getForeignKeyFilterEntities(Attribute<Entity> foreignKeyPropertyId);
 
   /**
    * Filters this combo box model so that only entities referencing the given foreign key entities
@@ -63,7 +64,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKeyPropertyId the property id
    * @param entities the entities
    */
-  void setForeignKeyFilterEntities(String foreignKeyPropertyId, Collection<Entity> entities);
+  void setForeignKeyFilterEntities(Attribute<Entity> foreignKeyPropertyId, Collection<Entity> entities);
 
   /**
    * Specifies whether foreign key filtering should be strict or not.
@@ -86,7 +87,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @return a combo box model for selecting a filtering value for this combo box model
    * @see #linkForeignKeyComboBoxModel(String, EntityComboBoxModel)
    */
-  EntityComboBoxModel createForeignKeyFilterComboBoxModel(String foreignKeyPropertyId);
+  EntityComboBoxModel createForeignKeyFilterComboBoxModel(Attribute<Entity> foreignKeyPropertyId);
 
   /**
    * Links the given combo box model representing master entities to this combo box model
@@ -94,7 +95,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKeyPropertyId the id of the foreign key property
    * @param foreignKeyModel the combo box model to link
    */
-  void linkForeignKeyComboBoxModel(String foreignKeyPropertyId, EntityComboBoxModel foreignKeyModel);
+  void linkForeignKeyComboBoxModel(Attribute<Entity> foreignKeyPropertyId, EntityComboBoxModel foreignKeyModel);
 
   /**
    * Selects the entity with the given primary key, if the entity is not available
@@ -154,7 +155,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param  propertyId the propertyId
    * @return a {@link Value} for selecting items by integer property value
    */
-  Value<Integer> integerValueSelector(String propertyId);
+  Value<Integer> integerValueSelector(Attribute<Integer> propertyId);
 
   /**
    * Creates a {@link Value} linked to the selected entity via the value of the given property.
@@ -162,7 +163,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param finder responsible for finding the entity by value
    * @return a {@link Value} for selecting items by integer property value
    */
-  Value<Integer> integerValueSelector(String propertyId, Finder<Integer> finder);
+  Value<Integer> integerValueSelector(Attribute<Integer> propertyId, Finder<Integer> finder);
 
   /**
    * @param listener a listener to be notified each time this model is refreshed
@@ -188,6 +189,6 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
      * @param value the value to search for, never null
      * @return the first Entity in the given list with the given value.
      */
-    Entity findByValue(List<Entity> entities, String propertyId, T value);
+    Entity findByValue(List<Entity> entities, Attribute<T> propertyId, T value);
   }
 }

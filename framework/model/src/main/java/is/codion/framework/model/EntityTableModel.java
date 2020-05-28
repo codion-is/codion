@@ -221,7 +221,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param propertyId the id of the property
    * @return the {@link ColumnSummaryModel} for the given property id
    */
-  ColumnSummaryModel getColumnSummaryModel(String propertyId);
+  ColumnSummaryModel getColumnSummaryModel(Attribute<?> propertyId);
 
   /**
    * @param row the row for which to retrieve the background color
@@ -235,7 +235,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param propertyId the propertyId
    * @return the index of the column representing the given property
    */
-  int getPropertyColumnIndex(String propertyId);
+  int getPropertyColumnIndex(Attribute<?> propertyId);
 
   /**
    * Returns the maximum number of records to fetch via the underlying query the next time
