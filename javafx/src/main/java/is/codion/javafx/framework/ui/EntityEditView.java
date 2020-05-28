@@ -11,6 +11,8 @@ import is.codion.common.state.State;
 import is.codion.common.state.States;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.ForeignKeyValue;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
@@ -50,12 +52,12 @@ public abstract class EntityEditView extends BorderPane {
   private static final KeyCode REFRESH_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC));
 
   private final FXEntityEditModel editModel;
-  private final Map<String, Control> controls = new HashMap<>();
+  private final Map<Attribute<?>, Control> controls = new HashMap<>();
 
   private boolean initialized = false;
   private boolean requestFocusAfterInsert = true;
-  private String initialFocusPropertyId;
-  private String afterInsertFocusPropertyId;
+  private Attribute<?> initialFocusPropertyId;
+  private Attribute<?> afterInsertFocusPropertyId;
 
   /**
    * Instantiates a new {@link EntityEditView} instance
@@ -131,7 +133,7 @@ public abstract class EntityEditView extends BorderPane {
    * Sets the given property as the property which component should receive focus when this edit view is initialized
    * @param initialFocusPropertyId the propertyId
    */
-  public final void setInitialFocusProperty(final String initialFocusPropertyId) {
+  public final void setInitialFocusProperty(final Attribute<?> initialFocusPropertyId) {
     this.initialFocusPropertyId = initialFocusPropertyId;
   }
 
@@ -139,7 +141,7 @@ public abstract class EntityEditView extends BorderPane {
    * Sets the given property as the property which component should receive focus after an insert has been performed
    * @param afterInsertFocusPropertyId the propertyId
    */
-  public final void setAfterInsertFocusProperty(final String afterInsertFocusPropertyId) {
+  public final void setAfterInsertFocusProperty(final Attribute<?> afterInsertFocusPropertyId) {
     this.afterInsertFocusPropertyId = afterInsertFocusPropertyId;
   }
 
@@ -167,7 +169,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param foreignKeyPropertyId the foreign key propertyId
    * @return a {@link EntityLookupField} based on the given property
    */
-  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyId) {
+  protected final EntityLookupField createForeignKeyLookupField(final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId) {
     checkControl(foreignKeyPropertyId);
     return FXUiUtil.createLookupField(getEditModel().getEntityDefinition()
             .getForeignKeyProperty(foreignKeyPropertyId), editModel);
@@ -178,7 +180,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param foreignKeyPropertyId the foreign key propertyId
    * @return a {@link ComboBox} based on the given property
    */
-  protected final ComboBox<Entity> createForeignKeyComboBox(final String foreignKeyPropertyId) {
+  protected final ComboBox<Entity> createForeignKeyComboBox(final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId) {
     checkControl(foreignKeyPropertyId);
     final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(getEditModel()
             .getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId), editModel);
@@ -193,7 +195,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param propertyId the propertyId
    * @return a {@link ComboBox} for the given property
    */
-  protected final ComboBox<Item> createValueListComboBox(final String propertyId) {
+  protected final ComboBox<Item> createValueListComboBox(final Attribute<?> propertyId) {
     checkControl(propertyId);
     final ComboBox<Item> box = FXUiUtil.createValueListComboBox((ValueListProperty)
             getEditModel().getEntityDefinition().getProperty(propertyId), editModel);
@@ -208,7 +210,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param propertyId the propertyId
    * @return a {@link TextField} for the given property
    */
-  protected final TextField createTextField(final String propertyId) {
+  protected final TextField createTextField(final Attribute<?> propertyId) {
     checkControl(propertyId);
     final Property property = getEditModel().getEntityDefinition().getProperty(propertyId);
     final TextField textField;
@@ -242,7 +244,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param propertyId the propertyId
    * @return a {@link DatePicker} based on the given property
    */
-  protected final DatePicker createDatePicker(final String propertyId) {
+  protected final DatePicker createDatePicker(final Attribute<?> propertyId) {
     checkControl(propertyId);
     final DatePicker picker = FXUiUtil.createDatePicker(getEditModel()
             .getEntityDefinition().getProperty(propertyId), editModel);
@@ -256,11 +258,11 @@ public abstract class EntityEditView extends BorderPane {
    * @param propertyId the propertyId
    * @return a {@link Label} for the given property
    */
-  protected final Label createLabel(final String propertyId) {
+  protected final Label createLabel(final Attribute<?> propertyId) {
     return new Label(getEditModel().getEntityDefinition().getProperty(propertyId).getCaption());
   }
 
-  protected final BorderPane createPropertyPanel(final String propertyId) {
+  protected final BorderPane createPropertyPanel(final Attribute<?> propertyId) {
     final BorderPane pane = new BorderPane();
     pane.setTop(createLabel(propertyId));
     final Control control = controls.get(propertyId);
@@ -398,7 +400,7 @@ public abstract class EntityEditView extends BorderPane {
     }
   }
 
-  private void requestComponentFocus(final String propertyId) {
+  private void requestComponentFocus(final Attribute<?> propertyId) {
     final Control control = controls.get(propertyId);
     if (control != null) {
       control.requestFocus();
@@ -417,7 +419,7 @@ public abstract class EntityEditView extends BorderPane {
     }
   }
 
-  private void checkControl(final String propertyId) {
+  private void checkControl(final Attribute<?> propertyId) {
     if (controls.containsKey(propertyId)) {
       throw new IllegalStateException("Control has already been created for property: " + propertyId);
     }

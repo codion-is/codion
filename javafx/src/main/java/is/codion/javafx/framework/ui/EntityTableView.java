@@ -37,7 +37,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -222,7 +221,7 @@ public class EntityTableView extends TableView<Entity> {
     FXUiUtil.link(updateSelected.disableProperty(), listModel.getSelectionEmptyObserver());
     Properties.sort(getListModel().getEntityDefinition().getUpdatableProperties()).stream().filter(
             this::includeUpdateSelectedProperty).forEach(property -> {
-      final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
+      final String caption = property.getCaption() == null ? property.getPropertyId().getId() : property.getCaption();
       final MenuItem updateProperty = new MenuItem(caption);
       updateProperty.setOnAction(actionEvent -> updateSelectedEntities(property));
       updateSelected.getItems().add(updateProperty);
@@ -256,7 +255,7 @@ public class EntityTableView extends TableView<Entity> {
   private void updateSelectedEntities(final Property property) {
     final List<Entity> selectedEntities = listModel.getEntities().deepCopyEntities(listModel.getSelectionModel().getSelectedItems());
 
-    final Collection<Object> values = Entities.getDistinctValues(property.getPropertyId(), selectedEntities);
+    final List<?> values = Entities.getDistinctValues(property.getPropertyId(), selectedEntities);
     final Object defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
     final PropertyInputDialog inputDialog = new PropertyInputDialog(property, defaultValue, listModel.getConnectionProvider());
