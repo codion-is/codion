@@ -6120,3 +6120,4 @@
   Entity.Key no longer extends ValueMap
   ValueMap removed
   PropertyValueProvider renamed ForeignKeyValue, ForeignKeyProperty now based on that
+  ForeignKeyProperty now overrides Property.getPropertyId()

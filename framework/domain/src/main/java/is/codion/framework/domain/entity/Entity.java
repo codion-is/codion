@@ -186,7 +186,7 @@ public interface Entity extends ForeignKeyValue, Comparable<Entity>, Serializabl
    * @param foreignKeyPropertyId the property id
    * @return true if the reference entity has been loaded
    */
-  boolean isLoaded(Attribute<?> foreignKeyPropertyId);
+  boolean isLoaded(Attribute<? extends ForeignKeyValue> foreignKeyPropertyId);
 
   /**
    * @param property the property for which to retrieve the color

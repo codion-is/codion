@@ -237,7 +237,7 @@ abstract class DefaultProperty implements Property {
   }
 
   @Override
-  public final Attribute<?> getPropertyId() {
+  public Attribute<?> getPropertyId() {
     return propertyId;
   }
 
