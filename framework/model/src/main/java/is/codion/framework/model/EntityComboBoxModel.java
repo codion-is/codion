@@ -53,18 +53,18 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   Predicate<Entity> getForeignKeyIncludeCondition();
 
   /**
-   * @param foreignKeyPropertyId the id of the foreign key property
+   * @param foreignKeyAttribute the id of the foreign key property
    * @return the entity values currently used to filter the contents of this model
    */
-  Collection<Entity> getForeignKeyFilterEntities(Attribute<Entity> foreignKeyPropertyId);
+  Collection<Entity> getForeignKeyFilterEntities(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * Filters this combo box model so that only entities referencing the given foreign key entities
    * via the given foreign key property are shown.
-   * @param foreignKeyPropertyId the property id
+   * @param foreignKeyAttribute the property id
    * @param entities the entities
    */
-  void setForeignKeyFilterEntities(Attribute<Entity> foreignKeyPropertyId, Collection<Entity> entities);
+  void setForeignKeyFilterEntities(Attribute<Entity> foreignKeyAttribute, Collection<Entity> entities);
 
   /**
    * Specifies whether foreign key filtering should be strict or not.
@@ -83,19 +83,19 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Returns a combo box model for selecting a foreign key value for filtering this model
-   * @param foreignKeyPropertyId the id of the property with which values to create the combo box model
+   * @param foreignKeyAttribute the attribute with which values to create the combo box model
    * @return a combo box model for selecting a filtering value for this combo box model
    * @see #linkForeignKeyComboBoxModel(String, EntityComboBoxModel)
    */
-  EntityComboBoxModel createForeignKeyFilterComboBoxModel(Attribute<Entity> foreignKeyPropertyId);
+  EntityComboBoxModel createForeignKeyFilterComboBoxModel(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * Links the given combo box model representing master entities to this combo box model
    * so that selection in the master model filters this model according to the selected master entity
-   * @param foreignKeyPropertyId the id of the foreign key property
+   * @param foreignKeyAttribute the foreign key attribute
    * @param foreignKeyModel the combo box model to link
    */
-  void linkForeignKeyComboBoxModel(Attribute<Entity> foreignKeyPropertyId, EntityComboBoxModel foreignKeyModel);
+  void linkForeignKeyComboBoxModel(Attribute<Entity> foreignKeyAttribute, EntityComboBoxModel foreignKeyModel);
 
   /**
    * Selects the entity with the given primary key, if the entity is not available
@@ -151,19 +151,19 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   Condition.Provider getSelectConditionProvider();
 
   /**
-   * Creates a {@link Value} linked to the selected entity via the value of the given property.
-   * @param  propertyId the propertyId
-   * @return a {@link Value} for selecting items by integer property value
+   * Creates a {@link Value} linked to the selected entity via the value of the given attribute.
+   * @param attribute the attribute
+   * @return a {@link Value} for selecting items by integer attribute value
    */
-  Value<Integer> integerValueSelector(Attribute<Integer> propertyId);
+  Value<Integer> integerValueSelector(Attribute<Integer> attribute);
 
   /**
    * Creates a {@link Value} linked to the selected entity via the value of the given property.
-   * @param  propertyId the propertyId
+   * @param attribute the attribute
    * @param finder responsible for finding the entity by value
    * @return a {@link Value} for selecting items by integer property value
    */
-  Value<Integer> integerValueSelector(Attribute<Integer> propertyId, Finder<Integer> finder);
+  Value<Integer> integerValueSelector(Attribute<Integer> attribute, Finder<Integer> finder);
 
   /**
    * @param listener a listener to be notified each time this model is refreshed
@@ -185,10 +185,10 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
      * Returns the first Entity in the given list with {@code value} associated with
      * the given property. Only called for non-null {@code value}s.
      * @param entities the entities to search
-     * @param  propertyId the propertyId
+     * @param attribute the attribute
      * @param value the value to search for, never null
      * @return the first Entity in the given list with the given value.
      */
-    Entity findByValue(List<Entity> entities, Attribute<T> propertyId, T value);
+    Entity findByValue(List<Entity> entities, Attribute<T> attribute, T value);
   }
 }

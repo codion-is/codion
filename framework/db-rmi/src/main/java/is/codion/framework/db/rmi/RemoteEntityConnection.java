@@ -184,7 +184,7 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Selects ordered and distinct non-null values of the given property
-   * @param attribute the id of the property
+   * @param attribute the attribute
    * @param condition the condition
    * @param <T> the value type
    * @return the values for the given attribute
@@ -199,7 +199,7 @@ public interface RemoteEntityConnection extends Remote {
   /**
    * Selects a single entity
    * @param entityId the entity type
-   * @param attribute the id of the property to use as a condition
+   * @param attribute the attribute to use as a condition
    * @param value the value to use in the condition
    * @return an entity of the type {@code entityId}, having the
    * value of {@code attribute} as {@code value}

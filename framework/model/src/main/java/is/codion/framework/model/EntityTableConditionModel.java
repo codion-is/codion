@@ -31,19 +31,19 @@ public interface EntityTableConditionModel extends Refreshable {
   String getEntityId();
 
   /**
-   * Sets the search condition values of the condition model associated with the property identified by {@code propertyId}
-   * @param propertyId the id of the property
+   * Sets the search condition values of the condition model associated with {@code attribute}.
+   * @param attribute the attribute
    * @param values the search condition values
    * @return true if the search state changed as a result of this method call, false otherwise
    */
-  <T> boolean setConditionValues(Attribute<T> propertyId, Collection<T> values);
+  <T> boolean setConditionValues(Attribute<T> attribute, Collection<T> values);
 
   /**
-   * Sets the condition value of the PropertyFilterModel associated with the property identified by {@code propertyId}.
-   * @param propertyId the id of the property
+   * Sets the condition value of the PropertyFilterModel associated with {@code attribute}.
+   * @param attribute the attribute
    * @param value the condition value
    */
-  <T> void setFilterValue(Attribute<T> propertyId, Comparable<T> value);
+  <T> void setFilterValue(Attribute<T> attribute, Comparable<T> value);
 
   /**
    * @return the current condition based on the state of the underlying condition models
@@ -67,22 +67,22 @@ public interface EntityTableConditionModel extends Refreshable {
   boolean isEnabled();
 
   /**
-   * @param propertyId the column propertyId
+   * @param attribute the column attribute
    * @return true if the {@link ColumnConditionModel} behind column with index {@code columnIndex} is enabled
    */
-  boolean isEnabled(Attribute<?> propertyId);
+  boolean isEnabled(Attribute<?> attribute);
 
   /**
    * Enables the search for the given property
-   * @param propertyId the id of the property for which to enable the search
+   * @param attribute the attribute for which to enable the search
    */
-  void enable(Attribute<?> propertyId);
+  void enable(Attribute<?> attribute);
 
   /**
    * Disables the search for the given property
-   * @param propertyId the id of the property for which to disable the search
+   * @param attribute the attribute for which to disable the search
    */
-  void disable(Attribute<?> propertyId);
+  void disable(Attribute<?> attribute);
 
   /**
    * Remembers the current condition model state, any subsequent changes to condition
@@ -115,11 +115,11 @@ public interface EntityTableConditionModel extends Refreshable {
   void setConjunction(Conjunction conjunction);
 
   /**
-   * @param propertyId the id of the property for which to check for the {@link ColumnConditionModel}
+   * @param attribute the attribute for which to check for the {@link ColumnConditionModel}
    * @return true if this EntityTableConditionModel contains a {@link ColumnConditionModel} associated
-   * with the property identified by {@code propertyId}
+   * with {@code attribute}
    */
-  boolean containsPropertyConditionModel(Attribute<?> propertyId);
+  boolean containsPropertyConditionModel(Attribute<?> attribute);
 
   /**
    * @return a Collection containing the PropertyConditionModels available in this table condition model
@@ -128,12 +128,12 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given property.
-   * @param propertyId the id of the property for which to retrieve the {@link ColumnConditionModel}
-   * @return the {@link ColumnConditionModel} associated with the property identified by {@code propertyId}
+   * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
+   * @return the {@link ColumnConditionModel} associated with {@code attribute}
    * @throws IllegalArgumentException in case no condition model is found
    * @see #containsPropertyConditionModel(String)
    */
-  ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(Attribute<?> propertyId);
+  ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(Attribute<?> attribute);
 
   /**
    * Clears the search state of all PropertyConditionModels, disables them and
@@ -147,17 +147,17 @@ public interface EntityTableConditionModel extends Refreshable {
   Collection<ColumnConditionModel<Entity, Property>> getPropertyFilterModels();
 
   /**
-   * The PropertyFilterModel associated with the property identified by {@code propertyId}
-   * @param propertyId the id of the property for which to retrieve the PropertyFilterModel
-   * @return the PropertyFilterModel for the property with id {@code propertyId}, null if none is found
+   * The filter model associated with {@code attribute}
+   * @param attribute the attribute for which to retrieve the PropertyFilterModel
+   * @return the PropertyFilterModel for the property with id {@code attribute}, null if none is found
    */
-  ColumnConditionModel<Entity, Property> getPropertyFilterModel(Attribute<?> propertyId);
+  ColumnConditionModel<Entity, Property> getPropertyFilterModel(Attribute<?> attribute);
 
   /**
-   * @param propertyId column propertyId
-   * @return true if the PropertyFilterModel behind column with index {@code columnIndex} is enabled
+   * @param attribute column attribute
+   * @return true if the filter model behind column with index {@code columnIndex} is enabled
    */
-  boolean isFilterEnabled(Attribute<?> propertyId);
+  boolean isFilterEnabled(Attribute<?> attribute);
 
   /**
    * @return the text used when performing a simple search

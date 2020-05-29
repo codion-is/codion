@@ -257,18 +257,18 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void setDetailModelForeignKey(final M detailModel, final Attribute<Entity> foreignKeyPropertyId) {
+  public final void setDetailModelForeignKey(final M detailModel, final Attribute<Entity> foreignKeyAttribute) {
     requireNonNull(detailModel, "detailModel");
     if (!containsDetailModel(detailModel)) {
       throw new IllegalArgumentException(this + " does not contain detail model: " + detailModel);
     }
 
-    if (foreignKeyPropertyId == null) {
+    if (foreignKeyAttribute == null) {
       detailModelForeignKeys.remove(detailModel);
     }
     else {
       detailModelForeignKeys.put(detailModel,
-              connectionProvider.getEntities().getDefinition(detailModel.getEntityId()).getForeignKeyProperty(foreignKeyPropertyId));
+              connectionProvider.getEntities().getDefinition(detailModel.getEntityId()).getForeignKeyProperty(foreignKeyAttribute));
     }
   }
 

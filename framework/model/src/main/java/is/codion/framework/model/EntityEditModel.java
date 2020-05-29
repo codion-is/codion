@@ -118,16 +118,16 @@ public interface EntityEditModel extends Refreshable {
   boolean containsUnsavedData();
 
   /**
-   * @param propertyId the id of the property
+   * @param attribute the attribute
    * @return true if the value of the given property is null
    */
-  boolean isNull(Attribute<?> propertyId);
+  boolean isNull(Attribute<?> attribute);
 
   /**
-   * @param propertyId the id of the property
+   * @param attribute the attribute
    * @return true if the value of the given property is not null
    */
-  boolean isNotNull(Attribute<?> propertyId);
+  boolean isNotNull(Attribute<?> attribute);
 
   /**
    * @param property the property
@@ -137,10 +137,10 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Sets the given value in the underlying Entity
-   * @param propertyId the id of the property to associate the given value with
+   * @param attribute the attribute to associate the given value with
    * @param value the value to associate with the given property
    */
-  <T> void put(Attribute<T> propertyId, T value);
+  <T> void put(Attribute<T> attribute, T value);
 
   /**
    * Sets the given value in the underlying Entity
@@ -151,10 +151,10 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Removes the given value from the underlying Entity
-   * @param propertyId the id of the property
+   * @param attribute the attribute
    * @return the value, if any
    */
-  <T> T remove(Attribute<T> propertyId);
+  <T> T remove(Attribute<T> attribute);
 
   /**
    * Removes the given value from the map
@@ -165,10 +165,10 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Returns the value associated with the given property
-   * @param propertyId the id of the property
+   * @param attribute the attribute
    * @return the value associated with the given property
    */
-  <T> T get(Attribute<T> propertyId);
+  <T> T get(Attribute<T> attribute);
 
   /**
    * Returns the value associated with the given property in the underlying Entity
@@ -178,21 +178,21 @@ public interface EntityEditModel extends Refreshable {
   Object get(Property property);
 
   /**
-   * Returns the value associated with the given propertyId assuming it
+   * Returns the value associated with the given attribute assuming it
    * is an {@link Entity} instance
-   * @param foreignKeyPropertyId the id of the property
+   * @param foreignKeyAttribute the attribute
    * @return the value assuming it is an {@link Entity}
    * @throws ClassCastException in case the value was not an {@link Entity}
    */
-  Entity getForeignKey(Attribute<Entity> foreignKeyPropertyId);
+  Entity getForeignKey(Attribute<Entity> foreignKeyAttribute);
 
   /**
-   * Instantiates a new Value based on the property identified by {@code propertyId} in this edit model
-   * @param  propertyId the propertyId
+   * Instantiates a new Value based on {@code attribute} in this edit model
+   * @param attribute the attribute
    * @param <V> the value type
    * @return a Value based on the given edit model value
    */
-  <V> Value<V> value(Attribute<V> propertyId);
+  <V> Value<V> value(Attribute<V> attribute);
 
   /**
    * @return the underlying domain entities
@@ -290,22 +290,22 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key property
-   * @param foreignKeyPropertyId the id of the property
+   * @param foreignKeyAttribute the attribute
    * @return true if a {@link EntityLookupModel} has been initialized for the given foreign key property
    */
-  boolean containsLookupModel(Attribute<Entity> foreignKeyPropertyId);
+  boolean containsLookupModel(Attribute<Entity> foreignKeyAttribute);
 
   /**
-   * @param foreignKeyPropertyId the id of the property for which to retrieve the {@link EntityLookupModel}
+   * @param foreignKeyAttribute the attribute for which to retrieve the {@link EntityLookupModel}
    * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
-   * has been initialized for the given property, a new one is created, associated with the property and returned.
+   * has been initialized for the given property, a new one is created, associated with the attribute and returned.
    */
-  EntityLookupModel getForeignKeyLookupModel(Attribute<Entity> foreignKeyPropertyId);
+  EntityLookupModel getForeignKeyLookupModel(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityLookupModel}
    * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
-   * has been initialized for the given property, a new one is created, associated with the property and returned.
+   * has been initialized for the given property, a new one is created, associated with the attribute and returned.
    */
   EntityLookupModel getForeignKeyLookupModel(ForeignKeyProperty foreignKeyProperty);
 
@@ -336,11 +336,11 @@ public interface EntityEditModel extends Refreshable {
   boolean isPersistValue(Property property);
 
   /**
-   * @param  propertyId the propertyId
+   * @param attribute the attribute
    * @param persistValue true if this model should persist the value of the given property on clear
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  void setPersistValue(Attribute<?> propertyId, boolean persistValue);
+  void setPersistValue(Attribute<?> attribute, boolean persistValue);
 
   /**
    * Performs a insert on the active entity, sets the primary key values of the active entity
@@ -538,36 +538,36 @@ public interface EntityEditModel extends Refreshable {
   StateObserver getInsertEnabledObserver();
 
   /**
-   * Adds a listener notified each time the value associated with the given property is edited via
+   * Adds a listener notified each time the value associated with the given attribute is edited via
    * {@link #put(Property, Object)} or {@link #remove(Property)}, note that this event is only fired
    * when the value actually changes.
-   * @param propertyId the id of the property for which to monitor value edits
+   * @param attribute the attribute for which to monitor value edits
    * @param listener a listener notified each time the value of the given property is edited via this model
    */
-  void addValueEditListener(Attribute<?> propertyId, EventDataListener<ValueChange> listener);
+  void addValueEditListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
 
   /**
    * Removes the given listener.
-   * @param propertyId the propertyId
+   * @param attribute the attribute
    * @param listener the listener to remove
    */
-  void removeValueEditListener(Attribute<?> propertyId, EventDataListener<ValueChange> listener);
+  void removeValueEditListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
 
   /**
-   * Adds a listener notified each time the value associated with the given key changes, either
+   * Adds a listener notified each time the value associated with the given attribute changes, either
    * via editing or when the active entity is set.
-   * @param propertyId the id of the property for which to monitor value changes
-   * @param listener a listener notified each time the value of the property identified by {@code propertyId} changes
+   * @param attribute the attribute for which to monitor value changes
+   * @param listener a listener notified each time the value of the {@code attribute} changes
    * @see #setEntity(Entity)
    */
-  void addValueListener(Attribute<?> propertyId, EventDataListener<ValueChange> listener);
+  void addValueListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
 
   /**
    * Removes the given listener.
-   * @param propertyId the id of the property for which to remove the listener
+   * @param attribute the attribute for which to remove the listener
    * @param listener the listener to remove
    */
-  void removeValueListener(Attribute<?> propertyId, EventDataListener<ValueChange> listener);
+  void removeValueListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
 
   /**
    * @param listener a listener notified each time the entity is set

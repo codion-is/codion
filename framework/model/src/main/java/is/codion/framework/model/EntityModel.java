@@ -177,16 +177,16 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   Collection<M> getDetailModels();
 
   /**
-   * Indicates that the given detail model is based on the foreign key with the given id, this becomes
+   * Indicates that the given detail model is based on the foreign key attribute, this becomes
    * practical when a detail model is based on an entity which contains multiple foreign keys to the
-   * same master entity. When initializing this detail model only the value for that foreignKeyProperty is set.
-   * If {@code foreignKeyPropertyId} is null the association is removed.
+   * same master entity. When initializing this detail model only the value for that foreignKeyAttribute is set.
+   * If {@code foreignKeyAttribute} is null the association is removed.
    * @param detailModel the detail model
-   * @param foreignKeyPropertyId the foreign key property id
+   * @param foreignKeyAttribute the foreign key attribute
    * @see #initialize(ForeignKeyProperty, java.util.List)
    * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
    */
-  void setDetailModelForeignKey(M detailModel, Attribute<Entity> foreignKeyPropertyId);
+  void setDetailModelForeignKey(M detailModel, Attribute<Entity> foreignKeyAttribute);
 
   /**
    * @param detailModel the detail model

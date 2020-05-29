@@ -92,12 +92,12 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public ColumnConditionModel<Entity, Property> getPropertyFilterModel(final Attribute<?> propertyId) {
-    if (propertyFilterModels.containsKey(propertyId)) {
-      return propertyFilterModels.get(propertyId);
+  public ColumnConditionModel<Entity, Property> getPropertyFilterModel(final Attribute<?> attribute) {
+    if (propertyFilterModels.containsKey(attribute)) {
+      return propertyFilterModels.get(attribute);
     }
 
-    throw new IllegalArgumentException("No property filter model found for property " + propertyId);
+    throw new IllegalArgumentException("No property filter model found for attribute " + attribute);
   }
 
   @Override
@@ -136,17 +136,17 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public boolean containsPropertyConditionModel(final Attribute<?> propertyId) {
-    return propertyConditionModels.containsKey(propertyId);
+  public boolean containsPropertyConditionModel(final Attribute<?> attribute) {
+    return propertyConditionModels.containsKey(attribute);
   }
 
   @Override
-  public ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(final Attribute<?> propertyId) {
-    if (propertyConditionModels.containsKey(propertyId)) {
-      return propertyConditionModels.get(propertyId);
+  public ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(final Attribute<?> attribute) {
+    if (propertyConditionModels.containsKey(attribute)) {
+      return propertyConditionModels.get(attribute);
     }
 
-    throw new IllegalArgumentException("Condition model not found for property: " + propertyId);
+    throw new IllegalArgumentException("Condition model not found for property: " + attribute);
   }
 
   @Override
@@ -155,22 +155,22 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public boolean isEnabled(final Attribute<?> propertyId) {
-    return containsPropertyConditionModel(propertyId) && getPropertyConditionModel(propertyId).isEnabled();
+  public boolean isEnabled(final Attribute<?> attribute) {
+    return containsPropertyConditionModel(attribute) && getPropertyConditionModel(attribute).isEnabled();
   }
 
   @Override
-  public boolean isFilterEnabled(final Attribute<?> propertyId) {
-    final ColumnConditionModel<Entity, Property> propertyFilterModel = getPropertyFilterModel(propertyId);
+  public boolean isFilterEnabled(final Attribute<?> attribute) {
+    final ColumnConditionModel<Entity, Property> propertyFilterModel = getPropertyFilterModel(attribute);
 
     return propertyFilterModel != null && propertyFilterModel.isEnabled();
   }
 
   @Override
-  public <T> boolean setConditionValues(final Attribute<T> propertyId, final Collection<T> values) {
+  public <T> boolean setConditionValues(final Attribute<T> attribute, final Collection<T> values) {
     final String conditionsString = getConditionsString();
-    if (containsPropertyConditionModel(propertyId)) {
-      final ColumnConditionModel conditionModel = getPropertyConditionModel(propertyId);
+    if (containsPropertyConditionModel(attribute)) {
+      final ColumnConditionModel conditionModel = getPropertyConditionModel(attribute);
       conditionModel.setEnabled(!Util.nullOrEmpty(values));
       conditionModel.setUpperBound(null);//because the upperBound could be a reference to the active entity which changes accordingly
       conditionModel.setUpperBound(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
@@ -179,8 +179,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <T> void setFilterValue(final Attribute<T> propertyId, final Comparable<T> value) {
-    final ColumnConditionModel<Entity, Property> filterModel = getPropertyFilterModel(propertyId);
+  public <T> void setFilterValue(final Attribute<T> attribute, final Comparable<T> value) {
+    final ColumnConditionModel<Entity, Property> filterModel = getPropertyFilterModel(attribute);
     if (filterModel != null) {
       filterModel.setLikeValue(value);
     }
@@ -249,16 +249,16 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public void enable(final Attribute<?> propertyId) {
-    if (containsPropertyConditionModel(propertyId)) {
-      getPropertyConditionModel(propertyId).setEnabled(true);
+  public void enable(final Attribute<?> attribute) {
+    if (containsPropertyConditionModel(attribute)) {
+      getPropertyConditionModel(attribute).setEnabled(true);
     }
   }
 
   @Override
-  public void disable(final Attribute<?> propertyId) {
-    if (containsPropertyConditionModel(propertyId)) {
-      getPropertyConditionModel(propertyId).setEnabled(false);
+  public void disable(final Attribute<?> attribute) {
+    if (containsPropertyConditionModel(attribute)) {
+      getPropertyConditionModel(attribute).setEnabled(false);
     }
   }
 

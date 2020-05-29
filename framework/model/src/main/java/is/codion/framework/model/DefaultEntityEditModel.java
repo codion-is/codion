@@ -238,8 +238,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void setPersistValue(final Attribute<?> propertyId, final boolean persistValue) {
-    persistentValues.put(propertyId, persistValue);
+  public final void setPersistValue(final Attribute<?> attribute, final boolean persistValue) {
+    persistentValues.put(attribute, persistValue);
   }
 
   @Override
@@ -332,8 +332,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Entity getForeignKey(final Attribute<Entity> foreignKeyPropertyId) {
-    return (Entity) get(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
+  public final Entity getForeignKey(final Attribute<Entity> foreignKeyAttribute) {
+    return (Entity) get(getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute));
   }
 
   @Override
@@ -364,18 +364,18 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> T get(final Attribute<T> propertyId) {
-    return entity.get(propertyId);
+  public final <T> T get(final Attribute<T> attribute) {
+    return entity.get(attribute);
   }
 
   @Override
-  public final <T> void put(final Attribute<T> propertyId, final T value) {
-    put(getEntityDefinition().getProperty(propertyId), value);
+  public final <T> void put(final Attribute<T> attribute, final T value) {
+    put(getEntityDefinition().getProperty(attribute), value);
   }
 
   @Override
-  public final <T> T remove(final Attribute<T> propertyId) {
-    return (T) remove(getEntityDefinition().getProperty(propertyId));
+  public final <T> T remove(final Attribute<T> attribute) {
+    return (T) remove(getEntityDefinition().getProperty(attribute));
   }
 
   @Override
@@ -411,13 +411,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isNull(final Attribute<?> propertyId) {
-    return entity.isNull(propertyId);
+  public final boolean isNull(final Attribute<?> attribute) {
+    return entity.isNull(attribute);
   }
 
   @Override
-  public final boolean isNotNull(final Attribute<?> propertyId) {
-    return !entity.isNull(propertyId);
+  public final boolean isNotNull(final Attribute<?> attribute) {
+    return !entity.isNull(attribute);
   }
 
   @Override
@@ -606,8 +606,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean containsLookupModel(final Attribute<Entity> foreignKeyPropertyId) {
-    return entityLookupModels.containsKey(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
+  public final boolean containsLookupModel(final Attribute<Entity> foreignKeyAttribute) {
+    return entityLookupModels.containsKey(getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute));
   }
 
   @Override
@@ -625,9 +625,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityLookupModel getForeignKeyLookupModel(final Attribute<Entity> foreignKeyPropertyId) {
-    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
-    return getForeignKeyLookupModel(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
+  public final EntityLookupModel getForeignKeyLookupModel(final Attribute<Entity> foreignKeyAttribute) {
+    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+    return getForeignKeyLookupModel(getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute));
   }
 
   @Override
@@ -642,8 +642,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <V> Value<V> value(final Attribute<V> propertyId) {
-    return new EditModelValue<>(this, propertyId);
+  public final <V> Value<V> value(final Attribute<V> attribute) {
+    return new EditModelValue<>(this, attribute);
   }
 
   @Override
@@ -678,27 +678,27 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void removeValueEditListener(final Attribute<?> propertyId, final EventDataListener<ValueChange> listener) {
-    if (valueEditEventMap.containsKey(propertyId)) {
-      valueEditEventMap.get(propertyId).removeDataListener(listener);
+  public final void removeValueEditListener(final Attribute<?> attribute, final EventDataListener<ValueChange> listener) {
+    if (valueEditEventMap.containsKey(attribute)) {
+      valueEditEventMap.get(attribute).removeDataListener(listener);
     }
   }
 
   @Override
-  public final void addValueEditListener(final Attribute<?> propertyId, final EventDataListener<ValueChange> listener) {
-    getValueEditEvent(propertyId).addDataListener(listener);
+  public final void addValueEditListener(final Attribute<?> attribute, final EventDataListener<ValueChange> listener) {
+    getValueEditEvent(attribute).addDataListener(listener);
   }
 
   @Override
-  public final void removeValueListener(final Attribute<?> propertyId, final EventDataListener<ValueChange> listener) {
-    if (valueChangeEventMap.containsKey(propertyId)) {
-      valueChangeEventMap.get(propertyId).removeDataListener(listener);
+  public final void removeValueListener(final Attribute<?> attribute, final EventDataListener<ValueChange> listener) {
+    if (valueChangeEventMap.containsKey(attribute)) {
+      valueChangeEventMap.get(attribute).removeDataListener(listener);
     }
   }
 
   @Override
-  public final void addValueListener(final Attribute<?> propertyId, final EventDataListener<ValueChange> listener) {
-    getValueChangeEvent(propertyId).addDataListener(listener);
+  public final void addValueListener(final Attribute<?> attribute, final EventDataListener<ValueChange> listener) {
+    getValueChangeEvent(attribute).addDataListener(listener);
   }
 
   @Override
@@ -976,12 +976,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return !Objects.equals(get(property), getDefaultValue(property));
   }
 
-  private Event<ValueChange> getValueEditEvent(final Attribute<?> propertyId) {
-    return valueEditEventMap.computeIfAbsent(propertyId, k -> Events.event());
+  private Event<ValueChange> getValueEditEvent(final Attribute<?> attribute) {
+    return valueEditEventMap.computeIfAbsent(attribute, k -> Events.event());
   }
 
-  private Event<ValueChange> getValueChangeEvent(final Attribute<?> propertyId) {
-    return valueChangeEventMap.computeIfAbsent(propertyId, k -> Events.event());
+  private Event<ValueChange> getValueChangeEvent(final Attribute<?> attribute) {
+    return valueChangeEventMap.computeIfAbsent(attribute, k -> Events.event());
   }
 
   private void initializePersistentValues() {
@@ -1042,22 +1042,22 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private static final class EditModelValue<V> extends AbstractValue<V> {
 
     private final EntityEditModel editModel;
-    private final Attribute<V> propertyId;
+    private final Attribute<V> attribute;
 
-    private EditModelValue(final EntityEditModel editModel, final Attribute<V> propertyId) {
+    private EditModelValue(final EntityEditModel editModel, final Attribute<V> attribute) {
       this.editModel = editModel;
-      this.propertyId = propertyId;
-      this.editModel.addValueListener(propertyId, valueChange -> notifyValueChange());
+      this.attribute = attribute;
+      this.editModel.addValueListener(attribute, valueChange -> notifyValueChange());
     }
 
     @Override
     public V get() {
-      return (V) editModel.get(propertyId);
+      return (V) editModel.get(attribute);
     }
 
     @Override
     public void set(final V value) {
-      editModel.put(propertyId, value);
+      editModel.put(attribute, value);
     }
 
     @Override

@@ -217,11 +217,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setBatchUpdateEnabled(boolean batchUpdateEnabled);
 
   /**
-   * Returns the {@link ColumnSummaryModel} associated with the property identified by {@code propertyId}
-   * @param propertyId the id of the property
+   * Returns the {@link ColumnSummaryModel} associated with {@code attribute}
+   * @param attribute the attribute
    * @return the {@link ColumnSummaryModel} for the given property id
    */
-  ColumnSummaryModel getColumnSummaryModel(Attribute<?> propertyId);
+  ColumnSummaryModel getColumnSummaryModel(Attribute<?> attribute);
 
   /**
    * @param row the row for which to retrieve the background color
@@ -232,10 +232,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   Object getPropertyBackgroundColor(int row, Property property);
 
   /**
-   * @param propertyId the propertyId
-   * @return the index of the column representing the given property
+   * @param attribute the attribute
+   * @return the index of the column representing the given attribute
    */
-  int getPropertyColumnIndex(Attribute<?> propertyId);
+  int getPropertyColumnIndex(Attribute<?> attribute);
 
   /**
    * Returns the maximum number of records to fetch via the underlying query the next time
@@ -341,9 +341,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * Arranges the column model so that only the given columns are visible and in the given order
-   * @param propertyIds the column identifiers
+   * @param attributes the column attributes
    */
-  void setColumns(Attribute<?>... propertyIds);
+  void setColumns(Attribute<?>... attributes);
 
   /**
    * @param delimiter the delimiter
