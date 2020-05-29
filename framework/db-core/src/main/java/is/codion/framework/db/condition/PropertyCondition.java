@@ -6,17 +6,16 @@ package is.codion.framework.db.condition;
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.Property;
 
 /**
- * A Condition based on a {@link Property}
+ * A Condition based on a single {@link Attribute}.
  */
 public interface PropertyCondition extends Condition {
 
   /**
-   * @return the propertyId
+   * @return the attribute
    */
-  Attribute<?> getPropertyId();
+  Attribute<?> getAttribute();
 
   /**
    * @return the condition operator

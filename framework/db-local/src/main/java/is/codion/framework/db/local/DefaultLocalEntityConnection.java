@@ -333,8 +333,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public int update(final EntityUpdateCondition updateCondition) throws DatabaseException {
     requireNonNull(updateCondition, "updateCondition");
-    if (updateCondition.getPropertyValues().isEmpty()) {
-      throw new IllegalArgumentException("No property values provided for update");
+    if (updateCondition.getAttributeValues().isEmpty()) {
+      throw new IllegalArgumentException("No attribute values provided for update");
     }
     checkIfReadOnly(updateCondition.getEntityId());
 
@@ -345,7 +345,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         final List<ColumnProperty> statementProperties = new ArrayList<>();
         final EntityDefinition entityDefinition = getEntityDefinition(updateCondition.getEntityId());
-        for (final Map.Entry<Attribute<?>, Object> propertyValue : updateCondition.getPropertyValues().entrySet()) {
+        for (final Map.Entry<Attribute<?>, Object> propertyValue : updateCondition.getAttributeValues().entrySet()) {
           final ColumnProperty columnProperty = entityDefinition.getColumnProperty(propertyValue.getKey());
           if (!columnProperty.isUpdatable()) {
             throw new IllegalArgumentException("Property is not updatable: " + columnProperty.getAttribute());
@@ -838,7 +838,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     for (final Map.Entry<String, List<Entity>> entitiesByEntityIdEntry : entitiesByEntityId.entrySet()) {
       final List<Entity.Key> originalKeys = getOriginalKeys(entitiesByEntityIdEntry.getValue());
       final EntitySelectCondition selectForUpdateCondition = selectCondition(originalKeys);
-      selectForUpdateCondition.setSelectPropertyIds(getPrimaryKeyAndWritableColumnPropertyIds(entitiesByEntityIdEntry.getKey()));
+      selectForUpdateCondition.setSelectAttributes(getPrimaryKeyAndWritableColumnPropertyIds(entitiesByEntityIdEntry.getKey()));
       selectForUpdateCondition.setForUpdate(true);
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
       final Map<Entity.Key, Entity> currentEntitiesByKey = mapToKey(currentEntities);
@@ -946,12 +946,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String selectQuery = null;
     final EntityDefinition entityDefinition = getEntityDefinition(selectCondition.getEntityId());
     final WhereCondition whereCondition = whereCondition(selectCondition, entityDefinition);
-    final List<ColumnProperty> propertiesToSelect = selectCondition.getSelectPropertyIds().isEmpty() ?
+    final List<ColumnProperty> propertiesToSelect = selectCondition.getSelectAttributes().isEmpty() ?
             entityDefinition.getSelectableColumnProperties() :
-            entityDefinition.getSelectableColumnProperties(selectCondition.getSelectPropertyIds());
+            entityDefinition.getSelectableColumnProperties(selectCondition.getSelectAttributes());
     try {
       selectQuery = selectQuery(columnsClause(entityDefinition.getEntityId(),
-              selectCondition.getSelectPropertyIds(), propertiesToSelect), selectCondition, whereCondition,
+              selectCondition.getSelectAttributes(), propertiesToSelect), selectCondition, whereCondition,
               entityDefinition, connection.getDatabase());
       statement = prepareStatement(selectQuery);
       resultSet = executeStatement(statement, selectQuery, whereCondition);

@@ -48,7 +48,7 @@ public final class Conditions {
   /**
    * Creates a {@link EntityCondition} instance specifying the entities of the type identified by {@code key},
    * using the given {@link Condition}
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @param condition the column condition
    * @return a condition based on the given column condition
    */
@@ -68,7 +68,7 @@ public final class Conditions {
 
   /**
    * Creates a {@link EntitySelectCondition} instance specifying all entities of the type identified by {@code entityId}
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @return a condition specifying all entities of the given type
    */
   public static EntityCondition condition(final String entityId) {
@@ -77,18 +77,17 @@ public final class Conditions {
 
   /**
    * Creates a {@link EntityCondition} instance for specifying entities of the type identified by {@code entityId}
-   * with a where condition based on the property identified by {@code propertyId}, the operators based on
-   * {@code operator} and {@code value}. Note that {@code value} may be a single value, a Collection
-   * of values or null.
-   * @param entityId the  entityId
-   * @param propertyId the propertyId
+   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
+   * Note that {@code value} may be a single value, a Collection of values or null.
+   * @param entityId the entityId
+   * @param attribute the attribute
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return a condition based on the given value
    */
-  public static EntityCondition condition(final String entityId, final Attribute<?> propertyId,
+  public static EntityCondition condition(final String entityId, final Attribute<?> attribute,
                                           final Operator operator, final Object value) {
-    return new DefaultEntityCondition(entityId, propertyCondition(propertyId, operator, value));
+    return new DefaultEntityCondition(entityId, propertyCondition(attribute, operator, value));
   }
 
   /**
@@ -113,7 +112,7 @@ public final class Conditions {
 
   /**
    * Creates a {@link EntitySelectCondition} instance for selecting all entities of the type identified by {@code entityId}
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @return a select condition encompassing all entities of the given type
    */
   public static EntitySelectCondition selectCondition(final String entityId) {
@@ -123,7 +122,7 @@ public final class Conditions {
   /**
    * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId},
    * using the given {@link Condition}
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @param condition the column condition
    * @return a select condition based on the given column condition
    */
@@ -133,23 +132,22 @@ public final class Conditions {
 
   /**
    * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId}
-   * with a where condition based on the property identified by {@code propertyId}, the operators based on
-   * {@code operator} and {@code value}. Note that {@code value} may be a single value, a Collection
-   * of values or null.
-   * @param entityId the  entityId
-   * @param  propertyId the propertyId
+   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
+   * Note that {@code value} may be a single value, a Collection of values or null.
+   * @param entityId the entityId
+   * @param attribute the attribute
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return a select condition based on the given value
    */
-  public static EntitySelectCondition selectCondition(final String entityId, final Attribute<?> propertyId,
+  public static EntitySelectCondition selectCondition(final String entityId, final Attribute<?> attribute,
                                                       final Operator operator, final Object value) {
-    return selectCondition(entityId, propertyCondition(propertyId, operator, value));
+    return selectCondition(entityId, propertyCondition(attribute, operator, value));
   }
 
   /**
    * Creates a {@link EntityUpdateCondition} instance for updating all entities of the type identified by {@code entityId}
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @return an update condition encompassing all entities of the given type
    */
   public static EntityUpdateCondition updateCondition(final String entityId) {
@@ -158,24 +156,23 @@ public final class Conditions {
 
   /**
    * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityId}
-   * with a where condition based on the property identified by {@code propertyId}, the operators based on
-   * {@code operator} and {@code value}. Note that {@code value} may be a single value, a Collection
-   * of values or null.
-   * @param entityId the  entityId
-   * @param  propertyId the propertyId
+   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
+   * Note that {@code value} may be a single value, a Collection of values or null.
+   * @param entityId the entityId
+   * @param attribute the attribute
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return an update condition based on the given value
    */
-  public static <T> EntityUpdateCondition updateCondition(final String entityId, final Attribute<T> propertyId,
+  public static <T> EntityUpdateCondition updateCondition(final String entityId, final Attribute<T> attribute,
                                                           final Operator operator, final T value) {
-    return updateCondition(entityId, propertyCondition(propertyId, operator, value));
+    return updateCondition(entityId, propertyCondition(attribute, operator, value));
   }
 
   /**
    * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityId},
    * using the given {@link Condition}
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @param condition the column condition
    * @return an update condition based on the given column condition
    */
@@ -226,27 +223,27 @@ public final class Conditions {
   /**
    * Creates a new {@link CustomCondition} based on the condition with the given id
    * @param conditionId the id of the condition
-   * @param propertyIds the properties representing the values used by this condition, in the same order as their respective values
+   * @param attributes the attributes representing the values used by this condition, in the same order as their respective values
    * @param values the values used by this condition string
    * @return a new Condition instance
    * @throws NullPointerException in case any of the parameters are null
    * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
    */
-  public static CustomCondition customCondition(final String conditionId, final List<Attribute<?>> propertyIds, final List values) {
-    return new DefaultCustomCondition(conditionId, propertyIds, values);
+  public static CustomCondition customCondition(final String conditionId, final List<Attribute<?>> attributes, final List values) {
+    return new DefaultCustomCondition(conditionId, attributes, values);
   }
 
   /**
    * Creates a {@link Condition} for the given property, with the operator specified by the {@code operator}
    * and {@code value}. Note that {@code value} may be a single value, a Collection of values or null.
-   * @param propertyId the property
+   * @param attribute the attribute
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return a property condition based on the given value
    */
-  public static PropertyCondition propertyCondition(final Attribute<?> propertyId, final Operator operator,
+  public static PropertyCondition propertyCondition(final Attribute<?> attribute, final Operator operator,
                                                     final Object value) {
-    return new DefaultPropertyCondition(propertyId, operator, value);
+    return new DefaultPropertyCondition(attribute, operator, value);
   }
 
   /**
@@ -281,7 +278,7 @@ public final class Conditions {
     }
     if (condition instanceof PropertyCondition) {
       final PropertyCondition propertyCondition = (PropertyCondition) condition;
-      final Property property = definition.getProperty(propertyCondition.getPropertyId());
+      final Property property = definition.getProperty(propertyCondition.getAttribute());
       if (property instanceof ForeignKeyProperty) {
         return foreignKeyCondition((ForeignKeyProperty) property, propertyCondition.getOperator(),
                 propertyCondition.getValues());

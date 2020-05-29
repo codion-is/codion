@@ -26,18 +26,18 @@ final class DefaultEntityUpdateCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntityUpdateCondition set(final Attribute<?> propertyId, final Object value) {
-    requireNonNull(propertyId, "propertyId");
-    if (propertyValues.containsKey(propertyId)) {
-      throw new IllegalArgumentException("Update condition already contains a value for property: " + propertyId);
+  public EntityUpdateCondition set(final Attribute<?> attribute, final Object value) {
+    requireNonNull(attribute, "attribute");
+    if (propertyValues.containsKey(attribute)) {
+      throw new IllegalArgumentException("Update condition already contains a value for attribute: " + attribute);
     }
-    propertyValues.put(propertyId, value);
+    propertyValues.put(attribute, value);
 
     return this;
   }
 
   @Override
-  public Map<Attribute<?>, Object> getPropertyValues() {
+  public Map<Attribute<?>, Object> getAttributeValues() {
     return unmodifiableMap(propertyValues);
   }
 }

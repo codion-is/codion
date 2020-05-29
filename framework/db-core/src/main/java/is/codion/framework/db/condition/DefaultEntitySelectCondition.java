@@ -18,7 +18,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   private static final long serialVersionUID = 1;
 
   private HashMap<Attribute<?>, Integer> foreignKeyFetchDepths;
-  private List<Attribute<?>> selectPropertyIds = emptyList();
+  private List<Attribute<?>> selectAttributes = emptyList();
 
   private OrderBy orderBy;
   private Integer foreignKeyFetchDepth;
@@ -91,18 +91,18 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setForeignKeyFetchDepth(final Attribute<?> foreignKeyPropertyId, final int fetchDepth) {
+  public EntitySelectCondition setForeignKeyFetchDepth(final Attribute<?> foreignKeyAttribute, final int fetchDepth) {
     if (foreignKeyFetchDepths == null) {
       foreignKeyFetchDepths = new HashMap<>();
     }
-    this.foreignKeyFetchDepths.put(foreignKeyPropertyId, fetchDepth);
+    this.foreignKeyFetchDepths.put(foreignKeyAttribute, fetchDepth);
     return this;
   }
 
   @Override
-  public Integer getForeignKeyFetchDepth(final Attribute<?> foreignKeyPropertyId) {
-    if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKeyPropertyId)) {
-      return foreignKeyFetchDepths.get(foreignKeyPropertyId);
+  public Integer getForeignKeyFetchDepth(final Attribute<?> foreignKeyAttribute) {
+    if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKeyAttribute)) {
+      return foreignKeyFetchDepths.get(foreignKeyAttribute);
     }
 
     return foreignKeyFetchDepth;
@@ -115,14 +115,14 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setSelectPropertyIds(final Attribute<?>... propertyIds) {
-    this.selectPropertyIds = new ArrayList<>(asList(propertyIds));
+  public EntitySelectCondition setSelectAttributes(final Attribute<?>... attributes) {
+    this.selectAttributes = new ArrayList<>(asList(attributes));
     return this;
   }
 
   @Override
-  public List<Attribute<?>> getSelectPropertyIds() {
-    return selectPropertyIds;
+  public List<Attribute<?>> getSelectAttributes() {
+    return selectAttributes;
   }
 
   @Override

@@ -139,14 +139,14 @@ public final class TestDomain extends Domain {
             .smallDataset(true)
             .orderBy(orderBy().ascending(DEPARTMENT_NAME))
             .stringProvider(new StringProvider(DEPARTMENT_NAME))
-            .conditionProvider(DEPARTMENT_CONDITION_ID, (propertyIds, values) -> {
+            .conditionProvider(DEPARTMENT_CONDITION_ID, (attributes, values) -> {
               final StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .conditionProvider(DEPARTMENT_NAME_NOT_NULL_CONDITION_ID, (propertyIds, values) -> "department name is not null")
+            .conditionProvider(DEPARTMENT_NAME_NOT_NULL_CONDITION_ID, (attributes, values) -> "department name is not null")
             .caption("Department");
   }
 

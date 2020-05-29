@@ -54,12 +54,12 @@ final class DefaultConditionCombination implements Condition.Combination {
   }
 
   @Override
-  public List<Attribute<?>> getPropertyIds() {
-    final List<Attribute<?>> propertyIds = new ArrayList<>();
+  public List<Attribute<?>> getAttributes() {
+    final List<Attribute<?>> attributes = new ArrayList<>();
     for (int i = 0; i < conditions.size(); i++) {
-      propertyIds.addAll(conditions.get(i).getPropertyIds());
+      attributes.addAll(conditions.get(i).getAttributes());
     }
 
-    return propertyIds;
+    return attributes;
   }
 }

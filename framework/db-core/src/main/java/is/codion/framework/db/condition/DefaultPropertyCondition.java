@@ -30,9 +30,9 @@ final class DefaultPropertyCondition implements PropertyCondition {
   private static final String NOT_IN_PREFIX = " not in (";
 
   /**
-   * The property used in this condition
+   * The attribute used in this condition
    */
-  private final Attribute<?> propertyId;
+  private final Attribute<?> attribute;
 
   /**
    * The values used in this condition
@@ -56,19 +56,19 @@ final class DefaultPropertyCondition implements PropertyCondition {
 
   /**
    * Instantiates a new PropertyCondition instance
-   * @param propertyId the id of the property
+   * @param attribute attribute
    * @param operator the condition operator
    * @param value the value, can be a Collection
    */
-  DefaultPropertyCondition(final Attribute<?> propertyId, final Operator operator, final Object value) {
-    requireNonNull(propertyId, "propertyId");
+  DefaultPropertyCondition(final Attribute<?> attribute, final Operator operator, final Object value) {
+    requireNonNull(attribute, "attribute");
     requireNonNull(operator, "operator");
-    this.propertyId = propertyId;
+    this.attribute = attribute;
     this.operator = operator;
     this.nullCondition = value == null;
     this.values = initializeValues(value);
     if (this.values.isEmpty()) {
-      throw new IllegalArgumentException("No values specified for PropertyCondition: " + propertyId);
+      throw new IllegalArgumentException("No values specified for PropertyCondition: " + attribute);
     }
   }
 
@@ -82,17 +82,17 @@ final class DefaultPropertyCondition implements PropertyCondition {
   }
 
   @Override
-  public List<Attribute<?>> getPropertyIds() {
+  public List<Attribute<?>> getAttributes() {
     if (nullCondition) {
       return emptyList();
     }//null condition, uses 'x is null', not 'x = ?'
 
-    return Collections.nCopies(values.size(), propertyId);
+    return Collections.nCopies(values.size(), attribute);
   }
 
   @Override
-  public Attribute<?> getPropertyId() {
-    return propertyId;
+  public Attribute<?> getAttribute() {
+    return attribute;
   }
 
   @Override

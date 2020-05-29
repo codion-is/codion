@@ -23,11 +23,11 @@ public interface Condition extends Serializable {
   List getValues();
 
   /**
-   * @return a list of the properties this condition is based on, in the same
+   * @return a list of the attributes this condition is based on, in the same
    * order as their respective values appear in the condition clause.
    * An empty list is returned in case no values are specified.
    */
-  List<Attribute<?>> getPropertyIds();
+  List<Attribute<?>> getAttributes();
 
   /**
    * An interface encapsulating a combination of Condition objects,
@@ -64,7 +64,7 @@ public interface Condition extends Serializable {
   }
 
   /**
-   * An empty condition, with no values or propertyIds
+   * An empty condition, with no values or attributes
    */
   final class EmptyCondition implements Condition {
 
@@ -76,7 +76,7 @@ public interface Condition extends Serializable {
     }
 
     @Override
-    public List<Attribute<?>> getPropertyIds() {
+    public List<Attribute<?>> getAttributes() {
       return emptyList();
     }
   }

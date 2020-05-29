@@ -144,7 +144,7 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Performs an update according to the given condition, updating the properties found
-   * in the {@link EntityUpdateCondition#getPropertyValues()} map, with the associated values.
+   * in the {@link EntityUpdateCondition#getAttributeValues()} map, with the associated values.
    * @param condition the condition
    * @return the number of affected rows
    * @throws DatabaseException in case of a dabase exception
@@ -252,12 +252,12 @@ public interface RemoteEntityConnection extends Remote {
   List<Entity> select(EntitySelectCondition condition) throws RemoteException, DatabaseException;
 
   /**
-   * Selects entities according to one property ({@code propertyId}), using {@code values} as a condition
+   * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
    * @param entityId the entity type
-   * @param propertyId the id of the condition property
-   * @param values the property values to use as condition
-   * @return entities of the type {@code entityId} according to {@code propertyId} and {@code values}
-   * @throws DatabaseException in case of a db exception
+   * @param attribute the condition attribute
+   * @param values the values to use as condition
+   * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
+   * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
   <T> List<Entity> select(String entityId, Attribute<T> propertyId, T... values) throws RemoteException, DatabaseException;
@@ -299,7 +299,7 @@ public interface RemoteEntityConnection extends Remote {
    * Writes {@code blobData} in the blob field specified by the property identified by {@code propertyId}
    * for the given entity
    * @param primaryKey the primary key of the entity for which to write the blob field
-   * @param blobPropertyId the id of the blob property
+   * @param blobAttribute the blob attribute
    * @param blobData the blob data
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
@@ -309,7 +309,7 @@ public interface RemoteEntityConnection extends Remote {
   /**
    * Reads the blob specified by the property identified by {@code propertyId} from the given entity
    * @param primaryKey the primary key of the entity
-   * @param blobPropertyId the id of the blob property
+   * @param blobAttribute the blob attribute
    * @return a byte array containing the blob data
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception

@@ -20,7 +20,7 @@ final class DefaultWhereCondition implements WhereCondition {
     this.entityDefinition = entityDefinition;
     this.condition = expandedCondition;
     this.values = condition.getValues();
-    this.columnProperties = entityDefinition.getColumnProperties(condition.getPropertyIds());
+    this.columnProperties = entityDefinition.getColumnProperties(condition.getAttributes());
   }
 
   @Override
@@ -56,13 +56,13 @@ final class DefaultWhereCondition implements WhereCondition {
     if (condition instanceof PropertyCondition) {
       final PropertyCondition propertyCondition = (PropertyCondition) condition;
 
-      return propertyCondition.getConditionString(entityDefinition.getColumnProperty(propertyCondition.getPropertyId()));
+      return propertyCondition.getConditionString(entityDefinition.getColumnProperty(propertyCondition.getAttribute()));
     }
     if (condition instanceof CustomCondition) {
       final CustomCondition customCondition = (CustomCondition) condition;
 
       return entityDefinition.getConditionProvider(customCondition.getConditionId())
-              .getConditionString(customCondition.getPropertyIds(), customCondition.getValues());
+              .getConditionString(customCondition.getAttributes(), customCondition.getValues());
     }
 
     return "";

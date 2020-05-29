@@ -54,7 +54,7 @@ public final class ConditionObjectMapperTest {
     final Condition readCondition = readEntityCondition.getCondition();
 
     assertEquals(entityCondition.getEntityId(), readEntityCondition.getEntityId());
-    assertEquals(condition.getPropertyIds(), readCondition.getPropertyIds());
+    assertEquals(condition.getAttributes(), readCondition.getAttributes());
     assertEquals(condition.getValues(), readCondition.getValues());
 
     assertEquals("(deptno not in (?, ?) and ename = ? and (empno >= ? and empno <= ?) and comm is not null)",
@@ -74,7 +74,7 @@ public final class ConditionObjectMapperTest {
     final Condition readCondition = readEntityCondition.getCondition();
 
     assertEquals(entityCondition.getEntityId(), readEntityCondition.getEntityId());
-    assertEquals(condition.getPropertyIds(), readCondition.getPropertyIds());
+    assertEquals(condition.getAttributes(), readCondition.getAttributes());
     assertEquals(condition.getValues(), readCondition.getValues());
   }
 
@@ -94,7 +94,7 @@ public final class ConditionObjectMapperTest {
     final CustomCondition readCondition = (CustomCondition) readEntityCondition.getCondition();
 
     assertEquals(condition.getConditionId(), readCondition.getConditionId());
-    assertEquals(condition.getPropertyIds(), readCondition.getPropertyIds());
+    assertEquals(condition.getAttributes(), readCondition.getAttributes());
     assertEquals(condition.getValues(), readCondition.getValues());
   }
 }

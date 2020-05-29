@@ -14,15 +14,15 @@ import java.util.Map;
 public interface EntityUpdateCondition extends EntityCondition {
 
   /**
-   * Adds a property value to update
-   * @param propertyId the propertyId
+   * Adds a attribute value to update
+   * @param attribute the attribute
    * @param value the new value
    * @return this {@link EntityUpdateCondition} instance
    */
-  EntityUpdateCondition set(Attribute<?> propertyId, Object value);
+  EntityUpdateCondition set(Attribute<?> attribute, Object value);
 
   /**
-   * @return the new values mapped to their respective propertyIds
+   * @return the new values mapped to their respective attributes
    */
-  Map<Attribute<?>, Object> getPropertyValues();
+  Map<Attribute<?>, Object> getAttributeValues();
 }

@@ -295,7 +295,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void selectPropertyIds() throws Exception {
     final List<Entity> emps = connection.select(selectCondition(T_EMP)
-            .setSelectPropertyIds(EMP_ID, EMP_JOB, EMP_DEPARTMENT));
+            .setSelectAttributes(EMP_ID, EMP_JOB, EMP_DEPARTMENT));
     for (final Entity emp : emps) {
       assertTrue(emp.containsKey(EMP_ID));
       assertTrue(emp.containsKey(EMP_JOB));
@@ -311,7 +311,7 @@ public class DefaultLocalEntityConnectionTest {
   public void selectInvalidPropertyIds() throws Exception {
     assertThrows(IllegalArgumentException.class, () ->
             connection.select(selectCondition(T_EMP)
-                    .setSelectPropertyIds(EMP_ID, EMP_JOB, EMP_DEPARTMENT_FK)));
+                    .setSelectAttributes(EMP_ID, EMP_JOB, EMP_DEPARTMENT_FK)));
   }
 
   @Test
@@ -792,7 +792,7 @@ public class DefaultLocalEntityConnectionTest {
     assertNotNull(scottFromDb.get(EMP_DATA));
 
     //overrides lazy loading
-    scottFromDb = connection.selectSingle(selectCondition(scott.getKey()).setSelectPropertyIds(EMP_DATA_LAZY));
+    scottFromDb = connection.selectSingle(selectCondition(scott.getKey()).setSelectAttributes(EMP_DATA_LAZY));
     assertNotNull(scottFromDb.get(EMP_DATA_LAZY));
   }
 
