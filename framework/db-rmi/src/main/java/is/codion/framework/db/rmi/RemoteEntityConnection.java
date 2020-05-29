@@ -184,31 +184,31 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Selects ordered and distinct non-null values of the given property
-   * @param propertyId the id of the property
+   * @param attribute the id of the property
    * @param condition the condition
    * @param <T> the value type
-   * @return the values in the given column (Property)
+   * @return the values for the given attribute
    * @throws DatabaseException in case of a db exception
-   * @throws IllegalArgumentException in case the given property is not a column based property
+   * @throws IllegalArgumentException in case the given property is not a column based attribute
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<T> selectValues(Attribute<T> propertyId, EntityCondition condition)
+  <T> List<T> selectValues(Attribute<T> attribute, EntityCondition condition)
           throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity
    * @param entityId the entity type
-   * @param propertyId the id of the property to use as a condition
+   * @param attribute the id of the property to use as a condition
    * @param value the value to use in the condition
    * @return an entity of the type {@code entityId}, having the
-   * value of {@code propertyId} as {@code value}
+   * value of {@code attribute} as {@code value}
    * @throws DatabaseException in case of a db exception
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  <T> Entity selectSingle(String entityId, Attribute<T> propertyId, T value) throws RemoteException, DatabaseException;
+  <T> Entity selectSingle(String entityId, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -260,7 +260,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<Entity> select(String entityId, Attribute<T> propertyId, T... values) throws RemoteException, DatabaseException;
+  <T> List<Entity> select(String entityId, Attribute<T> attribute, T... values) throws RemoteException, DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIds
@@ -296,7 +296,7 @@ public interface RemoteEntityConnection extends Remote {
   <T, R, P> R fillReport(ReportWrapper<T, R, P> reportWrapper, P reportParameters) throws RemoteException, DatabaseException, ReportException;
 
   /**
-   * Writes {@code blobData} in the blob field specified by the property identified by {@code propertyId}
+   * Writes {@code blobData} in the blob field specified by the property identified by {@code attribute}
    * for the given entity
    * @param primaryKey the primary key of the entity for which to write the blob field
    * @param blobAttribute the blob attribute
@@ -304,15 +304,15 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  void writeBlob(Entity.Key primaryKey, Attribute<byte[]> blobPropertyId, byte[] blobData) throws RemoteException, DatabaseException;
+  void writeBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws RemoteException, DatabaseException;
 
   /**
-   * Reads the blob specified by the property identified by {@code propertyId} from the given entity
+   * Reads the blob specified by the property identified by {@code attribute} from the given entity
    * @param primaryKey the primary key of the entity
    * @param blobAttribute the blob attribute
    * @return a byte array containing the blob data
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  byte[] readBlob(Entity.Key primaryKey, Attribute<byte[]> blobPropertyId) throws RemoteException, DatabaseException;
+  byte[] readBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute) throws RemoteException, DatabaseException;
 }

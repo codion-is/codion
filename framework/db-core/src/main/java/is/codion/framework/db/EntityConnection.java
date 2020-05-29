@@ -180,9 +180,9 @@ public interface EntityConnection {
    * @param attribute attribute
    * @param condition the condition
    * @param <T> the value type
-   * @return the values in the given column (Property)
+   * @return the values for the given attribute
    * @throws DatabaseException in case of a database exception
-   * @throws IllegalArgumentException in case the given property is not a column based property
+   * @throws IllegalArgumentException in case the given property is not a column based attribute
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
   <T> List<T> selectValues(Attribute<T> attribute, EntityCondition condition) throws DatabaseException;
