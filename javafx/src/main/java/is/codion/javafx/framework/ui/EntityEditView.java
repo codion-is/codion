@@ -55,8 +55,8 @@ public abstract class EntityEditView extends BorderPane {
 
   private boolean initialized = false;
   private boolean requestFocusAfterInsert = true;
-  private Attribute<?> initialFocusPropertyId;
-  private Attribute<?> afterInsertFocusPropertyId;
+  private Attribute<?> initialFocusAttribute;
+  private Attribute<?> afterInsertFocusAttribute;
 
   /**
    * Instantiates a new {@link EntityEditView} instance
@@ -129,19 +129,19 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   /**
-   * Sets the given property as the property which component should receive focus when this edit view is initialized
-   * @param initialFocusPropertyId the propertyId
+   * Sets the given attribute as the attribute which component should receive focus when this edit view is initialized
+   * @param initialFocusAttribute the attribute
    */
-  public final void setInitialFocusProperty(final Attribute<?> initialFocusPropertyId) {
-    this.initialFocusPropertyId = initialFocusPropertyId;
+  public final void setInitialFocusAttribute(final Attribute<?> initialFocusAttribute) {
+    this.initialFocusAttribute = initialFocusAttribute;
   }
 
   /**
    * Sets the given property as the property which component should receive focus after an insert has been performed
-   * @param afterInsertFocusPropertyId the propertyId
+   * @param afterInsertFocusAttribute the attribute
    */
-  public final void setAfterInsertFocusProperty(final Attribute<?> afterInsertFocusPropertyId) {
-    this.afterInsertFocusPropertyId = afterInsertFocusPropertyId;
+  public final void setAfterInsertFocusAttribute(final Attribute<?> afterInsertFocusAttribute) {
+    this.afterInsertFocusAttribute = afterInsertFocusAttribute;
   }
 
   /**
@@ -165,53 +165,53 @@ public abstract class EntityEditView extends BorderPane {
 
   /**
    * Creates a {@link EntityLookupField} based on the entities referenced by the given foreign key property
-   * @param foreignKeyPropertyId the foreign key propertyId
+   * @param foreignKeyAttribute the foreign key attribute
    * @return a {@link EntityLookupField} based on the given property
    */
-  protected final EntityLookupField createForeignKeyLookupField(final Attribute<Entity> foreignKeyPropertyId) {
-    checkControl(foreignKeyPropertyId);
+  protected final EntityLookupField createForeignKeyLookupField(final Attribute<Entity> foreignKeyAttribute) {
+    checkControl(foreignKeyAttribute);
     return FXUiUtil.createLookupField(getEditModel().getEntityDefinition()
-            .getForeignKeyProperty(foreignKeyPropertyId), editModel);
+            .getForeignKeyProperty(foreignKeyAttribute), editModel);
   }
 
   /**
    * Creates a {@link ComboBox} based on the entities referenced by the given foreign key property
-   * @param foreignKeyPropertyId the foreign key propertyId
+   * @param foreignKeyAttribute the foreign key attribute
    * @return a {@link ComboBox} based on the given property
    */
-  protected final ComboBox<Entity> createForeignKeyComboBox(final Attribute<Entity> foreignKeyPropertyId) {
-    checkControl(foreignKeyPropertyId);
+  protected final ComboBox<Entity> createForeignKeyComboBox(final Attribute<Entity> foreignKeyAttribute) {
+    checkControl(foreignKeyAttribute);
     final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(getEditModel()
-            .getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId), editModel);
+            .getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute), editModel);
 
-    controls.put(foreignKeyPropertyId, box);
+    controls.put(foreignKeyAttribute, box);
 
     return box;
   }
 
   /**
    * Creates a {@link ComboBox} based on the values of the given property
-   * @param propertyId the propertyId
+   * @param attribute the attribute
    * @return a {@link ComboBox} for the given property
    */
-  protected final ComboBox<Item> createValueListComboBox(final Attribute<?> propertyId) {
-    checkControl(propertyId);
+  protected final ComboBox<Item> createValueListComboBox(final Attribute<?> attribute) {
+    checkControl(attribute);
     final ComboBox<Item> box = FXUiUtil.createValueListComboBox((ValueListProperty)
-            getEditModel().getEntityDefinition().getProperty(propertyId), editModel);
+            getEditModel().getEntityDefinition().getProperty(attribute), editModel);
 
-    controls.put(propertyId, box);
+    controls.put(attribute, box);
 
     return box;
   }
 
   /**
-   * Creates a {@link TextField} for the given property
-   * @param propertyId the propertyId
-   * @return a {@link TextField} for the given property
+   * Creates a {@link TextField} for the given attribute
+   * @param attribute the attribute
+   * @return a {@link TextField} for the given attribute
    */
-  protected final TextField createTextField(final Attribute<?> propertyId) {
-    checkControl(propertyId);
-    final Property property = getEditModel().getEntityDefinition().getProperty(propertyId);
+  protected final TextField createTextField(final Attribute<?> attribute) {
+    checkControl(attribute);
+    final Property property = getEditModel().getEntityDefinition().getProperty(attribute);
     final TextField textField;
     switch (property.getType()) {
       case Types.INTEGER:
@@ -230,41 +230,41 @@ public abstract class EntityEditView extends BorderPane {
         textField = FXUiUtil.createTextField(property, editModel);
         break;
       default:
-        throw new IllegalArgumentException("Text field type for property: " + propertyId + " is not defined");
+        throw new IllegalArgumentException("Text field type for property: " + attribute + " is not defined");
     }
 
-    controls.put(propertyId, textField);
+    controls.put(attribute, textField);
 
     return textField;
   }
 
   /**
-   * Creates a {@link DatePicker} for the given property, assuming the property is date based
-   * @param propertyId the propertyId
-   * @return a {@link DatePicker} based on the given property
+   * Creates a {@link DatePicker} for the given attribute, assuming the property is date based
+   * @param attribute the attribute
+   * @return a {@link DatePicker} based on the given attribute
    */
-  protected final DatePicker createDatePicker(final Attribute<?> propertyId) {
-    checkControl(propertyId);
+  protected final DatePicker createDatePicker(final Attribute<?> attribute) {
+    checkControl(attribute);
     final DatePicker picker = FXUiUtil.createDatePicker(getEditModel()
-            .getEntityDefinition().getProperty(propertyId), editModel);
-    controls.put(propertyId, picker);
+            .getEntityDefinition().getProperty(attribute), editModel);
+    controls.put(attribute, picker);
 
     return picker;
   }
 
   /**
-   * Creates a {@link Label} with caption associated with the given property
-   * @param propertyId the propertyId
-   * @return a {@link Label} for the given property
+   * Creates a {@link Label} with caption associated with the given attribute
+   * @param attribute the attribute
+   * @return a {@link Label} for the given attribute
    */
-  protected final Label createLabel(final Attribute<?> propertyId) {
-    return new Label(getEditModel().getEntityDefinition().getProperty(propertyId).getCaption());
+  protected final Label createLabel(final Attribute<?> attribute) {
+    return new Label(getEditModel().getEntityDefinition().getProperty(attribute).getCaption());
   }
 
-  protected final BorderPane createPropertyPanel(final Attribute<?> propertyId) {
+  protected final BorderPane createPropertyPanel(final Attribute<?> attribute) {
     final BorderPane pane = new BorderPane();
-    pane.setTop(createLabel(propertyId));
-    final Control control = controls.get(propertyId);
+    pane.setTop(createLabel(attribute));
+    final Control control = controls.get(attribute);
     control.setMaxWidth(Double.MAX_VALUE);
     pane.setCenter(control);
 
@@ -399,17 +399,17 @@ public abstract class EntityEditView extends BorderPane {
     }
   }
 
-  private void requestComponentFocus(final Attribute<?> propertyId) {
-    final Control control = controls.get(propertyId);
+  private void requestComponentFocus(final Attribute<?> attribute) {
+    final Control control = controls.get(attribute);
     if (control != null) {
       control.requestFocus();
     }
   }
 
   private void requestInitialFocus(final boolean afterInsert) {
-    final Control focusControl = afterInsert && afterInsertFocusPropertyId != null ?
-            controls.get(afterInsertFocusPropertyId) :
-            controls.get(initialFocusPropertyId);
+    final Control focusControl = afterInsert && afterInsertFocusAttribute != null ?
+            controls.get(afterInsertFocusAttribute) :
+            controls.get(initialFocusAttribute);
     if (focusControl != null && focusControl.isFocusTraversable()) {
       focusControl.requestFocus();
     }
@@ -418,9 +418,9 @@ public abstract class EntityEditView extends BorderPane {
     }
   }
 
-  private void checkControl(final Attribute<?> propertyId) {
-    if (controls.containsKey(propertyId)) {
-      throw new IllegalStateException("Control has already been created for property: " + propertyId);
+  private void checkControl(final Attribute<?> attribute) {
+    if (controls.containsKey(attribute)) {
+      throw new IllegalStateException("Control has already been created for property: " + attribute);
     }
   }
 

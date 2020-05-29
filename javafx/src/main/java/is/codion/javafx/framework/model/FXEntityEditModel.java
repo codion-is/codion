@@ -46,13 +46,13 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
-   * Returns a {@link FXEntityListModel} for the given foreign key property. If one does not exist it is created.
-   * @param foreignKeyPropertyId the id of the foreign key property
+   * Returns a {@link FXEntityListModel} for the given foreign key attribute. If one does not exist it is created.
+   * @param foreignKeyAttribute the foreign key attribute
    * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key property
    * @see #createForeignKeyListModel(ForeignKeyProperty)
    */
-  public final FXEntityListModel getForeignKeyListModel(final Attribute<Entity> foreignKeyPropertyId) {
-    return getForeignKeyListModel(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
+  public final FXEntityListModel getForeignKeyListModel(final Attribute<Entity> foreignKeyAttribute) {
+    return getForeignKeyListModel(getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute));
   }
 
   /**
@@ -76,7 +76,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     requireNonNull(foreignKeyProperty);
     return new FXEntityListModel(foreignKeyProperty.getForeignEntityId(), getConnectionProvider());
     //todo
-//    if (getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyId())) {
+//    if (getValidator().isNullable(getEntity(), foreignKeyProperty.getAttribute())) {
 //      model.setNullValue(Domain.createToStringEntity(foreignKeyProperty.getForeignEntityId(),
 //              (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM)));
 //    }

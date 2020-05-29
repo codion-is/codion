@@ -151,21 +151,21 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   /**
-   * Returns the table column for property with the given id
-   * @param propertyId the propertyId
+   * Returns the table column for the given attribute
+   * @param attribute the attribute
    * @return the column
    * @throws IllegalArgumentException in case the column was not found
    */
-  public final EntityTableColumn getTableColumn(final Attribute<?> propertyId) {
+  public final EntityTableColumn getTableColumn(final Attribute<?> attribute) {
     final Optional<? extends TableColumn<Entity, ?>> tableColumn = columns.stream()
             .filter((Predicate<TableColumn<Entity, ?>>) entityTableColumn ->
-                    ((EntityTableColumn) entityTableColumn).getProperty().getAttribute().equals(propertyId)).findFirst();
+                    ((EntityTableColumn) entityTableColumn).getProperty().getAttribute().equals(attribute)).findFirst();
 
     if (tableColumn.isPresent()) {
       return (EntityTableColumn) tableColumn.get();
     }
 
-    throw new IllegalArgumentException("Column for property with id: " + propertyId + " not found");
+    throw new IllegalArgumentException("Column for attribute: " + attribute + " not found");
   }
 
   @Override
@@ -298,7 +298,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final ColumnSummaryModel getColumnSummaryModel(final Attribute<?> propertyId) {
+  public final ColumnSummaryModel getColumnSummaryModel(final Attribute<?> attribute) {
     throw new UnsupportedOperationException();
   }
 
@@ -308,7 +308,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final int getPropertyColumnIndex(final Attribute<?> propertyId) {
+  public final int getPropertyColumnIndex(final Attribute<?> attribute) {
     throw new UnsupportedOperationException();
   }
 
@@ -399,16 +399,16 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setColumns(final Attribute<?>... propertyIds) {
-    final List<Attribute<?>> propertyIdList = asList(propertyIds);
+  public final void setColumns(final Attribute<?>... attributes) {
+    final List<Attribute<?>> attributeList = asList(attributes);
     new ArrayList<>(columns).forEach(column -> {
-      if (!propertyIdList.contains(((PropertyTableColumn) column).getProperty().getAttribute())) {
+      if (!attributeList.contains(((PropertyTableColumn) column).getProperty().getAttribute())) {
         columns.remove(column);
       }
     });
     columns.sort((col1, col2) -> {
-      final Integer first = propertyIdList.indexOf(((PropertyTableColumn) col1).getProperty().getAttribute());
-      final Integer second = propertyIdList.indexOf(((PropertyTableColumn) col2).getProperty().getAttribute());
+      final Integer first = attributeList.indexOf(((PropertyTableColumn) col1).getProperty().getAttribute());
+      final Integer second = attributeList.indexOf(((PropertyTableColumn) col2).getProperty().getAttribute());
 
       return first.compareTo(second);
     });
