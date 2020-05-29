@@ -627,7 +627,7 @@ final class DefaultEntity implements Entity {
                                         final ColumnProperty referenceProperty,
                                         final ColumnProperty foreignColumnProperty) {
     if (!(referenceProperty instanceof MirrorProperty)) {
-      values.put(referenceProperty, referencedEntity == null ? null : referencedEntity.get(foreignColumnProperty));
+      put(referenceProperty, referencedEntity == null ? null : referencedEntity.get(foreignColumnProperty));
     }
   }
 
@@ -642,8 +642,8 @@ final class DefaultEntity implements Entity {
     if (denormalizedProperties != null) {
       for (int i = 0; i < denormalizedProperties.size(); i++) {
         final DenormalizedProperty denormalizedProperty = denormalizedProperties.get(i);
-        values.put(denormalizedProperty, referencedEntity == null ? null : referencedEntity.get(denormalizedProperty
-                .getDenormalizedProperty()));
+        put(denormalizedProperty, referencedEntity == null ? null :
+                referencedEntity.get(denormalizedProperty.getDenormalizedProperty()));
       }
     }
   }

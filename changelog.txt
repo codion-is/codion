@@ -6135,3 +6135,4 @@
   World demo module updated according to the latest changes
   Manual demo module updated according to the latest changes
   DefaultEntityKey bug fixed, hashCodeDirty not set to true when deserializing
+  DefaultEntity bug fixed, setForeignKeyValues() and setDenormalizedValues() used values.put() instead of this.put()
