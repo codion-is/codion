@@ -55,16 +55,16 @@ public final class CountryTableModel extends SwingEntityTableModel {
         final EntityConnection connection = getConnectionProvider().getConnection();
 
         List<Entity> cities = connection.select(World.T_CITY,
-                World.CITY_COUNTRY_FK, selectedCountries);
+                World.CITY_COUNTRY_FK, selectedCountries.toArray(new Entity[0]));
         cities.forEach(city -> citiesDataset.setValue(
-                city.getString(World.CITY_NAME),
-                city.getInteger(World.CITY_POPULATION)));
+                city.get(World.CITY_NAME),
+                city.get(World.CITY_POPULATION)));
 
         List<Entity> languages = connection.select(World.T_COUNTRYLANGUAGE,
-                World.COUNTRYLANGUAGE_COUNTRY_FK, selectedCountries);
+                World.COUNTRYLANGUAGE_COUNTRY_FK, selectedCountries.toArray(new Entity[0]));
         languages.forEach(language -> languagesDataset.setValue(
-                language.getString(World.COUNTRYLANGUAGE_LANGUAGE),
-                language.getInteger(World.COUNTRYLANGUAGE_NO_OF_SPEAKERS)));
+                language.get(World.COUNTRYLANGUAGE_LANGUAGE),
+                language.get(World.COUNTRYLANGUAGE_NO_OF_SPEAKERS)));
       }
     }
     catch (DatabaseException e) {

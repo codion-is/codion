@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -28,76 +29,76 @@ import static java.util.Arrays.asList;
 public final class World extends Domain {
 
   public static final String T_CITY = "world.city";
-  public static final String CITY_ID = "id";
-  public static final String CITY_NAME = "name";
-  public static final String CITY_COUNTRY_CODE = "countrycode";
-  public static final String CITY_COUNTRY_FK = "country_fk";
-  public static final String CITY_DISTRICT = "district";
-  public static final String CITY_POPULATION = "population";
+  public static final Attribute<Integer> CITY_ID = attribute("id");
+  public static final Attribute<String> CITY_NAME = attribute("name");
+  public static final Attribute<String> CITY_COUNTRY_CODE = attribute("countrycode");
+  public static final Attribute<Entity> CITY_COUNTRY_FK = attribute("country_fk");
+  public static final Attribute<String> CITY_DISTRICT = attribute("district");
+  public static final Attribute<Integer> CITY_POPULATION = attribute("population");
 
   public static final String T_COUNTRY = "world.country";
-  public static final String COUNTRY_CODE = "code";
-  public static final String COUNTRY_NAME = "name";
-  public static final String COUNTRY_CONTINENT = "continent";
-  public static final String COUNTRY_REGION = "region";
-  public static final String COUNTRY_SURFACEAREA = "surfacearea";
-  public static final String COUNTRY_INDEPYEAR = "indepyear";
-  public static final String COUNTRY_POPULATION = "population";
-  public static final String COUNTRY_LIFEEXPECTANCY = "lifeexpectancy";
-  public static final String COUNTRY_GNP = "gnp";
-  public static final String COUNTRY_GNPOLD = "gnpold";
-  public static final String COUNTRY_LOCALNAME = "localname";
-  public static final String COUNTRY_GOVERNMENTFORM = "governmentform";
-  public static final String COUNTRY_HEADOFSTATE = "headofstate";
-  public static final String COUNTRY_CAPITAL = "capital";
-  public static final String COUNTRY_CAPITAL_FK = "capital_fk";
-  public static final String COUNTRY_CODE2 = "code2";
-  public static final String COUNTRY_CAPITAL_POPULATION = "capital_population";
-  public static final String COUNTRY_NO_OF_CITIES = "no_of_cities";
-  public static final String COUNTRY_NO_OF_LANGUAGES = "no_of_languages";
-  public static final String COUNTRY_FLAG = "flag";
+  public static final Attribute<String> COUNTRY_CODE = attribute("code");
+  public static final Attribute<String> COUNTRY_NAME = attribute("name");
+  public static final Attribute<String> COUNTRY_CONTINENT = attribute("continent");
+  public static final Attribute<String> COUNTRY_REGION = attribute("region");
+  public static final Attribute<Double> COUNTRY_SURFACEAREA = attribute("surfacearea");
+  public static final Attribute<Integer> COUNTRY_INDEPYEAR = attribute("indepyear");
+  public static final Attribute<Integer> COUNTRY_POPULATION = attribute("population");
+  public static final Attribute<Double> COUNTRY_LIFEEXPECTANCY = attribute("lifeexpectancy");
+  public static final Attribute<Double> COUNTRY_GNP = attribute("gnp");
+  public static final Attribute<Double> COUNTRY_GNPOLD = attribute("gnpold");
+  public static final Attribute<String> COUNTRY_LOCALNAME = attribute("localname");
+  public static final Attribute<String> COUNTRY_GOVERNMENTFORM = attribute("governmentform");
+  public static final Attribute<String> COUNTRY_HEADOFSTATE = attribute("headofstate");
+  public static final Attribute<Integer> COUNTRY_CAPITAL = attribute("capital");
+  public static final Attribute<Entity> COUNTRY_CAPITAL_FK = attribute("capital_fk");
+  public static final Attribute<String> COUNTRY_CODE2 = attribute("code2");
+  public static final Attribute<Integer> COUNTRY_CAPITAL_POPULATION = attribute("capital_population");
+  public static final Attribute<Integer> COUNTRY_NO_OF_CITIES = attribute("no_of_cities");
+  public static final Attribute<Integer> COUNTRY_NO_OF_LANGUAGES = attribute("no_of_languages");
+  public static final Attribute<byte[]> COUNTRY_FLAG = attribute("flag");
 
   public static final String T_COUNTRYLANGUAGE = "world.countrylanguage";
-  public static final String COUNTRYLANGUAGE_COUNTRY_CODE = "countrycode";
-  public static final String COUNTRYLANGUAGE_COUNTRY_FK = "country_fk";
-  public static final String COUNTRYLANGUAGE_LANGUAGE = "language";
-  public static final String COUNTRYLANGUAGE_ISOFFICIAL = "isofficial";
-  public static final String COUNTRYLANGUAGE_PERCENTAGE = "percentage";
-  public static final String COUNTRYLANGUAGE_NO_OF_SPEAKERS = "no_of_speakers";
+  public static final Attribute<String> COUNTRYLANGUAGE_COUNTRY_CODE = attribute("countrycode");
+  public static final Attribute<Entity> COUNTRYLANGUAGE_COUNTRY_FK = attribute("country_fk");
+  public static final Attribute<String> COUNTRYLANGUAGE_LANGUAGE = attribute("language");
+  public static final Attribute<Boolean> COUNTRYLANGUAGE_ISOFFICIAL = attribute("isofficial");
+  public static final Attribute<Double> COUNTRYLANGUAGE_PERCENTAGE = attribute("percentage");
+  public static final Attribute<Integer> COUNTRYLANGUAGE_NO_OF_SPEAKERS = attribute("no_of_speakers");
   // end::entityAndPropertyIds[]
 
   public static final String T_CONTINENT = "continent";
-  public static final String CONTINENT_CONTINENT = "continent";
-  public static final String CONTINENT_SURFACE_AREA = "sum(surfacearea)";
-  public static final String CONTINENT_POPULATION = "sum(population)";
-  public static final String CONTINENT_MIN_LIFE_EXPECTANCY = "min(lifeexpectancy)";
-  public static final String CONTINENT_MAX_LIFE_EXPECTANCY = "max(lifeexpectancy)";
-  public static final String CONTINENT_MIN_INDEPENDENCE_YEAR = "min(indepyear)";
-  public static final String CONTINENT_MAX_INDEPENDENCE_YEAR = "max(indepyear)";
-  public static final String CONTINENT_GNP = "sum(gnp)";
+  public static final Attribute<String> CONTINENT_CONTINENT = attribute("continent");
+  public static final Attribute<Integer> CONTINENT_SURFACE_AREA = attribute("sum(surfacearea)");
+  public static final Attribute<Integer> CONTINENT_POPULATION = attribute("sum(population)");
+  public static final Attribute<Double> CONTINENT_MIN_LIFE_EXPECTANCY = attribute("min(lifeexpectancy)");
+  public static final Attribute<Double> CONTINENT_MAX_LIFE_EXPECTANCY = attribute("max(lifeexpectancy)");
+  public static final Attribute<Integer> CONTINENT_MIN_INDEPENDENCE_YEAR = attribute("min(indepyear)");
+  public static final Attribute<Integer> CONTINENT_MAX_INDEPENDENCE_YEAR = attribute("max(indepyear)");
+  public static final Attribute<Double> CONTINENT_GNP = attribute("sum(gnp)");
 
   public static final String T_LOOKUP = "world.country_city_v";
-  public static final String LOOKUP_COUNTRY_CODE = "countrycode";
-  public static final String LOOKUP_COUNTRY_NAME = "countryname";
-  public static final String LOOKUP_COUNTRY_CONTINENT = "continent";
-  public static final String LOOKUP_COUNTRY_REGION = "region";
-  public static final String LOOKUP_COUNTRY_SURFACEAREA = "surfacearea";
-  public static final String LOOKUP_COUNTRY_INDEPYEAR = "indepyear";
-  public static final String LOOKUP_COUNTRY_POPULATION = "countrypopulation";
-  public static final String LOOKUP_COUNTRY_LIFEEXPECTANCY = "lifeexpectancy";
-  public static final String LOOKUP_COUNTRY_GNP = "gnp";
-  public static final String LOOKUP_COUNTRY_GNPOLD = "gnpold";
-  public static final String LOOKUP_COUNTRY_LOCALNAME = "localname";
-  public static final String LOOKUP_COUNTRY_GOVERNMENTFORM = "governmentform";
-  public static final String LOOKUP_COUNTRY_HEADOFSTATE = "headofstate";
-  public static final String LOOKUP_COUNTRY_CODE2 = "code2";
-  public static final String LOOKUP_COUNTRY_FLAG = "flag";
-  public static final String LOOKUP_CITY_ID = "cityid";
-  public static final String LOOKUP_CITY_NAME = "cityname";
-  public static final String LOOKUP_CITY_DISTRICT = "district";
-  public static final String LOOKUP_CITY_POPULATION = "citypopulation";
+  public static final Attribute<String> LOOKUP_COUNTRY_CODE = attribute("countrycode");
+  public static final Attribute<String> LOOKUP_COUNTRY_NAME = attribute("countryname");
+  public static final Attribute<String> LOOKUP_COUNTRY_CONTINENT = attribute("continent");
+  public static final Attribute<String> LOOKUP_COUNTRY_REGION = attribute("region");
+  public static final Attribute<Double> LOOKUP_COUNTRY_SURFACEAREA = attribute("surfacearea");
+  public static final Attribute<Integer> LOOKUP_COUNTRY_INDEPYEAR = attribute("indepyear");
+  public static final Attribute<Integer> LOOKUP_COUNTRY_POPULATION = attribute("countrypopulation");
+  public static final Attribute<Double> LOOKUP_COUNTRY_LIFEEXPECTANCY = attribute("lifeexpectancy");
+  public static final Attribute<Double> LOOKUP_COUNTRY_GNP = attribute("gnp");
+  public static final Attribute<Double> LOOKUP_COUNTRY_GNPOLD = attribute("gnpold");
+  public static final Attribute<String> LOOKUP_COUNTRY_LOCALNAME = attribute("localname");
+  public static final Attribute<String> LOOKUP_COUNTRY_GOVERNMENTFORM = attribute("governmentform");
+  public static final Attribute<String> LOOKUP_COUNTRY_HEADOFSTATE = attribute("headofstate");
+  public static final Attribute<String> LOOKUP_COUNTRY_CODE2 = attribute("code2");
+  public static final Attribute<byte[]> LOOKUP_COUNTRY_FLAG = attribute("flag");
+  public static final Attribute<Integer> LOOKUP_CITY_ID = attribute("cityid");
+  public static final Attribute<String> LOOKUP_CITY_NAME = attribute("cityname");
+  public static final Attribute<String> LOOKUP_CITY_DISTRICT = attribute("district");
+  public static final Attribute<Integer> LOOKUP_CITY_POPULATION = attribute("citypopulation");
 
-  private static final List<Item> CONTINENTS = asList(
+  private static final List<Item<String>> CONTINENTS = asList(
           item("Africa"), item("Antarctica"), item("Asia"),
           item("Europe"), item("North America"), item("Oceania"),
           item("South America")
@@ -311,7 +312,7 @@ public final class World extends Domain {
     @Override
     public Object getColor(Entity city, Property property) {
       if (property.is(CITY_POPULATION) &&
-              city.getInteger(CITY_POPULATION) > 1_000_000) {
+              city.get(CITY_POPULATION) > 1_000_000) {
         //population YELLOW if > 1.000.000
         return Color.YELLOW;
       }
@@ -333,11 +334,11 @@ public final class World extends Domain {
     private static final long serialVersionUID = 1;
 
     @Override
-    public Object getValue(Map<String, Object> sourceValues) {
+    public Object getValue(Map<Attribute<?>, Object> sourceValues) {
       Double percentage = (Double) sourceValues.get(COUNTRYLANGUAGE_PERCENTAGE);
       Entity country = (Entity) sourceValues.get(COUNTRYLANGUAGE_COUNTRY_FK);
       if (notNull(percentage, country) && country.isNotNull(COUNTRY_POPULATION)) {
-        return Double.valueOf(country.getInteger(COUNTRY_POPULATION) * (percentage / 100)).intValue();
+        return Double.valueOf(country.get(COUNTRY_POPULATION) * (percentage / 100)).intValue();
       }
 
       return null;
@@ -356,8 +357,8 @@ public final class World extends Domain {
       //after a call to super.validate() property values that are not nullable
       //(such as country and population) are guaranteed to be non-null
       Entity country = city.getForeignKey(CITY_COUNTRY_FK);
-      Integer cityPopulation = city.getInteger(CITY_POPULATION);
-      Integer countryPopulation = country.getInteger(COUNTRY_POPULATION);
+      Integer cityPopulation = city.get(CITY_POPULATION);
+      Integer countryPopulation = country.get(COUNTRY_POPULATION);
       if (countryPopulation != null && cityPopulation > countryPopulation) {
         throw new ValidationException(CITY_POPULATION,
                 cityPopulation, "City population can not exceed country population");
