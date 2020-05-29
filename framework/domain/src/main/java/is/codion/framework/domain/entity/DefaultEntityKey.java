@@ -115,8 +115,8 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   @Override
-  public <T> T put(final Attribute<T> propertyId, final T value) {
-    return (T) put(definition.getPrimaryKeyProperty(propertyId), value);
+  public <T> T put(final Attribute<T> attribute, final T value) {
+    return (T) put(definition.getPrimaryKeyProperty(attribute), value);
   }
 
   @Override
@@ -129,8 +129,8 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   @Override
-  public <T> T get(final Attribute<T> propertyId) {
-    return (T) values.get(definition.getPrimaryKeyProperty(propertyId));
+  public <T> T get(final Attribute<T> attribute) {
+    return (T) values.get(definition.getPrimaryKeyProperty(attribute));
   }
 
   @Override
@@ -217,13 +217,13 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   @Override
-  public boolean isNull(final Attribute<?> propertyId) {
-    return values.get(definition.getPrimaryKeyProperty(propertyId)) == null;
+  public boolean isNull(final Attribute<?> attribute) {
+    return values.get(definition.getPrimaryKeyProperty(attribute)) == null;
   }
 
   @Override
-  public boolean isNotNull(final Attribute<?> propertyId) {
-    return !isNull(propertyId);
+  public boolean isNotNull(final Attribute<?> attribute) {
+    return !isNull(attribute);
   }
 
   @Override

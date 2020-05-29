@@ -6141,3 +6141,4 @@
   Property.getPropertyId() renamed getAttribute()
   ForeignKeyValue removed
   Properties, propertyId named attribute
+  Entity, propertyId replaced with attribute

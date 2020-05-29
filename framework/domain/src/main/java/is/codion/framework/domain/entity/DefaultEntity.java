@@ -137,8 +137,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public <T> T put(final Attribute<T> propertyId, final T value) {
-    return (T) put(definition.getProperty(propertyId), value);
+  public <T> T put(final Attribute<T> attribute, final T value) {
+    return (T) put(definition.getProperty(attribute), value);
   }
 
   @Override
@@ -160,12 +160,12 @@ final class DefaultEntity implements Entity {
   }
 
   /**
-   * @param propertyId the id of the property for which to retrieve the value
-   * @return the value of the property identified by {@code propertyId}
+   * @param attribute the attribute for which to retrieve the value
+   * @return the value of the property based on {@code attribute}
    */
   @Override
-  public <T> T get(final Attribute<T> propertyId) {
-    return (T) get(definition.getProperty(propertyId));
+  public <T> T get(final Attribute<T> attribute) {
+    return (T) get(definition.getProperty(attribute));
   }
 
   /**
@@ -192,13 +192,13 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean isNull(final Attribute<?> propertyId) {
-    return isNull(definition.getProperty(propertyId));
+  public boolean isNull(final Attribute<?> attribute) {
+    return isNull(definition.getProperty(attribute));
   }
 
   @Override
-  public boolean isNotNull(final Attribute<?> propertyId) {
-    return !isNull(propertyId);
+  public boolean isNotNull(final Attribute<?> attribute) {
+    return !isNull(attribute);
   }
 
   @Override
@@ -222,8 +222,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean isModified(final Attribute<?> propertyId) {
-    return isModified(definition.getProperty(propertyId));
+  public boolean isModified(final Attribute<?> attribute) {
+    return isModified(definition.getProperty(attribute));
   }
 
   @Override
@@ -233,8 +233,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public Entity getForeignKey(final Attribute<Entity> foreignKeyPropertyId) {
-    return getForeignKey(definition.getForeignKeyProperty(foreignKeyPropertyId));
+  public Entity getForeignKey(final Attribute<Entity> foreignKeyAttribute) {
+    return getForeignKey(definition.getForeignKeyProperty(foreignKeyAttribute));
   }
 
   @Override
@@ -251,8 +251,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean isLoaded(final Attribute<Entity> foreignKeyPropertyId) {
-    return values.get(definition.getForeignKeyProperty(foreignKeyPropertyId)) != null;
+  public boolean isLoaded(final Attribute<Entity> foreignKeyAttribute) {
+    return values.get(definition.getForeignKeyProperty(foreignKeyAttribute)) != null;
   }
 
   @Override
@@ -271,8 +271,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public String getAsString(final Attribute<?> propertyId) {
-    return getAsString(definition.getProperty(propertyId));
+  public String getAsString(final Attribute<?> attribute) {
+    return getAsString(definition.getProperty(attribute));
   }
 
   @Override
@@ -285,8 +285,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public <T> T getOriginal(final Attribute<T> propertyId) {
-    return (T) getOriginal(definition.getProperty(propertyId));
+  public <T> T getOriginal(final Attribute<T> attribute) {
+    return (T) getOriginal(definition.getProperty(attribute));
   }
 
   @Override
@@ -299,8 +299,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public void save(final Attribute<?> propertyId) {
-    save(definition.getProperty(propertyId));
+  public void save(final Attribute<?> attribute) {
+    save(definition.getProperty(attribute));
   }
 
   @Override
@@ -315,8 +315,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public void revert(final Attribute<?> propertyId) {
-    revert(definition.getProperty(propertyId));
+  public void revert(final Attribute<?> attribute) {
+    revert(definition.getProperty(attribute));
   }
 
   @Override
@@ -334,8 +334,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public <T> T remove(final Attribute<T> propertyId) {
-    return (T) remove(definition.getProperty(propertyId));
+  public <T> T remove(final Attribute<T> attribute) {
+    return (T) remove(definition.getProperty(attribute));
   }
 
   @Override
@@ -451,8 +451,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean containsKey(final Attribute<?> propertyId) {
-    return containsKey(definition.getProperty(propertyId));
+  public boolean containsKey(final Attribute<?> attribute) {
+    return containsKey(definition.getProperty(attribute));
   }
 
   @Override
