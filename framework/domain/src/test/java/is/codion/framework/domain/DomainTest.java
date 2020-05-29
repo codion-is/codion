@@ -187,12 +187,12 @@ public class DomainTest {
 
   @Test
   public void getSelectedProperties() {
-    final List<Attribute<?>> propertyIds = new ArrayList<>();
-    propertyIds.add(TestDomain.DEPARTMENT_ID);
-    propertyIds.add(TestDomain.DEPARTMENT_NAME);
+    final List<Attribute<?>> attributes = new ArrayList<>();
+    attributes.add(TestDomain.DEPARTMENT_ID);
+    attributes.add(TestDomain.DEPARTMENT_NAME);
 
     final EntityDefinition definition = domain.getDefinition(TestDomain.T_DEPARTMENT);
-    final Collection<Property> properties = definition.getProperties(propertyIds);
+    final Collection<Property> properties = definition.getProperties(attributes);
     assertEquals(2, properties.size());
     assertTrue(properties.contains(definition.getProperty(TestDomain.DEPARTMENT_ID)));
     assertTrue(properties.contains(definition.getProperty(TestDomain.DEPARTMENT_NAME)));
@@ -204,39 +204,39 @@ public class DomainTest {
   @Test
   public void key() {
     final String entityId = "DomainTest.key";
-    final Attribute<Integer> propertyId1 = attribute("id1");
-    final Attribute<Integer> propertyId2 = attribute("id2");
-    final Attribute<Integer> propertyId3 = attribute("id3");
+    final Attribute<Integer> attribute1 = attribute("id1");
+    final Attribute<Integer> attribute2 = attribute("id2");
+    final Attribute<Integer> attribute3 = attribute("id3");
     domain.define(entityId,
-            Properties.primaryKeyProperty(propertyId1, Types.INTEGER),
-            Properties.primaryKeyProperty(propertyId2, Types.INTEGER).primaryKeyIndex(1),
-            Properties.primaryKeyProperty(propertyId3, Types.INTEGER).primaryKeyIndex(2).nullable(true));
+            Properties.primaryKeyProperty(attribute1, Types.INTEGER),
+            Properties.primaryKeyProperty(attribute2, Types.INTEGER).primaryKeyIndex(1),
+            Properties.primaryKeyProperty(attribute3, Types.INTEGER).primaryKeyIndex(2).nullable(true));
 
     final Entity.Key key = entities.key(entityId);
     assertEquals(0, key.hashCode());
     assertTrue(key.isCompositeKey());
     assertTrue(key.isNull());
 
-    key.put(propertyId1, 1);
-    key.put(propertyId2, 2);
-    key.put(propertyId3, 3);
+    key.put(attribute1, 1);
+    key.put(attribute2, 2);
+    key.put(attribute3, 3);
     assertTrue(key.isNotNull());
     assertEquals(6, key.hashCode());
 
-    key.put(propertyId2, 3);
+    key.put(attribute2, 3);
     assertEquals(7, key.hashCode());
 
-    key.put(propertyId3, null);
+    key.put(attribute3, null);
     assertTrue(key.isNotNull());
     assertEquals(4, key.hashCode());
-    key.put(propertyId2, null);
+    key.put(attribute2, null);
     assertTrue(key.isNull());
     assertEquals(0, key.hashCode());
-    key.put(propertyId2, 4);
+    key.put(attribute2, 4);
     assertTrue(key.isNotNull());
     assertEquals(5, key.hashCode());
 
-    key.put(propertyId2, 42);
+    key.put(attribute2, 42);
     assertTrue(key.isNotNull());
     assertEquals(43, key.hashCode());
 
@@ -381,10 +381,10 @@ public class DomainTest {
   @Test
   public void redefine() {
     final String entityId = "entityId";
-    final Attribute<Object> propertyId = attribute("propertyId");
-    domain.define(entityId, Properties.primaryKeyProperty(propertyId, Types.INTEGER));
+    final Attribute<Object> attribute = attribute("attribute");
+    domain.define(entityId, Properties.primaryKeyProperty(attribute, Types.INTEGER));
     assertThrows(IllegalArgumentException.class, () -> domain.define(entityId, Properties.primaryKeyProperty(
-            propertyId, Types.INTEGER)));
+            attribute, Types.INTEGER)));
   }
 
   @Test
@@ -611,13 +611,13 @@ public class DomainTest {
   @Test
   public void conditionProvider() {
     assertThrows(IllegalArgumentException.class, () -> domain.define("nullConditionProvider1",
-            Properties.primaryKeyProperty(attribute("id"), Types.INTEGER)).conditionProvider(null, (propertyIds, values) -> null));
+            Properties.primaryKeyProperty(attribute("id"), Types.INTEGER)).conditionProvider(null, (attributes, values) -> null));
     assertThrows(NullPointerException.class, () -> domain.define("nullConditionProvider2",
             Properties.primaryKeyProperty(attribute("id"), Types.INTEGER)).conditionProvider("id", null));
     assertThrows(IllegalStateException.class, () -> domain.define("nullConditionProvider3",
             Properties.primaryKeyProperty(attribute("id"), Types.INTEGER))
-            .conditionProvider("id", (propertyIds, values) -> null)
-            .conditionProvider("id", (propertyIds, values) -> null));
+            .conditionProvider("id", (attributes, values) -> null)
+            .conditionProvider("id", (attributes, values) -> null));
   }
 
   @Test

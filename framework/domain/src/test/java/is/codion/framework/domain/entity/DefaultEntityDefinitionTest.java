@@ -86,7 +86,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void duplicatePropertyIds() {
+  public void duplicateAttributes() {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId", "tableName",
@@ -99,7 +99,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void duplicateForeignKeyPropertyIds() {
+  public void duplicateForeignKeyAttributes() {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId", "tableName",
@@ -202,7 +202,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityId1,
-                Properties.columnProperty(attribute("propertyId"), Types.INTEGER));
+                Properties.columnProperty(attribute("attribute"), Types.INTEGER));
         define(entityId2,
                 Properties.foreignKeyProperty(attribute("fk"), null, entityId1,
                         Properties.columnProperty(attribute("fk_col"), Types.INTEGER)));
@@ -217,8 +217,8 @@ public class DefaultEntityDefinitionTest {
       public TestDomain() {
         setStrictForeignKeys(false);
         define("entityId",
-                Properties.foreignKeyProperty(attribute("fkPropertyID"), "caption", "parent",
-                        Properties.primaryKeyProperty(attribute("propertyId"), Types.INTEGER)));
+                Properties.foreignKeyProperty(attribute("fkAttribute"), "caption", "parent",
+                        Properties.primaryKeyProperty(attribute("attribute"), Types.INTEGER)));
         setStrictForeignKeys(true);
       }
     }
@@ -226,7 +226,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void testPropertyIDConflict() {
+  public void testAttributeConflict() {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId",
@@ -239,7 +239,7 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  public void testPropertyIDConflictInForeignKey() {
+  public void testAttributeConflictInForeignKey() {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId",
@@ -278,7 +278,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entity",
-                Properties.primaryKeyProperty(attribute("propertyId"), Types.INTEGER))
+                Properties.primaryKeyProperty(attribute("attribute"), Types.INTEGER))
                 .colorProvider((entity1, property) -> colorBlue);
       }
     }
@@ -291,18 +291,18 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void testDefaultStringProvider() {
-    final Attribute<Integer> propertyId = attribute("propertyId");
+    final Attribute<Integer> attribute = attribute("attribute");
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityToString",
-                Properties.primaryKeyProperty(propertyId, Types.INTEGER));
+                Properties.primaryKeyProperty(attribute, Types.INTEGER));
       }
     }
     final Entities entities = new TestDomain().getEntities();
 
     final Entity entity = entities.entity("entityToString");
-    entity.put(propertyId, 1);
-    assertEquals("entityToString: propertyId:1", entity.toString());
+    entity.put(attribute, 1);
+    assertEquals("entityToString: attribute:1", entity.toString());
   }
 
   @Test
@@ -310,7 +310,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityToString",
-                Properties.primaryKeyProperty(attribute("propertyId"), Types.INTEGER)).stringProvider(null);
+                Properties.primaryKeyProperty(attribute("attribute"), Types.INTEGER)).stringProvider(null);
       }
     }
     assertThrows(NullPointerException.class, () -> new TestDomain());
@@ -321,7 +321,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityToString",
-                Properties.primaryKeyProperty(attribute("propertyId"), Types.INTEGER)).stringProvider(entity -> "test");
+                Properties.primaryKeyProperty(attribute("attribute"), Types.INTEGER)).stringProvider(entity -> "test");
 
       }
     }
@@ -337,7 +337,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityId,
-                Properties.primaryKeyProperty(attribute("propertyId"), Types.INTEGER));
+                Properties.primaryKeyProperty(attribute("attribute"), Types.INTEGER));
       }
     }
     final Domain domain = new TestDomain();
@@ -353,7 +353,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("nullKeyGenerator",
-                Properties.primaryKeyProperty(attribute("propertyId"), Types.INTEGER)).keyGenerator(null);
+                Properties.primaryKeyProperty(attribute("attribute"), Types.INTEGER)).keyGenerator(null);
       }
     }
     assertThrows(NullPointerException.class, () -> new TestDomain());
@@ -365,7 +365,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityId,
-                Properties.primaryKeyProperty(attribute("propertyId"), Types.INTEGER))
+                Properties.primaryKeyProperty(attribute("attribute"), Types.INTEGER))
                 .keyGenerator(automatic("table"));
       }
     }

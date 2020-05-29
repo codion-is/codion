@@ -134,14 +134,14 @@ public final class Properties {
    * @param type the property sql data type
    * @param caption the caption
    * @param valueProvider a {@link DerivedProperty.Provider} instance responsible for deriving the value
-   * @param linkedPropertyIds the ids of the properties from which this property derives its value
+   * @param linkedAttributes the ids of the properties from which this property derives its value
    * @return a new {@link TransientProperty.Builder}
    * @throws IllegalArgumentException in case no linked property ids are provided
    */
   public static TransientProperty.Builder derivedProperty(final Attribute<?> attribute, final int type, final String caption,
                                                           final DerivedProperty.Provider valueProvider,
-                                                          final Attribute<?>... linkedPropertyIds) {
-    return new DefaultDerivedProperty(attribute, type, caption, valueProvider, linkedPropertyIds).builder();
+                                                          final Attribute<?>... linkedAttributes) {
+    return new DefaultDerivedProperty(attribute, type, caption, valueProvider, linkedAttributes).builder();
   }
 
   /**
