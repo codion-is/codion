@@ -39,11 +39,11 @@ abstract class DefaultProperty implements Property {
   private String entityId;
 
   /**
-   * The property identifier, should be unique within an Entity.
-   * By default this id serves as column name for database properties.
-   * @see #getPropertyId()
+   * The attribute this property is based on, should be unique within an Entity.
+   * By default the name of this attribute serves as column name for column properties.
+   * @see #getAttribute()
    */
-  private final Attribute<?> propertyId;
+  private final Attribute<?> attribute;
 
   /**
    * The property type, java.sql.Types
@@ -134,15 +134,15 @@ abstract class DefaultProperty implements Property {
   private transient DateTimeFormatter dateTimeFormatter;
 
   /**
-   * @param  propertyId the propertyId, this is used as the underlying column name
+   * @param  attribute the propertyId, this is used as the underlying column name
    * @param type the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    * @param typeClass the type associated with this property
    */
-  DefaultProperty(final Attribute<?> propertyId, final int type, final String caption,
+  DefaultProperty(final Attribute<?> attribute, final int type, final String caption,
                   final Class typeClass) {
-    requireNonNull(propertyId, "propertyId");
-    this.propertyId = propertyId;
+    requireNonNull(attribute, "propertyId");
+    this.attribute = attribute;
     this.type = type;
     this.caption = caption;
     this.typeClass = typeClass;
@@ -158,12 +158,12 @@ abstract class DefaultProperty implements Property {
 
   @Override
   public final boolean is(final Attribute<?> propertyId) {
-    return this.propertyId.equals(propertyId);
+    return this.attribute.equals(propertyId);
   }
 
   @Override
   public final boolean is(final Property property) {
-    return is(property.getPropertyId());
+    return is(property.getAttribute());
   }
 
   @Override
@@ -237,8 +237,8 @@ abstract class DefaultProperty implements Property {
   }
 
   @Override
-  public Attribute<?> getPropertyId() {
-    return propertyId;
+  public Attribute<?> getAttribute() {
+    return attribute;
   }
 
   @Override
@@ -346,7 +346,7 @@ abstract class DefaultProperty implements Property {
 
   @Override
   public final String getCaption() {
-    return caption == null ? propertyId.getName() : caption;
+    return caption == null ? attribute.getName() : caption;
   }
 
   @Override
@@ -359,12 +359,12 @@ abstract class DefaultProperty implements Property {
     }
     final DefaultProperty that = (DefaultProperty) obj;
 
-    return Objects.equals(entityId, that.entityId) && propertyId.equals(that.propertyId);
+    return Objects.equals(entityId, that.entityId) && attribute.equals(that.attribute);
   }
 
   @Override
   public final int hashCode() {
-    return propertyId.hashCode() + 31 * (entityId == null ? 0 : entityId.hashCode());
+    return attribute.hashCode() + 31 * (entityId == null ? 0 : entityId.hashCode());
   }
 
   @Override
@@ -518,7 +518,7 @@ abstract class DefaultProperty implements Property {
     public Property.Builder entityId(final String entityId) {
       if (property.entityId != null) {
         throw new IllegalStateException("entityId (" + property.entityId +
-                ") has already been set for property: " + property.propertyId);
+                ") has already been set for property: " + property.attribute);
       }
       property.entityId = entityId;
       return this;
@@ -623,10 +623,10 @@ abstract class DefaultProperty implements Property {
     public final Property.Builder format(final Format format) {
       requireNonNull(format, "format");
       if (property.isNumerical() && !(format instanceof NumberFormat)) {
-        throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.propertyId);
+        throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.attribute);
       }
       if (property.isTemporal()) {
-        throw new IllegalArgumentException("Use dateTimeFormatPattern() for temporal properties: " + property.propertyId);
+        throw new IllegalArgumentException("Use dateTimeFormatPattern() for temporal properties: " + property.attribute);
       }
       property.format = format;
       return this;
@@ -636,7 +636,7 @@ abstract class DefaultProperty implements Property {
     public final Property.Builder dateTimeFormatPattern(final String dateTimeFormatPattern) {
       requireNonNull(dateTimeFormatPattern, "dateTimeFormatPattern");
       if (!property.isTemporal()) {
-        throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to temporal properties: " + property.propertyId);
+        throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to temporal properties: " + property.attribute);
       }
       property.dateTimeFormatter = ofPattern(dateTimeFormatPattern);
       property.dateTimeFormatPattern = dateTimeFormatPattern;

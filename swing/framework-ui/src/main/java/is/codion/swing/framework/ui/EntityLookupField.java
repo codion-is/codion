@@ -353,11 +353,11 @@ public final class EntityLookupField extends JTextField {
       for (final Map.Entry<ColumnProperty, EntityLookupModel.LookupSettings> entry :
               lookupModel.getPropertyLookupSettings().entrySet()) {
         propertyComboBoxModel.addItem(entry.getKey());
-        propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getPropertyId().getName());
+        propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getAttribute().getName());
       }
       if (propertyComboBoxModel.getSize() > 0) {
         propertyComboBoxModel.addSelectionListener(selected ->
-                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getPropertyId().getName()));
+                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getAttribute().getName()));
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 
@@ -514,7 +514,7 @@ public final class EntityLookupField extends JTextField {
       table.getActionMap().put(enterActionKey, selectControl);
       final Collection<ColumnProperty> lookupProperties = lookupModel.getLookupProperties();
       tableModel.getColumnModel().setColumns(lookupProperties.toArray(new Property[0]));
-      tableModel.setSortingDirective(lookupProperties.iterator().next().getPropertyId(), SortingDirective.ASCENDING);
+      tableModel.setSortingDirective(lookupProperties.iterator().next().getAttribute(), SortingDirective.ASCENDING);
       table.setSelectionMode(lookupModel.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       table.setDoubleClickAction(selectControl);

@@ -78,12 +78,12 @@ public interface Property extends Serializable {
   String getEntityId();
 
   /**
-   * The property identifier, should be unique within an Entity.
-   * By default this id serves as column name for database properties.
+   * The {@link Attribute} this property is based on, should be unique within an Entity.
+   * By default the {@link Attribute#getName()} serves as column name for database properties.
    * @param <T> the attribute type
-   * @return the id of this property
+   * @return the attribute this property is based on
    */
-  <T> Attribute<T> getPropertyId();
+  <T> Attribute<T> getAttribute();
 
   /**
    * @return the caption

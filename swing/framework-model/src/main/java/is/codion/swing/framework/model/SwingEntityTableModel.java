@@ -457,7 +457,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyId(), foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
+    if (conditionModel.setConditionValues(foreignKeyProperty.getAttribute(), foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
   }
@@ -471,7 +471,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     for (final Entity entity : getItems()) {
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
-          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getPropertyId());
+          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getAttribute());
           if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
             currentForeignKeyValue.setAs(foreignKeyValue);
             changed = true;
@@ -771,7 +771,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   private void onColumnHidden(final Property property) {
     //disable the condition model for the column to be hidden, to prevent confusion
-    conditionModel.disable(property.getPropertyId());
+    conditionModel.disable(property.getAttribute());
   }
 
   private org.json.JSONObject createPreferences() throws Exception {
@@ -790,7 +790,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
       columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? getColumnModel().getColumnIndex(property) : -1);
-      columnPreferencesRoot.put(property.getPropertyId().getName(), columnObject);
+      columnPreferencesRoot.put(property.getAttribute().getName(), columnObject);
     }
 
     return columnPreferencesRoot;
@@ -816,7 +816,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       final Property property = (Property) column.getIdentifier();
       if (columnModel.containsColumn(property)) {
         try {
-          final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getPropertyId().getName());
+          final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getAttribute().getName());
           column.setPreferredWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
           if (columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
             final int index = Math.min(columnModel.getColumnCount() - 1, columnPreferences.getInt(PREFERENCES_COLUMN_INDEX));

@@ -122,11 +122,11 @@ public abstract class EntityEditView extends BorderPane {
     final List<Property> properties = Properties.sort(getEditModel()
             .getEntityDefinition().getProperties(controls.keySet()));
     properties.removeIf(property -> {
-      final Control control = controls.get(property.getPropertyId());
+      final Control control = controls.get(property.getAttribute());
 
       return control == null || control.isDisabled() || !control.isVisible();
     });
-    controls.get(FXUiUtil.selectValues(properties).get(0).getPropertyId()).requestFocus();
+    controls.get(FXUiUtil.selectValues(properties).get(0).getAttribute()).requestFocus();
   }
 
   /**

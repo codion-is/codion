@@ -393,7 +393,7 @@ final class EntityConnectionHandler implements InvocationHandler {
             valueString.append(entity.getOriginal(property)).append("->");
           }
           valueString.append(entity.get(property));
-          builder.append(property.getPropertyId()).append(":").append(valueString).append(",");
+          builder.append(property.getAttribute()).append(":").append(valueString).append(",");
         }
       }
       builder.deleteCharAt(builder.length() - 1);

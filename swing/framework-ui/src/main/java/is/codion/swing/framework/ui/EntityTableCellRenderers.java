@@ -92,8 +92,8 @@ public final class EntityTableCellRenderers {
 
   private static Color getBackgroundColor(final SwingEntityTableModel tableModel, final Property property, final int row,
                                           final boolean indicateCondition) {
-    final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getPropertyId());
-    final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getPropertyId());
+    final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getAttribute());
+    final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getAttribute());
     final boolean showCondition = indicateCondition && (propertyConditionEnabled || propertyFilterEnabled);
     final Color cellColor = tableModel.getPropertyBackgroundColor(row, property);
     if (showCondition) {

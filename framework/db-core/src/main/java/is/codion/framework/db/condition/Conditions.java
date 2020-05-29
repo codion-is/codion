@@ -307,7 +307,7 @@ public final class Conditions {
       return compositeKeyCondition(keys, firstKey.getProperties(), LIKE);
     }
 
-    return propertyCondition(firstKey.getFirstProperty().getPropertyId(), LIKE, getValues(keys));
+    return propertyCondition(firstKey.getFirstProperty().getAttribute(), LIKE, getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */
@@ -325,7 +325,7 @@ public final class Conditions {
                                                     final Entity.Key entityKey) {
     final Condition.Combination conditionCombination = combination(AND);
     for (int i = 0; i < properties.size(); i++) {
-      conditionCombination.add(propertyCondition(properties.get(i).getPropertyId(), operator,
+      conditionCombination.add(propertyCondition(properties.get(i).getAttribute(), operator,
               entityKey == null ? null : entityKey.get(entityKey.getProperties().get(i))));
     }
 
@@ -350,11 +350,11 @@ public final class Conditions {
     if (keys.size() == 1) {
       final Entity.Key entityKey = keys.get(0);
 
-      return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getPropertyId(), operator,
+      return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getAttribute(), operator,
               entityKey == null ? null : entityKey.getFirstValue());
     }
 
-    return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getPropertyId(), operator,
+    return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getAttribute(), operator,
             getValues(keys));
   }
 

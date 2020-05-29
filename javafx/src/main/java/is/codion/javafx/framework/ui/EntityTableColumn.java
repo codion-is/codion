@@ -61,7 +61,7 @@ public final class EntityTableColumn extends FXEntityListModel.PropertyTableColu
     final Property property = getProperty();
     if (property instanceof ColumnProperty || property instanceof ForeignKeyProperty) {
       final ColumnConditionModel<Entity, ? extends Property> conditionModel =
-              listModel.getConditionModel().getPropertyConditionModel(getProperty().getPropertyId());
+              listModel.getConditionModel().getPropertyConditionModel(getProperty().getAttribute());
       if (conditionModel != null) {
         final PropertyConditionView view = new PropertyConditionView(conditionModel);
         view.prefWidthProperty().setValue(getWidth());

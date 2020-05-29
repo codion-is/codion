@@ -159,7 +159,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final EntityTableColumn getTableColumn(final Attribute<?> propertyId) {
     final Optional<? extends TableColumn<Entity, ?>> tableColumn = columns.stream()
             .filter((Predicate<TableColumn<Entity, ?>>) entityTableColumn ->
-                    ((EntityTableColumn) entityTableColumn).getProperty().getPropertyId().equals(propertyId)).findFirst();
+                    ((EntityTableColumn) entityTableColumn).getProperty().getAttribute().equals(propertyId)).findFirst();
 
     if (tableColumn.isPresent()) {
       return (EntityTableColumn) tableColumn.get();
@@ -190,7 +190,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> entities) {
-    if (conditionModel.setConditionValues(foreignKeyProperty.getPropertyId(), entities) && refreshOnForeignKeyConditionValuesSet) {
+    if (conditionModel.setConditionValues(foreignKeyProperty.getAttribute(), entities) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
   }
@@ -217,7 +217,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     for (final Entity entity : getItems()) {
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
-          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getPropertyId());
+          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getAttribute());
           if (Objects.equals(currentForeignKeyValue, foreignKeyValue)) {
             currentForeignKeyValue.setAs(foreignKeyValue);
           }
@@ -402,13 +402,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   public final void setColumns(final Attribute<?>... propertyIds) {
     final List<Attribute<?>> propertyIdList = asList(propertyIds);
     new ArrayList<>(columns).forEach(column -> {
-      if (!propertyIdList.contains(((PropertyTableColumn) column).getProperty().getPropertyId())) {
+      if (!propertyIdList.contains(((PropertyTableColumn) column).getProperty().getAttribute())) {
         columns.remove(column);
       }
     });
     columns.sort((col1, col2) -> {
-      final Integer first = propertyIdList.indexOf(((PropertyTableColumn) col1).getProperty().getPropertyId());
-      final Integer second = propertyIdList.indexOf(((PropertyTableColumn) col2).getProperty().getPropertyId());
+      final Integer first = propertyIdList.indexOf(((PropertyTableColumn) col1).getProperty().getAttribute());
+      final Integer second = propertyIdList.indexOf(((PropertyTableColumn) col2).getProperty().getAttribute());
 
       return first.compareTo(second);
     });
@@ -554,7 +554,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       final Property property = column.getProperty();
       if (columns.contains(column)) {
         try {
-          final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getPropertyId().getName());
+          final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getAttribute().getName());
           column.setPrefWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
           if (!columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
             columns.remove(column);
@@ -583,7 +583,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
       columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? columns.indexOf(column) : -1);
-      columnPreferencesRoot.put(property.getPropertyId().getName(), columnObject);
+      columnPreferencesRoot.put(property.getAttribute().getName(), columnObject);
     }
 
     return columnPreferencesRoot;
@@ -626,7 +626,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
     @Override
     public final String toString() {
-      return property.getPropertyId().getName();
+      return property.getAttribute().getName();
     }
   }
 
@@ -641,8 +641,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     @Override
     public int compare(final TableColumn<Entity, ?> col1, final TableColumn<Entity, ?> col2) {
       try {
-        final org.json.JSONObject columnOnePreferences = preferences.getJSONObject(((PropertyTableColumn) col1).getProperty().getPropertyId().getName());
-        final org.json.JSONObject columnTwoPreferences = preferences.getJSONObject(((PropertyTableColumn) col2).getProperty().getPropertyId().getName());
+        final org.json.JSONObject columnOnePreferences = preferences.getJSONObject(((PropertyTableColumn) col1).getProperty().getAttribute().getName());
+        final org.json.JSONObject columnTwoPreferences = preferences.getJSONObject(((PropertyTableColumn) col2).getProperty().getAttribute().getName());
         Integer firstIndex = columnOnePreferences.getInt(PREFERENCES_COLUMN_INDEX);
         if (firstIndex == null) {
           firstIndex = 0;

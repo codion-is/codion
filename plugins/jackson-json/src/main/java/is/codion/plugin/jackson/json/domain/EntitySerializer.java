@@ -59,7 +59,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
     final Map<String, Object> valueMap = new HashMap<>();
     for (final Property property : entity.keySet()) {
       if (include(property, entity)) {
-        valueMap.put(property.getPropertyId().getName(), entity.get(property));
+        valueMap.put(property.getAttribute().getName(), entity.get(property));
       }
     }
 
@@ -70,7 +70,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
     final Map<String, Object> valueMap = new HashMap<>();
     for (final Property property : entity.originalKeySet()) {
       if (include(property, entity)) {
-        valueMap.put(property.getPropertyId().getName(), entity.getOriginal(property));
+        valueMap.put(property.getAttribute().getName(), entity.getOriginal(property));
       }
     }
 

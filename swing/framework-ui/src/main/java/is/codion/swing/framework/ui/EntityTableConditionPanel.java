@@ -157,7 +157,7 @@ public final class EntityTableConditionPanel extends JPanel {
         final Property property = conditionProperties.size() == 1 ? conditionProperties.get(0) :
                 Dialogs.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
         if (property != null) {
-          final ColumnConditionPanel conditionPanel = getConditionPanel(property.getPropertyId());
+          final ColumnConditionPanel conditionPanel = getConditionPanel(property.getAttribute());
           if (conditionPanel != null) {
             conditionPanel.requestInputFocus();
           }
@@ -285,8 +285,8 @@ public final class EntityTableConditionPanel extends JPanel {
     @Override
     protected JPanel initializeColumnPanel(final TableColumn column) {
       final Property property = (Property) column.getIdentifier();
-      if (conditionModel.containsPropertyConditionModel(property.getPropertyId())) {
-        return initializeConditionPanel(conditionModel.getPropertyConditionModel(property.getPropertyId()));
+      if (conditionModel.containsPropertyConditionModel(property.getAttribute())) {
+        return initializeConditionPanel(conditionModel.getPropertyConditionModel(property.getAttribute()));
       }
 
       return new JPanel();

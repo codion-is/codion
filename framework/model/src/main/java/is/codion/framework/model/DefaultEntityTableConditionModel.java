@@ -303,7 +303,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final Collection<ColumnProperty> searchProperties =
             connectionProvider.getEntities().getDefinition(entityId).getSearchProperties();
     for (final ColumnProperty searchProperty : searchProperties) {
-      final ColumnConditionModel conditionModel = getPropertyConditionModel(searchProperty.getPropertyId());
+      final ColumnConditionModel conditionModel = getPropertyConditionModel(searchProperty.getAttribute());
       conditionModel.setCaseSensitive(false);
       conditionModel.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
       conditionModel.setUpperBound(searchString);
@@ -324,7 +324,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       for (final Property property : connectionProvider.getEntities().getDefinition(entityId).getProperties()) {
         if (!property.isHidden()) {
           final ColumnConditionModel<Entity, Property> filterModel = filterModelProvider.initializePropertyFilterModel(property);
-          this.propertyFilterModels.put(filterModel.getColumnIdentifier().getPropertyId(), filterModel);
+          this.propertyFilterModels.put(filterModel.getColumnIdentifier().getAttribute(), filterModel);
         }
       }
     }
@@ -337,7 +337,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
         final ColumnConditionModel<Entity, ColumnProperty> conditionModel =
                 conditionModelProvider.initializePropertyConditionModel(columnProperty);
         if (conditionModel != null) {
-          this.propertyConditionModels.put(conditionModel.getColumnIdentifier().getPropertyId(), conditionModel);
+          this.propertyConditionModels.put(conditionModel.getColumnIdentifier().getAttribute(), conditionModel);
         }
       }
     }
@@ -350,7 +350,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       final ColumnConditionModel<Entity, ForeignKeyProperty> conditionModel =
               conditionModelProvider.initializeForeignKeyConditionModel(foreignKeyProperty, connectionProvider);
       if (conditionModel != null) {
-        this.propertyConditionModels.put(conditionModel.getColumnIdentifier().getPropertyId(), conditionModel);
+        this.propertyConditionModels.put(conditionModel.getColumnIdentifier().getAttribute(), conditionModel);
       }
     }
   }
@@ -359,12 +359,12 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final Object conditionValue = conditionModel.getOperator().getValues().equals(Operator.Values.TWO) ?
             asList(conditionModel.getLowerBound(), conditionModel.getUpperBound()) : conditionModel.getUpperBound();
 
-    return propertyCondition(conditionModel.getColumnIdentifier().getPropertyId(), conditionModel.getOperator(), conditionValue)
+    return propertyCondition(conditionModel.getColumnIdentifier().getAttribute(), conditionModel.getOperator(), conditionValue)
             .setCaseSensitive(conditionModel.isCaseSensitive());
   }
 
   private static String toString(final ColumnConditionModel<Entity, ? extends Property> conditionModel) {
-    final StringBuilder stringBuilder = new StringBuilder(conditionModel.getColumnIdentifier().getPropertyId().getName());
+    final StringBuilder stringBuilder = new StringBuilder(conditionModel.getColumnIdentifier().getAttribute().getName());
     if (conditionModel.isEnabled()) {
       stringBuilder.append(conditionModel.getOperator());
       stringBuilder.append(boundToString(conditionModel.getUpperBound()));

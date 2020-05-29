@@ -114,11 +114,11 @@ public class DefaultEntityValidator implements EntityValidator {
 
     final Number value = (Number) entity.get(property);
     if (value.doubleValue() < (property.getMinimumValue() == null ? Double.NEGATIVE_INFINITY : property.getMinimumValue())) {
-      throw new RangeValidationException(property.getPropertyId(), value, "'" + property + "' " +
+      throw new RangeValidationException(property.getAttribute(), value, "'" + property + "' " +
               MESSAGES.getString("property_value_too_small") + " " + property.getMinimumValue());
     }
     if (value.doubleValue() > (property.getMaximumValue() == null ? Double.POSITIVE_INFINITY : property.getMaximumValue())) {
-      throw new RangeValidationException(property.getPropertyId(), value, "'" + property + "' " +
+      throw new RangeValidationException(property.getAttribute(), value, "'" + property + "' " +
               MESSAGES.getString("property_value_too_large") + " " + property.getMaximumValue());
     }
   }
@@ -134,11 +134,11 @@ public class DefaultEntityValidator implements EntityValidator {
         final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
         final boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(definition, property);
         if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
-          throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
+          throw new NullValidationException(property.getAttribute(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
         }
       }
       else {
-        throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
+        throw new NullValidationException(property.getAttribute(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
       }
     }
   }
@@ -154,7 +154,7 @@ public class DefaultEntityValidator implements EntityValidator {
     final int maxLength = property.getMaximumLength();
     final String value = (String) entity.get(property);
     if (maxLength != -1 && value.length() > maxLength) {
-      throw new LengthValidationException(property.getPropertyId(), value, "'" + property + "' " +
+      throw new LengthValidationException(property.getAttribute(), value, "'" + property + "' " +
               MESSAGES.getString("property_value_too_long") + " " + maxLength);
     }
   }

@@ -183,7 +183,7 @@ final class DefaultEntity implements Entity {
   public Object get(final Property property) {
     requireNonNull(property, "property");
     if (property instanceof MirrorProperty) {
-      return get(definition.getProperty(property.getPropertyId()));
+      return get(definition.getProperty(property.getAttribute()));
     }
     if (property instanceof DerivedProperty) {
       return getDerivedValue((DerivedProperty) property);
@@ -244,7 +244,7 @@ final class DefaultEntity implements Entity {
     if (value == null) {//possibly not loaded
       final Entity.Key referencedKey = getReferencedKey(foreignKeyProperty);
       if (referencedKey != null) {
-        return new DefaultEntity(definition.getForeignDefinition(foreignKeyProperty.getPropertyId()), referencedKey);
+        return new DefaultEntity(definition.getForeignDefinition(foreignKeyProperty.getAttribute()), referencedKey);
       }
     }
 
@@ -261,7 +261,7 @@ final class DefaultEntity implements Entity {
     if (property instanceof ValueListProperty) {
       return ((ValueListProperty) property).getCaption(get(property));
     }
-    if (property instanceof ForeignKeyProperty && !isLoaded(((ForeignKeyProperty) property).getPropertyId())) {
+    if (property instanceof ForeignKeyProperty && !isLoaded(((ForeignKeyProperty) property).getAttribute())) {
       final Entity.Key referencedKey = getReferencedKey((ForeignKeyProperty) property);
       if (referencedKey != null) {
         return referencedKey.toString();
@@ -443,7 +443,7 @@ final class DefaultEntity implements Entity {
       throw new IllegalArgumentException("Foreign key property " + foreignKeyProperty
               + " is not part of entity: " + getEntityId());
     }
-    final Key cachedReferencedKey = getCachedReferencedKey(foreignKeyProperty.getPropertyId());
+    final Key cachedReferencedKey = getCachedReferencedKey(foreignKeyProperty.getAttribute());
     if (cachedReferencedKey != null) {
       return cachedReferencedKey;
     }
@@ -488,7 +488,7 @@ final class DefaultEntity implements Entity {
       return isNull(properties.get(0));
     }
     final List<ColumnProperty> foreignProperties =
-            definition.getForeignDefinition(foreignKeyProperty.getPropertyId()).getPrimaryKeyProperties();
+            definition.getForeignDefinition(foreignKeyProperty.getAttribute()).getPrimaryKeyProperties();
     for (int i = 0; i < properties.size(); i++) {
       if (!foreignProperties.get(i).isNullable() && isNull(properties.get(i))) {
         return true;
@@ -525,7 +525,7 @@ final class DefaultEntity implements Entity {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
     if (property instanceof ValueListProperty && value != null && !((ValueListProperty) property).isValid(value)) {
-      throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyId());
+      throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getAttribute());
     }
 
     return property.prepareValue(property.validateType(value));
@@ -559,7 +559,7 @@ final class DefaultEntity implements Entity {
     if (valueChangeEvent != null) {
       valueChangeEvent.onEvent(valueChange(property, currentValue, previousValue, initialization));
       if (definition.hasDerivedProperties()) {
-        final Collection<DerivedProperty> derivedProperties = definition.getDerivedProperties(property.getPropertyId());
+        final Collection<DerivedProperty> derivedProperties = definition.getDerivedProperties(property.getAttribute());
         for (final DerivedProperty derivedProperty : derivedProperties) {
           final Object derivedValue = getDerivedValue(derivedProperty);
           valueChangeEvent.onEvent(valueChange(derivedProperty, derivedValue, derivedValue));
@@ -577,7 +577,7 @@ final class DefaultEntity implements Entity {
 
   private void removeInvalidForeignKeyValues(final ColumnProperty columnProperty, final Object value) {
     final List<ForeignKeyProperty> propertyForeignKeyProperties =
-            definition.getForeignKeyProperties(columnProperty.getPropertyId());
+            definition.getForeignKeyProperties(columnProperty.getAttribute());
     for (final ForeignKeyProperty foreignKeyProperty : propertyForeignKeyProperties) {
       final Entity foreignKeyEntity = (Entity) get(foreignKeyProperty);
       if (foreignKeyEntity != null) {
@@ -588,7 +588,7 @@ final class DefaultEntity implements Entity {
         //that foreign key reference is invalid and is removed
         if (!Objects.equals(value, referencedKey.get(keyProperty))) {
           remove(foreignKeyProperty);
-          removeCachedReferencedKey(foreignKeyProperty.getPropertyId());
+          removeCachedReferencedKey(foreignKeyProperty.getAttribute());
         }
       }
     }
@@ -603,10 +603,10 @@ final class DefaultEntity implements Entity {
    * @param referencedEntity the referenced entity
    */
   private void setForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
-    removeCachedReferencedKey(foreignKeyProperty.getPropertyId());
+    removeCachedReferencedKey(foreignKeyProperty.getAttribute());
     final List<ColumnProperty> properties = foreignKeyProperty.getColumnProperties();
     final List<ColumnProperty> foreignProperties =
-            definition.getForeignDefinition(foreignKeyProperty.getPropertyId()).getPrimaryKeyProperties();
+            definition.getForeignDefinition(foreignKeyProperty.getAttribute()).getPrimaryKeyProperties();
     if (properties.size() > 1) {
       setCompositeForeignKeyValues(referencedEntity, properties, foreignProperties);
     }
@@ -638,7 +638,7 @@ final class DefaultEntity implements Entity {
    */
   private void setDenormalizedValues(final ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     final List<DenormalizedProperty> denormalizedProperties =
-            definition.getDenormalizedProperties(foreignKeyProperty.getPropertyId());
+            definition.getDenormalizedProperties(foreignKeyProperty.getAttribute());
     if (denormalizedProperties != null) {
       for (int i = 0; i < denormalizedProperties.size(); i++) {
         final DenormalizedProperty denormalizedProperty = denormalizedProperties.get(i);
@@ -662,7 +662,7 @@ final class DefaultEntity implements Entity {
   }
 
   private Key initializeAndCacheCompositeReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
-    final EntityDefinition foreignEntityDefinition = definition.getForeignDefinition(foreignKeyProperty.getPropertyId());
+    final EntityDefinition foreignEntityDefinition = definition.getForeignDefinition(foreignKeyProperty.getAttribute());
     if (!foreignEntityDefinition.hasPrimaryKey()) {
       throw new IllegalArgumentException("Entity '" + foreignEntityDefinition.getEntityId() + "' has no primary key defined");
     }
@@ -672,7 +672,7 @@ final class DefaultEntity implements Entity {
     for (int i = 0; i < columnProperties.size(); i++) {
       ColumnProperty columnProperty = columnProperties.get(i);
       if (columnProperty instanceof MirrorProperty) {
-        columnProperty = definition.getColumnProperty(columnProperty.getPropertyId());
+        columnProperty = definition.getColumnProperty(columnProperty.getAttribute());
       }
       final ColumnProperty foreignColumnProperty = foreignProperties.get(i);
       final Object value = values.get(columnProperty);
@@ -682,7 +682,7 @@ final class DefaultEntity implements Entity {
       keyValues.put(foreignColumnProperty, value);
     }
 
-    return cacheReferencedKey(foreignKeyProperty.getPropertyId(), new DefaultEntityKey(foreignEntityDefinition, keyValues));
+    return cacheReferencedKey(foreignKeyProperty.getAttribute(), new DefaultEntityKey(foreignEntityDefinition, keyValues));
   }
 
   private Key initializeAndCacheSingleReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
@@ -692,8 +692,8 @@ final class DefaultEntity implements Entity {
       return null;
     }
 
-    return cacheReferencedKey(foreignKeyProperty.getPropertyId(),
-            new DefaultEntityKey(definition.getForeignDefinition(foreignKeyProperty.getPropertyId()), value));
+    return cacheReferencedKey(foreignKeyProperty.getAttribute(),
+            new DefaultEntityKey(definition.getForeignDefinition(foreignKeyProperty.getAttribute()), value));
   }
 
   private Key cacheReferencedKey(final Attribute<?> foreignKeyPropertyId, final Key referencedPrimaryKey) {

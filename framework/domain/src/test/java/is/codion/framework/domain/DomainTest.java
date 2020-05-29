@@ -69,16 +69,16 @@ public class DomainTest {
     assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_CODE).getType(), Types.INTEGER);
 
     //assert column names
-    assertEquals(definition.getProperty(TestDomain.DETAIL_ID).getPropertyId(), TestDomain.DETAIL_ID);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_INT).getPropertyId(), TestDomain.DETAIL_INT);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_DOUBLE).getPropertyId(), TestDomain.DETAIL_DOUBLE);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_STRING).getPropertyId(), TestDomain.DETAIL_STRING);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_DATE).getPropertyId(), TestDomain.DETAIL_DATE);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_TIMESTAMP).getPropertyId(), TestDomain.DETAIL_TIMESTAMP);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_BOOLEAN).getPropertyId(), TestDomain.DETAIL_BOOLEAN);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_ID).getPropertyId(), TestDomain.DETAIL_MASTER_ID);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_NAME).getPropertyId(), TestDomain.DETAIL_MASTER_NAME);
-    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_CODE).getPropertyId(), TestDomain.DETAIL_MASTER_CODE);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_ID).getAttribute(), TestDomain.DETAIL_ID);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_INT).getAttribute(), TestDomain.DETAIL_INT);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_DOUBLE).getAttribute(), TestDomain.DETAIL_DOUBLE);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_STRING).getAttribute(), TestDomain.DETAIL_STRING);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_DATE).getAttribute(), TestDomain.DETAIL_DATE);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_TIMESTAMP).getAttribute(), TestDomain.DETAIL_TIMESTAMP);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_BOOLEAN).getAttribute(), TestDomain.DETAIL_BOOLEAN);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_ID).getAttribute(), TestDomain.DETAIL_MASTER_ID);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_NAME).getAttribute(), TestDomain.DETAIL_MASTER_NAME);
+    assertEquals(definition.getProperty(TestDomain.DETAIL_MASTER_CODE).getAttribute(), TestDomain.DETAIL_MASTER_CODE);
 
     //assert captions
     assertNotNull(definition.getProperty(TestDomain.DETAIL_ID).getCaption());
@@ -115,49 +115,49 @@ public class DomainTest {
   public void getWritableColumnProperties() {
     List<Attribute<?>> writable = domain.getDefinition(TestDomain.T_DEPARTMENT)
             .getWritableColumnProperties(true, true)
-            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+            .stream().map(Property::getAttribute).collect(Collectors.toList());
     assertTrue(writable.contains(TestDomain.DEPARTMENT_ID));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_NAME));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_LOCATION));
     assertFalse(writable.contains(TestDomain.DEPARTMENT_ACTIVE));
 
     writable = domain.getDefinition(TestDomain.T_DEPARTMENT).getWritableColumnProperties(false, true)
-            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+            .stream().map(Property::getAttribute).collect(Collectors.toList());
     assertFalse(writable.contains(TestDomain.DEPARTMENT_ID));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_NAME));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_LOCATION));
     assertFalse(writable.contains(TestDomain.DEPARTMENT_ACTIVE));
 
     writable = domain.getDefinition(TestDomain.T_DEPARTMENT).getWritableColumnProperties(false, false)
-            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+            .stream().map(Property::getAttribute).collect(Collectors.toList());
     assertFalse(writable.contains(TestDomain.DEPARTMENT_ID));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_NAME));
     assertTrue(writable.contains(TestDomain.DEPARTMENT_LOCATION));
     assertFalse(writable.contains(TestDomain.DEPARTMENT_ACTIVE));
 
     writable = domain.getDefinition(TestDomain.T_EMP).getWritableColumnProperties(true, true)
-            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+            .stream().map(Property::getAttribute).collect(Collectors.toList());
     assertTrue(writable.contains(TestDomain.EMP_ID));
     assertTrue(writable.contains(TestDomain.EMP_HIREDATE));
     assertTrue(writable.contains(TestDomain.EMP_NAME));
     assertFalse(writable.contains(TestDomain.EMP_NAME_DEPARTMENT));
 
     writable = domain.getDefinition(TestDomain.T_EMP).getWritableColumnProperties(false, true)
-            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+            .stream().map(Property::getAttribute).collect(Collectors.toList());
     assertFalse(writable.contains(TestDomain.EMP_ID));
     assertTrue(writable.contains(TestDomain.EMP_HIREDATE));
     assertTrue(writable.contains(TestDomain.EMP_NAME));
     assertFalse(writable.contains(TestDomain.EMP_NAME_DEPARTMENT));
 
     writable = domain.getDefinition(TestDomain.T_EMP).getWritableColumnProperties(false, false)
-            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+            .stream().map(Property::getAttribute).collect(Collectors.toList());
     assertFalse(writable.contains(TestDomain.EMP_ID));
     assertFalse(writable.contains(TestDomain.EMP_HIREDATE));
     assertTrue(writable.contains(TestDomain.EMP_NAME));
     assertFalse(writable.contains(TestDomain.EMP_NAME_DEPARTMENT));
 
     writable = domain.getDefinition(TestDomain.T_EMP).getWritableColumnProperties(true, false)
-            .stream().map(Property::getPropertyId).collect(Collectors.toList());
+            .stream().map(Property::getAttribute).collect(Collectors.toList());
     assertFalse(writable.contains(TestDomain.EMP_ID));//overridden by includeNonUpdatable
     assertFalse(writable.contains(TestDomain.EMP_HIREDATE));
     assertTrue(writable.contains(TestDomain.EMP_NAME));
@@ -169,10 +169,10 @@ public class DomainTest {
     final List<Property> properties = Properties.sort(domain.getDefinition(TestDomain.T_EMP).getProperties(
             asList(TestDomain.EMP_HIREDATE, TestDomain.EMP_COMMISSION,
                     TestDomain.EMP_SALARY, TestDomain.EMP_JOB)));
-    assertEquals(TestDomain.EMP_COMMISSION, properties.get(0).getPropertyId());
-    assertEquals(TestDomain.EMP_HIREDATE, properties.get(1).getPropertyId());
-    assertEquals(TestDomain.EMP_JOB, properties.get(2).getPropertyId());
-    assertEquals(TestDomain.EMP_SALARY, properties.get(3).getPropertyId());
+    assertEquals(TestDomain.EMP_COMMISSION, properties.get(0).getAttribute());
+    assertEquals(TestDomain.EMP_HIREDATE, properties.get(1).getAttribute());
+    assertEquals(TestDomain.EMP_JOB, properties.get(2).getAttribute());
+    assertEquals(TestDomain.EMP_SALARY, properties.get(3).getAttribute());
   }
 
   @Test
@@ -365,7 +365,7 @@ public class DomainTest {
     final List<DenormalizedProperty> denormalized =
             domain.getDefinition(TestDomain.T_DETAIL).getDenormalizedProperties(TestDomain.DETAIL_MASTER_FK);
     assertFalse(denormalized.isEmpty());
-    assertEquals(TestDomain.DETAIL_MASTER_CODE_DENORM, denormalized.get(0).getPropertyId());
+    assertEquals(TestDomain.DETAIL_MASTER_CODE_DENORM, denormalized.get(0).getAttribute());
   }
 
   @Test

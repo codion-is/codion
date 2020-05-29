@@ -495,8 +495,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             (char) 0, enabled, frameworkIcons().edit());
     controls.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
-      if (!excludeFromUpdateMenu.contains(property.getPropertyId())) {
-        final String caption = property.getCaption() == null ? property.getPropertyId().getName() : property.getCaption();
+      if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
+        final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
         controls.add(control(() -> updateSelectedEntities(property), caption, enabled));
       }
     });
@@ -570,14 +570,14 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     final List<Entity> selectedEntities = tableModel.getEntities().deepCopyEntities(tableModel.getSelectionModel().getSelectedItems());
-    final Collection values = Entities.getDistinctValues(propertyToUpdate.getPropertyId(), selectedEntities);
+    final Collection values = Entities.getDistinctValues(propertyToUpdate.getAttribute(), selectedEntities);
     final Object initialValue = values.size() == 1 ? values.iterator().next() : null;
     final ComponentValuePanel inputPanel = new ComponentValuePanel(propertyToUpdate.getCaption(),
             componentValues.createComponentValue(propertyToUpdate, tableModel.getEditModel(), initialValue));
     Dialogs.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
-      Entities.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);
+      Entities.put(propertyToUpdate.getAttribute(), inputPanel.getValue(), selectedEntities);
       try {
         showWaitCursor(this);
         tableModel.update(selectedEntities);
@@ -1436,7 +1436,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       final Property property = (Property) tableColumn.getIdentifier();
       final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isIndicateCondition()
-              && tableModel.getConditionModel().isEnabled(property.getPropertyId());
+              && tableModel.getConditionModel().isEnabled(property.getAttribute());
       label.setFont(indicateSearch ? searchFont : defaultFont);
 
       return label;
@@ -1454,7 +1454,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     @Override
     public ColumnConditionPanel<Entity, Property> createColumnConditionPanel(final TableColumn column) {
       return new PropertyFilterPanel(tableModel.getConditionModel().getPropertyFilterModel(
-              ((Property) column.getIdentifier()).getPropertyId()));
+              ((Property) column.getIdentifier()).getAttribute()));
     }
   }
 }

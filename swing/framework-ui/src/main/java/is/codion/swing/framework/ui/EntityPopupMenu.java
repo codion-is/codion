@@ -69,13 +69,13 @@ final class EntityPopupMenu extends JPopupMenu {
     Text.collate(primaryKeyProperties);
     for (final ColumnProperty property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property);
-      final StringBuilder builder = new StringBuilder("[PK] ").append(property.getPropertyId()).append(": ").append(entity.getAsString(property));
+      final StringBuilder builder = new StringBuilder("[PK] ").append(property.getAttribute()).append(": ").append(entity.getAsString(property));
       if (modified) {
         builder.append(getOriginalValue(entity, property));
       }
       final JMenuItem menuItem = new JMenuItem(builder.toString());
       setInvalidModified(menuItem, true, modified);
-      menuItem.setToolTipText(property.getPropertyId().getName());
+      menuItem.setToolTipText(property.getAttribute().getName());
       rootMenu.add(menuItem);
     }
   }
@@ -92,14 +92,14 @@ final class EntityPopupMenu extends JPopupMenu {
         final EntityValidator validator = definition.getValidator();
         for (final ForeignKeyProperty property : fkProperties) {
           final boolean fkValueNull = entity.isForeignKeyNull(property);
-          final boolean isLoaded = entity.isLoaded(property.getPropertyId());
+          final boolean isLoaded = entity.isLoaded(property.getAttribute());
           final boolean valid = isValid(validator, entity, definition, property);
           final boolean modified = entity.isModified(property);
           final String toolTipText = getForeignKeyColumnNames(property);
           if (!fkValueNull) {
             final Entity referencedEntity;
             if (isLoaded) {
-              referencedEntity = entity.getForeignKey(property.getPropertyId());
+              referencedEntity = entity.getForeignKey(property.getAttribute());
             }
             else {
               referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedKey(property));
@@ -171,7 +171,7 @@ final class EntityPopupMenu extends JPopupMenu {
         setInvalidModified(menuItem, valid, modified);
         final StringBuilder toolTipBuilder = new StringBuilder();
         if (property instanceof ColumnProperty) {
-          toolTipBuilder.append(property.getPropertyId());
+          toolTipBuilder.append(property.getAttribute());
         }
         if (longValue) {
           if (value.length() > MAXIMUM_VALUE_LENGTH) {

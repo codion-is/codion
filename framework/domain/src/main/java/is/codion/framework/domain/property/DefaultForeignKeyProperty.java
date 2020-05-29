@@ -120,7 +120,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
     for (final ColumnProperty.Builder columnProperty : columnProperties) {
       requireNonNull(columnProperty, "columnProperty");
-      if (columnProperty.get().getPropertyId().equals(propertyId)) {
+      if (columnProperty.get().getAttribute().equals(propertyId)) {
         throw new IllegalArgumentException(foreignEntityId + ", column propertyId is the same as foreign key propertyId: " + propertyId);
       }
     }

@@ -144,7 +144,7 @@ final class DefaultEntityKey implements Entity.Key {
     final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
       final ColumnProperty property = primaryKeyProperties.get(i);
-      stringBuilder.append(property.getPropertyId()).append(":").append(values.get(property));
+      stringBuilder.append(property.getAttribute()).append(":").append(values.get(property));
       if (i < getPropertyCount() - 1) {
         stringBuilder.append(",");
       }

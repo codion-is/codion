@@ -230,8 +230,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public boolean isPersistValue(final Property property) {
-    if (persistentValues.containsKey(property.getPropertyId())) {
-      return persistentValues.get(property.getPropertyId());
+    if (persistentValues.containsKey(property.getAttribute())) {
+      return persistentValues.get(property.getAttribute());
     }
 
     return false;
@@ -389,7 +389,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     final boolean initialization = !entity.containsKey(property);
     final Object previousValue = entity.put(property, value);
     if (!Objects.equals(value, previousValue)) {
-      getValueEditEvent(property.getPropertyId()).onEvent(valueChange(property, value, previousValue, initialization));
+      getValueEditEvent(property.getAttribute()).onEvent(valueChange(property, value, previousValue, initialization));
     }
   }
 
@@ -399,7 +399,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     Object value = null;
     if (entity.containsKey(property)) {
       value = entity.remove(property);
-      getValueEditEvent(property.getPropertyId()).onEvent(valueChange(property, null, value));
+      getValueEditEvent(property.getAttribute()).onEvent(valueChange(property, null, value));
     }
 
     return value;
@@ -874,7 +874,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param values the foreign key entities
    */
   protected void replaceForeignKey(final ForeignKeyProperty foreignKeyProperty, final List<Entity> values) {
-    final Entity currentForeignKeyValue = getForeignKey(foreignKeyProperty.getPropertyId());
+    final Entity currentForeignKeyValue = getForeignKey(foreignKeyProperty.getAttribute());
     if (currentForeignKeyValue != null) {
       for (final Entity replacementValue : values) {
         if (currentForeignKeyValue.equals(replacementValue)) {
@@ -986,7 +986,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private void initializePersistentValues() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
-      getEntityDefinition().getForeignKeyProperties().forEach(property -> setPersistValue(property.getPropertyId(), true));
+      getEntityDefinition().getForeignKeyProperties().forEach(property -> setPersistValue(property.getAttribute(), true));
     }
   }
 
@@ -1002,7 +1002,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     validState.set(validator.isValid(entity, getEntityDefinition()));
     primaryKeyNullState.set(entity.getKey().isNull());
     entityNewState.set(isEntityNew());
-    final Event<ValueChange> valueChangeEvent = valueChangeEventMap.get(valueChange.getProperty().getPropertyId());
+    final Event<ValueChange> valueChangeEvent = valueChangeEventMap.get(valueChange.getProperty().getAttribute());
     if (valueChangeEvent != null) {
       valueChangeEvent.onEvent(valueChange);
     }

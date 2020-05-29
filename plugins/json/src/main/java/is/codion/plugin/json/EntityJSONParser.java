@@ -286,38 +286,38 @@ public final class EntityJSONParser {
    * @return the value for the given property
    */
   public Object parseValue(final Property property, final JSONObject propertyValues) {
-    if (propertyValues.isNull(property.getPropertyId().getName())) {
+    if (propertyValues.isNull(property.getAttribute().getName())) {
       return null;
     }
     if (property.isString()) {
-      return propertyValues.getString(property.getPropertyId().getName());
+      return propertyValues.getString(property.getAttribute().getName());
     }
     else if (property.isBoolean()) {
-      return propertyValues.getBoolean(property.getPropertyId().getName());
+      return propertyValues.getBoolean(property.getAttribute().getName());
     }
     else if (property.isTime()) {
-      return LocalTime.parse(propertyValues.getString(property.getPropertyId().getName()), jsonTimeFormat);
+      return LocalTime.parse(propertyValues.getString(property.getAttribute().getName()), jsonTimeFormat);
     }
     else if (property.isDate()) {
-      return LocalDate.parse(propertyValues.getString(property.getPropertyId().getName()), jsonDateFormat);
+      return LocalDate.parse(propertyValues.getString(property.getAttribute().getName()), jsonDateFormat);
     }
     else if (property.isTimestamp()) {
-      return LocalDateTime.parse(propertyValues.getString(property.getPropertyId().getName()), jsonTimestampFormat);
+      return LocalDateTime.parse(propertyValues.getString(property.getAttribute().getName()), jsonTimestampFormat);
     }
     else if (property.isDouble()) {
-      return propertyValues.getDouble(property.getPropertyId().getName());
+      return propertyValues.getDouble(property.getAttribute().getName());
     }
     else if (property.isInteger()) {
-      return propertyValues.getInt(property.getPropertyId().getName());
+      return propertyValues.getInt(property.getAttribute().getName());
     }
     else if (property.isBigDecimal()) {
-      return propertyValues.getBigDecimal(property.getPropertyId().getName());
+      return propertyValues.getBigDecimal(property.getAttribute().getName());
     }
     else if (property instanceof ForeignKeyProperty) {
-      return parseEntity(propertyValues.getJSONObject(property.getPropertyId().getName()));
+      return parseEntity(propertyValues.getJSONObject(property.getAttribute().getName()));
     }
 
-    return propertyValues.getString(property.getPropertyId().getName());
+    return propertyValues.getString(property.getAttribute().getName());
   }
 
   private JSONObject toJSONObject(final Entity entity) {
@@ -343,7 +343,7 @@ public final class EntityJSONParser {
     final JSONObject propertyValues = new JSONObject();
     for (final Property property : entity.keySet()) {
       if (include(property, entity)) {
-        propertyValues.put(property.getPropertyId().getName(), serializeValue(entity.get(property), property));
+        propertyValues.put(property.getAttribute().getName(), serializeValue(entity.get(property), property));
       }
     }
 
@@ -353,7 +353,7 @@ public final class EntityJSONParser {
   private JSONObject serializeValues(final Entity.Key key) {
     final JSONObject propertyValues = new JSONObject();
     for (final ColumnProperty property : entities.getDefinition(key.getEntityId()).getPrimaryKeyProperties()) {
-      propertyValues.put(property.getPropertyId().getName(), serializeValue(key.get(property), property));
+      propertyValues.put(property.getAttribute().getName(), serializeValue(key.get(property), property));
     }
 
     return propertyValues;
@@ -362,9 +362,9 @@ public final class EntityJSONParser {
   private JSONObject serializeOriginalValues(final Entity entity) {
     final JSONObject originalValues = new JSONObject();
     for (final Property property : entities.getDefinition(entity.getEntityId()).getProperties()) {
-      if (entity.isModified(property.getPropertyId()) && (!(property instanceof ForeignKeyProperty) || includeForeignKeyValues)) {
-        originalValues.put(property.getPropertyId().getName(),
-                serializeValue(entity.getOriginal(property.getPropertyId()), property));
+      if (entity.isModified(property.getAttribute()) && (!(property instanceof ForeignKeyProperty) || includeForeignKeyValues)) {
+        originalValues.put(property.getAttribute().getName(),
+                serializeValue(entity.getOriginal(property.getAttribute()), property));
       }
     }
 

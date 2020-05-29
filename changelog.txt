@@ -6138,3 +6138,4 @@
   DefaultEntity bug fixed, setForeignKeyValues() and setDenormalizedValues() used values.put() instead of this.put()
   Rest of modules updated according to the latest changes
   Attribute.id renamed name
+  Property.getPropertyId() renamed getAttribute()

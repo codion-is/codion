@@ -294,7 +294,7 @@ public abstract class DefaultEntities implements Entities {
         if (foreignEntity == null) {
           throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityId()
                   + "' referenced by entity '" + entityId + "' via foreign key property '"
-                  + foreignKeyProperty.getPropertyId() + "' has not been defined");
+                  + foreignKeyProperty.getAttribute() + "' has not been defined");
         }
         if (foreignEntity.getPrimaryKeyProperties().isEmpty()) {
           throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityId()
@@ -302,7 +302,7 @@ public abstract class DefaultEntities implements Entities {
         }
         if (foreignKeyProperty.getColumnProperties().size() != foreignEntity.getPrimaryKeyProperties().size()) {
           throw new IllegalArgumentException("Number of column properties in '" +
-                  entityId + "." + foreignKeyProperty.getPropertyId() +
+                  entityId + "." + foreignKeyProperty.getAttribute() +
                   "' does not match the number of foreign properties in the referenced entity '" +
                   foreignKeyProperty.getForeignEntityId() + "'");
         }
@@ -313,7 +313,7 @@ public abstract class DefaultEntities implements Entities {
   private void populateForeignDefinitions() {
     for (final DefaultEntityDefinition definition : entityDefinitions.values()) {
       for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
-        final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId = foreignKeyProperty.getPropertyId();
+        final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId = foreignKeyProperty.getAttribute();
         final EntityDefinition foreignDefinition = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
         if (foreignDefinition != null && !definition.hasForeignDefinition(foreignKeyPropertyId)) {
           definition.setForeignDefinition(foreignKeyPropertyId, foreignDefinition);
@@ -363,7 +363,7 @@ public abstract class DefaultEntities implements Entities {
         if (beanProperty != null && typeClass != null) {
           final Method getter = Util.getGetMethod(typeClass, beanProperty, beanClass);
           final Method setter = Util.getSetMethod(typeClass, beanProperty, beanClass);
-          map.put(property.getPropertyId(), new BeanProperty(getter, setter));
+          map.put(property.getAttribute(), new BeanProperty(getter, setter));
         }
       }
 

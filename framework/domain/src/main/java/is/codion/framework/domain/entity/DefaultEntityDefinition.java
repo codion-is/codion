@@ -695,21 +695,21 @@ final class DefaultEntityDefinition implements EntityDefinition {
       final Property property = propertyBuilder.get();
       checkIfUniquePropertyId(property, propertyMap);
       propertyBuilder.entityId(entityId);
-      propertyMap.put(property.getPropertyId(), property);
+      propertyMap.put(property.getAttribute(), property);
     }
 
     private void checkIfUniquePropertyId(final Property property, final Map<Attribute<?>, Property> propertyMap) {
-      if (propertyMap.containsKey(property.getPropertyId())) {
-        throw new IllegalArgumentException("Property with id " + property.getPropertyId()
+      if (propertyMap.containsKey(property.getAttribute())) {
+        throw new IllegalArgumentException("Property with id " + property.getAttribute()
                 + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
-                + " has already been defined as: " + propertyMap.get(property.getPropertyId()) + " in entity: " + entityId);
+                + " has already been defined as: " + propertyMap.get(property.getAttribute()) + " in entity: " + entityId);
       }
     }
 
     private Map<Attribute<? extends ForeignKeyValue>, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
       final Map<Attribute<? extends ForeignKeyValue>, ForeignKeyProperty> foreignKeyMap = new HashMap<>(foreignKeyProperties.size());
       foreignKeyProperties.forEach(foreignKeyProperty ->
-              foreignKeyMap.put(foreignKeyProperty.getPropertyId(), foreignKeyProperty));
+              foreignKeyMap.put(foreignKeyProperty.getAttribute(), foreignKeyProperty));
 
       return foreignKeyMap;
     }
@@ -718,7 +718,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
       final Map<Attribute<?>, List<ForeignKeyProperty>> foreignKeyMap = new HashMap<>();
       foreignKeyProperties.forEach(foreignKeyProperty ->
               foreignKeyProperty.getColumnProperties().forEach(columnProperty ->
-                      foreignKeyMap.computeIfAbsent(columnProperty.getPropertyId(),
+                      foreignKeyMap.computeIfAbsent(columnProperty.getAttribute(),
                               columnPropertyId -> new ArrayList<>()).add(foreignKeyProperty)));
 
       return foreignKeyMap;
@@ -726,7 +726,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private Map<Attribute<?>, ColumnProperty> initializePrimaryKeyPropertyMap() {
       final Map<Attribute<?>, ColumnProperty> map = new HashMap<>(this.primaryKeyProperties.size());
-      this.primaryKeyProperties.forEach(property -> map.put(property.getPropertyId(), property));
+      this.primaryKeyProperties.forEach(property -> map.put(property.getAttribute(), property));
 
       return unmodifiableMap(map);
     }

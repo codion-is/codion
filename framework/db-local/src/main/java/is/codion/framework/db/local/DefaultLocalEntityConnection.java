@@ -348,7 +348,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         for (final Map.Entry<Attribute<?>, Object> propertyValue : updateCondition.getPropertyValues().entrySet()) {
           final ColumnProperty columnProperty = entityDefinition.getColumnProperty(propertyValue.getKey());
           if (!columnProperty.isUpdatable()) {
-            throw new IllegalArgumentException("Property is not updatable: " + columnProperty.getPropertyId());
+            throw new IllegalArgumentException("Property is not updatable: " + columnProperty.getAttribute());
           }
           statementProperties.add(columnProperty);
           statementValues.add(columnProperty.validateType(propertyValue.getValue()));
@@ -607,7 +607,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     for (final ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
         final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getEntityId(),
-                foreignKeyReference.getPropertyId(), LIKE, entities));
+                foreignKeyReference.getAttribute(), LIKE, entities));
         if (!dependencies.isEmpty()) {
           dependencyMap.put(foreignKeyReference.getEntityId(), dependencies);
         }
@@ -695,7 +695,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     checkIfReadOnly(entityDefinition.getEntityId());
     final ColumnProperty blobProperty = entityDefinition.getColumnProperty(blobPropertyId);
     if (blobProperty.getColumnType() != Types.BLOB) {
-      throw new IllegalArgumentException("Property " + blobProperty.getPropertyId() + " in entity " +
+      throw new IllegalArgumentException("Property " + blobProperty.getAttribute() + " in entity " +
               primaryKey.getEntityId() + " does not have column type BLOB");
     }
     final WhereCondition whereCondition = whereCondition(condition(primaryKey), entityDefinition);
@@ -739,7 +739,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
     final ColumnProperty blobProperty = entityDefinition.getColumnProperty(blobPropertyId);
     if (blobProperty.getColumnType() != Types.BLOB) {
-      throw new IllegalArgumentException("Property " + blobProperty.getPropertyId() + " in entity " +
+      throw new IllegalArgumentException("Property " + blobProperty.getAttribute() + " in entity " +
               primaryKey.getEntityId() + " does not have column type BLOB");
     }
     PreparedStatement statement = null;
@@ -892,7 +892,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             getEntityDefinition(entities.get(0).getEntityId()).getForeignKeyProperties();
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       final ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
-      Integer conditionFetchDepthLimit = condition.getForeignKeyFetchDepth(foreignKeyProperty.getPropertyId());
+      Integer conditionFetchDepthLimit = condition.getForeignKeyFetchDepth(foreignKeyProperty.getAttribute());
       if (conditionFetchDepthLimit == null) {//use the default one
         conditionFetchDepthLimit = foreignKeyProperty.getFetchDepth();
       }
@@ -1103,7 +1103,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
       });
 
-      return writableAndPrimaryKeyProperties.stream().map(Property::getPropertyId).toArray(Attribute<?>[]::new);
+      return writableAndPrimaryKeyProperties.stream().map(Property::getAttribute).toArray(Attribute<?>[]::new);
     });
   }
 

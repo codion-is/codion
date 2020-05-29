@@ -282,7 +282,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       final LookupSettings lookupSettings = propertyLookupSettings.get(lookupProperty);
       for (final String rawLookupText : lookupTexts) {
         final String lookupText = prepareLookupText(rawLookupText, lookupSettings);
-        final PropertyCondition condition = propertyCondition(lookupProperty.getPropertyId(),
+        final PropertyCondition condition = propertyCondition(lookupProperty.getAttribute(),
                 Operator.LIKE, lookupText).setCaseSensitive(lookupSettings.getCaseSensitiveValue().get());
         baseCondition.add(condition);
       }
