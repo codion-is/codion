@@ -12,7 +12,6 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.ForeignKeyValue;
 import is.codion.framework.domain.property.MirrorProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
@@ -252,7 +251,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean isLoaded(final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId) {
+  public boolean isLoaded(final Attribute<Entity> foreignKeyPropertyId) {
     return values.get(definition.getForeignKeyProperty(foreignKeyPropertyId)) != null;
   }
 

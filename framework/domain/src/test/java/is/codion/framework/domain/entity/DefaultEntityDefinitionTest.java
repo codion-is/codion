@@ -7,7 +7,6 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.DerivedProperty;
-import is.codion.framework.domain.property.ForeignKeyValue;
 import is.codion.framework.domain.property.Properties;
 
 import org.junit.jupiter.api.Test;
@@ -75,7 +74,7 @@ public class DefaultEntityDefinitionTest {
         define("test.composite_key_master",
                 Properties.columnProperty(first, Types.INTEGER).primaryKeyIndex(0),
                 Properties.columnProperty(second, Types.INTEGER).primaryKeyIndex(1));
-        final Attribute<ForeignKeyValue> reference_fk = attribute("reference_fk");
+        final Attribute<Entity> reference_fk = attribute("reference_fk");
         final Attribute<?> reference = attribute("reference");
         define("test.composite_reference",
                 Properties.foreignKeyProperty(reference_fk, null, "test.composite_key_master",

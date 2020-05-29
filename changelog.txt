@@ -6139,3 +6139,4 @@
   Rest of modules updated according to the latest changes
   Attribute.id renamed name
   Property.getPropertyId() renamed getAttribute()
+  ForeignKeyValue removed

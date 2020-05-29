@@ -10,7 +10,6 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.ForeignKeyValue;
 import is.codion.framework.domain.property.MirrorProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
@@ -393,7 +392,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public ForeignKeyProperty getForeignKeyProperty(final Attribute<? extends ForeignKeyValue> propertyId) {
+  public ForeignKeyProperty getForeignKeyProperty(final Attribute<Entity> propertyId) {
     final ForeignKeyProperty property = entityProperties.foreignKeyPropertyMap.get(propertyId);
     if (property == null) {
       throw new IllegalArgumentException("Foreign key property with id: " + propertyId + " not found in entity of type: " + entityId);
@@ -593,7 +592,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
    * @throws IllegalStateException in case the foreign definition has already been set
    * @throws IllegalArgumentException in case the definition does not match the foreign key
    */
-  void setForeignDefinition(final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId, final EntityDefinition definition) {
+  void setForeignDefinition(final Attribute<Entity> foreignKeyPropertyId, final EntityDefinition definition) {
     requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
     requireNonNull(definition, "definition");
     final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKeyPropertyId);
@@ -644,7 +643,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private final List<ColumnProperty> primaryKeyProperties;
     private final Map<Attribute<?>, ColumnProperty> primaryKeyPropertyMap;
     private final List<ForeignKeyProperty> foreignKeyProperties;
-    private final Map<Attribute<? extends ForeignKeyValue>, ForeignKeyProperty> foreignKeyPropertyMap;
+    private final Map<Attribute<Entity>, ForeignKeyProperty> foreignKeyPropertyMap;
     private final Map<Attribute<?>, List<ForeignKeyProperty>> columnPropertyForeignKeyProperties;
     private final Map<Attribute<?>, Set<DerivedProperty>> derivedProperties;
     private final List<TransientProperty> transientProperties;
@@ -706,8 +705,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
       }
     }
 
-    private Map<Attribute<? extends ForeignKeyValue>, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
-      final Map<Attribute<? extends ForeignKeyValue>, ForeignKeyProperty> foreignKeyMap = new HashMap<>(foreignKeyProperties.size());
+    private Map<Attribute<Entity>, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
+      final Map<Attribute<Entity>, ForeignKeyProperty> foreignKeyMap = new HashMap<>(foreignKeyProperties.size());
       foreignKeyProperties.forEach(foreignKeyProperty ->
               foreignKeyMap.put(foreignKeyProperty.getAttribute(), foreignKeyProperty));
 

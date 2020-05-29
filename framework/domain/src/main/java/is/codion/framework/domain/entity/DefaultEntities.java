@@ -6,7 +6,6 @@ package is.codion.framework.domain.entity;
 import is.codion.common.Util;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.ForeignKeyValue;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
@@ -313,7 +312,7 @@ public abstract class DefaultEntities implements Entities {
   private void populateForeignDefinitions() {
     for (final DefaultEntityDefinition definition : entityDefinitions.values()) {
       for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
-        final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId = foreignKeyProperty.getAttribute();
+        final Attribute<Entity> foreignKeyPropertyId = foreignKeyProperty.getAttribute();
         final EntityDefinition foreignDefinition = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
         if (foreignDefinition != null && !definition.hasForeignDefinition(foreignKeyPropertyId)) {
           definition.setForeignDefinition(foreignKeyPropertyId, foreignDefinition);

@@ -7,7 +7,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.ForeignKeyValue;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
@@ -17,7 +16,7 @@ import java.util.Set;
 /**
  * Represents a row in a database table.
  */
-public interface Entity extends ForeignKeyValue, Comparable<Entity>, Serializable {
+public interface Entity extends Comparable<Entity>, Serializable {
 
   /**
    * @return the  entityId
@@ -186,7 +185,7 @@ public interface Entity extends ForeignKeyValue, Comparable<Entity>, Serializabl
    * @param foreignKeyPropertyId the property id
    * @return true if the reference entity has been loaded
    */
-  boolean isLoaded(Attribute<? extends ForeignKeyValue> foreignKeyPropertyId);
+  boolean isLoaded(Attribute<Entity> foreignKeyPropertyId);
 
   /**
    * @param property the property for which to retrieve the color

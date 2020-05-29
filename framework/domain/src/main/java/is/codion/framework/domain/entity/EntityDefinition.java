@@ -11,7 +11,6 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.ForeignKeyValue;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
 
@@ -341,7 +340,7 @@ public interface EntityDefinition extends Serializable {
    * @return the Property.ForeignKeyProperty with the given propertyId
    * @throws IllegalArgumentException in case no such property exists
    */
-  ForeignKeyProperty getForeignKeyProperty(Attribute<? extends ForeignKeyValue> propertyId);
+  ForeignKeyProperty getForeignKeyProperty(Attribute<Entity> propertyId);
 
   /**
    * @param columnPropertyId the column property id

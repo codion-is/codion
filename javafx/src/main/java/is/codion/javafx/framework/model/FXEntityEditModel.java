@@ -9,7 +9,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.ForeignKeyValue;
 import is.codion.framework.model.DefaultEntityEditModel;
 
 import java.util.HashMap;
@@ -52,7 +51,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key property
    * @see #createForeignKeyListModel(ForeignKeyProperty)
    */
-  public final FXEntityListModel getForeignKeyListModel(final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId) {
+  public final FXEntityListModel getForeignKeyListModel(final Attribute<Entity> foreignKeyPropertyId) {
     return getForeignKeyListModel(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
   }
 

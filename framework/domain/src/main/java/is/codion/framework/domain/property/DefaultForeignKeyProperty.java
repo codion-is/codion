@@ -33,7 +33,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
    * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnProperty the underlying column property comprising this foreign key
    */
-  DefaultForeignKeyProperty(final Attribute<? extends ForeignKeyValue> propertyId, final String caption,
+  DefaultForeignKeyProperty(final Attribute<Entity> propertyId, final String caption,
                             final String foreignEntityId, final ColumnProperty.Builder columnProperty) {
     this(propertyId, caption, foreignEntityId, singletonList(columnProperty));
   }
@@ -44,7 +44,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
    * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnPropertyBuilders the underlying column properties comprising this foreign key
    */
-  DefaultForeignKeyProperty(final Attribute<? extends ForeignKeyValue> propertyId, final String caption,
+  DefaultForeignKeyProperty(final Attribute<Entity> propertyId, final String caption,
                             final String foreignEntityId, final List<ColumnProperty.Builder> columnPropertyBuilders) {
     super(propertyId, Types.OTHER, caption, Entity.class);
     requireNonNull(foreignEntityId, "foreignEntityId");

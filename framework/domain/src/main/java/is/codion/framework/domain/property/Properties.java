@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.item.Item;
+import is.codion.framework.domain.entity.Entity;
 
 import java.sql.Types;
 import java.text.Collator;
@@ -83,7 +84,7 @@ public final class Properties {
    * column property comprising this foreign key relation
    * @return a new {@link ForeignKeyProperty.Builder}
    */
-  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<? extends ForeignKeyValue> propertyId,
+  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> propertyId,
                                                               final String caption, final String foreignEntityId,
                                                               final ColumnProperty.Builder columnPropertyBuilder) {
     return new DefaultForeignKeyProperty(propertyId, caption, foreignEntityId, columnPropertyBuilder).builder();
@@ -99,7 +100,7 @@ public final class Properties {
    * they reference appear in the the referenced entities primary key
    * @return a new {@link ForeignKeyProperty.Builder}
    */
-  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<? extends ForeignKeyValue> propertyId,
+  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> propertyId,
                                                               final String caption, final String foreignEntityId,
                                                               final List<ColumnProperty.Builder> columnPropertyBuilders) {
     return new DefaultForeignKeyProperty(propertyId, caption, foreignEntityId, columnPropertyBuilders).builder();
@@ -115,10 +116,10 @@ public final class Properties {
    * @return a new {@link TransientProperty.Builder}
    */
   public static TransientProperty.Builder denormalizedViewProperty(final Attribute<?> propertyId,
-                                                                   final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId,
+                                                                   final Attribute<Entity> foreignKeyPropertyId,
                                                                    final Property property, final String caption) {
     final DerivedProperty.Provider valueProvider = linkedValues -> {
-      final ForeignKeyValue foreignKeyValue = (ForeignKeyValue) linkedValues.get(foreignKeyPropertyId);
+      final Entity foreignKeyValue = (Entity) linkedValues.get(foreignKeyPropertyId);
 
       return foreignKeyValue == null ? null : foreignKeyValue.get(property);
     };
@@ -152,7 +153,7 @@ public final class Properties {
    * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder denormalizedProperty(final Attribute<?> propertyId,
-                                                            final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId,
+                                                            final Attribute<Entity> foreignKeyPropertyId,
                                                             final Property denormalizedProperty) {
     return denormalizedProperty(propertyId, foreignKeyPropertyId, denormalizedProperty, null);
   }
@@ -167,7 +168,7 @@ public final class Properties {
    * @return a new {@link ColumnProperty.Builder}
    */
   public static ColumnProperty.Builder denormalizedProperty(final Attribute<?> propertyId,
-                                                            final Attribute<? extends ForeignKeyValue> foreignKeyPropertyId,
+                                                            final Attribute<Entity> foreignKeyPropertyId,
                                                             final Property denormalizedProperty, final String caption) {
     return new DefaultDenormalizedProperty(propertyId, foreignKeyPropertyId, denormalizedProperty, caption).builder();
   }
