@@ -6131,3 +6131,4 @@
   EmpDept demo module updated according to the latest changes
   Petclinic demo module updated according to the latest changes
   Petstore demo module updated according to the latest changes
+  SchemaBrowser demo module updated according to the latest changes
