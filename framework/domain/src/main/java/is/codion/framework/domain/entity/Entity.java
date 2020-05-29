@@ -50,7 +50,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param property the property
    * @return the value mapped to the given property, null if no such mapping exists
    */
-  Object get(Property property);
+  <T> T get(Property<T> property);
 
   /**
    * Returns the original value associated with the property based on {@code attribute}.
@@ -65,7 +65,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param property the property for which to retrieve the original value
    * @return the original value
    */
-  Object getOriginal(Property property);
+  <T> T getOriginal(Property<T> property);
 
   /**
    * This method returns a String representation of the value associated with the given attribute,
@@ -73,7 +73,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param attribute the attribute for which to retrieve the value
    * @return a String representation of the value of {@code attribute}
    */
-  String getAsString(Attribute<?> attribute);
+  <T> String getAsString(Attribute<T> attribute);
 
   /**
    * Retrieves a string representation of the value mapped to the given property, an empty string is returned
@@ -81,7 +81,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param property the property
    * @return the value mapped to the given property as a string, an empty string if null
    */
-  String getAsString(Property property);
+  <T> String getAsString(Property<T> property);
 
   /**
    * Returns the Entity instance referenced by the given foreign key attribute.
@@ -141,7 +141,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param value the value
    * @return the previous value mapped to the given property
    */
-  Object put(Property property, Object value);
+  <T> T put(Property<T> property, T value);
 
   /**
    * Removes the given property and value from this value map along with the original value if any.
@@ -149,7 +149,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param property the property to remove
    * @return the value that was removed, null if no value was found
    */
-  Object remove(Property property);
+  <T> T remove(Property<T> property);
 
   /**
    * @param attribute the attribute
@@ -194,7 +194,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param property the property for which to retrieve the color
    * @return the color to use when displaying this property in a table
    */
-  Object getColor(Property property);
+  Object getColor(Property<?> property);
 
   /**
    * Reverts the value associated with the given attribute to its original value.
@@ -208,7 +208,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * If the value has not been modified or the property is not found then calling this method has no effect.
    * @param property the property for which to revert the value
    */
-  void revert(Property property);
+  <T> void revert(Property<T> property);
 
   /**
    * Saves the value associated with the given attribute, that is, removes the original value.
@@ -222,7 +222,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * If no original value exists calling this method has no effect.
    * @param property the property for which to save the value
    */
-  void save(Property property);
+  void save(Property<?> property);
 
   /**
    * Saves all the value modifications that have been made.
@@ -250,7 +250,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param property the property
    * @return true if the value mapped to the given property is null
    */
-  boolean isNull(Property property);
+  boolean isNull(Property<?> property);
 
   /**
    * Returns true if a this Entity contains a non-null value mapped to the given attribute
@@ -265,7 +265,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param property the property
    * @return true if the value mapped to the given property is not null
    */
-  boolean isNotNull(Property property);
+  boolean isNotNull(Property<?> property);
 
   /**
    * Returns true if this Entity contains a value for the given attribute, that value can be null.
@@ -279,17 +279,17 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param property the property
    * @return true if a value is mapped to this property
    */
-  boolean containsKey(Property property);
+  boolean containsKey(Property<?> property);
 
   /**
    * @return an unmodifiable view of the keys mapping the values in this Entity
    */
-  Set<Property> keySet();
+  Set<Property<?>> keySet();
 
   /**
    * @return an unmodifiable view of the keys mapping the original values in this Entity
    */
-  Set<Property> originalKeySet();
+  Set<Property<?>> originalKeySet();
 
   /**
    * @return the number of values in this map
@@ -315,7 +315,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param property the property
    * @return true if the value has changed
    */
-  boolean isModified(Property property);
+  boolean isModified(Property<?> property);
 
   /**
    * Adds a listener notified each time a value changes
@@ -344,7 +344,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
     /**
      * @return a List containing the properties comprising this key
      */
-    List<ColumnProperty> getProperties();
+    List<ColumnProperty<?>> getProperties();
 
     /**
      * @return true if this key contains no values or if it contains a null value for a non-nullable key property
@@ -383,7 +383,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
     /**
      * @return the first key property, useful for single property keys
      */
-    ColumnProperty getFirstProperty();
+    ColumnProperty<?> getFirstProperty();
 
     /**
      * @return the first value contained in this key, useful for single property keys
@@ -403,7 +403,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
      * @param value the value to associate with the property
      * @return the previous value
      */
-    Object put(ColumnProperty property, Object value);
+    <T> T put(ColumnProperty<T> property, T value);
 
     /**
      * @param attribute the attribute
@@ -416,7 +416,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
      * @param property the property
      * @return the value associated with the given property
      */
-    Object get(ColumnProperty property);
+    <T> T get(ColumnProperty<T> property);
 
     /**
      * After a call to this method this Key contains the same values as the source key.

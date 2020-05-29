@@ -92,9 +92,9 @@ public final class EntitiesTest {
     current.put(TestDomain.DEPARTMENT_LOCATION, "Location");
     current.put(TestDomain.DEPARTMENT_NAME, "Name");
 
-    final Property departmentId = entities.getDefinition(TestDomain.T_DEPARTMENT).getProperty(TestDomain.DEPARTMENT_ID);
-    final Property departmentLocation = entities.getDefinition(TestDomain.T_DEPARTMENT).getProperty(TestDomain.DEPARTMENT_LOCATION);
-    final Property departmentName = entities.getDefinition(TestDomain.T_DEPARTMENT).getProperty(TestDomain.DEPARTMENT_NAME);
+    final Property<Integer> departmentId = entities.getDefinition(TestDomain.T_DEPARTMENT).getProperty(TestDomain.DEPARTMENT_ID);
+    final Property<String> departmentLocation = entities.getDefinition(TestDomain.T_DEPARTMENT).getProperty(TestDomain.DEPARTMENT_LOCATION);
+    final Property<String> departmentName = entities.getDefinition(TestDomain.T_DEPARTMENT).getProperty(TestDomain.DEPARTMENT_NAME);
 
     assertFalse(Entities.isValueMissingOrModified(current, entity, departmentId));
     assertFalse(Entities.isValueMissingOrModified(current, entity, departmentLocation));
@@ -151,7 +151,7 @@ public final class EntitiesTest {
     final Entity emp2 = entities.copyEntity(emp1);
     emp2.put(TestDomain.EMP_DATA, modifiedBytes);
 
-    List<ColumnProperty> modifiedProperties = Entities.getModifiedColumnProperties(emp1, emp2);
+    List<ColumnProperty<?>> modifiedProperties = Entities.getModifiedColumnProperties(emp1, emp2);
     assertTrue(modifiedProperties.contains(entities.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_DATA)));
 
     //lazy loaded blob
@@ -347,17 +347,17 @@ public final class EntitiesTest {
   @Test
   public void putNull() {
     final Entity dept = entities.entity(TestDomain.T_DEPARTMENT);
-    for (final Property property : entities.getDefinition(TestDomain.T_DEPARTMENT).getProperties()) {
+    for (final Property<?> property : entities.getDefinition(TestDomain.T_DEPARTMENT).getProperties()) {
       assertFalse(dept.containsKey(property));
       assertTrue(dept.isNull(property));
       assertFalse(dept.isNotNull(property));
     }
-    for (final Property property : entities.getDefinition(TestDomain.T_DEPARTMENT).getProperties()) {
+    for (final Property<?> property : entities.getDefinition(TestDomain.T_DEPARTMENT).getProperties()) {
       dept.put(property, null);
     }
     //putting nulls should not have an effect
     assertFalse(dept.isModified());
-    for (final Property property : entities.getDefinition(TestDomain.T_DEPARTMENT).getProperties()) {
+    for (final Property<?> property : entities.getDefinition(TestDomain.T_DEPARTMENT).getProperties()) {
       assertTrue(dept.containsKey(property));
       assertTrue(dept.isNull(property));
       assertFalse(dept.isNotNull(property));

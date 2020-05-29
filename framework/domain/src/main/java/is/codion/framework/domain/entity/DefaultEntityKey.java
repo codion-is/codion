@@ -24,7 +24,7 @@ final class DefaultEntityKey implements Entity.Key {
   /**
    * Holds the values contained in this key.
    */
-  private Map<ColumnProperty, Object> values;
+  private Map<ColumnProperty<?>, Object> values;
 
   /**
    * true if this key consists of a single integer value
@@ -83,9 +83,9 @@ final class DefaultEntityKey implements Entity.Key {
    * @param definition the entity definition
    * @throws IllegalArgumentException in case the entity has no primary key
    */
-  DefaultEntityKey(final EntityDefinition definition, final Map<ColumnProperty, Object> values) {
+  DefaultEntityKey(final EntityDefinition definition, final Map<ColumnProperty<?>, Object> values) {
     this.values = values == null ? new HashMap<>() : new HashMap<>(values);
-    final List<ColumnProperty> properties = definition.getPrimaryKeyProperties();
+    final List<ColumnProperty<?>> properties = definition.getPrimaryKeyProperties();
     if (properties.isEmpty()) {
       throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
     }
@@ -100,12 +100,12 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   @Override
-  public List<ColumnProperty> getProperties() {
+  public List<ColumnProperty<?>> getProperties() {
     return definition.getPrimaryKeyProperties();
   }
 
   @Override
-  public ColumnProperty getFirstProperty() {
+  public ColumnProperty<?> getFirstProperty() {
     return definition.getPrimaryKeyProperties().get(0);
   }
 
@@ -120,9 +120,9 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   @Override
-  public Object put(final ColumnProperty property, final Object value) {
-    final Object newValue = property.prepareValue(property.validateType(value));
-    final Object previousValue = values.put(property, newValue);
+  public <T> T put(final ColumnProperty<T> property, final T value) {
+    final T newValue = property.prepareValue(property.validateType(value));
+    final T previousValue = (T) values.put(property, newValue);
     onValuePut(property, newValue, previousValue);
 
     return newValue;
@@ -134,16 +134,16 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   @Override
-  public Object get(final ColumnProperty property) {
-    return values.get(property);
+  public <T> T get(final ColumnProperty<T> property) {
+    return (T) values.get(property);
   }
 
   @Override
   public String toString() {
     final StringBuilder stringBuilder = new StringBuilder();
-    final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+    final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
-      final ColumnProperty property = primaryKeyProperties.get(i);
+      final ColumnProperty<?> property = primaryKeyProperties.get(i);
       stringBuilder.append(property.getAttribute()).append(":").append(values.get(property));
       if (i < getPropertyCount() - 1) {
         stringBuilder.append(",");
@@ -245,7 +245,7 @@ final class DefaultEntityKey implements Entity.Key {
     hashCodeDirty = true;
   }
 
-  private void onValuePut(final ColumnProperty property, final Object value, final Object previousValue) {
+  private <T> void onValuePut(final ColumnProperty<T> property, final T value, final Object previousValue) {
     if (singleIntegerKey) {
       setHashCode((Integer) value);
     }
@@ -282,9 +282,9 @@ final class DefaultEntityKey implements Entity.Key {
 
   private Integer computeMultipleValueHashCode() {
     int hash = 0;
-    final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+    final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
-      final ColumnProperty property = primaryKeyProperties.get(i);
+      final ColumnProperty<?> property = primaryKeyProperties.get(i);
       final Object value = values.get(property);
       if (!property.isNullable() && value == null) {
         return null;
@@ -320,7 +320,7 @@ final class DefaultEntityKey implements Entity.Key {
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getDomainId());
     stream.writeObject(definition.getEntityId());
-    final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+    final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
       stream.writeObject(values.get(primaryKeyProperties.get(i)));
     }
@@ -334,26 +334,26 @@ final class DefaultEntityKey implements Entity.Key {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
     }
     values = new HashMap<>();
-    final List<ColumnProperty> properties = definition.getPrimaryKeyProperties();
+    final List<ColumnProperty<?>> properties = definition.getPrimaryKeyProperties();
     compositeKey = properties.size() > 1;
     singleIntegerKey = !compositeKey && properties.get(0).isInteger();
     hashCodeDirty = true;
     for (int i = 0; i < properties.size(); i++) {
-      final ColumnProperty property = properties.get(i);
+      final ColumnProperty<Object> property = (ColumnProperty<Object>) properties.get(i);
       values.put(property, property.validateType(stream.readObject()));
     }
   }
 
-  private static Map<ColumnProperty, Object> createSingleValueMap(final EntityDefinition definition, final Object value) {
-    final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+  private static Map<ColumnProperty<?>, Object> createSingleValueMap(final EntityDefinition definition, final Object value) {
+    final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     if (primaryKeyProperties.isEmpty()) {
       throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
     }
     if (primaryKeyProperties.size() > 1) {
       throw new IllegalArgumentException(definition.getEntityId() + " has a composite primary key");
     }
-    final ColumnProperty keyProperty = primaryKeyProperties.get(0);
-    final Map<ColumnProperty, Object> values = new HashMap<>(1);
+    final ColumnProperty<Object> keyProperty = (ColumnProperty<Object>) primaryKeyProperties.get(0);
+    final Map<ColumnProperty<?>, Object> values = new HashMap<>(1);
     values.put(keyProperty, keyProperty.validateType(value));
 
     return values;

@@ -3,13 +3,13 @@
  */
 package is.codion.framework.domain.property;
 
-class DefaultAuditProperty extends DefaultColumnProperty implements AuditProperty {
+class DefaultAuditProperty<T> extends DefaultColumnProperty<T> implements AuditProperty<T> {
 
   private static final long serialVersionUID = 1;
 
   private final AuditAction auditAction;
 
-  DefaultAuditProperty(final Attribute<?> attribute, final int type, final AuditAction auditAction, final String caption) {
+  DefaultAuditProperty(final Attribute<T> attribute, final int type, final AuditAction auditAction, final String caption) {
     super(attribute, type, caption);
     this.auditAction = auditAction;
     super.setInsertable(false);

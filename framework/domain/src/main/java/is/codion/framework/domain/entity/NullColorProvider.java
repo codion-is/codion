@@ -12,7 +12,7 @@ final class NullColorProvider implements ColorProvider, Serializable {
   private static final long serialVersionUID = 1;
 
   @Override
-  public Object getColor(final Entity entity, final Property property) {
+  public Object getColor(final Entity entity, final Property<?> property) {
     return null;
   }
 }

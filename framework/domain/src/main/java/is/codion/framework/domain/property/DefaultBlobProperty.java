@@ -5,13 +5,13 @@ package is.codion.framework.domain.property;
 
 import java.sql.Types;
 
-final class DefaultBlobProperty extends DefaultColumnProperty implements BlobProperty {
+final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements BlobProperty {
 
   private static final long serialVersionUID = 1;
 
   private boolean eagerlyLoaded = false;
 
-  DefaultBlobProperty(final Attribute<?> attribute, final String caption) {
+  DefaultBlobProperty(final Attribute<byte[]> attribute, final String caption) {
     super(attribute, Types.BLOB, caption);
     builder().hidden(true);
   }
@@ -29,7 +29,7 @@ final class DefaultBlobProperty extends DefaultColumnProperty implements BlobPro
     return new DefaultBlobPropertyBuilder(this);
   }
 
-  static final class DefaultBlobPropertyBuilder extends DefaultColumnPropertyBuilder implements BlobProperty.Builder {
+  static final class DefaultBlobPropertyBuilder extends DefaultColumnPropertyBuilder<byte[]> implements BlobProperty.Builder {
 
     private final DefaultBlobProperty blobProperty;
 

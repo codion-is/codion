@@ -39,7 +39,7 @@ public final class DefaultEntityLookupModelTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private EntityLookupModel lookupModel;
-  private Collection<ColumnProperty> lookupProperties;
+  private Collection<ColumnProperty<?>> lookupProperties;
 
   @Test
   public void constructorNullEntityId() {

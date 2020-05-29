@@ -279,7 +279,7 @@ public final class Conditions {
     }
     if (condition instanceof PropertyCondition) {
       final PropertyCondition propertyCondition = (PropertyCondition) condition;
-      final Property property = definition.getProperty(propertyCondition.getAttribute());
+      final Property<?> property = definition.getProperty(propertyCondition.getAttribute());
       if (property instanceof ForeignKeyProperty) {
         return foreignKeyCondition((ForeignKeyProperty) property, propertyCondition.getOperator(),
                 propertyCondition.getValues());
@@ -289,7 +289,7 @@ public final class Conditions {
     return condition;
   }
 
-  private static Condition compositeKeyCondition(final List<Entity.Key> keys, final List<ColumnProperty> properties,
+  private static Condition compositeKeyCondition(final List<Entity.Key> keys, final List<ColumnProperty<?>> properties,
                                                  final Operator operator) {
     if (keys.size() == 1) {
       return singleCompositeCondition(properties, operator, keys.get(0));
@@ -309,7 +309,7 @@ public final class Conditions {
   }
 
   /** Assumes {@code keys} is not empty. */
-  private static Condition multipleCompositeCondition(final List<ColumnProperty> properties, final Operator operator,
+  private static Condition multipleCompositeCondition(final List<ColumnProperty<?>> properties, final Operator operator,
                                                       final List<Entity.Key> keys) {
     final Condition.Combination conditionCombination = combination(OR);
     for (int i = 0; i < keys.size(); i++) {
@@ -319,7 +319,7 @@ public final class Conditions {
     return conditionCombination;
   }
 
-  private static Condition singleCompositeCondition(final List<ColumnProperty> properties, final Operator operator,
+  private static Condition singleCompositeCondition(final List<ColumnProperty<?>> properties, final Operator operator,
                                                     final Entity.Key entityKey) {
     final Condition.Combination conditionCombination = combination(AND);
     for (int i = 0; i < properties.size(); i++) {

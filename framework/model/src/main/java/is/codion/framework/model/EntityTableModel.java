@@ -229,7 +229,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return an Object representing the background color for this row and property, specified by the row entity
    * @see EntityDefinition.Builder#colorProvider(ColorProvider)
    */
-  Object getPropertyBackgroundColor(int row, Property property);
+  Object getPropertyBackgroundColor(int row, Property<?> property);
 
   /**
    * @param attribute the attribute

@@ -28,7 +28,7 @@ final class Queries {
    * @param insertProperties the properties used to insert the given entity type
    * @return a query for inserting
    */
-  static String insertQuery(final String tableName, final List<ColumnProperty> insertProperties) {
+  static String insertQuery(final String tableName, final List<ColumnProperty<?>> insertProperties) {
     final StringBuilder queryBuilder = new StringBuilder("insert ").append("into ").append(tableName).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
     for (int i = 0; i < insertProperties.size(); i++) {
@@ -49,7 +49,7 @@ final class Queries {
    * @param whereClause the where clause, without the WHERE keyword
    * @return a query for updating
    */
-  static String updateQuery(final String tableName, final List<ColumnProperty> updateProperties,
+  static String updateQuery(final String tableName, final List<ColumnProperty<?>> updateProperties,
                             final String whereClause) {
     final StringBuilder queryBuilder = new StringBuilder("update ").append(tableName).append(" set ");
     for (int i = 0; i < updateProperties.size(); i++) {
@@ -132,12 +132,12 @@ final class Queries {
     return queryBuilder.toString();
   }
 
-  static String columnsClause(final List<ColumnProperty> columnProperties) {
+  static String columnsClause(final List<ColumnProperty<?>> columnProperties) {
     final StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < columnProperties.size(); i++) {
-      final ColumnProperty property = columnProperties.get(i);
+      final ColumnProperty<?> property = columnProperties.get(i);
       if (property instanceof SubqueryProperty) {
-        stringBuilder.append("(").append(((SubqueryProperty) property).getSubQuery())
+        stringBuilder.append("(").append(((SubqueryProperty<?>) property).getSubQuery())
                 .append(") as ").append(property.getColumnName());
       }
       else {

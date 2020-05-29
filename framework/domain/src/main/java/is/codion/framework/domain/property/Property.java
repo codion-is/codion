@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 /**
  * Specifies a Property.
  */
-public interface Property extends Serializable {
+public interface Property<T> extends Serializable {
 
   int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
   int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
@@ -98,7 +98,7 @@ public interface Property extends Serializable {
   /**
    * @return the Class representing the values of this attribute
    */
-  Class getTypeClass();
+  Class<T> getTypeClass();
 
   /**
    * @return the bean property name associated with this property
@@ -110,7 +110,7 @@ public interface Property extends Serializable {
    * @return the value
    * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this property
    */
-  Object validateType(Object value);
+  T validateType(T value);
 
   /**
    * Prepares the value according to the property configuration, such as rounding
@@ -118,7 +118,7 @@ public interface Property extends Serializable {
    * @param value the value to prepare
    * @return the prepared value
    */
-  Object prepareValue(Object value);
+  T prepareValue(T value);
 
   /**
    * Returns a value formatted with this property's format. If no format is specified {@link Object#toString()} is used.
@@ -128,7 +128,7 @@ public interface Property extends Serializable {
    * @see Property.Builder#format(Format)
    * @see Property.Builder#dateTimeFormatPattern(String)
    */
-  String formatValue(Object value);
+  String formatValue(T value);
 
   /**
    * @param attribute the attribute
@@ -140,7 +140,7 @@ public interface Property extends Serializable {
    * @param property the property
    * @return true if this property is of the given type
    */
-  boolean is(Property property);
+  boolean is(Property<?> property);
 
   /**
    * @return the data type ({@link java.sql.Types}) of the value of this property
@@ -302,60 +302,60 @@ public interface Property extends Serializable {
   /**
    * Builds a Property instance
    */
-  interface Builder {
+  interface Builder<T> {
 
     /**
      * @return the property
      */
-    Property get();
+    Property<T> get();
 
     /**
      * @param entityId the id of the entity this property is associated with
      * @throws IllegalStateException in case the entityId has already been set
      * @return this instance
      */
-    Property.Builder entityId(String entityId);
+    Property.Builder<T> entityId(String entityId);
 
     /**
      * Sets the bean name property to associate with this property
      * @param beanProperty the bean property name
      * @return this instance
      */
-    Property.Builder beanProperty(String beanProperty);
+    Property.Builder<T> beanProperty(String beanProperty);
 
     /**
      * Sets the default value for this property, overrides the underlying column default value, if any
      * @param defaultValue the value to use as default
      * @return this instance
      */
-    Property.Builder defaultValue(Object defaultValue);
+    Property.Builder<T> defaultValue(T defaultValue);
 
     /**
      * Sets the default value supplier, use in case of dynamic default values.
      * @param supplier the default value supplier
      * @return this instance
      */
-    Property.Builder defaultValueSupplier(Supplier<Object> supplier);
+    Property.Builder<T> defaultValueSupplier(Supplier<T> supplier);
 
     /**
      * @param hidden specifies whether this property should hidden in table views
      * @return this instance
      */
-    Property.Builder hidden(boolean hidden);
+    Property.Builder<T> hidden(boolean hidden);
 
     /**
      * Sets the maximum allowed value for this property, only applicable to numerical properties
      * @param maximumValue the maximum allowed value
      * @return this instance
      */
-    Property.Builder maximumValue(double maximumValue);
+    Property.Builder<T> maximumValue(double maximumValue);
 
     /**
      * Only applicable to numerical properties
      * @param minimumValue the minimum allowed value for this property
      * @return this instance
      */
-    Property.Builder minimumValue(double minimumValue);
+    Property.Builder<T> minimumValue(double minimumValue);
 
     /**
      * Sets the maximum fraction digits to show for this property, only applicable to properties based on Types.DOUBLE.
@@ -364,14 +364,14 @@ public interface Property extends Serializable {
      * @param maximumFractionDigits the maximum fraction digits
      * @return this instance
      */
-    Property.Builder maximumFractionDigits(int maximumFractionDigits);
+    Property.Builder<T> maximumFractionDigits(int maximumFractionDigits);
 
     /**
      * Sets the rounding mode to use when working with BigDecimal
      * @param bigDecimalRoundingMode the rounding mode
      * @return this instance
      */
-    Property.Builder bigDecimalRoundingMode(RoundingMode bigDecimalRoundingMode);
+    Property.Builder<T> bigDecimalRoundingMode(RoundingMode bigDecimalRoundingMode);
 
     /**
      * Specifies whether to use number grouping when presenting the value associated with this property.
@@ -382,13 +382,13 @@ public interface Property extends Serializable {
      * @param numberFormatGrouping if true then number grouping is used
      * @return this instance
      */
-    Property.Builder numberFormatGrouping(boolean numberFormatGrouping);
+    Property.Builder<T> numberFormatGrouping(boolean numberFormatGrouping);
 
     /**
      * @param preferredColumnWidth the preferred column width of this property in pixels when displayed in a table
      * @return this instance
      */
-    Property.Builder preferredColumnWidth(int preferredColumnWidth);
+    Property.Builder<T> preferredColumnWidth(int preferredColumnWidth);
 
     /**
      * Specifies whether or not this property is nullable, in case of
@@ -396,27 +396,27 @@ public interface Property extends Serializable {
      * @param nullable specifies whether or not this property accepts a null value
      * @return this instance
      */
-    Property.Builder nullable(boolean nullable);
+    Property.Builder<T> nullable(boolean nullable);
 
     /**
      * Sets the maximum length of this property value, this applies to String (varchar) based properties
      * @param maxLength the maximum length
      * @return this instance
      */
-    Property.Builder maximumLength(int maxLength);
+    Property.Builder<T> maximumLength(int maxLength);
 
     /**
      * Sets the mnemonic to use when creating a label for this property
      * @param mnemonic the mnemonic character
      * @return this instance
      */
-    Property.Builder mnemonic(Character mnemonic);
+    Property.Builder<T> mnemonic(Character mnemonic);
 
     /**
      * @param description a String describing this property
      * @return this instance
      */
-    Property.Builder description(String description);
+    Property.Builder<T> description(String description);
 
     /**
      * Sets the Format to use when presenting property values
@@ -426,7 +426,7 @@ public interface Property extends Serializable {
      * @throws IllegalArgumentException in case the format does not fit the property type,
      * NumberFormat for example is expected for numerical properties
      */
-    Property.Builder format(Format format);
+    Property.Builder<T> format(Format format);
 
     /**
      * Sets the date/time format pattern used when presenting values
@@ -434,6 +434,6 @@ public interface Property extends Serializable {
      * @return this instance
      * @throws IllegalArgumentException in case the pattern is invalid or if this property is not a date/time based one
      */
-    Property.Builder dateTimeFormatPattern(String dateTimeFormatPattern);
+    Property.Builder<T> dateTimeFormatPattern(String dateTimeFormatPattern);
   }
 }

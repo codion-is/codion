@@ -183,7 +183,7 @@ public final class Util {
    * @param places the number of decimal places
    * @return the rounded value
    */
-  public static double roundDouble(final double d, final int places) {
+  public static Double roundDouble(final Double d, final int places) {
     return Math.round(d * Math.pow(TEN, places)) / Math.pow(TEN, places);
   }
 

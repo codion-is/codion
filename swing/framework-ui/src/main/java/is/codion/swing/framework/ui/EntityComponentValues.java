@@ -19,6 +19,7 @@ import is.codion.swing.common.ui.value.TemporalValues;
 import is.codion.swing.common.ui.value.TextValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
+import javax.swing.JComponent;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.text.DecimalFormat;
@@ -41,37 +42,37 @@ public class EntityComponentValues {
    * @param initialValue the initial value to display
    * @return the ComponentValue handling input for {@code property}
    */
-  public ComponentValue createComponentValue(final Property property, final SwingEntityEditModel editModel,
-                                             final Object initialValue) {
+  public <T, C extends JComponent> ComponentValue<T, C> createComponentValue(final Property<T> property, final SwingEntityEditModel editModel,
+                                                                             final T initialValue) {
     if (property instanceof ForeignKeyProperty) {
-      return createEntityComponentValue((ForeignKeyProperty) property, editModel, (Entity) initialValue);
+      return (ComponentValue<T, C>) createEntityComponentValue((ForeignKeyProperty) property, editModel, (Entity) initialValue);
     }
     if (property instanceof ValueListProperty) {
       return SelectedValues.selectedItemValue(initialValue, ((ValueListProperty) property).getValues());
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
-        return BooleanValues.booleanComboBoxValue((Boolean) initialValue);
+        return (ComponentValue<T, C>) BooleanValues.booleanComboBoxValue((Boolean) initialValue);
       case Types.DATE:
-        return TemporalValues.temporalValue(new LocalDateInputPanel((LocalDate) initialValue, property.getDateTimeFormatPattern()));
+        return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalDateInputPanel((LocalDate) initialValue, property.getDateTimeFormatPattern()));
       case Types.TIMESTAMP:
-        return TemporalValues.temporalValue(new LocalDateTimeInputPanel((LocalDateTime) initialValue, property.getDateTimeFormatPattern()));
+        return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalDateTimeInputPanel((LocalDateTime) initialValue, property.getDateTimeFormatPattern()));
       case Types.TIME:
-        return TemporalValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimeFormatPattern()));
+        return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimeFormatPattern()));
       case Types.DOUBLE:
-        return NumericalValues.doubleValue((Double) initialValue, (DecimalFormat) property.getFormat());
+        return (ComponentValue<T, C>) NumericalValues.doubleValue((Double) initialValue, (DecimalFormat) property.getFormat());
       case Types.DECIMAL:
-        return NumericalValues.bigDecimalValue((BigDecimal) initialValue, (DecimalFormat) property.getFormat());
+        return (ComponentValue<T, C>) NumericalValues.bigDecimalValue((BigDecimal) initialValue, (DecimalFormat) property.getFormat());
       case Types.INTEGER:
-        return NumericalValues.integerValue((Integer) initialValue, (NumberFormat) property.getFormat());
+        return (ComponentValue<T, C>) NumericalValues.integerValue((Integer) initialValue, (NumberFormat) property.getFormat());
       case Types.BIGINT:
-        return NumericalValues.longValue((Long) initialValue, (NumberFormat) property.getFormat());
+        return (ComponentValue<T, C>) NumericalValues.longValue((Long) initialValue, (NumberFormat) property.getFormat());
       case Types.CHAR:
-        return TextValues.textValue(property.getCaption(), (String) initialValue, 1);
+        return (ComponentValue<T, C>) TextValues.textValue(property.getCaption(), (String) initialValue, 1);
       case Types.VARCHAR:
-        return TextValues.textValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
+        return (ComponentValue<T, C>) TextValues.textValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
       case Types.BLOB:
-        return FileValues.fileInputValue();
+        return (ComponentValue<T, C>) FileValues.fileInputValue();
       default:
         throw new IllegalArgumentException("No ComponentValue implementation available for property: " + property + " (type: " + property.getType() + ")");
     }

@@ -83,8 +83,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private final Domain domain;
   private final DatabaseConnection connection;
-  private final Map<String, List<ColumnProperty>> insertablePropertiesCache = new HashMap<>();
-  private final Map<String, List<ColumnProperty>> updatablePropertiesCache = new HashMap<>();
+  private final Map<String, List<ColumnProperty<?>>> insertablePropertiesCache = new HashMap<>();
+  private final Map<String, List<ColumnProperty<?>>> updatablePropertiesCache = new HashMap<>();
   private final Map<String, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
   private final Map<String, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
   private final Map<String, String> allColumnsClauseCache = new HashMap<>();
@@ -206,11 +206,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String insertQuery = null;
     synchronized (connection) {
       try {
-        final List<ColumnProperty> statementProperties = new ArrayList<>();
+        final List<ColumnProperty<?>> statementProperties = new ArrayList<>();
         for (int i = 0; i < entities.size(); i++) {
           final Entity entity = entities.get(i);
           final EntityDefinition entityDefinition = getEntityDefinition(entity.getEntityId());
-          final List<ColumnProperty> primaryKeyProperties = entityDefinition.getPrimaryKeyProperties();
+          final List<ColumnProperty<?>> primaryKeyProperties = entityDefinition.getPrimaryKeyProperties();
           final KeyGenerator keyGenerator = entityDefinition.getKeyGenerator();
           keyGenerator.beforeInsert(entity, primaryKeyProperties, connection);
 
@@ -270,11 +270,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           performOptimisticLocking(entitiesByEntityId);
         }
 
-        final List<ColumnProperty> statementProperties = new ArrayList<>();
+        final List<ColumnProperty<?>> statementProperties = new ArrayList<>();
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
         for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
           final EntityDefinition entityDefinition = getEntityDefinition(entityIdEntities.getKey());
-          final List<ColumnProperty> updatableProperties = getUpdatableProperties(entityDefinition);
+          final List<ColumnProperty<?>> updatableProperties = getUpdatableProperties(entityDefinition);
 
           final List<Entity> entitiesToUpdate = entityIdEntities.getValue();
           for (final Entity entity : entitiesToUpdate) {
@@ -343,7 +343,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String updateQuery = null;
     synchronized (connection) {
       try {
-        final List<ColumnProperty> statementProperties = new ArrayList<>();
+        final List<ColumnProperty<?>> statementProperties = new ArrayList<>();
         final EntityDefinition entityDefinition = getEntityDefinition(updateCondition.getEntityId());
         for (final Map.Entry<Attribute<?>, Object> propertyValue : updateCondition.getAttributeValues().entrySet()) {
           final ColumnProperty columnProperty = entityDefinition.getColumnProperty(propertyValue.getKey());
@@ -529,7 +529,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final WhereCondition combinedCondition = whereCondition(condition(condition.getEntityId(), combination(Conjunction.AND,
             expand(condition.getCondition(), entityDefinition),
             propertyCondition(attribute, NOT_LIKE, null))), entityDefinition);
-    final ColumnProperty propertyToSelect = entityDefinition.getColumnProperty(attribute);
+    final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
     final String columnName = propertyToSelect.getColumnName();
     final String selectQuery = selectQuery(entityDefinition.getSelectTableName(),
             "distinct " + columnName, combinedCondition.getWhereClause(), columnName);
@@ -693,7 +693,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(blobData, "blobData");
     final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
     checkIfReadOnly(entityDefinition.getEntityId());
-    final ColumnProperty blobProperty = entityDefinition.getColumnProperty(blobAttribute);
+    final ColumnProperty<byte[]> blobProperty = entityDefinition.getColumnProperty(blobAttribute);
     if (blobProperty.getColumnType() != Types.BLOB) {
       throw new IllegalArgumentException("Property " + blobProperty.getAttribute() + " in entity " +
               primaryKey.getEntityId() + " does not have column type BLOB");
@@ -704,7 +704,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final List<Object> statementValues = new ArrayList<>();
     statementValues.add(null);//the blob value, set explicitly later
     statementValues.addAll(whereCondition.getValues());
-    final List<ColumnProperty> statementProperties = new ArrayList<>();
+    final List<ColumnProperty<?>> statementProperties = new ArrayList<>();
     statementProperties.add(blobProperty);
     statementProperties.addAll(whereCondition.getColumnProperties());
     synchronized (connection) {
@@ -737,7 +737,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
     final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
-    final ColumnProperty blobProperty = entityDefinition.getColumnProperty(blobAttribute);
+    final ColumnProperty<byte[]> blobProperty = entityDefinition.getColumnProperty(blobAttribute);
     if (blobProperty.getColumnType() != Types.BLOB) {
       throw new IllegalArgumentException("Property " + blobProperty.getAttribute() + " in entity " +
               primaryKey.getEntityId() + " does not have column type BLOB");
@@ -851,7 +851,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
                   + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
         }
-        final List<ColumnProperty> modified = getModifiedColumnProperties(entity, current);
+        final List<ColumnProperty<?>> modified = getModifiedColumnProperties(entity, current);
         if (!modified.isEmpty()) {
           throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
         }
@@ -946,7 +946,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String selectQuery = null;
     final EntityDefinition entityDefinition = getEntityDefinition(selectCondition.getEntityId());
     final WhereCondition whereCondition = whereCondition(selectCondition, entityDefinition);
-    final List<ColumnProperty> propertiesToSelect = selectCondition.getSelectAttributes().isEmpty() ?
+    final List<ColumnProperty<?>> propertiesToSelect = selectCondition.getSelectAttributes().isEmpty() ?
             entityDefinition.getSelectableColumnProperties() :
             entityDefinition.getSelectableColumnProperties(selectCondition.getSelectAttributes());
     try {
@@ -968,7 +968,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private int executeStatement(final PreparedStatement statement, final String query,
-                               final List<ColumnProperty> statementProperties,
+                               final List<ColumnProperty<?>> statementProperties,
                                final List statementValues) throws SQLException {
     SQLException exception = null;
     try {
@@ -1033,7 +1033,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static String[] getPrimaryKeyColumnNames(final EntityDefinition entityDefinition) {
-    final List<ColumnProperty> primaryKeyProperties = entityDefinition.getPrimaryKeyProperties();
+    final List<ColumnProperty<?>> primaryKeyProperties = entityDefinition.getPrimaryKeyProperties();
     final String[] columnNames = new String[primaryKeyProperties.size()];
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
       columnNames[i] = primaryKeyProperties.get(i).getColumnName();
@@ -1081,13 +1081,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private List<ColumnProperty> getInsertableProperties(final EntityDefinition entityDefinition,
-                                                       final boolean includePrimaryKeyProperties) {
+  private List<ColumnProperty<?>> getInsertableProperties(final EntityDefinition entityDefinition,
+                                                          final boolean includePrimaryKeyProperties) {
     return insertablePropertiesCache.computeIfAbsent(entityDefinition.getEntityId(), entityId ->
             entityDefinition.getWritableColumnProperties(includePrimaryKeyProperties, true));
   }
 
-  private List<ColumnProperty> getUpdatableProperties(final EntityDefinition entityDefinition) {
+  private List<ColumnProperty<?>> getUpdatableProperties(final EntityDefinition entityDefinition) {
     return updatablePropertiesCache.computeIfAbsent(entityDefinition.getEntityId(), entityId ->
             entityDefinition.getWritableColumnProperties(true, false));
   }
@@ -1108,7 +1108,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private String columnsClause(final String entityId, final List<Attribute<?>> selectAttributes,
-                               final List<ColumnProperty> propertiesToSelect) {
+                               final List<ColumnProperty<?>> propertiesToSelect) {
     if (selectAttributes.isEmpty()) {
       return allColumnsClauseCache.computeIfAbsent(entityId, eId -> Queries.columnsClause(propertiesToSelect));
     }
@@ -1227,7 +1227,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return asList(values);
   }
 
-  private static void setParameterValues(final PreparedStatement statement, final List<ColumnProperty> statementProperties,
+  private static void setParameterValues(final PreparedStatement statement, final List<ColumnProperty<?>> statementProperties,
                                          final List statementValues) throws SQLException {
     if (nullOrEmpty(statementValues) || statement.getParameterMetaData().getParameterCount() == 0) {
       return;
@@ -1268,12 +1268,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param includeIf the Predicate to apply when checking to see if the property should be included
    */
   private static void populatePropertiesAndValues(final Entity entity,
-                                                  final List<ColumnProperty> entityProperties,
-                                                  final List<ColumnProperty> statementProperties,
+                                                  final List<ColumnProperty<?>> entityProperties,
+                                                  final List<ColumnProperty<?>> statementProperties,
                                                   final List<Object> statementValues,
-                                                  final Predicate<ColumnProperty> includeIf) {
+                                                  final Predicate<ColumnProperty<?>> includeIf) {
     for (int i = 0; i < entityProperties.size(); i++) {
-      final ColumnProperty property = entityProperties.get(i);
+      final ColumnProperty<?> property = entityProperties.get(i);
       if (includeIf.test(property)) {
         statementProperties.add(property);
         statementValues.add(entity.get(property));
@@ -1282,10 +1282,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static String createModifiedExceptionMessage(final Entity entity, final Entity modified,
-                                                       final Collection<ColumnProperty> modifiedProperties) {
+                                                       final Collection<ColumnProperty<?>> modifiedProperties) {
     final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED_EXCEPTION))
             .append(", ").append(entity.getEntityId());
-    for (final ColumnProperty property : modifiedProperties) {
+    for (final ColumnProperty<?> property : modifiedProperties) {
       builder.append(" \n").append(property).append(": ").append(entity.getOriginal(property))
               .append(" -> ").append(modified.get(property));
     }

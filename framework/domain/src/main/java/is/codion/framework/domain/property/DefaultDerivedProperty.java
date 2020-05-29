@@ -7,15 +7,15 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
-final class DefaultDerivedProperty extends DefaultTransientProperty implements DerivedProperty {
+final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implements DerivedProperty<T> {
 
   private static final long serialVersionUID = 1;
 
-  private final Provider valueProvider;
+  private final Provider<T> valueProvider;
   private final List<Attribute<?>> sourceAttributes;
 
-  DefaultDerivedProperty(final Attribute<?> attribute, final int type, final String caption,
-                         final Provider valueProvider, final Attribute<?>... sourceAttributes) {
+  DefaultDerivedProperty(final Attribute<T> attribute, final int type, final String caption,
+                         final Provider<T> valueProvider, final Attribute<?>... sourceAttributes) {
     super(attribute, type, caption);
     this.valueProvider = valueProvider;
     if (sourceAttributes == null || sourceAttributes.length == 0) {
@@ -25,7 +25,7 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
   }
 
   @Override
-  public Provider getValueProvider() {
+  public Provider<T> getValueProvider() {
     return valueProvider;
   }
 
@@ -38,22 +38,22 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
    * @return a builder for this property instance
    */
   @Override
-  TransientProperty.Builder builder() {
-    return new DefaultDerivedPropertyBuilder(this);
+  TransientProperty.Builder<T> builder() {
+    return new DefaultDerivedPropertyBuilder<>(this);
   }
 
-  private static final class DefaultDerivedPropertyBuilder
-          extends DefaultTransientPropertyBuilder implements Property.Builder {
+  private static final class DefaultDerivedPropertyBuilder<T>
+          extends DefaultTransientPropertyBuilder<T> implements Property.Builder<T> {
 
-    private final DefaultDerivedProperty derivedProperty;
+    private final DefaultDerivedProperty<T> derivedProperty;
 
-    private DefaultDerivedPropertyBuilder(final DefaultDerivedProperty derivedProperty) {
+    private DefaultDerivedPropertyBuilder(final DefaultDerivedProperty<T> derivedProperty) {
       super(derivedProperty);
       this.derivedProperty = derivedProperty;
     }
 
     @Override
-    public DerivedProperty get() {
+    public DerivedProperty<T> get() {
       return derivedProperty;
     }
   }

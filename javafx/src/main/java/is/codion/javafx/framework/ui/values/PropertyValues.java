@@ -44,8 +44,8 @@ public final class PropertyValues {
    * @param selectionModel the selection model
    * @return a {@link Value} based on the selected item in the given selection model
    */
-  public static Value selectedItemValue(final SingleSelectionModel<Item> selectionModel) {
-    return new SelectedItemValue(selectionModel);
+  public static <T> Value<T> selectedItemValue(final SingleSelectionModel<Item<T>> selectionModel) {
+    return new SelectedItemValue<>(selectionModel);
   }
 
   /**

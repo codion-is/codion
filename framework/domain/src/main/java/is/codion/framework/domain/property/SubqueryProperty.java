@@ -6,7 +6,7 @@ package is.codion.framework.domain.property;
 /**
  * A property based on a subquery, returning a single value
  */
-public interface SubqueryProperty extends ColumnProperty {
+public interface SubqueryProperty<T> extends ColumnProperty<T> {
 
   /**
    * @return the subquery string

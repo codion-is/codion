@@ -17,6 +17,7 @@ import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.DerivedProperty;
 
 import javax.imageio.ImageIO;
+import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.Serializable;
@@ -416,12 +417,12 @@ public final class ChinookImpl extends Domain implements Chinook {
   }
 
   private static final class CoverArtImageProvider
-          implements DerivedProperty.Provider {
+          implements DerivedProperty.Provider<Image> {
 
     private static final long serialVersionUID = 1;
 
     @Override
-    public Object getValue(final Map<Attribute<?>, Object> sourceValues) {
+    public Image getValue(final Map<Attribute<?>, Object> sourceValues) {
       final byte[] bytes = (byte[]) sourceValues.get(ALBUM_COVER);
       if (bytes == null) {
         return null;

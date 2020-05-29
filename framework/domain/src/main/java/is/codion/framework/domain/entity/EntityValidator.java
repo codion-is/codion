@@ -25,7 +25,7 @@ public interface EntityValidator extends Serializable {
    * @param property the property
    * @return true if the property accepts a null value
    */
-  boolean isNullable(Entity entity, Property property);
+  boolean isNullable(Entity entity, Property<?> property);
 
   /**
    * Returns true if the given entity contains only valid values.
@@ -50,7 +50,7 @@ public interface EntityValidator extends Serializable {
    * @param property the property the value is associated with
    * @throws ValidationException if the given value is not valid for the given property
    */
-  void validate(Entity entity, EntityDefinition definition, Property property) throws ValidationException;
+  void validate(Entity entity, EntityDefinition definition, Property<?> property) throws ValidationException;
 
   /**
    * Validates the given entities, assumes they are all of the same type.
@@ -69,7 +69,7 @@ public interface EntityValidator extends Serializable {
    * @see Property.Builder#nullable(boolean)
    * @see Property#isNullable()
    */
-  void performNullValidation(Entity entity, EntityDefinition definition, Property property) throws NullValidationException;
+  void performNullValidation(Entity entity, EntityDefinition definition, Property<?> property) throws NullValidationException;
 
   /**
    * Performs a range validation on the given number based property
@@ -79,7 +79,7 @@ public interface EntityValidator extends Serializable {
    * @see Property.Builder#maximumValue(double)
    * @see Property.Builder#minimumValue(double)
    */
-  void performRangeValidation(Entity entity, Property property) throws RangeValidationException;
+  void performRangeValidation(Entity entity, Property<?> property) throws RangeValidationException;
 
   /**
    * Performs a length validation on the given string based property
@@ -88,7 +88,7 @@ public interface EntityValidator extends Serializable {
    * @throws LengthValidationException in case the length of the value of the given property
    * @see Property.Builder#maximumLength(int)
    */
-  void performLengthValidation(Entity entity, Property property) throws LengthValidationException;
+  void performLengthValidation(Entity entity, Property<?> property) throws LengthValidationException;
 
   /**
    * Notifies all re-validation listeners that a re-validation is called for, for example

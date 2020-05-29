@@ -63,7 +63,7 @@ public interface EntityLookupModel {
   /**
    * @return a list containing the properties used when performing a lookup
    */
-  Collection<ColumnProperty> getLookupProperties();
+  Collection<ColumnProperty<?>> getLookupProperties();
 
   /**
    * @param resultSorter the comparator used to sort the lookup result, null if the result should not be sorted
@@ -142,7 +142,7 @@ public interface EntityLookupModel {
   /**
    * @return the settings associated with the lookup properties
    */
-  Map<ColumnProperty, LookupSettings> getPropertyLookupSettings();
+  Map<ColumnProperty<?>, LookupSettings> getPropertyLookupSettings();
 
   /**
    * @return the Value representing the search string

@@ -14,7 +14,7 @@ final class DefaultWhereCondition implements WhereCondition {
   private final EntityDefinition entityDefinition;
   private final Condition condition;
   private final List values;
-  private final List<ColumnProperty> columnProperties;
+  private final List<ColumnProperty<?>> columnProperties;
 
   DefaultWhereCondition(final Condition expandedCondition, final EntityDefinition entityDefinition) {
     this.entityDefinition = entityDefinition;
@@ -29,7 +29,7 @@ final class DefaultWhereCondition implements WhereCondition {
   }
 
   @Override
-  public List<ColumnProperty> getColumnProperties() {
+  public List<ColumnProperty<?>> getColumnProperties() {
     return columnProperties;
   }
 

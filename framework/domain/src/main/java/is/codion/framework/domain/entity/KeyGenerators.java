@@ -101,9 +101,9 @@ public final class KeyGenerators {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
+    public void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
                              final DatabaseConnection connection) throws SQLException {
-      final ColumnProperty primaryKeyProperty = primaryKeyProperties.get(0);
+      final ColumnProperty<?> primaryKeyProperty = primaryKeyProperties.get(0);
       if (entity.isNull(primaryKeyProperty)) {
         selectAndPut(entity, primaryKeyProperty, connection);
       }
@@ -124,9 +124,9 @@ public final class KeyGenerators {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
+    public void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
                              final DatabaseConnection connection) throws SQLException {
-      final ColumnProperty primaryKeyProperty = primaryKeyProperties.get(0);
+      final ColumnProperty<?> primaryKeyProperty = primaryKeyProperties.get(0);
       if (entity.isNull(primaryKeyProperty)) {
         selectAndPut(entity, primaryKeyProperty, connection);
       }
@@ -152,7 +152,7 @@ public final class KeyGenerators {
     }
 
     @Override
-    public void afterInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
+    public void afterInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
                             final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
       selectAndPut(entity, primaryKeyProperties.get(0), connection);
     }

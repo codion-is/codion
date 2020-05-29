@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.i18n.Messages;
+import is.codion.common.item.Item;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.PropertyValue;
@@ -44,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -222,8 +224,8 @@ public class EntityEditComponentPanel extends JPanel {
    */
   public void selectInputComponent() {
     final List<Attribute<?>> attributes = getSelectComponentAttributes();
-    final List<Property> properties = Properties.sort(getEditModel().getEntityDefinition().getProperties(attributes));
-    final Property property = properties.size() == 1 ?  properties.get(0) :
+    final List<Property<?>> properties = Properties.sort(getEditModel().getEntityDefinition().getProperties(attributes));
+    final Property<?> property = properties.size() == 1 ?  properties.get(0) :
             Dialogs.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
     if (property != null) {
       requestComponentFocus(property.getAttribute());
@@ -358,7 +360,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute to bind
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final Attribute<?> attribute) {
+  protected final JTextArea createTextArea(final Attribute<String> attribute) {
     return createTextArea(attribute, -1, -1);
   }
 
@@ -369,7 +371,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param columns the number of columns in the text area
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final Attribute<?> attribute, final int rows, final int columns) {
+  protected final JTextArea createTextArea(final Attribute<String> attribute, final int rows, final int columns) {
     return createTextArea(attribute, rows, columns, UpdateOn.KEYSTROKE);
   }
 
@@ -381,7 +383,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final Attribute<?> attribute, final int rows, final int columns,
+  protected final JTextArea createTextArea(final Attribute<String> attribute, final int rows, final int columns,
                                            final UpdateOn updateOn) {
     return createTextArea(attribute, rows, columns, updateOn, null);
   }
@@ -395,9 +397,9 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state indicating when this text area should be enabled
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final Attribute<?> attribute, final int rows, final int columns,
+  protected final JTextArea createTextArea(final Attribute<String> attribute, final int rows, final int columns,
                                            final UpdateOn updateOn, final StateObserver enabledState) {
-    final Property property = getEditModel().getEntityDefinition().getProperty(attribute);
+    final Property<String> property = getEditModel().getEntityDefinition().getProperty(attribute);
     final JTextArea textArea = EntityInputComponents.createTextArea(property,
             getEditModel().value(property.getAttribute()), rows, columns, updateOn, enabledState);
     EntityComponentValidators.addValidator(property, textArea, getEditModel());
@@ -411,7 +413,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute to bind
    * @return a TextInputPanel bound to the attribute
    */
-  protected final TextInputPanel createTextInputPanel(final Attribute<?> attribute) {
+  protected final TextInputPanel createTextInputPanel(final Attribute<String> attribute) {
     return createTextInputPanel(attribute, UpdateOn.KEYSTROKE, ButtonFocusable.YES);
   }
 
@@ -422,7 +424,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param buttonFocusable specifies whether the edit button should be focusable.
    * @return a TextInputPanel bound to the attribute
    */
-  protected final TextInputPanel createTextInputPanel(final Attribute<?> attribute, final UpdateOn updateOn,
+  protected final TextInputPanel createTextInputPanel(final Attribute<String> attribute, final UpdateOn updateOn,
                                                       final ButtonFocusable buttonFocusable) {
     return createTextInputPanel(getEditModel().getEntityDefinition().getProperty(attribute),
             updateOn, buttonFocusable);
@@ -434,7 +436,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final Property property, final UpdateOn updateOn) {
+  protected final TextInputPanel createTextInputPanel(final Property<String> property, final UpdateOn updateOn) {
     return createTextInputPanel(property, updateOn, ButtonFocusable.YES);
   }
 
@@ -445,7 +447,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param buttonFocusable specifies whether the edit button should be focusable.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final Property property, final UpdateOn updateOn,
+  protected final TextInputPanel createTextInputPanel(final Property<String> property, final UpdateOn updateOn,
                                                       final ButtonFocusable buttonFocusable) {
     final TextInputPanel inputPanel = EntityInputComponents.createTextInputPanel(property,
             getEditModel().value(property.getAttribute()), updateOn, buttonFocusable);
@@ -467,7 +469,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Attribute<?> attribute) {
+  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Attribute<T> attribute) {
     return createTemporalInputPanel(attribute, CalendarButton.YES);
   }
 
@@ -478,8 +480,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Attribute<?> attribute, final CalendarButton calendarButton) {
-    final Property property = getEditModel().getEntityDefinition().getProperty(attribute);
+  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Attribute<T> attribute, final CalendarButton calendarButton) {
+    final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
     return createTemporalInputPanel(property, calendarButton, null);
   }
 
@@ -490,8 +492,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a TemporalInputPanel bound to the attribute
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Attribute<?> attribute, final CalendarButton calendarButton,
-                                                              final StateObserver enabledState) {
+  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Attribute<T> attribute, final CalendarButton calendarButton,
+                                                                                      final StateObserver enabledState) {
     return createTemporalInputPanel(attribute, calendarButton, enabledState, UpdateOn.KEYSTROKE);
   }
 
@@ -503,8 +505,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @return a TemporalInputPanel bound to the attribute
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Attribute<?> attribute, final CalendarButton calendarButton,
-                                                              final StateObserver enabledState, final UpdateOn updateOn) {
+  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Attribute<T> attribute, final CalendarButton calendarButton,
+                                                                                      final StateObserver enabledState, final UpdateOn updateOn) {
     return createTemporalInputPanel(getEditModel().getEntityDefinition().getProperty(attribute),
             calendarButton, enabledState, updateOn);
   }
@@ -514,7 +516,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property for which to create the panel
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Property property) {
+  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property) {
     return createTemporalInputPanel(property, CalendarButton.YES);
   }
 
@@ -524,7 +526,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param calendarButton if yes a button for visually editing the date is included
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final CalendarButton calendarButton) {
+  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property, final CalendarButton calendarButton) {
     return createTemporalInputPanel(property, calendarButton, null);
   }
 
@@ -535,8 +537,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final CalendarButton calendarButton,
-                                                              final StateObserver enabledState) {
+  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property, final CalendarButton calendarButton,
+                                                                                      final StateObserver enabledState) {
     return createTemporalInputPanel(property, calendarButton, enabledState, UpdateOn.KEYSTROKE);
   }
 
@@ -548,9 +550,9 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @return a TemporalInputPanel bound to the property
    */
-  protected final TemporalInputPanel createTemporalInputPanel(final Property property, final CalendarButton calendarButton,
-                                                              final StateObserver enabledState, final UpdateOn updateOn) {
-    final TemporalInputPanel panel = EntityInputComponents.createTemporalInputPanel(property,
+  protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property, final CalendarButton calendarButton,
+                                                                                      final StateObserver enabledState, final UpdateOn updateOn) {
+    final TemporalInputPanel<T> panel = EntityInputComponents.createTemporalInputPanel(property,
             getEditModel().value(property.getAttribute()), updateOn, calendarButton, enabledState);
     if (panel instanceof LocalDateInputPanel) {
       final LocalDateInputPanel localDateInputPanel = (LocalDateInputPanel) panel;
@@ -638,7 +640,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property to bind
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property) {
+  protected final JTextField createTextField(final Property<?> property) {
     return createTextField(property, UpdateOn.KEYSTROKE);
   }
 
@@ -648,7 +650,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final UpdateOn updateOn) {
+  protected final JTextField createTextField(final Property<?> property, final UpdateOn updateOn) {
     return createTextField(property, null, updateOn);
   }
 
@@ -659,7 +661,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final String maskString,
+  protected final JTextField createTextField(final Property<?> property, final String maskString,
                                              final UpdateOn updateOn) {
     return createTextField(property, maskString, updateOn, null);
   }
@@ -672,7 +674,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final String maskString,
+  protected final JTextField createTextField(final Property<?> property, final String maskString,
                                              final UpdateOn updateOn, final StateObserver enabledState) {
     return createTextField(property, updateOn, maskString, enabledState, ValueContainsLiterals.NO);
   }
@@ -687,7 +689,7 @@ public class EntityEditComponentPanel extends JPanel {
    * associated with a the format mask, only applicable if {@code maskString} is specified
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final UpdateOn updateOn,
+  protected final JTextField createTextField(final Property<?> property, final UpdateOn updateOn,
                                              final String maskString, final StateObserver enabledState,
                                              final ValueContainsLiterals valueContainsLiterals) {
     final JTextField textField = EntityInputComponents.createTextField(property,
@@ -712,7 +714,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute to bind
    * @return a JCheckBox bound to the attribute
    */
-  protected final JCheckBox createCheckBox(final Attribute<?> attribute) {
+  protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute) {
     return createCheckBox(attribute, null);
   }
 
@@ -722,7 +724,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a JCheckBox bound to the attribute
    */
-  protected final JCheckBox createCheckBox(final Attribute<?> attribute, final StateObserver enabledState) {
+  protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState) {
     return createCheckBox(attribute, enabledState, IncludeCaption.YES);
   }
 
@@ -733,7 +735,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param includeCaption specifies whether or not the caption should be included
    * @return a JCheckBox bound to the attribute
    */
-  protected final JCheckBox createCheckBox(final Attribute<?> attribute, final StateObserver enabledState,
+  protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState,
                                            final IncludeCaption includeCaption) {
     return createCheckBox(getEditModel().getEntityDefinition().getProperty(attribute), enabledState, includeCaption);
   }
@@ -743,7 +745,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property to bind
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final Property property) {
+  protected final JCheckBox createCheckBox(final Property<Boolean> property) {
     return createCheckBox(property, null);
   }
 
@@ -753,7 +755,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final Property property, final StateObserver enabledState) {
+  protected final JCheckBox createCheckBox(final Property<Boolean> property, final StateObserver enabledState) {
     return createCheckBox(property, enabledState, IncludeCaption.YES);
   }
 
@@ -764,7 +766,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param includeCaption specifies whether or not the caption should be included
    * @return a JCheckBox bound to the property
    */
-  protected final JCheckBox createCheckBox(final Property property, final StateObserver enabledState,
+  protected final JCheckBox createCheckBox(final Property<Boolean> property, final StateObserver enabledState,
                                            final IncludeCaption includeCaption) {
     final JCheckBox box = EntityInputComponents.createCheckBox(property,
             getEditModel().value(property.getAttribute()), enabledState, includeCaption);
@@ -781,7 +783,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute to bind
    * @return a NullableCheckBox bound to the attribute
    */
-  protected final NullableCheckBox createNullableCheckBox(final Attribute<?> attribute) {
+  protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute) {
     return createNullableCheckBox(attribute, null);
   }
 
@@ -791,7 +793,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a NullableCheckBox bound to the attribute
    */
-  protected final NullableCheckBox createNullableCheckBox(final Attribute<?> attribute, final StateObserver enabledState) {
+  protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState) {
     return createNullableCheckBox(attribute, enabledState, IncludeCaption.YES);
   }
 
@@ -802,7 +804,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param includeCaption specifies whether or not the caption should be included
    * @return a NullableCheckBox bound to the attribute
    */
-  protected final NullableCheckBox createNullableCheckBox(final Attribute<?> attribute, final StateObserver enabledState,
+  protected final NullableCheckBox createNullableCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState,
                                                           final IncludeCaption includeCaption) {
     return createNullableCheckBox(getEditModel().getEntityDefinition().getProperty(attribute), enabledState, includeCaption);
   }
@@ -812,7 +814,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property to bind
    * @return a NullableCheckBox bound to the property
    */
-  protected final NullableCheckBox createNullableCheckBox(final Property property) {
+  protected final NullableCheckBox createNullableCheckBox(final Property<Boolean> property) {
     return createNullableCheckBox(property, null);
   }
 
@@ -822,7 +824,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a NullableCheckBox bound to the property
    */
-  protected final NullableCheckBox createNullableCheckBox(final Property property, final StateObserver enabledState) {
+  protected final NullableCheckBox createNullableCheckBox(final Property<Boolean> property, final StateObserver enabledState) {
     return createNullableCheckBox(property, enabledState, IncludeCaption.YES);
   }
 
@@ -833,7 +835,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param includeCaption specifies whether or not the caption should be included
    * @return a NullableCheckBox bound to the property
    */
-  protected final NullableCheckBox createNullableCheckBox(final Property property, final StateObserver enabledState,
+  protected final NullableCheckBox createNullableCheckBox(final Property<Boolean> property, final StateObserver enabledState,
                                                           final IncludeCaption includeCaption) {
     final NullableCheckBox box = EntityInputComponents.createNullableCheckBox(property,
             getEditModel().value(property.getAttribute()), enabledState, includeCaption);
@@ -851,7 +853,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute to bind
    * @return JComboBox for the given attribute
    */
-  protected final JComboBox createBooleanComboBox(final Attribute<?> attribute) {
+  protected final JComboBox<Item<Boolean>> createBooleanComboBox(final Attribute<Boolean> attribute) {
     return createBooleanComboBox(attribute, null);
   }
 
@@ -862,7 +864,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return JComboBox for the given attribute
    */
-  protected final JComboBox createBooleanComboBox(final Attribute<?> attribute, final StateObserver enabledState) {
+  protected final JComboBox<Item<Boolean>> createBooleanComboBox(final Attribute<Boolean> attribute, final StateObserver enabledState) {
     return createBooleanComboBox(getEditModel().getEntityDefinition().getProperty(attribute), enabledState);
   }
 
@@ -872,7 +874,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property to bind
    * @return JComboBox for the given property
    */
-  protected final JComboBox createBooleanComboBox(final Property property) {
+  protected final JComboBox<Item<Boolean>> createBooleanComboBox(final Property<Boolean> property) {
     return createBooleanComboBox(property, null);
   }
 
@@ -883,8 +885,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return JComboBox for the given property
    */
-  protected final JComboBox createBooleanComboBox(final Property property, final StateObserver enabledState) {
-    final JComboBox comboBox = EntityInputComponents.createBooleanComboBox(property,
+  protected final JComboBox<Item<Boolean>> createBooleanComboBox(final Property<Boolean> property, final StateObserver enabledState) {
+    final JComboBox<Item<Boolean>> comboBox = EntityInputComponents.createBooleanComboBox(property,
             getEditModel().value(property.getAttribute()), enabledState);
     setComponent(property.getAttribute(), comboBox);
 
@@ -899,8 +901,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound the the attribute
    * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
-  protected final SteppedComboBox createComboBox(final Attribute<?> attribute, final ComboBoxModel comboBoxModel,
-                                                 final boolean maximumMatch) {
+  protected final <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
+                                                        final boolean maximumMatch) {
     return createComboBox(attribute, comboBoxModel, maximumMatch, null);
   }
 
@@ -913,8 +915,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound the the attribute
    * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
-  protected final SteppedComboBox createComboBox(final Attribute<?> attribute, final ComboBoxModel comboBoxModel,
-                                                 final boolean maximumMatch, final StateObserver enabledState) {
+  protected final <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
+                                                        final boolean maximumMatch, final StateObserver enabledState) {
     return createComboBox(getEditModel().getEntityDefinition().getProperty(attribute),
             comboBoxModel, maximumMatch, enabledState);
   }
@@ -927,8 +929,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound the the property
    * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
-  protected final SteppedComboBox createComboBox(final Property property, final ComboBoxModel comboBoxModel,
-                                                 final boolean maximumMatch) {
+  protected final <T> SteppedComboBox<T> createComboBox(final Property<T> property, final ComboBoxModel<T> comboBoxModel,
+                                                        final boolean maximumMatch) {
     return createComboBox(property, comboBoxModel, maximumMatch, null);
   }
 
@@ -941,9 +943,9 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound the the property
    * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
-  protected final SteppedComboBox createComboBox(final Property property, final ComboBoxModel comboBoxModel,
-                                                 final boolean maximumMatch, final StateObserver enabledState) {
-    final SteppedComboBox comboBox = EntityInputComponents.createComboBox(property, getEditModel().value(property.getAttribute()),
+  protected final <T> SteppedComboBox<T> createComboBox(final Property<T> property, final ComboBoxModel<T> comboBoxModel,
+                                                        final boolean maximumMatch, final StateObserver enabledState) {
+    final SteppedComboBox<T> comboBox = EntityInputComponents.createComboBox(property, getEditModel().value(property.getAttribute()),
             comboBoxModel, enabledState);
     if (maximumMatch) {
       MaximumMatch.enable(comboBox);
@@ -964,7 +966,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the attribute
    * @throws IllegalArgumentException in case the property based on the given attribute is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final Attribute<?> attribute) {
+  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute) {
     return createValueListComboBox(attribute, Sorted.YES);
   }
 
@@ -976,7 +978,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the attribute
    * @throws IllegalArgumentException in case the property based on the given attribute is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final Attribute<?> attribute, final Sorted sorted) {
+  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute, final Sorted sorted) {
     return createValueListComboBox(attribute, sorted, null);
   }
 
@@ -988,7 +990,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
-  protected final SteppedComboBox createValueListComboBox(final Attribute<?> attribute, final StateObserver enabledState) {
+  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute, final StateObserver enabledState) {
     return createValueListComboBox(attribute, Sorted.YES, enabledState);
   }
 
@@ -1001,14 +1003,14 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a SteppedComboBox bound to the attribute
    * @throws IllegalArgumentException in case the property is not a value list attribute
    */
-  protected final SteppedComboBox createValueListComboBox(final Attribute<?> attribute, final Sorted sorted,
-                                                          final StateObserver enabledState) {
-    final Property property = getEditModel().getEntityDefinition().getProperty(attribute);
+  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute, final Sorted sorted,
+                                                                       final StateObserver enabledState) {
+    final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
     if (!(property instanceof ValueListProperty)) {
       throw new IllegalArgumentException("Property identified by '" + attribute + "' is not a ValueListProperty");
     }
 
-    return createValueListComboBox((ValueListProperty) property, sorted, enabledState);
+    return createValueListComboBox((ValueListProperty<T>) property, sorted, enabledState);
   }
 
   /**
@@ -1017,7 +1019,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property) {
+  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property) {
     return createValueListComboBox(property, Sorted.YES);
   }
 
@@ -1028,7 +1030,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final Sorted sorted) {
+  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final Sorted sorted) {
     return createValueListComboBox(property, sorted, null);
   }
 
@@ -1039,7 +1041,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final StateObserver enabledState) {
+  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final StateObserver enabledState) {
     return createValueListComboBox(property, Sorted.YES, enabledState);
   }
 
@@ -1051,9 +1053,9 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createValueListComboBox(final ValueListProperty property, final Sorted sorted,
-                                                          final StateObserver enabledState) {
-    final SteppedComboBox box = EntityInputComponents.createValueListComboBox(property,
+  protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final Sorted sorted,
+                                                                       final StateObserver enabledState) {
+    final SteppedComboBox<Item<T>> box = EntityInputComponents.createValueListComboBox(property,
             getEditModel().value(property.getAttribute()), sorted, enabledState);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter((JComponent) box.getEditor().getEditorComponent());
@@ -1070,7 +1072,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param comboBoxModel the ComboBoxModel
    * @return an editable SteppedComboBox bound the the attribute
    */
-  protected final SteppedComboBox createEditableComboBox(final Attribute<?> attribute, final ComboBoxModel comboBoxModel) {
+  protected final <T> SteppedComboBox<T> createEditableComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
     return createEditableComboBox(attribute, comboBoxModel, null);
   }
 
@@ -1081,8 +1083,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return an editable SteppedComboBox bound the the attribute
    */
-  protected final SteppedComboBox createEditableComboBox(final Attribute<?> attribute, final ComboBoxModel comboBoxModel,
-                                                         final StateObserver enabledState) {
+  protected final <T> SteppedComboBox<T> createEditableComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
+                                                                final StateObserver enabledState) {
     return createEditableComboBox(getEditModel().getEntityDefinition().getProperty(attribute),
             comboBoxModel, enabledState);
   }
@@ -1094,9 +1096,9 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return an editable SteppedComboBox bound the the property
    */
-  protected final SteppedComboBox createEditableComboBox(final Property property, final ComboBoxModel comboBoxModel,
-                                                         final StateObserver enabledState) {
-    final SteppedComboBox comboBox = EntityInputComponents.createComboBox(property, getEditModel().value(property.getAttribute()),
+  protected final <T> SteppedComboBox<T> createEditableComboBox(final Property<T> property, final ComboBoxModel<T> comboBoxModel,
+                                                                final StateObserver enabledState) {
+    final SteppedComboBox<T> comboBox = EntityInputComponents.createComboBox(property, getEditModel().value(property.getAttribute()),
             comboBoxModel, enabledState, Editable.YES);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
@@ -1113,7 +1115,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute to bind
    * @return a SteppedComboBox bound to the attribute
    */
-  protected final SteppedComboBox createPropertyComboBox(final Attribute<?> attribute) {
+  protected final <T> SteppedComboBox<T> createPropertyComboBox(final Attribute<T> attribute) {
     return createPropertyComboBox(attribute, null);
   }
 
@@ -1124,7 +1126,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the attribute
    */
-  protected final SteppedComboBox createPropertyComboBox(final Attribute<?> attribute, final StateObserver enabledState) {
+  protected final <T> SteppedComboBox<T> createPropertyComboBox(final Attribute<T> attribute, final StateObserver enabledState) {
     return createPropertyComboBox(attribute, enabledState, Editable.NO);
   }
 
@@ -1136,8 +1138,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @param editable yes if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the attribute
    */
-  protected final SteppedComboBox createPropertyComboBox(final Attribute<?> attribute, final StateObserver enabledState,
-                                                         final Editable editable) {
+  protected final <T> SteppedComboBox<T> createPropertyComboBox(final Attribute<T> attribute, final StateObserver enabledState,
+                                                                final Editable editable) {
     return createPropertyComboBox(getEditModel().getEntityDefinition().getColumnProperty(attribute),
             enabledState, editable);
   }
@@ -1148,7 +1150,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property to bind
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final ColumnProperty property) {
+  protected final <T> SteppedComboBox<T> createPropertyComboBox(final ColumnProperty<T> property) {
     return createPropertyComboBox(property, null);
   }
 
@@ -1159,7 +1161,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final ColumnProperty property, final StateObserver enabledState) {
+  protected final <T> SteppedComboBox<T> createPropertyComboBox(final ColumnProperty<T> property, final StateObserver enabledState) {
     return createPropertyComboBox(property, enabledState, Editable.NO);
   }
 
@@ -1171,10 +1173,10 @@ public class EntityEditComponentPanel extends JPanel {
    * @param editable yes if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
-  protected final SteppedComboBox createPropertyComboBox(final ColumnProperty property, final StateObserver enabledState,
-                                                         final Editable editable) {
-    final SteppedComboBox comboBox = EntityInputComponents.createPropertyComboBox(property, getEditModel().value(property.getAttribute()),
-            (ComboBoxModel) getEditModel().getComboBoxModel(property.getAttribute()), enabledState, editable);
+  protected final <T> SteppedComboBox<T> createPropertyComboBox(final ColumnProperty<T> property, final StateObserver enabledState,
+                                                                final Editable editable) {
+    final SteppedComboBox<T> comboBox = EntityInputComponents.createPropertyComboBox(property, getEditModel().value(property.getAttribute()),
+            (ComboBoxModel<T>) getEditModel().getComboBoxModel(property.getAttribute()), enabledState, editable);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
       transferFocusOnEnter(comboBox);

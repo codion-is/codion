@@ -6144,3 +6144,4 @@
   Entity, propertyId replaced with attribute
   property, entity package, propertyId replaced with attribute
   Further renaming of propertyId to attribute
+  Property generified

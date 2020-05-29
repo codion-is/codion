@@ -118,7 +118,7 @@ public abstract class EntityEditView extends BorderPane {
    * Displays a dialog for choosing a input component to receive focus
    */
   public void selectInputControl() {
-    final List<Property> properties = Properties.sort(getEditModel()
+    final List<Property<?>> properties = Properties.sort(getEditModel()
             .getEntityDefinition().getProperties(controls.keySet()));
     properties.removeIf(property -> {
       final Control control = controls.get(property.getAttribute());
@@ -194,9 +194,9 @@ public abstract class EntityEditView extends BorderPane {
    * @param attribute the attribute
    * @return a {@link ComboBox} for the given property
    */
-  protected final ComboBox<Item> createValueListComboBox(final Attribute<?> attribute) {
+  protected final <T> ComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute) {
     checkControl(attribute);
-    final ComboBox<Item> box = FXUiUtil.createValueListComboBox((ValueListProperty)
+    final ComboBox<Item<T>> box = FXUiUtil.createValueListComboBox((ValueListProperty<T>)
             getEditModel().getEntityDefinition().getProperty(attribute), editModel);
 
     controls.put(attribute, box);
@@ -211,7 +211,7 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final TextField createTextField(final Attribute<?> attribute) {
     checkControl(attribute);
-    final Property property = getEditModel().getEntityDefinition().getProperty(attribute);
+    final Property<?> property = getEditModel().getEntityDefinition().getProperty(attribute);
     final TextField textField;
     switch (property.getType()) {
       case Types.INTEGER:

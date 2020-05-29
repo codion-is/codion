@@ -126,7 +126,7 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return a Collection containing the PropertyConditionModels available in this table condition model
    */
-  Collection<ColumnConditionModel<Entity, ? extends Property>> getPropertyConditionModels();
+  Collection<ColumnConditionModel<Entity, ? extends Property<?>>> getPropertyConditionModels();
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given property.
@@ -135,7 +135,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @throws IllegalArgumentException in case no condition model is found
    * @see #containsPropertyConditionModel(Attribute)
    */
-  ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(Attribute<?> attribute);
+  ColumnConditionModel<Entity, ? extends Property<?>> getPropertyConditionModel(Attribute<?> attribute);
 
   /**
    * Clears the search state of all PropertyConditionModels, disables them and
@@ -146,14 +146,14 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return a Collection containing the filter models available in this table condition model
    */
-  Collection<ColumnConditionModel<Entity, Property>> getPropertyFilterModels();
+  Collection<ColumnConditionModel<Entity, Property<?>>> getPropertyFilterModels();
 
   /**
    * The filter model associated with {@code attribute}
    * @param attribute the attribute for which to retrieve the PropertyFilterModel
    * @return the PropertyFilterModel for the property with id {@code attribute}, null if none is found
    */
-  ColumnConditionModel<Entity, Property> getPropertyFilterModel(Attribute<?> attribute);
+  ColumnConditionModel<Entity, Property<?>> getPropertyFilterModel(Attribute<?> attribute);
 
   /**
    * @param attribute column attribute

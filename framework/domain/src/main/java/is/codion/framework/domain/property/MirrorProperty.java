@@ -9,4 +9,4 @@ package is.codion.framework.domain.property;
  * having composite natural primary keys, using the same column.
  * todo example pleeeeaaase!
  */
-public interface MirrorProperty extends ColumnProperty {}
+public interface MirrorProperty<T> extends ColumnProperty<T> {}

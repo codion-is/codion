@@ -233,15 +233,15 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @return the updatable column properties which values differ from the ones in the comparison entity
    * @see BlobProperty#isEagerlyLoaded()
    */
-  static List<ColumnProperty> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
+  static List<ColumnProperty<?>> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
     requireNonNull(entity);
     requireNonNull(comparison);
     return comparison.keySet().stream().filter(property -> {
-      final boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty) property).isUpdatable();
+      final boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
       final boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
 
       return updatableColumnProperty && !lazilyLoadedBlobProperty && isValueMissingOrModified(entity, comparison, property);
-    }).map(property -> (ColumnProperty) property).collect(toList());
+    }).map(property -> (ColumnProperty<?>) property).collect(toList());
   }
 
   /**

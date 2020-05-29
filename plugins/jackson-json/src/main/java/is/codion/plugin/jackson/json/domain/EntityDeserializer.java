@@ -50,7 +50,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
   }
 
-  public static Object parseValue(final EntityObjectMapper mapper, final Property property, final JsonNode jsonNode)
+  public static Object parseValue(final EntityObjectMapper mapper, final Property<?> property, final JsonNode jsonNode)
           throws JsonProcessingException {
     if (jsonNode.isNull()) {
       return null;
@@ -89,29 +89,29 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     return jsonNode.asText();
   }
 
-  private Map<Property, Object> getValueMap(final JsonNode node, final EntityDefinition definition)
+  private Map<Property<?>, Object> getValueMap(final JsonNode node, final EntityDefinition definition)
           throws JsonProcessingException {
     final JsonNode values = node.get("values");
-    final Map<Property, Object> valueMap = new HashMap<>();
+    final Map<Property<?>, Object> valueMap = new HashMap<>();
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
-      final Property property = definition.getProperty(attribute(field.getKey()));
+      final Property<?> property = definition.getProperty(attribute(field.getKey()));
       valueMap.put(property, parseValue(property, field.getValue()));
     }
 
     return valueMap;
   }
 
-  private Map<Property, Object> getOriginalValueMap(final JsonNode node, final EntityDefinition definition)
+  private Map<Property<?>, Object> getOriginalValueMap(final JsonNode node, final EntityDefinition definition)
           throws JsonProcessingException {
     final JsonNode originalValues = node.get("originalValues");
     if (originalValues != null) {
-      final Map<Property, Object> originalValueMap = new HashMap<>();
+      final Map<Property<?>, Object> originalValueMap = new HashMap<>();
       final Iterator<Map.Entry<String, JsonNode>> originalFields = originalValues.fields();
       while (originalFields.hasNext()) {
         final Map.Entry<String, JsonNode> field = originalFields.next();
-        final Property property = definition.getProperty(attribute(field.getKey()));
+        final Property<?> property = definition.getProperty(attribute(field.getKey()));
         originalValueMap.put(property, parseValue(property, field.getValue()));
       }
 
@@ -128,7 +128,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
    * @return the value for the given property
    * @throws JsonProcessingException in case of an error
    */
-  private Object parseValue(final Property property, final JsonNode jsonNode) throws JsonProcessingException {
+  private Object parseValue(final Property<?> property, final JsonNode jsonNode) throws JsonProcessingException {
     return parseValue(mapper, property, jsonNode);
   }
 }

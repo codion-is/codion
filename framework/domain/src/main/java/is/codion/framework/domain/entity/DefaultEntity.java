@@ -45,12 +45,12 @@ final class DefaultEntity implements Entity {
   /**
    * Holds the values contained in this value map.
    */
-  private Map<Property, Object> values;
+  private Map<Property<?>, Object> values;
 
   /**
    * Holds the original value for keys which values have changed since they were first set.
    */
-  private Map<Property, Object> originalValues;
+  private Map<Property<?>, Object> originalValues;
 
   /**
    * Used to cache the return value of the frequently called toString(),
@@ -95,8 +95,8 @@ final class DefaultEntity implements Entity {
    * @param originalValues the original values, may be null
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
-  DefaultEntity(final EntityDefinition definition, final Map<Property, Object> values, final Map<Property, Object> originalValues) {
-    final Map<Property, Object> validatedValues = validateProperties(definition, values);
+  DefaultEntity(final EntityDefinition definition, final Map<Property<?>, Object> values, final Map<Property<?>, Object> originalValues) {
+    final Map<Property<?>, Object> validatedValues = validateProperties(definition, values);
     this.values = validatedValues == null ? new HashMap<>() : validatedValues;
     this.originalValues = validateProperties(definition, originalValues);
     this.definition = definition;
@@ -142,18 +142,18 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public Object put(final Property property, final Object value) {
+  public <T> T put(final Property<T> property, final T value) {
     requireNonNull(property, PROPERTY);
-    final Object newValue = validateAndPrepareForPut(property, value);
+    final T newValue = validateAndPrepareForPut(property, value);
     final boolean initialization = !values.containsKey(property);
-    final Object previousValue = values.put(property, newValue);
+    final T previousValue = (T) values.put(property, newValue);
     if (!initialization && Objects.equals(previousValue, newValue)) {
       return newValue;
     }
     if (!initialization) {
       updateOriginalValue(property, newValue, previousValue);
     }
-    onValuePut(property, newValue, previousValue);
+    onValuePut(property, newValue);
     onValueChanged(property, newValue, previousValue, initialization);
 
     return previousValue;
@@ -179,16 +179,16 @@ final class DefaultEntity implements Entity {
    * @see #isLoaded(String)
    */
   @Override
-  public Object get(final Property property) {
+  public <T> T get(final Property<T> property) {
     requireNonNull(property, "property");
     if (property instanceof MirrorProperty) {
-      return get(definition.getProperty(property.getAttribute()));
+      return (T) get(definition.getProperty(property.getAttribute()));
     }
     if (property instanceof DerivedProperty) {
-      return getDerivedValue((DerivedProperty) property);
+      return (T) getDerivedValue((DerivedProperty<T>) property);
     }
 
-    return values.get(property);
+    return (T) values.get(property);
   }
 
   @Override
@@ -202,7 +202,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public final boolean isNotNull(final Property property) {
+  public final boolean isNotNull(final Property<?> property) {
     return !isNull(property);
   }
 
@@ -213,12 +213,12 @@ final class DefaultEntity implements Entity {
    * @return true if the value associated with the property is null
    */
   @Override
-  public boolean isNull(final Property property) {
+  public boolean isNull(final Property<?> property) {
     if (property instanceof ForeignKeyProperty) {
       return isForeignKeyNull((ForeignKeyProperty) property);
     }
 
-    return get(property) == null;//todo values.get()?
+    return get(property) == null;
   }
 
   @Override
@@ -227,7 +227,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public final boolean isModified(final Property property) {
+  public final boolean isModified(final Property<?> property) {
     requireNonNull(property, PROPERTY);
     return originalValues != null && originalValues.containsKey(property);
   }
@@ -256,9 +256,9 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public String getAsString(final Property property) {
+  public <T> String getAsString(final Property<T> property) {
     if (property instanceof ValueListProperty) {
-      return ((ValueListProperty) property).getCaption(get(property));
+      return ((ValueListProperty<T>) property).getCaption(get(property));
     }
     if (property instanceof ForeignKeyProperty && !isLoaded(((ForeignKeyProperty) property).getAttribute())) {
       final Entity.Key referencedKey = getReferencedKey((ForeignKeyProperty) property);
@@ -271,13 +271,13 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public String getAsString(final Attribute<?> attribute) {
+  public <T> String getAsString(final Attribute<T> attribute) {
     return getAsString(definition.getProperty(attribute));
   }
 
   @Override
   public void clearKeyValues() {
-    final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+    final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
       remove(primaryKeyProperties.get(i));
     }
@@ -290,9 +290,9 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public final Object getOriginal(final Property property) {
+  public <T> T getOriginal(final Property<T> property) {
     if (isModified(property)) {
-      return originalValues.get(property);
+      return (T) originalValues.get(property);
     }
 
     return get(property);
@@ -304,7 +304,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public final void save(final Property property) {
+  public final void save(final Property<?> property) {
     requireNonNull(property, PROPERTY);
     removeOriginalValue(property);
   }
@@ -320,7 +320,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public final void revert(final Property property) {
+  public <T> void revert(final Property<T> property) {
     if (isModified(property)) {
       put(property, getOriginal(property));
     }
@@ -328,7 +328,7 @@ final class DefaultEntity implements Entity {
 
   @Override
   public void revertAll() {
-    for (final Property property : keySet()) {
+    for (final Property<?> property : keySet()) {
       revert(property);
     }
   }
@@ -339,9 +339,9 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public final Object remove(final Property property) {
+  public <T> T remove(final Property<T> property) {
     if (values.containsKey(requireNonNull(property, PROPERTY))) {
-      final Object value = values.remove(property);
+      final T value = (T) values.remove(property);
       removeOriginalValue(property);
       onValueChanged(property, null, value, false);
 
@@ -356,22 +356,22 @@ final class DefaultEntity implements Entity {
     if (entity == this) {
       return;
     }
-    final Set<Property> affectedProperties = new HashSet<>(keySet());
+    final Set<Property<?>> affectedProperties = new HashSet<>(keySet());
     clear();
     if (entity != null) {
-      final Collection<Property> sourceProperties = entity.keySet();
+      final Collection<Property<?>> sourceProperties = entity.keySet();
       affectedProperties.addAll(sourceProperties);
-      for (final Property property : sourceProperties) {
+      for (final Property<?> property : sourceProperties) {
         values.put(property, entity.get(property));
       }
       if (entity.isModified()) {
         originalValues = new HashMap<>();
-        for (final Property property : entity.originalKeySet()) {
+        for (final Property<?> property : entity.originalKeySet()) {
           originalValues.put(property, entity.getOriginal(property));
         }
       }
     }
-    for (final Property property : affectedProperties) {
+    for (final Property<?> property : affectedProperties) {
       onValueChanged(property, values.get(property), null, true);
     }
   }
@@ -431,7 +431,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public Object getColor(final Property property) {
+  public Object getColor(final Property<?> property) {
     return definition.getColorProvider().getColor(this, property);
   }
 
@@ -456,17 +456,17 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public final boolean containsKey(final Property property) {
+  public final boolean containsKey(final Property<?> property) {
     return values.containsKey(requireNonNull(property, PROPERTY));
   }
 
   @Override
-  public final Set<Property> keySet() {
+  public final Set<Property<?>> keySet() {
     return unmodifiableSet(values.keySet());
   }
 
   @Override
-  public final Set<Property> originalKeySet() {
+  public final Set<Property<?>> originalKeySet() {
     if (originalValues == null) {
       return emptySet();
     }
@@ -482,11 +482,11 @@ final class DefaultEntity implements Entity {
   @Override
   public boolean isForeignKeyNull(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    final List<ColumnProperty> properties = foreignKeyProperty.getColumnProperties();
+    final List<ColumnProperty<?>> properties = foreignKeyProperty.getColumnProperties();
     if (properties.size() == 1) {
       return isNull(properties.get(0));
     }
-    final List<ColumnProperty> foreignProperties =
+    final List<ColumnProperty<?>> foreignProperties =
             definition.getForeignDefinition(foreignKeyProperty.getAttribute()).getPrimaryKeyProperties();
     for (int i = 0; i < properties.size(); i++) {
       if (!foreignProperties.get(i).isNullable() && isNull(properties.get(i))) {
@@ -519,20 +519,20 @@ final class DefaultEntity implements Entity {
     toString = null;
   }
 
-  private Object validateAndPrepareForPut(final Property property, final Object value) {
+  private <T> T validateAndPrepareForPut(final Property<T> property, final T value) {
     if (property instanceof DerivedProperty) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
-    if (property instanceof ValueListProperty && value != null && !((ValueListProperty) property).isValid(value)) {
+    if (property instanceof ValueListProperty && value != null && !((ValueListProperty<T>) property).isValid(value)) {
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getAttribute());
     }
 
     return property.prepareValue(property.validateType(value));
   }
 
-  private void onValuePut(final Property property, final Object value, final Object previousValue) {
+  private void onValuePut(final Property<?> property, final Object value) {
     if (property instanceof ColumnProperty) {
-      final ColumnProperty columnProperty = (ColumnProperty) property;
+      final ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
       if (columnProperty.isPrimaryKeyProperty()) {
         key = null;
       }
@@ -553,13 +553,14 @@ final class DefaultEntity implements Entity {
    * @param previousValue the previous value, if any
    * @param initialization true if the value is being initialized, that is, no previous value exists
    * @see #addValueListener(EventDataListener)
+   * todo type safe change event?
    */
-  private void onValueChanged(final Property property, final Object currentValue, final Object previousValue, final boolean initialization) {
+  private void onValueChanged(final Property<?> property, final Object currentValue, final Object previousValue, final boolean initialization) {
     if (valueChangeEvent != null) {
       valueChangeEvent.onEvent(valueChange(property, currentValue, previousValue, initialization));
       if (definition.hasDerivedProperties()) {
-        final Collection<DerivedProperty> derivedProperties = definition.getDerivedProperties(property.getAttribute());
-        for (final DerivedProperty derivedProperty : derivedProperties) {
+        final Collection<DerivedProperty<?>> derivedProperties = definition.getDerivedProperties(property.getAttribute());
+        for (final DerivedProperty<?> derivedProperty : derivedProperties) {
           final Object derivedValue = getDerivedValue(derivedProperty);
           valueChangeEvent.onEvent(valueChange(derivedProperty, derivedValue, derivedValue));
         }
@@ -574,14 +575,14 @@ final class DefaultEntity implements Entity {
     }
   }
 
-  private void removeInvalidForeignKeyValues(final ColumnProperty columnProperty, final Object value) {
+  private void removeInvalidForeignKeyValues(final ColumnProperty<?> columnProperty, final Object value) {
     final List<ForeignKeyProperty> propertyForeignKeyProperties =
             definition.getForeignKeyProperties(columnProperty.getAttribute());
     for (final ForeignKeyProperty foreignKeyProperty : propertyForeignKeyProperties) {
       final Entity foreignKeyEntity = (Entity) get(foreignKeyProperty);
       if (foreignKeyEntity != null) {
         final Entity.Key referencedKey = foreignKeyEntity.getKey();
-        final ColumnProperty keyProperty =
+        final ColumnProperty<?> keyProperty =
                 referencedKey.getProperties().get(foreignKeyProperty.getColumnProperties().indexOf(columnProperty));
         //if the value isn't equal to the value in the foreign key,
         //that foreign key reference is invalid and is removed
@@ -603,8 +604,8 @@ final class DefaultEntity implements Entity {
    */
   private void setForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     removeCachedReferencedKey(foreignKeyProperty.getAttribute());
-    final List<ColumnProperty> properties = foreignKeyProperty.getColumnProperties();
-    final List<ColumnProperty> foreignProperties =
+    final List<ColumnProperty<?>> properties = foreignKeyProperty.getColumnProperties();
+    final List<ColumnProperty<?>> foreignProperties =
             definition.getForeignDefinition(foreignKeyProperty.getAttribute()).getPrimaryKeyProperties();
     if (properties.size() > 1) {
       setCompositeForeignKeyValues(referencedEntity, properties, foreignProperties);
@@ -615,8 +616,8 @@ final class DefaultEntity implements Entity {
   }
 
   private void setCompositeForeignKeyValues(final Entity referencedEntity,
-                                            final List<ColumnProperty> referenceProperties,
-                                            final List<ColumnProperty> foreignColumnProperties) {
+                                            final List<ColumnProperty<?>> referenceProperties,
+                                            final List<ColumnProperty<?>> foreignColumnProperties) {
     for (int i = 0; i < referenceProperties.size(); i++) {
       setSingleForeignKeyValue(referencedEntity, referenceProperties.get(i), foreignColumnProperties.get(i));
     }
@@ -636,7 +637,7 @@ final class DefaultEntity implements Entity {
    * @param referencedEntity the foreign key entity containing the values to denormalize
    */
   private void setDenormalizedValues(final ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
-    final List<DenormalizedProperty> denormalizedProperties =
+    final List<DenormalizedProperty<?>> denormalizedProperties =
             definition.getDenormalizedProperties(foreignKeyProperty.getAttribute());
     if (denormalizedProperties != null) {
       for (int i = 0; i < denormalizedProperties.size(); i++) {
@@ -665,15 +666,15 @@ final class DefaultEntity implements Entity {
     if (!foreignEntityDefinition.hasPrimaryKey()) {
       throw new IllegalArgumentException("Entity '" + foreignEntityDefinition.getEntityId() + "' has no primary key defined");
     }
-    final List<ColumnProperty> foreignProperties = foreignEntityDefinition.getPrimaryKeyProperties();
-    final List<ColumnProperty> columnProperties = foreignKeyProperty.getColumnProperties();
-    final Map<ColumnProperty, Object> keyValues = new HashMap<>(columnProperties.size());
+    final List<ColumnProperty<?>> foreignProperties = foreignEntityDefinition.getPrimaryKeyProperties();
+    final List<ColumnProperty<?>> columnProperties = foreignKeyProperty.getColumnProperties();
+    final Map<ColumnProperty<?>, Object> keyValues = new HashMap<>(columnProperties.size());
     for (int i = 0; i < columnProperties.size(); i++) {
-      ColumnProperty columnProperty = columnProperties.get(i);
+      ColumnProperty<?> columnProperty = columnProperties.get(i);
       if (columnProperty instanceof MirrorProperty) {
         columnProperty = definition.getColumnProperty(columnProperty.getAttribute());
       }
-      final ColumnProperty foreignColumnProperty = foreignProperties.get(i);
+      final ColumnProperty<?> foreignColumnProperty = foreignProperties.get(i);
       final Object value = values.get(columnProperty);
       if (value == null && !foreignColumnProperty.isNullable()) {
         return null;
@@ -685,7 +686,7 @@ final class DefaultEntity implements Entity {
   }
 
   private Key initializeAndCacheSingleReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
-    final List<ColumnProperty> columnProperties = foreignKeyProperty.getColumnProperties();
+    final List<ColumnProperty<?>> columnProperties = foreignKeyProperty.getColumnProperties();
     final Object value = values.get(columnProperties.get(0));
     if (value == null) {
       return null;
@@ -730,11 +731,11 @@ final class DefaultEntity implements Entity {
     if (!definition.hasPrimaryKey()) {
       return new DefaultEntityKey(definition);
     }
-    final List<ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+    final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     if (primaryKeyProperties.size() > 1) {
-      final Map<ColumnProperty, Object> keyValues = new HashMap<>(primaryKeyProperties.size());
+      final Map<ColumnProperty<?>, Object> keyValues = new HashMap<>(primaryKeyProperties.size());
       for (int i = 0; i < primaryKeyProperties.size(); i++) {
-        final ColumnProperty property = primaryKeyProperties.get(i);
+        final ColumnProperty<?> property = primaryKeyProperties.get(i);
         keyValues.put(property, originalValues ? getOriginal(property) : values.get(property));
       }
 
@@ -744,7 +745,7 @@ final class DefaultEntity implements Entity {
     return new DefaultEntityKey(definition, originalValues ? getOriginal(primaryKeyProperties.get(0)) : values.get(primaryKeyProperties.get(0)));
   }
 
-  private Object getDerivedValue(final DerivedProperty derivedProperty) {
+  private <T> T getDerivedValue(final DerivedProperty<T> derivedProperty) {
     return derivedProperty.getValueProvider().getValue(getSourceValues(derivedProperty.getSourceAttributes()));
   }
 
@@ -770,15 +771,15 @@ final class DefaultEntity implements Entity {
   }
 
   private boolean writablePropertiesModified(final boolean overrideModifiesEntity) {
-    for (final Property property : originalKeySet()) {
+    for (final Property<?> property : originalKeySet()) {
       if (property instanceof ColumnProperty) {
-        final ColumnProperty columnProperty = (ColumnProperty) property;
+        final ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
         if (columnProperty.isInsertable() && columnProperty.isUpdatable()) {
           return true;
         }
       }
       if (property instanceof TransientProperty) {
-        return overrideModifiesEntity || ((TransientProperty) property).isModifiesEntity();
+        return overrideModifiesEntity || ((TransientProperty<?>) property).isModifiesEntity();
       }
     }
 
@@ -793,14 +794,14 @@ final class DefaultEntity implements Entity {
     return valueChangeEvent;
   }
 
-  private void setOriginalValue(final Property property, final Object previousValue) {
+  private void setOriginalValue(final Property<?> property, final Object previousValue) {
     if (originalValues == null) {
       originalValues = new HashMap<>();
     }
     originalValues.put(property, previousValue);
   }
 
-  private void removeOriginalValue(final Property property) {
+  private void removeOriginalValue(final Property<?> property) {
     if (originalValues != null) {
       originalValues.remove(property);
       if (originalValues.isEmpty()) {
@@ -809,7 +810,7 @@ final class DefaultEntity implements Entity {
     }
   }
 
-  private void updateOriginalValue(final Property property, final Object value, final Object previousValue) {
+  private void updateOriginalValue(final Property<?> property, final Object value, final Object previousValue) {
     final boolean modified = isModified(property);
     if (modified && Objects.equals(getOriginal(property), value)) {
       removeOriginalValue(property);//we're back to the original value
@@ -824,9 +825,9 @@ final class DefaultEntity implements Entity {
     stream.writeObject(definition.getEntityId());
     final boolean isModified = isModifiedInternal(true);
     stream.writeBoolean(isModified);
-    final List<Property> properties = definition.getProperties();
+    final List<Property<?>> properties = definition.getProperties();
     for (int i = 0; i < properties.size(); i++) {
-      final Property property = properties.get(i);
+      final Property<?> property = properties.get(i);
       if (!(property instanceof DerivedProperty)) {
         final boolean containsValue = containsKey(property);
         stream.writeBoolean(containsValue);
@@ -853,9 +854,9 @@ final class DefaultEntity implements Entity {
       throw new IllegalArgumentException("Undefined entity: " + entityId);
     }
     values = new HashMap<>();
-    final List<Property> properties = definition.getProperties();
+    final List<Property<?>> properties = definition.getProperties();
     for (int i = 0; i < properties.size(); i++) {
-      final Property property = properties.get(i);
+      final Property<Object> property = (Property<Object>) properties.get(i);
       if (!(property instanceof DerivedProperty)) {
         final boolean containsValue = stream.readBoolean();
         if (containsValue) {
@@ -868,13 +869,13 @@ final class DefaultEntity implements Entity {
     }
   }
 
-  private static Map<Property, Object> validateProperties(final EntityDefinition definition,
-                                                          final Map<Property, Object> propertyValues) {
+  private static Map<Property<?>, Object> validateProperties(final EntityDefinition definition,
+                                                             final Map<Property<?>, Object> propertyValues) {
     requireNonNull(definition, "definition");
     if (propertyValues != null && !propertyValues.isEmpty()) {
-      final Set<Property> propertySet = definition.getPropertySet();
-      for (final Map.Entry<Property, Object> valueEntry : propertyValues.entrySet()) {
-        final Property property = valueEntry.getKey();
+      final Set<Property<?>> propertySet = definition.getPropertySet();
+      for (final Map.Entry<Property<?>, Object> valueEntry : propertyValues.entrySet()) {
+        final Property<Object> property = (Property<Object>) valueEntry.getKey();
         if (!property.getEntityId().equals(definition.getEntityId()) || !propertySet.contains(property)) {
           throw new IllegalArgumentException("Property " + property + " is not part of entity: " + definition.getEntityId());
         }
@@ -885,12 +886,12 @@ final class DefaultEntity implements Entity {
     return propertyValues;
   }
 
-  private static Map<Property, Object> createValueMap(final Key key) {
+  private static Map<Property<?>, Object> createValueMap(final Key key) {
     requireNonNull(key, "key");
-    final List<ColumnProperty> properties = key.getProperties();
-    final Map<Property, Object> values = new HashMap<>(properties.size());
+    final List<ColumnProperty<?>> properties = key.getProperties();
+    final Map<Property<?>, Object> values = new HashMap<>(properties.size());
     for (int i = 0; i < properties.size(); i++) {
-      final ColumnProperty property = properties.get(i);
+      final ColumnProperty<?> property = properties.get(i);
       values.put(property, key.get(property));
     }
 

@@ -83,7 +83,7 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   public void setFilterValue() {
     conditionModel.setFilterValue(TestDomain.EMP_COMMISSION, 1400d);
-    final ColumnConditionModel<Entity, Property> propertyConditionModel = conditionModel.getPropertyFilterModel(TestDomain.EMP_COMMISSION);
+    final ColumnConditionModel<Entity, Property<?>> propertyConditionModel = conditionModel.getPropertyFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
     assertEquals(Operator.LIKE, propertyConditionModel.getOperator());

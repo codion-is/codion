@@ -62,7 +62,7 @@ public interface TableSortModel<R, C, T> {
    * @param columnIdentifier the column identifier
    * @return the Class representing the given column
    */
-  Class getColumnClass(C columnIdentifier);
+  Class<?> getColumnClass(C columnIdentifier);
 
   /**
    * @param listener a listener notified each time the sorting state changes

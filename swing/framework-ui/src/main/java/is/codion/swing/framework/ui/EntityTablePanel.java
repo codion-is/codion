@@ -187,7 +187,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final SwingEntityTableModel tableModel;
 
-  private final FilteredTable<Entity, Property, SwingEntityTableModel> table;
+  private final FilteredTable<Entity, Property<?>, SwingEntityTableModel> table;
 
   private final JScrollPane tableScrollPane;
 
@@ -288,7 +288,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return the filtered table instance
    */
-  public final FilteredTable<Entity, Property, SwingEntityTableModel> getTable() {
+  public final FilteredTable<Entity, Property<?>, SwingEntityTableModel> getTable() {
     return table;
   }
 
@@ -564,15 +564,15 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param propertyToUpdate the property to update
    * @see EntityComponentValues#createComponentValue(Property, SwingEntityEditModel, Object)
    */
-  public final void updateSelectedEntities(final Property propertyToUpdate) {
+  public final <T> void updateSelectedEntities(final Property<T> propertyToUpdate) {
     if (tableModel.getSelectionModel().isSelectionEmpty()) {
       return;
     }
 
     final List<Entity> selectedEntities = tableModel.getEntities().deepCopyEntities(tableModel.getSelectionModel().getSelectedItems());
-    final Collection values = Entities.getDistinctValues(propertyToUpdate.getAttribute(), selectedEntities);
-    final Object initialValue = values.size() == 1 ? values.iterator().next() : null;
-    final ComponentValuePanel inputPanel = new ComponentValuePanel(propertyToUpdate.getCaption(),
+    final Collection<T> values = Entities.getDistinctValues(propertyToUpdate.getAttribute(), selectedEntities);
+    final T initialValue = values.size() == 1 ? values.iterator().next() : null;
+    final ComponentValuePanel<T, JComponent> inputPanel = new ComponentValuePanel<>(propertyToUpdate.getCaption(),
             componentValues.createComponentValue(propertyToUpdate, tableModel.getEditModel(), initialValue));
     Dialogs.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
@@ -1076,7 +1076,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param property the property
    * @return the TableCellRenderer for the given property
    */
-  protected TableCellRenderer initializeTableCellRenderer(final Property property) {
+  protected TableCellRenderer initializeTableCellRenderer(final Property<?> property) {
     return EntityTableCellRenderers.createTableCellRenderer(tableModel, property);
   }
 
@@ -1085,8 +1085,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param property the property
    * @return a TableCellEditor for the given property
    */
-  protected TableCellEditor initializeTableCellEditor(final Property property) {
-    if (property instanceof ColumnProperty && !((ColumnProperty) property).isUpdatable()) {
+  protected TableCellEditor initializeTableCellEditor(final Property<?> property) {
+    if (property instanceof ColumnProperty && !((ColumnProperty<?>) property).isUpdatable()) {
       return null;
     }
 
@@ -1196,8 +1196,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     layoutPanel(tablePanel, initializeSouthPanel());
   }
 
-  private FilteredTable<Entity, Property, SwingEntityTableModel> createFilteredTable() {
-    final FilteredTable<Entity, Property, SwingEntityTableModel> filteredTable =
+  private FilteredTable<Entity, Property<?>, SwingEntityTableModel> createFilteredTable() {
+    final FilteredTable<Entity, Property<?>, SwingEntityTableModel> filteredTable =
             new FilteredTable<>(tableModel, new DefaultColumnConditionPanelProvider(tableModel));
     filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
@@ -1288,7 +1288,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void configureColumn(final TableColumn column) {
-    final Property property = (Property) column.getIdentifier();
+    final Property<?> property = (Property<?>) column.getIdentifier();
     column.setCellRenderer(initializeTableCellRenderer(property));
     column.setCellEditor(initializeTableCellEditor(property));
     column.setResizable(true);
@@ -1433,7 +1433,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
               hasFocus, row, column);
       final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
       final TableCellRenderer renderer = tableColumn.getCellRenderer();
-      final Property property = (Property) tableColumn.getIdentifier();
+      final Property<?> property = (Property<?>) tableColumn.getIdentifier();
       final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isIndicateCondition()
               && tableModel.getConditionModel().isEnabled(property.getAttribute());
@@ -1443,7 +1443,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
   }
 
-  private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Entity, Property> {
+  private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Entity, Property<?>> {
 
     private final SwingEntityTableModel tableModel;
 
@@ -1452,9 +1452,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     @Override
-    public ColumnConditionPanel<Entity, Property> createColumnConditionPanel(final TableColumn column) {
+    public ColumnConditionPanel<Entity, Property<?>> createColumnConditionPanel(final TableColumn column) {
       return new PropertyFilterPanel(tableModel.getConditionModel().getPropertyFilterModel(
-              ((Property) column.getIdentifier()).getAttribute()));
+              ((Property<?>) column.getIdentifier()).getAttribute()));
     }
   }
 }

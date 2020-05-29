@@ -140,7 +140,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Provides the default value for properties when a default entity is created
    */
-  private final Function<Property, Object> defaultValueProvider = this::getDefaultValue;
+  private final Function<Property<?>, Object> defaultValueProvider = this::getDefaultValue;
 
   /**
    * Specifies whether this edit model should warn about unsaved data
@@ -612,7 +612,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public EntityLookupModel createForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty) {
-    final Collection<ColumnProperty> searchProperties = getEntities()
+    final Collection<ColumnProperty<?>> searchProperties = getEntities()
             .getDefinition(foreignKeyProperty.getForeignEntityId()).getSearchProperties();
     if (searchProperties.isEmpty()) {
       throw new IllegalStateException("No search properties defined for entity: " + foreignKeyProperty.getForeignEntityId());
@@ -650,7 +650,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final boolean containsUnsavedData() {
     if (isEntityNew()) {
       final EntityDefinition entityDefinition = getEntityDefinition();
-      for (final ColumnProperty property : entityDefinition.getColumnProperties()) {
+      for (final ColumnProperty<?> property : entityDefinition.getColumnProperties()) {
         if (!property.isForeignKeyProperty() && valueModified(property)) {
           return true;
         }

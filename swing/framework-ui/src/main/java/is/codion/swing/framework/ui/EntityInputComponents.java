@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.DateFormats;
+import is.codion.common.item.Item;
 import is.codion.common.item.Items;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
@@ -63,6 +64,7 @@ import javax.swing.text.AbstractDocument;
 import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.temporal.Temporal;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -154,7 +156,7 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @return the component handling input for {@code property}
    */
-  public static JComponent createInputComponent(final Property property, final Value value) {
+  public static <T> JComponent createInputComponent(final Property<T> property, final Value<T> value) {
     return createInputComponent(property, value, null);
   }
 
@@ -164,19 +166,19 @@ public final class EntityInputComponents {
    * @param enabledState the enabled state
    * @return the component handling input for {@code property}
    */
-  public static JComponent createInputComponent(final Property property, final Value value,
-                                                final StateObserver enabledState) {
+  public static <T> JComponent createInputComponent(final Property<T> property, final Value<T> value,
+                                                    final StateObserver enabledState) {
     if (property instanceof ForeignKeyProperty) {
       throw new IllegalArgumentException("Use createForeignKeyComboBox() or createForeignKeyLookupField() for ForeignKeyProperties");
     }
     if (property instanceof ValueListProperty) {
-      return createValueListComboBox((ValueListProperty) property, value, enabledState);
+      return createValueListComboBox((ValueListProperty<T>) property, value, enabledState);
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
         return property.isNullable() ?
-                createNullableCheckBox(property, value, enabledState, IncludeCaption.NO) :
-                createCheckBox(property, value, enabledState, IncludeCaption.NO);
+                createNullableCheckBox((Property<Boolean>) property, (Value<Boolean>) value, enabledState, IncludeCaption.NO) :
+                createCheckBox((Property<Boolean>) property, (Value<Boolean>) value, enabledState, IncludeCaption.NO);
       case Types.DATE:
       case Types.TIMESTAMP:
       case Types.TIME:
@@ -200,7 +202,7 @@ public final class EntityInputComponents {
    * @return a JLabel for the given property
    * @see EntityInputComponents#LABEL_TEXT_ALIGNMENT
    */
-  public static JLabel createLabel(final Property property) {
+  public static JLabel createLabel(final Property<?> property) {
     return createLabel(property, LABEL_TEXT_ALIGNMENT.get());
   }
 
@@ -210,7 +212,7 @@ public final class EntityInputComponents {
    * @param horizontalAlignment the horizontal text alignment
    * @return a JLabel for the given property
    */
-  public static JLabel createLabel(final Property property, final int horizontalAlignment) {
+  public static JLabel createLabel(final Property<?> property, final int horizontalAlignment) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     final JLabel label = new JLabel(property.getCaption(), horizontalAlignment);
     if (property.getMnemonic() != null) {
@@ -227,7 +229,7 @@ public final class EntityInputComponents {
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a boolean property
    */
-  public static JCheckBox createCheckBox(final Property property, final Value<Boolean> value) {
+  public static JCheckBox createCheckBox(final Property<Boolean> property, final Value<Boolean> value) {
     return createCheckBox(property, value, null);
   }
 
@@ -239,7 +241,7 @@ public final class EntityInputComponents {
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a boolean property
    */
-  public static JCheckBox createCheckBox(final Property property, final Value<Boolean> value,
+  public static JCheckBox createCheckBox(final Property<Boolean> property, final Value<Boolean> value,
                                          final StateObserver enabledState) {
     return createCheckBox(property, value, enabledState, IncludeCaption.YES);
   }
@@ -253,7 +255,7 @@ public final class EntityInputComponents {
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a boolean property
    */
-  public static JCheckBox createCheckBox(final Property property, final Value<Boolean> value, final StateObserver enabledState,
+  public static JCheckBox createCheckBox(final Property<Boolean> property, final Value<Boolean> value, final StateObserver enabledState,
                                          final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
@@ -274,7 +276,7 @@ public final class EntityInputComponents {
    * @return a check box based on the given property
    * @throws IllegalArgumentException in case the property is not a nullable boolean property
    */
-  public static NullableCheckBox createNullableCheckBox(final Property property, final Value<Boolean> value, final StateObserver enabledState,
+  public static NullableCheckBox createNullableCheckBox(final Property<Boolean> property, final Value<Boolean> value, final StateObserver enabledState,
                                                         final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
@@ -292,7 +294,7 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @return a SteppedComboBox based on the given boolean property
    */
-  public static SteppedComboBox createBooleanComboBox(final Property property, final Value<Boolean> value) {
+  public static SteppedComboBox<Item<Boolean>> createBooleanComboBox(final Property<Boolean> property, final Value<Boolean> value) {
     return createBooleanComboBox(property, value, null);
   }
 
@@ -303,9 +305,9 @@ public final class EntityInputComponents {
    * @param enabledState the state controlling the enabled state of the combobox
    * @return a SteppedComboBox based on the given boolean property
    */
-  public static SteppedComboBox createBooleanComboBox(final Property property, final Value<Boolean> value,
-                                                      final StateObserver enabledState) {
-    final SteppedComboBox box = createComboBox(property, value, new BooleanComboBoxModel(), enabledState);
+  public static SteppedComboBox<Item<Boolean>> createBooleanComboBox(final Property<Boolean> property, final Value<Boolean> value,
+                                                                     final StateObserver enabledState) {
+    final SteppedComboBox<Item<Boolean>> box = createComboBox(property, value, new BooleanComboBoxModel(), enabledState);
     box.setPopupWidth(BOOLEAN_COMBO_BOX_POPUP_WIDTH);
 
     return box;
@@ -480,8 +482,8 @@ public final class EntityInputComponents {
    * @param calendarButton if yes then a button for opening a date input dialog is included (only available for LocalDate)
    * @return a date input panel
    */
-  public static TemporalInputPanel createTemporalInputPanel(final Property property, final Value value,
-                                                            final UpdateOn updateOn, final CalendarButton calendarButton) {
+  public static <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property, final Value<T> value,
+                                                                                    final UpdateOn updateOn, final CalendarButton calendarButton) {
     return createTemporalInputPanel(property, value, updateOn, calendarButton, null);
   }
 
@@ -494,9 +496,9 @@ public final class EntityInputComponents {
    * @param enabledState the state controlling the enabled state of the panel
    * @return a date input panel
    */
-  public static TemporalInputPanel createTemporalInputPanel(final Property property, final Value value,
-                                                            final UpdateOn updateOn, final CalendarButton calendarButton,
-                                                            final StateObserver enabledState) {
+  public static <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property, final Value<T> value,
+                                                                                    final UpdateOn updateOn, final CalendarButton calendarButton,
+                                                                                    final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     if (!property.isTemporal()) {
       throw new IllegalArgumentException("Property " + property + " is not a date or time property");
@@ -506,13 +508,13 @@ public final class EntityInputComponents {
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, value,
             DateFormats.getDateMask(formatString), updateOn, enabledState);
     if (property.isDate()) {
-      return new LocalDateInputPanel(field, formatString, calendarButton, enabledState);
+      return (TemporalInputPanel<T>) new LocalDateInputPanel(field, formatString, calendarButton, enabledState);
     }
     else if (property.isTimestamp()) {
-      return new LocalDateTimeInputPanel(field, formatString, calendarButton, enabledState);
+      return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(field, formatString, calendarButton, enabledState);
     }
     else if (property.isTime()) {
-      return new LocalTimeInputPanel(field, formatString, enabledState);
+      return (TemporalInputPanel<T>) new LocalTimeInputPanel(field, formatString, enabledState);
     }
 
     throw new IllegalArgumentException("Can not create a date input panel for a non-date property");

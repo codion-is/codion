@@ -283,24 +283,24 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Collection<ColumnProperty> getSearchProperties() {
+  public Collection<ColumnProperty<?>> getSearchProperties() {
     return entityProperties.columnProperties.stream().filter(ColumnProperty::isSearchProperty).collect(toList());
   }
 
   @Override
-  public ColumnProperty getColumnProperty(final Attribute<?> attribute) {
-    final Property property = getProperty(attribute);
+  public <T> ColumnProperty<T> getColumnProperty(final Attribute<T> attribute) {
+    final Property<T> property = getProperty(attribute);
     if (!(property instanceof ColumnProperty)) {
       throw new IllegalArgumentException(attribute + " is not a ColumnProperty");
     }
 
-    return (ColumnProperty) property;
+    return (ColumnProperty<T>) property;
   }
 
   @Override
-  public Property getProperty(final Attribute<?> attribute) {
+  public <T> Property<T> getProperty(final Attribute<T> attribute) {
     requireNonNull(attribute, "attribute");
-    final Property property = entityProperties.propertyMap.get(attribute);
+    final Property<T> property = (Property<T>) entityProperties.propertyMap.get(attribute);
     if (property == null) {
       throw new IllegalArgumentException("Property '" + attribute + "' not found in entity: " + entityId);
     }
@@ -309,8 +309,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public ColumnProperty getPrimaryKeyProperty(final Attribute<?> attribute) {
-    final ColumnProperty property = entityProperties.primaryKeyPropertyMap.get(attribute);
+  public <T> ColumnProperty<T> getPrimaryKeyProperty(final Attribute<T> attribute) {
+    final ColumnProperty<T> property = (ColumnProperty<T>) entityProperties.primaryKeyPropertyMap.get(attribute);
     if (property == null) {
       throw new IllegalArgumentException("Primary key property " + attribute + " not found in entity: " + entityId);
     }
@@ -319,15 +319,15 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<Property> getProperties(final Collection<Attribute<?>> attributes) {
+  public List<Property<?>> getProperties(final Collection<Attribute<?>> attributes) {
     requireNonNull(attributes, "attributes");
 
     return attributes.stream().map(this::getProperty).collect(toList());
   }
 
   @Override
-  public ColumnProperty getSelectableColumnProperty(final Attribute<?> attribute) {
-    final ColumnProperty property = getColumnProperty(attribute);
+  public <T> ColumnProperty<T> getSelectableColumnProperty(final Attribute<T> attribute) {
+    final ColumnProperty<T> property = getColumnProperty(attribute);
     if (!property.isSelectable()) {
       throw new IllegalArgumentException(attribute + " is not selectable");
     }
@@ -336,9 +336,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<ColumnProperty> getColumnProperties(final List<Attribute<?>> attributes) {
+  public List<ColumnProperty<?>> getColumnProperties(final List<Attribute<?>> attributes) {
     requireNonNull(attributes, "attributes");
-    final List<ColumnProperty> theProperties = new ArrayList<>(attributes.size());
+    final List<ColumnProperty<?>> theProperties = new ArrayList<>(attributes.size());
     for (int i = 0; i < attributes.size(); i++) {
       theProperties.add(getColumnProperty(attributes.get(i)));
     }
@@ -352,8 +352,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<ColumnProperty> getWritableColumnProperties(final boolean includePrimaryKeyProperties,
-                                                          final boolean includeNonUpdatable) {
+  public List<ColumnProperty<?>> getWritableColumnProperties(final boolean includePrimaryKeyProperties,
+                                                             final boolean includeNonUpdatable) {
     return entityProperties.columnProperties.stream()
             .filter(property -> property.isInsertable() &&
                     (includeNonUpdatable || property.isUpdatable()) &&
@@ -362,10 +362,10 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<Property> getUpdatableProperties() {
-    final List<ColumnProperty> writableColumnProperties = getWritableColumnProperties(!isKeyGenerated(), false);
+  public List<Property<?>> getUpdatableProperties() {
+    final List<ColumnProperty<?>> writableColumnProperties = getWritableColumnProperties(!isKeyGenerated(), false);
     writableColumnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
-    final List<Property> updatable = new ArrayList<>(writableColumnProperties);
+    final List<Property<?>> updatable = new ArrayList<>(writableColumnProperties);
     for (final ForeignKeyProperty foreignKeyProperty : entityProperties.foreignKeyProperties) {
       if (foreignKeyProperty.isUpdatable()) {
         updatable.add(foreignKeyProperty);
@@ -376,8 +376,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<ColumnProperty> getSelectableColumnProperties(final List<Attribute<?>> attributes) {
-    final List<ColumnProperty> theProperties = new ArrayList<>(attributes.size());
+  public List<ColumnProperty<?>> getSelectableColumnProperties(final List<Attribute<?>> attributes) {
+    final List<ColumnProperty<?>> theProperties = new ArrayList<>(attributes.size());
     for (int i = 0; i < attributes.size(); i++) {
       theProperties.add(getSelectableColumnProperty(attributes.get(i)));
     }
@@ -407,12 +407,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<Property> getProperties() {
+  public List<Property<?>> getProperties() {
     return entityProperties.properties;
   }
 
   @Override
-  public Set<Property> getPropertySet() {
+  public Set<Property<?>> getPropertySet() {
     return entityProperties.propertySet;
   }
 
@@ -432,39 +432,39 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Collection<DerivedProperty> getDerivedProperties(final Attribute<?> property) {
-    final Collection<DerivedProperty> derived = entityProperties.derivedProperties.get(property);
+  public Collection<DerivedProperty<?>> getDerivedProperties(final Attribute<?> property) {
+    final Collection<DerivedProperty<?>> derived = entityProperties.derivedProperties.get(property);
 
     return derived == null ? emptyList() : derived;
   }
 
   @Override
-  public List<ColumnProperty> getPrimaryKeyProperties() {
+  public List<ColumnProperty<?>> getPrimaryKeyProperties() {
     return entityProperties.primaryKeyProperties;
   }
 
   @Override
-  public List<Property> getVisibleProperties() {
+  public List<Property<?>> getVisibleProperties() {
     return entityProperties.visibleProperties;
   }
 
   @Override
-  public List<ColumnProperty> getColumnProperties() {
+  public List<ColumnProperty<?>> getColumnProperties() {
     return entityProperties.columnProperties;
   }
 
   @Override
-  public List<ColumnProperty> getSelectableColumnProperties() {
+  public List<ColumnProperty<?>> getSelectableColumnProperties() {
     return entityProperties.selectableColumnProperties;
   }
 
   @Override
-  public List<ColumnProperty> getLazyLoadedBlobProperties() {
+  public List<ColumnProperty<?>> getLazyLoadedBlobProperties() {
     return entityProperties.lazyLoadedBlobProperties;
   }
 
   @Override
-  public List<TransientProperty> getTransientProperties() {
+  public List<TransientProperty<?>> getTransientProperties() {
     return entityProperties.transientProperties;
   }
 
@@ -495,7 +495,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<DenormalizedProperty> getDenormalizedProperties(final Attribute<?> foreignKeyAttribute) {
+  public List<DenormalizedProperty<?>> getDenormalizedProperties(final Attribute<?> foreignKeyAttribute) {
     return entityProperties.denormalizedProperties.get(foreignKeyAttribute);
   }
 
@@ -525,7 +525,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Entity entity(final Function<Property, Object> valueProvider) {
+  public Entity entity(final Function<Property<?>, Object> valueProvider) {
     requireNonNull(valueProvider);
     final Entity entity = entity();
     for (final ColumnProperty property : entityProperties.columnProperties) {
@@ -540,7 +540,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
       }
     }
     for (final ForeignKeyProperty foreignKeyProperty : entityProperties.foreignKeyProperties) {
-      entity.put(foreignKeyProperty, valueProvider.apply(foreignKeyProperty));
+      entity.put(foreignKeyProperty, (Entity) valueProvider.apply(foreignKeyProperty));
     }
     entity.saveAll();
 
@@ -548,7 +548,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Entity entity(final Map<Property, Object> values, final Map<Property, Object> originalValues) {
+  public Entity entity(final Map<Property<?>, Object> values, final Map<Property<?>, Object> originalValues) {
     return new DefaultEntity(this, values, originalValues);
   }
 
@@ -633,23 +633,23 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private final String entityId;
 
-    private final Map<Attribute<?>, Property> propertyMap;
-    private final List<Property> properties;
-    private final Set<Property> propertySet;
-    private final List<Property> visibleProperties;
-    private final List<ColumnProperty> columnProperties;
-    private final List<ColumnProperty> lazyLoadedBlobProperties;
-    private final List<ColumnProperty> selectableColumnProperties;
-    private final List<ColumnProperty> primaryKeyProperties;
-    private final Map<Attribute<?>, ColumnProperty> primaryKeyPropertyMap;
+    private final Map<Attribute<?>, Property<?>> propertyMap;
+    private final List<Property<?>> properties;
+    private final Set<Property<?>> propertySet;
+    private final List<Property<?>> visibleProperties;
+    private final List<ColumnProperty<?>> columnProperties;
+    private final List<ColumnProperty<?>> lazyLoadedBlobProperties;
+    private final List<ColumnProperty<?>> selectableColumnProperties;
+    private final List<ColumnProperty<?>> primaryKeyProperties;
+    private final Map<Attribute<?>, ColumnProperty<?>> primaryKeyPropertyMap;
     private final List<ForeignKeyProperty> foreignKeyProperties;
     private final Map<Attribute<Entity>, ForeignKeyProperty> foreignKeyPropertyMap;
     private final Map<Attribute<?>, List<ForeignKeyProperty>> columnPropertyForeignKeyProperties;
-    private final Map<Attribute<?>, Set<DerivedProperty>> derivedProperties;
-    private final List<TransientProperty> transientProperties;
-    private final Map<Attribute<?>, List<DenormalizedProperty>> denormalizedProperties;
+    private final Map<Attribute<?>, Set<DerivedProperty<?>>> derivedProperties;
+    private final List<TransientProperty<?>> transientProperties;
+    private final Map<Attribute<?>, List<DenormalizedProperty<?>>> denormalizedProperties;
 
-    private EntityProperties(final String entityId, final Property.Builder... propertyBuilders) {
+    private EntityProperties(final String entityId, final Property.Builder<?>... propertyBuilders) {
       this.entityId = entityId;
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
@@ -668,9 +668,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
       this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties());
     }
 
-    private Map<Attribute<?>, Property> initializePropertyMap(final Property.Builder... propertyBuilders) {
-      final Map<Attribute<?>, Property> propertyMap = new LinkedHashMap<>(propertyBuilders.length);
-      for (final Property.Builder propertyBuilder : propertyBuilders) {
+    private Map<Attribute<?>, Property<?>> initializePropertyMap(final Property.Builder<?>... propertyBuilders) {
+      final Map<Attribute<?>, Property<?>> propertyMap = new LinkedHashMap<>(propertyBuilders.length);
+      for (final Property.Builder<?> propertyBuilder : propertyBuilders) {
         validateAndAddProperty(propertyBuilder, propertyMap);
         if (propertyBuilder instanceof ForeignKeyProperty.Builder) {
           initializeForeignKeyProperty(propertyMap, (ForeignKeyProperty.Builder) propertyBuilder);
@@ -681,23 +681,23 @@ final class DefaultEntityDefinition implements EntityDefinition {
       return unmodifiableMap(propertyMap);
     }
 
-    private void initializeForeignKeyProperty(final Map<Attribute<?>, Property> propertyMap,
+    private void initializeForeignKeyProperty(final Map<Attribute<?>, Property<?>> propertyMap,
                                               final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
-      for (final ColumnProperty.Builder propertyBuilder : foreignKeyPropertyBuilder.getColumnPropertyBuilders()) {
+      for (final ColumnProperty.Builder<?> propertyBuilder : foreignKeyPropertyBuilder.getColumnPropertyBuilders()) {
         if (!(propertyBuilder.get() instanceof MirrorProperty)) {
           validateAndAddProperty(propertyBuilder, propertyMap);
         }
       }
     }
 
-    private void validateAndAddProperty(final Property.Builder propertyBuilder, final Map<Attribute<?>, Property> propertyMap) {
-      final Property property = propertyBuilder.get();
+    private void validateAndAddProperty(final Property.Builder<?> propertyBuilder, final Map<Attribute<?>, Property<?>> propertyMap) {
+      final Property<?> property = propertyBuilder.get();
       checkIfUniqueAttribute(property, propertyMap);
       propertyBuilder.entityId(entityId);
       propertyMap.put(property.getAttribute(), property);
     }
 
-    private void checkIfUniqueAttribute(final Property property, final Map<Attribute<?>, Property> propertyMap) {
+    private void checkIfUniqueAttribute(final Property<?> property, final Map<Attribute<?>, Property<?>> propertyMap) {
       if (propertyMap.containsKey(property.getAttribute())) {
         throw new IllegalArgumentException("Property with id " + property.getAttribute()
                 + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
@@ -723,14 +723,14 @@ final class DefaultEntityDefinition implements EntityDefinition {
       return foreignKeyMap;
     }
 
-    private Map<Attribute<?>, ColumnProperty> initializePrimaryKeyPropertyMap() {
-      final Map<Attribute<?>, ColumnProperty> map = new HashMap<>(this.primaryKeyProperties.size());
+    private Map<Attribute<?>, ColumnProperty<?>> initializePrimaryKeyPropertyMap() {
+      final Map<Attribute<?>, ColumnProperty<?>> map = new HashMap<>(this.primaryKeyProperties.size());
       this.primaryKeyProperties.forEach(property -> map.put(property.getAttribute(), property));
 
       return unmodifiableMap(map);
     }
 
-    private List<Property> getVisibleProperties() {
+    private List<Property<?>> getVisibleProperties() {
       return properties.stream().filter(property -> !property.isHidden()).collect(toList());
     }
 
@@ -739,27 +739,27 @@ final class DefaultEntityDefinition implements EntityDefinition {
               .map(property -> (ForeignKeyProperty) property).collect(toList());
     }
 
-    private List<ColumnProperty> getColumnProperties() {
+    private List<ColumnProperty<?>> getColumnProperties() {
       return properties.stream().filter(property -> property instanceof ColumnProperty)
-              .map(property -> (ColumnProperty) property).collect(toList());
+              .map(property -> (ColumnProperty<?>) property).collect(toList());
     }
 
-    private List<TransientProperty> getTransientProperties() {
+    private List<TransientProperty<?>> getTransientProperties() {
       return properties.stream().filter(property -> property instanceof TransientProperty)
-              .map(property -> (TransientProperty) property).collect(toList());
+              .map(property -> (TransientProperty<?>) property).collect(toList());
     }
 
-    private List<ColumnProperty> initializeLazyLoadedBlobProperties() {
+    private List<ColumnProperty<?>> initializeLazyLoadedBlobProperties() {
       return columnProperties.stream().filter(Property::isBlob).filter(property ->
               !(property instanceof BlobProperty) || !((BlobProperty) property).isEagerlyLoaded()).collect(toList());
     }
 
-    private Map<Attribute<?>, List<DenormalizedProperty>> getDenormalizedProperties() {
-      final Map<Attribute<?>, List<DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
-      for (final Property property : properties) {
+    private Map<Attribute<?>, List<DenormalizedProperty<?>>> getDenormalizedProperties() {
+      final Map<Attribute<?>, List<DenormalizedProperty<?>>> denormalizedPropertiesMap = new HashMap<>(properties.size());
+      for (final Property<?> property : properties) {
         if (property instanceof DenormalizedProperty) {
-          final DenormalizedProperty denormalizedProperty = (DenormalizedProperty) property;
-          final Collection<DenormalizedProperty> denormalizedProperties =
+          final DenormalizedProperty<?> denormalizedProperty = (DenormalizedProperty<?>) property;
+          final Collection<DenormalizedProperty<?>> denormalizedProperties =
                   denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getForeignKeyAttribute(), attribute -> new ArrayList<>());
           denormalizedProperties.add(denormalizedProperty);
         }
@@ -768,12 +768,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
       return denormalizedPropertiesMap;
     }
 
-    private Map<Attribute<?>, Set<DerivedProperty>> initializeDerivedProperties() {
-      final Map<Attribute<?>, Set<DerivedProperty>> derivedPropertyMap = new HashMap<>();
-      for (final Property property : properties) {
+    private Map<Attribute<?>, Set<DerivedProperty<?>>> initializeDerivedProperties() {
+      final Map<Attribute<?>, Set<DerivedProperty<?>>> derivedPropertyMap = new HashMap<>();
+      for (final Property<?> property : properties) {
         if (property instanceof DerivedProperty) {
-          for (final Attribute<?> sourceAttribute : ((DerivedProperty) property).getSourceAttributes()) {
-            derivedPropertyMap.computeIfAbsent(sourceAttribute, attribute -> new HashSet<>()).add((DerivedProperty) property);
+          for (final Attribute<?> sourceAttribute : ((DerivedProperty<?>) property).getSourceAttributes()) {
+            derivedPropertyMap.computeIfAbsent(sourceAttribute, attribute -> new HashSet<>()).add((DerivedProperty<?>) property);
           }
         }
       }
@@ -781,9 +781,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
       return derivedPropertyMap;
     }
 
-    private List<ColumnProperty> getPrimaryKeyProperties() {
+    private List<ColumnProperty<?>> getPrimaryKeyProperties() {
       return properties.stream().filter(property -> property instanceof ColumnProperty
-              && ((ColumnProperty) property).isPrimaryKeyProperty()).map(property -> (ColumnProperty) property)
+              && ((ColumnProperty<?>) property).isPrimaryKeyProperty()).map(property -> (ColumnProperty<?>) property)
               .sorted((pk1, pk2) -> {
                 final Integer index1 = pk1.getPrimaryKeyIndex();
                 final Integer index2 = pk2.getPrimaryKeyIndex();
@@ -792,17 +792,17 @@ final class DefaultEntityDefinition implements EntityDefinition {
               }).collect(toList());
     }
 
-    private List<ColumnProperty> getSelectableProperties() {
+    private List<ColumnProperty<?>> getSelectableProperties() {
       return columnProperties.stream().filter(property ->
               !lazyLoadedBlobProperties.contains(property)).filter(ColumnProperty::isSelectable).collect(toList());
     }
   }
 
-  private static void validatePrimaryKeyProperties(final Map<Attribute<?>, Property> propertyMap) {
+  private static void validatePrimaryKeyProperties(final Map<Attribute<?>, Property<?>> propertyMap) {
     final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
-    for (final Property property : propertyMap.values()) {
-      if (property instanceof ColumnProperty && ((ColumnProperty) property).isPrimaryKeyProperty()) {
-        final Integer index = ((ColumnProperty) property).getPrimaryKeyIndex();
+    for (final Property<?> property : propertyMap.values()) {
+      if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyProperty()) {
+        final Integer index = ((ColumnProperty<?>) property).getPrimaryKeyIndex();
         if (usedPrimaryKeyIndexes.contains(index)) {
           throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
         }

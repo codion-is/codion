@@ -349,8 +349,8 @@ public final class EntityLookupField extends JTextField {
 
     private void initializeUI(final EntityLookupModel lookupModel) {
       final JPanel propertyBasePanel = new JPanel(new CardLayout(5, 5));
-      final SwingFilteredComboBoxModel<ColumnProperty> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
-      for (final Map.Entry<ColumnProperty, EntityLookupModel.LookupSettings> entry :
+      final SwingFilteredComboBoxModel<ColumnProperty<?>> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
+      for (final Map.Entry<ColumnProperty<?>, EntityLookupModel.LookupSettings> entry :
               lookupModel.getPropertyLookupSettings().entrySet()) {
         propertyComboBoxModel.addItem(entry.getKey());
         propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getAttribute().getName());
@@ -486,7 +486,7 @@ public final class EntityLookupField extends JTextField {
    */
   public static class TableSelectionProvider implements SelectionProvider {
 
-    private final FilteredTable<Entity, Property, SwingEntityTableModel> table;
+    private final FilteredTable<Entity, Property<?>, SwingEntityTableModel> table;
     private final JScrollPane scrollPane;
     private final JPanel basePanel = new JPanel(Layouts.borderLayout());
     private final Control selectControl;
@@ -512,7 +512,7 @@ public final class EntityLookupField extends JTextField {
       final String enterActionKey = "EntityLookupField.enter";
       table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
       table.getActionMap().put(enterActionKey, selectControl);
-      final Collection<ColumnProperty> lookupProperties = lookupModel.getLookupProperties();
+      final Collection<ColumnProperty<?>> lookupProperties = lookupModel.getLookupProperties();
       tableModel.getColumnModel().setColumns(lookupProperties.toArray(new Property[0]));
       tableModel.setSortingDirective(lookupProperties.iterator().next().getAttribute(), SortingDirective.ASCENDING);
       table.setSelectionMode(lookupModel.getMultipleSelectionEnabledValue().get() ?
@@ -525,7 +525,7 @@ public final class EntityLookupField extends JTextField {
     /**
      * @return the underlying FilteredTablePanel
      */
-    public final FilteredTable<Entity, Property, SwingEntityTableModel> getTable() {
+    public final FilteredTable<Entity, Property<?>, SwingEntityTableModel> getTable() {
       return table;
     }
 

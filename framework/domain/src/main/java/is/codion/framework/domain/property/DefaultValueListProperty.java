@@ -10,7 +10,7 @@ import java.util.Objects;
 
 import static java.util.Collections.unmodifiableList;
 
-final class DefaultValueListProperty<T> extends DefaultColumnProperty implements ValueListProperty<T> {
+final class DefaultValueListProperty<T> extends DefaultColumnProperty<T> implements ValueListProperty<T> {
 
   private static final long serialVersionUID = 1;
 

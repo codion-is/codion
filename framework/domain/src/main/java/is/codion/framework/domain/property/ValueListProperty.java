@@ -11,7 +11,7 @@ import java.util.List;
  * A property based on a list of values, each with a displayable caption.
  * @param <T> the value type
  */
-public interface ValueListProperty<T> extends ColumnProperty {
+public interface ValueListProperty<T> extends ColumnProperty<T> {
 
   /**
    * @param value the value to validate

@@ -70,7 +70,7 @@ public class DefaultEntityValidator implements EntityValidator {
   }
 
   @Override
-  public boolean isNullable(final Entity entity, final Property property) {
+  public boolean isNullable(final Entity entity, final Property<?> property) {
     return property.isNullable();
   }
 
@@ -84,13 +84,13 @@ public class DefaultEntityValidator implements EntityValidator {
   @Override
   public void validate(final Entity entity, final EntityDefinition definition) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
-    for (final Property property : definition.getProperties()) {
+    for (final Property<?> property : definition.getProperties()) {
       validate(entity, definition, property);
     }
   }
 
   @Override
-  public void validate(final Entity entity, final EntityDefinition definition, final Property property) throws ValidationException {
+  public void validate(final Entity entity, final EntityDefinition definition, final Property<?> property) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (performNullValidation && !isForeignKeyProperty(property)) {
@@ -105,7 +105,7 @@ public class DefaultEntityValidator implements EntityValidator {
   }
 
   @Override
-  public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
+  public final void performRangeValidation(final Entity entity, final Property<?> property) throws RangeValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (entity.isNull(property)) {
@@ -125,7 +125,7 @@ public class DefaultEntityValidator implements EntityValidator {
 
   @Override
   public final void performNullValidation(final Entity entity, final EntityDefinition definition,
-                                          final Property property) throws NullValidationException {
+                                          final Property<?> property) throws NullValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (!isNullable(entity, property) && entity.isNull(property)) {
@@ -144,7 +144,7 @@ public class DefaultEntityValidator implements EntityValidator {
   }
 
   @Override
-  public final void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException {
+  public final void performLengthValidation(final Entity entity, final Property<?> property) throws LengthValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (entity.isNull(property)) {
@@ -182,21 +182,21 @@ public class DefaultEntityValidator implements EntityValidator {
     return revalidateEvent;
   }
 
-  private static boolean isNonGeneratedPrimaryKeyProperty(final EntityDefinition definition, final Property property) {
+  private static boolean isNonGeneratedPrimaryKeyProperty(final EntityDefinition definition, final Property<?> property) {
     return (property instanceof ColumnProperty
-            && ((ColumnProperty) property).isPrimaryKeyProperty()) && !definition.isKeyGenerated();
+            && ((ColumnProperty<?>) property).isPrimaryKeyProperty()) && !definition.isKeyGenerated();
   }
 
   /**
    * @param property the property
    * @return true if the property is a part of a foreign key
    */
-  private static boolean isForeignKeyProperty(final Property property) {
-    return property instanceof ColumnProperty && ((ColumnProperty) property).isForeignKeyProperty();
+  private static boolean isForeignKeyProperty(final Property<?> property) {
+    return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isForeignKeyProperty();
   }
 
-  private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property property) {
-    return property instanceof ColumnProperty && !((ColumnProperty) property).isPrimaryKeyProperty()
-            && !((ColumnProperty) property).columnHasDefaultValue();
+  private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property<?> property) {
+    return property instanceof ColumnProperty && !((ColumnProperty<?>) property).isPrimaryKeyProperty()
+            && !((ColumnProperty<?>) property).columnHasDefaultValue();
   }
 }

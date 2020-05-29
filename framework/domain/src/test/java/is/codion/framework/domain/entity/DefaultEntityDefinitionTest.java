@@ -130,7 +130,7 @@ public class DefaultEntityDefinitionTest {
     final Domain domain = new TestDomain();
 
     final EntityDefinition definition = domain.getDefinition("entityId");
-    Collection<DerivedProperty> linked = definition.getDerivedProperties(name);
+    Collection<DerivedProperty<?>> linked = definition.getDerivedProperties(name);
     assertTrue(linked.contains(definition.getProperty(derived)));
     assertEquals(1, linked.size());
     linked = definition.getDerivedProperties(info);

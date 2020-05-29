@@ -61,7 +61,7 @@ public final class Example {
                       .nullable(false).maximumLength(40))
               .keyGenerator(new KeyGenerator() {
                 @Override
-                public void beforeInsert(Entity entity, List<ColumnProperty> primaryKeyProperties,
+                public void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
                                          DatabaseConnection connection) throws SQLException {
                   entity.put(CUSTOMER_ID, randomUUID().toString());
                 }

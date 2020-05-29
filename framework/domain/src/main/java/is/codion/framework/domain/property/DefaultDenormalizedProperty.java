@@ -8,12 +8,12 @@ import is.codion.framework.domain.entity.Entity;
 /**
  * A property representing a column that should get its value automatically from a column in a referenced table
  */
-final class DefaultDenormalizedProperty extends DefaultColumnProperty implements DenormalizedProperty {
+final class DefaultDenormalizedProperty<T> extends DefaultColumnProperty<T> implements DenormalizedProperty<T> {
 
   private static final long serialVersionUID = 1;
 
   private final Attribute<Entity> foreignKeyAttribute;
-  private final Property denormalizedProperty;
+  private final Property<T> denormalizedProperty;
 
   /**
    * @param attribute the attribute
@@ -22,8 +22,8 @@ final class DefaultDenormalizedProperty extends DefaultColumnProperty implements
    * @param denormalizedProperty the property from which this property should get its value
    * @param caption the caption if this property
    */
-  DefaultDenormalizedProperty(final Attribute<?> attribute, final Attribute<Entity> foreignKeyAttribute,
-                              final Property denormalizedProperty, final String caption) {
+  DefaultDenormalizedProperty(final Attribute<T> attribute, final Attribute<Entity> foreignKeyAttribute,
+                              final Property<T> denormalizedProperty, final String caption) {
     super(attribute, denormalizedProperty.getType(), caption);
     this.foreignKeyAttribute = foreignKeyAttribute;
     this.denormalizedProperty = denormalizedProperty;
@@ -35,7 +35,7 @@ final class DefaultDenormalizedProperty extends DefaultColumnProperty implements
   }
 
   @Override
-  public Property getDenormalizedProperty() {
+  public Property<T> getDenormalizedProperty() {
     return denormalizedProperty;
   }
 

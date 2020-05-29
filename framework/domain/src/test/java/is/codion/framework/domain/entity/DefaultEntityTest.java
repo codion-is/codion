@@ -47,30 +47,30 @@ public class DefaultEntityTest {
     final EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
     final EntityDefinition masterDefinition = ENTITIES.getDefinition(TestDomain.T_MASTER);
 
-    final Map<Property, Object> values = new HashMap<>();
+    final Map<Property<?>, Object> values = new HashMap<>();
     values.put(detailDefinition.getProperty(TestDomain.DETAIL_BOOLEAN), false);
     values.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), 1);
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, values, null));
 
-    final Map<Property, Object> originalValues = new HashMap<>();
+    final Map<Property<?>, Object> originalValues = new HashMap<>();
     originalValues.put(detailDefinition.getProperty(TestDomain.DETAIL_BOOLEAN), false);
     originalValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), 1);
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, originalValues));
 
-    final Map<Property, Object> invalidTypeValues = new HashMap<>();
+    final Map<Property<?>, Object> invalidTypeValues = new HashMap<>();
     invalidTypeValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), false);
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidTypeValues, null));
 
-    final Map<Property, Object> invalidTypeOriginalValues = new HashMap<>();
+    final Map<Property<?>, Object> invalidTypeOriginalValues = new HashMap<>();
     invalidTypeOriginalValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), false);
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final Property invalid = Properties.columnProperty(Properties.attribute("invalid"), Types.INTEGER).entityId(TestDomain.T_MASTER).get();
-    final Map<Property, Object> invalidPropertyValues = new HashMap<>();
+    final Property<?> invalid = Properties.columnProperty(Properties.attribute("invalid"), Types.INTEGER).entityId(TestDomain.T_MASTER).get();
+    final Map<Property<?>, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidPropertyValues, null));
@@ -588,7 +588,7 @@ public class DefaultEntityTest {
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
     final Attribute<Integer> trans = Properties.attribute("trans");
     final Attribute<Integer> id = Properties.attribute("id");
-    final TransientProperty.Builder transientProperty = Properties.transientProperty(trans, Types.INTEGER);
+    final TransientProperty.Builder<?> transientProperty = Properties.transientProperty(trans, Types.INTEGER);
     class TestDomain extends Domain {
       public TestDomain() {
         super("transient");

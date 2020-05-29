@@ -56,9 +56,9 @@ public final class TestDomain extends Domain {
             .smallDataset(true);
   }
 
-  public static final Attribute<?> DEPARTMENT_ID = attribute("deptno");
-  public static final Attribute<?> DEPARTMENT_NAME = attribute("dname");
-  public static final Attribute<?> DEPARTMENT_LOCATION = attribute("loc");
+  public static final Attribute<Integer> DEPARTMENT_ID = attribute("deptno");
+  public static final Attribute<String> DEPARTMENT_NAME = attribute("dname");
+  public static final Attribute<String> DEPARTMENT_LOCATION = attribute("loc");
 
   public static final String T_DEPARTMENT = "scott.dept";
 

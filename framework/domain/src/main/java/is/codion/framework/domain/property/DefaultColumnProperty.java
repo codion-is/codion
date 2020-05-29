@@ -20,7 +20,7 @@ import java.util.Objects;
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
+class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnProperty<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -37,15 +37,15 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   private boolean foreignKeyProperty = false;
   private boolean searchProperty = false;
 
-  private final transient ResultPacker<?> resultPacker;
-  private transient ValueFetcher<?> valueFetcher;
+  private final transient ResultPacker<T> resultPacker;
+  private transient ValueFetcher<T> valueFetcher;
   private transient String columnName;
-  private transient ValueConverter<Object, Object> valueConverter;
+  private transient ValueConverter<T, Object> valueConverter;
   private transient boolean groupingColumn = false;
   private transient boolean aggregateColumn = false;
   private transient boolean selectable = true;
 
-  DefaultColumnProperty(final Attribute<?> attribute, final int type, final String caption) {
+  DefaultColumnProperty(final Attribute<T> attribute, final int type, final String caption) {
     super(attribute, type, caption, getTypeClass(type));
     this.columnType = type;
     this.columnName = attribute.getName();
@@ -65,12 +65,12 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   }
 
   @Override
-  public final Object toColumnValue(final Object value) {
+  public final Object toColumnValue(final T value) {
     return valueConverter.toColumnValue(value);
   }
 
   @Override
-  public final Object fromColumnValue(final Object object) {
+  public final T fromColumnValue(final Object object) {
     return valueConverter.fromColumnValue(object);
   }
 
@@ -155,8 +155,8 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   /**
    * @return a builder for this property instance
    */
-  ColumnProperty.Builder builder() {
-    return new DefaultColumnPropertyBuilder(this);
+  ColumnProperty.Builder<T> builder() {
+    return new DefaultColumnPropertyBuilder<>(this);
   }
 
   private ValueConverter initializeValueConverter() {
@@ -207,10 +207,10 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
   }
 
-  private class PropertyResultPacker implements ResultPacker<Object> {
+  private class PropertyResultPacker implements ResultPacker<T> {
 
     @Override
-    public Object fetch(final ResultSet resultSet) throws SQLException {
+    public T fetch(final ResultSet resultSet) throws SQLException {
       return valueFetcher.fetchValue(resultSet, 1);
     }
   }
@@ -385,60 +385,60 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
   }
 
-  static class DefaultColumnPropertyBuilder extends DefaultPropertyBuilder implements ColumnProperty.Builder {
+  static class DefaultColumnPropertyBuilder<T> extends DefaultPropertyBuilder<T> implements ColumnProperty.Builder<T> {
 
-    private final DefaultColumnProperty columnProperty;
+    private final DefaultColumnProperty<T> columnProperty;
 
-    DefaultColumnPropertyBuilder(final DefaultColumnProperty columnProperty) {
+    DefaultColumnPropertyBuilder(final DefaultColumnProperty<T> columnProperty) {
       super(columnProperty);
       this.columnProperty = columnProperty;
     }
 
     @Override
-    public ColumnProperty get() {
+    public ColumnProperty<T> get() {
       return columnProperty;
     }
 
     @Override
-    public final ColumnProperty.Builder columnType(final int columnType) {
+    public final ColumnProperty.Builder<T> columnType(final int columnType) {
       columnProperty.columnType = columnType;
       columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder columnName(final String columnName) {
+    public final ColumnProperty.Builder<T> columnName(final String columnName) {
       columnProperty.columnName = requireNonNull(columnName, "columnName");
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder columnHasDefaultValue(final boolean columnHasDefaultValue) {
+    public final ColumnProperty.Builder<T> columnHasDefaultValue(final boolean columnHasDefaultValue) {
       columnProperty.columnHasDefaultValue = columnHasDefaultValue;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder readOnly(final boolean readOnly) {
+    public ColumnProperty.Builder<T> readOnly(final boolean readOnly) {
       columnProperty.insertable = !readOnly;
       columnProperty.updatable = !readOnly;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder insertable(final boolean insertable) {
+    public ColumnProperty.Builder<T> insertable(final boolean insertable) {
       columnProperty.insertable = insertable;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder updatable(final boolean updatable) {
+    public ColumnProperty.Builder<T> updatable(final boolean updatable) {
       columnProperty.updatable = updatable;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder primaryKeyIndex(final int index) {
+    public final ColumnProperty.Builder<T> primaryKeyIndex(final int index) {
       if (index < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0");
       }
@@ -449,7 +449,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public final ColumnProperty.Builder groupingColumn(final boolean groupingColumn) {
+    public final ColumnProperty.Builder<T> groupingColumn(final boolean groupingColumn) {
       if (columnProperty.aggregateColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is an aggregate column");
       }
@@ -458,7 +458,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public final ColumnProperty.Builder aggregateColumn(final boolean aggregateColumn) {
+    public final ColumnProperty.Builder<T> aggregateColumn(final boolean aggregateColumn) {
       if (columnProperty.groupingColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is a grouping column");
       }
@@ -467,20 +467,20 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public final ColumnProperty.Builder selectable(final boolean selectable) {
+    public final ColumnProperty.Builder<T> selectable(final boolean selectable) {
       columnProperty.selectable = selectable;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder valueConverter(final ValueConverter<?, ?> valueConverter) {
+    public final ColumnProperty.Builder<T> valueConverter(final ValueConverter<T, Object> valueConverter) {
       requireNonNull(valueConverter, "valueConverter");
-      columnProperty.valueConverter = (ValueConverter<Object, Object>) valueConverter;
+      columnProperty.valueConverter = valueConverter;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder searchProperty(final boolean searchProperty) {
+    public final ColumnProperty.Builder<T> searchProperty(final boolean searchProperty) {
       if (searchProperty && columnProperty.columnType != Types.VARCHAR) {
         throw new IllegalStateException("Search properties must be of type Types.VARCHAR");
       }

@@ -15,17 +15,17 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultForeignKeyProperty extends DefaultProperty implements ForeignKeyProperty {
+final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements ForeignKeyProperty {
 
   private static final long serialVersionUID = 1;
 
   private final String foreignEntityId;
-  private final List<ColumnProperty> columnProperties;
+  private final List<ColumnProperty<?>> columnProperties;
   private final boolean compositeReference;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
 
-  private final transient List<ColumnProperty.Builder> columnPropertyBuilders;
+  private final transient List<ColumnProperty.Builder<?>> columnPropertyBuilders;
 
   /**
    * @param attribute the attribute
@@ -34,7 +34,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
    * @param columnProperty the underlying column property comprising this foreign key
    */
   DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
-                            final String foreignEntityId, final ColumnProperty.Builder columnProperty) {
+                            final String foreignEntityId, final ColumnProperty.Builder<?> columnProperty) {
     this(attribute, caption, foreignEntityId, singletonList(columnProperty));
   }
 
@@ -45,7 +45,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
    * @param columnPropertyBuilders the underlying column properties comprising this foreign key
    */
   DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
-                            final String foreignEntityId, final List<ColumnProperty.Builder> columnPropertyBuilders) {
+                            final String foreignEntityId, final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
     super(attribute, Types.OTHER, caption, Entity.class);
     requireNonNull(foreignEntityId, "foreignEntityId");
     validateParameters(attribute, foreignEntityId, columnPropertyBuilders);
@@ -73,7 +73,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   }
 
   @Override
-  public List<ColumnProperty> getColumnProperties() {
+  public List<ColumnProperty<?>> getColumnProperties() {
     return columnProperties;
   }
 
@@ -93,7 +93,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   }
 
   @Override
-  public Entity validateType(final Object value) {
+  public Entity validateType(final Entity value) {
     super.validateType(value);
     if (value != null) {
       final Entity entity = (Entity) value;
@@ -113,12 +113,12 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     return new DefaultForeignKeyPropertyBuilder(this);
   }
 
-  private static void validateParameters(final Attribute<?> attribute, final String foreignEntityId,
-                                         final List<ColumnProperty.Builder> columnProperties) {
+  private static void validateParameters(final Attribute<Entity> attribute, final String foreignEntityId,
+                                         final List<ColumnProperty.Builder<?>> columnProperties) {
     if (nullOrEmpty(columnProperties)) {
       throw new IllegalArgumentException("No column properties specified");
     }
-    for (final ColumnProperty.Builder columnProperty : columnProperties) {
+    for (final ColumnProperty.Builder<?> columnProperty : columnProperties) {
       requireNonNull(columnProperty, "columnProperty");
       if (columnProperty.get().getAttribute().equals(attribute)) {
         throw new IllegalArgumentException(foreignEntityId + ", column attribute is the same as foreign key attribute: " + attribute);
@@ -127,7 +127,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   }
 
   private static final class DefaultForeignKeyPropertyBuilder
-          extends DefaultPropertyBuilder implements ForeignKeyProperty.Builder {
+          extends DefaultPropertyBuilder<Entity> implements ForeignKeyProperty.Builder {
 
     private final DefaultForeignKeyProperty foreignKeyProperty;
 
@@ -142,7 +142,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     }
 
     @Override
-    public List<ColumnProperty.Builder> getColumnPropertyBuilders() {
+    public List<ColumnProperty.Builder<?>> getColumnPropertyBuilders() {
       return foreignKeyProperty.columnPropertyBuilders;
     }
 

@@ -20,7 +20,7 @@ public interface PropertyConditionModelProvider {
    * @return a {@link ColumnConditionModel} for the given property, null if searching
    * should not be allowed for this property
    */
-  ColumnConditionModel<Entity, ColumnProperty> initializePropertyConditionModel(ColumnProperty property);
+  ColumnConditionModel<Entity, ColumnProperty<?>> initializePropertyConditionModel(ColumnProperty<?> property);
 
   /**
    * Initializes a {@link ColumnConditionModel} for the given property

@@ -165,7 +165,7 @@ public class EntityTestUnit {
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
    */
-  public static Entity createEntity(final Entities entities, final String entityId, final Function<Property, Object> valueProvider) {
+  public static Entity createEntity(final Entities entities, final String entityId, final Function<Property<?>, Object> valueProvider) {
     requireNonNull(entities);
     requireNonNull(entityId);
     final Entity entity = entities.entity(entityId);
@@ -196,13 +196,13 @@ public class EntityTestUnit {
    * @param referenceEntities entities referenced by the given property
    * @return a random value
    */
-  public static Object createRandomValue(final Property property, final Map<String, Entity> referenceEntities) {
+  public static Object createRandomValue(final Property<?> property, final Map<String, Entity> referenceEntities) {
     requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
       return getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
     }
     if (property instanceof ValueListProperty) {
-      return getRandomListValue((ValueListProperty) property);
+      return getRandomListValue((ValueListProperty<?>) property);
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
@@ -361,7 +361,7 @@ public class EntityTestUnit {
 
     final Entity updated = connection.update(testEntity);
     assertEquals(testEntity.getKey(), updated.getKey());
-    for (final ColumnProperty property : getEntities().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
+    for (final ColumnProperty<?> property : getEntities().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
       if (property.isUpdatable()) {
         final Object beforeUpdate = testEntity.get(property);
         final Object afterUpdate = updated.get(property);
@@ -432,8 +432,8 @@ public class EntityTestUnit {
     return Users.parseUser(testUser);
   }
 
-  private static void populateEntity(final Entities entities, final Entity entity, final Collection<ColumnProperty> properties,
-                                     final Function<Property, Object> valueProvider) {
+  private static void populateEntity(final Entities entities, final Entity entity, final Collection<ColumnProperty<?>> properties,
+                                     final Function<Property<?>, Object> valueProvider) {
     requireNonNull(valueProvider, "valueProvider");
     for (final ColumnProperty property : properties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()) {
@@ -441,20 +441,20 @@ public class EntityTestUnit {
       }
     }
     for (final ForeignKeyProperty property : entities.getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
-      final Object value = valueProvider.apply(property);
+      final Entity value = (Entity) valueProvider.apply(property);
       if (value != null) {
         entity.put(property, value);
       }
     }
   }
 
-  private static String getRandomString(final Property property) {
+  private static String getRandomString(final Property<?> property) {
     final int length = property.getMaximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaximumLength();
 
     return Text.createRandomString(length, length);
   }
 
-  private static byte[] getRandomBlob(final Property property) {
+  private static byte[] getRandomBlob(final Property<?> property) {
     if ((property instanceof BlobProperty) && ((BlobProperty) property).isEagerlyLoaded()) {
       return getRandomBlob(1024);
     }
@@ -480,14 +480,14 @@ public class EntityTestUnit {
     return item.getValue();
   }
 
-  private static int getRandomInteger(final Property property) {
+  private static int getRandomInteger(final Property<?> property) {
     final int min = (int) (property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue());
     final int max = (int) (property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue());
 
     return RANDOM.nextInt((max - min) + 1) + min;
   }
 
-  private static double getRandomDouble(final Property property) {
+  private static double getRandomDouble(final Property<?> property) {
     final double min = property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue();
     final double max = property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue();
 

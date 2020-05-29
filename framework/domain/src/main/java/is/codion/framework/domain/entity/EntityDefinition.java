@@ -147,12 +147,12 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return a unmodifiable list view of the properties
    */
-  List<Property> getProperties();
+  List<Property<?>> getProperties();
 
   /**
    * @return a Set containing all the properties in this entity
    */
-  Set<Property> getPropertySet();
+  Set<Property<?>> getPropertySet();
 
   /**
    * @return true if this entity has a defined primary key
@@ -177,24 +177,24 @@ public interface EntityDefinition extends Serializable {
    * @param attribute the attribute
    * @return a collection containing the properties which are derived from the given property
    */
-  Collection<DerivedProperty> getDerivedProperties(Attribute<?> attribute);
+  Collection<DerivedProperty<?>> getDerivedProperties(Attribute<?> attribute);
 
   /**
    * Returns a list containing all primary key properties associated with this entity type.
    * If the entity has no primary key properties defined, an empty list is returned.
    * @return the primary key properties of this entity type, sorted by primary key column index
    */
-  List<ColumnProperty> getPrimaryKeyProperties();
+  List<ColumnProperty<?>> getPrimaryKeyProperties();
 
   /**
    * @return a list containing the visible properties for this entity type
    */
-  List<Property> getVisibleProperties();
+  List<Property<?>> getVisibleProperties();
 
   /**
    * @return a list containing the column-based properties for this entity type
    */
-  List<ColumnProperty> getColumnProperties();
+  List<ColumnProperty<?>> getColumnProperties();
 
   /**
    * Returns the default select column properties used when selecting this entity type,
@@ -202,17 +202,17 @@ public interface EntityDefinition extends Serializable {
    * and {@link BlobProperty}s with {@link BlobProperty#isEagerlyLoaded()} returning true.
    * @return a list containing the default column properties to include in select queries
    */
-  List<ColumnProperty> getSelectableColumnProperties();
+  List<ColumnProperty<?>> getSelectableColumnProperties();
 
   /**
    * @return a list containing all lazy loaded blob properties for this entity type
    */
-  List<ColumnProperty> getLazyLoadedBlobProperties();
+  List<ColumnProperty<?>> getLazyLoadedBlobProperties();
 
   /**
    * @return a list containing the non-column-based properties for this entity type
    */
-  List<TransientProperty> getTransientProperties();
+  List<TransientProperty<?>> getTransientProperties();
 
   /**
    * @return a list containing the foreign key properties for this entity type
@@ -243,35 +243,35 @@ public interface EntityDefinition extends Serializable {
    * @return a list containing the denormalized properties which values originate from the entity
    * referenced by the given foreign key property
    */
-  List<DenormalizedProperty> getDenormalizedProperties(Attribute<?> foreignKeyAttribute);
+  List<DenormalizedProperty<?>> getDenormalizedProperties(Attribute<?> foreignKeyAttribute);
 
   /**
    * Returns the properties to search by when searching for entities of this type by a string value
    * @return the properties to use when searching by string
    * @see ColumnProperty.Builder#searchProperty(boolean)
    */
-  Collection<ColumnProperty> getSearchProperties();
+  Collection<ColumnProperty<?>> getSearchProperties();
 
   /**
    * @param attribute the attribute
    * @return the column attributeentified by attribute
    * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
    */
-  ColumnProperty getColumnProperty(Attribute<?> attribute);
+  <T> ColumnProperty<T> getColumnProperty(Attribute<T> attribute);
 
   /**
    * @param attribute the attribute
    * @return the attributeentified by {@code attribute} in the entity identified by {@code entityId}
    * @throws IllegalArgumentException in case no such property exists
    */
-  Property getProperty(Attribute<?> attribute);
+  <T> Property<T> getProperty(Attribute<T> attribute);
 
   /**
    * @param attribute the attribute
    * @return the primary key attributeentified by {@code attribute} in the entity identified by {@code entityId}
    * @throws IllegalArgumentException in case no such property exists
    */
-  ColumnProperty getPrimaryKeyProperty(Attribute<?> attribute);
+  <T> ColumnProperty<T> getPrimaryKeyProperty(Attribute<T> attribute);
 
   /**
    * Returns the {@link Property}s identified by the attributes in {@code attributes}
@@ -279,7 +279,7 @@ public interface EntityDefinition extends Serializable {
    * @return a list containing the properties identified by {@code attributes}, found in
    * the entity identified by {@code entityId}
    */
-  List<Property> getProperties(Collection<Attribute<?>> attributes);
+  List<Property<?>> getProperties(Collection<Attribute<?>> attributes);
 
   /**
    * @param attribute the attribute
@@ -288,7 +288,7 @@ public interface EntityDefinition extends Serializable {
    * or if it is not selectable
    * @see ColumnProperty#isSelectable()
    */
-  ColumnProperty getSelectableColumnProperty(Attribute<?> attribute);
+  <T> ColumnProperty<T> getSelectableColumnProperty(Attribute<T> attribute);
 
   /**
    * Returns the {@link ColumnProperty}s identified
@@ -297,7 +297,7 @@ public interface EntityDefinition extends Serializable {
    * @return a list containing all column properties found in the entity identified by {@code entityId},
    * that is, properties that map to database columns, an empty list if none exist
    */
-  List<ColumnProperty> getColumnProperties(List<Attribute<?>> attributes);
+  List<ColumnProperty<?>> getColumnProperties(List<Attribute<?>> attributes);
 
   /**
    * @return true if the primary key of the given type of entity is comprised of a single integer value
@@ -312,12 +312,12 @@ public interface EntityDefinition extends Serializable {
    * @return a list containing the writable column properties (properties that map to database columns) comprising
    * the entity identified by {@code entityId}
    */
-  List<ColumnProperty> getWritableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
+  List<ColumnProperty<?>> getWritableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
 
   /**
    * @return a list containing all updatable properties associated with the given  entityId
    */
-  List<Property> getUpdatableProperties();
+  List<Property<?>> getUpdatableProperties();
 
   /**
    * Returns the selectable {@link ColumnProperty}s identified
@@ -326,7 +326,7 @@ public interface EntityDefinition extends Serializable {
    * @return a list containing all column properties found in the entity identified by {@code entityId},
    * that is, properties that map to database columns, an empty list if none exist
    */
-  List<ColumnProperty> getSelectableColumnProperties(List<Attribute<?>> attributes);
+  List<ColumnProperty<?>> getSelectableColumnProperties(List<Attribute<?>> attributes);
 
   /**
    * Returns the foreign key properties referencing entities of the given type
@@ -378,7 +378,7 @@ public interface EntityDefinition extends Serializable {
    * @see ColumnProperty.Builder#columnHasDefaultValue(boolean)
    * @see ColumnProperty.Builder#defaultValue(Object)
    */
-  Entity entity(Function<Property, Object> valueProvider);
+  Entity entity(Function<Property<?>, Object> valueProvider);
 
   /**
    * Creates a new {@link Entity} instance based on this definition
@@ -387,7 +387,7 @@ public interface EntityDefinition extends Serializable {
    * @return a new {@link Entity} instance
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
-  Entity entity(Map<Property, Object> values, Map<Property, Object> originalValues);
+  Entity entity(Map<Property<?>, Object> values, Map<Property<?>, Object> originalValues);
 
   /**
    * Creates a new {@link Entity.Key} instance based on this definition

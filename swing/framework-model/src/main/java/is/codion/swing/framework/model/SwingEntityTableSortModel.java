@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * A default sort model implementation based on Entity
  */
-public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Property> {
+public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Property<?>> {
 
   private final EntityDefinition.Provider definitionProvider;
 
@@ -32,12 +32,12 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Pr
   }
 
   @Override
-  public final Class getColumnClass(final Property property) {
+  public final Class<?> getColumnClass(final Property<?> property) {
     return property.getTypeClass();
   }
 
   @Override
-  protected Comparator initializeColumnComparator(final Property property) {
+  protected Comparator<?> initializeColumnComparator(final Property<?> property) {
     if (property instanceof ForeignKeyProperty) {
       return definitionProvider.getDefinition(((ForeignKeyProperty) property).getForeignEntityId()).getComparator();
     }
@@ -46,13 +46,13 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Pr
   }
 
   @Override
-  protected final Comparable getComparable(final Entity row, final Property property) {
-    return (Comparable) row.get(property);
+  protected final Comparable<?> getComparable(final Entity row, final Property<?> property) {
+    return (Comparable<?>) row.get(property);
   }
 
-  private static List<TableColumn> initializeColumns(final List<Property> visibleProperties) {
+  private static List<TableColumn> initializeColumns(final List<Property<?>> visibleProperties) {
     final List<TableColumn> columns = new ArrayList<>(visibleProperties.size());
-    for (final Property property : visibleProperties) {
+    for (final Property<?> property : visibleProperties) {
       final TableColumn column = new TableColumn(columns.size());
       column.setIdentifier(property);
       column.setHeaderValue(property.getCaption());

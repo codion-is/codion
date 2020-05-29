@@ -75,7 +75,7 @@ import static java.util.Objects.requireNonNull;
  * EntityTablePanel panel = new EntityTablePanel(tableModel);
  * </pre>
  */
-public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Property>
+public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Property<?>>
         implements EntityTableModel<SwingEntityEditModel> {
 
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
@@ -168,7 +168,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @throws IllegalArgumentException if {@code conditionModel} entityId does not match the one supplied as parameter
    */
   public SwingEntityTableModel(final String entityId, final EntityConnectionProvider connectionProvider,
-                               final TableSortModel<Entity, Property, TableColumn> sortModel,
+                               final TableSortModel<Entity, Property<?>, TableColumn> sortModel,
                                final EntityTableConditionModel conditionModel) {
     super(sortModel, requireNonNull(conditionModel, "conditionModel").getPropertyFilterModels());
     if (!conditionModel.getEntityId().equals(entityId)) {
@@ -333,9 +333,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    */
   @Override
   public boolean isCellEditable(final int rowIndex, final int modelColumnIndex) {
-    final Property property = getColumnModel().getColumnIdentifier(modelColumnIndex);
+    final Property<?> property = getColumnModel().getColumnIdentifier(modelColumnIndex);
     return editable && !isReadOnly() && isUpdateEnabled() && property instanceof ColumnProperty
-            && ((ColumnProperty) property).isUpdatable();
+            && ((ColumnProperty<?>) property).isUpdatable();
   }
 
   /**
@@ -346,7 +346,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    */
   @Override
   public final Object getValueAt(final int rowIndex, final int modelColumnIndex) {
-    final Property property = getColumnModel().getColumnIdentifier(modelColumnIndex);
+    final Property<?> property = getColumnModel().getColumnIdentifier(modelColumnIndex);
     final Entity entity = getItemAt(rowIndex);
 
     return getValue(entity, property);
@@ -365,7 +365,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
     final Entity entity = getEntities().copyEntity(getItemAt(rowIndex));
 
-    entity.put(getColumnModel().getColumnIdentifier(modelColumnIndex), value);
+    final Property columnIdentifier = getColumnModel().getColumnIdentifier(modelColumnIndex);
+
+    entity.put(columnIdentifier, value);
     try {
       update(singletonList(entity));
     }
@@ -405,7 +407,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public Color getPropertyBackgroundColor(final int row, final Property property) {
+  public Color getPropertyBackgroundColor(final int row, final Property<?> property) {
     return (Color) getItemAt(row).getColor(property);
   }
 
@@ -559,10 +561,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final String getTableDataAsDelimitedString(final char delimiter) {
     final List<String> header = new ArrayList<>();
-    final List<Property> properties = new ArrayList<>();
+    final List<Property<?>> properties = new ArrayList<>();
     final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
-      final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
+      final Property<?> property = (Property<?>) columnEnumeration.nextElement().getIdentifier();
       properties.add(property);
       header.add(property.getCaption());
     }
@@ -593,7 +595,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  protected final ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final Property property) {
+  protected final ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final Property<?> property) {
     return new DefaultColumnValueProvider(property, this, property.getFormat());
   }
 
@@ -640,7 +642,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @return the value of the given property for the given entity for display
    * @throws NullPointerException in case entity or property is null
    */
-  protected Object getValue(final Entity entity, final Property property) {
+  protected Object getValue(final Entity entity, final Property<?> property) {
     requireNonNull(entity, "entity");
     requireNonNull(property, "property");
     if (property instanceof ValueListProperty) {
@@ -652,7 +654,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   @Override
   protected final String getSearchValueAt(final int rowIndex, final TableColumn column) {
-    return getItemAt(rowIndex).getAsString((Property) column.getIdentifier());
+    return getItemAt(rowIndex).getAsString((Property<?>) column.getIdentifier());
   }
 
   /**
@@ -769,7 +771,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
   }
 
-  private void onColumnHidden(final Property property) {
+  private void onColumnHidden(final Property<?> property) {
     //disable the condition model for the column to be hidden, to prevent confusion
     conditionModel.disable(property.getAttribute());
   }
@@ -784,7 +786,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private org.json.JSONObject createColumnPreferences() throws Exception {
     final org.json.JSONObject columnPreferencesRoot = new org.json.JSONObject();
     for (final TableColumn column : getColumnModel().getAllColumns()) {
-      final Property property = (Property) column.getIdentifier();
+      final Property<?> property = (Property<?>) column.getIdentifier();
       final org.json.JSONObject columnObject = new org.json.JSONObject();
       final boolean visible = getColumnModel().isColumnVisible(property);
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
@@ -811,9 +813,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   private void applyColumnPreferences(final org.json.JSONObject preferences) {
-    final SwingFilteredTableColumnModel<Entity, Property> columnModel = getColumnModel();
+    final SwingFilteredTableColumnModel<Entity, Property<?>> columnModel = getColumnModel();
     for (final TableColumn column : Collections.list(columnModel.getColumns())) {
-      final Property property = (Property) column.getIdentifier();
+      final Property<?> property = (Property<?>) column.getIdentifier();
       if (columnModel.containsColumn(property)) {
         try {
           final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getAttribute().getName());
@@ -823,7 +825,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
             columnModel.moveColumn(getColumnModel().getColumnIndex(column.getIdentifier()), index);
           }
           else {
-            columnModel.hideColumn((Property) column.getIdentifier());
+            columnModel.hideColumn((Property<?>) column.getIdentifier());
           }
         }
         catch (final Exception e) {

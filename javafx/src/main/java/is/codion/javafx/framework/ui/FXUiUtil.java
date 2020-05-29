@@ -234,7 +234,7 @@ public final class FXUiUtil {
    * @param defaultValue the default to set after instantiation
    * @return the {@link Value} instance
    */
-  public static Value createValue(final Property property, final Control control, final Object defaultValue) {
+  public static Value createValue(final Property<?> property, final Control control, final Object defaultValue) {
     if (property instanceof ForeignKeyProperty) {
       if (control instanceof ComboBox) {
         final Value<Entity> entityValue = PropertyValues.selectedValue(((ComboBox<Entity>) control).getSelectionModel());
@@ -248,7 +248,7 @@ public final class FXUiUtil {
       }
     }
     if (property instanceof ValueListProperty) {
-      final Value listValue = PropertyValues.selectedItemValue(((ComboBox<Item>) control).getSelectionModel());
+      final Value<Object> listValue = PropertyValues.selectedItemValue(((ComboBox<Item<Object>>) control).getSelectionModel());
       listValue.set(defaultValue);
       return listValue;
     }
@@ -706,10 +706,10 @@ public final class FXUiUtil {
    * @param editModel the edit model
    * @return a {@link ComboBox} based on the values of the given property
    */
-  public static ComboBox<Item> createValueListComboBox(final ValueListProperty valueListProperty,
-                                                       final FXEntityEditModel editModel) {
-    final ComboBox<Item> comboBox = new ComboBox<>(createValueListComboBoxModel(valueListProperty));
-    editModel.value(valueListProperty.getAttribute())
+  public static <T> ComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> valueListProperty,
+                                                              final FXEntityEditModel editModel) {
+    final ComboBox<Item<T>> comboBox = new ComboBox<>(createValueListComboBoxModel(valueListProperty));
+    editModel.<T>value(valueListProperty.getAttribute())
             .link(PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
     return comboBox;
   }

@@ -310,7 +310,7 @@ public final class World extends Domain {
     private static final long serialVersionUID = 1;
 
     @Override
-    public Object getColor(Entity city, Property property) {
+    public Object getColor(Entity city, Property<?> property) {
       if (property.is(CITY_POPULATION) &&
               city.get(CITY_POPULATION) > 1_000_000) {
         //population YELLOW if > 1.000.000
@@ -329,12 +329,12 @@ public final class World extends Domain {
   // end::colorProvider[]
 
   // tag::derivedPropertyProvider[]
-  private static final class NoOfSpeakersProvider implements DerivedProperty.Provider {
+  private static final class NoOfSpeakersProvider implements DerivedProperty.Provider<Integer> {
 
     private static final long serialVersionUID = 1;
 
     @Override
-    public Object getValue(Map<Attribute<?>, Object> sourceValues) {
+    public Integer getValue(Map<Attribute<?>, Object> sourceValues) {
       Double percentage = (Double) sourceValues.get(COUNTRYLANGUAGE_PERCENTAGE);
       Entity country = (Entity) sourceValues.get(COUNTRYLANGUAGE_COUNTRY_FK);
       if (notNull(percentage, country) && country.isNotNull(COUNTRY_POPULATION)) {
