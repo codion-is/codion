@@ -206,14 +206,14 @@ public final class EntityTableConditionPanel extends JPanel {
   }
 
   /**
-   * @param  propertyId the propertyId
+   * @param  attribute the attribute
    * @return the condition panel associated with the given property, null if none is specified
    */
-  public ColumnConditionPanel getConditionPanel(final Attribute<?> propertyId) {
+  public ColumnConditionPanel getConditionPanel(final Attribute<?> attribute) {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       for (final TableColumn column : columns) {
         final Property property = (Property) column.getIdentifier();
-        if (property.is(propertyId)) {
+        if (property.is(attribute)) {
           return (ColumnConditionPanel) ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().get(column);
         }
       }

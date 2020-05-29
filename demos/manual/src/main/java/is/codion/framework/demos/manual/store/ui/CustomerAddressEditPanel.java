@@ -23,7 +23,7 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(Store.CUSTOMER_ADDRESS_ADDRESS_FK);
+    setInitialFocusAttribute(Store.CUSTOMER_ADDRESS_ADDRESS_FK);
 
     EntityComboBox addressComboBox =
             createForeignKeyComboBox(Store.CUSTOMER_ADDRESS_ADDRESS_FK);

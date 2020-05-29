@@ -17,7 +17,7 @@ public class CategoryEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(CATEGORY_NAME);
+    setInitialFocusAttribute(CATEGORY_NAME);
 
     createTextField(CATEGORY_NAME).setColumns(10);
     createTextField(CATEGORY_DESCRIPTION).setColumns(18);

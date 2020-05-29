@@ -301,13 +301,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Specifies that the given property should be excluded from the update selected entities menu.
-   * @param propertyId the id of the property to exclude from the update menu
+   * @param attribute the id of the property to exclude from the update menu
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void excludeFromUpdateMenu(final Attribute<?> propertyId) {
+  public final void excludeFromUpdateMenu(final Attribute<?> attribute) {
     checkIfInitialized();
-    getTableModel().getEntityDefinition().getProperty(propertyId);//just validating that the property exists
-    excludeFromUpdateMenu.add(propertyId);
+    getTableModel().getEntityDefinition().getProperty(attribute);//just validating that the property exists
+    excludeFromUpdateMenu.add(attribute);
   }
 
   /**

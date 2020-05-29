@@ -717,13 +717,13 @@ public final class EntityInputComponents {
   /**
    * Creates a panel containing an EntityComboBox and a button for filtering that combo box based on a foreign key
    * @param entityComboBox the combo box
-   * @param foreignKeyPropertyId the foreign key to base the filtering on
+   * @param foreignKeyAttribute the foreign key to base the filtering on
    * @param filterButtonTakesFocus if true then the filter button is focusable
    * @return a panel with a combo box and a button
    */
-  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final Attribute<Entity> foreignKeyPropertyId,
+  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final Attribute<Entity> foreignKeyAttribute,
                                                        final boolean filterButtonTakesFocus) {
-    final Control foreignKeyFilterControl = entityComboBox.createForeignKeyFilterControl(foreignKeyPropertyId);
+    final Control foreignKeyFilterControl = entityComboBox.createForeignKeyFilterControl(foreignKeyAttribute);
     if (filterButtonTakesFocus) {
       return Components.createEastFocusableButtonPanel(entityComboBox, foreignKeyFilterControl);
     }

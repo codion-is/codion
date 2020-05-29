@@ -21,7 +21,7 @@ public class AlbumEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(ALBUM_ARTIST_FK);
+    setInitialFocusAttribute(ALBUM_ARTIST_FK);
 
     createForeignKeyLookupField(ALBUM_ARTIST_FK).setColumns(18);
     createTextField(ALBUM_TITLE).setColumns(18);

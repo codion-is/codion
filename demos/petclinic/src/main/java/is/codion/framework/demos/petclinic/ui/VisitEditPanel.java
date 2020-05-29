@@ -21,7 +21,7 @@ public final class VisitEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(VISIT_PET_FK);
+    setInitialFocusAttribute(VISIT_PET_FK);
 
     createForeignKeyComboBox(VISIT_PET_FK);
     createTextField(VISIT_DATE);

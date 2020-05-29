@@ -88,7 +88,7 @@ public final class ClientTutorial {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty(ARTIST_NAME);
+      setInitialFocusAttribute(ARTIST_NAME);
       JTextField nameField = createTextField(ARTIST_NAME);
       nameField.setColumns(15);
       addPropertyPanel(ARTIST_NAME);
@@ -103,7 +103,7 @@ public final class ClientTutorial {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty(ALBUM_ARTIST_FK);
+      setInitialFocusAttribute(ALBUM_ARTIST_FK);
       EntityLookupField artistLookupField = createForeignKeyLookupField(ALBUM_ARTIST_FK);
       artistLookupField.setColumns(15);
       JTextField titleField = createTextField(ALBUM_TITLE);

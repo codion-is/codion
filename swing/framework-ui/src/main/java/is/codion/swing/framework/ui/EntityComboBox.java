@@ -48,28 +48,28 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   /**
    * Creates an Action which displays a dialog for filtering this combo box via a foreign key
-   * @param foreignKeyPropertyId the id of the foreign key property on which to filter
+   * @param foreignKeyAttribute the foreign key attribute on which to filter
    * @return a Control for filtering this combo box
    */
-  public Control createForeignKeyFilterControl(final Attribute<Entity> foreignKeyPropertyId) {
+  public Control createForeignKeyFilterControl(final Attribute<Entity> foreignKeyAttribute) {
     return Controls.control(() -> {
-      final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKeyPropertyId);
-      final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKeyPropertyId),
+      final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKeyAttribute);
+      final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKeyAttribute),
               MESSAGES.getString("filter_by"), JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.QUESTION_MESSAGE, null, null, null);
       if (result != JOptionPane.OK_OPTION) {
-        getModel().setForeignKeyFilterEntities(foreignKeyPropertyId, current);
+        getModel().setForeignKeyFilterEntities(foreignKeyAttribute, current);
       }
     }, null, null, null, 0, null, frameworkIcons().filter());
   }
 
   /**
    * Creates a EntityComboBox for filtering this combo box via a foreign key
-   * @param foreignKeyPropertyId the id of the foreign key property on which to filter
+   * @param foreignKeyAttribute the foreign key attribute on which to filter
    * @return an EntityComboBox for filtering this combo box
    */
-  public EntityComboBox createForeignKeyFilterComboBox(final Attribute<Entity> foreignKeyPropertyId) {
-    final EntityComboBox comboBox = new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKeyPropertyId));
+  public EntityComboBox createForeignKeyFilterComboBox(final Attribute<Entity> foreignKeyAttribute) {
+    final EntityComboBox comboBox = new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKeyAttribute));
     MaximumMatch.enable(comboBox);
 
     return comboBox;
@@ -77,27 +77,27 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   /**
    * Creates a {@link IntegerField} which value is bound to the selected value in this combo box
-   * @param propertyId the property
+   * @param attribute the attribute
    * @return a {@link IntegerField} bound to the selected value
    */
-  public IntegerField integerFieldSelector(final Attribute<Integer> propertyId) {
+  public IntegerField integerFieldSelector(final Attribute<Integer> attribute) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(propertyId));
+    NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(attribute));
 
     return integerField;
   }
 
   /**
    * Creates a {@link IntegerField} which value is bound to the selected value in this combo box
-   * @param propertyId the property
+   * @param attribute the attribute
    * @param finder responsible for finding the item to select by value
    * @return a {@link IntegerField} bound to the selected value
    */
-  public IntegerField integerFieldSelector(final Attribute<Integer> propertyId, final EntityComboBoxModel.Finder<Integer> finder) {
+  public IntegerField integerFieldSelector(final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(propertyId, finder));
+    NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(attribute, finder));
 
     return integerField;
   }
