@@ -272,8 +272,8 @@ public final class EntityJSONParser {
     final EntityDefinition definition = entities.getDefinition(entityId);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final Attribute<Object> propertyId = attribute(propertyValues.names().get(j).toString());
-      key.put(propertyId, parseValue(definition.getProperty(propertyId), propertyValues));
+      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString());
+      key.put(attribute, parseValue(definition.getProperty(attribute), propertyValues));
     }
 
     return key;
@@ -402,10 +402,10 @@ public final class EntityJSONParser {
     final Map<Property, Object> valueMap = new HashMap<>();
     final JSONObject propertyValues = entityObject.getJSONObject(valuesKey);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final Attribute<Object> propertyId = attribute(propertyValues.names().get(j).toString());
+      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString());
       final EntityDefinition entityDefinition = entities.getDefinition(entityId);
-      valueMap.put(entityDefinition.getProperty(propertyId),
-              parseValue(entityDefinition.getProperty(propertyId), propertyValues));
+      valueMap.put(entityDefinition.getProperty(attribute),
+              parseValue(entityDefinition.getProperty(attribute), propertyValues));
     }
 
     return valueMap;

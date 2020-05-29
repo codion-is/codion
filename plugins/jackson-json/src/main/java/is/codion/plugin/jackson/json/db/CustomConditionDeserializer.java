@@ -34,14 +34,14 @@ final class CustomConditionDeserializer implements Serializable {
 
   CustomCondition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
     final String conditionId = conditionNode.get("conditionId").asText();
-    final JsonNode propertyIdsNode = conditionNode.get("propertyIds");
-    final List<String> attributeIds = Arrays.asList(entityObjectMapper.readValue(propertyIdsNode.toString(), String[].class));
-    final List<Attribute<?>> attributes = attributeIds.stream().map(Properties::attribute).collect(Collectors.toList());
+    final JsonNode attributesNode = conditionNode.get("attributes");
+    final List<String> attributeNames = Arrays.asList(entityObjectMapper.readValue(attributesNode.toString(), String[].class));
+    final List<Attribute<?>> attributes = attributeNames.stream().map(Properties::attribute).collect(Collectors.toList());
     final JsonNode valuesNode = conditionNode.get("values");
     final List values = new ArrayList();
-    int propertyIdIndex = 0;
+    int attributeIndex = 0;
     for (final JsonNode valueNode : valuesNode) {
-      final Property property = definition.getProperty(attributes.get(propertyIdIndex++));
+      final Property property = definition.getProperty(attributes.get(attributeIndex++));
       if (valueNode.isNull()) {
         values.add(null);
       }

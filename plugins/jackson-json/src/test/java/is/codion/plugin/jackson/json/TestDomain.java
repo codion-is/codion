@@ -45,7 +45,7 @@ public final class TestDomain extends Domain {
                     .readOnly(true),
             columnProperty(ENTITY_BOOLEAN, Types.BOOLEAN),
             columnProperty(ENTITY_TIME, Types.TIME))
-            .conditionProvider(ENTITY_CONDITION_ID, (propertyIds, values) -> "1 = 2");
+            .conditionProvider(ENTITY_CONDITION_ID, (attributes, values) -> "1 = 2");
   }
 
   public static final Attribute<Integer> DEPARTMENT_ID = attribute("deptno");

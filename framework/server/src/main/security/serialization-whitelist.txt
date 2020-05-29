@@ -91,7 +91,7 @@ is.codion.framework.domain.Domain
 is.codion.framework.domain.entity.DefaultEntity
 is.codion.framework.domain.entity.DefaultEntityKey
 is.codion.framework.domain.entity.DefaultOrderBy
-is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByProperty
+is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByAttribute
 is.codion.framework.domain.property.DefaultAttribute
 is.codion.framework.demos.chinook.domain.Chinook
 is.codion.framework.demos.empdept.domain.EmpDept

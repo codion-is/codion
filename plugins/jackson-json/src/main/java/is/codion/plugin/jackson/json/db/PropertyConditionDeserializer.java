@@ -32,8 +32,8 @@ final class PropertyConditionDeserializer implements Serializable {
   }
 
   PropertyCondition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
-    final String propertyId = conditionNode.get("propertyId").asText();
-    final Property property = definition.getProperty(attribute(propertyId));
+    final String attributeName = conditionNode.get("attribute").asText();
+    final Property property = definition.getProperty(attribute(attributeName));
     final JsonNode valuesNode = conditionNode.get("values");
     final List values = new ArrayList();
     for (final JsonNode valueNode : valuesNode) {
@@ -49,7 +49,7 @@ final class PropertyConditionDeserializer implements Serializable {
     }
     final boolean nullCondition = values.isEmpty();
 
-    return Conditions.propertyCondition(attribute(conditionNode.get("propertyId").asText()),
+    return Conditions.propertyCondition(attribute(conditionNode.get("attribute").asText()),
             Operator.valueOf(conditionNode.get("operator").asText()), nullCondition ? null : values);
   }
 }
