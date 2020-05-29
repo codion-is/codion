@@ -19,6 +19,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static is.codion.framework.domain.property.Properties.attribute;
+
 final class PropertyConditionDeserializer implements Serializable {
 
   private static final long serialVersionUID = 1;
@@ -30,7 +32,8 @@ final class PropertyConditionDeserializer implements Serializable {
   }
 
   PropertyCondition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
-    final Property property = definition.getProperty(conditionNode.get("propertyId").asText());
+    final String propertyId = conditionNode.get("propertyId").asText();
+    final Property property = definition.getProperty(attribute(propertyId));
     final JsonNode valuesNode = conditionNode.get("values");
     final List values = new ArrayList();
     for (final JsonNode valueNode : valuesNode) {
@@ -46,7 +49,7 @@ final class PropertyConditionDeserializer implements Serializable {
     }
     final boolean nullCondition = values.isEmpty();
 
-    return Conditions.propertyCondition(conditionNode.get("propertyId").asText(),
+    return Conditions.propertyCondition(attribute(conditionNode.get("propertyId").asText()),
             Operator.valueOf(conditionNode.get("operator").asText()), nullCondition ? null : values);
   }
 }

@@ -78,7 +78,7 @@ public final class TestDomain extends Domain {
 
   public static final String T_DETAIL = "db.detail_entity";
 
-  private static final List<Item> ITEMS = asList(item(0, "0"), item(1, "1"),
+  private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
           item(2, "2"), item(3, "3"));
 
   void detail() {

@@ -202,11 +202,11 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void setBatchUpdateEnabled(final boolean batchUpdateEnabled) {}
     @Override
-    public ColumnSummaryModel getColumnSummaryModel(final String propertyId) {return null;}
+    public ColumnSummaryModel getColumnSummaryModel(final Attribute<?> propertyId) {return null;}
     @Override
     public Object getPropertyBackgroundColor(final int row, final Property property) {return null;}
     @Override
-    public int getPropertyColumnIndex(final String propertyId) {return 0;}
+    public int getPropertyColumnIndex(final Attribute<?> propertyId) {return 0;}
     @Override
     public int getFetchCount() {return 0;}
     @Override

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.property;
 
-import static java.util.Objects.requireNonNull;
+import is.codion.common.Util;
 
 final class DefaultAttribute<T> implements Attribute<T> {
 
@@ -12,7 +12,10 @@ final class DefaultAttribute<T> implements Attribute<T> {
   private final String attributeId;
 
   DefaultAttribute(final String attributeId) {
-    this.attributeId = requireNonNull(attributeId);
+    if (Util.nullOrEmpty(attributeId)) {
+      throw new IllegalArgumentException("attributeId must be a non-empty string");
+    }
+    this.attributeId = attributeId;
   }
 
   @Override

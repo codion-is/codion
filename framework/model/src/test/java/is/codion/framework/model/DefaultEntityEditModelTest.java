@@ -19,7 +19,6 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -96,17 +95,12 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void getForeignKeyLookupModelNonFKProperty() {
-    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.getForeignKeyLookupModel((Attribute<Entity>) jobProperty.getPropertyId()));
-  }
-
-  @Test
   public void getForeignKeyLookupModel() {
-    assertFalse(employeeEditModel.containsLookupModel((Attribute<Entity>) deptProperty.getPropertyId()));
-    final EntityLookupModel model = employeeEditModel.getForeignKeyLookupModel((Attribute<Entity>) deptProperty.getPropertyId());
-    assertTrue(employeeEditModel.containsLookupModel((Attribute<Entity>) deptProperty.getPropertyId()));
+    assertFalse(employeeEditModel.containsLookupModel(TestDomain.EMP_DEPARTMENT_FK));
+    final EntityLookupModel model = employeeEditModel.getForeignKeyLookupModel(TestDomain.EMP_DEPARTMENT_FK);
+    assertTrue(employeeEditModel.containsLookupModel(TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(model);
-    assertEquals(model, employeeEditModel.getForeignKeyLookupModel((Attribute<Entity>) deptProperty.getPropertyId()));
+    assertEquals(model, employeeEditModel.getForeignKeyLookupModel(TestDomain.EMP_DEPARTMENT_FK));
   }
 
   @Test

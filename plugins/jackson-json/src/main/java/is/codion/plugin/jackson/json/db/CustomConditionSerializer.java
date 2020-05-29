@@ -4,12 +4,15 @@
 package is.codion.plugin.jackson.json.db;
 
 import is.codion.framework.db.condition.CustomCondition;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 
 import java.io.IOException;
 import java.io.Serializable;
+
+import static java.util.stream.Collectors.toList;
 
 final class CustomConditionSerializer implements Serializable {
 
@@ -26,7 +29,7 @@ final class CustomConditionSerializer implements Serializable {
     generator.writeObjectField("type", "custom");
     generator.writeObjectField("conditionId", condition.getConditionId());
     generator.writeFieldName("propertyIds");
-    entityObjectMapper.writeValue(generator, condition.getPropertyIds());
+    entityObjectMapper.writeValue(generator, condition.getPropertyIds().stream().map(Attribute::getId).collect(toList()));
     generator.writeFieldName("values");
     entityObjectMapper.writeValue(generator, condition.getValues());
     generator.writeEndObject();

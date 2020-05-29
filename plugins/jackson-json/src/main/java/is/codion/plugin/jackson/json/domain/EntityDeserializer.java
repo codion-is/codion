@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import static is.codion.framework.domain.property.Properties.attribute;
+
 public final class EntityDeserializer extends StdDeserializer<Entity> {
 
   private static final long serialVersionUID = 1;
@@ -94,7 +96,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
-      final Property property = definition.getProperty(field.getKey());
+      final Property property = definition.getProperty(attribute(field.getKey()));
       valueMap.put(property, parseValue(property, field.getValue()));
     }
 
@@ -109,7 +111,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
       final Iterator<Map.Entry<String, JsonNode>> originalFields = originalValues.fields();
       while (originalFields.hasNext()) {
         final Map.Entry<String, JsonNode> field = originalFields.next();
-        final Property property = definition.getProperty(field.getKey());
+        final Property property = definition.getProperty(attribute(field.getKey()));
         originalValueMap.put(property, parseValue(property, field.getValue()));
       }
 

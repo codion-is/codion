@@ -7,6 +7,8 @@ import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.CustomCondition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.plugin.jackson.json.domain.EntityDeserializer;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
@@ -18,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 final class CustomConditionDeserializer implements Serializable {
 
@@ -32,12 +35,13 @@ final class CustomConditionDeserializer implements Serializable {
   CustomCondition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
     final String conditionId = conditionNode.get("conditionId").asText();
     final JsonNode propertyIdsNode = conditionNode.get("propertyIds");
-    final List<String> propertyIds = Arrays.asList(entityObjectMapper.readValue(propertyIdsNode.toString(), String[].class));
+    final List<String> attributeIds = Arrays.asList(entityObjectMapper.readValue(propertyIdsNode.toString(), String[].class));
+    final List<Attribute<?>> attributes = attributeIds.stream().map(Properties::attribute).collect(Collectors.toList());
     final JsonNode valuesNode = conditionNode.get("values");
     final List values = new ArrayList();
     int propertyIdIndex = 0;
     for (final JsonNode valueNode : valuesNode) {
-      final Property property = definition.getProperty(propertyIds.get(propertyIdIndex++));
+      final Property property = definition.getProperty(attributes.get(propertyIdIndex++));
       if (valueNode.isNull()) {
         values.add(null);
       }
@@ -49,6 +53,6 @@ final class CustomConditionDeserializer implements Serializable {
       }
     }
 
-    return Conditions.customCondition(conditionId, propertyIds, values);
+    return Conditions.customCondition(conditionId, attributes, values);
   }
 }
