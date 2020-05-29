@@ -6,6 +6,7 @@ package is.codion.plugin.json;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.framework.domain.property.Properties.attribute;
 import static java.util.Collections.emptyList;
 
 /**
@@ -270,7 +272,7 @@ public final class EntityJSONParser {
     final EntityDefinition definition = entities.getDefinition(entityId);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final String propertyId = propertyValues.names().get(j).toString();
+      final Attribute<Object> propertyId = attribute(propertyValues.names().get(j).toString());
       key.put(propertyId, parseValue(definition.getProperty(propertyId), propertyValues));
     }
 
@@ -284,38 +286,38 @@ public final class EntityJSONParser {
    * @return the value for the given property
    */
   public Object parseValue(final Property property, final JSONObject propertyValues) {
-    if (propertyValues.isNull(property.getPropertyId())) {
+    if (propertyValues.isNull(property.getPropertyId().getId())) {
       return null;
     }
     if (property.isString()) {
-      return propertyValues.getString(property.getPropertyId());
+      return propertyValues.getString(property.getPropertyId().getId());
     }
     else if (property.isBoolean()) {
-      return propertyValues.getBoolean(property.getPropertyId());
+      return propertyValues.getBoolean(property.getPropertyId().getId());
     }
     else if (property.isTime()) {
-      return LocalTime.parse(propertyValues.getString(property.getPropertyId()), jsonTimeFormat);
+      return LocalTime.parse(propertyValues.getString(property.getPropertyId().getId()), jsonTimeFormat);
     }
     else if (property.isDate()) {
-      return LocalDate.parse(propertyValues.getString(property.getPropertyId()), jsonDateFormat);
+      return LocalDate.parse(propertyValues.getString(property.getPropertyId().getId()), jsonDateFormat);
     }
     else if (property.isTimestamp()) {
-      return LocalDateTime.parse(propertyValues.getString(property.getPropertyId()), jsonTimestampFormat);
+      return LocalDateTime.parse(propertyValues.getString(property.getPropertyId().getId()), jsonTimestampFormat);
     }
     else if (property.isDouble()) {
-      return propertyValues.getDouble(property.getPropertyId());
+      return propertyValues.getDouble(property.getPropertyId().getId());
     }
     else if (property.isInteger()) {
-      return propertyValues.getInt(property.getPropertyId());
+      return propertyValues.getInt(property.getPropertyId().getId());
     }
     else if (property.isBigDecimal()) {
-      return propertyValues.getBigDecimal(property.getPropertyId());
+      return propertyValues.getBigDecimal(property.getPropertyId().getId());
     }
     else if (property instanceof ForeignKeyProperty) {
-      return parseEntity(propertyValues.getJSONObject(property.getPropertyId()));
+      return parseEntity(propertyValues.getJSONObject(property.getPropertyId().getId()));
     }
 
-    return propertyValues.getString(property.getPropertyId());
+    return propertyValues.getString(property.getPropertyId().getId());
   }
 
   private JSONObject toJSONObject(final Entity entity) {
@@ -341,7 +343,7 @@ public final class EntityJSONParser {
     final JSONObject propertyValues = new JSONObject();
     for (final Property property : entity.keySet()) {
       if (include(property, entity)) {
-        propertyValues.put(property.getPropertyId(), serializeValue(entity.get(property), property));
+        propertyValues.put(property.getPropertyId().getId(), serializeValue(entity.get(property), property));
       }
     }
 
@@ -351,7 +353,7 @@ public final class EntityJSONParser {
   private JSONObject serializeValues(final Entity.Key key) {
     final JSONObject propertyValues = new JSONObject();
     for (final ColumnProperty property : entities.getDefinition(key.getEntityId()).getPrimaryKeyProperties()) {
-      propertyValues.put(property.getPropertyId(), serializeValue(key.get(property), property));
+      propertyValues.put(property.getPropertyId().getId(), serializeValue(key.get(property), property));
     }
 
     return propertyValues;
@@ -361,7 +363,7 @@ public final class EntityJSONParser {
     final JSONObject originalValues = new JSONObject();
     for (final Property property : entities.getDefinition(entity.getEntityId()).getProperties()) {
       if (entity.isModified(property.getPropertyId()) && (!(property instanceof ForeignKeyProperty) || includeForeignKeyValues)) {
-        originalValues.put(property.getPropertyId(),
+        originalValues.put(property.getPropertyId().getId(),
                 serializeValue(entity.getOriginal(property.getPropertyId()), property));
       }
     }
@@ -400,7 +402,7 @@ public final class EntityJSONParser {
     final Map<Property, Object> valueMap = new HashMap<>();
     final JSONObject propertyValues = entityObject.getJSONObject(valuesKey);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final String propertyId = propertyValues.names().get(j).toString();
+      final Attribute<Object> propertyId = attribute(propertyValues.names().get(j).toString());
       final EntityDefinition entityDefinition = entities.getDefinition(entityId);
       valueMap.put(entityDefinition.getProperty(propertyId),
               parseValue(entityDefinition.getProperty(propertyId), propertyValues));
