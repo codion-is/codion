@@ -293,7 +293,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void selectPropertyIds() throws Exception {
+  public void selectAttributes() throws Exception {
     final List<Entity> emps = connection.select(selectCondition(T_EMP)
             .setSelectAttributes(EMP_ID, EMP_JOB, EMP_DEPARTMENT));
     for (final Entity emp : emps) {
@@ -308,7 +308,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void selectInvalidPropertyIds() throws Exception {
+  public void selectInvalidAttributes() throws Exception {
     assertThrows(IllegalArgumentException.class, () ->
             connection.select(selectCondition(T_EMP)
                     .setSelectAttributes(EMP_ID, EMP_JOB, EMP_DEPARTMENT_FK)));
