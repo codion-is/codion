@@ -337,6 +337,7 @@ final class DefaultEntityKey implements Entity.Key {
     final List<ColumnProperty> properties = definition.getPrimaryKeyProperties();
     compositeKey = properties.size() > 1;
     singleIntegerKey = !compositeKey && properties.get(0).isInteger();
+    hashCodeDirty = true;
     for (int i = 0; i < properties.size(); i++) {
       final ColumnProperty property = properties.get(i);
       values.put(property, property.validateType(stream.readObject()));
