@@ -8,6 +8,7 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import java.io.Serializable;
@@ -23,24 +24,24 @@ import static is.codion.framework.domain.property.Properties.*;
 public final class Store extends Domain {
 
   public static final String T_ADDRESS = "store.address";
-  public static final String ADDRESS_ID = "id";
-  public static final String ADDRESS_STREET = "street";
-  public static final String ADDRESS_CITY = "city";
-  public static final String ADDRESS_VALID = "valid";
+  public static final Attribute<Integer> ADDRESS_ID = attribute("id");
+  public static final Attribute<String> ADDRESS_STREET = attribute("street");
+  public static final Attribute<String> ADDRESS_CITY = attribute("city");
+  public static final Attribute<Boolean> ADDRESS_VALID = attribute("valid");
 
   public static final String T_CUSTOMER = "store.customer";
-  public static final String CUSTOMER_ID = "id";
-  public static final String CUSTOMER_FIRST_NAME = "first_name";
-  public static final String CUSTOMER_LAST_NAME = "last_name";
-  public static final String CUSTOMER_EMAIL = "email";
-  public static final String CUSTOMER_IS_ACTIVE = "is_active";
+  public static final Attribute<String> CUSTOMER_ID = attribute("id");
+  public static final Attribute<String> CUSTOMER_FIRST_NAME = attribute("first_name");
+  public static final Attribute<String> CUSTOMER_LAST_NAME = attribute("last_name");
+  public static final Attribute<String> CUSTOMER_EMAIL = attribute("email");
+  public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = attribute("is_active");
 
   public static final String T_CUSTOMER_ADDRESS = "store.customer_address";
-  public static final String CUSTOMER_ADDRESS_ID = "id";
-  public static final String CUSTOMER_ADDRESS_CUSTOMER_ID = "customer_id";
-  public static final String CUSTOMER_ADDRESS_CUSTOMER_FK = "customer_fk";
-  public static final String CUSTOMER_ADDRESS_ADDRESS_ID = "address_id";
-  public static final String CUSTOMER_ADDRESS_ADDRESS_FK = "address_fk";
+  public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = attribute("id");
+  public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = attribute("customer_id");
+  public static final Attribute<Entity> CUSTOMER_ADDRESS_CUSTOMER_FK = attribute("customer_fk");
+  public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = attribute("address_id");
+  public static final Attribute<Entity> CUSTOMER_ADDRESS_ADDRESS_FK = attribute("address_fk");
 
   public Store() {
     customer();
@@ -106,12 +107,12 @@ public final class Store extends Domain {
     @Override
     public String apply(final Entity customer) {
       StringBuilder builder =
-              new StringBuilder(customer.getString(CUSTOMER_LAST_NAME))
+              new StringBuilder(customer.get(CUSTOMER_LAST_NAME))
                       .append(", ")
-                      .append(customer.getString(CUSTOMER_FIRST_NAME));
+                      .append(customer.get(CUSTOMER_FIRST_NAME));
       if (customer.isNotNull(CUSTOMER_EMAIL)) {
         builder.append(" <")
-                .append(customer.getString(CUSTOMER_EMAIL))
+                .append(customer.get(CUSTOMER_EMAIL))
                 .append(">");
       }
 

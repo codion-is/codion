@@ -9,6 +9,7 @@ import is.codion.framework.domain.entity.test.EntityTestUnit;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
+import java.util.UUID;
 
 // tag::storeTest[]
 public class StoreTest extends EntityTestUnit {
@@ -65,7 +66,7 @@ public class StoreTest extends EntityTestUnit {
       //Initialize a entity representing the table STORE.CUSTOMER,
       //which can be used for the testing
       Entity customer = getEntities().entity(Store.T_CUSTOMER);
-      customer.put(Store.CUSTOMER_ID, 42);
+      customer.put(Store.CUSTOMER_ID, UUID.randomUUID().toString());
       customer.put(Store.CUSTOMER_FIRST_NAME, "Robert");
       customer.put(Store.CUSTOMER_LAST_NAME, "Ford");
       customer.put(Store.CUSTOMER_IS_ACTIVE, true);

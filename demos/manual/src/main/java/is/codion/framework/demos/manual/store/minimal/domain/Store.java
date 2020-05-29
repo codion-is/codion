@@ -4,7 +4,9 @@
 package is.codion.framework.demos.manual.store.minimal.domain;
 
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.property.Attribute;
 
 import java.sql.Types;
 
@@ -14,18 +16,18 @@ import static is.codion.framework.domain.property.Properties.*;
 public class Store extends Domain {
 
   public static final String T_CUSTOMER = "store.customer";
-  public static final String CUSTOMER_ID = "id";
-  public static final String CUSTOMER_FIRST_NAME = "first_name";
-  public static final String CUSTOMER_LAST_NAME = "last_name";
-  public static final String CUSTOMER_EMAIL = "email";
-  public static final String CUSTOMER_IS_ACTIVE = "is_active";
+  public static final Attribute<Integer> CUSTOMER_ID = attribute("id");
+  public static final Attribute<String> CUSTOMER_FIRST_NAME = attribute("first_name");
+  public static final Attribute<String> CUSTOMER_LAST_NAME = attribute("last_name");
+  public static final Attribute<String> CUSTOMER_EMAIL = attribute("email");
+  public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = attribute("is_active");
 
   public static final String T_ADDRESS = "store.address";
-  public static final String ADDRESS_ID = "id";
-  public static final String ADDRESS_CUSTOMER_FK = "customer_fk";
-  public static final String ADDRESS_CUSTOMER_ID = "customer_id";
-  public static final String ADDRESS_STREET = "street";
-  public static final String ADDRESS_CITY = "city";
+  public static final Attribute<Integer> ADDRESS_ID = attribute("id");
+  public static final Attribute<Entity> ADDRESS_CUSTOMER_FK = attribute("customer_fk");
+  public static final Attribute<Integer> ADDRESS_CUSTOMER_ID = attribute("customer_id");
+  public static final Attribute<String> ADDRESS_STREET = attribute("street");
+  public static final Attribute<String> ADDRESS_CITY = attribute("city");
 
   public Store() {
     define(T_CUSTOMER,

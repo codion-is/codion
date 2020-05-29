@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -47,9 +48,9 @@ public final class Example {
 
     // tag::customer[]
     public static final String T_CUSTOMER = "store.customer";
-    public static final String CUSTOMER_ID = "id";
-    public static final String CUSTOMER_FIRST_NAME = "first_name";
-    public static final String CUSTOMER_LAST_NAME = "last_name";
+    public static final Attribute<String> CUSTOMER_ID = attribute("id");
+    public static final Attribute<String> CUSTOMER_FIRST_NAME = attribute("first_name");
+    public static final Attribute<String> CUSTOMER_LAST_NAME = attribute("last_name");
 
     void customer() {
       define(T_CUSTOMER,
@@ -71,9 +72,9 @@ public final class Example {
     // end::customer[]
     // tag::address[]
     public static final String T_ADDRESS = "store.address";
-    public static final String ADDRESS_ID = "id";
-    public static final String ADDRESS_STREET = "street";
-    public static final String ADDRESS_CITY = "city";
+    public static final Attribute<Integer> ADDRESS_ID = attribute("id");
+    public static final Attribute<String> ADDRESS_STREET = attribute("street");
+    public static final Attribute<String> ADDRESS_CITY = attribute("city");
 
     void address() {
       define(T_ADDRESS,
@@ -89,11 +90,11 @@ public final class Example {
     // end::address[]
     // tag::customerAddress[]
     public static final String T_CUSTOMER_ADDRESS = "store.customer_address";
-    public static final String CUSTOMER_ADDRESS_ID = "id";
-    public static final String CUSTOMER_ADDRESS_CUSTOMER_ID = "customer_id";
-    public static final String CUSTOMER_ADDRESS_CUSTOMER_FK = "customer_fk";
-    public static final String CUSTOMER_ADDRESS_ADDRESS_ID = "address_id";
-    public static final String CUSTOMER_ADDRESS_ADDRESS_FK = "address_fk";
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = attribute("id");
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = attribute("customer_id");
+    public static final Attribute<Entity> CUSTOMER_ADDRESS_CUSTOMER_FK = attribute("customer_fk");
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = attribute("address_id");
+    public static final Attribute<Entity> CUSTOMER_ADDRESS_ADDRESS_FK = attribute("address_fk");
 
     void customerAddress() {
       define(T_CUSTOMER_ADDRESS,
@@ -220,9 +221,9 @@ public final class Example {
 
     Entity address = customerAddress.getForeignKey(CUSTOMER_ADDRESS_ADDRESS_FK);
 
-    String lastName = johnDoe.getString(CUSTOMER_LAST_NAME);
-    String street = address.getString(ADDRESS_STREET);
-    String city = address.getString(ADDRESS_CITY);
+    String lastName = johnDoe.get(CUSTOMER_LAST_NAME);
+    String street = address.get(ADDRESS_STREET);
+    String city = address.get(ADDRESS_CITY);
     // end::select[]
   }
 

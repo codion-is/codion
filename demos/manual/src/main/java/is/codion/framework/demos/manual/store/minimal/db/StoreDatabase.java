@@ -40,7 +40,8 @@ public class StoreDatabase {
             connection.select(T_CUSTOMER, CUSTOMER_LAST_NAME, "Doe");
 
     List<Entity> doesAddresses =
-            connection.select(T_ADDRESS, ADDRESS_CUSTOMER_FK, customersNamedDoe);
+            connection.select(T_ADDRESS, ADDRESS_CUSTOMER_FK,
+                    customersNamedDoe.toArray(new Entity[0]));
 
     List<Entity> customersWithoutEmail =
             connection.select(selectCondition(T_CUSTOMER, CUSTOMER_EMAIL, Operator.LIKE, null));

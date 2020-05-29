@@ -6133,3 +6133,4 @@
   Petstore demo module updated according to the latest changes
   SchemaBrowser demo module updated according to the latest changes
   World demo module updated according to the latest changes
+  Manual demo module updated according to the latest changes
