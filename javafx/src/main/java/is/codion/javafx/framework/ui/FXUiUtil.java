@@ -739,6 +739,7 @@ public final class FXUiUtil {
   /**
    * Instantiates a {@link ObservableList} containing the {@link Item}s associated with the given value list property
    * @param property the property
+   * @param <T> the value type
    * @return a {@link ObservableList} containing the {@link Item}s associated with the given value list property
    */
   public static <T> ObservableList<Item<T>> createValueListComboBoxModel(final ValueListProperty<T> property) {

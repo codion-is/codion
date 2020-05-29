@@ -88,7 +88,7 @@ public abstract class EntityEditView extends BorderPane {
 
   /**
    * Transfers focus to the component associated with the initial focus property
-   * @see #setInitialFocusProperty(String)
+   * @see #setInitialFocusAttribute(Attribute)
    */
   public final void requestInitialFocus() {
     if (isVisible()) {
@@ -146,7 +146,7 @@ public abstract class EntityEditView extends BorderPane {
 
   /**
    * @param requestFocusAfterInsert if true then the input focus is set after insert
-   * @see #setInitialFocusProperty(String)
+   * @see #setInitialFocusAttribute(Attribute)
    */
   public void setRequestFocusAfterInsert(final boolean requestFocusAfterInsert) {
     this.requestFocusAfterInsert = requestFocusAfterInsert;

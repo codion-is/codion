@@ -354,6 +354,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param attribute the attribute for which to set the value
    * @param value the value
    * @param entities the entities for which to set the value
+   * @param <T> the value type
    * @return the previous property values mapped to the primary key of the entity
    */
   static <T> Map<Entity.Key, T> put(final Attribute<T> attribute, final T value, final Collection<Entity> entities) {

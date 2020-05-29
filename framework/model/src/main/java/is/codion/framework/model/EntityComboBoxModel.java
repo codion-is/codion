@@ -48,7 +48,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    *   });
    * </pre>
    * @return the {@link Predicate} based on the foreign key filter entities
-   * @see #setForeignKeyFilterEntities(String, Collection)
+   * @see #setForeignKeyFilterEntities(Attribute, Collection)
    */
   Predicate<Entity> getForeignKeyIncludeCondition();
 
@@ -72,7 +72,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * entities with null values for the given foreign key are filtered.
    * Non-strict simply means that entities with null references are not filtered.
    * @param strictForeignKeyFiltering the value
-   * @see #setForeignKeyFilterEntities(String, Collection)
+   * @see #setForeignKeyFilterEntities(Attribute, Collection)
    */
   void setStrictForeignKeyFiltering(boolean strictForeignKeyFiltering);
 
@@ -85,7 +85,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * Returns a combo box model for selecting a foreign key value for filtering this model
    * @param foreignKeyAttribute the attribute with which values to create the combo box model
    * @return a combo box model for selecting a filtering value for this combo box model
-   * @see #linkForeignKeyComboBoxModel(String, EntityComboBoxModel)
+   * @see #linkForeignKeyComboBoxModel(Attribute, EntityComboBoxModel)
    */
   EntityComboBoxModel createForeignKeyFilterComboBoxModel(Attribute<Entity> foreignKeyAttribute);
 

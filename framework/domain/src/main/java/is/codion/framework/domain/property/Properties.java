@@ -192,6 +192,7 @@ public final class Properties {
    * @param type the property sql data type
    * @param caption the property caption
    * @param validItems the Items representing all the valid values for this property
+   * @param <T> the value type
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <T> ColumnProperty.Builder valueListProperty(final Attribute<T> attribute, final int type, final String caption,

@@ -201,6 +201,7 @@ public interface RemoteEntityConnection extends Remote {
    * @param entityId the entity type
    * @param attribute the attribute to use as a condition
    * @param value the value to use in the condition
+   * @param <T> the value type
    * @return an entity of the type {@code entityId}, having the
    * value of {@code attribute} as {@code value}
    * @throws DatabaseException in case of a db exception
@@ -256,6 +257,7 @@ public interface RemoteEntityConnection extends Remote {
    * @param entityId the entity type
    * @param attribute the condition attribute
    * @param values the values to use as condition
+   * @param <T> the value type
    * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception

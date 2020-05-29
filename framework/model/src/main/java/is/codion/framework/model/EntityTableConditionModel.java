@@ -34,6 +34,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * Sets the search condition values of the condition model associated with {@code attribute}.
    * @param attribute the attribute
    * @param values the search condition values
+   * @param <T> the value type
    * @return true if the search state changed as a result of this method call, false otherwise
    */
   <T> boolean setConditionValues(Attribute<T> attribute, Collection<T> values);
@@ -42,6 +43,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * Sets the condition value of the PropertyFilterModel associated with {@code attribute}.
    * @param attribute the attribute
    * @param value the condition value
+   * @param <T> the value type
    */
   <T> void setFilterValue(Attribute<T> attribute, Comparable<T> value);
 
@@ -131,7 +133,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} associated with {@code attribute}
    * @throws IllegalArgumentException in case no condition model is found
-   * @see #containsPropertyConditionModel(String)
+   * @see #containsPropertyConditionModel(Attribute)
    */
   ColumnConditionModel<Entity, ? extends Property> getPropertyConditionModel(Attribute<?> attribute);
 

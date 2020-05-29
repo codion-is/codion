@@ -139,6 +139,7 @@ public interface EntityEditModel extends Refreshable {
    * Sets the given value in the underlying Entity
    * @param attribute the attribute to associate the given value with
    * @param value the value to associate with the given property
+   * @param <T> the value type
    */
   <T> void put(Attribute<T> attribute, T value);
 
@@ -152,6 +153,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * Removes the given value from the underlying Entity
    * @param attribute the attribute
+   * @param <T> the value type
    * @return the value, if any
    */
   <T> T remove(Attribute<T> attribute);
@@ -166,6 +168,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * Returns the value associated with the given property
    * @param attribute the attribute
+   * @param <T> the value type
    * @return the value associated with the given property
    */
   <T> T get(Attribute<T> attribute);
@@ -312,13 +315,13 @@ public interface EntityEditModel extends Refreshable {
   /**
    * Returns the default value for the given property, used when initializing a new default entity for this edit model.
    * This method is only called for properties that are non-denormalized and are not part of a foreign key.
-   * If the default value of a property should be the last value used, call {@link #setPersistValue(String, boolean)}
+   * If the default value of a property should be the last value used, call {@link #setPersistValue(Attribute, boolean)}
    * with {@code true} for the given property or override {@link #isPersistValue} so that it
    * returns {@code true} for that property in case the value should persist.
    * @param property the property
    * @return the default value for the property
    * @see Property.Builder#defaultValue(Object)
-   * @see #setPersistValue(String, boolean)
+   * @see #setPersistValue(Attribute, boolean)
    * @see #isPersistValue(Property)
    */
   Object getDefaultValue(Property property);

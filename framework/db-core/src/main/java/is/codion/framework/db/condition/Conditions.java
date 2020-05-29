@@ -162,6 +162,7 @@ public final class Conditions {
    * @param attribute the attribute
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
+   * @param <T> the value type
    * @return an update condition based on the given value
    */
   public static <T> EntityUpdateCondition updateCondition(final String entityId, final Attribute<T> attribute,

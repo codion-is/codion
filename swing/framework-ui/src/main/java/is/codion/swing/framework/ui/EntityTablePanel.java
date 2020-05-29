@@ -481,7 +481,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control list containing controls, one for each updatable property in the
    * underlying entity, for performing an update on the selected entities
    * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
-   * @see #excludeFromUpdateMenu(String)
+   * @see #excludeFromUpdateMenu(Attribute)
    * @see EntityEditModel#getUpdateEnabledObserver()
    */
   public final ControlList getUpdateSelectedControls() {

@@ -217,8 +217,8 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Displays a dialog allowing the user the select a input component which should receive the keyboard focus,
    * if only one input component is available then that component is selected automatically.
-   * @see #excludeComponentFromSelection(String)
-   * @see #requestComponentFocus(String)
+   * @see #excludeComponentFromSelection(Attribute)
+   * @see #requestComponentFocus(Attribute)
    */
   public void selectInputComponent() {
     final List<Attribute<?>> attributes = getSelectComponentAttributes();
@@ -255,7 +255,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Adds a property panel for the given property to this panel
    * @param attribute the attribute
-   * @see #createPropertyPanel(String)
+   * @see #createPropertyPanel(Attribute)
    */
   protected final void addPropertyPanel(final Attribute<?> attribute) {
     add(createPropertyPanel(attribute));
