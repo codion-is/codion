@@ -3,48 +3,55 @@
  */
 package is.codion.framework.demos.petclinic.domain;
 
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
+
+import java.time.LocalDate;
+
+import static is.codion.framework.domain.property.Properties.attribute;
+
 public interface Clinic {
 
   String T_VET = "petclinic.vet";
-  String VET_ID = "id";
-  String VET_FIRST_NAME = "first_name";
-  String VET_LAST_NAME = "last_name";
+  Attribute<Integer> VET_ID = attribute("id");
+  Attribute<String> VET_FIRST_NAME = attribute("first_name");
+  Attribute<String> VET_LAST_NAME = attribute("last_name");
 
   String T_SPECIALTY = "petclinic.specialty";
-  String SPECIALTY_ID = "id";
-  String SPECIALTY_NAME = "name";
+  Attribute<Integer> SPECIALTY_ID = attribute("id");
+  Attribute<String> SPECIALTY_NAME = attribute("name");
 
   String T_VET_SPECIALTY = "petclinic.vet_specialty";
-  String VET_SPECIALTY_VET = "vet";
-  String VET_SPECIALTY_VET_FK = "vet_fk";
-  String VET_SPECIALTY_SPECIALTY = "specialty";
-  String VET_SPECIALTY_SPECIALTY_FK = "specialty_fk";
+  Attribute<Integer> VET_SPECIALTY_VET = attribute("vet");
+  Attribute<Entity> VET_SPECIALTY_VET_FK = attribute("vet_fk");
+  Attribute<Integer> VET_SPECIALTY_SPECIALTY = attribute("specialty");
+  Attribute<Entity> VET_SPECIALTY_SPECIALTY_FK = attribute("specialty_fk");
 
   String T_PET_TYPE = "petclinic.pet_type";
-  String PET_TYPE_ID = "id";
-  String PET_TYPE_NAME = "name";
+  Attribute<Integer> PET_TYPE_ID = attribute("id");
+  Attribute<String> PET_TYPE_NAME = attribute("name");
 
   String T_OWNER = "petclinic.owner";
-  String OWNER_ID = "id";
-  String OWNER_FIRST_NAME = "first_name";
-  String OWNER_LAST_NAME = "last_name";
-  String OWNER_ADDRESS = "address";
-  String OWNER_CITY = "city";
-  String OWNER_TELEPHONE = "telephone";
+  Attribute<Integer> OWNER_ID = attribute("id");
+  Attribute<String> OWNER_FIRST_NAME = attribute("first_name");
+  Attribute<String> OWNER_LAST_NAME = attribute("last_name");
+  Attribute<String> OWNER_ADDRESS = attribute("address");
+  Attribute<String> OWNER_CITY = attribute("city");
+  Attribute<String> OWNER_TELEPHONE = attribute("telephone");
 
   String T_PET = "petclinic.pet";
-  String PET_ID = "id";
-  String PET_NAME = "name";
-  String PET_BIRTH_DATE = "birth_date";
-  String PET_PET_TYPE_ID = "type_id";
-  String PET_PET_TYPE_FK = "type_fk";
-  String PET_OWNER_ID = "owner_id";
-  String PET_OWNER_FK = "owner_fk";
+  Attribute<Integer> PET_ID = attribute("id");
+  Attribute<String> PET_NAME = attribute("name");
+  Attribute<String> PET_BIRTH_DATE = attribute("birth_date");
+  Attribute<Integer> PET_PET_TYPE_ID = attribute("type_id");
+  Attribute<Entity> PET_PET_TYPE_FK = attribute("type_fk");
+  Attribute<Integer> PET_OWNER_ID = attribute("owner_id");
+  Attribute<Entity> PET_OWNER_FK = attribute("owner_fk");
 
   String T_VISIT = "petclinic.visit";
-  String VISIT_ID = "id";
-  String VISIT_PET_ID = "pet_id";
-  String VISIT_PET_FK = "pet_fk";
-  String VISIT_DATE = "date";
-  String VISIT_DESCRIPTION = "description";
+  Attribute<Integer> VISIT_ID = attribute("id");
+  Attribute<Integer> VISIT_PET_ID = attribute("pet_id");
+  Attribute<Entity> VISIT_PET_FK = attribute("pet_fk");
+  Attribute<LocalDate> VISIT_DATE = attribute("date");
+  Attribute<String> VISIT_DESCRIPTION = attribute("description");
 }
