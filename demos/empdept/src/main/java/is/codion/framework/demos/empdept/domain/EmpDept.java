@@ -5,11 +5,15 @@ package is.codion.framework.demos.empdept.domain;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.plugin.jasperreports.model.JasperReportWrapper;
 
 import java.awt.Color;
+import java.math.BigDecimal;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
@@ -25,39 +29,39 @@ import static java.util.Arrays.asList;
  */
 public final class EmpDept extends Domain {
 
-  /**Entity identifier for the table scott.dept*/
+  /** Entity identifier for the table scott.dept*/
   public static final String T_DEPARTMENT = "scott.dept";
 
-  /**Property identifiers for the columns in the scott.dept table*/
-  public static final String DEPARTMENT_ID = "deptno";
-  public static final String DEPARTMENT_NAME = "dname";
-  public static final String DEPARTMENT_LOCATION = "loc";
+  /** Attributes for the columns in the scott.dept table*/
+  public static final Attribute<Integer> DEPARTMENT_ID = attribute("deptno");
+  public static final Attribute<String> DEPARTMENT_NAME = attribute("dname");
+  public static final Attribute<String> DEPARTMENT_LOCATION = attribute("loc");
   // end::departmentConstants[]
 
   // tag::employeeConstants[]
-  /**Entity identifier for the table scott.emp*/
+  /** Entity identifier for the table scott.emp*/
   public static final String T_EMPLOYEE = "scott.emp";
 
-  /**Property identifiers for the columns in the scott.emp table*/
-  public static final String EMPLOYEE_ID = "empno";
-  public static final String EMPLOYEE_NAME = "ename";
-  public static final String EMPLOYEE_JOB = "job";
-  public static final String EMPLOYEE_MGR = "mgr";
-  public static final String EMPLOYEE_HIREDATE = "hiredate";
-  public static final String EMPLOYEE_SALARY = "sal";
-  public static final String EMPLOYEE_COMMISSION = "comm";
-  public static final String EMPLOYEE_DEPARTMENT = "deptno";
+  /** Attributes for the columns in the scott.emp table*/
+  public static final Attribute<Integer> EMPLOYEE_ID = attribute("empno");
+  public static final Attribute<String> EMPLOYEE_NAME = attribute("ename");
+  public static final Attribute<String> EMPLOYEE_JOB = attribute("job");
+  public static final Attribute<Integer> EMPLOYEE_MGR = attribute("mgr");
+  public static final Attribute<LocalDate> EMPLOYEE_HIREDATE = attribute("hiredate");
+  public static final Attribute<BigDecimal> EMPLOYEE_SALARY = attribute("sal");
+  public static final Attribute<Double> EMPLOYEE_COMMISSION = attribute("comm");
+  public static final Attribute<Integer> EMPLOYEE_DEPARTMENT = attribute("deptno");
   /**Foreign key (reference) identifier for the DEPT column in the table scott.emp*/
-  public static final String EMPLOYEE_DEPARTMENT_FK = "dept_fk";
+  public static final Attribute<Entity> EMPLOYEE_DEPARTMENT_FK = attribute("dept_fk");
   /**Foreign key (reference) identifier for the MGR column in the table scott.emp*/
-  public static final String EMPLOYEE_MGR_FK = "mgr_fk";
+  public static final Attribute<Entity> EMPLOYEE_MGR_FK = attribute("mgr_fk");
   /**Property identifier for the denormalized department location property*/
-  public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
+  public static final Attribute<String> EMPLOYEE_DEPARTMENT_LOCATION = attribute("location");
 
   public static final JasperReportWrapper EMPLOYEE_REPORT =
           classPathReport(EmpDept.class, "empdept_employees.jasper");
 
-  public static final List<Item> JOB_VALUES = asList(
+  public static final List<Item<String>> JOB_VALUES = asList(
           item("ANALYST", "Analyst"), item("CLERK", "Clerk"),
           item("MANAGER", "Manager"), item("PRESIDENT", "President"),
           item("SALESMAN", "Salesman"));
@@ -112,7 +116,7 @@ public final class EmpDept extends Domain {
             denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION), "Location")
                     .preferredColumnWidth(100))
-            .keyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID))
+            .keyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID.getId()))
             .orderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))
             .stringProvider(new StringProvider(EMPLOYEE_NAME))
             .beanClass(Employee.class)

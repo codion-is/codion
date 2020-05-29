@@ -6128,3 +6128,4 @@
   Swing Framework Tools module updated according to the latest changes
   Chinook demo module updated according to the latest changes
   ValueListProperty generified
+  EmpDept demo module updated according to the latest changes

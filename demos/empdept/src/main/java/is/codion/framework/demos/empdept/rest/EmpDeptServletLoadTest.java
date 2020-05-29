@@ -110,7 +110,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
         final List<Entity> departments = client.getConnection().select(selectCondition(EmpDept.T_DEPARTMENT));
 
         client.getConnection().select(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT,
-                departments.get(new Random().nextInt(departments.size())).getAsString(EmpDept.DEPARTMENT_ID));
+                departments.get(new Random().nextInt(departments.size())).get(EmpDept.DEPARTMENT_ID));
       }
       catch (final Exception e) {
         throw new ScenarioException(e);
