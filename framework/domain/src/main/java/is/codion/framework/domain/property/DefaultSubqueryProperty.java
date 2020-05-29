@@ -10,14 +10,14 @@ final class DefaultSubqueryProperty extends DefaultColumnProperty implements Sub
   private final transient String subquery;
 
   /**
-   * @param  propertyId the propertyId, since SubqueryProperties do not map to underlying table columns,
-   * the property id should not be column name, only be unique for this entity
+   * @param attribute the attribute, since SubqueryProperties do not map to underlying table columns,
+   * the attribute should not be based on a column, only be unique for this entity
    * @param type the data type of this property
    * @param caption the caption of this property
    * @param subquery the sql query
    */
-  DefaultSubqueryProperty(final Attribute<?> propertyId, final int type, final String caption, final String subquery) {
-    super(propertyId, type, caption);
+  DefaultSubqueryProperty(final Attribute<?> attribute, final int type, final String caption, final String subquery) {
+    super(attribute, type, caption);
     super.setInsertable(false);
     super.setUpdatable(false);
     this.subquery = subquery;

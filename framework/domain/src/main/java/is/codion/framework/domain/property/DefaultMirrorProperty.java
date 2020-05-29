@@ -7,8 +7,8 @@ final class DefaultMirrorProperty extends DefaultColumnProperty implements Mirro
 
   private static final long serialVersionUID = 1;
 
-  DefaultMirrorProperty(final Attribute<?> propertyId) {
-    super(propertyId, -1, null);
+  DefaultMirrorProperty(final Attribute<?> attribute) {
+    super(attribute, -1, null);
     super.setInsertable(false);
     super.setUpdatable(false);
   }

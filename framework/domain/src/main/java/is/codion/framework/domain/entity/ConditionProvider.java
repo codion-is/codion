@@ -14,9 +14,9 @@ public interface ConditionProvider {
 
   /**
    * Creates a query condition string for the given values
-   * @param propertyIds the condition propertyIds
+   * @param attributes the condition attributes
    * @param values the values
    * @return a query condition string
    */
-  String getConditionString(List<Attribute<?>> propertyIds, List<?> values);
+  String getConditionString(List<Attribute<?>> attributes, List<?> values);
 }

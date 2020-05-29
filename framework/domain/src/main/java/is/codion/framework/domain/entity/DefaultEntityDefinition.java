@@ -153,7 +153,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private transient Map<String, ConditionProvider> conditionProviders;
 
   /**
-   * Maps the definition of a referenced entity to its foreign key propertyId.
+   * Maps the definition of a referenced entity to its foreign key attribute.
    */
   private final Map<Attribute<?>, EntityDefinition> foreignEntityDefinitions = new HashMap<>();
 
@@ -288,59 +288,59 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public ColumnProperty getColumnProperty(final Attribute<?> propertyId) {
-    final Property property = getProperty(propertyId);
+  public ColumnProperty getColumnProperty(final Attribute<?> attribute) {
+    final Property property = getProperty(attribute);
     if (!(property instanceof ColumnProperty)) {
-      throw new IllegalArgumentException(propertyId + " is not a ColumnProperty");
+      throw new IllegalArgumentException(attribute + " is not a ColumnProperty");
     }
 
     return (ColumnProperty) property;
   }
 
   @Override
-  public Property getProperty(final Attribute<?> propertyId) {
-    requireNonNull(propertyId, "propertyId");
-    final Property property = entityProperties.propertyMap.get(propertyId);
+  public Property getProperty(final Attribute<?> attribute) {
+    requireNonNull(attribute, "attribute");
+    final Property property = entityProperties.propertyMap.get(attribute);
     if (property == null) {
-      throw new IllegalArgumentException("Property '" + propertyId + "' not found in entity: " + entityId);
+      throw new IllegalArgumentException("Property '" + attribute + "' not found in entity: " + entityId);
     }
 
     return property;
   }
 
   @Override
-  public ColumnProperty getPrimaryKeyProperty(final Attribute<?> propertyId) {
-    final ColumnProperty property = entityProperties.primaryKeyPropertyMap.get(propertyId);
+  public ColumnProperty getPrimaryKeyProperty(final Attribute<?> attribute) {
+    final ColumnProperty property = entityProperties.primaryKeyPropertyMap.get(attribute);
     if (property == null) {
-      throw new IllegalArgumentException("Primary key property " + propertyId + " not found in entity: " + entityId);
+      throw new IllegalArgumentException("Primary key property " + attribute + " not found in entity: " + entityId);
     }
 
     return property;
   }
 
   @Override
-  public List<Property> getProperties(final Collection<Attribute<?>> propertyIds) {
-    requireNonNull(propertyIds, "propertyIds");
+  public List<Property> getProperties(final Collection<Attribute<?>> attributes) {
+    requireNonNull(attributes, "attributes");
 
-    return propertyIds.stream().map(this::getProperty).collect(toList());
+    return attributes.stream().map(this::getProperty).collect(toList());
   }
 
   @Override
-  public ColumnProperty getSelectableColumnProperty(final Attribute<?> propertyId) {
-    final ColumnProperty property = getColumnProperty(propertyId);
+  public ColumnProperty getSelectableColumnProperty(final Attribute<?> attribute) {
+    final ColumnProperty property = getColumnProperty(attribute);
     if (!property.isSelectable()) {
-      throw new IllegalArgumentException(propertyId + " is not selectable");
+      throw new IllegalArgumentException(attribute + " is not selectable");
     }
 
     return property;
   }
 
   @Override
-  public List<ColumnProperty> getColumnProperties(final List<Attribute<?>> propertyIds) {
-    requireNonNull(propertyIds, "propertyIds");
-    final List<ColumnProperty> theProperties = new ArrayList<>(propertyIds.size());
-    for (int i = 0; i < propertyIds.size(); i++) {
-      theProperties.add(getColumnProperty(propertyIds.get(i)));
+  public List<ColumnProperty> getColumnProperties(final List<Attribute<?>> attributes) {
+    requireNonNull(attributes, "attributes");
+    final List<ColumnProperty> theProperties = new ArrayList<>(attributes.size());
+    for (int i = 0; i < attributes.size(); i++) {
+      theProperties.add(getColumnProperty(attributes.get(i)));
     }
 
     return theProperties;
@@ -376,10 +376,10 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<ColumnProperty> getSelectableColumnProperties(final List<Attribute<?>> propertyIds) {
-    final List<ColumnProperty> theProperties = new ArrayList<>(propertyIds.size());
-    for (int i = 0; i < propertyIds.size(); i++) {
-      theProperties.add(getSelectableColumnProperty(propertyIds.get(i)));
+  public List<ColumnProperty> getSelectableColumnProperties(final List<Attribute<?>> attributes) {
+    final List<ColumnProperty> theProperties = new ArrayList<>(attributes.size());
+    for (int i = 0; i < attributes.size(); i++) {
+      theProperties.add(getSelectableColumnProperty(attributes.get(i)));
     }
 
     return theProperties;
@@ -392,18 +392,18 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public ForeignKeyProperty getForeignKeyProperty(final Attribute<Entity> propertyId) {
-    final ForeignKeyProperty property = entityProperties.foreignKeyPropertyMap.get(propertyId);
+  public ForeignKeyProperty getForeignKeyProperty(final Attribute<Entity> attribute) {
+    final ForeignKeyProperty property = entityProperties.foreignKeyPropertyMap.get(attribute);
     if (property == null) {
-      throw new IllegalArgumentException("Foreign key property with id: " + propertyId + " not found in entity of type: " + entityId);
+      throw new IllegalArgumentException("Foreign key property with id: " + attribute + " not found in entity of type: " + entityId);
     }
 
     return property;
   }
 
   @Override
-  public List<ForeignKeyProperty> getForeignKeyProperties(final Attribute<?> columnPropertyId) {
-    return entityProperties.columnPropertyForeignKeyProperties.computeIfAbsent(columnPropertyId, propertyId -> Collections.emptyList());
+  public List<ForeignKeyProperty> getForeignKeyProperties(final Attribute<?> columnAttribute) {
+    return entityProperties.columnPropertyForeignKeyProperties.computeIfAbsent(columnAttribute, attribute -> Collections.emptyList());
   }
 
   @Override
@@ -427,8 +427,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public boolean hasDerivedProperties(final Attribute<?> propertyId) {
-    return entityProperties.derivedProperties.containsKey(propertyId);
+  public boolean hasDerivedProperties(final Attribute<?> attribute) {
+    return entityProperties.derivedProperties.containsKey(attribute);
   }
 
   @Override
@@ -474,11 +474,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public EntityDefinition getForeignDefinition(final Attribute<?> foreignKeyPropertyId) {
-    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
-    final EntityDefinition definition = foreignEntityDefinitions.get(foreignKeyPropertyId);
+  public EntityDefinition getForeignDefinition(final Attribute<Entity> foreignKeyAttribute) {
+    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+    final EntityDefinition definition = foreignEntityDefinitions.get(foreignKeyAttribute);
     if (definition == null) {
-      throw new IllegalArgumentException("Referenced entity not found for foreign key property: " + foreignKeyPropertyId);
+      throw new IllegalArgumentException("Referenced entity not found for foreign key property: " + foreignKeyAttribute);
     }
 
     return definition;
@@ -490,13 +490,13 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public boolean hasDenormalizedProperties(final Attribute<?> foreignKeyPropertyId) {
-    return hasDenormalizedProperties && entityProperties.denormalizedProperties.containsKey(foreignKeyPropertyId);
+  public boolean hasDenormalizedProperties(final Attribute<?> foreignKeyAttribute) {
+    return hasDenormalizedProperties && entityProperties.denormalizedProperties.containsKey(foreignKeyAttribute);
   }
 
   @Override
-  public List<DenormalizedProperty> getDenormalizedProperties(final Attribute<?> foreignKeyPropertyId) {
-    return entityProperties.denormalizedProperties.get(foreignKeyPropertyId);
+  public List<DenormalizedProperty> getDenormalizedProperties(final Attribute<?> foreignKeyAttribute) {
+    return entityProperties.denormalizedProperties.get(foreignKeyAttribute);
   }
 
   @Override
@@ -578,32 +578,32 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   /**
    * Returns true if a entity definition has been associated with the given foreign key.
-   * @param foreignKeyPropertyId the foreign key property id
+   * @param foreignKeyAttribute the foreign key attribute
    * @return true if the referenced entity definition has been set for the given foreign key property
    */
-  boolean hasForeignDefinition(final Attribute<?> foreignKeyPropertyId) {
-    return foreignEntityDefinitions.containsKey(foreignKeyPropertyId);
+  boolean hasForeignDefinition(final Attribute<?> foreignKeyAttribute) {
+    return foreignEntityDefinitions.containsKey(foreignKeyAttribute);
   }
 
   /**
    * Associates the given definition with the given foreign key.
-   * @param foreignKeyPropertyId the foreign key property id
+   * @param foreignKeyAttribute the foreign key attribute
    * @param definition the entity definition referenced by the given foreign key
    * @throws IllegalStateException in case the foreign definition has already been set
    * @throws IllegalArgumentException in case the definition does not match the foreign key
    */
-  void setForeignDefinition(final Attribute<Entity> foreignKeyPropertyId, final EntityDefinition definition) {
-    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
+  void setForeignDefinition(final Attribute<Entity> foreignKeyAttribute, final EntityDefinition definition) {
+    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     requireNonNull(definition, "definition");
-    final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKeyPropertyId);
-    if (foreignEntityDefinitions.containsKey(foreignKeyPropertyId)) {
-      throw new IllegalStateException("Foreign definition has already been set for " + foreignKeyPropertyId);
+    final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKeyAttribute);
+    if (foreignEntityDefinitions.containsKey(foreignKeyAttribute)) {
+      throw new IllegalStateException("Foreign definition has already been set for " + foreignKeyAttribute);
     }
     if (!foreignKeyProperty.getForeignEntityId().equals(definition.getEntityId())) {
       throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.getForeignEntityId() +
-              " expected for " + foreignKeyPropertyId);
+              " expected for " + foreignKeyAttribute);
     }
-    foreignEntityDefinitions.put(foreignKeyPropertyId, definition);
+    foreignEntityDefinitions.put(foreignKeyAttribute, definition);
   }
 
   /**
@@ -692,12 +692,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private void validateAndAddProperty(final Property.Builder propertyBuilder, final Map<Attribute<?>, Property> propertyMap) {
       final Property property = propertyBuilder.get();
-      checkIfUniquePropertyId(property, propertyMap);
+      checkIfUniqueAttribute(property, propertyMap);
       propertyBuilder.entityId(entityId);
       propertyMap.put(property.getAttribute(), property);
     }
 
-    private void checkIfUniquePropertyId(final Property property, final Map<Attribute<?>, Property> propertyMap) {
+    private void checkIfUniqueAttribute(final Property property, final Map<Attribute<?>, Property> propertyMap) {
       if (propertyMap.containsKey(property.getAttribute())) {
         throw new IllegalArgumentException("Property with id " + property.getAttribute()
                 + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
@@ -718,7 +718,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
       foreignKeyProperties.forEach(foreignKeyProperty ->
               foreignKeyProperty.getColumnProperties().forEach(columnProperty ->
                       foreignKeyMap.computeIfAbsent(columnProperty.getAttribute(),
-                              columnPropertyId -> new ArrayList<>()).add(foreignKeyProperty)));
+                              columnAttribute -> new ArrayList<>()).add(foreignKeyProperty)));
 
       return foreignKeyMap;
     }
@@ -760,7 +760,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
         if (property instanceof DenormalizedProperty) {
           final DenormalizedProperty denormalizedProperty = (DenormalizedProperty) property;
           final Collection<DenormalizedProperty> denormalizedProperties =
-                  denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getForeignKeyPropertyId(), k -> new ArrayList<>());
+                  denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getForeignKeyAttribute(), attribute -> new ArrayList<>());
           denormalizedProperties.add(denormalizedProperty);
         }
       }
@@ -772,8 +772,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
       final Map<Attribute<?>, Set<DerivedProperty>> derivedPropertyMap = new HashMap<>();
       for (final Property property : properties) {
         if (property instanceof DerivedProperty) {
-          for (final Attribute<?> sourcePropertyId : ((DerivedProperty) property).getSourcePropertyIds()) {
-            derivedPropertyMap.computeIfAbsent(sourcePropertyId, propertyId -> new HashSet<>()).add((DerivedProperty) property);
+          for (final Attribute<?> sourceAttribute : ((DerivedProperty) property).getSourceAttributes()) {
+            derivedPropertyMap.computeIfAbsent(sourceAttribute, attribute -> new HashSet<>()).add((DerivedProperty) property);
           }
         }
       }

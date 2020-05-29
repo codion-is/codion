@@ -158,18 +158,18 @@ final class Queries {
    * @return a order by string
    */
   static String getOrderByClause(final OrderBy orderBy, final EntityDefinition entityDefinition) {
-    final List<OrderBy.OrderByProperty> orderByProperties = orderBy.getOrderByProperties();
-    if (orderByProperties.isEmpty()) {
-      throw new IllegalArgumentException("An order by clause must contain at least a single property");
+    final List<OrderBy.OrderByAttribute> orderByAttributes = orderBy.getOrderByAttributes();
+    if (orderByAttributes.isEmpty()) {
+      throw new IllegalArgumentException("An order by clause must contain at least a single attribute");
     }
     final String columnsClause;
-    if (orderByProperties.size() == 1) {
-      final OrderBy.OrderByProperty orderByProperty = orderByProperties.get(0);
-      columnsClause = getColumnOrderByClause(entityDefinition, orderByProperty);
+    if (orderByAttributes.size() == 1) {
+      final OrderBy.OrderByAttribute orderByAttribute = orderByAttributes.get(0);
+      columnsClause = getColumnOrderByClause(entityDefinition, orderByAttribute);
     }
     else {
-      final List<String> orderByColumnClauses = new ArrayList<>(orderByProperties.size());
-      for (final OrderBy.OrderByProperty property : orderByProperties) {
+      final List<String> orderByColumnClauses = new ArrayList<>(orderByAttributes.size());
+      for (final OrderBy.OrderByAttribute property : orderByAttributes) {
         orderByColumnClauses.add(getColumnOrderByClause(entityDefinition, property));
       }
       columnsClause = String.join(", ", orderByColumnClauses);
@@ -178,8 +178,8 @@ final class Queries {
     return "order by " + columnsClause;
   }
 
-  private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByProperty property) {
-    return entityDefinition.getColumnProperty(property.getPropertyId()).getColumnName() + (property.isAscending() ? "" : " desc");
+  private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByAttribute property) {
+    return entityDefinition.getColumnProperty(property.getAttribute()).getColumnName() + (property.isAscending() ? "" : " desc");
   }
 
   private static void addForUpdate(final StringBuilder queryBuilder, final Database database) {

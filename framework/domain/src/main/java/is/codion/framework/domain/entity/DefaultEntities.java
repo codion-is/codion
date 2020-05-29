@@ -312,10 +312,10 @@ public abstract class DefaultEntities implements Entities {
   private void populateForeignDefinitions() {
     for (final DefaultEntityDefinition definition : entityDefinitions.values()) {
       for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
-        final Attribute<Entity> foreignKeyPropertyId = foreignKeyProperty.getAttribute();
+        final Attribute<Entity> foreignKeyAttribute = foreignKeyProperty.getAttribute();
         final EntityDefinition foreignDefinition = entityDefinitions.get(foreignKeyProperty.getForeignEntityId());
-        if (foreignDefinition != null && !definition.hasForeignDefinition(foreignKeyPropertyId)) {
-          definition.setForeignDefinition(foreignKeyPropertyId, foreignDefinition);
+        if (foreignDefinition != null && !definition.hasForeignDefinition(foreignKeyAttribute)) {
+          definition.setForeignDefinition(foreignKeyAttribute, foreignDefinition);
         }
       }
     }

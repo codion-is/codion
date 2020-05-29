@@ -394,7 +394,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
     <T> T put(Attribute<T> attribute, T value);
 
     /**
-     * @param propertyId the propertyId
+     * @param attribute the attribute
      * @param value the value to associate with the property
      * @return the previous value
      */

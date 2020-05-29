@@ -13,7 +13,7 @@ public interface DenormalizedProperty extends ColumnProperty {
   /**
    * @return the id of the foreign key property from which this property should retrieve its value
    */
-  Attribute<Entity> getForeignKeyPropertyId();
+  Attribute<Entity> getForeignKeyAttribute();
 
   /**
    * @return the property in the referenced entity from which this property gets its value

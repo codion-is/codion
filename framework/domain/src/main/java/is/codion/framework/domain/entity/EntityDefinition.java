@@ -166,18 +166,18 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * Returns true if this entity contains properties which values are derived from the value of the given property
-   * @param propertyId the id of the property
+   * @param attribute the attribute
    * @return true if any properties are derived from the given property
    */
-  boolean hasDerivedProperties(Attribute<?> propertyId);
+  boolean hasDerivedProperties(Attribute<?> attribute);
 
   /**
    * Returns the properties which values are derived from the value of the given property,
    * an empty collection if no such derived properties exist
-   * @param propertyId the id of the property
+   * @param attribute the attribute
    * @return a collection containing the properties which are derived from the given property
    */
-  Collection<DerivedProperty> getDerivedProperties(Attribute<?> propertyId);
+  Collection<DerivedProperty> getDerivedProperties(Attribute<?> attribute);
 
   /**
    * Returns a list containing all primary key properties associated with this entity type.
@@ -221,10 +221,10 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * Returns the {@link EntityDefinition} of the entity referenced by the given foreign key property.
-   * @param foreignKeyPropertyId the foreign key property id
+   * @param foreignKeyAttribute the foreign key attribute
    * @return the definition of the referenced entity
    */
-  EntityDefinition getForeignDefinition(Attribute<?> foreignKeyPropertyId);
+  EntityDefinition getForeignDefinition(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * @return true if this entity type has any denormalized properties
@@ -232,18 +232,18 @@ public interface EntityDefinition extends Serializable {
   boolean hasDenormalizedProperties();
 
   /**
-   * @param foreignKeyPropertyId the id of the foreign key property
+   * @param foreignKeyAttribute the id of the foreign key property
    * @return true if this entity type has any denormalized properties associated with the give foreign key
    */
-  boolean hasDenormalizedProperties(Attribute<?> foreignKeyPropertyId);
+  boolean hasDenormalizedProperties(Attribute<?> foreignKeyAttribute);
 
   /**
    * Retrieves the denormalized properties which values originate from the entity referenced by the given foreign key property
-   * @param foreignKeyPropertyId the foreign key property id
+   * @param foreignKeyAttribute the foreign key attribute
    * @return a list containing the denormalized properties which values originate from the entity
    * referenced by the given foreign key property
    */
-  List<DenormalizedProperty> getDenormalizedProperties(Attribute<?> foreignKeyPropertyId);
+  List<DenormalizedProperty> getDenormalizedProperties(Attribute<?> foreignKeyAttribute);
 
   /**
    * Returns the properties to search by when searching for entities of this type by a string value
@@ -253,51 +253,51 @@ public interface EntityDefinition extends Serializable {
   Collection<ColumnProperty> getSearchProperties();
 
   /**
-   * @param  propertyId the propertyId
-   * @return the column property identified by property id
-   * @throws IllegalArgumentException in case the propertyId does not represent a {@link ColumnProperty}
+   * @param attribute the attribute
+   * @return the column attributeentified by attribute
+   * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
    */
-  ColumnProperty getColumnProperty(Attribute<?> propertyId);
+  ColumnProperty getColumnProperty(Attribute<?> attribute);
 
   /**
-   * @param  propertyId the propertyId
-   * @return the property identified by {@code propertyId} in the entity identified by {@code entityId}
+   * @param attribute the attribute
+   * @return the attributeentified by {@code attribute} in the entity identified by {@code entityId}
    * @throws IllegalArgumentException in case no such property exists
    */
-  Property getProperty(Attribute<?> propertyId);
+  Property getProperty(Attribute<?> attribute);
 
   /**
-   * @param  propertyId the propertyId
-   * @return the primary key property identified by {@code propertyId} in the entity identified by {@code entityId}
+   * @param attribute the attribute
+   * @return the primary key attributeentified by {@code attribute} in the entity identified by {@code entityId}
    * @throws IllegalArgumentException in case no such property exists
    */
-  ColumnProperty getPrimaryKeyProperty(Attribute<?> propertyId);
+  ColumnProperty getPrimaryKeyProperty(Attribute<?> attribute);
 
   /**
-   * Returns the {@link Property}s identified by the propertyIds in {@code propertyIds}
-   * @param propertyIds the ids of the properties to retrieve
-   * @return a list containing the properties identified by {@code propertyIds}, found in
+   * Returns the {@link Property}s identified by the attributes in {@code attributes}
+   * @param attributes the ids of the properties to retrieve
+   * @return a list containing the properties identified by {@code attributes}, found in
    * the entity identified by {@code entityId}
    */
-  List<Property> getProperties(Collection<Attribute<?>> propertyIds);
+  List<Property> getProperties(Collection<Attribute<?>> attributes);
 
   /**
-   * @param  propertyId the propertyId
-   * @return the column property identified by property id
-   * @throws IllegalArgumentException in case the propertyId does not represent a {@link ColumnProperty}
+   * @param attribute the attribute
+   * @return the column attributeentified by attribute
+   * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
    * or if it is not selectable
    * @see ColumnProperty#isSelectable()
    */
-  ColumnProperty getSelectableColumnProperty(Attribute<?> propertyId);
+  ColumnProperty getSelectableColumnProperty(Attribute<?> attribute);
 
   /**
    * Returns the {@link ColumnProperty}s identified
-   * by the propertyIds in {@code propertyIds}
-   * @param propertyIds the ids of the properties to retrieve
+   * by the attributes in {@code attributes}
+   * @param attributes the ids of the properties to retrieve
    * @return a list containing all column properties found in the entity identified by {@code entityId},
    * that is, properties that map to database columns, an empty list if none exist
    */
-  List<ColumnProperty> getColumnProperties(List<Attribute<?>> propertyIds);
+  List<ColumnProperty> getColumnProperties(List<Attribute<?>> attributes);
 
   /**
    * @return true if the primary key of the given type of entity is comprised of a single integer value
@@ -321,12 +321,12 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * Returns the selectable {@link ColumnProperty}s identified
-   * by the propertyIds in {@code propertyIds}
-   * @param propertyIds the ids of the properties to retrieve
+   * by the attributes in {@code attributes}
+   * @param attributes the ids of the properties to retrieve
    * @return a list containing all column properties found in the entity identified by {@code entityId},
    * that is, properties that map to database columns, an empty list if none exist
    */
-  List<ColumnProperty> getSelectableColumnProperties(List<Attribute<?>> propertyIds);
+  List<ColumnProperty> getSelectableColumnProperties(List<Attribute<?>> attributes);
 
   /**
    * Returns the foreign key properties referencing entities of the given type
@@ -336,17 +336,17 @@ public interface EntityDefinition extends Serializable {
   List<ForeignKeyProperty> getForeignKeyReferences(String foreignEntityId);
 
   /**
-   * @param  propertyId the propertyId
-   * @return the Property.ForeignKeyProperty with the given propertyId
+   * @param attribute the attribute
+   * @return the Property.ForeignKeyProperty with the given attribute
    * @throws IllegalArgumentException in case no such property exists
    */
-  ForeignKeyProperty getForeignKeyProperty(Attribute<Entity> propertyId);
+  ForeignKeyProperty getForeignKeyProperty(Attribute<Entity> attribute);
 
   /**
-   * @param columnPropertyId the column property id
+   * @param columnAttribute the column attribute
    * @return the ForeignKeyProperties based on the given column property
    */
-  List<ForeignKeyProperty> getForeignKeyProperties(Attribute<?> columnPropertyId);
+  List<ForeignKeyProperty> getForeignKeyProperties(Attribute<?> columnAttribute);
 
   /**
    * Returns the color provider, never null

@@ -13,11 +13,11 @@ public class RangeValidationException extends ValidationException {
 
   /**
    * Instantiates a new RangeValidationException
-   * @param propertyId the propertyId
+   * @param attribute the attribute
    * @param value the value that is out of range
    * @param message the message
    */
-  public RangeValidationException(final Attribute<?> propertyId, final Object value, final String message) {
-    super(propertyId, value, message);
+  public RangeValidationException(final Attribute<?> attribute, final Object value, final String message) {
+    super(attribute, value, message);
   }
 }

@@ -12,26 +12,26 @@ final class DefaultDenormalizedProperty extends DefaultColumnProperty implements
 
   private static final long serialVersionUID = 1;
 
-  private final Attribute<Entity> foreignKeyPropertyId;
+  private final Attribute<Entity> foreignKeyAttribute;
   private final Property denormalizedProperty;
 
   /**
-   * @param  propertyId the propertyId
-   * @param foreignKeyPropertyId the id of the foreign key property which references the entity which owns
+   * @param attribute the attribute
+   * @param foreignKeyAttribute the attribute of the foreign key references the entity which owns
    * the denormalized property
    * @param denormalizedProperty the property from which this property should get its value
    * @param caption the caption if this property
    */
-  DefaultDenormalizedProperty(final Attribute<?> propertyId, final Attribute<Entity> foreignKeyPropertyId,
+  DefaultDenormalizedProperty(final Attribute<?> attribute, final Attribute<Entity> foreignKeyAttribute,
                               final Property denormalizedProperty, final String caption) {
-    super(propertyId, denormalizedProperty.getType(), caption);
-    this.foreignKeyPropertyId = foreignKeyPropertyId;
+    super(attribute, denormalizedProperty.getType(), caption);
+    this.foreignKeyAttribute = foreignKeyAttribute;
     this.denormalizedProperty = denormalizedProperty;
   }
 
   @Override
-  public Attribute<Entity> getForeignKeyPropertyId() {
-    return foreignKeyPropertyId;
+  public Attribute<Entity> getForeignKeyAttribute() {
+    return foreignKeyAttribute;
   }
 
   @Override

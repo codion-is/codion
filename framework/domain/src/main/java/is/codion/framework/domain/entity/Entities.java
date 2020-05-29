@@ -312,55 +312,55 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   /**
    * Returns the values associated with the given property from the given entities.
    * @param <T> the value type
-   * @param propertyId the id of the property for which to retrieve the values
+   * @param attribute the attribute for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
    * @return a List containing the non-null values of the property with the given id from the given entities
    */
-  static <T> List<T> getValues(final Attribute<T> propertyId, final Collection<Entity> entities) {
-    requireNonNull(propertyId, "propertyId");
+  static <T> List<T> getValues(final Attribute<T> attribute, final Collection<Entity> entities) {
+    requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
-    return entities.stream().map(entity -> (T) entity.get(propertyId)).collect(toList());
+    return entities.stream().map(entity -> (T) entity.get(attribute)).collect(toList());
   }
 
   /**
-   * Returns a Collection containing the distinct non-null values of {@code propertyId} from the given entities.
+   * Returns a Collection containing the distinct non-null values of {@code attribute} from the given entities.
    * @param <T> the value type
-   * @param propertyId the id of the property for which to retrieve the values
+   * @param attribute the attribute for which to retrieve the values
    * @param entities the entities from which to retrieve the values
    * @return a List containing the distinct non-null property values
    */
-  static <T> List<T> getDistinctValues(final Attribute<T> propertyId, final Collection<Entity> entities) {
-    requireNonNull(propertyId, "propertyId");
+  static <T> List<T> getDistinctValues(final Attribute<T> attribute, final Collection<Entity> entities) {
+    requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
-    return entities.stream().map(entity -> (T) entity.get(propertyId)).distinct().filter(Objects::nonNull).collect(toList());
+    return entities.stream().map(entity -> (T) entity.get(attribute)).distinct().filter(Objects::nonNull).collect(toList());
   }
 
   /**
-   * Returns a Collection containing the distinct values of {@code propertyId} from the given entities.
+   * Returns a Collection containing the distinct values of {@code attribute} from the given entities.
    * @param <T> the value type
-   * @param propertyId the id of the property for which to retrieve the values
+   * @param attribute the attribute for which to retrieve the values
    * @param entities the entities from which to retrieve the values
    * @return a List containing the distinct property values
    */
-  static <T> List<T> getDistinctValuesIncludingNull(final Attribute<T> propertyId, final Collection<Entity> entities) {
-    requireNonNull(propertyId, "propertyId");
+  static <T> List<T> getDistinctValuesIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
+    requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
-    return entities.stream().map(entity -> (T) entity.get(propertyId)).distinct().collect(toList());
+    return entities.stream().map(entity -> (T) entity.get(attribute)).distinct().collect(toList());
   }
 
   /**
-   * Sets the value of the property with id {@code propertyId} to {@code value}
+   * Sets the value of the property with id {@code attribute} to {@code value}
    * in the given entities
-   * @param propertyId the id of the property for which to set the value
+   * @param attribute the attribute for which to set the value
    * @param value the value
    * @param entities the entities for which to set the value
    * @return the previous property values mapped to the primary key of the entity
    */
-  static <T> Map<Entity.Key, T> put(final Attribute<T> propertyId, final T value, final Collection<Entity> entities) {
+  static <T> Map<Entity.Key, T> put(final Attribute<T> attribute, final T value, final Collection<Entity> entities) {
     requireNonNull(entities, "entities");
     final Map<Entity.Key, T> previousValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
-      previousValues.put(entity.getKey(), entity.put(propertyId, value));
+      previousValues.put(entity.getKey(), entity.put(attribute, value));
     }
 
     return previousValues;
@@ -382,15 +382,15 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   }
 
   /**
-   * Returns a LinkedHashMap containing the given entities mapped to the value of the property with id {@code propertyId},
+   * Returns a LinkedHashMap containing the given entities mapped to the value of the property with id {@code attribute},
    * respecting the iteration order of the given collection
    * @param <K> the key type
-   * @param propertyId the id of the property which value should be used for mapping
+   * @param attribute the attribute which value should be used for mapping
    * @param entities the entities to map by property value
    * @return a Map of entities mapped to property value
    */
-  static <K> LinkedHashMap<K, List<Entity>> mapToValue(final Attribute<K> propertyId, final Collection<Entity> entities) {
-    return map(entities, value -> (K) value.get(propertyId));
+  static <K> LinkedHashMap<K, List<Entity>> mapToValue(final Attribute<K> attribute, final Collection<Entity> entities) {
+    return map(entities, value -> (K) value.get(attribute));
   }
 
   /**
@@ -437,7 +437,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   /**
    * Finds entities according to the values of values
    * @param entities the entities to search
-   * @param values the property values to use as condition mapped to their respective propertyIds
+   * @param values the property values to use as condition mapped to their respective attributes
    * @return the entities having the exact same property values as in the given value map
    */
   static List<Entity> getEntitiesByValue(final Collection<Entity> entities, final Map<Attribute<?>, Object> values) {
@@ -447,8 +447,8 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
     for (final Entity entity : requireNonNull(entities, "entities")) {
       boolean equal = true;
       for (final Map.Entry<Attribute<?>, Object> entries : values.entrySet()) {
-        final Attribute<?> propertyId = entries.getKey();
-        if (!entity.get(propertyId).equals(entries.getValue())) {
+        final Attribute<?> attribute = entries.getKey();
+        if (!entity.get(attribute).equals(entries.getValue())) {
           equal = false;
           break;
         }
@@ -465,18 +465,18 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * Returns true if the values of the given properties are equal in the given entities.
    * @param entityOne the first entity
    * @param entityTwo the second entity
-   * @param propertyIds the ids of the properties to use
-   * @return true if the values of the given properties are equal in the given entities
+   * @param attributes the attributes to use
+   * @return true if the values of the given attributes are equal in the given entities
    */
-  static boolean valuesEqual(final Entity entityOne, final Entity entityTwo, final Attribute<?>... propertyIds) {
+  static boolean valuesEqual(final Entity entityOne, final Entity entityTwo, final Attribute<?>... attributes) {
     requireNonNull(entityOne);
     requireNonNull(entityTwo);
-    requireNonNull(propertyIds);
-    if (propertyIds.length == 0) {
+    requireNonNull(attributes);
+    if (attributes.length == 0) {
       throw new IllegalArgumentException("No properties provided for equality check");
     }
-    for (final Attribute<?> propertyId : propertyIds) {
-      if (!Objects.equals(entityOne.get(propertyId), entityTwo.get(propertyId))) {
+    for (final Attribute<?> attribute : attributes) {
+      if (!Objects.equals(entityOne.get(attribute), entityTwo.get(attribute))) {
         return false;
       }
     }

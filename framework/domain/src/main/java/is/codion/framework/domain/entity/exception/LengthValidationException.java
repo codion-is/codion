@@ -12,11 +12,11 @@ public class LengthValidationException extends ValidationException {
 
   /**
    * Instantiates a new LengthValidationException
-   * @param propertyId the propertyId
+   * @param attribute the attribute
    * @param value the value that exceeds the allowed length
    * @param message the message
    */
-  public LengthValidationException(final Attribute<?> propertyId, final Object value, final String message) {
-    super(propertyId, value, message);
+  public LengthValidationException(final Attribute<?> attribute, final Object value, final String message) {
+    super(attribute, value, message);
   }
 }

@@ -28,27 +28,27 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
   private final transient List<ColumnProperty.Builder> columnPropertyBuilders;
 
   /**
-   * @param propertyId the propertyId
+   * @param attribute the attribute
    * @param caption the caption
    * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnProperty the underlying column property comprising this foreign key
    */
-  DefaultForeignKeyProperty(final Attribute<Entity> propertyId, final String caption,
+  DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
                             final String foreignEntityId, final ColumnProperty.Builder columnProperty) {
-    this(propertyId, caption, foreignEntityId, singletonList(columnProperty));
+    this(attribute, caption, foreignEntityId, singletonList(columnProperty));
   }
 
   /**
-   * @param propertyId the propertyId, note that this is not a column name
+   * @param attribute the attribute, note that this is not a column
    * @param caption the property caption
    * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnPropertyBuilders the underlying column properties comprising this foreign key
    */
-  DefaultForeignKeyProperty(final Attribute<Entity> propertyId, final String caption,
+  DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
                             final String foreignEntityId, final List<ColumnProperty.Builder> columnPropertyBuilders) {
-    super(propertyId, Types.OTHER, caption, Entity.class);
+    super(attribute, Types.OTHER, caption, Entity.class);
     requireNonNull(foreignEntityId, "foreignEntityId");
-    validateParameters(propertyId, foreignEntityId, columnPropertyBuilders);
+    validateParameters(attribute, foreignEntityId, columnPropertyBuilders);
     this.columnPropertyBuilders = columnPropertyBuilders;
     this.columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyProperty(true));
     this.compositeReference = columnPropertyBuilders.size() > 1;
@@ -113,15 +113,15 @@ final class DefaultForeignKeyProperty extends DefaultProperty implements Foreign
     return new DefaultForeignKeyPropertyBuilder(this);
   }
 
-  private static void validateParameters(final Attribute<?> propertyId, final String foreignEntityId,
+  private static void validateParameters(final Attribute<?> attribute, final String foreignEntityId,
                                          final List<ColumnProperty.Builder> columnProperties) {
     if (nullOrEmpty(columnProperties)) {
       throw new IllegalArgumentException("No column properties specified");
     }
     for (final ColumnProperty.Builder columnProperty : columnProperties) {
       requireNonNull(columnProperty, "columnProperty");
-      if (columnProperty.get().getAttribute().equals(propertyId)) {
-        throw new IllegalArgumentException(foreignEntityId + ", column propertyId is the same as foreign key propertyId: " + propertyId);
+      if (columnProperty.get().getAttribute().equals(attribute)) {
+        throw new IllegalArgumentException(foreignEntityId + ", column attribute is the same as foreign key attribute: " + attribute);
       }
     }
   }

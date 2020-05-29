@@ -13,9 +13,9 @@ import java.util.Map;
 public interface DerivedProperty extends TransientProperty {
 
   /**
-   * @return the ids of properties this property derives from.
+   * @return the attributes this property derives from.
    */
-  List<Attribute<?>> getSourcePropertyIds();
+  List<Attribute<?>> getSourceAttributes();
 
   /**
    * @return the value provider, providing the derived value
@@ -28,7 +28,7 @@ public interface DerivedProperty extends TransientProperty {
   interface Provider extends Serializable {
 
     /**
-     * @param sourceValues the source values, mapped to their respective propertyIds
+     * @param sourceValues the source values, mapped to their respective attributes
      * @return the derived value
      */
     Object getValue(Map<Attribute<?>, Object> sourceValues);

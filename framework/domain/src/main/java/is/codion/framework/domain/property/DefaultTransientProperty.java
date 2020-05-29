@@ -10,13 +10,13 @@ class DefaultTransientProperty extends DefaultProperty implements TransientPrope
   private boolean modifiesEntity = true;
 
   /**
-   * @param  propertyId the propertyId, since TransientProperties do not map to underlying table columns,
+   * @param attribute the attribute, since TransientProperties do not map to underlying table columns,
    * the property id should not be column name, only be unique for this entity
    * @param type the data type of this property
    * @param caption the caption of this property
    */
-  DefaultTransientProperty(final Attribute<?> propertyId, final int type, final String caption) {
-    super(propertyId, type, caption, getTypeClass(type));
+  DefaultTransientProperty(final Attribute<?> attribute, final int type, final String caption) {
+    super(attribute, type, caption, getTypeClass(type));
   }
 
   @Override

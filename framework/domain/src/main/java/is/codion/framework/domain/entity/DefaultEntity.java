@@ -695,26 +695,26 @@ final class DefaultEntity implements Entity {
             new DefaultEntityKey(definition.getForeignDefinition(foreignKeyProperty.getAttribute()), value));
   }
 
-  private Key cacheReferencedKey(final Attribute<?> foreignKeyPropertyId, final Key referencedPrimaryKey) {
+  private Key cacheReferencedKey(final Attribute<?> foreignKeyAttribute, final Key referencedPrimaryKey) {
     if (referencedKeyCache == null) {
       referencedKeyCache = new HashMap<>();
     }
-    referencedKeyCache.put(foreignKeyPropertyId, referencedPrimaryKey);
+    referencedKeyCache.put(foreignKeyAttribute, referencedPrimaryKey);
 
     return referencedPrimaryKey;
   }
 
-  private Key getCachedReferencedKey(final Attribute<?> fkPropertyId) {
+  private Key getCachedReferencedKey(final Attribute<?> fkAttribute) {
     if (referencedKeyCache == null) {
       return null;
     }
 
-    return referencedKeyCache.get(fkPropertyId);
+    return referencedKeyCache.get(fkAttribute);
   }
 
-  private void removeCachedReferencedKey(final Attribute<?> fkPropertyId) {
+  private void removeCachedReferencedKey(final Attribute<?> fkAttribute) {
     if (referencedKeyCache != null) {
-      referencedKeyCache.remove(fkPropertyId);
+      referencedKeyCache.remove(fkAttribute);
       if (referencedKeyCache.isEmpty()) {
         referencedKeyCache = null;
       }
@@ -745,20 +745,20 @@ final class DefaultEntity implements Entity {
   }
 
   private Object getDerivedValue(final DerivedProperty derivedProperty) {
-    return derivedProperty.getValueProvider().getValue(getSourceValues(derivedProperty.getSourcePropertyIds()));
+    return derivedProperty.getValueProvider().getValue(getSourceValues(derivedProperty.getSourceAttributes()));
   }
 
-  private Map<Attribute<?>, Object> getSourceValues(final List<Attribute<?>> sourcePropertyIds) {
-    if (sourcePropertyIds.size() == 1) {
-      final Attribute<?> sourcePropertyId = sourcePropertyIds.get(0);
+  private Map<Attribute<?>, Object> getSourceValues(final List<Attribute<?>> sourceAttributes) {
+    if (sourceAttributes.size() == 1) {
+      final Attribute<?> sourceAttribute = sourceAttributes.get(0);
 
-      return singletonMap(sourcePropertyId, get(sourcePropertyId));
+      return singletonMap(sourceAttribute, get(sourceAttribute));
     }
     else {
-      final Map<Attribute<?>, Object> values = new HashMap<>(sourcePropertyIds.size());
-      for (int i = 0; i < sourcePropertyIds.size(); i++) {
-        final Attribute<?> sourcePropertyId = sourcePropertyIds.get(i);
-        values.put(sourcePropertyId, get(sourcePropertyId));
+      final Map<Attribute<?>, Object> values = new HashMap<>(sourceAttributes.size());
+      for (int i = 0; i < sourceAttributes.size(); i++) {
+        final Attribute<?> sourceAttribute = sourceAttributes.get(i);
+        values.put(sourceAttribute, get(sourceAttribute));
       }
 
       return values;

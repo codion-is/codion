@@ -131,10 +131,10 @@ public interface Property extends Serializable {
   String formatValue(Object value);
 
   /**
-   * @param propertyId the propertyId
-   * @return true if this property is of the given type
+   * @param attribute the attribute
+   * @return true if this property is based on the given attribute
    */
-  boolean is(Attribute<?> propertyId);
+  boolean is(Attribute<?> attribute);
 
   /**
    * @param property the property

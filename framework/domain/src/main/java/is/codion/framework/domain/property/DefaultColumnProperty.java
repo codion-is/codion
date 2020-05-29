@@ -45,10 +45,10 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   private transient boolean aggregateColumn = false;
   private transient boolean selectable = true;
 
-  DefaultColumnProperty(final Attribute<?> propertyId, final int type, final String caption) {
-    super(propertyId, type, caption, getTypeClass(type));
+  DefaultColumnProperty(final Attribute<?> attribute, final int type, final String caption) {
+    super(attribute, type, caption, getTypeClass(type));
     this.columnType = type;
-    this.columnName = propertyId.getName();
+    this.columnName = attribute.getName();
     this.valueConverter = initializeValueConverter();
     this.valueFetcher = initializeValueFetcher();
     this.resultPacker = new PropertyResultPacker();

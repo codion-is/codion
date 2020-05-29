@@ -14,12 +14,12 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
   private final Provider valueProvider;
   private final List<Attribute<?>> sourcePropertyIds;
 
-  DefaultDerivedProperty(final Attribute<?> propertyId, final int type, final String caption,
+  DefaultDerivedProperty(final Attribute<?> attribute, final int type, final String caption,
                          final Provider valueProvider, final Attribute<?>... sourcePropertyIds) {
-    super(propertyId, type, caption);
+    super(attribute, type, caption);
     this.valueProvider = valueProvider;
     if (sourcePropertyIds == null || sourcePropertyIds.length == 0) {
-      throw new IllegalArgumentException("No source propertyIds, a derived property must be derived from one or more existing properties");
+      throw new IllegalArgumentException("No source attributes, a derived property must be derived from one or more existing properties");
     }
     this.sourcePropertyIds = asList(sourcePropertyIds);
   }
@@ -30,7 +30,7 @@ final class DefaultDerivedProperty extends DefaultTransientProperty implements D
   }
 
   @Override
-  public List<Attribute<?>> getSourcePropertyIds() {
+  public List<Attribute<?>> getSourceAttributes() {
     return sourcePropertyIds;
   }
 

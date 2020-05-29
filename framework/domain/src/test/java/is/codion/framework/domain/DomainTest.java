@@ -402,7 +402,7 @@ public class DomainTest {
     }
     catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(TestDomain.EMP_DEPARTMENT_FK, e.getPropertyId());
+      assertEquals(TestDomain.EMP_DEPARTMENT_FK, e.getAttribute());
     }
     emp.put(TestDomain.EMP_DEPARTMENT, 1);
     try {
@@ -418,7 +418,7 @@ public class DomainTest {
     }
     catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(TestDomain.EMP_SALARY, e.getPropertyId());
+      assertEquals(TestDomain.EMP_SALARY, e.getAttribute());
     }
   }
 

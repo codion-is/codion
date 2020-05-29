@@ -364,7 +364,7 @@ public abstract class EntityEditView extends BorderPane {
     }
     catch (final ValidationException e) {
       FXUiUtil.showExceptionDialog(e);
-      requestComponentFocus(e.getPropertyId());
+      requestComponentFocus(e.getAttribute());
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -380,7 +380,7 @@ public abstract class EntityEditView extends BorderPane {
       }
       catch (final ValidationException e) {
         FXUiUtil.showExceptionDialog(e);
-        requestComponentFocus(e.getPropertyId());
+        requestComponentFocus(e.getAttribute());
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);

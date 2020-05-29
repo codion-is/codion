@@ -134,14 +134,14 @@ abstract class DefaultProperty implements Property {
   private transient DateTimeFormatter dateTimeFormatter;
 
   /**
-   * @param  attribute the propertyId, this is used as the underlying column name
+   * @param attribute the attribute
    * @param type the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    * @param typeClass the type associated with this property
    */
   DefaultProperty(final Attribute<?> attribute, final int type, final String caption,
                   final Class typeClass) {
-    requireNonNull(attribute, "propertyId");
+    requireNonNull(attribute, "attribute");
     this.attribute = attribute;
     this.type = type;
     this.caption = caption;
@@ -157,8 +157,8 @@ abstract class DefaultProperty implements Property {
   }
 
   @Override
-  public final boolean is(final Attribute<?> propertyId) {
-    return this.attribute.equals(propertyId);
+  public final boolean is(final Attribute<?> attribute) {
+    return this.attribute.equals(attribute);
   }
 
   @Override

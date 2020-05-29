@@ -284,9 +284,9 @@ public final class DefaultEntityEditModelTest {
       fail("Validation should fail on invalid commission value");
     }
     catch (final ValidationException e) {
-      assertEquals(TestDomain.EMP_COMMISSION, e.getPropertyId());
+      assertEquals(TestDomain.EMP_COMMISSION, e.getAttribute());
       assertEquals(50d, e.getValue());
-      final Property property = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(e.getPropertyId());
+      final Property property = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(e.getAttribute());
       assertTrue(e.getMessage().contains(property.toString()));
       assertTrue(e.getMessage().contains(property.getMinimumValue().toString()));
     }

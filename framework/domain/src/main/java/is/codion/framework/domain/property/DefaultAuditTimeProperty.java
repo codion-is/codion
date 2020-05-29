@@ -10,7 +10,7 @@ public final class DefaultAuditTimeProperty extends DefaultAuditProperty
 
   private static final long serialVersionUID = 1;
 
-  DefaultAuditTimeProperty(final Attribute<?> propertyId, final AuditAction auditAction, final String caption) {
-    super(propertyId, Types.TIMESTAMP, auditAction, caption);
+  DefaultAuditTimeProperty(final Attribute<?> attribute, final AuditAction auditAction, final String caption) {
+    super(attribute, Types.TIMESTAMP, auditAction, caption);
   }
 }

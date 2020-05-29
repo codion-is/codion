@@ -11,8 +11,8 @@ final class DefaultBlobProperty extends DefaultColumnProperty implements BlobPro
 
   private boolean eagerlyLoaded = false;
 
-  DefaultBlobProperty(final Attribute<?> propertyId, final String caption) {
-    super(propertyId, Types.BLOB, caption);
+  DefaultBlobProperty(final Attribute<?> attribute, final String caption) {
+    super(attribute, Types.BLOB, caption);
     builder().hidden(true);
   }
 
