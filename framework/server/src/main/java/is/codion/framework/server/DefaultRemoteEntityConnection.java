@@ -185,16 +185,16 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> List<T> selectValues(final Attribute<T> propertyId, final EntityCondition condition) throws DatabaseException {
+  public <T> List<T> selectValues(final Attribute<T> attribute, final EntityCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectValues(propertyId, condition);
+      return connectionProxy.selectValues(attribute, condition);
     }
   }
 
   @Override
-  public <T> Entity selectSingle(final String entityId, final Attribute<T> propertyId, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(final String entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectSingle(entityId, propertyId, value);
+      return connectionProxy.selectSingle(entityId, attribute, value);
     }
   }
 
@@ -227,10 +227,10 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> List<Entity> select(final String entityId, final Attribute<T> propertyId,
+  public <T> List<Entity> select(final String entityId, final Attribute<T> attribute,
                                  final T... values) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.select(entityId, propertyId, values);
+      return connectionProxy.select(entityId, attribute, values);
     }
   }
 
@@ -242,16 +242,16 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobPropertyId, final byte[] blobData) throws DatabaseException {
+  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData) throws DatabaseException {
     synchronized (connectionProxy) {
-      connectionProxy.writeBlob(primaryKey, blobPropertyId, blobData);
+      connectionProxy.writeBlob(primaryKey, blobAttribute, blobData);
     }
   }
 
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobPropertyId) throws DatabaseException {
+  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.readBlob(primaryKey, blobPropertyId);
+      return connectionProxy.readBlob(primaryKey, blobAttribute);
     }
   }
 }
