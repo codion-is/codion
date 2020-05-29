@@ -322,10 +322,10 @@ public final class EntityService extends Application {
   }
 
   /**
-   * Selects the values for the given propertyId using the given query condition
+   * Selects the values for the given attribute using the given query condition
    * @param request the servlet request
    * @param headers the headers
-   * @param propertyId the propertyId
+   * @param attribute the attribute
    * @return a response
    */
   @POST
@@ -333,11 +333,11 @@ public final class EntityService extends Application {
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("values")
   public Response values(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("propertyId") final String propertyId) {
+                         @QueryParam("attribute") final String attribute) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Serializer.serialize(connection.selectValues(attribute(propertyId), deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.selectValues(attribute(attribute), deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
