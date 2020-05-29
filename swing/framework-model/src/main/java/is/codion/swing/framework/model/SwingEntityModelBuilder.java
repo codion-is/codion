@@ -35,7 +35,7 @@ public class SwingEntityModelBuilder
 
   /**
    * Instantiates a new SwingeEntityModelBuilder based on the given  entityId
-   * @param entityId the  entityId
+   * @param entityId the entityId
    */
   public SwingEntityModelBuilder(final String entityId) {
     this.entityId = requireNonNull(entityId, "entityId");

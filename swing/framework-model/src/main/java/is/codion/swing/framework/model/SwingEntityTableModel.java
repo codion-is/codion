@@ -81,7 +81,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
 
   /**
-   * The  entityId
+   * The entityId
    */
   private final String entityId;
 
@@ -149,7 +149,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /**
    * Instantiates a new DefaultEntityTableModel with default column and condition models.
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @param connectionProvider the db provider
    */
   public SwingEntityTableModel(final String entityId, final EntityConnectionProvider connectionProvider) {
@@ -160,7 +160,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /**
    * Instantiates a new DefaultEntityTableModel.
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @param connectionProvider the db provider
    * @param conditionModel the condition model
    * @param sortModel the sort model
@@ -320,8 +320,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final int getPropertyColumnIndex(final Attribute<?> propertyId) {
-    return getColumnModel().getColumnIndex(getEntityDefinition().getProperty(propertyId));
+  public final int getPropertyColumnIndex(final Attribute<?> attribute) {
+    return getColumnModel().getColumnIndex(getEntityDefinition().getProperty(attribute));
   }
 
   /**
@@ -375,33 +375,33 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   /**
-   * A convenience method for setting the sorting directive for the given property
-   * @param  propertyId the propertyId
+   * A convenience method for setting the sorting directive for the given attribute
+   * @param attribute the attribute
    * @param directive the directive
    * @see TableSortModel#setSortingDirective(Object, SortingDirective)
    */
-  public final void setSortingDirective(final Attribute<?> propertyId, final SortingDirective directive) {
-    getSortModel().setSortingDirective(getEntityDefinition().getProperty(propertyId), directive);
+  public final void setSortingDirective(final Attribute<?> attribute, final SortingDirective directive) {
+    getSortModel().setSortingDirective(getEntityDefinition().getProperty(attribute), directive);
   }
 
   /**
-   * A convenience method for setting the sorting directive for the given property
-   * @param  propertyId the propertyId
+   * A convenience method for setting the sorting directive for the given attribute
+   * @param attribute the attribute
    * @param directive the directive
    * @see TableSortModel#addSortingDirective(Object, SortingDirective)
    */
-  public final void addSortingDirective(final Attribute<?> propertyId, final SortingDirective directive) {
-    getSortModel().addSortingDirective(getEntityDefinition().getProperty(propertyId), directive);
+  public final void addSortingDirective(final Attribute<?> attribute, final SortingDirective directive) {
+    getSortModel().addSortingDirective(getEntityDefinition().getProperty(attribute), directive);
   }
 
   /**
-   * A convenience method for retrieving the sorting directive for the given property
+   * A convenience method for retrieving the sorting directive for the given attribute
    * from the underlying {@link TableSortModel}.
-   * @param  propertyId the propertyId
-   * @return the {@link TableSortModel.SortingState} associated with the given property
+   * @param attribute the attribute
+   * @return the {@link TableSortModel.SortingState} associated with the given attribute
    */
-  public final TableSortModel.SortingState getSortingState(final Attribute<?> propertyId) {
-    return getSortModel().getSortingState(getEntityDefinition().getProperty(propertyId));
+  public final TableSortModel.SortingState getSortingState(final Attribute<?> attribute) {
+    return getSortModel().getSortingState(getEntityDefinition().getProperty(attribute));
   }
 
   @Override
@@ -530,8 +530,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final ColumnSummaryModel getColumnSummaryModel(final Attribute<?> propertyId) {
-    return getColumnSummaryModel(getEntityDefinition().getProperty(propertyId));
+  public final ColumnSummaryModel getColumnSummaryModel(final Attribute<?> attribute) {
+    return getColumnSummaryModel(getEntityDefinition().getProperty(attribute));
   }
 
   @Override
@@ -540,8 +540,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final void setColumns(final Attribute<?>... propertyIds) {
-    getColumnModel().setColumns(getEntityDefinition().getProperties(asList(propertyIds)).toArray(new Property[0]));
+  public final void setColumns(final Attribute<?>... attributes) {
+    getColumnModel().setColumns(getEntityDefinition().getProperties(asList(attributes)).toArray(new Property[0]));
   }
 
   @Override

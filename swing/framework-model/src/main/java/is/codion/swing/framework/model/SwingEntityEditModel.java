@@ -77,14 +77,14 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
-   * Returns a {@link SwingEntityComboBoxModel} for the given foreign key property. If one does not exist it is created.
-   * @param foreignKeyPropertyId the id of the foreign key property
-   * @return a {@link SwingEntityComboBoxModel} based on the entity referenced by the given foreign key property
+   * Returns a {@link SwingEntityComboBoxModel} for the given foreign key attribute. If one does not exist it is created.
+   * @param foreignKeyAttribute the foreign key attribute
+   * @return a {@link SwingEntityComboBoxModel} based on the entity referenced by the given foreign key attribute
    * @see #createForeignKeyComboBoxModel(ForeignKeyProperty)
    */
-  public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(final Attribute<Entity> foreignKeyPropertyId) {
-    requireNonNull(foreignKeyPropertyId, "foreignKeyPropertyId");
-    return getForeignKeyComboBoxModel(getEntityDefinition().getForeignKeyProperty(foreignKeyPropertyId));
+  public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(final Attribute<Entity> foreignKeyAttribute) {
+    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+    return getForeignKeyComboBoxModel(getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute));
   }
 
   /**
@@ -105,16 +105,16 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
-   * Returns a {@link FilteredComboBoxModel} for the given property,
-   * @param  propertyId the propertyId
-   * @return a {@link FilteredComboBoxModel} for the given property
+   * Returns a {@link FilteredComboBoxModel} for the given attribute,
+   * @param attribute the attribute
+   * @return a {@link FilteredComboBoxModel} for the given attribute
    */
-  public final FilteredComboBoxModel getComboBoxModel(final Attribute<?> propertyId) {
-    requireNonNull(propertyId, "propertyId");
-    FilteredComboBoxModel comboBoxModel = comboBoxModels.get(propertyId);
+  public final FilteredComboBoxModel getComboBoxModel(final Attribute<?> attribute) {
+    requireNonNull(attribute, "attribute");
+    FilteredComboBoxModel comboBoxModel = comboBoxModels.get(attribute);
     if (comboBoxModel == null) {
-      comboBoxModel = createComboBoxModel(getEntityDefinition().getColumnProperty(propertyId));
-      comboBoxModels.put(propertyId, comboBoxModel);
+      comboBoxModel = createComboBoxModel(getEntityDefinition().getColumnProperty(attribute));
+      comboBoxModels.put(attribute, comboBoxModel);
       comboBoxModel.refresh();
     }
 
@@ -122,11 +122,11 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
-   * @param propertyId the id of the property
-   * @return true if this edit model contains a combobox model for the property
+   * @param attribute the attribute
+   * @return true if this edit model contains a combobox model for the attribute
    */
-  public final boolean containsComboBoxModel(final Attribute<?> propertyId) {
-    return comboBoxModels.containsKey(propertyId);
+  public final boolean containsComboBoxModel(final Attribute<?> attribute) {
+    return comboBoxModels.containsKey(attribute);
   }
 
   /**
