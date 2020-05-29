@@ -193,9 +193,9 @@ public final class Properties {
    * @param validItems the Items representing all the valid values for this property
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static ColumnProperty.Builder valueListProperty(final Attribute<?> propertyId, final int type, final String caption,
-                                                         final List<Item> validItems) {
-    return new DefaultValueListProperty(propertyId, type, caption, validItems).builder();
+  public static <T> ColumnProperty.Builder valueListProperty(final Attribute<T> propertyId, final int type, final String caption,
+                                                             final List<Item<T>> validItems) {
+    return new DefaultValueListProperty<>(propertyId, type, caption, validItems).builder();
   }
 
   /**

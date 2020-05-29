@@ -10,43 +10,43 @@ import java.util.Objects;
 
 import static java.util.Collections.unmodifiableList;
 
-final class DefaultValueListProperty extends DefaultColumnProperty implements ValueListProperty {
+final class DefaultValueListProperty<T> extends DefaultColumnProperty implements ValueListProperty<T> {
 
   private static final long serialVersionUID = 1;
 
-  private final List<Item> items;
+  private final List<Item<T>> items;
 
   /**
-   * @param  propertyId the propertyId
+   * @param propertyId the propertyId
    * @param type the data type of this property
    * @param caption the property caption
    * @param items the allowed values for this property
    */
-  DefaultValueListProperty(final Attribute<?> propertyId, final int type, final String caption, final List<Item> items) {
+  DefaultValueListProperty(final Attribute<T> propertyId, final int type, final String caption, final List<Item<T>> items) {
     super(propertyId, type, caption);
     this.items = unmodifiableList(items);
   }
 
   @Override
-  public boolean isValid(final Object value) {
+  public boolean isValid(final T value) {
     return findItem(value) != null;
   }
 
   @Override
-  public List<Item> getValues() {
+  public List<Item<T>> getValues() {
     return items;
   }
 
   @Override
-  public String getCaption(final Object value) {
-    final Item item = findItem(value);
+  public String getCaption(final T value) {
+    final Item<T> item = findItem(value);
 
     return item == null ? "" : item.getCaption();
   }
 
-  private Item findItem(final Object value) {
+  private Item<T> findItem(final T value) {
     for (int i = 0; i < items.size(); i++) {
-      final Item item = items.get(i);
+      final Item<T> item = items.get(i);
       if (Objects.equals(item.getValue(), value)) {
         return item;
       }

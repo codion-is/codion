@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -27,8 +26,6 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Provides {@link ComponentValue} implementations.
@@ -50,10 +47,7 @@ public class EntityComponentValues {
       return createEntityComponentValue((ForeignKeyProperty) property, editModel, (Entity) initialValue);
     }
     if (property instanceof ValueListProperty) {
-      final List<Item<Object>> values = ((ValueListProperty) property).getValues()
-              .stream().map(item -> (Item<Object>) item).collect(Collectors.toList());
-
-      return SelectedValues.selectedItemValue(initialValue, values);
+      return SelectedValues.selectedItemValue(initialValue, ((ValueListProperty) property).getValues());
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
