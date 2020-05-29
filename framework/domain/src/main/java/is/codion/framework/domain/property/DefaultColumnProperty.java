@@ -48,7 +48,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   DefaultColumnProperty(final Attribute<?> propertyId, final int type, final String caption) {
     super(propertyId, type, caption, getTypeClass(type));
     this.columnType = type;
-    this.columnName = propertyId.getId();
+    this.columnName = propertyId.getName();
     this.valueConverter = initializeValueConverter();
     this.valueFetcher = initializeValueFetcher();
     this.resultPacker = new PropertyResultPacker();

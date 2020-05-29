@@ -7,12 +7,13 @@ import java.io.Serializable;
 
 /**
  * Typed identifier for a {@link Property}.
+ * Note that Attributes are equal if their names are equal.
  * @param <T> the attribute type
  */
 public interface Attribute<T> extends Serializable {
 
   /**
-   * @return the id of this attribute.
+   * @return the name of this attribute.
    */
-  String getId();
+  String getName();
 }

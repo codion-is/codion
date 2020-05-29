@@ -40,7 +40,7 @@ final class EntityKeySerializer extends StdSerializer<Entity.Key> {
   private static Map<String, Object> getValueMap(final Entity.Key key) {
     final Map<String, Object> valueMap = new HashMap<>();
     for (final ColumnProperty property : key.getProperties()) {
-      valueMap.put(property.getPropertyId().getId(), key.get(property));
+      valueMap.put(property.getPropertyId().getName(), key.get(property));
     }
 
     return valueMap;

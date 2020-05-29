@@ -84,26 +84,26 @@ public final class TestDomain extends Domain {
   void detail() {
     define(T_DETAIL,
             primaryKeyProperty(DETAIL_ID, Types.BIGINT),
-            columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT.getId()),
-            columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE.getId()),
+            columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT.getName()),
+            columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE.getName()),
             columnProperty(DETAIL_STRING, Types.VARCHAR, "Detail string"),
-            columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE.getId()),
-            columnProperty(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP.getId()),
-            columnProperty(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN.getId())
+            columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE.getName()),
+            columnProperty(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP.getName()),
+            columnProperty(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN.getName())
                     .nullable(false)
                     .defaultValue(true)
                     .description("A boolean property"),
-            columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE.getId())
+            columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE.getName())
                     .defaultValue(true),
-            foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getId(), T_MASTER,
+            foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName(), T_MASTER,
                     asList(columnProperty(DETAIL_MASTER_ID_1, Types.INTEGER),
                             columnProperty(DETAIL_MASTER_ID_2, Types.INTEGER))),
             denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK,
-                    getDefinition(T_MASTER).getProperty(MASTER_NAME), DETAIL_MASTER_NAME.getId()),
+                    getDefinition(T_MASTER).getProperty(MASTER_NAME), DETAIL_MASTER_NAME.getName()),
             denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK,
-                    getDefinition(T_MASTER).getProperty(MASTER_CODE), DETAIL_MASTER_CODE.getId()),
-            valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST.getId(), ITEMS),
-            derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED.getId(), linkedValues -> {
+                    getDefinition(T_MASTER).getProperty(MASTER_CODE), DETAIL_MASTER_CODE.getName()),
+            valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
+            derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED.getName(), linkedValues -> {
               final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
               if (intValue == null) {
                 return null;
@@ -130,11 +130,11 @@ public final class TestDomain extends Domain {
 
   void department() {
     define(T_DEPARTMENT, "scott.dept",
-            primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID.getId())
+            primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID.getName())
                     .updatable(true).nullable(false),
-            columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME.getId())
+            columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME.getName())
                     .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
-            columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION.getId())
+            columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
             .orderBy(orderBy().ascending(DEPARTMENT_NAME))
@@ -165,26 +165,26 @@ public final class TestDomain extends Domain {
 
   void employee() {
     define(T_EMP, "scott.emp",
-            primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID.getId()).columnName("empno"),
-            columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME.getId())
+            primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID.getName()).columnName("empno"),
+            columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME.getName())
                     .searchProperty(true).columnName("ename").maximumLength(10).nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getId(), T_DEPARTMENT,
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), T_DEPARTMENT,
                     columnProperty(EMP_DEPARTMENT, Types.INTEGER))
                     .nullable(false),
-            valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB.getId(),
+            valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
-            columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY.getId())
+            columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY.getName())
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2),
-            columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION.getId())
+            columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION.getName())
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getId(), T_EMP,
+            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName(), T_EMP,
                     columnProperty(EMP_MGR, Types.INTEGER)),
-            columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE.getId())
+            columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE.getName())
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
-                    DEPARTMENT_LOCATION.getId()).preferredColumnWidth(100))
+                    DEPARTMENT_LOCATION.getName()).preferredColumnWidth(100))
             .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .stringProvider(new StringProvider(EMP_NAME))
             .caption("Employee");

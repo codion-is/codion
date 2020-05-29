@@ -116,7 +116,7 @@ public final class EmpDept extends Domain {
             denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION), "Location")
                     .preferredColumnWidth(100))
-            .keyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID.getId()))
+            .keyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID.getName()))
             .orderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))
             .stringProvider(new StringProvider(EMPLOYEE_NAME))
             .beanClass(Employee.class)

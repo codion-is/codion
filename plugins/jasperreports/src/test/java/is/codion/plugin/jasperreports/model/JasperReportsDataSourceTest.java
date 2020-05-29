@@ -31,7 +31,7 @@ public class JasperReportsDataSourceTest {
     final JasperReportsDataSource<Entity> source =
             new JasperReportsDataSource<>(entities.iterator(), (entity, field) -> entity.get(attribute(field.getName())));
     while (source.next()) {
-      final JRField field = new TestField(TestDomain.DEPARTMENT_NAME.getId());
+      final JRField field = new TestField(TestDomain.DEPARTMENT_NAME.getName());
       source.getFieldValue(field);
     }
   }

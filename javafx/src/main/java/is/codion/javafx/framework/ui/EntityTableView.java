@@ -221,7 +221,7 @@ public class EntityTableView extends TableView<Entity> {
     FXUiUtil.link(updateSelected.disableProperty(), listModel.getSelectionEmptyObserver());
     Properties.sort(getListModel().getEntityDefinition().getUpdatableProperties()).stream().filter(
             this::includeUpdateSelectedProperty).forEach(property -> {
-      final String caption = property.getCaption() == null ? property.getPropertyId().getId() : property.getCaption();
+      final String caption = property.getCaption() == null ? property.getPropertyId().getName() : property.getCaption();
       final MenuItem updateProperty = new MenuItem(caption);
       updateProperty.setOnAction(actionEvent -> updateSelectedEntities(property));
       updateSelected.getItems().add(updateProperty);

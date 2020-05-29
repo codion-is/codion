@@ -554,7 +554,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       final Property property = column.getProperty();
       if (columns.contains(column)) {
         try {
-          final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getPropertyId().getId());
+          final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getPropertyId().getName());
           column.setPrefWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
           if (!columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
             columns.remove(column);
@@ -583,7 +583,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
       columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? columns.indexOf(column) : -1);
-      columnPreferencesRoot.put(property.getPropertyId().getId(), columnObject);
+      columnPreferencesRoot.put(property.getPropertyId().getName(), columnObject);
     }
 
     return columnPreferencesRoot;
@@ -626,7 +626,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
     @Override
     public final String toString() {
-      return property.getPropertyId().getId();
+      return property.getPropertyId().getName();
     }
   }
 
@@ -641,8 +641,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     @Override
     public int compare(final TableColumn<Entity, ?> col1, final TableColumn<Entity, ?> col2) {
       try {
-        final org.json.JSONObject columnOnePreferences = preferences.getJSONObject(((PropertyTableColumn) col1).getProperty().getPropertyId().getId());
-        final org.json.JSONObject columnTwoPreferences = preferences.getJSONObject(((PropertyTableColumn) col2).getProperty().getPropertyId().getId());
+        final org.json.JSONObject columnOnePreferences = preferences.getJSONObject(((PropertyTableColumn) col1).getProperty().getPropertyId().getName());
+        final org.json.JSONObject columnTwoPreferences = preferences.getJSONObject(((PropertyTableColumn) col2).getProperty().getPropertyId().getName());
         Integer firstIndex = columnOnePreferences.getInt(PREFERENCES_COLUMN_INDEX);
         if (firstIndex == null) {
           firstIndex = 0;

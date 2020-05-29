@@ -286,38 +286,38 @@ public final class EntityJSONParser {
    * @return the value for the given property
    */
   public Object parseValue(final Property property, final JSONObject propertyValues) {
-    if (propertyValues.isNull(property.getPropertyId().getId())) {
+    if (propertyValues.isNull(property.getPropertyId().getName())) {
       return null;
     }
     if (property.isString()) {
-      return propertyValues.getString(property.getPropertyId().getId());
+      return propertyValues.getString(property.getPropertyId().getName());
     }
     else if (property.isBoolean()) {
-      return propertyValues.getBoolean(property.getPropertyId().getId());
+      return propertyValues.getBoolean(property.getPropertyId().getName());
     }
     else if (property.isTime()) {
-      return LocalTime.parse(propertyValues.getString(property.getPropertyId().getId()), jsonTimeFormat);
+      return LocalTime.parse(propertyValues.getString(property.getPropertyId().getName()), jsonTimeFormat);
     }
     else if (property.isDate()) {
-      return LocalDate.parse(propertyValues.getString(property.getPropertyId().getId()), jsonDateFormat);
+      return LocalDate.parse(propertyValues.getString(property.getPropertyId().getName()), jsonDateFormat);
     }
     else if (property.isTimestamp()) {
-      return LocalDateTime.parse(propertyValues.getString(property.getPropertyId().getId()), jsonTimestampFormat);
+      return LocalDateTime.parse(propertyValues.getString(property.getPropertyId().getName()), jsonTimestampFormat);
     }
     else if (property.isDouble()) {
-      return propertyValues.getDouble(property.getPropertyId().getId());
+      return propertyValues.getDouble(property.getPropertyId().getName());
     }
     else if (property.isInteger()) {
-      return propertyValues.getInt(property.getPropertyId().getId());
+      return propertyValues.getInt(property.getPropertyId().getName());
     }
     else if (property.isBigDecimal()) {
-      return propertyValues.getBigDecimal(property.getPropertyId().getId());
+      return propertyValues.getBigDecimal(property.getPropertyId().getName());
     }
     else if (property instanceof ForeignKeyProperty) {
-      return parseEntity(propertyValues.getJSONObject(property.getPropertyId().getId()));
+      return parseEntity(propertyValues.getJSONObject(property.getPropertyId().getName()));
     }
 
-    return propertyValues.getString(property.getPropertyId().getId());
+    return propertyValues.getString(property.getPropertyId().getName());
   }
 
   private JSONObject toJSONObject(final Entity entity) {
@@ -343,7 +343,7 @@ public final class EntityJSONParser {
     final JSONObject propertyValues = new JSONObject();
     for (final Property property : entity.keySet()) {
       if (include(property, entity)) {
-        propertyValues.put(property.getPropertyId().getId(), serializeValue(entity.get(property), property));
+        propertyValues.put(property.getPropertyId().getName(), serializeValue(entity.get(property), property));
       }
     }
 
@@ -353,7 +353,7 @@ public final class EntityJSONParser {
   private JSONObject serializeValues(final Entity.Key key) {
     final JSONObject propertyValues = new JSONObject();
     for (final ColumnProperty property : entities.getDefinition(key.getEntityId()).getPrimaryKeyProperties()) {
-      propertyValues.put(property.getPropertyId().getId(), serializeValue(key.get(property), property));
+      propertyValues.put(property.getPropertyId().getName(), serializeValue(key.get(property), property));
     }
 
     return propertyValues;
@@ -363,7 +363,7 @@ public final class EntityJSONParser {
     final JSONObject originalValues = new JSONObject();
     for (final Property property : entities.getDefinition(entity.getEntityId()).getProperties()) {
       if (entity.isModified(property.getPropertyId()) && (!(property instanceof ForeignKeyProperty) || includeForeignKeyValues)) {
-        originalValues.put(property.getPropertyId().getId(),
+        originalValues.put(property.getPropertyId().getName(),
                 serializeValue(entity.getOriginal(property.getPropertyId()), property));
       }
     }

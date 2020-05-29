@@ -75,7 +75,7 @@ final class EntityPopupMenu extends JPopupMenu {
       }
       final JMenuItem menuItem = new JMenuItem(builder.toString());
       setInvalidModified(menuItem, true, modified);
-      menuItem.setToolTipText(property.getPropertyId().getId());
+      menuItem.setToolTipText(property.getPropertyId().getName());
       rootMenu.add(menuItem);
     }
   }

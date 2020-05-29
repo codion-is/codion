@@ -9,18 +9,18 @@ final class DefaultAttribute<T> implements Attribute<T> {
 
   private static final long serialVersionUID = 1;
 
-  private final String attributeId;
+  private final String name;
 
-  DefaultAttribute(final String attributeId) {
-    if (Util.nullOrEmpty(attributeId)) {
-      throw new IllegalArgumentException("attributeId must be a non-empty string");
+  DefaultAttribute(final String name) {
+    if (Util.nullOrEmpty(name)) {
+      throw new IllegalArgumentException("name must be a non-empty string");
     }
-    this.attributeId = attributeId;
+    this.name = name;
   }
 
   @Override
-  public String getId() {
-    return attributeId;
+  public String getName() {
+    return name;
   }
 
   @Override
@@ -33,16 +33,16 @@ final class DefaultAttribute<T> implements Attribute<T> {
     }
     final DefaultAttribute<?> that = (DefaultAttribute<?>) object;
 
-    return attributeId.equals(that.attributeId);
+    return name.equals(that.name);
   }
 
   @Override
   public int hashCode() {
-    return attributeId.hashCode();
+    return name.hashCode();
   }
 
   @Override
   public String toString() {
-    return attributeId;
+    return name;
   }
 }

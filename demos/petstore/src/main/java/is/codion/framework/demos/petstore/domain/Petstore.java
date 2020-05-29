@@ -41,19 +41,19 @@ public final class Petstore extends Domain {
     define(T_ADDRESS, "petstore.address",
             primaryKeyProperty(ADDRESS_ID, Types.INTEGER)
                     .columnName("addressid"),
-            columnProperty(ADDRESS_STREET_1, Types.VARCHAR, ADDRESS_STREET_1.getId())
+            columnProperty(ADDRESS_STREET_1, Types.VARCHAR, ADDRESS_STREET_1.getName())
                     .columnName("street1").maximumLength(55).nullable(false),
-            columnProperty(ADDRESS_STREET_2, Types.VARCHAR, ADDRESS_STREET_2.getId())
+            columnProperty(ADDRESS_STREET_2, Types.VARCHAR, ADDRESS_STREET_2.getName())
                     .columnName("street2").maximumLength(55),
-            columnProperty(ADDRESS_CITY, Types.VARCHAR, ADDRESS_CITY.getId())
+            columnProperty(ADDRESS_CITY, Types.VARCHAR, ADDRESS_CITY.getName())
                     .columnName("city").maximumLength(55).nullable(false),
-            columnProperty(ADDRESS_STATE, Types.VARCHAR, ADDRESS_STATE.getId())
+            columnProperty(ADDRESS_STATE, Types.VARCHAR, ADDRESS_STATE.getName())
                     .columnName("state").maximumLength(25).nullable(false),
-            columnProperty(ADDRESS_ZIP, Types.INTEGER, ADDRESS_ZIP.getId())
+            columnProperty(ADDRESS_ZIP, Types.INTEGER, ADDRESS_ZIP.getName())
                     .columnName("zip").nullable(false),
-            columnProperty(ADDRESS_LATITUDE, Types.DOUBLE, ADDRESS_LATITUDE.getId())
+            columnProperty(ADDRESS_LATITUDE, Types.DOUBLE, ADDRESS_LATITUDE.getName())
                     .columnName("latitude").nullable(false).maximumFractionDigits(2),
-            columnProperty(ADDRESS_LONGITUDE, Types.DOUBLE, ADDRESS_LONGITUDE.getId())
+            columnProperty(ADDRESS_LONGITUDE, Types.DOUBLE, ADDRESS_LONGITUDE.getName())
                     .columnName("longitude").nullable(false).maximumFractionDigits(2))
             .keyGenerator(increment("petstore.address", "addressid"))
             .orderBy(orderBy().ascending(ADDRESS_CITY, ADDRESS_STREET_1, ADDRESS_STREET_2))
@@ -73,11 +73,11 @@ public final class Petstore extends Domain {
     define(T_CATEGORY, "petstore.category",
             primaryKeyProperty(CATEGORY_ID, Types.INTEGER)
                     .columnName("categoryid"),
-            columnProperty(CATEGORY_NAME, Types.VARCHAR, CATEGORY_NAME.getId())
+            columnProperty(CATEGORY_NAME, Types.VARCHAR, CATEGORY_NAME.getName())
                     .columnName("name").maximumLength(25).nullable(false),
-            columnProperty(CATEGORY_DESCRIPTION, Types.VARCHAR, CATEGORY_DESCRIPTION.getId())
+            columnProperty(CATEGORY_DESCRIPTION, Types.VARCHAR, CATEGORY_DESCRIPTION.getName())
                     .columnName("description").maximumLength(255).nullable(false),
-            columnProperty(CATEGORY_IMAGE_URL, Types.VARCHAR, CATEGORY_IMAGE_URL.getId())
+            columnProperty(CATEGORY_IMAGE_URL, Types.VARCHAR, CATEGORY_IMAGE_URL.getName())
                     .columnName("imageurl").hidden(true))
             .keyGenerator(increment("petstore.category", "categoryid"))
             .orderBy(orderBy().ascending(CATEGORY_NAME))
@@ -97,14 +97,14 @@ public final class Petstore extends Domain {
     define(T_PRODUCT, "petstore.product",
             primaryKeyProperty(PRODUCT_ID, Types.INTEGER)
                     .columnName("productid"),
-            foreignKeyProperty(PRODUCT_CATEGORY_FK, PRODUCT_CATEGORY_FK.getId(), T_CATEGORY,
+            foreignKeyProperty(PRODUCT_CATEGORY_FK, PRODUCT_CATEGORY_FK.getName(), T_CATEGORY,
                     columnProperty(PRODUCT_CATEGORY_ID, Types.INTEGER)
                             .columnName("categoryid")).nullable(false),
-            columnProperty(PRODUCT_NAME, Types.VARCHAR, PRODUCT_NAME.getId())
+            columnProperty(PRODUCT_NAME, Types.VARCHAR, PRODUCT_NAME.getName())
                     .columnName("name").maximumLength(25).nullable(false),
-            columnProperty(PRODUCT_DESCRIPTION, Types.VARCHAR, PRODUCT_DESCRIPTION.getId())
+            columnProperty(PRODUCT_DESCRIPTION, Types.VARCHAR, PRODUCT_DESCRIPTION.getName())
                     .columnName("description").maximumLength(255).nullable(false),
-            columnProperty(PRODUCT_IMAGE_URL, Types.VARCHAR, PRODUCT_IMAGE_URL.getId())
+            columnProperty(PRODUCT_IMAGE_URL, Types.VARCHAR, PRODUCT_IMAGE_URL.getName())
                     .columnName("imageurl").maximumLength(55).hidden(true))
             .keyGenerator(increment("petstore.product", "productid"))
             .orderBy(orderBy().ascending(PRODUCT_NAME))
@@ -123,11 +123,11 @@ public final class Petstore extends Domain {
     define(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
             primaryKeyProperty(SELLER_CONTACT_INFO_ID, Types.INTEGER)
                     .columnName("contactinfoid"),
-            columnProperty(SELLER_CONTACT_INFO_FIRST_NAME, Types.VARCHAR, SELLER_CONTACT_INFO_FIRST_NAME.getId())
+            columnProperty(SELLER_CONTACT_INFO_FIRST_NAME, Types.VARCHAR, SELLER_CONTACT_INFO_FIRST_NAME.getName())
                     .searchProperty(true).columnName("firstname").maximumLength(24).nullable(false),
-            columnProperty(SELLER_CONTACT_INFO_LAST_NAME, Types.VARCHAR, SELLER_CONTACT_INFO_LAST_NAME.getId())
+            columnProperty(SELLER_CONTACT_INFO_LAST_NAME, Types.VARCHAR, SELLER_CONTACT_INFO_LAST_NAME.getName())
                     .searchProperty(true).columnName("lastname").maximumLength(24).nullable(false),
-            columnProperty(SELLER_CONTACT_INFO_EMAIL, Types.VARCHAR, SELLER_CONTACT_INFO_EMAIL.getId())
+            columnProperty(SELLER_CONTACT_INFO_EMAIL, Types.VARCHAR, SELLER_CONTACT_INFO_EMAIL.getName())
                     .columnName("email").maximumLength(24).nullable(false))
             .keyGenerator(increment("petstore.sellercontactinfo", "contactinfoid"))
             .orderBy(orderBy()
@@ -156,27 +156,27 @@ public final class Petstore extends Domain {
     define(T_ITEM, "petstore.item",
             primaryKeyProperty(ITEM_ID, Types.INTEGER)
                     .columnName("itemid"),
-            foreignKeyProperty(ITEM_PRODUCT_FK, ITEM_PRODUCT_FK.getId(), T_PRODUCT,
+            foreignKeyProperty(ITEM_PRODUCT_FK, ITEM_PRODUCT_FK.getName(), T_PRODUCT,
                     columnProperty(ITEM_PRODUCT_ID, Types.INTEGER)
                             .columnName("productid"))
                     .fetchDepth(2).nullable(false),
-            columnProperty(ITEM_NAME, Types.VARCHAR, ITEM_NAME.getId())
+            columnProperty(ITEM_NAME, Types.VARCHAR, ITEM_NAME.getName())
                     .columnName("name").maximumLength(30).nullable(false),
-            columnProperty(ITEM_DESCRIPTION, Types.VARCHAR, ITEM_DESCRIPTION.getId())
+            columnProperty(ITEM_DESCRIPTION, Types.VARCHAR, ITEM_DESCRIPTION.getName())
                     .columnName("description").maximumLength(500).nullable(false),
-            columnProperty(ITEM_IMAGE_URL, Types.VARCHAR, ITEM_IMAGE_URL.getId())
+            columnProperty(ITEM_IMAGE_URL, Types.VARCHAR, ITEM_IMAGE_URL.getName())
                     .columnName("imageurl").maximumLength(55).hidden(true),
-            columnProperty(ITEM_IMAGE_THUMB_URL, Types.VARCHAR, ITEM_IMAGE_THUMB_URL.getId())
+            columnProperty(ITEM_IMAGE_THUMB_URL, Types.VARCHAR, ITEM_IMAGE_THUMB_URL.getName())
                     .columnName("imagethumburl").maximumLength(55).hidden(true),
-            columnProperty(ITEM_PRICE, Types.DECIMAL, ITEM_PRICE.getId())
+            columnProperty(ITEM_PRICE, Types.DECIMAL, ITEM_PRICE.getName())
                     .columnName("price").nullable(false).maximumFractionDigits(2),
-            foreignKeyProperty(ITEM_C0NTACT_INFO_FK, ITEM_C0NTACT_INFO_FK.getId(), T_SELLER_CONTACT_INFO,
+            foreignKeyProperty(ITEM_C0NTACT_INFO_FK, ITEM_C0NTACT_INFO_FK.getName(), T_SELLER_CONTACT_INFO,
                     columnProperty(ITEM_C0NTACT_INFO_ID, Types.INTEGER).columnName("contactinfo_contactinfoid"))
                     .nullable(false),
             foreignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
                     columnProperty(ITEM_ADDRESS_ID, Types.INTEGER).columnName("address_addressid"))
                     .nullable(false),
-            booleanProperty(ITEM_DISABLED, Types.INTEGER, ITEM_DISABLED.getId(), 1, 0)
+            booleanProperty(ITEM_DISABLED, Types.INTEGER, ITEM_DISABLED.getName(), 1, 0)
                     .columnName("disabled").defaultValue(false))
             .keyGenerator(increment("petstore.item", "itemid"))
             .orderBy(orderBy().ascending(ITEM_NAME))
@@ -194,9 +194,9 @@ public final class Petstore extends Domain {
     define(T_TAG, "petstore.tag",
             primaryKeyProperty(TAG_ID, Types.INTEGER)
                     .columnName("tagid"),
-            columnProperty(TAG_TAG, Types.VARCHAR, TAG_TAG.getId())
+            columnProperty(TAG_TAG, Types.VARCHAR, TAG_TAG.getName())
                     .columnName("tag").maximumLength(30).nullable(false),
-            subqueryProperty(TAG_REFCOUNT, Types.INTEGER, TAG_REFCOUNT.getId(),
+            subqueryProperty(TAG_REFCOUNT, Types.INTEGER, TAG_REFCOUNT.getName(),
                     "select count(*) from petstore.tag_item where tagid = tag.tagid")
                     .columnName("refcount"))
             .keyGenerator(increment("petstore.tag", "tagid"))
@@ -214,11 +214,11 @@ public final class Petstore extends Domain {
 
   void tagItem() {
     define(T_TAG_ITEM, "petstore.tag_item",
-            foreignKeyProperty(TAG_ITEM_ITEM_FK, TAG_ITEM_ITEM_FK.getId(), T_ITEM,
+            foreignKeyProperty(TAG_ITEM_ITEM_FK, TAG_ITEM_ITEM_FK.getName(), T_ITEM,
                     primaryKeyProperty(TAG_ITEM_ITEM_ID, Types.INTEGER)
                             .columnName("itemid").primaryKeyIndex(0))
                     .nullable(false),
-            foreignKeyProperty(TAG_ITEM_TAG_FK, TAG_ITEM_TAG_FK.getId(), T_TAG,
+            foreignKeyProperty(TAG_ITEM_TAG_FK, TAG_ITEM_TAG_FK.getName(), T_TAG,
                     primaryKeyProperty(TAG_ITEM_TAG_ID, Types.INTEGER)
                             .columnName("tagid").primaryKeyIndex(1))
                     .nullable(false))

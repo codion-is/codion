@@ -346,7 +346,7 @@ abstract class DefaultProperty implements Property {
 
   @Override
   public final String getCaption() {
-    return caption == null ? propertyId.getId() : caption;
+    return caption == null ? propertyId.getName() : caption;
   }
 
   @Override

@@ -22,12 +22,12 @@ public final class Properties {
 
   /**
    * Creates a new {@link Attribute}.
-   * @param attributeId the attributeId
+   * @param name the attribute name
    * @param <T> the attribute type
    * @return a new {@link Attribute}
    */
-  public static <T> Attribute<T> attribute(final String attributeId) {
-    return new DefaultAttribute<>(attributeId);
+  public static <T> Attribute<T> attribute(final String name) {
+    return new DefaultAttribute<>(name);
   }
 
   /**

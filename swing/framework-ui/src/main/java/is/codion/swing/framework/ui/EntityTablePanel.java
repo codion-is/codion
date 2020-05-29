@@ -496,7 +496,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     controls.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
       if (!excludeFromUpdateMenu.contains(property.getPropertyId())) {
-        final String caption = property.getCaption() == null ? property.getPropertyId().getId() : property.getCaption();
+        final String caption = property.getCaption() == null ? property.getPropertyId().getName() : property.getCaption();
         controls.add(control(() -> updateSelectedEntities(property), caption, enabled));
       }
     });

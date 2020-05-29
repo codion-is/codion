@@ -364,7 +364,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   private static String toString(final ColumnConditionModel<Entity, ? extends Property> conditionModel) {
-    final StringBuilder stringBuilder = new StringBuilder(conditionModel.getColumnIdentifier().getPropertyId().getId());
+    final StringBuilder stringBuilder = new StringBuilder(conditionModel.getColumnIdentifier().getPropertyId().getName());
     if (conditionModel.isEnabled()) {
       stringBuilder.append(conditionModel.getOperator());
       stringBuilder.append(boundToString(conditionModel.getUpperBound()));
