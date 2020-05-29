@@ -6140,3 +6140,4 @@
   Attribute.id renamed name
   Property.getPropertyId() renamed getAttribute()
   ForeignKeyValue removed
+  Properties, propertyId named attribute
