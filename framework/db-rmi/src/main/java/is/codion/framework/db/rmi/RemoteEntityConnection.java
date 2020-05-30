@@ -257,13 +257,25 @@ public interface RemoteEntityConnection extends Remote {
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
    * @param entityId the entity type
    * @param attribute the condition attribute
+   * @param value the value to use as condition
+   * @param <T> the value type
+   * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
+   * @throws DatabaseException in case of a database exception
+   * @throws RemoteException in case of a remote exception
+   */
+  <T> List<Entity> select(String entityId, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
+
+  /**
+   * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
+   * @param entityId the entity type
+   * @param attribute the condition attribute
    * @param values the values to use as condition
    * @param <T> the value type
    * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<Entity> select(String entityId, Attribute<T> attribute, T... values) throws RemoteException, DatabaseException;
+  <T> List<Entity> select(String entityId, Attribute<T> attribute, Collection<T> values) throws RemoteException, DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIds

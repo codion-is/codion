@@ -497,8 +497,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final String entityId, final Attribute<T> attribute, final T... values) throws DatabaseException {
-    return select(selectCondition(entityId, attribute, LIKE, createValueList(values)));
+  public <T> List<Entity> select(final String entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
+    return select(selectCondition(entityId, attribute, LIKE, value));
+  }
+
+  @Override
+  public <T> List<Entity> select(final String entityId, final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
+    return select(selectCondition(entityId, attribute, LIKE, values));
   }
 
   @Override

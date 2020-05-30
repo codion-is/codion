@@ -211,15 +211,15 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectWhereNull() throws Exception {
-    connection.select(T_EMP, EMP_MGR_FK, null);
-    connection.select(T_EMP, EMP_DATA_LAZY, null);
+    connection.select(T_EMP, EMP_MGR_FK, (Entity) null);
+    connection.select(T_EMP, EMP_DATA_LAZY, (byte[]) null);
   }
 
   @Test
   public void select() throws Exception {
     List<Entity> result = connection.select(new ArrayList<>());
     assertTrue(result.isEmpty());
-    result = connection.select(T_DEPARTMENT, DEPARTMENT_ID, 10, 20);
+    result = connection.select(T_DEPARTMENT, DEPARTMENT_ID, asList(10, 20));
     assertEquals(2, result.size());
     result = connection.select(getKeys(result));
     assertEquals(2, result.size());

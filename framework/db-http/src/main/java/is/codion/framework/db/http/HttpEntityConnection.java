@@ -394,9 +394,15 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final String entityId, final Attribute<T> attribute, final T... values)
+  public <T> List<Entity> select(final String entityId, final Attribute<T> attribute, final T value)
           throws DatabaseException {
-    return select(selectCondition(entityId, attribute, Operator.LIKE, asList(values)));
+    return select(selectCondition(entityId, attribute, Operator.LIKE, value));
+  }
+
+  @Override
+  public <T> List<Entity> select(final String entityId, final Attribute<T> attribute, final Collection<T> values)
+          throws DatabaseException {
+    return select(selectCondition(entityId, attribute, Operator.LIKE, values));
   }
 
   @Override

@@ -229,7 +229,15 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
 
   @Override
   public <T> List<Entity> select(final String entityId, final Attribute<T> attribute,
-                                 final T... values) throws DatabaseException {
+                                 final T value) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.select(entityId, attribute, value);
+    }
+  }
+
+  @Override
+  public <T> List<Entity> select(final String entityId, final Attribute<T> attribute,
+                                 final Collection<T> values) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(entityId, attribute, values);
     }

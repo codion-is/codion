@@ -243,12 +243,23 @@ public interface EntityConnection {
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
    * @param entityId the entity type
    * @param attribute the condition attribute
+   * @param value the value to use as condition
+   * @param <T> the value type
+   * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
+   * @throws DatabaseException in case of a database exception
+   */
+  <T> List<Entity> select(String entityId, Attribute<T> attribute, T value) throws DatabaseException;
+
+  /**
+   * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
+   * @param entityId the entity type
+   * @param attribute the condition attribute
    * @param values the values to use as condition
    * @param <T> the value type
    * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  <T> List<Entity> select(String entityId, Attribute<T> attribute, T... values) throws DatabaseException;
+  <T> List<Entity> select(String entityId, Attribute<T> attribute, Collection<T> values) throws DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityIds
