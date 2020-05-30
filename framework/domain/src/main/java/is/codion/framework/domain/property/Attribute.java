@@ -6,7 +6,7 @@ package is.codion.framework.domain.property;
 import java.io.Serializable;
 
 /**
- * Typed identifier for a {@link Property}.
+ * Typed identifier for a {@link attribute}.
  * Note that Attributes are equal if their names are equal, the type does not factor into equality.
  * @param <T> the attribute type
  */
@@ -30,77 +30,77 @@ public interface Attribute<T> extends Serializable {
 
   /**
    * @param type the type to check ({@link java.sql.Types})
-   * @return true if the type of this property is the one given
+   * @return true if the type of this attribute is the one given
    */
   boolean isType(int type);
 
   /**
-   * @return true if this is a numerical Property, that is, Integer or Double
+   * @return true if this is a numerical attribute, that is, Integer or Double
    */
   boolean isNumerical();
 
   /**
-   * @return true if this is a time based property, Date (LocalDate), Timestamp (LocalDatetime) or Time (LocalTime)
+   * @return true if this is a time based attribute, Date (LocalDate), Timestamp (LocalDatetime) or Time (LocalTime)
    */
   boolean isTemporal();
 
   /**
-   * @return true if this is a date property
+   * @return true if this is a date attribute
    */
   boolean isDate();
 
   /**
-   * @return true if this is a timestamp property
+   * @return true if this is a timestamp attribute
    */
   boolean isTimestamp();
 
   /**
-   * @return true if this is a time property
+   * @return true if this is a time attribute
    */
   boolean isTime();
 
   /**
-   * @return true if this is a character property
+   * @return true if this is a character attribute
    */
   boolean isCharacter();
 
   /**
-   * @return true if this is a string property
+   * @return true if this is a string attribute
    */
   boolean isString();
 
   /**
-   * @return true if this is a long property
+   * @return true if this is a long attribute
    */
   boolean isLong();
 
   /**
-   * @return true if this is a integer property
+   * @return true if this is a integer attribute
    */
   boolean isInteger();
 
   /**
-   * @return true if this is a double property
+   * @return true if this is a double attribute
    */
   boolean isDouble();
 
   /**
-   * @return true if this is a BigDecimal property
+   * @return true if this is a BigDecimal attribute
    */
   boolean isBigDecimal();
 
   /**
-   * @return true if this is a decimal property
+   * @return true if this is a decimal attribute
    */
   boolean isDecimal();
 
   /**
-   * @return true if this is a boolean property
+   * @return true if this is a boolean attribute
    */
   boolean isBoolean();
 
   /**
-   * @return true if this is a blob property
+   * @return true if this is a blob attribute
    */
   boolean isBlob();
 }
