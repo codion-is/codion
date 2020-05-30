@@ -20,6 +20,7 @@ import is.codion.framework.model.tests.TestDomain;
 
 import org.junit.jupiter.api.Test;
 
+import java.sql.Types;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static is.codion.framework.domain.property.Properties.attribute;
@@ -77,7 +78,7 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   public void getPropertyConditionModelNonExisting() {
-    assertThrows(IllegalArgumentException.class, () -> assertNull(conditionModel.getPropertyConditionModel(attribute("bla bla"))));
+    assertThrows(IllegalArgumentException.class, () -> assertNull(conditionModel.getPropertyConditionModel(attribute("bla bla", Types.INTEGER))));
   }
 
   @Test

@@ -13,9 +13,6 @@ import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Objects;
@@ -44,16 +41,6 @@ abstract class DefaultProperty<T> implements Property<T> {
    * @see #getAttribute()
    */
   private final Attribute<T> attribute;
-
-  /**
-   * The property type, java.sql.Types
-   */
-  private final int type;
-
-  /**
-   * The class representing the values associated with this property
-   */
-  private final Class<T> typeClass;
 
   /**
    * The caption to use when this property is presented
@@ -139,13 +126,10 @@ abstract class DefaultProperty<T> implements Property<T> {
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    * @param typeClass the type associated with this property
    */
-  DefaultProperty(final Attribute<T> attribute, final int type, final String caption,
-                  final Class<T> typeClass) {
+  DefaultProperty(final Attribute<T> attribute, final String caption) {
     requireNonNull(attribute, "attribute");
     this.attribute = attribute;
-    this.type = type;
     this.caption = caption;
-    this.typeClass = typeClass;
     this.hidden = caption == null;
     this.format = initializeDefaultFormat();
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
@@ -248,12 +232,12 @@ abstract class DefaultProperty<T> implements Property<T> {
 
   @Override
   public final int getType() {
-    return type;
+    return attribute.getType();
   }
 
   @Override
   public final boolean isType(final int type) {
-    return this.type == type;
+    return attribute.getType() == type;
   }
 
   @Override
@@ -369,13 +353,13 @@ abstract class DefaultProperty<T> implements Property<T> {
 
   @Override
   public final Class<T> getTypeClass() {
-    return typeClass;
+    return attribute.getTypeClass();
   }
 
   @Override
   public T validateType(final T value) {
-    if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
-      throw new IllegalArgumentException("Value of type " + typeClass +
+    if (value != null && attribute.getTypeClass() != value.getClass() && !attribute.getTypeClass().isAssignableFrom(value.getClass())) {
+      throw new IllegalArgumentException("Value of type " + attribute.getTypeClass() +
               " expected for property " + this + " in entity " + entityId + ", got: " + value.getClass());
     }
 
@@ -441,39 +425,6 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     return null;
-  }
-
-  /**
-   * @param sqlType the type
-   * @return the Class representing the given type
-   */
-  protected static Class getTypeClass(final int sqlType) {
-    switch (sqlType) {
-      case Types.BIGINT:
-        return Long.class;
-      case Types.INTEGER:
-        return Integer.class;
-      case Types.DOUBLE:
-        return Double.class;
-      case Types.DECIMAL:
-        return BigDecimal.class;
-      case Types.DATE:
-        return LocalDate.class;
-      case Types.TIME:
-        return LocalTime.class;
-      case Types.TIMESTAMP:
-        return LocalDateTime.class;
-      case Types.VARCHAR:
-        return String.class;
-      case Types.BOOLEAN:
-        return Boolean.class;
-      case Types.CHAR:
-        return Character.class;
-      case Types.BLOB:
-        return byte[].class;
-      default:
-        return Object.class;
-    }
   }
 
   private static class DefaultValueSupplier<T> implements Supplier<T>, Serializable {

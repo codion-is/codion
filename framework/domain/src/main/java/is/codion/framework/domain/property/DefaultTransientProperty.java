@@ -15,8 +15,8 @@ class DefaultTransientProperty<T> extends DefaultProperty<T> implements Transien
    * @param type the data type of this property
    * @param caption the caption of this property
    */
-  DefaultTransientProperty(final Attribute<T> attribute, final int type, final String caption) {
-    super(attribute, type, caption, getTypeClass(type));
+  DefaultTransientProperty(final Attribute<T> attribute, final String caption) {
+    super(attribute, caption);
   }
 
   @Override

@@ -87,6 +87,8 @@ is.codion.framework.domain.entity.NullColorProvider
 is.codion.framework.domain.entity.StringProvider
 is.codion.framework.domain.entity.StringProvider$StringValueProvider
 is.codion.framework.domain.property.DefaultAttribute
+is.codion.framework.domain.property.DefaultBlobAttribute
+is.codion.framework.domain.property.DefaultEntityAttribute
 is.codion.framework.domain.property.DefaultColumnProperty
 is.codion.framework.domain.property.DefaultDerivedProperty
 is.codion.framework.domain.property.DefaultForeignKeyProperty

@@ -29,6 +29,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -689,7 +690,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData) throws DatabaseException {
+  public void writeBlob(final Entity.Key primaryKey, final BlobAttribute blobAttribute, final byte[] blobData) throws DatabaseException {
     requireNonNull(blobData, "blobData");
     final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
     checkIfReadOnly(entityDefinition.getEntityId());
@@ -735,7 +736,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(final Entity.Key primaryKey, final BlobAttribute blobAttribute) throws DatabaseException {
     final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
     final ColumnProperty<byte[]> blobProperty = entityDefinition.getColumnProperty(blobAttribute);
     if (blobProperty.getColumnType() != Types.BLOB) {

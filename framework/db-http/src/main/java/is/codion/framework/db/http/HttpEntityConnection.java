@@ -19,6 +19,7 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.BlobAttribute;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
@@ -444,7 +445,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData)
+  public void writeBlob(final Entity.Key primaryKey, final BlobAttribute blobAttribute, final byte[] blobData)
           throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
@@ -462,7 +463,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(final Entity.Key primaryKey, final BlobAttribute blobAttribute) throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     try {

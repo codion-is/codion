@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
+import java.sql.Types;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
-      final ColumnProperty property = definition.getColumnProperty(attribute(field.getKey()));
+      final ColumnProperty property = definition.getColumnProperty(attribute(field.getKey(), Types.OTHER));
       key.put(property, EntityDeserializer.parseValue(entityObjectMapper, property, field.getValue()));
     }
 

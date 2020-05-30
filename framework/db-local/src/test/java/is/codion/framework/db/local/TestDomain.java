@@ -15,7 +15,9 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.EntityAttribute;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -63,9 +65,9 @@ public final class TestDomain extends Domain {
     addReport(REPORT);
   }
 
-  public static final Attribute<Integer> DEPARTMENT_ID = attribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = attribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = attribute("loc");
+  public static final Attribute<Integer> DEPARTMENT_ID = attribute("deptno", Types.INTEGER);
+  public static final Attribute<String> DEPARTMENT_NAME = attribute("dname", Types.VARCHAR);
+  public static final Attribute<String> DEPARTMENT_LOCATION = attribute("loc", Types.VARCHAR);
 
   public static final String T_DEPARTMENT = "scott.dept";
 
@@ -75,11 +77,11 @@ public final class TestDomain extends Domain {
 
   void department() {
     define(T_DEPARTMENT,
-            primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID.getName())
+            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
                     .updatable(true).nullable(false),
-            columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME.getName())
+            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
                     .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
-            columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION.getName())
+            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
             .stringProvider(new StringProvider(DEPARTMENT_NAME))
@@ -95,20 +97,20 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final Attribute<Integer> EMP_ID = attribute("empno");
-  public static final Attribute<String> EMP_NAME = attribute("ename");
-  public static final Attribute<String> EMP_JOB = attribute("job");
-  public static final Attribute<Integer> EMP_MGR = attribute("mgr");
-  public static final Attribute<LocalDate> EMP_HIREDATE = attribute("hiredate");
-  public static final Attribute<LocalDateTime> EMP_HIRETIME = attribute("hiretime");
-  public static final Attribute<Double> EMP_SALARY = attribute("sal");
-  public static final Attribute<Double> EMP_COMMISSION = attribute("comm");
-  public static final Attribute<Integer> EMP_DEPARTMENT = attribute("deptno");
-  public static final Attribute<Entity> EMP_DEPARTMENT_FK = attribute("dept_fk");
-  public static final Attribute<Entity> EMP_MGR_FK = attribute("mgr_fk");
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = attribute("location");
-  public static final Attribute<byte[]> EMP_DATA_LAZY = attribute("data_lazy");
-  public static final Attribute<byte[]> EMP_DATA = attribute("data");
+  public static final Attribute<Integer> EMP_ID = attribute("empno", Types.INTEGER);
+  public static final Attribute<String> EMP_NAME = attribute("ename", Types.VARCHAR);
+  public static final Attribute<String> EMP_JOB = attribute("job", Types.VARCHAR);
+  public static final Attribute<Integer> EMP_MGR = attribute("mgr", Types.INTEGER);
+  public static final Attribute<LocalDate> EMP_HIREDATE = attribute("hiredate", Types.DATE);
+  public static final Attribute<LocalDateTime> EMP_HIRETIME = attribute("hiretime", Types.TIMESTAMP);
+  public static final Attribute<Double> EMP_SALARY = attribute("sal", Types.DOUBLE);
+  public static final Attribute<Double> EMP_COMMISSION = attribute("comm", Types.DOUBLE);
+  public static final Attribute<Integer> EMP_DEPARTMENT = attribute("deptno", Types.INTEGER);
+  public static final EntityAttribute EMP_DEPARTMENT_FK = entityAttribute("dept_fk");
+  public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk");
+  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = attribute("location", Types.VARCHAR);
+  public static final BlobAttribute EMP_DATA_LAZY = blobAttribute("data_lazy");
+  public static final BlobAttribute EMP_DATA = blobAttribute("data");
   public static final String T_EMP = "scott.emp";
 
   public static final String EMP_NAME_IS_BLAKE_CONDITION_ID = "condition1Id";
@@ -116,30 +118,29 @@ public final class TestDomain extends Domain {
 
   void employee() {
     define(T_EMP,
-            primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID.getName()),
-            columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME.getName())
+            primaryKeyProperty(EMP_ID, EMP_ID.getName()),
+            columnProperty(EMP_NAME, EMP_NAME.getName())
                     .searchProperty(true).maximumLength(10).nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), T_DEPARTMENT,
-                    columnProperty(EMP_DEPARTMENT, Types.INTEGER))
+                    columnProperty(EMP_DEPARTMENT))
                     .nullable(false),
-            valueListProperty(EMP_JOB, Types.VARCHAR, EMP_JOB.getName(),
+            valueListProperty(EMP_JOB, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
-            columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY.getName())
+            columnProperty(EMP_SALARY, EMP_SALARY.getName())
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2),
-            columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION.getName())
+            columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName(), T_EMP,
-                    columnProperty(EMP_MGR, Types.INTEGER))
+                    columnProperty(EMP_MGR))
                     //not really soft, just for testing purposes
                     .softReference(true),
-            columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE.getName())
+            columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
-            columnProperty(EMP_HIRETIME, Types.TIMESTAMP, EMP_HIRETIME.getName()),
-            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
-                    getDefinition(T_DEPARTMENT).getProperty(DEPARTMENT_LOCATION),
+            columnProperty(EMP_HIRETIME, EMP_HIRETIME.getName()),
+            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION,
                     DEPARTMENT_LOCATION.getName()).preferredColumnWidth(100),
-            columnProperty(EMP_DATA_LAZY, Types.BLOB),
+            columnProperty(EMP_DATA_LAZY),
             blobProperty(EMP_DATA)
                     .eagerlyLoaded(true))
             .stringProvider(new StringProvider(EMP_NAME))
@@ -150,8 +151,8 @@ public final class TestDomain extends Domain {
   }
 
   public static final String T_UUID_TEST_DEFAULT = "scott.uuid_test_default";
-  public static final Attribute<Object> UUID_TEST_DEFAULT_ID = attribute("id");
-  public static final Attribute<String> UUID_TEST_DEFAULT_DATA = attribute("data");
+  public static final Attribute<Object> UUID_TEST_DEFAULT_ID = attribute("id", Types.JAVA_OBJECT);
+  public static final Attribute<String> UUID_TEST_DEFAULT_DATA = attribute("data", Types.VARCHAR);
 
   private void uuidTestDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
@@ -169,14 +170,14 @@ public final class TestDomain extends Domain {
       }
     };
     define(T_UUID_TEST_DEFAULT,
-            primaryKeyProperty(UUID_TEST_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
-            columnProperty(UUID_TEST_DEFAULT_DATA, Types.VARCHAR, "Data"))
+            primaryKeyProperty(UUID_TEST_DEFAULT_ID, "Id"),
+            columnProperty(UUID_TEST_DEFAULT_DATA, "Data"))
             .keyGenerator(uuidKeyGenerator);
   }
 
   public static final String T_UUID_TEST_NO_DEFAULT = "scott.uuid_test_no_default";
-  public static final Attribute<Object> UUID_TEST_NO_DEFAULT_ID = attribute("id");
-  public static final Attribute<String> UUID_TEST_NO_DEFAULT_DATA = attribute("data");
+  public static final Attribute<Object> UUID_TEST_NO_DEFAULT_ID = attribute("id", Types.JAVA_OBJECT);
+  public static final Attribute<String> UUID_TEST_NO_DEFAULT_DATA = attribute("data", Types.VARCHAR);
 
   private void uuidTestNoDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
@@ -187,8 +188,8 @@ public final class TestDomain extends Domain {
       }
     };
     define(T_UUID_TEST_NO_DEFAULT,
-            primaryKeyProperty(UUID_TEST_NO_DEFAULT_ID, Types.JAVA_OBJECT, "Id"),
-            columnProperty(UUID_TEST_NO_DEFAULT_DATA, Types.VARCHAR, "Data"))
+            primaryKeyProperty(UUID_TEST_NO_DEFAULT_ID, "Id"),
+            columnProperty(UUID_TEST_NO_DEFAULT_DATA, "Data"))
             .keyGenerator(uuidKeyGenerator);
   }
 
@@ -210,34 +211,34 @@ public final class TestDomain extends Domain {
 
   private void groupByQuery() {
     define(GROUP_BY_QUERY_ENTITY_ID, "scott.emp",
-            columnProperty(attribute("job"), Types.VARCHAR)
+            columnProperty(attribute("job", Types.VARCHAR))
                     .primaryKeyIndex(0)
                     .groupingColumn(true))
             .havingClause("job <> 'PRESIDENT'");
   }
 
   public static final String T_NO_PK = "scott.no_pk_table";
-  public static final Attribute<Integer> NO_PK_COL1 = attribute("col1");
-  public static final Attribute<String> NO_PK_COL2 = attribute("col2");
-  public static final Attribute<String> NO_PK_COL3 = attribute("col3");
-  public static final Attribute<Integer> NO_PK_COL4 = attribute("col4");
+  public static final Attribute<Integer> NO_PK_COL1 = attribute("col1", Types.INTEGER);
+  public static final Attribute<String> NO_PK_COL2 = attribute("col2", Types.VARCHAR);
+  public static final Attribute<String> NO_PK_COL3 = attribute("col3", Types.VARCHAR);
+  public static final Attribute<Integer> NO_PK_COL4 = attribute("col4", Types.INTEGER);
 
   private void noPkEntity() {
     define(T_NO_PK,
-            columnProperty(NO_PK_COL1, Types.INTEGER),
-            columnProperty(NO_PK_COL2, Types.VARCHAR),
-            columnProperty(NO_PK_COL3, Types.VARCHAR),
-            columnProperty(NO_PK_COL4, Types.INTEGER));
+            columnProperty(NO_PK_COL1),
+            columnProperty(NO_PK_COL2),
+            columnProperty(NO_PK_COL3),
+            columnProperty(NO_PK_COL4));
   }
 
   public static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
-  public static final Attribute<Integer> JOINED_EMPNO = attribute("e.empno");
-  public static final Attribute<Integer> JOINED_DEPTNO = attribute("d.deptno");
+  public static final Attribute<Integer> JOINED_EMPNO = attribute("e.empno", Types.INTEGER);
+  public static final Attribute<Integer> JOINED_DEPTNO = attribute("d.deptno", Types.INTEGER);
 
   private void joinedQuery() {
     define(JOINED_QUERY_ENTITY_ID,
-            primaryKeyProperty(JOINED_EMPNO, Types.INTEGER),
-            columnProperty(JOINED_DEPTNO, Types.INTEGER))
+            primaryKeyProperty(JOINED_EMPNO),
+            columnProperty(JOINED_DEPTNO))
             .selectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
             .conditionProvider(JOINED_QUERY_CONDITION_ID, (attributes, values) -> "d.deptno = 10");
   }

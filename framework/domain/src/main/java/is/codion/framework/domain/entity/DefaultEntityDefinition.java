@@ -760,7 +760,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
         if (property instanceof DenormalizedProperty) {
           final DenormalizedProperty<?> denormalizedProperty = (DenormalizedProperty<?>) property;
           final Collection<DenormalizedProperty<?>> denormalizedProperties =
-                  denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getForeignKeyAttribute(), attribute -> new ArrayList<>());
+                  denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getEntityAttribute(), attribute -> new ArrayList<>());
           denormalizedProperties.add(denormalizedProperty);
         }
       }

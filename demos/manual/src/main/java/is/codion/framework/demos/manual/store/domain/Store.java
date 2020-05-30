@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.EntityAttribute;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -24,24 +25,24 @@ import static is.codion.framework.domain.property.Properties.*;
 public final class Store extends Domain {
 
   public static final String T_ADDRESS = "store.address";
-  public static final Attribute<Integer> ADDRESS_ID = attribute("id");
-  public static final Attribute<String> ADDRESS_STREET = attribute("street");
-  public static final Attribute<String> ADDRESS_CITY = attribute("city");
-  public static final Attribute<Boolean> ADDRESS_VALID = attribute("valid");
+  public static final Attribute<Integer> ADDRESS_ID = attribute("id", Types.INTEGER);
+  public static final Attribute<String> ADDRESS_STREET = attribute("street", Types.VARCHAR);
+  public static final Attribute<String> ADDRESS_CITY = attribute("city", Types.VARCHAR);
+  public static final Attribute<Boolean> ADDRESS_VALID = attribute("valid", Types.BOOLEAN);
 
   public static final String T_CUSTOMER = "store.customer";
-  public static final Attribute<String> CUSTOMER_ID = attribute("id");
-  public static final Attribute<String> CUSTOMER_FIRST_NAME = attribute("first_name");
-  public static final Attribute<String> CUSTOMER_LAST_NAME = attribute("last_name");
-  public static final Attribute<String> CUSTOMER_EMAIL = attribute("email");
-  public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = attribute("is_active");
+  public static final Attribute<String> CUSTOMER_ID = attribute("id", Types.VARCHAR);
+  public static final Attribute<String> CUSTOMER_FIRST_NAME = attribute("first_name", Types.VARCHAR);
+  public static final Attribute<String> CUSTOMER_LAST_NAME = attribute("last_name", Types.VARCHAR);
+  public static final Attribute<String> CUSTOMER_EMAIL = attribute("email", Types.VARCHAR);
+  public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = attribute("is_active", Types.BOOLEAN);
 
   public static final String T_CUSTOMER_ADDRESS = "store.customer_address";
-  public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = attribute("id");
-  public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = attribute("customer_id");
-  public static final Attribute<Entity> CUSTOMER_ADDRESS_CUSTOMER_FK = attribute("customer_fk");
-  public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = attribute("address_id");
-  public static final Attribute<Entity> CUSTOMER_ADDRESS_ADDRESS_FK = attribute("address_fk");
+  public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = attribute("id", Types.INTEGER);
+  public static final Attribute<String> CUSTOMER_ADDRESS_CUSTOMER_ID = attribute("customer_id", Types.VARCHAR);
+  public static final EntityAttribute CUSTOMER_ADDRESS_CUSTOMER_FK = entityAttribute("customer_fk");
+  public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = attribute("address_id", Types.INTEGER);
+  public static final EntityAttribute CUSTOMER_ADDRESS_ADDRESS_FK = entityAttribute("address_fk");
 
   public Store() {
     customer();
@@ -52,13 +53,13 @@ public final class Store extends Domain {
   private void customer() {
     // tag::customer[]
     define(T_CUSTOMER,
-            primaryKeyProperty(CUSTOMER_ID, Types.VARCHAR),
-            columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")
+            primaryKeyProperty(CUSTOMER_ID),
+            columnProperty(CUSTOMER_FIRST_NAME, "First name")
                     .nullable(false).maximumLength(40),
-            columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
+            columnProperty(CUSTOMER_LAST_NAME, "Last name")
                     .nullable(false).maximumLength(40),
-            columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email"),
-            columnProperty(CUSTOMER_IS_ACTIVE, Types.BOOLEAN, "Is active")
+            columnProperty(CUSTOMER_EMAIL, "Email"),
+            columnProperty(CUSTOMER_IS_ACTIVE, "Is active")
                     .columnHasDefaultValue(true).defaultValue(true))
             .keyGenerator(new UUIDKeyGenerator())
             .stringProvider(new CustomerToString())
@@ -69,12 +70,12 @@ public final class Store extends Domain {
   private void address() {
     // tag::address[]
     define(T_ADDRESS,
-            primaryKeyProperty(ADDRESS_ID, Types.INTEGER),
-            columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street")
+            primaryKeyProperty(ADDRESS_ID),
+            columnProperty(ADDRESS_STREET, "Street")
                     .nullable(false).maximumLength(120),
-            columnProperty(ADDRESS_CITY, Types.VARCHAR, "City")
+            columnProperty(ADDRESS_CITY, "City")
                     .nullable(false).maximumLength(50),
-            columnProperty(ADDRESS_VALID, Types.BOOLEAN, "Valid")
+            columnProperty(ADDRESS_VALID, "Valid")
                     .columnHasDefaultValue(true).nullable(false))
             .stringProvider(new StringProvider(ADDRESS_STREET)
                     .addText(", ").addValue(ADDRESS_CITY))
@@ -87,12 +88,12 @@ public final class Store extends Domain {
   private void customerAddress() {
     // tag::customerAddress[]
     define(T_CUSTOMER_ADDRESS,
-            primaryKeyProperty(CUSTOMER_ADDRESS_ID, Types.INTEGER),
+            primaryKeyProperty(CUSTOMER_ADDRESS_ID),
             foreignKeyProperty(CUSTOMER_ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
-                    columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID, Types.VARCHAR))
+                    columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID))
                     .nullable(false),
             foreignKeyProperty(CUSTOMER_ADDRESS_ADDRESS_FK, "Address", T_ADDRESS,
-                    columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID, Types.INTEGER))
+                    columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID))
                     .nullable(false))
             .keyGenerator(automatic(T_CUSTOMER_ADDRESS))
             .caption("Customer address");

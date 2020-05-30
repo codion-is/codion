@@ -15,6 +15,7 @@ import is.codion.framework.domain.property.Property;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -272,7 +273,7 @@ public final class EntityJSONParser {
     final EntityDefinition definition = entities.getDefinition(entityId);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString());
+      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString(), Types.OTHER);
       key.put(attribute, parseValue(definition.getProperty(attribute), propertyValues));
     }
 
@@ -402,7 +403,7 @@ public final class EntityJSONParser {
     final Map<Property<?>, Object> valueMap = new HashMap<>();
     final JSONObject propertyValues = entityObject.getJSONObject(valuesKey);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString());
+      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString(), Types.OTHER);
       final EntityDefinition entityDefinition = entities.getDefinition(entityId);
       valueMap.put(entityDefinition.getProperty(attribute),
               parseValue(entityDefinition.getProperty(attribute), propertyValues));

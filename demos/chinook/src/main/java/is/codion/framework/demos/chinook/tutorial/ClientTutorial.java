@@ -7,9 +7,9 @@ import is.codion.common.db.database.Database;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -24,7 +24,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import java.awt.Color;
-import java.sql.Types;
 import java.util.List;
 
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
@@ -33,6 +32,8 @@ import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
 import static is.codion.swing.common.ui.Windows.getScreenSizeRatio;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static java.sql.Types.INTEGER;
+import static java.sql.Types.VARCHAR;
 import static java.util.Collections.singletonList;
 
 /**
@@ -44,22 +45,22 @@ public final class ClientTutorial {
   public static final class Chinook extends Domain {
 
     public static final String T_ARTIST = "chinook.artist";
-    public static final Attribute<Integer> ARTIST_ID = attribute("artistid");
-    public static final Attribute<String> ARTIST_NAME = attribute("name");
-    public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = attribute("nr_of_albums");
+    public static final Attribute<Integer> ARTIST_ID = attribute("artistid", INTEGER);
+    public static final Attribute<String> ARTIST_NAME = attribute("name", VARCHAR);
+    public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = attribute("nr_of_albums", INTEGER);
 
     public static final String T_ALBUM = "chinook.album";
-    public static final Attribute<Integer> ALBUM_ALBUMID = attribute("albumid");
-    public static final Attribute<String> ALBUM_TITLE = attribute("title");
-    public static final Attribute<Integer> ALBUM_ARTISTID = attribute("artistid");
-    public static final Attribute<Entity> ALBUM_ARTIST_FK = attribute("artist_fk");
+    public static final Attribute<Integer> ALBUM_ALBUMID = attribute("albumid", INTEGER);
+    public static final Attribute<String> ALBUM_TITLE = attribute("title", VARCHAR);
+    public static final Attribute<Integer> ALBUM_ARTISTID = attribute("artistid", INTEGER);
+    public static final EntityAttribute ALBUM_ARTIST_FK = entityAttribute("artist_fk");
 
     public Chinook() {
       define(T_ARTIST,
-              primaryKeyProperty(ARTIST_ID, Types.INTEGER),
-              columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
+              primaryKeyProperty(ARTIST_ID),
+              columnProperty(ARTIST_NAME, "Name")
                       .searchProperty(true).nullable(false).maximumLength(120),
-              subqueryProperty(ARTIST_NR_OF_ALBUMS, Types.INTEGER, "Albums",
+              subqueryProperty(ARTIST_NR_OF_ALBUMS, "Albums",
                       "select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid"))
               .keyGenerator(automatic(T_ARTIST))
@@ -67,11 +68,11 @@ public final class ClientTutorial {
               .caption("Artists");
 
       define(T_ALBUM,
-              primaryKeyProperty(ALBUM_ALBUMID, Types.INTEGER),
+              primaryKeyProperty(ALBUM_ALBUMID),
               foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
-                      columnProperty(ALBUM_ARTISTID, Types.INTEGER))
+                      columnProperty(ALBUM_ARTISTID))
                       .nullable(false),
-              columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
+              columnProperty(ALBUM_TITLE, "Title")
                       .nullable(false).maximumLength(160))
               .keyGenerator(automatic(T_ALBUM))
               .stringProvider(new StringProvider(ALBUM_ARTIST_FK)

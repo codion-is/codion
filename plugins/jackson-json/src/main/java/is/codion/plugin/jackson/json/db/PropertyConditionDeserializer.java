@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ final class PropertyConditionDeserializer implements Serializable {
 
   PropertyCondition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
     final String attributeName = conditionNode.get("attribute").asText();
-    final Property property = definition.getProperty(attribute(attributeName));
+    final Property property = definition.getProperty(attribute(attributeName, Types.OTHER));
     final JsonNode valuesNode = conditionNode.get("values");
     final List values = new ArrayList();
     for (final JsonNode valueNode : valuesNode) {
@@ -49,7 +50,7 @@ final class PropertyConditionDeserializer implements Serializable {
     }
     final boolean nullCondition = values.isEmpty();
 
-    return Conditions.propertyCondition(attribute(conditionNode.get("attribute").asText()),
+    return Conditions.propertyCondition(attribute(conditionNode.get("attribute").asText(), Types.OTHER),
             Operator.valueOf(conditionNode.get("operator").asText()), nullCondition ? null : values);
   }
 }

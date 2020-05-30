@@ -6145,3 +6145,4 @@
   property, entity package, propertyId replaced with attribute
   Further renaming of propertyId to attribute
   Property generified
+  Property.type moved to Attribute, EntityAttribute and BlobAttribute added

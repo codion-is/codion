@@ -18,12 +18,11 @@ final class DefaultValueListProperty<T> extends DefaultColumnProperty<T> impleme
 
   /**
    * @param attribute the attribute
-   * @param type the data type of this property
    * @param caption the property caption
    * @param items the allowed values for this property
    */
-  DefaultValueListProperty(final Attribute<T> attribute, final int type, final String caption, final List<Item<T>> items) {
-    super(attribute, type, caption);
+  DefaultValueListProperty(final Attribute<T> attribute, final String caption, final List<Item<T>> items) {
+    super(attribute, caption);
     this.items = unmodifiableList(items);
   }
 

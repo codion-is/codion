@@ -45,9 +45,9 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   private transient boolean aggregateColumn = false;
   private transient boolean selectable = true;
 
-  DefaultColumnProperty(final Attribute<T> attribute, final int type, final String caption) {
-    super(attribute, type, caption, getTypeClass(type));
-    this.columnType = type;
+  DefaultColumnProperty(final Attribute<T> attribute, final String caption) {
+    super(attribute, caption);
+    this.columnType = attribute.getType();
     this.columnName = attribute.getName();
     this.valueConverter = initializeValueConverter();
     this.valueFetcher = initializeValueFetcher();

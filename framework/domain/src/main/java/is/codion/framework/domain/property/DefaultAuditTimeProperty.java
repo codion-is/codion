@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.property;
 
-import java.sql.Types;
 import java.time.LocalDateTime;
 
 public final class DefaultAuditTimeProperty extends DefaultAuditProperty<LocalDateTime>
@@ -12,6 +11,6 @@ public final class DefaultAuditTimeProperty extends DefaultAuditProperty<LocalDa
   private static final long serialVersionUID = 1;
 
   DefaultAuditTimeProperty(final Attribute<LocalDateTime> attribute, final AuditAction auditAction, final String caption) {
-    super(attribute, Types.TIMESTAMP, auditAction, caption);
+    super(attribute, auditAction, caption);
   }
 }

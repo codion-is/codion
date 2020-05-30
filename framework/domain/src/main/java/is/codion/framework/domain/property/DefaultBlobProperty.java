@@ -3,8 +3,6 @@
  */
 package is.codion.framework.domain.property;
 
-import java.sql.Types;
-
 final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements BlobProperty {
 
   private static final long serialVersionUID = 1;
@@ -12,7 +10,7 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
   private boolean eagerlyLoaded = false;
 
   DefaultBlobProperty(final Attribute<byte[]> attribute, final String caption) {
-    super(attribute, Types.BLOB, caption);
+    super(attribute, caption);
     builder().hidden(true);
   }
 

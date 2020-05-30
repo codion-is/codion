@@ -13,6 +13,7 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.BlobAttribute;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -306,7 +307,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  void writeBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws RemoteException, DatabaseException;
+  void writeBlob(Entity.Key primaryKey, BlobAttribute blobAttribute, byte[] blobData) throws RemoteException, DatabaseException;
 
   /**
    * Reads the blob specified by the property identified by {@code attribute} from the given entity
@@ -316,5 +317,5 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  byte[] readBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute) throws RemoteException, DatabaseException;
+  byte[] readBlob(Entity.Key primaryKey, BlobAttribute blobAttribute) throws RemoteException, DatabaseException;
 }

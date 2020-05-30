@@ -16,6 +16,7 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.BlobAttribute;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -242,14 +243,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData) throws DatabaseException {
+  public void writeBlob(final Entity.Key primaryKey, final BlobAttribute blobAttribute, final byte[] blobData) throws DatabaseException {
     synchronized (connectionProxy) {
       connectionProxy.writeBlob(primaryKey, blobAttribute, blobData);
     }
   }
 
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(final Entity.Key primaryKey, final BlobAttribute blobAttribute) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.readBlob(primaryKey, blobAttribute);
     }

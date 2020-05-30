@@ -643,7 +643,7 @@ final class DefaultEntity implements Entity {
       for (int i = 0; i < denormalizedProperties.size(); i++) {
         final DenormalizedProperty denormalizedProperty = denormalizedProperties.get(i);
         put(denormalizedProperty, referencedEntity == null ? null :
-                referencedEntity.get(denormalizedProperty.getDenormalizedProperty()));
+                referencedEntity.get(denormalizedProperty.getDenormalizedAttribute()));
       }
     }
   }

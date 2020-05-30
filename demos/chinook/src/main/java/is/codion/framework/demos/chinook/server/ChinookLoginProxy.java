@@ -118,17 +118,17 @@ public final class ChinookLoginProxy implements LoginProxy {
   private static final class Authentication extends Domain {
 
     private static final String T_USER = "chinook.user";
-    private static final Attribute<Integer> USER_USERID = attribute("userid");
-    private static final Attribute<String> USER_USERNAME = attribute("username");
-    private static final Attribute<Integer> USER_PASSWORD_HASH = attribute("passwordhash");
+    private static final Attribute<Integer> USER_USERID = attribute("userid", Types.INTEGER);
+    private static final Attribute<String> USER_USERNAME = attribute("username", Types.VARCHAR);
+    private static final Attribute<Integer> USER_PASSWORD_HASH = attribute("passwordhash", Types.INTEGER);
 
     private Authentication() {
       define(T_USER,
-              primaryKeyProperty(USER_USERID, Types.INTEGER),
-              columnProperty(USER_USERNAME, Types.VARCHAR)
+              primaryKeyProperty(USER_USERID),
+              columnProperty(USER_USERNAME)
                       .nullable(false)
                       .maximumLength(20),
-              columnProperty(USER_PASSWORD_HASH, Types.INTEGER)
+              columnProperty(USER_PASSWORD_HASH)
                       .nullable(false))
               .keyGenerator(automatic(T_USER));
     }

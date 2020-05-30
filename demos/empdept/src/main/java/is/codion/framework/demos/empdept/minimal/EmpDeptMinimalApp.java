@@ -10,9 +10,9 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -25,12 +25,12 @@ import is.codion.swing.framework.ui.EntityPanelBuilder;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.util.Locale;
 
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.property.Properties.*;
+import static java.sql.Types.*;
 import static java.util.Arrays.asList;
 
 /**
@@ -46,35 +46,35 @@ public final class EmpDeptMinimalApp {
     /*
      * We start by defining attributes for the columns in the SCOTT.DEPT table.
      */
-    public static final Attribute<Integer> DEPT_DEPTNO = attribute("deptno");
-    public static final Attribute<String> DEPT_DNAME = attribute("dname");
-    public static final Attribute<String> DEPT_LOC = attribute("loc");
+    public static final Attribute<Integer> DEPT_DEPTNO = attribute("deptno", INTEGER);
+    public static final Attribute<String> DEPT_DNAME = attribute("dname", VARCHAR);
+    public static final Attribute<String> DEPT_LOC = attribute("loc", VARCHAR);
 
     /*
      * And for the columns in the SCOTT.EMP table.
      */
-    public static final Attribute<Integer> EMP_EMPNO = attribute("empno");
-    public static final Attribute<String> EMP_ENAME = attribute("ename");
-    public static final Attribute<Integer> EMP_DEPTNO = attribute("deptno");
-    public static final Attribute<Entity> EMP_DEPT_FK = attribute("dept_fk");
-    public static final Attribute<String> EMP_JOB = attribute("job");
-    public static final Attribute<Double> EMP_SAL = attribute("sal");
-    public static final Attribute<Double> EMP_COMM = attribute("comm");
-    public static final Attribute<Integer> EMP_MGR = attribute("mgr");
-    public static final Attribute<Entity> EMP_MGR_FK = attribute("mgr_fk");
-    public static final Attribute<LocalDate> EMP_HIREDATE = attribute("hiredate");
+    public static final Attribute<Integer> EMP_EMPNO = attribute("empno", INTEGER);
+    public static final Attribute<String> EMP_ENAME = attribute("ename", VARCHAR);
+    public static final Attribute<Integer> EMP_DEPTNO = attribute("deptno", INTEGER);
+    public static final EntityAttribute EMP_DEPT_FK = entityAttribute("dept_fk");
+    public static final Attribute<String> EMP_JOB = attribute("job", VARCHAR);
+    public static final Attribute<Double> EMP_SAL = attribute("sal", DOUBLE);
+    public static final Attribute<Double> EMP_COMM = attribute("comm", DOUBLE);
+    public static final Attribute<Integer> EMP_MGR = attribute("mgr", INTEGER);
+    public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk");
+    public static final Attribute<LocalDate> EMP_HIREDATE = attribute("hiredate", DATE);
 
     public EmpDept() {
       /*
        * We then define the entity based on the SCOTT.DEPT table
        */
       define("scott.dept",
-              primaryKeyProperty(DEPT_DEPTNO, Types.INTEGER),
-              columnProperty(DEPT_DEPTNO, Types.VARCHAR, "Department name")
+              primaryKeyProperty(DEPT_DEPTNO),
+              columnProperty(DEPT_DEPTNO, "Department name")
                       .searchProperty(true)
                       .nullable(false)
                       .maximumLength(14),
-              columnProperty(DEPT_LOC, Types.VARCHAR, "Department location")
+              columnProperty(DEPT_LOC, "Department location")
                       .maximumLength(13))
               .keyGenerator(increment("scott.dept", "deptno"))
               .caption("Departments")
@@ -85,26 +85,26 @@ public final class EmpDeptMinimalApp {
        * department as well as the manager
        */
       define("scott.emp",
-              primaryKeyProperty(EMP_EMPNO, Types.INTEGER),
-              columnProperty(EMP_ENAME, Types.VARCHAR, "Name")
+              primaryKeyProperty(EMP_EMPNO),
+              columnProperty(EMP_ENAME, "Name")
                       .searchProperty(true)
                       .nullable(false)
                       .maximumLength(10),
               foreignKeyProperty(EMP_DEPT_FK, "Department", "scott.dept",
-                      columnProperty(EMP_DEPTNO, Types.INTEGER))
+                      columnProperty(EMP_DEPTNO))
                       .nullable(false),
-              columnProperty(EMP_JOB, Types.VARCHAR, "Job")
+              columnProperty(EMP_JOB, "Job")
                       .nullable(false)
                       .maximumLength(9),
-              columnProperty(EMP_SAL, Types.DOUBLE, "Salary")
+              columnProperty(EMP_SAL, "Salary")
                       .nullable(false)
                       .maximumFractionDigits(2)
                       .minimumValue(1000).maximumValue(10000),
-              columnProperty(EMP_COMM, Types.DOUBLE, "Commission")
+              columnProperty(EMP_COMM, "Commission")
                       .maximumFractionDigits(2),
               foreignKeyProperty(EMP_MGR_FK, "Manager", "scott.emp",
-                      columnProperty(EMP_MGR, Types.INTEGER)),
-              columnProperty(EMP_HIREDATE, Types.DATE, "Hiredate")
+                      columnProperty(EMP_MGR)),
+              columnProperty(EMP_HIREDATE, "Hiredate")
                       .nullable(false))
               .keyGenerator(increment("scott.emp", "empno"))
               .caption("Employees")

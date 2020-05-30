@@ -69,7 +69,7 @@ public class DefaultEntityTest {
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final Property<?> invalid = Properties.columnProperty(Properties.attribute("invalid"), Types.INTEGER).entityId(TestDomain.T_MASTER).get();
+    final Property<?> invalid = Properties.columnProperty(Properties.attribute("invalid", Types.INTEGER)).entityId(TestDomain.T_MASTER).get();
     final Map<Property<?>, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
 
@@ -586,14 +586,14 @@ public class DefaultEntityTest {
 
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
-    final Attribute<Integer> trans = Properties.attribute("trans");
-    final Attribute<Integer> id = Properties.attribute("id");
-    final TransientProperty.Builder<?> transientProperty = Properties.transientProperty(trans, Types.INTEGER);
+    final Attribute<Integer> trans = Properties.attribute("trans", Types.INTEGER);
+    final Attribute<Integer> id = Properties.attribute("id", Types.INTEGER);
+    final TransientProperty.Builder<?> transientProperty = Properties.transientProperty(trans);
     class TestDomain extends Domain {
       public TestDomain() {
         super("transient");
         define("entityId",
-                Properties.primaryKeyProperty(id, Types.INTEGER),
+                Properties.primaryKeyProperty(id),
                 transientProperty);  }
     }
     final Entities entities = new TestDomain().registerEntities();

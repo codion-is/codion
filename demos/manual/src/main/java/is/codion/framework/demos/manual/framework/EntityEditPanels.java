@@ -3,8 +3,8 @@
  */
 package is.codion.framework.demos.manual.framework;
 
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.textfield.DecimalField;
@@ -27,24 +27,26 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.math.BigDecimal;
+import java.sql.Types;
 import java.time.LocalDate;
 
 import static is.codion.framework.domain.property.Properties.attribute;
+import static is.codion.framework.domain.property.Properties.entityAttribute;
 
 public final class EntityEditPanels {
 
   private static final class Domain {
-    static final Attribute<Boolean> BOOLEAN_ATTRIBUTE = attribute("boolean");
-    static final Attribute<Entity> FOREIGN_KEY_ATTRIBUTE = attribute("foreign_key");
-    static final Attribute<LocalDate> LOCAL_DATE_ATTRIBUTE = attribute("local_date");
-    static final Attribute<Integer> INTEGER_ATTRIBUTE = attribute("integer");
-    static final Attribute<Long> LONG_ATTRIBUTE = attribute("long");
-    static final Attribute<Double> DOUBLE_ATTRIBUTE = attribute("double");
-    static final Attribute<BigDecimal> BIG_DECIMAL_ATTRIBUTE = attribute("big_decimal");
-    static final Attribute<String> TEXT_ATTRIBUTE = attribute("text");
-    static final Attribute<String> LONG_TEXT_ATTRIBUTE = attribute("long_text");
-    static final Attribute<String> FORMATTED_TEXT_ATTRIBUTE = attribute("formatted_text");
-    static final Attribute<String> VALUE_LIST_ATTRIBUTE = attribute("value_list");
+    static final Attribute<Boolean> BOOLEAN_ATTRIBUTE = attribute("boolean", Types.BOOLEAN);
+    static final EntityAttribute FOREIGN_KEY_ATTRIBUTE = entityAttribute("foreign_key");
+    static final Attribute<LocalDate> LOCAL_DATE_ATTRIBUTE = attribute("local_date", Types.DATE);
+    static final Attribute<Integer> INTEGER_ATTRIBUTE = attribute("integer", Types.INTEGER);
+    static final Attribute<Long> LONG_ATTRIBUTE = attribute("long", Types.BIGINT);
+    static final Attribute<Double> DOUBLE_ATTRIBUTE = attribute("double", Types.DOUBLE);
+    static final Attribute<BigDecimal> BIG_DECIMAL_ATTRIBUTE = attribute("big_decimal", Types.DECIMAL);
+    static final Attribute<String> TEXT_ATTRIBUTE = attribute("text", Types.VARCHAR);
+    static final Attribute<String> LONG_TEXT_ATTRIBUTE = attribute("long_text", Types.VARCHAR);
+    static final Attribute<String> FORMATTED_TEXT_ATTRIBUTE = attribute("formatted_text", Types.VARCHAR);
+    static final Attribute<String> VALUE_LIST_ATTRIBUTE = attribute("value_list", Types.VARCHAR);
   }
 
   private static final class EditPanelDemo extends EntityEditPanel {

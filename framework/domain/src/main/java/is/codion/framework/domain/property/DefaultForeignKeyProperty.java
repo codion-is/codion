@@ -5,7 +5,6 @@ package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.entity.Entity;
 
-import java.sql.Types;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,7 +45,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    */
   DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
                             final String foreignEntityId, final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
-    super(attribute, Types.OTHER, caption, Entity.class);
+    super(attribute, caption);
     requireNonNull(foreignEntityId, "foreignEntityId");
     validateParameters(attribute, foreignEntityId, columnPropertyBuilders);
     this.columnPropertyBuilders = columnPropertyBuilders;
