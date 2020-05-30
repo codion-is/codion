@@ -254,21 +254,24 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * @param attribute the attribute
-   * @return the column attributeentified by attribute
+   * @return the column property associated with the attribute
+   * @param <T> the attribute type
    * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
    */
   <T> ColumnProperty<T> getColumnProperty(Attribute<T> attribute);
 
   /**
    * @param attribute the attribute
-   * @return the attributeentified by {@code attribute} in the entity identified by {@code entityId}
+   * @return the property associated with {@code attribute}.
+   * @param <T> the attribute type
    * @throws IllegalArgumentException in case no such property exists
    */
   <T> Property<T> getProperty(Attribute<T> attribute);
 
   /**
    * @param attribute the attribute
-   * @return the primary key attributeentified by {@code attribute} in the entity identified by {@code entityId}
+   * @return the primary key property associated with {@code attribute}.
+   * @param <T> the attribute type
    * @throws IllegalArgumentException in case no such property exists
    */
   <T> ColumnProperty<T> getPrimaryKeyProperty(Attribute<T> attribute);
@@ -283,7 +286,8 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * @param attribute the attribute
-   * @return the column attributeentified by attribute
+   * @param <T> the attribute type
+   * @return the column property associated with the attribute
    * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
    * or if it is not selectable
    * @see ColumnProperty#isSelectable()
@@ -293,9 +297,8 @@ public interface EntityDefinition extends Serializable {
   /**
    * Returns the {@link ColumnProperty}s identified
    * by the attributes in {@code attributes}
-   * @param attributes the ids of the properties to retrieve
-   * @return a list containing all column properties found in the entity identified by {@code entityId},
-   * that is, properties that map to database columns, an empty list if none exist
+   * @param attributes the attributes which properties to retrieve
+   * @return a list of column properties
    */
   List<ColumnProperty<?>> getColumnProperties(List<Attribute<?>> attributes);
 

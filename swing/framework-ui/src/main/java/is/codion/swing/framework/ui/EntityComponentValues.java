@@ -40,6 +40,8 @@ public class EntityComponentValues {
    * @param property the property for which to get the ComponentValue
    * @param editModel the edit model used to create foreign key input models
    * @param initialValue the initial value to display
+   * @param <T> the property type
+   * @param <C> the component type
    * @return the ComponentValue handling input for {@code property}
    */
   public <T, C extends JComponent> ComponentValue<T, C> createComponentValue(final Property<T> property, final SwingEntityEditModel editModel,

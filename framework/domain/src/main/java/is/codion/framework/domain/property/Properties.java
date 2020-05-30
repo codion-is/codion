@@ -24,6 +24,7 @@ public final class Properties {
   /**
    * Creates a new {@link ColumnProperty.Builder} instance.
    * @param attribute the attribute
+   * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <T> ColumnProperty.Builder<T> columnProperty(final Attribute<T> attribute) {
@@ -34,6 +35,7 @@ public final class Properties {
    * Creates a new {@link ColumnProperty.Builder} instance.
    * @param attribute the attribute
    * @param caption the property caption
+   * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <T> ColumnProperty.Builder<T> columnProperty(final Attribute<T> attribute, final String caption) {
@@ -44,6 +46,7 @@ public final class Properties {
    * A convenience method for creating a new {@link ColumnProperty.Builder} instance,
    * with the primary key index set to 0.
    * @param attribute the attribute
+   * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
   public static <T> ColumnProperty.Builder<T> primaryKeyProperty(final Attribute<T> attribute) {
@@ -55,6 +58,7 @@ public final class Properties {
    * with the primary key index set to 0.
    * @param attribute the attribute
    * @param caption the property caption
+   * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
   public static <T> ColumnProperty.Builder<T> primaryKeyProperty(final Attribute<T> attribute, final String caption) {
@@ -99,6 +103,7 @@ public final class Properties {
    * @param entityAttribute the id of the foreign key attribute from which this property gets its value
    * @param denormalizedAttribute the property from the referenced entity, from which this property gets its value
    * @param caption the caption of this property
+   * @param <T> the property type
    * @return a new {@link TransientProperty.Builder}
    */
   public static <T> TransientProperty.Builder<T> denormalizedViewProperty(final Attribute<T> attribute,
@@ -120,6 +125,7 @@ public final class Properties {
    * @param caption the caption
    * @param valueProvider a {@link DerivedProperty.Provider} instance responsible for deriving the value
    * @param linkedAttributes the ids of the properties from which this property derives its value
+   * @param <T> the property type
    * @return a new {@link TransientProperty.Builder}
    * @throws IllegalArgumentException in case no linked property ids are provided
    */
@@ -135,6 +141,7 @@ public final class Properties {
    * @param attribute the attribute, in case of database properties this should be the underlying column name
    * @param entityAttribute the id of the foreign key reference which owns the attribute which value to mirror
    * @param denormalizedAttribute the attribute from which this property should get its value
+   * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <T> ColumnProperty.Builder<T> denormalizedProperty(final Attribute<T> attribute,
@@ -150,6 +157,7 @@ public final class Properties {
    * @param entityAttribute the id of the foreign key reference which owns the attribute which value to mirror
    * @param denormalizedAttribute the property from which this attribute should get its value
    * @param caption the property caption
+   * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <T> ColumnProperty.Builder<T> denormalizedProperty(final Attribute<T> attribute,
@@ -163,6 +171,7 @@ public final class Properties {
    * @param attribute the attribute
    * @param caption the property caption
    * @param subquery the sql query
+   * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <T> ColumnProperty.Builder<T> subqueryProperty(final Attribute<T> attribute, final String caption,
@@ -175,7 +184,7 @@ public final class Properties {
    * @param attribute the attribute
    * @param caption the property caption
    * @param validItems the Items representing all the valid values for this property
-   * @param <T> the value type
+   * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <T> ColumnProperty.Builder<T> valueListProperty(final Attribute<T> attribute, final String caption,
@@ -186,6 +195,7 @@ public final class Properties {
   /**
    * Creates a new {@link TransientProperty.Builder} instance, which does not map to an underlying table column.
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @return a new {@link TransientProperty.Builder}
    */
   public static <T> TransientProperty.Builder<T> transientProperty(final Attribute<T> attribute) {
@@ -196,6 +206,7 @@ public final class Properties {
    * Creates a new {@link TransientProperty.Builder} instance, which does not map to an underlying table column.
    * @param attribute the attribute
    * @param caption the property caption
+   * @param <T> the attribute type
    * @return a new {@link TransientProperty.Builder}
    */
   public static <T> TransientProperty.Builder<T> transientProperty(final Attribute<T> attribute, final String caption) {
@@ -330,6 +341,7 @@ public final class Properties {
    * Creates a new {@link ColumnProperty.Builder} instance, for use in a foreign key,
    * mirroring a property which already exists as part of a different foreign key.
    * @param attribute the attribute of the mirrored property
+   * @param <T> the attribute type
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <T> ColumnProperty.Builder<T> mirrorProperty(final Attribute<T> attribute) {

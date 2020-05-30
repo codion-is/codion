@@ -192,6 +192,7 @@ public abstract class EntityEditView extends BorderPane {
   /**
    * Creates a {@link ComboBox} based on the values of the given property
    * @param attribute the attribute
+   * @param <T> the property type
    * @return a {@link ComboBox} for the given property
    */
   protected final <T> ComboBox<Item<T>> createValueListComboBox(final Attribute<T> attribute) {

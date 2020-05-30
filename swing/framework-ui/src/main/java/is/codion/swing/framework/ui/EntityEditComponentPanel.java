@@ -466,6 +466,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a new TemporalInputPanel using the default short date format, bound to the property
    * identified by {@code attribute}.
    * @param attribute the attribute for which to create the panel
+   * @param <T> the property type
    * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
@@ -477,6 +478,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a new TemporalInputPanel bound to {@code attribute}.
    * @param attribute the attribute for which to create the panel
    * @param calendarButton if yes a button for visually editing the date is included
+   * @param <T> the property type
    * @return a TemporalInputPanel using the default short date format
    * @see Property#DATE_FORMAT
    */
@@ -490,6 +492,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute for which to create the panel
    * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
+   * @param <T> the property type
    * @return a TemporalInputPanel bound to the attribute
    */
   protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Attribute<T> attribute, final CalendarButton calendarButton,
@@ -503,6 +506,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param updateOn specifies when the underlying value should be updated
+   * @param <T> the property type
    * @return a TemporalInputPanel bound to the attribute
    */
   protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Attribute<T> attribute, final CalendarButton calendarButton,
@@ -514,6 +518,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a new TemporalInputPanel bound to {@code attribute}.
    * @param property the property for which to create the panel
+   * @param <T> the property type
    * @return a TemporalInputPanel bound to the property
    */
   protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property) {
@@ -524,6 +529,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a new TemporalInputPanel bound to the given property.
    * @param property the property for which to create the panel
    * @param calendarButton if yes a button for visually editing the date is included
+   * @param <T> the property type
    * @return a TemporalInputPanel bound to the property
    */
   protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property, final CalendarButton calendarButton) {
@@ -535,6 +541,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property for which to create the panel
    * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
+   * @param <T> the property type
    * @return a TemporalInputPanel bound to the property
    */
   protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property, final CalendarButton calendarButton,
@@ -548,6 +555,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param calendarButton if yes a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param updateOn specifies when the underlying value should be updated
+   * @param <T> the property type
    * @return a TemporalInputPanel bound to the property
    */
   protected final <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property, final CalendarButton calendarButton,
@@ -898,6 +906,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute to bind
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
+   * @param <T> the property type
    * @return a SteppedComboBox bound the the attribute
    * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
@@ -912,6 +921,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
    * @param enabledState a state for controlling the enabled state of the component
+   * @param <T> the property type
    * @return a SteppedComboBox bound the the attribute
    * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
@@ -926,6 +936,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
+   * @param <T> the property type
    * @return a SteppedComboBox bound the the property
    * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
@@ -940,6 +951,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
    * @param enabledState a state for controlling the enabled state of the component
+   * @param <T> the property type
    * @return a SteppedComboBox bound the the property
    * @see is.codion.swing.common.ui.combobox.MaximumMatch
    */
@@ -963,6 +975,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a SteppedComboBox containing the values defined by the given value list attribute,
    * bound to the given attribute.
    * @param attribute the attribute
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the attribute
    * @throws IllegalArgumentException in case the property based on the given attribute is not a value list property
    */
@@ -975,6 +988,7 @@ public class EntityEditComponentPanel extends JPanel {
    * bound to the given property.
    * @param attribute the attribute
    * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the attribute
    * @throws IllegalArgumentException in case the property based on the given attribute is not a value list property
    */
@@ -987,6 +1001,7 @@ public class EntityEditComponentPanel extends JPanel {
    * bound to the given property.
    * @param attribute the attribute
    * @param enabledState a state for controlling the enabled state of the component
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the property
    * @throws IllegalArgumentException in case the property is not a value list property
    */
@@ -1000,6 +1015,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute
    * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
    * @param enabledState a state for controlling the enabled state of the component
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the attribute
    * @throws IllegalArgumentException in case the property is not a value list attribute
    */
@@ -1017,6 +1033,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a SteppedComboBox containing the values defined in the given value list property,
    * bound to the given property.
    * @param property the property
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the property
    */
   protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property) {
@@ -1028,6 +1045,7 @@ public class EntityEditComponentPanel extends JPanel {
    * bound to the given property.
    * @param property the property
    * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the property
    */
   protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final Sorted sorted) {
@@ -1039,6 +1057,7 @@ public class EntityEditComponentPanel extends JPanel {
    * bound to the given property.
    * @param property the property
    * @param enabledState a state for controlling the enabled state of the component
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the property
    */
   protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final StateObserver enabledState) {
@@ -1051,6 +1070,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property
    * @param sorted if yes the items are sorted, otherwise the original ordering is preserved
    * @param enabledState a state for controlling the enabled state of the component
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the property
    */
   protected final <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final Sorted sorted,
@@ -1070,6 +1090,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates an editable SteppedComboBox bound to {@code attribute}
    * @param attribute the attribute to bind
    * @param comboBoxModel the ComboBoxModel
+   * @param <T> the property type
    * @return an editable SteppedComboBox bound the the attribute
    */
   protected final <T> SteppedComboBox<T> createEditableComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel) {
@@ -1081,6 +1102,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute to bind
    * @param comboBoxModel the ComboBoxModel
    * @param enabledState a state for controlling the enabled state of the component
+   * @param <T> the property type
    * @return an editable SteppedComboBox bound the the attribute
    */
   protected final <T> SteppedComboBox<T> createEditableComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
@@ -1094,6 +1116,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property to bind
    * @param comboBoxModel the ComboBoxModel
    * @param enabledState a state for controlling the enabled state of the component
+   * @param <T> the property type
    * @return an editable SteppedComboBox bound the the property
    */
   protected final <T> SteppedComboBox<T> createEditableComboBox(final Property<T> property, final ComboBoxModel<T> comboBoxModel,
@@ -1113,6 +1136,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a SteppedComboBox bound to {@code attribute}, the combo box
    * contains the underlying values of the property
    * @param attribute the attribute to bind
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the attribute
    */
   protected final <T> SteppedComboBox<T> createPropertyComboBox(final Attribute<T> attribute) {
@@ -1124,6 +1148,7 @@ public class EntityEditComponentPanel extends JPanel {
    * contains the underlying values of the attribute
    * @param attribute the attribute to bind
    * @param enabledState a state for controlling the enabled state of the component
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the attribute
    */
   protected final <T> SteppedComboBox<T> createPropertyComboBox(final Attribute<T> attribute, final StateObserver enabledState) {
@@ -1136,6 +1161,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param editable yes if the combo box should be editable, only works with combo boxes based on String.class properties
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the attribute
    */
   protected final <T> SteppedComboBox<T> createPropertyComboBox(final Attribute<T> attribute, final StateObserver enabledState,
@@ -1148,6 +1174,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a SteppedComboBox bound to the given property, the combo box
    * contains the underlying values of the property
    * @param property the property to bind
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the property
    */
   protected final <T> SteppedComboBox<T> createPropertyComboBox(final ColumnProperty<T> property) {
@@ -1159,6 +1186,7 @@ public class EntityEditComponentPanel extends JPanel {
    * contains the underlying values of the property
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the property
    */
   protected final <T> SteppedComboBox<T> createPropertyComboBox(final ColumnProperty<T> property, final StateObserver enabledState) {
@@ -1171,6 +1199,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @param editable yes if the combo box should be editable, only works with combo boxes based on String.class properties
+   * @param <T> the property type
    * @return a SteppedComboBox bound to the property
    */
   protected final <T> SteppedComboBox<T> createPropertyComboBox(final ColumnProperty<T> property, final StateObserver enabledState,

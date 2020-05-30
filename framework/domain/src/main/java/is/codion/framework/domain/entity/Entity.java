@@ -48,6 +48,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
   /**
    * Retrieves the value mapped to the given property
    * @param property the property
+   * @param <T> the property type
    * @return the value mapped to the given property, null if no such mapping exists
    */
   <T> T get(Property<T> property);
@@ -63,6 +64,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
   /**
    * Returns the original value associated with the given property or the current value if it has not been modified.
    * @param property the property for which to retrieve the original value
+   * @param <T> the value type
    * @return the original value
    */
   <T> T getOriginal(Property<T> property);
@@ -71,6 +73,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * This method returns a String representation of the value associated with the given attribute,
    * if the property has a format it is used.
    * @param attribute the attribute for which to retrieve the value
+   * @param <T> the value type
    * @return a String representation of the value of {@code attribute}
    */
   <T> String getAsString(Attribute<T> attribute);
@@ -79,6 +82,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * Retrieves a string representation of the value mapped to the given property, an empty string is returned
    * in case of null values.
    * @param property the property
+   * @param <T> the property type
    * @return the value mapped to the given property as a string, an empty string if null
    */
   <T> String getAsString(Property<T> property);
@@ -139,6 +143,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * Maps the given value to the given property, returning the old value if any.
    * @param property the property
    * @param value the value
+   * @param <T> the value type
    * @return the previous value mapped to the given property
    */
   <T> T put(Property<T> property, T value);
@@ -147,6 +152,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * Removes the given property and value from this value map along with the original value if any.
    * If no value is mapped to the given property, this method has no effect.
    * @param property the property to remove
+   * @param <T> the value type
    * @return the value that was removed, null if no value was found
    */
   <T> T remove(Property<T> property);
@@ -207,6 +213,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * Reverts the value associated with the given property to its original value.
    * If the value has not been modified or the property is not found then calling this method has no effect.
    * @param property the property for which to revert the value
+   * @param <T> the value type
    */
   <T> void revert(Property<T> property);
 
@@ -401,6 +408,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
     /**
      * @param property the property
      * @param value the value to associate with the property
+     * @param <T> the value type
      * @return the previous value
      */
     <T> T put(ColumnProperty<T> property, T value);
@@ -414,6 +422,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
 
     /**
      * @param property the property
+     * @param <T> the value type
      * @return the value associated with the given property
      */
     <T> T get(ColumnProperty<T> property);

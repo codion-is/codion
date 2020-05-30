@@ -154,6 +154,7 @@ public final class EntityInputComponents {
   /**
    * @param property the property for which to create the input component
    * @param value the value to bind to the field
+   * @param <T> the property type
    * @return the component handling input for {@code property}
    */
   public static <T> JComponent createInputComponent(final Property<T> property, final Value<T> value) {
@@ -164,6 +165,7 @@ public final class EntityInputComponents {
    * @param property the property for which to create the input component
    * @param value the value to bind to the field
    * @param enabledState the enabled state
+   * @param <T> the property type
    * @return the component handling input for {@code property}
    */
   public static <T> JComponent createInputComponent(final Property<T> property, final Value<T> value,
@@ -480,6 +482,7 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param updateOn specifies when the underlying value should be updated
    * @param calendarButton if yes then a button for opening a date input dialog is included (only available for LocalDate)
+   * @param <T> the property type
    * @return a date input panel
    */
   public static <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property, final Value<T> value,
@@ -494,6 +497,7 @@ public final class EntityInputComponents {
    * @param updateOn specifies when the underlying value should be updated
    * @param calendarButton if yes then a button for opening a calendar dialog is included
    * @param enabledState the state controlling the enabled state of the panel
+   * @param <T> the property type
    * @return a date input panel
    */
   public static <T extends Temporal> TemporalInputPanel<T> createTemporalInputPanel(final Property<T> property, final Value<T> value,

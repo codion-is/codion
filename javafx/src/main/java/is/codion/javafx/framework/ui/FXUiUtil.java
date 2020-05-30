@@ -704,6 +704,7 @@ public final class FXUiUtil {
    * Instantiates a {@link ComboBox} based on the values of the given property and linked to the given edit model
    * @param valueListProperty the property
    * @param editModel the edit model
+   * @param <T> the property type
    * @return a {@link ComboBox} based on the values of the given property
    */
   public static <T> ComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> valueListProperty,
