@@ -368,11 +368,11 @@ public class EntityTestUnit {
         final String message = "Values of property " + property + " should be equal after update ["
                 + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
                 + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]";
-        if (property.isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
+        if (property.getAttribute().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
           assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
                   && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
         }
-        else if (property.isBlob() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
+        else if (property.getAttribute().isBlob() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
           assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
         }
         else {

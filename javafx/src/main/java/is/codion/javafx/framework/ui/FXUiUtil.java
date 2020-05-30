@@ -956,7 +956,7 @@ public final class FXUiUtil {
       if (maxLength > -1 && value != null && value.length() > maxLength) {
         return false;
       }
-      if (property.isTemporal()) {
+      if (property.getAttribute().isTemporal()) {
         try {
           if (value != null) {
             property.getDateTimeFormatter().parse(value);
@@ -978,7 +978,7 @@ public final class FXUiUtil {
       catch (final NumberFormatException | ParseException e) {
         return false;
       }
-      if (parsedValue != null && property.isNumerical() && !isWithinRange(property, (Number) parsedValue)) {
+      if (parsedValue != null && property.getAttribute().isNumerical() && !isWithinRange(property, (Number) parsedValue)) {
         return false;
       }
       if (parsedValue instanceof Double && !Objects.equals(parsedValue,

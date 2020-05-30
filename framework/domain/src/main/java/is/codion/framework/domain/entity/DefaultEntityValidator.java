@@ -96,10 +96,10 @@ public class DefaultEntityValidator implements EntityValidator {
     if (performNullValidation && !isForeignKeyProperty(property)) {
       performNullValidation(entity, definition, property);
     }
-    if (property.isNumerical()) {
+    if (property.getAttribute().isNumerical()) {
       performRangeValidation(entity, property);
     }
-    else if (property.isString()) {
+    else if (property.getAttribute().isString()) {
       performLengthValidation(entity, property);
     }
   }

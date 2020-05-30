@@ -261,7 +261,7 @@ public final class EntityInputComponents {
                                          final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    if (!property.isBoolean()) {
+    if (!property.getAttribute().isBoolean()) {
       throw new IllegalArgumentException("Boolean property required for createCheckBox");
     }
 
@@ -282,7 +282,7 @@ public final class EntityInputComponents {
                                                         final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    if (!property.isBoolean() || !property.isNullable()) {
+    if (!property.getAttribute().isBoolean() || !property.isNullable()) {
       throw new IllegalArgumentException("Nullable boolean property required for createNullableCheckBox");
     }
 
@@ -465,7 +465,7 @@ public final class EntityInputComponents {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
-    if (editable == Editable.YES && !property.isString()) {
+    if (editable == Editable.YES && !property.getAttribute().isString()) {
       throw new IllegalArgumentException("Editable property ComboBox is only implemented for String properties");
     }
     comboBox.setEditable(editable == Editable.YES);
@@ -504,20 +504,20 @@ public final class EntityInputComponents {
                                                                                     final UpdateOn updateOn, final CalendarButton calendarButton,
                                                                                     final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
-    if (!property.isTemporal()) {
+    if (!property.getAttribute().isTemporal()) {
       throw new IllegalArgumentException("Property " + property + " is not a date or time property");
     }
 
     final String formatString = property.getDateTimeFormatPattern();
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, value,
             DateFormats.getDateMask(formatString), updateOn, enabledState);
-    if (property.isDate()) {
+    if (property.getAttribute().isDate()) {
       return (TemporalInputPanel<T>) new LocalDateInputPanel(field, formatString, calendarButton, enabledState);
     }
-    else if (property.isTimestamp()) {
+    else if (property.getAttribute().isTimestamp()) {
       return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(field, formatString, calendarButton, enabledState);
     }
-    else if (property.isTime()) {
+    else if (property.getAttribute().isTime()) {
       return (TemporalInputPanel<T>) new LocalTimeInputPanel(field, formatString, enabledState);
     }
 
@@ -583,7 +583,7 @@ public final class EntityInputComponents {
                                          final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    if (!property.isString()) {
+    if (!property.getAttribute().isString()) {
       throw new IllegalArgumentException("Cannot create a text area for a non-string property");
     }
 
@@ -656,28 +656,28 @@ public final class EntityInputComponents {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiterals);
-    if (property.isString()) {
+    if (property.getAttribute().isString()) {
       value.link(TextValues.textValue(textField, property.getFormat(), updateOn));
     }
-    else if (property.isInteger()) {
+    else if (property.getAttribute().isInteger()) {
       value.link(NumericalValues.integerValue((IntegerField) textField, Nullable.YES, updateOn));
     }
-    else if (property.isDouble()) {
+    else if (property.getAttribute().isDouble()) {
       value.link(NumericalValues.doubleValue((DecimalField) textField, Nullable.YES, updateOn));
     }
-    else if (property.isBigDecimal()) {
+    else if (property.getAttribute().isBigDecimal()) {
       value.link(NumericalValues.bigDecimalValue((DecimalField) textField, updateOn));
     }
-    else if (property.isLong()) {
+    else if (property.getAttribute().isLong()) {
       value.link(NumericalValues.longValue((LongField) textField, Nullable.YES, updateOn));
     }
-    else if (property.isDate()) {
+    else if (property.getAttribute().isDate()) {
       value.link(TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
-    else if (property.isTime()) {
+    else if (property.getAttribute().isTime()) {
       value.link(TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
-    else if (property.isTimestamp()) {
+    else if (property.getAttribute().isTimestamp()) {
       value.link(TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
     else {
@@ -751,19 +751,19 @@ public final class EntityInputComponents {
 
   private static JTextField createTextField(final Property property, final String formatMaskString,
                                             final ValueContainsLiterals valueContainsLiterals) {
-    if (property.isInteger()) {
+    if (property.getAttribute().isInteger()) {
       return initializeIntField(property);
     }
-    else if (property.isDecimal()) {
+    else if (property.getAttribute().isDecimal()) {
       return initializeDecimalField(property);
     }
-    else if (property.isLong()) {
+    else if (property.getAttribute().isLong()) {
       return initializeLongField(property);
     }
-    else if (property.isTemporal()) {
+    else if (property.getAttribute().isTemporal()) {
       return TextFields.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
     }
-    else if (property.isString()) {
+    else if (property.getAttribute().isString()) {
       return initializeStringField(formatMaskString, valueContainsLiterals);
     }
 

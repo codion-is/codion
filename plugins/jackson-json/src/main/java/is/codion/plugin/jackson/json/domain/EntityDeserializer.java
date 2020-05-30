@@ -55,31 +55,31 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     if (jsonNode.isNull()) {
       return null;
     }
-    if (property.isString()) {
+    if (property.getAttribute().isString()) {
       return jsonNode.asText();
     }
-    else if (property.isBoolean()) {
+    else if (property.getAttribute().isBoolean()) {
       return jsonNode.asBoolean();
     }
-    else if (property.isTime()) {
+    else if (property.getAttribute().isTime()) {
       return LocalTime.parse(jsonNode.asText());
     }
-    else if (property.isDate()) {
+    else if (property.getAttribute().isDate()) {
       return LocalDate.parse(jsonNode.asText());
     }
-    else if (property.isTimestamp()) {
+    else if (property.getAttribute().isTimestamp()) {
       return LocalDateTime.parse(jsonNode.asText());
     }
-    else if (property.isDouble()) {
+    else if (property.getAttribute().isDouble()) {
       return jsonNode.asDouble();
     }
-    else if (property.isInteger()) {
+    else if (property.getAttribute().isInteger()) {
       return jsonNode.asInt();
     }
-    else if (property.isBigDecimal()) {
+    else if (property.getAttribute().isBigDecimal()) {
       return new BigDecimal(jsonNode.asText());
     }
-    else if (property.isBlob()) {
+    else if (property.getAttribute().isBlob()) {
       return Base64.getDecoder().decode(jsonNode.asText());
     }
     else if (property instanceof ForeignKeyProperty) {

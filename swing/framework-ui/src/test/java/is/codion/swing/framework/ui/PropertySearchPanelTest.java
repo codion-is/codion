@@ -26,7 +26,7 @@ public class PropertySearchPanelTest {
     final ColumnProperty<?> property = DOMAIN.getDefinition(TestDomain.T_DEPARTMENT)
             .getColumnProperty(TestDomain.DEPARTMENT_NAME);
     final ColumnConditionModel<Entity, ColumnProperty<?>> conditionModel =
-            new DefaultColumnConditionModel<>(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(),
+            new DefaultColumnConditionModel<>(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
                     property.getFormat(), property.getDateTimeFormatPattern());
     conditionModel.setUpperBound("DALLAS");
     conditionModel.setOperator(Operator.LIKE);

@@ -33,7 +33,7 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Pr
 
   @Override
   public final Class<?> getColumnClass(final Property<?> property) {
-    return property.getTypeClass();
+    return property.getAttribute().getTypeClass();
   }
 
   @Override

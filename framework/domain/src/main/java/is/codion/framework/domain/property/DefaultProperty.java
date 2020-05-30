@@ -9,7 +9,6 @@ import is.codion.common.Util;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -146,81 +145,6 @@ abstract class DefaultProperty<T> implements Property<T> {
   }
 
   @Override
-  public final boolean is(final Property<?> property) {
-    return is(property.getAttribute());
-  }
-
-  @Override
-  public final boolean isNumerical() {
-    return isInteger() || isDecimal() || isLong();
-  }
-
-  @Override
-  public final boolean isTemporal() {
-    return isDate() || isTimestamp() || isTime();
-  }
-
-  @Override
-  public final boolean isDate() {
-    return isType(Types.DATE);
-  }
-
-  @Override
-  public final boolean isTimestamp() {
-    return isType(Types.TIMESTAMP);
-  }
-
-  @Override
-  public final boolean isTime() {
-    return isType(Types.TIME);
-  }
-
-  @Override
-  public final boolean isCharacter() {
-    return isType(Types.CHAR);
-  }
-
-  @Override
-  public final boolean isString() {
-    return isType(Types.VARCHAR);
-  }
-
-  @Override
-  public final boolean isLong() {
-    return isType(Types.BIGINT);
-  }
-
-  @Override
-  public final boolean isInteger() {
-    return isType(Types.INTEGER);
-  }
-
-  @Override
-  public final boolean isDouble() {
-    return isType(Types.DOUBLE);
-  }
-
-  @Override
-  public final boolean isBigDecimal() {
-    return isType(Types.DECIMAL);
-  }
-
-  @Override
-  public final boolean isDecimal() {
-    return isDouble() || isBigDecimal();
-  }
-
-  @Override
-  public final boolean isBoolean() {
-    return isType(Types.BOOLEAN);
-  }
-
-  @Override
-  public final boolean isBlob() {
-    return isType(Types.BLOB);
-  }
-
-  @Override
   public Attribute<T> getAttribute() {
     return attribute;
   }
@@ -233,11 +157,6 @@ abstract class DefaultProperty<T> implements Property<T> {
   @Override
   public final int getType() {
     return attribute.getType();
-  }
-
-  @Override
-  public final boolean isType(final int type) {
-    return attribute.getType() == type;
   }
 
   @Override
@@ -352,11 +271,6 @@ abstract class DefaultProperty<T> implements Property<T> {
   }
 
   @Override
-  public final Class<T> getTypeClass() {
-    return attribute.getTypeClass();
-  }
-
-  @Override
   public T validateType(final T value) {
     if (value != null && attribute.getTypeClass() != value.getClass() && !attribute.getTypeClass().isAssignableFrom(value.getClass())) {
       throw new IllegalArgumentException("Value of type " + attribute.getTypeClass() +
@@ -383,7 +297,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     if (value == null) {
       return "";
     }
-    if (isTemporal()) {
+    if (attribute.isTemporal()) {
       final DateTimeFormatter formatter = getDateTimeFormatter();
       if (formatter != null) {
         return formatter.format((TemporalAccessor) value);
@@ -397,13 +311,13 @@ abstract class DefaultProperty<T> implements Property<T> {
   }
 
   private Format initializeDefaultFormat() {
-    if (isNumerical()) {
-      final NumberFormat numberFormat = isInteger() || isLong() ?
+    if (attribute.isNumerical()) {
+      final NumberFormat numberFormat = attribute.isInteger() || attribute.isLong() ?
               Formats.getNonGroupingIntegerFormat() : Formats.getNonGroupingNumberFormat();
-      if (isBigDecimal()) {
+      if (attribute.isBigDecimal()) {
         ((DecimalFormat) numberFormat).setParseBigDecimal(true);
       }
-      if (isDecimal()) {
+      if (attribute.isDecimal()) {
         numberFormat.setMaximumFractionDigits(Property.MAXIMUM_FRACTION_DIGITS.get());
       }
 
@@ -414,13 +328,13 @@ abstract class DefaultProperty<T> implements Property<T> {
   }
 
   private String getDefaultDateTimeFormatPattern() {
-    if (isDate()) {
+    if (attribute.isDate()) {
       return DATE_FORMAT.get();
     }
-    else if (isTime()) {
+    else if (attribute.isTime()) {
       return TIME_FORMAT.get();
     }
-    else if (isTimestamp()) {
+    else if (attribute.isTimestamp()) {
       return TIMESTAMP_FORMAT.get();
     }
 
@@ -509,7 +423,7 @@ abstract class DefaultProperty<T> implements Property<T> {
 
     @Override
     public final Property.Builder<T> maximumLength(final int maxLength) {
-      if (!property.isString()) {
+      if (!property.attribute.isString()) {
         throw new IllegalStateException("maximumLength is only applicable to string properties");
       }
       if (maxLength <= 0) {
@@ -521,7 +435,7 @@ abstract class DefaultProperty<T> implements Property<T> {
 
     @Override
     public final Property.Builder<T> maximumValue(final double maximumValue) {
-      if (!property.isNumerical()) {
+      if (!property.attribute.isNumerical()) {
         throw new IllegalStateException("maximumValue is only applicable to numerical properties");
       }
       if (property.minimumValue != null && property.minimumValue > maximumValue) {
@@ -533,7 +447,7 @@ abstract class DefaultProperty<T> implements Property<T> {
 
     @Override
     public final Property.Builder<T> minimumValue(final double minimumValue) {
-      if (!property.isNumerical()) {
+      if (!property.attribute.isNumerical()) {
         throw new IllegalStateException("minimumValue is only applicable to numerical properties");
       }
       if (property.maximumValue != null && property.maximumValue < minimumValue) {
@@ -545,7 +459,7 @@ abstract class DefaultProperty<T> implements Property<T> {
 
     @Override
     public final Property.Builder<T> numberFormatGrouping(final boolean numberFormatGrouping) {
-      if (!property.isNumerical()) {
+      if (!property.attribute.isNumerical()) {
         throw new IllegalStateException("numberFormatGrouping is only applicable to numerical properties");
       }
       ((NumberFormat) property.format).setGroupingUsed(numberFormatGrouping);
@@ -573,10 +487,10 @@ abstract class DefaultProperty<T> implements Property<T> {
     @Override
     public final Property.Builder<T> format(final Format format) {
       requireNonNull(format, "format");
-      if (property.isNumerical() && !(format instanceof NumberFormat)) {
+      if (property.attribute.isNumerical() && !(format instanceof NumberFormat)) {
         throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.attribute);
       }
-      if (property.isTemporal()) {
+      if (property.attribute.isTemporal()) {
         throw new IllegalArgumentException("Use dateTimeFormatPattern() for temporal properties: " + property.attribute);
       }
       property.format = format;
@@ -586,7 +500,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     @Override
     public final Property.Builder<T> dateTimeFormatPattern(final String dateTimeFormatPattern) {
       requireNonNull(dateTimeFormatPattern, "dateTimeFormatPattern");
-      if (!property.isTemporal()) {
+      if (!property.attribute.isTemporal()) {
         throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to temporal properties: " + property.attribute);
       }
       property.dateTimeFormatter = ofPattern(dateTimeFormatPattern);
@@ -596,7 +510,7 @@ abstract class DefaultProperty<T> implements Property<T> {
 
     @Override
     public final Property.Builder<T> maximumFractionDigits(final int maximumFractionDigits) {
-     if (!property.isDecimal()) {
+     if (!property.attribute.isDecimal()) {
         throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties");
       }
       ((NumberFormat) property.format).setMaximumFractionDigits(maximumFractionDigits);

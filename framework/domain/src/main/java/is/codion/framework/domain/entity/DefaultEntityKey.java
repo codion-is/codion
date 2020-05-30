@@ -75,7 +75,7 @@ final class DefaultEntityKey implements Entity.Key {
   DefaultEntityKey(final EntityDefinition definition, final Object value) {
     this.values = createSingleValueMap(definition, value);
     this.definition = definition;
-    this.singleIntegerKey = definition.getPrimaryKeyProperties().get(0).isInteger();
+    this.singleIntegerKey = definition.getPrimaryKeyProperties().get(0).getAttribute().isInteger();
   }
 
   /**
@@ -91,7 +91,7 @@ final class DefaultEntityKey implements Entity.Key {
     }
     this.definition = definition;
     this.compositeKey = properties.size() > 1;
-    this.singleIntegerKey = !compositeKey && properties.get(0).isInteger();
+    this.singleIntegerKey = !compositeKey && properties.get(0).getAttribute().isInteger();
   }
 
   @Override
@@ -336,7 +336,7 @@ final class DefaultEntityKey implements Entity.Key {
     values = new HashMap<>();
     final List<ColumnProperty<?>> properties = definition.getPrimaryKeyProperties();
     compositeKey = properties.size() > 1;
-    singleIntegerKey = !compositeKey && properties.get(0).isInteger();
+    singleIntegerKey = !compositeKey && properties.get(0).getAttribute().isInteger();
     hashCodeDirty = true;
     for (int i = 0; i < properties.size(); i++) {
       final ColumnProperty<Object> property = (ColumnProperty<Object>) properties.get(i);

@@ -322,7 +322,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       if (!entityId.equals(property.getEntityId())) {
         throw new IllegalArgumentException("Property '" + property + "' is not part of entity " + entityId);
       }
-      if (!property.isString()) {
+      if (!property.getAttribute().isString()) {
         throw new IllegalArgumentException("Property '" + property + "' is not a String based property");
       }
     }

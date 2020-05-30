@@ -96,11 +96,6 @@ public interface Property<T> extends Serializable {
   String getDescription();
 
   /**
-   * @return the Class representing the values of this attribute
-   */
-  Class<T> getTypeClass();
-
-  /**
    * @return the bean property name associated with this property
    */
   String getBeanProperty();
@@ -137,91 +132,9 @@ public interface Property<T> extends Serializable {
   boolean is(Attribute<?> attribute);
 
   /**
-   * @param property the property
-   * @return true if this property is of the given type
-   */
-  boolean is(Property<?> property);
-
-  /**
    * @return the data type ({@link java.sql.Types}) of the value of this property
    */
   int getType();
-
-  /**
-   * @param type the type to check ({@link java.sql.Types})
-   * @return true if the type of this property is the one given
-   */
-  boolean isType(int type);
-
-  /**
-   * @return true if this is a numerical Property, that is, Integer or Double
-   */
-  boolean isNumerical();
-
-  /**
-   * @return true if this is a time based property, Date (LocalDate), Timestamp (LocalDatetime) or Time (LocalTime)
-   */
-  boolean isTemporal();
-
-  /**
-   * @return true if this is a date property
-   */
-  boolean isDate();
-
-  /**
-   * @return true if this is a timestamp property
-   */
-  boolean isTimestamp();
-
-  /**
-   * @return true if this is a time property
-   */
-  boolean isTime();
-
-  /**
-   * @return true if this is a character property
-   */
-  boolean isCharacter();
-
-  /**
-   * @return true if this is a string property
-   */
-  boolean isString();
-
-  /**
-   * @return true if this is a long property
-   */
-  boolean isLong();
-
-  /**
-   * @return true if this is a integer property
-   */
-  boolean isInteger();
-
-  /**
-   * @return true if this is a double property
-   */
-  boolean isDouble();
-
-  /**
-   * @return true if this is a BigDecimal property
-   */
-  boolean isBigDecimal();
-
-  /**
-   * @return true if this is a decimal property
-   */
-  boolean isDecimal();
-
-  /**
-   * @return true if this is a boolean property
-   */
-  boolean isBoolean();
-
-  /**
-   * @return true if this is a blob property
-   */
-  boolean isBlob();
 
   /**
    * @return true if a default value has been set for this property

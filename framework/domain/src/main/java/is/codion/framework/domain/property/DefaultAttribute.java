@@ -48,6 +48,81 @@ class DefaultAttribute<T> implements Attribute<T> {
   }
 
   @Override
+  public final boolean isType(final int type) {
+    return this.type == type;
+  }
+
+  @Override
+  public final boolean isNumerical() {
+    return isInteger() || isDecimal() || isLong();
+  }
+
+  @Override
+  public final boolean isTemporal() {
+    return isDate() || isTimestamp() || isTime();
+  }
+
+  @Override
+  public final boolean isDate() {
+    return isType(Types.DATE);
+  }
+
+  @Override
+  public final boolean isTimestamp() {
+    return isType(Types.TIMESTAMP);
+  }
+
+  @Override
+  public final boolean isTime() {
+    return isType(Types.TIME);
+  }
+
+  @Override
+  public final boolean isCharacter() {
+    return isType(Types.CHAR);
+  }
+
+  @Override
+  public final boolean isString() {
+    return isType(Types.VARCHAR);
+  }
+
+  @Override
+  public final boolean isLong() {
+    return isType(Types.BIGINT);
+  }
+
+  @Override
+  public final boolean isInteger() {
+    return isType(Types.INTEGER);
+  }
+
+  @Override
+  public final boolean isDouble() {
+    return isType(Types.DOUBLE);
+  }
+
+  @Override
+  public final boolean isBigDecimal() {
+    return isType(Types.DECIMAL);
+  }
+
+  @Override
+  public final boolean isDecimal() {
+    return isDouble() || isBigDecimal();
+  }
+
+  @Override
+  public final boolean isBoolean() {
+    return isType(Types.BOOLEAN);
+  }
+
+  @Override
+  public final boolean isBlob() {
+    return isType(Types.BLOB);
+  }
+
+  @Override
   public final boolean equals(final Object object) {
     if (this == object) {
       return true;

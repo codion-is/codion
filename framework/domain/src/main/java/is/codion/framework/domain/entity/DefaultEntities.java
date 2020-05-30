@@ -355,7 +355,7 @@ public abstract class DefaultEntities implements Entities {
       final Map<Attribute<?>, BeanProperty> map = new HashMap<>();
       for (final Property property : entityDefinition.getProperties()) {
         final String beanProperty = property.getBeanProperty();
-        Class typeClass = property.getTypeClass();
+        Class typeClass = property.getAttribute().getTypeClass();
         if (property instanceof ForeignKeyProperty) {
           typeClass = getDefinition(((ForeignKeyProperty) property).getForeignEntityId()).getBeanClass();
         }

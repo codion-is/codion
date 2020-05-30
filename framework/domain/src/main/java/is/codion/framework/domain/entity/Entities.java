@@ -501,7 +501,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
 
     final Object originalValue = entity.getOriginal(property);
     final Object comparisonValue = comparison.get(property);
-    if (property.isBlob()) {
+    if (property.getAttribute().isBlob()) {
       return !Arrays.equals((byte[]) originalValue, (byte[]) comparisonValue);
     }
 

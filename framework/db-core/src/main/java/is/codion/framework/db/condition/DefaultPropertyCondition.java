@@ -168,7 +168,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
   }
 
   private static String getValuePlaceholder(final ColumnProperty property, final boolean caseSensitive) {
-    return property.isString() && !caseSensitive ? "upper(?)" : "?";
+    return property.getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
   }
 
   private static String getLikeCondition(final ColumnProperty property, final String columnIdentifier,
@@ -177,7 +177,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
     if (valueCount > 1) {
       return getInList(columnIdentifier, valuePlaceholder, valueCount, notLike);
     }
-    if (property.isString() && containsWildcards((String) values.get(0))) {
+    if (property.getAttribute().isString() && containsWildcards((String) values.get(0))) {
       return columnIdentifier + (notLike ? " not like " : " like ") + valuePlaceholder;
     }
     else {
@@ -214,7 +214,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
       columnName = property.getColumnName();
     }
 
-    if (!isNullCondition && property.isString() && !caseSensitive) {
+    if (!isNullCondition && property.getAttribute().isString() && !caseSensitive) {
       columnName = "upper(" + columnName + ")";
     }
 

@@ -185,18 +185,18 @@ public final class EntityJSONParser {
     if (property instanceof ForeignKeyProperty) {
       return toJSONObject((Entity) value);
     }
-    if (property.isBigDecimal()) {
+    if (property.getAttribute().isBigDecimal()) {
       return value.toString();
     }
-    if (property.isTime()) {
+    if (property.getAttribute().isTime()) {
       final LocalTime time = (LocalTime) value;
       return jsonTimeFormat.format(time);
     }
-    if (property.isDate()) {
+    if (property.getAttribute().isDate()) {
       final LocalDate date = (LocalDate) value;
       return jsonDateFormat.format(date);
     }
-    if (property.isTimestamp()) {
+    if (property.getAttribute().isTimestamp()) {
       final LocalDateTime dateTime = (LocalDateTime) value;
       return jsonTimestampFormat.format(dateTime);
     }
@@ -289,28 +289,28 @@ public final class EntityJSONParser {
     if (propertyValues.isNull(property.getAttribute().getName())) {
       return null;
     }
-    if (property.isString()) {
+    if (property.getAttribute().isString()) {
       return propertyValues.getString(property.getAttribute().getName());
     }
-    else if (property.isBoolean()) {
+    else if (property.getAttribute().isBoolean()) {
       return propertyValues.getBoolean(property.getAttribute().getName());
     }
-    else if (property.isTime()) {
+    else if (property.getAttribute().isTime()) {
       return LocalTime.parse(propertyValues.getString(property.getAttribute().getName()), jsonTimeFormat);
     }
-    else if (property.isDate()) {
+    else if (property.getAttribute().isDate()) {
       return LocalDate.parse(propertyValues.getString(property.getAttribute().getName()), jsonDateFormat);
     }
-    else if (property.isTimestamp()) {
+    else if (property.getAttribute().isTimestamp()) {
       return LocalDateTime.parse(propertyValues.getString(property.getAttribute().getName()), jsonTimestampFormat);
     }
-    else if (property.isDouble()) {
+    else if (property.getAttribute().isDouble()) {
       return propertyValues.getDouble(property.getAttribute().getName());
     }
-    else if (property.isInteger()) {
+    else if (property.getAttribute().isInteger()) {
       return propertyValues.getInt(property.getAttribute().getName());
     }
-    else if (property.isBigDecimal()) {
+    else if (property.getAttribute().isBigDecimal()) {
       return propertyValues.getBigDecimal(property.getAttribute().getName());
     }
     else if (property instanceof ForeignKeyProperty) {

@@ -160,13 +160,13 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   private ValueConverter initializeValueConverter() {
-    if (isDate()) {
+    if (getAttribute().isDate()) {
       return DATE_VALUE_CONVERTER;
     }
-    else if (isTimestamp()) {
+    else if (getAttribute().isTimestamp()) {
       return TIMESTAMP_VALUE_CONVERTER;
     }
-    else if (isTime()) {
+    else if (getAttribute().isTime()) {
       return TIME_VALUE_CONVERTER;
     }
 

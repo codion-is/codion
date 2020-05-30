@@ -197,7 +197,7 @@ public final class PropertyConditionView extends BorderPane {
       types.add(item(Operator.LIKE, Operator.LIKE.getCaption()));
       types.add(item(Operator.NOT_LIKE, Operator.NOT_LIKE.getCaption()));
     }
-    else if (property.isBoolean()) {
+    else if (property.getAttribute().isBoolean()) {
       types.add(item(Operator.LIKE, Operator.LIKE.getCaption()));
     }
     else {

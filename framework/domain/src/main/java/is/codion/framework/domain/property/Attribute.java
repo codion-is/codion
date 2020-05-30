@@ -27,4 +27,80 @@ public interface Attribute<T> extends Serializable {
    * @return the Class representing this attribute type
    */
   Class<T> getTypeClass();
+
+  /**
+   * @param type the type to check ({@link java.sql.Types})
+   * @return true if the type of this property is the one given
+   */
+  boolean isType(int type);
+
+  /**
+   * @return true if this is a numerical Property, that is, Integer or Double
+   */
+  boolean isNumerical();
+
+  /**
+   * @return true if this is a time based property, Date (LocalDate), Timestamp (LocalDatetime) or Time (LocalTime)
+   */
+  boolean isTemporal();
+
+  /**
+   * @return true if this is a date property
+   */
+  boolean isDate();
+
+  /**
+   * @return true if this is a timestamp property
+   */
+  boolean isTimestamp();
+
+  /**
+   * @return true if this is a time property
+   */
+  boolean isTime();
+
+  /**
+   * @return true if this is a character property
+   */
+  boolean isCharacter();
+
+  /**
+   * @return true if this is a string property
+   */
+  boolean isString();
+
+  /**
+   * @return true if this is a long property
+   */
+  boolean isLong();
+
+  /**
+   * @return true if this is a integer property
+   */
+  boolean isInteger();
+
+  /**
+   * @return true if this is a double property
+   */
+  boolean isDouble();
+
+  /**
+   * @return true if this is a BigDecimal property
+   */
+  boolean isBigDecimal();
+
+  /**
+   * @return true if this is a decimal property
+   */
+  boolean isDecimal();
+
+  /**
+   * @return true if this is a boolean property
+   */
+  boolean isBoolean();
+
+  /**
+   * @return true if this is a blob property
+   */
+  boolean isBlob();
 }

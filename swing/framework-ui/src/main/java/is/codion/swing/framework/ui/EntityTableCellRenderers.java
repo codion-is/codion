@@ -70,7 +70,7 @@ public final class EntityTableCellRenderers {
     if (!Objects.equals(tableModel.getEntityId(), property.getEntityId())) {
       throw new IllegalArgumentException("Property " + property + " not found in entity : " + tableModel.getEntityId());
     }
-    if (property.isBoolean()) {
+    if (property.getAttribute().isBoolean()) {
       return new BooleanRenderer(tableModel, property);
     }
 
@@ -140,7 +140,7 @@ public final class EntityTableCellRenderers {
      */
     public DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property property) {
       this(tableModel, property, property.getFormat(), property.getDateTimeFormatter(),
-              property.isNumerical() || property.isTemporal() ? RIGHT : LEFT);
+              property.getAttribute().isNumerical() || property.getAttribute().isTemporal() ? RIGHT : LEFT);
     }
 
     /**

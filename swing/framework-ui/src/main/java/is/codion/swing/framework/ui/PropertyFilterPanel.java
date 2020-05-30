@@ -23,7 +23,7 @@ public final class PropertyFilterPanel extends ColumnConditionPanel<Entity, Prop
   }
 
   private static Operator[] getOperators(final ColumnConditionModel<Entity, Property<?>> model) {
-    if (model.getColumnIdentifier().isBoolean()) {
+    if (model.getColumnIdentifier().getAttribute().isBoolean()) {
       return new Operator[] {Operator.LIKE};
     }
 

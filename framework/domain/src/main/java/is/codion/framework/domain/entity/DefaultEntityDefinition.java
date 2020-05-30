@@ -348,7 +348,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public boolean hasSingleIntegerPrimaryKey() {
-    return entityProperties.primaryKeyProperties.size() == 1 && entityProperties.primaryKeyProperties.get(0).isInteger();
+    return entityProperties.primaryKeyProperties.size() == 1 && entityProperties.primaryKeyProperties.get(0).getAttribute().isInteger();
   }
 
   @Override
@@ -750,7 +750,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     private List<ColumnProperty<?>> initializeLazyLoadedBlobProperties() {
-      return columnProperties.stream().filter(Property::isBlob).filter(property ->
+      return columnProperties.stream().filter(property -> property.getAttribute().isBlob()).filter(property ->
               !(property instanceof BlobProperty) || !((BlobProperty) property).isEagerlyLoaded()).collect(toList());
     }
 

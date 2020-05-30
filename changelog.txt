@@ -6148,3 +6148,4 @@
   Property.type moved to Attribute, EntityAttribute and BlobAttribute added
   Attribute now uses Class<T> for typeClass instead of Types.* sql type
   Attributes factory class added, with method for the most common attribute types
+  Property, getTypeClass() and isType() methods moved to Attribute

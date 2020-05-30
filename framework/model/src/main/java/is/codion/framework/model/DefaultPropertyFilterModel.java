@@ -17,7 +17,7 @@ public final class DefaultPropertyFilterModel extends DefaultColumnConditionMode
    * @param property the property
    */
   public DefaultPropertyFilterModel(final Property property) {
-    super(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimeFormatPattern());
+    super(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimeFormatPattern());
   }
 
   @Override

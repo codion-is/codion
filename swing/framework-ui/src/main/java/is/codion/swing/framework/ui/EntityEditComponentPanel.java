@@ -703,7 +703,7 @@ public class EntityEditComponentPanel extends JPanel {
     final JTextField textField = EntityInputComponents.createTextField(property,
             getEditModel().value(property.getAttribute()), maskString, updateOn,
             enabledState, valueContainsLiterals);
-    if (property.isString() && maskString != null) {
+    if (property.getAttribute().isString() && maskString != null) {
       EntityComponentValidators.addFormattedValidator(property, textField, getEditModel());
     }
     else {
