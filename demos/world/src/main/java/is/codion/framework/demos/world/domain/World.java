@@ -27,7 +27,7 @@ import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
-// tag::entityAndPropertyIds[]
+// tag::entityIdsAndAttributes[]
 public final class World extends Domain {
 
   public static final String T_CITY = "world.city";
@@ -67,7 +67,7 @@ public final class World extends Domain {
   public static final Attribute<Boolean> COUNTRYLANGUAGE_ISOFFICIAL = booleanAttribute("isofficial");
   public static final Attribute<Double> COUNTRYLANGUAGE_PERCENTAGE = doubleAttribute("percentage");
   public static final Attribute<Integer> COUNTRYLANGUAGE_NO_OF_SPEAKERS = integerAttribute("no_of_speakers");
-  // end::entityAndPropertyIds[]
+  // end::entityIdsAndAttributes[]
 
   public static final String T_CONTINENT = "continent";
   public static final Attribute<String> CONTINENT_CONTINENT = stringAttribute("continent");

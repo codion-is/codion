@@ -5,7 +5,7 @@
 :dir-world-source: ../../../../../demos/world/src/main/java
 :url-javadoc: link:../api
 
-The domain model is based around three classes; {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity], which represents a row in a table, {url-javadoc}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such) and {url-javadoc}/is/codion/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
+The domain model is based around four classes; {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity], which represents a row in a table, {url-javadoc}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such), {url-javadoc}/is/codion/framework/domain/property/Attribute.html[Attribute], which represents column types and {url-javadoc}/is/codion/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
 {url-javadoc}/is/codion/framework/domain/Domain.html[Domain] class, which in turn provides a {url-javadoc}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}/is/codion/framework/domain/Domain.html#getEntities[getEntities()], which serves as a container for the domain entity definitions and as a factory for *Entity* and *Entity.Key* instances.
 
 == Entities
@@ -14,20 +14,11 @@ The *Entity* class is a map like structure, which maps column values to the prop
 
 NOTE: Typically the *entityId* constant contains the underlying table name, but you can use whatever identifying string you want and specify the table name via a *tableName* parameter when defining the entity.
 
-== Properties
+== Attributes
 
-Each column in a table is represented by the {url-javadoc}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses. The {url-javadoc}/is/codion/framework/domain/property/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is identified by a *propertyId*, a String, unique within the Entity.
+Each column in a table is associated with a {url-javadoc}/is/codion/framework/domain/property/Attribute.html[Attribute] constant, which has a name and denotes the value type. The {url-javadoc}/is/codion/framework/domain/property/Attributes.html[Attributes] class provides factory methods for constructing Attribute objects and is usually statically imported, as will be assumed in the following examples.
 
-NOTE: Typically the *propertyId* contains the underlying column name, but as with the *entityId* you can use whatever value you want and specify the column name via the *columnName()* method when instantiating the Property.
-
-=== Example
-
-String constants for the Entities and Properties in the World demo, here the *entityIds* have a *T_* prefix (for *Type* or *Table*) whereas the *propertyIds* are prefixed by their respective table names.
-
-[source,java]
-----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=entityAndPropertyIds]
-----
+NOTE: Typically the *attribute* name is the underlying column name, but as with the *entityId* you can use whatever value you want and specify the column name via the *columnName()* method when instantiating the associated Property.
 
 === Supported data types
 
@@ -44,6 +35,19 @@ The following data types are supported:
 * Boolean (java.sql.Types.BOOLEAN)
 * Character (java.sql.Types.CHAR)
 * Blob (java.sql.Types.BLOB)
+
+== Properties
+
+Each column is represented by the {url-javadoc}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses. The {url-javadoc}/is/codion/framework/domain/property/Properties.html[Properties] class provides factory methods for constructing Property objects and is usually statically imported, as will be assumed in the following examples. Each Property is based on an Attribute, unique within the Entity.
+
+=== Example
+
+String constants for the Entities and Attribute constants for the properties in the World demo, here the *entityIds* have a *T_* prefix (for *Type* or *Table*) whereas the *attributes* are prefixed by their respective table names.
+
+[source,java]
+----
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=entityIdsAndAttributes]
+----
 
 === Property
 
@@ -154,7 +158,7 @@ Note that boolean properties always use the boolean Java type, the framework han
 ----
 entity.put(CUSTOMER_IS_ACTIVE, true);
 
-boolean isActive = entity.getBoolean(CUSTOMER_IS_ACTIVE);
+boolean isActive = entity.get(CUSTOMER_IS_ACTIVE);
 ----
 
 === DenormalizedViewProperty
@@ -168,12 +172,11 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[ta
 
 === DenormalizedProperty
 
-{url-javadoc}/is/codion/framework/domain/property/DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the column in the referenced table when the corresponding reference property value is set.
+{url-javadoc}/is/codion/framework/domain/property/DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the attribute in the referenced table when the corresponding reference property value is set.
 
 [source,java]
 ----
-denormalizedProperty(CUSTOMER_CITY, CUSTOMER_ADDRESS_FK,
-        getDefinition(T_ADDRESS).getProperty(ADDRESS_CITY), "City")
+denormalizedProperty(CUSTOMER_CITY, CUSTOMER_ADDRESS_FK, ADDRESS_CITY, "City")
 ----
 
 NOTE: The property is not kept in sync if the value of the denormalized property is modified in the referenced entity.

@@ -68,7 +68,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKeys]
 ----
 
-{url-entity-connection}#select-java.lang.String-java.lang.String-java.lang.Object...-[select(String entityId, String propertyId, Object... values)]
+{url-entity-connection}#select-java.lang.String-java.lang.String-java.lang.Object...-[select(String entityId, Attribute attribute, Object... values)]
 
 [source,java,indent=0]
 ----
@@ -93,7 +93,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleKeys]
 ----
 
-{url-entity-connection}#selectSingle-java.lang.String-java.lang.String-java.lang.Object...-[selectSingle(String entityId, String propertyId, Object... values)]
+{url-entity-connection}#selectSingle-java.lang.String-java.lang.String-java.lang.Object...-[selectSingle(String entityId, Attribute attribute, Object... values)]
 
 [source,java,indent=0]
 ----
@@ -104,7 +104,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting the values of a single column.
 
-{url-entity-connection}#selectValues-java.lang.String-is.codion.framework.db.condition.EntityCondition-[selectValues(String propertyId, EntityCondition condition)]
+{url-entity-connection}#selectValues-java.lang.String-is.codion.framework.db.condition.EntityCondition-[selectValues(Attribute attribute, EntityCondition condition)]
 
 [source,java,indent=0]
 ----

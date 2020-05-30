@@ -6,7 +6,7 @@ package is.codion.framework.domain.property;
 import java.io.Serializable;
 
 /**
- * Typed identifier for a {@link attribute}.
+ * Typed {@link Attribute} to base a {@link Property} on.
  * Note that Attributes are equal if their names are equal, the type does not factor into equality.
  * @param <T> the attribute type
  */

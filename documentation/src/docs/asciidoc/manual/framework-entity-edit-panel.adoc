@@ -25,11 +25,11 @@ include::{dir-source}/is/codion/framework/demos/manual/store/ui/CustomerAddressE
 
 === Boolean
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createBooleanComboBox-java.lang.String-[createBooleanComboBox(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createBooleanComboBox-is.codion.framework.domain.property.Attribute-[createBooleanComboBox(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createCheckBox-java.lang.String-[createCheckBox(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createCheckBox-is.codion.framework.domain.property.Attribute-[createCheckBox(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createNullableCheckBox-java.lang.String-[createNullableCheckBox(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createNullableCheckBox-is.codion.framework.domain.property.Attribute-[createNullableCheckBox(attribute)]
 
 [source,java,indent=0]
 ----
@@ -38,11 +38,11 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Foreign key
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyComboBox-java.lang.String-[createForeignKeyComboBox(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyComboBox-is.codion.framework.domain.property.Attribute-[createForeignKeyComboBox(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyField-java.lang.String-[createForeignKeyField(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyField-is.codion.framework.domain.property.Attribute-[createForeignKeyField(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyLookupField-java.lang.String-[createForeignKeyLookupField(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createForeignKeyLookupField-is.codion.framework.domain.property.Attribute-[createForeignKeyLookupField(attribute)]
 
 [source,java,indent=0]
 ----
@@ -51,7 +51,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Temporal
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTemporalInputPanel-java.lang.String-[createTemporalInputPanel(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTemporalInputPanel-is.codion.framework.domain.property.Attribute-[createTemporalInputPanel(attribute)]
 
 [source,java,indent=0]
 ----
@@ -72,11 +72,11 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=textValue]
 ----
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextArea-java.lang.String-[createTextArea(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextArea-is.codion.framework.domain.property.Attribute-[createTextArea(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextField-java.lang.String-[createTextField(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextField-is.codion.framework.domain.property.Attribute-[createTextField(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextInputPanel-java.lang.String-[createTextInputPanel(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextInputPanel-is.codion.framework.domain.property.Attribute-[createTextInputPanel(attribute)]
 
 === Value list
 
@@ -85,13 +85,13 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=valueList]
 ----
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createValueListComboBox-java.lang.String-[createValueListComboBox(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createValueListComboBox-java.lang.String-[createValueListComboBox(attribute)]
 
 == Panels & labels
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLabel-java.lang.String-[createLabel(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLabel-java.lang.String-[createLabel(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createPropertyPanel-java.lang.String-[createPropertyPanel(propertyId)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createPropertyPanel-java.lang.String-[createPropertyPanel(attribute)]
 
 [source,java,indent=0]
 ----

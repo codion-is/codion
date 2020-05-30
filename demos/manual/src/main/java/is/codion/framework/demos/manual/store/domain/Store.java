@@ -106,7 +106,7 @@ public final class Store extends Domain {
     private static final long serialVersionUID = 1;
 
     @Override
-    public String apply(final Entity customer) {
+    public String apply(Entity customer) {
       StringBuilder builder =
               new StringBuilder(customer.get(CUSTOMER_LAST_NAME))
                       .append(", ")
@@ -126,8 +126,8 @@ public final class Store extends Domain {
   private static final class UUIDKeyGenerator implements KeyGenerator {
 
     @Override
-    public void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
-                             final DatabaseConnection connection) throws SQLException {
+    public void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
+                             DatabaseConnection connection) throws SQLException {
       entity.put(CUSTOMER_ID, UUID.randomUUID().toString());
     }
   }
