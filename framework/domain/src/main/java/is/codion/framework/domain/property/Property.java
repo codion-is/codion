@@ -145,7 +145,7 @@ public interface Property<T> extends Serializable {
    * @return the default value for this property, if no default value has been set null is returned
    * @see #hasDefaultValue()
    */
-  Object getDefaultValue();
+  T getDefaultValue();
 
   /**
    * @return true if this property should be hidden in table views

@@ -194,10 +194,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public Object getDefaultValue(final Property property) {
+  public <T> T getDefaultValue(final Property<T> property) {
     if (isPersistValue(property)) {
       if (property instanceof ForeignKeyProperty) {
-        return entity.getForeignKey((ForeignKeyProperty) property);
+        return (T) entity.getForeignKey((ForeignKeyProperty) property);
       }
 
       return entity.get(property);
@@ -229,7 +229,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public boolean isPersistValue(final Property property) {
+  public boolean isPersistValue(final Property<?> property) {
     if (persistentValues.containsKey(property.getAttribute())) {
       return persistentValues.get(property.getAttribute());
     }
@@ -379,24 +379,24 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Object get(final Property property) {
+  public final <T> T get(final Property<T> property) {
     return entity.get(property);
   }
 
   @Override
-  public final void put(final Property property, final Object value) {
+  public final <T> void put(final Property<T> property, final T value) {
     requireNonNull(property, PROPERTY);
     final boolean initialization = !entity.containsKey(property);
-    final Object previousValue = entity.put(property, value);
+    final T previousValue = entity.put(property, value);
     if (!Objects.equals(value, previousValue)) {
       getValueEditEvent(property.getAttribute()).onEvent(valueChange(property, value, previousValue, initialization));
     }
   }
 
   @Override
-  public final Object remove(final Property property) {
+  public final <T> T remove(final Property<T> property) {
     requireNonNull(property, PROPERTY);
-    Object value = null;
+    T value = null;
     if (entity.containsKey(property)) {
       value = entity.remove(property);
       getValueEditEvent(property.getAttribute()).onEvent(valueChange(property, null, value));
@@ -406,7 +406,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isNullable(final Property property) {
+  public final boolean isNullable(final Property<?> property) {
     return validator.isNullable(entity, property);
   }
 
@@ -431,7 +431,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void validate(final Property property) throws ValidationException {
+  public final void validate(final Property<?> property) throws ValidationException {
     validator.validate(entity, getEntityDefinition(), property);
   }
 
@@ -459,7 +459,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isValid(final Property property) {
+  public final boolean isValid(final Property<?> property) {
     try {
       validator.validate(entity, getEntityDefinition(), requireNonNull(property, PROPERTY));
       return true;
@@ -972,7 +972,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     entitySetEvent.onEvent(entity);
   }
 
-  private boolean valueModified(final Property property) {
+  private boolean valueModified(final Property<?> property) {
     return !Objects.equals(get(property), getDefaultValue(property));
   }
 

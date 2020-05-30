@@ -133,7 +133,7 @@ public interface EntityEditModel extends Refreshable {
    * @param property the property
    * @return true if this value is allowed to be null in the underlying entity
    */
-  boolean isNullable(Property property);
+  boolean isNullable(Property<?> property);
 
   /**
    * Sets the given value in the underlying Entity
@@ -147,8 +147,9 @@ public interface EntityEditModel extends Refreshable {
    * Sets the given value in the underlying Entity
    * @param property the property to associate the given value with
    * @param value the value to associate with the given property
+   * @param <T> the value type
    */
-  void put(Property property, Object value);
+  <T> void put(Property<T> property, T value);
 
   /**
    * Removes the given value from the underlying Entity
@@ -161,9 +162,10 @@ public interface EntityEditModel extends Refreshable {
   /**
    * Removes the given value from the map
    * @param property the property associated with the value to remove
+   * @param <T> the value type
    * @return the value, if any
    */
-  Object remove(Property property);
+  <T> T remove(Property<T> property);
 
   /**
    * Returns the value associated with the given property
@@ -176,9 +178,10 @@ public interface EntityEditModel extends Refreshable {
   /**
    * Returns the value associated with the given property in the underlying Entity
    * @param property the property of the value to retrieve
+   * @param <T> the value type
    * @return the value associated with the given property
    */
-  Object get(Property property);
+  <T> T get(Property<T> property);
 
   /**
    * Returns the value associated with the given attribute assuming it
@@ -319,12 +322,13 @@ public interface EntityEditModel extends Refreshable {
    * with {@code true} for the given property or override {@link #isPersistValue} so that it
    * returns {@code true} for that property in case the value should persist.
    * @param property the property
+   * @param <T> the value type
    * @return the default value for the property
    * @see Property.Builder#defaultValue(Object)
    * @see #setPersistValue(Attribute, boolean)
    * @see #isPersistValue(Property)
    */
-  Object getDefaultValue(Property property);
+  <T> T getDefaultValue(Property<T> property);
 
   /**
    * Returns true if the last available value for this property should be used when initializing
@@ -336,7 +340,7 @@ public interface EntityEditModel extends Refreshable {
    * @return true if the given field value should be reset when the model is cleared
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  boolean isPersistValue(Property property);
+  boolean isPersistValue(Property<?> property);
 
   /**
    * @param attribute the attribute
@@ -455,7 +459,7 @@ public interface EntityEditModel extends Refreshable {
    * @throws ValidationException if the given value is not valid for the given property
    * @see #getValidator()
    */
-  void validate(Property property) throws ValidationException;
+  void validate(Property<?> property) throws ValidationException;
 
   /**
    * Validates the current state of the entity
@@ -486,7 +490,7 @@ public interface EntityEditModel extends Refreshable {
    * @see #validate(Property)
    * @see EntityValidator#validate(Entity, EntityDefinition)
    */
-  boolean isValid(Property property);
+  boolean isValid(Property<?> property);
 
   /**
    * @return true if the underlying Entity contains only valid values

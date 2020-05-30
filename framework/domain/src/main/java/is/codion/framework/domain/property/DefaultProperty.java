@@ -175,7 +175,7 @@ abstract class DefaultProperty<T> implements Property<T> {
   }
 
   @Override
-  public final Object getDefaultValue() {
+  public final T getDefaultValue() {
     return this.defaultValueSupplier.get();
   }
 

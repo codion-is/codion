@@ -553,7 +553,6 @@ final class DefaultEntity implements Entity {
    * @param previousValue the previous value, if any
    * @param initialization true if the value is being initialized, that is, no previous value exists
    * @see #addValueListener(EventDataListener)
-   * todo type safe change event?
    */
   private void onValueChanged(final Property<?> property, final Object currentValue, final Object previousValue, final boolean initialization) {
     if (valueChangeEvent != null) {
