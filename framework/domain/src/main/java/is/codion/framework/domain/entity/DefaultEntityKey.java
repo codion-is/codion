@@ -121,11 +121,7 @@ final class DefaultEntityKey implements Entity.Key {
 
   @Override
   public <T> T put(final ColumnProperty<T> property, final T value) {
-    final T newValue = property.prepareValue(property.validateType(value));
-    final T previousValue = (T) values.put(property, newValue);
-    onValuePut(property, newValue, previousValue);
-
-    return newValue;
+    return (T) putInternal((ColumnProperty<Object>) property, value);
   }
 
   @Override
@@ -166,20 +162,20 @@ final class DefaultEntityKey implements Entity.Key {
   /**
    * Key objects are equal if the entityIds match as well as all property values.
    * Empty keys are only equal to themselves.
-   * @param obj the object to compare with
+   * @param object the object to compare with
    * @return true if object is equal to this key
    */
   @Override
-  public boolean equals(final Object obj) {
-    if (this == obj) {
+  public boolean equals(final Object object) {
+    if (this == object) {
       return true;
     }
-    if (!definition.hasPrimaryKey()) {
+    if (object == null || !definition.hasPrimaryKey()) {
       return false;
     }
-    if (obj instanceof DefaultEntityKey) {
+    if (object.getClass() ==  DefaultEntityKey.class) {
       final String entityId = definition.getEntityId();
-      final DefaultEntityKey otherKey = (DefaultEntityKey) obj;
+      final DefaultEntityKey otherKey = (DefaultEntityKey) object;
       if (compositeKey) {
         return otherKey.isCompositeKey() && entityId.equals(otherKey.getEntityId()) && this.values.equals(otherKey.values);
       }
@@ -229,8 +225,8 @@ final class DefaultEntityKey implements Entity.Key {
   @Override
   public void setAs(final Entity.Key sourceKey) {
     clear();
-    for (final ColumnProperty property : sourceKey.getProperties()) {
-      put(property, sourceKey.get(property));
+    for (final ColumnProperty<?> property : sourceKey.getProperties()) {
+      putInternal((ColumnProperty<Object>) property, sourceKey.get(property));
     }
   }
 
@@ -239,19 +235,23 @@ final class DefaultEntityKey implements Entity.Key {
     return values.size();
   }
 
-  protected void clear() {
+  private void clear() {
     values.clear();
     cachedHashCode = null;
     hashCodeDirty = true;
   }
 
-  private <T> void onValuePut(final ColumnProperty<T> property, final T value, final Object previousValue) {
+  private Object putInternal(final ColumnProperty<Object> property, final Object value) {
+    final Object newValue = property.prepareValue((Object) property.validateType(value));
+    values.put(property, newValue);
     if (singleIntegerKey) {
       setHashCode((Integer) value);
     }
     else {
       hashCodeDirty = true;
     }
+
+    return newValue;
   }
 
   private void setHashCode(final Integer value) {

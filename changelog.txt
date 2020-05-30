@@ -6151,3 +6151,4 @@
   Property, getTypeClass() and isType() methods moved to Attribute
   EntityConnection.select() overloaded with Collection of values
   Condition.getValues() no longer returns a raw type
+  Some type safety improvements

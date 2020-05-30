@@ -40,7 +40,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   private final transient ResultPacker<T> resultPacker;
   private transient ValueFetcher<T> valueFetcher;
   private transient String columnName;
-  private transient ValueConverter<T, Object> valueConverter;
+  private transient ValueConverter<Object, Object> valueConverter;
   private transient boolean groupingColumn = false;
   private transient boolean aggregateColumn = false;
   private transient boolean selectable = true;
@@ -50,7 +50,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     this.columnType = attribute.getType();
     this.columnName = attribute.getName();
     this.valueConverter = initializeValueConverter();
-    this.valueFetcher = initializeValueFetcher();
+    this.valueFetcher = (ValueFetcher<T>) initializeValueFetcher();
     this.resultPacker = new PropertyResultPacker();
   }
 
@@ -67,11 +67,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   @Override
   public final Object toColumnValue(final T value) {
     return valueConverter.toColumnValue(value);
-  }
-
-  @Override
-  public final T fromColumnValue(final Object object) {
-    return valueConverter.fromColumnValue(object);
   }
 
   @Override
@@ -173,33 +168,33 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     return DEFAULT_VALUE_CONVERTER;
   }
 
-  private ValueFetcher initializeValueFetcher() {
+  private ValueFetcher<Object> initializeValueFetcher() {
     if (this instanceof MirrorProperty) {
       return null;
     }
     switch (columnType) {
       case Types.INTEGER:
-        return (resultSet, columnIndex) -> fromColumnValue(getInteger(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getInteger(resultSet, columnIndex)));
       case Types.BIGINT:
-        return (resultSet, columnIndex) -> fromColumnValue(getLong(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getLong(resultSet, columnIndex)));
       case Types.DOUBLE:
-        return (resultSet, columnIndex) -> fromColumnValue(getDouble(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getDouble(resultSet, columnIndex)));
       case Types.DECIMAL:
-        return (resultSet, columnIndex) -> fromColumnValue(getBigDecimal(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getBigDecimal(resultSet, columnIndex)));
       case Types.DATE:
-        return (resultSet, columnIndex) -> fromColumnValue(getDate(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getDate(resultSet, columnIndex)));
       case Types.TIMESTAMP:
-        return (resultSet, columnIndex) -> fromColumnValue(getTimestamp(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getTimestamp(resultSet, columnIndex)));
       case Types.TIME:
-        return (resultSet, columnIndex) -> fromColumnValue(getTime(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getTime(resultSet, columnIndex)));
       case Types.VARCHAR:
-        return (resultSet, columnIndex) -> fromColumnValue(getString(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getString(resultSet, columnIndex)));
       case Types.BOOLEAN:
-        return (resultSet, columnIndex) -> fromColumnValue(getBoolean(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getBoolean(resultSet, columnIndex)));
       case Types.CHAR:
-        return (resultSet, columnIndex) -> fromColumnValue(getCharacter(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getCharacter(resultSet, columnIndex)));
       case Types.BLOB:
-        return (resultSet, columnIndex) -> fromColumnValue(getBlob(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getBlob(resultSet, columnIndex)));
       case Types.JAVA_OBJECT:
         return ResultSet::getObject;
       default:
@@ -402,7 +397,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final ColumnProperty.Builder<T> columnType(final int columnType) {
       columnProperty.columnType = columnType;
-      columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
+      columnProperty.valueFetcher = (ValueFetcher<T>) columnProperty.initializeValueFetcher();
       return this;
     }
 
@@ -475,7 +470,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final ColumnProperty.Builder<T> valueConverter(final ValueConverter<T, Object> valueConverter) {
       requireNonNull(valueConverter, "valueConverter");
-      columnProperty.valueConverter = valueConverter;
+      columnProperty.valueConverter = (ValueConverter<Object, Object>) valueConverter;
       return this;
     }
 

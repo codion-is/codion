@@ -71,7 +71,7 @@ public interface Condition extends Serializable {
     private static final long serialVersionUID = 1;
 
     @Override
-    public List getValues() {
+    public List<Object> getValues() {
       return emptyList();
     }
 

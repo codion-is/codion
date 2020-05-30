@@ -102,7 +102,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
 
   @Override
   public String getConditionString(final ColumnProperty<?> property) {
-    return createColumnPropertyConditionString(property, operator, getValues(), nullCondition, caseSensitive);
+    return createColumnPropertyConditionString((ColumnProperty<Object>) property, operator, getValues(), nullCondition, caseSensitive);
   }
 
   @Override
@@ -133,7 +133,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
     return values;
   }
 
-  private static String createColumnPropertyConditionString(final ColumnProperty property,
+  private static String createColumnPropertyConditionString(final ColumnProperty<Object> property,
                                                             final Operator operator, final List<Object> values,
                                                             final boolean isNullCondition, final boolean isCaseSensitive) {
     for (int i = 0; i < values.size(); i++) {

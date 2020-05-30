@@ -143,20 +143,7 @@ final class DefaultEntity implements Entity {
 
   @Override
   public <T> T put(final Property<T> property, final T value) {
-    requireNonNull(property, PROPERTY);
-    final T newValue = validateAndPrepareForPut(property, value);
-    final boolean initialization = !values.containsKey(property);
-    final T previousValue = (T) values.put(property, newValue);
-    if (!initialization && Objects.equals(previousValue, newValue)) {
-      return newValue;
-    }
-    if (!initialization) {
-      updateOriginalValue(property, newValue, previousValue);
-    }
-    onValuePut(property, newValue);
-    onValueChanged(property, newValue, previousValue, initialization);
-
-    return previousValue;
+    return (T) putInternal((Property<Object>) property, value);
   }
 
   /**
@@ -519,11 +506,28 @@ final class DefaultEntity implements Entity {
     toString = null;
   }
 
-  private <T> T validateAndPrepareForPut(final Property<T> property, final T value) {
+  private Object putInternal(final Property<Object> property, final Object value) {
+    requireNonNull(property, PROPERTY);
+    final Object newValue = validateAndPrepareForPut(property, value);
+    final boolean initialization = !values.containsKey(property);
+    final Object previousValue = values.put(property, newValue);
+    if (!initialization && Objects.equals(previousValue, newValue)) {
+      return newValue;
+    }
+    if (!initialization) {
+      updateOriginalValue(property, newValue, previousValue);
+    }
+    onValuePut(property, newValue);
+    onValueChanged(property, newValue, previousValue, initialization);
+
+    return previousValue;
+  }
+
+  private Object validateAndPrepareForPut(final Property<Object> property, final Object value) {
     if (property instanceof DerivedProperty) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
-    if (property instanceof ValueListProperty && value != null && !((ValueListProperty<T>) property).isValid(value)) {
+    if (property instanceof ValueListProperty && value != null && !((ValueListProperty<Object>) property).isValid(value)) {
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getAttribute());
     }
 
@@ -623,10 +627,10 @@ final class DefaultEntity implements Entity {
   }
 
   private void setSingleForeignKeyValue(final Entity referencedEntity,
-                                        final ColumnProperty referenceProperty,
-                                        final ColumnProperty foreignColumnProperty) {
+                                        final ColumnProperty<?> referenceProperty,
+                                        final ColumnProperty<?> foreignColumnProperty) {
     if (!(referenceProperty instanceof MirrorProperty)) {
-      put(referenceProperty, referencedEntity == null ? null : referencedEntity.get(foreignColumnProperty));
+      putInternal((Property<Object>) referenceProperty, referencedEntity == null ? null : referencedEntity.get(foreignColumnProperty));
     }
   }
 
@@ -640,8 +644,8 @@ final class DefaultEntity implements Entity {
             definition.getDenormalizedProperties(foreignKeyProperty.getAttribute());
     if (denormalizedProperties != null) {
       for (int i = 0; i < denormalizedProperties.size(); i++) {
-        final DenormalizedProperty denormalizedProperty = denormalizedProperties.get(i);
-        put(denormalizedProperty, referencedEntity == null ? null :
+        final DenormalizedProperty<?> denormalizedProperty = denormalizedProperties.get(i);
+        putInternal((Property<Object>) denormalizedProperty, referencedEntity == null ? null :
                 referencedEntity.get(denormalizedProperty.getDenormalizedAttribute()));
       }
     }
@@ -793,11 +797,11 @@ final class DefaultEntity implements Entity {
     return valueChangeEvent;
   }
 
-  private void setOriginalValue(final Property<?> property, final Object previousValue) {
+  private void setOriginalValue(final Property<?> property, final Object originalValue) {
     if (originalValues == null) {
       originalValues = new HashMap<>();
     }
-    originalValues.put(property, previousValue);
+    originalValues.put(property, originalValue);
   }
 
   private void removeOriginalValue(final Property<?> property) {

@@ -32,7 +32,6 @@ import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Property;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -347,7 +346,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         final List<ColumnProperty<?>> statementProperties = new ArrayList<>();
         final EntityDefinition entityDefinition = getEntityDefinition(updateCondition.getEntityId());
         for (final Map.Entry<Attribute<?>, Object> propertyValue : updateCondition.getAttributeValues().entrySet()) {
-          final ColumnProperty columnProperty = entityDefinition.getColumnProperty(propertyValue.getKey());
+          final ColumnProperty<Object> columnProperty = entityDefinition.getColumnProperty((Attribute<Object>) propertyValue.getKey());
           if (!columnProperty.isUpdatable()) {
             throw new IllegalArgumentException("Property is not updatable: " + columnProperty.getAttribute());
           }
@@ -975,7 +974,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private int executeStatement(final PreparedStatement statement, final String query,
                                final List<ColumnProperty<?>> statementProperties,
-                               final List statementValues) throws SQLException {
+                               final List<Object> statementValues) throws SQLException {
     SQLException exception = null;
     try {
       logAccess("executeStatement", new Object[] {query, statementValues});
@@ -999,7 +998,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private ResultSet executeStatement(final PreparedStatement statement, final String query,
                                      final WhereCondition whereCondition) throws SQLException {
     SQLException exception = null;
-    final List statementValues = whereCondition.getValues();
+    final List<Object> statementValues = whereCondition.getValues();
     try {
       logAccess("executeStatement", statementValues == null ?
               new Object[] {query} : new Object[] {query, statementValues});
@@ -1101,15 +1100,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private Attribute<?>[] getPrimaryKeyAndWritableColumnAttributes(final String entityId) {
     return primaryKeyAndWritableColumnPropertiesCache.computeIfAbsent(entityId, e -> {
       final EntityDefinition entityDefinition = getEntityDefinition(entityId);
-      final List<ColumnProperty> writableAndPrimaryKeyProperties =
+      final List<ColumnProperty<?>> writableAndPrimaryKeyProperties =
               new ArrayList<>(entityDefinition.getWritableColumnProperties(true, true));
       entityDefinition.getPrimaryKeyProperties().forEach(primaryKeyProperty -> {
         if (!writableAndPrimaryKeyProperties.contains(primaryKeyProperty)) {
           writableAndPrimaryKeyProperties.add(primaryKeyProperty);
         }
       });
+      final List<Attribute<?>> attributes = new ArrayList<>();
+      writableAndPrimaryKeyProperties.forEach(columnProperty -> attributes.add(columnProperty.getAttribute()));
 
-      return writableAndPrimaryKeyProperties.stream().map(Property::getAttribute).toArray(Attribute<?>[]::new);
+      return attributes.toArray(new Attribute<?>[0]);
     });
   }
 
@@ -1186,7 +1187,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private String createLogMessage(final String sqlStatement, final List values, final Exception exception) {
+  private String createLogMessage(final String sqlStatement, final List<Object> values, final Exception exception) {
     final StringBuilder logMessage = new StringBuilder(getUser().toString()).append("\n");
     logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(values);
     if (exception != null) {
@@ -1222,19 +1223,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return domain.getEntities().getDefinition(entityId);
   }
 
-  private static List createValueList(final Object... values) {
-    if (values == null || values.length == 0) {
-      return null;
-    }
-    else if (values.length == 1 && values[0] instanceof Collection) {
-      return new ArrayList((Collection) values[0]);
-    }
-
-    return asList(values);
-  }
-
   private static void setParameterValues(final PreparedStatement statement, final List<ColumnProperty<?>> statementProperties,
-                                         final List statementValues) throws SQLException {
+                                         final List<Object> statementValues) throws SQLException {
     if (nullOrEmpty(statementValues) || statement.getParameterMetaData().getParameterCount() == 0) {
       return;
     }
@@ -1244,12 +1234,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     for (int i = 0; i < statementProperties.size(); i++) {
-      setParameterValue(statement, i + 1, statementValues.get(i), statementProperties.get(i));
+      setParameterValue(statement, i + 1, statementValues.get(i), (ColumnProperty<Object>) statementProperties.get(i));
     }
   }
 
   private static void setParameterValue(final PreparedStatement statement, final int parameterIndex,
-                                        final Object value, final ColumnProperty property) throws SQLException {
+                                        final Object value, final ColumnProperty<Object> property) throws SQLException {
     final Object columnValue = property.toColumnValue(value);
     try {
       if (columnValue == null) {

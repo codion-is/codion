@@ -102,7 +102,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
       }
     }
 
-    return (Entity) value;
+    return value;
   }
 
   /**

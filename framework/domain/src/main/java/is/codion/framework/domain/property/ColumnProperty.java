@@ -35,12 +35,6 @@ public interface ColumnProperty<T> extends Property<T> {
   Object toColumnValue(T value);
 
   /**
-   * @param value the SQL value Object to translate from
-   * @return the value of SQL {@code value}
-   */
-  T fromColumnValue(Object value);
-
-  /**
    * @return this propertys zero based index in the primary key, -1 if this property is not part of a primary key
    */
   int getPrimaryKeyIndex();

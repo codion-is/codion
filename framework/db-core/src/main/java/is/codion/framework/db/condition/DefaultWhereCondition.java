@@ -24,7 +24,7 @@ final class DefaultWhereCondition implements WhereCondition {
   }
 
   @Override
-  public List getValues() {
+  public List<Object> getValues() {
     return values;
   }
 
