@@ -27,7 +27,7 @@ public interface PropertyCondition extends Condition {
    * @param property the underlying property
    * @return the condition string
    */
-  String getConditionString(ColumnProperty property);
+  String getConditionString(ColumnProperty<?> property);
 
   /**
    * @param caseSensitive false if this condition should not be case-sensitive

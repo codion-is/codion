@@ -37,7 +37,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
   /**
    * The values used in this condition
    */
-  private final List values;
+  private final List<Object> values;
 
   /**
    * True if this condition tests for null
@@ -73,7 +73,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
   }
 
   @Override
-  public List getValues() {
+  public List<Object> getValues() {
     if (nullCondition) {
       return emptyList();
     }//null condition, uses 'x is null', not 'x = ?'
@@ -101,7 +101,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
   }
 
   @Override
-  public String getConditionString(final ColumnProperty property) {
+  public String getConditionString(final ColumnProperty<?> property) {
     return createColumnPropertyConditionString(property, operator, getValues(), nullCondition, caseSensitive);
   }
 
@@ -111,10 +111,10 @@ final class DefaultPropertyCondition implements PropertyCondition {
     return this;
   }
 
-  private static List initializeValues(final Object value) {
-    final List values = new ArrayList();
+  private static List<Object> initializeValues(final Object value) {
+    final List<Object> values = new ArrayList<>();
     if (value instanceof Collection) {
-      values.addAll((Collection) value);
+      values.addAll((Collection<Object>) value);
     }
     else {
       values.add(value);
@@ -134,7 +134,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
   }
 
   private static String createColumnPropertyConditionString(final ColumnProperty property,
-                                                            final Operator operator, final List values,
+                                                            final Operator operator, final List<Object> values,
                                                             final boolean isNullCondition, final boolean isCaseSensitive) {
     for (int i = 0; i < values.size(); i++) {
       property.validateType(values.get(i));
@@ -167,12 +167,12 @@ final class DefaultPropertyCondition implements PropertyCondition {
     }
   }
 
-  private static String getValuePlaceholder(final ColumnProperty property, final boolean caseSensitive) {
+  private static String getValuePlaceholder(final ColumnProperty<?> property, final boolean caseSensitive) {
     return property.getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
   }
 
-  private static String getLikeCondition(final ColumnProperty property, final String columnIdentifier,
-                                         final String valuePlaceholder, final boolean notLike, final List values,
+  private static String getLikeCondition(final ColumnProperty<?> property, final String columnIdentifier,
+                                         final String valuePlaceholder, final boolean notLike, final List<Object> values,
                                          final int valueCount) {
     if (valueCount > 1) {
       return getInList(columnIdentifier, valuePlaceholder, valueCount, notLike);
@@ -204,11 +204,11 @@ final class DefaultPropertyCondition implements PropertyCondition {
     return stringBuilder.toString();
   }
 
-  private static String initializeColumnIdentifier(final ColumnProperty property, final boolean isNullCondition,
+  private static String initializeColumnIdentifier(final ColumnProperty<?> property, final boolean isNullCondition,
                                                    final boolean caseSensitive) {
     String columnName;
     if (property instanceof SubqueryProperty) {
-      columnName = "(" + ((SubqueryProperty) property).getSubQuery() + ")";
+      columnName = "(" + ((SubqueryProperty<?>) property).getSubQuery() + ")";
     }
     else {
       columnName = property.getColumnName();
