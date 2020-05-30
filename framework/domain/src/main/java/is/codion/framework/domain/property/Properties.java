@@ -22,38 +22,6 @@ public final class Properties {
   private Properties() {}
 
   /**
-   * Creates a new {@link Attribute}.
-   * @param name the attribute name
-   * @param type the sql type representing this attribute
-   * @param <T> the attribute type
-   * @return a new {@link Attribute}
-   * @see java.sql.Types
-   */
-  public static <T> Attribute<T> attribute(final String name, final int type) {
-    return new DefaultAttribute<>(name, type);
-  }
-
-  /**
-   * Creates a new {@link EntityAttribute}.
-   * @param name the attribute name
-   * @return a new {@link EntityAttribute}
-   * @see java.sql.Types
-   */
-  public static EntityAttribute entityAttribute(final String name) {
-    return new DefaultEntityAttribute(name);
-  }
-
-  /**
-   * Creates a new {@link BlobAttribute}.
-   * @param name the attribute name
-   * @return a new {@link BlobAttribute}
-   * @see java.sql.Types
-   */
-  public static BlobAttribute blobAttribute(final String name) {
-    return new DefaultBlobAttribute(name);
-  }
-
-  /**
    * Creates a new {@link ColumnProperty.Builder} instance.
    * @param attribute the attribute
    * @return a new {@link ColumnProperty.Builder}

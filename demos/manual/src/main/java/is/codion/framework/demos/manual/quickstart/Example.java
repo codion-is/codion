@@ -33,9 +33,8 @@ import java.util.List;
 
 import static is.codion.framework.demos.manual.quickstart.Example.Store.*;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
-import static java.sql.Types.INTEGER;
-import static java.sql.Types.VARCHAR;
 import static java.util.UUID.randomUUID;
 
 public final class Example {
@@ -50,9 +49,9 @@ public final class Example {
 
     // tag::customer[]
     public static final String T_CUSTOMER = "store.customer";
-    public static final Attribute<String> CUSTOMER_ID = attribute("id", VARCHAR);
-    public static final Attribute<String> CUSTOMER_FIRST_NAME = attribute("first_name", VARCHAR);
-    public static final Attribute<String> CUSTOMER_LAST_NAME = attribute("last_name", VARCHAR);
+    public static final Attribute<String> CUSTOMER_ID = stringAttribute("id");
+    public static final Attribute<String> CUSTOMER_FIRST_NAME = stringAttribute("first_name");
+    public static final Attribute<String> CUSTOMER_LAST_NAME = stringAttribute("last_name");
 
     void customer() {
       define(T_CUSTOMER,
@@ -74,9 +73,9 @@ public final class Example {
     // end::customer[]
     // tag::address[]
     public static final String T_ADDRESS = "store.address";
-    public static final Attribute<Integer> ADDRESS_ID = attribute("id", INTEGER);
-    public static final Attribute<String> ADDRESS_STREET = attribute("street", VARCHAR);
-    public static final Attribute<String> ADDRESS_CITY = attribute("city", VARCHAR);
+    public static final Attribute<Integer> ADDRESS_ID = integerAttribute("id");
+    public static final Attribute<String> ADDRESS_STREET = stringAttribute("street");
+    public static final Attribute<String> ADDRESS_CITY = stringAttribute("city");
 
     void address() {
       define(T_ADDRESS,
@@ -92,10 +91,10 @@ public final class Example {
     // end::address[]
     // tag::customerAddress[]
     public static final String T_CUSTOMER_ADDRESS = "store.customer_address";
-    public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = attribute("id", INTEGER);
-    public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = attribute("customer_id", INTEGER);
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = integerAttribute("id");
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = integerAttribute("customer_id");
     public static final EntityAttribute CUSTOMER_ADDRESS_CUSTOMER_FK = entityAttribute("customer_fk");
-    public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = attribute("address_id", INTEGER);
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = integerAttribute("address_id");
     public static final EntityAttribute CUSTOMER_ADDRESS_ADDRESS_FK = entityAttribute("address_fk");
 
     void customerAddress() {

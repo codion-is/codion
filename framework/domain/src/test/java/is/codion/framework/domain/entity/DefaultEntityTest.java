@@ -9,6 +9,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.Attributes;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
@@ -18,7 +19,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -69,7 +69,7 @@ public class DefaultEntityTest {
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final Property<?> invalid = Properties.columnProperty(Properties.attribute("invalid", Types.INTEGER)).entityId(TestDomain.T_MASTER).get();
+    final Property<?> invalid = Properties.columnProperty(Attributes.integerAttribute("invalid")).entityId(TestDomain.T_MASTER).get();
     final Map<Property<?>, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
 
@@ -586,8 +586,8 @@ public class DefaultEntityTest {
 
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
-    final Attribute<Integer> trans = Properties.attribute("trans", Types.INTEGER);
-    final Attribute<Integer> id = Properties.attribute("id", Types.INTEGER);
+    final Attribute<Integer> trans = Attributes.integerAttribute("trans");
+    final Attribute<Integer> id = Attributes.integerAttribute("id");
     final TransientProperty.Builder<?> transientProperty = Properties.transientProperty(trans);
     class TestDomain extends Domain {
       public TestDomain() {

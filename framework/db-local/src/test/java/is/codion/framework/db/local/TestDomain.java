@@ -15,6 +15,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.Attributes;
 import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.EntityAttribute;
@@ -23,7 +24,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,6 +32,8 @@ import java.util.UUID;
 
 import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.property.Attributes.integerAttribute;
+import static is.codion.framework.domain.property.Attributes.stringAttribute;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -65,9 +67,9 @@ public final class TestDomain extends Domain {
     addReport(REPORT);
   }
 
-  public static final Attribute<Integer> DEPARTMENT_ID = attribute("deptno", Types.INTEGER);
-  public static final Attribute<String> DEPARTMENT_NAME = attribute("dname", Types.VARCHAR);
-  public static final Attribute<String> DEPARTMENT_LOCATION = attribute("loc", Types.VARCHAR);
+  public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno");
+  public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname");
+  public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc");
 
   public static final String T_DEPARTMENT = "scott.dept";
 
@@ -97,20 +99,20 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final Attribute<Integer> EMP_ID = attribute("empno", Types.INTEGER);
-  public static final Attribute<String> EMP_NAME = attribute("ename", Types.VARCHAR);
-  public static final Attribute<String> EMP_JOB = attribute("job", Types.VARCHAR);
-  public static final Attribute<Integer> EMP_MGR = attribute("mgr", Types.INTEGER);
-  public static final Attribute<LocalDate> EMP_HIREDATE = attribute("hiredate", Types.DATE);
-  public static final Attribute<LocalDateTime> EMP_HIRETIME = attribute("hiretime", Types.TIMESTAMP);
-  public static final Attribute<Double> EMP_SALARY = attribute("sal", Types.DOUBLE);
-  public static final Attribute<Double> EMP_COMMISSION = attribute("comm", Types.DOUBLE);
-  public static final Attribute<Integer> EMP_DEPARTMENT = attribute("deptno", Types.INTEGER);
-  public static final EntityAttribute EMP_DEPARTMENT_FK = entityAttribute("dept_fk");
-  public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk");
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = attribute("location", Types.VARCHAR);
-  public static final BlobAttribute EMP_DATA_LAZY = blobAttribute("data_lazy");
-  public static final BlobAttribute EMP_DATA = blobAttribute("data");
+  public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno");
+  public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename");
+  public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job");
+  public static final Attribute<Integer> EMP_MGR = Attributes.integerAttribute("mgr");
+  public static final Attribute<LocalDate> EMP_HIREDATE = Attributes.localDateAttribute("hiredate");
+  public static final Attribute<LocalDateTime> EMP_HIRETIME = Attributes.localDateTimeAttribute("hiretime");
+  public static final Attribute<Double> EMP_SALARY = Attributes.doubleAttribute("sal");
+  public static final Attribute<Double> EMP_COMMISSION = Attributes.doubleAttribute("comm");
+  public static final Attribute<Integer> EMP_DEPARTMENT = Attributes.integerAttribute("deptno");
+  public static final EntityAttribute EMP_DEPARTMENT_FK = Attributes.entityAttribute("dept_fk");
+  public static final EntityAttribute EMP_MGR_FK = Attributes.entityAttribute("mgr_fk");
+  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = Attributes.stringAttribute("location");
+  public static final BlobAttribute EMP_DATA_LAZY = Attributes.blobAttribute("data_lazy");
+  public static final BlobAttribute EMP_DATA = Attributes.blobAttribute("data");
   public static final String T_EMP = "scott.emp";
 
   public static final String EMP_NAME_IS_BLAKE_CONDITION_ID = "condition1Id";
@@ -151,8 +153,8 @@ public final class TestDomain extends Domain {
   }
 
   public static final String T_UUID_TEST_DEFAULT = "scott.uuid_test_default";
-  public static final Attribute<Object> UUID_TEST_DEFAULT_ID = attribute("id", Types.JAVA_OBJECT);
-  public static final Attribute<String> UUID_TEST_DEFAULT_DATA = attribute("data", Types.VARCHAR);
+  public static final Attribute<UUID> UUID_TEST_DEFAULT_ID = Attributes.attribute("id", UUID.class);
+  public static final Attribute<String> UUID_TEST_DEFAULT_DATA = Attributes.stringAttribute("data");
 
   private void uuidTestDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
@@ -161,7 +163,7 @@ public final class TestDomain extends Domain {
                               final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
         final ResultSet generatedKeys = insertStatement.getGeneratedKeys();
         if (generatedKeys.next()) {
-          entity.put(UUID_TEST_DEFAULT_ID, generatedKeys.getObject(1));
+          entity.put(UUID_TEST_DEFAULT_ID, (UUID) generatedKeys.getObject(1));
         }
       }
       @Override
@@ -176,8 +178,8 @@ public final class TestDomain extends Domain {
   }
 
   public static final String T_UUID_TEST_NO_DEFAULT = "scott.uuid_test_no_default";
-  public static final Attribute<Object> UUID_TEST_NO_DEFAULT_ID = attribute("id", Types.JAVA_OBJECT);
-  public static final Attribute<String> UUID_TEST_NO_DEFAULT_DATA = attribute("data", Types.VARCHAR);
+  public static final Attribute<UUID> UUID_TEST_NO_DEFAULT_ID = Attributes.attribute("id", UUID.class);
+  public static final Attribute<String> UUID_TEST_NO_DEFAULT_DATA = Attributes.stringAttribute("data");
 
   private void uuidTestNoDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
@@ -211,17 +213,17 @@ public final class TestDomain extends Domain {
 
   private void groupByQuery() {
     define(GROUP_BY_QUERY_ENTITY_ID, "scott.emp",
-            columnProperty(attribute("job", Types.VARCHAR))
+            columnProperty(Attributes.stringAttribute("job"))
                     .primaryKeyIndex(0)
                     .groupingColumn(true))
             .havingClause("job <> 'PRESIDENT'");
   }
 
   public static final String T_NO_PK = "scott.no_pk_table";
-  public static final Attribute<Integer> NO_PK_COL1 = attribute("col1", Types.INTEGER);
-  public static final Attribute<String> NO_PK_COL2 = attribute("col2", Types.VARCHAR);
-  public static final Attribute<String> NO_PK_COL3 = attribute("col3", Types.VARCHAR);
-  public static final Attribute<Integer> NO_PK_COL4 = attribute("col4", Types.INTEGER);
+  public static final Attribute<Integer> NO_PK_COL1 = Attributes.integerAttribute("col1");
+  public static final Attribute<String> NO_PK_COL2 = Attributes.stringAttribute("col2");
+  public static final Attribute<String> NO_PK_COL3 = Attributes.stringAttribute("col3");
+  public static final Attribute<Integer> NO_PK_COL4 = Attributes.integerAttribute("col4");
 
   private void noPkEntity() {
     define(T_NO_PK,
@@ -232,8 +234,8 @@ public final class TestDomain extends Domain {
   }
 
   public static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
-  public static final Attribute<Integer> JOINED_EMPNO = attribute("e.empno", Types.INTEGER);
-  public static final Attribute<Integer> JOINED_DEPTNO = attribute("d.deptno", Types.INTEGER);
+  public static final Attribute<Integer> JOINED_EMPNO = Attributes.integerAttribute("e.empno");
+  public static final Attribute<Integer> JOINED_DEPTNO = Attributes.integerAttribute("d.deptno");
 
   private void joinedQuery() {
     define(JOINED_QUERY_ENTITY_ID,

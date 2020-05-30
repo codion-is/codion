@@ -17,13 +17,13 @@ import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.EntityAttribute;
 
 import java.sql.Connection;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -50,9 +50,9 @@ public final class TestDomain extends Domain {
     registerEntities();
   }
 
-  public static final Attribute<Integer> DEPARTMENT_ID = attribute("deptno", Types.INTEGER);
-  public static final Attribute<String> DEPARTMENT_NAME = attribute("dname", Types.VARCHAR);
-  public static final Attribute<String> DEPARTMENT_LOCATION = attribute("loc", Types.VARCHAR);
+  public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno");
+  public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname");
+  public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc");
 
   public static final String T_DEPARTMENT = "scott.dept";
 
@@ -70,17 +70,17 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final Attribute<Integer> EMP_ID = attribute("empno", Types.INTEGER);
-  public static final Attribute<String> EMP_NAME = attribute("ename", Types.VARCHAR);
-  public static final Attribute<String> EMP_JOB = attribute("job", Types.VARCHAR);
-  public static final Attribute<Integer> EMP_MGR = attribute("mgr", Types.INTEGER);
-  public static final Attribute<LocalDate> EMP_HIREDATE = attribute("hiredate", Types.DATE);
-  public static final Attribute<Double> EMP_SALARY = attribute("sal", Types.DOUBLE);
-  public static final Attribute<Double> EMP_COMMISSION = attribute("comm", Types.DOUBLE);
-  public static final Attribute<Integer> EMP_DEPARTMENT = attribute("deptno", Types.INTEGER);
+  public static final Attribute<Integer> EMP_ID = integerAttribute("empno");
+  public static final Attribute<String> EMP_NAME = stringAttribute("ename");
+  public static final Attribute<String> EMP_JOB = stringAttribute("job");
+  public static final Attribute<Integer> EMP_MGR = integerAttribute("mgr");
+  public static final Attribute<LocalDate> EMP_HIREDATE = localDateAttribute("hiredate");
+  public static final Attribute<Double> EMP_SALARY = doubleAttribute("sal");
+  public static final Attribute<Double> EMP_COMMISSION = doubleAttribute("comm");
+  public static final Attribute<Integer> EMP_DEPARTMENT = integerAttribute("deptno");
   public static final EntityAttribute EMP_DEPARTMENT_FK = entityAttribute("dept_fk");
   public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk");
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = attribute("location", Types.VARCHAR);
+  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = stringAttribute("location");
   public static final BlobAttribute EMP_DATA = blobAttribute("data");
   public static final String T_EMP = "scott.emp";
 

@@ -40,15 +40,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.sql.Types;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static is.codion.framework.domain.property.Properties.attribute;
-import static is.codion.framework.domain.property.Properties.blobAttribute;
+import static is.codion.framework.domain.property.Attributes.attribute;
+import static is.codion.framework.domain.property.Attributes.blobAttribute;
 
 /**
  * A service for dealing with entities
@@ -339,7 +338,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Serializer.serialize(connection.selectValues(attribute(attribute, Types.OTHER), deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.selectValues(attribute(attribute, Object.class), deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

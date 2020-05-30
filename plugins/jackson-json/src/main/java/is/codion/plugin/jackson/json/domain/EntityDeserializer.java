@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -26,7 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static is.codion.framework.domain.property.Properties.attribute;
+import static is.codion.framework.domain.property.Attributes.attribute;
 
 public final class EntityDeserializer extends StdDeserializer<Entity> {
 
@@ -97,7 +96,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
-      final Property<?> property = definition.getProperty(attribute(field.getKey(), Types.OTHER));
+      final Property<?> property = definition.getProperty(attribute(field.getKey(), Object.class));
       valueMap.put(property, parseValue(property, field.getValue()));
     }
 
@@ -112,7 +111,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
       final Iterator<Map.Entry<String, JsonNode>> originalFields = originalValues.fields();
       while (originalFields.hasNext()) {
         final Map.Entry<String, JsonNode> field = originalFields.next();
-        final Property<?> property = definition.getProperty(attribute(field.getKey(), Types.OTHER));
+        final Property<?> property = definition.getProperty(attribute(field.getKey(), Object.class));
         originalValueMap.put(property, parseValue(property, field.getValue()));
       }
 

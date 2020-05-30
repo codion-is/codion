@@ -10,9 +10,9 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.Attributes;
 import is.codion.framework.domain.property.EntityAttribute;
 
-import java.sql.Types;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,9 +31,9 @@ public final class TestDomain extends Domain {
     registerEntities();
   }
 
-  public static final Attribute<Integer> DEPARTMENT_ID = attribute("deptno", Types.INTEGER);
-  public static final Attribute<String> DEPARTMENT_NAME = attribute("dname", Types.VARCHAR);
-  public static final Attribute<String> DEPARTMENT_LOCATION = attribute("loc", Types.VARCHAR);
+  public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno");
+  public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname");
+  public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc");
 
   public static final String T_DEPARTMENT = "scott.dept";
 
@@ -50,25 +50,26 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final Attribute<Integer> EMP_ID = attribute("empno", Types.INTEGER);
-  public static final Attribute<String> EMP_NAME = attribute("ename", Types.VARCHAR);
-  public static final Attribute<String> EMP_JOB = attribute("job", Types.VARCHAR);
-  public static final Attribute<Integer> EMP_MGR = attribute("mgr", Types.INTEGER);
-  public static final Attribute<LocalDate> EMP_HIREDATE = attribute("hiredate", Types.DATE);
-  public static final Attribute<Double> EMP_SALARY = attribute("sal", Types.DOUBLE);
-  public static final Attribute<Double> EMP_COMMISSION = attribute("comm", Types.DOUBLE);
-  public static final Attribute<Integer> EMP_DEPARTMENT = attribute("deptno", Types.INTEGER);
-  public static final EntityAttribute EMP_DEPARTMENT_FK = entityAttribute("dept_fk");
-  public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk");
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = attribute("location", Types.VARCHAR);
+  public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno");
+  public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename");
+  public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job");
+  public static final Attribute<Integer> EMP_MGR = Attributes.integerAttribute("mgr");
+  public static final Attribute<LocalDate> EMP_HIREDATE = Attributes.localDateAttribute("hiredate");
+  public static final Attribute<Double> EMP_SALARY = Attributes.doubleAttribute("sal");
+  public static final Attribute<Double> EMP_COMMISSION = Attributes.doubleAttribute("comm");
+  public static final Attribute<Integer> EMP_DEPARTMENT = Attributes.integerAttribute("deptno");
+  public static final EntityAttribute EMP_DEPARTMENT_FK = Attributes.entityAttribute("dept_fk");
+  public static final EntityAttribute EMP_MGR_FK = Attributes.entityAttribute("mgr_fk");
+  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = Attributes.stringAttribute("location");
   public static final String T_EMP = "scott.emp";
+
+  public static final String EMP_MGR_CONDITION_ID = "mgrConditionId";
 
   void employee() {
     define(T_EMP,
             primaryKeyProperty(EMP_ID, EMP_ID.getName()),
             columnProperty(EMP_NAME, EMP_NAME.getName())
-                    .searchProperty(true)
-                    .maximumLength(10).nullable(false),
+                    .searchProperty(true).maximumLength(10).nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), T_DEPARTMENT,
                     columnProperty(EMP_DEPARTMENT))
                     .nullable(false),
@@ -87,6 +88,7 @@ public final class TestDomain extends Domain {
                     DEPARTMENT_LOCATION.getName()).preferredColumnWidth(100))
             .stringProvider(new StringProvider(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
+            .conditionProvider(EMP_MGR_CONDITION_ID, (attributes, values) -> "mgr > ?")
             .caption("Employee");
   }
 

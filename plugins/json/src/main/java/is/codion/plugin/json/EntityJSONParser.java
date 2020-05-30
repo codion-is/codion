@@ -15,7 +15,6 @@ import is.codion.framework.domain.property.Property;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.framework.domain.property.Properties.attribute;
+import static is.codion.framework.domain.property.Attributes.attribute;
 import static java.util.Collections.emptyList;
 
 /**
@@ -273,7 +272,7 @@ public final class EntityJSONParser {
     final EntityDefinition definition = entities.getDefinition(entityId);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString(), Types.OTHER);
+      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString(), Object.class);
       key.put(attribute, parseValue(definition.getProperty(attribute), propertyValues));
     }
 
@@ -403,7 +402,7 @@ public final class EntityJSONParser {
     final Map<Property<?>, Object> valueMap = new HashMap<>();
     final JSONObject propertyValues = entityObject.getJSONObject(valuesKey);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString(), Types.OTHER);
+      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString(), Object.class);
       final EntityDefinition entityDefinition = entities.getDefinition(entityId);
       valueMap.put(entityDefinition.getProperty(attribute),
               parseValue(entityDefinition.getProperty(attribute), propertyValues));

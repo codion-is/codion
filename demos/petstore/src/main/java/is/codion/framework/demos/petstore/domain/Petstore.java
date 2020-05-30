@@ -12,8 +12,9 @@ import java.math.BigDecimal;
 
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
-import static java.sql.Types.*;
+import static java.sql.Types.INTEGER;
 
 public final class Petstore extends Domain {
 
@@ -28,14 +29,14 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_ADDRESS = "address";
-  public static final Attribute<Integer> ADDRESS_ID = attribute("Address id", INTEGER);
-  public static final Attribute<String> ADDRESS_STREET_1 = attribute("Street 1", VARCHAR);
-  public static final Attribute<String> ADDRESS_STREET_2 = attribute("Street 2", VARCHAR);
-  public static final Attribute<String> ADDRESS_CITY = attribute("City", VARCHAR);
-  public static final Attribute<String> ADDRESS_STATE = attribute("State", VARCHAR);
-  public static final Attribute<Integer> ADDRESS_ZIP = attribute("Zip", INTEGER);
-  public static final Attribute<Double> ADDRESS_LATITUDE = attribute("Latitude", DOUBLE);
-  public static final Attribute<Double> ADDRESS_LONGITUDE = attribute("Longitude", DOUBLE);
+  public static final Attribute<Integer> ADDRESS_ID = integerAttribute("Address id");
+  public static final Attribute<String> ADDRESS_STREET_1 = stringAttribute("Street 1");
+  public static final Attribute<String> ADDRESS_STREET_2 = stringAttribute("Street 2");
+  public static final Attribute<String> ADDRESS_CITY = stringAttribute("City");
+  public static final Attribute<String> ADDRESS_STATE = stringAttribute("State");
+  public static final Attribute<Integer> ADDRESS_ZIP = integerAttribute("Zip");
+  public static final Attribute<Double> ADDRESS_LATITUDE = doubleAttribute("Latitude");
+  public static final Attribute<Double> ADDRESS_LONGITUDE = doubleAttribute("Longitude");
 
   void address() {
     define(T_ADDRESS, "petstore.address",
@@ -64,10 +65,10 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_CATEGORY = "category";
-  public static final Attribute<Integer> CATEGORY_ID = attribute("Category id", INTEGER);
-  public static final Attribute<String> CATEGORY_NAME = attribute("Name", VARCHAR);
-  public static final Attribute<String> CATEGORY_DESCRIPTION = attribute("Description", VARCHAR);
-  public static final Attribute<String> CATEGORY_IMAGE_URL = attribute("Image URL", VARCHAR);
+  public static final Attribute<Integer> CATEGORY_ID = integerAttribute("Category id");
+  public static final Attribute<String> CATEGORY_NAME = stringAttribute("Name");
+  public static final Attribute<String> CATEGORY_DESCRIPTION = stringAttribute("Description");
+  public static final Attribute<String> CATEGORY_IMAGE_URL = stringAttribute("Image URL");
 
   void category() {
     define(T_CATEGORY, "petstore.category",
@@ -86,12 +87,12 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_PRODUCT = "product";
-  public static final Attribute<Integer> PRODUCT_ID = attribute("Product id", INTEGER);
-  public static final Attribute<Integer> PRODUCT_CATEGORY_ID = attribute("Category id", INTEGER);
+  public static final Attribute<Integer> PRODUCT_ID = integerAttribute("Product id");
+  public static final Attribute<Integer> PRODUCT_CATEGORY_ID = integerAttribute("Category id");
   public static final EntityAttribute PRODUCT_CATEGORY_FK = entityAttribute("Category");
-  public static final Attribute<String> PRODUCT_NAME = attribute("Name", VARCHAR);
-  public static final Attribute<String> PRODUCT_DESCRIPTION = attribute("Description", VARCHAR);
-  public static final Attribute<String> PRODUCT_IMAGE_URL = attribute("Image URL", VARCHAR);
+  public static final Attribute<String> PRODUCT_NAME = stringAttribute("Name");
+  public static final Attribute<String> PRODUCT_DESCRIPTION = stringAttribute("Description");
+  public static final Attribute<String> PRODUCT_IMAGE_URL = stringAttribute("Image URL");
 
   void product() {
     define(T_PRODUCT, "petstore.product",
@@ -114,10 +115,10 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_SELLER_CONTACT_INFO = "sellercontactinfo";
-  public static final Attribute<Integer> SELLER_CONTACT_INFO_ID = attribute("Contactinfo id", INTEGER);
-  public static final Attribute<String> SELLER_CONTACT_INFO_FIRST_NAME = attribute("First name", VARCHAR);
-  public static final Attribute<String> SELLER_CONTACT_INFO_LAST_NAME = attribute("Last name", VARCHAR);
-  public static final Attribute<String> SELLER_CONTACT_INFO_EMAIL = attribute("Email", VARCHAR);
+  public static final Attribute<Integer> SELLER_CONTACT_INFO_ID = integerAttribute("Contactinfo id");
+  public static final Attribute<String> SELLER_CONTACT_INFO_FIRST_NAME = stringAttribute("First name");
+  public static final Attribute<String> SELLER_CONTACT_INFO_LAST_NAME = stringAttribute("Last name");
+  public static final Attribute<String> SELLER_CONTACT_INFO_EMAIL = stringAttribute("Email");
 
   void sellerContactInfo() {
     define(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
@@ -138,19 +139,19 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_ITEM = "item";
-  public static final Attribute<Integer> ITEM_ID = attribute("Item id", INTEGER);
-  public static final Attribute<Integer> ITEM_PRODUCT_ID = attribute("Product id", INTEGER);
+  public static final Attribute<Integer> ITEM_ID = integerAttribute("Item id");
+  public static final Attribute<Integer> ITEM_PRODUCT_ID = integerAttribute("Product id");
   public static final EntityAttribute ITEM_PRODUCT_FK = entityAttribute("Product");
-  public static final Attribute<String> ITEM_NAME = attribute("Name", VARCHAR);
-  public static final Attribute<String> ITEM_DESCRIPTION = attribute("Description", VARCHAR);
-  public static final Attribute<String> ITEM_IMAGE_URL = attribute("Image URL", VARCHAR);
-  public static final Attribute<String> ITEM_IMAGE_THUMB_URL = attribute("Image thumbnail URL", VARCHAR);
-  public static final Attribute<BigDecimal> ITEM_PRICE = attribute("Price", DECIMAL);
-  public static final Attribute<Integer> ITEM_C0NTACT_INFO_ID = attribute("Contactinfo id", INTEGER);
+  public static final Attribute<String> ITEM_NAME = stringAttribute("Name");
+  public static final Attribute<String> ITEM_DESCRIPTION = stringAttribute("Description");
+  public static final Attribute<String> ITEM_IMAGE_URL = stringAttribute("Image URL");
+  public static final Attribute<String> ITEM_IMAGE_THUMB_URL = stringAttribute("Image thumbnail URL");
+  public static final Attribute<BigDecimal> ITEM_PRICE = bigDecimalAttribute("Price");
+  public static final Attribute<Integer> ITEM_C0NTACT_INFO_ID = integerAttribute("Contactinfo id");
   public static final EntityAttribute ITEM_C0NTACT_INFO_FK = entityAttribute("Contact info");
-  public static final Attribute<Integer> ITEM_ADDRESS_ID = attribute("Address id", INTEGER);
+  public static final Attribute<Integer> ITEM_ADDRESS_ID = integerAttribute("Address id");
   public static final EntityAttribute ITEM_ADDRESS_FK = entityAttribute("Address");
-  public static final Attribute<Boolean> ITEM_DISABLED = attribute("Disabled", BOOLEAN);
+  public static final Attribute<Boolean> ITEM_DISABLED = booleanAttribute("Disabled");
 
   void item() {
     define(T_ITEM, "petstore.item",
@@ -186,9 +187,9 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_TAG = "tag";
-  public static final Attribute<Integer> TAG_ID = attribute("Tag id", INTEGER);
-  public static final Attribute<String> TAG_TAG = attribute("Tag", VARCHAR);
-  public static final Attribute<Integer> TAG_REFCOUNT = attribute("Reference count", INTEGER);
+  public static final Attribute<Integer> TAG_ID = integerAttribute("Tag id");
+  public static final Attribute<String> TAG_TAG = stringAttribute("Tag");
+  public static final Attribute<Integer> TAG_REFCOUNT = integerAttribute("Reference count");
 
   void tag() {
     define(T_TAG, "petstore.tag",
@@ -207,9 +208,9 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_TAG_ITEM = "tag_item";
-  public static final Attribute<Integer> TAG_ITEM_ITEM_ID = attribute("Item id", INTEGER);
+  public static final Attribute<Integer> TAG_ITEM_ITEM_ID = integerAttribute("Item id");
   public static final EntityAttribute TAG_ITEM_ITEM_FK = entityAttribute("Item");
-  public static final Attribute<Integer> TAG_ITEM_TAG_ID = attribute("Tag id", INTEGER);
+  public static final Attribute<Integer> TAG_ITEM_TAG_ID = integerAttribute("Tag id");
   public static final EntityAttribute TAG_ITEM_TAG_FK = entityAttribute("Tag");
 
   void tagItem() {

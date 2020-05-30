@@ -8,26 +8,25 @@ import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
 
-import java.sql.Types;
-
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
 
 public class Store extends Domain {
 
   public static final String T_CUSTOMER = "store.customer";
-  public static final Attribute<Integer> CUSTOMER_ID = attribute("id", Types.INTEGER);
-  public static final Attribute<String> CUSTOMER_FIRST_NAME = attribute("first_name", Types.VARCHAR);
-  public static final Attribute<String> CUSTOMER_LAST_NAME = attribute("last_name", Types.VARCHAR);
-  public static final Attribute<String> CUSTOMER_EMAIL = attribute("email", Types.VARCHAR);
-  public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = attribute("is_active", Types.BOOLEAN);
+  public static final Attribute<Integer> CUSTOMER_ID = integerAttribute("id");
+  public static final Attribute<String> CUSTOMER_FIRST_NAME = stringAttribute("first_name");
+  public static final Attribute<String> CUSTOMER_LAST_NAME = stringAttribute("last_name");
+  public static final Attribute<String> CUSTOMER_EMAIL = stringAttribute("email");
+  public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = booleanAttribute("is_active");
 
   public static final String T_ADDRESS = "store.address";
-  public static final Attribute<Integer> ADDRESS_ID = attribute("id", Types.INTEGER);
+  public static final Attribute<Integer> ADDRESS_ID = integerAttribute("id");
   public static final EntityAttribute ADDRESS_CUSTOMER_FK = entityAttribute("customer_fk");
-  public static final Attribute<Integer> ADDRESS_CUSTOMER_ID = attribute("customer_id", Types.INTEGER);
-  public static final Attribute<String> ADDRESS_STREET = attribute("street", Types.VARCHAR);
-  public static final Attribute<String> ADDRESS_CITY = attribute("city", Types.VARCHAR);
+  public static final Attribute<Integer> ADDRESS_CUSTOMER_ID = integerAttribute("customer_id");
+  public static final Attribute<String> ADDRESS_STREET = stringAttribute("street");
+  public static final Attribute<String> ADDRESS_CITY = stringAttribute("city");
 
   public Store() {
     define(T_CUSTOMER,

@@ -27,26 +27,24 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.math.BigDecimal;
-import java.sql.Types;
 import java.time.LocalDate;
 
-import static is.codion.framework.domain.property.Properties.attribute;
-import static is.codion.framework.domain.property.Properties.entityAttribute;
+import static is.codion.framework.domain.property.Attributes.*;
 
 public final class EntityEditPanels {
 
   private static final class Domain {
-    static final Attribute<Boolean> BOOLEAN_ATTRIBUTE = attribute("boolean", Types.BOOLEAN);
+    static final Attribute<Boolean> BOOLEAN_ATTRIBUTE = booleanAttribute("boolean");
     static final EntityAttribute FOREIGN_KEY_ATTRIBUTE = entityAttribute("foreign_key");
-    static final Attribute<LocalDate> LOCAL_DATE_ATTRIBUTE = attribute("local_date", Types.DATE);
-    static final Attribute<Integer> INTEGER_ATTRIBUTE = attribute("integer", Types.INTEGER);
-    static final Attribute<Long> LONG_ATTRIBUTE = attribute("long", Types.BIGINT);
-    static final Attribute<Double> DOUBLE_ATTRIBUTE = attribute("double", Types.DOUBLE);
-    static final Attribute<BigDecimal> BIG_DECIMAL_ATTRIBUTE = attribute("big_decimal", Types.DECIMAL);
-    static final Attribute<String> TEXT_ATTRIBUTE = attribute("text", Types.VARCHAR);
-    static final Attribute<String> LONG_TEXT_ATTRIBUTE = attribute("long_text", Types.VARCHAR);
-    static final Attribute<String> FORMATTED_TEXT_ATTRIBUTE = attribute("formatted_text", Types.VARCHAR);
-    static final Attribute<String> VALUE_LIST_ATTRIBUTE = attribute("value_list", Types.VARCHAR);
+    static final Attribute<LocalDate> LOCAL_DATE_ATTRIBUTE = localDateAttribute("local_date");
+    static final Attribute<Integer> INTEGER_ATTRIBUTE = integerAttribute("integer");
+    static final Attribute<Long> LONG_ATTRIBUTE = longAttribute("long");
+    static final Attribute<Double> DOUBLE_ATTRIBUTE = doubleAttribute("double");
+    static final Attribute<BigDecimal> BIG_DECIMAL_ATTRIBUTE = bigDecimalAttribute("big_decimal");
+    static final Attribute<String> TEXT_ATTRIBUTE = stringAttribute("text");
+    static final Attribute<String> LONG_TEXT_ATTRIBUTE = stringAttribute("long_text");
+    static final Attribute<String> FORMATTED_TEXT_ATTRIBUTE = stringAttribute("formatted_text");
+    static final Attribute<String> VALUE_LIST_ATTRIBUTE = stringAttribute("value_list");
   }
 
   private static final class EditPanelDemo extends EntityEditPanel {

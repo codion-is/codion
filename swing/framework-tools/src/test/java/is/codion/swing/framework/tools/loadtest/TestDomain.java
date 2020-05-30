@@ -6,10 +6,10 @@ package is.codion.swing.framework.tools.loadtest;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.Attributes;
 
-import java.sql.Types;
-
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Properties.columnProperty;
+import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 
 public final class TestDomain extends Domain {
 
@@ -18,9 +18,9 @@ public final class TestDomain extends Domain {
     registerEntities();
   }
 
-  public static final Attribute<Integer> DEPARTMENT_ID = attribute("deptno", Types.INTEGER);
-  public static final Attribute<String> DEPARTMENT_NAME = attribute("dname", Types.VARCHAR);
-  public static final Attribute<String> DEPARTMENT_LOCATION = attribute("loc", Types.VARCHAR);
+  public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno");
+  public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname");
+  public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc");
 
   public static final String T_DEPARTMENT = "scott.dept";
 

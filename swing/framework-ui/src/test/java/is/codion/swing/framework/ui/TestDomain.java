@@ -7,10 +7,9 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.Attributes;
 import is.codion.framework.domain.property.EntityAttribute;
 
-import java.awt.Color;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -18,6 +17,7 @@ import java.util.List;
 
 import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -31,9 +31,9 @@ public final class TestDomain extends Domain {
   }
 
   public static final String T_MASTER = "domain.master_entity";
-  public static final Attribute<Long> MASTER_ID = attribute("id", Types.BIGINT);
-  public static final Attribute<String> MASTER_NAME = attribute("name", Types.VARCHAR);
-  public static final Attribute<Integer> MASTER_CODE = attribute("code", Types.INTEGER);
+  public static final Attribute<Long> MASTER_ID = Attributes.longAttribute("id");
+  public static final Attribute<String> MASTER_NAME = Attributes.stringAttribute("name");
+  public static final Attribute<Integer> MASTER_CODE = Attributes.integerAttribute("code");
 
   void master() {
     define(T_MASTER,
@@ -44,24 +44,23 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(MASTER_NAME));
   }
 
-  public static final Attribute<Integer> DETAIL_ID = attribute("id", Types.INTEGER);
-  public static final Attribute<Integer> DETAIL_INT = attribute("int", Types.INTEGER);
-  public static final Attribute<Double> DETAIL_DOUBLE = attribute("double", Types.DOUBLE);
-  public static final Attribute<String> DETAIL_STRING = attribute("string", Types.VARCHAR);
-  public static final Attribute<LocalDate> DETAIL_DATE = attribute("date", Types.DATE);
-  public static final Attribute<LocalDateTime> DETAIL_TIMESTAMP = attribute("timestamp", Types.TIMESTAMP);
-  public static final Attribute<Boolean> DETAIL_BOOLEAN = attribute("boolean", Types.BOOLEAN);
-  public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = attribute("boolean_nullable", Types.BOOLEAN);
-  public static final Attribute<Long> DETAIL_MASTER_ID = attribute("master_id", Types.BIGINT);
-  public static final EntityAttribute DETAIL_MASTER_FK = entityAttribute("master_fk");
-  public static final Attribute<String> DETAIL_MASTER_NAME = attribute("master_name", Types.VARCHAR);
-  public static final Attribute<Integer> DETAIL_MASTER_CODE = attribute("master_code", Types.INTEGER);
-  public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = attribute("int_value_list", Types.INTEGER);
-  public static final Attribute<Integer> DETAIL_INT_DERIVED = attribute("int_derived", Types.INTEGER);
+  public static final String T_DETAIL = "domain.detail_entity";
+  public static final Attribute<Long> DETAIL_ID = Attributes.longAttribute("id");
+  public static final Attribute<Integer> DETAIL_INT = Attributes.integerAttribute("int");
+  public static final Attribute<Double> DETAIL_DOUBLE = Attributes.doubleAttribute("double");
+  public static final Attribute<String> DETAIL_STRING = Attributes.stringAttribute("string");
+  public static final Attribute<LocalDate> DETAIL_DATE = Attributes.localDateAttribute("date");
+  public static final Attribute<LocalDateTime> DETAIL_TIMESTAMP = Attributes.localDateTimeAttribute("timestamp");
+  public static final Attribute<Boolean> DETAIL_BOOLEAN = Attributes.booleanAttribute("boolean");
+  public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = Attributes.booleanAttribute("boolean_nullable");
+  public static final Attribute<Long> DETAIL_MASTER_ID = Attributes.longAttribute("master_id");
+  public static final EntityAttribute DETAIL_MASTER_FK = Attributes.entityAttribute("master_fk");
+  public static final Attribute<String> DETAIL_MASTER_NAME = Attributes.stringAttribute("master_name");
+  public static final Attribute<Integer> DETAIL_MASTER_CODE = Attributes.integerAttribute("master_code");
+  public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = Attributes.integerAttribute("int_value_list");
+  public static final Attribute<Integer> DETAIL_INT_DERIVED = Attributes.integerAttribute("int_derived");
 
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
-
-  public static final String T_DETAIL = "domain.detail_entity";
 
   private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
           item(2, "2"), item(3, "3"));
@@ -94,15 +93,15 @@ public final class TestDomain extends Domain {
               return intValue * 10;
             }, DETAIL_INT))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
+            .orderBy(orderBy().ascending(DETAIL_STRING))
             .smallDataset(true)
             .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
-  public static final Attribute<Integer> DEPARTMENT_ID = attribute("deptno", Types.INTEGER);
-  public static final Attribute<String> DEPARTMENT_NAME = attribute("dname", Types.VARCHAR);
-  public static final Attribute<String> DEPARTMENT_LOCATION = attribute("loc", Types.VARCHAR);
-
   public static final String T_DEPARTMENT = "scott.dept";
+  public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno");
+  public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname");
+  public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc");
 
   void department() {
     define(T_DEPARTMENT,
@@ -113,22 +112,32 @@ public final class TestDomain extends Domain {
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
+            .orderBy(orderBy().ascending(DEPARTMENT_NAME))
             .stringProvider(new StringProvider(DEPARTMENT_NAME))
             .caption("Department");
   }
 
-  public static final Attribute<Integer> EMP_ID = attribute("empno", Types.INTEGER);
-  public static final Attribute<String> EMP_NAME = attribute("ename", Types.VARCHAR);
-  public static final Attribute<String> EMP_JOB = attribute("job", Types.VARCHAR);
-  public static final Attribute<Integer> EMP_MGR = attribute("mgr", Types.INTEGER);
-  public static final Attribute<LocalDate> EMP_HIREDATE = attribute("hiredate", Types.DATE);
-  public static final Attribute<Double> EMP_SALARY = attribute("sal", Types.DOUBLE);
-  public static final Attribute<Double> EMP_COMMISSION = attribute("comm", Types.DOUBLE);
-  public static final Attribute<Integer> EMP_DEPARTMENT = attribute("deptno", Types.INTEGER);
-  public static final EntityAttribute EMP_DEPARTMENT_FK = entityAttribute("dept_fk");
-  public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk");
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = attribute("location", Types.VARCHAR);
   public static final String T_EMP = "scott.emp";
+  public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno");
+  public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename");
+  public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job");
+  public static final Attribute<Integer> EMP_MGR = Attributes.integerAttribute("mgr");
+  public static final Attribute<LocalDate> EMP_HIREDATE = Attributes.localDateAttribute("hiredate");
+  public static final Attribute<Double> EMP_SALARY = Attributes.doubleAttribute("sal");
+  public static final Attribute<Double> EMP_COMMISSION = Attributes.doubleAttribute("comm");
+  public static final Attribute<Integer> EMP_DEPARTMENT = Attributes.integerAttribute("deptno");
+  public static final EntityAttribute EMP_DEPARTMENT_FK = Attributes.entityAttribute("dept_fk");
+  public static final EntityAttribute EMP_MGR_FK = Attributes.entityAttribute("mgr_fk");
+  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = Attributes.stringAttribute("location");
+
+  public static final String EMP_CONDITION_1_ID = "condition1Id";
+  public static final String EMP_CONDITION_2_ID = "condition2Id";
+  public static final String EMP_CONDITION_3_ID = "condition3Id";
+
+  /**
+   * Otherwise we'd depend on java.awt.Color
+   */
+  public static final Object CYAN = new Object();
 
   void employee() {
     define(T_EMP,
@@ -153,10 +162,14 @@ public final class TestDomain extends Domain {
                     DEPARTMENT_LOCATION.getName()).preferredColumnWidth(100))
             .stringProvider(new StringProvider(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
+            .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
+            .conditionProvider(EMP_CONDITION_1_ID, (attributes, values) -> "1 = 2")
+            .conditionProvider(EMP_CONDITION_2_ID, (attributes, values) -> "1 = 1")
+            .conditionProvider(EMP_CONDITION_3_ID, (attributes, values) -> " ename = 'CLARK'")
             .caption("Employee")
             .colorProvider((entity, property) -> {
               if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
-                return Color.CYAN;
+                return CYAN;
               }
 
               return null;

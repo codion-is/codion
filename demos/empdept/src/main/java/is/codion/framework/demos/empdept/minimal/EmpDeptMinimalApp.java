@@ -29,8 +29,8 @@ import java.time.LocalDate;
 import java.util.Locale;
 
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
-import static java.sql.Types.*;
 import static java.util.Arrays.asList;
 
 /**
@@ -46,23 +46,23 @@ public final class EmpDeptMinimalApp {
     /*
      * We start by defining attributes for the columns in the SCOTT.DEPT table.
      */
-    public static final Attribute<Integer> DEPT_DEPTNO = attribute("deptno", INTEGER);
-    public static final Attribute<String> DEPT_DNAME = attribute("dname", VARCHAR);
-    public static final Attribute<String> DEPT_LOC = attribute("loc", VARCHAR);
+    public static final Attribute<Integer> DEPT_DEPTNO = integerAttribute("deptno");
+    public static final Attribute<String> DEPT_DNAME = stringAttribute("dname");
+    public static final Attribute<String> DEPT_LOC = stringAttribute("loc");
 
     /*
      * And for the columns in the SCOTT.EMP table.
      */
-    public static final Attribute<Integer> EMP_EMPNO = attribute("empno", INTEGER);
-    public static final Attribute<String> EMP_ENAME = attribute("ename", VARCHAR);
-    public static final Attribute<Integer> EMP_DEPTNO = attribute("deptno", INTEGER);
+    public static final Attribute<Integer> EMP_EMPNO = integerAttribute("empno");
+    public static final Attribute<String> EMP_ENAME = stringAttribute("ename");
+    public static final Attribute<Integer> EMP_DEPTNO = integerAttribute("deptno");
     public static final EntityAttribute EMP_DEPT_FK = entityAttribute("dept_fk");
-    public static final Attribute<String> EMP_JOB = attribute("job", VARCHAR);
-    public static final Attribute<Double> EMP_SAL = attribute("sal", DOUBLE);
-    public static final Attribute<Double> EMP_COMM = attribute("comm", DOUBLE);
-    public static final Attribute<Integer> EMP_MGR = attribute("mgr", INTEGER);
+    public static final Attribute<String> EMP_JOB = stringAttribute("job");
+    public static final Attribute<Double> EMP_SAL = doubleAttribute("sal");
+    public static final Attribute<Double> EMP_COMM = doubleAttribute("comm");
+    public static final Attribute<Integer> EMP_MGR = integerAttribute("mgr");
     public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk");
-    public static final Attribute<LocalDate> EMP_HIREDATE = attribute("hiredate", DATE);
+    public static final Attribute<LocalDate> EMP_HIREDATE = localDateAttribute("hiredate");
 
     public EmpDept() {
       /*

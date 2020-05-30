@@ -28,12 +28,11 @@ import java.util.List;
 
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
 import static is.codion.swing.common.ui.Windows.getScreenSizeRatio;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static java.sql.Types.INTEGER;
-import static java.sql.Types.VARCHAR;
 import static java.util.Collections.singletonList;
 
 /**
@@ -45,14 +44,14 @@ public final class ClientTutorial {
   public static final class Chinook extends Domain {
 
     public static final String T_ARTIST = "chinook.artist";
-    public static final Attribute<Integer> ARTIST_ID = attribute("artistid", INTEGER);
-    public static final Attribute<String> ARTIST_NAME = attribute("name", VARCHAR);
-    public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = attribute("nr_of_albums", INTEGER);
+    public static final Attribute<Integer> ARTIST_ID = integerAttribute("artistid");
+    public static final Attribute<String> ARTIST_NAME = stringAttribute("name");
+    public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = integerAttribute("nr_of_albums");
 
     public static final String T_ALBUM = "chinook.album";
-    public static final Attribute<Integer> ALBUM_ALBUMID = attribute("albumid", INTEGER);
-    public static final Attribute<String> ALBUM_TITLE = attribute("title", VARCHAR);
-    public static final Attribute<Integer> ALBUM_ARTISTID = attribute("artistid", INTEGER);
+    public static final Attribute<Integer> ALBUM_ALBUMID = integerAttribute("albumid");
+    public static final Attribute<String> ALBUM_TITLE = stringAttribute("title");
+    public static final Attribute<Integer> ALBUM_ARTISTID = integerAttribute("artistid");
     public static final EntityAttribute ALBUM_ARTIST_FK = entityAttribute("artist_fk");
 
     public Chinook() {

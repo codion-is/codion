@@ -18,15 +18,16 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.property.Attribute;
 
-import java.sql.Types;
-
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.db.Operator.LIKE;
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.framework.db.condition.Conditions.*;
 import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
-import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.framework.domain.property.Attributes.integerAttribute;
+import static is.codion.framework.domain.property.Attributes.stringAttribute;
+import static is.codion.framework.domain.property.Properties.columnProperty;
+import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 import static java.lang.String.valueOf;
 
 /**
@@ -118,9 +119,9 @@ public final class ChinookLoginProxy implements LoginProxy {
   private static final class Authentication extends Domain {
 
     private static final String T_USER = "chinook.user";
-    private static final Attribute<Integer> USER_USERID = attribute("userid", Types.INTEGER);
-    private static final Attribute<String> USER_USERNAME = attribute("username", Types.VARCHAR);
-    private static final Attribute<Integer> USER_PASSWORD_HASH = attribute("passwordhash", Types.INTEGER);
+    private static final Attribute<Integer> USER_USERID = integerAttribute("userid");
+    private static final Attribute<String> USER_USERNAME = stringAttribute("username");
+    private static final Attribute<Integer> USER_PASSWORD_HASH = integerAttribute("passwordhash");
 
     private Authentication() {
       define(T_USER,

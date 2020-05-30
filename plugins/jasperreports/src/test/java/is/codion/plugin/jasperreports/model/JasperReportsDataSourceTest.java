@@ -12,10 +12,9 @@ import net.sf.jasperreports.engine.JRPropertiesMap;
 import net.sf.jasperreports.engine.JRPropertyExpression;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Types;
 import java.util.List;
 
-import static is.codion.framework.domain.property.Properties.attribute;
+import static is.codion.framework.domain.property.Attributes.attribute;
 import static java.util.Collections.singletonList;
 
 public class JasperReportsDataSourceTest {
@@ -30,7 +29,7 @@ public class JasperReportsDataSourceTest {
     department.put(TestDomain.DEPARTMENT_LOCATION, "none");
     final List<Entity> entities = singletonList(department);
     final JasperReportsDataSource<Entity> source =
-            new JasperReportsDataSource<>(entities.iterator(), (entity, field) -> entity.get(attribute(field.getName(), Types.OTHER)));
+            new JasperReportsDataSource<>(entities.iterator(), (entity, field) -> entity.get(attribute(field.getName(), Object.class)));
     while (source.next()) {
       final JRField field = new TestField(TestDomain.DEPARTMENT_NAME.getName());
       source.getFieldValue(field);

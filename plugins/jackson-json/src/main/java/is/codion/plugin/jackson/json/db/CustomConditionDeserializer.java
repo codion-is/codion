@@ -8,7 +8,7 @@ import is.codion.framework.db.condition.CustomCondition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Attribute;
-import is.codion.framework.domain.property.Properties;
+import is.codion.framework.domain.property.Attributes;
 import is.codion.framework.domain.property.Property;
 import is.codion.plugin.jackson.json.domain.EntityDeserializer;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +36,7 @@ final class CustomConditionDeserializer implements Serializable {
     final String conditionId = conditionNode.get("conditionId").asText();
     final JsonNode attributesNode = conditionNode.get("attributes");
     final List<String> attributeNames = Arrays.asList(entityObjectMapper.readValue(attributesNode.toString(), String[].class));
-    final List<Attribute<?>> attributes = attributeNames.stream().map(name -> Properties.attribute(name, Types.OTHER)).collect(Collectors.toList());
+    final List<Attribute<?>> attributes = attributeNames.stream().map(name -> Attributes.attribute(name, Object.class)).collect(Collectors.toList());
     final JsonNode valuesNode = conditionNode.get("values");
     final List values = new ArrayList();
     int attributeIndex = 0;
