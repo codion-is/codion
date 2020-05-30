@@ -51,11 +51,11 @@ public final class EmpDept extends Domain {
   public static final Attribute<BigDecimal> EMPLOYEE_SALARY = bigDecimalAttribute("sal");
   public static final Attribute<Double> EMPLOYEE_COMMISSION = doubleAttribute("comm");
   public static final Attribute<Integer> EMPLOYEE_DEPARTMENT = integerAttribute("deptno");
-  /**Foreign key (reference) identifier for the DEPT column in the table scott.emp*/
+  /**Foreign key (reference) attribute for the DEPT column in the table scott.emp*/
   public static final EntityAttribute EMPLOYEE_DEPARTMENT_FK = entityAttribute("dept_fk");
-  /**Foreign key (reference) identifier for the MGR column in the table scott.emp*/
+  /**Foreign key (reference) attribute for the MGR column in the table scott.emp*/
   public static final EntityAttribute EMPLOYEE_MGR_FK = entityAttribute("mgr_fk");
-  /**Property identifier for the denormalized department location property*/
+  /**Attribute for the denormalized department location property*/
   public static final Attribute<String> EMPLOYEE_DEPARTMENT_LOCATION = stringAttribute("location");
 
   public static final JasperReportWrapper EMPLOYEE_REPORT =
