@@ -94,7 +94,7 @@ public interface Chinook {
   Attribute<Integer> TRACK_BYTES = integerAttribute("bytes");
   Attribute<BigDecimal> TRACK_UNITPRICE = bigDecimalAttribute("unitprice");
 
-  DerivedProperty.Provider TRACK_MIN_SEC_PROVIDER =
+  DerivedProperty.Provider<String> TRACK_MIN_SEC_PROVIDER =
           linkedValues -> {
             final Integer milliseconds = (Integer) linkedValues.get(TRACK_MILLISECONDS);
             if (milliseconds == null || milliseconds <= 0) {
@@ -125,9 +125,9 @@ public interface Chinook {
   EntityAttribute INVOICELINE_TRACK_FK = entityAttribute("track_fk");
   Attribute<BigDecimal> INVOICELINE_UNITPRICE = bigDecimalAttribute("unitprice");
   Attribute<Integer> INVOICELINE_QUANTITY = integerAttribute("quantity");
-  Attribute<Double> INVOICELINE_TOTAL = doubleAttribute("total");
+  Attribute<BigDecimal> INVOICELINE_TOTAL = bigDecimalAttribute("total");
 
-  DerivedProperty.Provider INVOICELINE_TOTAL_PROVIDER =
+  DerivedProperty.Provider<BigDecimal> INVOICELINE_TOTAL_PROVIDER =
           linkedValues -> {
             final Integer quantity = (Integer) linkedValues.get(INVOICELINE_QUANTITY);
             final BigDecimal unitPrice = (BigDecimal) linkedValues.get(INVOICELINE_UNITPRICE);

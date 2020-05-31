@@ -357,7 +357,7 @@ public final class World extends Domain {
       super.validate(city, cityDefinition);
       //after a call to super.validate() property values that are not nullable
       //(such as country and population) are guaranteed to be non-null
-      Entity country = city.getForeignKey(CITY_COUNTRY_FK);
+      Entity country = city.get(CITY_COUNTRY_FK);
       Integer cityPopulation = city.get(CITY_POPULATION);
       Integer countryPopulation = country.get(COUNTRY_POPULATION);
       if (countryPopulation != null && cityPopulation > countryPopulation) {

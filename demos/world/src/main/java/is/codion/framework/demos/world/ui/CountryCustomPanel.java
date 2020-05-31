@@ -26,7 +26,7 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class CountryCustomPanel extends EntityPanel {
 
-  public CountryCustomPanel(final CountryCustomModel entityModel) {
+  public CountryCustomPanel(CountryCustomModel entityModel) {
     super(entityModel,
             new CountryEditPanel((CountryEditModel) entityModel.getEditModel()),
             new CountryTablePanel((CountryTableModel) entityModel.getTableModel()));
