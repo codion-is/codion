@@ -6157,3 +6157,4 @@
   EntityService and HttpEntityConnection now serializes Attributes instead of creating new instances
   DefaultEntityKey.toString() bug fixed, used Attribute.toString() instead of Attribute.getName()
   Jackson and JSON plugins updated according to the above
+  DefaultEntityKey.values, key now Attribute instead of Property, Entity.Key.get(Property) removed

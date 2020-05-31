@@ -46,7 +46,7 @@ public final class Conditions {
   }
 
   /**
-   * Creates a {@link EntityCondition} instance specifying the entities of the type identified by {@code key},
+   * Creates a {@link EntityCondition} instance specifying the entities of the type identified by {@code entityId},
    * using the given {@link Condition}
    * @param entityId the entityId
    * @param condition the column condition
@@ -230,7 +230,7 @@ public final class Conditions {
    * @throws NullPointerException in case any of the parameters are null
    * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
    */
-  public static CustomCondition customCondition(final String conditionId, final List<Attribute<?>> attributes, final List values) {
+  public static CustomCondition customCondition(final String conditionId, final List<Attribute<?>> attributes, final List<Object> values) {
     return new DefaultCustomCondition(conditionId, attributes, values);
   }
 
@@ -324,7 +324,7 @@ public final class Conditions {
     final Condition.Combination conditionCombination = combination(AND);
     for (int i = 0; i < properties.size(); i++) {
       conditionCombination.add(propertyCondition(properties.get(i).getAttribute(), operator,
-              entityKey == null ? null : entityKey.get(entityKey.getProperties().get(i))));
+              entityKey == null ? null : entityKey.get(entityKey.getProperties().get(i).getAttribute())));
     }
 
     return conditionCombination;
@@ -339,7 +339,7 @@ public final class Conditions {
   }
 
   private static Condition foreignKeyCondition(final ForeignKeyProperty foreignKeyProperty,
-                                               final Operator operator, final Collection values) {
+                                               final Operator operator, final Collection<Object> values) {
     final List<Entity.Key> keys = getKeys(values);
     if (foreignKeyProperty.isCompositeKey()) {
       return compositeKeyCondition(keys, foreignKeyProperty.getColumnProperties(), operator);
@@ -359,11 +359,11 @@ public final class Conditions {
   private static List<Entity.Key> getKeys(final Object value) {
     final List<Entity.Key> keys = new ArrayList<>();
     if (value instanceof Collection) {
-      if (((Collection) value).isEmpty()) {
+      if (((Collection<Object>) value).isEmpty()) {
         keys.add(null);
       }
       else {
-        for (final Object object : (Collection) value) {
+        for (final Object object : (Collection<Object>) value) {
           keys.add(getKey(object));
         }
       }

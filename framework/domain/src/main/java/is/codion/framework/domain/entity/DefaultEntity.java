@@ -601,7 +601,7 @@ final class DefaultEntity implements Entity {
                 referencedKey.getProperties().get(foreignKeyProperty.getColumnProperties().indexOf(columnProperty));
         //if the value isn't equal to the value in the foreign key,
         //that foreign key reference is invalid and is removed
-        if (!Objects.equals(value, referencedKey.get(keyProperty))) {
+        if (!Objects.equals(value, referencedKey.get(keyProperty.getAttribute()))) {
           remove(foreignKeyProperty);
           removeCachedReferencedKey(foreignKeyProperty.getAttribute());
         }
@@ -683,7 +683,7 @@ final class DefaultEntity implements Entity {
     }
     final List<ColumnProperty<?>> foreignProperties = foreignEntityDefinition.getPrimaryKeyProperties();
     final List<ColumnProperty<?>> columnProperties = foreignKeyProperty.getColumnProperties();
-    final Map<ColumnProperty<?>, Object> keyValues = new HashMap<>(columnProperties.size());
+    final Map<Attribute<?>, Object> keyValues = new HashMap<>(columnProperties.size());
     for (int i = 0; i < columnProperties.size(); i++) {
       ColumnProperty<?> columnProperty = columnProperties.get(i);
       if (columnProperty instanceof MirrorProperty) {
@@ -694,7 +694,7 @@ final class DefaultEntity implements Entity {
       if (value == null && !foreignColumnProperty.isNullable()) {
         return null;
       }
-      keyValues.put(foreignColumnProperty, value);
+      keyValues.put(foreignColumnProperty.getAttribute(), value);
     }
 
     return cacheReferencedKey(foreignKeyProperty.getAttribute(), new DefaultEntityKey(foreignEntityDefinition, keyValues));
@@ -748,10 +748,10 @@ final class DefaultEntity implements Entity {
     }
     final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     if (primaryKeyProperties.size() > 1) {
-      final Map<ColumnProperty<?>, Object> keyValues = new HashMap<>(primaryKeyProperties.size());
+      final Map<Attribute<?>, Object> keyValues = new HashMap<>(primaryKeyProperties.size());
       for (int i = 0; i < primaryKeyProperties.size(); i++) {
         final ColumnProperty<?> property = primaryKeyProperties.get(i);
-        keyValues.put(property, originalValues ? getOriginal(property) : values.get(property));
+        keyValues.put(property.getAttribute(), originalValues ? getOriginal(property) : values.get(property));
       }
 
       return new DefaultEntityKey(definition, keyValues);
@@ -907,7 +907,7 @@ final class DefaultEntity implements Entity {
     final Map<Property<?>, Object> values = new HashMap<>(properties.size());
     for (int i = 0; i < properties.size(); i++) {
       final ColumnProperty<?> property = properties.get(i);
-      values.put(property, key.get(property));
+      values.put(property, key.get(property.getAttribute()));
     }
 
     return values;

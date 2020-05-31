@@ -9,6 +9,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
+import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -175,28 +176,28 @@ public final class EntityJSONParser {
   /**
    * Serializes the given property value
    * @param value the value
-   * @param property the property
+   * @param attribute the attribute
    * @return the value as a string
    */
-  public Object serializeValue(final Object value, final Property<?> property) {
+  public Object serializeValue(final Object value, final Attribute<?> attribute) {
     if (value == null) {
       return JSONObject.NULL;
     }
-    if (property instanceof ForeignKeyProperty) {
+    if (attribute instanceof EntityAttribute) {
       return toJSONObject((Entity) value);
     }
-    if (property.getAttribute().isBigDecimal()) {
+    if (attribute.isBigDecimal()) {
       return value.toString();
     }
-    if (property.getAttribute().isTime()) {
+    if (attribute.isTime()) {
       final LocalTime time = (LocalTime) value;
       return jsonTimeFormat.format(time);
     }
-    if (property.getAttribute().isDate()) {
+    if (attribute.isDate()) {
       final LocalDate date = (LocalDate) value;
       return jsonDateFormat.format(date);
     }
-    if (property.getAttribute().isTimestamp()) {
+    if (attribute.isTimestamp()) {
       final LocalDateTime dateTime = (LocalDateTime) value;
       return jsonTimestampFormat.format(dateTime);
     }
@@ -343,7 +344,7 @@ public final class EntityJSONParser {
     final JSONObject propertyValues = new JSONObject();
     for (final Property<?> property : entity.keySet()) {
       if (include(property, entity)) {
-        propertyValues.put(property.getAttribute().getName(), serializeValue(entity.get(property), property));
+        propertyValues.put(property.getAttribute().getName(), serializeValue(entity.get(property), property.getAttribute()));
       }
     }
 
@@ -353,7 +354,7 @@ public final class EntityJSONParser {
   private JSONObject serializeValues(final Entity.Key key) {
     final JSONObject propertyValues = new JSONObject();
     for (final ColumnProperty<?> property : entities.getDefinition(key.getEntityId()).getPrimaryKeyProperties()) {
-      propertyValues.put(property.getAttribute().getName(), serializeValue(key.get(property), property));
+      propertyValues.put(property.getAttribute().getName(), serializeValue(key.get(property.getAttribute()), property.getAttribute()));
     }
 
     return propertyValues;
@@ -363,8 +364,7 @@ public final class EntityJSONParser {
     final JSONObject originalValues = new JSONObject();
     for (final Property<?> property : entities.getDefinition(entity.getEntityId()).getProperties()) {
       if (entity.isModified(property.getAttribute()) && (!(property instanceof ForeignKeyProperty) || includeForeignKeyValues)) {
-        originalValues.put(property.getAttribute().getName(),
-                serializeValue(entity.getOriginal(property.getAttribute()), property));
+        originalValues.put(property.getAttribute().getName(), serializeValue(entity.getOriginal(property), property.getAttribute()));
       }
     }
 

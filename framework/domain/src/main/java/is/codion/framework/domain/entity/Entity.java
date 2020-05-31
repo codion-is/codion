@@ -421,13 +421,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
     <T> T get(Attribute<T> attribute);
 
     /**
-     * @param property the property
-     * @param <T> the value type
-     * @return the value associated with the given property
-     */
-    <T> T get(ColumnProperty<T> property);
-
-    /**
      * After a call to this method this Key contains the same values as the source key.
      * A null argument to this method clears the destination key of all values.
      * Value change events for affected properties are fired after all values have been set, in no particular order.

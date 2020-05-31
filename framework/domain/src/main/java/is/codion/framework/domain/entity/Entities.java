@@ -303,7 +303,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
     final List<T> list = new ArrayList<>(keys.size());
     for (int i = 0; i < keys.size(); i++) {
       final Entity.Key key = keys.get(i);
-      list.add((T) key.get(key.getFirstProperty()));
+      list.add((T) key.get(key.getFirstProperty().getAttribute()));
     }
 
     return list;

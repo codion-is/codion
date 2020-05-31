@@ -24,7 +24,7 @@ final class DefaultEntityKey implements Entity.Key {
   /**
    * Holds the values contained in this key.
    */
-  private Map<ColumnProperty<?>, Object> values;
+  private Map<Attribute<?>, Object> values;
 
   /**
    * true if this key consists of a single integer value
@@ -81,9 +81,10 @@ final class DefaultEntityKey implements Entity.Key {
   /**
    * Instantiates a new Key for the given entity type
    * @param definition the entity definition
+   * @param values the values associated with their respective attributes
    * @throws IllegalArgumentException in case the entity has no primary key
    */
-  DefaultEntityKey(final EntityDefinition definition, final Map<ColumnProperty<?>, Object> values) {
+  DefaultEntityKey(final EntityDefinition definition, final Map<Attribute<?>, Object> values) {
     this.values = values == null ? new HashMap<>() : new HashMap<>(values);
     final List<ColumnProperty<?>> properties = definition.getPrimaryKeyProperties();
     if (properties.isEmpty()) {
@@ -111,7 +112,7 @@ final class DefaultEntityKey implements Entity.Key {
 
   @Override
   public Object getFirstValue() {
-    return values.get(getFirstProperty());
+    return values.get(getFirstProperty().getAttribute());
   }
 
   @Override
@@ -126,12 +127,7 @@ final class DefaultEntityKey implements Entity.Key {
 
   @Override
   public <T> T get(final Attribute<T> attribute) {
-    return (T) values.get(definition.getPrimaryKeyProperty(attribute));
-  }
-
-  @Override
-  public <T> T get(final ColumnProperty<T> property) {
-    return (T) values.get(property);
+    return (T) values.get(definition.getPrimaryKeyProperty(attribute).getAttribute());
   }
 
   @Override
@@ -139,8 +135,8 @@ final class DefaultEntityKey implements Entity.Key {
     final StringBuilder stringBuilder = new StringBuilder();
     final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
-      final ColumnProperty<?> property = primaryKeyProperties.get(i);
-      stringBuilder.append(property.getAttribute().getName()).append(":").append(values.get(property));
+      final Attribute<Object> attribute = primaryKeyProperties.get(i).getAttribute();
+      stringBuilder.append(attribute.getName()).append(":").append(values.get(attribute));
       if (i < getPropertyCount() - 1) {
         stringBuilder.append(",");
       }
@@ -214,7 +210,7 @@ final class DefaultEntityKey implements Entity.Key {
 
   @Override
   public boolean isNull(final Attribute<?> attribute) {
-    return values.get(definition.getPrimaryKeyProperty(attribute)) == null;
+    return values.get(attribute) == null;
   }
 
   @Override
@@ -226,7 +222,7 @@ final class DefaultEntityKey implements Entity.Key {
   public void setAs(final Entity.Key sourceKey) {
     clear();
     for (final ColumnProperty<?> property : sourceKey.getProperties()) {
-      putInternal((ColumnProperty<Object>) property, sourceKey.get(property));
+      putInternal((ColumnProperty<Object>) property, sourceKey.get(property.getAttribute()));
     }
   }
 
@@ -243,7 +239,7 @@ final class DefaultEntityKey implements Entity.Key {
 
   private Object putInternal(final ColumnProperty<Object> property, final Object value) {
     final Object newValue = property.prepareValue((Object) property.getAttribute().validateType(value));
-    values.put(property, newValue);
+    values.put(property.getAttribute(), newValue);
     if (singleIntegerKey) {
       setHashCode((Integer) value);
     }
@@ -285,7 +281,7 @@ final class DefaultEntityKey implements Entity.Key {
     final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
       final ColumnProperty<?> property = primaryKeyProperties.get(i);
-      final Object value = values.get(property);
+      final Object value = values.get(property.getAttribute());
       if (!property.isNullable() && value == null) {
         return null;
       }
@@ -322,7 +318,7 @@ final class DefaultEntityKey implements Entity.Key {
     stream.writeObject(definition.getEntityId());
     final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
-      stream.writeObject(values.get(primaryKeyProperties.get(i)));
+      stream.writeObject(values.get(primaryKeyProperties.get(i).getAttribute()));
     }
   }
 
@@ -339,12 +335,12 @@ final class DefaultEntityKey implements Entity.Key {
     singleIntegerKey = !compositeKey && properties.get(0).getAttribute().isInteger();
     hashCodeDirty = true;
     for (int i = 0; i < properties.size(); i++) {
-      final ColumnProperty<Object> property = (ColumnProperty<Object>) properties.get(i);
-      values.put(property, property.getAttribute().validateType(stream.readObject()));
+      final Attribute<Object> attribute = ((ColumnProperty<Object>) properties.get(i)).getAttribute();
+      values.put(attribute, attribute.validateType(stream.readObject()));
     }
   }
 
-  private static Map<ColumnProperty<?>, Object> createSingleValueMap(final EntityDefinition definition, final Object value) {
+  private static Map<Attribute<?>, Object> createSingleValueMap(final EntityDefinition definition, final Object value) {
     final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     if (primaryKeyProperties.isEmpty()) {
       throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
@@ -353,9 +349,10 @@ final class DefaultEntityKey implements Entity.Key {
       throw new IllegalArgumentException(definition.getEntityId() + " has a composite primary key");
     }
     final ColumnProperty<Object> keyProperty = (ColumnProperty<Object>) primaryKeyProperties.get(0);
-    final Map<ColumnProperty<?>, Object> values = new HashMap<>(1);
-    values.put(keyProperty, keyProperty.getAttribute().validateType(value));
+    final Map<Attribute<?>, Object> valueMap = new HashMap<>(1);
+    final Attribute<Object> attribute = keyProperty.getAttribute();
+    valueMap.put(attribute, attribute.validateType(value));
 
-    return values;
+    return valueMap;
   }
 }
