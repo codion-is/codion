@@ -328,8 +328,7 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(attribute);
     Objects.requireNonNull(condition);
     try {
-      return onResponse(execute(createHttpPost(createURIBuilder("values")
-              .addParameter("attribute", attribute.getName()), condition)));
+      return onResponse(execute(createHttpPost(createURIBuilder("values"), asList(attribute, condition))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -457,7 +456,7 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     Objects.requireNonNull(blobData, "blobData");
     try {
-      onResponse(execute(createHttpPost("writeBlob", asList(primaryKey, blobAttribute.getName(), blobData))));
+      onResponse(execute(createHttpPost("writeBlob", asList(primaryKey, blobAttribute, blobData))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -473,7 +472,7 @@ final class HttpEntityConnection implements EntityConnection {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     try {
-      return onResponse(execute(createHttpPost("readBlob", asList(primaryKey, blobAttribute.getName()))));
+      return onResponse(execute(createHttpPost("readBlob", asList(primaryKey, blobAttribute))));
     }
     catch (final DatabaseException e) {
       throw e;

@@ -27,6 +27,21 @@ public final class Attributes {
   }
 
   /**
+   * Creates a new {@link Attribute} associated with the given entityId.
+   * Use this when you don't have access to an actual Attribute instance, only its name
+   * and entityId, but need to access the value associated with it.
+   * @param name the attribute name
+   * @param entityId the id of the entity to associate this attribute with
+   * @return a new {@link Attribute}
+   */
+  public static Attribute<Object> attribute(final String name, final String entityId) {
+    final DefaultAttribute<Object> attribute = new DefaultAttribute<>(name, Object.class);
+    attribute.setEntityId(entityId);
+
+    return attribute;
+  }
+
+  /**
    * Creates a new Long based attribute.
    * @param name the attribute name.
    * @return a new Long based attribute.

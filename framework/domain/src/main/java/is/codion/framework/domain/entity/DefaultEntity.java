@@ -425,7 +425,7 @@ final class DefaultEntity implements Entity {
   @Override
   public Key getReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    if (!Objects.equals(getEntityId(), foreignKeyProperty.getEntityId())) {
+    if (!Objects.equals(getEntityId(), foreignKeyProperty.getAttribute().getEntityId())) {
       throw new IllegalArgumentException("Foreign key property " + foreignKeyProperty
               + " is not part of entity: " + getEntityId());
     }
@@ -506,7 +506,7 @@ final class DefaultEntity implements Entity {
     toString = null;
   }
 
-  private Object putInternal(final Property<Object> property, final Object value) {
+  private Object putInternal(final Property<?> property, final Object value) {
     requireNonNull(property, PROPERTY);
     final Object newValue = validateAndPrepareForPut(property, value);
     final boolean initialization = !values.containsKey(property);
@@ -523,15 +523,27 @@ final class DefaultEntity implements Entity {
     return previousValue;
   }
 
-  private Object validateAndPrepareForPut(final Property<Object> property, final Object value) {
+  private Object validateAndPrepareForPut(final Property property, final Object value) {
     if (property instanceof DerivedProperty) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
     if (property instanceof ValueListProperty && value != null && !((ValueListProperty<Object>) property).isValid(value)) {
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getAttribute());
     }
+    if (value != null && property instanceof ForeignKeyProperty) {
+      validateForeignKeyValue((ForeignKeyProperty) property, (Entity) value);
+    }
 
-    return property.prepareValue(property.validateType(value));
+    return property.prepareValue(property.getAttribute().validateType(value));
+  }
+
+  private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity value) {
+    final Entity entity = value;
+    final String foreignEntityId = property.getForeignEntityId();
+    if (!Objects.equals(foreignEntityId, entity.getEntityId())) {
+      throw new IllegalArgumentException("Entity of type " + foreignEntityId +
+              " expected for property " + this + ", got: " + entity.getEntityId());
+    }
   }
 
   private void onValuePut(final Property<?> property, final Object value) {
@@ -863,9 +875,9 @@ final class DefaultEntity implements Entity {
       if (!(property instanceof DerivedProperty)) {
         final boolean containsValue = stream.readBoolean();
         if (containsValue) {
-          values.put(property, property.validateType(stream.readObject()));
+          values.put(property, property.getAttribute().validateType(stream.readObject()));
           if (isModified && stream.readBoolean()) {
-            setOriginalValue(property, property.validateType(stream.readObject()));
+            setOriginalValue(property, property.getAttribute().validateType(stream.readObject()));
           }
         }
       }
@@ -879,10 +891,10 @@ final class DefaultEntity implements Entity {
       final Set<Property<?>> propertySet = definition.getPropertySet();
       for (final Map.Entry<Property<?>, Object> valueEntry : propertyValues.entrySet()) {
         final Property<Object> property = (Property<Object>) valueEntry.getKey();
-        if (!property.getEntityId().equals(definition.getEntityId()) || !propertySet.contains(property)) {
+        if (!property.getAttribute().getEntityId().equals(definition.getEntityId()) || !propertySet.contains(property)) {
           throw new IllegalArgumentException("Property " + property + " is not part of entity: " + definition.getEntityId());
         }
-        property.validateType(valueEntry.getValue());
+        property.getAttribute().validateType(valueEntry.getValue());
       }
     }
 

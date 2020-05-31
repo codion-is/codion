@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.property;
 
-import is.codion.common.Util;
 import is.codion.framework.domain.entity.Entity;
 
 import java.math.BigDecimal;
@@ -11,7 +10,9 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 class DefaultAttribute<T> implements Attribute<T> {
@@ -22,13 +23,17 @@ class DefaultAttribute<T> implements Attribute<T> {
   private final int type;
   private final Class<T> typeClass;
 
+  /**
+   * The id of the entity this attribute is associated with
+   */
+  private String entityId;
+
   DefaultAttribute(final String name, final Class<T> typeClass) {
-    if (Util.nullOrEmpty(name)) {
+    if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
     }
-    requireNonNull(typeClass, "typeClass");
     this.name = name;
-    this.type = getSqlType(typeClass);
+    this.type = getSqlType(requireNonNull(typeClass, "typeClass"));
     this.typeClass = typeClass;
   }
 
@@ -45,6 +50,25 @@ class DefaultAttribute<T> implements Attribute<T> {
   @Override
   public final Class<T> getTypeClass() {
     return typeClass;
+  }
+
+  @Override
+  public final String getEntityId() {
+    if (entityId == null) {
+      throw new IllegalStateException("entityId has not been set for attribute: " + name);
+    }
+
+    return entityId;
+  }
+
+  @Override
+  public final T validateType(final T value) {
+    if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
+      throw new IllegalArgumentException("Value of type " + typeClass +
+              " expected for property " + this + " in entity " + entityId + ", got: " + value.getClass());
+    }
+
+    return value;
   }
 
   @Override
@@ -123,64 +147,73 @@ class DefaultAttribute<T> implements Attribute<T> {
   }
 
   @Override
-  public final boolean equals(final Object object) {
+  public boolean equals(final Object object) {
     if (this == object) {
       return true;
     }
     if (!(object instanceof DefaultAttribute)) {
       return false;
     }
-
     final DefaultAttribute<?> that = (DefaultAttribute<?>) object;
 
-    return name.equals(that.name);
+    return name.equals(that.name) && Objects.equals(entityId, that.entityId);
   }
 
   @Override
-  public final int hashCode() {
-    return name.hashCode();
+  public int hashCode() {
+    return Objects.hash(name, entityId);
   }
 
   @Override
   public final String toString() {
-    return name;
+    return "entityId: " + entityId + ", name: " + name;
   }
 
-  private int getSqlType(final Class<T> typeClass) {
-    if (typeClass.equals(Long.class)) {
+  final void setEntityId(final String entityId) {
+    if (nullOrEmpty(entityId)) {
+      throw new IllegalArgumentException("entityId must be a non-empty string");
+    }
+    if (this.entityId != null && !Objects.equals(this.entityId, entityId)) {
+      throw new IllegalStateException("entityId has already been set as: " + this.entityId + " for attribute: " + name);
+    }
+    this.entityId = entityId;
+  }
+
+  private static int getSqlType(final Class<?> clazz) {
+    if (clazz.equals(Long.class)) {
       return Types.BIGINT;
     }
-    if (typeClass.equals(Integer.class)) {
+    if (clazz.equals(Integer.class)) {
       return Types.INTEGER;
     }
-    if (typeClass.equals(Double.class)) {
+    if (clazz.equals(Double.class)) {
       return Types.DOUBLE;
     }
-    if (typeClass.equals(BigDecimal.class)) {
+    if (clazz.equals(BigDecimal.class)) {
       return Types.DECIMAL;
     }
-    if (typeClass.equals(LocalDate.class)) {
+    if (clazz.equals(LocalDate.class)) {
       return Types.DATE;
     }
-    if (typeClass.equals(LocalTime.class)) {
+    if (clazz.equals(LocalTime.class)) {
       return Types.TIME;
     }
-    if (typeClass.equals(LocalDateTime.class)) {
+    if (clazz.equals(LocalDateTime.class)) {
       return Types.TIMESTAMP;
     }
-    if (typeClass.equals(String.class)) {
+    if (clazz.equals(String.class)) {
       return Types.VARCHAR;
     }
-    if (typeClass.equals(Boolean.class)) {
+    if (clazz.equals(Boolean.class)) {
       return Types.BOOLEAN;
     }
-    if (typeClass.equals(byte[].class)) {
+    if (clazz.equals(byte[].class)) {
       return Types.BLOB;
     }
-    if (typeClass.equals(Entity.class)) {
+    if (clazz.equals(Entity.class)) {
       return Types.JAVA_OBJECT;
     }
-    if (Object.class.isAssignableFrom(typeClass)) {
+    if (Object.class.isAssignableFrom(clazz)) {
       return Types.JAVA_OBJECT;
     }
 

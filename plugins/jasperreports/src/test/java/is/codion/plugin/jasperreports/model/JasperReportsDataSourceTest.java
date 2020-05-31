@@ -29,7 +29,8 @@ public class JasperReportsDataSourceTest {
     department.put(TestDomain.DEPARTMENT_LOCATION, "none");
     final List<Entity> entities = singletonList(department);
     final JasperReportsDataSource<Entity> source =
-            new JasperReportsDataSource<>(entities.iterator(), (entity, field) -> entity.get(attribute(field.getName(), Object.class)));
+            new JasperReportsDataSource<>(entities.iterator(), (entity, field) ->
+                    entity.get(attribute(field.getName(), entity.getEntityId())));
     while (source.next()) {
       final JRField field = new TestField(TestDomain.DEPARTMENT_NAME.getName());
       source.getFieldValue(field);

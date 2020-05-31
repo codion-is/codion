@@ -319,7 +319,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
   private static void validateLookupProperties(final String entityId, final Collection<ColumnProperty<?>> lookupProperties) {
     for (final ColumnProperty<?> property : lookupProperties) {
-      if (!entityId.equals(property.getEntityId())) {
+      if (!entityId.equals(property.getAttribute().getEntityId())) {
         throw new IllegalArgumentException("Property '" + property + "' is not part of entity " + entityId);
       }
       if (!property.getAttribute().isString()) {

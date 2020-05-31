@@ -692,8 +692,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private void validateAndAddProperty(final Property.Builder<?> propertyBuilder, final Map<Attribute<?>, Property<?>> propertyMap) {
       final Property<?> property = propertyBuilder.get();
-      checkIfUniqueAttribute(property, propertyMap);
       propertyBuilder.entityId(entityId);
+      checkIfUniqueAttribute(property, propertyMap);
       propertyMap.put(property.getAttribute(), property);
     }
 

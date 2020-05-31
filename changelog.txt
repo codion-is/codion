@@ -6152,3 +6152,8 @@
   EntityConnection.select() overloaded with Collection of values
   Condition.getValues() no longer returns a raw type
   Some type safety improvements
+  entityId moved from Property to Attribute, along with validateType(), ForeignKeyProperty.validateType() functionality moved to DefaultEntity.putInternal()
+  Property.getEntityId() removed
+  EntityService and HttpEntityConnection now serializes Attributes instead of creating new instances
+  DefaultEntityKey.toString() bug fixed, used Attribute.toString() instead of Attribute.getName()
+  Jackson and JSON plugins updated according to the above

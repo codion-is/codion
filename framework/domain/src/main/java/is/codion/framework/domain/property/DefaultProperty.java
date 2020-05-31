@@ -14,7 +14,6 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -28,11 +27,6 @@ abstract class DefaultProperty<T> implements Property<T> {
   private static final long serialVersionUID = 1;
 
   private static final Supplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
-
-  /**
-   * The id of the entity this property is associated with
-   */
-  private String entityId;
 
   /**
    * The attribute this property is based on, should be unique within an Entity.
@@ -150,11 +144,6 @@ abstract class DefaultProperty<T> implements Property<T> {
   }
 
   @Override
-  public final String getEntityId() {
-    return entityId;
-  }
-
-  @Override
   public final int getType() {
     return attribute.getType();
   }
@@ -262,22 +251,12 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
     final DefaultProperty<?> that = (DefaultProperty<?>) obj;
 
-    return Objects.equals(entityId, that.entityId) && attribute.equals(that.attribute);
+    return attribute.equals(that.attribute);
   }
 
   @Override
   public final int hashCode() {
-    return attribute.hashCode() + 31 * (entityId == null ? 0 : entityId.hashCode());
-  }
-
-  @Override
-  public T validateType(final T value) {
-    if (value != null && attribute.getTypeClass() != value.getClass() && !attribute.getTypeClass().isAssignableFrom(value.getClass())) {
-      throw new IllegalArgumentException("Value of type " + attribute.getTypeClass() +
-              " expected for property " + this + " in entity " + entityId + ", got: " + value.getClass());
-    }
-
-    return value;
+    return attribute.hashCode();
   }
 
   @Override
@@ -381,11 +360,7 @@ abstract class DefaultProperty<T> implements Property<T> {
 
     @Override
     public Property.Builder<T> entityId(final String entityId) {
-      if (property.entityId != null) {
-        throw new IllegalStateException("entityId (" + property.entityId +
-                ") has already been set for property: " + property.attribute);
-      }
-      property.entityId = entityId;
+      ((DefaultAttribute<T>) property.attribute).setEntityId(entityId);
       return this;
     }
 
@@ -409,7 +384,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     @Override
     public Property.Builder<T> defaultValueSupplier(final Supplier<T> supplier) {
       if (supplier != null) {
-        property.validateType(supplier.get());
+        property.attribute.validateType(supplier.get());
       }
       property.defaultValueSupplier = supplier == null ? (Supplier<T>) DEFAULT_VALUE_SUPPLIER : supplier;
       return this;

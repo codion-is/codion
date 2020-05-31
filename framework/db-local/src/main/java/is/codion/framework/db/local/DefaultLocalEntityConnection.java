@@ -351,7 +351,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             throw new IllegalArgumentException("Property is not updatable: " + columnProperty.getAttribute());
           }
           statementProperties.add(columnProperty);
-          statementValues.add(columnProperty.validateType(propertyValue.getValue()));
+          statementValues.add(columnProperty.getAttribute().validateType(propertyValue.getValue()));
         }
         final WhereCondition whereCondition = whereCondition(updateCondition, entityDefinition);
         updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, whereCondition.getWhereClause());
@@ -611,10 +611,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entities.iterator().next().getEntityId());
     for (final ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
-        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getEntityId(),
+        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getAttribute().getEntityId(),
                 foreignKeyReference.getAttribute(), LIKE, entities));
         if (!dependencies.isEmpty()) {
-          dependencyMap.put(foreignKeyReference.getEntityId(), dependencies);
+          dependencyMap.put(foreignKeyReference.getAttribute().getEntityId(), dependencies);
         }
       }
     }

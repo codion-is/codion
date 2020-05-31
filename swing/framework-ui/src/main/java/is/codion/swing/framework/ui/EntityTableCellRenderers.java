@@ -66,8 +66,8 @@ public final class EntityTableCellRenderers {
    * @see ColorProvider
    * @see EntityDefinition.Builder#colorProvider(ColorProvider)
    */
-  public static EntityTableCellRenderer createTableCellRenderer(final SwingEntityTableModel tableModel, final Property property) {
-    if (!Objects.equals(tableModel.getEntityId(), property.getEntityId())) {
+  public static EntityTableCellRenderer createTableCellRenderer(final SwingEntityTableModel tableModel, final Property<?> property) {
+    if (!Objects.equals(tableModel.getEntityId(), property.getAttribute().getEntityId())) {
       throw new IllegalArgumentException("Property " + property + " not found in entity : " + tableModel.getEntityId());
     }
     if (property.getAttribute().isBoolean()) {

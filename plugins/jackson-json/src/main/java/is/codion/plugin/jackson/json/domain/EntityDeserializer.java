@@ -91,34 +91,29 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
 
   private Map<Property<?>, Object> getValueMap(final JsonNode node, final EntityDefinition definition)
           throws JsonProcessingException {
-    final JsonNode values = node.get("values");
-    final Map<Property<?>, Object> valueMap = new HashMap<>();
-    final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
-    while (fields.hasNext()) {
-      final Map.Entry<String, JsonNode> field = fields.next();
-      final Property<?> property = definition.getProperty(attribute(field.getKey(), Object.class));
-      valueMap.put(property, parseValue(property, field.getValue()));
-    }
-
-    return valueMap;
+    return getPropertyValueMap(definition, node.get("values"));
   }
 
   private Map<Property<?>, Object> getOriginalValueMap(final JsonNode node, final EntityDefinition definition)
           throws JsonProcessingException {
     final JsonNode originalValues = node.get("originalValues");
     if (originalValues != null) {
-      final Map<Property<?>, Object> originalValueMap = new HashMap<>();
-      final Iterator<Map.Entry<String, JsonNode>> originalFields = originalValues.fields();
-      while (originalFields.hasNext()) {
-        final Map.Entry<String, JsonNode> field = originalFields.next();
-        final Property<?> property = definition.getProperty(attribute(field.getKey(), Object.class));
-        originalValueMap.put(property, parseValue(property, field.getValue()));
-      }
-
-      return originalValueMap;
+      return getPropertyValueMap(definition, originalValues);
     }
 
     return null;
+  }
+
+  private Map<Property<?>, Object> getPropertyValueMap(final EntityDefinition definition, final JsonNode values) throws JsonProcessingException {
+    final Map<Property<?>, Object> valueMap = new HashMap<>();
+    final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
+    while (fields.hasNext()) {
+      final Map.Entry<String, JsonNode> field = fields.next();
+      final Property<?> property = definition.getProperty(attribute(field.getKey(), definition.getEntityId()));
+      valueMap.put(property, parseValue(property, field.getValue()));
+    }
+
+    return valueMap;
   }
 
   /**

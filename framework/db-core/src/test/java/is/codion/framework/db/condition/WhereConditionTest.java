@@ -250,33 +250,33 @@ public final class WhereConditionTest {
     final ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.getProperty(TestDomain.DEPARTMENT_NAME);
     WhereCondition condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
             propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.LIKE, "upper%")), departmentDefinition);
-    assertEquals(property.getAttribute() + " like ?", condition.getWhereClause());
+    assertEquals(property.getColumnName() + " like ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
             propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.LIKE, "upper")), departmentDefinition);
-    assertEquals(property.getAttribute() + " = ?", condition.getWhereClause());
+    assertEquals(property.getColumnName() + " = ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
             propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.NOT_LIKE, "upper%")), departmentDefinition);
-    assertEquals(property.getAttribute() + " not like ?", condition.getWhereClause());
+    assertEquals(property.getColumnName() + " not like ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
             propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.NOT_LIKE, "upper")), departmentDefinition);
-    assertEquals(property.getAttribute() + " <> ?", condition.getWhereClause());
+    assertEquals(property.getColumnName() + " <> ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
             propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.GREATER_THAN, "upper")), departmentDefinition);
-    assertEquals(property.getAttribute() + " >= ?", condition.getWhereClause());
+    assertEquals(property.getColumnName() + " >= ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
             propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.LESS_THAN, "upper")), departmentDefinition);
-    assertEquals(property.getAttribute() + " <= ?", condition.getWhereClause());
+    assertEquals(property.getColumnName() + " <= ?", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
             propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.WITHIN_RANGE, asList("upper", "lower"))), departmentDefinition);
-    assertEquals("(" + property.getAttribute() + " >= ? and " + property.getAttribute() + " <= ?)", condition.getWhereClause());
+    assertEquals("(" + property.getColumnName() + " >= ? and " + property.getColumnName() + " <= ?)", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
             propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.LIKE, "%upper%")), departmentDefinition);
-    assertEquals(property.getAttribute() + " like ?", condition.getWhereClause());
+    assertEquals(property.getColumnName() + " like ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
             propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.NOT_LIKE, "%upper%")), departmentDefinition);
-    assertEquals(property.getAttribute() + " not like ?", condition.getWhereClause());
+    assertEquals(property.getColumnName() + " not like ?", condition.getWhereClause());
   }
 
   private static void assertKeyCondition(final WhereCondition condition) {

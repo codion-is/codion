@@ -18,6 +18,8 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.BlobAttribute;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static is.codion.framework.domain.property.Attributes.attribute;
-import static is.codion.framework.domain.property.Attributes.blobAttribute;
 
 /**
  * A service for dealing with entities
@@ -220,7 +219,7 @@ public final class EntityService extends Application {
                             @QueryParam("procedureId") final String procedureId) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
-      connection.executeProcedure(procedureId, EntityService.<List>deserialize(request).toArray());
+      connection.executeProcedure(procedureId, EntityService.<List<Object>>deserialize(request).toArray());
 
       return Response.ok().build();
     }
@@ -247,7 +246,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
       return Response.ok(Serializer.serialize(connection.executeFunction(functionId,
-              EntityService.<List>deserialize(request).toArray()))).build();
+              EntityService.<List<Object>>deserialize(request).toArray()))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -268,9 +267,9 @@ public final class EntityService extends Application {
   public Response report(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
+      final List<Object> parameters = deserialize(request);
 
-      final List parameters = deserialize(request);
-      return Response.ok(Serializer.serialize(connection.fillReport((ReportWrapper) parameters.get(0), parameters.get(1)))).build();
+      return Response.ok(Serializer.serialize(connection.fillReport((ReportWrapper<?, ?, Object>) parameters.get(0), parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -333,12 +332,12 @@ public final class EntityService extends Application {
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("values")
-  public Response values(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("attribute") final String attribute) {
+  public Response values(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
+      final List<Object> parameters = deserialize(request);
 
-      return Response.ok(Serializer.serialize(connection.selectValues(attribute(attribute, Object.class), deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.selectValues((Attribute<?>) parameters.get(0), (EntityCondition) parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -515,8 +514,9 @@ public final class EntityService extends Application {
   public Response writeBlob(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
-      final List parameters = deserialize(request);
-      connection.writeBlob((Entity.Key) parameters.get(0), blobAttribute((String) parameters.get(1)), (byte[]) parameters.get(2));
+      final List<Object> parameters = deserialize(request);
+
+      connection.writeBlob((Entity.Key) parameters.get(0), (BlobAttribute) parameters.get(1), (byte[]) parameters.get(2));
 
       return Response.ok().build();
     }
@@ -539,9 +539,9 @@ public final class EntityService extends Application {
   public Response readBlob(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
-      final List parameters = deserialize(request);
+      final List<Object> parameters = deserialize(request);
 
-      return Response.ok(Serializer.serialize(connection.readBlob((Entity.Key) parameters.get(0), blobAttribute((String) parameters.get(1))))).build();
+      return Response.ok(Serializer.serialize(connection.readBlob((Entity.Key) parameters.get(0), (BlobAttribute) parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -567,7 +567,7 @@ public final class EntityService extends Application {
     return server.connect(ConnectionRequest.connectionRequest(user, clientId, clientTypeId, parameters));
   }
 
-  static void setServer(final Server server) {
+  static void setServer(final Server<RemoteEntityConnection, Remote> server) {
     EntityService.server = server;
   }
 

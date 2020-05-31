@@ -73,11 +73,6 @@ public interface Property<T> extends Serializable {
   PropertyValue<String> WILDCARD_CHARACTER = Configuration.stringValue("codion.wildcardCharacter", "%");
 
   /**
-   * @return the id of the entity this property is associated with
-   */
-  String getEntityId();
-
-  /**
    * The {@link Attribute} this property is based on, should be unique within an Entity.
    * By default the {@link Attribute#getName()} serves as column name for database properties.
    * @param <T> the attribute type
@@ -99,13 +94,6 @@ public interface Property<T> extends Serializable {
    * @return the bean property name associated with this property
    */
   String getBeanProperty();
-
-  /**
-   * @param value the value to validate
-   * @return the value
-   * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this property
-   */
-  T validateType(T value);
 
   /**
    * Prepares the value according to the property configuration, such as rounding

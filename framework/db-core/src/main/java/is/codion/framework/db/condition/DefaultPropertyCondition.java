@@ -137,7 +137,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
                                                             final Operator operator, final List<Object> values,
                                                             final boolean isNullCondition, final boolean isCaseSensitive) {
     for (int i = 0; i < values.size(); i++) {
-      property.validateType(values.get(i));
+      property.getAttribute().validateType(values.get(i));
     }
     final String columnIdentifier = initializeColumnIdentifier(property, isNullCondition, isCaseSensitive);
     if (isNullCondition) {

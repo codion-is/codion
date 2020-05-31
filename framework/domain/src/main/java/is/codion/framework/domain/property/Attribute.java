@@ -29,6 +29,18 @@ public interface Attribute<T> extends Serializable {
   Class<T> getTypeClass();
 
   /**
+   * @return the id of the entity this Attribute is associated with
+   */
+  String getEntityId();
+
+  /**
+   * @param value the value to validate
+   * @return the value
+   * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this property
+   */
+  T validateType(T value);
+
+  /**
    * @param type the type to check ({@link java.sql.Types})
    * @return true if the type of this attribute is the one given
    */

@@ -6,7 +6,6 @@ package is.codion.framework.domain.property;
 import is.codion.framework.domain.entity.Entity;
 
 import java.util.List;
-import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Collections.singletonList;
@@ -89,20 +88,6 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   @Override
   public boolean isSoftReference() {
     return softReference;
-  }
-
-  @Override
-  public Entity validateType(final Entity value) {
-    super.validateType(value);
-    if (value != null) {
-      final Entity entity = (Entity) value;
-      if (!Objects.equals(foreignEntityId, entity.getEntityId())) {
-        throw new IllegalArgumentException("Entity of type " + foreignEntityId +
-                " expected for property " + this + ", got: " + entity.getEntityId());
-      }
-    }
-
-    return value;
   }
 
   /**

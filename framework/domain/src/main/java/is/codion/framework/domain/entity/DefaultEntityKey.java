@@ -140,7 +140,7 @@ final class DefaultEntityKey implements Entity.Key {
     final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
       final ColumnProperty<?> property = primaryKeyProperties.get(i);
-      stringBuilder.append(property.getAttribute()).append(":").append(values.get(property));
+      stringBuilder.append(property.getAttribute().getName()).append(":").append(values.get(property));
       if (i < getPropertyCount() - 1) {
         stringBuilder.append(",");
       }
@@ -242,7 +242,7 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   private Object putInternal(final ColumnProperty<Object> property, final Object value) {
-    final Object newValue = property.prepareValue((Object) property.validateType(value));
+    final Object newValue = property.prepareValue((Object) property.getAttribute().validateType(value));
     values.put(property, newValue);
     if (singleIntegerKey) {
       setHashCode((Integer) value);
@@ -340,7 +340,7 @@ final class DefaultEntityKey implements Entity.Key {
     hashCodeDirty = true;
     for (int i = 0; i < properties.size(); i++) {
       final ColumnProperty<Object> property = (ColumnProperty<Object>) properties.get(i);
-      values.put(property, property.validateType(stream.readObject()));
+      values.put(property, property.getAttribute().validateType(stream.readObject()));
     }
   }
 
@@ -354,7 +354,7 @@ final class DefaultEntityKey implements Entity.Key {
     }
     final ColumnProperty<Object> keyProperty = (ColumnProperty<Object>) primaryKeyProperties.get(0);
     final Map<ColumnProperty<?>, Object> values = new HashMap<>(1);
-    values.put(keyProperty, keyProperty.validateType(value));
+    values.put(keyProperty, keyProperty.getAttribute().validateType(value));
 
     return values;
   }
