@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 
 import static is.codion.common.Util.map;
 import static is.codion.common.Util.nullOrEmpty;
@@ -209,7 +210,8 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
     }
 
     return entities.stream().anyMatch(entity ->
-            definition.getPrimaryKeyProperties().stream().anyMatch(entity::isModified));
+            definition.getPrimaryKeyProperties().stream()
+                    .map((Function<ColumnProperty<?>, Attribute<Object>>) Property::getAttribute).anyMatch(entity::isModified));
   }
 
   /**
@@ -236,11 +238,11 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   static List<ColumnProperty<?>> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
     requireNonNull(entity);
     requireNonNull(comparison);
-    return comparison.keySet().stream().filter(property -> {
+    return comparison.keySet().stream().map(entity::getProperty).filter(property -> {
       final boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
       final boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
 
-      return updatableColumnProperty && !lazilyLoadedBlobProperty && isValueMissingOrModified(entity, comparison, property);
+      return updatableColumnProperty && !lazilyLoadedBlobProperty && isValueMissingOrModified(entity, comparison, property.getAttribute());
     }).map(property -> (ColumnProperty<?>) property).collect(toList());
   }
 
@@ -420,14 +422,14 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities
    * @return the values of the given properties from the given entities in a two dimensional list
    */
-  static List<List<String>> getStringValueList(final List<? extends Property> properties, final List<Entity> entities) {
+  static List<List<String>> getStringValueList(final List<? extends Property<?>> properties, final List<Entity> entities) {
     requireNonNull(properties);
     requireNonNull(entities);
     final List<List<String>> data = new ArrayList<>();
     for (final Entity entity : entities) {
       final List<String> line = new ArrayList<>(properties.size());
-      for (final Property property : properties) {
-        line.add(entity.getAsString(property));
+      for (final Property<?> property : properties) {
+        line.add(entity.getAsString(property.getAttribute()));
       }
       data.add(line);
     }
@@ -488,20 +490,20 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   /**
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
-   * @param property the property to check
+   * @param attribute the attribute to check
    * @return true if the value is missing or the original value differs from the one in the comparison entity
    */
-  static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final Property property) {
+  static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final Attribute<?> attribute) {
     requireNonNull(entity);
     requireNonNull(comparison);
-    requireNonNull(property);
-    if (!entity.containsKey(property)) {
+    requireNonNull(attribute);
+    if (!entity.containsKey(attribute)) {
       return true;
     }
 
-    final Object originalValue = entity.getOriginal(property);
-    final Object comparisonValue = comparison.get(property);
-    if (property.getAttribute().isBlob()) {
+    final Object originalValue = entity.getOriginal(attribute);
+    final Object comparisonValue = comparison.get(attribute);
+    if (attribute.isBlob()) {
       return !Arrays.equals((byte[]) originalValue, (byte[]) comparisonValue);
     }
 

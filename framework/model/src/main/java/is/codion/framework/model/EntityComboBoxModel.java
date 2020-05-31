@@ -10,6 +10,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.EntityAttribute;
 
 import java.util.Collection;
 import java.util.List;
@@ -64,7 +65,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKeyAttribute the property id
    * @param entities the entities
    */
-  void setForeignKeyFilterEntities(Attribute<Entity> foreignKeyAttribute, Collection<Entity> entities);
+  void setForeignKeyFilterEntities(EntityAttribute foreignKeyAttribute, Collection<Entity> entities);
 
   /**
    * Specifies whether foreign key filtering should be strict or not.
@@ -87,7 +88,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @return a combo box model for selecting a filtering value for this combo box model
    * @see #linkForeignKeyComboBoxModel(Attribute, EntityComboBoxModel)
    */
-  EntityComboBoxModel createForeignKeyFilterComboBoxModel(Attribute<Entity> foreignKeyAttribute);
+  EntityComboBoxModel createForeignKeyFilterComboBoxModel(EntityAttribute foreignKeyAttribute);
 
   /**
    * Links the given combo box model representing master entities to this combo box model
@@ -95,7 +96,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKeyAttribute the foreign key attribute
    * @param foreignKeyModel the combo box model to link
    */
-  void linkForeignKeyComboBoxModel(Attribute<Entity> foreignKeyAttribute, EntityComboBoxModel foreignKeyModel);
+  void linkForeignKeyComboBoxModel(EntityAttribute foreignKeyAttribute, EntityComboBoxModel foreignKeyModel);
 
   /**
    * Selects the entity with the given primary key, if the entity is not available

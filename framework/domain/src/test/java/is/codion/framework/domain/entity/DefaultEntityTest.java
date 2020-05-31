@@ -12,7 +12,6 @@ import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Attributes;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
-import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
 
 import org.junit.jupiter.api.Test;
@@ -44,33 +43,32 @@ public class DefaultEntityTest {
 
   @Test
   public void construction() {
-    final EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
     final EntityDefinition masterDefinition = ENTITIES.getDefinition(TestDomain.T_MASTER);
 
-    final Map<Property<?>, Object> values = new HashMap<>();
-    values.put(detailDefinition.getProperty(TestDomain.DETAIL_BOOLEAN), false);
-    values.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), 1);
+    final Map<Attribute<?>, Object> values = new HashMap<>();
+    values.put(TestDomain.DETAIL_BOOLEAN, false);
+    values.put(TestDomain.MASTER_CODE, 1);
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, values, null));
 
-    final Map<Property<?>, Object> originalValues = new HashMap<>();
-    originalValues.put(detailDefinition.getProperty(TestDomain.DETAIL_BOOLEAN), false);
-    originalValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), 1);
+    final Map<Attribute<?>, Object> originalValues = new HashMap<>();
+    originalValues.put(TestDomain.DETAIL_BOOLEAN, false);
+    originalValues.put(TestDomain.MASTER_CODE, 1);
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, originalValues));
 
-    final Map<Property<?>, Object> invalidTypeValues = new HashMap<>();
-    invalidTypeValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), false);
+    final Map<Attribute<?>, Object> invalidTypeValues = new HashMap<>();
+    invalidTypeValues.put(TestDomain.MASTER_CODE, false);
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidTypeValues, null));
 
-    final Map<Property<?>, Object> invalidTypeOriginalValues = new HashMap<>();
-    invalidTypeOriginalValues.put(masterDefinition.getProperty(TestDomain.MASTER_CODE), false);
+    final Map<Attribute<?>, Object> invalidTypeOriginalValues = new HashMap<>();
+    invalidTypeOriginalValues.put(TestDomain.MASTER_CODE, false);
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final Property<?> invalid = Properties.columnProperty(Attributes.integerAttribute("invalid", "entityId")).get();
-    final Map<Property<?>, Object> invalidPropertyValues = new HashMap<>();
+    final Attribute<?> invalid = Attributes.integerAttribute("invalid", "entityId");
+    final Map<Attribute<?>, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidPropertyValues, null));

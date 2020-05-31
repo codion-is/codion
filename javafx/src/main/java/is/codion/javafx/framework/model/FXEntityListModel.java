@@ -303,7 +303,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final Color getPropertyBackgroundColor(final int row, final Property property) {
+  public final Color getPropertyBackgroundColor(final int row, final Property<?> property) {
     return (Color) get(row).getColor(property);
   }
 
@@ -417,9 +417,9 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final String getTableDataAsDelimitedString(final char delimiter) {
     final List<String> header = new ArrayList<>();
-    final List<Property> properties = new ArrayList<>();
+    final List<Property<?>> properties = new ArrayList<>();
     columns.forEach(entityTableColumn -> {
-      final Property property = ((PropertyTableColumn) entityTableColumn).getProperty();
+      final Property<?> property = ((PropertyTableColumn) entityTableColumn).getProperty();
       properties.add(property);
       header.add(property.getCaption());
     });
@@ -551,7 +551,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private void applyColumnPreferences(final org.json.JSONObject preferences) {
     for (final PropertyTableColumn column : initialColumns) {
-      final Property property = column.getProperty();
+      final Property<?> property = column.getProperty();
       if (columns.contains(column)) {
         try {
           final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getAttribute().getName());
@@ -577,7 +577,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private org.json.JSONObject createColumnPreferences() throws Exception {
     final org.json.JSONObject columnPreferencesRoot = new org.json.JSONObject();
     for (final PropertyTableColumn column : initialColumns) {
-      final Property property = column.getProperty();
+      final Property<?> property = column.getProperty();
       final org.json.JSONObject columnObject = new org.json.JSONObject();
       final boolean visible = columns.contains(column);
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
@@ -610,9 +610,9 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   public static class PropertyTableColumn extends TableColumn<Entity, Object> {
 
-    private final Property property;
+    private final Property<?> property;
 
-    protected PropertyTableColumn(final Property property) {
+    protected PropertyTableColumn(final Property<?> property) {
       super(property.getCaption());
       this.property = property;
     }
@@ -620,7 +620,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     /**
      * @return the underlying property
      */
-    public final Property getProperty() {
+    public final Property<?> getProperty() {
       return property;
     }
 

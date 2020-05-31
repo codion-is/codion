@@ -6,7 +6,8 @@ package is.codion.plugin.jackson.json.domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.domain.property.Property;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -50,51 +51,51 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
   }
 
-  public static Object parseValue(final EntityObjectMapper mapper, final Property<?> property, final JsonNode jsonNode)
+  public static Object parseValue(final EntityObjectMapper mapper, final Attribute<?> attribute, final JsonNode jsonNode)
           throws JsonProcessingException {
     if (jsonNode.isNull()) {
       return null;
     }
-    if (property.getAttribute().isString()) {
+    if (attribute.isString()) {
       return jsonNode.asText();
     }
-    else if (property.getAttribute().isBoolean()) {
+    else if (attribute.isBoolean()) {
       return jsonNode.asBoolean();
     }
-    else if (property.getAttribute().isTime()) {
+    else if (attribute.isTime()) {
       return LocalTime.parse(jsonNode.asText());
     }
-    else if (property.getAttribute().isDate()) {
+    else if (attribute.isDate()) {
       return LocalDate.parse(jsonNode.asText());
     }
-    else if (property.getAttribute().isTimestamp()) {
+    else if (attribute.isTimestamp()) {
       return LocalDateTime.parse(jsonNode.asText());
     }
-    else if (property.getAttribute().isDouble()) {
+    else if (attribute.isDouble()) {
       return jsonNode.asDouble();
     }
-    else if (property.getAttribute().isInteger()) {
+    else if (attribute.isInteger()) {
       return jsonNode.asInt();
     }
-    else if (property.getAttribute().isBigDecimal()) {
+    else if (attribute.isBigDecimal()) {
       return new BigDecimal(jsonNode.asText());
     }
-    else if (property.getAttribute().isBlob()) {
+    else if (attribute.isBlob()) {
       return Base64.getDecoder().decode(jsonNode.asText());
     }
-    else if (property instanceof ForeignKeyProperty) {
+    else if (attribute instanceof EntityAttribute) {
       return mapper.readValue(jsonNode.toString(), Entity.class);
     }
 
     return jsonNode.asText();
   }
 
-  private Map<Property<?>, Object> getValueMap(final JsonNode node, final EntityDefinition definition)
+  private Map<Attribute<?>, Object> getValueMap(final JsonNode node, final EntityDefinition definition)
           throws JsonProcessingException {
     return getPropertyValueMap(definition, node.get("values"));
   }
 
-  private Map<Property<?>, Object> getOriginalValueMap(final JsonNode node, final EntityDefinition definition)
+  private Map<Attribute<?>, Object> getOriginalValueMap(final JsonNode node, final EntityDefinition definition)
           throws JsonProcessingException {
     final JsonNode originalValues = node.get("originalValues");
     if (originalValues != null) {
@@ -104,13 +105,13 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     return null;
   }
 
-  private Map<Property<?>, Object> getPropertyValueMap(final EntityDefinition definition, final JsonNode values) throws JsonProcessingException {
-    final Map<Property<?>, Object> valueMap = new HashMap<>();
+  private Map<Attribute<?>, Object> getPropertyValueMap(final EntityDefinition definition, final JsonNode values) throws JsonProcessingException {
+    final Map<Attribute<?>, Object> valueMap = new HashMap<>();
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
       final Property<?> property = definition.getProperty(attribute(field.getKey(), definition.getEntityId()));
-      valueMap.put(property, parseValue(property, field.getValue()));
+      valueMap.put(property.getAttribute(), parseValue(property.getAttribute(), field.getValue()));
     }
 
     return valueMap;
@@ -123,7 +124,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
    * @return the value for the given property
    * @throws JsonProcessingException in case of an error
    */
-  private Object parseValue(final Property<?> property, final JsonNode jsonNode) throws JsonProcessingException {
+  private Object parseValue(final Attribute<?> property, final JsonNode jsonNode) throws JsonProcessingException {
     return parseValue(mapper, property, jsonNode);
   }
 }

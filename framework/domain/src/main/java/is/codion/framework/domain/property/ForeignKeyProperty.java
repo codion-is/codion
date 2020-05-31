@@ -16,6 +16,12 @@ import java.util.List;
 public interface ForeignKeyProperty extends Property<Entity> {
 
   /**
+   * @return the underying attribute
+   */
+  @Override
+  EntityAttribute getAttribute();
+
+  /**
    * @return true if all reference properties comprising this foreign key property are insertable
    */
   boolean isInsertable();

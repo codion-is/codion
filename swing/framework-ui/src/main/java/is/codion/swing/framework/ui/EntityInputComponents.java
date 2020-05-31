@@ -13,8 +13,8 @@ import is.codion.common.value.Nullable;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
@@ -695,8 +695,8 @@ public final class EntityInputComponents {
    * @param enabledState the state controlling the enabled state of the panel
    * @return a combo box based on the property values
    */
-  public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final Value value,
-                                                       final ComboBoxModel comboBoxModel, final StateObserver enabledState) {
+  public static <T> SteppedComboBox<T> createPropertyComboBox(final ColumnProperty<T> property, final Value<T> value,
+                                                              final ComboBoxModel<T> comboBoxModel, final StateObserver enabledState) {
     return createPropertyComboBox(property, value, comboBoxModel, enabledState, Editable.NO);
   }
 
@@ -709,10 +709,10 @@ public final class EntityInputComponents {
    * @param editable if yes then the combo box will be editable
    * @return a combo box based on the property values
    */
-  public static SteppedComboBox createPropertyComboBox(final ColumnProperty property, final Value value,
-                                                       final ComboBoxModel comboBoxModel, final StateObserver enabledState,
-                                                       final Editable editable) {
-    final SteppedComboBox comboBox = createComboBox(property, value, comboBoxModel, enabledState, editable);
+  public static <T> SteppedComboBox<T> createPropertyComboBox(final ColumnProperty<T> property, final Value<T> value,
+                                                              final ComboBoxModel<T> comboBoxModel, final StateObserver enabledState,
+                                                              final Editable editable) {
+    final SteppedComboBox<T> comboBox = createComboBox(property, value, comboBoxModel, enabledState, editable);
     if (editable == Editable.NO) {
       addComboBoxCompletion(comboBox);
     }
@@ -727,7 +727,7 @@ public final class EntityInputComponents {
    * @param filterButtonTakesFocus if true then the filter button is focusable
    * @return a panel with a combo box and a button
    */
-  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final Attribute<Entity> foreignKeyAttribute,
+  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final EntityAttribute foreignKeyAttribute,
                                                        final boolean filterButtonTakesFocus) {
     final Control foreignKeyFilterControl = entityComboBox.createForeignKeyFilterControl(foreignKeyAttribute);
     if (filterButtonTakesFocus) {
@@ -737,7 +737,7 @@ public final class EntityInputComponents {
     return Components.createEastButtonPanel(entityComboBox, foreignKeyFilterControl);
   }
 
-  private static JTextField createTextField(final Property property, final StateObserver enabledState,
+  private static JTextField createTextField(final Property<?> property, final StateObserver enabledState,
                                             final String formatMaskString, final ValueContainsLiterals valueContainsLiterals) {
     final JTextField field = createTextField(property, formatMaskString, valueContainsLiterals);
     linkToEnabledState(enabledState, field);
@@ -749,7 +749,7 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JTextField createTextField(final Property property, final String formatMaskString,
+  private static JTextField createTextField(final Property<?> property, final String formatMaskString,
                                             final ValueContainsLiterals valueContainsLiterals) {
     if (property.getAttribute().isInteger()) {
       return initializeIntField(property);
@@ -778,7 +778,7 @@ public final class EntityInputComponents {
     return TextFields.createFormattedField(formatMaskString, valueContainsLiterals);
   }
 
-  private static JTextField initializeDecimalField(final Property property) {
+  private static JTextField initializeDecimalField(final Property<?> property) {
     final DecimalField field = new DecimalField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
       field.setRange(Math.min(property.getMinimumValue(), 0), property.getMaximumValue());
@@ -787,7 +787,7 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JTextField initializeIntField(final Property property) {
+  private static JTextField initializeIntField(final Property<?> property) {
     final IntegerField field = new IntegerField(cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
       field.setRange(property.getMinimumValue(), property.getMaximumValue());
@@ -796,7 +796,7 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JTextField initializeLongField(final Property property) {
+  private static JTextField initializeLongField(final Property<?> property) {
     final LongField field = new LongField(cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
       field.setRange(property.getMinimumValue(), property.getMaximumValue());
@@ -805,7 +805,7 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JCheckBox initializeCheckBox(final Property property, final Value<Boolean> value,
+  private static JCheckBox initializeCheckBox(final Property<?> property, final Value<Boolean> value,
                                               final StateObserver enabledState, final JCheckBox checkBox) {
     value.link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
     linkToEnabledState(enabledState, checkBox);
@@ -814,9 +814,9 @@ public final class EntityInputComponents {
     return checkBox;
   }
 
-  private static ItemComboBoxModel createValueListComboBoxModel(final ValueListProperty property, final Sorted sorted) {
-    final ItemComboBoxModel model = sorted == Sorted.YES ?
-            new ItemComboBoxModel(property.getValues()) : new ItemComboBoxModel(null, property.getValues());
+  private static <T> ItemComboBoxModel<T> createValueListComboBoxModel(final ValueListProperty<T> property, final Sorted sorted) {
+    final ItemComboBoxModel<T> model = sorted == Sorted.YES ?
+            new ItemComboBoxModel<>(property.getValues()) : new ItemComboBoxModel<>(null, property.getValues());
     if (property.isNullable() && !model.containsItem(Items.item(null))) {
       model.addItem(Items.item(null, EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
     }
@@ -843,7 +843,7 @@ public final class EntityInputComponents {
     return cloned;
   }
 
-  private static void addComboBoxCompletion(final JComboBox comboBox) {
+  private static void addComboBoxCompletion(final JComboBox<?> comboBox) {
     final String completionMode = COMBO_BOX_COMPLETION_MODE.get();
     switch (completionMode) {
       case COMPLETION_MODE_AUTOCOMPLETE:

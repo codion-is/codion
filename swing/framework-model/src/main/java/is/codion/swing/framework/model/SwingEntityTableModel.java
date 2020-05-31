@@ -108,7 +108,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * Fired each time this model is refreshed
    */
-  private final Event refreshEvent = Events.event();
+  private final Event<?> refreshEvent = Events.event();
 
   /**
    * If true then querying should be disabled if no condition is specified
@@ -365,9 +365,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
     final Entity entity = getEntities().copyEntity(getItemAt(rowIndex));
 
-    final Property columnIdentifier = getColumnModel().getColumnIdentifier(modelColumnIndex);
+    final Property<?> columnIdentifier = getColumnModel().getColumnIdentifier(modelColumnIndex);
 
-    entity.put(columnIdentifier, value);
+    entity.put(columnIdentifier.getAttribute(), value);
     try {
       update(singletonList(entity));
     }
@@ -646,15 +646,15 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     requireNonNull(entity, "entity");
     requireNonNull(property, "property");
     if (property instanceof ValueListProperty) {
-      return entity.getAsString(property);
+      return entity.getAsString(property.getAttribute());
     }
 
-    return entity.get(property);
+    return entity.get(property.getAttribute());
   }
 
   @Override
   protected final String getSearchValueAt(final int rowIndex, final TableColumn column) {
-    return getItemAt(rowIndex).getAsString((Property<?>) column.getIdentifier());
+    return getItemAt(rowIndex).getAsString(((Property<?>) column.getIdentifier()).getAttribute());
   }
 
   /**

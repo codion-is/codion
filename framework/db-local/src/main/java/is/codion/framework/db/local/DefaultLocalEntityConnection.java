@@ -215,7 +215,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           keyGenerator.beforeInsert(entity, primaryKeyProperties, connection);
 
           populatePropertiesAndValues(entity, getInsertableProperties(entityDefinition, keyGenerator.isInserted()),
-                  statementProperties, statementValues, entity::containsKey);
+                  statementProperties, statementValues, columnProperty -> entity.containsKey(columnProperty.getAttribute()));
           if (statementProperties.isEmpty()) {
             throw new SQLException("Unable to insert entity " + entity.getEntityId() + ", no properties to insert");
           }
@@ -279,7 +279,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final List<Entity> entitiesToUpdate = entityIdEntities.getValue();
           for (final Entity entity : entitiesToUpdate) {
             populatePropertiesAndValues(entity, updatableProperties, statementProperties, statementValues,
-                    property -> entity.containsKey(property) && entity.isModified(property));
+                    property -> entity.containsKey(property.getAttribute()) && entity.isModified(property.getAttribute()));
             if (statementProperties.isEmpty()) {
               throw new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
             }
@@ -907,7 +907,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final List<Entity.Key> referencedKeys = new ArrayList<>(getReferencedKeys(entities, foreignKeyProperty));
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
-              entities.get(j).put(foreignKeyProperty, null);
+              entities.get(j).put(foreignKeyProperty.getAttribute(), null);
             }
           }
           else {
@@ -919,7 +919,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             for (int j = 0; j < entities.size(); j++) {
               final Entity entity = entities.get(j);
               final Entity.Key referencedKey = entity.getReferencedKey(foreignKeyProperty);
-              entity.put(foreignKeyProperty, getReferencedEntity(referencedKey, referencedEntitiesMappedByKey));
+              entity.put(foreignKeyProperty.getAttribute(), getReferencedEntity(referencedKey, referencedEntitiesMappedByKey));
             }
           }
         }
@@ -1272,7 +1272,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       final ColumnProperty<?> property = entityProperties.get(i);
       if (includeIf.test(property)) {
         statementProperties.add(property);
-        statementValues.add(entity.get(property));
+        statementValues.add(entity.get(property.getAttribute()));
       }
     }
   }
@@ -1282,8 +1282,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED_EXCEPTION))
             .append(", ").append(entity.getEntityId());
     for (final ColumnProperty<?> property : modifiedProperties) {
-      builder.append(" \n").append(property).append(": ").append(entity.getOriginal(property))
-              .append(" -> ").append(modified.get(property));
+      builder.append(" \n").append(property).append(": ").append((Object) entity.getOriginal(property.getAttribute()))
+              .append(" -> ").append((Object) modified.get(property.getAttribute()));
     }
 
     return builder.toString();

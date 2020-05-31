@@ -47,7 +47,7 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Pr
 
   @Override
   protected final Comparable<?> getComparable(final Entity row, final Property<?> property) {
-    return (Comparable<?>) row.get(property);
+    return (Comparable<?>) row.get(property.getAttribute());
   }
 
   private static List<TableColumn> initializeColumns(final List<Property<?>> visibleProperties) {

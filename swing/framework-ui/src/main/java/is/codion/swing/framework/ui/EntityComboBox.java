@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.ui.combobox.MaximumMatch;
@@ -51,7 +52,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @param foreignKeyAttribute the foreign key attribute on which to filter
    * @return a Control for filtering this combo box
    */
-  public Control createForeignKeyFilterControl(final Attribute<Entity> foreignKeyAttribute) {
+  public Control createForeignKeyFilterControl(final EntityAttribute foreignKeyAttribute) {
     return Controls.control(() -> {
       final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKeyAttribute);
       final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKeyAttribute),
@@ -68,7 +69,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @param foreignKeyAttribute the foreign key attribute on which to filter
    * @return an EntityComboBox for filtering this combo box
    */
-  public EntityComboBox createForeignKeyFilterComboBox(final Attribute<Entity> foreignKeyAttribute) {
+  public EntityComboBox createForeignKeyFilterComboBox(final EntityAttribute foreignKeyAttribute) {
     final EntityComboBox comboBox = new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKeyAttribute));
     MaximumMatch.enable(comboBox);
 

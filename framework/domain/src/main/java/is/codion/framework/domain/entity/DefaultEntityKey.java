@@ -117,12 +117,7 @@ final class DefaultEntityKey implements Entity.Key {
 
   @Override
   public <T> T put(final Attribute<T> attribute, final T value) {
-    return (T) put(definition.getPrimaryKeyProperty(attribute), value);
-  }
-
-  @Override
-  public <T> T put(final ColumnProperty<T> property, final T value) {
-    return (T) putInternal((ColumnProperty<Object>) property, value);
+    return (T) putInternal(definition.getPrimaryKeyProperty((Attribute<Object>) attribute), value);
   }
 
   @Override

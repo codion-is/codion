@@ -6,9 +6,9 @@ package is.codion.framework.db.local;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
-import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
 
 import java.sql.ResultSet;
@@ -36,7 +36,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 
   @Override
   public Entity fetch(final ResultSet resultSet) throws SQLException {
-    final Map<Property<?>, Object> values = new HashMap<>(columnProperties.size());
+    final Map<Attribute<?>, Object> values = new HashMap<>(columnProperties.size());
     addResultSetValues(resultSet, values);
     addTransientNullValues(values);
     addLazyLoadedBlobNullValues(values);
@@ -44,11 +44,11 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     return definition.entity(values, null);
   }
 
-  private void addResultSetValues(final ResultSet resultSet, final Map<Property<?>, Object> values) throws SQLException {
+  private void addResultSetValues(final ResultSet resultSet, final Map<Attribute<?>, Object> values) throws SQLException {
     for (int i = 0; i < columnProperties.size(); i++) {
       final ColumnProperty<?> property = columnProperties.get(i);
       try {
-        values.put(property, property.prepareValue(property.fetchValue(resultSet, i + 1)));
+        values.put(property.getAttribute(), property.prepareValue(property.fetchValue(resultSet, i + 1)));
       }
       catch (final Exception e) {
         throw new SQLException("Exception fetching: " + property + ", entity: " +
@@ -57,22 +57,22 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     }
   }
 
-  private void addTransientNullValues(final Map<Property<?>, Object> values) {
+  private void addTransientNullValues(final Map<Attribute<?>, Object> values) {
     final List<TransientProperty<?>> transientProperties = definition.getTransientProperties();
     for (int i = 0; i < transientProperties.size(); i++) {
       final TransientProperty<?> transientProperty = transientProperties.get(i);
       if (!(transientProperty instanceof DerivedProperty)) {
-        values.put(transientProperty, null);
+        values.put(transientProperty.getAttribute(), null);
       }
     }
   }
 
-  private void addLazyLoadedBlobNullValues(final Map<Property<?>, Object> values) {
+  private void addLazyLoadedBlobNullValues(final Map<Attribute<?>, Object> values) {
     final List<ColumnProperty<?>> lazyLoadedBlobProperties = definition.getLazyLoadedBlobProperties();
     for (int i = 0; i < lazyLoadedBlobProperties.size(); i++) {
       final ColumnProperty<?> blobProperty = lazyLoadedBlobProperties.get(i);
-      if (!values.containsKey(blobProperty)) {
-        values.put(blobProperty, null);
+      if (!values.containsKey(blobProperty.getAttribute())) {
+        values.put(blobProperty.getAttribute(), null);
       }
     }
   }

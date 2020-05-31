@@ -50,7 +50,7 @@ final class CustomConditionDeserializer implements Serializable {
         values.add(entityObjectMapper.readValue(valueNode.toString(), Entity.Key.class));
       }
       else {
-        values.add(EntityDeserializer.parseValue(entityObjectMapper, property, valueNode));
+        values.add(EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), valueNode));
       }
     }
 

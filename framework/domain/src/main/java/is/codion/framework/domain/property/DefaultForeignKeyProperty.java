@@ -31,7 +31,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnProperty the underlying column property comprising this foreign key
    */
-  DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
+  DefaultForeignKeyProperty(final EntityAttribute attribute, final String caption,
                             final String foreignEntityId, final ColumnProperty.Builder<?> columnProperty) {
     this(attribute, caption, foreignEntityId, singletonList(columnProperty));
   }
@@ -42,7 +42,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnPropertyBuilders the underlying column properties comprising this foreign key
    */
-  DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
+  DefaultForeignKeyProperty(final EntityAttribute attribute, final String caption,
                             final String foreignEntityId, final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
     super(attribute, caption);
     requireNonNull(foreignEntityId, "foreignEntityId");
@@ -53,6 +53,11 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     this.foreignEntityId = foreignEntityId;
     this.columnProperties = unmodifiableList(columnPropertyBuilders.stream()
             .map(ColumnProperty.Builder::get).collect(toList()));
+  }
+
+  @Override
+  public EntityAttribute getAttribute() {
+    return (EntityAttribute) super.getAttribute();
   }
 
   @Override

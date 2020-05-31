@@ -531,16 +531,16 @@ final class DefaultEntityDefinition implements EntityDefinition {
     for (final ColumnProperty property : entityProperties.columnProperties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        entity.put(property, valueProvider.apply(property));
+        entity.put(property.getAttribute(), valueProvider.apply(property));
       }
     }
     for (final TransientProperty transientProperty : entityProperties.transientProperties) {
       if (!(transientProperty instanceof DerivedProperty)) {
-        entity.put(transientProperty, valueProvider.apply(transientProperty));
+        entity.put(transientProperty.getAttribute(), valueProvider.apply(transientProperty));
       }
     }
     for (final ForeignKeyProperty foreignKeyProperty : entityProperties.foreignKeyProperties) {
-      entity.put(foreignKeyProperty, (Entity) valueProvider.apply(foreignKeyProperty));
+      entity.put(foreignKeyProperty.getAttribute(), (Entity) valueProvider.apply(foreignKeyProperty));
     }
     entity.saveAll();
 
@@ -548,7 +548,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Entity entity(final Map<Property<?>, Object> values, final Map<Property<?>, Object> originalValues) {
+  public Entity entity(final Map<Attribute<?>, Object> values, final Map<Attribute<?>, Object> originalValues) {
     return new DefaultEntity(this, values, originalValues);
   }
 

@@ -6159,3 +6159,4 @@
   Jackson and JSON plugins updated according to the above
   DefaultEntityKey.values, key now Attribute instead of Property, Entity.Key.get(Property) removed
   DefaultAttribute, entityId now final, set via constructor, anything else turned out to be very fragile
+  Entity, most accessors with Property parameter removed

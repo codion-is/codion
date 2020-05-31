@@ -390,7 +390,7 @@ public interface EntityDefinition extends Serializable {
    * @return a new {@link Entity} instance
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
-  Entity entity(Map<Property<?>, Object> values, Map<Property<?>, Object> originalValues);
+  Entity entity(Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues);
 
   /**
    * Creates a new {@link Entity.Key} instance based on this definition

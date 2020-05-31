@@ -40,7 +40,7 @@ public class DefaultEntityValidator implements EntityValidator {
 
   private boolean performNullValidation = true;
 
-  private transient Event revalidateEvent;
+  private transient Event<?> revalidateEvent;
 
   /**
    * @return true if this validator performs null validation
@@ -108,11 +108,11 @@ public class DefaultEntityValidator implements EntityValidator {
   public final void performRangeValidation(final Entity entity, final Property<?> property) throws RangeValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
-    if (entity.isNull(property)) {
+    if (entity.isNull(property.getAttribute())) {
       return;
     }
 
-    final Number value = (Number) entity.get(property);
+    final Number value = (Number) entity.get(property.getAttribute());
     if (value.doubleValue() < (property.getMinimumValue() == null ? Double.NEGATIVE_INFINITY : property.getMinimumValue())) {
       throw new RangeValidationException(property.getAttribute(), value, "'" + property + "' " +
               MESSAGES.getString("property_value_too_small") + " " + property.getMinimumValue());
@@ -128,7 +128,7 @@ public class DefaultEntityValidator implements EntityValidator {
                                           final Property<?> property) throws NullValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
-    if (!isNullable(entity, property) && entity.isNull(property)) {
+    if (!isNullable(entity, property) && entity.isNull(property.getAttribute())) {
       if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
         final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
@@ -147,12 +147,12 @@ public class DefaultEntityValidator implements EntityValidator {
   public final void performLengthValidation(final Entity entity, final Property<?> property) throws LengthValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
-    if (entity.isNull(property)) {
+    if (entity.isNull(property.getAttribute())) {
       return;
     }
 
     final int maxLength = property.getMaximumLength();
-    final String value = (String) entity.get(property);
+    final String value = (String) entity.get(property.getAttribute());
     if (maxLength != -1 && value.length() > maxLength) {
       throw new LengthValidationException(property.getAttribute(), value, "'" + property + "' " +
               MESSAGES.getString("property_value_too_long") + " " + maxLength);
@@ -174,7 +174,7 @@ public class DefaultEntityValidator implements EntityValidator {
     getRevalidateEvent().removeListener(listener);
   }
 
-  private Event getRevalidateEvent() {
+  private Event<?> getRevalidateEvent() {
     if (revalidateEvent == null) {
       revalidateEvent = Events.event();
     }

@@ -363,8 +363,8 @@ public class EntityTestUnit {
     assertEquals(testEntity.getKey(), updated.getKey());
     for (final ColumnProperty<?> property : getEntities().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
       if (property.isUpdatable()) {
-        final Object beforeUpdate = testEntity.get(property);
-        final Object afterUpdate = updated.get(property);
+        final Object beforeUpdate = testEntity.get(property.getAttribute());
+        final Object afterUpdate = updated.get(property.getAttribute());
         final String message = "Values of property " + property + " should be equal after update ["
                 + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
                 + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]";
@@ -437,13 +437,13 @@ public class EntityTestUnit {
     requireNonNull(valueProvider, "valueProvider");
     for (final ColumnProperty property : properties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()) {
-        entity.put(property, valueProvider.apply(property));
+        entity.put(property.getAttribute(), valueProvider.apply(property));
       }
     }
     for (final ForeignKeyProperty property : entities.getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
       final Entity value = (Entity) valueProvider.apply(property);
       if (value != null) {
-        entity.put(property, value);
+        entity.put(property.getAttribute(), value);
       }
     }
   }

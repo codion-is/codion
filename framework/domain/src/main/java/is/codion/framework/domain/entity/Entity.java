@@ -6,6 +6,7 @@ package is.codion.framework.domain.entity;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -46,28 +47,12 @@ public interface Entity extends Comparable<Entity>, Serializable {
   <T> T get(Attribute<T> attribute);
 
   /**
-   * Retrieves the value mapped to the given property
-   * @param property the property
-   * @param <T> the property type
-   * @return the value mapped to the given property, null if no such mapping exists
-   */
-  <T> T get(Property<T> property);
-
-  /**
    * Returns the original value associated with the property based on {@code attribute}.
    * @param attribute the attribute for which to retrieve the original value
    * @param <T> the value type
    * @return the original value of the given property
    */
   <T> T getOriginal(Attribute<T> attribute);
-
-  /**
-   * Returns the original value associated with the given property or the current value if it has not been modified.
-   * @param property the property for which to retrieve the original value
-   * @param <T> the value type
-   * @return the original value
-   */
-  <T> T getOriginal(Property<T> property);
 
   /**
    * This method returns a String representation of the value associated with the given attribute,
@@ -77,15 +62,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @return a String representation of the value of {@code attribute}
    */
   <T> String getAsString(Attribute<T> attribute);
-
-  /**
-   * Retrieves a string representation of the value mapped to the given property, an empty string is returned
-   * in case of null values.
-   * @param property the property
-   * @param <T> the property type
-   * @return the value mapped to the given property as a string, an empty string if null
-   */
-  <T> String getAsString(Property<T> property);
 
   /**
    * Returns the Entity instance referenced by the given foreign key attribute.
@@ -99,19 +75,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @throws IllegalArgumentException if the attribute is not a foreign key attribute
    * @see #isLoaded(Attribute)
    */
-  Entity getForeignKey(Attribute<Entity> foreignKeyAttribute);
-
-  /**
-   * Returns the Entity instance referenced by the given foreign key property.
-   * If the underlying reference property contains a value, that is,
-   * a foreign key value exists but the actual referenced entity has not
-   * been loaded, an "empty" entity is returned, containing only the primary
-   * key value. Null is returned only if the actual reference property is null.
-   * @param foreignKeyProperty the foreign key property for which to retrieve the value
-   * @return the value of the foreign key property
-   * @see #isLoaded(Attribute)
-   */
-  Entity getForeignKey(ForeignKeyProperty foreignKeyProperty);
+  Entity getForeignKey(EntityAttribute foreignKeyAttribute);
 
   /**
    * Returns the primary key of the entity referenced by the given {@link ForeignKeyProperty},
@@ -130,32 +94,13 @@ public interface Entity extends Comparable<Entity>, Serializable {
   boolean isForeignKeyNull(ForeignKeyProperty foreignKeyProperty);
 
   /**
-   * Sets the value of the given attribute
+   * Sets the value of the given attribute, returning the old value if any
    * @param attribute the attribute
    * @param value the value
    * @param <T> the value type
    * @return the previous value
-   * @throws IllegalArgumentException in case the value type does not fit the attribute
    */
   <T> T put(Attribute<T> attribute, T value);
-
-  /**
-   * Maps the given value to the given property, returning the old value if any.
-   * @param property the property
-   * @param value the value
-   * @param <T> the value type
-   * @return the previous value mapped to the given property
-   */
-  <T> T put(Property<T> property, T value);
-
-  /**
-   * Removes the given property and value from this value map along with the original value if any.
-   * If no value is mapped to the given property, this method has no effect.
-   * @param property the property to remove
-   * @param <T> the value type
-   * @return the value that was removed, null if no value was found
-   */
-  <T> T remove(Property<T> property);
 
   /**
    * @param attribute the attribute
@@ -194,7 +139,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param foreignKeyAttribute the attribute
    * @return true if the reference entity has been loaded
    */
-  boolean isLoaded(Attribute<Entity> foreignKeyAttribute);
+  boolean isLoaded(EntityAttribute foreignKeyAttribute);
 
   /**
    * @param property the property for which to retrieve the color
@@ -207,15 +152,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * If the value has not been modified then calling this method has no effect.
    * @param attribute the attribute for which to revert the value
    */
-  void revert(Attribute<?> attribute);
-
-  /**
-   * Reverts the value associated with the given property to its original value.
-   * If the value has not been modified or the property is not found then calling this method has no effect.
-   * @param property the property for which to revert the value
-   * @param <T> the value type
-   */
-  <T> void revert(Property<T> property);
+  <T> void revert(Attribute<T> attribute);
 
   /**
    * Saves the value associated with the given attribute, that is, removes the original value.
@@ -223,13 +160,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param attribute the attribute for which to save the value
    */
   void save(Attribute<?> attribute);
-
-  /**
-   * Saves the value associated with the given property, that is, removes the original value.
-   * If no original value exists calling this method has no effect.
-   * @param property the property for which to save the value
-   */
-  void save(Property<?> property);
 
   /**
    * Saves all the value modifications that have been made.
@@ -253,26 +183,12 @@ public interface Entity extends Comparable<Entity>, Serializable {
   boolean isNull(Attribute<?> attribute);
 
   /**
-   * Returns true if a null value is mapped to the given property or the property is not found.
-   * @param property the property
-   * @return true if the value mapped to the given property is null
-   */
-  boolean isNull(Property<?> property);
-
-  /**
    * Returns true if a this Entity contains a non-null value mapped to the given attribute
    * In case of foreign key attributes the value of the underlying reference attribute is checked.
    * @param attribute the attribute
    * @return true if a non-null value is mapped to the given attribute
    */
   boolean isNotNull(Attribute<?> attribute);
-
-  /**
-   * Returns true if a this ValueMap contains a non-null value mapped to the given property
-   * @param property the property
-   * @return true if the value mapped to the given property is not null
-   */
-  boolean isNotNull(Property<?> property);
 
   /**
    * Returns true if this Entity contains a value for the given attribute, that value can be null.
@@ -282,21 +198,20 @@ public interface Entity extends Comparable<Entity>, Serializable {
   boolean containsKey(Attribute<?> attribute);
 
   /**
-   * Returns true if this ValueMap contains a value for the given property, that value can be null.
-   * @param property the property
-   * @return true if a value is mapped to this property
-   */
-  boolean containsKey(Property<?> property);
-
-  /**
    * @return an unmodifiable view of the keys mapping the values in this Entity
    */
-  Set<Property<?>> keySet();
+  Set<Attribute<?>> keySet();
 
   /**
    * @return an unmodifiable view of the keys mapping the original values in this Entity
    */
-  Set<Property<?>> originalKeySet();
+  Set<Attribute<?>> originalKeySet();
+
+  /**
+   * @param attribute the attribute
+   * @return the property associated with the given attribute
+   */
+  Property<?> getProperty(Attribute<?> attribute);
 
   /**
    * @return the number of values in this map
@@ -316,13 +231,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @return true if one or more values have been modified.
    */
   boolean isModified();
-
-  /**
-   * Returns true if the value associated with the given property has been modified..
-   * @param property the property
-   * @return true if the value has changed
-   */
-  boolean isModified(Property<?> property);
 
   /**
    * Adds a listener notified each time a value changes
@@ -404,14 +312,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
      * @return the previous value
      */
     <T> T put(Attribute<T> attribute, T value);
-
-    /**
-     * @param property the property
-     * @param value the value to associate with the property
-     * @param <T> the value type
-     * @return the previous value
-     */
-    <T> T put(ColumnProperty<T> property, T value);
 
     /**
      * @param attribute the attribute

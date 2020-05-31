@@ -38,7 +38,7 @@ public abstract class DefaultEntities implements Entities {
   private final String domainId;
   private final Map<String, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
-  private Map<Class, EntityDefinition> beanEntities;
+  private Map<Class<?>, EntityDefinition> beanEntities;
   private Map<String, Map<Attribute<?>, BeanProperty>> beanProperties;
 
   private transient boolean strictForeignKeys = EntityDefinition.STRICT_FOREIGN_KEYS.get();
@@ -130,9 +130,9 @@ public abstract class DefaultEntities implements Entities {
     final Entity copy = entity(entity.getEntityId());
     copy.setAs(entity);
     for (final ForeignKeyProperty foreignKeyProperty : getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
-      final Entity foreignKeyValue = (Entity) entity.get(foreignKeyProperty);
+      final Entity foreignKeyValue = entity.get(foreignKeyProperty.getAttribute());
       if (foreignKeyValue != null) {
-        entity.put(foreignKeyProperty, deepCopyEntity(foreignKeyValue));
+        entity.put(foreignKeyProperty.getAttribute(), deepCopyEntity(foreignKeyValue));
       }
     }
 
@@ -186,7 +186,7 @@ public abstract class DefaultEntities implements Entities {
       final V bean = beanClass.getConstructor().newInstance();
       for (final Map.Entry<Attribute<?>, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
         final Property<?> property = definition.getProperty(propertyEntry.getKey());
-        Object value = entity.get(property);
+        Object value = entity.get(property.getAttribute());
         if (property instanceof ForeignKeyProperty && value != null) {
           value = toBean((Entity) value);
         }
@@ -223,13 +223,13 @@ public abstract class DefaultEntities implements Entities {
     try {
       final Map<Attribute<?>, BeanProperty> beanPropertyMap = getBeanProperties(definition.getEntityId());
       for (final Map.Entry<Attribute<?>, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
-        final Property property = definition.getProperty(propertyEntry.getKey());
+        final Property<?> property = definition.getProperty(propertyEntry.getKey());
         Object value = propertyEntry.getValue().getter.invoke(bean);
         if (property instanceof ForeignKeyProperty && value != null) {
           value = fromBean(value);
         }
 
-        entity.put(property, value);
+        entity.put(property.getAttribute(), value);
       }
 
       return definition.<V>getBeanHelper().fromBean(bean, entity);

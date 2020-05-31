@@ -4,6 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.EntityAttribute;
 
 import java.io.Serializable;
 import java.text.Format;
@@ -101,7 +102,7 @@ public final class StringProvider implements Function<Entity, String>, Serializa
    * @param attribute the attribute in the referenced entity to use
    * @return this {@link StringProvider} instance
    */
-  public StringProvider addForeignKeyValue(final Attribute<Entity> foreignKeyAttribute, final Attribute<?> attribute) {
+  public StringProvider addForeignKeyValue(final EntityAttribute foreignKeyAttribute, final Attribute<?> attribute) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     Objects.requireNonNull(attribute, ATTRIBUTE_PARAM);
     valueProviders.add(new ForeignKeyValueProvider(foreignKeyAttribute, attribute));
@@ -144,10 +145,10 @@ public final class StringProvider implements Function<Entity, String>, Serializa
 
     private static final long serialVersionUID = 1;
 
-    private final Attribute<Entity> foreignKeyAttribute;
+    private final EntityAttribute foreignKeyAttribute;
     private final Attribute<?> attribute;
 
-    private ForeignKeyValueProvider(final Attribute<Entity> foreignKeyAttribute, final Attribute<?> attribute) {
+    private ForeignKeyValueProvider(final EntityAttribute foreignKeyAttribute, final Attribute<?> attribute) {
       this.foreignKeyAttribute = foreignKeyAttribute;
       this.attribute = attribute;
     }

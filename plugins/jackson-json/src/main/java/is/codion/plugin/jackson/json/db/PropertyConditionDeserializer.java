@@ -44,7 +44,7 @@ final class PropertyConditionDeserializer implements Serializable {
         values.add(entityObjectMapper.readValue(valueNode.toString(), Entity.Key.class));
       }
       else {
-        values.add(EntityDeserializer.parseValue(entityObjectMapper, property, valueNode));
+        values.add(EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), valueNode));
       }
     }
     final boolean nullCondition = values.isEmpty();

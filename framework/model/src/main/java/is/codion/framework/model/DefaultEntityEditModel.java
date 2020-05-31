@@ -72,9 +72,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Event<Map<Entity.Key, Entity>> afterUpdateEvent = Events.event();
   private final Event<List<Entity>> beforeDeleteEvent = Events.event();
   private final Event<List<Entity>> afterDeleteEvent = Events.event();
-  private final Event entitiesChangedEvent = Events.event();
-  private final Event beforeRefreshEvent = Events.event();
-  private final Event afterRefreshEvent = Events.event();
+  private final Event<?> entitiesChangedEvent = Events.event();
+  private final Event<?> beforeRefreshEvent = Events.event();
+  private final Event<?> afterRefreshEvent = Events.event();
   private final Event<State> confirmSetEntityEvent = Events.event();
 
   private final State entityModifiedState = States.state();
@@ -197,10 +197,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public <T> T getDefaultValue(final Property<T> property) {
     if (isPersistValue(property)) {
       if (property instanceof ForeignKeyProperty) {
-        return (T) entity.getForeignKey((ForeignKeyProperty) property);
+        return (T) entity.getForeignKey(((ForeignKeyProperty) property).getAttribute());
       }
 
-      return entity.get(property);
+      return entity.get(property.getAttribute());
     }
 
     return property.getDefaultValue();
@@ -380,14 +380,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> T get(final Property<T> property) {
-    return entity.get(property);
+    return entity.get(property.getAttribute());
   }
 
   @Override
   public final <T> void put(final Property<T> property, final T value) {
     requireNonNull(property, PROPERTY);
-    final boolean initialization = !entity.containsKey(property);
-    final T previousValue = entity.put(property, value);
+    final boolean initialization = !entity.containsKey(property.getAttribute());
+    final T previousValue = entity.put(property.getAttribute(), value);
     if (!Objects.equals(value, previousValue)) {
       getValueEditEvent(property.getAttribute()).onEvent(valueChange(property, value, previousValue, initialization));
     }
@@ -397,8 +397,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final <T> T remove(final Property<T> property) {
     requireNonNull(property, PROPERTY);
     T value = null;
-    if (entity.containsKey(property)) {
-      value = entity.remove(property);
+    if (entity.containsKey(property.getAttribute())) {
+      value = entity.remove(property.getAttribute());
       getValueEditEvent(property.getAttribute()).onEvent(valueChange(property, null, value));
     }
 

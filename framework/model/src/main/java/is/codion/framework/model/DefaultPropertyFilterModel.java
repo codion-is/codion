@@ -10,28 +10,28 @@ import is.codion.framework.domain.property.Property;
 /**
  * A class for filtering a set of entities based on a property.
  */
-public final class DefaultPropertyFilterModel extends DefaultColumnConditionModel<Entity, Property> {
+public final class DefaultPropertyFilterModel extends DefaultColumnConditionModel<Entity, Property<?>> {
 
   /**
    * Instantiates a new DefaultPropertyFilterModel
    * @param property the property
    */
-  public DefaultPropertyFilterModel(final Property property) {
+  public DefaultPropertyFilterModel(final Property<?> property) {
     super(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimeFormatPattern());
   }
 
   @Override
-  protected Comparable getComparable(final Entity row) {
-    if (row.isNull(getColumnIdentifier())) {
+  protected Comparable<?> getComparable(final Entity row) {
+    if (row.isNull(getColumnIdentifier().getAttribute())) {
       return null;
     }
 
-    final Property property = getColumnIdentifier();
-    final Object value = row.get(property);
+    final Property<?> property = getColumnIdentifier();
+    final Object value = row.get(property.getAttribute());
     if (value instanceof Entity) {
       return value.toString();
     }
 
-    return (Comparable) value;
+    return (Comparable<?>) value;
   }
 }
