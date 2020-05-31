@@ -22,19 +22,21 @@ class DefaultAttribute<T> implements Attribute<T> {
   private final String name;
   private final int type;
   private final Class<T> typeClass;
+  private final int hashCode;
+  private final String entityId;
 
-  /**
-   * The id of the entity this attribute is associated with
-   */
-  private String entityId;
-
-  DefaultAttribute(final String name, final Class<T> typeClass) {
+  DefaultAttribute(final String name, final Class<T> typeClass, final String entityId) {
     if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
     }
+    if (nullOrEmpty(entityId)) {
+      throw new IllegalArgumentException("entityId must be a non-empty string");
+    }
     this.name = name;
+    this.entityId = entityId;
     this.type = getSqlType(requireNonNull(typeClass, "typeClass"));
     this.typeClass = typeClass;
+    this.hashCode = Objects.hash(name, entityId);
   }
 
   @Override
@@ -54,10 +56,6 @@ class DefaultAttribute<T> implements Attribute<T> {
 
   @Override
   public final String getEntityId() {
-    if (entityId == null) {
-      throw new IllegalStateException("entityId has not been set for attribute: " + name);
-    }
-
     return entityId;
   }
 
@@ -147,7 +145,7 @@ class DefaultAttribute<T> implements Attribute<T> {
   }
 
   @Override
-  public boolean equals(final Object object) {
+  public final boolean equals(final Object object) {
     if (this == object) {
       return true;
     }
@@ -156,27 +154,17 @@ class DefaultAttribute<T> implements Attribute<T> {
     }
     final DefaultAttribute<?> that = (DefaultAttribute<?>) object;
 
-    return name.equals(that.name) && Objects.equals(entityId, that.entityId);
+    return name.equals(that.name) && entityId.equals(that.entityId);
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hash(name, entityId);
+  public final int hashCode() {
+    return hashCode;
   }
 
   @Override
   public final String toString() {
     return "entityId: " + entityId + ", name: " + name;
-  }
-
-  final void setEntityId(final String entityId) {
-    if (nullOrEmpty(entityId)) {
-      throw new IllegalArgumentException("entityId must be a non-empty string");
-    }
-    if (this.entityId != null && !Objects.equals(this.entityId, entityId)) {
-      throw new IllegalStateException("entityId has already been set as: " + this.entityId + " for attribute: " + name);
-    }
-    this.entityId = entityId;
   }
 
   private static int getSqlType(final Class<?> clazz) {

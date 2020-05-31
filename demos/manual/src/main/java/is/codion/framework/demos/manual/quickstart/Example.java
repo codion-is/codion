@@ -49,9 +49,9 @@ public final class Example {
 
     // tag::customer[]
     public static final String T_CUSTOMER = "store.customer";
-    public static final Attribute<String> CUSTOMER_ID = stringAttribute("id");
-    public static final Attribute<String> CUSTOMER_FIRST_NAME = stringAttribute("first_name");
-    public static final Attribute<String> CUSTOMER_LAST_NAME = stringAttribute("last_name");
+    public static final Attribute<String> CUSTOMER_ID = stringAttribute("id", T_CUSTOMER);
+    public static final Attribute<String> CUSTOMER_FIRST_NAME = stringAttribute("first_name", T_CUSTOMER);
+    public static final Attribute<String> CUSTOMER_LAST_NAME = stringAttribute("last_name", T_CUSTOMER);
 
     void customer() {
       define(T_CUSTOMER,
@@ -73,9 +73,9 @@ public final class Example {
     // end::customer[]
     // tag::address[]
     public static final String T_ADDRESS = "store.address";
-    public static final Attribute<Integer> ADDRESS_ID = integerAttribute("id");
-    public static final Attribute<String> ADDRESS_STREET = stringAttribute("street");
-    public static final Attribute<String> ADDRESS_CITY = stringAttribute("city");
+    public static final Attribute<Integer> ADDRESS_ID = integerAttribute("id", T_ADDRESS);
+    public static final Attribute<String> ADDRESS_STREET = stringAttribute("street", T_ADDRESS);
+    public static final Attribute<String> ADDRESS_CITY = stringAttribute("city", T_ADDRESS);
 
     void address() {
       define(T_ADDRESS,
@@ -91,11 +91,11 @@ public final class Example {
     // end::address[]
     // tag::customerAddress[]
     public static final String T_CUSTOMER_ADDRESS = "store.customer_address";
-    public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = integerAttribute("id");
-    public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = integerAttribute("customer_id");
-    public static final EntityAttribute CUSTOMER_ADDRESS_CUSTOMER_FK = entityAttribute("customer_fk");
-    public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = integerAttribute("address_id");
-    public static final EntityAttribute CUSTOMER_ADDRESS_ADDRESS_FK = entityAttribute("address_fk");
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = integerAttribute("id", T_CUSTOMER_ADDRESS);
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = integerAttribute("customer_id", T_CUSTOMER_ADDRESS);
+    public static final EntityAttribute CUSTOMER_ADDRESS_CUSTOMER_FK = entityAttribute("customer_fk", T_CUSTOMER_ADDRESS);
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = integerAttribute("address_id", T_CUSTOMER_ADDRESS);
+    public static final EntityAttribute CUSTOMER_ADDRESS_ADDRESS_FK = entityAttribute("address_fk", T_CUSTOMER_ADDRESS);
 
     void customerAddress() {
       define(T_CUSTOMER_ADDRESS,

@@ -96,9 +96,9 @@ final class DefaultEntity implements Entity {
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
   DefaultEntity(final EntityDefinition definition, final Map<Property<?>, Object> values, final Map<Property<?>, Object> originalValues) {
-    final Map<Property<?>, Object> validatedValues = validateProperties(definition, values);
+    final Map<Property<?>, Object> validatedValues = validatePropertiesAndValues(definition, values);
     this.values = validatedValues == null ? new HashMap<>() : validatedValues;
-    this.originalValues = validateProperties(definition, originalValues);
+    this.originalValues = validatePropertiesAndValues(definition, originalValues);
     this.definition = definition;
   }
 
@@ -884,14 +884,14 @@ final class DefaultEntity implements Entity {
     }
   }
 
-  private static Map<Property<?>, Object> validateProperties(final EntityDefinition definition,
-                                                             final Map<Property<?>, Object> propertyValues) {
+  private static Map<Property<?>, Object> validatePropertiesAndValues(final EntityDefinition definition,
+                                                                      final Map<Property<?>, Object> propertyValues) {
     requireNonNull(definition, "definition");
     if (propertyValues != null && !propertyValues.isEmpty()) {
       final Set<Property<?>> propertySet = definition.getPropertySet();
       for (final Map.Entry<Property<?>, Object> valueEntry : propertyValues.entrySet()) {
         final Property<Object> property = (Property<Object>) valueEntry.getKey();
-        if (!property.getAttribute().getEntityId().equals(definition.getEntityId()) || !propertySet.contains(property)) {
+        if (!propertySet.contains(property)) {
           throw new IllegalArgumentException("Property " + property + " is not part of entity: " + definition.getEntityId());
         }
         property.getAttribute().validateType(valueEntry.getValue());

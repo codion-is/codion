@@ -359,12 +359,6 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     @Override
-    public Property.Builder<T> entityId(final String entityId) {
-      ((DefaultAttribute<T>) property.attribute).setEntityId(entityId);
-      return this;
-    }
-
-    @Override
     public final Property.Builder<T> beanProperty(final String beanProperty) {
       property.beanProperty = requireNonNull(beanProperty, "beanProperty");
       return this;

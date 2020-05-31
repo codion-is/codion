@@ -31,9 +31,9 @@ public final class TestDomain extends Domain {
   }
 
   public static final String T_MASTER = "domain.master_entity";
-  public static final Attribute<Long> MASTER_ID = Attributes.longAttribute("id");
-  public static final Attribute<String> MASTER_NAME = Attributes.stringAttribute("name");
-  public static final Attribute<Integer> MASTER_CODE = Attributes.integerAttribute("code");
+  public static final Attribute<Long> MASTER_ID = Attributes.longAttribute("id", T_MASTER);
+  public static final Attribute<String> MASTER_NAME = Attributes.stringAttribute("name", T_MASTER);
+  public static final Attribute<Integer> MASTER_CODE = Attributes.integerAttribute("code", T_MASTER);
 
   void master() {
     define(T_MASTER,
@@ -45,20 +45,20 @@ public final class TestDomain extends Domain {
   }
 
   public static final String T_DETAIL = "domain.detail_entity";
-  public static final Attribute<Long> DETAIL_ID = Attributes.longAttribute("id");
-  public static final Attribute<Integer> DETAIL_INT = Attributes.integerAttribute("int");
-  public static final Attribute<Double> DETAIL_DOUBLE = Attributes.doubleAttribute("double");
-  public static final Attribute<String> DETAIL_STRING = Attributes.stringAttribute("string");
-  public static final Attribute<LocalDate> DETAIL_DATE = Attributes.localDateAttribute("date");
-  public static final Attribute<LocalDateTime> DETAIL_TIMESTAMP = Attributes.localDateTimeAttribute("timestamp");
-  public static final Attribute<Boolean> DETAIL_BOOLEAN = Attributes.booleanAttribute("boolean");
-  public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = Attributes.booleanAttribute("boolean_nullable");
-  public static final Attribute<Long> DETAIL_MASTER_ID = Attributes.longAttribute("master_id");
-  public static final EntityAttribute DETAIL_MASTER_FK = Attributes.entityAttribute("master_fk");
-  public static final Attribute<String> DETAIL_MASTER_NAME = Attributes.stringAttribute("master_name");
-  public static final Attribute<Integer> DETAIL_MASTER_CODE = Attributes.integerAttribute("master_code");
-  public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = Attributes.integerAttribute("int_value_list");
-  public static final Attribute<Integer> DETAIL_INT_DERIVED = Attributes.integerAttribute("int_derived");
+  public static final Attribute<Long> DETAIL_ID = Attributes.longAttribute("id", T_DETAIL);
+  public static final Attribute<Integer> DETAIL_INT = Attributes.integerAttribute("int", T_DETAIL);
+  public static final Attribute<Double> DETAIL_DOUBLE = Attributes.doubleAttribute("double", T_DETAIL);
+  public static final Attribute<String> DETAIL_STRING = Attributes.stringAttribute("string", T_DETAIL);
+  public static final Attribute<LocalDate> DETAIL_DATE = Attributes.localDateAttribute("date", T_DETAIL);
+  public static final Attribute<LocalDateTime> DETAIL_TIMESTAMP = Attributes.localDateTimeAttribute("timestamp", T_DETAIL);
+  public static final Attribute<Boolean> DETAIL_BOOLEAN = Attributes.booleanAttribute("boolean", T_DETAIL);
+  public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = Attributes.booleanAttribute("boolean_nullable", T_DETAIL);
+  public static final Attribute<Long> DETAIL_MASTER_ID = Attributes.longAttribute("master_id", T_DETAIL);
+  public static final EntityAttribute DETAIL_MASTER_FK = Attributes.entityAttribute("master_fk", T_DETAIL);
+  public static final Attribute<String> DETAIL_MASTER_NAME = Attributes.stringAttribute("master_name", T_DETAIL);
+  public static final Attribute<Integer> DETAIL_MASTER_CODE = Attributes.integerAttribute("master_code", T_DETAIL);
+  public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = Attributes.integerAttribute("int_value_list", T_DETAIL);
+  public static final Attribute<Integer> DETAIL_INT_DERIVED = Attributes.integerAttribute("int_derived", T_DETAIL);
 
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
@@ -99,9 +99,9 @@ public final class TestDomain extends Domain {
   }
 
   public static final String T_DEPARTMENT = "scott.dept";
-  public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc");
+  public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc", T_DEPARTMENT);
 
   void department() {
     define(T_DEPARTMENT,
@@ -118,17 +118,17 @@ public final class TestDomain extends Domain {
   }
 
   public static final String T_EMP = "scott.emp";
-  public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno");
-  public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename");
-  public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job");
-  public static final Attribute<Integer> EMP_MGR = Attributes.integerAttribute("mgr");
-  public static final Attribute<LocalDate> EMP_HIREDATE = Attributes.localDateAttribute("hiredate");
-  public static final Attribute<Double> EMP_SALARY = Attributes.doubleAttribute("sal");
-  public static final Attribute<Double> EMP_COMMISSION = Attributes.doubleAttribute("comm");
-  public static final Attribute<Integer> EMP_DEPARTMENT = Attributes.integerAttribute("deptno");
-  public static final EntityAttribute EMP_DEPARTMENT_FK = Attributes.entityAttribute("dept_fk");
-  public static final EntityAttribute EMP_MGR_FK = Attributes.entityAttribute("mgr_fk");
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = Attributes.stringAttribute("location");
+  public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno", T_EMP);
+  public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename", T_EMP);
+  public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job", T_EMP);
+  public static final Attribute<Integer> EMP_MGR = Attributes.integerAttribute("mgr", T_EMP);
+  public static final Attribute<LocalDate> EMP_HIREDATE = Attributes.localDateAttribute("hiredate", T_EMP);
+  public static final Attribute<Double> EMP_SALARY = Attributes.doubleAttribute("sal", T_EMP);
+  public static final Attribute<Double> EMP_COMMISSION = Attributes.doubleAttribute("comm", T_EMP);
+  public static final Attribute<Integer> EMP_DEPARTMENT = Attributes.integerAttribute("deptno", T_EMP);
+  public static final EntityAttribute EMP_DEPARTMENT_FK = Attributes.entityAttribute("dept_fk", T_EMP);
+  public static final EntityAttribute EMP_MGR_FK = Attributes.entityAttribute("mgr_fk", T_EMP);
+  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = Attributes.stringAttribute("location", T_EMP);
 
   public static final String EMP_CONDITION_1_ID = "condition1Id";
   public static final String EMP_CONDITION_2_ID = "condition2Id";

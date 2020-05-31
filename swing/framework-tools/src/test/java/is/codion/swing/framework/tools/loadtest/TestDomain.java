@@ -18,11 +18,10 @@ public final class TestDomain extends Domain {
     registerEntities();
   }
 
-  public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc");
-
   public static final String T_DEPARTMENT = "scott.dept";
+  public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc", T_DEPARTMENT);
 
   void department() {
     define(T_DEPARTMENT,

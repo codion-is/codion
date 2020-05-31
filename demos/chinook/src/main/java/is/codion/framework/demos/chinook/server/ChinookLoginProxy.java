@@ -119,9 +119,9 @@ public final class ChinookLoginProxy implements LoginProxy {
   private static final class Authentication extends Domain {
 
     private static final String T_USER = "chinook.user";
-    private static final Attribute<Integer> USER_USERID = integerAttribute("userid");
-    private static final Attribute<String> USER_USERNAME = stringAttribute("username");
-    private static final Attribute<Integer> USER_PASSWORD_HASH = integerAttribute("passwordhash");
+    private static final Attribute<Integer> USER_USERID = integerAttribute("userid", T_USER);
+    private static final Attribute<String> USER_USERNAME = stringAttribute("username", T_USER);
+    private static final Attribute<Integer> USER_PASSWORD_HASH = integerAttribute("passwordhash", T_USER);
 
     private Authentication() {
       define(T_USER,

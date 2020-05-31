@@ -24,8 +24,8 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void test() {
-    final Attribute<Integer> id = integerAttribute("id");
-    final Attribute<String> name = stringAttribute("name");
+    final Attribute<Integer> id = integerAttribute("id", "entityId");
+    final Attribute<String> name = stringAttribute("name", "entityId");
     final StringProvider stringProvider = new StringProvider(name);
     final Comparator<Entity> comparator = (o1, o2) -> 0;
     class TestDomain extends Domain {
@@ -69,13 +69,13 @@ public class DefaultEntityDefinitionTest {
   public void foreignKeyPropertyCountMismatch() {
     class TestDomain extends Domain {
       public TestDomain() {
-        final Attribute<Integer> first = integerAttribute("first");
-        final Attribute<Integer> second = integerAttribute("second");
+        final Attribute<Integer> first = integerAttribute("first", "test.composite_key_master");
+        final Attribute<Integer> second = integerAttribute("second", "test.composite_key_master");
         define("test.composite_key_master",
                 Properties.columnProperty(first).primaryKeyIndex(0),
                 Properties.columnProperty(second).primaryKeyIndex(1));
-        final EntityAttribute reference_fk = entityAttribute("reference_fk");
-        final Attribute<?> reference = attribute("reference", Integer.class);
+        final EntityAttribute reference_fk = entityAttribute("reference_fk", "test.composite_reference");
+        final Attribute<?> reference = integerAttribute("reference", "test.composite_reference");
         define("test.composite_reference",
                 Properties.foreignKeyProperty(reference_fk, null, "test.composite_key_master",
                         Properties.columnProperty(reference)
@@ -90,9 +90,9 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId", "tableName",
-                Properties.primaryKeyProperty(integerAttribute("id")),
-                Properties.columnProperty(stringAttribute("name")),
-                Properties.columnProperty(integerAttribute("id")));
+                Properties.primaryKeyProperty(integerAttribute("id", "entityId")),
+                Properties.columnProperty(stringAttribute("name", "entityId")),
+                Properties.columnProperty(integerAttribute("id", "entityId")));
       }
     }
     assertThrows(IllegalArgumentException.class, () -> new TestDomain());
@@ -103,10 +103,10 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId", "tableName",
-                Properties.primaryKeyProperty(integerAttribute("id")),
-                Properties.columnProperty(stringAttribute("name")),
-                Properties.foreignKeyProperty(entityAttribute("fkProperty"), null, "entityId",
-                        Properties.columnProperty(integerAttribute("id"))));
+                Properties.primaryKeyProperty(integerAttribute("id", "entityId")),
+                Properties.columnProperty(stringAttribute("name", "entityId")),
+                Properties.foreignKeyProperty(entityAttribute("fkProperty", "entityId"), null, "entityId",
+                        Properties.columnProperty(integerAttribute("id", "entityId"))));
       }
     }
     assertThrows(IllegalArgumentException.class, () -> new TestDomain());
@@ -114,13 +114,13 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void derivedProperty() {
-    final Attribute<Integer> name = attribute("name", Integer.class);
-    final Attribute<String> info = attribute("info", String.class);
-    final Attribute<String> derived = attribute("derived", String.class);
+    final Attribute<Integer> name = integerAttribute("name", "entityId");
+    final Attribute<String> info = stringAttribute("info", "entityId");
+    final Attribute<String> derived = stringAttribute("derived", "entityId");
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId",
-                Properties.primaryKeyProperty(attribute("id", Integer.class)),
+                Properties.primaryKeyProperty(integerAttribute("id", "entityId")),
                 Properties.columnProperty(name),
                 Properties.columnProperty(info),
                 Properties.derivedProperty(derived, null, linkedValues ->
@@ -143,9 +143,9 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId",
-                Properties.primaryKeyProperty(attribute("p0", Integer.class)).aggregateColumn(true),
-                Properties.columnProperty(attribute("p1", Integer.class)).groupingColumn(true),
-                Properties.columnProperty(attribute("p2", Integer.class)).groupingColumn(true));
+                Properties.primaryKeyProperty(integerAttribute("p0", "entityId")).aggregateColumn(true),
+                Properties.columnProperty(integerAttribute("p1", "entityId")).groupingColumn(true),
+                Properties.columnProperty(integerAttribute("p2", "entityId")).groupingColumn(true));
       }
     }
     final Domain domain = new TestDomain();
@@ -159,9 +159,9 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId",
-                Properties.primaryKeyProperty(attribute("p0", Integer.class)).aggregateColumn(true),
-                Properties.columnProperty(attribute("p1", Integer.class)).groupingColumn(true),
-                Properties.columnProperty(attribute("p2", Integer.class)).groupingColumn(true)).groupByClause("p1, p2");
+                Properties.primaryKeyProperty(integerAttribute("p0", "entityId")).aggregateColumn(true),
+                Properties.columnProperty(integerAttribute("p1", "entityId")).groupingColumn(true),
+                Properties.columnProperty(integerAttribute("p2", "entityId")).groupingColumn(true)).groupByClause("p1, p2");
       }
     }
     assertThrows(IllegalStateException.class, () -> new TestDomain());
@@ -173,7 +173,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId",
-                Properties.primaryKeyProperty(attribute("p0", Integer.class))).havingClause(havingClause);
+                Properties.primaryKeyProperty(integerAttribute("p0", "entityId"))).havingClause(havingClause);
       }
     }
     final Domain domain = new TestDomain();
@@ -188,7 +188,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId",
-                Properties.primaryKeyProperty(attribute("p0", Integer.class))).havingClause(havingClause)
+                Properties.primaryKeyProperty(attribute("p0", Integer.class, "entityId"))).havingClause(havingClause)
                 .havingClause(havingClause);
       }
     }
@@ -202,10 +202,10 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityId1,
-                Properties.columnProperty(attribute("attribute", Integer.class)));
+                Properties.columnProperty(attribute("attribute", Integer.class, entityId1)));
         define(entityId2,
-                Properties.foreignKeyProperty(entityAttribute("fk"), null, entityId1,
-                        Properties.columnProperty(attribute("fk_col", Integer.class))));
+                Properties.foreignKeyProperty(entityAttribute("fk", entityId2), null, entityId1,
+                        Properties.columnProperty(attribute("fk_col", Integer.class, entityId2))));
       }
     }
     assertThrows(IllegalArgumentException.class, () -> new TestDomain());
@@ -217,8 +217,8 @@ public class DefaultEntityDefinitionTest {
       public TestDomain() {
         setStrictForeignKeys(false);
         define("entityId",
-                Properties.foreignKeyProperty(entityAttribute("fkAttribute"), "caption", "parent",
-                        Properties.primaryKeyProperty(attribute("attribute", Integer.class))));
+                Properties.foreignKeyProperty(entityAttribute("fkAttribute", "entityId"), "caption", "parent",
+                        Properties.primaryKeyProperty(attribute("attribute", Integer.class, "entityId"))));
         setStrictForeignKeys(true);
       }
     }
@@ -230,9 +230,9 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId",
-                Properties.primaryKeyProperty(attribute("pk", Integer.class)),
-                Properties.columnProperty(attribute("col", Integer.class)),
-                Properties.columnProperty(attribute("col", Integer.class)));
+                Properties.primaryKeyProperty(attribute("pk", Integer.class, "entityId")),
+                Properties.columnProperty(attribute("col", Integer.class, "entityId")),
+                Properties.columnProperty(attribute("col", Integer.class, "entityId")));
       }
     }
     assertThrows(IllegalArgumentException.class, () -> new TestDomain());
@@ -243,10 +243,10 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId",
-                Properties.primaryKeyProperty(attribute("pk", Integer.class)),
-                Properties.columnProperty(attribute("col", Integer.class)),
-                Properties.foreignKeyProperty(entityAttribute("fk"), "cap", "par",
-                        Properties.columnProperty(attribute("col", Integer.class))));
+                Properties.primaryKeyProperty(attribute("pk", Integer.class, "entityId")),
+                Properties.columnProperty(attribute("col", Integer.class, "entityId")),
+                Properties.foreignKeyProperty(entityAttribute("fk", "entityId"), "cap", "par",
+                        Properties.columnProperty(attribute("col", Integer.class, "entityId"))));
       }
     }
     assertThrows(IllegalArgumentException.class, () -> new TestDomain());
@@ -254,15 +254,15 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testLinkedProperties() {
-    final Attribute<Integer> attribute1 = attribute("1", Integer.class);
-    final Attribute<Integer> attribute2 = attribute("2", Integer.class);
+    final Attribute<Integer> attribute1 = attribute("1", Integer.class, "entityId");
+    final Attribute<Integer> attribute2 = attribute("2", Integer.class, "entityId");
     class TestDomain extends Domain {
       public TestDomain() {
         define("entityId",
-                Properties.primaryKeyProperty(attribute("pk", Integer.class)),
+                Properties.primaryKeyProperty(attribute("pk", Integer.class, "entityId")),
                 Properties.columnProperty(attribute1),
                 Properties.columnProperty(attribute2),
-                Properties.derivedProperty(attribute("der", Integer.class), "cap", linkedValues -> null, attribute1, attribute2));
+                Properties.derivedProperty(attribute("der", Integer.class, "entityId"), "cap", linkedValues -> null, attribute1, attribute2));
       }
     }
     final Domain domain = new TestDomain();
@@ -277,40 +277,40 @@ public class DefaultEntityDefinitionTest {
     final String colorBlue = "blue";
     class TestDomain extends Domain {
       public TestDomain() {
-        define("entity",
-                Properties.primaryKeyProperty(attribute("attribute", Integer.class)))
+        define("entityId",
+                Properties.primaryKeyProperty(attribute("attribute", Integer.class, "entityId")))
                 .colorProvider((entity1, property) -> colorBlue);
       }
     }
     final Entities entities = new TestDomain().getEntities();
 
-    final Entity entity = entities.entity("entity");
-    final EntityDefinition definition = entities.getDefinition("entity");
+    final Entity entity = entities.entity("entityId");
+    final EntityDefinition definition = entities.getDefinition("entityId");
     assertEquals(colorBlue, definition.getColorProvider().getColor(entity, entity.getKey().getFirstProperty()));
   }
 
   @Test
   void testDefaultStringProvider() {
-    final Attribute<Integer> attribute = attribute("attribute", Integer.class);
+    final Attribute<Integer> attribute = attribute("attribute", Integer.class, "entityId");
     class TestDomain extends Domain {
       public TestDomain() {
-        define("entityToString",
+        define("entityId",
                 Properties.primaryKeyProperty(attribute));
       }
     }
     final Entities entities = new TestDomain().getEntities();
 
-    final Entity entity = entities.entity("entityToString");
+    final Entity entity = entities.entity("entityId");
     entity.put(attribute, 1);
-    assertEquals("entityToString: attribute:1", entity.toString());
+    assertEquals("entityId: attribute:1", entity.toString());
   }
 
   @Test
   public void nullStringProvider() {
     class TestDomain extends Domain {
       public TestDomain() {
-        define("entityToString",
-                Properties.primaryKeyProperty(attribute("attribute", Integer.class))).stringProvider(null);
+        define("entityId",
+                Properties.primaryKeyProperty(attribute("attribute", Integer.class, "entityId"))).stringProvider(null);
       }
     }
     assertThrows(NullPointerException.class, () -> new TestDomain());
@@ -320,14 +320,13 @@ public class DefaultEntityDefinitionTest {
   public void setToStringProvider() {
     class TestDomain extends Domain {
       public TestDomain() {
-        define("entityToString",
-                Properties.primaryKeyProperty(attribute("attribute", Integer.class))).stringProvider(entity -> "test");
-
+        define("entityId",
+                Properties.primaryKeyProperty(attribute("attribute", Integer.class, "entityId"))).stringProvider(entity -> "test");
       }
     }
     final Entities entities = new TestDomain().getEntities();
 
-    final Entity entity = entities.entity("entityToString");
+    final Entity entity = entities.entity("entityId");
     assertEquals("test", entity.toString());
   }
 
@@ -337,7 +336,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityId,
-                Properties.primaryKeyProperty(attribute("attribute", Integer.class)));
+                Properties.primaryKeyProperty(attribute("attribute", Integer.class, entityId)));
       }
     }
     final Domain domain = new TestDomain();
@@ -352,8 +351,8 @@ public class DefaultEntityDefinitionTest {
   public void nullKeyGenerator() {
     class TestDomain extends Domain {
       public TestDomain() {
-        define("nullKeyGenerator",
-                Properties.primaryKeyProperty(attribute("attribute", Integer.class))).keyGenerator(null);
+        define("entityId",
+                Properties.primaryKeyProperty(attribute("attribute", Integer.class, "entityId"))).keyGenerator(null);
       }
     }
     assertThrows(NullPointerException.class, () -> new TestDomain());
@@ -361,11 +360,11 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void keyGenerator() {
-    final String entityId = "automaticKeyGenerator";
+    final String entityId = "entityId";
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityId,
-                Properties.primaryKeyProperty(attribute("attribute", Integer.class)))
+                Properties.primaryKeyProperty(attribute("attribute", Integer.class, entityId)))
                 .keyGenerator(automatic("table"));
       }
     }

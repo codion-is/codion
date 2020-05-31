@@ -33,9 +33,9 @@ public final class EmpDept extends Domain {
   public static final String T_DEPARTMENT = "scott.dept";
 
   /** Attributes for the columns in the scott.dept table*/
-  public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc");
+  public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc", T_DEPARTMENT);
   // end::departmentConstants[]
 
   // tag::employeeConstants[]
@@ -43,20 +43,20 @@ public final class EmpDept extends Domain {
   public static final String T_EMPLOYEE = "scott.emp";
 
   /** Attributes for the columns in the scott.emp table*/
-  public static final Attribute<Integer> EMPLOYEE_ID = integerAttribute("empno");
-  public static final Attribute<String> EMPLOYEE_NAME = stringAttribute("ename");
-  public static final Attribute<String> EMPLOYEE_JOB = stringAttribute("job");
-  public static final Attribute<Integer> EMPLOYEE_MGR = integerAttribute("mgr");
-  public static final Attribute<LocalDate> EMPLOYEE_HIREDATE = localDateAttribute("hiredate");
-  public static final Attribute<BigDecimal> EMPLOYEE_SALARY = bigDecimalAttribute("sal");
-  public static final Attribute<Double> EMPLOYEE_COMMISSION = doubleAttribute("comm");
-  public static final Attribute<Integer> EMPLOYEE_DEPARTMENT = integerAttribute("deptno");
+  public static final Attribute<Integer> EMPLOYEE_ID = integerAttribute("empno", T_EMPLOYEE);
+  public static final Attribute<String> EMPLOYEE_NAME = stringAttribute("ename", T_EMPLOYEE);
+  public static final Attribute<String> EMPLOYEE_JOB = stringAttribute("job", T_EMPLOYEE);
+  public static final Attribute<Integer> EMPLOYEE_MGR = integerAttribute("mgr", T_EMPLOYEE);
+  public static final Attribute<LocalDate> EMPLOYEE_HIREDATE = localDateAttribute("hiredate", T_EMPLOYEE);
+  public static final Attribute<BigDecimal> EMPLOYEE_SALARY = bigDecimalAttribute("sal", T_EMPLOYEE);
+  public static final Attribute<Double> EMPLOYEE_COMMISSION = doubleAttribute("comm", T_EMPLOYEE);
+  public static final Attribute<Integer> EMPLOYEE_DEPARTMENT = integerAttribute("deptno", T_EMPLOYEE);
   /**Foreign key (reference) attribute for the DEPT column in the table scott.emp*/
-  public static final EntityAttribute EMPLOYEE_DEPARTMENT_FK = entityAttribute("dept_fk");
+  public static final EntityAttribute EMPLOYEE_DEPARTMENT_FK = entityAttribute("dept_fk", T_EMPLOYEE);
   /**Foreign key (reference) attribute for the MGR column in the table scott.emp*/
-  public static final EntityAttribute EMPLOYEE_MGR_FK = entityAttribute("mgr_fk");
+  public static final EntityAttribute EMPLOYEE_MGR_FK = entityAttribute("mgr_fk", T_EMPLOYEE);
   /**Attribute for the denormalized department location property*/
-  public static final Attribute<String> EMPLOYEE_DEPARTMENT_LOCATION = stringAttribute("location");
+  public static final Attribute<String> EMPLOYEE_DEPARTMENT_LOCATION = stringAttribute("location", T_EMPLOYEE);
 
   public static final JasperReportWrapper EMPLOYEE_REPORT =
           classPathReport(EmpDept.class, "empdept_employees.jasper");

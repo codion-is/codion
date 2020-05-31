@@ -50,11 +50,10 @@ public final class TestDomain extends Domain {
     registerEntities();
   }
 
-  public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc");
-
   public static final String T_DEPARTMENT = "scott.dept";
+  public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc", T_DEPARTMENT);
 
   void department() {
     define(T_DEPARTMENT,
@@ -70,19 +69,19 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final Attribute<Integer> EMP_ID = integerAttribute("empno");
-  public static final Attribute<String> EMP_NAME = stringAttribute("ename");
-  public static final Attribute<String> EMP_JOB = stringAttribute("job");
-  public static final Attribute<Integer> EMP_MGR = integerAttribute("mgr");
-  public static final Attribute<LocalDate> EMP_HIREDATE = localDateAttribute("hiredate");
-  public static final Attribute<Double> EMP_SALARY = doubleAttribute("sal");
-  public static final Attribute<Double> EMP_COMMISSION = doubleAttribute("comm");
-  public static final Attribute<Integer> EMP_DEPARTMENT = integerAttribute("deptno");
-  public static final EntityAttribute EMP_DEPARTMENT_FK = entityAttribute("dept_fk");
-  public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk");
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = stringAttribute("location");
-  public static final BlobAttribute EMP_DATA = blobAttribute("data");
   public static final String T_EMP = "scott.emp";
+  public static final Attribute<Integer> EMP_ID = integerAttribute("empno", T_EMP);
+  public static final Attribute<String> EMP_NAME = stringAttribute("ename", T_EMP);
+  public static final Attribute<String> EMP_JOB = stringAttribute("job", T_EMP);
+  public static final Attribute<Integer> EMP_MGR = integerAttribute("mgr", T_EMP);
+  public static final Attribute<LocalDate> EMP_HIREDATE = localDateAttribute("hiredate", T_EMP);
+  public static final Attribute<Double> EMP_SALARY = doubleAttribute("sal", T_EMP);
+  public static final Attribute<Double> EMP_COMMISSION = doubleAttribute("comm", T_EMP);
+  public static final Attribute<Integer> EMP_DEPARTMENT = integerAttribute("deptno", T_EMP);
+  public static final EntityAttribute EMP_DEPARTMENT_FK = entityAttribute("dept_fk", T_EMP);
+  public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk", T_EMP);
+  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = stringAttribute("location", T_EMP);
+  public static final BlobAttribute EMP_DATA = blobAttribute("data", T_EMP);
 
   void employee() {
     define(T_EMP,

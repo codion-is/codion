@@ -9,7 +9,7 @@ final class DefaultEntityAttribute extends DefaultAttribute<Entity> implements E
 
   private static final long serialVersionUID = 1;
 
-  DefaultEntityAttribute(final String name) {
-    super(name, Entity.class);
+  DefaultEntityAttribute(final String name, final String entityId) {
+    super(name, Entity.class, entityId);
   }
 }

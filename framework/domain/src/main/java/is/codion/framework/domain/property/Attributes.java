@@ -19,11 +19,12 @@ public final class Attributes {
    * Creates a new {@link Attribute}.
    * @param name the attribute name
    * @param typeClass the class representing the attribute value type
+   * @param entityId the id of the entity to associate this attribute with
    * @param <T> the attribute type
    * @return a new {@link Attribute}
    */
-  public static <T> Attribute<T> attribute(final String name, final Class<T> typeClass) {
-    return new DefaultAttribute<>(name, typeClass);
+  public static <T> Attribute<T> attribute(final String name, final Class<T> typeClass, final String entityId) {
+    return new DefaultAttribute<>(name, typeClass, entityId);
   }
 
   /**
@@ -35,8 +36,7 @@ public final class Attributes {
    * @return a new {@link Attribute}
    */
   public static Attribute<Object> attribute(final String name, final String entityId) {
-    final DefaultAttribute<Object> attribute = new DefaultAttribute<>(name, Object.class);
-    attribute.setEntityId(entityId);
+    final DefaultAttribute<Object> attribute = new DefaultAttribute<>(name, Object.class, entityId);
 
     return attribute;
   }
@@ -44,99 +44,110 @@ public final class Attributes {
   /**
    * Creates a new Long based attribute.
    * @param name the attribute name.
+   * @param entityId the id of the entity to associate this attribute with
    * @return a new Long based attribute.
    */
-  public static Attribute<Long> longAttribute(final String name) {
-    return attribute(name, Long.class);
+  public static Attribute<Long> longAttribute(final String name, final String entityId) {
+    return attribute(name, Long.class, entityId);
   }
 
   /**
    * Creates a new Integer based attribute.
    * @param name the attribute name.
+   * @param entityId the id of the entity to associate this attribute with
    * @return a new Integer based attribute.
    */
-  public static Attribute<Integer> integerAttribute(final String name) {
-    return attribute(name, Integer.class);
+  public static Attribute<Integer> integerAttribute(final String name, final String entityId) {
+    return attribute(name, Integer.class, entityId);
   }
 
   /**
    * Creates a new Double based attribute.
    * @param name the attribute name.
+   * @param entityId the id of the entity to associate this attribute with
    * @return a new Double based attribute.
    */
-  public static Attribute<Double> doubleAttribute(final String name) {
-    return attribute(name, Double.class);
+  public static Attribute<Double> doubleAttribute(final String name, final String entityId) {
+    return attribute(name, Double.class, entityId);
   }
 
   /**
    * Creates a new BigDecimal based attribute.
    * @param name the attribute name.
+   * @param entityId the id of the entity to associate this attribute with
    * @return a new BigDecimal based attribute.
    */
-  public static Attribute<BigDecimal> bigDecimalAttribute(final String name) {
-    return attribute(name, BigDecimal.class);
+  public static Attribute<BigDecimal> bigDecimalAttribute(final String name, final String entityId) {
+    return attribute(name, BigDecimal.class, entityId);
   }
 
   /**
    * Creates a new LocalDate based attribute.
    * @param name the attribute name.
+   * @param entityId the id of the entity to associate this attribute with
    * @return a new LocalDate based attribute.
    */
-  public static Attribute<LocalDate> localDateAttribute(final String name) {
-    return attribute(name, LocalDate.class);
+  public static Attribute<LocalDate> localDateAttribute(final String name, final String entityId) {
+    return attribute(name, LocalDate.class, entityId);
   }
 
   /**
    * Creates a new LocalTime based attribute.
    * @param name the attribute name.
+   * @param entityId the id of the entity to associate this attribute with
    * @return a new LocalTime based attribute.
    */
-  public static Attribute<LocalTime> localTimeAttribute(final String name) {
-    return attribute(name, LocalTime.class);
+  public static Attribute<LocalTime> localTimeAttribute(final String name, final String entityId) {
+    return attribute(name, LocalTime.class, entityId);
   }
 
   /**
    * Creates a new LocalDateTime based attribute.
    * @param name the attribute name.
+   * @param entityId the id of the entity to associate this attribute with
    * @return a new LocalDateTime based attribute.
    */
-  public static Attribute<LocalDateTime> localDateTimeAttribute(final String name) {
-    return attribute(name, LocalDateTime.class);
+  public static Attribute<LocalDateTime> localDateTimeAttribute(final String name, final String entityId) {
+    return attribute(name, LocalDateTime.class, entityId);
   }
 
   /**
    * Creates a new String based attribute.
    * @param name the attribute name.
+   * @param entityId the id of the entity to associate this attribute with
    * @return a new String based attribute.
    */
-  public static Attribute<String> stringAttribute(final String name) {
-    return attribute(name, String.class);
+  public static Attribute<String> stringAttribute(final String name, final String entityId) {
+    return attribute(name, String.class, entityId);
   }
 
   /**
    * Creates a new Boolean based attribute.
    * @param name the attribute name.
+   * @param entityId the id of the entity to associate this attribute with
    * @return a new Boolean based attribute.
    */
-  public static Attribute<Boolean> booleanAttribute(final String name) {
-    return attribute(name, Boolean.class);
+  public static Attribute<Boolean> booleanAttribute(final String name, final String entityId) {
+    return attribute(name, Boolean.class, entityId);
   }
 
   /**
    * Creates a new {@link EntityAttribute}.
    * @param name the attribute name
+   * @param entityId the id of the entity to associate this attribute with
    * @return a new {@link EntityAttribute}
    */
-  public static EntityAttribute entityAttribute(final String name) {
-    return new DefaultEntityAttribute(name);
+  public static EntityAttribute entityAttribute(final String name, final String entityId) {
+    return new DefaultEntityAttribute(name, entityId);
   }
 
   /**
    * Creates a new {@link BlobAttribute}.
    * @param name the attribute name
+   * @param entityId the id of the entity to associate this attribute with
    * @return a new {@link BlobAttribute}
    */
-  public static BlobAttribute blobAttribute(final String name) {
-    return new DefaultBlobAttribute(name);
+  public static BlobAttribute blobAttribute(final String name, final String entityId) {
+    return new DefaultBlobAttribute(name, entityId);
   }
 }

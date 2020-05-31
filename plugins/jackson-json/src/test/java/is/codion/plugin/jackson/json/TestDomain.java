@@ -29,12 +29,12 @@ public final class TestDomain extends Domain {
   }
 
   public static final String T_ENTITY = "test.entity";
-  public static final Attribute<BigDecimal> ENTITY_DECIMAL = Attributes.bigDecimalAttribute("id");
-  public static final Attribute<LocalDateTime> ENTITY_DATE_TIME = Attributes.localDateTimeAttribute("date_time");
-  public static final BlobAttribute ENTITY_BLOB = Attributes.blobAttribute("blob");
-  public static final Attribute<String> ENTITY_READ_ONLY = Attributes.stringAttribute("read_only");
-  public static final Attribute<Boolean> ENTITY_BOOLEAN = Attributes.booleanAttribute("boolean");
-  public static final Attribute<LocalTime> ENTITY_TIME = Attributes.localTimeAttribute("time");
+  public static final Attribute<BigDecimal> ENTITY_DECIMAL = Attributes.bigDecimalAttribute("id", T_ENTITY);
+  public static final Attribute<LocalDateTime> ENTITY_DATE_TIME = Attributes.localDateTimeAttribute("date_time", T_ENTITY);
+  public static final BlobAttribute ENTITY_BLOB = Attributes.blobAttribute("blob", T_ENTITY);
+  public static final Attribute<String> ENTITY_READ_ONLY = Attributes.stringAttribute("read_only", T_ENTITY);
+  public static final Attribute<Boolean> ENTITY_BOOLEAN = Attributes.booleanAttribute("boolean", T_ENTITY);
+  public static final Attribute<LocalTime> ENTITY_TIME = Attributes.localTimeAttribute("time", T_ENTITY);
   public static final String ENTITY_CONDITION_ID = "entityConditionId";
 
   void testEntity() {
@@ -49,12 +49,11 @@ public final class TestDomain extends Domain {
             .conditionProvider(ENTITY_CONDITION_ID, (attributes, values) -> "1 = 2");
   }
 
-  public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc");
-  public static final BlobAttribute DEPARTMENT_LOGO = Attributes.blobAttribute("logo");
-
   public static final String T_DEPARTMENT = "scott.dept";
+  public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc", T_DEPARTMENT);
+  public static final BlobAttribute DEPARTMENT_LOGO = Attributes.blobAttribute("logo", T_DEPARTMENT);
 
   void department() {
     define(T_DEPARTMENT,
@@ -70,18 +69,18 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno");
-  public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename");
-  public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job");
-  public static final Attribute<Integer> EMP_MGR = Attributes.integerAttribute("mgr");
-  public static final Attribute<LocalDate> EMP_HIREDATE = Attributes.localDateAttribute("hiredate");
-  public static final Attribute<BigDecimal> EMP_SALARY = Attributes.bigDecimalAttribute("sal");
-  public static final Attribute<Double> EMP_COMMISSION = Attributes.doubleAttribute("comm");
-  public static final Attribute<Integer> EMP_DEPARTMENT = Attributes.integerAttribute("deptno");
-  public static final EntityAttribute EMP_DEPARTMENT_FK = Attributes.entityAttribute("dept_fk");
-  public static final EntityAttribute EMP_MGR_FK = Attributes.entityAttribute("mgr_fk");
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = Attributes.stringAttribute("location");
   public static final String T_EMP = "scott.emp";
+  public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno", T_EMP);
+  public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename", T_EMP);
+  public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job", T_EMP);
+  public static final Attribute<Integer> EMP_MGR = Attributes.integerAttribute("mgr", T_EMP);
+  public static final Attribute<LocalDate> EMP_HIREDATE = Attributes.localDateAttribute("hiredate", T_EMP);
+  public static final Attribute<BigDecimal> EMP_SALARY = Attributes.bigDecimalAttribute("sal", T_EMP);
+  public static final Attribute<Double> EMP_COMMISSION = Attributes.doubleAttribute("comm", T_EMP);
+  public static final Attribute<Integer> EMP_DEPARTMENT = Attributes.integerAttribute("deptno", T_EMP);
+  public static final EntityAttribute EMP_DEPARTMENT_FK = Attributes.entityAttribute("dept_fk", T_EMP);
+  public static final EntityAttribute EMP_MGR_FK = Attributes.entityAttribute("mgr_fk", T_EMP);
+  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = Attributes.stringAttribute("location", T_EMP);
 
   void employee() {
     define(T_EMP,

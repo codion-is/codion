@@ -67,11 +67,10 @@ public final class TestDomain extends Domain {
     addReport(REPORT);
   }
 
-  public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc");
-
   public static final String T_DEPARTMENT = "scott.dept";
+  public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname", T_DEPARTMENT);
+  public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc", T_DEPARTMENT);
 
   public static final String DEPARTMENT_CONDITION_ID = "condition";
   public static final String DEPARTMENT_CONDITION_SALES_ID = "conditionSalesId";
@@ -99,21 +98,21 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno");
-  public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename");
-  public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job");
-  public static final Attribute<Integer> EMP_MGR = Attributes.integerAttribute("mgr");
-  public static final Attribute<LocalDate> EMP_HIREDATE = Attributes.localDateAttribute("hiredate");
-  public static final Attribute<LocalDateTime> EMP_HIRETIME = Attributes.localDateTimeAttribute("hiretime");
-  public static final Attribute<Double> EMP_SALARY = Attributes.doubleAttribute("sal");
-  public static final Attribute<Double> EMP_COMMISSION = Attributes.doubleAttribute("comm");
-  public static final Attribute<Integer> EMP_DEPARTMENT = Attributes.integerAttribute("deptno");
-  public static final EntityAttribute EMP_DEPARTMENT_FK = Attributes.entityAttribute("dept_fk");
-  public static final EntityAttribute EMP_MGR_FK = Attributes.entityAttribute("mgr_fk");
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = Attributes.stringAttribute("location");
-  public static final BlobAttribute EMP_DATA_LAZY = Attributes.blobAttribute("data_lazy");
-  public static final BlobAttribute EMP_DATA = Attributes.blobAttribute("data");
   public static final String T_EMP = "scott.emp";
+  public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno", T_EMP);
+  public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename", T_EMP);
+  public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job", T_EMP);
+  public static final Attribute<Integer> EMP_MGR = Attributes.integerAttribute("mgr", T_EMP);
+  public static final Attribute<LocalDate> EMP_HIREDATE = Attributes.localDateAttribute("hiredate", T_EMP);
+  public static final Attribute<LocalDateTime> EMP_HIRETIME = Attributes.localDateTimeAttribute("hiretime", T_EMP);
+  public static final Attribute<Double> EMP_SALARY = Attributes.doubleAttribute("sal", T_EMP);
+  public static final Attribute<Double> EMP_COMMISSION = Attributes.doubleAttribute("comm", T_EMP);
+  public static final Attribute<Integer> EMP_DEPARTMENT = Attributes.integerAttribute("deptno", T_EMP);
+  public static final EntityAttribute EMP_DEPARTMENT_FK = Attributes.entityAttribute("dept_fk", T_EMP);
+  public static final EntityAttribute EMP_MGR_FK = Attributes.entityAttribute("mgr_fk", T_EMP);
+  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = Attributes.stringAttribute("location", T_EMP);
+  public static final BlobAttribute EMP_DATA_LAZY = Attributes.blobAttribute("data_lazy", T_EMP);
+  public static final BlobAttribute EMP_DATA = Attributes.blobAttribute("data", T_EMP);
 
   public static final String EMP_NAME_IS_BLAKE_CONDITION_ID = "condition1Id";
   public static final String EMP_MGR_GREATER_THAN_CONDITION_ID = "condition2Id";
@@ -153,8 +152,8 @@ public final class TestDomain extends Domain {
   }
 
   public static final String T_UUID_TEST_DEFAULT = "scott.uuid_test_default";
-  public static final Attribute<UUID> UUID_TEST_DEFAULT_ID = Attributes.attribute("id", UUID.class);
-  public static final Attribute<String> UUID_TEST_DEFAULT_DATA = Attributes.stringAttribute("data");
+  public static final Attribute<UUID> UUID_TEST_DEFAULT_ID = Attributes.attribute("id", UUID.class, T_UUID_TEST_DEFAULT);
+  public static final Attribute<String> UUID_TEST_DEFAULT_DATA = Attributes.stringAttribute("data", T_UUID_TEST_DEFAULT);
 
   private void uuidTestDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
@@ -178,8 +177,8 @@ public final class TestDomain extends Domain {
   }
 
   public static final String T_UUID_TEST_NO_DEFAULT = "scott.uuid_test_no_default";
-  public static final Attribute<UUID> UUID_TEST_NO_DEFAULT_ID = Attributes.attribute("id", UUID.class);
-  public static final Attribute<String> UUID_TEST_NO_DEFAULT_DATA = Attributes.stringAttribute("data");
+  public static final Attribute<UUID> UUID_TEST_NO_DEFAULT_ID = Attributes.attribute("id", UUID.class, T_UUID_TEST_NO_DEFAULT);
+  public static final Attribute<String> UUID_TEST_NO_DEFAULT_DATA = Attributes.stringAttribute("data", T_UUID_TEST_NO_DEFAULT);
 
   private void uuidTestNoDefaultValue() {
     final KeyGenerator uuidKeyGenerator = new KeyGenerator() {
@@ -213,17 +212,17 @@ public final class TestDomain extends Domain {
 
   private void groupByQuery() {
     define(GROUP_BY_QUERY_ENTITY_ID, "scott.emp",
-            columnProperty(Attributes.stringAttribute("job"))
+            columnProperty(Attributes.stringAttribute("job", GROUP_BY_QUERY_ENTITY_ID))
                     .primaryKeyIndex(0)
                     .groupingColumn(true))
             .havingClause("job <> 'PRESIDENT'");
   }
 
   public static final String T_NO_PK = "scott.no_pk_table";
-  public static final Attribute<Integer> NO_PK_COL1 = Attributes.integerAttribute("col1");
-  public static final Attribute<String> NO_PK_COL2 = Attributes.stringAttribute("col2");
-  public static final Attribute<String> NO_PK_COL3 = Attributes.stringAttribute("col3");
-  public static final Attribute<Integer> NO_PK_COL4 = Attributes.integerAttribute("col4");
+  public static final Attribute<Integer> NO_PK_COL1 = Attributes.integerAttribute("col1", T_NO_PK);
+  public static final Attribute<String> NO_PK_COL2 = Attributes.stringAttribute("col2", T_NO_PK);
+  public static final Attribute<String> NO_PK_COL3 = Attributes.stringAttribute("col3", T_NO_PK);
+  public static final Attribute<Integer> NO_PK_COL4 = Attributes.integerAttribute("col4", T_NO_PK);
 
   private void noPkEntity() {
     define(T_NO_PK,
@@ -234,8 +233,8 @@ public final class TestDomain extends Domain {
   }
 
   public static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
-  public static final Attribute<Integer> JOINED_EMPNO = Attributes.integerAttribute("e.empno");
-  public static final Attribute<Integer> JOINED_DEPTNO = Attributes.integerAttribute("d.deptno");
+  public static final Attribute<Integer> JOINED_EMPNO = Attributes.integerAttribute("e.empno", JOINED_QUERY_ENTITY_ID);
+  public static final Attribute<Integer> JOINED_DEPTNO = Attributes.integerAttribute("d.deptno", JOINED_QUERY_ENTITY_ID);
 
   private void joinedQuery() {
     define(JOINED_QUERY_ENTITY_ID,

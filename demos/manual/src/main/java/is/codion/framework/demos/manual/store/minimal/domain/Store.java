@@ -15,18 +15,18 @@ import static is.codion.framework.domain.property.Properties.*;
 public class Store extends Domain {
 
   public static final String T_CUSTOMER = "store.customer";
-  public static final Attribute<Integer> CUSTOMER_ID = integerAttribute("id");
-  public static final Attribute<String> CUSTOMER_FIRST_NAME = stringAttribute("first_name");
-  public static final Attribute<String> CUSTOMER_LAST_NAME = stringAttribute("last_name");
-  public static final Attribute<String> CUSTOMER_EMAIL = stringAttribute("email");
-  public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = booleanAttribute("is_active");
+  public static final Attribute<Integer> CUSTOMER_ID = integerAttribute("id", T_CUSTOMER);
+  public static final Attribute<String> CUSTOMER_FIRST_NAME = stringAttribute("first_name", T_CUSTOMER);
+  public static final Attribute<String> CUSTOMER_LAST_NAME = stringAttribute("last_name", T_CUSTOMER);
+  public static final Attribute<String> CUSTOMER_EMAIL = stringAttribute("email", T_CUSTOMER);
+  public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = booleanAttribute("is_active", T_CUSTOMER);
 
   public static final String T_ADDRESS = "store.address";
-  public static final Attribute<Integer> ADDRESS_ID = integerAttribute("id");
-  public static final EntityAttribute ADDRESS_CUSTOMER_FK = entityAttribute("customer_fk");
-  public static final Attribute<Integer> ADDRESS_CUSTOMER_ID = integerAttribute("customer_id");
-  public static final Attribute<String> ADDRESS_STREET = stringAttribute("street");
-  public static final Attribute<String> ADDRESS_CITY = stringAttribute("city");
+  public static final Attribute<Integer> ADDRESS_ID = integerAttribute("id", T_ADDRESS);
+  public static final EntityAttribute ADDRESS_CUSTOMER_FK = entityAttribute("customer_fk", T_ADDRESS);
+  public static final Attribute<Integer> ADDRESS_CUSTOMER_ID = integerAttribute("customer_id", T_ADDRESS);
+  public static final Attribute<String> ADDRESS_STREET = stringAttribute("street", T_ADDRESS);
+  public static final Attribute<String> ADDRESS_CITY = stringAttribute("city", T_ADDRESS);
 
   public Store() {
     define(T_CUSTOMER,

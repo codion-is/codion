@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 /**
  * Typed {@link Attribute} to base a {@link Property} on.
- * Note that Attributes are equal if their names are equal, the type does not factor into equality.
+ * Note that Attributes are equal if their names and entityIds are equal, the typeClass does not factor into equality.
  * @param <T> the attribute type
  */
 public interface Attribute<T> extends Serializable {

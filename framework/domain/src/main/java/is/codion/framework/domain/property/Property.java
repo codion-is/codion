@@ -211,13 +211,6 @@ public interface Property<T> extends Serializable {
     Property<T> get();
 
     /**
-     * @param entityId the id of the entity this property is associated with
-     * @throws IllegalStateException in case the entityId has already been set
-     * @return this instance
-     */
-    Property.Builder<T> entityId(String entityId);
-
-    /**
      * Sets the bean name property to associate with this property
      * @param beanProperty the bean property name
      * @return this instance

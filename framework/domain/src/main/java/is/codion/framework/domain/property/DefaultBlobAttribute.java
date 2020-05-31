@@ -7,7 +7,7 @@ final class DefaultBlobAttribute extends DefaultAttribute<byte[]> implements Blo
 
   private static final long serialVersionUID = 1;
 
-  DefaultBlobAttribute(final String name) {
-    super(name, byte[].class);
+  DefaultBlobAttribute(final String name, final String entityId) {
+    super(name, byte[].class, entityId);
   }
 }

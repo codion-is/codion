@@ -29,14 +29,14 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_ADDRESS = "address";
-  public static final Attribute<Integer> ADDRESS_ID = integerAttribute("Address id");
-  public static final Attribute<String> ADDRESS_STREET_1 = stringAttribute("Street 1");
-  public static final Attribute<String> ADDRESS_STREET_2 = stringAttribute("Street 2");
-  public static final Attribute<String> ADDRESS_CITY = stringAttribute("City");
-  public static final Attribute<String> ADDRESS_STATE = stringAttribute("State");
-  public static final Attribute<Integer> ADDRESS_ZIP = integerAttribute("Zip");
-  public static final Attribute<Double> ADDRESS_LATITUDE = doubleAttribute("Latitude");
-  public static final Attribute<Double> ADDRESS_LONGITUDE = doubleAttribute("Longitude");
+  public static final Attribute<Integer> ADDRESS_ID = integerAttribute("Address id", T_ADDRESS);
+  public static final Attribute<String> ADDRESS_STREET_1 = stringAttribute("Street 1", T_ADDRESS);
+  public static final Attribute<String> ADDRESS_STREET_2 = stringAttribute("Street 2", T_ADDRESS);
+  public static final Attribute<String> ADDRESS_CITY = stringAttribute("City", T_ADDRESS);
+  public static final Attribute<String> ADDRESS_STATE = stringAttribute("State", T_ADDRESS);
+  public static final Attribute<Integer> ADDRESS_ZIP = integerAttribute("Zip", T_ADDRESS);
+  public static final Attribute<Double> ADDRESS_LATITUDE = doubleAttribute("Latitude", T_ADDRESS);
+  public static final Attribute<Double> ADDRESS_LONGITUDE = doubleAttribute("Longitude", T_ADDRESS);
 
   void address() {
     define(T_ADDRESS, "petstore.address",
@@ -65,10 +65,10 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_CATEGORY = "category";
-  public static final Attribute<Integer> CATEGORY_ID = integerAttribute("Category id");
-  public static final Attribute<String> CATEGORY_NAME = stringAttribute("Name");
-  public static final Attribute<String> CATEGORY_DESCRIPTION = stringAttribute("Description");
-  public static final Attribute<String> CATEGORY_IMAGE_URL = stringAttribute("Image URL");
+  public static final Attribute<Integer> CATEGORY_ID = integerAttribute("Category id", T_CATEGORY);
+  public static final Attribute<String> CATEGORY_NAME = stringAttribute("Name", T_CATEGORY);
+  public static final Attribute<String> CATEGORY_DESCRIPTION = stringAttribute("Description", T_CATEGORY);
+  public static final Attribute<String> CATEGORY_IMAGE_URL = stringAttribute("Image URL", T_CATEGORY);
 
   void category() {
     define(T_CATEGORY, "petstore.category",
@@ -87,12 +87,12 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_PRODUCT = "product";
-  public static final Attribute<Integer> PRODUCT_ID = integerAttribute("Product id");
-  public static final Attribute<Integer> PRODUCT_CATEGORY_ID = integerAttribute("Category id");
-  public static final EntityAttribute PRODUCT_CATEGORY_FK = entityAttribute("Category");
-  public static final Attribute<String> PRODUCT_NAME = stringAttribute("Name");
-  public static final Attribute<String> PRODUCT_DESCRIPTION = stringAttribute("Description");
-  public static final Attribute<String> PRODUCT_IMAGE_URL = stringAttribute("Image URL");
+  public static final Attribute<Integer> PRODUCT_ID = integerAttribute("Product id", T_PRODUCT);
+  public static final Attribute<Integer> PRODUCT_CATEGORY_ID = integerAttribute("Category id", T_PRODUCT);
+  public static final EntityAttribute PRODUCT_CATEGORY_FK = entityAttribute("Category", T_PRODUCT);
+  public static final Attribute<String> PRODUCT_NAME = stringAttribute("Name", T_PRODUCT);
+  public static final Attribute<String> PRODUCT_DESCRIPTION = stringAttribute("Description", T_PRODUCT);
+  public static final Attribute<String> PRODUCT_IMAGE_URL = stringAttribute("Image URL", T_PRODUCT);
 
   void product() {
     define(T_PRODUCT, "petstore.product",
@@ -115,10 +115,10 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_SELLER_CONTACT_INFO = "sellercontactinfo";
-  public static final Attribute<Integer> SELLER_CONTACT_INFO_ID = integerAttribute("Contactinfo id");
-  public static final Attribute<String> SELLER_CONTACT_INFO_FIRST_NAME = stringAttribute("First name");
-  public static final Attribute<String> SELLER_CONTACT_INFO_LAST_NAME = stringAttribute("Last name");
-  public static final Attribute<String> SELLER_CONTACT_INFO_EMAIL = stringAttribute("Email");
+  public static final Attribute<Integer> SELLER_CONTACT_INFO_ID = integerAttribute("Contactinfo id", T_SELLER_CONTACT_INFO);
+  public static final Attribute<String> SELLER_CONTACT_INFO_FIRST_NAME = stringAttribute("First name", T_SELLER_CONTACT_INFO);
+  public static final Attribute<String> SELLER_CONTACT_INFO_LAST_NAME = stringAttribute("Last name", T_SELLER_CONTACT_INFO);
+  public static final Attribute<String> SELLER_CONTACT_INFO_EMAIL = stringAttribute("Email", T_SELLER_CONTACT_INFO);
 
   void sellerContactInfo() {
     define(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
@@ -139,19 +139,19 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_ITEM = "item";
-  public static final Attribute<Integer> ITEM_ID = integerAttribute("Item id");
-  public static final Attribute<Integer> ITEM_PRODUCT_ID = integerAttribute("Product id");
-  public static final EntityAttribute ITEM_PRODUCT_FK = entityAttribute("Product");
-  public static final Attribute<String> ITEM_NAME = stringAttribute("Name");
-  public static final Attribute<String> ITEM_DESCRIPTION = stringAttribute("Description");
-  public static final Attribute<String> ITEM_IMAGE_URL = stringAttribute("Image URL");
-  public static final Attribute<String> ITEM_IMAGE_THUMB_URL = stringAttribute("Image thumbnail URL");
-  public static final Attribute<BigDecimal> ITEM_PRICE = bigDecimalAttribute("Price");
-  public static final Attribute<Integer> ITEM_C0NTACT_INFO_ID = integerAttribute("Contactinfo id");
-  public static final EntityAttribute ITEM_C0NTACT_INFO_FK = entityAttribute("Contact info");
-  public static final Attribute<Integer> ITEM_ADDRESS_ID = integerAttribute("Address id");
-  public static final EntityAttribute ITEM_ADDRESS_FK = entityAttribute("Address");
-  public static final Attribute<Boolean> ITEM_DISABLED = booleanAttribute("Disabled");
+  public static final Attribute<Integer> ITEM_ID = integerAttribute("Item id", T_ITEM);
+  public static final Attribute<Integer> ITEM_PRODUCT_ID = integerAttribute("Product id", T_ITEM);
+  public static final EntityAttribute ITEM_PRODUCT_FK = entityAttribute("Product", T_ITEM);
+  public static final Attribute<String> ITEM_NAME = stringAttribute("Name", T_ITEM);
+  public static final Attribute<String> ITEM_DESCRIPTION = stringAttribute("Description", T_ITEM);
+  public static final Attribute<String> ITEM_IMAGE_URL = stringAttribute("Image URL", T_ITEM);
+  public static final Attribute<String> ITEM_IMAGE_THUMB_URL = stringAttribute("Image thumbnail URL", T_ITEM);
+  public static final Attribute<BigDecimal> ITEM_PRICE = bigDecimalAttribute("Price", T_ITEM);
+  public static final Attribute<Integer> ITEM_C0NTACT_INFO_ID = integerAttribute("Contactinfo id", T_ITEM);
+  public static final EntityAttribute ITEM_C0NTACT_INFO_FK = entityAttribute("Contact info", T_ITEM);
+  public static final Attribute<Integer> ITEM_ADDRESS_ID = integerAttribute("Address id", T_ITEM);
+  public static final EntityAttribute ITEM_ADDRESS_FK = entityAttribute("Address", T_ITEM);
+  public static final Attribute<Boolean> ITEM_DISABLED = booleanAttribute("Disabled", T_ITEM);
 
   void item() {
     define(T_ITEM, "petstore.item",
@@ -187,9 +187,9 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_TAG = "tag";
-  public static final Attribute<Integer> TAG_ID = integerAttribute("Tag id");
-  public static final Attribute<String> TAG_TAG = stringAttribute("Tag");
-  public static final Attribute<Integer> TAG_REFCOUNT = integerAttribute("Reference count");
+  public static final Attribute<Integer> TAG_ID = integerAttribute("Tag id", T_TAG);
+  public static final Attribute<String> TAG_TAG = stringAttribute("Tag", T_TAG);
+  public static final Attribute<Integer> TAG_REFCOUNT = integerAttribute("Reference count", T_TAG);
 
   void tag() {
     define(T_TAG, "petstore.tag",
@@ -208,10 +208,10 @@ public final class Petstore extends Domain {
   }
 
   public static final String T_TAG_ITEM = "tag_item";
-  public static final Attribute<Integer> TAG_ITEM_ITEM_ID = integerAttribute("Item id");
-  public static final EntityAttribute TAG_ITEM_ITEM_FK = entityAttribute("Item");
-  public static final Attribute<Integer> TAG_ITEM_TAG_ID = integerAttribute("Tag id");
-  public static final EntityAttribute TAG_ITEM_TAG_FK = entityAttribute("Tag");
+  public static final Attribute<Integer> TAG_ITEM_ITEM_ID = integerAttribute("Item id", T_TAG_ITEM);
+  public static final EntityAttribute TAG_ITEM_ITEM_FK = entityAttribute("Item", T_TAG_ITEM);
+  public static final Attribute<Integer> TAG_ITEM_TAG_ID = integerAttribute("Tag id", T_TAG_ITEM);
+  public static final EntityAttribute TAG_ITEM_TAG_FK = entityAttribute("Tag", T_TAG_ITEM);
 
   void tagItem() {
     define(T_TAG_ITEM, "petstore.tag_item",

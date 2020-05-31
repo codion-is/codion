@@ -42,7 +42,7 @@ public final class SchemaBrowser extends Domain {
   }
 
   public static final String T_SCHEMA = "schema";
-  public static final Attribute<String> SCHEMA_NAME = stringAttribute(bundle.getString("schema_name"));
+  public static final Attribute<String> SCHEMA_NAME = stringAttribute(bundle.getString("schema_name"), T_SCHEMA);
 
   void defineSchema() {
     define(T_SCHEMA, bundle.getString("t_schema"),
@@ -54,9 +54,9 @@ public final class SchemaBrowser extends Domain {
   }
 
   public static final String T_TABLE = "table";
-  public static final Attribute<String> TABLE_SCHEMA = stringAttribute(bundle.getString("table_schema"));
-  public static final EntityAttribute TABLE_SCHEMA_FK = entityAttribute(bundle.getString("table_schema_ref"));
-  public static final Attribute<String> TABLE_NAME = stringAttribute(bundle.getString("table_name"));
+  public static final Attribute<String> TABLE_SCHEMA = stringAttribute(bundle.getString("table_schema"), T_TABLE);
+  public static final EntityAttribute TABLE_SCHEMA_FK = entityAttribute(bundle.getString("table_schema_ref"), T_TABLE);
+  public static final Attribute<String> TABLE_NAME = stringAttribute(bundle.getString("table_name"), T_TABLE);
 
   void defineTable() {
     define(T_TABLE, bundle.getString("t_table"),
@@ -70,11 +70,11 @@ public final class SchemaBrowser extends Domain {
   }
 
   public static final String T_COLUMN = "column";
-  public static final Attribute<String> COLUMN_SCHEMA = stringAttribute(bundle.getString("column_schema"));
-  public static final Attribute<String> COLUMN_TABLE_NAME = stringAttribute(bundle.getString("column_table_name"));
-  public static final EntityAttribute COLUMN_TABLE_FK = entityAttribute(bundle.getString("column_table_ref"));
-  public static final Attribute<String> COLUMN_NAME = stringAttribute(bundle.getString("column_name"));
-  public static final Attribute<String> COLUMN_DATA_TYPE = stringAttribute(bundle.getString("column_data_type"));
+  public static final Attribute<String> COLUMN_SCHEMA = stringAttribute(bundle.getString("column_schema"), T_COLUMN);
+  public static final Attribute<String> COLUMN_TABLE_NAME = stringAttribute(bundle.getString("column_table_name"), T_COLUMN);
+  public static final EntityAttribute COLUMN_TABLE_FK = entityAttribute(bundle.getString("column_table_ref"), T_COLUMN);
+  public static final Attribute<String> COLUMN_NAME = stringAttribute(bundle.getString("column_name"), T_COLUMN);
+  public static final Attribute<String> COLUMN_DATA_TYPE = stringAttribute(bundle.getString("column_data_type"), T_COLUMN);
 
   void defineColumn() {
     define(T_COLUMN, bundle.getString("t_column"),
@@ -90,11 +90,11 @@ public final class SchemaBrowser extends Domain {
   }
 
   public static final String T_CONSTRAINT = "constraint";
-  public static final Attribute<String> CONSTRAINT_SCHEMA = stringAttribute(bundle.getString("constraint_schema"));
-  public static final Attribute<String> CONSTRAINT_TABLE_NAME = stringAttribute(bundle.getString("constraint_table_name"));
-  public static final EntityAttribute CONSTRAINT_TABLE_FK = entityAttribute(bundle.getString("constraint_table_ref"));
-  public static final Attribute<String> CONSTRAINT_NAME = stringAttribute(bundle.getString("constraint_name"));
-  public static final Attribute<String> CONSTRAINT_TYPE = stringAttribute(bundle.getString("constraint_type"));
+  public static final Attribute<String> CONSTRAINT_SCHEMA = stringAttribute(bundle.getString("constraint_schema"), T_CONSTRAINT);
+  public static final Attribute<String> CONSTRAINT_TABLE_NAME = stringAttribute(bundle.getString("constraint_table_name"), T_CONSTRAINT);
+  public static final EntityAttribute CONSTRAINT_TABLE_FK = entityAttribute(bundle.getString("constraint_table_ref"), T_CONSTRAINT);
+  public static final Attribute<String> CONSTRAINT_NAME = stringAttribute(bundle.getString("constraint_name"), T_CONSTRAINT);
+  public static final Attribute<String> CONSTRAINT_TYPE = stringAttribute(bundle.getString("constraint_type"), T_CONSTRAINT);
 
   void defineConstraint() {
     define(T_CONSTRAINT, bundle.getString("t_constraint"),
@@ -110,12 +110,12 @@ public final class SchemaBrowser extends Domain {
   }
 
   public static final String T_COLUMN_CONSTRAINT = "column_constraint";
-  public static final Attribute<String> COLUMN_CONSTRAINT_SCHEMA = stringAttribute(bundle.getString("column_constraint_schema"));
-  public static final Attribute<String> COLUMN_CONSTRAINT_CONSTRAINT_NAME = stringAttribute(bundle.getString("column_constraint_constraint_name"));
-  public static final EntityAttribute COLUMN_CONSTRAINT_CONSTRAINT_FK = entityAttribute(bundle.getString("column_constraint_constraint_ref"));
-  public static final Attribute<String> COLUMN_CONSTRAINT_TABLE_NAME = stringAttribute(bundle.getString("column_constraint_table_name"));
-  public static final Attribute<String> COLUMN_CONSTRAINT_COLUMN_NAME = stringAttribute(bundle.getString("column_constraint_column_name"));
-  public static final Attribute<Integer> COLUMN_CONSTRAINT_POSITION = integerAttribute(bundle.getString("column_constraint_position"));
+  public static final Attribute<String> COLUMN_CONSTRAINT_SCHEMA = stringAttribute(bundle.getString("column_constraint_schema"), T_COLUMN_CONSTRAINT);
+  public static final Attribute<String> COLUMN_CONSTRAINT_CONSTRAINT_NAME = stringAttribute(bundle.getString("column_constraint_constraint_name"), T_COLUMN_CONSTRAINT);
+  public static final EntityAttribute COLUMN_CONSTRAINT_CONSTRAINT_FK = entityAttribute(bundle.getString("column_constraint_constraint_ref"), T_COLUMN_CONSTRAINT);
+  public static final Attribute<String> COLUMN_CONSTRAINT_TABLE_NAME = stringAttribute(bundle.getString("column_constraint_table_name"), T_COLUMN_CONSTRAINT);
+  public static final Attribute<String> COLUMN_CONSTRAINT_COLUMN_NAME = stringAttribute(bundle.getString("column_constraint_column_name"), T_COLUMN_CONSTRAINT);
+  public static final Attribute<Integer> COLUMN_CONSTRAINT_POSITION = integerAttribute(bundle.getString("column_constraint_position"), T_COLUMN_CONSTRAINT);
 
   void defineColumnConstraint() {
     define(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),

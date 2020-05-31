@@ -692,12 +692,15 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private void validateAndAddProperty(final Property.Builder<?> propertyBuilder, final Map<Attribute<?>, Property<?>> propertyMap) {
       final Property<?> property = propertyBuilder.get();
-      propertyBuilder.entityId(entityId);
-      checkIfUniqueAttribute(property, propertyMap);
+      validate(property, propertyMap);
       propertyMap.put(property.getAttribute(), property);
     }
 
-    private void checkIfUniqueAttribute(final Property<?> property, final Map<Attribute<?>, Property<?>> propertyMap) {
+    private void validate(final Property<?> property, final Map<Attribute<?>, Property<?>> propertyMap) {
+      if (!entityId.equals(property.getAttribute().getEntityId())) {
+        throw new IllegalArgumentException("Attribute entityId (" +
+                property.getAttribute().getEntityId() + ") does not match the definition entityId: " + entityId);
+      }
       if (propertyMap.containsKey(property.getAttribute())) {
         throw new IllegalArgumentException("Property with id " + property.getAttribute()
                 + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")

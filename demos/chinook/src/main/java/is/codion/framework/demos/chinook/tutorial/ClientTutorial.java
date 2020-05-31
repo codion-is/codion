@@ -44,15 +44,15 @@ public final class ClientTutorial {
   public static final class Chinook extends Domain {
 
     public static final String T_ARTIST = "chinook.artist";
-    public static final Attribute<Integer> ARTIST_ID = integerAttribute("artistid");
-    public static final Attribute<String> ARTIST_NAME = stringAttribute("name");
-    public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = integerAttribute("nr_of_albums");
+    public static final Attribute<Integer> ARTIST_ID = integerAttribute("artistid", T_ARTIST);
+    public static final Attribute<String> ARTIST_NAME = stringAttribute("name", T_ARTIST);
+    public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = integerAttribute("nr_of_albums", T_ARTIST);
 
     public static final String T_ALBUM = "chinook.album";
-    public static final Attribute<Integer> ALBUM_ALBUMID = integerAttribute("albumid");
-    public static final Attribute<String> ALBUM_TITLE = stringAttribute("title");
-    public static final Attribute<Integer> ALBUM_ARTISTID = integerAttribute("artistid");
-    public static final EntityAttribute ALBUM_ARTIST_FK = entityAttribute("artist_fk");
+    public static final Attribute<Integer> ALBUM_ALBUMID = integerAttribute("albumid", T_ALBUM);
+    public static final Attribute<String> ALBUM_TITLE = stringAttribute("title", T_ALBUM);
+    public static final Attribute<Integer> ALBUM_ARTISTID = integerAttribute("artistid", T_ALBUM);
+    public static final EntityAttribute ALBUM_ARTIST_FK = entityAttribute("artist_fk", T_ALBUM);
 
     public Chinook() {
       define(T_ARTIST,

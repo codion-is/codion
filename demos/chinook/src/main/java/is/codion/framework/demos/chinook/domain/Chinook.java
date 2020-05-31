@@ -20,79 +20,79 @@ import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport
 public interface Chinook {
 
   String T_ARTIST = "artist@chinook";
-  Attribute<Long> ARTIST_ARTISTID = longAttribute("artistid");
-  Attribute<String> ARTIST_NAME = stringAttribute("name");
-  Attribute<Integer> ARTIST_NR_OF_ALBUMS = integerAttribute("nr_of_albums");
-  Attribute<Integer> ARTIST_NR_OF_TRACKS = integerAttribute("nr_of_tracks");
+  Attribute<Long> ARTIST_ARTISTID = longAttribute("artistid", T_ARTIST);
+  Attribute<String> ARTIST_NAME = stringAttribute("name", T_ARTIST);
+  Attribute<Integer> ARTIST_NR_OF_ALBUMS = integerAttribute("nr_of_albums", T_ARTIST);
+  Attribute<Integer> ARTIST_NR_OF_TRACKS = integerAttribute("nr_of_tracks", T_ARTIST);
 
   String T_ALBUM = "album@chinook";
-  Attribute<Long> ALBUM_ALBUMID = longAttribute("albumid");
-  Attribute<String> ALBUM_TITLE = stringAttribute("title");
-  Attribute<Long> ALBUM_ARTISTID = longAttribute("artistid");
-  EntityAttribute ALBUM_ARTIST_FK = entityAttribute("artist_fk");
-  BlobAttribute ALBUM_COVER = blobAttribute("cover");
-  Attribute<Image> ALBUM_COVER_IMAGE = attribute("coverimage", Image.class);
-  Attribute<Integer> ALBUM_NUMBER_OF_TRACKS = integerAttribute("nr_of_tracks");
+  Attribute<Long> ALBUM_ALBUMID = longAttribute("albumid", T_ALBUM);
+  Attribute<String> ALBUM_TITLE = stringAttribute("title", T_ALBUM);
+  Attribute<Long> ALBUM_ARTISTID = longAttribute("artistid", T_ALBUM);
+  EntityAttribute ALBUM_ARTIST_FK = entityAttribute("artist_fk", T_ALBUM);
+  BlobAttribute ALBUM_COVER = blobAttribute("cover", T_ALBUM);
+  Attribute<Image> ALBUM_COVER_IMAGE = attribute("coverimage", Image.class, T_ALBUM);
+  Attribute<Integer> ALBUM_NUMBER_OF_TRACKS = integerAttribute("nr_of_tracks", T_ALBUM);
 
   String T_EMPLOYEE = "employee@chinook";
-  Attribute<Long> EMPLOYEE_EMPLOYEEID = longAttribute("employeeid");
-  Attribute<String> EMPLOYEE_LASTNAME = stringAttribute("lastname");
-  Attribute<String> EMPLOYEE_FIRSTNAME = stringAttribute("firstname");
-  Attribute<String> EMPLOYEE_TITLE = stringAttribute("title");
-  Attribute<Long> EMPLOYEE_REPORTSTO = longAttribute("reportsto");
-  EntityAttribute EMPLOYEE_REPORTSTO_FK = entityAttribute("reportsto_fk");
-  Attribute<LocalDate> EMPLOYEE_BIRTHDATE = localDateAttribute("birthdate");
-  Attribute<LocalDate> EMPLOYEE_HIREDATE = localDateAttribute("hiredate");
-  Attribute<String> EMPLOYEE_ADDRESS = stringAttribute("address");
-  Attribute<String> EMPLOYEE_CITY = stringAttribute("city");
-  Attribute<String> EMPLOYEE_STATE = stringAttribute("state");
-  Attribute<String> EMPLOYEE_COUNTRY = stringAttribute("country");
-  Attribute<String> EMPLOYEE_POSTALCODE = stringAttribute("postalcode");
-  Attribute<String> EMPLOYEE_PHONE = stringAttribute("phone");
-  Attribute<String> EMPLOYEE_FAX = stringAttribute("fax");
-  Attribute<String> EMPLOYEE_EMAIL = stringAttribute("email");
+  Attribute<Long> EMPLOYEE_EMPLOYEEID = longAttribute("employeeid", T_EMPLOYEE);
+  Attribute<String> EMPLOYEE_LASTNAME = stringAttribute("lastname", T_EMPLOYEE);
+  Attribute<String> EMPLOYEE_FIRSTNAME = stringAttribute("firstname", T_EMPLOYEE);
+  Attribute<String> EMPLOYEE_TITLE = stringAttribute("title", T_EMPLOYEE);
+  Attribute<Long> EMPLOYEE_REPORTSTO = longAttribute("reportsto", T_EMPLOYEE);
+  EntityAttribute EMPLOYEE_REPORTSTO_FK = entityAttribute("reportsto_fk", T_EMPLOYEE);
+  Attribute<LocalDate> EMPLOYEE_BIRTHDATE = localDateAttribute("birthdate", T_EMPLOYEE);
+  Attribute<LocalDate> EMPLOYEE_HIREDATE = localDateAttribute("hiredate", T_EMPLOYEE);
+  Attribute<String> EMPLOYEE_ADDRESS = stringAttribute("address", T_EMPLOYEE);
+  Attribute<String> EMPLOYEE_CITY = stringAttribute("city", T_EMPLOYEE);
+  Attribute<String> EMPLOYEE_STATE = stringAttribute("state", T_EMPLOYEE);
+  Attribute<String> EMPLOYEE_COUNTRY = stringAttribute("country", T_EMPLOYEE);
+  Attribute<String> EMPLOYEE_POSTALCODE = stringAttribute("postalcode", T_EMPLOYEE);
+  Attribute<String> EMPLOYEE_PHONE = stringAttribute("phone", T_EMPLOYEE);
+  Attribute<String> EMPLOYEE_FAX = stringAttribute("fax", T_EMPLOYEE);
+  Attribute<String> EMPLOYEE_EMAIL = stringAttribute("email", T_EMPLOYEE);
 
   String T_CUSTOMER = "customer@chinook";
-  Attribute<Long> CUSTOMER_CUSTOMERID = longAttribute("customerid");
-  Attribute<String> CUSTOMER_FIRSTNAME = stringAttribute("firstname");
-  Attribute<String> CUSTOMER_LASTNAME = stringAttribute("lastname");
-  Attribute<String> CUSTOMER_COMPANY = stringAttribute("company");
-  Attribute<String> CUSTOMER_ADDRESS = stringAttribute("address");
-  Attribute<String> CUSTOMER_CITY = stringAttribute("city");
-  Attribute<String> CUSTOMER_STATE = stringAttribute("state");
-  Attribute<String> CUSTOMER_COUNTRY = stringAttribute("country");
-  Attribute<String> CUSTOMER_POSTALCODE = stringAttribute("postalcode");
-  Attribute<String> CUSTOMER_PHONE = stringAttribute("phone");
-  Attribute<String> CUSTOMER_FAX = stringAttribute("fax");
-  Attribute<String> CUSTOMER_EMAIL = stringAttribute("email");
-  Attribute<Long> CUSTOMER_SUPPORTREPID = longAttribute("supportrepid");
-  EntityAttribute CUSTOMER_SUPPORTREP_FK = entityAttribute("supportrep_fk");
+  Attribute<Long> CUSTOMER_CUSTOMERID = longAttribute("customerid", T_CUSTOMER);
+  Attribute<String> CUSTOMER_FIRSTNAME = stringAttribute("firstname", T_CUSTOMER);
+  Attribute<String> CUSTOMER_LASTNAME = stringAttribute("lastname", T_CUSTOMER);
+  Attribute<String> CUSTOMER_COMPANY = stringAttribute("company", T_CUSTOMER);
+  Attribute<String> CUSTOMER_ADDRESS = stringAttribute("address", T_CUSTOMER);
+  Attribute<String> CUSTOMER_CITY = stringAttribute("city", T_CUSTOMER);
+  Attribute<String> CUSTOMER_STATE = stringAttribute("state", T_CUSTOMER);
+  Attribute<String> CUSTOMER_COUNTRY = stringAttribute("country", T_CUSTOMER);
+  Attribute<String> CUSTOMER_POSTALCODE = stringAttribute("postalcode", T_CUSTOMER);
+  Attribute<String> CUSTOMER_PHONE = stringAttribute("phone", T_CUSTOMER);
+  Attribute<String> CUSTOMER_FAX = stringAttribute("fax", T_CUSTOMER);
+  Attribute<String> CUSTOMER_EMAIL = stringAttribute("email", T_CUSTOMER);
+  Attribute<Long> CUSTOMER_SUPPORTREPID = longAttribute("supportrepid", T_CUSTOMER);
+  EntityAttribute CUSTOMER_SUPPORTREP_FK = entityAttribute("supportrep_fk", T_CUSTOMER);
 
   JasperReportWrapper CUSTOMER_REPORT = classPathReport(Chinook.class, "customer_report.jasper");
 
   String T_GENRE = "genre@chinook";
-  Attribute<Long> GENRE_GENREID = longAttribute("genreid");
-  Attribute<String> GENRE_NAME = stringAttribute("name");
+  Attribute<Long> GENRE_GENREID = longAttribute("genreid", T_GENRE);
+  Attribute<String> GENRE_NAME = stringAttribute("name", T_GENRE);
 
   String T_MEDIATYPE = "mediatype@chinook";
-  Attribute<Long> MEDIATYPE_MEDIATYPEID = longAttribute("mediatypeid");
-  Attribute<String> MEDIATYPE_NAME = stringAttribute("name");
+  Attribute<Long> MEDIATYPE_MEDIATYPEID = longAttribute("mediatypeid", T_MEDIATYPE);
+  Attribute<String> MEDIATYPE_NAME = stringAttribute("name", T_MEDIATYPE);
 
   String T_TRACK = "track@chinook";
-  Attribute<Long> TRACK_TRACKID = longAttribute("trackid");
-  Attribute<String> TRACK_NAME = stringAttribute("name");
-  EntityAttribute TRACK_ARTIST_DENORM = entityAttribute("artist_denorm");
-  Attribute<Long> TRACK_ALBUMID = longAttribute("albumid");
-  EntityAttribute TRACK_ALBUM_FK = entityAttribute("album_fk");
-  Attribute<Long> TRACK_MEDIATYPEID = longAttribute("mediatypeid");
-  EntityAttribute TRACK_MEDIATYPE_FK = entityAttribute("mediatype_fk");
-  Attribute<Long> TRACK_GENREID = longAttribute("genreid");
-  EntityAttribute TRACK_GENRE_FK = entityAttribute("genre_fk");
-  Attribute<String> TRACK_COMPOSER = stringAttribute("composer");
-  Attribute<Integer> TRACK_MILLISECONDS = integerAttribute("milliseconds");
-  Attribute<String> TRACK_MINUTES_SECONDS_DERIVED = stringAttribute("minutes_seconds_transient");
-  Attribute<Integer> TRACK_BYTES = integerAttribute("bytes");
-  Attribute<BigDecimal> TRACK_UNITPRICE = bigDecimalAttribute("unitprice");
+  Attribute<Long> TRACK_TRACKID = longAttribute("trackid", T_TRACK);
+  Attribute<String> TRACK_NAME = stringAttribute("name", T_TRACK);
+  EntityAttribute TRACK_ARTIST_DENORM = entityAttribute("artist_denorm", T_TRACK);
+  Attribute<Long> TRACK_ALBUMID = longAttribute("albumid", T_TRACK);
+  EntityAttribute TRACK_ALBUM_FK = entityAttribute("album_fk", T_TRACK);
+  Attribute<Long> TRACK_MEDIATYPEID = longAttribute("mediatypeid", T_TRACK);
+  EntityAttribute TRACK_MEDIATYPE_FK = entityAttribute("mediatype_fk", T_TRACK);
+  Attribute<Long> TRACK_GENREID = longAttribute("genreid", T_TRACK);
+  EntityAttribute TRACK_GENRE_FK = entityAttribute("genre_fk", T_TRACK);
+  Attribute<String> TRACK_COMPOSER = stringAttribute("composer", T_TRACK);
+  Attribute<Integer> TRACK_MILLISECONDS = integerAttribute("milliseconds", T_TRACK);
+  Attribute<String> TRACK_MINUTES_SECONDS_DERIVED = stringAttribute("minutes_seconds_transient", T_TRACK);
+  Attribute<Integer> TRACK_BYTES = integerAttribute("bytes", T_TRACK);
+  Attribute<BigDecimal> TRACK_UNITPRICE = bigDecimalAttribute("unitprice", T_TRACK);
 
   DerivedProperty.Provider<String> TRACK_MIN_SEC_PROVIDER =
           linkedValues -> {
@@ -105,27 +105,27 @@ public interface Chinook {
           };
 
   String T_INVOICE = "invoice@chinook";
-  Attribute<Long> INVOICE_INVOICEID = longAttribute("invoiceid");
-  Attribute<Long> INVOICE_CUSTOMERID = longAttribute("customerid");
-  EntityAttribute INVOICE_CUSTOMER_FK = entityAttribute("customer_fk");
-  Attribute<LocalDateTime> INVOICE_INVOICEDATE = localDateTimeAttribute("invoicedate");
-  Attribute<String> INVOICE_BILLINGADDRESS = stringAttribute("billingaddress");
-  Attribute<String> INVOICE_BILLINGCITY = stringAttribute("billingcity");
-  Attribute<String> INVOICE_BILLINGSTATE = stringAttribute("billingstate");
-  Attribute<String> INVOICE_BILLINGCOUNTRY = stringAttribute("billingcountry");
-  Attribute<String> INVOICE_BILLINGPOSTALCODE = stringAttribute("billingpostalcode");
-  Attribute<BigDecimal> INVOICE_TOTAL = bigDecimalAttribute("total");
-  Attribute<BigDecimal> INVOICE_TOTAL_SUB = bigDecimalAttribute("total_sub");
+  Attribute<Long> INVOICE_INVOICEID = longAttribute("invoiceid", T_INVOICE);
+  Attribute<Long> INVOICE_CUSTOMERID = longAttribute("customerid", T_INVOICE);
+  EntityAttribute INVOICE_CUSTOMER_FK = entityAttribute("customer_fk", T_INVOICE);
+  Attribute<LocalDateTime> INVOICE_INVOICEDATE = localDateTimeAttribute("invoicedate", T_INVOICE);
+  Attribute<String> INVOICE_BILLINGADDRESS = stringAttribute("billingaddress", T_INVOICE);
+  Attribute<String> INVOICE_BILLINGCITY = stringAttribute("billingcity", T_INVOICE);
+  Attribute<String> INVOICE_BILLINGSTATE = stringAttribute("billingstate", T_INVOICE);
+  Attribute<String> INVOICE_BILLINGCOUNTRY = stringAttribute("billingcountry", T_INVOICE);
+  Attribute<String> INVOICE_BILLINGPOSTALCODE = stringAttribute("billingpostalcode", T_INVOICE);
+  Attribute<BigDecimal> INVOICE_TOTAL = bigDecimalAttribute("total", T_INVOICE);
+  Attribute<BigDecimal> INVOICE_TOTAL_SUB = bigDecimalAttribute("total_sub", T_INVOICE);
 
   String T_INVOICELINE = "invoiceline@chinook";
-  Attribute<Long> INVOICELINE_INVOICELINEID = longAttribute("invoicelineid");
-  Attribute<Long> INVOICELINE_INVOICEID = longAttribute("invoiceid");
-  EntityAttribute INVOICELINE_INVOICE_FK = entityAttribute("invoice_fk");
-  Attribute<Long> INVOICELINE_TRACKID = longAttribute("trackid");
-  EntityAttribute INVOICELINE_TRACK_FK = entityAttribute("track_fk");
-  Attribute<BigDecimal> INVOICELINE_UNITPRICE = bigDecimalAttribute("unitprice");
-  Attribute<Integer> INVOICELINE_QUANTITY = integerAttribute("quantity");
-  Attribute<BigDecimal> INVOICELINE_TOTAL = bigDecimalAttribute("total");
+  Attribute<Long> INVOICELINE_INVOICELINEID = longAttribute("invoicelineid", T_INVOICELINE);
+  Attribute<Long> INVOICELINE_INVOICEID = longAttribute("invoiceid", T_INVOICELINE);
+  EntityAttribute INVOICELINE_INVOICE_FK = entityAttribute("invoice_fk", T_INVOICELINE);
+  Attribute<Long> INVOICELINE_TRACKID = longAttribute("trackid", T_INVOICELINE);
+  EntityAttribute INVOICELINE_TRACK_FK = entityAttribute("track_fk", T_INVOICELINE);
+  Attribute<BigDecimal> INVOICELINE_UNITPRICE = bigDecimalAttribute("unitprice", T_INVOICELINE);
+  Attribute<Integer> INVOICELINE_QUANTITY = integerAttribute("quantity", T_INVOICELINE);
+  Attribute<BigDecimal> INVOICELINE_TOTAL = bigDecimalAttribute("total", T_INVOICELINE);
 
   DerivedProperty.Provider<BigDecimal> INVOICELINE_TOTAL_PROVIDER =
           linkedValues -> {
@@ -139,17 +139,17 @@ public interface Chinook {
           };
 
   String T_PLAYLIST = "playlist@chinook";
-  Attribute<Long> PLAYLIST_PLAYLISTID = longAttribute("playlistid");
-  Attribute<String> PLAYLIST_NAME = stringAttribute("name");
+  Attribute<Long> PLAYLIST_PLAYLISTID = longAttribute("playlistid", T_PLAYLIST);
+  Attribute<String> PLAYLIST_NAME = stringAttribute("name", T_PLAYLIST);
 
   String T_PLAYLISTTRACK = "playlisttrack@chinook";
-  Attribute<Long> PLAYLISTTRACK_ID = longAttribute("playlisttrackid");
-  Attribute<Long> PLAYLISTTRACK_PLAYLISTID = longAttribute("playlistid");
-  EntityAttribute PLAYLISTTRACK_PLAYLIST_FK = entityAttribute("playlist_fk");
-  Attribute<Long> PLAYLISTTRACK_TRACKID = longAttribute("trackid");
-  EntityAttribute PLAYLISTTRACK_TRACK_FK = entityAttribute("track_fk");
-  EntityAttribute PLAYLISTTRACK_ALBUM_DENORM = entityAttribute("album_denorm");
-  EntityAttribute PLAYLISTTRACK_ARTIST_DENORM = entityAttribute("artist_denorm");
+  Attribute<Long> PLAYLISTTRACK_ID = longAttribute("playlisttrackid", T_PLAYLISTTRACK);
+  Attribute<Long> PLAYLISTTRACK_PLAYLISTID = longAttribute("playlistid", T_PLAYLISTTRACK);
+  EntityAttribute PLAYLISTTRACK_PLAYLIST_FK = entityAttribute("playlist_fk", T_PLAYLISTTRACK);
+  Attribute<Long> PLAYLISTTRACK_TRACKID = longAttribute("trackid", T_PLAYLISTTRACK);
+  EntityAttribute PLAYLISTTRACK_TRACK_FK = entityAttribute("track_fk", T_PLAYLISTTRACK);
+  EntityAttribute PLAYLISTTRACK_ALBUM_DENORM = entityAttribute("album_denorm", T_PLAYLISTTRACK);
+  EntityAttribute PLAYLISTTRACK_ARTIST_DENORM = entityAttribute("artist_denorm", T_PLAYLISTTRACK);
 
   String P_UPDATE_TOTALS = "chinook.update_totals_procedure";
   String F_RAISE_PRICE = "chinook.raise_price_function";

@@ -46,29 +46,31 @@ public final class EmpDeptMinimalApp {
     /*
      * We start by defining attributes for the columns in the SCOTT.DEPT table.
      */
-    public static final Attribute<Integer> DEPT_DEPTNO = integerAttribute("deptno");
-    public static final Attribute<String> DEPT_DNAME = stringAttribute("dname");
-    public static final Attribute<String> DEPT_LOC = stringAttribute("loc");
+    public static final String T_DEPT = "scott.dept";
+    public static final Attribute<Integer> DEPT_DEPTNO = integerAttribute("deptno", T_DEPT);
+    public static final Attribute<String> DEPT_DNAME = stringAttribute("dname", T_DEPT);
+    public static final Attribute<String> DEPT_LOC = stringAttribute("loc", T_DEPT);
 
     /*
      * And for the columns in the SCOTT.EMP table.
      */
-    public static final Attribute<Integer> EMP_EMPNO = integerAttribute("empno");
-    public static final Attribute<String> EMP_ENAME = stringAttribute("ename");
-    public static final Attribute<Integer> EMP_DEPTNO = integerAttribute("deptno");
-    public static final EntityAttribute EMP_DEPT_FK = entityAttribute("dept_fk");
-    public static final Attribute<String> EMP_JOB = stringAttribute("job");
-    public static final Attribute<Double> EMP_SAL = doubleAttribute("sal");
-    public static final Attribute<Double> EMP_COMM = doubleAttribute("comm");
-    public static final Attribute<Integer> EMP_MGR = integerAttribute("mgr");
-    public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk");
-    public static final Attribute<LocalDate> EMP_HIREDATE = localDateAttribute("hiredate");
+    public static final String T_EMP = "scott.emp";
+    public static final Attribute<Integer> EMP_EMPNO = integerAttribute("empno", T_EMP);
+    public static final Attribute<String> EMP_ENAME = stringAttribute("ename", T_EMP);
+    public static final Attribute<Integer> EMP_DEPTNO = integerAttribute("deptno", T_EMP);
+    public static final EntityAttribute EMP_DEPT_FK = entityAttribute("dept_fk", T_EMP);
+    public static final Attribute<String> EMP_JOB = stringAttribute("job", T_EMP);
+    public static final Attribute<Double> EMP_SAL = doubleAttribute("sal", T_EMP);
+    public static final Attribute<Double> EMP_COMM = doubleAttribute("comm", T_EMP);
+    public static final Attribute<Integer> EMP_MGR = integerAttribute("mgr", T_EMP);
+    public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk", T_EMP);
+    public static final Attribute<LocalDate> EMP_HIREDATE = localDateAttribute("hiredate", T_EMP);
 
     public EmpDept() {
       /*
        * We then define the entity based on the SCOTT.DEPT table
        */
-      define("scott.dept",
+      define(T_DEPT,
               primaryKeyProperty(DEPT_DEPTNO),
               columnProperty(DEPT_DEPTNO, "Department name")
                       .searchProperty(true)
@@ -84,7 +86,7 @@ public final class EmpDeptMinimalApp {
        * notice the foreign key wrapper properties, referencing the
        * department as well as the manager
        */
-      define("scott.emp",
+      define(T_EMP,
               primaryKeyProperty(EMP_EMPNO),
               columnProperty(EMP_ENAME, "Name")
                       .searchProperty(true)
@@ -119,7 +121,7 @@ public final class EmpDeptMinimalApp {
   public static final class EmployeeEditModel extends SwingEntityEditModel {
 
     public EmployeeEditModel(final EntityConnectionProvider connectionProvider) {
-      super("scott.emp", connectionProvider);
+      super(EmpDept.T_EMP, connectionProvider);
     }
 
     /**
@@ -223,9 +225,9 @@ public final class EmpDeptMinimalApp {
     @Override
     protected void setupEntityPanelBuilders() {
       //now, let's assemble our application
-      final EntityPanelBuilder departmentProvider = new EntityPanelBuilder("scott.dept")
+      final EntityPanelBuilder departmentProvider = new EntityPanelBuilder(EmpDept.T_DEPT)
               .setEditPanelClass(DepartmentEditPanel.class);
-      final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder("scott.emp")
+      final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(EmpDept.T_EMP)
               .setEditModelClass(EmployeeEditModel.class);
       final EntityPanelBuilder employeeProvider = new EntityPanelBuilder(employeeModelBuilder)
               .setEditPanelClass(EmployeeEditPanel.class);
