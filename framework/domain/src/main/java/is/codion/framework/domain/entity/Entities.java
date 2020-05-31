@@ -163,7 +163,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @see EntityDefinition.Builder#beanClass(Class)
    * @see Property.Builder#beanProperty(String)
    */
-  List<Entity> fromBeans(List beans);
+  List<Entity> fromBeans(List<Object> beans);
 
   /**
    * Creates an Entity from the given bean object.

@@ -57,7 +57,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The bean class, if any
    */
-  private Class beanClass;
+  private Class<?> beanClass;
 
   /**
    * Holds the order by clause
@@ -109,7 +109,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The bean helper
    */
-  private BeanHelper beanHelper = new DefaultBeanHelper();
+  private BeanHelper<?> beanHelper = new DefaultBeanHelper();
 
   /**
    * The name of the underlying table
@@ -170,7 +170,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * Defines a new entity type with the entityId serving as the initial entity caption.
    */
-  DefaultEntityDefinition(final String entityId, final String tableName, final Property.Builder... propertyBuilders) {
+  DefaultEntityDefinition(final String entityId, final String tableName, final Property.Builder<?>... propertyBuilders) {
     this.entityId = rejectNullOrEmpty(entityId, "entityId");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.entityProperties = new EntityProperties(entityId, propertyBuilders);
@@ -213,8 +213,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Class getBeanClass() {
-    return beanClass;
+  public <V> Class<V> getBeanClass() {
+    return (Class<V>) beanClass;
   }
 
   @Override
@@ -573,7 +573,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public <V> BeanHelper<V> getBeanHelper() {
-    return beanHelper;
+    return (BeanHelper<V>) beanHelper;
   }
 
   /**
@@ -855,7 +855,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder beanClass(final Class beanClass) {
+    public <V> Builder beanClass(final Class<V> beanClass) {
       definition.beanClass = requireNonNull(beanClass, "beanClass");
       return this;
     }
@@ -959,7 +959,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
   }
 
-  private static final class DefaultBeanHelper implements BeanHelper {
+  private static final class DefaultBeanHelper implements BeanHelper<Object> {
 
     private static final long serialVersionUID = 1;
   }

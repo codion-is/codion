@@ -247,7 +247,7 @@ public final class WhereConditionTest {
   @Test
   public void propertyConditionModel() throws Exception {
     final EntityDefinition departmentDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
-    final ColumnProperty property = (ColumnProperty) departmentDefinition.getProperty(TestDomain.DEPARTMENT_NAME);
+    final ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.getProperty(TestDomain.DEPARTMENT_NAME);
     WhereCondition condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
             propertyCondition(TestDomain.DEPARTMENT_NAME, Operator.LIKE, "upper%")), departmentDefinition);
     assertEquals(property.getAttribute() + " like ?", condition.getWhereClause());

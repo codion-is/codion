@@ -72,7 +72,7 @@ public interface EntityDefinition extends Serializable {
    * Returns the bean class associated with this entity type
    * @return the bean class
    */
-  Class getBeanClass();
+  <V> Class<V> getBeanClass();
 
   /**
    * @return true if the underlying table is small enough for displaying the contents in a combo box
@@ -521,9 +521,10 @@ public interface EntityDefinition extends Serializable {
     /**
      * Sets the bean class to associate with this entity type
      * @param beanClass the bean class
+     * @param <V> the class type
      * @return this {@link Builder} instance
      */
-    Builder beanClass(Class beanClass);
+    <V> Builder beanClass(Class<V> beanClass);
 
     /**
      * Specifies whether or not this entity should be regarded as based on a small dataset,

@@ -85,7 +85,7 @@ public abstract class Domain implements EntityDefinition.Provider {
     return entities.getDefinitions();
   }
 
-  public final boolean containsReport(final ReportWrapper reportWrapper) {
+  public final boolean containsReport(final ReportWrapper<?, ?, ?> reportWrapper) {
     return reports.containsReport(reportWrapper);
   }
 
@@ -122,7 +122,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  protected final EntityDefinition.Builder define(final String entityId, final Property.Builder... propertyBuilders) {
+  protected final EntityDefinition.Builder define(final String entityId, final Property.Builder<?>... propertyBuilders) {
     return define(entityId, entityId, propertyBuilders);
   }
 
@@ -137,7 +137,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type
    */
   protected final EntityDefinition.Builder define(final String entityId, final String tableName,
-                                                  final Property.Builder... propertyBuilders) {
+                                                  final Property.Builder<?>... propertyBuilders) {
     return entities.defineInternal(entityId, tableName, propertyBuilders);
   }
 
@@ -147,7 +147,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @throws RuntimeException in case loading the report failed
    * @throws IllegalArgumentException in case the report has already been added
    */
-  protected final void addReport(final ReportWrapper reportWrapper) {
+  protected final void addReport(final ReportWrapper<?, ?, ?> reportWrapper) {
     reports.addReport(reportWrapper);
   }
 
@@ -178,7 +178,7 @@ public abstract class Domain implements EntityDefinition.Provider {
     }
 
     protected EntityDefinition.Builder defineInternal(final String entityId, final String tableName,
-                                                      final Property.Builder... propertyBuilders) {
+                                                      final Property.Builder<?>... propertyBuilders) {
       return super.define(entityId, tableName, propertyBuilders);
     }
 
@@ -223,9 +223,9 @@ public abstract class Domain implements EntityDefinition.Provider {
 
   private static final class DomainReports {
 
-    private final Set<ReportWrapper> reports = new HashSet<>();
+    private final Set<ReportWrapper<?, ?, ?>> reports = new HashSet<>();
 
-    private void addReport(final ReportWrapper report) {
+    private void addReport(final ReportWrapper<?, ?, ?> report) {
       if (containsReport(report)) {
         throw new IllegalArgumentException("Report has already been added: " + report);
       }
@@ -238,7 +238,7 @@ public abstract class Domain implements EntityDefinition.Provider {
       }
     }
 
-    private boolean containsReport(final ReportWrapper reportWrapper) {
+    private boolean containsReport(final ReportWrapper<?, ?, ?> reportWrapper) {
       return reports.contains(requireNonNull(reportWrapper, "reportWrapper"));
     }
   }

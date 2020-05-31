@@ -185,7 +185,7 @@ public abstract class DefaultEntities implements Entities {
     try {
       final V bean = beanClass.getConstructor().newInstance();
       for (final Map.Entry<Attribute<?>, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
-        final Property property = definition.getProperty(propertyEntry.getKey());
+        final Property<?> property = definition.getProperty(propertyEntry.getKey());
         Object value = entity.get(property);
         if (property instanceof ForeignKeyProperty && value != null) {
           value = toBean((Entity) value);
@@ -202,7 +202,7 @@ public abstract class DefaultEntities implements Entities {
   }
 
   @Override
-  public final List<Entity> fromBeans(final List beans) {
+  public final List<Entity> fromBeans(final List<Object> beans) {
     if (Util.nullOrEmpty(beans)) {
       return emptyList();
     }
@@ -217,7 +217,7 @@ public abstract class DefaultEntities implements Entities {
   @Override
   public final <V> Entity fromBean(final V bean) {
     requireNonNull(bean, "bean");
-    final Class beanClass = bean.getClass();
+    final Class<V> beanClass = (Class<V>) bean.getClass();
     final EntityDefinition definition = getBeanEntityDefinition(beanClass);
     final Entity entity = entity(definition.getEntityId());
     try {
@@ -267,7 +267,7 @@ public abstract class DefaultEntities implements Entities {
   }
 
   protected final EntityDefinition.Builder define(final String entityId, final String tableName,
-                                                  final Property.Builder... propertyBuilders) {
+                                                  final Property.Builder<?>... propertyBuilders) {
     final EntityDefinition.Builder definitionBuilder =
             new DefaultEntityDefinition(entityId, tableName, propertyBuilders).builder();
     addDefinition((DefaultEntityDefinition) definitionBuilder.domainId(domainId).get());
@@ -321,7 +321,7 @@ public abstract class DefaultEntities implements Entities {
     }
   }
 
-  private EntityDefinition getBeanEntityDefinition(final Class beanClass) {
+  private EntityDefinition getBeanEntityDefinition(final Class<?> beanClass) {
     if (beanEntities == null) {
       beanEntities = new HashMap<>();
     }
@@ -347,15 +347,15 @@ public abstract class DefaultEntities implements Entities {
 
   private Map<Attribute<?>, BeanProperty> initializeBeanProperties(final String entityId) {
     final EntityDefinition entityDefinition = getDefinition(entityId);
-    final Class beanClass = entityDefinition.getBeanClass();
+    final Class<?> beanClass = entityDefinition.getBeanClass();
     if (beanClass == null) {
       throw new IllegalArgumentException("No bean class specified for entity: " + entityId);
     }
     try {
       final Map<Attribute<?>, BeanProperty> map = new HashMap<>();
-      for (final Property property : entityDefinition.getProperties()) {
+      for (final Property<?> property : entityDefinition.getProperties()) {
         final String beanProperty = property.getBeanProperty();
-        Class typeClass = property.getAttribute().getTypeClass();
+        Class<?> typeClass = property.getAttribute().getTypeClass();
         if (property instanceof ForeignKeyProperty) {
           typeClass = getDefinition(((ForeignKeyProperty) property).getForeignEntityId()).getBeanClass();
         }

@@ -48,7 +48,7 @@ final class DefaultEntity implements Entity {
   private Map<Property<?>, Object> values;
 
   /**
-   * Holds the original value for keys which values have changed since they were first set.
+   * Holds the original value for properties which values have changed since they were first set.
    */
   private Map<Property<?>, Object> originalValues;
 
@@ -61,7 +61,7 @@ final class DefaultEntity implements Entity {
   /**
    * Caches the result of {@link #getReferencedKey} method
    */
-  private Map<Attribute<?>, Key> referencedKeyCache;
+  private Map<Attribute<Entity>, Key> referencedKeyCache;
 
   /**
    * Keep a reference to this frequently referenced object
@@ -699,7 +699,7 @@ final class DefaultEntity implements Entity {
             new DefaultEntityKey(definition.getForeignDefinition(foreignKeyProperty.getAttribute()), value));
   }
 
-  private Key cacheReferencedKey(final Attribute<?> foreignKeyAttribute, final Key referencedPrimaryKey) {
+  private Key cacheReferencedKey(final Attribute<Entity> foreignKeyAttribute, final Key referencedPrimaryKey) {
     if (referencedKeyCache == null) {
       referencedKeyCache = new HashMap<>();
     }
