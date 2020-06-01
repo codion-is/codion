@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.framework.domain.property.Attributes.attribute;
 import static java.util.Collections.emptyList;
 
 /**
@@ -274,7 +273,7 @@ public final class EntityJSONParser {
     final EntityDefinition definition = entities.getDefinition(entityId);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString(), entityId);
+      final Attribute<Object> attribute = entityId.objectAttribute(propertyValues.names().get(j).toString());
       key.put(attribute, parseValue(definition.getProperty(attribute), propertyValues));
     }
 
@@ -405,7 +404,7 @@ public final class EntityJSONParser {
     final Map<Attribute<?>, Object> valueMap = new HashMap<>();
     final JSONObject propertyValues = entityObject.getJSONObject(valuesKey);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final Attribute<Object> attribute = attribute(propertyValues.names().get(j).toString(), entityId);
+      final Attribute<Object> attribute = entityId.objectAttribute(propertyValues.names().get(j).toString());
       final EntityDefinition entityDefinition = entities.getDefinition(entityId);
       valueMap.put(attribute, parseValue(entityDefinition.getProperty(attribute), propertyValues));
     }

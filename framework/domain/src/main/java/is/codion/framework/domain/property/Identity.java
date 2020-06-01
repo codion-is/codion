@@ -11,7 +11,7 @@ import java.time.LocalTime;
 
 /**
  * An identifier for entity types.
- * Factory for {@link Attributes} associated with this identity.
+ * Factory for {@link Attribute} instances associated with this identity.
  */
 public interface Identity extends Serializable {
 
@@ -29,6 +29,14 @@ public interface Identity extends Serializable {
    */
   <T> Attribute<T> attribute(String name, Class<T> typeClass);
 
+  /**
+   * Creates a new {@link Attribute} associated with this Identity.
+   * Use this when you don't have access to an actual Attribute instance, only its name
+   * and identity, but need to access the value associated with it.
+   * @param name the attribute name
+   * @return a new {@link Attribute}
+   */
+  Attribute<Object> objectAttribute(String name);
 
   /**
    * Creates a new Long based attribute, associated with this Identity.

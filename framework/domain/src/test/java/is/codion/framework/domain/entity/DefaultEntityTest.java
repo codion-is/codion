@@ -9,7 +9,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.property.Attribute;
-import is.codion.framework.domain.property.Attributes;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Properties;
@@ -68,7 +67,8 @@ public class DefaultEntityTest {
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final Attribute<?> invalid = Attributes.integerAttribute("invalid", Identity.identity("entityId"));
+    final Identity entityId = Identity.identity("entityId");
+    final Attribute<?> invalid = entityId.integerAttribute("invalid");
     final Map<Attribute<?>, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
 
@@ -586,8 +586,8 @@ public class DefaultEntityTest {
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
     final Identity entityId = Identity.identity("entityId");
-    final Attribute<Integer> trans = Attributes.integerAttribute("trans", entityId);
-    final Attribute<Integer> id = Attributes.integerAttribute("id", entityId);
+    final Attribute<Integer> trans = entityId.integerAttribute("trans");
+    final Attribute<Integer> id = entityId.integerAttribute("id");
     final TransientProperty.Builder<?> transientProperty = Properties.transientProperty(trans);
     class TestDomain extends Domain {
       public TestDomain() {

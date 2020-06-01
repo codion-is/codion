@@ -30,62 +30,67 @@ final class DefaultIdentity implements Identity {
 
   @Override
   public <T> Attribute<T> attribute(final String name, final Class<T> typeClass) {
-    return Attributes.attribute(name, typeClass, this);
+    return new DefaultAttribute<>(name, typeClass, this);
+  }
+
+  @Override
+  public Attribute<Object> objectAttribute(final String name) {
+    return attribute(name, Object.class);
   }
 
   @Override
   public Attribute<Long> longAttribute(final String name) {
-    return Attributes.attribute(name, Long.class, this);
+    return new DefaultAttribute<>(name, Long.class, this);
   }
 
   @Override
   public Attribute<Integer> integerAttribute(final String name) {
-    return Attributes.attribute(name, Integer.class, this);
+    return new DefaultAttribute<>(name, Integer.class, this);
   }
 
   @Override
   public Attribute<Double> doubleAttribute(final String name) {
-    return Attributes.attribute(name, Double.class, this);
+    return new DefaultAttribute<>(name, Double.class, this);
   }
 
   @Override
   public Attribute<BigDecimal> bigDecimalAttribute(final String name) {
-    return Attributes.attribute(name, BigDecimal.class, this);
+    return new DefaultAttribute<>(name, BigDecimal.class, this);
   }
 
   @Override
   public Attribute<LocalDate> localDateAttribute(final String name) {
-    return Attributes.attribute(name, LocalDate.class, this);
+    return new DefaultAttribute<>(name, LocalDate.class, this);
   }
 
   @Override
   public Attribute<LocalTime> localTimeAttribute(final String name) {
-    return Attributes.attribute(name, LocalTime.class, this);
+    return new DefaultAttribute<>(name, LocalTime.class, this);
   }
 
   @Override
   public Attribute<LocalDateTime> localDateTimeAttribute(final String name) {
-    return Attributes.attribute(name, LocalDateTime.class, this);
+    return new DefaultAttribute<>(name, LocalDateTime.class, this);
   }
 
   @Override
   public Attribute<String> stringAttribute(final String name) {
-    return Attributes.attribute(name, String.class, this);
+    return new DefaultAttribute<>(name, String.class, this);
   }
 
   @Override
   public Attribute<Boolean> booleanAttribute(final String name) {
-    return Attributes.attribute(name, Boolean.class, this);
+    return new DefaultAttribute<>(name, Boolean.class, this);
   }
 
   @Override
   public EntityAttribute entityAttribute(final String name) {
-    return Attributes.entityAttribute(name, this);
+    return new DefaultEntityAttribute(name, this);
   }
 
   @Override
   public BlobAttribute blobAttribute(final String name) {
-    return Attributes.blobAttribute(name, this);
+    return new DefaultBlobAttribute(name, this);
   }
 
   @Override

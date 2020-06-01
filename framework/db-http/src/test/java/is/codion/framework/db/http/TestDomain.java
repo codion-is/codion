@@ -24,7 +24,6 @@ import java.util.List;
 import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -52,9 +51,9 @@ public final class TestDomain extends Domain {
   }
 
   public static final Identity T_DEPARTMENT = Identity.identity("scott.dept");
-  public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno", T_DEPARTMENT);
-  public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname", T_DEPARTMENT);
-  public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc", T_DEPARTMENT);
+  public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
+  public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
+  public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
 
   void department() {
     define(T_DEPARTMENT,
@@ -71,18 +70,18 @@ public final class TestDomain extends Domain {
   }
 
   public static final Identity T_EMP = Identity.identity("scott.emp");
-  public static final Attribute<Integer> EMP_ID = integerAttribute("empno", T_EMP);
-  public static final Attribute<String> EMP_NAME = stringAttribute("ename", T_EMP);
-  public static final Attribute<String> EMP_JOB = stringAttribute("job", T_EMP);
-  public static final Attribute<Integer> EMP_MGR = integerAttribute("mgr", T_EMP);
-  public static final Attribute<LocalDate> EMP_HIREDATE = localDateAttribute("hiredate", T_EMP);
-  public static final Attribute<Double> EMP_SALARY = doubleAttribute("sal", T_EMP);
-  public static final Attribute<Double> EMP_COMMISSION = doubleAttribute("comm", T_EMP);
-  public static final Attribute<Integer> EMP_DEPARTMENT = integerAttribute("deptno", T_EMP);
-  public static final EntityAttribute EMP_DEPARTMENT_FK = entityAttribute("dept_fk", T_EMP);
-  public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk", T_EMP);
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = stringAttribute("location", T_EMP);
-  public static final BlobAttribute EMP_DATA = blobAttribute("data", T_EMP);
+  public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
+  public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
+  public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
+  public static final Attribute<Integer> EMP_MGR = T_EMP.integerAttribute("mgr");
+  public static final Attribute<LocalDate> EMP_HIREDATE = T_EMP.localDateAttribute("hiredate");
+  public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
+  public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
+  public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
+  public static final EntityAttribute EMP_DEPARTMENT_FK = T_EMP.entityAttribute("dept_fk");
+  public static final EntityAttribute EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
+  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
+  public static final BlobAttribute EMP_DATA = T_EMP.blobAttribute("data");
 
   void employee() {
     define(T_EMP,

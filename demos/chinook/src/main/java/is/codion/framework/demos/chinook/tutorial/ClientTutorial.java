@@ -29,7 +29,6 @@ import java.util.List;
 
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
-import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Identity.identity;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
@@ -46,15 +45,15 @@ public final class ClientTutorial {
   public static final class Chinook extends Domain {
 
     public static final Identity T_ARTIST = identity("chinook.artist");
-    public static final Attribute<Integer> ARTIST_ID = integerAttribute("artistid", T_ARTIST);
-    public static final Attribute<String> ARTIST_NAME = stringAttribute("name", T_ARTIST);
-    public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = integerAttribute("nr_of_albums", T_ARTIST);
+    public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
+    public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
+    public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = T_ARTIST.integerAttribute("nr_of_albums");
 
     public static final Identity T_ALBUM = identity("chinook.album");
-    public static final Attribute<Integer> ALBUM_ALBUMID = integerAttribute("albumid", T_ALBUM);
-    public static final Attribute<String> ALBUM_TITLE = stringAttribute("title", T_ALBUM);
-    public static final Attribute<Integer> ALBUM_ARTISTID = integerAttribute("artistid", T_ALBUM);
-    public static final EntityAttribute ALBUM_ARTIST_FK = entityAttribute("artist_fk", T_ALBUM);
+    public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
+    public static final Attribute<String> ALBUM_TITLE = T_ARTIST.stringAttribute("title");
+    public static final Attribute<Integer> ALBUM_ARTISTID = T_ARTIST.integerAttribute("artistid");
+    public static final EntityAttribute ALBUM_ARTIST_FK = T_ARTIST.entityAttribute("artist_fk");
 
     public Chinook() {
       define(T_ARTIST,

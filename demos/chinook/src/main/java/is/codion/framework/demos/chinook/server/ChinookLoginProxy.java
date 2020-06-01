@@ -25,8 +25,6 @@ import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.framework.db.condition.Conditions.*;
 import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
-import static is.codion.framework.domain.property.Attributes.integerAttribute;
-import static is.codion.framework.domain.property.Attributes.stringAttribute;
 import static is.codion.framework.domain.property.Identity.identity;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
@@ -121,9 +119,9 @@ public final class ChinookLoginProxy implements LoginProxy {
   private static final class Authentication extends Domain {
 
     private static final Identity T_USER = identity("chinook.user");
-    private static final Attribute<Integer> USER_USERID = integerAttribute("userid", T_USER);
-    private static final Attribute<String> USER_USERNAME = stringAttribute("username", T_USER);
-    private static final Attribute<Integer> USER_PASSWORD_HASH = integerAttribute("passwordhash", T_USER);
+    private static final Attribute<Integer> USER_USERID = T_USER.integerAttribute("userid");
+    private static final Attribute<String> USER_USERNAME = T_USER.stringAttribute("username");
+    private static final Attribute<Integer> USER_PASSWORD_HASH = T_USER.integerAttribute("passwordhash");
 
     private Authentication() {
       define(T_USER,

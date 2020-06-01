@@ -19,8 +19,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-import static is.codion.framework.domain.property.Attributes.attribute;
-
 final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
 
   private static final long serialVersionUID = 1;
@@ -45,7 +43,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
-      final ColumnProperty<Object> property = definition.getColumnProperty(attribute(field.getKey(), definition.getEntityId()));
+      final ColumnProperty<Object> property = definition.getColumnProperty(definition.getEntityId().objectAttribute(field.getKey()));
       key.put(property.getAttribute(), EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), field.getValue()));
     }
 

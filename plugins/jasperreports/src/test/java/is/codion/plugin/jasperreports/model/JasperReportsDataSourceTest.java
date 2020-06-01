@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static is.codion.framework.domain.property.Attributes.attribute;
 import static java.util.Collections.singletonList;
 
 public class JasperReportsDataSourceTest {
@@ -30,7 +29,7 @@ public class JasperReportsDataSourceTest {
     final List<Entity> entities = singletonList(department);
     final JasperReportsDataSource<Entity> source =
             new JasperReportsDataSource<>(entities.iterator(), (entity, field) ->
-                    entity.get(attribute(field.getName(), entity.getEntityId())));
+                    entity.get(entity.getEntityId().objectAttribute(field.getName())));
     while (source.next()) {
       final JRField field = new TestField(TestDomain.DEPARTMENT_NAME.getName());
       source.getFieldValue(field);

@@ -21,8 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static is.codion.framework.domain.property.Attributes.attribute;
-
 final class CustomConditionDeserializer implements Serializable {
 
   private static final long serialVersionUID = 1;
@@ -37,7 +35,7 @@ final class CustomConditionDeserializer implements Serializable {
     final String conditionId = conditionNode.get("conditionId").asText();
     final JsonNode attributesNode = conditionNode.get("attributes");
     final List<String> attributeNames = Arrays.asList(entityObjectMapper.readValue(attributesNode.toString(), String[].class));
-    final List<Attribute<?>> attributes = attributeNames.stream().map(name -> attribute(name, definition.getEntityId())).collect(Collectors.toList());
+    final List<Attribute<?>> attributes = attributeNames.stream().map(name -> definition.getEntityId().objectAttribute(name)).collect(Collectors.toList());
     final JsonNode valuesNode = conditionNode.get("values");
     final List<Object> values = new ArrayList<>();
     int attributeIndex = 0;

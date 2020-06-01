@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.framework.domain.property.Attributes.integerAttribute;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,7 +77,8 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   public void getPropertyConditionModelNonExisting() {
-    assertThrows(IllegalArgumentException.class, () -> assertNull(conditionModel.getPropertyConditionModel(integerAttribute("bla bla", Identity.identity("test")))));
+    final Identity entityId = Identity.identity("test");
+    assertThrows(IllegalArgumentException.class, () -> assertNull(conditionModel.getPropertyConditionModel(entityId.integerAttribute("bla bla"))));
   }
 
   @Test
@@ -123,7 +123,7 @@ public class DefaultEntityTableConditionModelTest {
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));
     conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
-    final ColumnConditionModel nameConditionModel = conditionModel.getPropertyConditionModel(TestDomain.EMP_NAME);
+    final ColumnConditionModel<?, ?> nameConditionModel = conditionModel.getPropertyConditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setLikeValue("SCOTT");
     conditionModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_2_ID));
     assertNotNull(conditionModel.getAdditionalConditionProvider());
@@ -164,14 +164,14 @@ public class DefaultEntityTableConditionModelTest {
     final String value = "test";
     final String wildcard = Property.WILDCARD_CHARACTER.get();
     conditionModel.setSimpleConditionString(value);
-    for (final ColumnConditionModel model : conditionModel.getPropertyConditionModels()) {
+    for (final ColumnConditionModel<?, ?> model : conditionModel.getPropertyConditionModels()) {
       if (model.getTypeClass().equals(String.class)) {
         assertEquals(wildcard + value + wildcard, model.getUpperBound());
         assertTrue(model.isEnabled());
       }
     }
     conditionModel.setSimpleConditionString(null);
-    for (final ColumnConditionModel model : conditionModel.getPropertyConditionModels()) {
+    for (final ColumnConditionModel<?, ?> model : conditionModel.getPropertyConditionModels()) {
       if (model.getTypeClass().equals(String.class)) {
         assertNull(model.getUpperBound());
         assertFalse(model.isEnabled());

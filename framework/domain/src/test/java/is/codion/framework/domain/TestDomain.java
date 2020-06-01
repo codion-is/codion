@@ -27,7 +27,6 @@ import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.KeyGenerators.queried;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Identity.identity;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -45,8 +44,8 @@ public final class TestDomain extends Domain {
   }
 
   public static final Identity T_COMPOSITE_MASTER = identity("domain.composite_master");
-  public static final Attribute<Integer> COMPOSITE_MASTER_ID = integerAttribute("id", T_COMPOSITE_MASTER);
-  public static final Attribute<Integer> COMPOSITE_MASTER_ID_2 = integerAttribute("id2", T_COMPOSITE_MASTER);
+  public static final Attribute<Integer> COMPOSITE_MASTER_ID = T_COMPOSITE_MASTER.integerAttribute("id");
+  public static final Attribute<Integer> COMPOSITE_MASTER_ID_2 = T_COMPOSITE_MASTER.integerAttribute("id2");
 
   void compositeMaster() {
     define(T_COMPOSITE_MASTER,
@@ -55,9 +54,9 @@ public final class TestDomain extends Domain {
   }
 
   public static final Identity T_COMPOSITE_DETAIL = identity("domain.composite_detail");
-  public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = integerAttribute("master_id", T_COMPOSITE_DETAIL);
-  public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = integerAttribute("master_id2", T_COMPOSITE_DETAIL);
-  public static final EntityAttribute COMPOSITE_DETAIL_MASTER_FK = entityAttribute("master_fk", T_COMPOSITE_DETAIL);
+  public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = T_COMPOSITE_DETAIL.integerAttribute("master_id");
+  public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = T_COMPOSITE_DETAIL.integerAttribute("master_id2");
+  public static final EntityAttribute COMPOSITE_DETAIL_MASTER_FK = T_COMPOSITE_DETAIL.entityAttribute("master_fk");
 
   void compositeDetail() {
     define(T_COMPOSITE_DETAIL,
@@ -67,9 +66,9 @@ public final class TestDomain extends Domain {
   }
 
   public static final Identity T_MASTER = identity("domain.master_entity");
-  public static final Attribute<Long> MASTER_ID = longAttribute("id", T_MASTER);
-  public static final Attribute<String> MASTER_NAME = stringAttribute("name", T_MASTER);
-  public static final Attribute<Integer> MASTER_CODE = integerAttribute("code", T_MASTER);
+  public static final Attribute<Long> MASTER_ID = T_MASTER.longAttribute("id");
+  public static final Attribute<String> MASTER_NAME = T_MASTER.stringAttribute("name");
+  public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
 
   void master() {
     define(T_MASTER,
@@ -81,21 +80,21 @@ public final class TestDomain extends Domain {
   }
 
   public static final Identity T_DETAIL = identity("domain.detail_entity");
-  public static final Attribute<Long> DETAIL_ID = longAttribute("id", T_DETAIL);
-  public static final Attribute<Integer> DETAIL_INT = integerAttribute("int", T_DETAIL);
-  public static final Attribute<Double> DETAIL_DOUBLE = doubleAttribute("double", T_DETAIL);
-  public static final Attribute<String> DETAIL_STRING = stringAttribute("string", T_DETAIL);
-  public static final Attribute<LocalDate> DETAIL_DATE = localDateAttribute("date", T_DETAIL);
-  public static final Attribute<LocalDateTime> DETAIL_TIMESTAMP = localDateTimeAttribute("timestamp", T_DETAIL);
-  public static final Attribute<Boolean> DETAIL_BOOLEAN = booleanAttribute("boolean", T_DETAIL);
-  public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = booleanAttribute("boolean_nullable", T_DETAIL);
-  public static final Attribute<Long> DETAIL_MASTER_ID = longAttribute("master_id", T_DETAIL);
-  public static final EntityAttribute DETAIL_MASTER_FK = entityAttribute("master_fk", T_DETAIL);
-  public static final Attribute<String> DETAIL_MASTER_NAME = stringAttribute("master_name", T_DETAIL);
-  public static final Attribute<Integer> DETAIL_MASTER_CODE = integerAttribute("master_code", T_DETAIL);
-  public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = integerAttribute("int_value_list", T_DETAIL);
-  public static final Attribute<Integer> DETAIL_INT_DERIVED = integerAttribute("int_derived", T_DETAIL);
-  public static final Attribute<Integer> DETAIL_MASTER_CODE_DENORM = integerAttribute("master_code_denorm", T_DETAIL);
+  public static final Attribute<Long> DETAIL_ID = T_DETAIL.longAttribute("id");
+  public static final Attribute<Integer> DETAIL_INT = T_DETAIL.integerAttribute("int");
+  public static final Attribute<Double> DETAIL_DOUBLE = T_DETAIL.doubleAttribute("double");
+  public static final Attribute<String> DETAIL_STRING = T_DETAIL.stringAttribute("string");
+  public static final Attribute<LocalDate> DETAIL_DATE = T_DETAIL.localDateAttribute("date");
+  public static final Attribute<LocalDateTime> DETAIL_TIMESTAMP = T_DETAIL.localDateTimeAttribute("timestamp");
+  public static final Attribute<Boolean> DETAIL_BOOLEAN = T_DETAIL.booleanAttribute("boolean");
+  public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = T_DETAIL.booleanAttribute("boolean_nullable");
+  public static final Attribute<Long> DETAIL_MASTER_ID = T_DETAIL.longAttribute("master_id");
+  public static final EntityAttribute DETAIL_MASTER_FK = T_DETAIL.entityAttribute("master_fk");
+  public static final Attribute<String> DETAIL_MASTER_NAME = T_DETAIL.stringAttribute("master_name");
+  public static final Attribute<Integer> DETAIL_MASTER_CODE = T_DETAIL.integerAttribute("master_code");
+  public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = T_DETAIL.integerAttribute("int_value_list");
+  public static final Attribute<Integer> DETAIL_INT_DERIVED = T_DETAIL.integerAttribute("int_derived");
+  public static final Attribute<Integer> DETAIL_MASTER_CODE_DENORM = T_DETAIL.integerAttribute("master_code_denorm");
 
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
@@ -143,11 +142,11 @@ public final class TestDomain extends Domain {
   }
 
   public static final Identity T_DEPARTMENT = identity("domain.scott.dept");
-  public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno", T_DEPARTMENT);
-  public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname", T_DEPARTMENT);
-  public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc", T_DEPARTMENT);
-  public static final Attribute<Boolean> DEPARTMENT_ACTIVE = booleanAttribute("active", T_DEPARTMENT);
-  public static final BlobAttribute DEPARTMENT_DATA = blobAttribute("data", T_DEPARTMENT);
+  public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
+  public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
+  public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
+  public static final Attribute<Boolean> DEPARTMENT_ACTIVE = T_DEPARTMENT.booleanAttribute("active");
+  public static final BlobAttribute DEPARTMENT_DATA = T_DEPARTMENT.blobAttribute("data");
 
   void department() {
     define(T_DEPARTMENT, "scott.dept",
@@ -174,19 +173,19 @@ public final class TestDomain extends Domain {
   }
 
   public static final Identity T_EMP = identity("domain.scott.emp");
-  public static final Attribute<Integer> EMP_ID = integerAttribute("emp_id", T_EMP);
-  public static final Attribute<String> EMP_NAME = stringAttribute("emp_name", T_EMP);
-  public static final Attribute<String> EMP_JOB = stringAttribute("job", T_EMP);
-  public static final Attribute<Integer> EMP_MGR = integerAttribute("mgr", T_EMP);
-  public static final Attribute<LocalDateTime> EMP_HIREDATE = localDateTimeAttribute("hiredate", T_EMP);
-  public static final Attribute<Double> EMP_SALARY = doubleAttribute("sal", T_EMP);
-  public static final Attribute<Double> EMP_COMMISSION = doubleAttribute("comm", T_EMP);
-  public static final Attribute<Integer> EMP_DEPARTMENT = integerAttribute("deptno", T_EMP);
-  public static final EntityAttribute EMP_DEPARTMENT_FK = entityAttribute("dept_fk", T_EMP);
-  public static final EntityAttribute EMP_MGR_FK = entityAttribute("mgr_fk", T_EMP);
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = stringAttribute("location", T_EMP);
-  public static final Attribute<String> EMP_NAME_DEPARTMENT = stringAttribute("name_department", T_EMP);
-  public static final BlobAttribute EMP_DATA = blobAttribute("data", T_EMP);
+  public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("emp_id");
+  public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("emp_name");
+  public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
+  public static final Attribute<Integer> EMP_MGR = T_EMP.integerAttribute("mgr");
+  public static final Attribute<LocalDateTime> EMP_HIREDATE = T_EMP.localDateTimeAttribute("hiredate");
+  public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
+  public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
+  public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
+  public static final EntityAttribute EMP_DEPARTMENT_FK = T_EMP.entityAttribute("dept_fk");
+  public static final EntityAttribute EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
+  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
+  public static final Attribute<String> EMP_NAME_DEPARTMENT = T_EMP.stringAttribute("name_department");
+  public static final BlobAttribute EMP_DATA = T_EMP.blobAttribute("data");
 
   void employee() {
     define(T_EMP, "scott.emp",
@@ -243,9 +242,9 @@ public final class TestDomain extends Domain {
   }
 
   public static final Identity T_NO_PK = identity("no_pk");
-  public static final Attribute<Integer> NO_PK_COL1 = integerAttribute("col1", T_NO_PK);
-  public static final Attribute<Integer> NO_PK_COL2 = integerAttribute("col2", T_NO_PK);
-  public static final Attribute<Integer> NO_PK_COL3 = integerAttribute("col3", T_NO_PK);
+  public static final Attribute<Integer> NO_PK_COL1 = T_NO_PK.integerAttribute("col1");
+  public static final Attribute<Integer> NO_PK_COL2 = T_NO_PK.integerAttribute("col2");
+  public static final Attribute<Integer> NO_PK_COL3 = T_NO_PK.integerAttribute("col3");
 
   void noPKEntity() {
     define(T_NO_PK,
