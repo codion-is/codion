@@ -24,6 +24,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.property.DomainIdentity;
 import is.codion.framework.domain.property.Identity;
 
 import org.slf4j.Logger;
@@ -67,7 +68,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
 
   private final EntityServerConfiguration configuration;
-  private final Map<String, Domain> domainModels;
+  private final Map<DomainIdentity, Domain> domainModels;
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
@@ -406,7 +407,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   private Domain getClientDomainModel(final RemoteClient remoteClient) {
-    final String domainId = (String) remoteClient.getParameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID);
+    final DomainIdentity domainId = (DomainIdentity) remoteClient.getParameters().get(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID);
     if (domainId == null) {
       throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID + "' parameter not specified");
     }
@@ -414,8 +415,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     return domainModels.get(domainId);
   }
 
-  private static Map<String, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
-    final Map<String, Domain> domains = new HashMap<>();
+  private static Map<DomainIdentity, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
+    final Map<DomainIdentity, Domain> domains = new HashMap<>();
     try {
       for (final String className : domainModelClassNames) {
         LOG.info("Server loading and registering domain model class '" + className + " from classpath");

@@ -5,6 +5,7 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.Util;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.DomainIdentity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Property;
@@ -34,9 +35,9 @@ public abstract class DefaultEntities implements Entities {
 
   private static final long serialVersionUID = 1;
 
-  private static final Map<String, Entities> REGISTERED_ENTITIES = new HashMap<>();
+  private static final Map<DomainIdentity, Entities> REGISTERED_ENTITIES = new HashMap<>();
 
-  private final String domainId;
+  private final DomainIdentity domainId;
   private final Map<Identity, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
   private Map<Class<?>, EntityDefinition> beanEntities;
@@ -48,12 +49,12 @@ public abstract class DefaultEntities implements Entities {
    * Instantiates a new DefaultEntities for the given domainId
    * @param domainId the domainId
    */
-  protected DefaultEntities(final String domainId) {
+  protected DefaultEntities(final DomainIdentity domainId) {
     this.domainId = requireNonNull(domainId, "domainId");
   }
 
   @Override
-  public final String getDomainId() {
+  public final DomainIdentity getDomainId() {
     return domainId;
   }
 
@@ -254,7 +255,7 @@ public abstract class DefaultEntities implements Entities {
    * @throws IllegalArgumentException in case the domain has not been registered
    * @see #register()
    */
-  static Entities getEntities(final String domainId) {
+  static Entities getEntities(final DomainIdentity domainId) {
     final Entities entities = REGISTERED_ENTITIES.get(domainId);
     if (entities == null) {
       throw new IllegalArgumentException("Entities for domain '" + domainId + "' have not been registered");
@@ -267,7 +268,7 @@ public abstract class DefaultEntities implements Entities {
     this.strictForeignKeys = strictForeignKeys;
   }
 
-  protected final EntityDefinition.Builder define(final Identity entityId, final String tableName,
+  protected final EntityDefinition.Builder define(final EntityIdentity entityId, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
     final EntityDefinition.Builder definitionBuilder =
             new DefaultEntityDefinition(entityId, tableName, propertyBuilders).builder();

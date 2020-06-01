@@ -20,6 +20,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.BlobAttribute;
+import is.codion.framework.domain.property.DomainIdentity;
 import is.codion.framework.domain.property.Identity;
 
 import org.apache.http.HttpHost;
@@ -85,7 +86,7 @@ final class HttpEntityConnection implements EntityConnection {
           .setConnectTimeout(2000)
           .build();
 
-  private final String domainId;
+  private final DomainIdentity domainId;
   private final User user;
   private final boolean httpsEnabled;
   private final String baseurl;
@@ -108,7 +109,7 @@ final class HttpEntityConnection implements EntityConnection {
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  HttpEntityConnection(final String domainId, final String serverHostName, final int serverPort,
+  HttpEntityConnection(final DomainIdentity domainId, final String serverHostName, final int serverPort,
                        final ClientHttps httpsEnabled, final User user, final String clientTypeId, final UUID clientId,
                        final HttpClientConnectionManager connectionManager) {
     this.domainId = Objects.requireNonNull(domainId, DOMAIN_ID);
@@ -524,7 +525,7 @@ final class HttpEntityConnection implements EntityConnection {
             .setDefaultRequestConfig(REQUEST_CONFIG)
             .setConnectionManager(connectionManager)
             .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
-              request.setHeader(DOMAIN_ID, domainId);
+              request.setHeader(DOMAIN_ID, domainId.getName());
               request.setHeader(CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(CLIENT_ID, clientIdString);
               request.setHeader(CONTENT_TYPE, APPLICATION_OCTET_STREAM);

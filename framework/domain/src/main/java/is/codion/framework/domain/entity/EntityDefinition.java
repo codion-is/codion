@@ -39,7 +39,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return the entityId
    */
-  Identity getEntityId();
+  EntityIdentity getEntityId();
 
   /**
    * @return the name of the underlying table, with schema prefix if applicable
@@ -57,7 +57,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return the id of the domain this entity type belongs to
    */
-  String getDomainId();
+  Identity getDomainId();
 
   /**
    * @return the validator for this entity type
@@ -489,7 +489,7 @@ public interface EntityDefinition extends Serializable {
      * @return this {@link Builder} instance
      * @throws IllegalStateException in case the domain id has already been set
      */
-    Builder domainId(String domainId);
+    Builder domainId(Identity domainId);
 
     /**
      * @param validator the validator for this entity type

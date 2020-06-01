@@ -4,11 +4,12 @@
 package is.codion.swing.framework.server.monitor;
 
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.EntityAttribute;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.property.Identities;
 
 import java.time.LocalDate;
 
@@ -25,7 +26,7 @@ public final class TestDomain extends Domain {
     registerEntities();
   }
 
-  public static final Identity T_DEPARTMENT = Identity.identity("scott.dept");
+  public static final EntityIdentity T_DEPARTMENT = Identities.entityIdentity("scott.dept");
   public static final BlobAttribute DEPARTMENT_LOGO = T_DEPARTMENT.blobAttribute("logo");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
@@ -45,7 +46,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final Identity T_EMP = Identity.identity("scott.emp");
+  public static final EntityIdentity T_EMP = Identities.entityIdentity("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");

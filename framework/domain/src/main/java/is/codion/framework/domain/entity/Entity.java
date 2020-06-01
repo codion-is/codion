@@ -23,7 +23,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
   /**
    * @return the entityId
    */
-  Identity getEntityId();
+  EntityIdentity getEntityId();
 
   /**
    * Returns the primary key of this entity.

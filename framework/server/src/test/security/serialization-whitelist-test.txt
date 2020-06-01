@@ -80,13 +80,15 @@ is.codion.framework.domain.entity.DefaultEntityDefinition
 is.codion.framework.domain.entity.DefaultEntityDefinition$DefaultBeanHelper
 is.codion.framework.domain.entity.DefaultEntityDefinition$EntityProperties
 is.codion.framework.domain.entity.DefaultEntityValidator
-is.codion.framework.domain.property.DefaultIdentity
 is.codion.framework.domain.entity.DefaultOrderBy
 is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByAttribute
 is.codion.framework.domain.entity.Entity
 is.codion.framework.domain.entity.NullColorProvider
 is.codion.framework.domain.entity.StringProvider
 is.codion.framework.domain.entity.StringProvider$StringValueProvider
+is.codion.framework.domain.property.DefaultDomainIdentity
+is.codion.framework.domain.property.DefaultEntityIdentity
+is.codion.framework.domain.property.DefaultIdentity
 is.codion.framework.domain.property.DefaultAttribute
 is.codion.framework.domain.property.DefaultBlobAttribute
 is.codion.framework.domain.property.DefaultEntityAttribute

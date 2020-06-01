@@ -6164,3 +6164,4 @@
   Identity now an Attribute factory
   Identity moved to property package
   Attributes factory class removed
+  EntityIdentity and DomainIdentity added

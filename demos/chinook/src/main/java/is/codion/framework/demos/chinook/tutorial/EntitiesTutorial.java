@@ -14,10 +14,10 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
-import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.util.List;
@@ -28,7 +28,7 @@ import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinoo
 import static is.codion.framework.domain.entity.Entities.getKeys;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.property.Identity.identity;
+import static is.codion.framework.domain.property.Identities.entityIdentity;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -43,13 +43,13 @@ public final class EntitiesTutorial {
 
     //string constant for the table entityId ('T_' prefix)
     //and a Attribute for each column
-    public static final Identity T_ARTIST = identity("chinook.artist");
+    public static final EntityIdentity T_ARTIST = entityIdentity("chinook.artist");
     public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
     public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
 
     //string constants for the table entityId ('T_' prefix),
     //and a Attribute for each column and one for the foreign key relation
-    public static final Identity T_ALBUM = identity("chinook.album");
+    public static final EntityIdentity T_ALBUM = entityIdentity("chinook.album");
     public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
     public static final Attribute<String> ALBUM_TITLE = T_ALBUM.stringAttribute("title");
     public static final Attribute<Integer> ALBUM_ARTISTID = T_ALBUM.integerAttribute("artistid");

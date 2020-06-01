@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
+import is.codion.framework.domain.property.Identities;
 import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Property;
 
@@ -44,7 +45,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityNode = parser.getCodec().readTree(parser);
 
-    final Identity entityId = Identity.identity(entityNode.get("entityId").asText());
+    final Identity entityId = Identities.entityIdentity(entityNode.get("entityId").asText());
     final EntityDefinition definition = entities.getDefinition(entityId);
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));

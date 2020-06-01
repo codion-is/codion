@@ -10,11 +10,11 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Identity;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -30,7 +30,7 @@ import java.time.LocalDate;
 import java.util.Locale;
 
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
-import static is.codion.framework.domain.property.Identity.identity;
+import static is.codion.framework.domain.property.Identities.entityIdentity;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -47,7 +47,7 @@ public final class EmpDeptMinimalApp {
     /*
      * We start by defining attributes for the columns in the SCOTT.DEPT table.
      */
-    public static final Identity T_DEPT = identity("scott.dept");
+    public static final EntityIdentity T_DEPT = entityIdentity("scott.dept");
     public static final Attribute<Integer> DEPT_DEPTNO = T_DEPT.integerAttribute("deptno");
     public static final Attribute<String> DEPT_DNAME = T_DEPT.stringAttribute("dname");
     public static final Attribute<String> DEPT_LOC = T_DEPT.stringAttribute("loc");
@@ -55,7 +55,7 @@ public final class EmpDeptMinimalApp {
     /*
      * And for the columns in the SCOTT.EMP table.
      */
-    public static final Identity T_EMP = identity("scott.emp");
+    public static final EntityIdentity T_EMP = entityIdentity("scott.emp");
     public static final Attribute<Integer> EMP_EMPNO = T_EMP.integerAttribute("empno");
     public static final Attribute<String> EMP_ENAME = T_EMP.stringAttribute("ename");
     public static final Attribute<Integer> EMP_DEPTNO = T_EMP.integerAttribute("deptno");

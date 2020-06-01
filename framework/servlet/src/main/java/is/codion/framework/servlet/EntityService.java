@@ -20,6 +20,8 @@ import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.BlobAttribute;
+import is.codion.framework.domain.property.DomainIdentity;
+import is.codion.framework.domain.property.Identities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -555,7 +557,7 @@ public final class EntityService extends Application {
     }
 
     final MultivaluedMap<String, String> headerValues = headers.getRequestHeaders();
-    final String domainId = getDomainId(headerValues);
+    final DomainIdentity domainId = Identities.domainIdentity(getDomainId(headerValues));
     final String clientTypeId = getClientTypeId(headerValues);
     final UUID clientId = getClientId(headerValues, request.getSession());
     final User user = getUser(headerValues);

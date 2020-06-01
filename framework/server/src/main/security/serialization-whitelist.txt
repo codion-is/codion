@@ -90,6 +90,8 @@ is.codion.framework.db.condition.Condition$EmptyCondition
 is.codion.framework.domain.Domain
 is.codion.framework.domain.entity.DefaultEntity
 is.codion.framework.domain.entity.DefaultEntityKey
+is.codion.framework.domain.property.DefaultDomainIdentity
+is.codion.framework.domain.property.DefaultEntityIdentity
 is.codion.framework.domain.property.DefaultIdentity
 is.codion.framework.domain.entity.DefaultOrderBy
 is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByAttribute

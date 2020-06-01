@@ -9,6 +9,8 @@ import is.codion.common.event.Events;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.property.DomainIdentity;
+import is.codion.framework.domain.property.Identities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,12 +216,12 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    */
   protected abstract void disconnect(EntityConnection connection);
 
-  protected static String getDomainId(final String domainClass) {
+  protected DomainIdentity getDomainId(final String domainClass) {
     if (domainClass.contains(".")) {
-      return domainClass.substring(domainClass.lastIndexOf('.') + 1);
+      return Identities.domainIdentity(domainClass.substring(domainClass.lastIndexOf('.') + 1));
     }
 
-    return domainClass;
+    return Identities.domainIdentity(domainClass);
   }
 
   private void validateConnection() {

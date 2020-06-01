@@ -10,7 +10,7 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.property.Identities;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.TransientProperty;
 
@@ -67,7 +67,7 @@ public class DefaultEntityTest {
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final Identity entityId = Identity.identity("entityId");
+    final EntityIdentity entityId = Identities.entityIdentity("entityId");
     final Attribute<?> invalid = entityId.integerAttribute("invalid");
     final Map<Attribute<?>, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
@@ -585,7 +585,7 @@ public class DefaultEntityTest {
 
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
-    final Identity entityId = Identity.identity("entityId");
+    final EntityIdentity entityId = Identities.entityIdentity("entityId");
     final Attribute<Integer> trans = entityId.integerAttribute("trans");
     final Attribute<Integer> id = entityId.integerAttribute("id");
     final TransientProperty.Builder<?> transientProperty = Properties.transientProperty(trans);

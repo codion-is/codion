@@ -3,9 +3,10 @@
  */
 package is.codion.framework.demos.manual.framework;
 
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.property.Identities;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.textfield.DecimalField;
@@ -33,7 +34,7 @@ import java.time.LocalDate;
 public final class EntityEditPanels {
 
   private static final class Domain {
-    static final Identity ENTITY_ID = Identity.identity("entityId");
+    static final EntityIdentity ENTITY_ID = Identities.entityIdentity("entityId");
     static final Attribute<Boolean> BOOLEAN_ATTRIBUTE = ENTITY_ID.booleanAttribute("boolean");
     static final EntityAttribute FOREIGN_KEY_ATTRIBUTE = ENTITY_ID.entityAttribute("foreign_key");
     static final Attribute<LocalDate> LOCAL_DATE_ATTRIBUTE = ENTITY_ID.localDateAttribute("local_date");

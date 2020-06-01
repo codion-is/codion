@@ -43,12 +43,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The entityId
    */
-  private final Identity entityId;
+  private final EntityIdentity entityId;
 
   /**
    * The domainId
    */
-  private String domainId;
+  private Identity domainId;
 
   /**
    * The caption to use for the entity type
@@ -171,7 +171,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * Defines a new entity type with the entityId serving as the initial entity caption.
    */
-  DefaultEntityDefinition(final Identity entityId, final String tableName, final Property.Builder<?>... propertyBuilders) {
+  DefaultEntityDefinition(final EntityIdentity entityId, final String tableName, final Property.Builder<?>... propertyBuilders) {
     this.entityId = requireNonNull(entityId, "entityId");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.entityProperties = new EntityProperties(entityId, propertyBuilders);
@@ -181,7 +181,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Identity getEntityId() {
+  public EntityIdentity getEntityId() {
     return entityId;
   }
 
@@ -204,7 +204,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public String getDomainId() {
+  public Identity getDomainId() {
     return domainId;
   }
 
@@ -829,8 +829,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder domainId(final String domainId) {
-      rejectNullOrEmpty(domainId, "domainId");
+    public Builder domainId(final Identity domainId) {
+      requireNonNull(domainId, "domainId");
       if (definition.domainId != null) {
         throw new IllegalStateException("Domain id has already been set: " + definition.domainId);
       }

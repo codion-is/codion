@@ -24,6 +24,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.property.Identities;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -48,7 +49,7 @@ public class EntityServerTest {
 
   private static final User ADMIN_USER = Users.parseUser("scott:tiger");
   private static final Map<String, Object> CONNECTION_PARAMS =
-          Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, "TestDomain");
+          Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, Identities.domainIdentity("TestDomain"));
   private static Server<RemoteEntityConnection, EntityServerAdmin> server;
   private static EntityServerAdmin admin;
 

@@ -5,10 +5,11 @@ package is.codion.framework.db;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.property.Identities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ public final class TestDomain extends Domain {
     employee();
   }
 
-  public static final Identity T_SUPER = Identity.identity("db.super_entity");
+  public static final EntityIdentity T_SUPER = Identities.entityIdentity("db.super_entity");
   public static final Attribute<Integer> SUPER_ID = T_SUPER.integerAttribute("id");
 
   void superEntity() {
@@ -38,7 +39,7 @@ public final class TestDomain extends Domain {
             primaryKeyProperty(SUPER_ID));
   }
 
-  public static final Identity T_MASTER = Identity.identity("db.master_entity");
+  public static final EntityIdentity T_MASTER = Identities.entityIdentity("db.master_entity");
   public static final Attribute<Integer> MASTER_ID_1 = T_MASTER.integerAttribute("id");
   public static final Attribute<Integer> MASTER_ID_2 = T_MASTER.integerAttribute("id2");
   public static final Attribute<Integer> MASTER_SUPER_ID = T_MASTER.integerAttribute("super_id");
@@ -58,7 +59,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(MASTER_NAME));
   }
 
-  public static final Identity T_DETAIL = Identity.identity("db.detail_entity");
+  public static final EntityIdentity T_DETAIL = Identities.entityIdentity("db.detail_entity");
 
   public static final Attribute<Long> DETAIL_ID = T_DETAIL.longAttribute("id");
   public static final Attribute<Integer> DETAIL_INT = T_DETAIL.integerAttribute("int");
@@ -76,7 +77,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = T_DETAIL.integerAttribute("int_value_list");
   public static final Attribute<Integer> DETAIL_INT_DERIVED = T_DETAIL.integerAttribute("int_derived");
 
-  public static final Identity DETAIL_SELECT_TABLE_NAME = Identity.identity("db.entity_test_select");
+  public static final EntityIdentity DETAIL_SELECT_TABLE_NAME = Identities.entityIdentity("db.entity_test_select");
 
   private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
           item(2, "2"), item(3, "3"));
@@ -115,7 +116,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
-  public static final Identity T_DEPARTMENT = Identity.identity("db.scott.dept");
+  public static final EntityIdentity T_DEPARTMENT = Identities.entityIdentity("db.scott.dept");
 
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
@@ -146,7 +147,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final Identity T_EMP = Identity.identity("db.scott.emp");
+  public static final EntityIdentity T_EMP = Identities.entityIdentity("db.scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("emp_id");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("emp_name");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");

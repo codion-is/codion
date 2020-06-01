@@ -4,16 +4,16 @@
 package is.codion.framework.demos.petstore.domain;
 
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
-import is.codion.framework.domain.property.Identity;
 
 import java.math.BigDecimal;
 
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.property.Identity.identity;
+import static is.codion.framework.domain.property.Identities.entityIdentity;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.sql.Types.INTEGER;
 
@@ -29,7 +29,7 @@ public final class Petstore extends Domain {
     tagItem();
   }
 
-  public static final Identity T_ADDRESS = identity("address");
+  public static final EntityIdentity T_ADDRESS = entityIdentity("address");
   public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("Address id");
   public static final Attribute<String> ADDRESS_STREET_1 = T_ADDRESS.stringAttribute("Street 1");
   public static final Attribute<String> ADDRESS_STREET_2 = T_ADDRESS.stringAttribute("Street 2");
@@ -65,7 +65,7 @@ public final class Petstore extends Domain {
             .caption("Addresses");
   }
 
-  public static final Identity T_CATEGORY = identity("category");
+  public static final EntityIdentity T_CATEGORY = entityIdentity("category");
   public static final Attribute<Integer> CATEGORY_ID = T_CATEGORY.integerAttribute("Category id");
   public static final Attribute<String> CATEGORY_NAME = T_CATEGORY.stringAttribute("Name");
   public static final Attribute<String> CATEGORY_DESCRIPTION = T_CATEGORY.stringAttribute("Description");
@@ -87,7 +87,7 @@ public final class Petstore extends Domain {
             .caption("Categories");
   }
 
-  public static final Identity T_PRODUCT = identity("product");
+  public static final EntityIdentity T_PRODUCT = entityIdentity("product");
   public static final Attribute<Integer> PRODUCT_ID = T_PRODUCT.integerAttribute("Product id");
   public static final Attribute<Integer> PRODUCT_CATEGORY_ID = T_PRODUCT.integerAttribute("Category id");
   public static final EntityAttribute PRODUCT_CATEGORY_FK = T_PRODUCT.entityAttribute("Category");
@@ -115,7 +115,7 @@ public final class Petstore extends Domain {
             .caption("Products");
   }
 
-  public static final Identity T_SELLER_CONTACT_INFO = identity("sellercontactinfo");
+  public static final EntityIdentity T_SELLER_CONTACT_INFO = entityIdentity("sellercontactinfo");
   public static final Attribute<Integer> SELLER_CONTACT_INFO_ID = T_SELLER_CONTACT_INFO.integerAttribute("Contactinfo id");
   public static final Attribute<String> SELLER_CONTACT_INFO_FIRST_NAME = T_SELLER_CONTACT_INFO.stringAttribute("First name");
   public static final Attribute<String> SELLER_CONTACT_INFO_LAST_NAME = T_SELLER_CONTACT_INFO.stringAttribute("Last name");
@@ -139,7 +139,7 @@ public final class Petstore extends Domain {
             .caption("Seller info");
   }
 
-  public static final Identity T_ITEM = identity("item");
+  public static final EntityIdentity T_ITEM = entityIdentity("item");
   public static final Attribute<Integer> ITEM_ID = T_ITEM.integerAttribute("Item id");
   public static final Attribute<Integer> ITEM_PRODUCT_ID = T_ITEM.integerAttribute("Product id");
   public static final EntityAttribute ITEM_PRODUCT_FK = T_ITEM.entityAttribute("Product");
@@ -187,7 +187,7 @@ public final class Petstore extends Domain {
             .caption("Items");
   }
 
-  public static final Identity T_TAG = identity("tag");
+  public static final EntityIdentity T_TAG = entityIdentity("tag");
   public static final Attribute<Integer> TAG_ID = T_TAG.integerAttribute("Tag id");
   public static final Attribute<String> TAG_TAG = T_TAG.stringAttribute("Tag");
   public static final Attribute<Integer> TAG_REFCOUNT = T_TAG.integerAttribute("Reference count");
@@ -208,7 +208,7 @@ public final class Petstore extends Domain {
             .caption("Tags");
   }
 
-  public static final Identity T_TAG_ITEM = identity("tag_item");
+  public static final EntityIdentity T_TAG_ITEM = entityIdentity("tag_item");
   public static final Attribute<Integer> TAG_ITEM_ITEM_ID = T_TAG_ITEM.integerAttribute("Item id");
   public static final EntityAttribute TAG_ITEM_ITEM_FK = T_TAG_ITEM.entityAttribute("Item");
   public static final Attribute<Integer> TAG_ITEM_TAG_ID = T_TAG_ITEM.integerAttribute("Tag id");

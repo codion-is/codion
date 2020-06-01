@@ -5,10 +5,11 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.property.Identities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ public final class TestDomain extends Domain {
     employee();
   }
 
-  public static final Identity T_MASTER = Identity.identity("domain.master_entity");
+  public static final EntityIdentity T_MASTER = Identities.entityIdentity("domain.master_entity");
   public static final Attribute<Long> MASTER_ID = T_MASTER.longAttribute("id");
   public static final Attribute<String> MASTER_NAME = T_MASTER.stringAttribute("name");
   public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
@@ -44,7 +45,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(MASTER_NAME));
   }
 
-  public static final Identity T_DETAIL = Identity.identity("domain.detail_entity");
+  public static final EntityIdentity T_DETAIL = Identities.entityIdentity("domain.detail_entity");
   public static final Attribute<Long> DETAIL_ID = T_DETAIL.longAttribute("id");
   public static final Attribute<Integer> DETAIL_INT = T_DETAIL.integerAttribute("int");
   public static final Attribute<Double> DETAIL_DOUBLE = T_DETAIL.doubleAttribute("double");
@@ -98,7 +99,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
-  public static final Identity T_DEPARTMENT = Identity.identity("scott.dept");
+  public static final EntityIdentity T_DEPARTMENT = Identities.entityIdentity("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -117,7 +118,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final Identity T_EMP = Identity.identity("scott.emp");
+  public static final EntityIdentity T_EMP = Identities.entityIdentity("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");

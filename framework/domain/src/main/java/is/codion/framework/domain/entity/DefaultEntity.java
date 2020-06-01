@@ -11,8 +11,10 @@ import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
+import is.codion.framework.domain.property.DomainIdentity;
 import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Identities;
 import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.MirrorProperty;
 import is.codion.framework.domain.property.Property;
@@ -105,7 +107,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public Identity getEntityId() {
+  public EntityIdentity getEntityId() {
     return definition.getEntityId();
   }
 
@@ -790,7 +792,7 @@ final class DefaultEntity implements Entity {
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.getDomainId());
+    stream.writeObject(definition.getDomainId().getName());
     stream.writeObject(definition.getEntityId().getName());
     final boolean isModified = isModifiedInternal(true);
     stream.writeBoolean(isModified);
@@ -815,8 +817,8 @@ final class DefaultEntity implements Entity {
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    final String domainId = (String) stream.readObject();
-    final Identity entityId = Identity.identity((String) stream.readObject());
+    final DomainIdentity domainId = Identities.domainIdentity((String) stream.readObject());
+    final Identity entityId = Identities.entityIdentity((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
     definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
     if (definition == null) {

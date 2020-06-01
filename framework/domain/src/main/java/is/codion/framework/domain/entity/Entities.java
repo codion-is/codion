@@ -38,7 +38,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   /**
    * @return the domain id
    */
-  String getDomainId();
+  Identity getDomainId();
 
   /**
    * Creates a new {@link Entity} instance with the given entityId
