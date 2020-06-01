@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.attribute.Attribute;
 
 /**
  * Represents a change in a {@link Entity} value.
@@ -11,9 +11,9 @@ import is.codion.framework.domain.property.Property;
 public interface ValueChange {
 
   /**
-   * @return the Property associated with the changed value
+   * @return the attribute associated with the changed value
    */
-  Property getProperty();
+  Attribute<?> getAttribute();
 
   /**
    * @return the new value

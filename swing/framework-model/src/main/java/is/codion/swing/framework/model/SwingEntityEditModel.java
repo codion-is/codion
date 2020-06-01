@@ -209,7 +209,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
             comboBoxModel.setSelectedItem(null);
           }
         }
-        clearForeignKeyReferences(foreignKeyProperty, entry.getValue());
+        clearForeignKeyReferences(foreignKeyProperty.getAttribute(), entry.getValue());
       }
     }
   }
@@ -228,7 +228,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     }
   }
 
-  private void clearForeignKeyReferences(final ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) {
+  private void clearForeignKeyReferences(final Attribute<Entity> foreignKeyProperty, final List<Entity> entities) {
     entities.forEach(entity -> {
       if (Objects.equals(entity, get(foreignKeyProperty))) {
         put(foreignKeyProperty, null);

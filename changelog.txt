@@ -6174,3 +6174,5 @@
   Updated a bunch of Identity parameters and return values to the more appropriate EntityIdentity
   EntityIdentity moved to Entity, renamed Identity
   DomainIdentity removed, quite unnecessary
+  ValueChange now Attribute based
+  EntityEditModel, put(), get() and remove() with Property parameters removed

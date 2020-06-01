@@ -409,7 +409,7 @@ public class DefaultEntityTest {
     assertEquals(employee.get(TestDomain.EMP_NAME), "noname");
 
     final EventDataListener<ValueChange> valueListener = valueChange -> {
-      if (valueChange.getProperty().is(TestDomain.EMP_DEPARTMENT_FK)) {
+      if (valueChange.getAttribute().equals(TestDomain.EMP_DEPARTMENT_FK)) {
         assertTrue(employee.isNull(TestDomain.EMP_DEPARTMENT_FK));
         assertTrue(employee.isNull(TestDomain.EMP_DEPARTMENT));
       }

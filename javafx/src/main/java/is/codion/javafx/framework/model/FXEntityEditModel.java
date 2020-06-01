@@ -140,8 +140,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
 
   private void clearForeignKeyReferences(final ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) {
     entities.forEach(entity -> {
-      if (Objects.equals(entity, get(foreignKeyProperty))) {
-        put(foreignKeyProperty, null);
+      if (Objects.equals(entity, get(foreignKeyProperty.getAttribute()))) {
+        put(foreignKeyProperty.getAttribute(), null);
       }
     });
   }

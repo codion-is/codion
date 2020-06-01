@@ -403,7 +403,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   protected void onInitialization(final ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
     if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
-      editModel.put(foreignKeyProperty, foreignKeyValues.get(0));
+      editModel.put(foreignKeyProperty.getAttribute(), foreignKeyValues.get(0));
     }
   }
 

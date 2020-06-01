@@ -382,7 +382,7 @@ public interface EntityDefinition extends Serializable {
    * @see ColumnProperty.Builder#columnHasDefaultValue(boolean)
    * @see ColumnProperty.Builder#defaultValue(Object)
    */
-  Entity entity(Function<Property<?>, Object> valueProvider);
+  Entity entity(Function<Attribute<?>, Object> valueProvider);
 
   /**
    * Creates a new {@link Entity} instance based on this definition

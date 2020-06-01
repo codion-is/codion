@@ -234,7 +234,7 @@ final class DefaultEntity implements Entity {
     if (values.containsKey(requireNonNull(attribute, ATTRIBUTE))) {
       final T value = (T) values.remove(attribute);
       removeOriginalValue(attribute);
-      onValueChanged(definition.getProperty(attribute), null, value, false);
+      onValueChanged(attribute, null, value, false);
 
       return value;
     }
@@ -263,7 +263,7 @@ final class DefaultEntity implements Entity {
       }
     }
     for (final Attribute<?> attribute : affectedProperties) {
-      onValueChanged(definition.getProperty(attribute), values.get(attribute), null, true);
+      onValueChanged(attribute, values.get(attribute), null, true);
     }
   }
 
@@ -454,7 +454,7 @@ final class DefaultEntity implements Entity {
       updateOriginalValue(property.getAttribute(), newValue, previousValue);
     }
     onValuePut(property, newValue);
-    onValueChanged(property, newValue, previousValue, initialization);
+    onValueChanged(property.getAttribute(), newValue, previousValue, initialization);
 
     return previousValue;
   }
@@ -513,21 +513,21 @@ final class DefaultEntity implements Entity {
   }
 
   /**
-   * Fires notifications for a value change for the given property as well as for properties derived from it.
-   * @param property the property which value is changing
+   * Fires notifications for a value change for the given attribute as well as for properties derived from it.
+   * @param attribute the attribute which value is changing
    * @param currentValue the new value
    * @param previousValue the previous value, if any
    * @param initialization true if the value is being initialized, that is, no previous value exists
    * @see #addValueListener(EventDataListener)
    */
-  private void onValueChanged(final Property<?> property, final Object currentValue, final Object previousValue, final boolean initialization) {
+  private void onValueChanged(final Attribute<?> attribute, final Object currentValue, final Object previousValue, final boolean initialization) {
     if (valueChangeEvent != null) {
-      valueChangeEvent.onEvent(valueChange(property, currentValue, previousValue, initialization));
+      valueChangeEvent.onEvent(valueChange(attribute, currentValue, previousValue, initialization));
       if (definition.hasDerivedProperties()) {
-        final Collection<DerivedProperty<?>> derivedProperties = definition.getDerivedProperties(property.getAttribute());
+        final Collection<DerivedProperty<?>> derivedProperties = definition.getDerivedProperties(attribute);
         for (final DerivedProperty<?> derivedProperty : derivedProperties) {
           final Object derivedValue = getDerivedValue(derivedProperty);
-          valueChangeEvent.onEvent(valueChange(derivedProperty, derivedValue, derivedValue));
+          valueChangeEvent.onEvent(valueChange(derivedProperty.getAttribute(), derivedValue, derivedValue));
         }
       }
     }
