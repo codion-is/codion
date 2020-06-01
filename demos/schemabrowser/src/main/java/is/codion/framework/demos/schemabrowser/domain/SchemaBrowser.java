@@ -72,10 +72,10 @@ public final class SchemaBrowser extends Domain {
 
   public static final Identity T_COLUMN = identity("column");
   public static final Attribute<String> COLUMN_SCHEMA = T_COLUMN.stringAttribute(bundle.getString("column_schema"));
-  public static final Attribute<String> COLUMN_TABLE_NAME = T_TABLE.stringAttribute(bundle.getString("column_table_name"));
-  public static final EntityAttribute COLUMN_TABLE_FK = T_TABLE.entityAttribute(bundle.getString("column_table_ref"));
-  public static final Attribute<String> COLUMN_NAME = T_TABLE.stringAttribute(bundle.getString("column_name"));
-  public static final Attribute<String> COLUMN_DATA_TYPE = T_TABLE.stringAttribute(bundle.getString("column_data_type"));
+  public static final Attribute<String> COLUMN_TABLE_NAME = T_COLUMN.stringAttribute(bundle.getString("column_table_name"));
+  public static final EntityAttribute COLUMN_TABLE_FK = T_COLUMN.entityAttribute(bundle.getString("column_table_ref"));
+  public static final Attribute<String> COLUMN_NAME = T_COLUMN.stringAttribute(bundle.getString("column_name"));
+  public static final Attribute<String> COLUMN_DATA_TYPE = T_COLUMN.stringAttribute(bundle.getString("column_data_type"));
 
   void defineColumn() {
     define(T_COLUMN, bundle.getString("t_column"),
