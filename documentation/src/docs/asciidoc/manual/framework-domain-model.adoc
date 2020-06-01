@@ -5,7 +5,7 @@
 :dir-world-source: ../../../../../demos/world/src/main/java
 :url-javadoc: link:../api
 
-The domain model is based around five classes; {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity], which represents a row in a table, {url-javadoc}/is/codion/framework/domain/entity/EntityIdentity.html[EntityIdentity], which identifies an entity type, {url-javadoc}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such), {url-javadoc}/is/codion/framework/domain/property/Attribute.html[Attribute], which represents column types and {url-javadoc}/is/codion/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
+The domain model is based around five classes; {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity], which represents a row in a table, {url-javadoc}/is/codion/framework/domain/entity/EntityIdentity.html[EntityIdentity], which identifies an entity type, {url-javadoc}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such), {url-javadoc}/is/codion/framework/domain/attribute/Attribute.html[Attribute], which represents column types and {url-javadoc}/is/codion/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
 {url-javadoc}/is/codion/framework/domain/Domain.html[Domain] class, which in turn provides a {url-javadoc}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}/is/codion/framework/domain/Domain.html#getEntities[getEntities()], which serves as a container for the domain entity definitions and as a factory for *Entity* and *Entity.Key* instances.
 
 == Entities
@@ -16,7 +16,7 @@ NOTE: Typically, the *entityId* name contains the underlying table name, but you
 
 == Attributes
 
-Each column in a table is associated with a {url-javadoc}/is/codion/framework/domain/property/Attribute.html[Attribute] constant, which has a name and denotes the value type. The {url-javadoc}/is/codion/framework/domain/property/Attributes.html[Attributes] class provides factory methods for constructing Attribute objects and is usually statically imported, as will be assumed in the following examples.
+Each column in a table is associated with a {url-javadoc}/is/codion/framework/domain/attribute/Attribute.html[Attribute] constant, which has a name and denotes the value type. The {url-javadoc}/is/codion/framework/domain/property/Attributes.html[Attributes] class provides factory methods for constructing Attribute objects and is usually statically imported, as will be assumed in the following examples.
 
 NOTE: Typically, the *attribute* name is the underlying column name, but as with the *entityId* you can use whatever value you want and specify the column name via the *columnName()* method when instantiating the associated Property.
 
