@@ -31,7 +31,6 @@ public interface ColumnProperty<T> extends Property<T> {
    * but for certain types this may be necessary, such as boolean values
    * represented by a non-boolean data type in the underlying database
    * @param value the value to translate
-   * @param <T> the value type
    * @return the sql value used to represent the given value
    */
   Object toColumnValue(T value);
