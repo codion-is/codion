@@ -6168,3 +6168,4 @@
   Attribute and Identity moved to separate packages
   Domain.domainIdentity() moved to Entities
   EntityAttribute removed, Attribute.isEntity() added
+  BlobAttribute removed

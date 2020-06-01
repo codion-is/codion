@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.attribute.Attributes;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.identity.Identities;
 import is.codion.framework.domain.identity.Identity;
 
@@ -90,7 +89,7 @@ final class DefaultEntityIdentity implements EntityIdentity {
   }
 
   @Override
-  public BlobAttribute blobAttribute(final String name) {
+  public Attribute<byte[]> blobAttribute(final String name) {
     return Attributes.blobAttribute(name, this);
   }
 

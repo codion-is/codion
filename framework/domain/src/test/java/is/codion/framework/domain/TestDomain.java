@@ -6,7 +6,6 @@ package is.codion.framework.domain;
 import is.codion.common.DateFormats;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.entity.Department;
 import is.codion.framework.domain.entity.Employee;
 import is.codion.framework.domain.entity.Entity;
@@ -145,7 +144,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
   public static final Attribute<Boolean> DEPARTMENT_ACTIVE = T_DEPARTMENT.booleanAttribute("active");
-  public static final BlobAttribute DEPARTMENT_DATA = T_DEPARTMENT.blobAttribute("data");
+  public static final Attribute<byte[]> DEPARTMENT_DATA = T_DEPARTMENT.blobAttribute("data");
 
   void department() {
     define(T_DEPARTMENT, "scott.dept",
@@ -184,7 +183,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
   public static final Attribute<String> EMP_NAME_DEPARTMENT = T_EMP.stringAttribute("name_department");
-  public static final BlobAttribute EMP_DATA = T_EMP.blobAttribute("data");
+  public static final Attribute<byte[]> EMP_DATA = T_EMP.blobAttribute("data");
 
   void employee() {
     define(T_EMP, "scott.emp",

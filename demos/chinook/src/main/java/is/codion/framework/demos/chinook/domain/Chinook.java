@@ -4,7 +4,6 @@
 package is.codion.framework.demos.chinook.domain;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -31,7 +30,7 @@ public interface Chinook {
   Attribute<String> ALBUM_TITLE = T_ALBUM.stringAttribute("title");
   Attribute<Long> ALBUM_ARTISTID = T_ALBUM.longAttribute("artistid");
   Attribute<Entity> ALBUM_ARTIST_FK = T_ALBUM.entityAttribute("artist_fk");
-  BlobAttribute ALBUM_COVER = T_ALBUM.blobAttribute("cover");
+  Attribute<byte[]> ALBUM_COVER = T_ALBUM.blobAttribute("cover");
   Attribute<Image> ALBUM_COVER_IMAGE = T_ALBUM.attribute("coverimage", Image.class);
   Attribute<Integer> ALBUM_NUMBER_OF_TRACKS = T_ALBUM.integerAttribute("nr_of_tracks");
 

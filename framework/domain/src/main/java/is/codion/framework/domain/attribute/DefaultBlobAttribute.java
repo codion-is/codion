@@ -5,7 +5,7 @@ package is.codion.framework.domain.attribute;
 
 import is.codion.framework.domain.identity.Identity;
 
-final class DefaultBlobAttribute extends DefaultAttribute<byte[]> implements BlobAttribute {
+final class DefaultBlobAttribute extends DefaultAttribute<byte[]> {
 
   private static final long serialVersionUID = 1;
 

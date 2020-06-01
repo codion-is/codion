@@ -18,7 +18,6 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.identity.DomainIdentity;
@@ -517,7 +516,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Object> parameters = deserialize(request);
 
-      connection.writeBlob((Entity.Key) parameters.get(0), (BlobAttribute) parameters.get(1), (byte[]) parameters.get(2));
+      connection.writeBlob((Entity.Key) parameters.get(0), (Attribute<byte[]>) parameters.get(1), (byte[]) parameters.get(2));
 
       return Response.ok().build();
     }
@@ -542,7 +541,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Object> parameters = deserialize(request);
 
-      return Response.ok(Serializer.serialize(connection.readBlob((Entity.Key) parameters.get(0), (BlobAttribute) parameters.get(1)))).build();
+      return Response.ok(Serializer.serialize(connection.readBlob((Entity.Key) parameters.get(0), (Attribute<byte[]>) parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

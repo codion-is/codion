@@ -14,7 +14,6 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.identity.Identity;
@@ -252,14 +251,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final BlobAttribute blobAttribute, final byte[] blobData) throws DatabaseException {
+  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData) throws DatabaseException {
     synchronized (connectionProxy) {
       connectionProxy.writeBlob(primaryKey, blobAttribute, blobData);
     }
   }
 
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final BlobAttribute blobAttribute) throws DatabaseException {
+  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.readBlob(primaryKey, blobAttribute);
     }

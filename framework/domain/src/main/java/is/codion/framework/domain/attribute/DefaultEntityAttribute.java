@@ -6,7 +6,7 @@ package is.codion.framework.domain.attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.identity.Identity;
 
-final class DefaultEntityAttribute extends DefaultAttribute<Entity> implements Attribute<Entity> {
+final class DefaultEntityAttribute extends DefaultAttribute<Entity> {
 
   private static final long serialVersionUID = 1;
 
@@ -14,6 +14,7 @@ final class DefaultEntityAttribute extends DefaultAttribute<Entity> implements A
     super(name, Entity.class, entityId);
   }
 
+  @Override
   public boolean isEntity() {
     return true;
   }

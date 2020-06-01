@@ -12,7 +12,6 @@ import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -109,8 +108,8 @@ public final class TestDomain extends Domain {
   public static final Attribute<Entity> EMP_DEPARTMENT_FK = T_EMP.entityAttribute("dept_fk");
   public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
-  public static final BlobAttribute EMP_DATA_LAZY = T_EMP.blobAttribute("data_lazy");
-  public static final BlobAttribute EMP_DATA = T_EMP.blobAttribute("data");
+  public static final Attribute<byte[]> EMP_DATA_LAZY = T_EMP.blobAttribute("data_lazy");
+  public static final Attribute<byte[]> EMP_DATA = T_EMP.blobAttribute("data");
 
   public static final String EMP_NAME_IS_BLAKE_CONDITION_ID = "condition1Id";
   public static final String EMP_MGR_GREATER_THAN_CONDITION_ID = "condition2Id";

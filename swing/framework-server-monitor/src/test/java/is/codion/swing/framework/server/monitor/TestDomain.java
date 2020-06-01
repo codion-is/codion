@@ -5,7 +5,6 @@ package is.codion.swing.framework.server.monitor;
 
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
@@ -27,7 +26,7 @@ public final class TestDomain extends Domain {
   }
 
   public static final EntityIdentity T_DEPARTMENT = entityIdentity("scott.dept");
-  public static final BlobAttribute DEPARTMENT_LOGO = T_DEPARTMENT.blobAttribute("logo");
+  public static final Attribute<byte[]> DEPARTMENT_LOGO = T_DEPARTMENT.blobAttribute("logo");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");

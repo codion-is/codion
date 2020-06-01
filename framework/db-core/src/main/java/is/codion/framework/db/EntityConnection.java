@@ -12,7 +12,6 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.identity.Identity;
@@ -302,7 +301,7 @@ public interface EntityConnection {
    * @throws is.codion.common.db.exception.UpdateException in case multiple rows were affected
    * @throws DatabaseException in case of a database exception
    */
-  void writeBlob(Entity.Key primaryKey, BlobAttribute blobAttribute, byte[] blobData) throws DatabaseException;
+  void writeBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws DatabaseException;
 
   /**
    * Reads the blob specified by the property identified by {@code attribute} from the given entity,
@@ -312,5 +311,5 @@ public interface EntityConnection {
    * @return a byte array containing the blob data or null if no blob data is found
    * @throws DatabaseException in case of a database exception
    */
-  byte[] readBlob(Entity.Key primaryKey, BlobAttribute blobAttribute) throws DatabaseException;
+  byte[] readBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException;
 }

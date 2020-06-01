@@ -5,7 +5,6 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.identity.Identity;
 
@@ -250,7 +249,7 @@ public final class Properties {
    * @param attribute the attribute
    * @return a new {@link BlobProperty.Builder}
    */
-  public static BlobProperty.Builder blobProperty(final BlobAttribute attribute) {
+  public static BlobProperty.Builder blobProperty(final Attribute<byte[]> attribute) {
     return blobProperty(attribute, null);
   }
 
@@ -260,7 +259,7 @@ public final class Properties {
    * @param caption the property caption
    * @return a new {@link BlobProperty.Builder}
    */
-  public static BlobProperty.Builder blobProperty(final BlobAttribute attribute, final String caption) {
+  public static BlobProperty.Builder blobProperty(final Attribute<byte[]> attribute, final String caption) {
     return new DefaultBlobProperty(attribute, caption).builder();
   }
 

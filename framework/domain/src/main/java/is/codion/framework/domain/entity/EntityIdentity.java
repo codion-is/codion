@@ -4,7 +4,6 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.identity.Identity;
 
 import java.math.BigDecimal;
@@ -106,9 +105,9 @@ public interface EntityIdentity extends Identity {
   Attribute<Entity> entityAttribute(String name);
 
   /**
-   * Creates a new {@link BlobAttribute}, associated with this Identity.
+   * Creates a new {@link Attribute<byte[]>}, associated with this Identity.
    * @param name the attribute name
-   * @return a new {@link BlobAttribute}
+   * @return a new {@link Attribute<byte[]>}
    */
-  BlobAttribute blobAttribute(String name);
+  Attribute<byte[]> blobAttribute(String name);
 }

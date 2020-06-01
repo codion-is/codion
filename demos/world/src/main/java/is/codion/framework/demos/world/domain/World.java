@@ -3,7 +3,6 @@ package is.codion.framework.demos.world.domain;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
@@ -58,7 +57,7 @@ public final class World extends Domain {
   public static final Attribute<Integer> COUNTRY_CAPITAL_POPULATION = T_COUNTRY.integerAttribute("capital_population");
   public static final Attribute<Integer> COUNTRY_NO_OF_CITIES = T_COUNTRY.integerAttribute("no_of_cities");
   public static final Attribute<Integer> COUNTRY_NO_OF_LANGUAGES = T_COUNTRY.integerAttribute("no_of_languages");
-  public static final BlobAttribute COUNTRY_FLAG = T_COUNTRY.blobAttribute("flag");
+  public static final Attribute<byte[]> COUNTRY_FLAG = T_COUNTRY.blobAttribute("flag");
 
   public static final EntityIdentity T_COUNTRYLANGUAGE = entityIdentity("world.countrylanguage");
   public static final Attribute<String> COUNTRYLANGUAGE_COUNTRY_CODE = T_COUNTRYLANGUAGE.stringAttribute("countrycode");
@@ -94,7 +93,7 @@ public final class World extends Domain {
   public static final Attribute<String> LOOKUP_COUNTRY_GOVERNMENTFORM = T_LOOKUP.stringAttribute("governmentform");
   public static final Attribute<String> LOOKUP_COUNTRY_HEADOFSTATE = T_LOOKUP.stringAttribute("headofstate");
   public static final Attribute<String> LOOKUP_COUNTRY_CODE2 = T_LOOKUP.stringAttribute("code2");
-  public static final BlobAttribute LOOKUP_COUNTRY_FLAG = T_LOOKUP.blobAttribute("flag");
+  public static final Attribute<byte[]> LOOKUP_COUNTRY_FLAG = T_LOOKUP.blobAttribute("flag");
   public static final Attribute<Integer> LOOKUP_CITY_ID = T_LOOKUP.integerAttribute("cityid");
   public static final Attribute<String> LOOKUP_CITY_NAME = T_LOOKUP.stringAttribute("cityname");
   public static final Attribute<String> LOOKUP_CITY_DISTRICT = T_LOOKUP.stringAttribute("district");

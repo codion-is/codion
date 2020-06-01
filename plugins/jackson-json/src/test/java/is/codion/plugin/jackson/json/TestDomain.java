@@ -5,7 +5,6 @@ package is.codion.plugin.jackson.json;
 
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.BlobAttribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
@@ -32,7 +31,7 @@ public final class TestDomain extends Domain {
   public static final EntityIdentity T_ENTITY = entityIdentity("test.entity");
   public static final Attribute<BigDecimal> ENTITY_DECIMAL = T_ENTITY.bigDecimalAttribute("id");
   public static final Attribute<LocalDateTime> ENTITY_DATE_TIME = T_ENTITY.localDateTimeAttribute("date_time");
-  public static final BlobAttribute ENTITY_BLOB = T_ENTITY.blobAttribute("blob");
+  public static final Attribute<byte[]> ENTITY_BLOB = T_ENTITY.blobAttribute("blob");
   public static final Attribute<String> ENTITY_READ_ONLY = T_ENTITY.stringAttribute("read_only");
   public static final Attribute<Boolean> ENTITY_BOOLEAN = T_ENTITY.booleanAttribute("boolean");
   public static final Attribute<LocalTime> ENTITY_TIME = T_ENTITY.localTimeAttribute("time");
@@ -54,7 +53,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
-  public static final BlobAttribute DEPARTMENT_LOGO = T_DEPARTMENT.blobAttribute("logo");
+  public static final Attribute<byte[]> DEPARTMENT_LOGO = T_DEPARTMENT.blobAttribute("logo");
 
   void department() {
     define(T_DEPARTMENT,
