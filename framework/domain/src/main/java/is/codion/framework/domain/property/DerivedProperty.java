@@ -21,7 +21,6 @@ public interface DerivedProperty<T> extends TransientProperty<T> {
   List<Attribute<?>> getSourceAttributes();
 
   /**
-   * @param <T> the underlying type
    * @return the value provider, providing the derived value
    */
   Provider<T> getValueProvider();
@@ -34,7 +33,6 @@ public interface DerivedProperty<T> extends TransientProperty<T> {
 
     /**
      * @param sourceValues the source values, mapped to their respective attributes
-     * @param <T> the type of the provided value
      * @return the derived value
      */
     T getValue(Map<Attribute<?>, Object> sourceValues);

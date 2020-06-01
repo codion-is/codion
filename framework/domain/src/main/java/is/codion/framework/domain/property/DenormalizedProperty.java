@@ -18,7 +18,6 @@ public interface DenormalizedProperty<T> extends ColumnProperty<T> {
   Attribute<Entity> getEntityAttribute();
 
   /**
-   * @param <T> the underlying type
    * @return the property in the referenced entity from which this property gets its value
    */
   Attribute<T> getDenormalizedAttribute();
