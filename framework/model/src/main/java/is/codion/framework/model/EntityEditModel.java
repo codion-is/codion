@@ -74,7 +74,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * @return an Entity instance populated with default values for all properties
-   * @see #getDefaultValue(Property)
+   * @see #getDefaultValue(Attribute)
    */
   Entity getDefaultEntity();
 
