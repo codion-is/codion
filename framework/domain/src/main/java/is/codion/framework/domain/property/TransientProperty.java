@@ -9,6 +9,7 @@ package is.codion.framework.domain.property;
  * The value of transient properties can be set and retrieved like normal properties but are ignored during DML operations.
  * Note that by default setting a transient value marks the entity as being modified, but trying to update an entity
  * with only transient values modified will result in an error.
+ * @param <T> the property value type
  */
 public interface TransientProperty<T> extends Property<T> {
 
@@ -19,16 +20,19 @@ public interface TransientProperty<T> extends Property<T> {
 
   /**
    * Builds a TransientProperty instance
+   * @param <T> the property value type
    */
   interface Builder<T> extends Property.Builder<T> {
 
     /**
+     * @param <T> the property value type
      * @return the property
      */
     TransientProperty<T> get();
 
     /**
      * @param modifiesEntity if true then modifications to the value result in the owning entity becoming modified
+     * @param <T> the property value type
      * @return this property instance
      */
     TransientProperty.Builder<T> modifiesEntity(boolean modifiesEntity);

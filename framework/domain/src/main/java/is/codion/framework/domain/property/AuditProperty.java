@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 /**
  * A property representing an audit column
+ * @param <T> the underlying type
  */
 public interface AuditProperty<T> extends ColumnProperty<T> {
 

@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 
 /**
  * Specifies a Property.
+ * @param <T> the underlying type
  */
 public interface Property<T> extends Serializable {
 
@@ -203,6 +204,7 @@ public interface Property<T> extends Serializable {
 
   /**
    * Builds a Property instance
+   * @param <T> the property value type
    */
   interface Builder<T> {
 

@@ -11,6 +11,7 @@ import java.util.Map;
 
 /**
  * A property which value is derived from the values of one or more properties.
+ * @param <T> the underlying type
  */
 public interface DerivedProperty<T> extends TransientProperty<T> {
 
@@ -20,17 +21,20 @@ public interface DerivedProperty<T> extends TransientProperty<T> {
   List<Attribute<?>> getSourceAttributes();
 
   /**
+   * @param <T> the underlying type
    * @return the value provider, providing the derived value
    */
   Provider<T> getValueProvider();
 
   /**
    * Responsible for providing values derived from other values
+   * @param <T> the underlying type
    */
   interface Provider<T> extends Serializable {
 
     /**
      * @param sourceValues the source values, mapped to their respective attributes
+     * @param <T> the type of the provided value
      * @return the derived value
      */
     T getValue(Map<Attribute<?>, Object> sourceValues);
