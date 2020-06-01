@@ -6,7 +6,6 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Properties;
 
@@ -77,7 +76,7 @@ public class DefaultEntityDefinitionTest {
                 Properties.columnProperty(first).primaryKeyIndex(0),
                 Properties.columnProperty(second).primaryKeyIndex(1));
         final EntityIdentity entityId2 = entityIdentity("test.composite_reference");
-        final EntityAttribute reference_fk = entityId2.entityAttribute("reference_fk");
+        final Attribute<Entity> reference_fk = entityId2.entityAttribute("reference_fk");
         final Attribute<?> reference = entityId2.integerAttribute("reference");
         define(entityId2,
                 Properties.foreignKeyProperty(reference_fk, null, entityId1,

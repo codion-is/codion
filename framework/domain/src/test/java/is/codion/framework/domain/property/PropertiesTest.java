@@ -4,7 +4,8 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.DateFormats;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyNonUniqueReferenceAttribute() {
-    final EntityAttribute attribute = ENTITY_ID.entityAttribute("attribute");
+    final Attribute<Entity> attribute = ENTITY_ID.entityAttribute("attribute");
     assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(attribute, "caption", REFERENCED_ENTITY_ID, columnProperty(attribute)));
   }
 

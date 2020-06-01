@@ -11,7 +11,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -59,12 +59,12 @@ public final class EmpDeptMinimalApp {
     public static final Attribute<Integer> EMP_EMPNO = T_EMP.integerAttribute("empno");
     public static final Attribute<String> EMP_ENAME = T_EMP.stringAttribute("ename");
     public static final Attribute<Integer> EMP_DEPTNO = T_EMP.integerAttribute("deptno");
-    public static final EntityAttribute EMP_DEPT_FK = T_EMP.entityAttribute("dept_fk");
+    public static final Attribute<Entity> EMP_DEPT_FK = T_EMP.entityAttribute("dept_fk");
     public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
     public static final Attribute<Double> EMP_SAL = T_EMP.doubleAttribute("sal");
     public static final Attribute<Double> EMP_COMM = T_EMP.doubleAttribute("comm");
     public static final Attribute<Integer> EMP_MGR = T_EMP.integerAttribute("mgr");
-    public static final EntityAttribute EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
+    public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
     public static final Attribute<LocalDate> EMP_HIREDATE = T_EMP.localDateAttribute("hiredate");
 
     public EmpDept() {

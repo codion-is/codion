@@ -4,7 +4,6 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.attribute.BlobAttribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
@@ -35,7 +34,7 @@ public final class World extends Domain {
   public static final Attribute<Integer> CITY_ID = T_CITY.integerAttribute("id");
   public static final Attribute<String> CITY_NAME = T_CITY.stringAttribute("name");
   public static final Attribute<String> CITY_COUNTRY_CODE = T_CITY.stringAttribute("countrycode");
-  public static final EntityAttribute CITY_COUNTRY_FK = T_CITY.entityAttribute("country_fk");
+  public static final Attribute<Entity> CITY_COUNTRY_FK = T_CITY.entityAttribute("country_fk");
   public static final Attribute<String> CITY_DISTRICT = T_CITY.stringAttribute("district");
   public static final Attribute<Integer> CITY_POPULATION = T_CITY.integerAttribute("population");
 
@@ -54,7 +53,7 @@ public final class World extends Domain {
   public static final Attribute<String> COUNTRY_GOVERNMENTFORM = T_COUNTRY.stringAttribute("governmentform");
   public static final Attribute<String> COUNTRY_HEADOFSTATE = T_COUNTRY.stringAttribute("headofstate");
   public static final Attribute<Integer> COUNTRY_CAPITAL = T_COUNTRY.integerAttribute("capital");
-  public static final EntityAttribute COUNTRY_CAPITAL_FK = T_COUNTRY.entityAttribute("capital_fk");
+  public static final Attribute<Entity> COUNTRY_CAPITAL_FK = T_COUNTRY.entityAttribute("capital_fk");
   public static final Attribute<String> COUNTRY_CODE2 = T_COUNTRY.stringAttribute("code2");
   public static final Attribute<Integer> COUNTRY_CAPITAL_POPULATION = T_COUNTRY.integerAttribute("capital_population");
   public static final Attribute<Integer> COUNTRY_NO_OF_CITIES = T_COUNTRY.integerAttribute("no_of_cities");
@@ -63,7 +62,7 @@ public final class World extends Domain {
 
   public static final EntityIdentity T_COUNTRYLANGUAGE = entityIdentity("world.countrylanguage");
   public static final Attribute<String> COUNTRYLANGUAGE_COUNTRY_CODE = T_COUNTRYLANGUAGE.stringAttribute("countrycode");
-  public static final EntityAttribute COUNTRYLANGUAGE_COUNTRY_FK = T_COUNTRYLANGUAGE.entityAttribute("country_fk");
+  public static final Attribute<Entity> COUNTRYLANGUAGE_COUNTRY_FK = T_COUNTRYLANGUAGE.entityAttribute("country_fk");
   public static final Attribute<String> COUNTRYLANGUAGE_LANGUAGE = T_COUNTRYLANGUAGE.stringAttribute("language");
   public static final Attribute<Boolean> COUNTRYLANGUAGE_ISOFFICIAL = T_COUNTRYLANGUAGE.booleanAttribute("isofficial");
   public static final Attribute<Double> COUNTRYLANGUAGE_PERCENTAGE = T_COUNTRYLANGUAGE.doubleAttribute("percentage");

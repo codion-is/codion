@@ -9,7 +9,6 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.identity.Identity;
 
@@ -50,7 +49,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    *   });
    * </pre>
    * @return the {@link Predicate} based on the foreign key filter entities
-   * @see #setForeignKeyFilterEntities(EntityAttribute, Collection)
+   * @see #setForeignKeyFilterEntities(Attribute<Entity>, Collection)
    */
   Predicate<Entity> getForeignKeyIncludeCondition();
 
@@ -66,7 +65,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKeyAttribute the property id
    * @param entities the entities
    */
-  void setForeignKeyFilterEntities(EntityAttribute foreignKeyAttribute, Collection<Entity> entities);
+  void setForeignKeyFilterEntities(Attribute<Entity> foreignKeyAttribute, Collection<Entity> entities);
 
   /**
    * Specifies whether foreign key filtering should be strict or not.
@@ -74,7 +73,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * entities with null values for the given foreign key are filtered.
    * Non-strict simply means that entities with null references are not filtered.
    * @param strictForeignKeyFiltering the value
-   * @see #setForeignKeyFilterEntities(EntityAttribute, Collection)
+   * @see #setForeignKeyFilterEntities(Attribute<Entity>, Collection)
    */
   void setStrictForeignKeyFiltering(boolean strictForeignKeyFiltering);
 
@@ -87,9 +86,9 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * Returns a combo box model for selecting a foreign key value for filtering this model
    * @param foreignKeyAttribute the attribute with which values to create the combo box model
    * @return a combo box model for selecting a filtering value for this combo box model
-   * @see #linkForeignKeyComboBoxModel(EntityAttribute, EntityComboBoxModel)
+   * @see #linkForeignKeyComboBoxModel(Attribute<Entity>, EntityComboBoxModel)
    */
-  EntityComboBoxModel createForeignKeyFilterComboBoxModel(EntityAttribute foreignKeyAttribute);
+  EntityComboBoxModel createForeignKeyFilterComboBoxModel(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * Links the given combo box model representing master entities to this combo box model
@@ -97,7 +96,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKeyAttribute the foreign key attribute
    * @param foreignKeyModel the combo box model to link
    */
-  void linkForeignKeyComboBoxModel(EntityAttribute foreignKeyAttribute, EntityComboBoxModel foreignKeyModel);
+  void linkForeignKeyComboBoxModel(Attribute<Entity> foreignKeyAttribute, EntityComboBoxModel foreignKeyModel);
 
   /**
    * Selects the entity with the given primary key, if the entity is not available

@@ -8,7 +8,6 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.identity.DomainIdentity;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -170,7 +169,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public Entity getForeignKey(final EntityAttribute entityAttribute) {
+  public Entity getForeignKey(final Attribute<Entity> entityAttribute) {
     final Entity value = (Entity) values.get(entityAttribute);
     if (value == null) {//possibly not loaded
       final Entity.Key referencedKey = getReferencedKey(definition.getForeignKeyProperty(entityAttribute));
@@ -183,7 +182,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean isLoaded(final EntityAttribute foreignKeyAttribute) {
+  public boolean isLoaded(final Attribute<Entity> foreignKeyAttribute) {
     return values.get(definition.getForeignKeyProperty(foreignKeyAttribute).getAttribute()) != null;
   }
 

@@ -6,7 +6,7 @@ package is.codion.framework.demos.empdept.domain;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.plugin.jasperreports.model.JasperReportWrapper;
@@ -53,9 +53,9 @@ public final class EmpDept extends Domain {
   public static final Attribute<Double> EMPLOYEE_COMMISSION = T_EMPLOYEE.doubleAttribute("comm");
   public static final Attribute<Integer> EMPLOYEE_DEPARTMENT = T_EMPLOYEE.integerAttribute("deptno");
   /**Foreign key (reference) attribute for the DEPT column in the table scott.emp*/
-  public static final EntityAttribute EMPLOYEE_DEPARTMENT_FK = T_EMPLOYEE.entityAttribute("dept_fk");
+  public static final Attribute<Entity> EMPLOYEE_DEPARTMENT_FK = T_EMPLOYEE.entityAttribute("dept_fk");
   /**Foreign key (reference) attribute for the MGR column in the table scott.emp*/
-  public static final EntityAttribute EMPLOYEE_MGR_FK = T_EMPLOYEE.entityAttribute("mgr_fk");
+  public static final Attribute<Entity> EMPLOYEE_MGR_FK = T_EMPLOYEE.entityAttribute("mgr_fk");
   /**Attribute for the denormalized department location property*/
   public static final Attribute<String> EMPLOYEE_DEPARTMENT_LOCATION = T_EMPLOYEE.stringAttribute("location");
 

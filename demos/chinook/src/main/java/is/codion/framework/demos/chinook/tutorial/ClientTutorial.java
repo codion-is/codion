@@ -8,7 +8,7 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -53,7 +53,7 @@ public final class ClientTutorial {
     public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
     public static final Attribute<String> ALBUM_TITLE = T_ARTIST.stringAttribute("title");
     public static final Attribute<Integer> ALBUM_ARTISTID = T_ARTIST.integerAttribute("artistid");
-    public static final EntityAttribute ALBUM_ARTIST_FK = T_ARTIST.entityAttribute("artist_fk");
+    public static final Attribute<Entity> ALBUM_ARTIST_FK = T_ARTIST.entityAttribute("artist_fk");
 
     public Chinook() {
       define(T_ARTIST,

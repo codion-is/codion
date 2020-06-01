@@ -118,4 +118,9 @@ public interface Attribute<T> extends Serializable {
    * @return true if this is a blob attribute
    */
   boolean isBlob();
+
+  /**
+   * @return true if this is a Entity attribute
+   */
+  boolean isEntity();
 }

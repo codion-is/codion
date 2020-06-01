@@ -5,7 +5,7 @@ package is.codion.framework.demos.manual.store.minimal.domain;
 
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 
@@ -24,7 +24,7 @@ public class Store extends Domain {
 
   public static final EntityIdentity T_ADDRESS = entityIdentity("store.address");
   public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("id");
-  public static final EntityAttribute ADDRESS_CUSTOMER_FK = T_ADDRESS.entityAttribute("customer_fk");
+  public static final Attribute<Entity> ADDRESS_CUSTOMER_FK = T_ADDRESS.entityAttribute("customer_fk");
   public static final Attribute<Integer> ADDRESS_CUSTOMER_ID = T_ADDRESS.integerAttribute("customer_id");
   public static final Attribute<String> ADDRESS_STREET = T_ADDRESS.stringAttribute("street");
   public static final Attribute<String> ADDRESS_CITY = T_ADDRESS.stringAttribute("city");

@@ -4,7 +4,6 @@
 package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.identity.Identity;
 
@@ -34,7 +33,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnProperty the underlying column property comprising this foreign key
    */
-  DefaultForeignKeyProperty(final EntityAttribute attribute, final String caption,
+  DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
                             final Identity foreignEntityId, final ColumnProperty.Builder<?> columnProperty) {
     this(attribute, caption, foreignEntityId, singletonList(columnProperty));
   }
@@ -45,7 +44,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    * @param foreignEntityId the id of the entity referenced by this foreign key
    * @param columnPropertyBuilders the underlying column properties comprising this foreign key
    */
-  DefaultForeignKeyProperty(final EntityAttribute attribute, final String caption,
+  DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
                             final Identity foreignEntityId, final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
     super(attribute, caption);
     requireNonNull(foreignEntityId, "foreignEntityId");
@@ -59,8 +58,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   @Override
-  public EntityAttribute getAttribute() {
-    return (EntityAttribute) super.getAttribute();
+  public Attribute<Entity> getAttribute() {
+    return (Attribute<Entity>) super.getAttribute();
   }
 
   @Override

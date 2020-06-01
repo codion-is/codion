@@ -4,7 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.entity.Entity;
 
 /**
  * A property representing a column that should get its value automatically from a column in a referenced table
@@ -13,7 +13,7 @@ final class DefaultDenormalizedProperty<T> extends DefaultColumnProperty<T> impl
 
   private static final long serialVersionUID = 1;
 
-  private final EntityAttribute entityAttribute;
+  private final Attribute<Entity> entityAttribute;
   private final Attribute<T> denormalizedAttribute;
 
   /**
@@ -23,7 +23,7 @@ final class DefaultDenormalizedProperty<T> extends DefaultColumnProperty<T> impl
    * @param denormalizedAttribute the attribute from which this property should get its value
    * @param caption the caption if this property
    */
-  DefaultDenormalizedProperty(final Attribute<T> attribute, final EntityAttribute entityAttribute,
+  DefaultDenormalizedProperty(final Attribute<T> attribute, final Attribute<Entity> entityAttribute,
                               final Attribute<T> denormalizedAttribute, final String caption) {
     super(attribute, caption);
     this.entityAttribute = entityAttribute;
@@ -31,7 +31,7 @@ final class DefaultDenormalizedProperty<T> extends DefaultColumnProperty<T> impl
   }
 
   @Override
-  public EntityAttribute getEntityAttribute() {
+  public Attribute<Entity> getEntityAttribute() {
     return entityAttribute;
   }
 

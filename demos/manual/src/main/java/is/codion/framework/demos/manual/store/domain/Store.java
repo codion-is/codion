@@ -6,7 +6,6 @@ package is.codion.framework.demos.manual.store.domain;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -41,9 +40,9 @@ public final class Store extends Domain {
   public static final EntityIdentity T_CUSTOMER_ADDRESS = entityIdentity("store.customer_address");
   public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("id");
   public static final Attribute<String> CUSTOMER_ADDRESS_CUSTOMER_ID = T_CUSTOMER_ADDRESS.stringAttribute("customer_id");
-  public static final EntityAttribute CUSTOMER_ADDRESS_CUSTOMER_FK = T_CUSTOMER_ADDRESS.entityAttribute("customer_fk");
+  public static final Attribute<Entity> CUSTOMER_ADDRESS_CUSTOMER_FK = T_CUSTOMER_ADDRESS.entityAttribute("customer_fk");
   public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("address_id");
-  public static final EntityAttribute CUSTOMER_ADDRESS_ADDRESS_FK = T_CUSTOMER_ADDRESS.entityAttribute("address_fk");
+  public static final Attribute<Entity> CUSTOMER_ADDRESS_ADDRESS_FK = T_CUSTOMER_ADDRESS.entityAttribute("address_fk");
 
   public Store() {
     customer();

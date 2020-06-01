@@ -12,7 +12,7 @@ import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -729,7 +729,7 @@ public final class EntityInputComponents {
    * @param filterButtonTakesFocus if true then the filter button is focusable
    * @return a panel with a combo box and a button
    */
-  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final EntityAttribute foreignKeyAttribute,
+  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final Attribute<Entity> foreignKeyAttribute,
                                                        final boolean filterButtonTakesFocus) {
     final Control foreignKeyFilterControl = entityComboBox.createForeignKeyFilterControl(foreignKeyAttribute);
     if (filterButtonTakesFocus) {

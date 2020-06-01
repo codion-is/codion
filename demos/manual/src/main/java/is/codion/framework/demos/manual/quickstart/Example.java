@@ -13,7 +13,6 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnections;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
@@ -94,9 +93,9 @@ public final class Example {
     public static final EntityIdentity T_CUSTOMER_ADDRESS = entityIdentity("store.customer_address");
     public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("id");
     public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = T_CUSTOMER_ADDRESS.integerAttribute("customer_id");
-    public static final EntityAttribute CUSTOMER_ADDRESS_CUSTOMER_FK = T_CUSTOMER_ADDRESS.entityAttribute("customer_fk");
+    public static final Attribute<Entity> CUSTOMER_ADDRESS_CUSTOMER_FK = T_CUSTOMER_ADDRESS.entityAttribute("customer_fk");
     public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("address_id");
-    public static final EntityAttribute CUSTOMER_ADDRESS_ADDRESS_FK = T_CUSTOMER_ADDRESS.entityAttribute("address_fk");
+    public static final Attribute<Entity> CUSTOMER_ADDRESS_ADDRESS_FK = T_CUSTOMER_ADDRESS.entityAttribute("address_fk");
 
     void customerAddress() {
       define(T_CUSTOMER_ADDRESS,

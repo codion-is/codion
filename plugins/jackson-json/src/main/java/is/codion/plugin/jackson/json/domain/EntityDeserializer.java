@@ -4,7 +4,6 @@
 package is.codion.plugin.jackson.json.domain;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -84,7 +83,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     else if (attribute.isBlob()) {
       return Base64.getDecoder().decode(jsonNode.asText());
     }
-    else if (attribute instanceof EntityAttribute) {
+    else if (attribute.isEntity()) {
       return mapper.readValue(jsonNode.toString(), Entity.class);
     }
 

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.property;
 
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.identity.Identity;
 
@@ -21,7 +21,7 @@ public interface ForeignKeyProperty extends Property<Entity> {
    * @return the underying attribute
    */
   @Override
-  EntityAttribute getAttribute();
+  Attribute<Entity> getAttribute();
 
   /**
    * @return true if all reference properties comprising this foreign key property are insertable

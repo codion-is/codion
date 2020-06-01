@@ -6,7 +6,7 @@ package is.codion.framework.db;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 
@@ -43,7 +43,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<Integer> MASTER_ID_1 = T_MASTER.integerAttribute("id");
   public static final Attribute<Integer> MASTER_ID_2 = T_MASTER.integerAttribute("id2");
   public static final Attribute<Integer> MASTER_SUPER_ID = T_MASTER.integerAttribute("super_id");
-  public static final EntityAttribute MASTER_SUPER_FK = T_MASTER.entityAttribute("super_fk");
+  public static final Attribute<Entity> MASTER_SUPER_FK = T_MASTER.entityAttribute("super_fk");
   public static final Attribute<String> MASTER_NAME = T_MASTER.stringAttribute("name");
   public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
 
@@ -71,7 +71,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = T_DETAIL.booleanAttribute("boolean_nullable");
   public static final Attribute<Integer> DETAIL_MASTER_ID_1 = T_DETAIL.integerAttribute("master_id");
   public static final Attribute<Integer> DETAIL_MASTER_ID_2 = T_DETAIL.integerAttribute("master_id_2");
-  public static final EntityAttribute DETAIL_MASTER_FK = T_DETAIL.entityAttribute("master_fk");
+  public static final Attribute<Entity> DETAIL_MASTER_FK = T_DETAIL.entityAttribute("master_fk");
   public static final Attribute<String> DETAIL_MASTER_NAME = T_DETAIL.stringAttribute("master_name");
   public static final Attribute<Integer> DETAIL_MASTER_CODE = T_DETAIL.integerAttribute("master_code");
   public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = T_DETAIL.integerAttribute("int_value_list");
@@ -156,8 +156,8 @@ public final class TestDomain extends Domain {
   public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
   public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
   public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
-  public static final EntityAttribute EMP_DEPARTMENT_FK = T_EMP.entityAttribute("dept_fk");
-  public static final EntityAttribute EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
+  public static final Attribute<Entity> EMP_DEPARTMENT_FK = T_EMP.entityAttribute("dept_fk");
+  public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
 
   void employee() {

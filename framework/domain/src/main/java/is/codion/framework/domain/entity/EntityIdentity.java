@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.attribute.BlobAttribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.identity.Identity;
 
 import java.math.BigDecimal;
@@ -100,11 +99,11 @@ public interface EntityIdentity extends Identity {
   Attribute<Boolean> booleanAttribute(String name);
 
   /**
-   * Creates a new {@link EntityAttribute}, associated with this Identity.
+   * Creates a new {@link Attribute<Entity>}, associated with this Identity.
    * @param name the attribute name
-   * @return a new {@link EntityAttribute}
+   * @return a new {@link Attribute<Entity>}
    */
-  EntityAttribute entityAttribute(String name);
+  Attribute<Entity> entityAttribute(String name);
 
   /**
    * Creates a new {@link BlobAttribute}, associated with this Identity.

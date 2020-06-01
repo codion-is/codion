@@ -4,7 +4,6 @@
 package is.codion.plugin.json;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -183,7 +182,7 @@ public final class EntityJSONParser {
     if (value == null) {
       return JSONObject.NULL;
     }
-    if (attribute instanceof EntityAttribute) {
+    if (attribute.isEntity()) {
       return toJSONObject((Entity) value);
     }
     if (attribute.isBigDecimal()) {

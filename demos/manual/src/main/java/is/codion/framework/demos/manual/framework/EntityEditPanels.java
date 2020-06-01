@@ -4,7 +4,7 @@
 package is.codion.framework.demos.manual.framework;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
@@ -37,7 +37,7 @@ public final class EntityEditPanels {
   private static final class Domain {
     static final EntityIdentity ENTITY_ID = entityIdentity("entityId");
     static final Attribute<Boolean> BOOLEAN_ATTRIBUTE = ENTITY_ID.booleanAttribute("boolean");
-    static final EntityAttribute FOREIGN_KEY_ATTRIBUTE = ENTITY_ID.entityAttribute("foreign_key");
+    static final Attribute<Entity> FOREIGN_KEY_ATTRIBUTE = ENTITY_ID.entityAttribute("foreign_key");
     static final Attribute<LocalDate> LOCAL_DATE_ATTRIBUTE = ENTITY_ID.localDateAttribute("local_date");
     static final Attribute<Integer> INTEGER_ATTRIBUTE = ENTITY_ID.integerAttribute("integer");
     static final Attribute<Long> LONG_ATTRIBUTE = ENTITY_ID.longAttribute("long");

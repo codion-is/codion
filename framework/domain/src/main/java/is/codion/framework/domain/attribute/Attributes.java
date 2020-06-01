@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain.attribute;
 
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.identity.Identity;
 
 /**
@@ -37,12 +38,12 @@ public final class Attributes {
   }
 
   /**
-   * Creates a new {@link EntityAttribute}.
+   * Creates a new {@link Attribute<Entity>}.
    * @param name the attribute name
    * @param entityId the id of the entity to associate this attribute with
-   * @return a new {@link EntityAttribute}
+   * @return a new {@link Attribute<Entity>}
    */
-  public static EntityAttribute entityAttribute(final String name, final Identity entityId) {
+  public static Attribute<Entity> entityAttribute(final String name, final Identity entityId) {
     return new DefaultEntityAttribute(name, entityId);
   }
 

@@ -4,7 +4,7 @@
 package is.codion.framework.demos.petclinic.domain;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 
 import java.time.LocalDate;
@@ -24,9 +24,9 @@ public interface Clinic {
 
   EntityIdentity T_VET_SPECIALTY = entityIdentity("petclinic.vet_specialty");
   Attribute<Integer> VET_SPECIALTY_VET = T_VET_SPECIALTY.integerAttribute("vet");
-  EntityAttribute VET_SPECIALTY_VET_FK = T_VET_SPECIALTY.entityAttribute("vet_fk");
+  Attribute<Entity> VET_SPECIALTY_VET_FK = T_VET_SPECIALTY.entityAttribute("vet_fk");
   Attribute<Integer> VET_SPECIALTY_SPECIALTY = T_VET_SPECIALTY.integerAttribute("specialty");
-  EntityAttribute VET_SPECIALTY_SPECIALTY_FK = T_VET_SPECIALTY.entityAttribute("specialty_fk");
+  Attribute<Entity> VET_SPECIALTY_SPECIALTY_FK = T_VET_SPECIALTY.entityAttribute("specialty_fk");
 
   EntityIdentity T_PET_TYPE = entityIdentity("petclinic.pet_type");
   Attribute<Integer> PET_TYPE_ID = T_PET_TYPE.integerAttribute("id");
@@ -45,14 +45,14 @@ public interface Clinic {
   Attribute<String> PET_NAME = T_PET.stringAttribute("name");
   Attribute<LocalDate> PET_BIRTH_DATE = T_PET.localDateAttribute("birth_date");
   Attribute<Integer> PET_PET_TYPE_ID = T_PET.integerAttribute("type_id");
-  EntityAttribute PET_PET_TYPE_FK = T_PET.entityAttribute("type_fk");
+  Attribute<Entity> PET_PET_TYPE_FK = T_PET.entityAttribute("type_fk");
   Attribute<Integer> PET_OWNER_ID = T_PET.integerAttribute("owner_id");
-  EntityAttribute PET_OWNER_FK = T_PET.entityAttribute("owner_fk");
+  Attribute<Entity> PET_OWNER_FK = T_PET.entityAttribute("owner_fk");
 
   EntityIdentity T_VISIT = entityIdentity("petclinic.visit");
   Attribute<Integer> VISIT_ID = T_VISIT.integerAttribute("id");
   Attribute<Integer> VISIT_PET_ID = T_VISIT.integerAttribute("pet_id");
-  EntityAttribute VISIT_PET_FK = T_VISIT.entityAttribute("pet_fk");
+  Attribute<Entity> VISIT_PET_FK = T_VISIT.entityAttribute("pet_fk");
   Attribute<LocalDate> VISIT_DATE = T_VISIT.localDateAttribute("date");
   Attribute<String> VISIT_DESCRIPTION = T_VISIT.stringAttribute("description");
 }

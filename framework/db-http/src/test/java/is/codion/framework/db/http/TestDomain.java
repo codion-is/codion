@@ -13,7 +13,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.attribute.BlobAttribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 
@@ -79,8 +79,8 @@ public final class TestDomain extends Domain {
   public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
   public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
   public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
-  public static final EntityAttribute EMP_DEPARTMENT_FK = T_EMP.entityAttribute("dept_fk");
-  public static final EntityAttribute EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
+  public static final Attribute<Entity> EMP_DEPARTMENT_FK = T_EMP.entityAttribute("dept_fk");
+  public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
   public static final BlobAttribute EMP_DATA = T_EMP.blobAttribute("data");
 

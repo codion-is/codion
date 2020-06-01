@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -74,9 +73,9 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @return the value of the property based on {@code foreignKeyAttribute},
    * assuming it is an Entity
    * @throws IllegalArgumentException if the attribute is not a foreign key attribute
-   * @see #isLoaded(EntityAttribute)
+   * @see #isLoaded(Attribute<Entity>)
    */
-  Entity getForeignKey(EntityAttribute foreignKeyAttribute);
+  Entity getForeignKey(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * Returns the primary key of the entity referenced by the given {@link ForeignKeyProperty},
@@ -140,7 +139,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param foreignKeyAttribute the attribute
    * @return true if the reference entity has been loaded
    */
-  boolean isLoaded(EntityAttribute foreignKeyAttribute);
+  boolean isLoaded(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * @param property the property for which to retrieve the color

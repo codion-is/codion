@@ -5,7 +5,7 @@ package is.codion.framework.demos.petstore.domain;
 
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 
@@ -90,7 +90,7 @@ public final class Petstore extends Domain {
   public static final EntityIdentity T_PRODUCT = entityIdentity("product");
   public static final Attribute<Integer> PRODUCT_ID = T_PRODUCT.integerAttribute("Product id");
   public static final Attribute<Integer> PRODUCT_CATEGORY_ID = T_PRODUCT.integerAttribute("Category id");
-  public static final EntityAttribute PRODUCT_CATEGORY_FK = T_PRODUCT.entityAttribute("Category");
+  public static final Attribute<Entity> PRODUCT_CATEGORY_FK = T_PRODUCT.entityAttribute("Category");
   public static final Attribute<String> PRODUCT_NAME = T_PRODUCT.stringAttribute("Name");
   public static final Attribute<String> PRODUCT_DESCRIPTION = T_PRODUCT.stringAttribute("Description");
   public static final Attribute<String> PRODUCT_IMAGE_URL = T_PRODUCT.stringAttribute("Image URL");
@@ -142,16 +142,16 @@ public final class Petstore extends Domain {
   public static final EntityIdentity T_ITEM = entityIdentity("item");
   public static final Attribute<Integer> ITEM_ID = T_ITEM.integerAttribute("Item id");
   public static final Attribute<Integer> ITEM_PRODUCT_ID = T_ITEM.integerAttribute("Product id");
-  public static final EntityAttribute ITEM_PRODUCT_FK = T_ITEM.entityAttribute("Product");
+  public static final Attribute<Entity> ITEM_PRODUCT_FK = T_ITEM.entityAttribute("Product");
   public static final Attribute<String> ITEM_NAME = T_ITEM.stringAttribute("Name");
   public static final Attribute<String> ITEM_DESCRIPTION = T_ITEM.stringAttribute("Description");
   public static final Attribute<String> ITEM_IMAGE_URL = T_ITEM.stringAttribute("Image URL");
   public static final Attribute<String> ITEM_IMAGE_THUMB_URL = T_ITEM.stringAttribute("Image thumbnail URL");
   public static final Attribute<BigDecimal> ITEM_PRICE = T_ITEM.bigDecimalAttribute("Price");
   public static final Attribute<Integer> ITEM_C0NTACT_INFO_ID = T_ITEM.integerAttribute("Contactinfo id");
-  public static final EntityAttribute ITEM_C0NTACT_INFO_FK = T_ITEM.entityAttribute("Contact info");
+  public static final Attribute<Entity> ITEM_C0NTACT_INFO_FK = T_ITEM.entityAttribute("Contact info");
   public static final Attribute<Integer> ITEM_ADDRESS_ID = T_ITEM.integerAttribute("Address id");
-  public static final EntityAttribute ITEM_ADDRESS_FK = T_ITEM.entityAttribute("Address");
+  public static final Attribute<Entity> ITEM_ADDRESS_FK = T_ITEM.entityAttribute("Address");
   public static final Attribute<Boolean> ITEM_DISABLED = T_ITEM.booleanAttribute("Disabled");
 
   void item() {
@@ -210,9 +210,9 @@ public final class Petstore extends Domain {
 
   public static final EntityIdentity T_TAG_ITEM = entityIdentity("tag_item");
   public static final Attribute<Integer> TAG_ITEM_ITEM_ID = T_TAG_ITEM.integerAttribute("Item id");
-  public static final EntityAttribute TAG_ITEM_ITEM_FK = T_TAG_ITEM.entityAttribute("Item");
+  public static final Attribute<Entity> TAG_ITEM_ITEM_FK = T_TAG_ITEM.entityAttribute("Item");
   public static final Attribute<Integer> TAG_ITEM_TAG_ID = T_TAG_ITEM.integerAttribute("Tag id");
-  public static final EntityAttribute TAG_ITEM_TAG_FK = T_TAG_ITEM.entityAttribute("Tag");
+  public static final Attribute<Entity> TAG_ITEM_TAG_FK = T_TAG_ITEM.entityAttribute("Tag");
 
   void tagItem() {
     define(T_TAG_ITEM, "petstore.tag_item",

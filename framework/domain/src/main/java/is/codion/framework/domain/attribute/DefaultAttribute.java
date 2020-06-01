@@ -143,6 +143,11 @@ class DefaultAttribute<T> implements Attribute<T> {
   }
 
   @Override
+  public boolean isEntity() {
+    return false;
+  }
+
+  @Override
   public final boolean equals(final Object object) {
     if (this == object) {
       return true;
