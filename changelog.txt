@@ -6166,3 +6166,4 @@
   Attributes factory class removed
   EntityIdentity and DomainIdentity added
   Attribute and Identity moved to separate packages
+  Domain.domainIdentity() moved to Entities

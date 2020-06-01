@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.identity.DomainIdentity;
 import is.codion.framework.domain.identity.Identity;
@@ -321,7 +320,7 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    final DomainIdentity domainId = Domain.domainIdentity((String) stream.readObject());
+    final DomainIdentity domainId = Entities.domainIdentity((String) stream.readObject());
     final Identity entityId = Entities.entityIdentity((String) stream.readObject());
     definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
     if (definition == null) {

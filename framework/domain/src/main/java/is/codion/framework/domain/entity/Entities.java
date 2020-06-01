@@ -4,6 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.identity.DomainIdentity;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -190,6 +191,14 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    */
   static EntityIdentity entityIdentity(final String name) {
     return new DefaultEntityIdentity(name);
+  }
+
+  /**
+   * @param name the identity name
+   * @return a {@link DomainIdentity} instance with the given name
+   */
+  static DomainIdentity domainIdentity(final String name) {
+    return new DefaultDomainIdentity(name);
   }
 
   /**

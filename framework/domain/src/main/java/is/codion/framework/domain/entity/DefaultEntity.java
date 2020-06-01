@@ -7,7 +7,6 @@ import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
-import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.identity.DomainIdentity;
@@ -817,7 +816,7 @@ final class DefaultEntity implements Entity {
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    final DomainIdentity domainId = Domain.domainIdentity((String) stream.readObject());
+    final DomainIdentity domainId = Entities.domainIdentity((String) stream.readObject());
     final Identity entityId = Entities.entityIdentity((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
     definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
