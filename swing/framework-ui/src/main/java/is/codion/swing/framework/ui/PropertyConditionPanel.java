@@ -16,18 +16,18 @@ import javax.swing.SwingConstants;
 /**
  * A column condition panel based on the Property class.
  */
-public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, ColumnProperty> {
+public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, ColumnProperty<?>> {
 
   /**
    * Instantiates a new PropertyConditionPanel.
    * @param model the model to base this panel on
    */
-  public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty> model) {
+  public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty<?>> model) {
     super(model, ToggleAdvancedButton.NO, new PropertyBoundFieldProvider(model), getOperators(model));
   }
 
-  private static Operator[] getOperators(final ColumnConditionModel<Entity, ColumnProperty> model) {
-    if (model.getColumnIdentifier().isBoolean()) {
+  private static Operator[] getOperators(final ColumnConditionModel<Entity, ColumnProperty<?>> model) {
+    if (model.getColumnIdentifier().getAttribute().isBoolean()) {
       return new Operator[] {Operator.LIKE};
     }
 
@@ -36,9 +36,9 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, C
 
   private static final class PropertyBoundFieldProvider implements BoundFieldProvider {
 
-    private final ColumnConditionModel<Entity, ColumnProperty> model;
+    private final ColumnConditionModel<Entity, ColumnProperty<?>> model;
 
-    private PropertyBoundFieldProvider(final ColumnConditionModel<Entity, ColumnProperty> model) {
+    private PropertyBoundFieldProvider(final ColumnConditionModel<Entity, ColumnProperty<?>> model) {
       this.model = model;
     }
 

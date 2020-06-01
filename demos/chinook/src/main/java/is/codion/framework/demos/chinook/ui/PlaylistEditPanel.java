@@ -17,7 +17,7 @@ public class PlaylistEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(PLAYLIST_NAME);
+    setInitialFocusAttribute(PLAYLIST_NAME);
 
     createTextField(PLAYLIST_NAME).setColumns(12);
 

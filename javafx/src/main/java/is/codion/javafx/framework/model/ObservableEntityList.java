@@ -13,6 +13,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.identity.Identity;
 
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -39,7 +40,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   private static final String SELECTION_MODEL_HAS_NOT_BEEN_SET = "Selection model has not been set";
 
-  private final String entityId;
+  private final Identity entityId;
   private final EntityConnectionProvider connectionProvider;
   private final SortedList<Entity> sortedList;
   private final FilteredList<Entity> filteredList;
@@ -58,7 +59,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
    * @param entityId the entity on which to base the list
    * @param connectionProvider the connection provider
    */
-  public ObservableEntityList(final String entityId, final EntityConnectionProvider connectionProvider) {
+  public ObservableEntityList(final Identity entityId, final EntityConnectionProvider connectionProvider) {
     super(FXCollections.observableArrayList());
     this.entityId = entityId;
     this.connectionProvider = connectionProvider;
@@ -69,7 +70,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   /**
    * @return the id of the underlying entity
    */
-  public final String getEntityId() {
+  public final Identity getEntityId() {
     return entityId;
   }
 

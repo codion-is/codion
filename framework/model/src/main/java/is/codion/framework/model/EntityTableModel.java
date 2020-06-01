@@ -12,12 +12,14 @@ import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -62,7 +64,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the id of the entity this table model is based on
    */
-  String getEntityId();
+  Identity getEntityId();
 
   /**
    * @return the connection provider used by this table model
@@ -117,10 +119,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * For every entity in this table model, replaces the foreign key instance bearing the primary
    * key with the corresponding entity from {@code foreignKeyValues}, useful when property
    * values have been changed in the referenced entity that must be reflected in the table model.
-   * @param foreignKeyEntityId the  entityId of the foreign key values
+   * @param foreignKeyEntityId the entityId of the foreign key values
    * @param foreignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(String foreignKeyEntityId, Collection<Entity> foreignKeyValues);
+  void replaceForeignKeyValues(Identity foreignKeyEntityId, Collection<Entity> foreignKeyValues);
 
   /**
    * Adds the given entities to the bottom of this table model.
@@ -216,11 +218,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setBatchUpdateEnabled(boolean batchUpdateEnabled);
 
   /**
-   * Returns the {@link ColumnSummaryModel} associated with the property identified by {@code propertyId}
-   * @param propertyId the id of the property
+   * Returns the {@link ColumnSummaryModel} associated with {@code attribute}
+   * @param attribute the attribute
    * @return the {@link ColumnSummaryModel} for the given property id
    */
-  ColumnSummaryModel getColumnSummaryModel(String propertyId);
+  ColumnSummaryModel getColumnSummaryModel(Attribute<?> attribute);
 
   /**
    * @param row the row for which to retrieve the background color
@@ -228,13 +230,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return an Object representing the background color for this row and property, specified by the row entity
    * @see EntityDefinition.Builder#colorProvider(ColorProvider)
    */
-  Object getPropertyBackgroundColor(int row, Property property);
+  Object getPropertyBackgroundColor(int row, Property<?> property);
 
   /**
-   * @param propertyId the propertyId
-   * @return the index of the column representing the given property
+   * @param attribute the attribute
+   * @return the index of the column representing the given attribute
    */
-  int getPropertyColumnIndex(String propertyId);
+  int getPropertyColumnIndex(Attribute<?> attribute);
 
   /**
    * Returns the maximum number of records to fetch via the underlying query the next time
@@ -340,9 +342,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * Arranges the column model so that only the given columns are visible and in the given order
-   * @param propertyIds the column identifiers
+   * @param attributes the column attributes
    */
-  void setColumns(String... propertyIds);
+  void setColumns(Attribute<?>... attributes);
 
   /**
    * @param delimiter the delimiter

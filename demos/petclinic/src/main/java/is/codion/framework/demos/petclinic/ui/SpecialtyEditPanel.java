@@ -18,7 +18,7 @@ public final class SpecialtyEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(SPECIALTY_NAME);
+    setInitialFocusAttribute(SPECIALTY_NAME);
 
     createTextField(SPECIALTY_NAME).setColumns(12);
 

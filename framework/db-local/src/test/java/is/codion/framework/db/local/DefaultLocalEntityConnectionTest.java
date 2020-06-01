@@ -25,6 +25,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.identity.Identity;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -181,16 +182,16 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectDependencies() throws Exception {
-    final Map<String, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
+    final Map<Identity, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
     assertTrue(empty.isEmpty());
     final List<Entity> accounting = connection.select(T_DEPARTMENT, DEPARTMENT_NAME, "ACCOUNTING");
-    final Map<String, Collection<Entity>> emps = connection.selectDependencies(accounting);
+    final Map<Identity, Collection<Entity>> emps = connection.selectDependencies(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(T_EMP));
     assertEquals(7, emps.get(T_EMP).size());
 
     final Entity emp = connection.selectSingle(T_EMP, EMP_NAME, "KING");
-    final Map<String, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
+    final Map<Identity, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
     assertTrue(deps.isEmpty());//soft foreign key reference
   }
 
@@ -211,15 +212,15 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectWhereNull() throws Exception {
-    connection.select(T_EMP, EMP_MGR_FK, (Object[]) null);
-    connection.select(T_EMP, EMP_DATA_LAZY, (Object) null);
+    connection.select(T_EMP, EMP_MGR_FK, (Entity) null);
+    connection.select(T_EMP, EMP_DATA_LAZY, (byte[]) null);
   }
 
   @Test
   public void select() throws Exception {
     List<Entity> result = connection.select(new ArrayList<>());
     assertTrue(result.isEmpty());
-    result = connection.select(T_DEPARTMENT, DEPARTMENT_ID, 10, 20);
+    result = connection.select(T_DEPARTMENT, DEPARTMENT_ID, asList(10, 20));
     assertEquals(2, result.size());
     result = connection.select(getKeys(result));
     assertEquals(2, result.size());
@@ -293,9 +294,9 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void selectPropertyIds() throws Exception {
+  public void selectAttributes() throws Exception {
     final List<Entity> emps = connection.select(selectCondition(T_EMP)
-            .setSelectPropertyIds(EMP_ID, EMP_JOB, EMP_DEPARTMENT));
+            .setSelectAttributes(EMP_ID, EMP_JOB, EMP_DEPARTMENT));
     for (final Entity emp : emps) {
       assertTrue(emp.containsKey(EMP_ID));
       assertTrue(emp.containsKey(EMP_JOB));
@@ -308,10 +309,10 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void selectInvalidPropertyIds() throws Exception {
+  public void selectInvalidAttributes() throws Exception {
     assertThrows(IllegalArgumentException.class, () ->
             connection.select(selectCondition(T_EMP)
-                    .setSelectPropertyIds(EMP_ID, EMP_JOB, EMP_DEPARTMENT_FK)));
+                    .setSelectAttributes(EMP_ID, EMP_JOB, EMP_DEPARTMENT_FK)));
   }
 
   @Test
@@ -330,7 +331,7 @@ public class DefaultLocalEntityConnectionTest {
 
     rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_ID));
     assertEquals(16, rowCount);
-    deptNoCondition = Conditions.propertyCondition("d.deptno", Operator.GREATER_THAN, 30);
+    deptNoCondition = Conditions.propertyCondition(JOINED_DEPTNO, Operator.GREATER_THAN, 30);
     rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_ID, deptNoCondition));
     assertEquals(4, rowCount);
 
@@ -341,12 +342,12 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void selectSingle() throws Exception {
     Entity sales = connection.selectSingle(T_DEPARTMENT, DEPARTMENT_NAME, "SALES");
-    assertEquals(sales.getString(DEPARTMENT_NAME), "SALES");
+    assertEquals(sales.get(DEPARTMENT_NAME), "SALES");
     sales = connection.selectSingle(sales.getKey());
-    assertEquals(sales.getString(DEPARTMENT_NAME), "SALES");
+    assertEquals(sales.get(DEPARTMENT_NAME), "SALES");
     sales = connection.selectSingle(selectCondition(T_DEPARTMENT,
             Conditions.customCondition(DEPARTMENT_CONDITION_SALES_ID)));
-    assertEquals(sales.getString(DEPARTMENT_NAME), "SALES");
+    assertEquals(sales.get(DEPARTMENT_NAME), "SALES");
 
     final Entity king = connection.selectSingle(T_EMP, EMP_NAME, "KING");
     assertTrue(king.containsKey(EMP_MGR_FK));
@@ -421,8 +422,8 @@ public class DefaultLocalEntityConnectionTest {
 
     emp = connection.selectSingle(connection.insert(emp));
 
-    assertEquals(hiredate, emp.getDate(EMP_HIREDATE));
-    assertEquals(hiretime, emp.getTimestamp(EMP_HIRETIME));
+    assertEquals(hiredate, emp.get(EMP_HIREDATE));
+    assertEquals(hiretime, emp.get(EMP_HIRETIME));
   }
 
   @Test
@@ -478,8 +479,8 @@ public class DefaultLocalEntityConnectionTest {
       king.put(EMP_NAME, newName);
       final List<Entity> updated = connection.update(asList(sales, king));
       assertTrue(updated.containsAll(asList(sales, king)));
-      assertEquals(newName, updated.get(updated.indexOf(sales)).getString(DEPARTMENT_NAME));
-      assertEquals(newName, updated.get(updated.indexOf(king)).getString(EMP_NAME));
+      assertEquals(newName, updated.get(updated.indexOf(sales)).get(DEPARTMENT_NAME));
+      assertEquals(newName, updated.get(updated.indexOf(king)).get(EMP_NAME));
     }
     finally {
       connection.rollbackTransaction();
@@ -526,8 +527,8 @@ public class DefaultLocalEntityConnectionTest {
       assertEquals(0, connection.selectRowCount(selectCondition));
       final List<Entity> afterUpdate = connection.select(Entities.getKeys(entities));
       for (final Entity entity : afterUpdate) {
-        assertEquals(500d, entity.getDouble(EMP_COMMISSION));
-        assertEquals(4200d, entity.getDouble(EMP_SALARY));
+        assertEquals(500d, entity.get(EMP_COMMISSION));
+        assertEquals(4200d, entity.get(EMP_SALARY));
       }
     }
     finally {
@@ -586,7 +587,7 @@ public class DefaultLocalEntityConnectionTest {
       condition.setForUpdate(true);
 
       Entity sales = connection.selectSingle(condition);
-      originalLocation = sales.getString(DEPARTMENT_LOCATION);
+      originalLocation = sales.get(DEPARTMENT_LOCATION);
 
       sales.put(DEPARTMENT_LOCATION, "Syracuse");
       try {
@@ -773,16 +774,6 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void writeBlobIncorrectType() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> connection.writeBlob(ENTITIES.key(T_DEPARTMENT), DEPARTMENT_NAME, new byte[0]));
-  }
-
-  @Test
-  public void readBlobIncorrectType() throws DatabaseException {
-    assertThrows(IllegalArgumentException.class, () -> connection.readBlob(ENTITIES.key(T_DEPARTMENT), DEPARTMENT_NAME));
-  }
-
-  @Test
   public void readWriteBlob() throws DatabaseException {
     final byte[] lazyBytes = new byte[1024];
     final byte[] bytes = new byte[1024];
@@ -802,7 +793,7 @@ public class DefaultLocalEntityConnectionTest {
     assertNotNull(scottFromDb.get(EMP_DATA));
 
     //overrides lazy loading
-    scottFromDb = connection.selectSingle(selectCondition(scott.getKey()).setSelectPropertyIds(EMP_DATA_LAZY));
+    scottFromDb = connection.selectSingle(selectCondition(scott.getKey()).setSelectAttributes(EMP_DATA_LAZY));
     assertNotNull(scottFromDb.get(EMP_DATA_LAZY));
   }
 
@@ -829,7 +820,7 @@ public class DefaultLocalEntityConnectionTest {
     //lazy loaded
     assertNull(scottFromDb.get(EMP_DATA_LAZY));
     assertNotNull(scottFromDb.get(EMP_DATA));
-    assertArrayEquals(bytes, scottFromDb.getBlob(EMP_DATA));
+    assertArrayEquals(bytes, scottFromDb.get(EMP_DATA));
 
     final byte[] newLazyBytes = new byte[2048];
     final byte[] newBytes = new byte[2048];
@@ -845,7 +836,7 @@ public class DefaultLocalEntityConnectionTest {
     assertArrayEquals(newLazyBytes, lazyFromDb);
 
     scottFromDb = connection.selectSingle(scott.getKey());
-    assertArrayEquals(newBytes, scottFromDb.getBlob(EMP_DATA));
+    assertArrayEquals(newBytes, scottFromDb.get(EMP_DATA));
   }
 
   @Test
@@ -854,7 +845,7 @@ public class DefaultLocalEntityConnectionTest {
     entity.put(UUID_TEST_DEFAULT_DATA, "test");
     connection.insert(entity);
     assertNotNull(entity.get(UUID_TEST_DEFAULT_ID));
-    assertEquals("test", entity.getString(UUID_TEST_DEFAULT_DATA));
+    assertEquals("test", entity.get(UUID_TEST_DEFAULT_DATA));
   }
 
   @Test
@@ -863,7 +854,7 @@ public class DefaultLocalEntityConnectionTest {
     entity.put(UUID_TEST_NO_DEFAULT_DATA, "test");
     connection.insert(entity);
     assertNotNull(entity.get(UUID_TEST_NO_DEFAULT_ID));
-    assertEquals("test", entity.getString(UUID_TEST_NO_DEFAULT_DATA));
+    assertEquals("test", entity.get(UUID_TEST_NO_DEFAULT_DATA));
   }
 
   @Test

@@ -24,7 +24,7 @@ final class PropertyConditionSerializer implements Serializable {
   void serialize(final PropertyCondition condition, final JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeObjectField("type", "property");
-    generator.writeObjectField("propertyId", condition.getPropertyId());
+    generator.writeObjectField("attribute", condition.getAttribute().getName());
     generator.writeObjectField("operator", condition.getOperator().name());
     generator.writeFieldName("values");
     generator.writeStartArray();

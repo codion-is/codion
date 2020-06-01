@@ -17,6 +17,7 @@ import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -128,10 +129,10 @@ public class EntityTestUnit {
    * @param entityId the id of the entity to test
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
-  public final void test(final String entityId) throws DatabaseException {
+  public final void test(final Identity entityId) throws DatabaseException {
     try {
       connection.beginTransaction();
-      final Map<String, Entity> foreignKeyEntities = initializeReferencedEntities(entityId, new HashMap<>());
+      final Map<Identity, Entity> foreignKeyEntities = initializeReferencedEntities(entityId, new HashMap<>());
       Entity testEntity = null;
       final EntityDefinition entityDefinition = getEntities().getDefinition(entityId);
       if (!entityDefinition.isReadOnly()) {
@@ -151,21 +152,21 @@ public class EntityTestUnit {
 
   /**
    * @param entities the domain model entities
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @param referenceEntities entities referenced by the given  entityId
    * @return a Entity instance containing randomized values, based on the property definitions
    */
-  public static Entity createRandomEntity(final Entities entities, final String entityId, final Map<String, Entity> referenceEntities) {
+  public static Entity createRandomEntity(final Entities entities, final Identity entityId, final Map<Identity, Entity> referenceEntities) {
     return createEntity(entities, entityId, property -> createRandomValue(property, referenceEntities));
   }
 
   /**
    * @param entities the domain model entities
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
    */
-  public static Entity createEntity(final Entities entities, final String entityId, final Function<Property, Object> valueProvider) {
+  public static Entity createEntity(final Entities entities, final Identity entityId, final Function<Property<?>, Object> valueProvider) {
     requireNonNull(entities);
     requireNonNull(entityId);
     final Entity entity = entities.entity(entityId);
@@ -182,7 +183,7 @@ public class EntityTestUnit {
    * @param entity the entity to randomize
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
-  public static void randomize(final Entities entities, final Entity entity, final Map<String, Entity> foreignKeyEntities) {
+  public static void randomize(final Entities entities, final Entity entity, final Map<Identity, Entity> foreignKeyEntities) {
     requireNonNull(entities);
     requireNonNull(entity);
     populateEntity(entities, entity,
@@ -196,13 +197,13 @@ public class EntityTestUnit {
    * @param referenceEntities entities referenced by the given property
    * @return a random value
    */
-  public static Object createRandomValue(final Property property, final Map<String, Entity> referenceEntities) {
+  public static Object createRandomValue(final Property<?> property, final Map<Identity, Entity> referenceEntities) {
     requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
       return getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
     }
     if (property instanceof ValueListProperty) {
-      return getRandomListValue((ValueListProperty) property);
+      return getRandomListValue((ValueListProperty<?>) property);
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
@@ -263,17 +264,17 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return the entity instance to use for testing the entity type
    */
-  protected Entity initializeTestEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
+  protected Entity initializeTestEntity(final Identity entityId, final Map<Identity, Entity> foreignKeyEntities) {
     return createRandomEntity(getEntities(), entityId, foreignKeyEntities);
   }
 
   /**
    * Initializes a new Entity of the given type, by default this method creates a Entity filled with random values.
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return a entity of the given type
    */
-  protected Entity initializeReferenceEntity(final String entityId, final Map<String, Entity> foreignKeyEntities) {
+  protected Entity initializeReferenceEntity(final Identity entityId, final Map<Identity, Entity> foreignKeyEntities) {
     return createRandomEntity(getEntities(), entityId, foreignKeyEntities);
   }
 
@@ -282,7 +283,7 @@ public class EntityTestUnit {
    * @param testEntity the entity to modify
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
-  protected void modifyEntity(final Entity testEntity, final Map<String, Entity> foreignKeyEntities) {
+  protected void modifyEntity(final Entity testEntity, final Map<Identity, Entity> foreignKeyEntities) {
     randomize(getEntities(), testEntity, foreignKeyEntities);
   }
 
@@ -292,12 +293,12 @@ public class EntityTestUnit {
    * @param foreignKeyEntities foreign key entities already created
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    * @see #initializeReferenceEntity(String, Map)
-   * @return the Entities to reference mapped to their respective foreign key propertyIds
+   * @return the Entities to reference mapped to their respective entityIds
    */
-  private Map<String, Entity> initializeReferencedEntities(final String entityId, final Map<String, Entity> foreignKeyEntities)
+  private Map<Identity, Entity> initializeReferencedEntities(final Identity entityId, final Map<Identity, Entity> foreignKeyEntities)
           throws DatabaseException {
     for (final ForeignKeyProperty foreignKeyProperty : getEntities().getDefinition(entityId).getForeignKeyProperties()) {
-      final String foreignEntityId = foreignKeyProperty.getForeignEntityId();
+      final Identity foreignEntityId = foreignKeyProperty.getForeignEntityId();
       if (!foreignKeyEntities.containsKey(foreignEntityId)) {
         if (!Objects.equals(entityId, foreignEntityId)) {
           foreignKeyEntities.put(foreignEntityId, null);//short circuit recursion, value replaced below
@@ -337,7 +338,7 @@ public class EntityTestUnit {
    * @param testEntity the entity to test selecting
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
-  private void testSelect(final String entityId, final Entity testEntity) throws DatabaseException {
+  private void testSelect(final Identity entityId, final Entity testEntity) throws DatabaseException {
     if (testEntity != null) {
       assertEquals(testEntity, connection.selectSingle(testEntity.getKey()),
               "Entity of type " + testEntity.getEntityId() + " failed equals comparison");
@@ -353,7 +354,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
-  private void testUpdate(final Entity testEntity, final Map<String, Entity> foreignKeyEntities) throws DatabaseException {
+  private void testUpdate(final Entity testEntity, final Map<Identity, Entity> foreignKeyEntities) throws DatabaseException {
     modifyEntity(testEntity, foreignKeyEntities);
     if (!testEntity.isModified()) {
       return;
@@ -361,18 +362,18 @@ public class EntityTestUnit {
 
     final Entity updated = connection.update(testEntity);
     assertEquals(testEntity.getKey(), updated.getKey());
-    for (final ColumnProperty property : getEntities().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
+    for (final ColumnProperty<?> property : getEntities().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
       if (property.isUpdatable()) {
-        final Object beforeUpdate = testEntity.get(property);
-        final Object afterUpdate = updated.get(property);
+        final Object beforeUpdate = testEntity.get(property.getAttribute());
+        final Object afterUpdate = updated.get(property.getAttribute());
         final String message = "Values of property " + property + " should be equal after update ["
                 + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
                 + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]";
-        if (property.isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
+        if (property.getAttribute().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
           assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
                   && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
         }
-        else if (property.isBlob() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
+        else if (property.getAttribute().isBlob() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
           assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
         }
         else {
@@ -432,29 +433,29 @@ public class EntityTestUnit {
     return Users.parseUser(testUser);
   }
 
-  private static void populateEntity(final Entities entities, final Entity entity, final Collection<ColumnProperty> properties,
-                                     final Function<Property, Object> valueProvider) {
+  private static void populateEntity(final Entities entities, final Entity entity, final Collection<ColumnProperty<?>> properties,
+                                     final Function<Property<?>, Object> valueProvider) {
     requireNonNull(valueProvider, "valueProvider");
     for (final ColumnProperty property : properties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()) {
-        entity.put(property, valueProvider.apply(property));
+        entity.put(property.getAttribute(), valueProvider.apply(property));
       }
     }
     for (final ForeignKeyProperty property : entities.getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
-      final Object value = valueProvider.apply(property);
+      final Entity value = (Entity) valueProvider.apply(property);
       if (value != null) {
-        entity.put(property, value);
+        entity.put(property.getAttribute(), value);
       }
     }
   }
 
-  private static String getRandomString(final Property property) {
+  private static String getRandomString(final Property<?> property) {
     final int length = property.getMaximumLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaximumLength();
 
     return Text.createRandomString(length, length);
   }
 
-  private static byte[] getRandomBlob(final Property property) {
+  private static byte[] getRandomBlob(final Property<?> property) {
     if ((property instanceof BlobProperty) && ((BlobProperty) property).isEagerlyLoaded()) {
       return getRandomBlob(1024);
     }
@@ -469,7 +470,7 @@ public class EntityTestUnit {
     return bytes;
   }
 
-  private static Object getReferenceEntity(final ForeignKeyProperty property, final Map<String, Entity> referenceEntities) {
+  private static Object getReferenceEntity(final ForeignKeyProperty property, final Map<Identity, Entity> referenceEntities) {
     return referenceEntities == null ? null : referenceEntities.get(property.getForeignEntityId());
   }
 
@@ -480,14 +481,14 @@ public class EntityTestUnit {
     return item.getValue();
   }
 
-  private static int getRandomInteger(final Property property) {
+  private static int getRandomInteger(final Property<?> property) {
     final int min = (int) (property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue());
     final int max = (int) (property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue());
 
     return RANDOM.nextInt((max - min) + 1) + min;
   }
 
-  private static double getRandomDouble(final Property property) {
+  private static double getRandomDouble(final Property<?> property) {
     final double min = property.getMinimumValue() == null ? MININUM_RANDOM_NUMBER : property.getMinimumValue();
     final double max = property.getMaximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.getMaximumValue();
 

@@ -12,6 +12,8 @@ import is.codion.framework.demos.manual.store.model.CustomerEditModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
+import java.util.UUID;
+
 public final class Misc {
 
   public static void main(String[] args) throws DatabaseException, ValidationException {
@@ -24,7 +26,7 @@ public final class Misc {
 
     CustomerEditModel editModel = new CustomerEditModel(connectionProvider);
 
-    editModel.put(Store.CUSTOMER_ID, 42);
+    editModel.put(Store.CUSTOMER_ID, UUID.randomUUID().toString());
     editModel.put(Store.CUSTOMER_FIRST_NAME, "Björn");
     editModel.put(Store.CUSTOMER_LAST_NAME, "Sigurðsson");
     editModel.put(Store.CUSTOMER_IS_ACTIVE, true);

@@ -10,6 +10,7 @@ import is.codion.common.model.table.SortingDirective;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -183,7 +184,7 @@ public final class EntityLookupField extends JTextField {
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
-  public static Entity lookupEntity(final String entityId, final EntityConnectionProvider connectionProvider,
+  public static Entity lookupEntity(final Identity entityId, final EntityConnectionProvider connectionProvider,
                                     final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
     final List<Entity> entities = lookupEntities(entityId, connectionProvider, true, dialogParent, lookupCaption, dialogTitle);
 
@@ -202,7 +203,7 @@ public final class EntityLookupField extends JTextField {
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
-  public static List<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
+  public static List<Entity> lookupEntities(final Identity entityId, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
     return lookupEntities(entityId, connectionProvider, false, dialogParent, lookupCaption, dialogTitle);
   }
@@ -325,7 +326,7 @@ public final class EntityLookupField extends JTextField {
     Dialogs.displayInDialog(this, messagePanel, SwingMessages.get("OptionPane.messageDialogTitle"), closeEvent);
   }
 
-  private static List<Entity> lookupEntities(final String entityId, final EntityConnectionProvider connectionProvider,
+  private static List<Entity> lookupEntities(final Identity entityId, final EntityConnectionProvider connectionProvider,
                                              final boolean singleSelection, final JComponent dialogParent,
                                              final String lookupCaption, final String dialogTitle) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
@@ -349,15 +350,15 @@ public final class EntityLookupField extends JTextField {
 
     private void initializeUI(final EntityLookupModel lookupModel) {
       final JPanel propertyBasePanel = new JPanel(new CardLayout(5, 5));
-      final SwingFilteredComboBoxModel<ColumnProperty> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
-      for (final Map.Entry<ColumnProperty, EntityLookupModel.LookupSettings> entry :
+      final SwingFilteredComboBoxModel<ColumnProperty<?>> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
+      for (final Map.Entry<ColumnProperty<?>, EntityLookupModel.LookupSettings> entry :
               lookupModel.getPropertyLookupSettings().entrySet()) {
         propertyComboBoxModel.addItem(entry.getKey());
-        propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getPropertyId());
+        propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getAttribute().getName());
       }
       if (propertyComboBoxModel.getSize() > 0) {
         propertyComboBoxModel.addSelectionListener(selected ->
-                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getPropertyId()));
+                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.getAttribute().getName()));
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 
@@ -486,7 +487,7 @@ public final class EntityLookupField extends JTextField {
    */
   public static class TableSelectionProvider implements SelectionProvider {
 
-    private final FilteredTable<Entity, Property, SwingEntityTableModel> table;
+    private final FilteredTable<Entity, Property<?>, SwingEntityTableModel> table;
     private final JScrollPane scrollPane;
     private final JPanel basePanel = new JPanel(Layouts.borderLayout());
     private final Control selectControl;
@@ -512,9 +513,9 @@ public final class EntityLookupField extends JTextField {
       final String enterActionKey = "EntityLookupField.enter";
       table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
       table.getActionMap().put(enterActionKey, selectControl);
-      final Collection<ColumnProperty> lookupProperties = lookupModel.getLookupProperties();
+      final Collection<ColumnProperty<?>> lookupProperties = lookupModel.getLookupProperties();
       tableModel.getColumnModel().setColumns(lookupProperties.toArray(new Property[0]));
-      tableModel.setSortingDirective(lookupProperties.iterator().next().getPropertyId(), SortingDirective.ASCENDING);
+      tableModel.setSortingDirective(lookupProperties.iterator().next().getAttribute(), SortingDirective.ASCENDING);
       table.setSelectionMode(lookupModel.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
       table.setDoubleClickAction(selectControl);
@@ -525,7 +526,7 @@ public final class EntityLookupField extends JTextField {
     /**
      * @return the underlying FilteredTablePanel
      */
-    public final FilteredTable<Entity, Property, SwingEntityTableModel> getTable() {
+    public final FilteredTable<Entity, Property<?>, SwingEntityTableModel> getTable() {
       return table;
     }
 

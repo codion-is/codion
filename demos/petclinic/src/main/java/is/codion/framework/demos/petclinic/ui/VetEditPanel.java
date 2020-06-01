@@ -19,7 +19,7 @@ public final class VetEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(VET_FIRST_NAME);
+    setInitialFocusAttribute(VET_FIRST_NAME);
 
     createTextField(VET_FIRST_NAME).setColumns(12);
     createTextField(VET_LAST_NAME).setColumns(12);

@@ -7,6 +7,9 @@ import is.codion.common.db.database.Database;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -22,10 +25,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import java.awt.Color;
-import java.sql.Types;
 import java.util.List;
 
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
@@ -41,37 +44,37 @@ public final class ClientTutorial {
 
   public static final class Chinook extends Domain {
 
-    public static final String T_ARTIST = "chinook.artist";
-    public static final String ARTIST_ID = "artistid";
-    public static final String ARTIST_NAME = "name";
-    public static final String ARTIST_NR_OF_ALBUMS = "nr_of_albums";
+    public static final EntityIdentity T_ARTIST = entityIdentity("chinook.artist");
+    public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
+    public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
+    public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = T_ARTIST.integerAttribute("nr_of_albums");
 
-    public static final String T_ALBUM = "chinook.album";
-    public static final String ALBUM_ALBUMID = "albumid";
-    public static final String ALBUM_TITLE = "title";
-    public static final String ALBUM_ARTISTID = "artistid";
-    public static final String ALBUM_ARTIST_FK = "artist_fk";
+    public static final EntityIdentity T_ALBUM = entityIdentity("chinook.album");
+    public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
+    public static final Attribute<String> ALBUM_TITLE = T_ARTIST.stringAttribute("title");
+    public static final Attribute<Integer> ALBUM_ARTISTID = T_ARTIST.integerAttribute("artistid");
+    public static final Attribute<Entity> ALBUM_ARTIST_FK = T_ARTIST.entityAttribute("artist_fk");
 
     public Chinook() {
       define(T_ARTIST,
-              primaryKeyProperty(ARTIST_ID, Types.INTEGER),
-              columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
+              primaryKeyProperty(ARTIST_ID),
+              columnProperty(ARTIST_NAME, "Name")
                       .searchProperty(true).nullable(false).maximumLength(120),
-              subqueryProperty(ARTIST_NR_OF_ALBUMS, Types.INTEGER, "Albums",
+              subqueryProperty(ARTIST_NR_OF_ALBUMS, "Albums",
                       "select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid"))
-              .keyGenerator(automatic(T_ARTIST))
+              .keyGenerator(automatic("chinook.artist"))
               .stringProvider(new StringProvider(ARTIST_NAME))
               .caption("Artists");
 
       define(T_ALBUM,
-              primaryKeyProperty(ALBUM_ALBUMID, Types.INTEGER),
+              primaryKeyProperty(ALBUM_ALBUMID),
               foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
-                      columnProperty(ALBUM_ARTISTID, Types.INTEGER))
+                      columnProperty(ALBUM_ARTISTID))
                       .nullable(false),
-              columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
+              columnProperty(ALBUM_TITLE, "Title")
                       .nullable(false).maximumLength(160))
-              .keyGenerator(automatic(T_ALBUM))
+              .keyGenerator(automatic("chinook.artist"))
               .stringProvider(new StringProvider(ALBUM_ARTIST_FK)
                       .addText(" - ").addValue(ALBUM_TITLE))
               .caption("Albums");
@@ -86,7 +89,7 @@ public final class ClientTutorial {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty(ARTIST_NAME);
+      setInitialFocusAttribute(ARTIST_NAME);
       JTextField nameField = createTextField(ARTIST_NAME);
       nameField.setColumns(15);
       addPropertyPanel(ARTIST_NAME);
@@ -101,7 +104,7 @@ public final class ClientTutorial {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty(ALBUM_ARTIST_FK);
+      setInitialFocusAttribute(ALBUM_ARTIST_FK);
       EntityLookupField artistLookupField = createForeignKeyLookupField(ALBUM_ARTIST_FK);
       artistLookupField.setColumns(15);
       JTextField titleField = createTextField(ALBUM_TITLE);

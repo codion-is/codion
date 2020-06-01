@@ -57,6 +57,12 @@ public final class EntityObjectMapperTest {
     jsonString = mapper.writeValueAsString(entity);
 
     assertTrue(entity.valuesEqual(mapper.readValue(jsonString, Entity.class)));
+
+    entity.put(TestDomain.ENTITY_BOOLEAN, false);
+    jsonString = mapper.writeValueAsString(entity);
+    final Entity entityModified = mapper.readValue(jsonString, Entity.class);
+    assertTrue(entityModified.isModified());
+    assertTrue(entityModified.isModified(TestDomain.ENTITY_BOOLEAN));
   }
 
   @Test

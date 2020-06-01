@@ -21,7 +21,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(EMPLOYEE_FIRSTNAME);
+    setInitialFocusAttribute(EMPLOYEE_FIRSTNAME);
 
     createTextField(EMPLOYEE_FIRSTNAME).setColumns(16);
     createTextField(EMPLOYEE_LASTNAME).setColumns(16);

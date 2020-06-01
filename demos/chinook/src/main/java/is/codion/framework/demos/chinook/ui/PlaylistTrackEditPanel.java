@@ -22,7 +22,7 @@ public class PlaylistTrackEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(PLAYLISTTRACK_PLAYLIST_FK);
+    setInitialFocusAttribute(PLAYLISTTRACK_PLAYLIST_FK);
 
     final EntityComboBox playlistComboBox = createForeignKeyComboBox(PLAYLISTTRACK_PLAYLIST_FK);
     setPreferredHeight(playlistComboBox, getPreferredTextFieldHeight());

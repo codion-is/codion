@@ -39,7 +39,7 @@ public final class DefaultEntityLookupModelTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private EntityLookupModel lookupModel;
-  private Collection<ColumnProperty> lookupProperties;
+  private Collection<ColumnProperty<?>> lookupProperties;
 
   @Test
   public void constructorNullEntityId() {
@@ -91,8 +91,8 @@ public final class DefaultEntityLookupModelTest {
 
   @Test
   public void setToStringProvider() {
-    final Property job = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
-    lookupModel.setToStringProvider(entity -> entity.getAsString(job));
+    final Property<?> job = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_JOB);
+    lookupModel.setToStringProvider(entity -> entity.getAsString(job.getAttribute()));
     final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, "Darri");
     employee.put(TestDomain.EMP_JOB, "CLERK");
@@ -133,8 +133,8 @@ public final class DefaultEntityLookupModelTest {
     assertTrue(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    final ColumnProperty employeeNameProperty = ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME);
-    final ColumnProperty employeeJobProperty = ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
+    final ColumnProperty<String> employeeNameProperty = ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME);
+    final ColumnProperty<String> employeeJobProperty = ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
 
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(false);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);
@@ -230,7 +230,7 @@ public final class DefaultEntityLookupModelTest {
 
   private static boolean contains(final List<Entity> result, final String employeeName) {
     for (final Entity entity : result) {
-      if (entity.getString(TestDomain.EMP_NAME).equals(employeeName)) {
+      if (entity.get(TestDomain.EMP_NAME).equals(employeeName)) {
         return true;
       }
     }

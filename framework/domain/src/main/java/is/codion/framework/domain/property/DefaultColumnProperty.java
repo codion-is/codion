@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.db.result.ResultPacker;
+import is.codion.framework.domain.attribute.Attribute;
 
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -20,7 +21,7 @@ import java.util.Objects;
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
+class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnProperty<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -37,20 +38,20 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   private boolean foreignKeyProperty = false;
   private boolean searchProperty = false;
 
-  private final transient ResultPacker<?> resultPacker;
-  private transient ValueFetcher<?> valueFetcher;
+  private final transient ResultPacker<T> resultPacker;
+  private transient ValueFetcher<T> valueFetcher;
   private transient String columnName;
   private transient ValueConverter<Object, Object> valueConverter;
   private transient boolean groupingColumn = false;
   private transient boolean aggregateColumn = false;
   private transient boolean selectable = true;
 
-  DefaultColumnProperty(final String propertyId, final int type, final String caption) {
-    super(propertyId, type, caption, getTypeClass(type));
-    this.columnType = type;
-    this.columnName = propertyId;
+  DefaultColumnProperty(final Attribute<T> attribute, final String caption) {
+    super(attribute, caption);
+    this.columnType = attribute.getType();
+    this.columnName = attribute.getName();
     this.valueConverter = initializeValueConverter();
-    this.valueFetcher = initializeValueFetcher();
+    this.valueFetcher = (ValueFetcher<T>) initializeValueFetcher();
     this.resultPacker = new PropertyResultPacker();
   }
 
@@ -65,13 +66,8 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   }
 
   @Override
-  public final Object toColumnValue(final Object value) {
+  public final Object toColumnValue(final T value) {
     return valueConverter.toColumnValue(value);
-  }
-
-  @Override
-  public final Object fromColumnValue(final Object object) {
-    return valueConverter.fromColumnValue(object);
   }
 
   @Override
@@ -155,51 +151,51 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
   /**
    * @return a builder for this property instance
    */
-  ColumnProperty.Builder builder() {
-    return new DefaultColumnPropertyBuilder(this);
+  ColumnProperty.Builder<T> builder() {
+    return new DefaultColumnPropertyBuilder<>(this);
   }
 
   private ValueConverter initializeValueConverter() {
-    if (isDate()) {
+    if (getAttribute().isDate()) {
       return DATE_VALUE_CONVERTER;
     }
-    else if (isTimestamp()) {
+    else if (getAttribute().isTimestamp()) {
       return TIMESTAMP_VALUE_CONVERTER;
     }
-    else if (isTime()) {
+    else if (getAttribute().isTime()) {
       return TIME_VALUE_CONVERTER;
     }
 
     return DEFAULT_VALUE_CONVERTER;
   }
 
-  private ValueFetcher initializeValueFetcher() {
+  private ValueFetcher<Object> initializeValueFetcher() {
     if (this instanceof MirrorProperty) {
       return null;
     }
     switch (columnType) {
       case Types.INTEGER:
-        return (resultSet, columnIndex) -> fromColumnValue(getInteger(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getInteger(resultSet, columnIndex)));
       case Types.BIGINT:
-        return (resultSet, columnIndex) -> fromColumnValue(getLong(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getLong(resultSet, columnIndex)));
       case Types.DOUBLE:
-        return (resultSet, columnIndex) -> fromColumnValue(getDouble(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getDouble(resultSet, columnIndex)));
       case Types.DECIMAL:
-        return (resultSet, columnIndex) -> fromColumnValue(getBigDecimal(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getBigDecimal(resultSet, columnIndex)));
       case Types.DATE:
-        return (resultSet, columnIndex) -> fromColumnValue(getDate(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getDate(resultSet, columnIndex)));
       case Types.TIMESTAMP:
-        return (resultSet, columnIndex) -> fromColumnValue(getTimestamp(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getTimestamp(resultSet, columnIndex)));
       case Types.TIME:
-        return (resultSet, columnIndex) -> fromColumnValue(getTime(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getTime(resultSet, columnIndex)));
       case Types.VARCHAR:
-        return (resultSet, columnIndex) -> fromColumnValue(getString(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getString(resultSet, columnIndex)));
       case Types.BOOLEAN:
-        return (resultSet, columnIndex) -> fromColumnValue(getBoolean(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getBoolean(resultSet, columnIndex)));
       case Types.CHAR:
-        return (resultSet, columnIndex) -> fromColumnValue(getCharacter(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getCharacter(resultSet, columnIndex)));
       case Types.BLOB:
-        return (resultSet, columnIndex) -> fromColumnValue(getBlob(resultSet, columnIndex));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getBlob(resultSet, columnIndex)));
       case Types.JAVA_OBJECT:
         return ResultSet::getObject;
       default:
@@ -207,10 +203,10 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
   }
 
-  private class PropertyResultPacker implements ResultPacker<Object> {
+  private class PropertyResultPacker implements ResultPacker<T> {
 
     @Override
-    public Object fetch(final ResultSet resultSet) throws SQLException {
+    public T fetch(final ResultSet resultSet) throws SQLException {
       return valueFetcher.fetchValue(resultSet, 1);
     }
   }
@@ -385,60 +381,60 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
   }
 
-  static class DefaultColumnPropertyBuilder extends DefaultPropertyBuilder implements ColumnProperty.Builder {
+  static class DefaultColumnPropertyBuilder<T> extends DefaultPropertyBuilder<T> implements ColumnProperty.Builder<T> {
 
-    private final DefaultColumnProperty columnProperty;
+    private final DefaultColumnProperty<T> columnProperty;
 
-    DefaultColumnPropertyBuilder(final DefaultColumnProperty columnProperty) {
+    DefaultColumnPropertyBuilder(final DefaultColumnProperty<T> columnProperty) {
       super(columnProperty);
       this.columnProperty = columnProperty;
     }
 
     @Override
-    public ColumnProperty get() {
+    public ColumnProperty<T> get() {
       return columnProperty;
     }
 
     @Override
-    public final ColumnProperty.Builder columnType(final int columnType) {
+    public final ColumnProperty.Builder<T> columnType(final int columnType) {
       columnProperty.columnType = columnType;
-      columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
+      columnProperty.valueFetcher = (ValueFetcher<T>) columnProperty.initializeValueFetcher();
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder columnName(final String columnName) {
+    public final ColumnProperty.Builder<T> columnName(final String columnName) {
       columnProperty.columnName = requireNonNull(columnName, "columnName");
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder columnHasDefaultValue(final boolean columnHasDefaultValue) {
+    public final ColumnProperty.Builder<T> columnHasDefaultValue(final boolean columnHasDefaultValue) {
       columnProperty.columnHasDefaultValue = columnHasDefaultValue;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder readOnly(final boolean readOnly) {
+    public ColumnProperty.Builder<T> readOnly(final boolean readOnly) {
       columnProperty.insertable = !readOnly;
       columnProperty.updatable = !readOnly;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder insertable(final boolean insertable) {
+    public ColumnProperty.Builder<T> insertable(final boolean insertable) {
       columnProperty.insertable = insertable;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder updatable(final boolean updatable) {
+    public ColumnProperty.Builder<T> updatable(final boolean updatable) {
       columnProperty.updatable = updatable;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder primaryKeyIndex(final int index) {
+    public final ColumnProperty.Builder<T> primaryKeyIndex(final int index) {
       if (index < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0");
       }
@@ -449,7 +445,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public final ColumnProperty.Builder groupingColumn(final boolean groupingColumn) {
+    public final ColumnProperty.Builder<T> groupingColumn(final boolean groupingColumn) {
       if (columnProperty.aggregateColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is an aggregate column");
       }
@@ -458,7 +454,7 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public final ColumnProperty.Builder aggregateColumn(final boolean aggregateColumn) {
+    public final ColumnProperty.Builder<T> aggregateColumn(final boolean aggregateColumn) {
       if (columnProperty.groupingColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is a grouping column");
       }
@@ -467,20 +463,20 @@ class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
     }
 
     @Override
-    public final ColumnProperty.Builder selectable(final boolean selectable) {
+    public final ColumnProperty.Builder<T> selectable(final boolean selectable) {
       columnProperty.selectable = selectable;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder valueConverter(final ValueConverter<?, ?> valueConverter) {
+    public final ColumnProperty.Builder<T> valueConverter(final ValueConverter<T, Object> valueConverter) {
       requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueConverter = (ValueConverter<Object, Object>) valueConverter;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder searchProperty(final boolean searchProperty) {
+    public final ColumnProperty.Builder<T> searchProperty(final boolean searchProperty) {
       if (searchProperty && columnProperty.columnType != Types.VARCHAR) {
         throw new IllegalStateException("Search properties must be of type Types.VARCHAR");
       }

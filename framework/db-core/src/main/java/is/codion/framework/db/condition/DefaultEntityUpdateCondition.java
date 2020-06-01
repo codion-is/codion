@@ -3,6 +3,9 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.identity.Identity;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -13,29 +16,29 @@ final class DefaultEntityUpdateCondition extends DefaultEntityCondition implemen
 
   private static final long serialVersionUID = 1;
 
-  private final Map<String, Object> propertyValues = new LinkedHashMap<>();
+  private final Map<Attribute<?>, Object> propertyValues = new LinkedHashMap<>();
 
-  DefaultEntityUpdateCondition(final String entityId) {
+  DefaultEntityUpdateCondition(final Identity entityId) {
     super(entityId);
   }
 
-  DefaultEntityUpdateCondition(final String entityId, final Condition condition) {
+  DefaultEntityUpdateCondition(final Identity entityId, final Condition condition) {
     super(entityId, condition);
   }
 
   @Override
-  public EntityUpdateCondition set(final String propertyId, final Object value) {
-    requireNonNull(propertyId, "propertyId");
-    if (propertyValues.containsKey(propertyId)) {
-      throw new IllegalArgumentException("Update condition already contains a value for property: " + propertyId);
+  public EntityUpdateCondition set(final Attribute<?> attribute, final Object value) {
+    requireNonNull(attribute, "attribute");
+    if (propertyValues.containsKey(attribute)) {
+      throw new IllegalArgumentException("Update condition already contains a value for attribute: " + attribute);
     }
-    propertyValues.put(propertyId, value);
+    propertyValues.put(attribute, value);
 
     return this;
   }
 
   @Override
-  public Map<String, Object> getPropertyValues() {
+  public Map<Attribute<?>, Object> getAttributeValues() {
     return unmodifiableMap(propertyValues);
   }
 }

@@ -27,7 +27,7 @@ final class EntitySelectConditionSerializer extends StdSerializer<EntitySelectCo
   public void serialize(final EntitySelectCondition condition, final JsonGenerator generator,
                         final SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("entityId", condition.getEntityId());
+    generator.writeStringField("entityId", condition.getEntityId().getName());
     generator.writeFieldName("condition");
     conditionSerializer.serialize(condition.getCondition(), generator);
     generator.writeFieldName("orderBy");

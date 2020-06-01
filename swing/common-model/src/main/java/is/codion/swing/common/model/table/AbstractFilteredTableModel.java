@@ -381,7 +381,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final Class getColumnClass(final int columnIndex) {
+  public final Class<?> getColumnClass(final int columnIndex) {
     return sortModel.getColumnClass(getColumnModel().getColumnIdentifier(columnIndex));
   }
 

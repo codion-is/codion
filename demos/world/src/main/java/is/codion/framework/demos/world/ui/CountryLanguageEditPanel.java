@@ -16,7 +16,7 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(World.COUNTRYLANGUAGE_COUNTRY_FK);
+    setInitialFocusAttribute(World.COUNTRYLANGUAGE_COUNTRY_FK);
 
     setPreferredWidth(createForeignKeyComboBox(World.COUNTRYLANGUAGE_COUNTRY_FK), 120);
     createTextField(World.COUNTRYLANGUAGE_LANGUAGE).setColumns(12);

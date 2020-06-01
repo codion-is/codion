@@ -41,7 +41,7 @@ public final class TrackTableModelTest {
     trackTableModel.raisePriceOfSelected(BigDecimal.ONE);
 
     trackTableModel.getItems().forEach(track ->
-            assertEquals(BigDecimal.valueOf(1.99), track.getBigDecimal(Chinook.TRACK_UNITPRICE)));
+            assertEquals(BigDecimal.valueOf(1.99), track.get(Chinook.TRACK_UNITPRICE)));
   }
 
   private EntityConnectionProvider createConnectionProvider() {

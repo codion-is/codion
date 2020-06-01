@@ -3,7 +3,9 @@
  */
 package is.codion.plugin.jackson.json.domain;
 
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -37,7 +39,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
     requireNonNull(entity, "entity");
     generator.writeStartObject();
     generator.writeFieldName("entityId");
-    mapper.writeValue(generator, entity.getEntityId());
+    mapper.writeValue(generator, entity.getEntityId().getName());
     generator.writeFieldName("values");
     mapper.writeValue(generator, getValueMap(entity));
     if (entity.isModified()) {
@@ -57,9 +59,11 @@ final class EntitySerializer extends StdSerializer<Entity> {
 
   private Map<String, Object> getValueMap(final Entity entity) {
     final Map<String, Object> valueMap = new HashMap<>();
-    for (final Property property : entity.keySet()) {
+    final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityId());
+    for (final Attribute<?> attribute : entity.keySet()) {
+      final Property<?> property = definition.getProperty(attribute);
       if (include(property, entity)) {
-        valueMap.put(property.getPropertyId(), entity.get(property));
+        valueMap.put(property.getAttribute().getName(), entity.get(property.getAttribute()));
       }
     }
 
@@ -68,20 +72,22 @@ final class EntitySerializer extends StdSerializer<Entity> {
 
   private Map<String, Object> getOriginalValueMap(final Entity entity) {
     final Map<String, Object> valueMap = new HashMap<>();
-    for (final Property property : entity.originalKeySet()) {
+    final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityId());
+    for (final Attribute<?> attribute : entity.originalKeySet()) {
+      final Property<?> property = definition.getProperty(attribute);
       if (include(property, entity)) {
-        valueMap.put(property.getPropertyId(), entity.getOriginal(property));
+        valueMap.put(property.getAttribute().getName(), entity.getOriginal(property.getAttribute()));
       }
     }
 
     return valueMap;
   }
 
-  private boolean include(final Property property, final Entity entity) {
+  private boolean include(final Property<?> property, final Entity entity) {
     if (!includeForeignKeyValues && property instanceof ForeignKeyProperty) {
       return false;
     }
-    if (!includeNullValues && entity.isNull(property)) {
+    if (!includeNullValues && entity.isNull(property.getAttribute())) {
       return false;
     }
 

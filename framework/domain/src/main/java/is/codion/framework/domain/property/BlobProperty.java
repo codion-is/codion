@@ -6,7 +6,7 @@ package is.codion.framework.domain.property;
 /**
  * A {@link java.sql.Types#BLOB} based column property
  */
-public interface BlobProperty extends ColumnProperty {
+public interface BlobProperty extends ColumnProperty<byte[]> {
 
   /**
    * @return true if this value should be loaded eagerly when selected
@@ -16,7 +16,7 @@ public interface BlobProperty extends ColumnProperty {
   /**
    * Provides setters for BlobProperty properties
    */
-  interface Builder extends ColumnProperty.Builder {
+  interface Builder extends ColumnProperty.Builder<byte[]> {
 
     /**
      * @return the property

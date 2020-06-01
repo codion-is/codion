@@ -18,7 +18,7 @@ public final class EmployeeEditView extends EntityEditView {
 
   @Override
   protected Node initializeEditPanel() {
-    setInitialFocusProperty(EmpDept.EMPLOYEE_ID);
+    setInitialFocusAttribute(EmpDept.EMPLOYEE_ID);
 
     createTextField(EmpDept.EMPLOYEE_ID);
     createTextField(EmpDept.EMPLOYEE_NAME);

@@ -9,6 +9,9 @@ import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.value.Values;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -145,18 +148,18 @@ public final class EntityTableConditionPanel extends JPanel {
    */
   public void selectConditionPanel() {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
-      final List<Property> conditionProperties = new ArrayList<>();
+      final List<Property<?>> conditionProperties = new ArrayList<>();
       ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().forEach((column, panel) -> {
         if (panel instanceof ColumnConditionPanel) {
-          conditionProperties.add((Property) column.getIdentifier());
+          conditionProperties.add((Property<?>) column.getIdentifier());
         }
       });
       if (!conditionProperties.isEmpty()) {
         Properties.sort(conditionProperties);
-        final Property property = conditionProperties.size() == 1 ? conditionProperties.get(0) :
+        final Property<?> property = conditionProperties.size() == 1 ? conditionProperties.get(0) :
                 Dialogs.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
         if (property != null) {
-          final ColumnConditionPanel conditionPanel = getConditionPanel(property.getPropertyId());
+          final ColumnConditionPanel<?, ?> conditionPanel = getConditionPanel(property.getAttribute());
           if (conditionPanel != null) {
             conditionPanel.requestInputFocus();
           }
@@ -169,11 +172,11 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param listener a listener notified when a condition panel receives focus, note this does not apply
    * for custom search panels
    */
-  public void addFocusGainedListener(final EventDataListener<Property> listener) {
+  public void addFocusGainedListener(final EventDataListener<Property<?>> listener) {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().forEach((column, panel) -> {
         if (panel instanceof ColumnConditionPanel) {
-          ((ColumnConditionPanel) panel).addFocusGainedListener(listener);
+          ((ColumnConditionPanel<?, Property<?>>) panel).addFocusGainedListener(listener);
         }
       });
     }
@@ -205,14 +208,14 @@ public final class EntityTableConditionPanel extends JPanel {
   }
 
   /**
-   * @param  propertyId the propertyId
+   * @param  attribute the attribute
    * @return the condition panel associated with the given property, null if none is specified
    */
-  public ColumnConditionPanel getConditionPanel(final String propertyId) {
+  public ColumnConditionPanel<?, Property<?>> getConditionPanel(final Attribute<?> attribute) {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       for (final TableColumn column : columns) {
-        final Property property = (Property) column.getIdentifier();
-        if (property.is(propertyId)) {
+        final Property property = (Property<?>) column.getIdentifier();
+        if (property.is(attribute)) {
           return (ColumnConditionPanel) ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().get(column);
         }
       }
@@ -283,9 +286,9 @@ public final class EntityTableConditionPanel extends JPanel {
 
     @Override
     protected JPanel initializeColumnPanel(final TableColumn column) {
-      final Property property = (Property) column.getIdentifier();
-      if (conditionModel.containsPropertyConditionModel(property.getPropertyId())) {
-        return initializeConditionPanel(conditionModel.getPropertyConditionModel(property.getPropertyId()));
+      final Property<?> property = (Property<?>) column.getIdentifier();
+      if (conditionModel.containsPropertyConditionModel(property.getAttribute())) {
+        return initializeConditionPanel(conditionModel.getPropertyConditionModel(property.getAttribute()));
       }
 
       return new JPanel();
@@ -296,12 +299,13 @@ public final class EntityTableConditionPanel extends JPanel {
      * @param propertyConditionModel the {@link ColumnConditionModel} for which to create a condition panel
      * @return a ColumnConditionPanel based on the given model
      */
-    private static ColumnConditionPanel initializeConditionPanel(final ColumnConditionModel propertyConditionModel) {
+    private static ColumnConditionPanel<Entity, ? extends Property<?>> initializeConditionPanel(
+            final ColumnConditionModel<Entity, ? extends Property<?>> propertyConditionModel) {
       if (propertyConditionModel instanceof ForeignKeyConditionModel) {
         return new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel);
       }
 
-      return new PropertyConditionPanel(propertyConditionModel);
+      return new PropertyConditionPanel((ColumnConditionModel<Entity, ColumnProperty<?>>) propertyConditionModel);
     }
   }
 }

@@ -11,8 +11,10 @@ import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
@@ -138,8 +140,8 @@ public interface EntityConnection {
   List<Entity> update(List<Entity> entities) throws DatabaseException;
 
   /**
-   * Performs an update according to the given condition, updating the properties found
-   * in the {@link EntityUpdateCondition#getPropertyValues()} map, with the associated values.
+   * Performs an update according to the given condition, updating the attributes found
+   * in the {@link EntityUpdateCondition#getAttributeValues()} map, with the associated values.
    * @param condition the condition
    * @return the number of affected rows
    * @throws DatabaseException in case of a dabase exception
@@ -176,28 +178,29 @@ public interface EntityConnection {
   /**
    * Selects ordered and distinct non-null values of the given property, note that the given property
    * must be of type {@link ColumnProperty}.
-   * @param propertyId the id of the property
+   * @param attribute attribute
    * @param condition the condition
    * @param <T> the value type
-   * @return the values in the given column (Property)
+   * @return the values for the given attribute
    * @throws DatabaseException in case of a database exception
-   * @throws IllegalArgumentException in case the given property is not a column based property
+   * @throws IllegalArgumentException in case the given property is not a column based attribute
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  <T> List<T> selectValues(String propertyId, EntityCondition condition) throws DatabaseException;
+  <T> List<T> selectValues(Attribute<T> attribute, EntityCondition condition) throws DatabaseException;
 
   /**
    * Selects a single entity
    * @param entityId the entity type
-   * @param propertyId the id of the property to use as a condition
+   * @param attribute attribute to use as a condition
    * @param value the value to use in the condition
+   * @param <T> the value type
    * @return an entity of the type {@code entityId}, having the
-   * value of {@code propertyId} as {@code value}
+   * value of {@code attribute} as {@code value}
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  Entity selectSingle(String entityId, String propertyId, Object value) throws DatabaseException;
+  <T> Entity selectSingle(Identity entityId, Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -237,14 +240,26 @@ public interface EntityConnection {
   List<Entity> select(EntitySelectCondition condition) throws DatabaseException;
 
   /**
-   * Selects entities according to one property ({@code propertyId}), using {@code values} as a condition
+   * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
    * @param entityId the entity type
-   * @param propertyId the id of the condition property
-   * @param values the property values to use as condition
-   * @return entities of the type {@code entityId} according to {@code propertyId} and {@code values}
+   * @param attribute the condition attribute
+   * @param value the value to use as condition
+   * @param <T> the value type
+   * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> select(String entityId, String propertyId, Object... values) throws DatabaseException;
+  <T> List<Entity> select(Identity entityId, Attribute<T> attribute, T value) throws DatabaseException;
+
+  /**
+   * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
+   * @param entityId the entity type
+   * @param attribute the condition attribute
+   * @param values the values to use as condition
+   * @param <T> the value type
+   * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
+   * @throws DatabaseException in case of a database exception
+   */
+  <T> List<Entity> select(Identity entityId, Attribute<T> attribute, Collection<T> values) throws DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityIds
@@ -253,7 +268,7 @@ public interface EntityConnection {
    * @throws DatabaseException in case of a database exception
    * @see ForeignKeyProperty#isSoftReference()
    */
-  Map<String, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws DatabaseException;
+  Map<Identity, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws DatabaseException;
 
   /**
    * Selects the number of rows returned according to the given condition
@@ -278,23 +293,23 @@ public interface EntityConnection {
   <T, R, P> R fillReport(ReportWrapper<T, R, P> reportWrapper, P reportParameters) throws DatabaseException, ReportException;
 
   /**
-   * Writes {@code blobData} in the blob field specified by the property identified by {@code propertyId}
+   * Writes {@code blobData} in the blob field specified by the property identified by {@code attribute}
    * for the given entity
    * @param primaryKey the primary key of the entity for which to write the blob field
-   * @param blobPropertyId the id of the blob property
+   * @param blobAttribute the blob attribute
    * @param blobData the blob data
    * @throws is.codion.common.db.exception.UpdateException in case multiple rows were affected
    * @throws DatabaseException in case of a database exception
    */
-  void writeBlob(Entity.Key primaryKey, String blobPropertyId, byte[] blobData) throws DatabaseException;
+  void writeBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws DatabaseException;
 
   /**
-   * Reads the blob specified by the property identified by {@code propertyId} from the given entity,
+   * Reads the blob specified by the property identified by {@code attribute} from the given entity,
    * returns null if no blob data is found.
    * @param primaryKey the primary key of the entity
-   * @param blobPropertyId the id of the blob property
+   * @param blobAttribute the blob attribute
    * @return a byte array containing the blob data or null if no blob data is found
    * @throws DatabaseException in case of a database exception
    */
-  byte[] readBlob(Entity.Key primaryKey, String blobPropertyId) throws DatabaseException;
+  byte[] readBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException;
 }

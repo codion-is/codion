@@ -37,11 +37,11 @@ public final class ConditionsTest {
             Conditions.customCondition(TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID))
             .setOrderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getCondition().getValues().isEmpty());
-    assertTrue(condition.getCondition().getPropertyIds().isEmpty());
+    assertTrue(condition.getCondition().getAttributes().isEmpty());
   }
 
   @Test
-  public void selectConditionOrderBySamePropertyId() {
+  public void selectConditionOrderBySameAttribute() {
     assertThrows(IllegalArgumentException.class, () -> Conditions.selectCondition(TestDomain.T_EMP)
             .setOrderBy(orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT)));
   }

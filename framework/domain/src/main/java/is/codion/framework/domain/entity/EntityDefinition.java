@@ -5,6 +5,8 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -35,9 +37,9 @@ public interface EntityDefinition extends Serializable {
   PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.strictForeignKeys", true);
 
   /**
-   * @return the  entityId
+   * @return the entityId
    */
-  String getEntityId();
+  EntityIdentity getEntityId();
 
   /**
    * @return the name of the underlying table, with schema prefix if applicable
@@ -55,7 +57,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return the id of the domain this entity type belongs to
    */
-  String getDomainId();
+  Identity getDomainId();
 
   /**
    * @return the validator for this entity type
@@ -69,9 +71,10 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * Returns the bean class associated with this entity type
+   * @param <V> the class type
    * @return the bean class
    */
-  Class getBeanClass();
+  <V> Class<V> getBeanClass();
 
   /**
    * @return true if the underlying table is small enough for displaying the contents in a combo box
@@ -146,12 +149,12 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return a unmodifiable list view of the properties
    */
-  List<Property> getProperties();
+  List<Property<?>> getProperties();
 
   /**
    * @return a Set containing all the properties in this entity
    */
-  Set<Property> getPropertySet();
+  Set<Property<?>> getPropertySet();
 
   /**
    * @return true if this entity has a defined primary key
@@ -165,35 +168,35 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * Returns true if this entity contains properties which values are derived from the value of the given property
-   * @param propertyId the id of the property
+   * @param attribute the attribute
    * @return true if any properties are derived from the given property
    */
-  boolean hasDerivedProperties(String propertyId);
+  boolean hasDerivedProperties(Attribute<?> attribute);
 
   /**
    * Returns the properties which values are derived from the value of the given property,
    * an empty collection if no such derived properties exist
-   * @param propertyId the id of the property
+   * @param attribute the attribute
    * @return a collection containing the properties which are derived from the given property
    */
-  Collection<DerivedProperty> getDerivedProperties(String propertyId);
+  Collection<DerivedProperty<?>> getDerivedProperties(Attribute<?> attribute);
 
   /**
    * Returns a list containing all primary key properties associated with this entity type.
    * If the entity has no primary key properties defined, an empty list is returned.
    * @return the primary key properties of this entity type, sorted by primary key column index
    */
-  List<ColumnProperty> getPrimaryKeyProperties();
+  List<ColumnProperty<?>> getPrimaryKeyProperties();
 
   /**
    * @return a list containing the visible properties for this entity type
    */
-  List<Property> getVisibleProperties();
+  List<Property<?>> getVisibleProperties();
 
   /**
    * @return a list containing the column-based properties for this entity type
    */
-  List<ColumnProperty> getColumnProperties();
+  List<ColumnProperty<?>> getColumnProperties();
 
   /**
    * Returns the default select column properties used when selecting this entity type,
@@ -201,17 +204,17 @@ public interface EntityDefinition extends Serializable {
    * and {@link BlobProperty}s with {@link BlobProperty#isEagerlyLoaded()} returning true.
    * @return a list containing the default column properties to include in select queries
    */
-  List<ColumnProperty> getSelectableColumnProperties();
+  List<ColumnProperty<?>> getSelectableColumnProperties();
 
   /**
    * @return a list containing all lazy loaded blob properties for this entity type
    */
-  List<ColumnProperty> getLazyLoadedBlobProperties();
+  List<ColumnProperty<?>> getLazyLoadedBlobProperties();
 
   /**
    * @return a list containing the non-column-based properties for this entity type
    */
-  List<TransientProperty> getTransientProperties();
+  List<TransientProperty<?>> getTransientProperties();
 
   /**
    * @return a list containing the foreign key properties for this entity type
@@ -220,10 +223,10 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * Returns the {@link EntityDefinition} of the entity referenced by the given foreign key property.
-   * @param foreignKeyPropertyId the foreign key property id
+   * @param foreignKeyAttribute the foreign key attribute
    * @return the definition of the referenced entity
    */
-  EntityDefinition getForeignDefinition(String foreignKeyPropertyId);
+  EntityDefinition getForeignDefinition(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * @return true if this entity type has any denormalized properties
@@ -231,72 +234,75 @@ public interface EntityDefinition extends Serializable {
   boolean hasDenormalizedProperties();
 
   /**
-   * @param foreignKeyPropertyId the id of the foreign key property
+   * @param foreignKeyAttribute the id of the foreign key property
    * @return true if this entity type has any denormalized properties associated with the give foreign key
    */
-  boolean hasDenormalizedProperties(String foreignKeyPropertyId);
+  boolean hasDenormalizedProperties(Attribute<?> foreignKeyAttribute);
 
   /**
    * Retrieves the denormalized properties which values originate from the entity referenced by the given foreign key property
-   * @param foreignKeyPropertyId the foreign key property id
+   * @param foreignKeyAttribute the foreign key attribute
    * @return a list containing the denormalized properties which values originate from the entity
    * referenced by the given foreign key property
    */
-  List<DenormalizedProperty> getDenormalizedProperties(String foreignKeyPropertyId);
+  List<DenormalizedProperty<?>> getDenormalizedProperties(Attribute<?> foreignKeyAttribute);
 
   /**
    * Returns the properties to search by when searching for entities of this type by a string value
    * @return the properties to use when searching by string
    * @see ColumnProperty.Builder#searchProperty(boolean)
    */
-  Collection<ColumnProperty> getSearchProperties();
+  Collection<ColumnProperty<?>> getSearchProperties();
 
   /**
-   * @param  propertyId the propertyId
-   * @return the column property identified by property id
-   * @throws IllegalArgumentException in case the propertyId does not represent a {@link ColumnProperty}
+   * @param attribute the attribute
+   * @return the column property associated with the attribute
+   * @param <T> the attribute type
+   * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
    */
-  ColumnProperty getColumnProperty(String propertyId);
+  <T> ColumnProperty<T> getColumnProperty(Attribute<T> attribute);
 
   /**
-   * @param  propertyId the propertyId
-   * @return the property identified by {@code propertyId} in the entity identified by {@code entityId}
+   * @param attribute the attribute
+   * @return the property associated with {@code attribute}.
+   * @param <T> the attribute type
    * @throws IllegalArgumentException in case no such property exists
    */
-  Property getProperty(String propertyId);
+  <T> Property<T> getProperty(Attribute<T> attribute);
 
   /**
-   * @param  propertyId the propertyId
-   * @return the primary key property identified by {@code propertyId} in the entity identified by {@code entityId}
+   * @param attribute the attribute
+   * @return the primary key property associated with {@code attribute}.
+   * @param <T> the attribute type
    * @throws IllegalArgumentException in case no such property exists
    */
-  ColumnProperty getPrimaryKeyProperty(String propertyId);
+  <T> ColumnProperty<T> getPrimaryKeyProperty(Attribute<T> attribute);
 
   /**
-   * Returns the {@link Property}s identified by the propertyIds in {@code propertyIds}
-   * @param propertyIds the ids of the properties to retrieve
-   * @return a list containing the properties identified by {@code propertyIds}, found in
+   * Returns the {@link Property}s identified by the attributes in {@code attributes}
+   * @param attributes the ids of the properties to retrieve
+   * @return a list containing the properties identified by {@code attributes}, found in
    * the entity identified by {@code entityId}
    */
-  List<Property> getProperties(Collection<String> propertyIds);
+  List<Property<?>> getProperties(Collection<Attribute<?>> attributes);
 
   /**
-   * @param  propertyId the propertyId
-   * @return the column property identified by property id
-   * @throws IllegalArgumentException in case the propertyId does not represent a {@link ColumnProperty}
+   * @param attribute the attribute
+   * @param <T> the attribute type
+   * @return the column property associated with the attribute
+   * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
    * or if it is not selectable
    * @see ColumnProperty#isSelectable()
    */
-  ColumnProperty getSelectableColumnProperty(String propertyId);
+  <T> ColumnProperty<T> getSelectableColumnProperty(Attribute<T> attribute);
 
   /**
    * Returns the {@link ColumnProperty}s identified
-   * by the propertyIds in {@code propertyIds}
-   * @param propertyIds the ids of the properties to retrieve
-   * @return a list containing all column properties found in the entity identified by {@code entityId},
-   * that is, properties that map to database columns, an empty list if none exist
+   * by the attributes in {@code attributes}
+   * @param attributes the attributes which properties to retrieve
+   * @return a list of column properties
    */
-  List<ColumnProperty> getColumnProperties(List<String> propertyIds);
+  List<ColumnProperty<?>> getColumnProperties(List<Attribute<?>> attributes);
 
   /**
    * @return true if the primary key of the given type of entity is comprised of a single integer value
@@ -311,41 +317,41 @@ public interface EntityDefinition extends Serializable {
    * @return a list containing the writable column properties (properties that map to database columns) comprising
    * the entity identified by {@code entityId}
    */
-  List<ColumnProperty> getWritableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
+  List<ColumnProperty<?>> getWritableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
 
   /**
    * @return a list containing all updatable properties associated with the given  entityId
    */
-  List<Property> getUpdatableProperties();
+  List<Property<?>> getUpdatableProperties();
 
   /**
    * Returns the selectable {@link ColumnProperty}s identified
-   * by the propertyIds in {@code propertyIds}
-   * @param propertyIds the ids of the properties to retrieve
+   * by the attributes in {@code attributes}
+   * @param attributes the ids of the properties to retrieve
    * @return a list containing all column properties found in the entity identified by {@code entityId},
    * that is, properties that map to database columns, an empty list if none exist
    */
-  List<ColumnProperty> getSelectableColumnProperties(List<String> propertyIds);
+  List<ColumnProperty<?>> getSelectableColumnProperties(List<Attribute<?>> attributes);
 
   /**
    * Returns the foreign key properties referencing entities of the given type
    * @param foreignEntityId the id of the referenced entity
    * @return a List containing the properties, an empty list is returned in case no foreign key references are found
    */
-  List<ForeignKeyProperty> getForeignKeyReferences(String foreignEntityId);
+  List<ForeignKeyProperty> getForeignKeyReferences(Identity foreignEntityId);
 
   /**
-   * @param  propertyId the propertyId
-   * @return the Property.ForeignKeyProperty with the given propertyId
+   * @param attribute the attribute
+   * @return the Property.ForeignKeyProperty with the given attribute
    * @throws IllegalArgumentException in case no such property exists
    */
-  ForeignKeyProperty getForeignKeyProperty(String propertyId);
+  ForeignKeyProperty getForeignKeyProperty(Attribute<Entity> attribute);
 
   /**
-   * @param columnPropertyId the column property id
+   * @param columnAttribute the column attribute
    * @return the ForeignKeyProperties based on the given column property
    */
-  List<ForeignKeyProperty> getForeignKeyProperties(String columnPropertyId);
+  List<ForeignKeyProperty> getForeignKeyProperties(Attribute<?> columnAttribute);
 
   /**
    * Returns the color provider, never null
@@ -377,7 +383,7 @@ public interface EntityDefinition extends Serializable {
    * @see ColumnProperty.Builder#columnHasDefaultValue(boolean)
    * @see ColumnProperty.Builder#defaultValue(Object)
    */
-  Entity entity(Function<Property, Object> valueProvider);
+  Entity entity(Function<Property<?>, Object> valueProvider);
 
   /**
    * Creates a new {@link Entity} instance based on this definition
@@ -386,7 +392,7 @@ public interface EntityDefinition extends Serializable {
    * @return a new {@link Entity} instance
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
-  Entity entity(Map<Property, Object> values, Map<Property, Object> originalValues);
+  Entity entity(Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues);
 
   /**
    * Creates a new {@link Entity.Key} instance based on this definition
@@ -459,7 +465,7 @@ public interface EntityDefinition extends Serializable {
      * @return the entity definition
      * @throws IllegalArgumentException in case the definition is not found
      */
-    EntityDefinition getDefinition(String entityId);
+    EntityDefinition getDefinition(Identity entityId);
 
     /**
      * Returns all {@link EntityDefinition}s available in this provider
@@ -483,7 +489,7 @@ public interface EntityDefinition extends Serializable {
      * @return this {@link Builder} instance
      * @throws IllegalStateException in case the domain id has already been set
      */
-    Builder domainId(String domainId);
+    Builder domainId(Identity domainId);
 
     /**
      * @param validator the validator for this entity type
@@ -517,9 +523,10 @@ public interface EntityDefinition extends Serializable {
     /**
      * Sets the bean class to associate with this entity type
      * @param beanClass the bean class
+     * @param <V> the class type
      * @return this {@link Builder} instance
      */
-    Builder beanClass(Class beanClass);
+    <V> Builder beanClass(Class<V> beanClass);
 
     /**
      * Specifies whether or not this entity should be regarded as based on a small dataset,

@@ -12,18 +12,18 @@ import is.codion.swing.common.ui.table.ColumnConditionPanel;
 /**
  * A column filter panel based on properties.
  */
-public final class PropertyFilterPanel extends ColumnConditionPanel<Entity, Property> {
+public final class PropertyFilterPanel extends ColumnConditionPanel<Entity, Property<?>> {
 
   /**
    * Instantiates a new PropertyFilterPanel.
    * @param model the model to base this panel on
    */
-  public PropertyFilterPanel(final ColumnConditionModel<Entity, Property> model) {
+  public PropertyFilterPanel(final ColumnConditionModel<Entity, Property<?>> model) {
     super(model, ToggleAdvancedButton.YES, getOperators(model));
   }
 
-  private static Operator[] getOperators(final ColumnConditionModel<Entity, Property> model) {
-    if (model.getColumnIdentifier().isBoolean()) {
+  private static Operator[] getOperators(final ColumnConditionModel<Entity, Property<?>> model) {
+    if (model.getColumnIdentifier().getAttribute().isBoolean()) {
       return new Operator[] {Operator.LIKE};
     }
 

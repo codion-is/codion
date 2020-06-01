@@ -51,7 +51,7 @@ public final class EntityEditPanelTest {
     assertFalse(editModel.isEntityNew());
     editPanel.clearAndRequestFocus();
     assertTrue(editModel.isEntityNew());
-    assertEquals(7, editPanel.getComponentPropertyIds().size());
+    assertEquals(7, editPanel.getComponentAttributes().size());
 
     editPanel.setClearAfterInsert(true);
     assertTrue(editPanel.isClearAfterInsert());
@@ -82,7 +82,7 @@ public final class EntityEditPanelTest {
       createTextField(TestDomain.EMP_COMMISSION);
       createTemporalInputPanel(TestDomain.EMP_HIREDATE, CalendarButton.YES);
 
-      setInitialFocusProperty(TestDomain.EMP_NAME);
+      setInitialFocusAttribute(TestDomain.EMP_NAME);
 
       setLayout(new FlexibleGridLayout(3, 3, 5, 5, FixRowHeights.YES, FixColumnWidths.NO));
 

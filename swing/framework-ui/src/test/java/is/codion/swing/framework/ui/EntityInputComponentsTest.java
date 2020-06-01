@@ -52,20 +52,6 @@ public class EntityInputComponentsTest {
   }
 
   @Test
-  public void createNullableCheckBoxNonBooleanProperty() {
-    assertThrows(IllegalArgumentException.class, () ->
-            EntityInputComponents.createNullableCheckBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_TIMESTAMP),
-                    editModel.value(TestDomain.DETAIL_TIMESTAMP), null, IncludeCaption.YES));
-  }
-
-  @Test
-  public void createCheckBoxNonBooleanProperty() {
-    assertThrows(IllegalArgumentException.class, () ->
-            EntityInputComponents.createCheckBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_TIMESTAMP),
-                    editModel.value(TestDomain.DETAIL_TIMESTAMP)));
-  }
-
-  @Test
   public void createCheckBox() {
     //set default values
     editModel.setEntity(null);

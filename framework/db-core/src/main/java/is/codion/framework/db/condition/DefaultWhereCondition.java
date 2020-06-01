@@ -13,23 +13,23 @@ final class DefaultWhereCondition implements WhereCondition {
 
   private final EntityDefinition entityDefinition;
   private final Condition condition;
-  private final List values;
-  private final List<ColumnProperty> columnProperties;
+  private final List<Object> values;
+  private final List<ColumnProperty<?>> columnProperties;
 
   DefaultWhereCondition(final Condition expandedCondition, final EntityDefinition entityDefinition) {
     this.entityDefinition = entityDefinition;
     this.condition = expandedCondition;
     this.values = condition.getValues();
-    this.columnProperties = entityDefinition.getColumnProperties(condition.getPropertyIds());
+    this.columnProperties = entityDefinition.getColumnProperties(condition.getAttributes());
   }
 
   @Override
-  public List getValues() {
+  public List<Object> getValues() {
     return values;
   }
 
   @Override
-  public List<ColumnProperty> getColumnProperties() {
+  public List<ColumnProperty<?>> getColumnProperties() {
     return columnProperties;
   }
 
@@ -56,13 +56,13 @@ final class DefaultWhereCondition implements WhereCondition {
     if (condition instanceof PropertyCondition) {
       final PropertyCondition propertyCondition = (PropertyCondition) condition;
 
-      return propertyCondition.getConditionString(entityDefinition.getColumnProperty(propertyCondition.getPropertyId()));
+      return propertyCondition.getConditionString(entityDefinition.getColumnProperty(propertyCondition.getAttribute()));
     }
     if (condition instanceof CustomCondition) {
       final CustomCondition customCondition = (CustomCondition) condition;
 
       return entityDefinition.getConditionProvider(customCondition.getConditionId())
-              .getConditionString(customCondition.getPropertyIds(), customCondition.getValues());
+              .getConditionString(customCondition.getAttributes(), customCondition.getValues());
     }
 
     return "";

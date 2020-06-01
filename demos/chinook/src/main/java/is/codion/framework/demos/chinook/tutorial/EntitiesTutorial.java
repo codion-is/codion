@@ -12,17 +12,19 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Property;
 
-import java.sql.Types;
 import java.util.List;
 
 import static is.codion.common.db.Operator.LIKE;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.Entities.getKeys;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
@@ -38,24 +40,24 @@ public final class EntitiesTutorial {
   /** The domain class, which contains the domain model definition */
   public static final class Chinook extends Domain {
 
-    //string constants for the table entityId ('T_' prefix)
-    //and a propertyId for each column
-    public static final String T_ARTIST = "chinook.artist";
-    public static final String ARTIST_ID = "artistid";
-    public static final String ARTIST_NAME = "name";
+    //string constant for the table entityId ('T_' prefix)
+    //and a Attribute for each column
+    public static final EntityIdentity T_ARTIST = entityIdentity("chinook.artist");
+    public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
+    public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
 
     //string constants for the table entityId ('T_' prefix),
-    //and a propertyId for each column and one for the foreign key relation
-    public static final String T_ALBUM = "chinook.album";
-    public static final String ALBUM_ALBUMID = "albumid";
-    public static final String ALBUM_TITLE = "title";
-    public static final String ALBUM_ARTISTID = "artistid";
-    public static final String ALBUM_ARTIST_FK = "artist_fk";
+    //and a Attribute for each column and one for the foreign key relation
+    public static final EntityIdentity T_ALBUM = entityIdentity("chinook.album");
+    public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
+    public static final Attribute<String> ALBUM_TITLE = T_ALBUM.stringAttribute("title");
+    public static final Attribute<Integer> ALBUM_ARTISTID = T_ALBUM.integerAttribute("artistid");
+    public static final Attribute<Entity> ALBUM_ARTIST_FK = T_ALBUM.entityAttribute("artist_fk");
 
     public Chinook() {
       //create properties for the columns in the table 'chinook.artist'
-      Property.Builder artistId = primaryKeyProperty(ARTIST_ID, Types.INTEGER);
-      Property.Builder artistName = columnProperty(ARTIST_NAME, Types.VARCHAR, "Name");
+      Property.Builder artistId = primaryKeyProperty(ARTIST_ID);
+      Property.Builder artistName = columnProperty(ARTIST_NAME, "Name");
       artistName.nullable(false).maximumLength(120);
 
       //define an entity based on the table 'chinook.artist',
@@ -67,14 +69,14 @@ public final class EntitiesTutorial {
               .caption("Artist");
 
       //create properties for the columns in the table 'chinook.album'
-      Property.Builder albumId = primaryKeyProperty(ALBUM_ALBUMID, Types.INTEGER);
-      Property.Builder albumTitle = columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title");
+      Property.Builder albumId = primaryKeyProperty(ALBUM_ALBUMID);
+      Property.Builder albumTitle = columnProperty(ALBUM_TITLE, "Title");
       albumTitle.nullable(false).maximumLength(160);
       //we wrap the actual 'artistid' column property in a foreign key
       //referencing the entity identified by T_ARTIST
       Property.Builder albumArtist =
               foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
-                      columnProperty(ALBUM_ARTISTID, Types.INTEGER));
+                      columnProperty(ALBUM_ARTISTID));
       albumArtist.nullable(false);
 
       //define an entity based on the table 'chinook.album',

@@ -3,6 +3,10 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.identity.Identity;
+
 import java.util.List;
 
 /**
@@ -11,7 +15,13 @@ import java.util.List;
  * e.g.: Properties.foreignKeyProperty("reference_fk", Properties.columnProperty("reference_id")), where "reference_id" is the
  * actual name of the column involved in the reference, but "reference_fk" is simply a descriptive property id
  */
-public interface ForeignKeyProperty extends Property {
+public interface ForeignKeyProperty extends Property<Entity> {
+
+  /**
+   * @return the underying attribute
+   */
+  @Override
+  Attribute<Entity> getAttribute();
 
   /**
    * @return true if all reference properties comprising this foreign key property are insertable
@@ -26,13 +36,13 @@ public interface ForeignKeyProperty extends Property {
   /**
    * @return the id of the entity referenced by this foreign key
    */
-  String getForeignEntityId();
+  Identity getForeignEntityId();
 
   /**
    * Returns an unmodifiable list containing the properties that comprise this foreign key
    * @return the reference properties
    */
-  List<ColumnProperty> getColumnProperties();
+  List<ColumnProperty<?>> getColumnProperties();
 
   /**
    * @return true if this foreign key is based on multiple columns
@@ -53,7 +63,7 @@ public interface ForeignKeyProperty extends Property {
   /**
    * Provides setters for ForeignKeyProperty properties
    */
-  interface Builder extends Property.Builder {
+  interface Builder extends Property.Builder<Entity> {
 
     /**
      * @return the property
@@ -63,7 +73,7 @@ public interface ForeignKeyProperty extends Property {
     /**
      * @return the builders for the underlying column properties comprising this foreign key
      */
-    List<ColumnProperty.Builder> getColumnPropertyBuilders();
+    List<ColumnProperty.Builder<?>> getColumnPropertyBuilders();
 
     /**
      * @param fetchDepth the default query fetch depth for this foreign key

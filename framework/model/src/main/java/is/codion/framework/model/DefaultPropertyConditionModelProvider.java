@@ -18,7 +18,7 @@ public class DefaultPropertyConditionModelProvider implements PropertyConditionM
 
   @Override
   public ColumnConditionModel<Entity, ColumnProperty> initializePropertyConditionModel(final ColumnProperty property) {
-    return new DefaultColumnConditionModel<>(property, property.getTypeClass(), Property.WILDCARD_CHARACTER.get(),
+    return new DefaultColumnConditionModel<>(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
             property.getFormat(), property.getDateTimeFormatPattern());
   }
 

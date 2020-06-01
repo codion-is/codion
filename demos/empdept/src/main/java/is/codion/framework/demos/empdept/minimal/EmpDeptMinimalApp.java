@@ -10,6 +10,9 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -23,9 +26,10 @@ import is.codion.swing.framework.ui.EntityPanelBuilder;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.sql.Types;
+import java.time.LocalDate;
 import java.util.Locale;
 
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -38,53 +42,76 @@ public final class EmpDeptMinimalApp {
   /**
    * This class initializes the domain model based on the SCOTT schema
    */
-  private static final class EmpDeptDomain extends Domain {
+  private static final class EmpDept extends Domain {
 
-    public EmpDeptDomain() {
+    /*
+     * We start by defining attributes for the columns in the SCOTT.DEPT table.
+     */
+    public static final EntityIdentity T_DEPT = entityIdentity("scott.dept");
+    public static final Attribute<Integer> DEPT_DEPTNO = T_DEPT.integerAttribute("deptno");
+    public static final Attribute<String> DEPT_DNAME = T_DEPT.stringAttribute("dname");
+    public static final Attribute<String> DEPT_LOC = T_DEPT.stringAttribute("loc");
+
+    /*
+     * And for the columns in the SCOTT.EMP table.
+     */
+    public static final EntityIdentity T_EMP = entityIdentity("scott.emp");
+    public static final Attribute<Integer> EMP_EMPNO = T_EMP.integerAttribute("empno");
+    public static final Attribute<String> EMP_ENAME = T_EMP.stringAttribute("ename");
+    public static final Attribute<Integer> EMP_DEPTNO = T_EMP.integerAttribute("deptno");
+    public static final Attribute<Entity> EMP_DEPT_FK = T_EMP.entityAttribute("dept_fk");
+    public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
+    public static final Attribute<Double> EMP_SAL = T_EMP.doubleAttribute("sal");
+    public static final Attribute<Double> EMP_COMM = T_EMP.doubleAttribute("comm");
+    public static final Attribute<Integer> EMP_MGR = T_EMP.integerAttribute("mgr");
+    public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
+    public static final Attribute<LocalDate> EMP_HIREDATE = T_EMP.localDateAttribute("hiredate");
+
+    public EmpDept() {
       /*
-       * We start by defining the entity based on the SCOTT.DEPT table
+       * We then define the entity based on the SCOTT.DEPT table
        */
-      define("scott.dept",
-              primaryKeyProperty("deptno", Types.INTEGER),
-              columnProperty("dname", Types.VARCHAR, "Department name")
+      define(T_DEPT,
+              primaryKeyProperty(DEPT_DEPTNO),
+              columnProperty(DEPT_DEPTNO, "Department name")
                       .searchProperty(true)
                       .nullable(false)
                       .maximumLength(14),
-              columnProperty("loc", Types.VARCHAR, "Department location")
+              columnProperty(DEPT_LOC, "Department location")
                       .maximumLength(13))
               .keyGenerator(increment("scott.dept", "deptno"))
               .caption("Departments")
-              .stringProvider(new StringProvider("dname"));
+              .stringProvider(new StringProvider(DEPT_DNAME));
       /*
        * We then define the entity based on the SCOTT.EMP table,
        * notice the foreign key wrapper properties, referencing the
        * department as well as the manager
        */
-      define("scott.emp",
-              primaryKeyProperty("empno", Types.INTEGER),
-              columnProperty("ename", Types.VARCHAR, "Name")
+      define(T_EMP,
+              primaryKeyProperty(EMP_EMPNO),
+              columnProperty(EMP_ENAME, "Name")
                       .searchProperty(true)
                       .nullable(false)
                       .maximumLength(10),
-              foreignKeyProperty("dept_fk", "Department", "scott.dept",
-                      columnProperty("deptno", Types.INTEGER))
+              foreignKeyProperty(EMP_DEPT_FK, "Department", T_DEPT,
+                      columnProperty(EMP_DEPTNO))
                       .nullable(false),
-              columnProperty("job", Types.VARCHAR, "Job")
+              columnProperty(EMP_JOB, "Job")
                       .nullable(false)
                       .maximumLength(9),
-              columnProperty("sal", Types.DOUBLE, "Salary")
+              columnProperty(EMP_SAL, "Salary")
                       .nullable(false)
                       .maximumFractionDigits(2)
                       .minimumValue(1000).maximumValue(10000),
-              columnProperty("comm", Types.DOUBLE, "Commission")
+              columnProperty(EMP_COMM, "Commission")
                       .maximumFractionDigits(2),
-              foreignKeyProperty("mgr_fk", "Manager", "scott.emp",
-                      columnProperty("mgr", Types.INTEGER)),
-              columnProperty("hiredate", Types.DATE, "Hiredate")
+              foreignKeyProperty(EMP_MGR_FK, "Manager", T_EMP,
+                      columnProperty(EMP_MGR)),
+              columnProperty(EMP_HIREDATE, "Hiredate")
                       .nullable(false))
               .keyGenerator(increment("scott.emp", "empno"))
               .caption("Employees")
-              .stringProvider(new StringProvider("ename"));
+              .stringProvider(new StringProvider(EMP_ENAME));
     }
   }
 
@@ -95,7 +122,7 @@ public final class EmpDeptMinimalApp {
   public static final class EmployeeEditModel extends SwingEntityEditModel {
 
     public EmployeeEditModel(final EntityConnectionProvider connectionProvider) {
-      super("scott.emp", connectionProvider);
+      super(EmpDept.T_EMP, connectionProvider);
     }
 
     /**
@@ -106,9 +133,9 @@ public final class EmpDeptMinimalApp {
     public SwingEntityComboBoxModel createForeignKeyComboBoxModel(
             final ForeignKeyProperty foreignKeyProperty) {
       final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
-      if (foreignKeyProperty.is("mgr_fk")) {
+      if (foreignKeyProperty.is(EmpDept.EMP_MGR_FK)) {
         comboBoxModel.setSelectConditionProvider(() -> Conditions.propertyCondition(
-                "job", Operator.LIKE, asList("MANAGER", "PRESIDENT")));
+                EmpDept.EMP_JOB, Operator.LIKE, asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }
 
@@ -130,15 +157,15 @@ public final class EmpDeptMinimalApp {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty("dname");
+      setInitialFocusAttribute(EmpDept.DEPT_DEPTNO);
 
-      createTextField("dname");
-      createTextField("loc");
+      createTextField(EmpDept.DEPT_DNAME);
+      createTextField(EmpDept.DEPT_LOC);
 
       setLayout(new GridLayout(2, 1, 5, 5));
 
-      addPropertyPanel("dname");
-      addPropertyPanel("loc");
+      addPropertyPanel(EmpDept.DEPT_DNAME);
+      addPropertyPanel(EmpDept.DEPT_LOC);
     }
   }
 
@@ -153,25 +180,25 @@ public final class EmpDeptMinimalApp {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty("ename");
+      setInitialFocusAttribute(EmpDept.EMP_ENAME);
 
-      createTextField("ename");
-      createForeignKeyComboBox("dept_fk");
-      createTextField("job");
-      createForeignKeyComboBox("mgr_fk");
-      createTemporalInputPanel("hiredate");
-      createTextField("sal");
-      createTextField("comm");
+      createTextField(EmpDept.EMP_ENAME);
+      createForeignKeyComboBox(EmpDept.EMP_DEPT_FK);
+      createTextField(EmpDept.EMP_JOB);
+      createForeignKeyComboBox(EmpDept.EMP_MGR_FK);
+      createTemporalInputPanel(EmpDept.EMP_HIREDATE);
+      createTextField(EmpDept.EMP_SAL);
+      createTextField(EmpDept.EMP_COMM);
 
       setLayout(new GridLayout(4, 2, 5, 5));
 
-      addPropertyPanel("ename");
-      addPropertyPanel("dept_fk");
-      addPropertyPanel("job");
-      addPropertyPanel("mgr_fk");
-      addPropertyPanel("hiredate");
-      addPropertyPanel("sal");
-      addPropertyPanel("comm");
+      addPropertyPanel(EmpDept.EMP_ENAME);
+      addPropertyPanel(EmpDept.EMP_DEPT_FK);
+      addPropertyPanel(EmpDept.EMP_JOB);
+      addPropertyPanel(EmpDept.EMP_MGR_FK);
+      addPropertyPanel(EmpDept.EMP_HIREDATE);
+      addPropertyPanel(EmpDept.EMP_SAL);
+      addPropertyPanel(EmpDept.EMP_COMM);
     }
   }
 
@@ -199,9 +226,9 @@ public final class EmpDeptMinimalApp {
     @Override
     protected void setupEntityPanelBuilders() {
       //now, let's assemble our application
-      final EntityPanelBuilder departmentProvider = new EntityPanelBuilder("scott.dept")
+      final EntityPanelBuilder departmentProvider = new EntityPanelBuilder(EmpDept.T_DEPT)
               .setEditPanelClass(DepartmentEditPanel.class);
-      final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder("scott.emp")
+      final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(EmpDept.T_EMP)
               .setEditModelClass(EmployeeEditModel.class);
       final EntityPanelBuilder employeeProvider = new EntityPanelBuilder(employeeModelBuilder)
               .setEditPanelClass(EmployeeEditPanel.class);
@@ -225,7 +252,7 @@ public final class EmpDeptMinimalApp {
     //Let's set the locale, otherwise the application would be in icelandic
     Locale.setDefault(new Locale("en", "EN"));
     //the remote connection settings
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(EmpDeptDomain.class.getName());
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(EmpDept.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
     ServerConfiguration.SERVER_HOST_NAME.set("codion.no-ip.org");
     //we're using Secure Sockets Layer so we need to specify a truststore

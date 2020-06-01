@@ -16,14 +16,15 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
-
-import java.sql.Types;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.EntityIdentity;
 
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.db.Operator.LIKE;
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.framework.db.condition.Conditions.*;
 import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
@@ -117,20 +118,20 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   private static final class Authentication extends Domain {
 
-    private static final String T_USER = "chinook.user";
-    private static final String USER_USERID = "userid";
-    private static final String USER_USERNAME = "username";
-    private static final String USER_PASSWORD_HASH = "passwordhash";
+    private static final EntityIdentity T_USER = entityIdentity("chinook.user");
+    private static final Attribute<Integer> USER_USERID = T_USER.integerAttribute("userid");
+    private static final Attribute<String> USER_USERNAME = T_USER.stringAttribute("username");
+    private static final Attribute<Integer> USER_PASSWORD_HASH = T_USER.integerAttribute("passwordhash");
 
     private Authentication() {
       define(T_USER,
-              primaryKeyProperty(USER_USERID, Types.INTEGER),
-              columnProperty(USER_USERNAME, Types.VARCHAR)
+              primaryKeyProperty(USER_USERID),
+              columnProperty(USER_USERNAME)
                       .nullable(false)
                       .maximumLength(20),
-              columnProperty(USER_PASSWORD_HASH, Types.INTEGER)
+              columnProperty(USER_PASSWORD_HASH)
                       .nullable(false))
-              .keyGenerator(automatic(T_USER));
+              .keyGenerator(automatic("chinook.user"));
     }
   }
 }

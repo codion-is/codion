@@ -1,5 +1,6 @@
 [B
 [C
+[Lis.codion.framework.domain.attribute.Attribute;
 [Ljava.lang.Object;
 [Ljava.lang.String;
 [Ljava.util.Map$Entry;
@@ -87,10 +88,16 @@ is.codion.framework.db.condition.DefaultEntitySelectCondition
 is.codion.framework.db.condition.DefaultPropertyCondition
 is.codion.framework.db.condition.Condition$EmptyCondition
 is.codion.framework.domain.Domain
+is.codion.framework.domain.entity.DefaultDomainIdentity
 is.codion.framework.domain.entity.DefaultEntity
 is.codion.framework.domain.entity.DefaultEntityKey
+is.codion.framework.domain.entity.DefaultEntityIdentity
+is.codion.framework.domain.identity.DefaultIdentity
 is.codion.framework.domain.entity.DefaultOrderBy
-is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByProperty
+is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByAttribute
+is.codion.framework.domain.attribute.DefaultAttribute
+is.codion.framework.domain.attribute.DefaultBlobAttribute
+is.codion.framework.domain.attribute.DefaultEntityAttribute
 is.codion.framework.demos.chinook.domain.Chinook
 is.codion.framework.demos.empdept.domain.EmpDept
 is.codion.plugin.jasperreports.model.AbstractJasperReportWrapper

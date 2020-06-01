@@ -2,102 +2,104 @@ package is.codion.framework.demos.world.domain;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.awt.Color;
-import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import static is.codion.common.Util.notNull;
 import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.KeyGenerators.sequence;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
-// tag::entityAndPropertyIds[]
+// tag::entityIdsAndAttributes[]
 public final class World extends Domain {
 
-  public static final String T_CITY = "world.city";
-  public static final String CITY_ID = "id";
-  public static final String CITY_NAME = "name";
-  public static final String CITY_COUNTRY_CODE = "countrycode";
-  public static final String CITY_COUNTRY_FK = "country_fk";
-  public static final String CITY_DISTRICT = "district";
-  public static final String CITY_POPULATION = "population";
+  public static final EntityIdentity T_CITY = entityIdentity("world.city");
+  public static final Attribute<Integer> CITY_ID = T_CITY.integerAttribute("id");
+  public static final Attribute<String> CITY_NAME = T_CITY.stringAttribute("name");
+  public static final Attribute<String> CITY_COUNTRY_CODE = T_CITY.stringAttribute("countrycode");
+  public static final Attribute<Entity> CITY_COUNTRY_FK = T_CITY.entityAttribute("country_fk");
+  public static final Attribute<String> CITY_DISTRICT = T_CITY.stringAttribute("district");
+  public static final Attribute<Integer> CITY_POPULATION = T_CITY.integerAttribute("population");
 
-  public static final String T_COUNTRY = "world.country";
-  public static final String COUNTRY_CODE = "code";
-  public static final String COUNTRY_NAME = "name";
-  public static final String COUNTRY_CONTINENT = "continent";
-  public static final String COUNTRY_REGION = "region";
-  public static final String COUNTRY_SURFACEAREA = "surfacearea";
-  public static final String COUNTRY_INDEPYEAR = "indepyear";
-  public static final String COUNTRY_POPULATION = "population";
-  public static final String COUNTRY_LIFEEXPECTANCY = "lifeexpectancy";
-  public static final String COUNTRY_GNP = "gnp";
-  public static final String COUNTRY_GNPOLD = "gnpold";
-  public static final String COUNTRY_LOCALNAME = "localname";
-  public static final String COUNTRY_GOVERNMENTFORM = "governmentform";
-  public static final String COUNTRY_HEADOFSTATE = "headofstate";
-  public static final String COUNTRY_CAPITAL = "capital";
-  public static final String COUNTRY_CAPITAL_FK = "capital_fk";
-  public static final String COUNTRY_CODE2 = "code2";
-  public static final String COUNTRY_CAPITAL_POPULATION = "capital_population";
-  public static final String COUNTRY_NO_OF_CITIES = "no_of_cities";
-  public static final String COUNTRY_NO_OF_LANGUAGES = "no_of_languages";
-  public static final String COUNTRY_FLAG = "flag";
+  public static final EntityIdentity T_COUNTRY = entityIdentity("world.country");
+  public static final Attribute<String> COUNTRY_CODE = T_COUNTRY.stringAttribute("code");
+  public static final Attribute<String> COUNTRY_NAME = T_COUNTRY.stringAttribute("name");
+  public static final Attribute<String> COUNTRY_CONTINENT = T_COUNTRY.stringAttribute("continent");
+  public static final Attribute<String> COUNTRY_REGION = T_COUNTRY.stringAttribute("region");
+  public static final Attribute<Double> COUNTRY_SURFACEAREA = T_COUNTRY.doubleAttribute("surfacearea");
+  public static final Attribute<Integer> COUNTRY_INDEPYEAR = T_COUNTRY.integerAttribute("indepyear");
+  public static final Attribute<Integer> COUNTRY_POPULATION = T_COUNTRY.integerAttribute("population");
+  public static final Attribute<Double> COUNTRY_LIFEEXPECTANCY = T_COUNTRY.doubleAttribute("lifeexpectancy");
+  public static final Attribute<Double> COUNTRY_GNP = T_COUNTRY.doubleAttribute("gnp");
+  public static final Attribute<Double> COUNTRY_GNPOLD = T_COUNTRY.doubleAttribute("gnpold");
+  public static final Attribute<String> COUNTRY_LOCALNAME = T_COUNTRY.stringAttribute("localname");
+  public static final Attribute<String> COUNTRY_GOVERNMENTFORM = T_COUNTRY.stringAttribute("governmentform");
+  public static final Attribute<String> COUNTRY_HEADOFSTATE = T_COUNTRY.stringAttribute("headofstate");
+  public static final Attribute<Integer> COUNTRY_CAPITAL = T_COUNTRY.integerAttribute("capital");
+  public static final Attribute<Entity> COUNTRY_CAPITAL_FK = T_COUNTRY.entityAttribute("capital_fk");
+  public static final Attribute<String> COUNTRY_CODE2 = T_COUNTRY.stringAttribute("code2");
+  public static final Attribute<Integer> COUNTRY_CAPITAL_POPULATION = T_COUNTRY.integerAttribute("capital_population");
+  public static final Attribute<Integer> COUNTRY_NO_OF_CITIES = T_COUNTRY.integerAttribute("no_of_cities");
+  public static final Attribute<Integer> COUNTRY_NO_OF_LANGUAGES = T_COUNTRY.integerAttribute("no_of_languages");
+  public static final Attribute<byte[]> COUNTRY_FLAG = T_COUNTRY.blobAttribute("flag");
 
-  public static final String T_COUNTRYLANGUAGE = "world.countrylanguage";
-  public static final String COUNTRYLANGUAGE_COUNTRY_CODE = "countrycode";
-  public static final String COUNTRYLANGUAGE_COUNTRY_FK = "country_fk";
-  public static final String COUNTRYLANGUAGE_LANGUAGE = "language";
-  public static final String COUNTRYLANGUAGE_ISOFFICIAL = "isofficial";
-  public static final String COUNTRYLANGUAGE_PERCENTAGE = "percentage";
-  public static final String COUNTRYLANGUAGE_NO_OF_SPEAKERS = "no_of_speakers";
-  // end::entityAndPropertyIds[]
+  public static final EntityIdentity T_COUNTRYLANGUAGE = entityIdentity("world.countrylanguage");
+  public static final Attribute<String> COUNTRYLANGUAGE_COUNTRY_CODE = T_COUNTRYLANGUAGE.stringAttribute("countrycode");
+  public static final Attribute<Entity> COUNTRYLANGUAGE_COUNTRY_FK = T_COUNTRYLANGUAGE.entityAttribute("country_fk");
+  public static final Attribute<String> COUNTRYLANGUAGE_LANGUAGE = T_COUNTRYLANGUAGE.stringAttribute("language");
+  public static final Attribute<Boolean> COUNTRYLANGUAGE_ISOFFICIAL = T_COUNTRYLANGUAGE.booleanAttribute("isofficial");
+  public static final Attribute<Double> COUNTRYLANGUAGE_PERCENTAGE = T_COUNTRYLANGUAGE.doubleAttribute("percentage");
+  public static final Attribute<Integer> COUNTRYLANGUAGE_NO_OF_SPEAKERS = T_COUNTRYLANGUAGE.integerAttribute("no_of_speakers");
+  // end::entityIdsAndAttributes[]
 
-  public static final String T_CONTINENT = "continent";
-  public static final String CONTINENT_CONTINENT = "continent";
-  public static final String CONTINENT_SURFACE_AREA = "sum(surfacearea)";
-  public static final String CONTINENT_POPULATION = "sum(population)";
-  public static final String CONTINENT_MIN_LIFE_EXPECTANCY = "min(lifeexpectancy)";
-  public static final String CONTINENT_MAX_LIFE_EXPECTANCY = "max(lifeexpectancy)";
-  public static final String CONTINENT_MIN_INDEPENDENCE_YEAR = "min(indepyear)";
-  public static final String CONTINENT_MAX_INDEPENDENCE_YEAR = "max(indepyear)";
-  public static final String CONTINENT_GNP = "sum(gnp)";
+  public static final EntityIdentity T_CONTINENT = entityIdentity("continent");
+  public static final Attribute<String> CONTINENT_CONTINENT = T_CONTINENT.stringAttribute("continent");
+  public static final Attribute<Integer> CONTINENT_SURFACE_AREA = T_CONTINENT.integerAttribute("sum(surfacearea)");
+  public static final Attribute<Long> CONTINENT_POPULATION = T_CONTINENT.longAttribute("sum(population)");
+  public static final Attribute<Double> CONTINENT_MIN_LIFE_EXPECTANCY = T_CONTINENT.doubleAttribute("min(lifeexpectancy)");
+  public static final Attribute<Double> CONTINENT_MAX_LIFE_EXPECTANCY = T_CONTINENT.doubleAttribute("max(lifeexpectancy)");
+  public static final Attribute<Integer> CONTINENT_MIN_INDEPENDENCE_YEAR = T_CONTINENT.integerAttribute("min(indepyear)");
+  public static final Attribute<Integer> CONTINENT_MAX_INDEPENDENCE_YEAR = T_CONTINENT.integerAttribute("max(indepyear)");
+  public static final Attribute<Double> CONTINENT_GNP = T_CONTINENT.doubleAttribute("sum(gnp)");
 
-  public static final String T_LOOKUP = "world.country_city_v";
-  public static final String LOOKUP_COUNTRY_CODE = "countrycode";
-  public static final String LOOKUP_COUNTRY_NAME = "countryname";
-  public static final String LOOKUP_COUNTRY_CONTINENT = "continent";
-  public static final String LOOKUP_COUNTRY_REGION = "region";
-  public static final String LOOKUP_COUNTRY_SURFACEAREA = "surfacearea";
-  public static final String LOOKUP_COUNTRY_INDEPYEAR = "indepyear";
-  public static final String LOOKUP_COUNTRY_POPULATION = "countrypopulation";
-  public static final String LOOKUP_COUNTRY_LIFEEXPECTANCY = "lifeexpectancy";
-  public static final String LOOKUP_COUNTRY_GNP = "gnp";
-  public static final String LOOKUP_COUNTRY_GNPOLD = "gnpold";
-  public static final String LOOKUP_COUNTRY_LOCALNAME = "localname";
-  public static final String LOOKUP_COUNTRY_GOVERNMENTFORM = "governmentform";
-  public static final String LOOKUP_COUNTRY_HEADOFSTATE = "headofstate";
-  public static final String LOOKUP_COUNTRY_CODE2 = "code2";
-  public static final String LOOKUP_COUNTRY_FLAG = "flag";
-  public static final String LOOKUP_CITY_ID = "cityid";
-  public static final String LOOKUP_CITY_NAME = "cityname";
-  public static final String LOOKUP_CITY_DISTRICT = "district";
-  public static final String LOOKUP_CITY_POPULATION = "citypopulation";
+  public static final EntityIdentity T_LOOKUP = entityIdentity("world.country_city_v");
+  public static final Attribute<String> LOOKUP_COUNTRY_CODE = T_LOOKUP.stringAttribute("countrycode");
+  public static final Attribute<String> LOOKUP_COUNTRY_NAME = T_LOOKUP.stringAttribute("countryname");
+  public static final Attribute<String> LOOKUP_COUNTRY_CONTINENT = T_LOOKUP.stringAttribute("continent");
+  public static final Attribute<String> LOOKUP_COUNTRY_REGION = T_LOOKUP.stringAttribute("region");
+  public static final Attribute<Double> LOOKUP_COUNTRY_SURFACEAREA = T_LOOKUP.doubleAttribute("surfacearea");
+  public static final Attribute<Integer> LOOKUP_COUNTRY_INDEPYEAR = T_LOOKUP.integerAttribute("indepyear");
+  public static final Attribute<Integer> LOOKUP_COUNTRY_POPULATION = T_LOOKUP.integerAttribute("countrypopulation");
+  public static final Attribute<Double> LOOKUP_COUNTRY_LIFEEXPECTANCY = T_LOOKUP.doubleAttribute("lifeexpectancy");
+  public static final Attribute<Double> LOOKUP_COUNTRY_GNP = T_LOOKUP.doubleAttribute("gnp");
+  public static final Attribute<Double> LOOKUP_COUNTRY_GNPOLD = T_LOOKUP.doubleAttribute("gnpold");
+  public static final Attribute<String> LOOKUP_COUNTRY_LOCALNAME = T_LOOKUP.stringAttribute("localname");
+  public static final Attribute<String> LOOKUP_COUNTRY_GOVERNMENTFORM = T_LOOKUP.stringAttribute("governmentform");
+  public static final Attribute<String> LOOKUP_COUNTRY_HEADOFSTATE = T_LOOKUP.stringAttribute("headofstate");
+  public static final Attribute<String> LOOKUP_COUNTRY_CODE2 = T_LOOKUP.stringAttribute("code2");
+  public static final Attribute<byte[]> LOOKUP_COUNTRY_FLAG = T_LOOKUP.blobAttribute("flag");
+  public static final Attribute<Integer> LOOKUP_CITY_ID = T_LOOKUP.integerAttribute("cityid");
+  public static final Attribute<String> LOOKUP_CITY_NAME = T_LOOKUP.stringAttribute("cityname");
+  public static final Attribute<String> LOOKUP_CITY_DISTRICT = T_LOOKUP.stringAttribute("district");
+  public static final Attribute<Integer> LOOKUP_CITY_POPULATION = T_LOOKUP.integerAttribute("citypopulation");
 
-  private static final List<Item> CONTINENTS = asList(
+  private static final List<Item<String>> CONTINENTS = asList(
           item("Africa"), item("Antarctica"), item("Asia"),
           item("Europe"), item("North America"), item("Oceania"),
           item("South America")
@@ -121,18 +123,18 @@ public final class World extends Domain {
   // tag::defineCity[]
   void city() {
     define(T_CITY,
-            primaryKeyProperty(CITY_ID, Types.INTEGER),
-            columnProperty(CITY_NAME, Types.VARCHAR, "Name")
+            primaryKeyProperty(CITY_ID),
+            columnProperty(CITY_NAME, "Name")
                     .searchProperty(true)
                     .nullable(false)
                     .maximumLength(35),
             foreignKeyProperty(CITY_COUNTRY_FK, "Country", T_COUNTRY,
-                    columnProperty(CITY_COUNTRY_CODE, Types.VARCHAR))
+                    columnProperty(CITY_COUNTRY_CODE))
                     .nullable(false),
-            columnProperty(CITY_DISTRICT, Types.VARCHAR, "District")
+            columnProperty(CITY_DISTRICT, "District")
                     .nullable(false)
                     .maximumLength(20),
-            columnProperty(CITY_POPULATION, Types.INTEGER, "Population")
+            columnProperty(CITY_POPULATION, "Population")
                     .nullable(false)
                     .numberFormatGrouping(true))
             // tag::sequence[]
@@ -149,67 +151,66 @@ public final class World extends Domain {
   void country() {
     define(T_COUNTRY,
             // tag::primaryKey[]
-            primaryKeyProperty(COUNTRY_CODE, Types.VARCHAR, "Country code")
+            primaryKeyProperty(COUNTRY_CODE, "Country code")
                     .updatable(true)
                     .maximumLength(3),
             // end::primaryKey[]
-            columnProperty(COUNTRY_NAME, Types.VARCHAR, "Name")
+            columnProperty(COUNTRY_NAME, "Name")
                     .searchProperty(true)
                     .nullable(false)
                     .maximumLength(52),
-            valueListProperty(COUNTRY_CONTINENT, Types.VARCHAR, "Continent", CONTINENTS)
+            valueListProperty(COUNTRY_CONTINENT, "Continent", CONTINENTS)
                     .nullable(false)
                     .maximumLength(20),
             // tag::columnProperty[]
-            columnProperty(COUNTRY_REGION, Types.VARCHAR, "Region")
+            columnProperty(COUNTRY_REGION, "Region")
                     .nullable(false)
                     .maximumLength(26),
-            columnProperty(COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area")
+            columnProperty(COUNTRY_SURFACEAREA, "Surface area")
                     .nullable(false)
                     .numberFormatGrouping(true)
                     .maximumFractionDigits(2),
-            columnProperty(COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year")
+            columnProperty(COUNTRY_INDEPYEAR, "Indep. year")
                     .minimumValue(-2000).maximumValue(2500),
-            columnProperty(COUNTRY_POPULATION, Types.INTEGER, "Population")
+            columnProperty(COUNTRY_POPULATION, "Population")
                     .nullable(false)
                     .numberFormatGrouping(true),
-            columnProperty(COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy")
+            columnProperty(COUNTRY_LIFEEXPECTANCY, "Life expectancy")
                     .maximumFractionDigits(1)
                     .minimumValue(0).maximumValue(99),
             // end::columnProperty[]
-            columnProperty(COUNTRY_GNP, Types.DOUBLE, "GNP")
+            columnProperty(COUNTRY_GNP, "GNP")
                     .numberFormatGrouping(true)
                     .maximumFractionDigits(2),
-            columnProperty(COUNTRY_GNPOLD, Types.DOUBLE, "GNP old")
+            columnProperty(COUNTRY_GNPOLD, "GNP old")
                     .numberFormatGrouping(true)
                     .maximumFractionDigits(2),
-            columnProperty(COUNTRY_LOCALNAME, Types.VARCHAR, "Local name")
+            columnProperty(COUNTRY_LOCALNAME, "Local name")
                     .nullable(false)
                     .maximumLength(45),
-            columnProperty(COUNTRY_GOVERNMENTFORM, Types.VARCHAR, "Government form")
+            columnProperty(COUNTRY_GOVERNMENTFORM, "Government form")
                     .nullable(false),
-            columnProperty(COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state")
+            columnProperty(COUNTRY_HEADOFSTATE, "Head of state")
                     .maximumLength(60),
             // tag::foreignKeyPropertyCapital[]
             foreignKeyProperty(COUNTRY_CAPITAL_FK, "Capital", T_CITY,
-                    columnProperty(COUNTRY_CAPITAL, Types.INTEGER)),
+                    columnProperty(COUNTRY_CAPITAL)),
             // end::foreignKeyPropertyCapital[]
             // tag::denormalizedViewProperty[]
-            denormalizedViewProperty(COUNTRY_CAPITAL_POPULATION, COUNTRY_CAPITAL_FK,
-                    getDefinition(T_CITY).getProperty(CITY_POPULATION), "Capital pop.")
+            denormalizedViewProperty(COUNTRY_CAPITAL_POPULATION, COUNTRY_CAPITAL_FK, CITY_POPULATION, "Capital pop.")
                     .numberFormatGrouping(true),
             // end::denormalizedViewProperty[]
             // tag::subqueryProperty[]
-            subqueryProperty(COUNTRY_NO_OF_CITIES, Types.INTEGER, "No. of cities",
+            subqueryProperty(COUNTRY_NO_OF_CITIES, "No. of cities",
                     "select count(*) from world.city where city.countrycode = country.code"),
             // end::subqueryProperty[]
-            subqueryProperty(COUNTRY_NO_OF_LANGUAGES, Types.INTEGER, "No. of languages",
+            subqueryProperty(COUNTRY_NO_OF_LANGUAGES, "No. of languages",
                     "select count(*) from world.countrylanguage where countrycode = code"),
             // tag::blobProperty[]
             blobProperty(COUNTRY_FLAG, "Flag")
                     .eagerlyLoaded(true),
             // end::blobProperty[]
-            columnProperty(COUNTRY_CODE2, Types.VARCHAR, "Code2")
+            columnProperty(COUNTRY_CODE2, "Code2")
                     .nullable(false)
                     .maximumLength(2))
             .orderBy(orderBy().ascending(COUNTRY_NAME))
@@ -221,25 +222,25 @@ public final class World extends Domain {
     define(T_COUNTRYLANGUAGE,
             // tag::compositePrimaryKey[]
             foreignKeyProperty(COUNTRYLANGUAGE_COUNTRY_FK, "Country", T_COUNTRY,
-                    columnProperty(COUNTRYLANGUAGE_COUNTRY_CODE, Types.VARCHAR)
+                    columnProperty(COUNTRYLANGUAGE_COUNTRY_CODE)
                             .primaryKeyIndex(0)
                             .updatable(true))
                     .nullable(false),
-            columnProperty(COUNTRYLANGUAGE_LANGUAGE, Types.VARCHAR, "Language")
+            columnProperty(COUNTRYLANGUAGE_LANGUAGE, "Language")
                     .primaryKeyIndex(1)
                     .updatable(true),
             // end::compositePrimaryKey[]
             // tag::booleanProperty[]
-            columnProperty(COUNTRYLANGUAGE_ISOFFICIAL, Types.BOOLEAN, "Is official")
+            columnProperty(COUNTRYLANGUAGE_ISOFFICIAL, "Is official")
                     .columnHasDefaultValue(true)
                     .nullable(false),
             // end::booleanProperty[]
             // tag::derivedProperty[]
-            derivedProperty(COUNTRYLANGUAGE_NO_OF_SPEAKERS, Types.INTEGER, "No. of speakers",
+            derivedProperty(COUNTRYLANGUAGE_NO_OF_SPEAKERS, "No. of speakers",
                     new NoOfSpeakersProvider(), COUNTRYLANGUAGE_COUNTRY_FK, COUNTRYLANGUAGE_PERCENTAGE)
                     .numberFormatGrouping(true),
             // end::derivedProperty[]
-            columnProperty(COUNTRYLANGUAGE_PERCENTAGE, Types.DOUBLE, "Percentage")
+            columnProperty(COUNTRYLANGUAGE_PERCENTAGE, "Percentage")
                     .nullable(false)
                     .maximumFractionDigits(1)
                     .minimumValue(0).maximumValue(100))
@@ -249,29 +250,29 @@ public final class World extends Domain {
 
   void lookup() {
     define(T_LOOKUP,
-            columnProperty(LOOKUP_COUNTRY_CODE, Types.VARCHAR, "Country code"),
-            columnProperty(LOOKUP_COUNTRY_NAME, Types.VARCHAR, "Country name"),
-            columnProperty(LOOKUP_COUNTRY_CONTINENT, Types.VARCHAR, "Continent"),
-            columnProperty(LOOKUP_COUNTRY_REGION, Types.VARCHAR, "Region"),
-            columnProperty(LOOKUP_COUNTRY_SURFACEAREA, Types.DOUBLE, "Surface area")
+            columnProperty(LOOKUP_COUNTRY_CODE, "Country code"),
+            columnProperty(LOOKUP_COUNTRY_NAME, "Country name"),
+            columnProperty(LOOKUP_COUNTRY_CONTINENT, "Continent"),
+            columnProperty(LOOKUP_COUNTRY_REGION, "Region"),
+            columnProperty(LOOKUP_COUNTRY_SURFACEAREA, "Surface area")
                     .numberFormatGrouping(true),
-            columnProperty(LOOKUP_COUNTRY_INDEPYEAR, Types.INTEGER, "Indep. year"),
-            columnProperty(LOOKUP_COUNTRY_POPULATION, Types.INTEGER, "Country population")
+            columnProperty(LOOKUP_COUNTRY_INDEPYEAR, "Indep. year"),
+            columnProperty(LOOKUP_COUNTRY_POPULATION, "Country population")
                     .numberFormatGrouping(true),
-            columnProperty(LOOKUP_COUNTRY_LIFEEXPECTANCY, Types.DOUBLE, "Life expectancy"),
-            columnProperty(LOOKUP_COUNTRY_GNP, Types.DOUBLE, "GNP")
+            columnProperty(LOOKUP_COUNTRY_LIFEEXPECTANCY, "Life expectancy"),
+            columnProperty(LOOKUP_COUNTRY_GNP, "GNP")
                     .numberFormatGrouping(true),
-            columnProperty(LOOKUP_COUNTRY_GNPOLD, Types.DOUBLE, "GNP old")
+            columnProperty(LOOKUP_COUNTRY_GNPOLD, "GNP old")
                     .numberFormatGrouping(true),
-            columnProperty(LOOKUP_COUNTRY_LOCALNAME, Types.VARCHAR, "Local name"),
-            columnProperty(LOOKUP_COUNTRY_GOVERNMENTFORM, Types.VARCHAR, "Government form"),
-            columnProperty(LOOKUP_COUNTRY_HEADOFSTATE, Types.VARCHAR, "Head of state"),
+            columnProperty(LOOKUP_COUNTRY_LOCALNAME, "Local name"),
+            columnProperty(LOOKUP_COUNTRY_GOVERNMENTFORM, "Government form"),
+            columnProperty(LOOKUP_COUNTRY_HEADOFSTATE, "Head of state"),
             blobProperty(LOOKUP_COUNTRY_FLAG, "Flag"),
-            columnProperty(LOOKUP_COUNTRY_CODE2, Types.VARCHAR, "Code2"),
-            columnProperty(LOOKUP_CITY_ID, Types.INTEGER),
-            columnProperty(LOOKUP_CITY_NAME, Types.VARCHAR, "City"),
-            columnProperty(LOOKUP_CITY_DISTRICT, Types.VARCHAR, "District"),
-            columnProperty(LOOKUP_CITY_POPULATION, Types.INTEGER, "City population")
+            columnProperty(LOOKUP_COUNTRY_CODE2, "Code2"),
+            columnProperty(LOOKUP_CITY_ID),
+            columnProperty(LOOKUP_CITY_NAME, "City"),
+            columnProperty(LOOKUP_CITY_DISTRICT, "District"),
+            columnProperty(LOOKUP_CITY_POPULATION, "City population")
                     .numberFormatGrouping(true))
             .orderBy(orderBy().ascending(LOOKUP_COUNTRY_NAME).descending(LOOKUP_CITY_POPULATION))
             .readOnly(true)
@@ -280,23 +281,23 @@ public final class World extends Domain {
 
   void continent() {
     define(T_CONTINENT, "world.country",
-            columnProperty(CONTINENT_CONTINENT, Types.VARCHAR, "Continent")
+            columnProperty(CONTINENT_CONTINENT, "Continent")
                     .groupingColumn(true),
-            columnProperty(CONTINENT_SURFACE_AREA, Types.INTEGER, "Surface area")
+            columnProperty(CONTINENT_SURFACE_AREA, "Surface area")
                     .aggregateColumn(true)
                     .numberFormatGrouping(true),
-            columnProperty(CONTINENT_POPULATION, Types.BIGINT, "Population")
+            columnProperty(CONTINENT_POPULATION, "Population")
                     .aggregateColumn(true)
                     .numberFormatGrouping(true),
-            columnProperty(CONTINENT_MIN_LIFE_EXPECTANCY, Types.DOUBLE, "Min. life expectancy")
+            columnProperty(CONTINENT_MIN_LIFE_EXPECTANCY, "Min. life expectancy")
                     .aggregateColumn(true),
-            columnProperty(CONTINENT_MAX_LIFE_EXPECTANCY, Types.DOUBLE, "Max. life expectancy")
+            columnProperty(CONTINENT_MAX_LIFE_EXPECTANCY, "Max. life expectancy")
                     .aggregateColumn(true),
-            columnProperty(CONTINENT_MIN_INDEPENDENCE_YEAR, Types.INTEGER, "Min. ind. year")
+            columnProperty(CONTINENT_MIN_INDEPENDENCE_YEAR, "Min. ind. year")
                     .aggregateColumn(true),
-            columnProperty(CONTINENT_MAX_INDEPENDENCE_YEAR, Types.INTEGER, "Max. ind. year")
+            columnProperty(CONTINENT_MAX_INDEPENDENCE_YEAR, "Max. ind. year")
                     .aggregateColumn(true),
-            columnProperty(CONTINENT_GNP, Types.DOUBLE, "GNP")
+            columnProperty(CONTINENT_GNP, "GNP")
                     .aggregateColumn(true)
                     .numberFormatGrouping(true))
             .readOnly(true)
@@ -309,9 +310,9 @@ public final class World extends Domain {
     private static final long serialVersionUID = 1;
 
     @Override
-    public Object getColor(Entity city, Property property) {
+    public Object getColor(Entity city, Property<?> property) {
       if (property.is(CITY_POPULATION) &&
-              city.getInteger(CITY_POPULATION) > 1_000_000) {
+              city.get(CITY_POPULATION) > 1_000_000) {
         //population YELLOW if > 1.000.000
         return Color.YELLOW;
       }
@@ -328,16 +329,16 @@ public final class World extends Domain {
   // end::colorProvider[]
 
   // tag::derivedPropertyProvider[]
-  private static final class NoOfSpeakersProvider implements DerivedProperty.Provider {
+  private static final class NoOfSpeakersProvider implements DerivedProperty.Provider<Integer> {
 
     private static final long serialVersionUID = 1;
 
     @Override
-    public Object getValue(Map<String, Object> sourceValues) {
+    public Integer getValue(Map<Attribute<?>, Object> sourceValues) {
       Double percentage = (Double) sourceValues.get(COUNTRYLANGUAGE_PERCENTAGE);
       Entity country = (Entity) sourceValues.get(COUNTRYLANGUAGE_COUNTRY_FK);
       if (notNull(percentage, country) && country.isNotNull(COUNTRY_POPULATION)) {
-        return Double.valueOf(country.getInteger(COUNTRY_POPULATION) * (percentage / 100)).intValue();
+        return Double.valueOf(country.get(COUNTRY_POPULATION) * (percentage / 100)).intValue();
       }
 
       return null;
@@ -355,9 +356,9 @@ public final class World extends Domain {
       super.validate(city, cityDefinition);
       //after a call to super.validate() property values that are not nullable
       //(such as country and population) are guaranteed to be non-null
-      Entity country = city.getForeignKey(CITY_COUNTRY_FK);
-      Integer cityPopulation = city.getInteger(CITY_POPULATION);
-      Integer countryPopulation = country.getInteger(COUNTRY_POPULATION);
+      Entity country = city.get(CITY_COUNTRY_FK);
+      Integer cityPopulation = city.get(CITY_POPULATION);
+      Integer countryPopulation = country.get(COUNTRY_POPULATION);
       if (countryPopulation != null && cityPopulation > countryPopulation) {
         throw new ValidationException(CITY_POPULATION,
                 cityPopulation, "City population can not exceed country population");

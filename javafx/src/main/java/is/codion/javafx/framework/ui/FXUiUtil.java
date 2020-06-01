@@ -234,7 +234,7 @@ public final class FXUiUtil {
    * @param defaultValue the default to set after instantiation
    * @return the {@link Value} instance
    */
-  public static Value createValue(final Property property, final Control control, final Object defaultValue) {
+  public static Value createValue(final Property<?> property, final Control control, final Object defaultValue) {
     if (property instanceof ForeignKeyProperty) {
       if (control instanceof ComboBox) {
         final Value<Entity> entityValue = PropertyValues.selectedValue(((ComboBox<Entity>) control).getSelectionModel());
@@ -248,7 +248,7 @@ public final class FXUiUtil {
       }
     }
     if (property instanceof ValueListProperty) {
-      final Value listValue = PropertyValues.selectedItemValue(((ComboBox<Item>) control).getSelectionModel());
+      final Value<Object> listValue = PropertyValues.selectedItemValue(((ComboBox<Item<Object>>) control).getSelectionModel());
       listValue.set(defaultValue);
       return listValue;
     }
@@ -386,7 +386,7 @@ public final class FXUiUtil {
   public static CheckBox createCheckBox(final Property property, final FXEntityEditModel editModel,
                                         final StateObserver enabledState) {
     final CheckBox checkBox = createCheckBox(enabledState);
-    editModel.<Boolean>value(property.getPropertyId()).link(createBooleanValue(checkBox));
+    editModel.<Boolean>value(property.getAttribute()).link(createBooleanValue(checkBox));
 
     return checkBox;
   }
@@ -420,7 +420,7 @@ public final class FXUiUtil {
   public static TextField createTextField(final Property property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    editModel.<String>value(property.getPropertyId()).link(createStringValue(textField));
+    editModel.<String>value(property.getAttribute()).link(createStringValue(textField));
 
     return textField;
   }
@@ -454,7 +454,7 @@ public final class FXUiUtil {
   public static TextField createLongField(final Property property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    editModel.<Long>value(property.getPropertyId()).link(createLongValue(property, textField));
+    editModel.<Long>value(property.getAttribute()).link(createLongValue(property, textField));
 
     return textField;
   }
@@ -493,7 +493,7 @@ public final class FXUiUtil {
   public static TextField createIntegerField(final Property property, final FXEntityEditModel editModel,
                                              final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    editModel.<Integer>value(property.getPropertyId()).link(createIntegerValue(property, textField));
+    editModel.<Integer>value(property.getAttribute()).link(createIntegerValue(property, textField));
 
     return textField;
   }
@@ -532,7 +532,7 @@ public final class FXUiUtil {
   public static TextField createDoubleField(final Property property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    editModel.<Double>value(property.getPropertyId()).link(createDoubleValue(property, textField));
+    editModel.<Double>value(property.getAttribute()).link(createDoubleValue(property, textField));
 
     return textField;
   }
@@ -557,7 +557,7 @@ public final class FXUiUtil {
   public static TextField createBigDecimalField(final Property property, final FXEntityEditModel editModel,
                                                 final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    editModel.<BigDecimal>value(property.getPropertyId()).link(createBigDecimalValue(property, textField));
+    editModel.<BigDecimal>value(property.getAttribute()).link(createBigDecimalValue(property, textField));
 
     return textField;
   }
@@ -610,7 +610,7 @@ public final class FXUiUtil {
   public static DatePicker createDatePicker(final Property property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final DatePicker picker = createDatePicker(enabledState);
-    editModel.<LocalDate>value(property.getPropertyId()).link(createDateValue(property, picker));
+    editModel.<LocalDate>value(property.getAttribute()).link(createDateValue(property, picker));
 
     return picker;
   }
@@ -677,7 +677,7 @@ public final class FXUiUtil {
                                                     final FXEntityEditModel editModel) {
     final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty);
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
-    editModel.value(foreignKeyProperty.getPropertyId()).link(PropertyValues.lookupValue(lookupModel));
+    editModel.value(foreignKeyProperty.getAttribute()).link(PropertyValues.lookupValue(lookupModel));
 
     return lookupField;
   }
@@ -694,7 +694,7 @@ public final class FXUiUtil {
     listModel.refresh();
     final ComboBox<Entity> box = new ComboBox<>(listModel.getSortedList());
     listModel.setSelectionModel(box.getSelectionModel());
-    editModel.<Entity>value(foreignKeyProperty.getPropertyId())
+    editModel.<Entity>value(foreignKeyProperty.getAttribute())
             .link(PropertyValues.selectedValue(box.getSelectionModel()));
 
     return box;
@@ -704,12 +704,13 @@ public final class FXUiUtil {
    * Instantiates a {@link ComboBox} based on the values of the given property and linked to the given edit model
    * @param valueListProperty the property
    * @param editModel the edit model
+   * @param <T> the property type
    * @return a {@link ComboBox} based on the values of the given property
    */
-  public static ComboBox<Item> createValueListComboBox(final ValueListProperty valueListProperty,
-                                                       final FXEntityEditModel editModel) {
-    final ComboBox<Item> comboBox = new ComboBox<>(createValueListComboBoxModel(valueListProperty));
-    editModel.value(valueListProperty.getPropertyId())
+  public static <T> ComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> valueListProperty,
+                                                              final FXEntityEditModel editModel) {
+    final ComboBox<Item<T>> comboBox = new ComboBox<>(createValueListComboBoxModel(valueListProperty));
+    editModel.<T>value(valueListProperty.getAttribute())
             .link(PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
     return comboBox;
   }
@@ -739,9 +740,10 @@ public final class FXUiUtil {
   /**
    * Instantiates a {@link ObservableList} containing the {@link Item}s associated with the given value list property
    * @param property the property
+   * @param <T> the value type
    * @return a {@link ObservableList} containing the {@link Item}s associated with the given value list property
    */
-  public static ObservableList<Item> createValueListComboBoxModel(final ValueListProperty property) {
+  public static <T> ObservableList<Item<T>> createValueListComboBoxModel(final ValueListProperty<T> property) {
     return new SortedList<>(FXCollections.observableArrayList(property.getValues()),
             Comparator.comparing(Item::toString));
   }
@@ -954,7 +956,7 @@ public final class FXUiUtil {
       if (maxLength > -1 && value != null && value.length() > maxLength) {
         return false;
       }
-      if (property.isTemporal()) {
+      if (property.getAttribute().isTemporal()) {
         try {
           if (value != null) {
             property.getDateTimeFormatter().parse(value);
@@ -976,7 +978,7 @@ public final class FXUiUtil {
       catch (final NumberFormatException | ParseException e) {
         return false;
       }
-      if (parsedValue != null && property.isNumerical() && !isWithinRange(property, (Number) parsedValue)) {
+      if (parsedValue != null && property.getAttribute().isNumerical() && !isWithinRange(property, (Number) parsedValue)) {
         return false;
       }
       if (parsedValue instanceof Double && !Objects.equals(parsedValue,

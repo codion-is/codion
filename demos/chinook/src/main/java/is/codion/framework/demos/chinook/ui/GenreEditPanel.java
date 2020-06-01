@@ -17,7 +17,7 @@ public class GenreEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(GENRE_NAME);
+    setInitialFocusAttribute(GENRE_NAME);
 
     createTextField(GENRE_NAME).setColumns(12);
 

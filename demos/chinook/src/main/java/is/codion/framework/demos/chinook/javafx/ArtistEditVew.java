@@ -18,7 +18,7 @@ public final class ArtistEditVew extends EntityEditView {
 
   @Override
   protected Node initializeEditPanel() {
-    setInitialFocusProperty(Chinook.ARTIST_NAME);
+    setInitialFocusAttribute(Chinook.ARTIST_NAME);
     createTextField(Chinook.ARTIST_NAME);
 
     final BorderPane pane = new BorderPane();

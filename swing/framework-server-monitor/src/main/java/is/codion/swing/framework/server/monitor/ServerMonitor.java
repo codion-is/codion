@@ -15,6 +15,7 @@ import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.server.EntityServerAdmin;
 
 import org.jfree.data.xy.XYDataset;
@@ -321,8 +322,8 @@ public final class ServerMonitor {
    */
   public void refreshDomainList() throws RemoteException {
     domainListModel.setDataVector(new Object[][] {}, new Object[] {"Entity ID", "Table name"});
-    final Map<String, String> definitions = server.getEntityDefinitions();
-    for (final Map.Entry<String, String> definition : definitions.entrySet()) {
+    final Map<Identity, String> definitions = server.getEntityDefinitions();
+    for (final Map.Entry<Identity, String> definition : definitions.entrySet()) {
       domainListModel.addRow(new Object[] {definition.getKey(), definition.getValue()});
     }
   }

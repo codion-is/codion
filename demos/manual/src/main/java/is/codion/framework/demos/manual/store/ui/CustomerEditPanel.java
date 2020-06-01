@@ -20,7 +20,7 @@ public class CustomerEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     //the firstName field should receive the focus whenever the panel is initialized
-    setInitialFocusProperty(Store.CUSTOMER_FIRST_NAME);
+    setInitialFocusAttribute(Store.CUSTOMER_FIRST_NAME);
 
     createTextField(Store.CUSTOMER_FIRST_NAME).setColumns(15);
     createTextField(Store.CUSTOMER_LAST_NAME).setColumns(15);

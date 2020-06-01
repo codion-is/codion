@@ -12,8 +12,10 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnections;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
@@ -27,10 +29,10 @@ import is.codion.swing.framework.ui.EntityPanel;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.List;
 
 import static is.codion.framework.demos.manual.quickstart.Example.Store.*;
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.UUID.randomUUID;
@@ -46,21 +48,21 @@ public final class Example {
     }
 
     // tag::customer[]
-    public static final String T_CUSTOMER = "store.customer";
-    public static final String CUSTOMER_ID = "id";
-    public static final String CUSTOMER_FIRST_NAME = "first_name";
-    public static final String CUSTOMER_LAST_NAME = "last_name";
+    public static final EntityIdentity T_CUSTOMER = entityIdentity("store.customer");
+    public static final Attribute<String> CUSTOMER_ID = T_CUSTOMER.stringAttribute("id");
+    public static final Attribute<String> CUSTOMER_FIRST_NAME = T_CUSTOMER.stringAttribute("first_name");
+    public static final Attribute<String> CUSTOMER_LAST_NAME = T_CUSTOMER.stringAttribute("last_name");
 
     void customer() {
       define(T_CUSTOMER,
-              primaryKeyProperty(CUSTOMER_ID, Types.VARCHAR),
-              columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")
+              primaryKeyProperty(CUSTOMER_ID),
+              columnProperty(CUSTOMER_FIRST_NAME, "First name")
                       .nullable(false).maximumLength(40),
-              columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
+              columnProperty(CUSTOMER_LAST_NAME, "Last name")
                       .nullable(false).maximumLength(40))
               .keyGenerator(new KeyGenerator() {
                 @Override
-                public void beforeInsert(Entity entity, List<ColumnProperty> primaryKeyProperties,
+                public void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
                                          DatabaseConnection connection) throws SQLException {
                   entity.put(CUSTOMER_ID, randomUUID().toString());
                 }
@@ -70,41 +72,41 @@ public final class Example {
     }
     // end::customer[]
     // tag::address[]
-    public static final String T_ADDRESS = "store.address";
-    public static final String ADDRESS_ID = "id";
-    public static final String ADDRESS_STREET = "street";
-    public static final String ADDRESS_CITY = "city";
+    public static final EntityIdentity T_ADDRESS = entityIdentity("store.address");
+    public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("id");
+    public static final Attribute<String> ADDRESS_STREET = T_ADDRESS.stringAttribute("street");
+    public static final Attribute<String> ADDRESS_CITY = T_ADDRESS.stringAttribute("city");
 
     void address() {
       define(T_ADDRESS,
-              primaryKeyProperty(ADDRESS_ID, Types.INTEGER),
-              columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street")
+              primaryKeyProperty(ADDRESS_ID),
+              columnProperty(ADDRESS_STREET, "Street")
                       .nullable(false).maximumLength(120),
-              columnProperty(ADDRESS_CITY, Types.VARCHAR, "City")
+              columnProperty(ADDRESS_CITY, "City")
                       .nullable(false).maximumLength(50))
-              .keyGenerator(automatic(T_ADDRESS))
+              .keyGenerator(automatic("store.address"))
               .stringProvider(new StringProvider(ADDRESS_STREET)
                       .addText(", ").addValue(ADDRESS_CITY));
     }
     // end::address[]
     // tag::customerAddress[]
-    public static final String T_CUSTOMER_ADDRESS = "store.customer_address";
-    public static final String CUSTOMER_ADDRESS_ID = "id";
-    public static final String CUSTOMER_ADDRESS_CUSTOMER_ID = "customer_id";
-    public static final String CUSTOMER_ADDRESS_CUSTOMER_FK = "customer_fk";
-    public static final String CUSTOMER_ADDRESS_ADDRESS_ID = "address_id";
-    public static final String CUSTOMER_ADDRESS_ADDRESS_FK = "address_fk";
+    public static final EntityIdentity T_CUSTOMER_ADDRESS = entityIdentity("store.customer_address");
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("id");
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = T_CUSTOMER_ADDRESS.integerAttribute("customer_id");
+    public static final Attribute<Entity> CUSTOMER_ADDRESS_CUSTOMER_FK = T_CUSTOMER_ADDRESS.entityAttribute("customer_fk");
+    public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("address_id");
+    public static final Attribute<Entity> CUSTOMER_ADDRESS_ADDRESS_FK = T_CUSTOMER_ADDRESS.entityAttribute("address_fk");
 
     void customerAddress() {
       define(T_CUSTOMER_ADDRESS,
-              primaryKeyProperty(CUSTOMER_ADDRESS_ID, Types.INTEGER),
+              primaryKeyProperty(CUSTOMER_ADDRESS_ID),
               foreignKeyProperty(CUSTOMER_ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
-                      columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID, Types.VARCHAR))
+                      columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID))
                       .nullable(false),
               foreignKeyProperty(CUSTOMER_ADDRESS_ADDRESS_FK, "Address", T_ADDRESS,
-                      columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID, Types.INTEGER))
+                      columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID))
                       .nullable(false))
-              .keyGenerator(automatic(T_CUSTOMER_ADDRESS))
+              .keyGenerator(automatic("store.customer_address"))
               .caption("Customer address");
     }
     // end::customerAddress[]
@@ -120,7 +122,7 @@ public final class Example {
 
       @Override
       protected void initializeUI() {
-        setInitialFocusProperty(CUSTOMER_FIRST_NAME);
+        setInitialFocusAttribute(CUSTOMER_FIRST_NAME);
         createTextField(CUSTOMER_FIRST_NAME).setColumns(12);
         createTextField(CUSTOMER_LAST_NAME).setColumns(12);
         addPropertyPanel(CUSTOMER_FIRST_NAME);
@@ -148,7 +150,7 @@ public final class Example {
 
       @Override
       protected void initializeUI() {
-        setInitialFocusProperty(CUSTOMER_ADDRESS_CUSTOMER_FK);
+        setInitialFocusAttribute(CUSTOMER_ADDRESS_CUSTOMER_FK);
         createForeignKeyComboBox(CUSTOMER_ADDRESS_CUSTOMER_FK);
         createForeignKeyComboBox(CUSTOMER_ADDRESS_ADDRESS_FK);
         addPropertyPanel(CUSTOMER_ADDRESS_CUSTOMER_FK);
@@ -220,9 +222,9 @@ public final class Example {
 
     Entity address = customerAddress.getForeignKey(CUSTOMER_ADDRESS_ADDRESS_FK);
 
-    String lastName = johnDoe.getString(CUSTOMER_LAST_NAME);
-    String street = address.getString(ADDRESS_STREET);
-    String city = address.getString(ADDRESS_CITY);
+    String lastName = johnDoe.get(CUSTOMER_LAST_NAME);
+    String street = address.get(ADDRESS_STREET);
+    String city = address.get(ADDRESS_CITY);
     // end::select[]
   }
 

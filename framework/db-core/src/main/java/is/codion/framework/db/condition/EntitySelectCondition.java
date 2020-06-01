@@ -3,6 +3,7 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.List;
@@ -74,18 +75,18 @@ public interface EntitySelectCondition extends EntityCondition {
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
    * should be fetched, -1 no limit and null unspecified (use default).
-   * @param foreignKeyPropertyId the foreign key property id
+   * @param foreignKeyAttribute the foreign key attribute
    * @return the number of levels of foreign key values to fetch
    */
-  Integer getForeignKeyFetchDepth(String foreignKeyPropertyId);
+  Integer getForeignKeyFetchDepth(Attribute<?> foreignKeyAttribute);
 
   /**
    * Limit the levels of foreign keys to fetch via the given foreign key property
-   * @param foreignKeyPropertyId the property id
+   * @param foreignKeyAttribute the attribute
    * @param fetchDepth the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForeignKeyFetchDepth(String foreignKeyPropertyId, int fetchDepth);
+  EntitySelectCondition setForeignKeyFetchDepth(Attribute<?> foreignKeyAttribute, int fetchDepth);
 
   /**
    * Limit the levels of foreign keys to fetch
@@ -95,20 +96,20 @@ public interface EntitySelectCondition extends EntityCondition {
   EntitySelectCondition setForeignKeyFetchDepth(int fetchDepth);
 
   /**
-   * Sets the properties to include in the resulting Entities,
-   * including the column properties involved in a foreign key
+   * Sets the attributes to include in the resulting Entities,
+   * including the column attributes involved in a foreign key
    * causes the foreign key values to be populated.
    * If you want the primary key to be populated you must include
-   * the primary key properties.
-   * Note that these must be ColumnProperty ids
-   * @param propertyIds the ids of the column properties to include
+   * the primary key attributes.
+   * Note that these must be ColumnProperty attributes
+   * @param attributes the attributes to include
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setSelectPropertyIds(String... propertyIds);
+  EntitySelectCondition setSelectAttributes(Attribute<?>... attributes);
 
   /**
-   * @return the ids of the properties to include in the query result,
+   * @return the attributes to include in the query result,
    * an empty list if all should be included
    */
-  List<String> getSelectPropertyIds();
+  List<Attribute<?>> getSelectAttributes();
 }

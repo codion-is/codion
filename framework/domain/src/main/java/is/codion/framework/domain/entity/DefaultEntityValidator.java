@@ -40,7 +40,7 @@ public class DefaultEntityValidator implements EntityValidator {
 
   private boolean performNullValidation = true;
 
-  private transient Event revalidateEvent;
+  private transient Event<?> revalidateEvent;
 
   /**
    * @return true if this validator performs null validation
@@ -70,7 +70,7 @@ public class DefaultEntityValidator implements EntityValidator {
   }
 
   @Override
-  public boolean isNullable(final Entity entity, final Property property) {
+  public boolean isNullable(final Entity entity, final Property<?> property) {
     return property.isNullable();
   }
 
@@ -84,77 +84,77 @@ public class DefaultEntityValidator implements EntityValidator {
   @Override
   public void validate(final Entity entity, final EntityDefinition definition) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
-    for (final Property property : definition.getProperties()) {
+    for (final Property<?> property : definition.getProperties()) {
       validate(entity, definition, property);
     }
   }
 
   @Override
-  public void validate(final Entity entity, final EntityDefinition definition, final Property property) throws ValidationException {
+  public void validate(final Entity entity, final EntityDefinition definition, final Property<?> property) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (performNullValidation && !isForeignKeyProperty(property)) {
       performNullValidation(entity, definition, property);
     }
-    if (property.isNumerical()) {
+    if (property.getAttribute().isNumerical()) {
       performRangeValidation(entity, property);
     }
-    else if (property.isString()) {
+    else if (property.getAttribute().isString()) {
       performLengthValidation(entity, property);
     }
   }
 
   @Override
-  public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
+  public final void performRangeValidation(final Entity entity, final Property<?> property) throws RangeValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
-    if (entity.isNull(property)) {
+    if (entity.isNull(property.getAttribute())) {
       return;
     }
 
-    final Number value = (Number) entity.get(property);
+    final Number value = (Number) entity.get(property.getAttribute());
     if (value.doubleValue() < (property.getMinimumValue() == null ? Double.NEGATIVE_INFINITY : property.getMinimumValue())) {
-      throw new RangeValidationException(property.getPropertyId(), value, "'" + property + "' " +
+      throw new RangeValidationException(property.getAttribute(), value, "'" + property + "' " +
               MESSAGES.getString("property_value_too_small") + " " + property.getMinimumValue());
     }
     if (value.doubleValue() > (property.getMaximumValue() == null ? Double.POSITIVE_INFINITY : property.getMaximumValue())) {
-      throw new RangeValidationException(property.getPropertyId(), value, "'" + property + "' " +
+      throw new RangeValidationException(property.getAttribute(), value, "'" + property + "' " +
               MESSAGES.getString("property_value_too_large") + " " + property.getMaximumValue());
     }
   }
 
   @Override
   public final void performNullValidation(final Entity entity, final EntityDefinition definition,
-                                          final Property property) throws NullValidationException {
+                                          final Property<?> property) throws NullValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
-    if (!isNullable(entity, property) && entity.isNull(property)) {
+    if (!isNullable(entity, property) && entity.isNull(property.getAttribute())) {
       if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
         final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
         final boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(definition, property);
         if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
-          throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
+          throw new NullValidationException(property.getAttribute(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
         }
       }
       else {
-        throw new NullValidationException(property.getPropertyId(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
+        throw new NullValidationException(property.getAttribute(), MESSAGES.getString(VALUE_REQUIRED_KEY) + ": " + property);
       }
     }
   }
 
   @Override
-  public final void performLengthValidation(final Entity entity, final Property property) throws LengthValidationException {
+  public final void performLengthValidation(final Entity entity, final Property<?> property) throws LengthValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
-    if (entity.isNull(property)) {
+    if (entity.isNull(property.getAttribute())) {
       return;
     }
 
     final int maxLength = property.getMaximumLength();
-    final String value = (String) entity.get(property);
+    final String value = (String) entity.get(property.getAttribute());
     if (maxLength != -1 && value.length() > maxLength) {
-      throw new LengthValidationException(property.getPropertyId(), value, "'" + property + "' " +
+      throw new LengthValidationException(property.getAttribute(), value, "'" + property + "' " +
               MESSAGES.getString("property_value_too_long") + " " + maxLength);
     }
   }
@@ -174,7 +174,7 @@ public class DefaultEntityValidator implements EntityValidator {
     getRevalidateEvent().removeListener(listener);
   }
 
-  private Event getRevalidateEvent() {
+  private Event<?> getRevalidateEvent() {
     if (revalidateEvent == null) {
       revalidateEvent = Events.event();
     }
@@ -182,21 +182,21 @@ public class DefaultEntityValidator implements EntityValidator {
     return revalidateEvent;
   }
 
-  private static boolean isNonGeneratedPrimaryKeyProperty(final EntityDefinition definition, final Property property) {
+  private static boolean isNonGeneratedPrimaryKeyProperty(final EntityDefinition definition, final Property<?> property) {
     return (property instanceof ColumnProperty
-            && ((ColumnProperty) property).isPrimaryKeyProperty()) && !definition.isKeyGenerated();
+            && ((ColumnProperty<?>) property).isPrimaryKeyProperty()) && !definition.isKeyGenerated();
   }
 
   /**
    * @param property the property
    * @return true if the property is a part of a foreign key
    */
-  private static boolean isForeignKeyProperty(final Property property) {
-    return property instanceof ColumnProperty && ((ColumnProperty) property).isForeignKeyProperty();
+  private static boolean isForeignKeyProperty(final Property<?> property) {
+    return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isForeignKeyProperty();
   }
 
-  private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property property) {
-    return property instanceof ColumnProperty && !((ColumnProperty) property).isPrimaryKeyProperty()
-            && !((ColumnProperty) property).columnHasDefaultValue();
+  private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property<?> property) {
+    return property instanceof ColumnProperty && !((ColumnProperty<?>) property).isPrimaryKeyProperty()
+            && !((ColumnProperty<?>) property).columnHasDefaultValue();
   }
 }

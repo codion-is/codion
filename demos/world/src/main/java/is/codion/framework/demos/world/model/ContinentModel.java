@@ -44,20 +44,20 @@ public final class ContinentModel extends SwingEntityModel {
     lifeExpectancyDataset.clear();
     getTableModel().getItems().forEach(continent -> {
       populationDataset.setValue(
-            continent.getString(World.CONTINENT_CONTINENT),
-            continent.getLong(World.CONTINENT_POPULATION));
+            continent.get(World.CONTINENT_CONTINENT),
+            continent.get(World.CONTINENT_POPULATION));
       surfaceAreaDataset.setValue(
-            continent.getString(World.CONTINENT_CONTINENT),
-            continent.getInteger(World.CONTINENT_SURFACE_AREA));
+            continent.get(World.CONTINENT_CONTINENT),
+            continent.get(World.CONTINENT_SURFACE_AREA));
       gnpDataset.setValue(
-            continent.getString(World.CONTINENT_CONTINENT),
-            continent.getDouble(World.CONTINENT_GNP));
+            continent.get(World.CONTINENT_CONTINENT),
+            continent.get(World.CONTINENT_GNP));
       lifeExpectancyDataset.addValue(
-              continent.getDouble(World.CONTINENT_MIN_LIFE_EXPECTANCY),
-              "Lowest", continent.getString(World.CONTINENT_CONTINENT));
+              continent.get(World.CONTINENT_MIN_LIFE_EXPECTANCY),
+              "Lowest", continent.get(World.CONTINENT_CONTINENT));
       lifeExpectancyDataset.addValue(
-              continent.getDouble(World.CONTINENT_MAX_LIFE_EXPECTANCY),
-              "Highest",continent.getString(World.CONTINENT_CONTINENT));
+              continent.get(World.CONTINENT_MAX_LIFE_EXPECTANCY),
+              "Highest",continent.get(World.CONTINENT_CONTINENT));
     });
   }
 }

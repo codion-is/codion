@@ -13,12 +13,14 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ValueChange;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -64,7 +66,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * @return the id of the entity this edit model is based on
    */
-  String getEntityId();
+  Identity getEntityId();
 
   /**
    * @return the connection provider used by this edit model
@@ -117,81 +119,87 @@ public interface EntityEditModel extends Refreshable {
   boolean containsUnsavedData();
 
   /**
-   * @param propertyId the id of the property
+   * @param attribute the attribute
    * @return true if the value of the given property is null
    */
-  boolean isNull(String propertyId);
+  boolean isNull(Attribute<?> attribute);
 
   /**
-   * @param propertyId the id of the property
+   * @param attribute the attribute
    * @return true if the value of the given property is not null
    */
-  boolean isNotNull(String propertyId);
+  boolean isNotNull(Attribute<?> attribute);
 
   /**
    * @param property the property
    * @return true if this value is allowed to be null in the underlying entity
    */
-  boolean isNullable(Property property);
+  boolean isNullable(Property<?> property);
 
   /**
    * Sets the given value in the underlying Entity
-   * @param propertyId the id of the property to associate the given value with
+   * @param attribute the attribute to associate the given value with
    * @param value the value to associate with the given property
+   * @param <T> the value type
    */
-  void put(String propertyId, Object value);
+  <T> void put(Attribute<T> attribute, T value);
 
   /**
    * Sets the given value in the underlying Entity
    * @param property the property to associate the given value with
    * @param value the value to associate with the given property
+   * @param <T> the value type
    */
-  void put(Property property, Object value);
+  <T> void put(Property<T> property, T value);
 
   /**
    * Removes the given value from the underlying Entity
-   * @param propertyId the id of the property
+   * @param attribute the attribute
+   * @param <T> the value type
    * @return the value, if any
    */
-  Object remove(String propertyId);
+  <T> T remove(Attribute<T> attribute);
 
   /**
    * Removes the given value from the map
    * @param property the property associated with the value to remove
+   * @param <T> the value type
    * @return the value, if any
    */
-  Object remove(Property property);
+  <T> T remove(Property<T> property);
 
   /**
    * Returns the value associated with the given property
-   * @param propertyId the id of the property
+   * @param attribute the attribute
+   * @param <T> the value type
    * @return the value associated with the given property
    */
-  Object get(String propertyId);
+  <T> T get(Attribute<T> attribute);
 
   /**
    * Returns the value associated with the given property in the underlying Entity
    * @param property the property of the value to retrieve
+   * @param <T> the value type
    * @return the value associated with the given property
    */
-  Object get(Property property);
+  <T> T get(Property<T> property);
 
   /**
-   * Returns the value associated with the given propertyId assuming it
+   * Returns the value associated with the given attribute assuming it
    * is an {@link Entity} instance
-   * @param foreignKeyPropertyId the id of the property
+   * @param foreignKeyAttribute the attribute
    * @return the value assuming it is an {@link Entity}
    * @throws ClassCastException in case the value was not an {@link Entity}
    */
-  Entity getForeignKey(String foreignKeyPropertyId);
+  Entity getForeignKey(Attribute<Entity> foreignKeyAttribute);
 
   /**
-   * Instantiates a new Value based on the property identified by {@code propertyId} in this edit model
-   * @param  propertyId the propertyId
+   * Instantiates a new Value based on {@code attribute} in this edit model
+   * @param attribute the attribute
    * @param <V> the value type
    * @return a Value based on the given edit model value
    */
-  <V> Value<V> value(String propertyId);
+  <V> Value<V> value(Attribute<V> attribute);
 
   /**
    * @return the underlying domain entities
@@ -289,38 +297,39 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key property
-   * @param foreignKeyPropertyId the id of the property
+   * @param foreignKeyAttribute the attribute
    * @return true if a {@link EntityLookupModel} has been initialized for the given foreign key property
    */
-  boolean containsLookupModel(String foreignKeyPropertyId);
+  boolean containsLookupModel(Attribute<Entity> foreignKeyAttribute);
 
   /**
-   * @param foreignKeyPropertyId the id of the property for which to retrieve the {@link EntityLookupModel}
+   * @param foreignKeyAttribute the attribute for which to retrieve the {@link EntityLookupModel}
    * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
-   * has been initialized for the given property, a new one is created, associated with the property and returned.
+   * has been initialized for the given property, a new one is created, associated with the attribute and returned.
    */
-  EntityLookupModel getForeignKeyLookupModel(String foreignKeyPropertyId);
+  EntityLookupModel getForeignKeyLookupModel(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityLookupModel}
    * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
-   * has been initialized for the given property, a new one is created, associated with the property and returned.
+   * has been initialized for the given property, a new one is created, associated with the attribute and returned.
    */
   EntityLookupModel getForeignKeyLookupModel(ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Returns the default value for the given property, used when initializing a new default entity for this edit model.
    * This method is only called for properties that are non-denormalized and are not part of a foreign key.
-   * If the default value of a property should be the last value used, call {@link #setPersistValue(String, boolean)}
+   * If the default value of a property should be the last value used, call {@link #setPersistValue(Attribute, boolean)}
    * with {@code true} for the given property or override {@link #isPersistValue} so that it
    * returns {@code true} for that property in case the value should persist.
    * @param property the property
+   * @param <T> the value type
    * @return the default value for the property
    * @see Property.Builder#defaultValue(Object)
-   * @see #setPersistValue(String, boolean)
+   * @see #setPersistValue(Attribute, boolean)
    * @see #isPersistValue(Property)
    */
-  Object getDefaultValue(Property property);
+  <T> T getDefaultValue(Property<T> property);
 
   /**
    * Returns true if the last available value for this property should be used when initializing
@@ -332,14 +341,14 @@ public interface EntityEditModel extends Refreshable {
    * @return true if the given field value should be reset when the model is cleared
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  boolean isPersistValue(Property property);
+  boolean isPersistValue(Property<?> property);
 
   /**
-   * @param  propertyId the propertyId
+   * @param attribute the attribute
    * @param persistValue true if this model should persist the value of the given property on clear
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  void setPersistValue(String propertyId, boolean persistValue);
+  void setPersistValue(Attribute<?> attribute, boolean persistValue);
 
   /**
    * Performs a insert on the active entity, sets the primary key values of the active entity
@@ -451,7 +460,7 @@ public interface EntityEditModel extends Refreshable {
    * @throws ValidationException if the given value is not valid for the given property
    * @see #getValidator()
    */
-  void validate(Property property) throws ValidationException;
+  void validate(Property<?> property) throws ValidationException;
 
   /**
    * Validates the current state of the entity
@@ -482,7 +491,7 @@ public interface EntityEditModel extends Refreshable {
    * @see #validate(Property)
    * @see EntityValidator#validate(Entity, EntityDefinition)
    */
-  boolean isValid(Property property);
+  boolean isValid(Property<?> property);
 
   /**
    * @return true if the underlying Entity contains only valid values
@@ -537,36 +546,36 @@ public interface EntityEditModel extends Refreshable {
   StateObserver getInsertEnabledObserver();
 
   /**
-   * Adds a listener notified each time the value associated with the given property is edited via
+   * Adds a listener notified each time the value associated with the given attribute is edited via
    * {@link #put(Property, Object)} or {@link #remove(Property)}, note that this event is only fired
    * when the value actually changes.
-   * @param propertyId the id of the property for which to monitor value edits
+   * @param attribute the attribute for which to monitor value edits
    * @param listener a listener notified each time the value of the given property is edited via this model
    */
-  void addValueEditListener(String propertyId, EventDataListener<ValueChange> listener);
+  void addValueEditListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
 
   /**
    * Removes the given listener.
-   * @param propertyId the propertyId
+   * @param attribute the attribute
    * @param listener the listener to remove
    */
-  void removeValueEditListener(String propertyId, EventDataListener<ValueChange> listener);
+  void removeValueEditListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
 
   /**
-   * Adds a listener notified each time the value associated with the given key changes, either
+   * Adds a listener notified each time the value associated with the given attribute changes, either
    * via editing or when the active entity is set.
-   * @param propertyId the id of the property for which to monitor value changes
-   * @param listener a listener notified each time the value of the property identified by {@code propertyId} changes
+   * @param attribute the attribute for which to monitor value changes
+   * @param listener a listener notified each time the value of the {@code attribute} changes
    * @see #setEntity(Entity)
    */
-  void addValueListener(String propertyId, EventDataListener<ValueChange> listener);
+  void addValueListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
 
   /**
    * Removes the given listener.
-   * @param propertyId the id of the property for which to remove the listener
+   * @param attribute the attribute for which to remove the listener
    * @param listener the listener to remove
    */
-  void removeValueListener(String propertyId, EventDataListener<ValueChange> listener);
+  void removeValueListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
 
   /**
    * @param listener a listener notified each time the entity is set

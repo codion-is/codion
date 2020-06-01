@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
@@ -54,9 +55,9 @@ public class EntityPanelBuilder {
 
   /**
    * Instantiates a new EntityPanelBuilder for the given entity type
-   * @param entityId the  entityId
+   * @param entityId the entityId
    */
-  public EntityPanelBuilder(final String entityId) {
+  public EntityPanelBuilder(final Identity entityId) {
     this(new SwingEntityModelBuilder(entityId));
   }
 
@@ -69,9 +70,9 @@ public class EntityPanelBuilder {
   }
 
   /**
-   * @return the  entityId
+   * @return the entityId
    */
-  public final String getEntityId() {
+  public final Identity getEntityId() {
     return modelBuilder.getEntityId();
   }
 
