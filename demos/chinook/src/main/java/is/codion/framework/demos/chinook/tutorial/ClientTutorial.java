@@ -9,7 +9,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -44,12 +43,12 @@ public final class ClientTutorial {
 
   public static final class Chinook extends Domain {
 
-    public static final EntityIdentity T_ARTIST = entityIdentity("chinook.artist");
+    public static final Entity.Identity T_ARTIST = entityIdentity("chinook.artist");
     public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
     public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
     public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = T_ARTIST.integerAttribute("nr_of_albums");
 
-    public static final EntityIdentity T_ALBUM = entityIdentity("chinook.album");
+    public static final Entity.Identity T_ALBUM = entityIdentity("chinook.album");
     public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
     public static final Attribute<String> ALBUM_TITLE = T_ARTIST.stringAttribute("title");
     public static final Attribute<Integer> ALBUM_ARTISTID = T_ARTIST.integerAttribute("artistid");

@@ -10,9 +10,9 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityIdentity;
-import is.codion.framework.domain.identity.DomainIdentity;
+import is.codion.framework.domain.identity.Identities;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.Property;
 
@@ -27,7 +27,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents an application domain model, entities, reports and database operations.
  * Override to define a domain model.
- * @see #define(EntityIdentity, Property.Builder[])
+ * @see #define(Entity.Identity, Property.Builder[])
  * @see #addReport(ReportWrapper)
  * @see #addOperation(DatabaseOperation)
  */
@@ -42,7 +42,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @see Class#getSimpleName()
    */
   protected Domain() {
-    this.entities = new DomainEntities(Entities.domainIdentity(getClass().getSimpleName()));
+    this.entities = new DomainEntities(Identities.identity(getClass().getSimpleName()));
   }
 
   /**
@@ -50,21 +50,21 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @param domainName the domain identifier
    */
   protected Domain(final String domainName) {
-    this(Entities.domainIdentity(domainName));
+    this(Identities.identity(domainName));
   }
 
   /**
    * Instantiates a new Domain
    * @param domainId the domain identifier
    */
-  protected Domain(final DomainIdentity domainId) {
+  protected Domain(final Identity domainId) {
     this.entities = new DomainEntities(requireNonNull(domainId, "domainId"));
   }
 
   /**
    * @return the domainId
    */
-  public final DomainIdentity getDomainId() {
+  public final Identity getDomainId() {
     return entities.getDomainId();
   }
 
@@ -87,7 +87,7 @@ public abstract class Domain implements EntityDefinition.Provider {
   }
 
   @Override
-  public final EntityDefinition getDefinition(final Identity entityId) {
+  public final EntityDefinition getDefinition(final Entity.Identity entityId) {
     return entities.getDefinition(entityId);
   }
 
@@ -133,7 +133,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  protected final EntityDefinition.Builder define(final EntityIdentity entityId, final Property.Builder<?>... propertyBuilders) {
+  protected final EntityDefinition.Builder define(final Entity.Identity entityId, final Property.Builder<?>... propertyBuilders) {
     return define(entityId, entityId.getName(), propertyBuilders);
   }
 
@@ -147,7 +147,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @return a {@link EntityDefinition.Builder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type
    */
-  protected final EntityDefinition.Builder define(final EntityIdentity entityId, final String tableName,
+  protected final EntityDefinition.Builder define(final Entity.Identity entityId, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
     return entities.defineInternal(entityId, tableName, propertyBuilders);
   }
@@ -184,11 +184,11 @@ public abstract class Domain implements EntityDefinition.Provider {
 
     private static final long serialVersionUID = 1;
 
-    private DomainEntities(final DomainIdentity domainId) {
+    private DomainEntities(final Identity domainId) {
       super(domainId);
     }
 
-    protected EntityDefinition.Builder defineInternal(final EntityIdentity entityId, final String tableName,
+    protected EntityDefinition.Builder defineInternal(final Entity.Identity entityId, final String tableName,
                                                       final Property.Builder<?>... propertyBuilders) {
       return super.define(entityId, tableName, propertyBuilders);
     }

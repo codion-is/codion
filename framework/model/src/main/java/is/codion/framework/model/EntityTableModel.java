@@ -19,7 +19,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -64,7 +63,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the id of the entity this table model is based on
    */
-  Identity getEntityId();
+  Entity.Identity getEntityId();
 
   /**
    * @return the connection provider used by this table model
@@ -122,7 +121,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param foreignKeyEntityId the entityId of the foreign key values
    * @param foreignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(Identity foreignKeyEntityId, Collection<Entity> foreignKeyValues);
+  void replaceForeignKeyValues(Entity.Identity foreignKeyEntityId, Collection<Entity> foreignKeyValues);
 
   /**
    * Adds the given entities to the bottom of this table model.

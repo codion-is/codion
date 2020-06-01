@@ -4,7 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.identity.Identity;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.DefaultEntityModel;
 
 import static java.util.Objects.requireNonNull;
@@ -19,7 +19,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * @param entityId the id of the Entity this DefaultEntityModel represents
    * @param connectionProvider a EntityConnectionProvider
    */
-  public SwingEntityModel(final Identity entityId, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider) {
     this(new SwingEntityEditModel(requireNonNull(entityId, "entityId"),
             requireNonNull(connectionProvider, "connectionProvider")));
   }

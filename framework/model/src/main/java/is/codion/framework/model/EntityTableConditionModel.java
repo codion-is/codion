@@ -14,7 +14,6 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
@@ -29,7 +28,7 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return the id of the entity this table condition model is based on
    */
-  Identity getEntityId();
+  Entity.Identity getEntityId();
 
   /**
    * Sets the search condition values of the condition model associated with {@code attribute}.

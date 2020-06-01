@@ -20,7 +20,6 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.PropertyCondition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -53,7 +52,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * The id of the entity this lookup model is based on
    */
-  private final Identity entityId;
+  private final Entity.Identity entityId;
 
   /**
    * The properties to use when doing the lookup
@@ -91,7 +90,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
    * @see EntityDefinition#getSearchProperties()
    */
-  public DefaultEntityLookupModel(final Identity entityId, final EntityConnectionProvider connectionProvider) {
+  public DefaultEntityLookupModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider) {
     this(entityId, connectionProvider, connectionProvider.getEntities().getDefinition(entityId).getSearchProperties());
   }
 
@@ -101,7 +100,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
    * @param lookupProperties the properties to search by, these must be string based
    */
-  public DefaultEntityLookupModel(final Identity entityId, final EntityConnectionProvider connectionProvider,
+  public DefaultEntityLookupModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider,
                                   final Collection<ColumnProperty<?>> lookupProperties) {
     requireNonNull(entityId, "entityId");
     requireNonNull(connectionProvider, "connectionProvider");
@@ -116,7 +115,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   @Override
-  public Identity getEntityId() {
+  public Entity.Identity getEntityId() {
     return entityId;
   }
 
@@ -318,7 +317,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     return entities.stream().map(toStringProvider).collect(joining(multipleItemSeparatorValue.get()));
   }
 
-  private static void validateLookupProperties(final Identity entityId, final Collection<ColumnProperty<?>> lookupProperties) {
+  private static void validateLookupProperties(final Entity.Identity entityId, final Collection<ColumnProperty<?>> lookupProperties) {
     for (final ColumnProperty<?> property : lookupProperties) {
       if (!entityId.equals(property.getAttribute().getEntityId())) {
         throw new IllegalArgumentException("Property '" + property + "' is not part of entity " + entityId);

@@ -4,8 +4,8 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.identity.Identity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
    * Instantiates a new {@link DefaultEntitySelectCondition}, which includes all the underlying entities
    * @param entityId the id of the entity to select
    */
-  DefaultEntitySelectCondition(final Identity entityId) {
+  DefaultEntitySelectCondition(final Entity.Identity entityId) {
     super(entityId);
   }
 
@@ -43,7 +43,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
    * @see DefaultPropertyCondition
    * @see EntityKeyCondition
    */
-  DefaultEntitySelectCondition(final Identity entityId, final Condition condition) {
+  DefaultEntitySelectCondition(final Entity.Identity entityId, final Condition condition) {
     super(entityId, condition);
   }
 

@@ -18,9 +18,9 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.identity.DomainIdentity;
+import is.codion.framework.domain.identity.Identities;
+import is.codion.framework.domain.identity.Identity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -555,7 +555,7 @@ public final class EntityService extends Application {
     }
 
     final MultivaluedMap<String, String> headerValues = headers.getRequestHeaders();
-    final DomainIdentity domainId = Entities.domainIdentity(getDomainId(headerValues));
+    final Identity domainId = Identities.identity(getDomainId(headerValues));
     final String clientTypeId = getClientTypeId(headerValues);
     final UUID clientId = getClientId(headerValues, request.getSession());
     final User user = getUser(headerValues);

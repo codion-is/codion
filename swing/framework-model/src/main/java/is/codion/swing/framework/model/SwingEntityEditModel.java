@@ -10,7 +10,6 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -40,7 +39,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param entityId the id of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public SwingEntityEditModel(final Identity entityId, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityEditModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider) {
     this(entityId, connectionProvider, connectionProvider.getEntities().getDefinition(entityId).getValidator());
   }
 
@@ -50,7 +49,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public SwingEntityEditModel(final Identity entityId, final EntityConnectionProvider connectionProvider, final EntityValidator validator) {
+  public SwingEntityEditModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider, final EntityValidator validator) {
     super(entityId, connectionProvider, validator);
   }
 
@@ -176,8 +175,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   @Override
   public final void addForeignKeyValues(final List<Entity> entities) {
-    final Map<Identity, List<Entity>> mapped = Entities.mapToEntityId(entities);
-    for (final Map.Entry<Identity, List<Entity>> entry : mapped.entrySet()) {
+    final Map<Entity.Identity, List<Entity>> mapped = Entities.mapToEntityId(entities);
+    for (final Map.Entry<Entity.Identity, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getAttribute())) {
           final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty);
@@ -191,8 +190,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   @Override
   public final void removeForeignKeyValues(final List<Entity> entities) {
-    final Map<Identity, List<Entity>> mapped = Entities.mapToEntityId(entities);
-    for (final Map.Entry<Identity, List<Entity>> entry : mapped.entrySet()) {
+    final Map<Entity.Identity, List<Entity>> mapped = Entities.mapToEntityId(entities);
+    for (final Map.Entry<Entity.Identity, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getAttribute())) {
           final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty);
@@ -210,7 +209,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
             comboBoxModel.setSelectedItem(null);
           }
         }
-        clearForeignKeyReferences(foreignKeyProperty, entry.getValue());
+        clearForeignKeyReferences(foreignKeyProperty.getAttribute(), entry.getValue());
       }
     }
   }
@@ -229,7 +228,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     }
   }
 
-  private void clearForeignKeyReferences(final ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) {
+  private void clearForeignKeyReferences(final Attribute<Entity> foreignKeyProperty, final List<Entity> entities) {
     entities.forEach(entity -> {
       if (Objects.equals(entity, get(foreignKeyProperty))) {
         put(foreignKeyProperty, null);

@@ -4,9 +4,9 @@
 package is.codion.framework.demos.chinook.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ValueChange;
-import is.codion.framework.domain.property.Property;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.time.LocalDateTime;
@@ -22,12 +22,12 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  public Object getDefaultValue(final Property property) {
-    if (property.is(INVOICE_INVOICEDATE)) {
-      return LocalDateTime.now();
+  public <T> T getDefaultValue(final Attribute<T> attribute) {
+    if (attribute.equals(INVOICE_INVOICEDATE)) {
+      return (T) LocalDateTime.now();
     }
 
-    return super.getDefaultValue(property);
+    return super.getDefaultValue(attribute);
   }
 
   private void bindEvents() {

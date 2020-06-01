@@ -4,7 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.identity.Identity;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.DefaultEntityLookupModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -28,7 +28,7 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor {
   @Override
   protected JComponent initializeEditorComponent() {
     final ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) getProperty();
-    final Identity foreignEntityId = foreignKeyProperty.getForeignEntityId();
+    final Entity.Identity foreignEntityId = foreignKeyProperty.getForeignEntityId();
 
     if (connectionProvider.getEntities().getDefinition(foreignEntityId).isSmallDataset()) {
       return EntityInputComponents.createForeignKeyComboBox(foreignKeyProperty, getCellValue(),

@@ -3,13 +3,13 @@
  */
 package is.codion.framework.domain.attribute;
 
-import is.codion.framework.domain.identity.Identity;
+import is.codion.framework.domain.entity.Entity;
 
 final class DefaultBlobAttribute extends DefaultAttribute<byte[]> {
 
   private static final long serialVersionUID = 1;
 
-  DefaultBlobAttribute(final String name, final Identity entityId) {
+  DefaultBlobAttribute(final String name, final Entity.Identity entityId) {
     super(name, byte[].class, entityId);
   }
 }

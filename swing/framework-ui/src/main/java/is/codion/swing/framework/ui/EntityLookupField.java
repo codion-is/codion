@@ -10,7 +10,6 @@ import is.codion.common.model.table.SortingDirective;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -184,7 +183,7 @@ public final class EntityLookupField extends JTextField {
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
-  public static Entity lookupEntity(final Identity entityId, final EntityConnectionProvider connectionProvider,
+  public static Entity lookupEntity(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider,
                                     final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
     final List<Entity> entities = lookupEntities(entityId, connectionProvider, true, dialogParent, lookupCaption, dialogTitle);
 
@@ -203,7 +202,7 @@ public final class EntityLookupField extends JTextField {
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
-  public static List<Entity> lookupEntities(final Identity entityId, final EntityConnectionProvider connectionProvider,
+  public static List<Entity> lookupEntities(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
     return lookupEntities(entityId, connectionProvider, false, dialogParent, lookupCaption, dialogTitle);
   }
@@ -310,7 +309,7 @@ public final class EntityLookupField extends JTextField {
    * triggers another lookup, resulting in a loop
    */
   private void showEmptyResultMessage() {
-    final Event closeEvent = Events.event();
+    final Event<?> closeEvent = Events.event();
     final JButton okButton = new JButton(Controls.control(closeEvent::onEvent, Messages.get(Messages.OK)));
     KeyEvents.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED,
             ON_KEY_PRESSED, Controls.control(okButton::doClick));
@@ -326,7 +325,7 @@ public final class EntityLookupField extends JTextField {
     Dialogs.displayInDialog(this, messagePanel, SwingMessages.get("OptionPane.messageDialogTitle"), closeEvent);
   }
 
-  private static List<Entity> lookupEntities(final Identity entityId, final EntityConnectionProvider connectionProvider,
+  private static List<Entity> lookupEntities(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider,
                                              final boolean singleSelection, final JComponent dialogParent,
                                              final String lookupCaption, final String dialogTitle) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);

@@ -4,7 +4,6 @@
 package is.codion.framework.domain.attribute;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 
 /**
  * A factory for {@link Attribute} instances.
@@ -21,7 +20,7 @@ public final class Attributes {
    * @param <T> the attribute type
    * @return a new {@link Attribute}
    */
-  public static <T> Attribute<T> attribute(final String name, final Class<T> typeClass, final EntityIdentity entityId) {
+  public static <T> Attribute<T> attribute(final String name, final Class<T> typeClass, final Entity.Identity entityId) {
     return new DefaultAttribute<>(name, typeClass, entityId);
   }
 
@@ -33,7 +32,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new {@link Attribute}
    */
-  public static Attribute<Object> attribute(final String name, final EntityIdentity entityId) {
+  public static Attribute<Object> attribute(final String name, final Entity.Identity entityId) {
     return new DefaultAttribute<>(name, Object.class, entityId);
   }
 
@@ -43,7 +42,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new {@link Attribute}
    */
-  public static Attribute<Entity> entityAttribute(final String name, final EntityIdentity entityId) {
+  public static Attribute<Entity> entityAttribute(final String name, final Entity.Identity entityId) {
     return new DefaultEntityAttribute(name, entityId);
   }
 
@@ -53,7 +52,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new {@link Attribute}
    */
-  public static Attribute<byte[]> blobAttribute(final String name, final EntityIdentity entityId) {
+  public static Attribute<byte[]> blobAttribute(final String name, final Entity.Identity entityId) {
     return new DefaultBlobAttribute(name, entityId);
   }
 }

@@ -12,7 +12,6 @@ import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;
@@ -47,7 +46,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * @return the id of the entity this entity model is based on
    */
-  Identity getEntityId();
+  Entity.Identity getEntityId();
 
   /**
    * @return the connection provider used by this entity model
@@ -97,7 +96,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param foreignKeyEntityId the id of the master entity
    * @param foreignKeyValues the master entities
    */
-  void initialize(Identity foreignKeyEntityId, List<Entity> foreignKeyValues);
+  void initialize(Entity.Identity foreignKeyEntityId, List<Entity> foreignKeyValues);
 
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities,
@@ -148,7 +147,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param entityId the entityId
    * @return true if this model contains a detail model for the given  entityId
    */
-  boolean containsDetailModel(Identity entityId);
+  boolean containsDetailModel(Entity.Identity entityId);
 
   /**
    * @param detailModel the detail model
@@ -170,7 +169,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case no detail model for the given entityId is found
    */
-  M getDetailModel(Identity entityId);
+  M getDetailModel(Entity.Identity entityId);
 
   /**
    * @return an unmodifiable collection containing the detail models this model contains

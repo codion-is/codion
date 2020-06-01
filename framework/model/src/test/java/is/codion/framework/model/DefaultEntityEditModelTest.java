@@ -16,10 +16,10 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -165,8 +165,7 @@ public final class DefaultEntityEditModelTest {
     assertFalse(employeeEditModel.getEntityCopy().isLoaded(TestDomain.EMP_DEPARTMENT_FK));
     dept = employeeEditModel.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
     assertNull(dept);
-    dept = (Entity) employeeEditModel.getDefaultValue(
-            ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_DEPARTMENT_FK));
+    dept = (Entity) employeeEditModel.getDefaultValue(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(dept);
   }
 
@@ -499,7 +498,7 @@ public final class DefaultEntityEditModelTest {
 
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
-    public TestEntityEditModel(final Identity entityId, final EntityConnectionProvider connectionProvider) {
+    public TestEntityEditModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider) {
       super(entityId, connectionProvider);
     }
 
@@ -513,12 +512,12 @@ public final class DefaultEntityEditModelTest {
     public void clear() {}
 
     @Override
-    public Object getDefaultValue(final Property property) {
-      if (property.is(TestDomain.EMP_HIREDATE)) {
-        return LocalDate.now();
+    public <T> T getDefaultValue(final Attribute<T> attribute) {
+      if (attribute.equals(TestDomain.EMP_HIREDATE)) {
+        return (T) LocalDate.now();
       }
 
-      return super.getDefaultValue(property);
+      return super.getDefaultValue(attribute);
     }
   }
 }

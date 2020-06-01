@@ -19,7 +19,6 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.identity.DomainIdentity;
 import is.codion.framework.domain.identity.Identity;
 
 import org.apache.http.HttpHost;
@@ -85,7 +84,7 @@ final class HttpEntityConnection implements EntityConnection {
           .setConnectTimeout(2000)
           .build();
 
-  private final DomainIdentity domainId;
+  private final Identity domainId;
   private final User user;
   private final boolean httpsEnabled;
   private final String baseurl;
@@ -108,7 +107,7 @@ final class HttpEntityConnection implements EntityConnection {
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  HttpEntityConnection(final DomainIdentity domainId, final String serverHostName, final int serverPort,
+  HttpEntityConnection(final Identity domainId, final String serverHostName, final int serverPort,
                        final ClientHttps httpsEnabled, final User user, final String clientTypeId, final UUID clientId,
                        final HttpClientConnectionManager connectionManager) {
     this.domainId = Objects.requireNonNull(domainId, DOMAIN_ID);
@@ -341,7 +340,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(final Identity entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(final Entity.Identity entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
     return selectSingle(selectCondition(entityId, attribute, Operator.LIKE, value));
   }
 
@@ -394,19 +393,19 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final Identity entityId, final Attribute<T> attribute, final T value)
+  public <T> List<Entity> select(final Entity.Identity entityId, final Attribute<T> attribute, final T value)
           throws DatabaseException {
     return select(selectCondition(entityId, attribute, Operator.LIKE, value));
   }
 
   @Override
-  public <T> List<Entity> select(final Identity entityId, final Attribute<T> attribute, final Collection<T> values)
+  public <T> List<Entity> select(final Entity.Identity entityId, final Attribute<T> attribute, final Collection<T> values)
           throws DatabaseException {
     return select(selectCondition(entityId, attribute, Operator.LIKE, values));
   }
 
   @Override
-  public Map<Identity, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
+  public Map<Entity.Identity, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       return onResponse(execute(createHttpPost("dependencies", entities)));

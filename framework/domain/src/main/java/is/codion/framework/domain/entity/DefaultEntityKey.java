@@ -4,7 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.identity.DomainIdentity;
+import is.codion.framework.domain.identity.Identities;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 
@@ -98,7 +98,7 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   @Override
-  public Identity getEntityId() {
+  public Entity.Identity getEntityId() {
     return definition.getEntityId();
   }
 
@@ -167,7 +167,7 @@ final class DefaultEntityKey implements Entity.Key {
       return false;
     }
     if (object.getClass() ==  DefaultEntityKey.class) {
-      final Identity entityId = definition.getEntityId();
+      final Entity.Identity entityId = definition.getEntityId();
       final DefaultEntityKey otherKey = (DefaultEntityKey) object;
       if (compositeKey) {
         return otherKey.isCompositeKey() && entityId.equals(otherKey.getEntityId()) && this.values.equals(otherKey.values);
@@ -320,8 +320,8 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    final DomainIdentity domainId = Entities.domainIdentity((String) stream.readObject());
-    final Identity entityId = Entities.entityIdentity((String) stream.readObject());
+    final Identity domainId = Identities.identity((String) stream.readObject());
+    final Entity.Identity entityId = Entities.entityIdentity((String) stream.readObject());
     definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);

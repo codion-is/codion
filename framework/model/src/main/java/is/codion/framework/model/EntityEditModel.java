@@ -20,7 +20,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ValueChange;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -66,7 +65,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * @return the id of the entity this edit model is based on
    */
-  Identity getEntityId();
+  Entity.Identity getEntityId();
 
   /**
    * @return the connection provider used by this edit model
@@ -75,7 +74,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * @return an Entity instance populated with default values for all properties
-   * @see #getDefaultValue(Property)
+   * @see #getDefaultValue(Attribute)
    */
   Entity getDefaultEntity();
 
@@ -145,14 +144,6 @@ public interface EntityEditModel extends Refreshable {
   <T> void put(Attribute<T> attribute, T value);
 
   /**
-   * Sets the given value in the underlying Entity
-   * @param property the property to associate the given value with
-   * @param value the value to associate with the given property
-   * @param <T> the value type
-   */
-  <T> void put(Property<T> property, T value);
-
-  /**
    * Removes the given value from the underlying Entity
    * @param attribute the attribute
    * @param <T> the value type
@@ -161,28 +152,12 @@ public interface EntityEditModel extends Refreshable {
   <T> T remove(Attribute<T> attribute);
 
   /**
-   * Removes the given value from the map
-   * @param property the property associated with the value to remove
-   * @param <T> the value type
-   * @return the value, if any
-   */
-  <T> T remove(Property<T> property);
-
-  /**
    * Returns the value associated with the given property
    * @param attribute the attribute
    * @param <T> the value type
    * @return the value associated with the given property
    */
   <T> T get(Attribute<T> attribute);
-
-  /**
-   * Returns the value associated with the given property in the underlying Entity
-   * @param property the property of the value to retrieve
-   * @param <T> the value type
-   * @return the value associated with the given property
-   */
-  <T> T get(Property<T> property);
 
   /**
    * Returns the value associated with the given attribute assuming it
@@ -329,7 +304,7 @@ public interface EntityEditModel extends Refreshable {
    * @see #setPersistValue(Attribute, boolean)
    * @see #isPersistValue(Property)
    */
-  <T> T getDefaultValue(Property<T> property);
+  <T> T getDefaultValue(Attribute<T> property);
 
   /**
    * Returns true if the last available value for this property should be used when initializing
@@ -547,7 +522,7 @@ public interface EntityEditModel extends Refreshable {
 
   /**
    * Adds a listener notified each time the value associated with the given attribute is edited via
-   * {@link #put(Property, Object)} or {@link #remove(Property)}, note that this event is only fired
+   * {@link #put(Attribute, Object)} or {@link #remove(Attribute)}, note that this event is only fired
    * when the value actually changes.
    * @param attribute the attribute for which to monitor value edits
    * @param listener a listener notified each time the value of the given property is edited via this model
