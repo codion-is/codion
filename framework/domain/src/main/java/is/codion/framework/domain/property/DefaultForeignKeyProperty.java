@@ -58,7 +58,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   @Override
   public Attribute<Entity> getAttribute() {
-    return (Attribute<Entity>) super.getAttribute();
+    return super.getAttribute();
   }
 
   @Override

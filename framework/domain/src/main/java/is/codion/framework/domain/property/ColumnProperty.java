@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 /**
  * Specifies a property based on a table column
+ * @param <T> the underlying type
  */
 public interface ColumnProperty<T> extends Property<T> {
 
@@ -30,6 +31,7 @@ public interface ColumnProperty<T> extends Property<T> {
    * but for certain types this may be necessary, such as boolean values
    * represented by a non-boolean data type in the underlying database
    * @param value the value to translate
+   * @param <T> the value type
    * @return the sql value used to represent the given value
    */
   Object toColumnValue(T value);

@@ -1038,7 +1038,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
     @Override
     public V get() {
-      return (V) editModel.get(attribute);
+      return editModel.get(attribute);
     }
 
     @Override
