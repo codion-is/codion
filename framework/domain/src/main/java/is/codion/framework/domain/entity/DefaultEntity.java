@@ -172,7 +172,7 @@ final class DefaultEntity implements Entity {
   public Entity getForeignKey(final Attribute<Entity> entityAttribute) {
     final Entity value = (Entity) values.get(entityAttribute);
     if (value == null) {//possibly not loaded
-      final Entity.Key referencedKey = getReferencedKey(definition.getForeignKeyProperty(entityAttribute));
+      final Entity.Key referencedKey = getReferencedKey(entityAttribute);
       if (referencedKey != null) {
         return new DefaultEntity(definition.getForeignDefinition(entityAttribute), referencedKey);
       }
@@ -328,12 +328,9 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public Key getReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
-    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    if (!Objects.equals(getEntityId(), foreignKeyProperty.getAttribute().getEntityId())) {
-      throw new IllegalArgumentException("Foreign key property " + foreignKeyProperty
-              + " is not part of entity: " + getEntityId());
-    }
+  public Key getReferencedKey(final Attribute<Entity> foreignKeyAttribute) {
+    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+    final ForeignKeyProperty foreignKeyProperty = definition.getForeignKeyProperty(foreignKeyAttribute);
     final Key cachedReferencedKey = getCachedReferencedKey(foreignKeyProperty.getAttribute());
     if (cachedReferencedKey != null) {
       return cachedReferencedKey;
@@ -372,8 +369,9 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean isForeignKeyNull(final ForeignKeyProperty foreignKeyProperty) {
-    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
+  public boolean isForeignKeyNull(final Attribute<Entity> foreignKeyAttribute) {
+    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+    final ForeignKeyProperty foreignKeyProperty = definition.getForeignKeyProperty(foreignKeyAttribute);
     final List<ColumnProperty<?>> properties = foreignKeyProperty.getColumnProperties();
     if (properties.size() == 1) {
       return isNull(properties.get(0));
@@ -436,7 +434,7 @@ final class DefaultEntity implements Entity {
       return ((ValueListProperty<T>) property).getCaption(get(property));
     }
     if (property instanceof ForeignKeyProperty && !isLoaded(((ForeignKeyProperty) property).getAttribute())) {
-      final Entity.Key referencedKey = getReferencedKey((ForeignKeyProperty) property);
+      final Entity.Key referencedKey = getReferencedKey(((ForeignKeyProperty) property).getAttribute());
       if (referencedKey != null) {
         return referencedKey.toString();
       }
@@ -470,7 +468,7 @@ final class DefaultEntity implements Entity {
    */
   private boolean isNull(final Property<?> property) {
     if (property instanceof ForeignKeyProperty) {
-      return isForeignKeyNull((ForeignKeyProperty) property);
+      return isForeignKeyNull(((ForeignKeyProperty) property).getAttribute());
     }
 
     return get(property) == null;

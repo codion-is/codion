@@ -7,7 +7,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
@@ -73,25 +72,25 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @return the value of the property based on {@code foreignKeyAttribute},
    * assuming it is an Entity
    * @throws IllegalArgumentException if the attribute is not a foreign key attribute
-   * @see #isLoaded(Attribute<Entity>)
+   * @see #isLoaded(Attribute)
    */
   Entity getForeignKey(Attribute<Entity> foreignKeyAttribute);
 
   /**
-   * Returns the primary key of the entity referenced by the given {@link ForeignKeyProperty},
+   * Returns the primary key of the entity referenced by the given {@link Attribute},
    * if the reference is null this method returns null.
-   * @param foreignKeyProperty the foreign key property for which to retrieve the underlying {@link Entity.Key}
+   * @param foreignKeyAttribute the foreign key attribute for which to retrieve the underlying {@link Entity.Key}
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
-  Key getReferencedKey(ForeignKeyProperty foreignKeyProperty);
+  Key getReferencedKey(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * Returns true if the value of the given foreign key is null, in case of composite
    * foreign keys a single null value of a non-null property is enough.
-   * @param foreignKeyProperty the foreign key property
+   * @param foreignKeyAttribute the foreign key attribute
    * @return true if the foreign key value is null
    */
-  boolean isForeignKeyNull(ForeignKeyProperty foreignKeyProperty);
+  boolean isForeignKeyNull(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * Sets the value of the given attribute, returning the old value if any

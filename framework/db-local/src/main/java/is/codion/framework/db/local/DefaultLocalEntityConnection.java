@@ -897,17 +897,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             getEntityDefinition(entities.get(0).getEntityId()).getForeignKeyProperties();
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       final ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
-      Integer conditionFetchDepthLimit = condition.getForeignKeyFetchDepth(foreignKeyProperty.getAttribute());
+      final Attribute<Entity> foreignKeyAttribute = foreignKeyProperty.getAttribute();
+      Integer conditionFetchDepthLimit = condition.getForeignKeyFetchDepth(foreignKeyAttribute);
       if (conditionFetchDepthLimit == null) {//use the default one
         conditionFetchDepthLimit = foreignKeyProperty.getFetchDepth();
       }
       if (!limitForeignKeyFetchDepth || conditionFetchDepthLimit == -1 || currentForeignKeyFetchDepth < conditionFetchDepthLimit) {
         try {
           logAccess("setForeignKeys", new Object[] {foreignKeyProperty});
-          final List<Entity.Key> referencedKeys = new ArrayList<>(getReferencedKeys(entities, foreignKeyProperty));
+          final List<Entity.Key> referencedKeys = new ArrayList<>(getReferencedKeys(entities, foreignKeyAttribute));
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
-              entities.get(j).put(foreignKeyProperty.getAttribute(), null);
+              entities.get(j).put(foreignKeyAttribute, null);
             }
           }
           else {
@@ -918,8 +919,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             final Map<Entity.Key, Entity> referencedEntitiesMappedByKey = mapToKey(referencedEntities);
             for (int j = 0; j < entities.size(); j++) {
               final Entity entity = entities.get(j);
-              final Entity.Key referencedKey = entity.getReferencedKey(foreignKeyProperty);
-              entity.put(foreignKeyProperty.getAttribute(), getReferencedEntity(referencedKey, referencedEntitiesMappedByKey));
+              final Entity.Key referencedKey = entity.getReferencedKey(foreignKeyAttribute);
+              entity.put(foreignKeyAttribute, getReferencedEntity(referencedKey, referencedEntitiesMappedByKey));
             }
           }
         }

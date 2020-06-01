@@ -27,7 +27,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents an application domain model, entities, reports and database operations.
  * Override to define a domain model.
- * @see #define(Identity, Property.Builder[])
+ * @see #define(EntityIdentity, Property.Builder[])
  * @see #addReport(ReportWrapper)
  * @see #addOperation(DatabaseOperation)
  */

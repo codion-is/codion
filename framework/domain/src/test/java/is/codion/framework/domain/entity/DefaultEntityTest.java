@@ -9,7 +9,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.TransientProperty;
 
@@ -170,11 +169,8 @@ public class DefaultEntityTest {
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 2);
 
-    final ForeignKeyProperty foreignKeyProperty =
-            ENTITIES.getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(
-                    TestDomain.COMPOSITE_DETAIL_MASTER_FK);
-    final Entity.Key referencedKey = detail.getReferencedKey(foreignKeyProperty);
-    final Entity.Key cachedKey = detail.getReferencedKey(foreignKeyProperty);
+    final Entity.Key referencedKey = detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+    final Entity.Key cachedKey = detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
 
     assertSame(cachedKey, referencedKey);
   }
@@ -188,9 +184,7 @@ public class DefaultEntityTest {
     final Entity detail = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master);
 
-    final ForeignKeyProperty foreignKeyProperty =
-            ENTITIES.getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
-    assertEquals(master.getKey(), detail.getReferencedKey(foreignKeyProperty));
+    assertEquals(master.getKey(), detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
 
     //otherwise the values are equal and put() returns before propagating foreign key values
     final Entity masterCopy = ENTITIES.deepCopyEntity(master);
@@ -198,7 +192,7 @@ public class DefaultEntityTest {
     masterCopy.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
 
-    assertNull(detail.getReferencedKey(foreignKeyProperty));
+    assertNull(detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
   }
 
   @Test
@@ -279,7 +273,7 @@ public class DefaultEntityTest {
     assertFalse(testEntity.isNull(TestDomain.DETAIL_MASTER_ID));
     assertTrue(testEntity.isNotNull(TestDomain.DETAIL_MASTER_ID));
 
-    testEntity.getReferencedKey(ENTITIES.getDefinition(TestDomain.T_DETAIL).getForeignKeyProperty(TestDomain.DETAIL_MASTER_FK));
+    testEntity.getReferencedKey(TestDomain.DETAIL_MASTER_FK);
 
     //test copy()
     final Entity test2 = ENTITIES.deepCopyEntity(testEntity);
@@ -322,7 +316,7 @@ public class DefaultEntityTest {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertThrows(IllegalArgumentException.class, () ->
-            testEntity.getReferencedKey(ENTITIES.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK)));
+            testEntity.getReferencedKey(TestDomain.EMP_DEPARTMENT_FK));
   }
 
   @Test
@@ -331,7 +325,7 @@ public class DefaultEntityTest {
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     assertTrue(testEntity.isNull(TestDomain.DETAIL_MASTER_ID));
     assertTrue(testEntity.isNull(TestDomain.DETAIL_MASTER_FK));
-    assertTrue(testEntity.isForeignKeyNull(ENTITIES.getDefinition(TestDomain.T_DETAIL).getForeignKeyProperty(TestDomain.DETAIL_MASTER_FK)));
+    assertTrue(testEntity.isForeignKeyNull(TestDomain.DETAIL_MASTER_FK));
     testEntity.put(TestDomain.DETAIL_MASTER_ID, 10L);
 
     assertFalse(testEntity.isLoaded(TestDomain.DETAIL_MASTER_FK));
@@ -341,17 +335,15 @@ public class DefaultEntityTest {
     assertFalse(testEntity.isNull(TestDomain.DETAIL_MASTER_FK));
     assertFalse(testEntity.isNull(TestDomain.DETAIL_MASTER_ID));
 
-    final ForeignKeyProperty foreignKeyProperty =
-            ENTITIES.getDefinition(TestDomain.T_COMPOSITE_DETAIL).getForeignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
     final Entity composite = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, null);
-    assertTrue(composite.isForeignKeyNull(foreignKeyProperty));
+    assertTrue(composite.isForeignKeyNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1);
-    assertTrue(composite.isForeignKeyNull(foreignKeyProperty));
+    assertTrue(composite.isForeignKeyNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, null);
-    assertTrue(composite.isForeignKeyNull(foreignKeyProperty));
+    assertTrue(composite.isForeignKeyNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 1);
-    assertFalse(composite.isForeignKeyNull(foreignKeyProperty));
+    assertFalse(composite.isForeignKeyNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
   }
 
   @Test
@@ -460,12 +452,12 @@ public class DefaultEntityTest {
     department.put(TestDomain.DEPARTMENT_ID, -10);
     final Entity employee = ENTITIES.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_ID, -10);
-    assertTrue(employee.isForeignKeyNull(ENTITIES.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK)));
+    assertTrue(employee.isForeignKeyNull(TestDomain.EMP_DEPARTMENT_FK));
     assertNull(employee.get(TestDomain.EMP_DEPARTMENT_FK));
     assertNull(employee.get(TestDomain.EMP_DEPARTMENT));
 
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
-    assertFalse(employee.isForeignKeyNull(ENTITIES.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK)));
+    assertFalse(employee.isForeignKeyNull(TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(employee.get(TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(employee.get(TestDomain.EMP_DEPARTMENT));
   }

@@ -98,16 +98,16 @@ public interface EntityIdentity extends Identity {
   Attribute<Boolean> booleanAttribute(String name);
 
   /**
-   * Creates a new {@link Attribute<Entity>}, associated with this Identity.
+   * Creates a new {@link Attribute}, associated with this Identity.
    * @param name the attribute name
-   * @return a new {@link Attribute<Entity>}
+   * @return a new {@link Attribute}
    */
   Attribute<Entity> entityAttribute(String name);
 
   /**
-   * Creates a new {@link Attribute<byte[]>}, associated with this Identity.
+   * Creates a new {@link Attribute}, associated with this Identity.
    * @param name the attribute name
-   * @return a new {@link Attribute<byte[]>}
+   * @return a new {@link Attribute}
    */
   Attribute<byte[]> blobAttribute(String name);
 }

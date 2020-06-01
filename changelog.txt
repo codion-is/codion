@@ -6169,3 +6169,4 @@
   Domain.domainIdentity() moved to Entities
   EntityAttribute removed, Attribute.isEntity() added
   BlobAttribute removed
+  Entity.getReferencedKey() and isForeignKeyNull() ForeignKeyProperty parameter replaced with Attribute<Entity>

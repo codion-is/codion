@@ -405,7 +405,7 @@ public final class EntitiesTest {
     final Entity emp4 = entities.entity(TestDomain.T_EMP);
 
     final Set<Entity.Key> referencedKeys = Entities.getReferencedKeys(asList(emp1, emp2, emp3, emp4),
-            entities.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK));
+            TestDomain.EMP_DEPARTMENT_FK);
     assertEquals(2, referencedKeys.size());
     referencedKeys.forEach(key -> assertEquals(TestDomain.T_DEPARTMENT, key.getEntityId()));
     final List<Integer> values = Entities.getValues(new ArrayList<>(referencedKeys));

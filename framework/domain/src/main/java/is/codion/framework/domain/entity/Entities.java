@@ -8,7 +8,6 @@ import is.codion.framework.domain.identity.DomainIdentity;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
@@ -282,13 +281,13 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   /**
    * Returns the primary keys of the entities referenced by the given entities via the given foreign key
    * @param entities the entities
-   * @param foreignKeyProperty the foreign key
+   * @param foreignKeyAttribute the foreign key attribute
    * @return the primary keys of the referenced entities
    */
-  static Set<Entity.Key> getReferencedKeys(final List<Entity> entities, final ForeignKeyProperty foreignKeyProperty) {
+  static Set<Entity.Key> getReferencedKeys(final List<Entity> entities, final Attribute<Entity> foreignKeyAttribute) {
     final Set<Entity.Key> keySet = new HashSet<>();
     for (int i = 0; i < entities.size(); i++) {
-      final Entity.Key key = entities.get(i).getReferencedKey(foreignKeyProperty);
+      final Entity.Key key = entities.get(i).getReferencedKey(foreignKeyAttribute);
       if (key != null) {
         keySet.add(key);
       }
