@@ -796,15 +796,16 @@ final class DefaultEntity implements Entity {
     for (int i = 0; i < properties.size(); i++) {
       final Property<?> property = properties.get(i);
       if (!(property instanceof DerivedProperty)) {
-        final boolean containsValue = containsKey(property.getAttribute());
+        final Attribute<?> attribute = property.getAttribute();
+        final boolean containsValue = values.containsKey(attribute);
         stream.writeBoolean(containsValue);
         if (containsValue) {
-          stream.writeObject(values.get(property.getAttribute()));
+          stream.writeObject(values.get(attribute));
           if (isModified) {
-            final boolean valueModified = isModified(property.getAttribute());
+            final boolean valueModified = originalValues != null && originalValues.containsKey(attribute);
             stream.writeBoolean(valueModified);
             if (valueModified) {
-              stream.writeObject(getOriginal(property.getAttribute()));
+              stream.writeObject(originalValues.get(attribute));
             }
           }
         }
@@ -827,9 +828,10 @@ final class DefaultEntity implements Entity {
       if (!(property instanceof DerivedProperty)) {
         final boolean containsValue = stream.readBoolean();
         if (containsValue) {
-          values.put(property.getAttribute(), property.getAttribute().validateType(stream.readObject()));
+          final Attribute<Object> attribute = property.getAttribute();
+          values.put(attribute, attribute.validateType(stream.readObject()));
           if (isModified && stream.readBoolean()) {
-            setOriginalValue(property.getAttribute(), property.getAttribute().validateType(stream.readObject()));
+            setOriginalValue(attribute, attribute.validateType(stream.readObject()));
           }
         }
       }

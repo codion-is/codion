@@ -5,7 +5,7 @@ package is.codion.framework.domain.identity;
 
 import static is.codion.common.Util.nullOrEmpty;
 
-class DefaultIdentity implements Identity {
+final class DefaultIdentity implements Identity {
 
   private static final long serialVersionUID = 1;
 
@@ -19,7 +19,7 @@ class DefaultIdentity implements Identity {
   }
 
   @Override
-  public final String getName() {
+  public String getName() {
     return name;
   }
 
@@ -37,12 +37,12 @@ class DefaultIdentity implements Identity {
   }
 
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return name.hashCode();
   }
 
   @Override
-  public final String toString() {
+  public String toString() {
     return name;
   }
 }
