@@ -6176,3 +6176,4 @@
   DomainIdentity removed, quite unnecessary
   ValueChange now Attribute based
   EntityEditModel, put(), get() and remove() with Property parameters removed
+  EntityEditComponentPanel, removed redundant create method overloads with Property parameter

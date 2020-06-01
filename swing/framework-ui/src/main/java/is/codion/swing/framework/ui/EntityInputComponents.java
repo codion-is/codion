@@ -261,9 +261,6 @@ public final class EntityInputComponents {
                                          final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    if (!property.getAttribute().isBoolean()) {
-      throw new IllegalArgumentException("Boolean property required for createCheckBox");
-    }
 
     return initializeCheckBox(property, value, enabledState,
             includeCaption == IncludeCaption.YES ? new JCheckBox(property.getCaption()) : new JCheckBox());
@@ -282,7 +279,7 @@ public final class EntityInputComponents {
                                                         final IncludeCaption includeCaption) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    if (!property.getAttribute().isBoolean() || !property.isNullable()) {
+    if (!property.isNullable()) {
       throw new IllegalArgumentException("Nullable boolean property required for createNullableCheckBox");
     }
 
