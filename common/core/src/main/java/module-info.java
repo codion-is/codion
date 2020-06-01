@@ -14,7 +14,6 @@ module is.codion.common.core {
   exports is.codion.common.state;
   exports is.codion.common.user;
   exports is.codion.common.value;
-  exports is.codion.common.valuemap;
   exports is.codion.common.version;
 
   uses is.codion.common.LoggerProxy;
