@@ -5,7 +5,7 @@ package is.codion.framework.db.http;
 
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.identity.DomainIdentity;
+import is.codion.framework.domain.identity.Identity;
 
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 
@@ -28,7 +28,7 @@ public final class HttpEntityConnections {
    * @param clientId the client id
    * @return a http based EntityConnection
    */
-  public static HttpEntityConnection createConnection(final DomainIdentity domainId, final String serverHostName,
+  public static HttpEntityConnection createConnection(final Identity domainId, final String serverHostName,
                                                       final int serverPort, final User user,
                                                       final String clientTypeId, final UUID clientId) {
     return new HttpEntityConnection(domainId, serverHostName, serverPort, ClientHttps.FALSE, user, clientTypeId, clientId,
@@ -45,7 +45,7 @@ public final class HttpEntityConnections {
    * @param clientId the client id
    * @return a http based EntityConnection
    */
-  public static HttpEntityConnection createSecureConnection(final DomainIdentity domainId, final String serverHostName,
+  public static HttpEntityConnection createSecureConnection(final Identity domainId, final String serverHostName,
                                                             final int serverPort, final User user,
                                                             final String clientTypeId, final UUID clientId) {
     return new HttpEntityConnection(domainId, serverHostName, serverPort, ClientHttps.TRUE, user, clientTypeId, clientId,

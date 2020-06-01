@@ -7,7 +7,6 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -267,7 +266,7 @@ public final class EntityJSONParser {
    * @throws IllegalArgumentException in case of an undefined entity
    */
   public Entity.Key parseKey(final JSONObject keyObject) {
-    final EntityIdentity entityId = Entities.entityIdentity(keyObject.getString(ENTITY_ID));
+    final Entity.Identity entityId = Entities.entityIdentity(keyObject.getString(ENTITY_ID));
     final Entity.Key key = entities.key(entityId);
     final EntityDefinition definition = entities.getDefinition(entityId);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
@@ -393,13 +392,13 @@ public final class EntityJSONParser {
    * @throws IllegalArgumentException in case of an undefined entity
    */
   private Entity parseEntity(final JSONObject entityObject) {
-    final EntityIdentity entityId = Entities.entityIdentity(entityObject.getString(ENTITY_ID));
+    final Entity.Identity entityId = Entities.entityIdentity(entityObject.getString(ENTITY_ID));
 
     return entities.getDefinition(entityId).entity(parseValues(entityObject, entityId, VALUES),
             entityObject.isNull(ORIGINAL_VALUES) ? null : parseValues(entityObject, entityId, ORIGINAL_VALUES));
   }
 
-  private Map<Attribute<?>, Object> parseValues(final JSONObject entityObject, final EntityIdentity entityId, final String valuesKey) {
+  private Map<Attribute<?>, Object> parseValues(final JSONObject entityObject, final Entity.Identity entityId, final String valuesKey) {
     final Map<Attribute<?>, Object> valueMap = new HashMap<>();
     final JSONObject propertyValues = entityObject.getJSONObject(valuesKey);
     for (int j = 0; j < propertyValues.names().length(); j++) {

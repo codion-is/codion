@@ -6,8 +6,8 @@ package is.codion.plugin.jackson.json.db;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.EntityCondition;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -35,7 +35,7 @@ final class EntityConditionDeserializer extends StdDeserializer<EntityCondition>
   @Override
   public EntityCondition deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityConditionNode = parser.getCodec().readTree(parser);
-    final EntityIdentity entityId = entityIdentity(entityConditionNode.get("entityId").asText());
+    final Entity.Identity entityId = entityIdentity(entityConditionNode.get("entityId").asText());
     final JsonNode conditionNode = entityConditionNode.get("condition");
 
     final Condition condition = conditionDeserializer.deserialize(

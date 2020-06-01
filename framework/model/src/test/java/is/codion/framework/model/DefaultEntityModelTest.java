@@ -18,9 +18,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.tests.AbstractEntityModelTest;
@@ -71,7 +69,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
 
   public static final class TestEntityEditModel extends DefaultEntityEditModel {
 
-    public TestEntityEditModel(final EntityIdentity entityId, final EntityConnectionProvider connectionProvider) {
+    public TestEntityEditModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider) {
       super(entityId, connectionProvider);
     }
     @Override
@@ -93,10 +91,10 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
    */
   public static class TestEntityTableModel implements EntityTableModel<TestEntityEditModel>, FilteredTableModel<Entity, Property, Object> {
 
-    private final EntityIdentity entityId;
+    private final Entity.Identity entityId;
     private final EntityConnectionProvider connectionProvider;
 
-    public TestEntityTableModel(final EntityIdentity entityId, final EntityConnectionProvider connectionProvider) {
+    public TestEntityTableModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider) {
       this.entityId = entityId;
       this.connectionProvider = connectionProvider;
     }
@@ -174,7 +172,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {}
     @Override
-    public void replaceForeignKeyValues(final Identity foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {}
+    public void replaceForeignKeyValues(final Entity.Identity foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {}
     @Override
     public void addEntities(final List<Entity> entities) {}
     @Override
@@ -286,7 +284,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void clear() {}
     @Override
-    public EntityIdentity getEntityId() {return entityId;}
+    public Entity.Identity getEntityId() {return entityId;}
     @Override
     public EntityConnectionProvider getConnectionProvider() {return connectionProvider;}
     @Override

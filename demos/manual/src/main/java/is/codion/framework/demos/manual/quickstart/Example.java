@@ -15,7 +15,6 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
@@ -48,7 +47,7 @@ public final class Example {
     }
 
     // tag::customer[]
-    public static final EntityIdentity T_CUSTOMER = entityIdentity("store.customer");
+    public static final Entity.Identity T_CUSTOMER = entityIdentity("store.customer");
     public static final Attribute<String> CUSTOMER_ID = T_CUSTOMER.stringAttribute("id");
     public static final Attribute<String> CUSTOMER_FIRST_NAME = T_CUSTOMER.stringAttribute("first_name");
     public static final Attribute<String> CUSTOMER_LAST_NAME = T_CUSTOMER.stringAttribute("last_name");
@@ -72,7 +71,7 @@ public final class Example {
     }
     // end::customer[]
     // tag::address[]
-    public static final EntityIdentity T_ADDRESS = entityIdentity("store.address");
+    public static final Entity.Identity T_ADDRESS = entityIdentity("store.address");
     public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("id");
     public static final Attribute<String> ADDRESS_STREET = T_ADDRESS.stringAttribute("street");
     public static final Attribute<String> ADDRESS_CITY = T_ADDRESS.stringAttribute("city");
@@ -90,7 +89,7 @@ public final class Example {
     }
     // end::address[]
     // tag::customerAddress[]
-    public static final EntityIdentity T_CUSTOMER_ADDRESS = entityIdentity("store.customer_address");
+    public static final Entity.Identity T_CUSTOMER_ADDRESS = entityIdentity("store.customer_address");
     public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("id");
     public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = T_CUSTOMER_ADDRESS.integerAttribute("customer_id");
     public static final Attribute<Entity> CUSTOMER_ADDRESS_CUSTOMER_FK = T_CUSTOMER_ADDRESS.entityAttribute("customer_fk");

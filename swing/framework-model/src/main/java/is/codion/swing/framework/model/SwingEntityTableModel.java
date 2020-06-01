@@ -20,10 +20,8 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -85,7 +83,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * The entityId
    */
-  private final EntityIdentity entityId;
+  private final Entity.Identity entityId;
 
   /**
    * The EntityConnection provider
@@ -154,7 +152,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param entityId the entityId
    * @param connectionProvider the db provider
    */
-  public SwingEntityTableModel(final EntityIdentity entityId, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityTableModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider) {
     this(entityId, connectionProvider, new SwingEntityTableSortModel(connectionProvider.getEntities(), entityId),
             new DefaultEntityTableConditionModel(entityId, connectionProvider,
                     new DefaultPropertyFilterModelProvider(), new SwingPropertyConditionModelProvider()));
@@ -169,7 +167,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @throws NullPointerException in case conditionModel is null
    * @throws IllegalArgumentException if {@code conditionModel} entityId does not match the one supplied as parameter
    */
-  public SwingEntityTableModel(final EntityIdentity entityId, final EntityConnectionProvider connectionProvider,
+  public SwingEntityTableModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Property<?>, TableColumn> sortModel,
                                final EntityTableConditionModel conditionModel) {
     super(sortModel, requireNonNull(conditionModel, "conditionModel").getPropertyFilterModels());
@@ -254,7 +252,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final EntityIdentity getEntityId() {
+  public final Entity.Identity getEntityId() {
     return entityId;
   }
 
@@ -467,7 +465,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final void replaceForeignKeyValues(final Identity foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
+  public final void replaceForeignKeyValues(final Entity.Identity foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyValues, "foreignKeyValues");
     final List<ForeignKeyProperty> foreignKeyProperties =
             getEntityDefinition().getForeignKeyReferences(requireNonNull(foreignKeyEntityId, "foreignKeyEntityId"));

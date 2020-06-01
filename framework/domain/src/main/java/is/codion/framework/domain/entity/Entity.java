@@ -9,6 +9,10 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +24,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
   /**
    * @return the entityId
    */
-  EntityIdentity getEntityId();
+  Identity getEntityId();
 
   /**
    * Returns the primary key of this entity.
@@ -116,7 +120,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param entityId the entityId
    * @return true if this entity is of the given type
    */
-  boolean is(EntityIdentity entityId);
+  boolean is(Identity entityId);
 
   /**
    * @param entity the entity to compare to
@@ -253,7 +257,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
     /**
      * @return the entityId
      */
-    EntityIdentity getEntityId();
+    Identity getEntityId();
 
     /**
      * @return a List containing the properties comprising this key
@@ -331,5 +335,106 @@ public interface Entity extends Comparable<Entity>, Serializable {
      * @return the number of values in this key
      */
     int size();
+  }
+
+  /**
+   * Factory for {@link Attribute} instances associated with this identity.
+   */
+  interface Identity extends is.codion.framework.domain.identity.Identity {
+
+    /**
+     * Creates a new {@link Attribute}, associated with this Identity.
+     * @param name the attribute name
+     * @param typeClass the class representing the attribute value type
+     * @param <T> the attribute type
+     * @return a new {@link Attribute}
+     */
+    <T> Attribute<T> attribute(String name, Class<T> typeClass);
+
+    /**
+     * Creates a new {@link Attribute} associated with this Identity.
+     * Use this when you don't have access to an actual Attribute instance, only its name
+     * and identity, but need to access the value associated with it.
+     * @param name the attribute name
+     * @return a new {@link Attribute}
+     */
+    Attribute<Object> objectAttribute(String name);
+
+    /**
+     * Creates a new Long based attribute, associated with this Identity.
+     * @param name the attribute name.
+     * @return a new Long based attribute.
+     */
+    Attribute<Long> longAttribute(String name);
+
+    /**
+     * Creates a new Integer based attribute, associated with this Identity.
+     * @param name the attribute name.
+     * @return a new Integer based attribute.
+     */
+    Attribute<Integer> integerAttribute(String name);
+
+    /**
+     * Creates a new Double based attribute, associated with this Identity.
+     * @param name the attribute name.
+     * @return a new Double based attribute.
+     */
+    Attribute<Double> doubleAttribute(String name);
+
+    /**
+     * Creates a new BigDecimal based attribute, associated with this Identity.
+     * @param name the attribute name.
+     * @return a new BigDecimal based attribute.
+     */
+    Attribute<BigDecimal> bigDecimalAttribute(String name);
+
+    /**
+     * Creates a new LocalDate based attribute, associated with this Identity.
+     * @param name the attribute name.
+     * @return a new LocalDate based attribute.
+     */
+    Attribute<LocalDate> localDateAttribute(String name);
+
+    /**
+     * Creates a new LocalTime based attribute, associated with this Identity.
+     * @param name the attribute name.
+     * @return a new LocalTime based attribute.
+     */
+    Attribute<LocalTime> localTimeAttribute(String name);
+
+    /**
+     * Creates a new LocalDateTime based attribute, associated with this Identity.
+     * @param name the attribute name.
+     * @return a new LocalDateTime based attribute.
+     */
+    Attribute<LocalDateTime> localDateTimeAttribute(String name);
+
+    /**
+     * Creates a new String based attribute, associated with this Identity.
+     * @param name the attribute name.
+     * @return a new String based attribute.
+     */
+    Attribute<String> stringAttribute(String name);
+
+    /**
+     * Creates a new Boolean based attribute, associated with this Identity.
+     * @param name the attribute name.
+     * @return a new Boolean based attribute.
+     */
+    Attribute<Boolean> booleanAttribute(String name);
+
+    /**
+     * Creates a new {@link Attribute}, associated with this Identity.
+     * @param name the attribute name
+     * @return a new {@link Attribute}
+     */
+    Attribute<Entity> entityAttribute(String name);
+
+    /**
+     * Creates a new {@link Attribute}, associated with this Identity.
+     * @param name the attribute name
+     * @return a new {@link Attribute}
+     */
+    Attribute<byte[]> blobAttribute(String name);
   }
 }

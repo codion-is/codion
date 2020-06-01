@@ -6,7 +6,6 @@ package is.codion.framework.demos.manual.store.minimal.domain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 
 import static is.codion.framework.domain.entity.Entities.entityIdentity;
@@ -15,14 +14,14 @@ import static is.codion.framework.domain.property.Properties.*;
 
 public class Store extends Domain {
 
-  public static final EntityIdentity T_CUSTOMER = entityIdentity("store.customer");
+  public static final Entity.Identity T_CUSTOMER = entityIdentity("store.customer");
   public static final Attribute<Integer> CUSTOMER_ID = T_CUSTOMER.integerAttribute("id");
   public static final Attribute<String> CUSTOMER_FIRST_NAME = T_CUSTOMER.stringAttribute("first_name");
   public static final Attribute<String> CUSTOMER_LAST_NAME = T_CUSTOMER.stringAttribute("last_name");
   public static final Attribute<String> CUSTOMER_EMAIL = T_CUSTOMER.stringAttribute("email");
   public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = T_CUSTOMER.booleanAttribute("is_active");
 
-  public static final EntityIdentity T_ADDRESS = entityIdentity("store.address");
+  public static final Entity.Identity T_ADDRESS = entityIdentity("store.address");
   public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("id");
   public static final Attribute<Entity> ADDRESS_CUSTOMER_FK = T_ADDRESS.entityAttribute("customer_fk");
   public static final Attribute<Integer> ADDRESS_CUSTOMER_ID = T_ADDRESS.integerAttribute("customer_id");

@@ -4,7 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.EntityIdentity;
+import is.codion.framework.domain.entity.Entity;
 
 /**
  * Specifies a class which provides EntityModel, EntityTableModel and EntityEditModel instances for a given entityId.
@@ -17,7 +17,7 @@ public interface EntityModelBuilder<M extends EntityModel<M, E, T>, E extends En
   /**
    * @return the entityId of the models provided by this model provider
    */
-  EntityIdentity getEntityId();
+  Entity.Identity getEntityId();
 
   /**
    * Creates a {@link EntityModel} instance, based on the given connection provider

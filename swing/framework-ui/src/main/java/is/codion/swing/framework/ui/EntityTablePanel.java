@@ -20,7 +20,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
@@ -604,7 +603,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     try {
       showWaitCursor(this);
-      final Map<EntityIdentity, Collection<Entity>> dependencies =
+      final Map<Entity.Identity, Collection<Entity>> dependencies =
               tableModel.getConnectionProvider().getConnection()
                       .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
       if (!dependencies.isEmpty()) {
@@ -776,7 +775,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public static void showDependenciesDialog(final Collection<Entity> entities, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent) {
     try {
-      final Map<EntityIdentity, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependencies(entities);
+      final Map<Entity.Identity, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependencies(entities);
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, MESSAGES.getString("delete_dependent_records"));
     }
     catch (final DatabaseException e) {
@@ -820,7 +819,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    final EntityIdentity entityId = entities.iterator().next().getEntityId();
+    final Entity.Identity entityId = entities.iterator().next().getEntityId();
     final SwingEntityEditModel editModel = new SwingEntityEditModel(entityId, connectionProvider);
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityId, connectionProvider) {
       @Override
@@ -1363,7 +1362,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     });
   }
 
-  private static void showDependenciesDialog(final Map<EntityIdentity, Collection<Entity>> dependencies,
+  private static void showDependenciesDialog(final Map<Entity.Identity, Collection<Entity>> dependencies,
                                              final EntityConnectionProvider connectionProvider,
                                              final JComponent dialogParent, final String title) {
     JPanel dependenciesPanel;
@@ -1392,11 +1391,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return label;
   }
 
-  private static JPanel createDependenciesPanel(final Map<EntityIdentity, Collection<Entity>> dependencies,
+  private static JPanel createDependenciesPanel(final Map<Entity.Identity, Collection<Entity>> dependencies,
                                                 final EntityConnectionProvider connectionProvider) {
     final JPanel panel = new JPanel(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
-    for (final Map.Entry<EntityIdentity, Collection<Entity>> entry : dependencies.entrySet()) {
+    for (final Map.Entry<Entity.Identity, Collection<Entity>> entry : dependencies.entrySet()) {
       final Collection<Entity> dependantEntities = entry.getValue();
       if (!dependantEntities.isEmpty()) {
         tabPane.addTab(connectionProvider.getEntities().getDefinition(entry.getKey()).getCaption(),

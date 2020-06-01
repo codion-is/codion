@@ -6172,3 +6172,5 @@
   Entity.getReferencedKey() and isForeignKeyNull() ForeignKeyProperty parameter replaced with Attribute<Entity>
   DefaultEntity.readObject() and writeObject(), some minor performance optimizations
   Updated a bunch of Identity parameters and return values to the more appropriate EntityIdentity
+  EntityIdentity moved to Entity, renamed Identity
+  DomainIdentity removed, quite unnecessary

@@ -16,7 +16,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.identity.DomainIdentity;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -101,7 +101,7 @@ public class EntityServletServerTest {
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
             .build();
-    final DomainIdentity domainId = new TestDomain().getDomainId();
+    final Identity domainId = new TestDomain().getDomainId();
     final String clientTypeId = "EntityServletServerTest";
     final UUID clientId = UUID.randomUUID();
     final CloseableHttpClient client = HttpClientBuilder.create()
@@ -147,7 +147,7 @@ public class EntityServletServerTest {
     response.close();
     client.close();
 
-    final DomainIdentity domainId = new TestDomain().getDomainId();
+    final Identity domainId = new TestDomain().getDomainId();
     final String clientTypeId = "EntityServletServerTest";
     //test with missing clientId header
     client = HttpClientBuilder.create()

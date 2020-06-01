@@ -13,7 +13,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 
 import java.sql.Connection;
@@ -50,7 +49,7 @@ public final class TestDomain extends Domain {
     registerEntities();
   }
 
-  public static final EntityIdentity T_DEPARTMENT = entityIdentity("scott.dept");
+  public static final Entity.Identity T_DEPARTMENT = entityIdentity("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -69,7 +68,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final EntityIdentity T_EMP = entityIdentity("scott.emp");
+  public static final Entity.Identity T_EMP = entityIdentity("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");

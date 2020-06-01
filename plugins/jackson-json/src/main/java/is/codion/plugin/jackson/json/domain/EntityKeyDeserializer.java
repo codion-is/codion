@@ -6,7 +6,6 @@ package is.codion.plugin.jackson.json.domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -36,7 +35,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
   public Entity.Key deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final ObjectCodec codec = parser.getCodec();
     final JsonNode node = codec.readTree(parser);
-    final EntityIdentity entityId = Entities.entityIdentity(node.get("entityId").asText());
+    final Entity.Identity entityId = Entities.entityIdentity(node.get("entityId").asText());
     final EntityDefinition definition = entities.getDefinition(entityId);
     final JsonNode values = node.get("values");
     final Entity.Key key = entities.key(entityId);

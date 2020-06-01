@@ -7,7 +7,6 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 
 import java.time.LocalDate;
@@ -31,7 +30,7 @@ public final class TestDomain extends Domain {
     employee();
   }
 
-  public static final EntityIdentity T_MASTER = entityIdentity("domain.master_entity");
+  public static final Entity.Identity T_MASTER = entityIdentity("domain.master_entity");
   public static final Attribute<Long> MASTER_ID = T_MASTER.longAttribute("id");
   public static final Attribute<String> MASTER_NAME = T_MASTER.stringAttribute("name");
   public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
@@ -45,7 +44,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(MASTER_NAME));
   }
 
-  public static final EntityIdentity T_DETAIL = entityIdentity("domain.detail_entity");
+  public static final Entity.Identity T_DETAIL = entityIdentity("domain.detail_entity");
   public static final Attribute<Long> DETAIL_ID = T_DETAIL.longAttribute("id");
   public static final Attribute<Integer> DETAIL_INT = T_DETAIL.integerAttribute("int");
   public static final Attribute<Double> DETAIL_DOUBLE = T_DETAIL.doubleAttribute("double");
@@ -99,7 +98,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
-  public static final EntityIdentity T_DEPARTMENT = entityIdentity("scott.dept");
+  public static final Entity.Identity T_DEPARTMENT = entityIdentity("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -118,7 +117,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final EntityIdentity T_EMP = entityIdentity("scott.emp");
+  public static final Entity.Identity T_EMP = entityIdentity("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");

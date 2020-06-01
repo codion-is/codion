@@ -15,7 +15,6 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Property;
 
@@ -42,13 +41,13 @@ public final class EntitiesTutorial {
 
     //EntityIdentity constant for the table entityId ('T_' prefix)
     //and an Attribute for each column
-    public static final EntityIdentity T_ARTIST = entityIdentity("chinook.artist");
+    public static final Entity.Identity T_ARTIST = entityIdentity("chinook.artist");
     public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
     public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
 
     //EntityIdentity constant for the table entityId ('T_' prefix),
     //and an Attribute for each column and one for the foreign key relation
-    public static final EntityIdentity T_ALBUM = entityIdentity("chinook.album");
+    public static final Entity.Identity T_ALBUM = entityIdentity("chinook.album");
     public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
     public static final Attribute<String> ALBUM_TITLE = T_ALBUM.stringAttribute("title");
     public static final Attribute<Integer> ALBUM_ARTISTID = T_ALBUM.integerAttribute("artistid");

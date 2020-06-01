@@ -4,7 +4,6 @@
 package is.codion.framework.domain.attribute;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 
 import java.math.BigDecimal;
 import java.sql.Types;
@@ -24,9 +23,9 @@ class DefaultAttribute<T> implements Attribute<T> {
   private final int type;
   private final Class<T> typeClass;
   private final int hashCode;
-  private final EntityIdentity entityId;
+  private final Entity.Identity entityId;
 
-  DefaultAttribute(final String name, final Class<T> typeClass, final EntityIdentity entityId) {
+  DefaultAttribute(final String name, final Class<T> typeClass, final Entity.Identity entityId) {
     if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
     }
@@ -53,7 +52,7 @@ class DefaultAttribute<T> implements Attribute<T> {
   }
 
   @Override
-  public final EntityIdentity getEntityId() {
+  public final Entity.Identity getEntityId() {
     return entityId;
   }
 

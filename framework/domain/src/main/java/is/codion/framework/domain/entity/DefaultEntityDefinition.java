@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.Text;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -43,12 +42,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The entityId
    */
-  private final EntityIdentity entityId;
+  private final Entity.Identity entityId;
 
   /**
    * The domainId
    */
-  private Identity domainId;
+  private is.codion.framework.domain.identity.Identity domainId;
 
   /**
    * The caption to use for the entity type
@@ -171,7 +170,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * Defines a new entity type with the entityId serving as the initial entity caption.
    */
-  DefaultEntityDefinition(final EntityIdentity entityId, final String tableName, final Property.Builder<?>... propertyBuilders) {
+  DefaultEntityDefinition(final Entity.Identity entityId, final String tableName, final Property.Builder<?>... propertyBuilders) {
     this.entityId = requireNonNull(entityId, "entityId");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.entityProperties = new EntityProperties(entityId, propertyBuilders);
@@ -181,7 +180,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public EntityIdentity getEntityId() {
+  public Entity.Identity getEntityId() {
     return entityId;
   }
 
@@ -204,7 +203,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Identity getDomainId() {
+  public is.codion.framework.domain.identity.Identity getDomainId() {
     return domainId;
   }
 
@@ -387,7 +386,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<ForeignKeyProperty> getForeignKeyReferences(final Identity foreignEntityId) {
+  public List<ForeignKeyProperty> getForeignKeyReferences(final Entity.Identity foreignEntityId) {
     return getForeignKeyProperties().stream().filter(foreignKeyProperty ->
             foreignKeyProperty.getForeignEntityId().equals(foreignEntityId)).collect(toList());
   }
@@ -632,7 +631,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private static final long serialVersionUID = 1;
 
-    private final EntityIdentity entityId;
+    private final Entity.Identity entityId;
 
     private final Map<Attribute<?>, Property<?>> propertyMap;
     private final List<Property<?>> properties;
@@ -650,7 +649,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private final List<TransientProperty<?>> transientProperties;
     private final Map<Attribute<?>, List<DenormalizedProperty<?>>> denormalizedProperties;
 
-    private EntityProperties(final EntityIdentity entityId, final Property.Builder<?>... propertyBuilders) {
+    private EntityProperties(final Entity.Identity entityId, final Property.Builder<?>... propertyBuilders) {
       this.entityId = entityId;
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
@@ -829,7 +828,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder domainId(final Identity domainId) {
+    public Builder domainId(final is.codion.framework.domain.identity.Identity domainId) {
       requireNonNull(domainId, "domainId");
       if (definition.domainId != null) {
         throw new IllegalStateException("Domain id has already been set: " + definition.domainId);

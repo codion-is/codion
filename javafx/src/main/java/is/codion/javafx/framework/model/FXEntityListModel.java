@@ -17,10 +17,8 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
@@ -79,7 +77,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @param entityId the entityId
    * @param connectionProvider the connection provider
    */
-  public FXEntityListModel(final EntityIdentity entityId, final EntityConnectionProvider connectionProvider) {
+  public FXEntityListModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider) {
     this(entityId, connectionProvider, new DefaultEntityTableConditionModel(entityId, connectionProvider,
             null, new FXConditionModelProvider()));
   }
@@ -91,7 +89,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @param conditionModel the {@link EntityTableConditionModel} to use
    * @throws IllegalArgumentException in case the condition model is based on a different entity
    */
-  public FXEntityListModel(final EntityIdentity entityId, final EntityConnectionProvider connectionProvider,
+  public FXEntityListModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider,
                            final EntityTableConditionModel conditionModel) {
     super(entityId, connectionProvider);
     requireNonNull(conditionModel);
@@ -213,7 +211,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void replaceForeignKeyValues(final Identity foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
+  public final void replaceForeignKeyValues(final Entity.Identity foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
             getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
     for (final Entity entity : getItems()) {

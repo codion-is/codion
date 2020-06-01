@@ -7,7 +7,6 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.plugin.jasperreports.model.JasperReportWrapper;
 
@@ -31,7 +30,7 @@ import static java.util.Arrays.asList;
 public final class EmpDept extends Domain {
 
   /** Entity identifier for the table scott.dept*/
-  public static final EntityIdentity T_DEPARTMENT = entityIdentity("scott.dept");
+  public static final Entity.Identity T_DEPARTMENT = entityIdentity("scott.dept");
 
   /** Attributes for the columns in the scott.dept table*/
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
@@ -41,7 +40,7 @@ public final class EmpDept extends Domain {
 
   // tag::employeeConstants[]
   /** Entity identifier for the table scott.emp*/
-  public static final EntityIdentity T_EMPLOYEE = entityIdentity("scott.emp");
+  public static final Entity.Identity T_EMPLOYEE = entityIdentity("scott.emp");
 
   /** Attributes for the columns in the scott.emp table*/
   public static final Attribute<Integer> EMPLOYEE_ID = T_EMPLOYEE.integerAttribute("empno");

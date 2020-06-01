@@ -11,8 +11,6 @@ import is.codion.common.event.Events;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import org.slf4j.Logger;
@@ -52,8 +50,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityModel.class);
 
-  private final Event refreshStartedEvent = Events.event();
-  private final Event refreshDoneEvent = Events.event();
+  private final Event<?> refreshStartedEvent = Events.event();
+  private final Event<?> refreshDoneEvent = Events.event();
   private final Event<M> linkedDetailModelAddedEvent = Events.event();
   private final Event<M> linkedDetailModelRemovedEvent = Events.event();
 
@@ -128,7 +126,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final EntityIdentity getEntityId() {
+  public final Entity.Identity getEntityId() {
     return editModel.getEntityId();
   }
 
@@ -196,7 +194,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final boolean containsDetailModel(final EntityIdentity entityId) {
+  public final boolean containsDetailModel(final Entity.Identity entityId) {
     return detailModels.stream().anyMatch(detailModel -> detailModel.getEntityId().equals(entityId));
   }
 
@@ -248,7 +246,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M getDetailModel(final EntityIdentity entityId) {
+  public final M getDetailModel(final Entity.Identity entityId) {
     for (final M detailModel : detailModels) {
       if (detailModel.getEntityId().equals(entityId)) {
         return detailModel;
@@ -324,7 +322,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void initialize(final Identity foreignKeyEntityId, final List<Entity> foreignKeyValues) {
+  public final void initialize(final Entity.Identity foreignKeyEntityId, final List<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
             editModel.getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
     if (!foreignKeyProperties.isEmpty()) {
@@ -413,8 +411,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Initializes all linked detail models according to the active entities in this master model
    * @see #getActiveEntities()
    * @see #addLinkedDetailModel(EntityModel)
-   * @see #initialize(ForeignKeyProperty, java.util.List)
-   * @see #initialize(Identity, List)
+   * @see #initialize(Entity.Identity, List)
    */
   protected final void initializeDetailModels() {
     final List<Entity> activeEntities = getActiveEntities();

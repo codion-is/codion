@@ -8,8 +8,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.identity.DomainIdentity;
-import is.codion.framework.domain.identity.Identity;
+import is.codion.framework.domain.identity.Identities;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -105,7 +104,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public EntityIdentity getEntityId() {
+  public Identity getEntityId() {
     return definition.getEntityId();
   }
 
@@ -124,7 +123,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean is(final EntityIdentity entityId) {
+  public boolean is(final Identity entityId) {
     return definition.getEntityId().equals(entityId);
   }
 
@@ -814,8 +813,8 @@ final class DefaultEntity implements Entity {
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    final DomainIdentity domainId = Entities.domainIdentity((String) stream.readObject());
-    final EntityIdentity entityId = Entities.entityIdentity((String) stream.readObject());
+    final is.codion.framework.domain.identity.Identity domainId = Identities.identity((String) stream.readObject());
+    final Identity entityId = Entities.entityIdentity((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
     definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
     if (definition == null) {

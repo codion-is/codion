@@ -6,7 +6,6 @@ package is.codion.framework.domain.property;
 import is.codion.common.DateFormats;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class PropertiesTest {
 
-  private static final EntityIdentity ENTITY_ID = entityIdentity("entityId");
-  private static final EntityIdentity REFERENCED_ENTITY_ID = entityIdentity("referencedEntityId");
+  private static final Entity.Identity ENTITY_ID = entityIdentity("entityId");
+  private static final Entity.Identity REFERENCED_ENTITY_ID = entityIdentity("referencedEntityId");
 
   @Test
   public void derivedPropertyWithoutLinkedProperties() {

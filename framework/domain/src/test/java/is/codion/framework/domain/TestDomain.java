@@ -10,7 +10,6 @@ import is.codion.framework.domain.entity.Department;
 import is.codion.framework.domain.entity.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.ColumnProperty;
 
@@ -41,7 +40,7 @@ public final class TestDomain extends Domain {
     noPKEntity();
   }
 
-  public static final EntityIdentity T_COMPOSITE_MASTER = entityIdentity("domain.composite_master");
+  public static final Entity.Identity T_COMPOSITE_MASTER = entityIdentity("domain.composite_master");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID = T_COMPOSITE_MASTER.integerAttribute("id");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID_2 = T_COMPOSITE_MASTER.integerAttribute("id2");
 
@@ -51,7 +50,7 @@ public final class TestDomain extends Domain {
             columnProperty(COMPOSITE_MASTER_ID_2).primaryKeyIndex(1));
   }
 
-  public static final EntityIdentity T_COMPOSITE_DETAIL = entityIdentity("domain.composite_detail");
+  public static final Entity.Identity T_COMPOSITE_DETAIL = entityIdentity("domain.composite_detail");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = T_COMPOSITE_DETAIL.integerAttribute("master_id");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = T_COMPOSITE_DETAIL.integerAttribute("master_id2");
   public static final Attribute<Entity> COMPOSITE_DETAIL_MASTER_FK = T_COMPOSITE_DETAIL.entityAttribute("master_fk");
@@ -63,7 +62,7 @@ public final class TestDomain extends Domain {
                             columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1))));
   }
 
-  public static final EntityIdentity T_MASTER = entityIdentity("domain.master_entity");
+  public static final Entity.Identity T_MASTER = entityIdentity("domain.master_entity");
   public static final Attribute<Long> MASTER_ID = T_MASTER.longAttribute("id");
   public static final Attribute<String> MASTER_NAME = T_MASTER.stringAttribute("name");
   public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
@@ -77,7 +76,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(MASTER_NAME));
   }
 
-  public static final EntityIdentity T_DETAIL = entityIdentity("domain.detail_entity");
+  public static final Entity.Identity T_DETAIL = entityIdentity("domain.detail_entity");
   public static final Attribute<Long> DETAIL_ID = T_DETAIL.longAttribute("id");
   public static final Attribute<Integer> DETAIL_INT = T_DETAIL.integerAttribute("int");
   public static final Attribute<Double> DETAIL_DOUBLE = T_DETAIL.doubleAttribute("double");
@@ -139,7 +138,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
-  public static final EntityIdentity T_DEPARTMENT = entityIdentity("domain.scott.dept");
+  public static final Entity.Identity T_DEPARTMENT = entityIdentity("domain.scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -170,7 +169,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final EntityIdentity T_EMP = entityIdentity("domain.scott.emp");
+  public static final Entity.Identity T_EMP = entityIdentity("domain.scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("emp_id");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("emp_name");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
@@ -239,7 +238,7 @@ public final class TestDomain extends Domain {
             .caption("Employee");
   }
 
-  public static final EntityIdentity T_NO_PK = entityIdentity("no_pk");
+  public static final Entity.Identity T_NO_PK = entityIdentity("no_pk");
   public static final Attribute<Integer> NO_PK_COL1 = T_NO_PK.integerAttribute("col1");
   public static final Attribute<Integer> NO_PK_COL2 = T_NO_PK.integerAttribute("col2");
   public static final Attribute<Integer> NO_PK_COL3 = T_NO_PK.integerAttribute("col3");

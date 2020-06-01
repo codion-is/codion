@@ -5,7 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
-import is.codion.framework.domain.entity.EntityIdentity;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.Windows;
@@ -537,7 +537,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the detail panel of the given type
    * @throws IllegalArgumentException in case the panel was not found
    */
-  public final EntityPanel getDetailPanel(final EntityIdentity entityId) {
+  public final EntityPanel getDetailPanel(final Entity.Identity entityId) {
     for (final EntityPanel detailPanel : detailEntityPanels) {
       if (detailPanel.entityModel.getEntityId().equals(entityId)) {
         return detailPanel;
@@ -552,7 +552,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param entityId the entityId
    * @return true if a detail panel for the given entityId is found
    */
-  public final boolean containsDetailPanel(final EntityIdentity entityId) {
+  public final boolean containsDetailPanel(final Entity.Identity entityId) {
     return detailEntityPanels.stream().anyMatch(detailPanel -> detailPanel.entityModel.getEntityId().equals(entityId));
   }
 

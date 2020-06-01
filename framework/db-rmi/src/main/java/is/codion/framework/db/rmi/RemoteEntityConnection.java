@@ -13,7 +13,6 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -210,7 +209,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  <T> Entity selectSingle(EntityIdentity entityId, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
+  <T> Entity selectSingle(Entity.Identity entityId, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -263,7 +262,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<Entity> select(EntityIdentity entityId, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
+  <T> List<Entity> select(Entity.Identity entityId, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
@@ -275,7 +274,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<Entity> select(EntityIdentity entityId, Attribute<T> attribute, Collection<T> values) throws RemoteException, DatabaseException;
+  <T> List<Entity> select(Entity.Identity entityId, Attribute<T> attribute, Collection<T> values) throws RemoteException, DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIds
@@ -284,7 +283,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  Map<EntityIdentity, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws RemoteException, DatabaseException;
+  Map<Entity.Identity, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Selects the number of rows returned according to the given condition

@@ -6,7 +6,6 @@ package is.codion.plugin.jackson.json;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 
 import java.math.BigDecimal;
@@ -28,7 +27,7 @@ public final class TestDomain extends Domain {
     employee();
   }
 
-  public static final EntityIdentity T_ENTITY = entityIdentity("test.entity");
+  public static final Entity.Identity T_ENTITY = entityIdentity("test.entity");
   public static final Attribute<BigDecimal> ENTITY_DECIMAL = T_ENTITY.bigDecimalAttribute("id");
   public static final Attribute<LocalDateTime> ENTITY_DATE_TIME = T_ENTITY.localDateTimeAttribute("date_time");
   public static final Attribute<byte[]> ENTITY_BLOB = T_ENTITY.blobAttribute("blob");
@@ -49,7 +48,7 @@ public final class TestDomain extends Domain {
             .conditionProvider(ENTITY_CONDITION_ID, (attributes, values) -> "1 = 2");
   }
 
-  public static final EntityIdentity T_DEPARTMENT = entityIdentity("scott.dept");
+  public static final Entity.Identity T_DEPARTMENT = entityIdentity("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -69,7 +68,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final EntityIdentity T_EMP = entityIdentity("scott.emp");
+  public static final Entity.Identity T_EMP = entityIdentity("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
