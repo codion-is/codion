@@ -10,10 +10,10 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
-import is.codion.framework.domain.property.Attribute;
-import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -29,8 +29,8 @@ import java.awt.GridLayout;
 import java.time.LocalDate;
 import java.util.Locale;
 
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
-import static is.codion.framework.domain.property.Identities.entityIdentity;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 

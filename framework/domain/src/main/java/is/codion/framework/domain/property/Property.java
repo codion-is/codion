@@ -5,6 +5,7 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
+import is.codion.framework.domain.attribute.Attribute;
 
 import java.io.Serializable;
 import java.math.RoundingMode;

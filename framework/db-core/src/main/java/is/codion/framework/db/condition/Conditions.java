@@ -5,13 +5,13 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
 import is.codion.common.db.Operator;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.ConditionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.util.ArrayList;

@@ -13,7 +13,7 @@ import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.user.User;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.identity.Identity;
 
 import com.sun.management.GarbageCollectionNotificationInfo;
 import org.slf4j.Logger;

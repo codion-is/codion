@@ -16,7 +16,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.DomainIdentity;
+import is.codion.framework.domain.identity.DomainIdentity;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;

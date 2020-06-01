@@ -2,6 +2,9 @@ package is.codion.framework.demos.world.domain;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.attribute.BlobAttribute;
+import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
@@ -9,10 +12,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.Attribute;
-import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.DerivedProperty;
-import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.domain.property.Property;
 
 import java.awt.Color;
@@ -22,9 +22,9 @@ import java.util.Objects;
 
 import static is.codion.common.Util.notNull;
 import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.KeyGenerators.sequence;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.property.Identities.entityIdentity;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 

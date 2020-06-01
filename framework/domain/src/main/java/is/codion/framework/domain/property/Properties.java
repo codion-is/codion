@@ -4,7 +4,11 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.item.Item;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.attribute.BlobAttribute;
+import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.identity.Identity;
 
 import java.text.Collator;
 import java.time.LocalDateTime;

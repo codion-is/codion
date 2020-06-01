@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.attribute.Attribute;
+
 final class DefaultMirrorProperty<T> extends DefaultColumnProperty<T> implements MirrorProperty<T> {
 
   private static final long serialVersionUID = 1;

@@ -1,5 +1,5 @@
 [C
-[Lis.codion.framework.domain.property.Attribute;
+[Lis.codion.framework.domain.attribute.Attribute;
 [Ljava.lang.Object;
 [Ljava.lang.StackTraceElement;
 [Ljava.lang.String;
@@ -72,6 +72,7 @@ is.codion.framework.db.condition.DefaultEntityCondition
 is.codion.framework.db.condition.DefaultEntitySelectCondition
 is.codion.framework.db.rmi.RemoteEntityConnection
 is.codion.framework.domain.Domain
+is.codion.framework.domain.Domain$DefaultDomainIdentity
 is.codion.framework.domain.Domain$DomainEntities
 is.codion.framework.domain.Domain$DefaultEntityDefinitionProvider
 is.codion.framework.domain.entity.DefaultEntities
@@ -86,12 +87,11 @@ is.codion.framework.domain.entity.Entity
 is.codion.framework.domain.entity.NullColorProvider
 is.codion.framework.domain.entity.StringProvider
 is.codion.framework.domain.entity.StringProvider$StringValueProvider
-is.codion.framework.domain.property.DefaultDomainIdentity
-is.codion.framework.domain.property.DefaultEntityIdentity
-is.codion.framework.domain.property.DefaultIdentity
-is.codion.framework.domain.property.DefaultAttribute
-is.codion.framework.domain.property.DefaultBlobAttribute
-is.codion.framework.domain.property.DefaultEntityAttribute
+is.codion.framework.domain.entity.DefaultEntityIdentity
+is.codion.framework.domain.identity.DefaultIdentity
+is.codion.framework.domain.attribute.DefaultAttribute
+is.codion.framework.domain.attribute.DefaultBlobAttribute
+is.codion.framework.domain.attribute.DefaultEntityAttribute
 is.codion.framework.domain.property.DefaultColumnProperty
 is.codion.framework.domain.property.DefaultDerivedProperty
 is.codion.framework.domain.property.DefaultForeignKeyProperty

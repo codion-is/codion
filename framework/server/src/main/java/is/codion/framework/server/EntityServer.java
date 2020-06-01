@@ -24,8 +24,8 @@ import is.codion.common.user.User;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.DomainIdentity;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.identity.DomainIdentity;
+import is.codion.framework.domain.identity.Identity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

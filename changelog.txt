@@ -6165,3 +6165,4 @@
   Identity moved to property package
   Attributes factory class removed
   EntityIdentity and DomainIdentity added
+  Attribute and Identity moved to separate packages

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.entity.exception;
 
-import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.attribute.Attribute;
 
 /**
  * An exception used to indicate that a null value was being associated with

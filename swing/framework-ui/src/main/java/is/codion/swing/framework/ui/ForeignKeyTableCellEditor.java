@@ -4,8 +4,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Identity;
 import is.codion.framework.model.DefaultEntityLookupModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 

@@ -16,10 +16,10 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.Identities;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.EntityServletServerFactory;
@@ -55,7 +55,7 @@ public final class HttpEntityConnectionTest {
 
   private static EntityServer server;
 
-  private final HttpEntityConnection connection = new HttpEntityConnection(Identities.domainIdentity("TestDomain"),
+  private final HttpEntityConnection connection = new HttpEntityConnection(Domain.domainIdentity("TestDomain"),
           HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
           HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
           HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get(),

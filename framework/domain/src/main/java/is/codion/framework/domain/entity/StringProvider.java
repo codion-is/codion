@@ -3,8 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.Attribute;
-import is.codion.framework.domain.property.EntityAttribute;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.attribute.EntityAttribute;
 
 import java.io.Serializable;
 import java.text.Format;

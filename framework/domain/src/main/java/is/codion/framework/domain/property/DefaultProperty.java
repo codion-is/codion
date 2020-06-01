@@ -5,6 +5,7 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.Formats;
 import is.codion.common.Util;
+import is.codion.framework.domain.attribute.Attribute;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

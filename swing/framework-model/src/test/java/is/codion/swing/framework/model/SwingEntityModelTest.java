@@ -7,7 +7,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.Identities;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.tests.AbstractEntityModelTest;
 import is.codion.framework.model.tests.TestDomain;
@@ -19,6 +18,7 @@ import javax.swing.JComboBox;
 import java.util.ArrayList;
 import java.util.List;
 
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityModelTest
@@ -82,7 +82,7 @@ public final class SwingEntityModelTest
   @Test
   public void testDetailModels() throws DatabaseException, ValidationException {
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
-    assertFalse(departmentModel.containsDetailModel(Identities.entityIdentity("undefined")));
+    assertFalse(departmentModel.containsDetailModel(entityIdentity("undefined")));
     assertFalse(departmentModel.containsDetailModel(EmpModel.class));
     final SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     assertNotNull(employeeModel);

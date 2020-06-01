@@ -3,8 +3,8 @@
  */
 package is.codion.plugin.jackson.json.domain;
 
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import com.fasterxml.jackson.core.JsonGenerator;

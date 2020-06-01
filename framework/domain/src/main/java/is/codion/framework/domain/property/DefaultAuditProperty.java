@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.attribute.Attribute;
+
 class DefaultAuditProperty<T> extends DefaultColumnProperty<T> implements AuditProperty<T> {
 
   private static final long serialVersionUID = 1;

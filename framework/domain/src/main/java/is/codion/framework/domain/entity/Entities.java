@@ -3,11 +3,11 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
@@ -183,6 +183,14 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @see #getDomainId()
    */
   Entities register();
+
+  /**
+   * @param name the identity name
+   * @return a {@link EntityIdentity} instance with the given name
+   */
+  static EntityIdentity entityIdentity(final String name) {
+    return new DefaultEntityIdentity(name);
+  }
 
   /**
    * Returns true if the entity has a null primary key or a null original primary key,

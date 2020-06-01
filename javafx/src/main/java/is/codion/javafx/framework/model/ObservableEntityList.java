@@ -13,7 +13,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.identity.Identity;
 
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;

@@ -11,15 +11,14 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.attribute.BlobAttribute;
+import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
-import is.codion.framework.domain.property.Attribute;
-import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.EntityAttribute;
-import is.codion.framework.domain.property.Identities;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -32,6 +31,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -66,7 +66,7 @@ public final class TestDomain extends Domain {
     addReport(REPORT);
   }
 
-  public static final EntityIdentity T_DEPARTMENT = Identities.entityIdentity("scott.dept");
+  public static final EntityIdentity T_DEPARTMENT = entityIdentity("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -97,7 +97,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final EntityIdentity T_EMP = Identities.entityIdentity("scott.emp");
+  public static final EntityIdentity T_EMP = entityIdentity("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
@@ -150,7 +150,7 @@ public final class TestDomain extends Domain {
             .caption("Employee");
   }
 
-  public static final EntityIdentity T_UUID_TEST_DEFAULT = Identities.entityIdentity("scott.uuid_test_default");
+  public static final EntityIdentity T_UUID_TEST_DEFAULT = entityIdentity("scott.uuid_test_default");
   public static final Attribute<UUID> UUID_TEST_DEFAULT_ID = T_UUID_TEST_DEFAULT.attribute("id", UUID.class);
   public static final Attribute<String> UUID_TEST_DEFAULT_DATA = T_UUID_TEST_DEFAULT.stringAttribute("data");
 
@@ -175,7 +175,7 @@ public final class TestDomain extends Domain {
             .keyGenerator(uuidKeyGenerator);
   }
 
-  public static final EntityIdentity T_UUID_TEST_NO_DEFAULT = Identities.entityIdentity("scott.uuid_test_no_default");
+  public static final EntityIdentity T_UUID_TEST_NO_DEFAULT = entityIdentity("scott.uuid_test_no_default");
   public static final Attribute<UUID> UUID_TEST_NO_DEFAULT_ID = T_UUID_TEST_NO_DEFAULT.attribute("id", UUID.class);
   public static final Attribute<String> UUID_TEST_NO_DEFAULT_DATA = T_UUID_TEST_NO_DEFAULT.stringAttribute("data");
 
@@ -206,7 +206,7 @@ public final class TestDomain extends Domain {
     });
   }
 
-  public static final EntityIdentity GROUP_BY_QUERY_ENTITY_ID = Identities.entityIdentity("groupByQueryEntityID");
+  public static final EntityIdentity GROUP_BY_QUERY_ENTITY_ID = entityIdentity("groupByQueryEntityID");
   public static final String JOINED_QUERY_CONDITION_ID = "conditionId";
 
   private void groupByQuery() {
@@ -217,7 +217,7 @@ public final class TestDomain extends Domain {
             .havingClause("job <> 'PRESIDENT'");
   }
 
-  public static final EntityIdentity T_NO_PK = Identities.entityIdentity("scott.no_pk_table");
+  public static final EntityIdentity T_NO_PK = entityIdentity("scott.no_pk_table");
   public static final Attribute<Integer> NO_PK_COL1 = T_NO_PK.integerAttribute("col1");
   public static final Attribute<String> NO_PK_COL2 = T_NO_PK.stringAttribute("col2");
   public static final Attribute<String> NO_PK_COL3 = T_NO_PK.stringAttribute("col3");
@@ -231,7 +231,7 @@ public final class TestDomain extends Domain {
             columnProperty(NO_PK_COL4));
   }
 
-  public static final EntityIdentity JOINED_QUERY_ENTITY_ID = Identities.entityIdentity("joinedQueryEntityID");
+  public static final EntityIdentity JOINED_QUERY_ENTITY_ID = entityIdentity("joinedQueryEntityID");
   public static final Attribute<Integer> JOINED_EMPNO = JOINED_QUERY_ENTITY_ID.integerAttribute("e.empno");
   public static final Attribute<Integer> JOINED_DEPTNO = JOINED_QUERY_ENTITY_ID.integerAttribute("d.deptno");
 

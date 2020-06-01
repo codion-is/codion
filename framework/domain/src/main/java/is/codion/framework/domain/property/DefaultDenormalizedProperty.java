@@ -3,6 +3,9 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.attribute.EntityAttribute;
+
 /**
  * A property representing a column that should get its value automatically from a column in a referenced table
  */

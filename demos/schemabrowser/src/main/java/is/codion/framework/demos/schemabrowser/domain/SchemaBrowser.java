@@ -5,17 +5,17 @@ package is.codion.framework.demos.schemabrowser.domain;
 
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
-import is.codion.framework.domain.property.Attribute;
-import is.codion.framework.domain.property.EntityAttribute;
 
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.property.Identities.entityIdentity;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 

@@ -5,7 +5,7 @@ package is.codion.framework.model;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.identity.Identity;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

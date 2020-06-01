@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.attribute.Attribute;
+
 final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements BlobProperty {
 
   private static final long serialVersionUID = 1;

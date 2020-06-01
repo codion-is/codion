@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.attribute.Attribute;
+
 class DefaultTransientProperty<T> extends DefaultProperty<T> implements TransientProperty<T> {
 
   private static final long serialVersionUID = 1;

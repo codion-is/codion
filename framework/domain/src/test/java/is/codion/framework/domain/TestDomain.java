@@ -5,16 +5,16 @@ package is.codion.framework.domain;
 
 import is.codion.common.DateFormats;
 import is.codion.common.item.Item;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.attribute.BlobAttribute;
+import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.Department;
 import is.codion.framework.domain.entity.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.StringProvider;
-import is.codion.framework.domain.property.Attribute;
-import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.EntityAttribute;
 
 import java.sql.Types;
 import java.time.LocalDate;
@@ -24,10 +24,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.KeyGenerators.queried;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.property.Identities.entityIdentity;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 

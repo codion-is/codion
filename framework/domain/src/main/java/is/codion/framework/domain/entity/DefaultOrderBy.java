@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.attribute.Attribute;
 
 import java.util.ArrayList;
 import java.util.List;

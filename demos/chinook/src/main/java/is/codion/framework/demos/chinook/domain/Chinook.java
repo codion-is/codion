@@ -3,11 +3,11 @@
  */
 package is.codion.framework.demos.chinook.domain;
 
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.attribute.BlobAttribute;
+import is.codion.framework.domain.attribute.EntityAttribute;
 import is.codion.framework.domain.entity.EntityIdentity;
-import is.codion.framework.domain.property.Attribute;
-import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.DerivedProperty;
-import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.plugin.jasperreports.model.JasperReportWrapper;
 
 import java.awt.Image;
@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static is.codion.framework.domain.property.Identities.entityIdentity;
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public interface Chinook {

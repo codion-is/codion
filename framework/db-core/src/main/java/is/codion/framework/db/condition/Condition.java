@@ -4,7 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
-import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.attribute.Attribute;
 
 import java.io.Serializable;
 import java.util.List;

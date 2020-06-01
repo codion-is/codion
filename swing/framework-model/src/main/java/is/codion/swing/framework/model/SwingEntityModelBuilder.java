@@ -4,7 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.model.EntityModelBuilder;
 
 import org.slf4j.Logger;

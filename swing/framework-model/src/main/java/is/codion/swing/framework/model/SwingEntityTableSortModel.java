@@ -5,8 +5,8 @@ package is.codion.swing.framework.model;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.model.table.AbstractTableSortModel;
 

@@ -12,9 +12,9 @@ import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityIdentity;
-import is.codion.framework.domain.property.DomainIdentity;
-import is.codion.framework.domain.property.Identities;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.identity.DomainIdentity;
+import is.codion.framework.domain.identity.Identities;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static is.codion.framework.domain.property.Identities.domainIdentity;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -44,7 +43,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @see Class#getSimpleName()
    */
   protected Domain() {
-    this.entities = new DomainEntities(Identities.domainIdentity(getClass().getSimpleName()));
+    this.entities = new DomainEntities(domainIdentity(getClass().getSimpleName()));
   }
 
   /**
@@ -61,6 +60,10 @@ public abstract class Domain implements EntityDefinition.Provider {
    */
   protected Domain(final DomainIdentity domainId) {
     this.entities = new DomainEntities(requireNonNull(domainId, "domainId"));
+  }
+
+  public static DomainIdentity domainIdentity(final String name) {
+    return new DefaultDomainIdentity(name);
   }
 
   /**
@@ -253,6 +256,45 @@ public abstract class Domain implements EntityDefinition.Provider {
 
     private boolean containsReport(final ReportWrapper<?, ?, ?> reportWrapper) {
       return reports.contains(requireNonNull(reportWrapper, "reportWrapper"));
+    }
+  }
+
+  private static final class DefaultDomainIdentity implements DomainIdentity {
+
+    private static final long serialVersionUID = 1;
+
+    private final Identity identity;
+
+    DefaultDomainIdentity(final String name) {
+      this.identity = Identities.identity(name);
+    }
+
+    @Override
+    public String getName() {
+      return identity.getName();
+    }
+
+    @Override
+    public String toString() {
+      return identity.toString();
+    }
+
+    @Override
+    public int hashCode() {
+      return identity.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+      if (this == object) {
+        return true;
+      }
+      if (object == null || getClass() != object.getClass()) {
+        return false;
+      }
+      final DefaultDomainIdentity that = (DefaultDomainIdentity) object;
+
+      return getName().equals(that.getName());
     }
   }
 }

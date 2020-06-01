@@ -3,10 +3,10 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.Attribute;
-import is.codion.framework.domain.property.BlobAttribute;
-import is.codion.framework.domain.property.EntityAttribute;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.attribute.BlobAttribute;
+import is.codion.framework.domain.attribute.EntityAttribute;
+import is.codion.framework.domain.identity.Identity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

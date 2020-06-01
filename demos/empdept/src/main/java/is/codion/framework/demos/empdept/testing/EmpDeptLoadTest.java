@@ -11,7 +11,7 @@ import is.codion.framework.demos.empdept.domain.EmpDept;
 import is.codion.framework.demos.empdept.ui.EmpDeptAppPanel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityModel;
 import is.codion.swing.common.tools.loadtest.ScenarioException;

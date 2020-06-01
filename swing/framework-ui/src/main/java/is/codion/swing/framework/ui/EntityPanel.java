@@ -5,7 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.Windows;

@@ -7,8 +7,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.Identities;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -17,6 +16,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
+
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 
 final class EntityConditionDeserializer extends StdDeserializer<EntityCondition> {
 
@@ -34,7 +35,7 @@ final class EntityConditionDeserializer extends StdDeserializer<EntityCondition>
   @Override
   public EntityCondition deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityConditionNode = parser.getCodec().readTree(parser);
-    final Identity entityId = Identities.entityIdentity(entityConditionNode.get("entityId").asText());
+    final Identity entityId = entityIdentity(entityConditionNode.get("entityId").asText());
     final JsonNode conditionNode = entityConditionNode.get("condition");
 
     final Condition condition = conditionDeserializer.deserialize(

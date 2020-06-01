@@ -5,8 +5,8 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.Identity;
 import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import java.util.ArrayList;

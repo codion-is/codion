@@ -3,8 +3,8 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.property.Attribute;
 
 import java.util.List;
 

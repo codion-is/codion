@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.attribute.Attribute;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;

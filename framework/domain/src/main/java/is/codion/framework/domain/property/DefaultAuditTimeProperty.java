@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.attribute.Attribute;
+
 import java.time.LocalDateTime;
 
 public final class DefaultAuditTimeProperty extends DefaultAuditProperty<LocalDateTime>

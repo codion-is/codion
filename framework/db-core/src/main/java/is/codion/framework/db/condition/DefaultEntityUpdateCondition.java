@@ -3,8 +3,8 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.framework.domain.property.Attribute;
-import is.codion.framework.domain.property.Identity;
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.identity.Identity;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

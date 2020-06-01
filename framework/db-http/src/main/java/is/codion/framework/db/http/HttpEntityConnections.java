@@ -5,7 +5,7 @@ package is.codion.framework.db.http;
 
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.property.DomainIdentity;
+import is.codion.framework.domain.identity.DomainIdentity;
 
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 
