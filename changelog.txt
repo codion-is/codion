@@ -6161,3 +6161,4 @@
   DefaultAttribute, entityId now final, set via constructor, anything else turned out to be very fragile
   Entity, most accessors with Property parameter removed
   Identity added, entityId no longer a String
+  Identity now an Attribute factory

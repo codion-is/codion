@@ -20,7 +20,6 @@ import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static java.util.Arrays.asList;
@@ -35,9 +34,9 @@ public final class EmpDept extends Domain {
   public static final Identity T_DEPARTMENT = identity("scott.dept");
 
   /** Attributes for the columns in the scott.dept table*/
-  public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno", T_DEPARTMENT);
-  public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname", T_DEPARTMENT);
-  public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc", T_DEPARTMENT);
+  public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
+  public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
+  public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
   // end::departmentConstants[]
 
   // tag::employeeConstants[]
@@ -45,20 +44,20 @@ public final class EmpDept extends Domain {
   public static final Identity T_EMPLOYEE = identity("scott.emp");
 
   /** Attributes for the columns in the scott.emp table*/
-  public static final Attribute<Integer> EMPLOYEE_ID = integerAttribute("empno", T_EMPLOYEE);
-  public static final Attribute<String> EMPLOYEE_NAME = stringAttribute("ename", T_EMPLOYEE);
-  public static final Attribute<String> EMPLOYEE_JOB = stringAttribute("job", T_EMPLOYEE);
-  public static final Attribute<Integer> EMPLOYEE_MGR = integerAttribute("mgr", T_EMPLOYEE);
-  public static final Attribute<LocalDate> EMPLOYEE_HIREDATE = localDateAttribute("hiredate", T_EMPLOYEE);
-  public static final Attribute<BigDecimal> EMPLOYEE_SALARY = bigDecimalAttribute("sal", T_EMPLOYEE);
-  public static final Attribute<Double> EMPLOYEE_COMMISSION = doubleAttribute("comm", T_EMPLOYEE);
-  public static final Attribute<Integer> EMPLOYEE_DEPARTMENT = integerAttribute("deptno", T_EMPLOYEE);
+  public static final Attribute<Integer> EMPLOYEE_ID = T_EMPLOYEE.integerAttribute("empno");
+  public static final Attribute<String> EMPLOYEE_NAME = T_EMPLOYEE.stringAttribute("ename");
+  public static final Attribute<String> EMPLOYEE_JOB = T_EMPLOYEE.stringAttribute("job");
+  public static final Attribute<Integer> EMPLOYEE_MGR = T_EMPLOYEE.integerAttribute("mgr");
+  public static final Attribute<LocalDate> EMPLOYEE_HIREDATE = T_EMPLOYEE.localDateAttribute("hiredate");
+  public static final Attribute<BigDecimal> EMPLOYEE_SALARY = T_EMPLOYEE.bigDecimalAttribute("sal");
+  public static final Attribute<Double> EMPLOYEE_COMMISSION = T_EMPLOYEE.doubleAttribute("comm");
+  public static final Attribute<Integer> EMPLOYEE_DEPARTMENT = T_EMPLOYEE.integerAttribute("deptno");
   /**Foreign key (reference) attribute for the DEPT column in the table scott.emp*/
-  public static final EntityAttribute EMPLOYEE_DEPARTMENT_FK = entityAttribute("dept_fk", T_EMPLOYEE);
+  public static final EntityAttribute EMPLOYEE_DEPARTMENT_FK = T_EMPLOYEE.entityAttribute("dept_fk");
   /**Foreign key (reference) attribute for the MGR column in the table scott.emp*/
-  public static final EntityAttribute EMPLOYEE_MGR_FK = entityAttribute("mgr_fk", T_EMPLOYEE);
+  public static final EntityAttribute EMPLOYEE_MGR_FK = T_EMPLOYEE.entityAttribute("mgr_fk");
   /**Attribute for the denormalized department location property*/
-  public static final Attribute<String> EMPLOYEE_DEPARTMENT_LOCATION = stringAttribute("location", T_EMPLOYEE);
+  public static final Attribute<String> EMPLOYEE_DEPARTMENT_LOCATION = T_EMPLOYEE.stringAttribute("location");
 
   public static final JasperReportWrapper EMPLOYEE_REPORT =
           classPathReport(EmpDept.class, "empdept_employees.jasper");
