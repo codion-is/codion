@@ -97,7 +97,7 @@ There are at minimum two steps involved in creating a Codion application:
 
 === Domain
 
-The Codion framework is based around the *Entity* class, a map-like structure, representing a row in a table. The domain is modelled much like an E/R diagram, with an *EntityDefinition* per table, an *Attribute* and a *Property* for each column and a *ForeignKeyProperty* for each foreign key relationship.
+The Codion framework is based around the *Entity* class, a map-like structure, representing a row in a table. The domain is modelled much like an E/R diagram, with a *EntityIdentity* and *EntityDefinition* per table, an *Attribute* and a *Property* for each column and a *ForeignKeyProperty* for each foreign key relationship.
 
 [cols="2,4"]
 |===
@@ -121,7 +121,7 @@ include::{dir-source-sql}/create_schema.sql[]
 ----
 ====
 
-First we define a entity based on the table *store.customer*, using a String constant to identify the entity type (the *entityId*) and attributes for all of its properties.
+First we define a entity based on the table *store.customer*, using a *EntityIdentity* constant to identify the entity type (the *entityId*) and to provide attributes for all of its properties.
 
 NOTE: In this example the constants contain the actual table and column names, but these can be specified via parameters if that is preferred (see manual).
 
