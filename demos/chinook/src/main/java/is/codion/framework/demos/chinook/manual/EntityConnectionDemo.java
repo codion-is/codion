@@ -16,7 +16,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Identity;
+import is.codion.framework.domain.property.Identity;
 
 import net.sf.jasperreports.engine.JasperPrint;
 

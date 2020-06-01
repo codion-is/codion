@@ -6162,3 +6162,4 @@
   Entity, most accessors with Property parameter removed
   Identity added, entityId no longer a String
   Identity now an Attribute factory
+  Identity moved to property package

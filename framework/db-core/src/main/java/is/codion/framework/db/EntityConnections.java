@@ -6,7 +6,7 @@ package is.codion.framework.db;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Identity;
+import is.codion.framework.domain.property.Identity;
 
 import java.util.ArrayList;
 import java.util.Iterator;

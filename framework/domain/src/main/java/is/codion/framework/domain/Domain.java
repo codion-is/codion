@@ -11,7 +11,7 @@ import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.Identity;
+import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;

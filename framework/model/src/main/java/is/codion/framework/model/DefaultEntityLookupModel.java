@@ -20,8 +20,8 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.PropertyCondition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;

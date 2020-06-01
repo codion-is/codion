@@ -4,8 +4,8 @@
 package is.codion.framework.demos.manual.store.domain;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
+import is.codion.framework.domain.property.Identity;
 
 import org.junit.jupiter.api.Test;
 

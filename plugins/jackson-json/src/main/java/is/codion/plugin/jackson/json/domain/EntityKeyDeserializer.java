@@ -6,8 +6,8 @@ package is.codion.plugin.jackson.json.domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.Identity;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;

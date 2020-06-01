@@ -4,7 +4,6 @@
 package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Identity;
 
 final class DefaultEntityAttribute extends DefaultAttribute<Entity> implements EntityAttribute {
 

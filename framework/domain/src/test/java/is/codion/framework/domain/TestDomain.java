@@ -9,12 +9,12 @@ import is.codion.framework.domain.entity.Department;
 import is.codion.framework.domain.entity.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.EntityAttribute;
+import is.codion.framework.domain.property.Identity;
 
 import java.sql.Types;
 import java.time.LocalDate;
@@ -24,11 +24,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.KeyGenerators.queried;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Attributes.*;
+import static is.codion.framework.domain.property.Identity.identity;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 

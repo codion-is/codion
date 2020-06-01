@@ -4,7 +4,7 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Identity;
+import is.codion.framework.domain.property.Identity;
 import is.codion.framework.model.DefaultEntityModel;
 
 import static java.util.Objects.requireNonNull;

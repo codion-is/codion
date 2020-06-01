@@ -4,16 +4,16 @@
 package is.codion.framework.demos.petstore.domain;
 
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
+import is.codion.framework.domain.property.Identity;
 
 import java.math.BigDecimal;
 
-import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.property.Identity.identity;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.sql.Types.INTEGER;
 

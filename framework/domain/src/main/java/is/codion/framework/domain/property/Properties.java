@@ -5,7 +5,6 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Identity;
 
 import java.text.Collator;
 import java.time.LocalDateTime;

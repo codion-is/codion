@@ -8,6 +8,7 @@ import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.EntityAttribute;
+import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Properties;
 
 import org.junit.jupiter.api.Test;

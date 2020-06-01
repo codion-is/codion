@@ -4,7 +4,6 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.DateFormats;
-import is.codion.framework.domain.entity.Identity;
 
 import org.junit.jupiter.api.Test;
 

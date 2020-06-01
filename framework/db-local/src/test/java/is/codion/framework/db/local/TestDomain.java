@@ -12,7 +12,6 @@ import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
@@ -20,6 +19,7 @@ import is.codion.framework.domain.property.Attributes;
 import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.EntityAttribute;
+import is.codion.framework.domain.property.Identity;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

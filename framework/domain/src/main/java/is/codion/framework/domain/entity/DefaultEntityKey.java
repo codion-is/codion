@@ -5,6 +5,7 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.Identity;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

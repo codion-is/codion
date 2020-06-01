@@ -11,6 +11,7 @@ import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Attributes;
 import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.TransientProperty;
 

@@ -4,10 +4,10 @@
 package is.codion.swing.framework.tools.loadtest;
 
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Attributes;
+import is.codion.framework.domain.property.Identity;
 
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;

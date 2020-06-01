@@ -13,7 +13,7 @@ import is.codion.common.state.States;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.Identity;
+import is.codion.framework.domain.property.Identity;
 
 import java.util.ArrayList;
 import java.util.Collection;

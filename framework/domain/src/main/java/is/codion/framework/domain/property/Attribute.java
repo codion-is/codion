@@ -3,8 +3,6 @@
  */
 package is.codion.framework.domain.property;
 
-import is.codion.framework.domain.entity.Identity;
-
 import java.io.Serializable;
 
 /**

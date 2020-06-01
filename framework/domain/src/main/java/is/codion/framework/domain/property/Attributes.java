@@ -3,8 +3,6 @@
  */
 package is.codion.framework.domain.property;
 
-import is.codion.framework.domain.entity.Identity;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,9 +36,7 @@ public final class Attributes {
    * @return a new {@link Attribute}
    */
   public static Attribute<Object> attribute(final String name, final Identity entityId) {
-    final DefaultAttribute<Object> attribute = new DefaultAttribute<>(name, Object.class, entityId);
-
-    return attribute;
+    return new DefaultAttribute<>(name, Object.class, entityId);
   }
 
   /**

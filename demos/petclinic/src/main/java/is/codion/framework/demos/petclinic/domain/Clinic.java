@@ -3,13 +3,13 @@
  */
 package is.codion.framework.demos.petclinic.domain;
 
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
+import is.codion.framework.domain.property.Identity;
 
 import java.time.LocalDate;
 
-import static is.codion.framework.domain.entity.Identity.identity;
+import static is.codion.framework.domain.property.Identity.identity;
 
 public interface Clinic {
 

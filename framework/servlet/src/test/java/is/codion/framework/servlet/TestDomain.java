@@ -8,11 +8,11 @@ import is.codion.common.db.operation.AbstractDatabaseFunction;
 import is.codion.common.db.operation.AbstractDatabaseProcedure;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Attributes;
 import is.codion.framework.domain.property.EntityAttribute;
+import is.codion.framework.domain.property.Identity;
 
 import java.time.LocalDate;
 import java.util.List;

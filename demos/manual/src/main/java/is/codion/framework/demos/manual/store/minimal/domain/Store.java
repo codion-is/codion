@@ -4,14 +4,14 @@
 package is.codion.framework.demos.manual.store.minimal.domain;
 
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
+import is.codion.framework.domain.property.Identity;
 
-import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Attributes.*;
+import static is.codion.framework.domain.property.Identity.identity;
 import static is.codion.framework.domain.property.Properties.*;
 
 public class Store extends Domain {

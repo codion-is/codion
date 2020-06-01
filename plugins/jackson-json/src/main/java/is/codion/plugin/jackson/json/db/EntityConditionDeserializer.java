@@ -7,7 +7,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.Identity;
+import is.codion.framework.domain.property.Identity;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;

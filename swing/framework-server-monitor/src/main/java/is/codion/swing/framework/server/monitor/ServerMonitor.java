@@ -15,7 +15,7 @@ import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
-import is.codion.framework.domain.entity.Identity;
+import is.codion.framework.domain.property.Identity;
 import is.codion.framework.server.EntityServerAdmin;
 
 import org.jfree.data.xy.XYDataset;

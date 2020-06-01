@@ -8,6 +8,7 @@ import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;

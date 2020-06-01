@@ -6,12 +6,12 @@ package is.codion.framework.demos.manual.store.domain;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.EntityAttribute;
+import is.codion.framework.domain.property.Identity;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Attributes.*;
+import static is.codion.framework.domain.property.Identity.identity;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class Store extends Domain {

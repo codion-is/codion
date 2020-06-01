@@ -4,7 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Identity;
+import is.codion.framework.domain.property.Identity;
 
 /**
  * Specifies a class which provides EntityModel, EntityTableModel and EntityEditModel instances for a given entityId.

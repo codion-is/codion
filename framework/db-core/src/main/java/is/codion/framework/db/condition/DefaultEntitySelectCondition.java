@@ -3,9 +3,9 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.property.Attribute;
+import is.codion.framework.domain.property.Identity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
