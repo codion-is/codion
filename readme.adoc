@@ -30,7 +30,7 @@ Both actually. Codion is highly modular, so you can use as much or as little as 
 
 Codion is dual-licensed under the Open Source https://en.wikipedia.org/wiki/Affero_General_Public_License[AGPLv3] license and a commercial license.
 
-I realize this choice of license will turn quite a few people off, but keep in mind that you can freely use the AGPL licensed version to create closed-source applications for personal or internal company use, since it only kicks in when the application is distributed.
+Keep in mind that you can freely use the AGPL licensed version to create closed-source applications for personal or internal company use, since it only kicks in when the application is distributed.
 
 See http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic[GPL FAQ]
 
@@ -64,7 +64,7 @@ And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic
 
 Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[ORM] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities* and *properties*. This simplifies a lot of things and completely eliminates the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
 
-In the following example we start by extending the *Domain* class, with three convenient static imports (omitting the rest of the imports for brevity). We then define a *EntityIdentity* constants for the entities (referred to as *entityIds*) and use those to create *Attribute* constants for their respective properties, which are used whenever we need to refer to the entity type and its values. Finally we use these *entityIds* and *attributes* to define and configure two entities, with a master-detail relationship.
+In the following example we start by extending the *Domain* class, with three convenient static imports (omitting the rest of the imports for brevity). We then define a *Entity.Identity* constants for the entities (referred to as *entityIds*) and use those to create *Attribute* constants for their respective properties. These constants are used whenever we need to refer to the entity type and its values. Finally we use these *entityIds* and *attributes* to define and configure two entities, with a master-detail relationship.
 
 [source,java]
 ----
@@ -173,7 +173,7 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty(CUSTOMER_FIRST_NAME);
+      setInitialFocusAttribute(CUSTOMER_FIRST_NAME);
       createTextField(CUSTOMER_FIRST_NAME).setColumns(12);
       createTextField(CUSTOMER_LAST_NAME).setColumns(12);
       createTextField(CUSTOMER_EMAIL).setColumns(12);
@@ -194,7 +194,7 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty(ADDRESS_STREET);
+      setInitialFocusAttribute(ADDRESS_STREET);
       createForeignKeyComboBox(ADDRESS_CUSTOMER_FK);
       createTextField(ADDRESS_STREET).setColumns(12);
       createTextField(ADDRESS_CITY).setColumns(12);
