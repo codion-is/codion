@@ -11,6 +11,7 @@ import is.codion.common.event.Events;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
@@ -127,7 +128,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final Identity getEntityId() {
+  public final EntityIdentity getEntityId() {
     return editModel.getEntityId();
   }
 
@@ -195,7 +196,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final boolean containsDetailModel(final Identity entityId) {
+  public final boolean containsDetailModel(final EntityIdentity entityId) {
     return detailModels.stream().anyMatch(detailModel -> detailModel.getEntityId().equals(entityId));
   }
 
@@ -247,7 +248,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M getDetailModel(final Identity entityId) {
+  public final M getDetailModel(final EntityIdentity entityId) {
     for (final M detailModel : detailModels) {
       if (detailModel.getEntityId().equals(entityId)) {
         return detailModel;

@@ -17,6 +17,7 @@ import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -129,7 +130,7 @@ public class EntityTestUnit {
    * @param entityId the id of the entity to test
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
-  public final void test(final Identity entityId) throws DatabaseException {
+  public final void test(final EntityIdentity entityId) throws DatabaseException {
     try {
       connection.beginTransaction();
       final Map<Identity, Entity> foreignKeyEntities = initializeReferencedEntities(entityId, new HashMap<>());
@@ -156,7 +157,7 @@ public class EntityTestUnit {
    * @param referenceEntities entities referenced by the given  entityId
    * @return a Entity instance containing randomized values, based on the property definitions
    */
-  public static Entity createRandomEntity(final Entities entities, final Identity entityId, final Map<Identity, Entity> referenceEntities) {
+  public static Entity createRandomEntity(final Entities entities, final EntityIdentity entityId, final Map<Identity, Entity> referenceEntities) {
     return createEntity(entities, entityId, property -> createRandomValue(property, referenceEntities));
   }
 
@@ -166,7 +167,7 @@ public class EntityTestUnit {
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
    */
-  public static Entity createEntity(final Entities entities, final Identity entityId, final Function<Property<?>, Object> valueProvider) {
+  public static Entity createEntity(final Entities entities, final EntityIdentity entityId, final Function<Property<?>, Object> valueProvider) {
     requireNonNull(entities);
     requireNonNull(entityId);
     final Entity entity = entities.entity(entityId);
@@ -264,7 +265,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return the entity instance to use for testing the entity type
    */
-  protected Entity initializeTestEntity(final Identity entityId, final Map<Identity, Entity> foreignKeyEntities) {
+  protected Entity initializeTestEntity(final EntityIdentity entityId, final Map<Identity, Entity> foreignKeyEntities) {
     return createRandomEntity(getEntities(), entityId, foreignKeyEntities);
   }
 
@@ -274,7 +275,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return a entity of the given type
    */
-  protected Entity initializeReferenceEntity(final Identity entityId, final Map<Identity, Entity> foreignKeyEntities) {
+  protected Entity initializeReferenceEntity(final EntityIdentity entityId, final Map<Identity, Entity> foreignKeyEntities) {
     return createRandomEntity(getEntities(), entityId, foreignKeyEntities);
   }
 
@@ -295,10 +296,10 @@ public class EntityTestUnit {
    * @see #initializeReferenceEntity(String, Map)
    * @return the Entities to reference mapped to their respective entityIds
    */
-  private Map<Identity, Entity> initializeReferencedEntities(final Identity entityId, final Map<Identity, Entity> foreignKeyEntities)
+  private Map<Identity, Entity> initializeReferencedEntities(final EntityIdentity entityId, final Map<Identity, Entity> foreignKeyEntities)
           throws DatabaseException {
     for (final ForeignKeyProperty foreignKeyProperty : getEntities().getDefinition(entityId).getForeignKeyProperties()) {
-      final Identity foreignEntityId = foreignKeyProperty.getForeignEntityId();
+      final EntityIdentity foreignEntityId = foreignKeyProperty.getForeignEntityId();
       if (!foreignKeyEntities.containsKey(foreignEntityId)) {
         if (!Objects.equals(entityId, foreignEntityId)) {
           foreignKeyEntities.put(foreignEntityId, null);//short circuit recursion, value replaced below
@@ -338,7 +339,7 @@ public class EntityTestUnit {
    * @param testEntity the entity to test selecting
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
-  private void testSelect(final Identity entityId, final Entity testEntity) throws DatabaseException {
+  private void testSelect(final EntityIdentity entityId, final Entity testEntity) throws DatabaseException {
     if (testEntity != null) {
       assertEquals(testEntity, connection.selectSingle(testEntity.getKey()),
               "Entity of type " + testEntity.getEntityId() + " failed equals comparison");

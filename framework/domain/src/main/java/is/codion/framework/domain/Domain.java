@@ -13,7 +13,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.identity.DomainIdentity;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
@@ -87,7 +86,7 @@ public abstract class Domain implements EntityDefinition.Provider {
   }
 
   @Override
-  public final EntityDefinition getDefinition(final Identity entityId) {
+  public final EntityDefinition getDefinition(final EntityIdentity entityId) {
     return entities.getDefinition(entityId);
   }
 

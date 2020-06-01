@@ -9,7 +9,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.ConditionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.identity.Identity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -53,7 +53,7 @@ public final class Conditions {
    * @param condition the column condition
    * @return a condition based on the given column condition
    */
-  public static EntityCondition condition(final Identity entityId, final Condition condition) {
+  public static EntityCondition condition(final EntityIdentity entityId, final Condition condition) {
     return new DefaultEntityCondition(entityId, condition);
   }
 
@@ -72,7 +72,7 @@ public final class Conditions {
    * @param entityId the entityId
    * @return a condition specifying all entities of the given type
    */
-  public static EntityCondition condition(final Identity entityId) {
+  public static EntityCondition condition(final EntityIdentity entityId) {
     return new DefaultEntityCondition(entityId);
   }
 
@@ -86,7 +86,7 @@ public final class Conditions {
    * @param value the condition value, can be a Collection of values
    * @return a condition based on the given value
    */
-  public static EntityCondition condition(final Identity entityId, final Attribute<?> attribute,
+  public static EntityCondition condition(final EntityIdentity entityId, final Attribute<?> attribute,
                                           final Operator operator, final Object value) {
     return new DefaultEntityCondition(entityId, propertyCondition(attribute, operator, value));
   }
@@ -116,7 +116,7 @@ public final class Conditions {
    * @param entityId the entityId
    * @return a select condition encompassing all entities of the given type
    */
-  public static EntitySelectCondition selectCondition(final Identity entityId) {
+  public static EntitySelectCondition selectCondition(final EntityIdentity entityId) {
     return new DefaultEntitySelectCondition(entityId);
   }
 
@@ -127,7 +127,7 @@ public final class Conditions {
    * @param condition the column condition
    * @return a select condition based on the given column condition
    */
-  public static EntitySelectCondition selectCondition(final Identity entityId, final Condition condition) {
+  public static EntitySelectCondition selectCondition(final EntityIdentity entityId, final Condition condition) {
     return new DefaultEntitySelectCondition(entityId, condition);
   }
 
@@ -141,7 +141,7 @@ public final class Conditions {
    * @param value the condition value, can be a Collection of values
    * @return a select condition based on the given value
    */
-  public static EntitySelectCondition selectCondition(final Identity entityId, final Attribute<?> attribute,
+  public static EntitySelectCondition selectCondition(final EntityIdentity entityId, final Attribute<?> attribute,
                                                       final Operator operator, final Object value) {
     return selectCondition(entityId, propertyCondition(attribute, operator, value));
   }
@@ -151,7 +151,7 @@ public final class Conditions {
    * @param entityId the entityId
    * @return an update condition encompassing all entities of the given type
    */
-  public static EntityUpdateCondition updateCondition(final Identity entityId) {
+  public static EntityUpdateCondition updateCondition(final EntityIdentity entityId) {
     return new DefaultEntityUpdateCondition(entityId);
   }
 
@@ -166,7 +166,7 @@ public final class Conditions {
    * @param <T> the value type
    * @return an update condition based on the given value
    */
-  public static <T> EntityUpdateCondition updateCondition(final Identity entityId, final Attribute<T> attribute,
+  public static <T> EntityUpdateCondition updateCondition(final EntityIdentity entityId, final Attribute<T> attribute,
                                                           final Operator operator, final T value) {
     return updateCondition(entityId, propertyCondition(attribute, operator, value));
   }
@@ -178,7 +178,7 @@ public final class Conditions {
    * @param condition the column condition
    * @return an update condition based on the given column condition
    */
-  public static EntityUpdateCondition updateCondition(final Identity entityId, final Condition condition) {
+  public static EntityUpdateCondition updateCondition(final EntityIdentity entityId, final Condition condition) {
     return new DefaultEntityUpdateCondition(entityId, condition);
   }
 

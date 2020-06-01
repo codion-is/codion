@@ -632,7 +632,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private static final long serialVersionUID = 1;
 
-    private final Identity entityId;
+    private final EntityIdentity entityId;
 
     private final Map<Attribute<?>, Property<?>> propertyMap;
     private final List<Property<?>> properties;
@@ -650,7 +650,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private final List<TransientProperty<?>> transientProperties;
     private final Map<Attribute<?>, List<DenormalizedProperty<?>>> denormalizedProperties;
 
-    private EntityProperties(final Identity entityId, final Property.Builder<?>... propertyBuilders) {
+    private EntityProperties(final EntityIdentity entityId, final Property.Builder<?>... propertyBuilders) {
       this.entityId = entityId;
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));

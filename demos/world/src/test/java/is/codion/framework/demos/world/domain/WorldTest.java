@@ -2,6 +2,7 @@ package is.codion.framework.demos.world.domain;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 import is.codion.framework.domain.identity.Identity;
 
@@ -31,7 +32,7 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(Identity entityId, Map<Identity, Entity> foreignKeyEntities) {
+  protected Entity initializeTestEntity(EntityIdentity entityId, Map<Identity, Entity> foreignKeyEntities) {
     Entity entity = super.initializeTestEntity(entityId, foreignKeyEntities);
     if (entityId.equals(World.T_COUNTRY)) {
       entity.put(World.COUNTRY_CODE, "XXX");
@@ -50,7 +51,7 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(Identity entityId, Map<Identity, Entity> foreignKeyEntities) {
+  protected Entity initializeReferenceEntity(EntityIdentity entityId, Map<Identity, Entity> foreignKeyEntities) {
     if (entityId.equals(World.T_COUNTRY)) {
       Entity iceland = getEntities().entity(World.T_COUNTRY);
       iceland.put(World.COUNTRY_CODE, "ISL");

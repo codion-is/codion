@@ -12,6 +12,7 @@ import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
@@ -47,7 +48,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * @return the id of the entity this entity model is based on
    */
-  Identity getEntityId();
+  EntityIdentity getEntityId();
 
   /**
    * @return the connection provider used by this entity model
@@ -148,7 +149,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param entityId the entityId
    * @return true if this model contains a detail model for the given  entityId
    */
-  boolean containsDetailModel(Identity entityId);
+  boolean containsDetailModel(EntityIdentity entityId);
 
   /**
    * @param detailModel the detail model
@@ -170,7 +171,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case no detail model for the given entityId is found
    */
-  M getDetailModel(Identity entityId);
+  M getDetailModel(EntityIdentity entityId);
 
   /**
    * @return an unmodifiable collection containing the detail models this model contains

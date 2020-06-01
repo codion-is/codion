@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -117,7 +116,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param entityId the entityId
    * @return true if this entity is of the given type
    */
-  boolean is(Identity entityId);
+  boolean is(EntityIdentity entityId);
 
   /**
    * @param entity the entity to compare to
@@ -254,7 +253,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
     /**
      * @return the entityId
      */
-    Identity getEntityId();
+    EntityIdentity getEntityId();
 
     /**
      * @return a List containing the properties comprising this key

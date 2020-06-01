@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.identity.Identity;
@@ -64,7 +65,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the id of the entity this table model is based on
    */
-  Identity getEntityId();
+  EntityIdentity getEntityId();
 
   /**
    * @return the connection provider used by this table model

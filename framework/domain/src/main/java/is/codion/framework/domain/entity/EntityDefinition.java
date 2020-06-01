@@ -465,7 +465,7 @@ public interface EntityDefinition extends Serializable {
      * @return the entity definition
      * @throws IllegalArgumentException in case the definition is not found
      */
-    EntityDefinition getDefinition(Identity entityId);
+    EntityDefinition getDefinition(EntityIdentity entityId);
 
     /**
      * Returns all {@link EntityDefinition}s available in this provider

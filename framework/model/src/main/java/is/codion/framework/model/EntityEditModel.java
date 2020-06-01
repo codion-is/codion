@@ -17,10 +17,10 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ValueChange;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -66,7 +66,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * @return the id of the entity this edit model is based on
    */
-  Identity getEntityId();
+  EntityIdentity getEntityId();
 
   /**
    * @return the connection provider used by this edit model

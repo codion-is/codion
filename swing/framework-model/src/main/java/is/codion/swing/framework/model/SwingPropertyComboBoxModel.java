@@ -5,7 +5,7 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.identity.Identity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
@@ -30,7 +30,7 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
    * @param property the underlying property
    * @param nullValue the value to use to represent a null value
    */
-  public SwingPropertyComboBoxModel(final Identity entityId, final EntityConnectionProvider connectionProvider,
+  public SwingPropertyComboBoxModel(final EntityIdentity entityId, final EntityConnectionProvider connectionProvider,
                                     final ColumnProperty<?> property, final T nullValue) {
     this(() -> {
       try {

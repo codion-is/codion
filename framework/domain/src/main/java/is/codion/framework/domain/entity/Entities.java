@@ -45,7 +45,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entityId the entityId
    * @return a new {@link Entity} instance
    */
-  Entity entity(Identity entityId);
+  Entity entity(EntityIdentity entityId);
 
   /**
    * Creates a new {@link Entity} instance with the given primary key
@@ -59,7 +59,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entityId the entityId
    * @return a new {@link Entity.Key} instance
    */
-  Entity.Key key(Identity entityId);
+  Entity.Key key(EntityIdentity entityId);
 
   /**
    * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
@@ -69,7 +69,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityId or value is null
    */
-  Entity.Key key(Identity entityId, Integer value);
+  Entity.Key key(EntityIdentity entityId, Integer value);
 
   /**
    * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
@@ -79,7 +79,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityId or value is null
    */
-  Entity.Key key(Identity entityId, Long value);
+  Entity.Key key(EntityIdentity entityId, Long value);
 
   /**
    * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
@@ -89,7 +89,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityId or values is null
    */
-  List<Entity.Key> keys(Identity entityId, Integer... values);
+  List<Entity.Key> keys(EntityIdentity entityId, Integer... values);
 
   /**
    * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
@@ -99,7 +99,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityId or values is null
    */
-  List<Entity.Key> keys(Identity entityId, Long... values);
+  List<Entity.Key> keys(EntityIdentity entityId, Long... values);
 
   /**
    * Copies the given entities, with new copied instances of all foreign key value entities.
@@ -136,7 +136,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param toStringValue the string to return by a call to toString() on the resulting entity
    * @return an empty entity wrapping a string
    */
-  Entity createToStringEntity(Identity entityId, String toStringValue);
+  Entity createToStringEntity(EntityIdentity entityId, String toStringValue);
 
   /**
    * Transforms the given entities into beans according to the information found in this Entities instance
@@ -419,7 +419,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities to map by entityId
    * @return a Map of entities mapped to entityId
    */
-  static LinkedHashMap<Identity, List<Entity>> mapToEntityId(final Collection<Entity> entities) {
+  static LinkedHashMap<EntityIdentity, List<Entity>> mapToEntityId(final Collection<Entity> entities) {
     return map(entities, Entity::getEntityId);
   }
 
@@ -429,7 +429,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param keys the entity keys to map by entityId
    * @return a Map of entity keys mapped to entityId
    */
-  static LinkedHashMap<Identity, List<Entity.Key>> mapKeysToEntityId(final Collection<Entity.Key> keys) {
+  static LinkedHashMap<EntityIdentity, List<Entity.Key>> mapKeysToEntityId(final Collection<Entity.Key> keys) {
     return map(keys, Entity.Key::getEntityId);
   }
 

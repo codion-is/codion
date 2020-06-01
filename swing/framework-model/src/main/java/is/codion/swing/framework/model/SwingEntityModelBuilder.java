@@ -4,7 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.identity.Identity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.model.EntityModelBuilder;
 
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class SwingEntityModelBuilder
 
   private static final String CONNECTION_PROVIDER_PARAMETER = "connectionProvider";
 
-  private final Identity entityId;
+  private final EntityIdentity entityId;
 
   private final List<EntityModelBuilder<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel>>
           detailModelBuilders = new ArrayList<>();
@@ -38,12 +38,12 @@ public class SwingEntityModelBuilder
    * Instantiates a new SwingeEntityModelBuilder based on the given  entityId
    * @param entityId the entityId
    */
-  public SwingEntityModelBuilder(final Identity entityId) {
+  public SwingEntityModelBuilder(final EntityIdentity entityId) {
     this.entityId = requireNonNull(entityId, "entityId");
   }
 
   @Override
-  public final Identity getEntityId() {
+  public final EntityIdentity getEntityId() {
     return entityId;
   }
 

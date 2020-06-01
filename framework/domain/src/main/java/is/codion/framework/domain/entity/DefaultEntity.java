@@ -124,7 +124,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean is(final Identity entityId) {
+  public boolean is(final EntityIdentity entityId) {
     return definition.getEntityId().equals(entityId);
   }
 
@@ -815,7 +815,7 @@ final class DefaultEntity implements Entity {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final DomainIdentity domainId = Entities.domainIdentity((String) stream.readObject());
-    final Identity entityId = Entities.entityIdentity((String) stream.readObject());
+    final EntityIdentity entityId = Entities.entityIdentity((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
     definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
     if (definition == null) {

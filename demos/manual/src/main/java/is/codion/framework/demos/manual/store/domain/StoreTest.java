@@ -4,6 +4,7 @@
 package is.codion.framework.demos.manual.store.domain;
 
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityIdentity;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 import is.codion.framework.domain.identity.Identity;
 
@@ -35,7 +36,7 @@ public class StoreTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(Identity entityId,
+  protected Entity initializeReferenceEntity(EntityIdentity entityId,
                                              Map<Identity, Entity> foreignKeyEntities) {
     //see if the currently running test requires an ADDRESS entity
     if (entityId.equals(Store.T_ADDRESS)) {
@@ -51,7 +52,7 @@ public class StoreTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(Identity entityId,
+  protected Entity initializeTestEntity(EntityIdentity entityId,
                                         Map<Identity, Entity> foreignKeyEntities) {
     if (entityId.equals(Store.T_ADDRESS)) {
       //Initialize a entity representing the table STORE.ADDRESS,

@@ -21,7 +21,6 @@ import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -284,7 +283,7 @@ public class DomainTest {
     assertTrue(master.containsKey(TestDomain.MASTER_ID));
     assertEquals(10L, master.get(TestDomain.MASTER_ID));
 
-    assertThrows(NullPointerException.class, () -> entities.entity((Identity) null));
+    assertThrows(NullPointerException.class, () -> entities.entity((EntityIdentity) null));
   }
 
   @Test
