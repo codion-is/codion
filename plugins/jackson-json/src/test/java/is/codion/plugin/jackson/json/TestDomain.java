@@ -4,6 +4,7 @@
 package is.codion.plugin.jackson.json;
 
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Attributes;
@@ -28,7 +29,7 @@ public final class TestDomain extends Domain {
     employee();
   }
 
-  public static final String T_ENTITY = "test.entity";
+  public static final Identity T_ENTITY = Identity.identity("test.entity");
   public static final Attribute<BigDecimal> ENTITY_DECIMAL = Attributes.bigDecimalAttribute("id", T_ENTITY);
   public static final Attribute<LocalDateTime> ENTITY_DATE_TIME = Attributes.localDateTimeAttribute("date_time", T_ENTITY);
   public static final BlobAttribute ENTITY_BLOB = Attributes.blobAttribute("blob", T_ENTITY);
@@ -49,7 +50,7 @@ public final class TestDomain extends Domain {
             .conditionProvider(ENTITY_CONDITION_ID, (attributes, values) -> "1 = 2");
   }
 
-  public static final String T_DEPARTMENT = "scott.dept";
+  public static final Identity T_DEPARTMENT = Identity.identity("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc", T_DEPARTMENT);
@@ -69,7 +70,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final String T_EMP = "scott.emp";
+  public static final Identity T_EMP = Identity.identity("scott.emp");
   public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno", T_EMP);
   public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename", T_EMP);
   public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job", T_EMP);

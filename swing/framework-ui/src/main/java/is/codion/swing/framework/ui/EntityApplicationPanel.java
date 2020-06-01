@@ -26,6 +26,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
@@ -297,10 +298,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @return the first entity panel found based on the given entity type, null if none is found
    */
-  public final EntityPanel getEntityPanel(final String entityId) {
+  public final EntityPanel getEntityPanel(final Identity entityId) {
     return entityPanels.stream().filter(entityPanel ->
             entityPanel.getModel().getEntityId().equals(entityId)).findFirst().orElse(null);
   }
@@ -1537,7 +1538,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return username;
   }
 
-  private static boolean referencesOnlySelf(final Entities entities, final String entityId) {
+  private static boolean referencesOnlySelf(final Entities entities, final Identity entityId) {
     return entities.getDefinition(entityId).getForeignKeyProperties().stream()
             .allMatch(fkProperty -> fkProperty.getForeignEntityId().equals(entityId));
   }
@@ -1546,7 +1547,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     private final Entities entities;
 
-    private EntityDependencyTreeNode(final String entityId, final Entities entities) {
+    private EntityDependencyTreeNode(final Identity entityId, final Entities entities) {
       super(requireNonNull(entityId, "entityId"));
       this.entities = entities;
     }
@@ -1554,8 +1555,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     /**
      * @return the id of the entity this node represents
      */
-    public String getEntityId() {
-      return (String) getUserObject();
+    public Identity getEntityId() {
+      return (Identity) getUserObject();
     }
 
     @Override
@@ -1581,7 +1582,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return childrenList;
     }
 
-    private boolean foreignKeyCycle(final String referencedEntityId) {
+    private boolean foreignKeyCycle(final Identity referencedEntityId) {
       TreeNode tmp = getParent();
       while (tmp instanceof EntityDependencyTreeNode) {
         if (((EntityDependencyTreeNode) tmp).getEntityId().equals(referencedEntityId)) {

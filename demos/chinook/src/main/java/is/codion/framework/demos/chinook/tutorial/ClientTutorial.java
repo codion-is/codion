@@ -7,6 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
@@ -27,6 +28,7 @@ import java.awt.Color;
 import java.util.List;
 
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
+import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
@@ -43,12 +45,12 @@ public final class ClientTutorial {
 
   public static final class Chinook extends Domain {
 
-    public static final String T_ARTIST = "chinook.artist";
+    public static final Identity T_ARTIST = identity("chinook.artist");
     public static final Attribute<Integer> ARTIST_ID = integerAttribute("artistid", T_ARTIST);
     public static final Attribute<String> ARTIST_NAME = stringAttribute("name", T_ARTIST);
     public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = integerAttribute("nr_of_albums", T_ARTIST);
 
-    public static final String T_ALBUM = "chinook.album";
+    public static final Identity T_ALBUM = identity("chinook.album");
     public static final Attribute<Integer> ALBUM_ALBUMID = integerAttribute("albumid", T_ALBUM);
     public static final Attribute<String> ALBUM_TITLE = stringAttribute("title", T_ALBUM);
     public static final Attribute<Integer> ALBUM_ARTISTID = integerAttribute("artistid", T_ALBUM);
@@ -62,7 +64,7 @@ public final class ClientTutorial {
               subqueryProperty(ARTIST_NR_OF_ALBUMS, "Albums",
                       "select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid"))
-              .keyGenerator(automatic(T_ARTIST))
+              .keyGenerator(automatic("chinook.artist"))
               .stringProvider(new StringProvider(ARTIST_NAME))
               .caption("Artists");
 
@@ -73,7 +75,7 @@ public final class ClientTutorial {
                       .nullable(false),
               columnProperty(ALBUM_TITLE, "Title")
                       .nullable(false).maximumLength(160))
-              .keyGenerator(automatic(T_ALBUM))
+              .keyGenerator(automatic("chinook.artist"))
               .stringProvider(new StringProvider(ALBUM_ARTIST_FK)
                       .addText(" - ").addValue(ALBUM_TITLE))
               .caption("Albums");

@@ -4,6 +4,7 @@
 package is.codion.framework.demos.manual.store.domain;
 
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -34,8 +35,8 @@ public class StoreTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(String entityId,
-                                             Map<String, Entity> foreignKeyEntities) {
+  protected Entity initializeReferenceEntity(Identity entityId,
+                                             Map<Identity, Entity> foreignKeyEntities) {
     //see if the currently running test requires an ADDRESS entity
     if (entityId.equals(Store.T_ADDRESS)) {
       Entity address = getEntities().entity(Store.T_ADDRESS);
@@ -50,8 +51,8 @@ public class StoreTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(String entityId,
-                                        Map<String, Entity> foreignKeyEntities) {
+  protected Entity initializeTestEntity(Identity entityId,
+                                        Map<Identity, Entity> foreignKeyEntities) {
     if (entityId.equals(Store.T_ADDRESS)) {
       //Initialize a entity representing the table STORE.ADDRESS,
       //which can be used for the testing
@@ -86,7 +87,7 @@ public class StoreTest extends EntityTestUnit {
 
   @Override
   protected void modifyEntity(Entity testEntity,
-                              Map<String, Entity> foreignKeyEntities) {
+                              Map<Identity, Entity> foreignKeyEntities) {
     if (testEntity.is(Store.T_ADDRESS)) {
       testEntity.put(Store.ADDRESS_STREET, "New Street");
       testEntity.put(Store.ADDRESS_CITY, "New City");

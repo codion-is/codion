@@ -42,7 +42,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The entityId
    */
-  private final String entityId;
+  private final Identity entityId;
 
   /**
    * The domainId
@@ -170,17 +170,17 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * Defines a new entity type with the entityId serving as the initial entity caption.
    */
-  DefaultEntityDefinition(final String entityId, final String tableName, final Property.Builder<?>... propertyBuilders) {
-    this.entityId = rejectNullOrEmpty(entityId, "entityId");
+  DefaultEntityDefinition(final Identity entityId, final String tableName, final Property.Builder<?>... propertyBuilders) {
+    this.entityId = requireNonNull(entityId, "entityId");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.entityProperties = new EntityProperties(entityId, propertyBuilders);
     this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
     this.groupByClause = initializeGroupByClause();
-    this.caption = entityId;
+    this.caption = entityId.getName();
   }
 
   @Override
-  public String getEntityId() {
+  public Identity getEntityId() {
     return entityId;
   }
 
@@ -386,7 +386,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<ForeignKeyProperty> getForeignKeyReferences(final String foreignEntityId) {
+  public List<ForeignKeyProperty> getForeignKeyReferences(final Identity foreignEntityId) {
     return getForeignKeyProperties().stream().filter(foreignKeyProperty ->
             foreignKeyProperty.getForeignEntityId().equals(foreignEntityId)).collect(toList());
   }
@@ -501,7 +501,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public String toString() {
-    return entityId;
+    return entityId.getName();
   }
 
   @Override
@@ -631,7 +631,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private static final long serialVersionUID = 1;
 
-    private final String entityId;
+    private final Identity entityId;
 
     private final Map<Attribute<?>, Property<?>> propertyMap;
     private final List<Property<?>> properties;
@@ -649,7 +649,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private final List<TransientProperty<?>> transientProperties;
     private final Map<Attribute<?>, List<DenormalizedProperty<?>>> denormalizedProperties;
 
-    private EntityProperties(final String entityId, final Property.Builder<?>... propertyBuilders) {
+    private EntityProperties(final Identity entityId, final Property.Builder<?>... propertyBuilders) {
       this.entityId = entityId;
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));

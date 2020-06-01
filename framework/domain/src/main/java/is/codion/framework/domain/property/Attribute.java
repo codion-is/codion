@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.entity.Identity;
+
 import java.io.Serializable;
 
 /**
@@ -31,7 +33,7 @@ public interface Attribute<T> extends Serializable {
   /**
    * @return the id of the entity this Attribute is associated with
    */
-  String getEntityId();
+  Identity getEntityId();
 
   /**
    * @param value the value to validate

@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.ValueChange;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.Attribute;
@@ -65,7 +66,7 @@ public interface EntityEditModel extends Refreshable {
   /**
    * @return the id of the entity this edit model is based on
    */
-  String getEntityId();
+  Identity getEntityId();
 
   /**
    * @return the connection provider used by this edit model

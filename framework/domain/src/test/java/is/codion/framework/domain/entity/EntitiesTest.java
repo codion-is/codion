@@ -7,6 +7,7 @@ import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
@@ -330,7 +331,7 @@ public final class EntitiesTest {
     final Entity four = entities.entity(TestDomain.T_EMP);
 
     final Collection<Entity> entities = asList(one, two, three, four);
-    final Map<String, List<Entity>> map = Entities.mapToEntityId(entities);
+    final Map<Identity, List<Entity>> map = Entities.mapToEntityId(entities);
 
     Collection<Entity> mapped = map.get(TestDomain.T_EMP);
     assertTrue(mapped.contains(one));

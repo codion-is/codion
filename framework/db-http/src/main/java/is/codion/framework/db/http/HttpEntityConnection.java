@@ -18,6 +18,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.BlobAttribute;
 
@@ -340,7 +341,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(final String entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(final Identity entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
     return selectSingle(selectCondition(entityId, attribute, Operator.LIKE, value));
   }
 
@@ -393,19 +394,19 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final String entityId, final Attribute<T> attribute, final T value)
+  public <T> List<Entity> select(final Identity entityId, final Attribute<T> attribute, final T value)
           throws DatabaseException {
     return select(selectCondition(entityId, attribute, Operator.LIKE, value));
   }
 
   @Override
-  public <T> List<Entity> select(final String entityId, final Attribute<T> attribute, final Collection<T> values)
+  public <T> List<Entity> select(final Identity entityId, final Attribute<T> attribute, final Collection<T> values)
           throws DatabaseException {
     return select(selectCondition(entityId, attribute, Operator.LIKE, values));
   }
 
   @Override
-  public Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
+  public Map<Identity, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       return onResponse(execute(createHttpPost("dependencies", entities)));

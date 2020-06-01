@@ -11,6 +11,7 @@ import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
@@ -76,7 +77,7 @@ public abstract class Domain implements EntityDefinition.Provider {
   }
 
   @Override
-  public final EntityDefinition getDefinition(final String entityId) {
+  public final EntityDefinition getDefinition(final Identity entityId) {
     return entities.getDefinition(entityId);
   }
 
@@ -122,8 +123,8 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  protected final EntityDefinition.Builder define(final String entityId, final Property.Builder<?>... propertyBuilders) {
-    return define(entityId, entityId, propertyBuilders);
+  protected final EntityDefinition.Builder define(final Identity entityId, final Property.Builder<?>... propertyBuilders) {
+    return define(entityId, entityId.getName(), propertyBuilders);
   }
 
   /**
@@ -136,7 +137,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @return a {@link EntityDefinition.Builder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type
    */
-  protected final EntityDefinition.Builder define(final String entityId, final String tableName,
+  protected final EntityDefinition.Builder define(final Identity entityId, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
     return entities.defineInternal(entityId, tableName, propertyBuilders);
   }
@@ -177,7 +178,7 @@ public abstract class Domain implements EntityDefinition.Provider {
       super(domainId);
     }
 
-    protected EntityDefinition.Builder defineInternal(final String entityId, final String tableName,
+    protected EntityDefinition.Builder defineInternal(final Identity entityId, final String tableName,
                                                       final Property.Builder<?>... propertyBuilders) {
       return super.define(entityId, tableName, propertyBuilders);
     }

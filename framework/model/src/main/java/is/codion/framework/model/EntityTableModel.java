@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -63,7 +64,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the id of the entity this table model is based on
    */
-  String getEntityId();
+  Identity getEntityId();
 
   /**
    * @return the connection provider used by this table model
@@ -118,10 +119,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * For every entity in this table model, replaces the foreign key instance bearing the primary
    * key with the corresponding entity from {@code foreignKeyValues}, useful when property
    * values have been changed in the referenced entity that must be reflected in the table model.
-   * @param foreignKeyEntityId the  entityId of the foreign key values
+   * @param foreignKeyEntityId the entityId of the foreign key values
    * @param foreignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(String foreignKeyEntityId, Collection<Entity> foreignKeyValues);
+  void replaceForeignKeyValues(Identity foreignKeyEntityId, Collection<Entity> foreignKeyValues);
 
   /**
    * Adds the given entities to the bottom of this table model.

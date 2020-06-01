@@ -13,6 +13,7 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.BlobAttribute;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -200,7 +201,7 @@ public interface EntityConnection {
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  <T> Entity selectSingle(String entityId, Attribute<T> attribute, T value) throws DatabaseException;
+  <T> Entity selectSingle(Identity entityId, Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -248,7 +249,7 @@ public interface EntityConnection {
    * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  <T> List<Entity> select(String entityId, Attribute<T> attribute, T value) throws DatabaseException;
+  <T> List<Entity> select(Identity entityId, Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
@@ -259,7 +260,7 @@ public interface EntityConnection {
    * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  <T> List<Entity> select(String entityId, Attribute<T> attribute, Collection<T> values) throws DatabaseException;
+  <T> List<Entity> select(Identity entityId, Attribute<T> attribute, Collection<T> values) throws DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityIds
@@ -268,7 +269,7 @@ public interface EntityConnection {
    * @throws DatabaseException in case of a database exception
    * @see ForeignKeyProperty#isSoftReference()
    */
-  Map<String, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws DatabaseException;
+  Map<Identity, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws DatabaseException;
 
   /**
    * Selects the number of rows returned according to the given condition

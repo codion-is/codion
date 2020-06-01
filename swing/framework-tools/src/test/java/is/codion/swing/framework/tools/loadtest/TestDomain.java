@@ -4,6 +4,7 @@
 package is.codion.swing.framework.tools.loadtest;
 
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Attributes;
@@ -18,7 +19,7 @@ public final class TestDomain extends Domain {
     registerEntities();
   }
 
-  public static final String T_DEPARTMENT = "scott.dept";
+  public static final Identity T_DEPARTMENT = Identity.identity("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc", T_DEPARTMENT);

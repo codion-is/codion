@@ -10,6 +10,7 @@ import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.demos.empdept.domain.EmpDept;
 import is.codion.framework.demos.empdept.ui.EmpDeptAppPanel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityModel;
@@ -118,7 +119,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         final SwingEntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
         final SwingEntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
-        final Map<String, Entity> references = new HashMap<>();
+        final Map<Identity, Entity> references = new HashMap<>();
         references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectionModel().getSelectedItem());
         employeeModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(application.getEntities(), EmpDept.T_EMPLOYEE, references));
         employeeModel.getEditModel().insert();

@@ -11,6 +11,7 @@ import is.codion.common.model.Refreshable;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
@@ -46,7 +47,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * @return the id of the entity this entity model is based on
    */
-  String getEntityId();
+  Identity getEntityId();
 
   /**
    * @return the connection provider used by this entity model
@@ -96,7 +97,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param foreignKeyEntityId the id of the master entity
    * @param foreignKeyValues the master entities
    */
-  void initialize(String foreignKeyEntityId, List<Entity> foreignKeyValues);
+  void initialize(Identity foreignKeyEntityId, List<Entity> foreignKeyValues);
 
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities,
@@ -144,10 +145,10 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   boolean containsDetailModel(Class<? extends M> modelClass);
 
   /**
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @return true if this model contains a detail model for the given  entityId
    */
-  boolean containsDetailModel(String entityId);
+  boolean containsDetailModel(Identity entityId);
 
   /**
    * @param detailModel the detail model
@@ -165,11 +166,11 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
   /**
    * Returns a detail model of the given type
-   * @param entityId the  entityId of the required EntityModel
+   * @param entityId the entityId of the required EntityModel
    * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case no detail model for the given entityId is found
    */
-  M getDetailModel(String entityId);
+  M getDetailModel(Identity entityId);
 
   /**
    * @return an unmodifiable collection containing the detail models this model contains

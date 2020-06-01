@@ -5,6 +5,7 @@ package is.codion.framework.demos.empdept.domain;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Attributes.*;
@@ -30,7 +32,7 @@ import static java.util.Arrays.asList;
 public final class EmpDept extends Domain {
 
   /** Entity identifier for the table scott.dept*/
-  public static final String T_DEPARTMENT = "scott.dept";
+  public static final Identity T_DEPARTMENT = identity("scott.dept");
 
   /** Attributes for the columns in the scott.dept table*/
   public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno", T_DEPARTMENT);
@@ -40,7 +42,7 @@ public final class EmpDept extends Domain {
 
   // tag::employeeConstants[]
   /** Entity identifier for the table scott.emp*/
-  public static final String T_EMPLOYEE = "scott.emp";
+  public static final Identity T_EMPLOYEE = identity("scott.emp");
 
   /** Attributes for the columns in the scott.emp table*/
   public static final Attribute<Integer> EMPLOYEE_ID = integerAttribute("empno", T_EMPLOYEE);
@@ -115,7 +117,7 @@ public final class EmpDept extends Domain {
                     .nullable(false).beanProperty("hiredate"),
             denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK, DEPARTMENT_LOCATION, "Location")
                     .preferredColumnWidth(100))
-            .keyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID.getName()))
+            .keyGenerator(increment("scott.emp", EMPLOYEE_ID.getName()))
             .orderBy(orderBy().ascending(EMPLOYEE_DEPARTMENT, EMPLOYEE_NAME))
             .stringProvider(new StringProvider(EMPLOYEE_NAME))
             .beanClass(Employee.class)

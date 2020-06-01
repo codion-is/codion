@@ -104,7 +104,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public String getEntityId() {
+  public Identity getEntityId() {
     return definition.getEntityId();
   }
 
@@ -123,7 +123,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean is(final String entityId) {
+  public boolean is(final Identity entityId) {
     return definition.getEntityId().equals(entityId);
   }
 
@@ -491,7 +491,7 @@ final class DefaultEntity implements Entity {
 
   private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity value) {
     final Entity entity = value;
-    final String foreignEntityId = property.getForeignEntityId();
+    final Identity foreignEntityId = property.getForeignEntityId();
     if (!Objects.equals(foreignEntityId, entity.getEntityId())) {
       throw new IllegalArgumentException("Entity of type " + foreignEntityId +
               " expected for property " + this + ", got: " + entity.getEntityId());
@@ -790,7 +790,7 @@ final class DefaultEntity implements Entity {
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getDomainId());
-    stream.writeObject(definition.getEntityId());
+    stream.writeObject(definition.getEntityId().getName());
     final boolean isModified = isModifiedInternal(true);
     stream.writeBoolean(isModified);
     final List<Property<?>> properties = definition.getProperties();
@@ -815,7 +815,7 @@ final class DefaultEntity implements Entity {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final String domainId = (String) stream.readObject();
-    final String entityId = (String) stream.readObject();
+    final Identity entityId = Identity.identity((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
     definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
     if (definition == null) {

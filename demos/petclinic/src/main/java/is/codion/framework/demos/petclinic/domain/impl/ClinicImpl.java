@@ -34,7 +34,7 @@ public final class ClinicImpl extends Domain {
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false))
-            .keyGenerator(automatic(T_VET))
+            .keyGenerator(automatic(T_VET.getName()))
             .caption("Vets")
             .stringProvider(new StringProvider(VET_LAST_NAME)
                     .addText(", ").addValue(VET_FIRST_NAME))
@@ -49,7 +49,7 @@ public final class ClinicImpl extends Domain {
                     .searchProperty(true)
                     .maximumLength(80)
                     .nullable(false))
-            .keyGenerator(automatic(T_SPECIALTY))
+            .keyGenerator(automatic(T_SPECIALTY.getName()))
             .caption("Specialties")
             .stringProvider(new StringProvider(SPECIALTY_NAME))
             .smallDataset(true);
@@ -77,7 +77,7 @@ public final class ClinicImpl extends Domain {
                     .searchProperty(true)
                     .maximumLength(80)
                     .nullable(false))
-            .keyGenerator(automatic(T_PET_TYPE))
+            .keyGenerator(automatic(T_PET_TYPE.getName()))
             .caption("Pet types")
             .stringProvider(new StringProvider(PET_TYPE_NAME))
             .orderBy(orderBy().ascending(PET_TYPE_NAME))
@@ -101,7 +101,7 @@ public final class ClinicImpl extends Domain {
                     .maximumLength(80),
             columnProperty(OWNER_TELEPHONE, "Telephone")
                     .maximumLength(20))
-            .keyGenerator(automatic(T_OWNER))
+            .keyGenerator(automatic(T_OWNER.getName()))
             .caption("Owners")
             .stringProvider(new StringProvider(OWNER_LAST_NAME).addText(", ")
                     .addValue(OWNER_FIRST_NAME))
@@ -122,7 +122,7 @@ public final class ClinicImpl extends Domain {
             foreignKeyProperty(PET_OWNER_FK, "Owner", T_OWNER,
                     columnProperty(PET_OWNER_ID))
                     .nullable(false))
-            .keyGenerator(automatic(T_PET))
+            .keyGenerator(automatic(T_PET.getName()))
             .caption("Pets")
             .stringProvider(new StringProvider(PET_NAME))
             .orderBy(orderBy().ascending(PET_NAME));
@@ -138,7 +138,7 @@ public final class ClinicImpl extends Domain {
                     .nullable(false),
             columnProperty(VISIT_DESCRIPTION, "Description")
                     .maximumLength(255))
-            .keyGenerator(automatic(T_VISIT))
+            .keyGenerator(automatic(T_VISIT.getName()))
             .orderBy(orderBy().ascending(VISIT_PET_ID).descending(VISIT_DATE))
             .caption("Visits");
   }

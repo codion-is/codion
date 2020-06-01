@@ -80,6 +80,7 @@ is.codion.framework.domain.entity.DefaultEntityDefinition
 is.codion.framework.domain.entity.DefaultEntityDefinition$DefaultBeanHelper
 is.codion.framework.domain.entity.DefaultEntityDefinition$EntityProperties
 is.codion.framework.domain.entity.DefaultEntityValidator
+is.codion.framework.domain.entity.DefaultIdentity
 is.codion.framework.domain.entity.DefaultOrderBy
 is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByAttribute
 is.codion.framework.domain.entity.Entity

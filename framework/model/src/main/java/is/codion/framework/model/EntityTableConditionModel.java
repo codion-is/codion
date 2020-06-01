@@ -13,6 +13,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Property;
 
@@ -28,7 +29,7 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return the id of the entity this table condition model is based on
    */
-  String getEntityId();
+  Identity getEntityId();
 
   /**
    * Sets the search condition values of the condition model associated with {@code attribute}.

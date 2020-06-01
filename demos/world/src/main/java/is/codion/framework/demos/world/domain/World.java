@@ -6,6 +6,7 @@ import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.Attribute;
@@ -21,6 +22,7 @@ import java.util.Objects;
 
 import static is.codion.common.Util.notNull;
 import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.sequence;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Attributes.*;
@@ -30,7 +32,7 @@ import static java.util.Arrays.asList;
 // tag::entityIdsAndAttributes[]
 public final class World extends Domain {
 
-  public static final String T_CITY = "world.city";
+  public static final Identity T_CITY = identity("world.city");
   public static final Attribute<Integer> CITY_ID = integerAttribute("id", T_CITY);
   public static final Attribute<String> CITY_NAME = stringAttribute("name", T_CITY);
   public static final Attribute<String> CITY_COUNTRY_CODE = stringAttribute("countrycode", T_CITY);
@@ -38,7 +40,7 @@ public final class World extends Domain {
   public static final Attribute<String> CITY_DISTRICT = stringAttribute("district", T_CITY);
   public static final Attribute<Integer> CITY_POPULATION = integerAttribute("population", T_CITY);
 
-  public static final String T_COUNTRY = "world.country";
+  public static final Identity T_COUNTRY = identity("world.country");
   public static final Attribute<String> COUNTRY_CODE = stringAttribute("code", T_COUNTRY);
   public static final Attribute<String> COUNTRY_NAME = stringAttribute("name", T_COUNTRY);
   public static final Attribute<String> COUNTRY_CONTINENT = stringAttribute("continent", T_COUNTRY);
@@ -60,7 +62,7 @@ public final class World extends Domain {
   public static final Attribute<Integer> COUNTRY_NO_OF_LANGUAGES = integerAttribute("no_of_languages", T_COUNTRY);
   public static final BlobAttribute COUNTRY_FLAG = blobAttribute("flag", T_COUNTRY);
 
-  public static final String T_COUNTRYLANGUAGE = "world.countrylanguage";
+  public static final Identity T_COUNTRYLANGUAGE = identity("world.countrylanguage");
   public static final Attribute<String> COUNTRYLANGUAGE_COUNTRY_CODE = stringAttribute("countrycode", T_COUNTRYLANGUAGE);
   public static final EntityAttribute COUNTRYLANGUAGE_COUNTRY_FK = entityAttribute("country_fk", T_COUNTRYLANGUAGE);
   public static final Attribute<String> COUNTRYLANGUAGE_LANGUAGE = stringAttribute("language", T_COUNTRYLANGUAGE);
@@ -69,7 +71,7 @@ public final class World extends Domain {
   public static final Attribute<Integer> COUNTRYLANGUAGE_NO_OF_SPEAKERS = integerAttribute("no_of_speakers", T_COUNTRYLANGUAGE);
   // end::entityIdsAndAttributes[]
 
-  public static final String T_CONTINENT = "continent";
+  public static final Identity T_CONTINENT = identity("continent");
   public static final Attribute<String> CONTINENT_CONTINENT = stringAttribute("continent", T_CONTINENT);
   public static final Attribute<Integer> CONTINENT_SURFACE_AREA = integerAttribute("sum(surfacearea)", T_CONTINENT);
   public static final Attribute<Long> CONTINENT_POPULATION = longAttribute("sum(population)", T_CONTINENT);
@@ -79,7 +81,7 @@ public final class World extends Domain {
   public static final Attribute<Integer> CONTINENT_MAX_INDEPENDENCE_YEAR = integerAttribute("max(indepyear)", T_CONTINENT);
   public static final Attribute<Double> CONTINENT_GNP = doubleAttribute("sum(gnp)", T_CONTINENT);
 
-  public static final String T_LOOKUP = "world.country_city_v";
+  public static final Identity T_LOOKUP = identity("world.country_city_v");
   public static final Attribute<String> LOOKUP_COUNTRY_CODE = stringAttribute("countrycode", T_LOOKUP);
   public static final Attribute<String> LOOKUP_COUNTRY_NAME = stringAttribute("countryname", T_LOOKUP);
   public static final Attribute<String> LOOKUP_COUNTRY_CONTINENT = stringAttribute("continent", T_LOOKUP);

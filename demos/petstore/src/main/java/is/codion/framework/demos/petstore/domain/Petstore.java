@@ -4,12 +4,14 @@
 package is.codion.framework.demos.petstore.domain;
 
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
 
 import java.math.BigDecimal;
 
+import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Attributes.*;
@@ -28,7 +30,7 @@ public final class Petstore extends Domain {
     tagItem();
   }
 
-  public static final String T_ADDRESS = "address";
+  public static final Identity T_ADDRESS = identity("address");
   public static final Attribute<Integer> ADDRESS_ID = integerAttribute("Address id", T_ADDRESS);
   public static final Attribute<String> ADDRESS_STREET_1 = stringAttribute("Street 1", T_ADDRESS);
   public static final Attribute<String> ADDRESS_STREET_2 = stringAttribute("Street 2", T_ADDRESS);
@@ -64,7 +66,7 @@ public final class Petstore extends Domain {
             .caption("Addresses");
   }
 
-  public static final String T_CATEGORY = "category";
+  public static final Identity T_CATEGORY = identity("category");
   public static final Attribute<Integer> CATEGORY_ID = integerAttribute("Category id", T_CATEGORY);
   public static final Attribute<String> CATEGORY_NAME = stringAttribute("Name", T_CATEGORY);
   public static final Attribute<String> CATEGORY_DESCRIPTION = stringAttribute("Description", T_CATEGORY);
@@ -86,7 +88,7 @@ public final class Petstore extends Domain {
             .caption("Categories");
   }
 
-  public static final String T_PRODUCT = "product";
+  public static final Identity T_PRODUCT = identity("product");
   public static final Attribute<Integer> PRODUCT_ID = integerAttribute("Product id", T_PRODUCT);
   public static final Attribute<Integer> PRODUCT_CATEGORY_ID = integerAttribute("Category id", T_PRODUCT);
   public static final EntityAttribute PRODUCT_CATEGORY_FK = entityAttribute("Category", T_PRODUCT);
@@ -114,7 +116,7 @@ public final class Petstore extends Domain {
             .caption("Products");
   }
 
-  public static final String T_SELLER_CONTACT_INFO = "sellercontactinfo";
+  public static final Identity T_SELLER_CONTACT_INFO = identity("sellercontactinfo");
   public static final Attribute<Integer> SELLER_CONTACT_INFO_ID = integerAttribute("Contactinfo id", T_SELLER_CONTACT_INFO);
   public static final Attribute<String> SELLER_CONTACT_INFO_FIRST_NAME = stringAttribute("First name", T_SELLER_CONTACT_INFO);
   public static final Attribute<String> SELLER_CONTACT_INFO_LAST_NAME = stringAttribute("Last name", T_SELLER_CONTACT_INFO);
@@ -138,7 +140,7 @@ public final class Petstore extends Domain {
             .caption("Seller info");
   }
 
-  public static final String T_ITEM = "item";
+  public static final Identity T_ITEM = identity("item");
   public static final Attribute<Integer> ITEM_ID = integerAttribute("Item id", T_ITEM);
   public static final Attribute<Integer> ITEM_PRODUCT_ID = integerAttribute("Product id", T_ITEM);
   public static final EntityAttribute ITEM_PRODUCT_FK = entityAttribute("Product", T_ITEM);
@@ -186,7 +188,7 @@ public final class Petstore extends Domain {
             .caption("Items");
   }
 
-  public static final String T_TAG = "tag";
+  public static final Identity T_TAG = identity("tag");
   public static final Attribute<Integer> TAG_ID = integerAttribute("Tag id", T_TAG);
   public static final Attribute<String> TAG_TAG = stringAttribute("Tag", T_TAG);
   public static final Attribute<Integer> TAG_REFCOUNT = integerAttribute("Reference count", T_TAG);
@@ -207,7 +209,7 @@ public final class Petstore extends Domain {
             .caption("Tags");
   }
 
-  public static final String T_TAG_ITEM = "tag_item";
+  public static final Identity T_TAG_ITEM = identity("tag_item");
   public static final Attribute<Integer> TAG_ITEM_ITEM_ID = integerAttribute("Item id", T_TAG_ITEM);
   public static final EntityAttribute TAG_ITEM_ITEM_FK = entityAttribute("Item", T_TAG_ITEM);
   public static final Attribute<Integer> TAG_ITEM_TAG_ID = integerAttribute("Tag id", T_TAG_ITEM);

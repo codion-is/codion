@@ -11,6 +11,7 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.BlobAttribute;
@@ -50,7 +51,7 @@ public final class TestDomain extends Domain {
     registerEntities();
   }
 
-  public static final String T_DEPARTMENT = "scott.dept";
+  public static final Identity T_DEPARTMENT = Identity.identity("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc", T_DEPARTMENT);
@@ -69,7 +70,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final String T_EMP = "scott.emp";
+  public static final Identity T_EMP = Identity.identity("scott.emp");
   public static final Attribute<Integer> EMP_ID = integerAttribute("empno", T_EMP);
   public static final Attribute<String> EMP_NAME = stringAttribute("ename", T_EMP);
   public static final Attribute<String> EMP_JOB = stringAttribute("job", T_EMP);

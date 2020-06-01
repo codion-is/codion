@@ -18,6 +18,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.EntityServletServerFactory;
@@ -188,7 +189,7 @@ public final class HttpEntityConnectionTest {
   @Test
   public void selectDependencies() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final Map<String, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
+    final Map<Identity, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
     assertNotNull(dependentEntities);
     assertTrue(dependentEntities.containsKey(TestDomain.T_EMP));
     assertFalse(dependentEntities.get(TestDomain.T_EMP).isEmpty());

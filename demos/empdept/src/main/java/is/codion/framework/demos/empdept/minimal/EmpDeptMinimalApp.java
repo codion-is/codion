@@ -10,6 +10,7 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
@@ -28,6 +29,7 @@ import java.awt.GridLayout;
 import java.time.LocalDate;
 import java.util.Locale;
 
+import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
@@ -46,7 +48,7 @@ public final class EmpDeptMinimalApp {
     /*
      * We start by defining attributes for the columns in the SCOTT.DEPT table.
      */
-    public static final String T_DEPT = "scott.dept";
+    public static final Identity T_DEPT = identity("scott.dept");
     public static final Attribute<Integer> DEPT_DEPTNO = integerAttribute("deptno", T_DEPT);
     public static final Attribute<String> DEPT_DNAME = stringAttribute("dname", T_DEPT);
     public static final Attribute<String> DEPT_LOC = stringAttribute("loc", T_DEPT);
@@ -54,7 +56,7 @@ public final class EmpDeptMinimalApp {
     /*
      * And for the columns in the SCOTT.EMP table.
      */
-    public static final String T_EMP = "scott.emp";
+    public static final Identity T_EMP = identity("scott.emp");
     public static final Attribute<Integer> EMP_EMPNO = integerAttribute("empno", T_EMP);
     public static final Attribute<String> EMP_ENAME = stringAttribute("ename", T_EMP);
     public static final Attribute<Integer> EMP_DEPTNO = integerAttribute("deptno", T_EMP);
@@ -92,7 +94,7 @@ public final class EmpDeptMinimalApp {
                       .searchProperty(true)
                       .nullable(false)
                       .maximumLength(10),
-              foreignKeyProperty(EMP_DEPT_FK, "Department", "scott.dept",
+              foreignKeyProperty(EMP_DEPT_FK, "Department", T_DEPT,
                       columnProperty(EMP_DEPTNO))
                       .nullable(false),
               columnProperty(EMP_JOB, "Job")
@@ -104,7 +106,7 @@ public final class EmpDeptMinimalApp {
                       .minimumValue(1000).maximumValue(10000),
               columnProperty(EMP_COMM, "Commission")
                       .maximumFractionDigits(2),
-              foreignKeyProperty(EMP_MGR_FK, "Manager", "scott.emp",
+              foreignKeyProperty(EMP_MGR_FK, "Manager", T_EMP,
                       columnProperty(EMP_MGR)),
               columnProperty(EMP_HIREDATE, "Hiredate")
                       .nullable(false))

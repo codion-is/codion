@@ -9,6 +9,7 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
 
@@ -24,7 +25,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * @return the id of the entity this combo box model is based on
    */
-  String getEntityId();
+  Identity getEntityId();
 
   /**
    * @return the connection provider used by this combo box model

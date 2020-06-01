@@ -5,6 +5,7 @@ package is.codion.framework.model.tests;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Attributes;
@@ -29,7 +30,7 @@ public final class TestDomain extends Domain {
     employee();
   }
 
-  public static final String T_MASTER = "domain.master_entity";
+  public static final Identity T_MASTER = Identity.identity("domain.master_entity");
   public static final Attribute<Long> MASTER_ID = Attributes.longAttribute("id", T_MASTER);
   public static final Attribute<String> MASTER_NAME = Attributes.stringAttribute("name", T_MASTER);
   public static final Attribute<Integer> MASTER_CODE = Attributes.integerAttribute("code", T_MASTER);
@@ -48,7 +49,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(MASTER_NAME));
   }
 
-  public static final String T_DETAIL = "domain.detail_entity";
+  public static final Identity T_DETAIL = Identity.identity("domain.detail_entity");
   public static final Attribute<Long> DETAIL_ID = Attributes.longAttribute("id", T_DETAIL);
   public static final Attribute<Integer> DETAIL_INT = Attributes.integerAttribute("int", T_DETAIL);
   public static final Attribute<Double> DETAIL_DOUBLE = Attributes.doubleAttribute("double", T_DETAIL);
@@ -102,7 +103,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
-  public static final String T_DEPARTMENT = "scott.dept";
+  public static final Identity T_DEPARTMENT = Identity.identity("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = Attributes.integerAttribute("deptno", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_NAME = Attributes.stringAttribute("dname", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_LOCATION = Attributes.stringAttribute("loc", T_DEPARTMENT);
@@ -121,7 +122,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final String T_EMP = "scott.emp";
+  public static final Identity T_EMP = Identity.identity("scott.emp");
   public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno", T_EMP);
   public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename", T_EMP);
   public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job", T_EMP);

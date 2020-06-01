@@ -6,6 +6,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.tests.AbstractEntityModelTest;
@@ -81,7 +82,7 @@ public final class SwingEntityModelTest
   @Test
   public void testDetailModels() throws DatabaseException, ValidationException {
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
-    assertFalse(departmentModel.containsDetailModel("undefined"));
+    assertFalse(departmentModel.containsDetailModel(Identity.identity("undefined")));
     assertFalse(departmentModel.containsDetailModel(EmpModel.class));
     final SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     assertNotNull(employeeModel);

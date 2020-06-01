@@ -39,7 +39,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
     requireNonNull(entity, "entity");
     generator.writeStartObject();
     generator.writeFieldName("entityId");
-    mapper.writeValue(generator, entity.getEntityId());
+    mapper.writeValue(generator, entity.getEntityId().getName());
     generator.writeFieldName("values");
     mapper.writeValue(generator, getValueMap(entity));
     if (entity.isModified()) {

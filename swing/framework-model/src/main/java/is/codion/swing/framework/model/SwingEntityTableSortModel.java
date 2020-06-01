@@ -5,6 +5,7 @@ package is.codion.swing.framework.model;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.model.table.AbstractTableSortModel;
@@ -26,7 +27,7 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Pr
    * @param definitionProvider the domain entity definition provider
    * @param entityId the entityId
    */
-  public SwingEntityTableSortModel(final EntityDefinition.Provider definitionProvider, final String entityId) {
+  public SwingEntityTableSortModel(final EntityDefinition.Provider definitionProvider, final Identity entityId) {
     super(initializeColumns(definitionProvider.getDefinition(entityId).getVisibleProperties()));
     this.definitionProvider = definitionProvider;
   }

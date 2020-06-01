@@ -9,6 +9,7 @@ import is.codion.framework.domain.entity.Department;
 import is.codion.framework.domain.entity.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.BlobAttribute;
@@ -23,6 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.KeyGenerators.queried;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
@@ -42,7 +44,7 @@ public final class TestDomain extends Domain {
     noPKEntity();
   }
 
-  public static final String T_COMPOSITE_MASTER = "domain.composite_master";
+  public static final Identity T_COMPOSITE_MASTER = identity("domain.composite_master");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID = integerAttribute("id", T_COMPOSITE_MASTER);
   public static final Attribute<Integer> COMPOSITE_MASTER_ID_2 = integerAttribute("id2", T_COMPOSITE_MASTER);
 
@@ -52,7 +54,7 @@ public final class TestDomain extends Domain {
             columnProperty(COMPOSITE_MASTER_ID_2).primaryKeyIndex(1));
   }
 
-  public static final String T_COMPOSITE_DETAIL = "domain.composite_detail";
+  public static final Identity T_COMPOSITE_DETAIL = identity("domain.composite_detail");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = integerAttribute("master_id", T_COMPOSITE_DETAIL);
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = integerAttribute("master_id2", T_COMPOSITE_DETAIL);
   public static final EntityAttribute COMPOSITE_DETAIL_MASTER_FK = entityAttribute("master_fk", T_COMPOSITE_DETAIL);
@@ -64,7 +66,7 @@ public final class TestDomain extends Domain {
                             columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1))));
   }
 
-  public static final String T_MASTER = "domain.master_entity";
+  public static final Identity T_MASTER = identity("domain.master_entity");
   public static final Attribute<Long> MASTER_ID = longAttribute("id", T_MASTER);
   public static final Attribute<String> MASTER_NAME = stringAttribute("name", T_MASTER);
   public static final Attribute<Integer> MASTER_CODE = integerAttribute("code", T_MASTER);
@@ -78,7 +80,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(MASTER_NAME));
   }
 
-  public static final String T_DETAIL = "domain.detail_entity";
+  public static final Identity T_DETAIL = identity("domain.detail_entity");
   public static final Attribute<Long> DETAIL_ID = longAttribute("id", T_DETAIL);
   public static final Attribute<Integer> DETAIL_INT = integerAttribute("int", T_DETAIL);
   public static final Attribute<Double> DETAIL_DOUBLE = doubleAttribute("double", T_DETAIL);
@@ -140,7 +142,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
-  public static final String T_DEPARTMENT = "domain.scott.dept";
+  public static final Identity T_DEPARTMENT = identity("domain.scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc", T_DEPARTMENT);
@@ -171,7 +173,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final String T_EMP = "domain.scott.emp";
+  public static final Identity T_EMP = identity("domain.scott.emp");
   public static final Attribute<Integer> EMP_ID = integerAttribute("emp_id", T_EMP);
   public static final Attribute<String> EMP_NAME = stringAttribute("emp_name", T_EMP);
   public static final Attribute<String> EMP_JOB = stringAttribute("job", T_EMP);
@@ -240,7 +242,7 @@ public final class TestDomain extends Domain {
             .caption("Employee");
   }
 
-  public static final String T_NO_PK = "no_pk";
+  public static final Identity T_NO_PK = identity("no_pk");
   public static final Attribute<Integer> NO_PK_COL1 = integerAttribute("col1", T_NO_PK);
   public static final Attribute<Integer> NO_PK_COL2 = integerAttribute("col2", T_NO_PK);
   public static final Attribute<Integer> NO_PK_COL3 = integerAttribute("col3", T_NO_PK);

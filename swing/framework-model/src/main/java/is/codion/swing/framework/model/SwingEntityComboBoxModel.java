@@ -15,6 +15,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -47,7 +48,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /**
    * the id of the underlying entity
    */
-  private final String entityId;
+  private final Identity entityId;
 
   /**
    * the EntityConnectionProvider instance used by this EntityComboBoxModel
@@ -107,7 +108,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    * @param entityId the id of the entity this combo box model should represent
    * @param connectionProvider a EntityConnectionProvider instance
    */
-  public SwingEntityComboBoxModel(final String entityId, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityComboBoxModel(final Identity entityId, final EntityConnectionProvider connectionProvider) {
     requireNonNull(entityId, "entityId");
     requireNonNull(connectionProvider, "connectionProvider");
     this.entityId = entityId;
@@ -129,7 +130,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final String getEntityId() {
+  public final Identity getEntityId() {
     return entityId;
   }
 

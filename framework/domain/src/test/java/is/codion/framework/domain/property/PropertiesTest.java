@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.DateFormats;
+import is.codion.framework.domain.entity.Identity;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class PropertiesTest {
 
-  private static final String ENTITY_ID = "entityId";
+  private static final Identity ENTITY_ID = Identity.identity("entityId");
+  private static final Identity REFERENCED_ENTITY_ID = Identity.identity("referencedEntityId");
 
   @Test
   public void derivedPropertyWithoutLinkedProperties() {
@@ -29,12 +31,12 @@ public final class PropertiesTest {
   @Test
   public void foreignKeyPropertyNonUniqueReferenceAttribute() {
     final EntityAttribute attribute = Attributes.entityAttribute("attribute", ENTITY_ID);
-    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(attribute, "caption", "referencedEntityId", columnProperty(attribute)));
+    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(attribute, "caption", REFERENCED_ENTITY_ID, columnProperty(attribute)));
   }
 
   @Test
   public void foreignKeyPropertyWithoutReferenceProperty() {
-    assertThrows(NullPointerException.class, () -> foreignKeyProperty(Attributes.entityAttribute("attribute", ENTITY_ID), "caption", "referencedEntityId", (ColumnProperty.Builder) null));
+    assertThrows(NullPointerException.class, () -> foreignKeyProperty(Attributes.entityAttribute("attribute", ENTITY_ID), "caption", REFERENCED_ENTITY_ID, (ColumnProperty.Builder) null));
   }
 
   @Test
@@ -130,7 +132,7 @@ public final class PropertiesTest {
     final ColumnProperty.Builder columnProperty = columnProperty(Attributes.attribute("attribute", Integer.class, ENTITY_ID));
     final ColumnProperty.Builder columnProperty2 = columnProperty(Attributes.attribute("attribute2", Integer.class, ENTITY_ID));
     final ForeignKeyProperty.Builder foreignKeyProperty =
-            foreignKeyProperty(Attributes.entityAttribute("fkAttribute", ENTITY_ID), "fk", "referenceEntityID",
+            foreignKeyProperty(Attributes.entityAttribute("fkAttribute", ENTITY_ID), "fk", REFERENCED_ENTITY_ID,
                     Arrays.asList(columnProperty, columnProperty2));
     foreignKeyProperty.nullable(false);
     assertFalse(columnProperty.get().isNullable());
@@ -146,17 +148,17 @@ public final class PropertiesTest {
 
     final ForeignKeyProperty.Builder updatableForeignKeyProperty = foreignKeyProperty(Attributes.entityAttribute(
             "fkProperty", ENTITY_ID), "test",
-            "referencedEntityID", updatableReferenceProperty);
+            REFERENCED_ENTITY_ID, updatableReferenceProperty);
     assertTrue(updatableForeignKeyProperty.get().isUpdatable());
 
     final ForeignKeyProperty nonUpdatableForeignKeyProperty = foreignKeyProperty(Attributes.entityAttribute(
             "fkProperty", ENTITY_ID), "test",
-            "referencedEntityID", nonUpdatableReferenceProperty).get();
+            REFERENCED_ENTITY_ID, nonUpdatableReferenceProperty).get();
 
     assertFalse(nonUpdatableForeignKeyProperty.isUpdatable());
 
     final ForeignKeyProperty nonUpdatableCompositeForeignKeyProperty =
-            foreignKeyProperty(Attributes.entityAttribute("fkProperty", ENTITY_ID), "test", "referencedEntityID",
+            foreignKeyProperty(Attributes.entityAttribute("fkProperty", ENTITY_ID), "test", REFERENCED_ENTITY_ID,
                     Arrays.asList(updatableReferenceProperty, nonUpdatableReferenceProperty)).get();
     assertFalse(nonUpdatableCompositeForeignKeyProperty.isUpdatable());
   }

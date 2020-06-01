@@ -5,6 +5,7 @@ package is.codion.framework.db;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.Attributes;
@@ -31,7 +32,7 @@ public final class TestDomain extends Domain {
     employee();
   }
 
-  public static final String T_SUPER = "db.super_entity";
+  public static final Identity T_SUPER = Identity.identity("db.super_entity");
   public static final Attribute<Integer> SUPER_ID = integerAttribute("id", T_SUPER);
 
   void superEntity() {
@@ -39,7 +40,7 @@ public final class TestDomain extends Domain {
             primaryKeyProperty(SUPER_ID));
   }
 
-  public static final String T_MASTER = "db.master_entity";
+  public static final Identity T_MASTER = Identity.identity("db.master_entity");
   public static final Attribute<Integer> MASTER_ID_1 = integerAttribute("id", T_MASTER);
   public static final Attribute<Integer> MASTER_ID_2 = integerAttribute("id2", T_MASTER);
   public static final Attribute<Integer> MASTER_SUPER_ID = integerAttribute("super_id", T_MASTER);
@@ -59,7 +60,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(MASTER_NAME));
   }
 
-  public static final String T_DETAIL = "db.detail_entity";
+  public static final Identity T_DETAIL = Identity.identity("db.detail_entity");
 
   public static final Attribute<Long> DETAIL_ID = Attributes.longAttribute("id", T_DETAIL);
   public static final Attribute<Integer> DETAIL_INT = integerAttribute("int", T_DETAIL);
@@ -77,7 +78,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = integerAttribute("int_value_list", T_DETAIL);
   public static final Attribute<Integer> DETAIL_INT_DERIVED = integerAttribute("int_derived", T_DETAIL);
 
-  public static final String DETAIL_SELECT_TABLE_NAME = "db.entity_test_select";
+  public static final Identity DETAIL_SELECT_TABLE_NAME = Identity.identity("db.entity_test_select");
 
   private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
           item(2, "2"), item(3, "3"));
@@ -110,13 +111,13 @@ public final class TestDomain extends Domain {
 
               return intValue * 10;
             }, DETAIL_INT))
-            .selectTableName(DETAIL_SELECT_TABLE_NAME)
+            .selectTableName(DETAIL_SELECT_TABLE_NAME.getName())
             .orderBy(orderBy().ascending(DETAIL_STRING))
             .smallDataset(true)
             .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
-  public static final String T_DEPARTMENT = "db.scott.dept";
+  public static final Identity T_DEPARTMENT = Identity.identity("db.scott.dept");
 
   public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname", T_DEPARTMENT);
@@ -147,7 +148,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final String T_EMP = "db.scott.emp";
+  public static final Identity T_EMP = Identity.identity("db.scott.emp");
   public static final Attribute<Integer> EMP_ID = integerAttribute("emp_id", T_EMP);
   public static final Attribute<String> EMP_NAME = stringAttribute("emp_name", T_EMP);
   public static final Attribute<String> EMP_JOB = stringAttribute("job", T_EMP);

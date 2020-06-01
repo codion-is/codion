@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.entity.Identity;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +25,7 @@ public final class Attributes {
    * @param <T> the attribute type
    * @return a new {@link Attribute}
    */
-  public static <T> Attribute<T> attribute(final String name, final Class<T> typeClass, final String entityId) {
+  public static <T> Attribute<T> attribute(final String name, final Class<T> typeClass, final Identity entityId) {
     return new DefaultAttribute<>(name, typeClass, entityId);
   }
 
@@ -35,7 +37,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new {@link Attribute}
    */
-  public static Attribute<Object> attribute(final String name, final String entityId) {
+  public static Attribute<Object> attribute(final String name, final Identity entityId) {
     final DefaultAttribute<Object> attribute = new DefaultAttribute<>(name, Object.class, entityId);
 
     return attribute;
@@ -47,7 +49,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new Long based attribute.
    */
-  public static Attribute<Long> longAttribute(final String name, final String entityId) {
+  public static Attribute<Long> longAttribute(final String name, final Identity entityId) {
     return attribute(name, Long.class, entityId);
   }
 
@@ -57,7 +59,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new Integer based attribute.
    */
-  public static Attribute<Integer> integerAttribute(final String name, final String entityId) {
+  public static Attribute<Integer> integerAttribute(final String name, final Identity entityId) {
     return attribute(name, Integer.class, entityId);
   }
 
@@ -67,7 +69,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new Double based attribute.
    */
-  public static Attribute<Double> doubleAttribute(final String name, final String entityId) {
+  public static Attribute<Double> doubleAttribute(final String name, final Identity entityId) {
     return attribute(name, Double.class, entityId);
   }
 
@@ -77,7 +79,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new BigDecimal based attribute.
    */
-  public static Attribute<BigDecimal> bigDecimalAttribute(final String name, final String entityId) {
+  public static Attribute<BigDecimal> bigDecimalAttribute(final String name, final Identity entityId) {
     return attribute(name, BigDecimal.class, entityId);
   }
 
@@ -87,7 +89,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new LocalDate based attribute.
    */
-  public static Attribute<LocalDate> localDateAttribute(final String name, final String entityId) {
+  public static Attribute<LocalDate> localDateAttribute(final String name, final Identity entityId) {
     return attribute(name, LocalDate.class, entityId);
   }
 
@@ -97,7 +99,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new LocalTime based attribute.
    */
-  public static Attribute<LocalTime> localTimeAttribute(final String name, final String entityId) {
+  public static Attribute<LocalTime> localTimeAttribute(final String name, final Identity entityId) {
     return attribute(name, LocalTime.class, entityId);
   }
 
@@ -107,7 +109,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new LocalDateTime based attribute.
    */
-  public static Attribute<LocalDateTime> localDateTimeAttribute(final String name, final String entityId) {
+  public static Attribute<LocalDateTime> localDateTimeAttribute(final String name, final Identity entityId) {
     return attribute(name, LocalDateTime.class, entityId);
   }
 
@@ -117,7 +119,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new String based attribute.
    */
-  public static Attribute<String> stringAttribute(final String name, final String entityId) {
+  public static Attribute<String> stringAttribute(final String name, final Identity entityId) {
     return attribute(name, String.class, entityId);
   }
 
@@ -127,7 +129,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new Boolean based attribute.
    */
-  public static Attribute<Boolean> booleanAttribute(final String name, final String entityId) {
+  public static Attribute<Boolean> booleanAttribute(final String name, final Identity entityId) {
     return attribute(name, Boolean.class, entityId);
   }
 
@@ -137,7 +139,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new {@link EntityAttribute}
    */
-  public static EntityAttribute entityAttribute(final String name, final String entityId) {
+  public static EntityAttribute entityAttribute(final String name, final Identity entityId) {
     return new DefaultEntityAttribute(name, entityId);
   }
 
@@ -147,7 +149,7 @@ public final class Attributes {
    * @param entityId the id of the entity to associate this attribute with
    * @return a new {@link BlobAttribute}
    */
-  public static BlobAttribute blobAttribute(final String name, final String entityId) {
+  public static BlobAttribute blobAttribute(final String name, final Identity entityId) {
     return new DefaultBlobAttribute(name, entityId);
   }
 }

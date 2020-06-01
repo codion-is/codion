@@ -14,6 +14,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
@@ -25,6 +26,7 @@ import static is.codion.common.db.Operator.LIKE;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
 import static is.codion.framework.domain.entity.Entities.getKeys;
+import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Attributes.*;
@@ -42,13 +44,13 @@ public final class EntitiesTutorial {
 
     //string constant for the table entityId ('T_' prefix)
     //and a Attribute for each column
-    public static final String T_ARTIST = "chinook.artist";
+    public static final Identity T_ARTIST = identity("chinook.artist");
     public static final Attribute<Integer> ARTIST_ID = integerAttribute("artistid", T_ARTIST);
     public static final Attribute<String> ARTIST_NAME = stringAttribute("name", T_ARTIST);
 
     //string constants for the table entityId ('T_' prefix),
     //and a Attribute for each column and one for the foreign key relation
-    public static final String T_ALBUM = "chinook.album";
+    public static final Identity T_ALBUM = identity("chinook.album");
     public static final Attribute<Integer> ALBUM_ALBUMID = integerAttribute("albumid", T_ALBUM);
     public static final Attribute<String> ALBUM_TITLE = stringAttribute("title", T_ALBUM);
     public static final Attribute<Integer> ALBUM_ARTISTID = integerAttribute("artistid", T_ALBUM);

@@ -6,6 +6,7 @@ package is.codion.framework.demos.manual.store.domain;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
@@ -18,26 +19,27 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
+import static is.codion.framework.domain.entity.Identity.identity;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Attributes.*;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class Store extends Domain {
 
-  public static final String T_ADDRESS = "store.address";
+  public static final Identity T_ADDRESS = identity("store.address");
   public static final Attribute<Integer> ADDRESS_ID = integerAttribute("id", T_ADDRESS);
   public static final Attribute<String> ADDRESS_STREET = stringAttribute("street", T_ADDRESS);
   public static final Attribute<String> ADDRESS_CITY = stringAttribute("city", T_ADDRESS);
   public static final Attribute<Boolean> ADDRESS_VALID = booleanAttribute("valid", T_ADDRESS);
 
-  public static final String T_CUSTOMER = "store.customer";
+  public static final Identity T_CUSTOMER = identity("store.customer");
   public static final Attribute<String> CUSTOMER_ID = stringAttribute("id", T_CUSTOMER);
   public static final Attribute<String> CUSTOMER_FIRST_NAME = stringAttribute("first_name", T_CUSTOMER);
   public static final Attribute<String> CUSTOMER_LAST_NAME = stringAttribute("last_name", T_CUSTOMER);
   public static final Attribute<String> CUSTOMER_EMAIL = stringAttribute("email", T_CUSTOMER);
   public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = booleanAttribute("is_active", T_CUSTOMER);
 
-  public static final String T_CUSTOMER_ADDRESS = "store.customer_address";
+  public static final Identity T_CUSTOMER_ADDRESS = identity("store.customer_address");
   public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = integerAttribute("id", T_CUSTOMER_ADDRESS);
   public static final Attribute<String> CUSTOMER_ADDRESS_CUSTOMER_ID = stringAttribute("customer_id", T_CUSTOMER_ADDRESS);
   public static final EntityAttribute CUSTOMER_ADDRESS_CUSTOMER_FK = entityAttribute("customer_fk", T_CUSTOMER_ADDRESS);
@@ -79,7 +81,7 @@ public final class Store extends Domain {
                     .columnHasDefaultValue(true).nullable(false))
             .stringProvider(new StringProvider(ADDRESS_STREET)
                     .addText(", ").addValue(ADDRESS_CITY))
-            .keyGenerator(automatic(T_ADDRESS))
+            .keyGenerator(automatic("store.address"))
             .smallDataset(true)
             .caption("Address");
     // end::address[]
@@ -95,7 +97,7 @@ public final class Store extends Domain {
             foreignKeyProperty(CUSTOMER_ADDRESS_ADDRESS_FK, "Address", T_ADDRESS,
                     columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID))
                     .nullable(false))
-            .keyGenerator(automatic(T_CUSTOMER_ADDRESS))
+            .keyGenerator(automatic("store.customer_address"))
             .caption("Customer address");
     // end::customerAddress[]
   }

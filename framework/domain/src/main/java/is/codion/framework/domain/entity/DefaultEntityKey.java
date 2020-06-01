@@ -96,7 +96,7 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   @Override
-  public String getEntityId() {
+  public Identity getEntityId() {
     return definition.getEntityId();
   }
 
@@ -165,7 +165,7 @@ final class DefaultEntityKey implements Entity.Key {
       return false;
     }
     if (object.getClass() ==  DefaultEntityKey.class) {
-      final String entityId = definition.getEntityId();
+      final Identity entityId = definition.getEntityId();
       final DefaultEntityKey otherKey = (DefaultEntityKey) object;
       if (compositeKey) {
         return otherKey.isCompositeKey() && entityId.equals(otherKey.getEntityId()) && this.values.equals(otherKey.values);
@@ -310,7 +310,7 @@ final class DefaultEntityKey implements Entity.Key {
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getDomainId());
-    stream.writeObject(definition.getEntityId());
+    stream.writeObject(definition.getEntityId().getName());
     final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
       stream.writeObject(values.get(primaryKeyProperties.get(i).getAttribute()));
@@ -319,7 +319,7 @@ final class DefaultEntityKey implements Entity.Key {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final String domainId = (String) stream.readObject();
-    final String entityId = (String) stream.readObject();
+    final Identity entityId = Identity.identity((String) stream.readObject());
     definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityId);

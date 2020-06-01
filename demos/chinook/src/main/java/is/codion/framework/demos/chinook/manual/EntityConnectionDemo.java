@@ -16,6 +16,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
@@ -162,7 +163,7 @@ public final class EntityConnectionDemo {
     // tag::selectDependencies[]
     List<Entity> employees = connection.select(selectCondition(T_EMPLOYEE));
 
-    Map<String, Collection<Entity>> dependencies = connection.selectDependencies(employees);
+    Map<Identity, Collection<Entity>> dependencies = connection.selectDependencies(employees);
 
     Collection<Entity> customersDependingOnEmployees = dependencies.get(T_CUSTOMER);
     // end::selectDependencies[]

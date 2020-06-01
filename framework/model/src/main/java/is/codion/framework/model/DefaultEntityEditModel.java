@@ -20,6 +20,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.ValueChange;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.Attribute;
@@ -158,17 +159,17 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entityId the id of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider) {
+  public DefaultEntityEditModel(final Identity entityId, final EntityConnectionProvider connectionProvider) {
     this(entityId, connectionProvider, connectionProvider.getEntities().getDefinition(entityId).getValidator());
   }
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the  entityIdentified by {@code entityId}.
+   * Instantiates a new {@link DefaultEntityEditModel} based on the entityIdentified by {@code entityId}.
    * @param entityId the id of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public DefaultEntityEditModel(final String entityId, final EntityConnectionProvider connectionProvider,
+  public DefaultEntityEditModel(final Identity entityId, final EntityConnectionProvider connectionProvider,
                                 final EntityValidator validator) {
     this.entity = connectionProvider.getEntities().entity(entityId);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
@@ -305,7 +306,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final String getEntityId() {
+  public final Identity getEntityId() {
     return entity.getEntityId();
   }
 
@@ -316,8 +317,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void replaceForeignKeyValues(final Collection<Entity> entities) {
-    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(entities);
-    for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
+    final Map<Identity, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(entities);
+    for (final Map.Entry<Identity, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
       final List<ForeignKeyProperty> foreignKeyProperties = getEntityDefinition()
               .getForeignKeyReferences(entityIdEntities.getKey());
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
@@ -353,8 +354,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void setForeignKeyValues(final Collection<Entity> entities) {
-    final Map<String, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(entities);
-    for (final Map.Entry<String, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
+    final Map<Identity, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(entities);
+    for (final Map.Entry<Identity, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition()
               .getForeignKeyReferences(entityIdEntities.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?

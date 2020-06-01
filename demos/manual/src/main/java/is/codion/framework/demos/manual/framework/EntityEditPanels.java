@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.manual.framework;
 
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.EntityAttribute;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
@@ -34,7 +35,7 @@ import static is.codion.framework.domain.property.Attributes.*;
 public final class EntityEditPanels {
 
   private static final class Domain {
-    static final String ENTITY_ID = "entityId";
+    static final Identity ENTITY_ID = Identity.identity("entityId");
     static final Attribute<Boolean> BOOLEAN_ATTRIBUTE = booleanAttribute("boolean", ENTITY_ID);
     static final EntityAttribute FOREIGN_KEY_ATTRIBUTE = entityAttribute("foreign_key", ENTITY_ID);
     static final Attribute<LocalDate> LOCAL_DATE_ATTRIBUTE = localDateAttribute("local_date", ENTITY_ID);

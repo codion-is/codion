@@ -12,6 +12,7 @@ import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Attribute;
@@ -67,7 +68,7 @@ public final class TestDomain extends Domain {
     addReport(REPORT);
   }
 
-  public static final String T_DEPARTMENT = "scott.dept";
+  public static final Identity T_DEPARTMENT = Identity.identity("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = integerAttribute("deptno", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_NAME = stringAttribute("dname", T_DEPARTMENT);
   public static final Attribute<String> DEPARTMENT_LOCATION = stringAttribute("loc", T_DEPARTMENT);
@@ -98,7 +99,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final String T_EMP = "scott.emp";
+  public static final Identity T_EMP = Identity.identity("scott.emp");
   public static final Attribute<Integer> EMP_ID = Attributes.integerAttribute("empno", T_EMP);
   public static final Attribute<String> EMP_NAME = Attributes.stringAttribute("ename", T_EMP);
   public static final Attribute<String> EMP_JOB = Attributes.stringAttribute("job", T_EMP);
@@ -151,7 +152,7 @@ public final class TestDomain extends Domain {
             .caption("Employee");
   }
 
-  public static final String T_UUID_TEST_DEFAULT = "scott.uuid_test_default";
+  public static final Identity T_UUID_TEST_DEFAULT = Identity.identity("scott.uuid_test_default");
   public static final Attribute<UUID> UUID_TEST_DEFAULT_ID = Attributes.attribute("id", UUID.class, T_UUID_TEST_DEFAULT);
   public static final Attribute<String> UUID_TEST_DEFAULT_DATA = Attributes.stringAttribute("data", T_UUID_TEST_DEFAULT);
 
@@ -176,7 +177,7 @@ public final class TestDomain extends Domain {
             .keyGenerator(uuidKeyGenerator);
   }
 
-  public static final String T_UUID_TEST_NO_DEFAULT = "scott.uuid_test_no_default";
+  public static final Identity T_UUID_TEST_NO_DEFAULT = Identity.identity("scott.uuid_test_no_default");
   public static final Attribute<UUID> UUID_TEST_NO_DEFAULT_ID = Attributes.attribute("id", UUID.class, T_UUID_TEST_NO_DEFAULT);
   public static final Attribute<String> UUID_TEST_NO_DEFAULT_DATA = Attributes.stringAttribute("data", T_UUID_TEST_NO_DEFAULT);
 
@@ -207,7 +208,7 @@ public final class TestDomain extends Domain {
     });
   }
 
-  public static final String GROUP_BY_QUERY_ENTITY_ID = "groupByQueryEntityID";
+  public static final Identity GROUP_BY_QUERY_ENTITY_ID = Identity.identity("groupByQueryEntityID");
   public static final String JOINED_QUERY_CONDITION_ID = "conditionId";
 
   private void groupByQuery() {
@@ -218,7 +219,7 @@ public final class TestDomain extends Domain {
             .havingClause("job <> 'PRESIDENT'");
   }
 
-  public static final String T_NO_PK = "scott.no_pk_table";
+  public static final Identity T_NO_PK = Identity.identity("scott.no_pk_table");
   public static final Attribute<Integer> NO_PK_COL1 = Attributes.integerAttribute("col1", T_NO_PK);
   public static final Attribute<String> NO_PK_COL2 = Attributes.stringAttribute("col2", T_NO_PK);
   public static final Attribute<String> NO_PK_COL3 = Attributes.stringAttribute("col3", T_NO_PK);
@@ -232,7 +233,7 @@ public final class TestDomain extends Domain {
             columnProperty(NO_PK_COL4));
   }
 
-  public static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
+  public static final Identity JOINED_QUERY_ENTITY_ID = Identity.identity("joinedQueryEntityID");
   public static final Attribute<Integer> JOINED_EMPNO = Attributes.integerAttribute("e.empno", JOINED_QUERY_ENTITY_ID);
   public static final Attribute<Integer> JOINED_DEPTNO = Attributes.integerAttribute("d.deptno", JOINED_QUERY_ENTITY_ID);
 

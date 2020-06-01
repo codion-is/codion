@@ -36,9 +36,9 @@ public interface EntityDefinition extends Serializable {
   PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.strictForeignKeys", true);
 
   /**
-   * @return the  entityId
+   * @return the entityId
    */
-  String getEntityId();
+  Identity getEntityId();
 
   /**
    * @return the name of the underlying table, with schema prefix if applicable
@@ -336,7 +336,7 @@ public interface EntityDefinition extends Serializable {
    * @param foreignEntityId the id of the referenced entity
    * @return a List containing the properties, an empty list is returned in case no foreign key references are found
    */
-  List<ForeignKeyProperty> getForeignKeyReferences(String foreignEntityId);
+  List<ForeignKeyProperty> getForeignKeyReferences(Identity foreignEntityId);
 
   /**
    * @param attribute the attribute
@@ -463,7 +463,7 @@ public interface EntityDefinition extends Serializable {
      * @return the entity definition
      * @throws IllegalArgumentException in case the definition is not found
      */
-    EntityDefinition getDefinition(String entityId);
+    EntityDefinition getDefinition(Identity entityId);
 
     /**
      * Returns all {@link EntityDefinition}s available in this provider

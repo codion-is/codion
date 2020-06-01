@@ -24,6 +24,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.Identity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -257,8 +258,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   /**
    * @return a map containing all defined entityIds, with their respective table names as an associated value
    */
-  final Map<String, String> getEntityDefinitions() {
-    final Map<String, String> definitions = new HashMap<>();
+  final Map<Identity, String> getEntityDefinitions() {
+    final Map<Identity, String> definitions = new HashMap<>();
     for (final Domain domain : domainModels.values()) {
       for (final EntityDefinition definition : domain.getDefinitions()) {
         definitions.put(definition.getEntityId(), definition.getTableName());

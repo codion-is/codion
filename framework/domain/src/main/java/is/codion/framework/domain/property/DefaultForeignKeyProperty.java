@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   private static final long serialVersionUID = 1;
 
-  private final String foreignEntityId;
+  private final Identity foreignEntityId;
   private final List<ColumnProperty<?>> columnProperties;
   private final boolean compositeReference;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
@@ -32,7 +33,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    * @param columnProperty the underlying column property comprising this foreign key
    */
   DefaultForeignKeyProperty(final EntityAttribute attribute, final String caption,
-                            final String foreignEntityId, final ColumnProperty.Builder<?> columnProperty) {
+                            final Identity foreignEntityId, final ColumnProperty.Builder<?> columnProperty) {
     this(attribute, caption, foreignEntityId, singletonList(columnProperty));
   }
 
@@ -43,7 +44,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    * @param columnPropertyBuilders the underlying column properties comprising this foreign key
    */
   DefaultForeignKeyProperty(final EntityAttribute attribute, final String caption,
-                            final String foreignEntityId, final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
+                            final Identity foreignEntityId, final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
     super(attribute, caption);
     requireNonNull(foreignEntityId, "foreignEntityId");
     validateParameters(attribute, foreignEntityId, columnPropertyBuilders);
@@ -71,7 +72,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   @Override
-  public String getForeignEntityId() {
+  public Identity getForeignEntityId() {
     return foreignEntityId;
   }
 
@@ -102,7 +103,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     return new DefaultForeignKeyPropertyBuilder(this);
   }
 
-  private static void validateParameters(final Attribute<Entity> attribute, final String foreignEntityId,
+  private static void validateParameters(final Attribute<Entity> attribute, final Identity foreignEntityId,
                                          final List<ColumnProperty.Builder<?>> columnProperties) {
     if (nullOrEmpty(columnProperties)) {
       throw new IllegalArgumentException("No column properties specified");

@@ -5,6 +5,7 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 
 import java.text.Collator;
 import java.time.LocalDateTime;
@@ -75,7 +76,7 @@ public final class Properties {
    * @return a new {@link ForeignKeyProperty.Builder}
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(final EntityAttribute attribute,
-                                                              final String caption, final String foreignEntityId,
+                                                              final String caption, final Identity foreignEntityId,
                                                               final ColumnProperty.Builder<?> columnPropertyBuilder) {
     return new DefaultForeignKeyProperty(attribute, caption, foreignEntityId, columnPropertyBuilder).builder();
   }
@@ -91,7 +92,7 @@ public final class Properties {
    * @return a new {@link ForeignKeyProperty.Builder}
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(final EntityAttribute attribute,
-                                                              final String caption, final String foreignEntityId,
+                                                              final String caption, final Identity foreignEntityId,
                                                               final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
     return new DefaultForeignKeyProperty(attribute, caption, foreignEntityId, columnPropertyBuilders).builder();
   }

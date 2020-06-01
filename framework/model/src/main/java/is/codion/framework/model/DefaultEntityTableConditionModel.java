@@ -19,6 +19,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Identity;
 import is.codion.framework.domain.property.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -42,9 +43,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   private final State conditionChangedState = States.state();
   private final Event<String> simpleConditionStringChangedEvent = Events.event();
-  private final Event simpleSearchPerformedEvent = Events.event();
+  private final Event<?> simpleSearchPerformedEvent = Events.event();
 
-  private final String entityId;
+  private final Identity entityId;
   private final EntityConnectionProvider connectionProvider;
   private final Map<Attribute<?>, ColumnConditionModel<Entity, Property<?>>> propertyFilterModels = new LinkedHashMap<>();
   private final Map<Attribute<?>, ColumnConditionModel<Entity, ? extends Property<?>>> propertyConditionModels = new HashMap<>();
@@ -61,7 +62,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
    * @param filterModelProvider provides the column filter models for this table condition model
    * @param conditionModelProvider provides the column condition models for this table condition model
    */
-  public DefaultEntityTableConditionModel(final String entityId, final EntityConnectionProvider connectionProvider,
+  public DefaultEntityTableConditionModel(final Identity entityId, final EntityConnectionProvider connectionProvider,
                                           final PropertyFilterModelProvider filterModelProvider,
                                           final PropertyConditionModelProvider conditionModelProvider) {
     requireNonNull(entityId, "entityId");
@@ -76,7 +77,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public String getEntityId() {
+  public Identity getEntityId() {
     return entityId;
   }
 
@@ -319,7 +320,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     return propertyConditionModels.values().stream().map(DefaultEntityTableConditionModel::toString).collect(joining());
   }
 
-  private void initializeFilterModels(final String entityId, final PropertyFilterModelProvider filterModelProvider) {
+  private void initializeFilterModels(final Identity entityId, final PropertyFilterModelProvider filterModelProvider) {
     if (filterModelProvider != null) {
       for (final Property<?> property : connectionProvider.getEntities().getDefinition(entityId).getProperties()) {
         if (!property.isHidden()) {
@@ -330,7 +331,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private void initializeColumnPropertyConditionModels(final String entityId, final PropertyConditionModelProvider conditionModelProvider) {
+  private void initializeColumnPropertyConditionModels(final Identity entityId, final PropertyConditionModelProvider conditionModelProvider) {
     for (final ColumnProperty<?> columnProperty :
             connectionProvider.getEntities().getDefinition(entityId).getColumnProperties()) {
       if (!columnProperty.isForeignKeyProperty() && !columnProperty.isAggregateColumn()) {
@@ -343,7 +344,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private void initializeForeignKeyPropertyConditionModels(final String entityId, final EntityConnectionProvider connectionProvider,
+  private void initializeForeignKeyPropertyConditionModels(final Identity entityId, final EntityConnectionProvider connectionProvider,
                                                            final PropertyConditionModelProvider conditionModelProvider) {
     for (final ForeignKeyProperty foreignKeyProperty :
             connectionProvider.getEntities().getDefinition(entityId).getForeignKeyProperties()) {
