@@ -71,6 +71,7 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * Returns the bean class associated with this entity type
+   * @param <V> the class type
    * @return the bean class
    */
   <V> Class<V> getBeanClass();

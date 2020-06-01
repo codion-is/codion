@@ -413,7 +413,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @see #getActiveEntities()
    * @see #addLinkedDetailModel(EntityModel)
    * @see #initialize(ForeignKeyProperty, java.util.List)
-   * @see #initialize(String, java.util.List)
+   * @see #initialize(Identity, List)
    */
   protected final void initializeDetailModels() {
     final List<Entity> activeEntities = getActiveEntities();

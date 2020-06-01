@@ -325,7 +325,6 @@ public final class EntityService extends Application {
    * Selects the values for the given attribute using the given query condition
    * @param request the servlet request
    * @param headers the headers
-   * @param attribute the attribute
    * @return a response
    */
   @POST

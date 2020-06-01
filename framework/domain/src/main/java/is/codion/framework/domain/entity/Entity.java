@@ -74,7 +74,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @return the value of the property based on {@code foreignKeyAttribute},
    * assuming it is an Entity
    * @throws IllegalArgumentException if the attribute is not a foreign key attribute
-   * @see #isLoaded(Attribute)
+   * @see #isLoaded(EntityAttribute)
    */
   Entity getForeignKey(EntityAttribute foreignKeyAttribute);
 
@@ -152,6 +152,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * Reverts the value associated with the given attribute to its original value.
    * If the value has not been modified then calling this method has no effect.
    * @param attribute the attribute for which to revert the value
+   * @param <T> the value type
    */
   <T> void revert(Attribute<T> attribute);
 

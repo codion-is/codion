@@ -693,6 +693,7 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param comboBoxModel the combo box model
    * @param enabledState the state controlling the enabled state of the panel
+   * @param <T> the property type
    * @return a combo box based on the property values
    */
   public static <T> SteppedComboBox<T> createPropertyComboBox(final ColumnProperty<T> property, final Value<T> value,
@@ -707,6 +708,7 @@ public final class EntityInputComponents {
    * @param comboBoxModel the combo box model
    * @param enabledState the state controlling the enabled state of the panel
    * @param editable if yes then the combo box will be editable
+   * @param <T> the property type
    * @return a combo box based on the property values
    */
   public static <T> SteppedComboBox<T> createPropertyComboBox(final ColumnProperty<T> property, final Value<T> value,
