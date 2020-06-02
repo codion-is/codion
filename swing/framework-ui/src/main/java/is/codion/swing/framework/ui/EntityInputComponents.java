@@ -306,10 +306,17 @@ public final class EntityInputComponents {
    */
   public static SteppedComboBox<Item<Boolean>> createBooleanComboBox(final Property<Boolean> property, final Value<Boolean> value,
                                                                      final StateObserver enabledState) {
-    final SteppedComboBox<Item<Boolean>> box = createComboBox(property, value, new BooleanComboBoxModel(), enabledState);
-    box.setPopupWidth(BOOLEAN_COMBO_BOX_POPUP_WIDTH);
+    requireNonNull(property, PROPERTY_PARAM_NAME);
+    requireNonNull(value, VALUE_PARAM_NAME);
+    final BooleanComboBoxModel comboBoxModel = new BooleanComboBoxModel();
+    final SteppedComboBox<Item<Boolean>> comboBox = new SteppedComboBox<>(comboBoxModel);
+    value.link(SelectedValues.selectedItemValue(comboBox));
+    linkToEnabledState(enabledState, comboBox);
+    comboBox.setToolTipText(property.getDescription());
+    addComboBoxCompletion(comboBox);
+    comboBox.setPopupWidth(BOOLEAN_COMBO_BOX_POPUP_WIDTH);
 
-    return box;
+    return comboBox;
   }
 
   /**
@@ -385,9 +392,10 @@ public final class EntityInputComponents {
    * Creates a combo box based on the values in the given value list property
    * @param property the property
    * @param value the value to bind to the field
+   * @param <T> the property type
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value) {
+  public static <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final Value<T> value) {
     return createValueListComboBox(property, value, Sorted.YES, null);
   }
 
@@ -396,10 +404,11 @@ public final class EntityInputComponents {
    * @param property the property
    * @param value the value to bind to the field
    * @param enabledState the state controlling the enabled state of the combo box
+   * @param <T> the property type
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
-                                                        final StateObserver enabledState) {
+  public static <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final Value<T> value,
+                                                                     final StateObserver enabledState) {
     return createValueListComboBox(property, value, Sorted.YES, enabledState);
   }
 
@@ -408,10 +417,11 @@ public final class EntityInputComponents {
    * @param property the property
    * @param value the value to bind to the field
    * @param sorted if yes then the items are sorted
+   * @param <T> the property type
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
-                                                        final Sorted sorted) {
+  public static <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final Value<T> value,
+                                                                     final Sorted sorted) {
     return createValueListComboBox(property, value, sorted, null);
   }
 
@@ -423,12 +433,18 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param sorted if yes then the items are sorted
    * @param enabledState the state controlling the enabled state of the combo box
+   * @param <T> the property type
    * @return a combo box based on the given values
    */
-  public static SteppedComboBox createValueListComboBox(final ValueListProperty property, final Value value,
-                                                        final Sorted sorted, final StateObserver enabledState) {
-    final SteppedComboBox comboBox = createComboBox(property, value,
-            createValueListComboBoxModel(property, sorted), enabledState);
+  public static <T> SteppedComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> property, final Value<T> value,
+                                                                     final Sorted sorted, final StateObserver enabledState) {
+    final ItemComboBoxModel<T> valueListComboBoxModel = createValueListComboBoxModel(property, sorted);
+    requireNonNull(property, PROPERTY_PARAM_NAME);
+    requireNonNull(value, VALUE_PARAM_NAME);
+    final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(valueListComboBoxModel);
+    value.link(SelectedValues.selectedItemValue(comboBox));
+    linkToEnabledState(enabledState, comboBox);
+    comboBox.setToolTipText(property.getDescription());
     addComboBoxCompletion(comboBox);
 
     return comboBox;
@@ -440,10 +456,11 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param model the combo box model
    * @param enabledState the state controlling the enabled state of the combo box
+   * @param <T> the property type
    * @return a combo box based on the given model
    */
-  public static SteppedComboBox createComboBox(final Property property, final Value value,
-                                               final ComboBoxModel model, final StateObserver enabledState) {
+  public static <T> SteppedComboBox<T> createComboBox(final Property<T> property, final Value<T> value,
+                                                      final ComboBoxModel<T> model, final StateObserver enabledState) {
     return createComboBox(property, value, model, enabledState, Editable.NO);
   }
 
@@ -454,14 +471,15 @@ public final class EntityInputComponents {
    * @param model the combo box model
    * @param enabledState the state controlling the enabled state of the combo box
    * @param editable if yes then the combo box is made editable
+   * @param <T> the property type
    * @return a combo box based on the given model
    */
-  public static SteppedComboBox createComboBox(final Property property, final Value value,
-                                               final ComboBoxModel model, final StateObserver enabledState,
-                                               final Editable editable) {
+  public static <T> SteppedComboBox<T> createComboBox(final Property<T> property, final Value<T> value,
+                                                      final ComboBoxModel<T> model, final StateObserver enabledState,
+                                                      final Editable editable) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    final SteppedComboBox comboBox = new SteppedComboBox(model);
+    final SteppedComboBox<T> comboBox = new SteppedComboBox<>(model);
     if (editable == Editable.YES && !property.getAttribute().isString()) {
       throw new IllegalArgumentException("Editable property ComboBox is only implemented for String properties");
     }
@@ -529,7 +547,7 @@ public final class EntityInputComponents {
    * @param buttonFocusable if yes then the dialog button is focusable
    * @return a text input panel
    */
-  public static TextInputPanel createTextInputPanel(final Property property, final Value<String> value,
+  public static TextInputPanel createTextInputPanel(final Property<String> property, final Value<String> value,
                                                     final UpdateOn updateOn, final ButtonFocusable buttonFocusable) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
@@ -547,7 +565,7 @@ public final class EntityInputComponents {
    * @param updateOn specifies when the underlying value should be updated
    * @return a text area
    */
-  public static JTextArea createTextArea(final Property property, final Value<String> value, final UpdateOn updateOn) {
+  public static JTextArea createTextArea(final Property<String> property, final Value<String> value, final UpdateOn updateOn) {
     return createTextArea(property, value, -1, -1, updateOn);
   }
 
@@ -560,7 +578,7 @@ public final class EntityInputComponents {
    * @param updateOn specifies when the underlying value should be updated
    * @return a text area
    */
-  public static JTextArea createTextArea(final Property property, final Value<String> value,
+  public static JTextArea createTextArea(final Property<String> property, final Value<String> value,
                                          final int rows, final int columns, final UpdateOn updateOn) {
     return createTextArea(property, value, rows, columns, updateOn, null);
   }
@@ -575,7 +593,7 @@ public final class EntityInputComponents {
    * @param enabledState a state indicating when the text area should be enabled
    * @return a text area
    */
-  public static JTextArea createTextArea(final Property property, final Value<String> value,
+  public static JTextArea createTextArea(final Property<String> property, final Value<String> value,
                                          final int rows, final int columns, final UpdateOn updateOn,
                                          final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
@@ -723,13 +741,13 @@ public final class EntityInputComponents {
    * Creates a panel containing an EntityComboBox and a button for filtering that combo box based on a foreign key
    * @param entityComboBox the combo box
    * @param foreignKeyAttribute the foreign key to base the filtering on
-   * @param filterButtonTakesFocus if true then the filter button is focusable
+   * @param filterButtonFocusable if true then the filter button is focusable
    * @return a panel with a combo box and a button
    */
   public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final Attribute<Entity> foreignKeyAttribute,
-                                                       final boolean filterButtonTakesFocus) {
+                                                       final ButtonFocusable filterButtonFocusable) {
     final Control foreignKeyFilterControl = entityComboBox.createForeignKeyFilterControl(foreignKeyAttribute);
-    if (filterButtonTakesFocus) {
+    if (filterButtonFocusable == ButtonFocusable.YES) {
       return Components.createEastFocusableButtonPanel(entityComboBox, foreignKeyFilterControl);
     }
 

@@ -27,6 +27,16 @@ public final class SelectedValues {
   }
 
   /**
+   * Instantiates a Item based ComponentValue.
+   * @param <V> the value type
+   * @param comboBox the combo box
+   * @return a Value bound to the given component
+   */
+  public static <V> ComponentValue<V, JComboBox<Item<V>>> selectedItemValue(final JComboBox<Item<V>> comboBox) {
+    return new SelectedItemValue<>(comboBox);
+  }
+
+  /**
    * @param <V> the value type
    * @param comboBox the combo box
    * @return a Value bound to the given component

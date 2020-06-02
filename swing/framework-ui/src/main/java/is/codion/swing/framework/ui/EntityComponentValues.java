@@ -50,7 +50,7 @@ public class EntityComponentValues {
       return (ComponentValue<T, C>) createEntityComponentValue((ForeignKeyProperty) property, editModel, (Entity) initialValue);
     }
     if (property instanceof ValueListProperty) {
-      return SelectedValues.selectedItemValue(initialValue, ((ValueListProperty) property).getValues());
+      return (ComponentValue<T, C>) SelectedValues.selectedItemValue(initialValue, ((ValueListProperty<T>) property).getValues());
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
