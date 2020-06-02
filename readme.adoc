@@ -74,48 +74,52 @@ import static is.codion.framework.domain.property.Properties.*;
 
 public class Store extends Domain {
 
-  public static final EntityType T_CUSTOMER = type("store.customer");
-  public static final Attribute<Integer> CUSTOMER_ID = T_CUSTOMER.integerAttribute("id");
-  public static final Attribute<String> CUSTOMER_FIRST_NAME = T_CUSTOMER.stringAttribute("first_name");
-  public static final Attribute<String> CUSTOMER_LAST_NAME = T_CUSTOMER.stringAttribute("last_name");
-  public static final Attribute<String> CUSTOMER_EMAIL = T_CUSTOMER.stringAttribute("email");
-  public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = T_CUSTOMER.booleanAttribute("is_active");
+  public interface Customer {
+    EntityType TYPE = type("store.customer");
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
+    Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
+    Attribute<String> EMAIL = TYPE.stringAttribute("email");
+    Attribute<Boolean> IS_ACTIVE = TYPE.booleanAttribute("is_active");
+  }
 
-  public static final EntityType T_ADDRESS = type("store.address");
-  public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("id");
-  public static final Attribute<Entity> ADDRESS_CUSTOMER_FK = T_ADDRESS.entityAttribute("customer_fk");
-  public static final Attribute<Integer> ADDRESS_CUSTOMER_ID = T_ADDRESS.integerAttribute("customer_id");
-  public static final Attribute<String> ADDRESS_STREET = T_ADDRESS.stringAttribute("street");
-  public static final Attribute<String> ADDRESS_CITY = T_ADDRESS.stringAttribute("city");
+  public interface Address {
+    EntityType TYPE = type("store.address");
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<Integer> CUSTOMER_ID = TYPE.integerAttribute("customer_id");
+    Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
+    Attribute<String> STREET = TYPE.stringAttribute("street");
+    Attribute<String> CITY = TYPE.stringAttribute("city");
+  }
 
   public Store() {
-    define(T_CUSTOMER,
-            primaryKeyProperty(CUSTOMER_ID),
-            columnProperty(CUSTOMER_FIRST_NAME, "First name")
+    define(Customer.TYPE,
+            primaryKeyProperty(Customer.ID),
+            columnProperty(Customer.FIRST_NAME, "First name")
                     .nullable(false).maximumLength(40),
-            columnProperty(CUSTOMER_LAST_NAME, "Last name")
+            columnProperty(Customer.LAST_NAME, "Last name")
                     .nullable(false).maximumLength(40),
-            columnProperty(CUSTOMER_EMAIL, "Email")
+            columnProperty(Customer.EMAIL, "Email")
                     .maximumLength(100),
-            columnProperty(CUSTOMER_IS_ACTIVE, "Is active")
+            columnProperty(Customer.IS_ACTIVE, "Is active")
                     .defaultValue(true))
             .keyGenerator(automatic("store.customer"))
-            .stringProvider(new StringProvider(CUSTOMER_LAST_NAME)
-                    .addText(", ").addValue(CUSTOMER_FIRST_NAME))
+            .stringProvider(new StringProvider(Customer.LAST_NAME)
+                    .addText(", ").addValue(Customer.FIRST_NAME))
             .caption("Customer");
 
-    define(T_ADDRESS,
-            primaryKeyProperty(ADDRESS_ID),
-            foreignKeyProperty(ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
-                    columnProperty(ADDRESS_CUSTOMER_ID))
+    define(Address.TYPE,
+            primaryKeyProperty(Address.ID),
+            foreignKeyProperty(Address.CUSTOMER_FK, "Customer", Customer.TYPE,
+                    columnProperty(Address.CUSTOMER_ID))
                     .nullable(false),
-            columnProperty(ADDRESS_STREET, "Street")
+            columnProperty(Address.STREET, "Street")
                     .nullable(false).maximumLength(100),
-            columnProperty(ADDRESS_CITY, "City")
+            columnProperty(Address.CITY, "City")
                     .nullable(false).maximumLength(50))
             .keyGenerator(automatic("store.address"))
-            .stringProvider(new StringProvider(ADDRESS_STREET)
-                    .addText(", ").addValue(ADDRESS_CITY))
+            .stringProvider(new StringProvider(Address.STREET)
+                    .addText(", ").addValue(Address.CITY))
             .caption("Address");
   }
 }
@@ -141,12 +145,12 @@ public class StoreTest extends EntityTestUnit {
 
   @Test
   void customer() throws Exception {
-    test(Store.T_CUSTOMER);
+    test(Customer.TYPE);
   }
 
   @Test
   void address() throws Exception {
-    test(Store.T_ADDRESS);
+    test(Address.TYPE);
   }
 }
 ----
@@ -173,16 +177,16 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(CUSTOMER_FIRST_NAME);
-      createTextField(CUSTOMER_FIRST_NAME).setColumns(12);
-      createTextField(CUSTOMER_LAST_NAME).setColumns(12);
-      createTextField(CUSTOMER_EMAIL).setColumns(12);
-      createCheckBox(CUSTOMER_IS_ACTIVE, null, IncludeCaption.NO);
+      setInitialFocusAttribute(Customer.FIRST_NAME);
+      createTextField(Customer.FIRST_NAME).setColumns(12);
+      createTextField(Customer.LAST_NAME).setColumns(12);
+      createTextField(Customer.EMAIL).setColumns(12);
+      createCheckBox(Customer.IS_ACTIVE, null, IncludeCaption.NO);
       setLayout(gridLayout(2, 2));
-      addPropertyPanel(CUSTOMER_FIRST_NAME);
-      addPropertyPanel(CUSTOMER_LAST_NAME);
-      addPropertyPanel(CUSTOMER_EMAIL);
-      addPropertyPanel(CUSTOMER_IS_ACTIVE);
+      addPropertyPanel(Customer.FIRST_NAME);
+      addPropertyPanel(Customer.LAST_NAME);
+      addPropertyPanel(Customer.EMAIL);
+      addPropertyPanel(Customer.IS_ACTIVE);
     }
   }
 
@@ -194,14 +198,14 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(ADDRESS_STREET);
-      createForeignKeyComboBox(ADDRESS_CUSTOMER_FK);
-      createTextField(ADDRESS_STREET).setColumns(12);
-      createTextField(ADDRESS_CITY).setColumns(12);
+      setInitialFocusAttribute(Address.STREET);
+      createForeignKeyComboBox(Address.CUSTOMER_FK);
+      createTextField(Address.STREET).setColumns(12);
+      createTextField(Address.CITY).setColumns(12);
       setLayout(gridLayout(3, 1));
-      addPropertyPanel(ADDRESS_CUSTOMER_FK);
-      addPropertyPanel(ADDRESS_STREET);
-      addPropertyPanel(ADDRESS_CITY);
+      addPropertyPanel(Address.CUSTOMER_FK);
+      addPropertyPanel(Address.STREET);
+      addPropertyPanel(Address.CITY);
     }
   }
 
@@ -216,9 +220,9 @@ public class StoreDemo {
                     .setUser(Users.parseUser("scott:tiger"));
 
     SwingEntityModel customerModel =
-            new SwingEntityModel(T_CUSTOMER, connectionProvider);
+            new SwingEntityModel(Customer.TYPE, connectionProvider);
     SwingEntityModel addressModel =
-            new SwingEntityModel(T_ADDRESS, connectionProvider);
+            new SwingEntityModel(Address.TYPE, connectionProvider);
     customerModel.addDetailModel(addressModel);
 
     EntityPanel customerPanel =

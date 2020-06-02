@@ -6,7 +6,7 @@ package is.codion.framework.demos.empdept.model;
 import is.codion.common.db.Operator;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -19,7 +19,7 @@ import static java.util.Arrays.asList;
 public final class EmployeeEditModel extends SwingEntityEditModel {
 
   public EmployeeEditModel(final EntityConnectionProvider connectionProvider) {
-    super(EmpDept.T_EMPLOYEE, connectionProvider);
+    super(Employee.TYPE, connectionProvider);
     bindEvents();
   }
   // end::constructor[]
@@ -29,16 +29,16 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   @Override
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyProperty foreignKeyProperty) {
     final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
-    if (foreignKeyProperty.is(EmpDept.EMPLOYEE_MGR_FK)) {
+    if (foreignKeyProperty.is(Employee.MGR_FK)) {
       //Customize the null value so that it displays the chosen
       //text instead of the default '-' character
-      comboBoxModel.setNullValue(getEntities().createToStringEntity(EmpDept.T_EMPLOYEE, "None"));
+      comboBoxModel.setNullValue(getEntities().createToStringEntity(Employee.TYPE, "None"));
       //we do not want filtering to remove a value that is selected
       //and thereby change the selection, see bindEvents() below
       comboBoxModel.setFilterSelectedItem(false);
       //Only select the president and managers from the database
       comboBoxModel.setSelectConditionProvider(() ->
-              Conditions.propertyCondition(EmpDept.EMPLOYEE_JOB, Operator.LIKE, asList("MANAGER", "PRESIDENT")));
+              Conditions.propertyCondition(Employee.JOB, Operator.LIKE, asList("MANAGER", "PRESIDENT")));
     }
 
     return comboBoxModel;
@@ -49,15 +49,15 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   private void bindEvents() {
     //Refresh the manager ComboBoxModel when an employee is added, deleted or updated,
     //in case a new manager got hired, fired or promoted
-    addEntitiesChangedListener(() -> getForeignKeyComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh());
+    addEntitiesChangedListener(() -> getForeignKeyComboBoxModel(Employee.MGR_FK).refresh());
     //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
     //this filtering happens each time the department value is changed, either when an employee is
     //selected or the department combo box selection changes
-    addValueListener(EmpDept.EMPLOYEE_DEPARTMENT_FK, valueChange -> {
+    addValueListener(Employee.DEPARTMENT_FK, valueChange -> {
       //only show managers from the same department as the selected employee and hide the currently
       //selected employee to prevent an employee from being made her own manager
-      getForeignKeyComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).setIncludeCondition(manager ->
-              Objects.equals(manager.getForeignKey(EmpDept.EMPLOYEE_DEPARTMENT_FK), valueChange.getValue())
+      getForeignKeyComboBoxModel(Employee.MGR_FK).setIncludeCondition(manager ->
+              Objects.equals(manager.getForeignKey(Employee.DEPARTMENT_FK), valueChange.getValue())
                       && !Objects.equals(manager, getEntity()));
     });
   }

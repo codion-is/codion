@@ -7,9 +7,6 @@ import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.demos.empdept.domain.EmpDept.T_DEPARTMENT;
-import static is.codion.framework.demos.empdept.domain.EmpDept.T_EMPLOYEE;
-
 // tag::domainTest[]
 public class EmpDeptTest extends EntityTestUnit {
 
@@ -19,12 +16,12 @@ public class EmpDeptTest extends EntityTestUnit {
 
   @Test
   public void department() throws Exception {
-    test(T_DEPARTMENT);
+    test(EmpDept.Department.TYPE);
   }
 
   @Test
   public void employee() throws Exception {
-    test(T_EMPLOYEE);
+    test(EmpDept.Employee.TYPE);
   }
 }
 // end::domainTest[]

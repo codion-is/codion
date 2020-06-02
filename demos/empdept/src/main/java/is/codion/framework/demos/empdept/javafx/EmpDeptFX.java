@@ -6,7 +6,8 @@ package is.codion.framework.demos.empdept.javafx;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.domain.EmpDept.Department;
+import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.model.EntityModel;
 import is.codion.javafx.framework.model.FXEntityEditModel;
 import is.codion.javafx.framework.model.FXEntityListModel;
@@ -32,13 +33,13 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 
   @Override
   protected void initializeEntityViews() {
-    final EntityModel departmentModel = getModel().getEntityModel(EmpDept.T_DEPARTMENT);
+    final EntityModel departmentModel = getModel().getEntityModel(Department.TYPE);
     final EntityView departmentView = new EntityView(departmentModel,
             new DepartmentEditView((FXEntityEditModel) departmentModel.getEditModel()),
             new EntityTableView((FXEntityListModel) departmentModel.getTableModel()));
     departmentModel.getTableModel().refresh();
 
-    final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
+    final EntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
     final EntityView employeeView = new EntityView(employeeModel,
             new EmployeeEditView((FXEntityEditModel) employeeModel.getEditModel()),
             new EntityTableView((FXEntityListModel) employeeModel.getTableModel()));

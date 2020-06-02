@@ -48,63 +48,69 @@ public final class Example {
     }
 
     // tag::customer[]
-    public static final EntityType T_CUSTOMER = type("store.customer");
-    public static final Attribute<String> CUSTOMER_ID = T_CUSTOMER.stringAttribute("id");
-    public static final Attribute<String> CUSTOMER_FIRST_NAME = T_CUSTOMER.stringAttribute("first_name");
-    public static final Attribute<String> CUSTOMER_LAST_NAME = T_CUSTOMER.stringAttribute("last_name");
+    public interface Customer {
+      EntityType TYPE = type("store.customer");
+      Attribute<String> ID = TYPE.stringAttribute("id");
+      Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
+      Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
+    }
 
     void customer() {
-      define(T_CUSTOMER,
-              primaryKeyProperty(CUSTOMER_ID),
-              columnProperty(CUSTOMER_FIRST_NAME, "First name")
+      define(Customer.TYPE,
+              primaryKeyProperty(Customer.ID),
+              columnProperty(Customer.FIRST_NAME, "First name")
                       .nullable(false).maximumLength(40),
-              columnProperty(CUSTOMER_LAST_NAME, "Last name")
+              columnProperty(Customer.LAST_NAME, "Last name")
                       .nullable(false).maximumLength(40))
               .keyGenerator(new KeyGenerator() {
                 @Override
                 public void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
                                          DatabaseConnection connection) throws SQLException {
-                  entity.put(CUSTOMER_ID, randomUUID().toString());
+                  entity.put(Customer.ID, randomUUID().toString());
                 }
               })
-              .stringProvider(new StringProvider(CUSTOMER_LAST_NAME)
-                      .addText(", ").addValue(CUSTOMER_FIRST_NAME));
+              .stringProvider(new StringProvider(Customer.LAST_NAME)
+                      .addText(", ").addValue(Customer.FIRST_NAME));
     }
     // end::customer[]
     // tag::address[]
-    public static final EntityType T_ADDRESS = type("store.address");
-    public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("id");
-    public static final Attribute<String> ADDRESS_STREET = T_ADDRESS.stringAttribute("street");
-    public static final Attribute<String> ADDRESS_CITY = T_ADDRESS.stringAttribute("city");
+    public interface Address {
+      EntityType TYPE = type("store.address");
+      Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("id");
+      Attribute<String> ADDRESS_STREET = TYPE.stringAttribute("street");
+      Attribute<String> ADDRESS_CITY = TYPE.stringAttribute("city");
+    }
 
     void address() {
-      define(T_ADDRESS,
-              primaryKeyProperty(ADDRESS_ID),
-              columnProperty(ADDRESS_STREET, "Street")
+      define(Address.TYPE,
+              primaryKeyProperty(Address.ADDRESS_ID),
+              columnProperty(Address.ADDRESS_STREET, "Street")
                       .nullable(false).maximumLength(120),
-              columnProperty(ADDRESS_CITY, "City")
+              columnProperty(Address.ADDRESS_CITY, "City")
                       .nullable(false).maximumLength(50))
               .keyGenerator(automatic("store.address"))
-              .stringProvider(new StringProvider(ADDRESS_STREET)
-                      .addText(", ").addValue(ADDRESS_CITY));
+              .stringProvider(new StringProvider(Address.ADDRESS_STREET)
+                      .addText(", ").addValue(Address.ADDRESS_CITY));
     }
     // end::address[]
     // tag::customerAddress[]
-    public static final EntityType T_CUSTOMER_ADDRESS = type("store.customer_address");
-    public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("id");
-    public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = T_CUSTOMER_ADDRESS.integerAttribute("customer_id");
-    public static final Attribute<Entity> CUSTOMER_ADDRESS_CUSTOMER_FK = T_CUSTOMER_ADDRESS.entityAttribute("customer_fk");
-    public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("address_id");
-    public static final Attribute<Entity> CUSTOMER_ADDRESS_ADDRESS_FK = T_CUSTOMER_ADDRESS.entityAttribute("address_fk");
+    public interface CustomerAddress {
+      EntityType TYPE = type("store.customer_address");
+      Attribute<Integer> ID = TYPE.integerAttribute("id");
+      Attribute<Integer> CUSTOMER_ID = TYPE.integerAttribute("customer_id");
+      Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
+      Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("address_id");
+      Attribute<Entity> ADDRESS_FK = TYPE.entityAttribute("address_fk");
+    }
 
     void customerAddress() {
-      define(T_CUSTOMER_ADDRESS,
-              primaryKeyProperty(CUSTOMER_ADDRESS_ID),
-              foreignKeyProperty(CUSTOMER_ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
-                      columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID))
+      define(CustomerAddress.TYPE,
+              primaryKeyProperty(CustomerAddress.ID),
+              foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer", Customer.TYPE,
+                      columnProperty(CustomerAddress.CUSTOMER_ID))
                       .nullable(false),
-              foreignKeyProperty(CUSTOMER_ADDRESS_ADDRESS_FK, "Address", T_ADDRESS,
-                      columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID))
+              foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address", Address.TYPE,
+                      columnProperty(CustomerAddress.ADDRESS_ID))
                       .nullable(false))
               .keyGenerator(automatic("store.customer_address"))
               .caption("Customer address");
@@ -122,11 +128,11 @@ public final class Example {
 
       @Override
       protected void initializeUI() {
-        setInitialFocusAttribute(CUSTOMER_FIRST_NAME);
-        createTextField(CUSTOMER_FIRST_NAME).setColumns(12);
-        createTextField(CUSTOMER_LAST_NAME).setColumns(12);
-        addPropertyPanel(CUSTOMER_FIRST_NAME);
-        addPropertyPanel(CUSTOMER_LAST_NAME);
+        setInitialFocusAttribute(Customer.FIRST_NAME);
+        createTextField(Customer.FIRST_NAME).setColumns(12);
+        createTextField(Customer.LAST_NAME).setColumns(12);
+        addPropertyPanel(Customer.FIRST_NAME);
+        addPropertyPanel(Customer.LAST_NAME);
       }
     }
 
@@ -135,7 +141,7 @@ public final class Example {
                     .setDomainClassName(Store.class.getName())
                     .setUser(Users.parseUser("scott:tiger"));
 
-    SwingEntityModel customerModel = new SwingEntityModel(T_CUSTOMER, connectionProvider);
+    SwingEntityModel customerModel = new SwingEntityModel(Customer.TYPE, connectionProvider);
 
     EntityPanel customerPanel = new EntityPanel(customerModel,
             new CustomerEditPanel(customerModel.getEditModel()));
@@ -150,15 +156,15 @@ public final class Example {
 
       @Override
       protected void initializeUI() {
-        setInitialFocusAttribute(CUSTOMER_ADDRESS_CUSTOMER_FK);
-        createForeignKeyComboBox(CUSTOMER_ADDRESS_CUSTOMER_FK);
-        createForeignKeyComboBox(CUSTOMER_ADDRESS_ADDRESS_FK);
-        addPropertyPanel(CUSTOMER_ADDRESS_CUSTOMER_FK);
-        addPropertyPanel(CUSTOMER_ADDRESS_ADDRESS_FK);
+        setInitialFocusAttribute(CustomerAddress.CUSTOMER_FK);
+        createForeignKeyComboBox(CustomerAddress.CUSTOMER_FK);
+        createForeignKeyComboBox(CustomerAddress.ADDRESS_FK);
+        addPropertyPanel(CustomerAddress.CUSTOMER_FK);
+        addPropertyPanel(CustomerAddress.ADDRESS_FK);
       }
     }
 
-    SwingEntityModel customerAddressModel = new SwingEntityModel(T_CUSTOMER_ADDRESS, connectionProvider);
+    SwingEntityModel customerAddressModel = new SwingEntityModel(CustomerAddress.TYPE, connectionProvider);
 
     customerModel.addDetailModel(customerAddressModel);
 
@@ -187,17 +193,17 @@ public final class Example {
 
       @Test
       void customer() throws DatabaseException {
-        test(T_CUSTOMER);
+        test(Customer.TYPE);
       }
 
       @Test
       void address() throws DatabaseException {
-        test(T_ADDRESS);
+        test(Address.TYPE);
       }
 
       @Test
       void customerAddress() throws DatabaseException {
-        test(T_CUSTOMER_ADDRESS);
+        test(CustomerAddress.TYPE);
       }
     }
     // end::domainModelTest[]
@@ -212,19 +218,19 @@ public final class Example {
                     domain, Databases.getInstance(), Users.parseUser("scott:tiger"));
 
     //select customer where last name = Doe
-    Entity johnDoe = connection.selectSingle(T_CUSTOMER, CUSTOMER_LAST_NAME, "Doe");
+    Entity johnDoe = connection.selectSingle(Customer.TYPE, Customer.LAST_NAME, "Doe");
 
     //select all customer addresses
     List<Entity> customerAddresses = //where customer = john doe
-            connection.select(T_CUSTOMER_ADDRESS, CUSTOMER_ADDRESS_CUSTOMER_FK, johnDoe);
+            connection.select(CustomerAddress.TYPE, CustomerAddress.CUSTOMER_FK, johnDoe);
 
     Entity customerAddress = customerAddresses.get(0);
 
-    Entity address = customerAddress.getForeignKey(CUSTOMER_ADDRESS_ADDRESS_FK);
+    Entity address = customerAddress.getForeignKey(CustomerAddress.ADDRESS_FK);
 
-    String lastName = johnDoe.get(CUSTOMER_LAST_NAME);
-    String street = address.get(ADDRESS_STREET);
-    String city = address.get(ADDRESS_CITY);
+    String lastName = johnDoe.get(Customer.LAST_NAME);
+    String street = address.get(Address.ADDRESS_STREET);
+    String city = address.get(Address.ADDRESS_CITY);
     // end::select[]
   }
 
@@ -238,25 +244,25 @@ public final class Example {
 
     Entities entities = domain.getEntities();
 
-    Entity customer = entities.entity(T_CUSTOMER);
-    customer.put(CUSTOMER_FIRST_NAME, "John");
-    customer.put(CUSTOMER_LAST_NAME, "Doe");
+    Entity customer = entities.entity(Customer.TYPE);
+    customer.put(Customer.FIRST_NAME, "John");
+    customer.put(Customer.LAST_NAME, "Doe");
 
     connection.insert(customer);
 
-    Entity address = entities.entity(T_ADDRESS);
-    address.put(ADDRESS_STREET, "Elm Street 321");
-    address.put(ADDRESS_CITY, "Syracuse");
+    Entity address = entities.entity(Address.TYPE);
+    address.put(Address.ADDRESS_STREET, "Elm Street 321");
+    address.put(Address.ADDRESS_CITY, "Syracuse");
 
     connection.insert(address);
 
-    Entity customerAddress = entities.entity(T_CUSTOMER_ADDRESS);
-    customerAddress.put(CUSTOMER_ADDRESS_CUSTOMER_FK, customer);
-    customerAddress.put(CUSTOMER_ADDRESS_ADDRESS_FK, address);
+    Entity customerAddress = entities.entity(CustomerAddress.TYPE);
+    customerAddress.put(CustomerAddress.CUSTOMER_FK, customer);
+    customerAddress.put(CustomerAddress.ADDRESS_FK, address);
 
     connection.insert(customerAddress);
 
-    customer.put(CUSTOMER_FIRST_NAME, "Jonathan");
+    customer.put(Customer.FIRST_NAME, "Jonathan");
 
     connection.update(customer);
 

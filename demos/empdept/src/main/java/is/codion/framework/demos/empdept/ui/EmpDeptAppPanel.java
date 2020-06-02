@@ -8,7 +8,8 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.table.ColumnSummary;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.domain.EmpDept.Department;
+import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.demos.empdept.model.EmployeeEditModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.plugin.json.EntityJSONParser;
@@ -38,10 +39,10 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
             new EmployeePanelBuilder(employeeModelBuilder);
     employeePanelBuilder.setEditPanelClass(EmployeeEditPanel.class);
 
-    final SwingEntityModelBuilder departmentModelBuilder = new SwingEntityModelBuilder(EmpDept.T_DEPARTMENT) {
+    final SwingEntityModelBuilder departmentModelBuilder = new SwingEntityModelBuilder(Department.TYPE) {
       @Override
       protected void configureModel(final SwingEntityModel entityModel) {
-        entityModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getQueryConditionRequiredState().set(false);
+        entityModel.getDetailModel(Employee.TYPE).getTableModel().getQueryConditionRequiredState().set(false);
       }
     };
     //This relies on the foreign key association between employee and department
@@ -106,13 +107,13 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   // tag::employeeModelBuilder[]
   private static final class EmployeeModelBuilder extends SwingEntityModelBuilder {
     private EmployeeModelBuilder() {
-      super(EmpDept.T_EMPLOYEE);
+      super(Employee.TYPE);
       setEditModelClass(EmployeeEditModel.class);
     }
 
     @Override
     protected void configureTableModel(final SwingEntityTableModel tableModel) {
-      tableModel.getColumnSummaryModel(EmpDept.EMPLOYEE_SALARY).setSummary(ColumnSummary.AVERAGE);
+      tableModel.getColumnSummaryModel(Employee.SALARY).setSummary(ColumnSummary.AVERAGE);
     }
   }
   // end::employeeModelBuilder[]

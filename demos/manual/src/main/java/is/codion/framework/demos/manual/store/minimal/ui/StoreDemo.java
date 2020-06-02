@@ -16,7 +16,8 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
 import is.codion.swing.framework.ui.EntityPanel;
 
-import static is.codion.framework.demos.manual.store.minimal.domain.Store.*;
+import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
+import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
 
@@ -30,16 +31,16 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(CUSTOMER_FIRST_NAME);
-      createTextField(CUSTOMER_FIRST_NAME).setColumns(12);
-      createTextField(CUSTOMER_LAST_NAME).setColumns(12);
-      createTextField(CUSTOMER_EMAIL).setColumns(12);
-      createCheckBox(CUSTOMER_IS_ACTIVE, null, IncludeCaption.NO);
+      setInitialFocusAttribute(Customer.FIRST_NAME);
+      createTextField(Customer.FIRST_NAME).setColumns(12);
+      createTextField(Customer.LAST_NAME).setColumns(12);
+      createTextField(Customer.EMAIL).setColumns(12);
+      createCheckBox(Customer.IS_ACTIVE, null, IncludeCaption.NO);
       setLayout(gridLayout(2, 2));
-      addPropertyPanel(CUSTOMER_FIRST_NAME);
-      addPropertyPanel(CUSTOMER_LAST_NAME);
-      addPropertyPanel(CUSTOMER_EMAIL);
-      addPropertyPanel(CUSTOMER_IS_ACTIVE);
+      addPropertyPanel(Customer.FIRST_NAME);
+      addPropertyPanel(Customer.LAST_NAME);
+      addPropertyPanel(Customer.EMAIL);
+      addPropertyPanel(Customer.IS_ACTIVE);
     }
   }
 
@@ -51,14 +52,14 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(ADDRESS_STREET);
-      createForeignKeyComboBox(ADDRESS_CUSTOMER_FK);
-      createTextField(ADDRESS_STREET).setColumns(12);
-      createTextField(ADDRESS_CITY).setColumns(12);
+      setInitialFocusAttribute(Address.STREET);
+      createForeignKeyComboBox(Address.CUSTOMER_FK);
+      createTextField(Address.STREET).setColumns(12);
+      createTextField(Address.CITY).setColumns(12);
       setLayout(gridLayout(3, 1));
-      addPropertyPanel(ADDRESS_CUSTOMER_FK);
-      addPropertyPanel(ADDRESS_STREET);
-      addPropertyPanel(ADDRESS_CITY);
+      addPropertyPanel(Address.CUSTOMER_FK);
+      addPropertyPanel(Address.STREET);
+      addPropertyPanel(Address.CITY);
     }
   }
 
@@ -73,9 +74,9 @@ public class StoreDemo {
                     .setUser(Users.parseUser("scott:tiger"));
 
     SwingEntityModel customerModel =
-            new SwingEntityModel(T_CUSTOMER, connectionProvider);
+            new SwingEntityModel(Customer.TYPE, connectionProvider);
     SwingEntityModel addressModel =
-            new SwingEntityModel(T_ADDRESS, connectionProvider);
+            new SwingEntityModel(Address.TYPE, connectionProvider);
     customerModel.addDetailModel(addressModel);
 
     EntityPanel customerPanel =
