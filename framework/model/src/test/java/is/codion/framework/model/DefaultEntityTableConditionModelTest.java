@@ -78,7 +78,7 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   public void getPropertyConditionModelNonExisting() {
-    final EntityType entityType = Entities.entityType("test");
+    final EntityType entityType = Entities.type("test");
     assertThrows(IllegalArgumentException.class, () -> assertNull(conditionModel.getPropertyConditionModel(entityType.integerAttribute("bla bla"))));
   }
 

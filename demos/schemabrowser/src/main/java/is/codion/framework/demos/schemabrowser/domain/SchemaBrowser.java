@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static is.codion.framework.domain.entity.Entities.entityType;
+import static is.codion.framework.domain.entity.Entities.type;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -42,7 +42,7 @@ public final class SchemaBrowser extends Domain {
     }
   }
 
-  public static final EntityType T_SCHEMA = entityType("schema");
+  public static final EntityType T_SCHEMA = type("schema");
   public static final Attribute<String> SCHEMA_NAME = T_SCHEMA.stringAttribute(bundle.getString("schema_name"));
 
   void defineSchema() {
@@ -54,7 +54,7 @@ public final class SchemaBrowser extends Domain {
             .caption("Schemas");
   }
 
-  public static final EntityType T_TABLE = entityType("table");
+  public static final EntityType T_TABLE = type("table");
   public static final Attribute<String> TABLE_SCHEMA = T_TABLE.stringAttribute(bundle.getString("table_schema"));
   public static final Attribute<Entity> TABLE_SCHEMA_FK = T_TABLE.entityAttribute(bundle.getString("table_schema_ref"));
   public static final Attribute<String> TABLE_NAME = T_TABLE.stringAttribute(bundle.getString("table_name"));
@@ -70,7 +70,7 @@ public final class SchemaBrowser extends Domain {
             .caption("Tables");
   }
 
-  public static final EntityType T_COLUMN = entityType("column");
+  public static final EntityType T_COLUMN = type("column");
   public static final Attribute<String> COLUMN_SCHEMA = T_COLUMN.stringAttribute(bundle.getString("column_schema"));
   public static final Attribute<String> COLUMN_TABLE_NAME = T_COLUMN.stringAttribute(bundle.getString("column_table_name"));
   public static final Attribute<Entity> COLUMN_TABLE_FK = T_COLUMN.entityAttribute(bundle.getString("column_table_ref"));
@@ -90,7 +90,7 @@ public final class SchemaBrowser extends Domain {
             .caption("Columns");
   }
 
-  public static final EntityType T_CONSTRAINT = entityType("constraint");
+  public static final EntityType T_CONSTRAINT = type("constraint");
   public static final Attribute<String> CONSTRAINT_SCHEMA = T_CONSTRAINT.stringAttribute(bundle.getString("constraint_schema"));
   public static final Attribute<String> CONSTRAINT_TABLE_NAME = T_CONSTRAINT.stringAttribute(bundle.getString("constraint_table_name"));
   public static final Attribute<Entity> CONSTRAINT_TABLE_FK = T_CONSTRAINT.entityAttribute(bundle.getString("constraint_table_ref"));
@@ -110,7 +110,7 @@ public final class SchemaBrowser extends Domain {
             .caption("Constraints");
   }
 
-  public static final EntityType T_COLUMN_CONSTRAINT = entityType("column_constraint");
+  public static final EntityType T_COLUMN_CONSTRAINT = type("column_constraint");
   public static final Attribute<String> COLUMN_CONSTRAINT_SCHEMA = T_COLUMN_CONSTRAINT.stringAttribute(bundle.getString("column_constraint_schema"));
   public static final Attribute<String> COLUMN_CONSTRAINT_CONSTRAINT_NAME = T_COLUMN_CONSTRAINT.stringAttribute(bundle.getString("column_constraint_constraint_name"));
   public static final Attribute<Entity> COLUMN_CONSTRAINT_CONSTRAINT_FK = T_COLUMN_CONSTRAINT.entityAttribute(bundle.getString("column_constraint_constraint_ref"));
