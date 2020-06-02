@@ -846,6 +846,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       selectForUpdateCondition.setSelectAttributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()));
       selectForUpdateCondition.setForUpdate(true);
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
+      final EntityDefinition definition = domain.getDefinition(entitiesByEntityTypeEntry.getKey());
       final Map<Entity.Key, Entity> currentEntitiesByKey = mapToKey(currentEntities);
       for (final Entity entity : entitiesByEntityTypeEntry.getValue()) {
         final Entity current = currentEntitiesByKey.get(entity.getOriginalKey());
@@ -856,7 +857,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
                   + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
         }
-        final List<ColumnProperty<?>> modified = getModifiedColumnProperties(entity, current);
+        final List<ColumnProperty<?>> modified = getModifiedColumnProperties(definition, entity, current);
         if (!modified.isEmpty()) {
           throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
         }

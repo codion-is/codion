@@ -6,7 +6,6 @@ package is.codion.framework.domain.entity;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.util.List;
@@ -140,12 +139,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
   boolean isLoaded(Attribute<Entity> foreignKeyAttribute);
 
   /**
-   * @param property the property for which to retrieve the color
-   * @return the color to use when displaying this property in a table
-   */
-  Object getColor(Property<?> property);
-
-  /**
    * Reverts the value associated with the given attribute to its original value.
    * If the value has not been modified then calling this method has no effect.
    * @param attribute the attribute for which to revert the value
@@ -205,12 +198,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @return an unmodifiable view of the keys mapping the original values in this Entity
    */
   Set<Attribute<?>> originalKeySet();
-
-  /**
-   * @param attribute the attribute
-   * @return the property associated with the given attribute
-   */
-  Property<?> getProperty(Attribute<?> attribute);
 
   /**
    * @return the number of values in this map

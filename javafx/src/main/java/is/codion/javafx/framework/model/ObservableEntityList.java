@@ -13,6 +13,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import javafx.beans.property.SimpleListProperty;
@@ -42,6 +43,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
+  private final EntityDefinition entityDefinition;
   private final SortedList<Entity> sortedList;
   private final FilteredList<Entity> filteredList;
 
@@ -63,6 +65,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     super(FXCollections.observableArrayList());
     this.entityType = entityType;
     this.connectionProvider = connectionProvider;
+    this.entityDefinition =  connectionProvider.getEntities().getDefinition(entityType);
     this.filteredList = new FilteredList<>(this);
     this.sortedList = new SortedList<>(filteredList, connectionProvider.getEntities().getDefinition(entityType).getComparator());
   }
@@ -72,6 +75,13 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
    */
   public final EntityType getEntityType() {
     return entityType;
+  }
+
+  /**
+   * @return the definition of the underlying entity
+   */
+  public final EntityDefinition getEntityDefinition() {
+    return entityDefinition;
   }
 
   /**

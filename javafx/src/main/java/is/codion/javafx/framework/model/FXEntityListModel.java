@@ -111,11 +111,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final EntityDefinition getEntityDefinition() {
-    return getEntities().getDefinition(getEntityType());
-  }
-
-  @Override
   public final void setEditModel(final FXEntityEditModel editModel) {
     requireNonNull(editModel, "editModel");
     if (this.editModel != null) {
@@ -305,7 +300,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final Color getPropertyBackgroundColor(final int row, final Property<?> property) {
-    return (Color) get(row).getColor(property);
+    return (Color) getEntityDefinition().getColorProvider().getColor(get(row), property);
   }
 
   @Override

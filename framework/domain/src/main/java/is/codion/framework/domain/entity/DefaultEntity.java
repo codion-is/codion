@@ -323,11 +323,6 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public Object getColor(final Property<?> property) {
-    return definition.getColorProvider().getColor(this, property);
-  }
-
-  @Override
   public Key getReferencedKey(final Attribute<Entity> foreignKeyAttribute) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     final ForeignKeyProperty foreignKeyProperty = definition.getForeignKeyProperty(foreignKeyAttribute);
@@ -356,11 +351,6 @@ final class DefaultEntity implements Entity {
     }
 
     return unmodifiableSet(originalValues.keySet());
-  }
-
-  @Override
-  public Property<?> getProperty(final Attribute<?> attribute) {
-    return definition.getProperty(attribute);
   }
 
   @Override

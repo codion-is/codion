@@ -71,6 +71,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private final EntityType entityType;
 
   /**
+   * The entity definition
+   */
+  private final EntityDefinition entityDefinition;
+
+  /**
    * The EntityConnection provider
    */
   private final EntityConnectionProvider connectionProvider;
@@ -161,6 +166,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
               + ", tableModel: " + entityType);
     }
     this.entityType = entityType;
+    this.entityDefinition = connectionProvider.getEntities().getDefinition(entityType);
     this.connectionProvider = connectionProvider;
     this.conditionModel = conditionModel;
     bindEventsInternal();
@@ -174,7 +180,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   @Override
   public final EntityDefinition getEntityDefinition() {
-    return getEntities().getDefinition(entityType);
+    return entityDefinition;
   }
 
   @Override
@@ -393,7 +399,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   @Override
   public Color getPropertyBackgroundColor(final int row, final Property<?> property) {
-    return (Color) getItemAt(row).getColor(property);
+    return (Color) getEntityDefinition().getColorProvider().getColor(getItemAt(row), property);
   }
 
   @Override
