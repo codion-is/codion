@@ -19,7 +19,7 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -323,8 +323,8 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(final EntityId entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
-    return selectSingle(selectCondition(entityId, attribute, Operator.LIKE, value));
+  public <T> Entity selectSingle(final EntityType entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
+    return selectSingle(selectCondition(entityType, attribute, Operator.LIKE, value));
   }
 
   @Override
@@ -376,19 +376,19 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final EntityId entityId, final Attribute<T> attribute, final T value)
+  public <T> List<Entity> select(final EntityType entityType, final Attribute<T> attribute, final T value)
           throws DatabaseException {
-    return select(entityId, attribute, singletonList(value));
+    return select(entityType, attribute, singletonList(value));
   }
 
   @Override
-  public <T> List<Entity> select(final EntityId entityId, final Attribute<T> attribute, final Collection<T> values)
+  public <T> List<Entity> select(final EntityType entityType, final Attribute<T> attribute, final Collection<T> values)
           throws DatabaseException {
-    return select(selectCondition(entityId, attribute, Operator.LIKE, values));
+    return select(selectCondition(entityType, attribute, Operator.LIKE, values));
   }
 
   @Override
-  public Map<EntityId, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       return handleResponse(execute(createRequest("dependencies", entities)));
