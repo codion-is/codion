@@ -6182,6 +6182,6 @@
   SelectedItemValue, bug fix, did not select correctly
   Entity.Identity renamed EntityId and moved up to package level
   EntityId renamed EntityType, one of the frameworks oldest variable names disappears in a puff of well duhh
-  Entities.entityType() moved to Entity and renamed type
   Entity.getColor() and getProperty() removed
   EntityType no longer extends Identity
+  Entities.entityType() renamed type

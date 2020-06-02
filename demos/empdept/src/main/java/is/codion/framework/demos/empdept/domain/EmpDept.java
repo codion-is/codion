@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.Entities.entityType;
+import static is.codion.framework.domain.entity.Entities.type;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -31,7 +31,7 @@ import static java.util.Arrays.asList;
 public final class EmpDept extends Domain {
 
   /** Entity type for the table scott.dept*/
-  public static final EntityType T_DEPARTMENT = entityType("scott.dept");
+  public static final EntityType T_DEPARTMENT = type("scott.dept");
 
   /** Attributes for the columns in the scott.dept table*/
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
@@ -41,7 +41,7 @@ public final class EmpDept extends Domain {
 
   // tag::employeeConstants[]
   /** Entity type for the table scott.emp*/
-  public static final EntityType T_EMPLOYEE = entityType("scott.emp");
+  public static final EntityType T_EMPLOYEE = type("scott.emp");
 
   /** Attributes for the columns in the scott.emp table*/
   public static final Attribute<Integer> EMPLOYEE_ID = T_EMPLOYEE.integerAttribute("empno");

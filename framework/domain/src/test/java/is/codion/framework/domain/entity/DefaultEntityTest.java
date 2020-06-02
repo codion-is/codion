@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.domain.entity.Entities.entityType;
+import static is.codion.framework.domain.entity.Entities.type;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,7 +66,7 @@ public class DefaultEntityTest {
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final EntityType entityType = entityType("entityType");
+    final EntityType entityType = type("entityType");
     final Attribute<?> invalid = entityType.integerAttribute("invalid");
     final Map<Attribute<?>, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
@@ -577,7 +577,7 @@ public class DefaultEntityTest {
 
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
-    final EntityType entityType = entityType("entityType");
+    final EntityType entityType = type("entityType");
     final Attribute<Integer> trans = entityType.integerAttribute("trans");
     final Attribute<Integer> id = entityType.integerAttribute("id");
     final TransientProperty.Builder<?> transientProperty = Properties.transientProperty(trans);

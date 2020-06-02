@@ -24,8 +24,8 @@ import java.util.List;
 import static is.codion.common.db.Operator.LIKE;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
-import static is.codion.framework.domain.entity.Entities.entityType;
 import static is.codion.framework.domain.entity.Entities.getKeys;
+import static is.codion.framework.domain.entity.Entities.type;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -42,13 +42,13 @@ public final class EntitiesTutorial {
 
     //EntityType constant for the table entityType ('T_' prefix)
     //and an Attribute for each column
-    public static final EntityType T_ARTIST = entityType("chinook.artist");
+    public static final EntityType T_ARTIST = type("chinook.artist");
     public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
     public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
 
     //EntityType constant for the table entityType ('T_' prefix),
     //and an Attribute for each column and one for the foreign key relation
-    public static final EntityType T_ALBUM = entityType("chinook.album");
+    public static final EntityType T_ALBUM = type("chinook.album");
     public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
     public static final Attribute<String> ALBUM_TITLE = T_ALBUM.stringAttribute("title");
     public static final Attribute<Integer> ALBUM_ARTISTID = T_ALBUM.integerAttribute("artistid");

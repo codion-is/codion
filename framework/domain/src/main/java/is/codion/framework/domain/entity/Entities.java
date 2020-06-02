@@ -184,10 +184,10 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   Entities register();
 
   /**
-   * @param name the identity name
+   * @param name the entity type name
    * @return a {@link EntityType} instance with the given name
    */
-  static EntityType entityType(final String name) {
+  static EntityType type(final String name) {
     return new DefaultEntityType(name);
   }
 

@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static is.codion.framework.domain.entity.Entities.entityType;
+import static is.codion.framework.domain.entity.Entities.type;
 
 public final class EntityDeserializer extends StdDeserializer<Entity> {
 
@@ -45,7 +45,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityNode = parser.getCodec().readTree(parser);
 
-    final EntityType entityType = entityType(entityNode.get("entityType").asText());
+    final EntityType entityType = type(entityNode.get("entityType").asText());
     final EntityDefinition definition = entities.getDefinition(entityType);
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
