@@ -16,8 +16,10 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.identity.Identity;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
@@ -82,7 +84,7 @@ final class HttpEntityConnection implements EntityConnection {
           .setConnectTimeout(2000)
           .build();
 
-  private final String domainId;
+  private final Identity domainId;
   private final User user;
   private final boolean httpsEnabled;
   private final String baseurl;
@@ -105,7 +107,7 @@ final class HttpEntityConnection implements EntityConnection {
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  HttpEntityConnection(final String domainId, final String serverHostName, final int serverPort,
+  HttpEntityConnection(final Identity domainId, final String serverHostName, final int serverPort,
                        final ClientHttps httpsEnabled, final User user, final String clientTypeId, final UUID clientId,
                        final HttpClientConnectionManager connectionManager) {
     this.domainId = Objects.requireNonNull(domainId, DOMAIN_ID);
@@ -322,12 +324,11 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> List<T> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
-    Objects.requireNonNull(propertyId);
+  public <T> List<T> selectValues(final Attribute<T> attribute, final EntityCondition condition) throws DatabaseException {
+    Objects.requireNonNull(attribute);
     Objects.requireNonNull(condition);
     try {
-      return onResponse(execute(createHttpPost(createURIBuilder("values")
-              .addParameter("propertyId", propertyId), condition)));
+      return onResponse(execute(createHttpPost(createURIBuilder("values"), asList(attribute, condition))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -339,8 +340,8 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
-    return selectSingle(selectCondition(entityId, propertyId, Operator.LIKE, value));
+  public <T> Entity selectSingle(final Entity.Identity entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
+    return selectSingle(selectCondition(entityId, attribute, Operator.LIKE, value));
   }
 
   @Override
@@ -392,13 +393,19 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public List<Entity> select(final String entityId, final String propertyId, final Object... values)
+  public <T> List<Entity> select(final Entity.Identity entityId, final Attribute<T> attribute, final T value)
           throws DatabaseException {
-    return select(selectCondition(entityId, propertyId, Operator.LIKE, asList(values)));
+    return select(selectCondition(entityId, attribute, Operator.LIKE, value));
   }
 
   @Override
-  public Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
+  public <T> List<Entity> select(final Entity.Identity entityId, final Attribute<T> attribute, final Collection<T> values)
+          throws DatabaseException {
+    return select(selectCondition(entityId, attribute, Operator.LIKE, values));
+  }
+
+  @Override
+  public Map<Entity.Identity, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       return onResponse(execute(createHttpPost("dependencies", entities)));
@@ -443,13 +450,13 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData)
+  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData)
           throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
-    Objects.requireNonNull(blobPropertyId, "blobPropertyId");
+    Objects.requireNonNull(blobAttribute, "blobAttribute");
     Objects.requireNonNull(blobData, "blobData");
     try {
-      onResponse(execute(createHttpPost("writeBlob", asList(primaryKey, blobPropertyId, blobData))));
+      onResponse(execute(createHttpPost("writeBlob", asList(primaryKey, blobAttribute, blobData))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -461,11 +468,11 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException {
+  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
-    Objects.requireNonNull(blobPropertyId, "blobPropertyId");
+    Objects.requireNonNull(blobAttribute, "blobAttribute");
     try {
-      return onResponse(execute(createHttpPost("readBlob", asList(primaryKey, blobPropertyId))));
+      return onResponse(execute(createHttpPost("readBlob", asList(primaryKey, blobAttribute))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -516,7 +523,7 @@ final class HttpEntityConnection implements EntityConnection {
             .setDefaultRequestConfig(REQUEST_CONFIG)
             .setConnectionManager(connectionManager)
             .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
-              request.setHeader(DOMAIN_ID, domainId);
+              request.setHeader(DOMAIN_ID, domainId.getName());
               request.setHeader(CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(CLIENT_ID, clientIdString);
               request.setHeader(CONTENT_TYPE, APPLICATION_OCTET_STREAM);

@@ -30,7 +30,7 @@ Both actually. Codion is highly modular, so you can use as much or as little as 
 
 Codion is dual-licensed under the Open Source https://en.wikipedia.org/wiki/Affero_General_Public_License[AGPLv3] license and a commercial license.
 
-I realize this choice of license will turn quite a few people off, but keep in mind that you can freely use the AGPL licensed version to create closed-source applications for personal or internal company use, since it only kicks in when the application is distributed.
+Keep in mind that you can freely use the AGPL licensed version to create closed-source applications for personal or internal company use, since it only kicks in when the application is distributed.
 
 See http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic[GPL FAQ]
 
@@ -64,39 +64,40 @@ And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic
 
 Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[ORM] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities* and *properties*. This simplifies a lot of things and completely eliminates the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
 
-In the following example we start by extending the *Domain* class, with two convenient static imports (skipping the rest of the imports for brevity). We then define string constants for the entities and their respective properties (referred to as *entityIds* and *propertyIds*), which are used whenever we need to refer to the entity type and its properties. Finally we use these *entityIds* and *propertyIds* to define and configure two entities, with a master-detail relationship.
+In the following example we start by extending the *Domain* class, with three convenient static imports (omitting the rest of the imports for brevity). We then define a *Entity.Identity* constants for the entities (referred to as *entityIds*) and use those to create *Attribute* constants for their respective properties. These constants are used whenever we need to refer to the entity type and its values. Finally we use these *entityIds* and *attributes* to define and configure two entities, with a master-detail relationship.
 
 [source,java]
 ----
+import static is.codion.framework.domain.entity.Entities.entityIdentity;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 
 public class Store extends Domain {
 
-  public static final String T_CUSTOMER = "store.customer";
-  public static final String CUSTOMER_ID = "id";
-  public static final String CUSTOMER_FIRST_NAME = "first_name";
-  public static final String CUSTOMER_LAST_NAME = "last_name";
-  public static final String CUSTOMER_EMAIL = "email";
-  public static final String CUSTOMER_IS_ACTIVE = "is_active";
+  public static final Entity.Identity T_CUSTOMER = entityIdentity("store.customer");
+  public static final Attribute<Integer> CUSTOMER_ID = T_CUSTOMER.integerAttribute("id");
+  public static final Attribute<String> CUSTOMER_FIRST_NAME = T_CUSTOMER.stringAttribute("first_name");
+  public static final Attribute<String> CUSTOMER_LAST_NAME = T_CUSTOMER.stringAttribute("last_name");
+  public static final Attribute<String> CUSTOMER_EMAIL = T_CUSTOMER.stringAttribute("email");
+  public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = T_CUSTOMER.booleanAttribute("is_active");
 
-  public static final String T_ADDRESS = "store.address";
-  public static final String ADDRESS_ID = "id";
-  public static final String ADDRESS_CUSTOMER_FK = "customer_fk";
-  public static final String ADDRESS_CUSTOMER_ID = "customer_id";
-  public static final String ADDRESS_STREET = "street";
-  public static final String ADDRESS_CITY = "city";
+  public static final Entity.Identity T_ADDRESS = entityIdentity("store.address");
+  public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("id");
+  public static final Attribute<Entity> ADDRESS_CUSTOMER_FK = T_ADDRESS.entityAttribute("customer_fk");
+  public static final Attribute<Integer> ADDRESS_CUSTOMER_ID = T_ADDRESS.integerAttribute("customer_id");
+  public static final Attribute<String> ADDRESS_STREET = T_ADDRESS.stringAttribute("street");
+  public static final Attribute<String> ADDRESS_CITY = T_ADDRESS.stringAttribute("city");
 
   public Store() {
     define(T_CUSTOMER,
-            primaryKeyProperty(CUSTOMER_ID, Types.INTEGER),
-            columnProperty(CUSTOMER_FIRST_NAME, Types.VARCHAR, "First name")
+            primaryKeyProperty(CUSTOMER_ID),
+            columnProperty(CUSTOMER_FIRST_NAME, "First name")
                     .nullable(false).maximumLength(40),
-            columnProperty(CUSTOMER_LAST_NAME, Types.VARCHAR, "Last name")
+            columnProperty(CUSTOMER_LAST_NAME, "Last name")
                     .nullable(false).maximumLength(40),
-            columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email")
+            columnProperty(CUSTOMER_EMAIL, "Email")
                     .maximumLength(100),
-            columnProperty(CUSTOMER_IS_ACTIVE, Types.BOOLEAN, "Is active")
+            columnProperty(CUSTOMER_IS_ACTIVE, "Is active")
                     .defaultValue(true))
             .keyGenerator(automatic("store.customer"))
             .stringProvider(new StringProvider(CUSTOMER_LAST_NAME)
@@ -104,13 +105,13 @@ public class Store extends Domain {
             .caption("Customer");
 
     define(T_ADDRESS,
-            primaryKeyProperty(ADDRESS_ID, Types.INTEGER),
+            primaryKeyProperty(ADDRESS_ID),
             foreignKeyProperty(ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
-                    columnProperty(ADDRESS_CUSTOMER_ID, Types.INTEGER))
+                    columnProperty(ADDRESS_CUSTOMER_ID))
                     .nullable(false),
-            columnProperty(ADDRESS_STREET, Types.VARCHAR, "Street")
+            columnProperty(ADDRESS_STREET, "Street")
                     .nullable(false).maximumLength(100),
-            columnProperty(ADDRESS_CITY, Types.VARCHAR, "City")
+            columnProperty(ADDRESS_CITY, "City")
                     .nullable(false).maximumLength(50))
             .keyGenerator(automatic("store.address"))
             .stringProvider(new StringProvider(ADDRESS_STREET)
@@ -172,7 +173,7 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty(CUSTOMER_FIRST_NAME);
+      setInitialFocusAttribute(CUSTOMER_FIRST_NAME);
       createTextField(CUSTOMER_FIRST_NAME).setColumns(12);
       createTextField(CUSTOMER_LAST_NAME).setColumns(12);
       createTextField(CUSTOMER_EMAIL).setColumns(12);
@@ -193,7 +194,7 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty(ADDRESS_STREET);
+      setInitialFocusAttribute(ADDRESS_STREET);
       createForeignKeyComboBox(ADDRESS_CUSTOMER_FK);
       createTextField(ADDRESS_STREET).setColumns(12);
       createTextField(ADDRESS_CITY).setColumns(12);

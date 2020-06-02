@@ -17,5 +17,5 @@ public interface ColorProvider extends Serializable {
    * @param property the property
    * @return the color to use for this entity and property
    */
-  Object getColor(Entity entity, Property property);
+  Object getColor(Entity entity, Property<?> property);
 }

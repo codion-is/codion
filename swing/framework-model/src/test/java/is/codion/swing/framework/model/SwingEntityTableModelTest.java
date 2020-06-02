@@ -123,7 +123,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   public void testFiltering() {
     testModel.refresh();
-    final ColumnConditionModel<Entity, Property> filterModel = testModel.getConditionModel().getPropertyFilterModel(TestDomain.DETAIL_STRING);
+    final ColumnConditionModel<Entity, Property<?>> filterModel = testModel.getConditionModel().getPropertyFilterModel(TestDomain.DETAIL_STRING);
     filterModel.setLikeValue("a");
     testModel.filterContents();
     assertEquals(4, testModel.getFilteredItems().size());
@@ -174,7 +174,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.setEditable(true);
     tableModel.setValueAt("newname", 0, 1);
     final Entity entity = tableModel.getItemAt(0);
-    assertEquals("newname", entity.getString(TestDomain.EMP_NAME));
+    assertEquals("newname", entity.get(TestDomain.EMP_NAME));
     assertThrows(RuntimeException.class, () -> tableModel.setValueAt("newname", 0, 0));
   }
 

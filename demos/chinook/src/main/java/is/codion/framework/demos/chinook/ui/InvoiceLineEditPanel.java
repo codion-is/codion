@@ -32,7 +32,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(INVOICELINE_TRACK_FK);
+    setInitialFocusAttribute(INVOICELINE_TRACK_FK);
 
     final EntityLookupField trackLookupField = createForeignKeyLookupField(INVOICELINE_TRACK_FK);
     trackLookupField.setSelectionProvider(new TrackSelectionProvider(trackLookupField.getModel()));

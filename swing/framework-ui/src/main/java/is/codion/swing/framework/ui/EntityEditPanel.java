@@ -354,7 +354,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public void onValidationException(final ValidationException exception) {
     JOptionPane.showMessageDialog(this, exception.getMessage(),
             Messages.get(Messages.EXCEPTION), JOptionPane.ERROR_MESSAGE);
-    requestComponentFocus(exception.getPropertyId());
+    requestComponentFocus(exception.getAttribute());
   }
 
   /**

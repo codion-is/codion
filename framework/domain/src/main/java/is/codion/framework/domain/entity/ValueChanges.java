@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.attribute.Attribute;
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,26 +16,26 @@ public final class ValueChanges {
 
   /**
    * Returns a new {@link ValueChange} instance
-   * @param property the Property associated with the value
+   * @param attribute the attribute associated with the value
    * @param currentValue the current value
    * @param previousValue the previous value
    * @return a new {@link ValueChange} instance
    */
-  public static ValueChange valueChange(final Property property, final Object currentValue, final Object previousValue) {
-    return valueChange(property, currentValue, previousValue, false);
+  public static ValueChange valueChange(final Attribute<?> attribute, final Object currentValue, final Object previousValue) {
+    return valueChange(attribute, currentValue, previousValue, false);
   }
 
   /**
    * Returns a new {@link ValueChange} instance
-   * @param property the Property associated with the value
+   * @param attribute the attribute associated with the value
    * @param currentValue the current value
    * @param previousValue the previous value
    * @param initialization true if the value was being initialized
    * @return a new {@link ValueChange} instance
    */
-  public static ValueChange valueChange(final Property property, final Object currentValue, final Object previousValue,
+  public static ValueChange valueChange(final Attribute<?> attribute, final Object currentValue, final Object previousValue,
                                         final boolean initialization) {
-    return new DefaultValueChange(property, currentValue, previousValue, initialization);
+    return new DefaultValueChange(attribute, currentValue, previousValue, initialization);
   }
 
   private static final class DefaultValueChange implements ValueChange {
@@ -43,7 +43,7 @@ public final class ValueChanges {
     /**
      * The Property identifying the changed value
      */
-    private final Property property;
+    private final Attribute<?> property;
 
     /**
      * The new value
@@ -62,21 +62,21 @@ public final class ValueChanges {
 
     /**
      * Instantiates a new DefaultValueChange
-     * @param property the Property associated with the value
+     * @param attribute the attribute associated with the value
      * @param value the new value
      * @param previousValue the previous value
      * @param initialization true if the value is being initialized
      */
-    private DefaultValueChange(final Property property, final Object value, final Object previousValue,
+    private DefaultValueChange(final Attribute<?> attribute, final Object value, final Object previousValue,
                                final boolean initialization) {
-      this.property = requireNonNull(property, "property");
+      this.property = requireNonNull(attribute, "attribute");
       this.value = value;
       this.previousValue = previousValue;
       this.initialization = initialization;
     }
 
     @Override
-    public Property getProperty() {
+    public Attribute<?> getAttribute() {
       return property;
     }
 

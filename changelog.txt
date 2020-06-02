@@ -6142,3 +6142,65 @@
   EntityConnectionProvider.addOnConnectListener() now takes EventDataListener receiving the newly established connection as data
   EntityConnections.insertBatch(), entities parameter is now Iterator, no longer returns the inserted keys, onInsertBatchListener parameter added instead
 0.16.2
+  is.codion.framework.domain.property.Attribute added for type safe value access
+  Entity no longer extends ValueMap
+  Entity.Key no longer extends ValueMap
+  ValueMap removed
+  PropertyValueProvider renamed ForeignKeyValue, ForeignKeyProperty now based on that
+  ForeignKeyProperty now overrides Property.getPropertyId()
+  Property.getAttribute() now with generic type parameter, ForeignKeyProperty generics improved a bit
+  JavaFX module updated according to the latest changes
+  Swing Framework Model module updated according to the latest changes
+  Swing Framework UI module updated according to the latest changes
+  Swing Framework Tools module updated according to the latest changes
+  Chinook demo module updated according to the latest changes
+  ValueListProperty generified
+  EmpDept demo module updated according to the latest changes
+  Petclinic demo module updated according to the latest changes
+  Petstore demo module updated according to the latest changes
+  SchemaBrowser demo module updated according to the latest changes
+  World demo module updated according to the latest changes
+  Manual demo module updated according to the latest changes
+  DefaultEntityKey bug fixed, hashCodeDirty not set to true when deserializing
+  DefaultEntity bug fixed, setForeignKeyValues() and setDenormalizedValues() used values.put() instead of this.put()
+  Rest of modules updated according to the latest changes
+  Attribute.id renamed name
+  Property.getPropertyId() renamed getAttribute()
+  ForeignKeyValue removed
+  Properties, propertyId named attribute
+  Entity, propertyId replaced with attribute
+  property, entity package, propertyId replaced with attribute
+  Further renaming of propertyId to attribute
+  Property generified
+  Property.type moved to Attribute, EntityAttribute and BlobAttribute added
+  Attribute now uses Class<T> for typeClass instead of Types.* sql type
+  Attributes factory class added, with method for the most common attribute types
+  Property, getTypeClass() and isType() methods moved to Attribute
+  EntityConnection.select() overloaded with Collection of values
+  Condition.getValues() no longer returns a raw type
+  Some type safety improvements
+  entityId moved from Property to Attribute, along with validateType(), ForeignKeyProperty.validateType() functionality moved to DefaultEntity.putInternal()
+  Property.getEntityId() removed
+  EntityService and HttpEntityConnection now serializes Attributes instead of creating new instances
+  DefaultEntityKey.toString() bug fixed, used Attribute.toString() instead of Attribute.getName()
+  Jackson and JSON plugins updated according to the above
+  DefaultEntityKey.values, key now Attribute instead of Property, Entity.Key.get(Property) removed
+  DefaultAttribute, entityId now final, set via constructor, anything else turned out to be very fragile
+  Entity, most accessors with Property parameter removed
+  Identity added, entityId no longer a String
+  Identity now an Attribute factory
+  Identity moved to property package
+  Attributes factory class removed
+  EntityIdentity and DomainIdentity added
+  Attribute and Identity moved to separate packages
+  Domain.domainIdentity() moved to Entities
+  EntityAttribute removed, Attribute.isEntity() added
+  BlobAttribute removed
+  Entity.getReferencedKey() and isForeignKeyNull() ForeignKeyProperty parameter replaced with Attribute<Entity>
+  DefaultEntity.readObject() and writeObject(), some minor performance optimizations
+  Updated a bunch of Identity parameters and return values to the more appropriate EntityIdentity
+  EntityIdentity moved to Entity, renamed Identity
+  DomainIdentity removed, quite unnecessary
+  ValueChange now Attribute based
+  EntityEditModel, put(), get() and remove() with Property parameters removed
+  EntityEditComponentPanel, removed redundant create method overloads with Property parameter

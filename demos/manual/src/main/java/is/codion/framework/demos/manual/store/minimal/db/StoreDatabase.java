@@ -49,8 +49,8 @@ public class StoreDatabase {
     Entities entities = connection.getEntities();
 
     Entity customer = entities.entity(T_CUSTOMER);
-    customer.put(CUSTOMER_FIRST_NAME, "Björn");
-    customer.put(CUSTOMER_LAST_NAME, "Sigurðsson");
+    customer.put(CUSTOMER_FIRST_NAME, "Peter");
+    customer.put(CUSTOMER_LAST_NAME, "Jackson");
 
     Entity.Key customerKey = connection.insert(customer);
     //select to get generated and default column values
@@ -58,12 +58,12 @@ public class StoreDatabase {
 
     Entity address = entities.entity(T_ADDRESS);
     address.put(ADDRESS_CUSTOMER_FK, customer);
-    address.put(ADDRESS_STREET, "Stóragerði");
-    address.put(ADDRESS_CITY, "Reykjavík");
+    address.put(ADDRESS_STREET, "Elm st.");
+    address.put(ADDRESS_CITY, "Boston");
 
     Entity.Key addressKey = connection.insert(address);
 
-    customer.put(CUSTOMER_EMAIL, "valid@email.is");
+    customer.put(CUSTOMER_EMAIL, "mail@email.com");
 
     customer = connection.update(customer);
 

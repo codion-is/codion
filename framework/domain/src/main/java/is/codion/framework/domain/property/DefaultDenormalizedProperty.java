@@ -3,38 +3,41 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Entity;
+
 /**
  * A property representing a column that should get its value automatically from a column in a referenced table
  */
-final class DefaultDenormalizedProperty extends DefaultColumnProperty implements DenormalizedProperty {
+final class DefaultDenormalizedProperty<T> extends DefaultColumnProperty<T> implements DenormalizedProperty<T> {
 
   private static final long serialVersionUID = 1;
 
-  private final String foreignKeyPropertyId;
-  private final Property denormalizedProperty;
+  private final Attribute<Entity> entityAttribute;
+  private final Attribute<T> denormalizedAttribute;
 
   /**
-   * @param  propertyId the propertyId
-   * @param foreignKeyPropertyId the id of the foreign key property which references the entity which owns
-   * the denormalized property
-   * @param denormalizedProperty the property from which this property should get its value
+   * @param attribute the attribute
+   * @param entityAttribute the attribute of the foreign key references the entity which owns
+   * the denormalized attribute
+   * @param denormalizedAttribute the attribute from which this property should get its value
    * @param caption the caption if this property
    */
-  DefaultDenormalizedProperty(final String propertyId, final String foreignKeyPropertyId,
-                              final Property denormalizedProperty, final String caption) {
-    super(propertyId, denormalizedProperty.getType(), caption);
-    this.foreignKeyPropertyId = foreignKeyPropertyId;
-    this.denormalizedProperty = denormalizedProperty;
+  DefaultDenormalizedProperty(final Attribute<T> attribute, final Attribute<Entity> entityAttribute,
+                              final Attribute<T> denormalizedAttribute, final String caption) {
+    super(attribute, caption);
+    this.entityAttribute = entityAttribute;
+    this.denormalizedAttribute = denormalizedAttribute;
   }
 
   @Override
-  public String getForeignKeyPropertyId() {
-    return foreignKeyPropertyId;
+  public Attribute<Entity> getEntityAttribute() {
+    return entityAttribute;
   }
 
   @Override
-  public Property getDenormalizedProperty() {
-    return denormalizedProperty;
+  public Attribute<T> getDenormalizedAttribute() {
+    return denormalizedAttribute;
   }
 
   @Override

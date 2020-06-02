@@ -43,7 +43,7 @@ public interface KeyGenerator {
    * @param connection the connection to use
    * @throws SQLException in case of an exception
    */
-  default void beforeInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
+  default void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
                             final DatabaseConnection connection) throws SQLException {/*for overriding*/}
 
   /**
@@ -56,7 +56,7 @@ public interface KeyGenerator {
    * @param insertStatement the insert statement
    * @throws SQLException in case of an exception
    */
-  default void afterInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
+  default void afterInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
                            final DatabaseConnection connection, final Statement insertStatement) throws SQLException {/*for overriding*/}
 
   /**

@@ -9,6 +9,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
@@ -49,8 +50,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityModel.class);
 
-  private final Event refreshStartedEvent = Events.event();
-  private final Event refreshDoneEvent = Events.event();
+  private final Event<?> refreshStartedEvent = Events.event();
+  private final Event<?> refreshDoneEvent = Events.event();
   private final Event<M> linkedDetailModelAddedEvent = Events.event();
   private final Event<M> linkedDetailModelRemovedEvent = Events.event();
 
@@ -125,7 +126,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final String getEntityId() {
+  public final Entity.Identity getEntityId() {
     return editModel.getEntityId();
   }
 
@@ -193,7 +194,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final boolean containsDetailModel(final String entityId) {
+  public final boolean containsDetailModel(final Entity.Identity entityId) {
     return detailModels.stream().anyMatch(detailModel -> detailModel.getEntityId().equals(entityId));
   }
 
@@ -245,7 +246,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M getDetailModel(final String entityId) {
+  public final M getDetailModel(final Entity.Identity entityId) {
     for (final M detailModel : detailModels) {
       if (detailModel.getEntityId().equals(entityId)) {
         return detailModel;
@@ -256,18 +257,18 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void setDetailModelForeignKey(final M detailModel, final String foreignKeyPropertyId) {
+  public final void setDetailModelForeignKey(final M detailModel, final Attribute<Entity> foreignKeyAttribute) {
     requireNonNull(detailModel, "detailModel");
     if (!containsDetailModel(detailModel)) {
       throw new IllegalArgumentException(this + " does not contain detail model: " + detailModel);
     }
 
-    if (foreignKeyPropertyId == null) {
+    if (foreignKeyAttribute == null) {
       detailModelForeignKeys.remove(detailModel);
     }
     else {
       detailModelForeignKeys.put(detailModel,
-              connectionProvider.getEntities().getDefinition(detailModel.getEntityId()).getForeignKeyProperty(foreignKeyPropertyId));
+              connectionProvider.getEntities().getDefinition(detailModel.getEntityId()).getForeignKeyProperty(foreignKeyAttribute));
     }
   }
 
@@ -321,7 +322,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void initialize(final String foreignKeyEntityId, final List<Entity> foreignKeyValues) {
+  public final void initialize(final Entity.Identity foreignKeyEntityId, final List<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
             editModel.getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
     if (!foreignKeyProperties.isEmpty()) {
@@ -402,7 +403,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   protected void onInitialization(final ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
     if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
-      editModel.put(foreignKeyProperty, foreignKeyValues.get(0));
+      editModel.put(foreignKeyProperty.getAttribute(), foreignKeyValues.get(0));
     }
   }
 
@@ -410,8 +411,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Initializes all linked detail models according to the active entities in this master model
    * @see #getActiveEntities()
    * @see #addLinkedDetailModel(EntityModel)
-   * @see #initialize(ForeignKeyProperty, java.util.List)
-   * @see #initialize(String, java.util.List)
+   * @see #initialize(Entity.Identity, List)
    */
   protected final void initializeDetailModels() {
     final List<Entity> activeEntities = getActiveEntities();

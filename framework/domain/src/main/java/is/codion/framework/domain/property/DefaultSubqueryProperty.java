@@ -3,21 +3,22 @@
  */
 package is.codion.framework.domain.property;
 
-final class DefaultSubqueryProperty extends DefaultColumnProperty implements SubqueryProperty {
+import is.codion.framework.domain.attribute.Attribute;
+
+final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implements SubqueryProperty<T> {
 
   private static final long serialVersionUID = 1;
 
   private final transient String subquery;
 
   /**
-   * @param  propertyId the propertyId, since SubqueryProperties do not map to underlying table columns,
-   * the property id should not be column name, only be unique for this entity
-   * @param type the data type of this property
+   * @param attribute the attribute, since SubqueryProperties do not map to underlying table columns,
+   * the attribute should not be based on a column, only be unique for this entity
    * @param caption the caption of this property
    * @param subquery the sql query
    */
-  DefaultSubqueryProperty(final String propertyId, final int type, final String caption, final String subquery) {
-    super(propertyId, type, caption);
+  DefaultSubqueryProperty(final Attribute<T> attribute, final String caption, final String subquery) {
+    super(attribute, caption);
     super.setInsertable(false);
     super.setUpdatable(false);
     this.subquery = subquery;
@@ -32,37 +33,37 @@ final class DefaultSubqueryProperty extends DefaultColumnProperty implements Sub
    * @return a builder for this property instance
    */
   @Override
-  SubqueryProperty.Builder builder() {
-    return new DefaultSubqueryPropertyBuilder(this);
+  SubqueryProperty.Builder<T> builder() {
+    return new DefaultSubqueryPropertyBuilder<>(this);
   }
 
-  private static final class DefaultSubqueryPropertyBuilder
-          extends DefaultColumnPropertyBuilder implements Property.Builder {
+  private static final class DefaultSubqueryPropertyBuilder<T>
+          extends DefaultColumnPropertyBuilder<T> implements Property.Builder<T> {
 
-    private final DefaultSubqueryProperty subqueryProperty;
+    private final DefaultSubqueryProperty<T> subqueryProperty;
 
-    private DefaultSubqueryPropertyBuilder(final DefaultSubqueryProperty subqueryProperty) {
+    private DefaultSubqueryPropertyBuilder(final DefaultSubqueryProperty<T> subqueryProperty) {
       super(subqueryProperty);
       this.subqueryProperty = subqueryProperty;
     }
 
     @Override
-    public SubqueryProperty get() {
+    public SubqueryProperty<T> get() {
       return subqueryProperty;
     }
 
     @Override
-    public ColumnProperty.Builder readOnly(final boolean readOnly) {
+    public ColumnProperty.Builder<T> readOnly(final boolean readOnly) {
       throw new UnsupportedOperationException("Subquery properties are always read only");
     }
 
     @Override
-    public SubqueryProperty.Builder insertable(final boolean insertable) {
+    public SubqueryProperty.Builder<T> insertable(final boolean insertable) {
       throw new UnsupportedOperationException("Subquery properties are never insertable");
     }
 
     @Override
-    public SubqueryProperty.Builder updatable(final boolean updatable) {
+    public SubqueryProperty.Builder<T> updatable(final boolean updatable) {
       throw new UnsupportedOperationException("Subquery properties are never updatable");
     }
   }

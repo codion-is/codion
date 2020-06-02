@@ -3,14 +3,14 @@
  */
 package is.codion.framework.domain.property;
 
-import java.sql.Types;
+import is.codion.framework.domain.attribute.Attribute;
 
-public final class DefaultAuditUserProperty extends DefaultAuditProperty
+public final class DefaultAuditUserProperty extends DefaultAuditProperty<String>
         implements AuditProperty.AuditUserProperty {
 
   private static final long serialVersionUID = 1;
 
-  DefaultAuditUserProperty(final String propertyId, final AuditAction auditAction, final String caption) {
-    super(propertyId, Types.VARCHAR, auditAction, caption);
+  DefaultAuditUserProperty(final Attribute<String> attribute, final AuditAction auditAction, final String caption) {
+    super(attribute, auditAction, caption);
   }
 }

@@ -107,7 +107,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
    * @param columnIdentifier the column identifier
    * @return a Comparable for the given row and column
    */
-  protected abstract Comparable getComparable(R row, C columnIdentifier);
+  protected abstract Comparable<?> getComparable(R row, C columnIdentifier);
 
   /**
    * Initializes a comparator used when sorting by the give column,
@@ -115,8 +115,8 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
    * @param columnIdentifier the column identifier
    * @return the comparator to use when sorting by the given column
    */
-  protected Comparator initializeColumnComparator(final C columnIdentifier) {
-    final Class columnClass = getColumnClass(columnIdentifier);
+  protected Comparator<?> initializeColumnComparator(final C columnIdentifier) {
+    final Class<?> columnClass = getColumnClass(columnIdentifier);
     if (columnClass.equals(String.class)) {
       return LEXICAL_COMPARATOR;
     }

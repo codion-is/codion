@@ -84,7 +84,7 @@ public final class EntityComponentValidators {
       this.editModel = editModel;
       this.defaultToolTip = defaultToolTip;
       this.editModel.getValidator().addRevalidationListener(this::validate);
-      this.editModel.addValueListener(property.getPropertyId(), valueChange -> validate());
+      this.editModel.addValueListener(property.getAttribute(), valueChange -> validate());
     }
 
     /**
@@ -107,7 +107,7 @@ public final class EntityComponentValidators {
     }
 
     protected boolean isNull() {
-      return editModel.isNull(property.getPropertyId());
+      return editModel.isNull(property.getAttribute());
     }
 
     /**

@@ -116,7 +116,7 @@ public final class EntityConnectionDemo {
 
   static void selectValue(EntityConnection connection) throws DatabaseException {
     // tag::selectValue[]
-    List<Entity> aliceInChains = connection.select(T_ARTIST, ARTIST_NAME, "Alice In Chains");
+    Entity aliceInChains = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Alice In Chains");
 
     List<Entity> albums = connection.select(T_ALBUM, ALBUM_ARTIST_FK, aliceInChains);
     // end::selectValue[]
@@ -162,7 +162,7 @@ public final class EntityConnectionDemo {
     // tag::selectDependencies[]
     List<Entity> employees = connection.select(selectCondition(T_EMPLOYEE));
 
-    Map<String, Collection<Entity>> dependencies = connection.selectDependencies(employees);
+    Map<Entity.Identity, Collection<Entity>> dependencies = connection.selectDependencies(employees);
 
     Collection<Entity> customersDependingOnEmployees = dependencies.get(T_CUSTOMER);
     // end::selectDependencies[]

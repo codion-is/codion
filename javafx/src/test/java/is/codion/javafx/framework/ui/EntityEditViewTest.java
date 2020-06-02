@@ -44,7 +44,7 @@ public final class EntityEditViewTest {
 
     @Override
     protected Node initializeEditPanel() {
-      setInitialFocusProperty(TestDomain.EMP_ID);
+      setInitialFocusAttribute(TestDomain.EMP_ID);
 
       createTextField(TestDomain.EMP_ID);
       createTextField(TestDomain.EMP_NAME);

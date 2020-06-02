@@ -3,58 +3,59 @@
  */
 package is.codion.framework.domain.property;
 
+import is.codion.framework.domain.attribute.Attribute;
+
 import java.util.List;
 
-import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
 
-final class DefaultDerivedProperty extends DefaultTransientProperty implements DerivedProperty {
+final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implements DerivedProperty<T> {
 
   private static final long serialVersionUID = 1;
 
-  private final Provider valueProvider;
-  private final List<String> sourcePropertyIds;
+  private final Provider<T> valueProvider;
+  private final List<Attribute<?>> sourceAttributes;
 
-  DefaultDerivedProperty(final String propertyId, final int type, final String caption,
-                         final Provider valueProvider, final String... sourcePropertyIds) {
-    super(propertyId, type, caption);
+  DefaultDerivedProperty(final Attribute<T> attribute, final String caption,
+                         final Provider<T> valueProvider, final Attribute<?>... sourceAttributes) {
+    super(attribute, caption);
     this.valueProvider = valueProvider;
-    if (nullOrEmpty(sourcePropertyIds)) {
-      throw new IllegalArgumentException("No source propertyIds, a derived property must be derived from one or more existing properties");
+    if (sourceAttributes == null || sourceAttributes.length == 0) {
+      throw new IllegalArgumentException("No source attributes, a derived property must be derived from one or more existing attributes");
     }
-    this.sourcePropertyIds = asList(sourcePropertyIds);
+    this.sourceAttributes = asList(sourceAttributes);
   }
 
   @Override
-  public Provider getValueProvider() {
+  public Provider<T> getValueProvider() {
     return valueProvider;
   }
 
   @Override
-  public List<String> getSourcePropertyIds() {
-    return sourcePropertyIds;
+  public List<Attribute<?>> getSourceAttributes() {
+    return sourceAttributes;
   }
 
   /**
    * @return a builder for this property instance
    */
   @Override
-  TransientProperty.Builder builder() {
-    return new DefaultDerivedPropertyBuilder(this);
+  TransientProperty.Builder<T> builder() {
+    return new DefaultDerivedPropertyBuilder<>(this);
   }
 
-  private static final class DefaultDerivedPropertyBuilder
-          extends DefaultTransientPropertyBuilder implements Property.Builder {
+  private static final class DefaultDerivedPropertyBuilder<T>
+          extends DefaultTransientPropertyBuilder<T> implements Property.Builder<T> {
 
-    private final DefaultDerivedProperty derivedProperty;
+    private final DefaultDerivedProperty<T> derivedProperty;
 
-    private DefaultDerivedPropertyBuilder(final DefaultDerivedProperty derivedProperty) {
+    private DefaultDerivedPropertyBuilder(final DefaultDerivedProperty<T> derivedProperty) {
       super(derivedProperty);
       this.derivedProperty = derivedProperty;
     }
 
     @Override
-    public DerivedProperty get() {
+    public DerivedProperty<T> get() {
       return derivedProperty;
     }
   }

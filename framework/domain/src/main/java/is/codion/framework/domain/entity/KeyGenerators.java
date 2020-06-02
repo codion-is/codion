@@ -73,7 +73,7 @@ public final class KeyGenerators {
 
   private abstract static class AbstractQueriedKeyGenerator implements KeyGenerator {
 
-    protected final void selectAndPut(final Entity entity, final ColumnProperty keyProperty,
+    protected final void selectAndPut(final Entity entity, final ColumnProperty<?> keyProperty,
                                       final DatabaseConnection connection) throws SQLException {
       final Object value;
       switch (keyProperty.getColumnType()) {
@@ -86,7 +86,7 @@ public final class KeyGenerators {
         default:
           throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes", null, null);
       }
-      entity.put(keyProperty, value);
+      entity.put(keyProperty.getAttribute(), value);
     }
 
     protected abstract String getQuery(Database database);
@@ -101,10 +101,10 @@ public final class KeyGenerators {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
+    public void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
                              final DatabaseConnection connection) throws SQLException {
-      final ColumnProperty primaryKeyProperty = primaryKeyProperties.get(0);
-      if (entity.isNull(primaryKeyProperty)) {
+      final ColumnProperty<?> primaryKeyProperty = primaryKeyProperties.get(0);
+      if (entity.isNull(primaryKeyProperty.getAttribute())) {
         selectAndPut(entity, primaryKeyProperty, connection);
       }
     }
@@ -124,10 +124,10 @@ public final class KeyGenerators {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
+    public void beforeInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
                              final DatabaseConnection connection) throws SQLException {
-      final ColumnProperty primaryKeyProperty = primaryKeyProperties.get(0);
-      if (entity.isNull(primaryKeyProperty)) {
+      final ColumnProperty<?> primaryKeyProperty = primaryKeyProperties.get(0);
+      if (entity.isNull(primaryKeyProperty.getAttribute())) {
         selectAndPut(entity, primaryKeyProperty, connection);
       }
     }
@@ -152,7 +152,7 @@ public final class KeyGenerators {
     }
 
     @Override
-    public void afterInsert(final Entity entity, final List<ColumnProperty> primaryKeyProperties,
+    public void afterInsert(final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties,
                             final DatabaseConnection connection, final Statement insertStatement) throws SQLException {
       selectAndPut(entity, primaryKeyProperties.get(0), connection);
     }

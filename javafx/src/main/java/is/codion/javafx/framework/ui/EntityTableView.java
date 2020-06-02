@@ -37,7 +37,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -136,7 +135,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private Callback<TableColumn.CellDataFeatures<Entity, Object>, ObservableValue<Object>> getCellValueFactory(final Property property) {
-    return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.getPropertyId()));
+    return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.getAttribute()));
   }
 
   private void initializeToolPane() {
@@ -222,7 +221,7 @@ public class EntityTableView extends TableView<Entity> {
     FXUiUtil.link(updateSelected.disableProperty(), listModel.getSelectionEmptyObserver());
     Properties.sort(getListModel().getEntityDefinition().getUpdatableProperties()).stream().filter(
             this::includeUpdateSelectedProperty).forEach(property -> {
-      final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
+      final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
       final MenuItem updateProperty = new MenuItem(caption);
       updateProperty.setOnAction(actionEvent -> updateSelectedEntities(property));
       updateSelected.getItems().add(updateProperty);
@@ -256,7 +255,7 @@ public class EntityTableView extends TableView<Entity> {
   private void updateSelectedEntities(final Property property) {
     final List<Entity> selectedEntities = listModel.getEntities().deepCopyEntities(listModel.getSelectionModel().getSelectedItems());
 
-    final Collection<Object> values = Entities.getDistinctValues(property.getPropertyId(), selectedEntities);
+    final List<?> values = Entities.getDistinctValues(property.getAttribute(), selectedEntities);
     final Object defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
     final PropertyInputDialog inputDialog = new PropertyInputDialog(property, defaultValue, listModel.getConnectionProvider());
@@ -265,7 +264,7 @@ public class EntityTableView extends TableView<Entity> {
     final Optional<PropertyInputDialog.InputResult> inputResult = inputDialog.showAndWait();
     try {
       if (inputResult.isPresent() && inputResult.get().isInputAccepted()) {
-        Entities.put(property.getPropertyId(), inputResult.get().getValue(), selectedEntities);
+        Entities.put(property.getAttribute(), inputResult.get().getValue(), selectedEntities);
         listModel.update(selectedEntities);
       }
     }
@@ -286,7 +285,7 @@ public class EntityTableView extends TableView<Entity> {
     if (!selectionModel.isEmpty()) {
       final TablePosition<Entity, Object> pos = getSelectionModel().getSelectedCells().get(0);
       final Entity item = listModel.get(pos.getRow());
-      final String value = item.getAsString(((EntityTableColumn) pos.getTableColumn()).getProperty());
+      final String value = item.getAsString(((EntityTableColumn) pos.getTableColumn()).getProperty().getAttribute());
       FXUiUtil.setClipboard(value);
     }
   }

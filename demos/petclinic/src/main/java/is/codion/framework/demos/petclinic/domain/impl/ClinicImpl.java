@@ -6,8 +6,6 @@ package is.codion.framework.demos.petclinic.domain.impl;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.StringProvider;
 
-import java.sql.Types;
-
 import static is.codion.framework.demos.petclinic.domain.Clinic.*;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
@@ -27,16 +25,16 @@ public final class ClinicImpl extends Domain {
 
   private void vet() {
     define(T_VET,
-            primaryKeyProperty(VET_ID, Types.INTEGER),
-            columnProperty(VET_FIRST_NAME, Types.VARCHAR, "First name")
+            primaryKeyProperty(VET_ID),
+            columnProperty(VET_FIRST_NAME, "First name")
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(VET_LAST_NAME, Types.VARCHAR, "Last name")
+            columnProperty(VET_LAST_NAME, "Last name")
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false))
-            .keyGenerator(automatic(T_VET))
+            .keyGenerator(automatic(T_VET.getName()))
             .caption("Vets")
             .stringProvider(new StringProvider(VET_LAST_NAME)
                     .addText(", ").addValue(VET_FIRST_NAME))
@@ -46,12 +44,12 @@ public final class ClinicImpl extends Domain {
 
   private void specialty() {
     define(T_SPECIALTY,
-            primaryKeyProperty(SPECIALTY_ID, Types.INTEGER),
-            columnProperty(SPECIALTY_NAME, Types.VARCHAR, "Name")
+            primaryKeyProperty(SPECIALTY_ID),
+            columnProperty(SPECIALTY_NAME, "Name")
                     .searchProperty(true)
                     .maximumLength(80)
                     .nullable(false))
-            .keyGenerator(automatic(T_SPECIALTY))
+            .keyGenerator(automatic(T_SPECIALTY.getName()))
             .caption("Specialties")
             .stringProvider(new StringProvider(SPECIALTY_NAME))
             .smallDataset(true);
@@ -60,11 +58,11 @@ public final class ClinicImpl extends Domain {
   private void vetSpecialty() {
     define(T_VET_SPECIALTY,
             foreignKeyProperty(VET_SPECIALTY_VET_FK, "Vet", T_VET,
-                    columnProperty(VET_SPECIALTY_VET, Types.INTEGER)
+                    columnProperty(VET_SPECIALTY_VET)
                             .primaryKeyIndex(0))
                     .nullable(false),
             foreignKeyProperty(VET_SPECIALTY_SPECIALTY_FK, "Specialty", T_SPECIALTY,
-                    primaryKeyProperty(VET_SPECIALTY_SPECIALTY, Types.INTEGER)
+                    primaryKeyProperty(VET_SPECIALTY_SPECIALTY)
                             .primaryKeyIndex(1))
                     .nullable(false))
             .caption("Vet specialties")
@@ -74,12 +72,12 @@ public final class ClinicImpl extends Domain {
 
   private void petType() {
     define(T_PET_TYPE,
-            primaryKeyProperty(PET_TYPE_ID, Types.INTEGER),
-            columnProperty(PET_TYPE_NAME, Types.VARCHAR, "Name")
+            primaryKeyProperty(PET_TYPE_ID),
+            columnProperty(PET_TYPE_NAME, "Name")
                     .searchProperty(true)
                     .maximumLength(80)
                     .nullable(false))
-            .keyGenerator(automatic(T_PET_TYPE))
+            .keyGenerator(automatic(T_PET_TYPE.getName()))
             .caption("Pet types")
             .stringProvider(new StringProvider(PET_TYPE_NAME))
             .orderBy(orderBy().ascending(PET_TYPE_NAME))
@@ -88,22 +86,22 @@ public final class ClinicImpl extends Domain {
 
   private void owner() {
     define(T_OWNER,
-            primaryKeyProperty(OWNER_ID, Types.INTEGER),
-            columnProperty(OWNER_FIRST_NAME, Types.VARCHAR, "First name")
+            primaryKeyProperty(OWNER_ID),
+            columnProperty(OWNER_FIRST_NAME, "First name")
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(OWNER_LAST_NAME, Types.VARCHAR, "Last name")
+            columnProperty(OWNER_LAST_NAME, "Last name")
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(OWNER_ADDRESS, Types.VARCHAR, "Address")
+            columnProperty(OWNER_ADDRESS, "Address")
                     .maximumLength(255),
-            columnProperty(OWNER_CITY, Types.VARCHAR, "City")
+            columnProperty(OWNER_CITY, "City")
                     .maximumLength(80),
-            columnProperty(OWNER_TELEPHONE, Types.VARCHAR, "Telephone")
+            columnProperty(OWNER_TELEPHONE, "Telephone")
                     .maximumLength(20))
-            .keyGenerator(automatic(T_OWNER))
+            .keyGenerator(automatic(T_OWNER.getName()))
             .caption("Owners")
             .stringProvider(new StringProvider(OWNER_LAST_NAME).addText(", ")
                     .addValue(OWNER_FIRST_NAME))
@@ -112,19 +110,19 @@ public final class ClinicImpl extends Domain {
 
   private void pet() {
     define(T_PET,
-            primaryKeyProperty(PET_ID, Types.INTEGER),
-            columnProperty(PET_NAME, Types.VARCHAR, "Name")
+            primaryKeyProperty(PET_ID),
+            columnProperty(PET_NAME, "Name")
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(PET_BIRTH_DATE, Types.DATE, "Birth date"),
+            columnProperty(PET_BIRTH_DATE, "Birth date"),
             foreignKeyProperty(PET_PET_TYPE_FK, "Pet type", T_PET_TYPE,
-                    columnProperty(PET_PET_TYPE_ID, Types.INTEGER))
+                    columnProperty(PET_PET_TYPE_ID))
                     .nullable(false),
             foreignKeyProperty(PET_OWNER_FK, "Owner", T_OWNER,
-                    columnProperty(PET_OWNER_ID, Types.INTEGER))
+                    columnProperty(PET_OWNER_ID))
                     .nullable(false))
-            .keyGenerator(automatic(T_PET))
+            .keyGenerator(automatic(T_PET.getName()))
             .caption("Pets")
             .stringProvider(new StringProvider(PET_NAME))
             .orderBy(orderBy().ascending(PET_NAME));
@@ -132,15 +130,15 @@ public final class ClinicImpl extends Domain {
 
   private void visit() {
     define(T_VISIT,
-            primaryKeyProperty(VISIT_ID, Types.INTEGER),
+            primaryKeyProperty(VISIT_ID),
             foreignKeyProperty(VISIT_PET_FK, "Pet", T_PET,
-                    columnProperty(VISIT_PET_ID, Types.INTEGER))
+                    columnProperty(VISIT_PET_ID))
                     .nullable(false),
-            columnProperty(VISIT_DATE, Types.DATE, "Date")
+            columnProperty(VISIT_DATE, "Date")
                     .nullable(false),
-            columnProperty(VISIT_DESCRIPTION, Types.VARCHAR, "Description")
+            columnProperty(VISIT_DESCRIPTION, "Description")
                     .maximumLength(255))
-            .keyGenerator(automatic(T_VISIT))
+            .keyGenerator(automatic(T_VISIT.getName()))
             .orderBy(orderBy().ascending(VISIT_PET_ID).descending(VISIT_DATE))
             .caption("Visits");
   }

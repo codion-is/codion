@@ -22,7 +22,7 @@ public class CustomerEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(CUSTOMER_FIRSTNAME);
+    setInitialFocusAttribute(CUSTOMER_FIRSTNAME);
 
     createTextField(CUSTOMER_FIRSTNAME).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(CUSTOMER_LASTNAME).setColumns(TEXT_FIELD_COLUMNS);

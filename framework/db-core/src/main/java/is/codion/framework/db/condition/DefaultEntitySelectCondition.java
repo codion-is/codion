@@ -3,6 +3,8 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.ArrayList;
@@ -16,8 +18,8 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
 
   private static final long serialVersionUID = 1;
 
-  private HashMap<String, Integer> foreignKeyFetchDepths;
-  private List<String> selectPropertyIds = emptyList();
+  private HashMap<Attribute<?>, Integer> foreignKeyFetchDepths;
+  private List<Attribute<?>> selectAttributes = emptyList();
 
   private OrderBy orderBy;
   private Integer foreignKeyFetchDepth;
@@ -30,7 +32,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
    * Instantiates a new {@link DefaultEntitySelectCondition}, which includes all the underlying entities
    * @param entityId the id of the entity to select
    */
-  DefaultEntitySelectCondition(final String entityId) {
+  DefaultEntitySelectCondition(final Entity.Identity entityId) {
     super(entityId);
   }
 
@@ -41,7 +43,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
    * @see DefaultPropertyCondition
    * @see EntityKeyCondition
    */
-  DefaultEntitySelectCondition(final String entityId, final Condition condition) {
+  DefaultEntitySelectCondition(final Entity.Identity entityId, final Condition condition) {
     super(entityId, condition);
   }
 
@@ -90,18 +92,18 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setForeignKeyFetchDepth(final String foreignKeyPropertyId, final int fetchDepth) {
+  public EntitySelectCondition setForeignKeyFetchDepth(final Attribute<?> foreignKeyAttribute, final int fetchDepth) {
     if (foreignKeyFetchDepths == null) {
       foreignKeyFetchDepths = new HashMap<>();
     }
-    this.foreignKeyFetchDepths.put(foreignKeyPropertyId, fetchDepth);
+    this.foreignKeyFetchDepths.put(foreignKeyAttribute, fetchDepth);
     return this;
   }
 
   @Override
-  public Integer getForeignKeyFetchDepth(final String foreignKeyPropertyId) {
-    if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKeyPropertyId)) {
-      return foreignKeyFetchDepths.get(foreignKeyPropertyId);
+  public Integer getForeignKeyFetchDepth(final Attribute<?> foreignKeyAttribute) {
+    if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKeyAttribute)) {
+      return foreignKeyFetchDepths.get(foreignKeyAttribute);
     }
 
     return foreignKeyFetchDepth;
@@ -114,14 +116,14 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setSelectPropertyIds(final String... propertyIds) {
-    this.selectPropertyIds = new ArrayList<>(asList(propertyIds));
+  public EntitySelectCondition setSelectAttributes(final Attribute<?>... attributes) {
+    this.selectAttributes = new ArrayList<>(asList(attributes));
     return this;
   }
 
   @Override
-  public List<String> getSelectPropertyIds() {
-    return selectPropertyIds;
+  public List<Attribute<?>> getSelectAttributes() {
+    return selectAttributes;
   }
 
   @Override

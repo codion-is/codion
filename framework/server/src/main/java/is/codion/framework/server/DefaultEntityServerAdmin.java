@@ -13,6 +13,7 @@ import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.user.User;
+import is.codion.framework.domain.identity.Identity;
 
 import com.sun.management.GarbageCollectionNotificationInfo;
 import org.slf4j.Logger;
@@ -355,7 +356,7 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
   }
 
   @Override
-  public Map<String, String> getEntityDefinitions() {
+  public Map<Identity, String> getEntityDefinitions() {
     return server.getEntityDefinitions();
   }
 

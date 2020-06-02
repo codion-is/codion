@@ -10,7 +10,10 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.identity.Identities;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
@@ -24,7 +27,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents an application domain model, entities, reports and database operations.
  * Override to define a domain model.
- * @see #define(String, Property.Builder...)
+ * @see #define(Entity.Identity, Property.Builder[])
  * @see #addReport(ReportWrapper)
  * @see #addOperation(DatabaseOperation)
  */
@@ -39,21 +42,29 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @see Class#getSimpleName()
    */
   protected Domain() {
-    this.entities = new DomainEntities(getClass().getSimpleName());
+    this.entities = new DomainEntities(Identities.identity(getClass().getSimpleName()));
+  }
+
+  /**
+   * Instantiates a new Domain
+   * @param domainName the domain identifier
+   */
+  protected Domain(final String domainName) {
+    this(Identities.identity(domainName));
   }
 
   /**
    * Instantiates a new Domain
    * @param domainId the domain identifier
    */
-  protected Domain(final String domainId) {
+  protected Domain(final Identity domainId) {
     this.entities = new DomainEntities(requireNonNull(domainId, "domainId"));
   }
 
   /**
    * @return the domainId
    */
-  public final String getDomainId() {
+  public final Identity getDomainId() {
     return entities.getDomainId();
   }
 
@@ -76,7 +87,7 @@ public abstract class Domain implements EntityDefinition.Provider {
   }
 
   @Override
-  public final EntityDefinition getDefinition(final String entityId) {
+  public final EntityDefinition getDefinition(final Entity.Identity entityId) {
     return entities.getDefinition(entityId);
   }
 
@@ -85,7 +96,7 @@ public abstract class Domain implements EntityDefinition.Provider {
     return entities.getDefinitions();
   }
 
-  public final boolean containsReport(final ReportWrapper reportWrapper) {
+  public final boolean containsReport(final ReportWrapper<?, ?, ?> reportWrapper) {
     return reports.containsReport(reportWrapper);
   }
 
@@ -122,8 +133,8 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  protected final EntityDefinition.Builder define(final String entityId, final Property.Builder... propertyBuilders) {
-    return define(entityId, entityId, propertyBuilders);
+  protected final EntityDefinition.Builder define(final Entity.Identity entityId, final Property.Builder<?>... propertyBuilders) {
+    return define(entityId, entityId.getName(), propertyBuilders);
   }
 
   /**
@@ -136,8 +147,8 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @return a {@link EntityDefinition.Builder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type
    */
-  protected final EntityDefinition.Builder define(final String entityId, final String tableName,
-                                                  final Property.Builder... propertyBuilders) {
+  protected final EntityDefinition.Builder define(final Entity.Identity entityId, final String tableName,
+                                                  final Property.Builder<?>... propertyBuilders) {
     return entities.defineInternal(entityId, tableName, propertyBuilders);
   }
 
@@ -147,7 +158,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @throws RuntimeException in case loading the report failed
    * @throws IllegalArgumentException in case the report has already been added
    */
-  protected final void addReport(final ReportWrapper reportWrapper) {
+  protected final void addReport(final ReportWrapper<?, ?, ?> reportWrapper) {
     reports.addReport(reportWrapper);
   }
 
@@ -173,12 +184,12 @@ public abstract class Domain implements EntityDefinition.Provider {
 
     private static final long serialVersionUID = 1;
 
-    private DomainEntities(final String domainId) {
+    private DomainEntities(final Identity domainId) {
       super(domainId);
     }
 
-    protected EntityDefinition.Builder defineInternal(final String entityId, final String tableName,
-                                                      final Property.Builder... propertyBuilders) {
+    protected EntityDefinition.Builder defineInternal(final Entity.Identity entityId, final String tableName,
+                                                      final Property.Builder<?>... propertyBuilders) {
       return super.define(entityId, tableName, propertyBuilders);
     }
 
@@ -223,9 +234,9 @@ public abstract class Domain implements EntityDefinition.Provider {
 
   private static final class DomainReports {
 
-    private final Set<ReportWrapper> reports = new HashSet<>();
+    private final Set<ReportWrapper<?, ?, ?>> reports = new HashSet<>();
 
-    private void addReport(final ReportWrapper report) {
+    private void addReport(final ReportWrapper<?, ?, ?> report) {
       if (containsReport(report)) {
         throw new IllegalArgumentException("Report has already been added: " + report);
       }
@@ -238,8 +249,9 @@ public abstract class Domain implements EntityDefinition.Provider {
       }
     }
 
-    private boolean containsReport(final ReportWrapper reportWrapper) {
+    private boolean containsReport(final ReportWrapper<?, ?, ?> reportWrapper) {
       return reports.contains(requireNonNull(reportWrapper, "reportWrapper"));
     }
   }
+
 }

@@ -13,6 +13,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 
@@ -184,16 +185,16 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> List<T> selectValues(final String propertyId, final EntityCondition condition) throws DatabaseException {
+  public <T> List<T> selectValues(final Attribute<T> attribute, final EntityCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectValues(propertyId, condition);
+      return connectionProxy.selectValues(attribute, condition);
     }
   }
 
   @Override
-  public Entity selectSingle(final String entityId, final String propertyId, final Object value) throws DatabaseException {
+  public <T> Entity selectSingle(final Entity.Identity entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectSingle(entityId, propertyId, value);
+      return connectionProxy.selectSingle(entityId, attribute, value);
     }
   }
 
@@ -226,31 +227,39 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public List<Entity> select(final String entityId, final String propertyId,
-                             final Object... values) throws DatabaseException {
+  public <T> List<Entity> select(final Entity.Identity entityId, final Attribute<T> attribute,
+                                 final T value) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.select(entityId, propertyId, values);
+      return connectionProxy.select(entityId, attribute, value);
     }
   }
 
   @Override
-  public Map<String, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
+  public <T> List<Entity> select(final Entity.Identity entityId, final Attribute<T> attribute,
+                                 final Collection<T> values) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.select(entityId, attribute, values);
+    }
+  }
+
+  @Override
+  public Map<Entity.Identity, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectDependencies(entities);
     }
   }
 
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyId, final byte[] blobData) throws DatabaseException {
+  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData) throws DatabaseException {
     synchronized (connectionProxy) {
-      connectionProxy.writeBlob(primaryKey, blobPropertyId, blobData);
+      connectionProxy.writeBlob(primaryKey, blobAttribute, blobData);
     }
   }
 
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyId) throws DatabaseException {
+  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.readBlob(primaryKey, blobPropertyId);
+      return connectionProxy.readBlob(primaryKey, blobAttribute);
     }
   }
 }

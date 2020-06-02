@@ -17,7 +17,7 @@ public class ArtistEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(ARTIST_NAME);
+    setInitialFocusAttribute(ARTIST_NAME);
 
     createTextField(ARTIST_NAME).setColumns(18);
 

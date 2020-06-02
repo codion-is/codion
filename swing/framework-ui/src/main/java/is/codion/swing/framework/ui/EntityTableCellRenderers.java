@@ -66,11 +66,11 @@ public final class EntityTableCellRenderers {
    * @see ColorProvider
    * @see EntityDefinition.Builder#colorProvider(ColorProvider)
    */
-  public static EntityTableCellRenderer createTableCellRenderer(final SwingEntityTableModel tableModel, final Property property) {
-    if (!Objects.equals(tableModel.getEntityId(), property.getEntityId())) {
+  public static EntityTableCellRenderer createTableCellRenderer(final SwingEntityTableModel tableModel, final Property<?> property) {
+    if (!Objects.equals(tableModel.getEntityId(), property.getAttribute().getEntityId())) {
       throw new IllegalArgumentException("Property " + property + " not found in entity : " + tableModel.getEntityId());
     }
-    if (property.isBoolean()) {
+    if (property.getAttribute().isBoolean()) {
       return new BooleanRenderer(tableModel, property);
     }
 
@@ -92,8 +92,8 @@ public final class EntityTableCellRenderers {
 
   private static Color getBackgroundColor(final SwingEntityTableModel tableModel, final Property property, final int row,
                                           final boolean indicateCondition) {
-    final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getPropertyId());
-    final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getPropertyId());
+    final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getAttribute());
+    final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getAttribute());
     final boolean showCondition = indicateCondition && (propertyConditionEnabled || propertyFilterEnabled);
     final Color cellColor = tableModel.getPropertyBackgroundColor(row, property);
     if (showCondition) {
@@ -140,7 +140,7 @@ public final class EntityTableCellRenderers {
      */
     public DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property property) {
       this(tableModel, property, property.getFormat(), property.getDateTimeFormatter(),
-              property.isNumerical() || property.isTemporal() ? RIGHT : LEFT);
+              property.getAttribute().isNumerical() || property.getAttribute().isTemporal() ? RIGHT : LEFT);
     }
 
     /**

@@ -17,6 +17,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.state.States;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -186,7 +187,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final SwingEntityTableModel tableModel;
 
-  private final FilteredTable<Entity, Property, SwingEntityTableModel> table;
+  private final FilteredTable<Entity, Property<?>, SwingEntityTableModel> table;
 
   private final JScrollPane tableScrollPane;
 
@@ -217,7 +218,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final List<ControlList> additionalPopupControls = new ArrayList<>();
   private final List<ControlList> additionalToolBarControls = new ArrayList<>();
-  private final Set<String> excludeFromUpdateMenu = new HashSet<>();
+  private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
 
   /**
    * specifies whether to include the south panel
@@ -287,7 +288,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return the filtered table instance
    */
-  public final FilteredTable<Entity, Property, SwingEntityTableModel> getTable() {
+  public final FilteredTable<Entity, Property<?>, SwingEntityTableModel> getTable() {
     return table;
   }
 
@@ -300,13 +301,13 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   /**
    * Specifies that the given property should be excluded from the update selected entities menu.
-   * @param propertyId the id of the property to exclude from the update menu
+   * @param attribute the id of the property to exclude from the update menu
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void excludeFromUpdateMenu(final String propertyId) {
+  public final void excludeFromUpdateMenu(final Attribute<?> attribute) {
     checkIfInitialized();
-    getTableModel().getEntityDefinition().getProperty(propertyId);//just validating that the property exists
-    excludeFromUpdateMenu.add(propertyId);
+    getTableModel().getEntityDefinition().getProperty(attribute);//just validating that the property exists
+    excludeFromUpdateMenu.add(attribute);
   }
 
   /**
@@ -480,7 +481,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @return a control list containing controls, one for each updatable property in the
    * underlying entity, for performing an update on the selected entities
    * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
-   * @see #excludeFromUpdateMenu(String)
+   * @see #excludeFromUpdateMenu(Attribute)
    * @see EntityEditModel#getUpdateEnabledObserver()
    */
   public final ControlList getUpdateSelectedControls() {
@@ -494,8 +495,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
             (char) 0, enabled, frameworkIcons().edit());
     controls.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     Properties.sort(tableModel.getEntityDefinition().getUpdatableProperties()).forEach(property -> {
-      if (!excludeFromUpdateMenu.contains(property.getPropertyId())) {
-        final String caption = property.getCaption() == null ? property.getPropertyId() : property.getCaption();
+      if (!excludeFromUpdateMenu.contains(property.getAttribute())) {
+        final String caption = property.getCaption() == null ? property.getAttribute().getName() : property.getCaption();
         controls.add(control(() -> updateSelectedEntities(property), caption, enabled));
       }
     });
@@ -561,22 +562,23 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
+   * @param <T> the property type
    * @see EntityComponentValues#createComponentValue(Property, SwingEntityEditModel, Object)
    */
-  public final void updateSelectedEntities(final Property propertyToUpdate) {
+  public final <T> void updateSelectedEntities(final Property<T> propertyToUpdate) {
     if (tableModel.getSelectionModel().isSelectionEmpty()) {
       return;
     }
 
     final List<Entity> selectedEntities = tableModel.getEntities().deepCopyEntities(tableModel.getSelectionModel().getSelectedItems());
-    final Collection values = Entities.getDistinctValues(propertyToUpdate.getPropertyId(), selectedEntities);
-    final Object initialValue = values.size() == 1 ? values.iterator().next() : null;
-    final ComponentValuePanel inputPanel = new ComponentValuePanel(propertyToUpdate.getCaption(),
+    final Collection<T> values = Entities.getDistinctValues(propertyToUpdate.getAttribute(), selectedEntities);
+    final T initialValue = values.size() == 1 ? values.iterator().next() : null;
+    final ComponentValuePanel<T, JComponent> inputPanel = new ComponentValuePanel<>(propertyToUpdate.getCaption(),
             componentValues.createComponentValue(propertyToUpdate, tableModel.getEditModel(), initialValue));
     Dialogs.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), Modal.YES,
             inputPanel.getOkAction(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
-      Entities.put(propertyToUpdate.getPropertyId(), inputPanel.getValue(), selectedEntities);
+      Entities.put(propertyToUpdate.getAttribute(), inputPanel.getValue(), selectedEntities);
       try {
         showWaitCursor(this);
         tableModel.update(selectedEntities);
@@ -601,7 +603,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
     try {
       showWaitCursor(this);
-      final Map<String, Collection<Entity>> dependencies =
+      final Map<Entity.Identity, Collection<Entity>> dependencies =
               tableModel.getConnectionProvider().getConnection()
                       .selectDependencies(tableModel.getSelectionModel().getSelectedItems());
       if (!dependencies.isEmpty()) {
@@ -773,7 +775,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   public static void showDependenciesDialog(final Collection<Entity> entities, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent) {
     try {
-      final Map<String, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependencies(entities);
+      final Map<Entity.Identity, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependencies(entities);
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, MESSAGES.getString("delete_dependent_records"));
     }
     catch (final DatabaseException e) {
@@ -817,7 +819,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    final String entityId = entities.iterator().next().getEntityId();
+    final Entity.Identity entityId = entities.iterator().next().getEntityId();
     final SwingEntityEditModel editModel = new SwingEntityEditModel(entityId, connectionProvider);
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityId, connectionProvider) {
       @Override
@@ -1075,7 +1077,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param property the property
    * @return the TableCellRenderer for the given property
    */
-  protected TableCellRenderer initializeTableCellRenderer(final Property property) {
+  protected TableCellRenderer initializeTableCellRenderer(final Property<?> property) {
     return EntityTableCellRenderers.createTableCellRenderer(tableModel, property);
   }
 
@@ -1084,8 +1086,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param property the property
    * @return a TableCellEditor for the given property
    */
-  protected TableCellEditor initializeTableCellEditor(final Property property) {
-    if (property instanceof ColumnProperty && !((ColumnProperty) property).isUpdatable()) {
+  protected TableCellEditor initializeTableCellEditor(final Property<?> property) {
+    if (property instanceof ColumnProperty && !((ColumnProperty<?>) property).isUpdatable()) {
       return null;
     }
 
@@ -1195,8 +1197,8 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     layoutPanel(tablePanel, initializeSouthPanel());
   }
 
-  private FilteredTable<Entity, Property, SwingEntityTableModel> createFilteredTable() {
-    final FilteredTable<Entity, Property, SwingEntityTableModel> filteredTable =
+  private FilteredTable<Entity, Property<?>, SwingEntityTableModel> createFilteredTable() {
+    final FilteredTable<Entity, Property<?>, SwingEntityTableModel> filteredTable =
             new FilteredTable<>(tableModel, new DefaultColumnConditionPanelProvider(tableModel));
     filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
@@ -1287,7 +1289,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   private void configureColumn(final TableColumn column) {
-    final Property property = (Property) column.getIdentifier();
+    final Property<?> property = (Property<?>) column.getIdentifier();
     column.setCellRenderer(initializeTableCellRenderer(property));
     column.setCellEditor(initializeTableCellEditor(property));
     column.setResizable(true);
@@ -1360,7 +1362,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     });
   }
 
-  private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies,
+  private static void showDependenciesDialog(final Map<Entity.Identity, Collection<Entity>> dependencies,
                                              final EntityConnectionProvider connectionProvider,
                                              final JComponent dialogParent, final String title) {
     JPanel dependenciesPanel;
@@ -1389,11 +1391,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     return label;
   }
 
-  private static JPanel createDependenciesPanel(final Map<String, Collection<Entity>> dependencies,
+  private static JPanel createDependenciesPanel(final Map<Entity.Identity, Collection<Entity>> dependencies,
                                                 final EntityConnectionProvider connectionProvider) {
     final JPanel panel = new JPanel(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane(JTabbedPane.TOP);
-    for (final Map.Entry<String, Collection<Entity>> entry : dependencies.entrySet()) {
+    for (final Map.Entry<Entity.Identity, Collection<Entity>> entry : dependencies.entrySet()) {
       final Collection<Entity> dependantEntities = entry.getValue();
       if (!dependantEntities.isEmpty()) {
         tabPane.addTab(connectionProvider.getEntities().getDefinition(entry.getKey()).getCaption(),
@@ -1432,17 +1434,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
               hasFocus, row, column);
       final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
       final TableCellRenderer renderer = tableColumn.getCellRenderer();
-      final Property property = (Property) tableColumn.getIdentifier();
+      final Property<?> property = (Property<?>) tableColumn.getIdentifier();
       final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isIndicateCondition()
-              && tableModel.getConditionModel().isEnabled(property.getPropertyId());
+              && tableModel.getConditionModel().isEnabled(property.getAttribute());
       label.setFont(indicateSearch ? searchFont : defaultFont);
 
       return label;
     }
   }
 
-  private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Entity, Property> {
+  private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Entity, Property<?>> {
 
     private final SwingEntityTableModel tableModel;
 
@@ -1451,9 +1453,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     @Override
-    public ColumnConditionPanel<Entity, Property> createColumnConditionPanel(final TableColumn column) {
+    public ColumnConditionPanel<Entity, Property<?>> createColumnConditionPanel(final TableColumn column) {
       return new PropertyFilterPanel(tableModel.getConditionModel().getPropertyFilterModel(
-              ((Property) column.getIdentifier()).getPropertyId()));
+              ((Property<?>) column.getIdentifier()).getAttribute()));
     }
   }
 }

@@ -24,13 +24,13 @@ public final class CountryEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(World.COUNTRY_CODE);
+    setInitialFocusAttribute(World.COUNTRY_CODE);
 
     upperCase(createTextField(World.COUNTRY_CODE)).setColumns(12);
     upperCase(createTextField(World.COUNTRY_CODE2)).setColumns(12);
     createTextField(World.COUNTRY_NAME).setColumns(12);
     setPreferredWidth(createValueListComboBox(World.COUNTRY_CONTINENT), 120);
-    setPreferredWidth(createPropertyComboBox(World.COUNTRY_REGION), 120);
+    setPreferredWidth(createAttributeComboBox(World.COUNTRY_REGION), 120);
     createTextField(World.COUNTRY_SURFACEAREA);
     createTextField(World.COUNTRY_INDEPYEAR);
     createTextField(World.COUNTRY_POPULATION);
@@ -38,7 +38,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     createTextField(World.COUNTRY_GNP);
     createTextField(World.COUNTRY_GNPOLD);
     createTextField(World.COUNTRY_LOCALNAME).setColumns(12);
-    setPreferredWidth(createPropertyComboBox(World.COUNTRY_GOVERNMENTFORM, null, Editable.YES), 120);
+    setPreferredWidth(createAttributeComboBox(World.COUNTRY_GOVERNMENTFORM, null, Editable.YES), 120);
     createTextField(World.COUNTRY_HEADOFSTATE).setColumns(12);
     EntityComboBox capitalComboBox =
             setPreferredWidth(createForeignKeyComboBox(World.COUNTRY_CAPITAL_FK), 120);
@@ -87,7 +87,7 @@ public final class CountryEditPanel extends EntityEditPanel {
         countryComponent.setEnabled(false);
         countryComponent.setFocusable(false);
         //and change the initial focus property
-        editPanel.setInitialFocusProperty(World.CITY_NAME);
+        editPanel.setInitialFocusAttribute(World.CITY_NAME);
       }
     }
   }

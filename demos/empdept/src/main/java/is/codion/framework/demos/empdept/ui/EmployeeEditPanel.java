@@ -27,7 +27,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
   // tag::initializeUI[]
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(EmpDept.EMPLOYEE_NAME);
+    setInitialFocusAttribute(EmpDept.EMPLOYEE_NAME);
 
     final JTextField nameField = TextFields.upperCase(createTextField(EmpDept.EMPLOYEE_NAME));
     nameField.setColumns(8);

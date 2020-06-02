@@ -3,6 +3,7 @@
  */
 package is.codion.plugin.jackson.json.domain;
 
+import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ColumnProperty;
 
@@ -31,7 +32,7 @@ final class EntityKeySerializer extends StdSerializer<Entity.Key> {
   public void serialize(final Entity.Key key, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
     requireNonNull(key, "key");
     generator.writeStartObject();
-    generator.writeStringField("entityId", key.getEntityId());
+    generator.writeStringField("entityId", key.getEntityId().getName());
     generator.writeFieldName("values");
     entityObjectMapper.writeValue(generator, getValueMap(key));
     generator.writeEndObject();
@@ -39,8 +40,9 @@ final class EntityKeySerializer extends StdSerializer<Entity.Key> {
 
   private static Map<String, Object> getValueMap(final Entity.Key key) {
     final Map<String, Object> valueMap = new HashMap<>();
-    for (final ColumnProperty property : key.keySet()) {
-      valueMap.put(property.getPropertyId(), key.get(property));
+    for (final ColumnProperty<?> property : key.getProperties()) {
+      final Attribute<?> attribute = property.getAttribute();
+      valueMap.put(attribute.getName(), key.get(attribute));
     }
 
     return valueMap;

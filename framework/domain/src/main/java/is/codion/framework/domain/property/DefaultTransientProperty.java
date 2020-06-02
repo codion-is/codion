@@ -3,20 +3,22 @@
  */
 package is.codion.framework.domain.property;
 
-class DefaultTransientProperty extends DefaultProperty implements TransientProperty {
+import is.codion.framework.domain.attribute.Attribute;
+
+class DefaultTransientProperty<T> extends DefaultProperty<T> implements TransientProperty<T> {
 
   private static final long serialVersionUID = 1;
 
   private boolean modifiesEntity = true;
 
   /**
-   * @param  propertyId the propertyId, since TransientProperties do not map to underlying table columns,
+   * @param attribute the attribute, since TransientProperties do not map to underlying table columns,
    * the property id should not be column name, only be unique for this entity
    * @param type the data type of this property
    * @param caption the caption of this property
    */
-  DefaultTransientProperty(final String propertyId, final int type, final String caption) {
-    super(propertyId, type, caption, getTypeClass(type));
+  DefaultTransientProperty(final Attribute<T> attribute, final String caption) {
+    super(attribute, caption);
   }
 
   @Override
@@ -27,27 +29,27 @@ class DefaultTransientProperty extends DefaultProperty implements TransientPrope
   /**
    * @return a builder for this property instance
    */
-  TransientProperty.Builder builder() {
-    return new DefaultTransientPropertyBuilder(this);
+  TransientProperty.Builder<T> builder() {
+    return new DefaultTransientPropertyBuilder<>(this);
   }
 
-  static class DefaultTransientPropertyBuilder
-          extends DefaultPropertyBuilder implements TransientProperty.Builder {
+  static class DefaultTransientPropertyBuilder<T>
+          extends DefaultPropertyBuilder<T> implements TransientProperty.Builder<T> {
 
-    private final DefaultTransientProperty transientProperty;
+    private final DefaultTransientProperty<T> transientProperty;
 
-    DefaultTransientPropertyBuilder(final DefaultTransientProperty transientProperty) {
+    DefaultTransientPropertyBuilder(final DefaultTransientProperty<T> transientProperty) {
       super(transientProperty);
       this.transientProperty = transientProperty;
     }
 
     @Override
-    public TransientProperty get() {
+    public TransientProperty<T> get() {
       return transientProperty;
     }
 
     @Override
-    public TransientProperty.Builder modifiesEntity(final boolean modifiesEntity) {
+    public TransientProperty.Builder<T> modifiesEntity(final boolean modifiesEntity) {
       transientProperty.modifiesEntity = modifiesEntity;
       return this;
     }

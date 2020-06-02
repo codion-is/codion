@@ -10,8 +10,9 @@ import java.sql.SQLException;
 
 /**
  * Specifies a property based on a table column
+ * @param <T> the underlying type
  */
-public interface ColumnProperty extends Property {
+public interface ColumnProperty<T> extends Property<T> {
 
   /**
    * @return the column name
@@ -32,13 +33,7 @@ public interface ColumnProperty extends Property {
    * @param value the value to translate
    * @return the sql value used to represent the given value
    */
-  Object toColumnValue(Object value);
-
-  /**
-   * @param value the SQL value Object to translate from
-   * @return the value of SQL {@code value}
-   */
-  Object fromColumnValue(Object value);
+  Object toColumnValue(T value);
 
   /**
    * @return this propertys zero based index in the primary key, -1 if this property is not part of a primary key
@@ -163,50 +158,50 @@ public interface ColumnProperty extends Property {
   /**
    * Provides setters for ColumnProperty properties
    */
-  interface Builder extends Property.Builder {
+  interface Builder<T> extends Property.Builder<T> {
 
     /**
      * @return the property
      */
-    ColumnProperty get();
+    ColumnProperty<T> get();
 
     /**
      * Sets the actual column type, use in conjunction with a {@link ValueConverter} if necessary.
      * @param columnType the underlying column type
      * @return this instance
      */
-    ColumnProperty.Builder columnType(int columnType);
+    ColumnProperty.Builder<T> columnType(int columnType);
 
     /**
      * Sets the actual string used as column when querying
      * @param columnName the column name
      * @return this instance
      */
-    ColumnProperty.Builder columnName(String columnName);
+    ColumnProperty.Builder<T> columnName(String columnName);
 
     /**
      * @param readOnly specifies whether this property should be included during insert and update operations
      * @return this instance
      */
-    ColumnProperty.Builder readOnly(boolean readOnly);
+    ColumnProperty.Builder<T> readOnly(boolean readOnly);
 
     /**
      * @param insertable specifies whether this property should be included during insert operations
      * @return this instance
      */
-    ColumnProperty.Builder insertable(boolean insertable);
+    ColumnProperty.Builder<T> insertable(boolean insertable);
 
     /**
      * @param updatable specifies whether this property is updatable
      * @return this instance
      */
-    ColumnProperty.Builder updatable(boolean updatable);
+    ColumnProperty.Builder<T> updatable(boolean updatable);
 
     /**
      * @param columnHasDefaultValue specifies whether or not the underlying column has a default value
      * @return this instance
      */
-    ColumnProperty.Builder columnHasDefaultValue(boolean columnHasDefaultValue);
+    ColumnProperty.Builder<T> columnHasDefaultValue(boolean columnHasDefaultValue);
 
     /**
      * Sets the zero based primary key index of this property.
@@ -218,34 +213,34 @@ public interface ColumnProperty extends Property {
      * @see #nullable(boolean)
      * @see #updatable(boolean)
      */
-    ColumnProperty.Builder primaryKeyIndex(int index);
+    ColumnProperty.Builder<T> primaryKeyIndex(int index);
 
     /**
      * @param groupingColumn true if this column should be used in a group by clause
      * @throws IllegalStateException in case the column has already been defined as an aggregate column
      * @return this instance
      */
-    ColumnProperty.Builder groupingColumn(boolean groupingColumn);
+    ColumnProperty.Builder<T> groupingColumn(boolean groupingColumn);
 
     /**
      * @param aggregateColumn true if this column is an aggregate function column
      * @throws IllegalStateException in case the column has already been defined as a grouping column
      * @return this instance
      */
-    ColumnProperty.Builder aggregateColumn(boolean aggregateColumn);
+    ColumnProperty.Builder<T> aggregateColumn(boolean aggregateColumn);
 
     /**
      * @param selectable false if this property should not be included in select queries
      * @return this instance
      */
-    ColumnProperty.Builder selectable(boolean selectable);
+    ColumnProperty.Builder<T> selectable(boolean selectable);
 
     /**
      * Set a value converter, for converting to and from a sql representation of the value
      * @param valueConverter the converter
      * @return this instance
      */
-    ColumnProperty.Builder valueConverter(ValueConverter<?, ?> valueConverter);
+    ColumnProperty.Builder<T> valueConverter(ValueConverter<T, Object> valueConverter);
 
     /**
      * If true then this property is included when searching for an entity by a string value.
@@ -254,7 +249,7 @@ public interface ColumnProperty extends Property {
      * @throws IllegalStateException in case this property is not of the type Types.VARCHAR
      * @return this instance
      */
-    ColumnProperty.Builder searchProperty(boolean searchProperty);
+    ColumnProperty.Builder<T> searchProperty(boolean searchProperty);
 
     /**
      * @param foreignKeyProperty true if this property is part of a foreign key

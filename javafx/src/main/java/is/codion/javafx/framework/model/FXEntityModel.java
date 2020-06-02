@@ -4,6 +4,7 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.DefaultEntityModel;
 
 import static java.util.Objects.requireNonNull;
@@ -19,7 +20,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @param entityId the id of the entity on which to base the model
    * @param connectionProvider the connection provider
    */
-  public FXEntityModel(final String entityId, final EntityConnectionProvider connectionProvider) {
+  public FXEntityModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider) {
     this(new FXEntityEditModel(entityId, connectionProvider), new FXEntityListModel(entityId, connectionProvider));
   }
 

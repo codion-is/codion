@@ -13,6 +13,7 @@ import is.codion.common.state.States;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -114,7 +115,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   }
 
   @Override
-  public final boolean containsEntityModel(final String entityId) {
+  public final boolean containsEntityModel(final Entity.Identity entityId) {
     return entityModels.stream().anyMatch(entityModel -> entityModel.getEntityId().equals(entityId));
   }
 
@@ -154,7 +155,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   }
 
   @Override
-  public final M getEntityModel(final String entityId) {
+  public final M getEntityModel(final Entity.Identity entityId) {
     for (final M entityModel : entityModels) {
       if (entityModel.getEntityId().equals(entityId)) {
         return entityModel;

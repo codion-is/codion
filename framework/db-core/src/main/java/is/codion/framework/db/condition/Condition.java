@@ -4,6 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
+import is.codion.framework.domain.attribute.Attribute;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,14 +20,14 @@ public interface Condition extends Serializable {
    * @return a list of the values this condition is based on, in the order they appear
    * in the condition clause. An empty list is returned in case no values are specified.
    */
-  List getValues();
+  List<Object> getValues();
 
   /**
-   * @return a list of the properties this condition is based on, in the same
+   * @return a list of the attributes this condition is based on, in the same
    * order as their respective values appear in the condition clause.
    * An empty list is returned in case no values are specified.
    */
-  List<String> getPropertyIds();
+  List<Attribute<?>> getAttributes();
 
   /**
    * An interface encapsulating a combination of Condition objects,
@@ -63,19 +64,19 @@ public interface Condition extends Serializable {
   }
 
   /**
-   * An empty condition, with no values or propertyIds
+   * An empty condition, with no values or attributes
    */
   final class EmptyCondition implements Condition {
 
     private static final long serialVersionUID = 1;
 
     @Override
-    public List getValues() {
+    public List<Object> getValues() {
       return emptyList();
     }
 
     @Override
-    public List<String> getPropertyIds() {
+    public List<Attribute<?>> getAttributes() {
       return emptyList();
     }
   }

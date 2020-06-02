@@ -28,7 +28,7 @@ final class Queries {
    * @param insertProperties the properties used to insert the given entity type
    * @return a query for inserting
    */
-  static String insertQuery(final String tableName, final List<ColumnProperty> insertProperties) {
+  static String insertQuery(final String tableName, final List<ColumnProperty<?>> insertProperties) {
     final StringBuilder queryBuilder = new StringBuilder("insert ").append("into ").append(tableName).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
     for (int i = 0; i < insertProperties.size(); i++) {
@@ -49,7 +49,7 @@ final class Queries {
    * @param whereClause the where clause, without the WHERE keyword
    * @return a query for updating
    */
-  static String updateQuery(final String tableName, final List<ColumnProperty> updateProperties,
+  static String updateQuery(final String tableName, final List<ColumnProperty<?>> updateProperties,
                             final String whereClause) {
     final StringBuilder queryBuilder = new StringBuilder("update ").append(tableName).append(" set ");
     for (int i = 0; i < updateProperties.size(); i++) {
@@ -132,12 +132,12 @@ final class Queries {
     return queryBuilder.toString();
   }
 
-  static String columnsClause(final List<ColumnProperty> columnProperties) {
+  static String columnsClause(final List<ColumnProperty<?>> columnProperties) {
     final StringBuilder stringBuilder = new StringBuilder();
     for (int i = 0; i < columnProperties.size(); i++) {
-      final ColumnProperty property = columnProperties.get(i);
+      final ColumnProperty<?> property = columnProperties.get(i);
       if (property instanceof SubqueryProperty) {
-        stringBuilder.append("(").append(((SubqueryProperty) property).getSubQuery())
+        stringBuilder.append("(").append(((SubqueryProperty<?>) property).getSubQuery())
                 .append(") as ").append(property.getColumnName());
       }
       else {
@@ -158,18 +158,18 @@ final class Queries {
    * @return a order by string
    */
   static String getOrderByClause(final OrderBy orderBy, final EntityDefinition entityDefinition) {
-    final List<OrderBy.OrderByProperty> orderByProperties = orderBy.getOrderByProperties();
-    if (orderByProperties.isEmpty()) {
-      throw new IllegalArgumentException("An order by clause must contain at least a single property");
+    final List<OrderBy.OrderByAttribute> orderByAttributes = orderBy.getOrderByAttributes();
+    if (orderByAttributes.isEmpty()) {
+      throw new IllegalArgumentException("An order by clause must contain at least a single attribute");
     }
     final String columnsClause;
-    if (orderByProperties.size() == 1) {
-      final OrderBy.OrderByProperty orderByProperty = orderByProperties.get(0);
-      columnsClause = getColumnOrderByClause(entityDefinition, orderByProperty);
+    if (orderByAttributes.size() == 1) {
+      final OrderBy.OrderByAttribute orderByAttribute = orderByAttributes.get(0);
+      columnsClause = getColumnOrderByClause(entityDefinition, orderByAttribute);
     }
     else {
-      final List<String> orderByColumnClauses = new ArrayList<>(orderByProperties.size());
-      for (final OrderBy.OrderByProperty property : orderByProperties) {
+      final List<String> orderByColumnClauses = new ArrayList<>(orderByAttributes.size());
+      for (final OrderBy.OrderByAttribute property : orderByAttributes) {
         orderByColumnClauses.add(getColumnOrderByClause(entityDefinition, property));
       }
       columnsClause = String.join(", ", orderByColumnClauses);
@@ -178,8 +178,8 @@ final class Queries {
     return "order by " + columnsClause;
   }
 
-  private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByProperty property) {
-    return entityDefinition.getColumnProperty(property.getPropertyId()).getColumnName() + (property.isAscending() ? "" : " desc");
+  private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByAttribute property) {
+    return entityDefinition.getColumnProperty(property.getAttribute()).getColumnName() + (property.isAscending() ? "" : " desc");
   }
 
   private static void addForUpdate(final StringBuilder queryBuilder, final Database database) {

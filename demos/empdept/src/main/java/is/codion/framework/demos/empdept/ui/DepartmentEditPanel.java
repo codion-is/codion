@@ -22,7 +22,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
   // tag::initializeUI[]
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(EmpDept.DEPARTMENT_ID);
+    setInitialFocusAttribute(EmpDept.DEPARTMENT_ID);
 
     final JTextField departmentIdField = createTextField(EmpDept.DEPARTMENT_ID);
     departmentIdField.setColumns(10);
@@ -33,11 +33,11 @@ public class DepartmentEditPanel extends EntityEditPanel {
     getEditModel().getPrimaryKeyNullObserver().addListener(() -> {
       if (getEditModel().isEntityNew()) {
         departmentIdField.setEnabled(true);
-        setInitialFocusProperty(EmpDept.DEPARTMENT_ID);
+        setInitialFocusAttribute(EmpDept.DEPARTMENT_ID);
       }
       else {
         departmentIdField.setEnabled(false);
-        setInitialFocusProperty(EmpDept.DEPARTMENT_NAME);
+        setInitialFocusAttribute(EmpDept.DEPARTMENT_NAME);
       }
     });
 

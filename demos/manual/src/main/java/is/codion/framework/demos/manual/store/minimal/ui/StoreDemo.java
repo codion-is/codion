@@ -30,7 +30,7 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty(CUSTOMER_FIRST_NAME);
+      setInitialFocusAttribute(CUSTOMER_FIRST_NAME);
       createTextField(CUSTOMER_FIRST_NAME).setColumns(12);
       createTextField(CUSTOMER_LAST_NAME).setColumns(12);
       createTextField(CUSTOMER_EMAIL).setColumns(12);
@@ -51,7 +51,7 @@ public class StoreDemo {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusProperty(ADDRESS_STREET);
+      setInitialFocusAttribute(ADDRESS_STREET);
       createForeignKeyComboBox(ADDRESS_CUSTOMER_FK);
       createTextField(ADDRESS_STREET).setColumns(12);
       createTextField(ADDRESS_CITY).setColumns(12);

@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.attribute.Attribute;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,51 +14,51 @@ final class DefaultOrderBy implements OrderBy {
 
   private static final long serialVersionUID = 1;
 
-  private final List<OrderByProperty> orderByProperties = new ArrayList<>(1);
+  private final List<OrderByAttribute> orderByAttributes = new ArrayList<>(1);
 
   @Override
-  public OrderBy ascending(final String... propertyIds) {
-    add(true, propertyIds);
+  public OrderBy ascending(final Attribute<?>... attributes) {
+    add(true, attributes);
     return this;
   }
 
   @Override
-  public OrderBy descending(final String... propertyIds) {
-    add(false, propertyIds);
+  public OrderBy descending(final Attribute<?>... attributes) {
+    add(false, attributes);
     return this;
   }
 
   @Override
-  public List<OrderByProperty> getOrderByProperties() {
-    return orderByProperties;
+  public List<OrderByAttribute> getOrderByAttributes() {
+    return orderByAttributes;
   }
 
-  private void add(final boolean ascending, final String... propertyIds) {
-    requireNonNull(propertyIds, "propertyIds");
-    for (final String propertyId : propertyIds) {
-      final DefaultOrderByProperty property = new DefaultOrderByProperty(propertyId, ascending);
-      if (orderByProperties.contains(property)) {
-        throw new IllegalArgumentException("Order by already contains property: " + propertyId);
+  private void add(final boolean ascending, final Attribute<?>... attributes) {
+    requireNonNull(attributes, "attributes");
+    for (final Attribute<?> attribute : attributes) {
+      final DefaultOrderByAttribute property = new DefaultOrderByAttribute(attribute, ascending);
+      if (orderByAttributes.contains(property)) {
+        throw new IllegalArgumentException("Order by already contains property: " + attribute);
       }
-      orderByProperties.add(property);
+      orderByAttributes.add(property);
     }
   }
 
-  private static final class DefaultOrderByProperty implements OrderBy.OrderByProperty {
+  private static final class DefaultOrderByAttribute implements OrderByAttribute {
 
     private static final long serialVersionUID = 1;
 
-    private final String propertyId;
+    private final Attribute<?> attribute;
     private final boolean ascending;
 
-    private DefaultOrderByProperty(final String propertyId, final boolean ascending) {
-      this.propertyId = requireNonNull(propertyId, "propertyId");
+    private DefaultOrderByAttribute(final Attribute<?> attribute, final boolean ascending) {
+      this.attribute = requireNonNull(attribute, "attribute");
       this.ascending = ascending;
     }
 
     @Override
-    public String getPropertyId() {
-      return propertyId;
+    public Attribute<?> getAttribute() {
+      return attribute;
     }
 
     @Override
@@ -73,12 +75,12 @@ final class DefaultOrderBy implements OrderBy {
         return false;
       }
 
-      return propertyId.equals(((DefaultOrderByProperty) object).propertyId);
+      return attribute.equals(((DefaultOrderByAttribute) object).attribute);
     }
 
     @Override
     public int hashCode() {
-      return propertyId.hashCode();
+      return attribute.hashCode();
     }
   }
 }

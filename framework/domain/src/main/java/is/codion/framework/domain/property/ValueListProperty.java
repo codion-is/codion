@@ -9,23 +9,24 @@ import java.util.List;
 
 /**
  * A property based on a list of values, each with a displayable caption.
+ * @param <T> the value type
  */
-public interface ValueListProperty extends ColumnProperty {
+public interface ValueListProperty<T> extends ColumnProperty<T> {
 
   /**
    * @param value the value to validate
    * @return true if the given value is valid for this property
    */
-  boolean isValid(Object value);
+  boolean isValid(T value);
 
   /**
    * @return an unmodifiable view of the available values
    */
-  List<Item> getValues();
+  List<Item<T>> getValues();
 
   /**
    * @param value the value
    * @return the caption associated with the given value
    */
-  String getCaption(Object value);
+  String getCaption(T value);
 }

@@ -36,7 +36,7 @@ public final class EntityEditEvents {
    * @param entityId the type of entity to listen for
    * @param listener the listener
    */
-  public static void addInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
+  public static void addInsertListener(final Entity.Identity entityId, final EventDataListener<List<Entity>> listener) {
     EDIT_OBSERVER.addInsertListener(entityId, listener);
   }
 
@@ -45,7 +45,7 @@ public final class EntityEditEvents {
    * @param entityId the type of entity to listen for
    * @param listener the listener
    */
-  public static void addUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
+  public static void addUpdateListener(final Entity.Identity entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
     EDIT_OBSERVER.addUpdateListener(entityId, listener);
   }
 
@@ -54,34 +54,34 @@ public final class EntityEditEvents {
    * @param entityId the type of entity to listen for
    * @param listener the listener
    */
-  public static void addDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
+  public static void addDeleteListener(final Entity.Identity entityId, final EventDataListener<List<Entity>> listener) {
     EDIT_OBSERVER.addDeleteListener(entityId, listener);
   }
 
   /**
    * Removes the given listener
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @param listener the listener to remove
    */
-  public static void removeInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
+  public static void removeInsertListener(final Entity.Identity entityId, final EventDataListener<List<Entity>> listener) {
     EDIT_OBSERVER.removeInsertListener(entityId, listener);
   }
 
   /**
    * Removes the given listener
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @param listener the listener to remove
    */
-  public static void removeUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
+  public static void removeUpdateListener(final Entity.Identity entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
     EDIT_OBSERVER.removeUpdateListener(entityId, listener);
   }
 
   /**
    * Removes the given listener
-   * @param entityId the  entityId
+   * @param entityId the entityId
    * @param listener the listener to remove
    */
-  public static void removeDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
+  public static void removeDeleteListener(final Entity.Identity entityId, final EventDataListener<List<Entity>> listener) {
     EDIT_OBSERVER.removeDeleteListener(entityId, listener);
   }
 
@@ -111,31 +111,31 @@ public final class EntityEditEvents {
 
   private static final class EntityEditObserver {
 
-    private final Map<String, WeakObserver<List<Entity>>> insertEvents = new ConcurrentHashMap<>();
-    private final Map<String, WeakObserver<Map<Entity.Key, Entity>>> updateEvents = new ConcurrentHashMap<>();
-    private final Map<String, WeakObserver<List<Entity>>> deleteEvents = new ConcurrentHashMap<>();
+    private final Map<Entity.Identity, WeakObserver<List<Entity>>> insertEvents = new ConcurrentHashMap<>();
+    private final Map<Entity.Identity, WeakObserver<Map<Entity.Key, Entity>>> updateEvents = new ConcurrentHashMap<>();
+    private final Map<Entity.Identity, WeakObserver<List<Entity>>> deleteEvents = new ConcurrentHashMap<>();
 
-    private void addInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
+    private void addInsertListener(final Entity.Identity entityId, final EventDataListener<List<Entity>> listener) {
       getInsertObserver(entityId).addDataListener(listener);
     }
 
-    private void removeInsertListener(final String entityId, final EventDataListener<List<Entity>> listener) {
+    private void removeInsertListener(final Entity.Identity entityId, final EventDataListener<List<Entity>> listener) {
       getInsertObserver(entityId).removeDataListener(listener);
     }
 
-    private void addUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
+    private void addUpdateListener(final Entity.Identity entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
       getUpdateObserver(entityId).addDataListener(listener);
     }
 
-    private void removeUpdateListener(final String entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
+    private void removeUpdateListener(final Entity.Identity entityId, final EventDataListener<Map<Entity.Key, Entity>> listener) {
       getUpdateObserver(entityId).removeDataListener(listener);
     }
 
-    private void addDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
+    private void addDeleteListener(final Entity.Identity entityId, final EventDataListener<List<Entity>> listener) {
       getDeleteObserver(entityId).addDataListener(listener);
     }
 
-    private void removeDeleteListener(final String entityId, final EventDataListener<List<Entity>> listener) {
+    private void removeDeleteListener(final Entity.Identity entityId, final EventDataListener<List<Entity>> listener) {
       getDeleteObserver(entityId).removeDataListener(listener);
     }
 
@@ -168,15 +168,15 @@ public final class EntityEditEvents {
       });
     }
 
-    private WeakObserver<List<Entity>> getInsertObserver(final String entityId) {
+    private WeakObserver<List<Entity>> getInsertObserver(final Entity.Identity entityId) {
       return insertEvents.computeIfAbsent(requireNonNull(entityId), eId -> new WeakObserver<>());
     }
 
-    private WeakObserver<Map<Entity.Key, Entity>> getUpdateObserver(final String entityId) {
+    private WeakObserver<Map<Entity.Key, Entity>> getUpdateObserver(final Entity.Identity entityId) {
       return updateEvents.computeIfAbsent(requireNonNull(entityId), eId -> new WeakObserver<>());
     }
 
-    private WeakObserver<List<Entity>> getDeleteObserver(final String entityId) {
+    private WeakObserver<List<Entity>> getDeleteObserver(final Entity.Identity entityId) {
       return deleteEvents.computeIfAbsent(requireNonNull(entityId), eId -> new WeakObserver<>());
     }
 

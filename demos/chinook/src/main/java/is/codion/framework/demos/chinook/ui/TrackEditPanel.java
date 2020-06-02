@@ -29,7 +29,7 @@ public class TrackEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusProperty(TRACK_ALBUM_FK);
+    setInitialFocusAttribute(TRACK_ALBUM_FK);
 
     createForeignKeyLookupField(TRACK_ALBUM_FK).setColumns(18);
     createTextField(TRACK_NAME).setColumns(18);

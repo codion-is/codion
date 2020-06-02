@@ -3,12 +3,14 @@
  */
 package is.codion.framework.domain.property;
 
-final class DefaultMirrorProperty extends DefaultColumnProperty implements MirrorProperty {
+import is.codion.framework.domain.attribute.Attribute;
+
+final class DefaultMirrorProperty<T> extends DefaultColumnProperty<T> implements MirrorProperty<T> {
 
   private static final long serialVersionUID = 1;
 
-  DefaultMirrorProperty(final String propertyId) {
-    super(propertyId, -1, null);
+  DefaultMirrorProperty(final Attribute<T> attribute) {
+    super(attribute, null);
     super.setInsertable(false);
     super.setUpdatable(false);
   }
