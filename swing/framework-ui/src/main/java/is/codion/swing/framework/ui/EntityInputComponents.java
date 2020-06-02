@@ -61,9 +61,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
+import java.math.BigDecimal;
 import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.util.List;
 
@@ -620,9 +624,10 @@ public final class EntityInputComponents {
    * Creates a text field based on the given property
    * @param property the property
    * @param value the value to bind to the field
+   * @param <T> the property type
    * @return a text field for the given property
    */
-  public static JTextField createTextField(final Property property, final Value value) {
+  public static <T> JTextField createTextField(final Property<T> property, final Value<T> value) {
     return createTextField(property, value, null, UpdateOn.KEYSTROKE);
   }
 
@@ -632,9 +637,10 @@ public final class EntityInputComponents {
    * @param value the value to bind to the field
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param updateOn specifies when the underlying value should be updated
+   * @param <T> the property type
    * @return a text field for the given property
    */
-  public static JTextField createTextField(final Property property, final Value value,
+  public static <T> JTextField createTextField(final Property<T> property, final Value<T> value,
                                            final String formatMaskString, final UpdateOn updateOn) {
     return createTextField(property, value, formatMaskString, updateOn, null);
   }
@@ -646,9 +652,10 @@ public final class EntityInputComponents {
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param updateOn specifies when the underlying value should be updated
    * @param enabledState the state controlling the enabled state of the panel
+   * @param <T> the property type
    * @return a text field for the given property
    */
-  public static JTextField createTextField(final Property property, final Value value,
+  public static <T> JTextField createTextField(final Property<T> property, final Value<T> value,
                                            final String formatMaskString, final UpdateOn updateOn,
                                            final StateObserver enabledState) {
     return createTextField(property, value, formatMaskString, updateOn, enabledState, ValueContainsLiterals.NO);
@@ -663,37 +670,38 @@ public final class EntityInputComponents {
    * @param enabledState the state controlling the enabled state of the panel
    * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
    * associated with a the format mask
+   * @param <T> the property type
    * @return a text field for the given property
    */
-  public static JTextField createTextField(final Property property, final Value value, final String formatMaskString,
+  public static <T> JTextField createTextField(final Property<T> property, final Value<T> value, final String formatMaskString,
                                            final UpdateOn updateOn, final StateObserver enabledState,
                                            final ValueContainsLiterals valueContainsLiterals) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiterals);
     if (property.getAttribute().isString()) {
-      value.link(TextValues.textValue(textField, property.getFormat(), updateOn));
+      ((Value<String>) value).link(TextValues.textValue(textField, property.getFormat(), updateOn));
     }
     else if (property.getAttribute().isInteger()) {
-      value.link(NumericalValues.integerValue((IntegerField) textField, Nullable.YES, updateOn));
+      ((Value<Integer>) value).link(NumericalValues.integerValue((IntegerField) textField, Nullable.YES, updateOn));
     }
     else if (property.getAttribute().isDouble()) {
-      value.link(NumericalValues.doubleValue((DecimalField) textField, Nullable.YES, updateOn));
+      ((Value<Double>) value).link(NumericalValues.doubleValue((DecimalField) textField, Nullable.YES, updateOn));
     }
     else if (property.getAttribute().isBigDecimal()) {
-      value.link(NumericalValues.bigDecimalValue((DecimalField) textField, updateOn));
+      ((Value<BigDecimal>) value).link(NumericalValues.bigDecimalValue((DecimalField) textField, updateOn));
     }
     else if (property.getAttribute().isLong()) {
-      value.link(NumericalValues.longValue((LongField) textField, Nullable.YES, updateOn));
+      ((Value<Long>) value).link(NumericalValues.longValue((LongField) textField, Nullable.YES, updateOn));
     }
     else if (property.getAttribute().isDate()) {
-      value.link(TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
+      ((Value<LocalDate>) value).link(TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
     else if (property.getAttribute().isTime()) {
-      value.link(TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
+      ((Value<LocalTime>) value).link(TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
     else if (property.getAttribute().isTimestamp()) {
-      value.link(TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
+      ((Value<LocalDateTime>) value).link(TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);

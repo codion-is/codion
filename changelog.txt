@@ -6178,3 +6178,4 @@
   EntityEditModel, put(), get() and remove() with Property parameters removed
   EntityEditComponentPanel, removed redundant create method overloads with Property parameter
   EntityInputComponents refactored, now type safe
+  EntityEditComponentPanel, now fully type safe
