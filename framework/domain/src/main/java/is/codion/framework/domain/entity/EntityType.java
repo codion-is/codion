@@ -4,8 +4,8 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.identity.Identity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,7 +14,12 @@ import java.time.LocalTime;
 /**
  * Defines a Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
  */
-public interface EntityType extends Identity {
+public interface EntityType extends Serializable {
+
+  /**
+   * @return the entity type name, unique within a domain.
+   */
+  String getName();
 
   /**
    * Creates a new {@link Attribute}, associated with this Identity.

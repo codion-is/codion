@@ -6184,3 +6184,4 @@
   EntityId renamed EntityType, one of the frameworks oldest variable names disappears in a puff of well duhh
   Entities.entityType() moved to Entity and renamed type
   Entity.getColor() and getProperty() removed
+  EntityType no longer extends Identity

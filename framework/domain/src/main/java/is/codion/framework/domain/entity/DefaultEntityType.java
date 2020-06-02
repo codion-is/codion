@@ -5,27 +5,30 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.attribute.Attributes;
-import is.codion.framework.domain.identity.Identities;
-import is.codion.framework.domain.identity.Identity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static is.codion.common.Util.nullOrEmpty;
+
 final class DefaultEntityType implements EntityType {
 
   private static final long serialVersionUID = 1;
 
-  private final Identity identity;
+  private final String name;
 
   DefaultEntityType(final String name) {
-    this.identity = Identities.identity(name);
+    if (nullOrEmpty(name)) {
+      throw new IllegalArgumentException("name must be a non-empty string");
+    }
+    this.name = name;
   }
 
   @Override
   public String getName() {
-    return identity.getName();
+    return name;
   }
 
   @Override
@@ -95,12 +98,12 @@ final class DefaultEntityType implements EntityType {
 
   @Override
   public String toString() {
-    return identity.toString();
+    return name;
   }
 
   @Override
   public int hashCode() {
-    return identity.hashCode();
+    return name.hashCode();
   }
 
   @Override
@@ -113,6 +116,6 @@ final class DefaultEntityType implements EntityType {
     }
     final DefaultEntityType that = (DefaultEntityType) object;
 
-    return getName().equals(that.getName());
+    return name.equals(that.name);
   }
 }

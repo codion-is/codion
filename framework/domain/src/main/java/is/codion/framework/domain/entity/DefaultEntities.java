@@ -37,7 +37,7 @@ public abstract class DefaultEntities implements Entities {
   private static final Map<Identity, Entities> REGISTERED_ENTITIES = new HashMap<>();
 
   private final Identity domainId;
-  private final Map<Identity, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
+  private final Map<EntityType, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
   private Map<Class<?>, EntityDefinition> beanEntities;
   private Map<EntityType, Map<Attribute<?>, BeanProperty>> beanProperties;
