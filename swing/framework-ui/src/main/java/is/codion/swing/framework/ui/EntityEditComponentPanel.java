@@ -513,9 +513,10 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a JTextField bound to {@code attribute}
    * @param attribute the attribute to bind
+   * @param <T> the attribute type
    * @return a text field bound to the attribute
    */
-  protected final JTextField createTextField(final Attribute<?> attribute) {
+  protected final <T> JTextField createTextField(final Attribute<T> attribute) {
     return createTextField(attribute, UpdateOn.KEYSTROKE);
   }
 
@@ -523,9 +524,10 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a JTextField bound to {@code attribute}
    * @param attribute the attribute to bind
    * @param updateOn specifies when the underlying value should be updated
+   * @param <T> the attribute type
    * @return a text field bound to the attribute
    */
-  protected final JTextField createTextField(final Attribute<?> attribute, final UpdateOn updateOn) {
+  protected final <T> JTextField createTextField(final Attribute<T> attribute, final UpdateOn updateOn) {
     return createTextField(attribute, updateOn, null);
   }
 
@@ -534,10 +536,11 @@ public class EntityEditComponentPanel extends JPanel {
    * @param attribute the attribute to bind
    * @param updateOn specifies when the underlying value should be updated
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
+   * @param <T> the attribute type
    * @return a text field bound to the attribute
    */
-  protected final JTextField createTextField(final Attribute<?> attribute, final UpdateOn updateOn,
-                                             final String maskString) {
+  protected final <T> JTextField createTextField(final Attribute<T> attribute, final UpdateOn updateOn,
+                                                 final String maskString) {
     return createTextField(attribute, updateOn, maskString, null);
   }
 
@@ -547,10 +550,11 @@ public class EntityEditComponentPanel extends JPanel {
    * @param updateOn specifies when the underlying value should be updated
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
+   * @param <T> the attribute type
    * @return a text field bound to the attribute
    */
-  protected final JTextField createTextField(final Attribute<?> attribute, final UpdateOn updateOn,
-                                             final String maskString, final StateObserver enabledState) {
+  protected final <T> JTextField createTextField(final Attribute<T> attribute, final UpdateOn updateOn,
+                                                 final String maskString, final StateObserver enabledState) {
     return createTextField(attribute, updateOn, maskString, enabledState, ValueContainsLiterals.NO);
   }
 
@@ -562,12 +566,13 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
    * associated with a the format mask, only applicable if {@code maskString} is specified
+   * @param <T> the attribute type
    * @return a text field bound to the attribute
    */
-  protected final JTextField createTextField(final Attribute<?> attribute, final UpdateOn updateOn,
-                                             final String maskString, final StateObserver enabledState,
-                                             final ValueContainsLiterals valueContainsLiterals) {
-    final Property<?> property = getEditModel().getEntityDefinition().getProperty(attribute);
+  protected final <T> JTextField createTextField(final Attribute<T> attribute, final UpdateOn updateOn,
+                                                 final String maskString, final StateObserver enabledState,
+                                                 final ValueContainsLiterals valueContainsLiterals) {
+    final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
     final JTextField textField = EntityInputComponents.createTextField(property,
             getEditModel().value(attribute), maskString, updateOn,
             enabledState, valueContainsLiterals);
@@ -786,7 +791,7 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     final SteppedComboBox<Item<T>> box = EntityInputComponents.createValueListComboBox(
-            (ValueListProperty) property, getEditModel().value(attribute), sorted, enabledState);
+            (ValueListProperty<T>) property, getEditModel().value(attribute), sorted, enabledState);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter((JComponent) box.getEditor().getEditorComponent());
       transferFocusOnEnter(box);
@@ -939,8 +944,8 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates an uneditable JTextField bound to {@code attribute}
-   * @param attribute the attribute to bind
+   * Creates an uneditable JTextField bound to {@code foreignKeyAttribute}
+   * @param foreignKeyAttribute the attribute to bind
    * @return an uneditable JTextField bound to the attribute
    */
   protected final JTextField createForeignKeyField(final Attribute<Entity> foreignKeyAttribute) {
