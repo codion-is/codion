@@ -6180,3 +6180,4 @@
   EntityInputComponents refactored, now type safe
   EntityEditComponentPanel, now fully type safe
   SelectedItemValue, bug fix, did not select correctly
+  Entity.Identity renamed EntityId and moved up to package level

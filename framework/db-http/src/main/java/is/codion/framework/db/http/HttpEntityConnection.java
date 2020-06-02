@@ -19,6 +19,7 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.identity.Identity;
 
 import org.apache.http.HttpHost;
@@ -340,7 +341,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(final Entity.Identity entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(final EntityId entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
     return selectSingle(selectCondition(entityId, attribute, Operator.LIKE, value));
   }
 
@@ -393,19 +394,19 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final Entity.Identity entityId, final Attribute<T> attribute, final T value)
+  public <T> List<Entity> select(final EntityId entityId, final Attribute<T> attribute, final T value)
           throws DatabaseException {
     return select(selectCondition(entityId, attribute, Operator.LIKE, value));
   }
 
   @Override
-  public <T> List<Entity> select(final Entity.Identity entityId, final Attribute<T> attribute, final Collection<T> values)
+  public <T> List<Entity> select(final EntityId entityId, final Attribute<T> attribute, final Collection<T> values)
           throws DatabaseException {
     return select(selectCondition(entityId, attribute, Operator.LIKE, values));
   }
 
   @Override
-  public Map<Entity.Identity, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
+  public Map<EntityId, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       return onResponse(execute(createHttpPost("dependencies", entities)));

@@ -15,6 +15,7 @@ import is.codion.framework.domain.entity.Employee;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
@@ -39,7 +40,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.framework.domain.entity.Entities.entityIdentity;
+import static is.codion.framework.domain.entity.Entities.entityId;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -197,7 +198,7 @@ public class DomainTest {
 
   @Test
   public void key() {
-    final Entity.Identity entityId = entityIdentity("DomainTest.key");
+    final EntityId entityId = entityId("DomainTest.key");
     final Attribute<Integer> attribute1 = entityId.attribute("id1", Integer.class);
     final Attribute<Integer> attribute2 = entityId.attribute("id2", Integer.class);
     final Attribute<Integer> attribute3 = entityId.attribute("id3", Integer.class);
@@ -254,7 +255,7 @@ public class DomainTest {
   @Test
   public void keyWithSameIndex() {
     assertThrows(IllegalArgumentException.class, () -> {
-      final Entity.Identity entityId = entityIdentity("keyWithSameIndex");
+      final EntityId entityId = entityId("keyWithSameIndex");
       domain.define(entityId,
               Properties.primaryKeyProperty(entityId.attribute("1", Integer.class)).primaryKeyIndex(0),
               Properties.primaryKeyProperty(entityId.attribute("2", Integer.class)).primaryKeyIndex(1),
@@ -265,7 +266,7 @@ public class DomainTest {
   @Test
   public void keyWithSameIndex2() {
     assertThrows(IllegalArgumentException.class, () -> {
-      final Entity.Identity entityId = entityIdentity("keyWithSameIndex2");
+      final EntityId entityId = entityId("keyWithSameIndex2");
       domain.define(entityId,
               Properties.primaryKeyProperty(entityId.attribute("1", Integer.class)),
               Properties.primaryKeyProperty(entityId.attribute("2", Integer.class)),
@@ -282,7 +283,7 @@ public class DomainTest {
     assertTrue(master.containsKey(TestDomain.MASTER_ID));
     assertEquals(10L, master.get(TestDomain.MASTER_ID));
 
-    assertThrows(NullPointerException.class, () -> entities.entity((Entity.Identity) null));
+    assertThrows(NullPointerException.class, () -> entities.entity((EntityId) null));
   }
 
   @Test
@@ -380,7 +381,7 @@ public class DomainTest {
 
   @Test
   public void redefine() {
-    final Entity.Identity entityId = entityIdentity("entityId");
+    final EntityId entityId = entityId("entityId");
     final Attribute<Integer> attribute = entityId.attribute("attribute", Integer.class);
     domain.define(entityId, Properties.primaryKeyProperty(attribute));
     assertThrows(IllegalArgumentException.class, () -> domain.define(entityId, Properties.primaryKeyProperty(attribute)));
@@ -524,10 +525,10 @@ public class DomainTest {
   @Test
   public void foreignKeyReferencingUndefinedEntity() {
     assertThrows(IllegalArgumentException.class, () -> {
-      final Entity.Identity entityId = entityIdentity("test.entity");
+      final EntityId entityId = entityId("test.entity");
       domain.define(entityId,
               Properties.primaryKeyProperty(entityId.attribute("id", Integer.class)),
-              Properties.foreignKeyProperty(entityId.entityAttribute("fk_id_fk"), "caption", entityIdentity("test.referenced_entity"),
+              Properties.foreignKeyProperty(entityId.entityAttribute("fk_id_fk"), "caption", entityId("test.referenced_entity"),
                       Properties.columnProperty(entityId.attribute("fk_id", Integer.class))));
     });
   }
@@ -535,29 +536,29 @@ public class DomainTest {
   @Test
   public void foreignKeyReferencingUndefinedEntityNonStrict() {
     domain.setStrictForeignKeys(false);
-    final Entity.Identity entityId = entityIdentity("test.entity");
+    final EntityId entityId = entityId("test.entity");
     domain.define(entityId,
             Properties.primaryKeyProperty(entityId.attribute("id", Integer.class)),
-            Properties.foreignKeyProperty(entityId.entityAttribute("fk_id_fk"), "caption", entityIdentity("test.referenced_entity"),
+            Properties.foreignKeyProperty(entityId.entityAttribute("fk_id_fk"), "caption", entityId("test.referenced_entity"),
                     Properties.columnProperty(entityId.attribute("fk_id", Integer.class))));
     domain.setStrictForeignKeys(true);
   }
 
   @Test
   public void hasSingleIntegerPrimaryKey() {
-    Entity.Identity entityId = entityIdentity("hasSingleIntegerPrimaryKey");
+    EntityId entityId = entityId("hasSingleIntegerPrimaryKey");
     domain.define(entityId,
             Properties.columnProperty(entityId.attribute("test", Integer.class))
                     .primaryKeyIndex(0));
     assertTrue(domain.getDefinition(entityId).hasSingleIntegerPrimaryKey());
-    entityId = entityIdentity("hasSingleIntegerPrimaryKey2");
+    entityId = entityId("hasSingleIntegerPrimaryKey2");
     domain.define(entityId,
             Properties.columnProperty(entityId.attribute("test", Integer.class))
                     .primaryKeyIndex(0),
             Properties.columnProperty(entityId.attribute("test2", Integer.class))
                     .primaryKeyIndex(1));
     assertFalse(domain.getDefinition(entityId).hasSingleIntegerPrimaryKey());
-    entityId = entityIdentity("hasSingleIntegerPrimaryKey3");
+    entityId = entityId("hasSingleIntegerPrimaryKey3");
     domain.define(entityId,
             Properties.columnProperty(entityId.attribute("test", String.class))
                     .primaryKeyIndex(0));
@@ -567,7 +568,7 @@ public class DomainTest {
   @Test
   public void havingClause() {
     final String havingClause = "p1 > 1";
-    final Entity.Identity entityId = entityIdentity("entityId3");
+    final EntityId entityId = entityId("entityId3");
     domain.define(entityId,
             Properties.primaryKeyProperty(entityId.attribute("p0", Integer.class))).havingClause(havingClause);
     assertEquals(havingClause, domain.getDefinition(entityId).getHavingClause());
@@ -614,13 +615,13 @@ public class DomainTest {
 
   @Test
   public void conditionProvider() {
-    final Entity.Identity nullConditionProvider1 = entityIdentity("nullConditionProvider1");
+    final EntityId nullConditionProvider1 = entityId("nullConditionProvider1");
     assertThrows(IllegalArgumentException.class, () -> domain.define(nullConditionProvider1,
             Properties.primaryKeyProperty(nullConditionProvider1.integerAttribute("id"))).conditionProvider(null, (attributes, values) -> null));
-    final Entity.Identity nullConditionProvider2 = entityIdentity("nullConditionProvider2");
+    final EntityId nullConditionProvider2 = entityId("nullConditionProvider2");
     assertThrows(NullPointerException.class, () -> domain.define(nullConditionProvider2,
             Properties.primaryKeyProperty(nullConditionProvider2.integerAttribute("id"))).conditionProvider("id", null));
-    final Entity.Identity nullConditionProvider3 = entityIdentity("nullConditionProvider3");
+    final EntityId nullConditionProvider3 = entityId("nullConditionProvider3");
     assertThrows(IllegalStateException.class, () -> domain.define(nullConditionProvider3,
             Properties.primaryKeyProperty(nullConditionProvider3.integerAttribute("id")))
             .conditionProvider("id", (attributes, values) -> null)

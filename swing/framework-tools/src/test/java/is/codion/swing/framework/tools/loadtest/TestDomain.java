@@ -5,10 +5,10 @@ package is.codion.swing.framework.tools.loadtest;
 
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.entity.StringProvider;
 
-import static is.codion.framework.domain.entity.Entities.entityIdentity;
+import static is.codion.framework.domain.entity.Entities.entityId;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 
@@ -19,7 +19,7 @@ public final class TestDomain extends Domain {
     registerEntities();
   }
 
-  public static final Entity.Identity T_DEPARTMENT = entityIdentity("scott.dept");
+  public static final EntityId T_DEPARTMENT = entityId("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");

@@ -230,7 +230,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[ta
 
 == Domain
 
-Each entity type is defined by calling {url-javadoc}/is/codion/framework/domain/Domain.html#define-is.codion.framework.domain.entity.Entity.Identity-is.codion.framework.domain.property.Property.Builder...-[Domain.define]. The framework assumes the *entityId* name contains the table name, unless the *tableName* parameter is specified.
+Each entity type is defined by calling {url-javadoc}/is/codion/framework/domain/Domain.html#define-is.codion.framework.domain.entity.EntityId-is.codion.framework.domain.property.Property.Builder...-[Domain.define]. The framework assumes the *entityId* name contains the table name, unless the *tableName* parameter is specified.
 
 [source,java,indent=0]
 ----

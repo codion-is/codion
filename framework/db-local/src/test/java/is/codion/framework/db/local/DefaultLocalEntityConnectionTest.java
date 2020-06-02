@@ -25,6 +25,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -181,16 +182,16 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectDependencies() throws Exception {
-    final Map<Entity.Identity, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
+    final Map<EntityId, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
     assertTrue(empty.isEmpty());
     final List<Entity> accounting = connection.select(T_DEPARTMENT, DEPARTMENT_NAME, "ACCOUNTING");
-    final Map<Entity.Identity, Collection<Entity>> emps = connection.selectDependencies(accounting);
+    final Map<EntityId, Collection<Entity>> emps = connection.selectDependencies(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(T_EMP));
     assertEquals(7, emps.get(T_EMP).size());
 
     final Entity emp = connection.selectSingle(T_EMP, EMP_NAME, "KING");
-    final Map<Entity.Identity, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
+    final Map<EntityId, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
     assertTrue(deps.isEmpty());//soft foreign key reference
   }
 

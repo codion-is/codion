@@ -6,19 +6,20 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.attribute.Attributes;
 import is.codion.framework.domain.identity.Identities;
+import is.codion.framework.domain.identity.Identity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-final class DefaultEntityIdentity implements Entity.Identity {
+final class DefaultEntityId implements EntityId {
 
   private static final long serialVersionUID = 1;
 
-  private final is.codion.framework.domain.identity.Identity identity;
+  private final Identity identity;
 
-  DefaultEntityIdentity(final String name) {
+  DefaultEntityId(final String name) {
     this.identity = Identities.identity(name);
   }
 
@@ -110,7 +111,7 @@ final class DefaultEntityIdentity implements Entity.Identity {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    final DefaultEntityIdentity that = (DefaultEntityIdentity) object;
+    final DefaultEntityId that = (DefaultEntityId) object;
 
     return getName().equals(that.getName());
   }

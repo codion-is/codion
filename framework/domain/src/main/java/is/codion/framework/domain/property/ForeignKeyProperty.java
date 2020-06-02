@@ -5,6 +5,7 @@ package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public interface ForeignKeyProperty extends Property<Entity> {
   /**
    * @return the id of the entity referenced by this foreign key
    */
-  Entity.Identity getForeignEntityId();
+  EntityId getForeignEntityId();
 
   /**
    * Returns an unmodifiable list containing the properties that comprise this foreign key

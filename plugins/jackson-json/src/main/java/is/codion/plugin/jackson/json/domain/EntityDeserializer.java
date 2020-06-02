@@ -7,6 +7,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.property.Property;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -25,7 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static is.codion.framework.domain.entity.Entities.entityIdentity;
+import static is.codion.framework.domain.entity.Entities.entityId;
 
 public final class EntityDeserializer extends StdDeserializer<Entity> {
 
@@ -44,7 +45,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityNode = parser.getCodec().readTree(parser);
 
-    final Entity.Identity entityId = entityIdentity(entityNode.get("entityId").asText());
+    final EntityId entityId = entityId(entityNode.get("entityId").asText());
     final EntityDefinition definition = entities.getDefinition(entityId);
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));

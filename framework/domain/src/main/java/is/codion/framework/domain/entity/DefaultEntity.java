@@ -9,6 +9,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.identity.Identities;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -104,7 +105,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public Identity getEntityId() {
+  public EntityId getEntityId() {
     return definition.getEntityId();
   }
 
@@ -123,7 +124,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean is(final Identity entityId) {
+  public boolean is(final EntityId entityId) {
     return definition.getEntityId().equals(entityId);
   }
 
@@ -489,7 +490,7 @@ final class DefaultEntity implements Entity {
 
   private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity value) {
     final Entity entity = value;
-    final Identity foreignEntityId = property.getForeignEntityId();
+    final EntityId foreignEntityId = property.getForeignEntityId();
     if (!Objects.equals(foreignEntityId, entity.getEntityId())) {
       throw new IllegalArgumentException("Entity of type " + foreignEntityId +
               " expected for property " + this + ", got: " + entity.getEntityId());
@@ -813,8 +814,8 @@ final class DefaultEntity implements Entity {
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    final is.codion.framework.domain.identity.Identity domainId = Identities.identity((String) stream.readObject());
-    final Identity entityId = Entities.entityIdentity((String) stream.readObject());
+    final Identity domainId = Identities.identity((String) stream.readObject());
+    final EntityId entityId = Entities.entityId((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
     definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
     if (definition == null) {

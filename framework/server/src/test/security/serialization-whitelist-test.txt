@@ -86,7 +86,7 @@ is.codion.framework.domain.entity.Entity
 is.codion.framework.domain.entity.NullColorProvider
 is.codion.framework.domain.entity.StringProvider
 is.codion.framework.domain.entity.StringProvider$StringValueProvider
-is.codion.framework.domain.entity.DefaultEntityIdentity
+is.codion.framework.domain.entity.DefaultEntityId
 is.codion.framework.domain.identity.DefaultIdentity
 is.codion.framework.domain.attribute.DefaultAttribute
 is.codion.framework.domain.attribute.DefaultBlobAttribute
