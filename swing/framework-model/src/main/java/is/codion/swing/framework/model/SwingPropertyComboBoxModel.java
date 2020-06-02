@@ -5,7 +5,7 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
@@ -25,16 +25,16 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
   private final Supplier<Collection<T>> valueProvider;
 
   /**
-   * @param entityId the id of the underlying entity
+   * @param entityType the id of the underlying entity
    * @param connectionProvider a EntityConnectionProvider instance
    * @param property the underlying property
    * @param nullValue the value to use to represent a null value
    */
-  public SwingPropertyComboBoxModel(final EntityId entityId, final EntityConnectionProvider connectionProvider,
+  public SwingPropertyComboBoxModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                     final ColumnProperty<?> property, final T nullValue) {
     this(() -> {
       try {
-        return connectionProvider.getConnection().selectValues(property.getAttribute(), condition(entityId));
+        return connectionProvider.getConnection().selectValues(property.getAttribute(), condition(entityType));
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);

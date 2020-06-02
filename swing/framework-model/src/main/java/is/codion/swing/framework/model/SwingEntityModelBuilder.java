@@ -4,7 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.EntityModelBuilder;
 
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ public class SwingEntityModelBuilder
 
   private static final String CONNECTION_PROVIDER_PARAMETER = "connectionProvider";
 
-  private final EntityId entityId;
+  private final EntityType entityType;
 
   private final List<EntityModelBuilder<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel>>
           detailModelBuilders = new ArrayList<>();
@@ -35,16 +35,16 @@ public class SwingEntityModelBuilder
   private Class<? extends SwingEntityTableModel> tableModelClass;
 
   /**
-   * Instantiates a new SwingeEntityModelBuilder based on the given  entityId
-   * @param entityId the entityId
+   * Instantiates a new SwingeEntityModelBuilder based on the given entityType
+   * @param entityType the entityType
    */
-  public SwingEntityModelBuilder(final EntityId entityId) {
-    this.entityId = requireNonNull(entityId, "entityId");
+  public SwingEntityModelBuilder(final EntityType entityType) {
+    this.entityType = requireNonNull(entityType, "entityType");
   }
 
   @Override
-  public final EntityId getEntityId() {
-    return entityId;
+  public final EntityType getEntityType() {
+    return entityType;
   }
 
   @Override
@@ -108,12 +108,12 @@ public class SwingEntityModelBuilder
 
   @Override
   public final boolean equals(final Object obj) {
-    return obj instanceof EntityModelBuilder && ((EntityModelBuilder) obj).getEntityId().equals(getEntityId());
+    return obj instanceof EntityModelBuilder && ((EntityModelBuilder) obj).getEntityType().equals(getEntityType());
   }
 
   @Override
   public final int hashCode() {
-    return getEntityId().hashCode();
+    return getEntityType().hashCode();
   }
 
   @Override
@@ -224,10 +224,10 @@ public class SwingEntityModelBuilder
   }
 
   private SwingEntityEditModel initializeDefaultEditModel(final EntityConnectionProvider connectionProvider) {
-    return new SwingEntityEditModel(entityId, connectionProvider);
+    return new SwingEntityEditModel(entityType, connectionProvider);
   }
 
   private SwingEntityTableModel initializeDefaultTableModel(final EntityConnectionProvider connectionProvider) {
-    return new SwingEntityTableModel(entityId, connectionProvider);
+    return new SwingEntityTableModel(entityType, connectionProvider);
   }
 }

@@ -6,7 +6,7 @@ package is.codion.framework.domain.property;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.text.Collator;
 import java.time.LocalDateTime;
@@ -71,31 +71,31 @@ public final class Properties {
    * Instantiates a {@link ForeignKeyProperty.Builder} instance.
    * @param attribute the attribute
    * @param caption the caption
-   * @param foreignEntityId the id of the entity referenced by this foreign key
+   * @param foreignEntityType the type of the entity referenced by this foreign key
    * @param columnPropertyBuilder the {@link ColumnProperty.Builder} for the underlying
    * column property comprising this foreign key relation
    * @return a new {@link ForeignKeyProperty.Builder}
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute,
-                                                              final String caption, final EntityId foreignEntityId,
+                                                              final String caption, final EntityType foreignEntityType,
                                                               final ColumnProperty.Builder<?> columnPropertyBuilder) {
-    return new DefaultForeignKeyProperty(attribute, caption, foreignEntityId, columnPropertyBuilder).builder();
+    return new DefaultForeignKeyProperty(attribute, caption, foreignEntityType, columnPropertyBuilder).builder();
   }
 
   /**
    * Instantiates a {@link ForeignKeyProperty.Builder} instance.
    * @param attribute the attribute
    * @param caption the caption
-   * @param foreignEntityId the id of the entity referenced by this foreign key
+   * @param foreignEntityType the type of the entity referenced by this foreign key
    * @param columnPropertyBuilders a List containing the {@link ColumnProperty.Builder}s for the underlying
    * column properties comprising this foreign key relation, in the same order as the column properties
    * they reference appear in the the referenced entities primary key
    * @return a new {@link ForeignKeyProperty.Builder}
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute,
-                                                              final String caption, final EntityId foreignEntityId,
+                                                              final String caption, final EntityType foreignEntityType,
                                                               final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
-    return new DefaultForeignKeyProperty(attribute, caption, foreignEntityId, columnPropertyBuilders).builder();
+    return new DefaultForeignKeyProperty(attribute, caption, foreignEntityType, columnPropertyBuilders).builder();
   }
 
   /**

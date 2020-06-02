@@ -4,7 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.DefaultEntityModel;
 
 import static java.util.Objects.requireNonNull;
@@ -16,11 +16,11 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
 
   /**
    * Instantiates a new SwingEntityModel with default EntityEditModel and EntityTableModel implementations.
-   * @param entityId the id of the Entity this DefaultEntityModel represents
+   * @param entityType the type of the entity this DefaultEntityModel represents
    * @param connectionProvider a EntityConnectionProvider
    */
-  public SwingEntityModel(final EntityId entityId, final EntityConnectionProvider connectionProvider) {
-    this(new SwingEntityEditModel(requireNonNull(entityId, "entityId"),
+  public SwingEntityModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+    this(new SwingEntityEditModel(requireNonNull(entityType, "entityType"),
             requireNonNull(connectionProvider, "connectionProvider")));
   }
 
@@ -29,7 +29,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * @param editModel the edit model
    */
   public SwingEntityModel(final SwingEntityEditModel editModel) {
-    super(editModel, new SwingEntityTableModel(editModel.getEntityId(), editModel.getConnectionProvider()));
+    super(editModel, new SwingEntityTableModel(editModel.getEntityType(), editModel.getConnectionProvider()));
   }
 
   /**
@@ -37,7 +37,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * @param tableModel the table model
    */
   public SwingEntityModel(final SwingEntityTableModel tableModel) {
-    this(tableModel.hasEditModel() ? tableModel.getEditModel() : new SwingEntityEditModel(tableModel.getEntityId(),
+    this(tableModel.hasEditModel() ? tableModel.getEditModel() : new SwingEntityEditModel(tableModel.getEntityType(),
             tableModel.getConnectionProvider()), tableModel);
   }
 

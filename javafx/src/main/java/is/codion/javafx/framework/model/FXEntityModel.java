@@ -4,7 +4,7 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.DefaultEntityModel;
 
 import static java.util.Objects.requireNonNull;
@@ -17,11 +17,11 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
   /**
    * Instantiates a new {@link FXEntityModel} with default {@link FXEntityEditModel}
    * and {@link FXEntityListModel} implementations
-   * @param entityId the id of the entity on which to base the model
+   * @param entityType the type of the entity on which to base the model
    * @param connectionProvider the connection provider
    */
-  public FXEntityModel(final EntityId entityId, final EntityConnectionProvider connectionProvider) {
-    this(new FXEntityEditModel(entityId, connectionProvider), new FXEntityListModel(entityId, connectionProvider));
+  public FXEntityModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+    this(new FXEntityEditModel(entityType, connectionProvider), new FXEntityListModel(entityType, connectionProvider));
   }
 
   /**
@@ -30,7 +30,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @throws IllegalArgumentException in case editModel is null
    */
   public FXEntityModel(final FXEntityEditModel editModel) {
-    this(requireNonNull(editModel), new FXEntityListModel(editModel.getEntityId(), editModel.getConnectionProvider()));
+    this(requireNonNull(editModel), new FXEntityListModel(editModel.getEntityType(), editModel.getConnectionProvider()));
   }
 
   /**
@@ -39,7 +39,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @param listModel the {@link FXEntityListModel} to use
    */
   public FXEntityModel(final FXEntityListModel listModel) {
-    this(requireNonNull(listModel).getEditModel() == null ? new FXEntityEditModel(listModel.getEntityId(),
+    this(requireNonNull(listModel).getEditModel() == null ? new FXEntityEditModel(listModel.getEntityType(),
             listModel.getConnectionProvider()) : listModel.getEditModel(), listModel);
   }
 

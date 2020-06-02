@@ -9,7 +9,7 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import java.util.Collection;
@@ -24,9 +24,9 @@ import java.util.function.Function;
 public interface EntityLookupModel {
 
   /**
-   * @return the id of the entity this lookup model is based on
+   * @return the type of the entity this lookup model is based on
    */
-  EntityId getEntityId();
+  EntityType getEntityType();
 
   /**
    * @return the connection provider used by this lookup model

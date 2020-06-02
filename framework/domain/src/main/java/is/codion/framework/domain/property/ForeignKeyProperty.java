@@ -5,7 +5,7 @@ package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.util.List;
 
@@ -34,9 +34,9 @@ public interface ForeignKeyProperty extends Property<Entity> {
   boolean isUpdatable();
 
   /**
-   * @return the id of the entity referenced by this foreign key
+   * @return the type of the entity referenced by this foreign key
    */
-  EntityId getForeignEntityId();
+  EntityType getForeignEntityType();
 
   /**
    * Returns an unmodifiable list containing the properties that comprise this foreign key

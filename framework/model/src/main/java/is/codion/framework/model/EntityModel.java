@@ -12,7 +12,7 @@ import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;
@@ -45,9 +45,9 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
           "is.codion.framework.model.EntityModel.useClientPreferences", Util.onClasspath("org.json.JSONObject"));
 
   /**
-   * @return the id of the entity this entity model is based on
+   * @return the type of the entity this entity model is based on
    */
-  EntityId getEntityId();
+  EntityType getEntityType();
 
   /**
    * @return the connection provider used by this entity model
@@ -92,12 +92,12 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities.
-   * It sets the value for the first available foreign key property representing the given entityId
+   * It sets the value for the first available foreign key property representing the given entityType
    * in the {@link EntityEditModel} and sets the search values in the {@link EntityTableModel}.
-   * @param foreignKeyEntityId the id of the master entity
+   * @param foreignKeyEntityType the id of the master entity
    * @param foreignKeyValues the master entities
    */
-  void initialize(EntityId foreignKeyEntityId, List<Entity> foreignKeyValues);
+  void initialize(EntityType foreignKeyEntityType, List<Entity> foreignKeyValues);
 
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities,
@@ -145,10 +145,10 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   boolean containsDetailModel(Class<? extends M> modelClass);
 
   /**
-   * @param entityId the entityId
-   * @return true if this model contains a detail model for the given  entityId
+   * @param entityType the entityType
+   * @return true if this model contains a detail model for the given entityType
    */
-  boolean containsDetailModel(EntityId entityId);
+  boolean containsDetailModel(EntityType entityType);
 
   /**
    * @param detailModel the detail model
@@ -166,11 +166,11 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
   /**
    * Returns a detail model of the given type
-   * @param entityId the entityId of the required EntityModel
+   * @param entityType the entityType of the required EntityModel
    * @return the detail model of type {@code entityModelClass}
-   * @throws IllegalArgumentException in case no detail model for the given entityId is found
+   * @throws IllegalArgumentException in case no detail model for the given entityType is found
    */
-  M getDetailModel(EntityId entityId);
+  M getDetailModel(EntityType entityType);
 
   /**
    * @return an unmodifiable collection containing the detail models this model contains

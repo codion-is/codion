@@ -11,7 +11,7 @@ import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.identity.Identities;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.Property;
@@ -27,7 +27,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents an application domain model, entities, reports and database operations.
  * Override to define a domain model.
- * @see #define(EntityId, Property.Builder[])
+ * @see #define(EntityType, Property.Builder[])
  * @see #addReport(ReportWrapper)
  * @see #addOperation(DatabaseOperation)
  */
@@ -87,8 +87,8 @@ public abstract class Domain implements EntityDefinition.Provider {
   }
 
   @Override
-  public final EntityDefinition getDefinition(final EntityId entityId) {
-    return entities.getDefinition(entityId);
+  public final EntityDefinition getDefinition(final EntityType entityType) {
+    return entities.getDefinition(entityType);
   }
 
   @Override
@@ -124,32 +124,32 @@ public abstract class Domain implements EntityDefinition.Provider {
   }
 
   /**
-   * Adds a new {@link EntityDefinition} to this domain model, using the {@code entityId} as table name.
+   * Adds a new {@link EntityDefinition} to this domain model, using the {@code entityType} as table name.
    * Returns the {@link EntityDefinition} instance for further configuration.
-   * @param entityId the id uniquely identifying the entity type
+   * @param entityType the id uniquely identifying the entity type
    * @param propertyBuilders the {@link Property.Builder} objects to base this entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
    * @return a {@link EntityDefinition.Builder}
-   * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
+   * @throws IllegalArgumentException in case the entityType has already been used to define an entity type or if
    * no primary key property is specified
    */
-  protected final EntityDefinition.Builder define(final EntityId entityId, final Property.Builder<?>... propertyBuilders) {
-    return define(entityId, entityId.getName(), propertyBuilders);
+  protected final EntityDefinition.Builder define(final EntityType entityType, final Property.Builder<?>... propertyBuilders) {
+    return define(entityType, entityType.getName(), propertyBuilders);
   }
 
   /**
    * Adds a new {@link EntityDefinition} to this domain model.
    * Returns a {@link EntityDefinition.Builder} instance for further configuration.
-   * @param entityId the id uniquely identifying the entity type
+   * @param entityType the id uniquely identifying the entity type
    * @param tableName the name of the underlying table
    * @param propertyBuilders the {@link Property.Builder} objects to base the entity on. In case a select query is specified
    * for this entity, the property order must match the select column order.
    * @return a {@link EntityDefinition.Builder}
-   * @throws IllegalArgumentException in case the entityId has already been used to define an entity type
+   * @throws IllegalArgumentException in case the entityType has already been used to define an entity type
    */
-  protected final EntityDefinition.Builder define(final EntityId entityId, final String tableName,
+  protected final EntityDefinition.Builder define(final EntityType entityType, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
-    return entities.defineInternal(entityId, tableName, propertyBuilders);
+    return entities.defineInternal(entityType, tableName, propertyBuilders);
   }
 
   /**
@@ -188,9 +188,9 @@ public abstract class Domain implements EntityDefinition.Provider {
       super(domainId);
     }
 
-    protected EntityDefinition.Builder defineInternal(final EntityId entityId, final String tableName,
+    protected EntityDefinition.Builder defineInternal(final EntityType entityType, final String tableName,
                                                       final Property.Builder<?>... propertyBuilders) {
-      return super.define(entityId, tableName, propertyBuilders);
+      return super.define(entityType, tableName, propertyBuilders);
     }
 
     private void setStrictForeignKeysInternal(final boolean strictForeignKeys) {

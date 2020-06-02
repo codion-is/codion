@@ -24,6 +24,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.identity.Identity;
 
 import org.slf4j.Logger;
@@ -256,13 +257,13 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   /**
-   * @return a map containing all defined entityIds, with their respective table names as an associated value
+   * @return a map containing all defined entityTypes, with their respective table names as an associated value
    */
-  final Map<Identity, String> getEntityDefinitions() {
-    final Map<Identity, String> definitions = new HashMap<>();
+  final Map<EntityType, String> getEntityDefinitions() {
+    final Map<EntityType, String> definitions = new HashMap<>();
     for (final Domain domain : domainModels.values()) {
       for (final EntityDefinition definition : domain.getDefinitions()) {
-        definitions.put(definition.getEntityId(), definition.getTableName());
+        definitions.put(definition.getEntityType(), definition.getTableName());
       }
     }
 
@@ -516,7 +517,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     Clients.resolveTrustStoreFromClasspath(DefaultEntityServerAdmin.class.getSimpleName());
     try {
       final Registry registry = Servers.getRegistry(registryPort);
-      final Server<?, EntityServerAdmin> server = (Server) registry.lookup(serverName);
+      final Server<?, EntityServerAdmin> server = (Server<?, EntityServerAdmin>) registry.lookup(serverName);
       final EntityServerAdmin serverAdmin = server.getServerAdmin(adminUser);
       final String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
       LOG.info(shutDownInfo);

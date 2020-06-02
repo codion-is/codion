@@ -74,13 +74,13 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
   }
 
   @Test
-  public void getEntityModelByEntityIDNotFound() {
+  public void getEntityModelByEntityTypeNotFound() {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
     assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test
-  public void getEntityModelByEntityId() {
+  public void getEntityModelByEntityType() {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
     final Model departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);

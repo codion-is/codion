@@ -16,7 +16,7 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -193,9 +193,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> Entity selectSingle(final EntityId entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(final EntityType entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectSingle(entityId, attribute, value);
+      return connectionProxy.selectSingle(entityType, attribute, value);
     }
   }
 
@@ -228,23 +228,23 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> List<Entity> select(final EntityId entityId, final Attribute<T> attribute,
+  public <T> List<Entity> select(final EntityType entityType, final Attribute<T> attribute,
                                  final T value) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.select(entityId, attribute, value);
+      return connectionProxy.select(entityType, attribute, value);
     }
   }
 
   @Override
-  public <T> List<Entity> select(final EntityId entityId, final Attribute<T> attribute,
+  public <T> List<Entity> select(final EntityType entityType, final Attribute<T> attribute,
                                  final Collection<T> values) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.select(entityId, attribute, values);
+      return connectionProxy.select(entityType, attribute, values);
     }
   }
 
   @Override
-  public Map<EntityId, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectDependencies(entities);
     }

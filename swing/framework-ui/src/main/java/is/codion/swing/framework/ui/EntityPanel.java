@@ -5,7 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.HierarchyPanel;
 import is.codion.swing.common.ui.Windows;
@@ -65,9 +65,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * A panel representing a Entity via a EntityModel, which facilitates browsing and editing of records.
  * <pre>
- *   String entityId = ...;
+ *   EntityType entityType = ...;
  *   EntityConnectionProvider connectionProvider = ...;
- *   SwingEntityModel entityModel = new SwingEntityModel(entityId, connectionProvider);
+ *   SwingEntityModel entityModel = new SwingEntityModel(entityType, connectionProvider);
  *   EntityPanel entityPanel = new EntityPanel(entityModel);
  *   entityPanel.initializePanel();
  *   JFrame frame = new JFrame();
@@ -532,28 +532,28 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Returns the detail panel for the given {@code entityId}, if one is available
-   * @param entityId the entityId of the detail panel to retrieve
+   * Returns the detail panel for the given {@code entityType}, if one is available
+   * @param entityType the entityType of the detail panel to retrieve
    * @return the detail panel of the given type
    * @throws IllegalArgumentException in case the panel was not found
    */
-  public final EntityPanel getDetailPanel(final EntityId entityId) {
+  public final EntityPanel getDetailPanel(final EntityType entityType) {
     for (final EntityPanel detailPanel : detailEntityPanels) {
-      if (detailPanel.entityModel.getEntityId().equals(entityId)) {
+      if (detailPanel.entityModel.getEntityType().equals(entityType)) {
         return detailPanel;
       }
     }
 
-    throw new IllegalArgumentException("Detail panel for entity: " + entityId + " not found in panel: " + getClass());
+    throw new IllegalArgumentException("Detail panel for entity: " + entityType + " not found in panel: " + getClass());
   }
 
   /**
-   * Returns true if this panel contains a detail panel for the given {@code entityId}
-   * @param entityId the entityId
-   * @return true if a detail panel for the given entityId is found
+   * Returns true if this panel contains a detail panel for the given {@code entityType}
+   * @param entityType the entityType
+   * @return true if a detail panel for the given entityType is found
    */
-  public final boolean containsDetailPanel(final EntityId entityId) {
-    return detailEntityPanels.stream().anyMatch(detailPanel -> detailPanel.entityModel.getEntityId().equals(entityId));
+  public final boolean containsDetailPanel(final EntityType entityType) {
+    return detailEntityPanels.stream().anyMatch(detailPanel -> detailPanel.entityModel.getEntityType().equals(entityType));
   }
 
   @Override

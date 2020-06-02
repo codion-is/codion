@@ -7,7 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
 
 import java.time.LocalDate;
@@ -16,7 +16,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.Entities.entityId;
+import static is.codion.framework.domain.entity.Entities.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -31,7 +31,7 @@ public final class TestDomain extends Domain {
     employee();
   }
 
-  public static final EntityId T_MASTER = entityId("domain.master_entity");
+  public static final EntityType T_MASTER = entityType("domain.master_entity");
   public static final Attribute<Long> MASTER_ID = T_MASTER.longAttribute("id");
   public static final Attribute<String> MASTER_NAME = T_MASTER.stringAttribute("name");
   public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
@@ -45,7 +45,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(MASTER_NAME));
   }
 
-  public static final EntityId T_DETAIL = entityId("domain.detail_entity");
+  public static final EntityType T_DETAIL = entityType("domain.detail_entity");
   public static final Attribute<Long> DETAIL_ID = T_DETAIL.longAttribute("id");
   public static final Attribute<Integer> DETAIL_INT = T_DETAIL.integerAttribute("int");
   public static final Attribute<Double> DETAIL_DOUBLE = T_DETAIL.doubleAttribute("double");
@@ -99,7 +99,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
-  public static final EntityId T_DEPARTMENT = entityId("scott.dept");
+  public static final EntityType T_DEPARTMENT = entityType("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -118,7 +118,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final EntityId T_EMP = entityId("scott.emp");
+  public static final EntityType T_EMP = entityType("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");

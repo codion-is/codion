@@ -18,9 +18,9 @@ import java.util.Set;
 public interface Entity extends Comparable<Entity>, Serializable {
 
   /**
-   * @return the entityId
+   * @return the entity type
    */
-  EntityId getEntityId();
+  EntityType getEntityType();
 
   /**
    * Returns the primary key of this entity.
@@ -113,10 +113,10 @@ public interface Entity extends Comparable<Entity>, Serializable {
   void clearKeyValues();
 
   /**
-   * @param entityId the entityId
+   * @param entityType the entity type
    * @return true if this entity is of the given type
    */
-  boolean is(EntityId entityId);
+  boolean is(EntityType entityType);
 
   /**
    * @param entity the entity to compare to
@@ -251,9 +251,9 @@ public interface Entity extends Comparable<Entity>, Serializable {
   interface Key extends Serializable {
 
     /**
-     * @return the entityId
+     * @return the entity type
      */
-    EntityId getEntityId();
+    EntityType getEntityType();
 
     /**
      * @return a List containing the properties comprising this key

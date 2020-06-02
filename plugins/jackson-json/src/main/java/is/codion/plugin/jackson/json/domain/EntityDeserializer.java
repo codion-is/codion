@@ -7,7 +7,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.Property;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static is.codion.framework.domain.entity.Entities.entityId;
+import static is.codion.framework.domain.entity.Entities.entityType;
 
 public final class EntityDeserializer extends StdDeserializer<Entity> {
 
@@ -45,8 +45,8 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityNode = parser.getCodec().readTree(parser);
 
-    final EntityId entityId = entityId(entityNode.get("entityId").asText());
-    final EntityDefinition definition = entities.getDefinition(entityId);
+    final EntityType entityType = entityType(entityNode.get("entityType").asText());
+    final EntityDefinition definition = entities.getDefinition(entityType);
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
   }
@@ -110,7 +110,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
-      final Property<?> property = definition.getProperty(definition.getEntityId().objectAttribute(field.getKey()));
+      final Property<?> property = definition.getProperty(definition.getEntityType().objectAttribute(field.getKey()));
       valueMap.put(property.getAttribute(), parseValue(property.getAttribute(), field.getValue()));
     }
 

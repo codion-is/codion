@@ -5,20 +5,20 @@
 :dir-world-source: ../../../../../demos/world/src/main/java
 :url-javadoc: link:../api
 
-The domain model is based around five classes; {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity], which represents a row in a table, {url-javadoc}/is/codion/framework/domain/entity/EntityIdentity.html[EntityIdentity], which identifies an entity type, {url-javadoc}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such), {url-javadoc}/is/codion/framework/domain/attribute/Attribute.html[Attribute], which represents column types and {url-javadoc}/is/codion/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
+The domain model is based around five classes; {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity], which represents a row in a table, {url-javadoc}/is/codion/framework/domain/entity/EntityType.html[EntityType], which specifies an entity type, {url-javadoc}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such), {url-javadoc}/is/codion/framework/domain/attribute/Attribute.html[Attribute], which represents column types and {url-javadoc}/is/codion/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
 {url-javadoc}/is/codion/framework/domain/Domain.html[Domain] class, which in turn provides a {url-javadoc}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}/is/codion/framework/domain/Domain.html#getEntities[getEntities()], which serves as a container for the domain entity definitions and as a factory for *Entity* and *Entity.Key* instances.
 
 == Entities
 
-The *Entity* class is a map like structure, which maps column values to the attribute representing each column. Each table is represented by a entity type, identified by a *entityId*, a EntityIdentity constant unique within the domain.
+The *Entity* class is a map like structure, which maps column values to the attribute representing each column. Each table is represented by a entity type, identified by a EntityType constant with a name unique within the domain.
 
-NOTE: Typically, the *entityId* name contains the underlying table name, but you can use whatever identifying string you want and specify the table name via a *tableName* parameter when defining the entity.
+NOTE: Typically, the *entityType* name contains the underlying table name, but you can use whatever identifying string you want and specify the table name via a *tableName* parameter when defining the entity.
 
 == Attributes
 
 Each column in a table is associated with a {url-javadoc}/is/codion/framework/domain/attribute/Attribute.html[Attribute] constant, which has a name and denotes the value type. The {url-javadoc}/is/codion/framework/domain/property/Attributes.html[Attributes] class provides factory methods for constructing Attribute objects and is usually statically imported, as will be assumed in the following examples.
 
-NOTE: Typically, the *attribute* name is the underlying column name, but as with the *entityId* you can use whatever value you want and specify the column name via the *columnName()* method when instantiating the associated Property.
+NOTE: Typically, the *attribute* name is the underlying column name, but as with the *entityType* you can use whatever value you want and specify the column name via the *columnName()* method when instantiating the associated Property.
 
 === Supported data types
 
@@ -42,11 +42,11 @@ Each column is represented by the {url-javadoc}/is/codion/framework/domain/prope
 
 === Example
 
-String constants for the Entities and Attribute constants for the properties in the World demo, here the *entityIds* have a *T_* prefix (for *Type* or *Table*) whereas the *attributes* are prefixed by their respective table names.
+String constants for the Entities and Attribute constants for the properties in the World demo, here the *entityTypes* have a *T_* prefix (for *Type* or *Table*) whereas the *attributes* are prefixed by their respective table names.
 
 [source,java]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=entityIdsAndAttributes]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=entityTypesAndAttributes]
 ----
 
 === Property
@@ -230,7 +230,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[ta
 
 == Domain
 
-Each entity type is defined by calling {url-javadoc}/is/codion/framework/domain/Domain.html#define-is.codion.framework.domain.entity.EntityId-is.codion.framework.domain.property.Property.Builder...-[Domain.define]. The framework assumes the *entityId* name contains the table name, unless the *tableName* parameter is specified.
+Each entity type is defined by calling {url-javadoc}/is/codion/framework/domain/Domain.html#define-is.codion.framework.domain.entity.EntityType-is.codion.framework.domain.property.Property.Builder...-[Domain.define]. The framework assumes the *entityType* name contains the table name, unless the *tableName* parameter is specified.
 
 [source,java,indent=0]
 ----
@@ -369,7 +369,7 @@ The following methods all have default implementations which are based on random
 * {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeTestEntity-java.lang.String-java.util.Map-[initializeTestEntity] should return a entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.
 * {url-javadoc}/is/codion/framework/domain/entity/test/EntityTestUnit.html#modifyEntity-is.codion.framework.domain.entity.Entity-java.util.Map-[modifyEntity] should simply leave the entity in a modified state so that it can be used for update test, since the database layer throws an exception if an unmodified entity is updated. If *modifyEntity* returns an unmodified entity, the update test is skipped.
 
-To run the full CRUD test for a domain entity you need to call the *test(EntityIdentity entityId)* method with the id of the given entity as parameter. You can either create a single *testDomain()* method and call the *test* method in turn for each entityId or create a *entityName* method for each domain entity, as we do in the example below.
+To run the full CRUD test for a domain entity you need to call the *test(EntityType entityType)* method with the entity type as parameter. You can either create a single *testDomain()* method and call the *test* method in turn for each entityType or create a *entityName* method for each domain entity, as we do in the example below.
 
 [source,java]
 ----

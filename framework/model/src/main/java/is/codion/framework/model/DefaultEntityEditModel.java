@@ -20,7 +20,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ValueChange;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -46,19 +46,6 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link EntityEditModel} implementation
- *
- * <pre>
- * String entityId = "some.entity";
- * String clientTypeId = "JavadocDemo";
- * User user = Users.user("scott", "tiger");
- *
- * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeId);
- *
- * EntityEditModel editModel = new DefaultEntityEditModel(entityId, connectionProvider);
- *
- * EntityEditPanel panel = new EntityEditPanel(editModel);
- * panel.initializePanel();
- * </pre>
  */
 public abstract class DefaultEntityEditModel implements EntityEditModel {
 
@@ -155,23 +142,23 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private boolean postEditEvents = POST_EDIT_EVENTS.get();
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by {@code entityId}.
-   * @param entityId the id of the entity to base this {@link DefaultEntityEditModel} on
+   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by {@code entityType}.
+   * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public DefaultEntityEditModel(final EntityId entityId, final EntityConnectionProvider connectionProvider) {
-    this(entityId, connectionProvider, connectionProvider.getEntities().getDefinition(entityId).getValidator());
+  public DefaultEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+    this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getValidator());
   }
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the entityIdentified by {@code entityId}.
-   * @param entityId the id of the entity to base this {@link DefaultEntityEditModel} on
+   * Instantiates a new {@link DefaultEntityEditModel} based on the entityTypeentified by {@code entityType}.
+   * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public DefaultEntityEditModel(final EntityId entityId, final EntityConnectionProvider connectionProvider,
+  public DefaultEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                 final EntityValidator validator) {
-    this.entity = connectionProvider.getEntities().entity(entityId);
+    this.entity = connectionProvider.getEntities().entity(entityType);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.validator = validator;
     setReadOnly(getEntityDefinition().isReadOnly());
@@ -186,12 +173,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final EntityDefinition getEntityDefinition() {
-    return getEntities().getDefinition(entity.getEntityId());
+    return getEntities().getDefinition(entity.getEntityType());
   }
 
   @Override
   public final String toString() {
-    return getClass().toString() + ", " + entity.getEntityId();
+    return getClass().toString() + ", " + entity.getEntityType();
   }
 
   @Override
@@ -307,8 +294,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityId getEntityId() {
-    return entity.getEntityId();
+  public final EntityType getEntityType() {
+    return entity.getEntityType();
   }
 
   @Override
@@ -318,12 +305,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void replaceForeignKeyValues(final Collection<Entity> entities) {
-    final Map<EntityId, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(entities);
-    for (final Map.Entry<EntityId, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
+    final Map<EntityType, List<Entity>> entitiesByEntityType = Entities.mapToEntityType(entities);
+    for (final Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
       final List<ForeignKeyProperty> foreignKeyProperties = getEntityDefinition()
-              .getForeignKeyReferences(entityIdEntities.getKey());
+              .getForeignKeyReferences(entityTypeEntities.getKey());
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-        replaceForeignKey(foreignKeyProperty, entityIdEntities.getValue());
+        replaceForeignKey(foreignKeyProperty, entityTypeEntities.getValue());
       }
     }
   }
@@ -355,12 +342,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void setForeignKeyValues(final Collection<Entity> entities) {
-    final Map<EntityId, List<Entity>> entitiesByEntityId = Entities.mapToEntityId(entities);
-    for (final Map.Entry<EntityId, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
+    final Map<EntityType, List<Entity>> entitiesByEntityType = Entities.mapToEntityType(entities);
+    for (final Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition()
-              .getForeignKeyReferences(entityIdEntities.getKey())) {
+              .getForeignKeyReferences(entityTypeEntities.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
-        put(foreignKeyProperty.getAttribute(), entityIdEntities.getValue().iterator().next());
+        put(foreignKeyProperty.getAttribute(), entityTypeEntities.getValue().iterator().next());
       }
     }
   }
@@ -435,8 +422,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void validate(final Collection<Entity> entities) throws ValidationException {
     for (final Entity entityToValidate : entities) {
-      final EntityDefinition definition = getEntities().getDefinition(entityToValidate.getEntityId());
-      if (definition.getEntityId().equals(getEntityId())) {
+      final EntityDefinition definition = getEntities().getDefinition(entityToValidate.getEntityType());
+      if (definition.getEntityType().equals(getEntityType())) {
         validator.validate(entityToValidate, definition);
       }
       else {
@@ -600,12 +587,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public EntityLookupModel createForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty) {
     final Collection<ColumnProperty<?>> searchProperties = getEntities()
-            .getDefinition(foreignKeyProperty.getForeignEntityId()).getSearchProperties();
+            .getDefinition(foreignKeyProperty.getForeignEntityType()).getSearchProperties();
     if (searchProperties.isEmpty()) {
-      throw new IllegalStateException("No search properties defined for entity: " + foreignKeyProperty.getForeignEntityId());
+      throw new IllegalStateException("No search properties defined for entity: " + foreignKeyProperty.getForeignEntityType());
     }
 
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(foreignKeyProperty.getForeignEntityId(), connectionProvider, searchProperties);
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(foreignKeyProperty.getForeignEntityType(), connectionProvider, searchProperties);
     lookupModel.getMultipleSelectionEnabledValue().set(false);
 
     return lookupModel;

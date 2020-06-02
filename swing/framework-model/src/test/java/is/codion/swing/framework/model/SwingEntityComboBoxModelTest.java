@@ -76,7 +76,7 @@ public final class SwingEntityComboBoxModelTest {
   }
 
   @Test
-  public void constructorNullEntityId() {
+  public void constructorNullEntityType() {
     assertThrows(NullPointerException.class, () -> new SwingEntityComboBoxModel(null, CONNECTION_PROVIDER));
   }
 
@@ -202,7 +202,7 @@ public final class SwingEntityComboBoxModelTest {
     final AtomicInteger refreshed = new AtomicInteger();
     final EventListener refreshListener = refreshed::incrementAndGet;
     comboBoxModel.addRefreshListener(refreshListener);
-    assertEquals(TestDomain.T_EMP, comboBoxModel.getEntityId());
+    assertEquals(TestDomain.T_EMP, comboBoxModel.getEntityType());
     comboBoxModel.setStaticData(false);
     comboBoxModel.toString();
     assertEquals(0, comboBoxModel.getSize());

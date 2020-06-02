@@ -53,7 +53,7 @@ public final class ConditionObjectMapperTest {
     final Condition condition = entityCondition.getCondition();
     final Condition readCondition = readEntityCondition.getCondition();
 
-    assertEquals(entityCondition.getEntityId(), readEntityCondition.getEntityId());
+    assertEquals(entityCondition.getEntityType(), readEntityCondition.getEntityType());
     assertEquals(condition.getAttributes(), readCondition.getAttributes());
     assertEquals(condition.getValues(), readCondition.getValues());
 
@@ -73,7 +73,7 @@ public final class ConditionObjectMapperTest {
     final Condition condition = entityCondition.getCondition();
     final Condition readCondition = readEntityCondition.getCondition();
 
-    assertEquals(entityCondition.getEntityId(), readEntityCondition.getEntityId());
+    assertEquals(entityCondition.getEntityType(), readEntityCondition.getEntityType());
     assertEquals(condition.getAttributes(), readCondition.getAttributes());
     assertEquals(condition.getValues(), readCondition.getValues());
   }

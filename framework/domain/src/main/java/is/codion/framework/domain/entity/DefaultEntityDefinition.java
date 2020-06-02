@@ -41,9 +41,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private static final long serialVersionUID = 1;
 
   /**
-   * The entityId
+   * The entity type
    */
-  private final EntityId entityId;
+  private final EntityType entityType;
 
   /**
    * The domainId
@@ -169,20 +169,20 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private final boolean hasDenormalizedProperties;
 
   /**
-   * Defines a new entity type with the entityId serving as the initial entity caption.
+   * Defines a new entity type with the entityType name serving as the initial entity caption.
    */
-  DefaultEntityDefinition(final EntityId entityId, final String tableName, final Property.Builder<?>... propertyBuilders) {
-    this.entityId = requireNonNull(entityId, "entityId");
+  DefaultEntityDefinition(final EntityType entityType, final String tableName, final Property.Builder<?>... propertyBuilders) {
+    this.entityType = requireNonNull(entityType, "entityType");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
-    this.entityProperties = new EntityProperties(entityId, propertyBuilders);
+    this.entityProperties = new EntityProperties(entityType, propertyBuilders);
     this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
     this.groupByClause = initializeGroupByClause();
-    this.caption = entityId.getName();
+    this.caption = entityType.getName();
   }
 
   @Override
-  public EntityId getEntityId() {
-    return entityId;
+  public EntityType getEntityType() {
+    return entityType;
   }
 
   @Override
@@ -303,7 +303,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     requireNonNull(attribute, "attribute");
     final Property<T> property = (Property<T>) entityProperties.propertyMap.get(attribute);
     if (property == null) {
-      throw new IllegalArgumentException("Property '" + attribute + "' not found in entity: " + entityId);
+      throw new IllegalArgumentException("Property '" + attribute + "' not found in entity: " + entityType);
     }
 
     return property;
@@ -313,7 +313,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   public <T> ColumnProperty<T> getPrimaryKeyProperty(final Attribute<T> attribute) {
     final ColumnProperty<T> property = (ColumnProperty<T>) entityProperties.primaryKeyPropertyMap.get(attribute);
     if (property == null) {
-      throw new IllegalArgumentException("Primary key property " + attribute + " not found in entity: " + entityId);
+      throw new IllegalArgumentException("Primary key property " + attribute + " not found in entity: " + entityType);
     }
 
     return property;
@@ -387,16 +387,16 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<ForeignKeyProperty> getForeignKeyReferences(final EntityId foreignEntityId) {
+  public List<ForeignKeyProperty> getForeignKeyReferences(final EntityType foreignEntityType) {
     return getForeignKeyProperties().stream().filter(foreignKeyProperty ->
-            foreignKeyProperty.getForeignEntityId().equals(foreignEntityId)).collect(toList());
+            foreignKeyProperty.getForeignEntityType().equals(foreignEntityType)).collect(toList());
   }
 
   @Override
   public ForeignKeyProperty getForeignKeyProperty(final Attribute<Entity> attribute) {
     final ForeignKeyProperty property = entityProperties.foreignKeyPropertyMap.get(attribute);
     if (property == null) {
-      throw new IllegalArgumentException("Foreign key property with id: " + attribute + " not found in entity of type: " + entityId);
+      throw new IllegalArgumentException("Foreign key property with id: " + attribute + " not found in entity of type: " + entityType);
     }
 
     return property;
@@ -502,7 +502,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public String toString() {
-    return entityId.getName();
+    return entityType.getName();
   }
 
   @Override
@@ -600,8 +600,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
     if (foreignEntityDefinitions.containsKey(foreignKeyAttribute)) {
       throw new IllegalStateException("Foreign definition has already been set for " + foreignKeyAttribute);
     }
-    if (!foreignKeyProperty.getForeignEntityId().equals(definition.getEntityId())) {
-      throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.getForeignEntityId() +
+    if (!foreignKeyProperty.getForeignEntityType().equals(definition.getEntityType())) {
+      throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.getForeignEntityType() +
               " expected for " + foreignKeyAttribute);
     }
     foreignEntityDefinitions.put(foreignKeyAttribute, definition);
@@ -632,7 +632,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private static final long serialVersionUID = 1;
 
-    private final EntityId entityId;
+    private final EntityType entityType;
 
     private final Map<Attribute<?>, Property<?>> propertyMap;
     private final List<Property<?>> properties;
@@ -650,8 +650,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private final List<TransientProperty<?>> transientProperties;
     private final Map<Attribute<?>, List<DenormalizedProperty<?>>> denormalizedProperties;
 
-    private EntityProperties(final EntityId entityId, final Property.Builder<?>... propertyBuilders) {
-      this.entityId = entityId;
+    private EntityProperties(final EntityType entityType, final Property.Builder<?>... propertyBuilders) {
+      this.entityType = entityType;
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
       this.propertySet = new HashSet<>(propertyMap.values());
@@ -711,14 +711,14 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     private void validate(final Property<?> property, final Map<Attribute<?>, Property<?>> propertyMap) {
-      if (!entityId.equals(property.getAttribute().getEntityId())) {
-        throw new IllegalArgumentException("Attribute entityId (" +
-                property.getAttribute().getEntityId() + ") does not match the definition entityId: " + entityId);
+      if (!entityType.equals(property.getAttribute().getEntityType())) {
+        throw new IllegalArgumentException("Attribute entityType (" +
+                property.getAttribute().getEntityType() + ") does not match the definition entityType: " + entityType);
       }
       if (propertyMap.containsKey(property.getAttribute())) {
         throw new IllegalArgumentException("Property with id " + property.getAttribute()
                 + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
-                + " has already been defined as: " + propertyMap.get(property.getAttribute()) + " in entity: " + entityId);
+                + " has already been defined as: " + propertyMap.get(property.getAttribute()) + " in entity: " + entityType);
       }
     }
 

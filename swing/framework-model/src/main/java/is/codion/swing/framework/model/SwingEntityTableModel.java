@@ -20,7 +20,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -59,22 +59,6 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A TableModel implementation for displaying and working with entities.
- *
- * <pre>
- * String entityId = "some.entity";
- * String clientTypeId = "JavadocDemo";
- * User user = Users.parseUser("scott:tiger");
- *
- * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeId);
- *
- * SwingEntityTableModel tableModel = new SwingEntityTableModel(entityId, connectionProvider);
- *
- * SwingEntityEditModel editModel = ...;
- *
- * tableModel.setEditModel(editModel);
- *
- * EntityTablePanel panel = new EntityTablePanel(tableModel);
- * </pre>
  */
 public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Property<?>>
         implements EntityTableModel<SwingEntityEditModel> {
@@ -82,9 +66,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
 
   /**
-   * The entityId
+   * The entityType
    */
-  private final EntityId entityId;
+  private final EntityType entityType;
 
   /**
    * The EntityConnection provider
@@ -150,33 +134,33 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   /**
    * Instantiates a new DefaultEntityTableModel with default column and condition models.
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @param connectionProvider the db provider
    */
-  public SwingEntityTableModel(final EntityId entityId, final EntityConnectionProvider connectionProvider) {
-    this(entityId, connectionProvider, new SwingEntityTableSortModel(connectionProvider.getEntities(), entityId),
-            new DefaultEntityTableConditionModel(entityId, connectionProvider,
+  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+    this(entityType, connectionProvider, new SwingEntityTableSortModel(connectionProvider.getEntities(), entityType),
+            new DefaultEntityTableConditionModel(entityType, connectionProvider,
                     new DefaultPropertyFilterModelProvider(), new SwingPropertyConditionModelProvider()));
   }
 
   /**
    * Instantiates a new DefaultEntityTableModel.
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @param connectionProvider the db provider
    * @param conditionModel the condition model
    * @param sortModel the sort model
    * @throws NullPointerException in case conditionModel is null
-   * @throws IllegalArgumentException if {@code conditionModel} entityId does not match the one supplied as parameter
+   * @throws IllegalArgumentException if {@code conditionModel} entityType does not match the one supplied as parameter
    */
-  public SwingEntityTableModel(final EntityId entityId, final EntityConnectionProvider connectionProvider,
+  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Property<?>, TableColumn> sortModel,
                                final EntityTableConditionModel conditionModel) {
     super(sortModel, requireNonNull(conditionModel, "conditionModel").getPropertyFilterModels());
-    if (!conditionModel.getEntityId().equals(entityId)) {
-      throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityId()
-              + ", tableModel: " + entityId);
+    if (!conditionModel.getEntityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityType()
+              + ", tableModel: " + entityType);
     }
-    this.entityId = entityId;
+    this.entityType = entityType;
     this.connectionProvider = connectionProvider;
     this.conditionModel = conditionModel;
     bindEventsInternal();
@@ -190,12 +174,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   @Override
   public final EntityDefinition getEntityDefinition() {
-    return getEntities().getDefinition(entityId);
+    return getEntities().getDefinition(entityType);
   }
 
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + entityId;
+    return getClass().getSimpleName() + ": " + entityType;
   }
 
   @Override
@@ -204,8 +188,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set for table model: " + this);
     }
-    if (!editModel.getEntityId().equals(entityId)) {
-      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityId() + ", tableModel: " + entityId);
+    if (!editModel.getEntityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityType() + ", tableModel: " + entityType);
     }
     this.editModel = editModel;
     bindEditModelEvents();
@@ -253,8 +237,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final EntityId getEntityId() {
-    return entityId;
+  public final EntityType getEntityType() {
+    return entityType;
   }
 
   @Override
@@ -466,10 +450,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final void replaceForeignKeyValues(final EntityId foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
+  public final void replaceForeignKeyValues(final EntityType foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyValues, "foreignKeyValues");
     final List<ForeignKeyProperty> foreignKeyProperties =
-            getEntityDefinition().getForeignKeyReferences(requireNonNull(foreignKeyEntityId, "foreignKeyEntityId"));
+            getEntityDefinition().getForeignKeyReferences(requireNonNull(foreignKeyEntityType, "foreignKeyEntityType"));
     boolean changed = false;
     for (final Entity entity : getItems()) {
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
@@ -628,7 +612,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
 
     try {
-      return connectionProvider.getConnection().select(selectCondition(entityId,
+      return connectionProvider.getConnection().select(selectCondition(entityType,
               getConditionModel().getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {
@@ -673,14 +657,14 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * The default implementation is:
    * <pre>
    * {@code
-   * return getClass().getSimpleName() + "-" + getEntityId();
+   * return getClass().getSimpleName() + "-" + getEntityType();
    * }
    * </pre>
    * Override in case this key is not unique.
    * @return the key used to identify user preferences for this table model
    */
   protected String getUserPreferencesKey() {
-    return getClass().getSimpleName() + "-" + getEntityId();
+    return getClass().getSimpleName() + "-" + getEntityType();
   }
 
   /**
@@ -709,7 +693,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
       final List<Entity> entitiesToAdd = insertedEntities.stream().filter(entity ->
-              entity.getEntityId().equals(getEntityId())).collect(Collectors.toList());
+              entity.getEntityType().equals(getEntityType())).collect(Collectors.toList());
       switch (insertAction) {
         case ADD_TOP:
           addEntitiesAt(0, entitiesToAdd);

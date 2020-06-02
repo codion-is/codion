@@ -5,7 +5,7 @@ package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   private static final long serialVersionUID = 1;
 
-  private final EntityId foreignEntityId;
+  private final EntityType foreignEntityType;
   private final List<ColumnProperty<?>> columnProperties;
   private final boolean compositeReference;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
@@ -30,29 +30,29 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   /**
    * @param attribute the attribute
    * @param caption the caption
-   * @param foreignEntityId the id of the entity referenced by this foreign key
+   * @param foreignEntityType the type of the entity referenced by this foreign key
    * @param columnProperty the underlying column property comprising this foreign key
    */
   DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
-                            final EntityId foreignEntityId, final ColumnProperty.Builder<?> columnProperty) {
-    this(attribute, caption, foreignEntityId, singletonList(columnProperty));
+                            final EntityType foreignEntityType, final ColumnProperty.Builder<?> columnProperty) {
+    this(attribute, caption, foreignEntityType, singletonList(columnProperty));
   }
 
   /**
    * @param attribute the attribute, note that this is not a column
    * @param caption the property caption
-   * @param foreignEntityId the id of the entity referenced by this foreign key
+   * @param foreignEntityType the type of the entity referenced by this foreign key
    * @param columnPropertyBuilders the underlying column properties comprising this foreign key
    */
   DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
-                            final EntityId foreignEntityId, final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
+                            final EntityType foreignEntityType, final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
     super(attribute, caption);
-    requireNonNull(foreignEntityId, "foreignEntityId");
-    validateParameters(attribute, foreignEntityId, columnPropertyBuilders);
+    requireNonNull(foreignEntityType, "foreignEntityType");
+    validateParameters(attribute, foreignEntityType, columnPropertyBuilders);
     this.columnPropertyBuilders = columnPropertyBuilders;
     this.columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyProperty(true));
     this.compositeReference = columnPropertyBuilders.size() > 1;
-    this.foreignEntityId = foreignEntityId;
+    this.foreignEntityType = foreignEntityType;
     this.columnProperties = unmodifiableList(columnPropertyBuilders.stream()
             .map(ColumnProperty.Builder::get).collect(toList()));
   }
@@ -73,8 +73,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   @Override
-  public EntityId getForeignEntityId() {
-    return foreignEntityId;
+  public EntityType getForeignEntityType() {
+    return foreignEntityType;
   }
 
   @Override
@@ -104,7 +104,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     return new DefaultForeignKeyPropertyBuilder(this);
   }
 
-  private static void validateParameters(final Attribute<Entity> attribute, final EntityId foreignEntityId,
+  private static void validateParameters(final Attribute<Entity> attribute, final EntityType foreignEntityType,
                                          final List<ColumnProperty.Builder<?>> columnProperties) {
     if (nullOrEmpty(columnProperties)) {
       throw new IllegalArgumentException("No column properties specified");
@@ -112,7 +112,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     for (final ColumnProperty.Builder<?> columnProperty : columnProperties) {
       requireNonNull(columnProperty, "columnProperty");
       if (columnProperty.get().getAttribute().equals(attribute)) {
-        throw new IllegalArgumentException(foreignEntityId + ", column attribute is the same as foreign key attribute: " + attribute);
+        throw new IllegalArgumentException(foreignEntityType + ", column attribute is the same as foreign key attribute: " + attribute);
       }
     }
   }

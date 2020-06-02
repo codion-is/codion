@@ -42,7 +42,7 @@ public final class DefaultEntityLookupModelTest {
   private Collection<ColumnProperty<?>> lookupProperties;
 
   @Test
-  public void constructorNullEntityId() {
+  public void constructorNullEntityType() {
     assertThrows(NullPointerException.class, () -> new DefaultEntityLookupModel(null, CONNECTION_PROVIDER, new ArrayList<>()));
   }
 

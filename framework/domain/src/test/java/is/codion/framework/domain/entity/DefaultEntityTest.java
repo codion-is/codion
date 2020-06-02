@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.domain.entity.Entities.entityId;
+import static is.codion.framework.domain.entity.Entities.entityType;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,8 +66,8 @@ public class DefaultEntityTest {
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final EntityId entityId = entityId("entityId");
-    final Attribute<?> invalid = entityId.integerAttribute("invalid");
+    final EntityType entityType = entityType("entityType");
+    final Attribute<?> invalid = entityType.integerAttribute("invalid");
     final Map<Attribute<?>, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
 
@@ -577,20 +577,20 @@ public class DefaultEntityTest {
 
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
-    final EntityId entityId = entityId("entityId");
-    final Attribute<Integer> trans = entityId.integerAttribute("trans");
-    final Attribute<Integer> id = entityId.integerAttribute("id");
+    final EntityType entityType = entityType("entityType");
+    final Attribute<Integer> trans = entityType.integerAttribute("trans");
+    final Attribute<Integer> id = entityType.integerAttribute("id");
     final TransientProperty.Builder<?> transientProperty = Properties.transientProperty(trans);
     class TestDomain extends Domain {
       public TestDomain() {
         super("transient");
-        define(entityId,
+        define(entityType,
                 Properties.primaryKeyProperty(id),
                 transientProperty);  }
     }
     final Entities entities = new TestDomain().registerEntities();
 
-    final Entity entity = entities.entity(entityId);
+    final Entity entity = entities.entity(entityType);
     entity.put(id, 42);
     entity.put(trans, null);
     entity.saveAll();

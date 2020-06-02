@@ -37,9 +37,9 @@ public interface EntityDefinition extends Serializable {
   PropertyValue<Boolean> STRICT_FOREIGN_KEYS = Configuration.booleanValue("codion.domain.strictForeignKeys", true);
 
   /**
-   * @return the entityId
+   * @return the entity type
    */
-  EntityId getEntityId();
+  EntityType getEntityType();
 
   /**
    * @return the name of the underlying table, with schema prefix if applicable
@@ -282,7 +282,7 @@ public interface EntityDefinition extends Serializable {
    * Returns the {@link Property}s identified by the attributes in {@code attributes}
    * @param attributes the ids of the properties to retrieve
    * @return a list containing the properties identified by {@code attributes}, found in
-   * the entity identified by {@code entityId}
+   * the entity identified by {@code entityType}
    */
   List<Property<?>> getProperties(Collection<Attribute<?>> attributes);
 
@@ -315,12 +315,12 @@ public interface EntityDefinition extends Serializable {
    * are only included if {@code includeNonUpdatable} is true
    * @param includeNonUpdatable if true then non updatable properties are included
    * @return a list containing the writable column properties (properties that map to database columns) comprising
-   * the entity identified by {@code entityId}
+   * the entity of type {@code entityType}
    */
   List<ColumnProperty<?>> getWritableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
 
   /**
-   * @return a list containing all updatable properties associated with the given  entityId
+   * @return a list containing all updatable properties associated with the given entityType
    */
   List<Property<?>> getUpdatableProperties();
 
@@ -328,17 +328,17 @@ public interface EntityDefinition extends Serializable {
    * Returns the selectable {@link ColumnProperty}s identified
    * by the attributes in {@code attributes}
    * @param attributes the ids of the properties to retrieve
-   * @return a list containing all column properties found in the entity identified by {@code entityId},
+   * @return a list containing all column properties found in the entity identified by {@code entityType},
    * that is, properties that map to database columns, an empty list if none exist
    */
   List<ColumnProperty<?>> getSelectableColumnProperties(List<Attribute<?>> attributes);
 
   /**
    * Returns the foreign key properties referencing entities of the given type
-   * @param foreignEntityId the id of the referenced entity
+   * @param foreignEntityType the id of the referenced entity
    * @return a List containing the properties, an empty list is returned in case no foreign key references are found
    */
-  List<ForeignKeyProperty> getForeignKeyReferences(EntityId foreignEntityId);
+  List<ForeignKeyProperty> getForeignKeyReferences(EntityType foreignEntityType);
 
   /**
    * @param attribute the attribute
@@ -405,7 +405,7 @@ public interface EntityDefinition extends Serializable {
    * @param value the key value, assumes a single integer key
    * @return a new {@link Entity.Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or value is null
+   * @throws NullPointerException in case entityType or value is null
    */
   Entity.Key key(Integer value);
 
@@ -414,7 +414,7 @@ public interface EntityDefinition extends Serializable {
    * @param value the key value, assumes a single long key
    * @return a new {@link Entity.Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or value is null
+   * @throws NullPointerException in case entityType or value is null
    */
   Entity.Key key(Long value);
 
@@ -460,12 +460,12 @@ public interface EntityDefinition extends Serializable {
   interface Provider {
 
     /**
-     * Returns the {@link EntityDefinition} for the given entityId
-     * @param entityId the entityId
+     * Returns the {@link EntityDefinition} for the given entityType
+     * @param entityType the entityType
      * @return the entity definition
      * @throws IllegalArgumentException in case the definition is not found
      */
-    EntityDefinition getDefinition(EntityId entityId);
+    EntityDefinition getDefinition(EntityType entityType);
 
     /**
      * Returns all {@link EntityDefinition}s available in this provider

@@ -16,7 +16,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.EntityEditEvents;
@@ -47,7 +47,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /**
    * the id of the underlying entity
    */
-  private final EntityId entityId;
+  private final EntityType entityType;
 
   /**
    * the EntityConnectionProvider instance used by this EntityComboBoxModel
@@ -104,23 +104,23 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   };
 
   /**
-   * @param entityId the id of the entity this combo box model should represent
+   * @param entityType the type of the entity this combo box model should represent
    * @param connectionProvider a EntityConnectionProvider instance
    */
-  public SwingEntityComboBoxModel(final EntityId entityId, final EntityConnectionProvider connectionProvider) {
-    requireNonNull(entityId, "entityId");
+  public SwingEntityComboBoxModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+    requireNonNull(entityType, "entityType");
     requireNonNull(connectionProvider, "connectionProvider");
-    this.entityId = entityId;
+    this.entityType = entityType;
     this.connectionProvider = connectionProvider;
     this.entities = connectionProvider.getEntities();
-    setStaticData(this.entities.getDefinition(entityId).isStaticData());
+    setStaticData(this.entities.getDefinition(entityType).isStaticData());
     setIncludeCondition(foreignKeyIncludeCondition);
     addEditEventListeners();
   }
 
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + " [entityId: " + entityId + "]";
+    return getClass().getSimpleName() + " [entityType: " + entityType + "]";
   }
 
   @Override
@@ -129,8 +129,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final EntityId getEntityId() {
-    return entityId;
+  public final EntityType getEntityType() {
+    return entityType;
   }
 
   @Override
@@ -238,10 +238,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   public final SwingEntityComboBoxModel createForeignKeyFilterComboBoxModel(final Attribute<Entity> foreignKeyAttribute) {
-    final ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityId).getForeignKeyProperty(foreignKeyAttribute);
+    final ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKeyAttribute);
     final SwingEntityComboBoxModel foreignKeyModel =
-            new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityId(), connectionProvider);
-    foreignKeyModel.setNullValue(entities.createToStringEntity(foreignKeyProperty.getForeignEntityId(), "-"));
+            new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityType(), connectionProvider);
+    foreignKeyModel.setNullValue(entities.createToStringEntity(foreignKeyProperty.getForeignEntityType(), "-"));
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKeyAttribute, foreignKeyModel);
 
@@ -250,10 +250,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   public final void linkForeignKeyComboBoxModel(final Attribute<Entity> foreignKeyAttribute, final EntityComboBoxModel foreignKeyModel) {
-    final ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityId).getForeignKeyProperty(foreignKeyAttribute);
-    if (!foreignKeyProperty.getForeignEntityId().equals(foreignKeyModel.getEntityId())) {
-      throw new IllegalArgumentException("Foreign key ComboBoxModel is of type: " + foreignKeyModel.getEntityId()
-              + ", should be: " + foreignKeyProperty.getForeignEntityId());
+    final ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKeyAttribute);
+    if (!foreignKeyProperty.getForeignEntityType().equals(foreignKeyModel.getEntityType())) {
+      throw new IllegalArgumentException("Foreign key ComboBoxModel is of type: " + foreignKeyModel.getEntityType()
+              + ", should be: " + foreignKeyProperty.getForeignEntityType());
     }
     final Collection<Entity> filterEntities = getForeignKeyFilterEntities(foreignKeyAttribute);
     if (!Util.nullOrEmpty(filterEntities)) {
@@ -344,7 +344,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().select(selectCondition(entityId,
+      return connectionProvider.getConnection().select(selectCondition(entityType,
               selectConditionProvider == null ? null : selectConditionProvider.getCondition()));
     }
     catch (final DatabaseException e) {
@@ -375,15 +375,15 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   private void addEditEventListeners() {
-    EntityEditEvents.addInsertListener(entityId, insertListener);
-    EntityEditEvents.addUpdateListener(entityId, updateListener);
-    EntityEditEvents.addDeleteListener(entityId, deleteListener);
+    EntityEditEvents.addInsertListener(entityType, insertListener);
+    EntityEditEvents.addUpdateListener(entityType, updateListener);
+    EntityEditEvents.addDeleteListener(entityType, deleteListener);
   }
 
   private void removeEditEventListeners() {
-    EntityEditEvents.removeInsertListener(entityId, insertListener);
-    EntityEditEvents.removeUpdateListener(entityId, updateListener);
-    EntityEditEvents.removeDeleteListener(entityId, deleteListener);
+    EntityEditEvents.removeInsertListener(entityType, insertListener);
+    EntityEditEvents.removeUpdateListener(entityType, updateListener);
+    EntityEditEvents.removeDeleteListener(entityType, deleteListener);
   }
 
   private final class InsertListener implements EventDataListener<List<Entity>> {

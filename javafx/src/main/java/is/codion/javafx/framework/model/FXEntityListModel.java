@@ -17,7 +17,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -74,32 +74,32 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private int fetchCount = -1;
 
   /**
-   * Instantiates a new {@link FXEntityListModel} based on the given entityId
-   * @param entityId the entityId
+   * Instantiates a new {@link FXEntityListModel} based on the given entityType
+   * @param entityType the entityType
    * @param connectionProvider the connection provider
    */
-  public FXEntityListModel(final EntityId entityId, final EntityConnectionProvider connectionProvider) {
-    this(entityId, connectionProvider, new DefaultEntityTableConditionModel(entityId, connectionProvider,
+  public FXEntityListModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+    this(entityType, connectionProvider, new DefaultEntityTableConditionModel(entityType, connectionProvider,
             null, new FXConditionModelProvider()));
   }
 
   /**
-   * Instantiates a new {@link FXEntityListModel} based on the given entityId
-   * @param entityId the entityId
+   * Instantiates a new {@link FXEntityListModel} based on the given entityType
+   * @param entityType the entityType
    * @param connectionProvider the connection provider
    * @param conditionModel the {@link EntityTableConditionModel} to use
    * @throws IllegalArgumentException in case the condition model is based on a different entity
    */
-  public FXEntityListModel(final EntityId entityId, final EntityConnectionProvider connectionProvider,
+  public FXEntityListModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                            final EntityTableConditionModel conditionModel) {
-    super(entityId, connectionProvider);
+    super(entityType, connectionProvider);
     requireNonNull(conditionModel);
-    if (!conditionModel.getEntityId().equals(entityId)) {
-      throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityId()
-              + ", tableModel: " + entityId);
+    if (!conditionModel.getEntityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityType()
+              + ", tableModel: " + entityType);
     }
     if (getEntityDefinition().getVisibleProperties().isEmpty()) {
-      throw new IllegalArgumentException("No visible properties defined for entity: " + entityId);
+      throw new IllegalArgumentException("No visible properties defined for entity: " + entityType);
     }
     this.conditionModel = conditionModel;
     bindEvents();
@@ -112,7 +112,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final EntityDefinition getEntityDefinition() {
-    return getEntities().getDefinition(getEntityId());
+    return getEntities().getDefinition(getEntityType());
   }
 
   @Override
@@ -121,8 +121,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set");
     }
-    if (!editModel.getEntityId().equals(getEntityId())) {
-      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityId() + ", tableModel: " + getEntityId());
+    if (!editModel.getEntityType().equals(getEntityType())) {
+      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityType() + ", tableModel: " + getEntityType());
     }
     this.editModel = editModel;
     bindEditModelEvents();
@@ -212,9 +212,9 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void replaceForeignKeyValues(final EntityId foreignKeyEntityId, final Collection<Entity> foreignKeyValues) {
+  public final void replaceForeignKeyValues(final EntityType foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
-            getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
+            getEntityDefinition().getForeignKeyReferences(foreignKeyEntityType);
     for (final Entity entity : getItems()) {
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
@@ -450,7 +450,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
     try {
       return getConnectionProvider().getConnection().select(selectCondition(
-              getEntityId(), conditionModel.getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
+              getEntityType(), conditionModel.getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -472,14 +472,14 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * The default implementation is:
    * <pre>
    * {@code
-   * return getClass().getSimpleName() + "-" + getEntityId();
+   * return getClass().getSimpleName() + "-" + getEntityType();
    * }
    * </pre>
    * Override in case this key is not unique.
    * @return the key used to identify user preferences for this table model
    */
   protected String getUserPreferencesKey() {
-    return getClass().getSimpleName() + "-" + getEntityId();
+    return getClass().getSimpleName() + "-" + getEntityType();
   }
 
   @Override
@@ -496,7 +496,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     getSelectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
       final List<Entity> entitiesToAdd = insertedEntities.stream().filter(entity ->
-              entity.getEntityId().equals(getEntityId())).collect(Collectors.toList());
+              entity.getEntityType().equals(getEntityType())).collect(Collectors.toList());
       switch (insertAction) {
         case ADD_TOP:
           addEntitiesAt(0, entitiesToAdd);

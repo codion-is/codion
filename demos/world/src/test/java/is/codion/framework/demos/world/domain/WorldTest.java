@@ -2,7 +2,7 @@ package is.codion.framework.demos.world.domain;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -31,9 +31,9 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(EntityId entityId, Map<EntityId, Entity> foreignKeyEntities) {
-    Entity entity = super.initializeTestEntity(entityId, foreignKeyEntities);
-    if (entityId.equals(World.T_COUNTRY)) {
+  protected Entity initializeTestEntity(EntityType entityType, Map<EntityType, Entity> foreignKeyEntities) {
+    Entity entity = super.initializeTestEntity(entityType, foreignKeyEntities);
+    if (entityType.equals(World.T_COUNTRY)) {
       entity.put(World.COUNTRY_CODE, "XXX");
       entity.put(World.COUNTRY_CONTINENT, "Asia");
     }
@@ -42,7 +42,7 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected void modifyEntity(Entity testEntity, Map<EntityId, Entity> foreignKeyEntities) {
+  protected void modifyEntity(Entity testEntity, Map<EntityType, Entity> foreignKeyEntities) {
     super.modifyEntity(testEntity, foreignKeyEntities);
     if (testEntity.is(World.T_COUNTRY)) {
       testEntity.put(World.COUNTRY_CONTINENT, "Europe");
@@ -50,20 +50,20 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(EntityId entityId, Map<EntityId, Entity> foreignKeyEntities) {
-    if (entityId.equals(World.T_COUNTRY)) {
+  protected Entity initializeReferenceEntity(EntityType entityType, Map<EntityType, Entity> foreignKeyEntities) {
+    if (entityType.equals(World.T_COUNTRY)) {
       Entity iceland = getEntities().entity(World.T_COUNTRY);
       iceland.put(World.COUNTRY_CODE, "ISL");
 
       return iceland;
     }
-    if (entityId.equals(World.T_CITY)) {
+    if (entityType.equals(World.T_CITY)) {
       Entity reykjavik = getEntities().entity(World.T_CITY);
       reykjavik.put(World.CITY_ID, 1449);
 
       return reykjavik;
     }
 
-    return super.initializeReferenceEntity(entityId, foreignKeyEntities);
+    return super.initializeReferenceEntity(entityType, foreignKeyEntities);
   }
 }

@@ -6,7 +6,7 @@ package is.codion.framework.db;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -42,18 +42,18 @@ public final class EntityConnections {
    * @param destination the destination db
    * @param batchSize the number of records to copy between commits
    * @param includePrimaryKeys specifies whether primary key values should be included when copying
-   * @param entityIds the ids of the entity types to copy
+   * @param entityTypes the entity types to copy
    * @throws DatabaseException in case of a db exception
    * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */
   public static void copyEntities(final EntityConnection source, final EntityConnection destination, final int batchSize,
-                                  final IncludePrimaryKeys includePrimaryKeys, final EntityId... entityIds) throws DatabaseException {
+                                  final IncludePrimaryKeys includePrimaryKeys, final EntityType... entityTypes) throws DatabaseException {
     requireNonNull(source, "source");
     requireNonNull(destination, "destination");
     requireNonNull(includePrimaryKeys, "includePrimaryKeys");
-    requireNonNull(entityIds);
-    for (final EntityId entityId : entityIds) {
-      final List<Entity> entities = source.select(selectCondition(entityId).setForeignKeyFetchDepth(0));
+    requireNonNull(entityTypes);
+    for (final EntityType entityType : entityTypes) {
+      final List<Entity> entities = source.select(selectCondition(entityType).setForeignKeyFetchDepth(0));
       if (includePrimaryKeys == IncludePrimaryKeys.NO) {
         entities.forEach(Entity::clearKeyValues);
       }

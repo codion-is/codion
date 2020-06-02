@@ -279,7 +279,7 @@ public final class EntityService extends Application {
   }
 
   /**
-   * Returns the entities referencing the given entities via foreign keys, mapped to their respective entityIds
+   * Returns the entities referencing the given entities via foreign keys, mapped to their respective entityTypes
    * @param request the servlet request
    * @param headers the headers
    * @return a response

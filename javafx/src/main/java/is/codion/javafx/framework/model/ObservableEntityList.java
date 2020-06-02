@@ -13,7 +13,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -40,7 +40,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   private static final String SELECTION_MODEL_HAS_NOT_BEEN_SET = "Selection model has not been set";
 
-  private final EntityId entityId;
+  private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
   private final SortedList<Entity> sortedList;
   private final FilteredList<Entity> filteredList;
@@ -56,22 +56,22 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   /**
    * Instantiates a new {@link ObservableEntityList}
-   * @param entityId the entity on which to base the list
+   * @param entityType the entity on which to base the list
    * @param connectionProvider the connection provider
    */
-  public ObservableEntityList(final EntityId entityId, final EntityConnectionProvider connectionProvider) {
+  public ObservableEntityList(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
     super(FXCollections.observableArrayList());
-    this.entityId = entityId;
+    this.entityType = entityType;
     this.connectionProvider = connectionProvider;
     this.filteredList = new FilteredList<>(this);
-    this.sortedList = new SortedList<>(filteredList, connectionProvider.getEntities().getDefinition(entityId).getComparator());
+    this.sortedList = new SortedList<>(filteredList, connectionProvider.getEntities().getDefinition(entityType).getComparator());
   }
 
   /**
    * @return the id of the underlying entity
    */
-  public final EntityId getEntityId() {
-    return entityId;
+  public final EntityType getEntityType() {
+    return entityType;
   }
 
   /**
@@ -277,8 +277,8 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().select(selectCondition(entityId, selectCondition)
-              .setOrderBy(connectionProvider.getEntities().getDefinition(entityId).getOrderBy()));
+      return connectionProvider.getConnection().select(selectCondition(entityType, selectCondition)
+              .setOrderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

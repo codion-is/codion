@@ -382,8 +382,8 @@ final class EntityConnectionHandler implements InvocationHandler {
     }
 
     private String entityToString(final Entity entity) {
-      final StringBuilder builder = new StringBuilder(entity.getEntityId().getName()).append(" {");
-      final List<ColumnProperty<?>> columnProperties = definitionProvider.getDefinition(entity.getEntityId()).getColumnProperties();
+      final StringBuilder builder = new StringBuilder(entity.getEntityType().getName()).append(" {");
+      final List<ColumnProperty<?>> columnProperties = definitionProvider.getDefinition(entity.getEntityType()).getColumnProperties();
       for (int i = 0; i < columnProperties.size(); i++) {
         final ColumnProperty<?> property = columnProperties.get(i);
         final boolean modified = entity.isModified(property.getAttribute());
@@ -402,7 +402,7 @@ final class EntityConnectionHandler implements InvocationHandler {
     }
 
     private static String entityKeyToString(final Entity.Key key) {
-      return key.getEntityId() + " {" + key.toString() + "}";
+      return key.getEntityType() + " {" + key.toString() + "}";
     }
   }
 }

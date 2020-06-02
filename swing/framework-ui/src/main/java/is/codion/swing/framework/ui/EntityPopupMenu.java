@@ -60,10 +60,10 @@ final class EntityPopupMenu extends JPopupMenu {
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
                                          final EntityConnectionProvider connectionProvider, final Set<Entity> visitedEntities) {
     final Entities entities = connectionProvider.getEntities();
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityId()).getPrimaryKeyProperties()));
-    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(entities.getDefinition(entity.getEntityId())
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityType()).getPrimaryKeyProperties()));
+    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(entities.getDefinition(entity.getEntityType())
             .getForeignKeyProperties()), visitedEntities);
-    populateValueMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityId()).getProperties()), entities);
+    populateValueMenu(rootMenu, entity, new ArrayList<>(entities.getDefinition(entity.getEntityType()).getProperties()), entities);
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<ColumnProperty<?>> primaryKeyProperties) {
@@ -89,7 +89,7 @@ final class EntityPopupMenu extends JPopupMenu {
       if (!visitedEntities.contains(entity)) {
         visitedEntities.add(entity);
         Text.collate(fkProperties);
-        final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entity.getEntityId());
+        final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entity.getEntityType());
         final EntityValidator validator = definition.getValidator();
         for (final ForeignKeyProperty property : fkProperties) {
           final Attribute<Entity> attribute = property.getAttribute();
@@ -146,7 +146,7 @@ final class EntityPopupMenu extends JPopupMenu {
                                         final Entities entities) {
     Text.collate(properties);
     final int maxValueLength = 20;
-    final EntityDefinition definition = entities.getDefinition(entity.getEntityId());
+    final EntityDefinition definition = entities.getDefinition(entity.getEntityType());
     final EntityValidator validator = definition.getValidator();
     for (final Property<?> property : properties) {
       final boolean valid = isValid(validator, entity, definition, property);

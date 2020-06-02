@@ -4,7 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.DefaultEntityLookupModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -28,14 +28,14 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor {
   @Override
   protected JComponent initializeEditorComponent() {
     final ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) getProperty();
-    final EntityId foreignEntityId = foreignKeyProperty.getForeignEntityId();
+    final EntityType foreignEntityType = foreignKeyProperty.getForeignEntityType();
 
-    if (connectionProvider.getEntities().getDefinition(foreignEntityId).isSmallDataset()) {
+    if (connectionProvider.getEntities().getDefinition(foreignEntityType).isSmallDataset()) {
       return EntityInputComponents.createForeignKeyComboBox(foreignKeyProperty, getCellValue(),
-              new SwingEntityComboBoxModel(foreignEntityId, connectionProvider));
+              new SwingEntityComboBoxModel(foreignEntityType, connectionProvider));
     }
 
     return EntityInputComponents.createForeignKeyLookupField(foreignKeyProperty, getCellValue(),
-            new DefaultEntityLookupModel(foreignEntityId, connectionProvider));
+            new DefaultEntityLookupModel(foreignEntityType, connectionProvider));
   }
 }

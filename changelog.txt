@@ -6181,3 +6181,4 @@
   EntityEditComponentPanel, now fully type safe
   SelectedItemValue, bug fix, did not select correctly
   Entity.Identity renamed EntityId and moved up to package level
+  EntityId renamed EntityType, one of the frameworks oldest variable names disappears in a puff of well duhh

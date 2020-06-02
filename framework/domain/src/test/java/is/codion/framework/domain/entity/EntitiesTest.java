@@ -8,7 +8,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -331,7 +331,7 @@ public final class EntitiesTest {
     final Entity four = entities.entity(TestDomain.T_EMP);
 
     final Collection<Entity> entities = asList(one, two, three, four);
-    final Map<EntityId, List<Entity>> map = Entities.mapToEntityId(entities);
+    final Map<EntityType, List<Entity>> map = Entities.mapToEntityType(entities);
 
     Collection<Entity> mapped = map.get(TestDomain.T_EMP);
     assertTrue(mapped.contains(one));
@@ -407,7 +407,7 @@ public final class EntitiesTest {
     final Set<Entity.Key> referencedKeys = Entities.getReferencedKeys(asList(emp1, emp2, emp3, emp4),
             TestDomain.EMP_DEPARTMENT_FK);
     assertEquals(2, referencedKeys.size());
-    referencedKeys.forEach(key -> assertEquals(TestDomain.T_DEPARTMENT, key.getEntityId()));
+    referencedKeys.forEach(key -> assertEquals(TestDomain.T_DEPARTMENT, key.getEntityType()));
     final List<Integer> values = Entities.getValues(new ArrayList<>(referencedKeys));
     assertTrue(values.contains(1));
     assertTrue(values.contains(2));

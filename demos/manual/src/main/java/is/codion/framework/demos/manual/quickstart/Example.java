@@ -15,7 +15,7 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
@@ -32,7 +32,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static is.codion.framework.demos.manual.quickstart.Example.Store.*;
-import static is.codion.framework.domain.entity.Entities.entityId;
+import static is.codion.framework.domain.entity.Entities.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.UUID.randomUUID;
@@ -48,7 +48,7 @@ public final class Example {
     }
 
     // tag::customer[]
-    public static final EntityId T_CUSTOMER = entityId("store.customer");
+    public static final EntityType T_CUSTOMER = entityType("store.customer");
     public static final Attribute<String> CUSTOMER_ID = T_CUSTOMER.stringAttribute("id");
     public static final Attribute<String> CUSTOMER_FIRST_NAME = T_CUSTOMER.stringAttribute("first_name");
     public static final Attribute<String> CUSTOMER_LAST_NAME = T_CUSTOMER.stringAttribute("last_name");
@@ -72,7 +72,7 @@ public final class Example {
     }
     // end::customer[]
     // tag::address[]
-    public static final EntityId T_ADDRESS = entityId("store.address");
+    public static final EntityType T_ADDRESS = entityType("store.address");
     public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("id");
     public static final Attribute<String> ADDRESS_STREET = T_ADDRESS.stringAttribute("street");
     public static final Attribute<String> ADDRESS_CITY = T_ADDRESS.stringAttribute("city");
@@ -90,7 +90,7 @@ public final class Example {
     }
     // end::address[]
     // tag::customerAddress[]
-    public static final EntityId T_CUSTOMER_ADDRESS = entityId("store.customer_address");
+    public static final EntityType T_CUSTOMER_ADDRESS = entityType("store.customer_address");
     public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("id");
     public static final Attribute<Integer> CUSTOMER_ADDRESS_CUSTOMER_ID = T_CUSTOMER_ADDRESS.integerAttribute("customer_id");
     public static final Attribute<Entity> CUSTOMER_ADDRESS_CUSTOMER_FK = T_CUSTOMER_ADDRESS.entityAttribute("customer_fk");

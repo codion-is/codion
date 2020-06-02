@@ -4,7 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.ArrayList;
@@ -30,21 +30,21 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
 
   /**
    * Instantiates a new {@link DefaultEntitySelectCondition}, which includes all the underlying entities
-   * @param entityId the id of the entity to select
+   * @param entityType the type of the entity to select
    */
-  DefaultEntitySelectCondition(final EntityId entityId) {
-    super(entityId);
+  DefaultEntitySelectCondition(final EntityType entityType) {
+    super(entityType);
   }
 
   /**
    * Instantiates a new {@link DefaultEntitySelectCondition}
-   * @param entityId the id of the entity to select
+   * @param entityType the type of the entity to select
    * @param condition the Condition object
    * @see DefaultPropertyCondition
    * @see EntityKeyCondition
    */
-  DefaultEntitySelectCondition(final EntityId entityId, final Condition condition) {
-    super(entityId, condition);
+  DefaultEntitySelectCondition(final EntityType entityType, final Condition condition) {
+    super(entityType, condition);
   }
 
   @Override

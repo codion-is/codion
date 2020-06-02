@@ -64,24 +64,24 @@ And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic
 
 Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[ORM] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities* and *properties*. This simplifies a lot of things and completely eliminates the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
 
-In the following example we start by extending the *Domain* class, with three convenient static imports (omitting the rest of the imports for brevity). We then define *EntityId* constants for the entities and use those to create *Attribute* constants for their respective properties. These constants are used whenever we need to refer to the entity type and its values. Finally we use these *entityIds* and *attributes* to define and configure two entities, with a master-detail relationship.
+In the following example we start by extending the *Domain* class, with three convenient static imports (omitting the rest of the imports for brevity). We then define *EntityType* constants for the entities and use those to create *Attribute* constants for their respective properties. These constants are used whenever we need to refer to the entity type and its values. Finally we use these *entityTypes* and *attributes* to define and configure two entities, with a master-detail relationship.
 
 [source,java]
 ----
-import static is.codion.framework.domain.entity.Entities.entityId;
+import static is.codion.framework.domain.entity.Entities.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 
 public class Store extends Domain {
 
-  public static final EntityId T_CUSTOMER = entityId("store.customer");
+  public static final EntityType T_CUSTOMER = entityType("store.customer");
   public static final Attribute<Integer> CUSTOMER_ID = T_CUSTOMER.integerAttribute("id");
   public static final Attribute<String> CUSTOMER_FIRST_NAME = T_CUSTOMER.stringAttribute("first_name");
   public static final Attribute<String> CUSTOMER_LAST_NAME = T_CUSTOMER.stringAttribute("last_name");
   public static final Attribute<String> CUSTOMER_EMAIL = T_CUSTOMER.stringAttribute("email");
   public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = T_CUSTOMER.booleanAttribute("is_active");
 
-  public static final EntityId T_ADDRESS = entityId("store.address");
+  public static final EntityType T_ADDRESS = entityType("store.address");
   public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("id");
   public static final Attribute<Entity> ADDRESS_CUSTOMER_FK = T_ADDRESS.entityAttribute("customer_fk");
   public static final Attribute<Integer> ADDRESS_CUSTOMER_ID = T_ADDRESS.integerAttribute("customer_id");
@@ -129,7 +129,7 @@ public class Store extends Domain {
 |is.codion.framework.domain.test|is.codion.jdk11:codion-framework-domain-test:{version}
 |===
 
-The *EntityTestUnit* class provides a JUnit testing harness for the domain model. The *EntityTestUnit.test(entityId)* method runs insert, select, update and delete on a randomly generated entity instance, verifying the results.
+The *EntityTestUnit* class provides a JUnit testing harness for the domain model. The *EntityTestUnit.test(entityType)* method runs insert, select, update and delete on a randomly generated entity instance, verifying the results.
 
 [source,java]
 ----

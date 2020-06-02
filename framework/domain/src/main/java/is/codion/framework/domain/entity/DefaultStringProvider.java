@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.function.Function;
 
 /**
- * A ToString implementation using the entityId plus primary key value.
+ * A ToString implementation using the entityType plus primary key value.
  */
 final class DefaultStringProvider implements Function<Entity, String>, Serializable {
 
@@ -15,6 +15,6 @@ final class DefaultStringProvider implements Function<Entity, String>, Serializa
 
   @Override
   public String apply(final Entity entity) {
-    return entity.getEntityId() + ": " + entity.getKey();
+    return entity.getEntityType() + ": " + entity.getKey();
   }
 }

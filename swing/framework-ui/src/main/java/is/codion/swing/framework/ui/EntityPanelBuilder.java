@@ -6,7 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
@@ -55,10 +55,10 @@ public class EntityPanelBuilder {
 
   /**
    * Instantiates a new EntityPanelBuilder for the given entity type
-   * @param entityId the entityId
+   * @param entityType the entityType
    */
-  public EntityPanelBuilder(final EntityId entityId) {
-    this(new SwingEntityModelBuilder(entityId));
+  public EntityPanelBuilder(final EntityType entityType) {
+    this(new SwingEntityModelBuilder(entityType));
   }
 
   /**
@@ -70,10 +70,10 @@ public class EntityPanelBuilder {
   }
 
   /**
-   * @return the entityId
+   * @return the entityType
    */
-  public final EntityId getEntityId() {
-    return modelBuilder.getEntityId();
+  public final EntityType getEntityType() {
+    return modelBuilder.getEntityType();
   }
 
   /**
@@ -250,13 +250,13 @@ public class EntityPanelBuilder {
   @Override
   public final boolean equals(final Object obj) {
     return obj instanceof EntityPanelBuilder &&
-            ((EntityPanelBuilder) obj).modelBuilder.getEntityId().equals(modelBuilder.getEntityId()) &&
+            ((EntityPanelBuilder) obj).modelBuilder.getEntityType().equals(modelBuilder.getEntityType()) &&
             ((EntityPanelBuilder) obj).modelBuilder.getModelClass().equals(modelBuilder.getModelClass());
   }
 
   @Override
   public final int hashCode() {
-    return modelBuilder.getEntityId().hashCode() + modelBuilder.getModelClass().hashCode();
+    return modelBuilder.getEntityType().hashCode() + modelBuilder.getModelClass().hashCode();
   }
 
   /**
@@ -293,7 +293,7 @@ public class EntityPanelBuilder {
         entityPanel.setDetailPanelState(detailPanelState);
         entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (final EntityPanelBuilder detailPanelBuilder : detailPanelBuilders) {
-          final SwingEntityModel detailModel = model.getDetailModel(detailPanelBuilder.getEntityId());
+          final SwingEntityModel detailModel = model.getDetailModel(detailPanelBuilder.getEntityType());
           final EntityPanel detailPanel = detailPanelBuilder.createPanel(detailModel);
           entityPanel.addDetailPanel(detailPanel);
         }
@@ -395,7 +395,7 @@ public class EntityPanelBuilder {
         entityPanel = findModelConstructor(getPanelClass()).newInstance(entityModel);
       }
       entityPanel.setCaption(caption == null ? entityModel.getConnectionProvider()
-              .getEntities().getDefinition(entityModel.getEntityId()).getCaption() : caption);
+              .getEntities().getDefinition(entityModel.getEntityType()).getCaption() : caption);
 
       return entityPanel;
     }
@@ -409,10 +409,10 @@ public class EntityPanelBuilder {
 
   private EntityEditPanel initializeEditPanel(final SwingEntityEditModel editModel) {
     if (editPanelClass == null) {
-      throw new IllegalArgumentException("No edit panel class has been specified for entity panel provider: " + getEntityId());
+      throw new IllegalArgumentException("No edit panel class has been specified for entity panel provider: " + getEntityType());
     }
-    if (!editModel.getEntityId().equals(getEntityId())) {
-      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityId() + ", required: " + getEntityId());
+    if (!editModel.getEntityType().equals(getEntityType())) {
+      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityType() + ", required: " + getEntityType());
     }
     try {
       final EntityEditPanel editPanel = findEditModelConstructor(editPanelClass).newInstance(editModel);
@@ -430,8 +430,8 @@ public class EntityPanelBuilder {
 
   private EntityTablePanel initializeTablePanel(final SwingEntityTableModel tableModel) {
     try {
-      if (!tableModel.getEntityId().equals(getEntityId())) {
-        throw new IllegalArgumentException("Entity ID mismatch, tableModel: " + tableModel.getEntityId() + ", required: " + getEntityId());
+      if (!tableModel.getEntityType().equals(getEntityType())) {
+        throw new IllegalArgumentException("Entity ID mismatch, tableModel: " + tableModel.getEntityType() + ", required: " + getEntityType());
       }
       final EntityTablePanel tablePanel = findTableModelConstructor(getTablePanelClass()).newInstance(tableModel);
       configureTablePanel(tablePanel);
@@ -524,7 +524,7 @@ public class EntityPanelBuilder {
       });
       final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
       final JDialog dialog = pane.createDialog(component, getCaption() == null ?
-              connectionProvider.getEntities().getDefinition(getEntityId()).getCaption() : getCaption());
+              connectionProvider.getEntities().getDefinition(getEntityType()).getCaption() : getCaption());
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       Components.addInitialFocusHack(editPanel, Controls.control(editPanel::requestInitialFocus));
       dialog.setVisible(true);

@@ -4,7 +4,7 @@
 package is.codion.framework.domain.attribute;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.math.BigDecimal;
 import java.sql.Types;
@@ -24,17 +24,17 @@ class DefaultAttribute<T> implements Attribute<T> {
   private final int type;
   private final Class<T> typeClass;
   private final int hashCode;
-  private final EntityId entityId;
+  private final EntityType entityType;
 
-  DefaultAttribute(final String name, final Class<T> typeClass, final EntityId entityId) {
+  DefaultAttribute(final String name, final Class<T> typeClass, final EntityType entityType) {
     if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
     }
     this.name = name;
-    this.entityId = requireNonNull(entityId, "entityId");
+    this.entityType = requireNonNull(entityType, "entityType");
     this.type = getSqlType(requireNonNull(typeClass, "typeClass"));
     this.typeClass = typeClass;
-    this.hashCode = Objects.hash(name, entityId);
+    this.hashCode = Objects.hash(name, entityType);
   }
 
   @Override
@@ -53,15 +53,15 @@ class DefaultAttribute<T> implements Attribute<T> {
   }
 
   @Override
-  public final EntityId getEntityId() {
-    return entityId;
+  public final EntityType getEntityType() {
+    return entityType;
   }
 
   @Override
   public final T validateType(final T value) {
     if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
       throw new IllegalArgumentException("Value of type " + typeClass +
-              " expected for property " + this + " in entity " + entityId + ", got: " + value.getClass());
+              " expected for property " + this + " in entity " + entityType + ", got: " + value.getClass());
     }
 
     return value;
@@ -157,7 +157,7 @@ class DefaultAttribute<T> implements Attribute<T> {
     }
     final DefaultAttribute<?> that = (DefaultAttribute<?>) object;
 
-    return name.equals(that.name) && entityId.equals(that.entityId);
+    return name.equals(that.name) && entityType.equals(that.entityType);
   }
 
   @Override
@@ -167,7 +167,7 @@ class DefaultAttribute<T> implements Attribute<T> {
 
   @Override
   public final String toString() {
-    return "entityId: " + entityId + ", name: " + name;
+    return "entityType: " + entityType + ", name: " + name;
   }
 
   private static int getSqlType(final Class<?> clazz) {

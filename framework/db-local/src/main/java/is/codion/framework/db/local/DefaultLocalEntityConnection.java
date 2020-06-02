@@ -28,7 +28,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -83,11 +83,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private final Domain domain;
   private final DatabaseConnection connection;
-  private final Map<EntityId, List<ColumnProperty<?>>> insertablePropertiesCache = new HashMap<>();
-  private final Map<EntityId, List<ColumnProperty<?>>> updatablePropertiesCache = new HashMap<>();
-  private final Map<EntityId, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
-  private final Map<EntityId, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
-  private final Map<EntityId, String> allColumnsClauseCache = new HashMap<>();
+  private final Map<EntityType, List<ColumnProperty<?>>> insertablePropertiesCache = new HashMap<>();
+  private final Map<EntityType, List<ColumnProperty<?>>> updatablePropertiesCache = new HashMap<>();
+  private final Map<EntityType, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
+  private final Map<EntityType, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
+  private final Map<EntityType, String> allColumnsClauseCache = new HashMap<>();
 
   private boolean optimisticLockingEnabled = true;
   private boolean limitForeignKeyFetchDepth = true;
@@ -209,7 +209,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         final List<ColumnProperty<?>> statementProperties = new ArrayList<>();
         for (int i = 0; i < entities.size(); i++) {
           final Entity entity = entities.get(i);
-          final EntityDefinition entityDefinition = getEntityDefinition(entity.getEntityId());
+          final EntityDefinition entityDefinition = getEntityDefinition(entity.getEntityType());
           final List<ColumnProperty<?>> primaryKeyProperties = entityDefinition.getPrimaryKeyProperties();
           final KeyGenerator keyGenerator = entityDefinition.getKeyGenerator();
           keyGenerator.beforeInsert(entity, primaryKeyProperties, connection);
@@ -217,7 +217,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           populatePropertiesAndValues(entity, getInsertableProperties(entityDefinition, keyGenerator.isInserted()),
                   statementProperties, statementValues, columnProperty -> entity.containsKey(columnProperty.getAttribute()));
           if (statementProperties.isEmpty()) {
-            throw new SQLException("Unable to insert entity " + entity.getEntityId() + ", no properties to insert");
+            throw new SQLException("Unable to insert entity " + entity.getEntityType() + ", no properties to insert");
           }
 
           final String[] returnColumns = keyGenerator.returnGeneratedKeys() ? getPrimaryKeyColumnNames(entityDefinition) : null;
@@ -258,8 +258,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entities.isEmpty()) {
       return emptyList();
     }
-    final Map<EntityId, List<Entity>> entitiesByEntityId = mapToEntityId(entities);
-    checkIfReadOnly(entitiesByEntityId.keySet());
+    final Map<EntityType, List<Entity>> entitiesByEntityType = mapToEntityType(entities);
+    checkIfReadOnly(entitiesByEntityType.keySet());
 
     final List<Object> statementValues = new ArrayList<>();
     PreparedStatement statement = null;
@@ -267,21 +267,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         if (optimisticLockingEnabled) {
-          performOptimisticLocking(entitiesByEntityId);
+          performOptimisticLocking(entitiesByEntityType);
         }
 
         final List<ColumnProperty<?>> statementProperties = new ArrayList<>();
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
-        for (final Map.Entry<EntityId, List<Entity>> entityIdEntities : entitiesByEntityId.entrySet()) {
-          final EntityDefinition entityDefinition = getEntityDefinition(entityIdEntities.getKey());
+        for (final Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
+          final EntityDefinition entityDefinition = getEntityDefinition(entityTypeEntities.getKey());
           final List<ColumnProperty<?>> updatableProperties = getUpdatableProperties(entityDefinition);
 
-          final List<Entity> entitiesToUpdate = entityIdEntities.getValue();
+          final List<Entity> entitiesToUpdate = entityTypeEntities.getValue();
           for (final Entity entity : entitiesToUpdate) {
             populatePropertiesAndValues(entity, updatableProperties, statementProperties, statementValues,
                     property -> entity.containsKey(property.getAttribute()) && entity.isModified(property.getAttribute()));
             if (statementProperties.isEmpty()) {
-              throw new SQLException("Unable to update entity " + entity.getEntityId() + ", no modified values found");
+              throw new SQLException("Unable to update entity " + entity.getEntityType() + ", no modified values found");
             }
 
             final WhereCondition updateCondition = whereCondition(condition(entity.getOriginalKey()), entityDefinition);
@@ -301,7 +301,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final List<Entity> selected = doSelect(selectCondition(getKeys(entitiesToUpdate)));
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
-                    selected.size() + ", entityId: " + entityIdEntities.getKey());
+                    selected.size() + ", entityType: " + entityTypeEntities.getKey());
           }
           updatedEntities.addAll(selected);
         }
@@ -336,7 +336,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (updateCondition.getAttributeValues().isEmpty()) {
       throw new IllegalArgumentException("No attribute values provided for update");
     }
-    checkIfReadOnly(updateCondition.getEntityId());
+    checkIfReadOnly(updateCondition.getEntityType());
 
     final List<Object> statementValues = new ArrayList<>();
     PreparedStatement statement = null;
@@ -344,7 +344,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         final List<ColumnProperty<?>> statementProperties = new ArrayList<>();
-        final EntityDefinition entityDefinition = getEntityDefinition(updateCondition.getEntityId());
+        final EntityDefinition entityDefinition = getEntityDefinition(updateCondition.getEntityType());
         for (final Map.Entry<Attribute<?>, Object> propertyValue : updateCondition.getAttributeValues().entrySet()) {
           final ColumnProperty<Object> columnProperty = entityDefinition.getColumnProperty((Attribute<Object>) propertyValue.getKey());
           if (!columnProperty.isUpdatable()) {
@@ -377,9 +377,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public int delete(final EntityCondition deleteCondition) throws DatabaseException {
     requireNonNull(deleteCondition, "deleteCondition");
-    checkIfReadOnly(deleteCondition.getEntityId());
+    checkIfReadOnly(deleteCondition.getEntityType());
 
-    final EntityDefinition entityDefinition = getEntityDefinition(deleteCondition.getEntityId());
+    final EntityDefinition entityDefinition = getEntityDefinition(deleteCondition.getEntityType());
     final WhereCondition whereCondition = whereCondition(deleteCondition, entityDefinition);
     PreparedStatement statement = null;
     String deleteQuery = null;
@@ -415,8 +415,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (keys.isEmpty()) {
       return 0;
     }
-    final Map<EntityId, List<Entity.Key>> keysByEntityId = mapKeysToEntityId(keys);
-    checkIfReadOnly(keysByEntityId.keySet());
+    final Map<EntityType, List<Entity.Key>> keysByEntityType = mapKeysToEntityType(keys);
+    checkIfReadOnly(keysByEntityType.keySet());
 
     PreparedStatement statement = null;
     WhereCondition whereCondition = null;
@@ -424,9 +424,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         int deleteCount = 0;
-        for (final Map.Entry<EntityId, List<Entity.Key>> entityIdKeys : keysByEntityId.entrySet()) {
-          final EntityDefinition entityDefinition = getEntityDefinition(entityIdKeys.getKey());
-          whereCondition = whereCondition(condition(entityIdKeys.getValue()), entityDefinition);
+        for (final Map.Entry<EntityType, List<Entity.Key>> entityTypeKeys : keysByEntityType.entrySet()) {
+          final EntityDefinition entityDefinition = getEntityDefinition(entityTypeKeys.getKey());
+          whereCondition = whereCondition(condition(entityTypeKeys.getValue()), entityDefinition);
           deleteQuery = deleteQuery(entityDefinition.getTableName(), whereCondition.getWhereClause());
           statement = prepareStatement(deleteQuery);
           deleteCount += executeStatement(statement, deleteQuery,
@@ -449,8 +449,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(final EntityId entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
-    return selectSingle(selectCondition(entityId, attribute, LIKE, value));
+  public <T> Entity selectSingle(final EntityType entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
+    return selectSingle(selectCondition(entityType, attribute, LIKE, value));
   }
 
   @Override
@@ -481,8 +481,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         final List<Entity> result = new ArrayList<>();
-        for (final List<Entity.Key> entityIdKeys : mapKeysToEntityId(keys).values()) {
-          result.addAll(doSelect(selectCondition(entityIdKeys)));
+        for (final List<Entity.Key> entityTypeKeys : mapKeysToEntityType(keys).values()) {
+          result.addAll(doSelect(selectCondition(entityTypeKeys)));
         }
         commitIfTransactionIsNotOpen();
 
@@ -496,13 +496,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final EntityId entityId, final Attribute<T> attribute, final T value) throws DatabaseException {
-    return select(selectCondition(entityId, attribute, LIKE, value));
+  public <T> List<Entity> select(final EntityType entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
+    return select(selectCondition(entityType, attribute, LIKE, value));
   }
 
   @Override
-  public <T> List<Entity> select(final EntityId entityId, final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
-    return select(selectCondition(entityId, attribute, LIKE, values));
+  public <T> List<Entity> select(final EntityType entityType, final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
+    return select(selectCondition(entityType, attribute, LIKE, values));
   }
 
   @Override
@@ -527,11 +527,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public <T> List<T> selectValues(final Attribute<T> attribute, final EntityCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
-    final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
+    final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityType());
     if (entityDefinition.getSelectQuery() != null) {
       throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
-    final WhereCondition combinedCondition = whereCondition(condition(condition.getEntityId(), combination(Conjunction.AND,
+    final WhereCondition combinedCondition = whereCondition(condition(condition.getEntityType(), combination(Conjunction.AND,
             expand(condition.getCondition(), entityDefinition),
             propertyCondition(attribute, NOT_LIKE, null))), entityDefinition);
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
@@ -565,7 +565,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public int selectRowCount(final EntityCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
-    final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityId());
+    final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityType());
     final WhereCondition whereCondition = whereCondition(condition, entityDefinition);
     final Database database = connection.getDatabase();
     final String subquery = selectQuery(Queries.columnsClause(entityDefinition.getPrimaryKeyProperties()),
@@ -600,21 +600,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Map<EntityId, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES_PARAM_NAME);
     if (entities.isEmpty()) {
       return emptyMap();
     }
 
-    final Map<EntityId, Collection<Entity>> dependencyMap = new HashMap<>();
+    final Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
     final Collection<ForeignKeyProperty> foreignKeyReferences = getForeignKeyReferences(
-            entities.iterator().next().getEntityId());
+            entities.iterator().next().getEntityType());
     for (final ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
-        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getAttribute().getEntityId(),
+        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getAttribute().getEntityType(),
                 foreignKeyReference.getAttribute(), LIKE, entities));
         if (!dependencies.isEmpty()) {
-          dependencyMap.put(foreignKeyReference.getAttribute().getEntityId(), dependencies);
+          dependencyMap.put(foreignKeyReference.getAttribute().getEntityType(), dependencies);
         }
       }
     }
@@ -696,12 +696,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData) throws DatabaseException {
     requireNonNull(blobData, "blobData");
-    final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
-    checkIfReadOnly(entityDefinition.getEntityId());
+    final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityType());
+    checkIfReadOnly(entityDefinition.getEntityType());
     final ColumnProperty<byte[]> blobProperty = entityDefinition.getColumnProperty(blobAttribute);
     if (blobProperty.getColumnType() != Types.BLOB) {
       throw new IllegalArgumentException("Property " + blobProperty.getAttribute() + " in entity " +
-              primaryKey.getEntityId() + " does not have column type BLOB");
+              primaryKey.getEntityType() + " does not have column type BLOB");
     }
     final WhereCondition whereCondition = whereCondition(condition(primaryKey), entityDefinition);
     final String updateQuery = "update " + entityDefinition.getTableName() + " set " + blobProperty.getColumnName() + " = ?" +
@@ -741,11 +741,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
-    final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityId());
+    final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityType());
     final ColumnProperty<byte[]> blobProperty = entityDefinition.getColumnProperty(blobAttribute);
     if (blobProperty.getColumnType() != Types.BLOB) {
       throw new IllegalArgumentException("Property " + blobProperty.getAttribute() + " in entity " +
-              primaryKey.getEntityId() + " does not have column type BLOB");
+              primaryKey.getEntityType() + " does not have column type BLOB");
     }
     PreparedStatement statement = null;
     SQLException exception = null;
@@ -834,20 +834,20 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * and checks if they have been modified by comparing the property values to the current values in the database.
    * Note that this does not include BLOB properties or properties that are readOnly.
    * The calling method is responsible for releasing the select for update lock.
-   * @param entitiesByEntityId the entities to check, mapped to entityId
+   * @param entitiesByEntityType the entities to check, mapped to entityType
    * @throws SQLException in case of exception
    * @throws RecordModifiedException in case an entity has been modified, if an entity has been deleted,
    * the {@code modifiedRow} provided by the exception is null
    */
-  private void performOptimisticLocking(final Map<EntityId, List<Entity>> entitiesByEntityId) throws SQLException, RecordModifiedException {
-    for (final Map.Entry<EntityId, List<Entity>> entitiesByEntityIdEntry : entitiesByEntityId.entrySet()) {
-      final List<Entity.Key> originalKeys = getOriginalKeys(entitiesByEntityIdEntry.getValue());
+  private void performOptimisticLocking(final Map<EntityType, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
+    for (final Map.Entry<EntityType, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
+      final List<Entity.Key> originalKeys = getOriginalKeys(entitiesByEntityTypeEntry.getValue());
       final EntitySelectCondition selectForUpdateCondition = selectCondition(originalKeys);
-      selectForUpdateCondition.setSelectAttributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityIdEntry.getKey()));
+      selectForUpdateCondition.setSelectAttributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()));
       selectForUpdateCondition.setForUpdate(true);
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
       final Map<Entity.Key, Entity> currentEntitiesByKey = mapToKey(currentEntities);
-      for (final Entity entity : entitiesByEntityIdEntry.getValue()) {
+      for (final Entity entity : entitiesByEntityTypeEntry.getValue()) {
         final Entity current = currentEntitiesByKey.get(entity.getOriginalKey());
         if (current == null) {
           final Entity original = domain.getEntities().copyEntity(entity);
@@ -894,7 +894,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void setForeignKeys(final List<Entity> entities, final EntitySelectCondition condition,
                               final int currentForeignKeyFetchDepth) throws SQLException {
     final List<ForeignKeyProperty> foreignKeyProperties =
-            getEntityDefinition(entities.get(0).getEntityId()).getForeignKeyProperties();
+            getEntityDefinition(entities.get(0).getEntityType()).getForeignKeyProperties();
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       final ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
       final Attribute<Entity> foreignKeyAttribute = foreignKeyProperty.getAttribute();
@@ -950,13 +950,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectQuery = null;
-    final EntityDefinition entityDefinition = getEntityDefinition(selectCondition.getEntityId());
+    final EntityDefinition entityDefinition = getEntityDefinition(selectCondition.getEntityType());
     final WhereCondition whereCondition = whereCondition(selectCondition, entityDefinition);
     final List<ColumnProperty<?>> propertiesToSelect = selectCondition.getSelectAttributes().isEmpty() ?
             entityDefinition.getSelectableColumnProperties() :
             entityDefinition.getSelectableColumnProperties(selectCondition.getSelectAttributes());
     try {
-      selectQuery = selectQuery(columnsClause(entityDefinition.getEntityId(),
+      selectQuery = selectQuery(columnsClause(entityDefinition.getEntityType(),
               selectCondition.getSelectAttributes(), propertiesToSelect), selectCondition, whereCondition,
               entityDefinition, connection.getDatabase());
       statement = prepareStatement(selectQuery);
@@ -1049,15 +1049,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   /**
-   * @param entityId the entityId
-   * @return all foreign keys in the domain referencing entities of type {@code entityId}
+   * @param entityType the entityType
+   * @return all foreign keys in the domain referencing entities of type {@code entityType}
    */
-  private Collection<ForeignKeyProperty> getForeignKeyReferences(final EntityId entityId) {
-    return foreignKeyReferenceCache.computeIfAbsent(entityId, e -> {
+  private Collection<ForeignKeyProperty> getForeignKeyReferences(final EntityType entityType) {
+    return foreignKeyReferenceCache.computeIfAbsent(entityType, e -> {
       final List<ForeignKeyProperty> foreignKeyReferences = new ArrayList<>();
       for (final EntityDefinition entityDefinition : domain.getEntities().getDefinitions()) {
         for (final ForeignKeyProperty foreignKeyProperty : entityDefinition.getForeignKeyProperties()) {
-          if (foreignKeyProperty.getForeignEntityId().equals(entityId)) {
+          if (foreignKeyProperty.getForeignEntityType().equals(entityType)) {
             foreignKeyReferences.add(foreignKeyProperty);
           }
         }
@@ -1089,18 +1089,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private List<ColumnProperty<?>> getInsertableProperties(final EntityDefinition entityDefinition,
                                                           final boolean includePrimaryKeyProperties) {
-    return insertablePropertiesCache.computeIfAbsent(entityDefinition.getEntityId(), entityId ->
+    return insertablePropertiesCache.computeIfAbsent(entityDefinition.getEntityType(), entityType ->
             entityDefinition.getWritableColumnProperties(includePrimaryKeyProperties, true));
   }
 
   private List<ColumnProperty<?>> getUpdatableProperties(final EntityDefinition entityDefinition) {
-    return updatablePropertiesCache.computeIfAbsent(entityDefinition.getEntityId(), entityId ->
+    return updatablePropertiesCache.computeIfAbsent(entityDefinition.getEntityType(), entityType ->
             entityDefinition.getWritableColumnProperties(true, false));
   }
 
-  private Attribute<?>[] getPrimaryKeyAndWritableColumnAttributes(final EntityId entityId) {
-    return primaryKeyAndWritableColumnPropertiesCache.computeIfAbsent(entityId, e -> {
-      final EntityDefinition entityDefinition = getEntityDefinition(entityId);
+  private Attribute<?>[] getPrimaryKeyAndWritableColumnAttributes(final EntityType entityType) {
+    return primaryKeyAndWritableColumnPropertiesCache.computeIfAbsent(entityType, e -> {
+      final EntityDefinition entityDefinition = getEntityDefinition(entityType);
       final List<ColumnProperty<?>> writableAndPrimaryKeyProperties =
               new ArrayList<>(entityDefinition.getWritableColumnProperties(true, true));
       entityDefinition.getPrimaryKeyProperties().forEach(primaryKeyProperty -> {
@@ -1115,10 +1115,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     });
   }
 
-  private String columnsClause(final EntityId entityId, final List<Attribute<?>> selectAttributes,
+  private String columnsClause(final EntityType entityType, final List<Attribute<?>> selectAttributes,
                                final List<ColumnProperty<?>> propertiesToSelect) {
     if (selectAttributes.isEmpty()) {
-      return allColumnsClauseCache.computeIfAbsent(entityId, eId -> Queries.columnsClause(propertiesToSelect));
+      return allColumnsClauseCache.computeIfAbsent(entityType, eId -> Queries.columnsClause(propertiesToSelect));
     }
 
     return Queries.columnsClause(propertiesToSelect);
@@ -1204,24 +1204,24 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private void checkIfReadOnly(final List<Entity> entities) throws DatabaseException {
     for (int i = 0; i < entities.size(); i++) {
-      checkIfReadOnly(entities.get(i).getEntityId());
+      checkIfReadOnly(entities.get(i).getEntityType());
     }
   }
 
-  private void checkIfReadOnly(final Collection<EntityId> entityIds) throws DatabaseException {
-    for (final EntityId entityId : entityIds) {
-      checkIfReadOnly(entityId);
+  private void checkIfReadOnly(final Collection<EntityType> entityTypes) throws DatabaseException {
+    for (final EntityType entityType : entityTypes) {
+      checkIfReadOnly(entityType);
     }
   }
 
-  private void checkIfReadOnly(final EntityId entityId) throws DatabaseException {
-    if (getEntityDefinition(entityId).isReadOnly()) {
-      throw new DatabaseException("Entities of type: " + entityId + " are read only");
+  private void checkIfReadOnly(final EntityType entityType) throws DatabaseException {
+    if (getEntityDefinition(entityType).isReadOnly()) {
+      throw new DatabaseException("Entities of type: " + entityType + " are read only");
     }
   }
 
-  private EntityDefinition getEntityDefinition(final EntityId entityId) {
-    return domain.getEntities().getDefinition(entityId);
+  private EntityDefinition getEntityDefinition(final EntityType entityType) {
+    return domain.getEntities().getDefinition(entityType);
   }
 
   private static void setParameterValues(final PreparedStatement statement, final List<ColumnProperty<?>> statementProperties,
@@ -1281,7 +1281,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static String createModifiedExceptionMessage(final Entity entity, final Entity modified,
                                                        final Collection<ColumnProperty<?>> modifiedProperties) {
     final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED_EXCEPTION))
-            .append(", ").append(entity.getEntityId());
+            .append(", ").append(entity.getEntityType());
     for (final ColumnProperty<?> property : modifiedProperties) {
       builder.append(" \n").append(property).append(": ").append((Object) entity.getOriginal(property.getAttribute()))
               .append(" -> ").append((Object) modified.get(property.getAttribute()));
