@@ -6,6 +6,7 @@ package is.codion.framework.domain.entity;
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -38,7 +39,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return the entityId
    */
-  Entity.Identity getEntityId();
+  EntityId getEntityId();
 
   /**
    * @return the name of the underlying table, with schema prefix if applicable
@@ -56,7 +57,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return the id of the domain this entity type belongs to
    */
-  is.codion.framework.domain.identity.Identity getDomainId();
+  Identity getDomainId();
 
   /**
    * @return the validator for this entity type
@@ -337,7 +338,7 @@ public interface EntityDefinition extends Serializable {
    * @param foreignEntityId the id of the referenced entity
    * @return a List containing the properties, an empty list is returned in case no foreign key references are found
    */
-  List<ForeignKeyProperty> getForeignKeyReferences(Entity.Identity foreignEntityId);
+  List<ForeignKeyProperty> getForeignKeyReferences(EntityId foreignEntityId);
 
   /**
    * @param attribute the attribute
@@ -464,7 +465,7 @@ public interface EntityDefinition extends Serializable {
      * @return the entity definition
      * @throws IllegalArgumentException in case the definition is not found
      */
-    EntityDefinition getDefinition(Entity.Identity entityId);
+    EntityDefinition getDefinition(EntityId entityId);
 
     /**
      * Returns all {@link EntityDefinition}s available in this provider
@@ -488,7 +489,7 @@ public interface EntityDefinition extends Serializable {
      * @return this {@link Builder} instance
      * @throws IllegalStateException in case the domain id has already been set
      */
-    Builder domainId(is.codion.framework.domain.identity.Identity domainId);
+    Builder domainId(Identity domainId);
 
     /**
      * @param validator the validator for this entity type

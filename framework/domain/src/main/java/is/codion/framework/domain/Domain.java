@@ -10,8 +10,8 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.identity.Identities;
 import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.Property;
@@ -27,7 +27,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents an application domain model, entities, reports and database operations.
  * Override to define a domain model.
- * @see #define(Entity.Identity, Property.Builder[])
+ * @see #define(EntityId, Property.Builder[])
  * @see #addReport(ReportWrapper)
  * @see #addOperation(DatabaseOperation)
  */
@@ -87,7 +87,7 @@ public abstract class Domain implements EntityDefinition.Provider {
   }
 
   @Override
-  public final EntityDefinition getDefinition(final Entity.Identity entityId) {
+  public final EntityDefinition getDefinition(final EntityId entityId) {
     return entities.getDefinition(entityId);
   }
 
@@ -133,7 +133,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type or if
    * no primary key property is specified
    */
-  protected final EntityDefinition.Builder define(final Entity.Identity entityId, final Property.Builder<?>... propertyBuilders) {
+  protected final EntityDefinition.Builder define(final EntityId entityId, final Property.Builder<?>... propertyBuilders) {
     return define(entityId, entityId.getName(), propertyBuilders);
   }
 
@@ -147,7 +147,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @return a {@link EntityDefinition.Builder}
    * @throws IllegalArgumentException in case the entityId has already been used to define an entity type
    */
-  protected final EntityDefinition.Builder define(final Entity.Identity entityId, final String tableName,
+  protected final EntityDefinition.Builder define(final EntityId entityId, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
     return entities.defineInternal(entityId, tableName, propertyBuilders);
   }
@@ -188,7 +188,7 @@ public abstract class Domain implements EntityDefinition.Provider {
       super(domainId);
     }
 
-    protected EntityDefinition.Builder defineInternal(final Entity.Identity entityId, final String tableName,
+    protected EntityDefinition.Builder defineInternal(final EntityId entityId, final String tableName,
                                                       final Property.Builder<?>... propertyBuilders) {
       return super.define(entityId, tableName, propertyBuilders);
     }

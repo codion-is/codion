@@ -6,12 +6,13 @@ package is.codion.plugin.jasperreports.model;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.entity.StringProvider;
 
 import java.time.LocalDate;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.Entities.entityIdentity;
+import static is.codion.framework.domain.entity.Entities.entityId;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
@@ -25,7 +26,7 @@ public final class TestDomain extends Domain {
     employee();
   }
 
-  public static final Entity.Identity T_DEPARTMENT = entityIdentity("scott.dept");
+  public static final EntityId T_DEPARTMENT = entityId("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -44,7 +45,7 @@ public final class TestDomain extends Domain {
   }
 
 
-  public static final Entity.Identity T_EMP = entityIdentity("scott.emp");
+  public static final EntityId T_EMP = entityId("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");

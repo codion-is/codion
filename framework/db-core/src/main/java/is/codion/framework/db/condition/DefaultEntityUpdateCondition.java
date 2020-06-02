@@ -4,7 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,11 +18,11 @@ final class DefaultEntityUpdateCondition extends DefaultEntityCondition implemen
 
   private final Map<Attribute<?>, Object> propertyValues = new LinkedHashMap<>();
 
-  DefaultEntityUpdateCondition(final Entity.Identity entityId) {
+  DefaultEntityUpdateCondition(final EntityId entityId) {
     super(entityId);
   }
 
-  DefaultEntityUpdateCondition(final Entity.Identity entityId, final Condition condition) {
+  DefaultEntityUpdateCondition(final EntityId entityId, final Condition condition) {
     super(entityId, condition);
   }
 

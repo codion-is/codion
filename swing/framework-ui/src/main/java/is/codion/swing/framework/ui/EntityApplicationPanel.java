@@ -25,8 +25,8 @@ import is.codion.common.version.Versions;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
@@ -301,7 +301,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param entityId the entityId
    * @return the first entity panel found based on the given entity type, null if none is found
    */
-  public final EntityPanel getEntityPanel(final Entity.Identity entityId) {
+  public final EntityPanel getEntityPanel(final EntityId entityId) {
     return entityPanels.stream().filter(entityPanel ->
             entityPanel.getModel().getEntityId().equals(entityId)).findFirst().orElse(null);
   }
@@ -1538,7 +1538,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return username;
   }
 
-  private static boolean referencesOnlySelf(final Entities entities, final Entity.Identity entityId) {
+  private static boolean referencesOnlySelf(final Entities entities, final EntityId entityId) {
     return entities.getDefinition(entityId).getForeignKeyProperties().stream()
             .allMatch(fkProperty -> fkProperty.getForeignEntityId().equals(entityId));
   }
@@ -1547,7 +1547,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     private final Entities entities;
 
-    private EntityDependencyTreeNode(final Entity.Identity entityId, final Entities entities) {
+    private EntityDependencyTreeNode(final EntityId entityId, final Entities entities) {
       super(requireNonNull(entityId, "entityId"));
       this.entities = entities;
     }
@@ -1555,8 +1555,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     /**
      * @return the id of the entity this node represents
      */
-    public Entity.Identity getEntityId() {
-      return (Entity.Identity) getUserObject();
+    public EntityId getEntityId() {
+      return (EntityId) getUserObject();
     }
 
     @Override
@@ -1582,7 +1582,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return childrenList;
     }
 
-    private boolean foreignKeyCycle(final Entity.Identity referencedEntityId) {
+    private boolean foreignKeyCycle(final EntityId referencedEntityId) {
       TreeNode tmp = getParent();
       while (tmp instanceof EntityDependencyTreeNode) {
         if (((EntityDependencyTreeNode) tmp).getEntityId().equals(referencedEntityId)) {

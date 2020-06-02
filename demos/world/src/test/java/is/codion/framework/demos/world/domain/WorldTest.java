@@ -2,6 +2,7 @@ package is.codion.framework.demos.world.domain;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(Entity.Identity entityId, Map<Entity.Identity, Entity> foreignKeyEntities) {
+  protected Entity initializeTestEntity(EntityId entityId, Map<EntityId, Entity> foreignKeyEntities) {
     Entity entity = super.initializeTestEntity(entityId, foreignKeyEntities);
     if (entityId.equals(World.T_COUNTRY)) {
       entity.put(World.COUNTRY_CODE, "XXX");
@@ -41,7 +42,7 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected void modifyEntity(Entity testEntity, Map<Entity.Identity, Entity> foreignKeyEntities) {
+  protected void modifyEntity(Entity testEntity, Map<EntityId, Entity> foreignKeyEntities) {
     super.modifyEntity(testEntity, foreignKeyEntities);
     if (testEntity.is(World.T_COUNTRY)) {
       testEntity.put(World.COUNTRY_CONTINENT, "Europe");
@@ -49,7 +50,7 @@ public final class WorldTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(Entity.Identity entityId, Map<Entity.Identity, Entity> foreignKeyEntities) {
+  protected Entity initializeReferenceEntity(EntityId entityId, Map<EntityId, Entity> foreignKeyEntities) {
     if (entityId.equals(World.T_COUNTRY)) {
       Entity iceland = getEntities().entity(World.T_COUNTRY);
       iceland.put(World.COUNTRY_CODE, "ISL");

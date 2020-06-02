@@ -11,6 +11,7 @@ import is.codion.common.event.Events;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import org.slf4j.Logger;
@@ -126,7 +127,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final Entity.Identity getEntityId() {
+  public final EntityId getEntityId() {
     return editModel.getEntityId();
   }
 
@@ -194,7 +195,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final boolean containsDetailModel(final Entity.Identity entityId) {
+  public final boolean containsDetailModel(final EntityId entityId) {
     return detailModels.stream().anyMatch(detailModel -> detailModel.getEntityId().equals(entityId));
   }
 
@@ -246,7 +247,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M getDetailModel(final Entity.Identity entityId) {
+  public final M getDetailModel(final EntityId entityId) {
     for (final M detailModel : detailModels) {
       if (detailModel.getEntityId().equals(entityId)) {
         return detailModel;
@@ -322,7 +323,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void initialize(final Entity.Identity foreignKeyEntityId, final List<Entity> foreignKeyValues) {
+  public final void initialize(final EntityId foreignKeyEntityId, final List<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
             editModel.getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
     if (!foreignKeyProperties.isEmpty()) {
@@ -411,7 +412,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Initializes all linked detail models according to the active entities in this master model
    * @see #getActiveEntities()
    * @see #addLinkedDetailModel(EntityModel)
-   * @see #initialize(Entity.Identity, List)
+   * @see #initialize(EntityId, List)
    */
   protected final void initializeDetailModels() {
     final List<Entity> activeEntities = getActiveEntities();

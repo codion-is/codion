@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 
 import static java.util.Objects.requireNonNull;
 
@@ -13,7 +13,7 @@ class DefaultEntityCondition implements EntityCondition {
 
   private static final Condition.EmptyCondition EMPTY_CONDITION = new Condition.EmptyCondition();
 
-  private final Entity.Identity entityId;
+  private final EntityId entityId;
   private final Condition condition;
 
   /**
@@ -21,7 +21,7 @@ class DefaultEntityCondition implements EntityCondition {
    * Using an empty condition means all underlying records should be selected
    * @param entityId the id of the entity to select
    */
-  DefaultEntityCondition(final Entity.Identity entityId) {
+  DefaultEntityCondition(final EntityId entityId) {
     this(entityId, null);
   }
 
@@ -30,13 +30,13 @@ class DefaultEntityCondition implements EntityCondition {
    * @param entityId the id of the entity to select
    * @param condition the Condition object
    */
-  DefaultEntityCondition(final Entity.Identity entityId, final Condition condition) {
+  DefaultEntityCondition(final EntityId entityId, final Condition condition) {
     this.entityId = requireNonNull(entityId, "entityId");
     this.condition = condition == null ? EMPTY_CONDITION : condition;
   }
 
   @Override
-  public final Entity.Identity getEntityId() {
+  public final EntityId getEntityId() {
     return entityId;
   }
 

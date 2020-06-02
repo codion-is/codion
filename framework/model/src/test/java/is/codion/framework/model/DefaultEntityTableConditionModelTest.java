@@ -16,6 +16,7 @@ import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.tests.TestDomain;
 
@@ -77,7 +78,7 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   public void getPropertyConditionModelNonExisting() {
-    final Entity.Identity entityId = Entities.entityIdentity("test");
+    final EntityId entityId = Entities.entityId("test");
     assertThrows(IllegalArgumentException.class, () -> assertNull(conditionModel.getPropertyConditionModel(entityId.integerAttribute("bla bla"))));
   }
 

@@ -96,7 +96,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void getDetailModelNotFound() {
-    assertThrows(IllegalArgumentException.class, () -> departmentModel.getDetailModel(Entities.entityIdentity("undefined")));
+    assertThrows(IllegalArgumentException.class, () -> departmentModel.getDetailModel(Entities.entityId("undefined")));
   }
 
   @Test

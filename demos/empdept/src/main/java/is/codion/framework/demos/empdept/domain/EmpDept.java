@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.plugin.jasperreports.model.JasperReportWrapper;
 
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.Entities.entityIdentity;
+import static is.codion.framework.domain.entity.Entities.entityId;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -30,7 +31,7 @@ import static java.util.Arrays.asList;
 public final class EmpDept extends Domain {
 
   /** Entity identifier for the table scott.dept*/
-  public static final Entity.Identity T_DEPARTMENT = entityIdentity("scott.dept");
+  public static final EntityId T_DEPARTMENT = entityId("scott.dept");
 
   /** Attributes for the columns in the scott.dept table*/
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
@@ -40,7 +41,7 @@ public final class EmpDept extends Domain {
 
   // tag::employeeConstants[]
   /** Entity identifier for the table scott.emp*/
-  public static final Entity.Identity T_EMPLOYEE = entityIdentity("scott.emp");
+  public static final EntityId T_EMPLOYEE = entityId("scott.emp");
 
   /** Attributes for the columns in the scott.emp table*/
   public static final Attribute<Integer> EMPLOYEE_ID = T_EMPLOYEE.integerAttribute("empno");

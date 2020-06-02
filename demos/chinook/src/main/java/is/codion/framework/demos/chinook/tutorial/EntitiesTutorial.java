@@ -15,6 +15,7 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Property;
 
@@ -23,7 +24,7 @@ import java.util.List;
 import static is.codion.common.db.Operator.LIKE;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
-import static is.codion.framework.domain.entity.Entities.entityIdentity;
+import static is.codion.framework.domain.entity.Entities.entityId;
 import static is.codion.framework.domain.entity.Entities.getKeys;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
@@ -41,13 +42,13 @@ public final class EntitiesTutorial {
 
     //EntityIdentity constant for the table entityId ('T_' prefix)
     //and an Attribute for each column
-    public static final Entity.Identity T_ARTIST = entityIdentity("chinook.artist");
+    public static final EntityId T_ARTIST = entityId("chinook.artist");
     public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
     public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
 
     //EntityIdentity constant for the table entityId ('T_' prefix),
     //and an Attribute for each column and one for the foreign key relation
-    public static final Entity.Identity T_ALBUM = entityIdentity("chinook.album");
+    public static final EntityId T_ALBUM = entityId("chinook.album");
     public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
     public static final Attribute<String> ALBUM_TITLE = T_ALBUM.stringAttribute("title");
     public static final Attribute<Integer> ALBUM_ARTISTID = T_ALBUM.integerAttribute("artistid");

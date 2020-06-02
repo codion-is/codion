@@ -10,6 +10,7 @@ import is.codion.common.model.table.SortingDirective;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -183,7 +184,7 @@ public final class EntityLookupField extends JTextField {
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
-  public static Entity lookupEntity(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider,
+  public static Entity lookupEntity(final EntityId entityId, final EntityConnectionProvider connectionProvider,
                                     final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
     final List<Entity> entities = lookupEntities(entityId, connectionProvider, true, dialogParent, lookupCaption, dialogTitle);
 
@@ -202,7 +203,7 @@ public final class EntityLookupField extends JTextField {
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
-  public static List<Entity> lookupEntities(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider,
+  public static List<Entity> lookupEntities(final EntityId entityId, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
     return lookupEntities(entityId, connectionProvider, false, dialogParent, lookupCaption, dialogTitle);
   }
@@ -325,7 +326,7 @@ public final class EntityLookupField extends JTextField {
     Dialogs.displayInDialog(this, messagePanel, SwingMessages.get("OptionPane.messageDialogTitle"), closeEvent);
   }
 
-  private static List<Entity> lookupEntities(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider,
+  private static List<Entity> lookupEntities(final EntityId entityId, final EntityConnectionProvider connectionProvider,
                                              final boolean singleSelection, final JComponent dialogParent,
                                              final String lookupCaption, final String dialogTitle) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);

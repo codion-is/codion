@@ -19,6 +19,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -498,7 +499,7 @@ public final class DefaultEntityEditModelTest {
 
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
-    public TestEntityEditModel(final Entity.Identity entityId, final EntityConnectionProvider connectionProvider) {
+    public TestEntityEditModel(final EntityId entityId, final EntityConnectionProvider connectionProvider) {
       super(entityId, connectionProvider);
     }
 

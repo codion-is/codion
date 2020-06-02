@@ -12,6 +12,7 @@ import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -28,7 +29,7 @@ import java.awt.GridLayout;
 import java.time.LocalDate;
 import java.util.Locale;
 
-import static is.codion.framework.domain.entity.Entities.entityIdentity;
+import static is.codion.framework.domain.entity.Entities.entityId;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -46,7 +47,7 @@ public final class EmpDeptMinimalApp {
     /*
      * We start by defining attributes for the columns in the SCOTT.DEPT table.
      */
-    public static final Entity.Identity T_DEPT = entityIdentity("scott.dept");
+    public static final EntityId T_DEPT = entityId("scott.dept");
     public static final Attribute<Integer> DEPT_DEPTNO = T_DEPT.integerAttribute("deptno");
     public static final Attribute<String> DEPT_DNAME = T_DEPT.stringAttribute("dname");
     public static final Attribute<String> DEPT_LOC = T_DEPT.stringAttribute("loc");
@@ -54,7 +55,7 @@ public final class EmpDeptMinimalApp {
     /*
      * And for the columns in the SCOTT.EMP table.
      */
-    public static final Entity.Identity T_EMP = entityIdentity("scott.emp");
+    public static final EntityId T_EMP = entityId("scott.emp");
     public static final Attribute<Integer> EMP_EMPNO = T_EMP.integerAttribute("empno");
     public static final Attribute<String> EMP_ENAME = T_EMP.stringAttribute("ename");
     public static final Attribute<Integer> EMP_DEPTNO = T_EMP.integerAttribute("deptno");

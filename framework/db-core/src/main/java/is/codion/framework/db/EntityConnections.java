@@ -6,6 +6,7 @@ package is.codion.framework.db;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -46,12 +47,12 @@ public final class EntityConnections {
    * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */
   public static void copyEntities(final EntityConnection source, final EntityConnection destination, final int batchSize,
-                                  final IncludePrimaryKeys includePrimaryKeys, final Entity.Identity... entityIds) throws DatabaseException {
+                                  final IncludePrimaryKeys includePrimaryKeys, final EntityId... entityIds) throws DatabaseException {
     requireNonNull(source, "source");
     requireNonNull(destination, "destination");
     requireNonNull(includePrimaryKeys, "includePrimaryKeys");
     requireNonNull(entityIds);
-    for (final Entity.Identity entityId : entityIds) {
+    for (final EntityId entityId : entityIds) {
       final List<Entity> entities = source.select(selectCondition(entityId).setForeignKeyFetchDepth(0));
       if (includePrimaryKeys == IncludePrimaryKeys.NO) {
         entities.forEach(Entity::clearKeyValues);

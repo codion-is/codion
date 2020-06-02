@@ -5,6 +5,7 @@ package is.codion.framework.demos.manual.framework;
 
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityId;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.textfield.DecimalField;
@@ -29,12 +30,12 @@ import javax.swing.JTextField;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static is.codion.framework.domain.entity.Entities.entityIdentity;
+import static is.codion.framework.domain.entity.Entities.entityId;
 
 public final class EntityEditPanels {
 
   private static final class Domain {
-    static final Entity.Identity ENTITY_ID = entityIdentity("entityId");
+    static final EntityId ENTITY_ID = entityId("entityId");
     static final Attribute<Boolean> BOOLEAN_ATTRIBUTE = ENTITY_ID.booleanAttribute("boolean");
     static final Attribute<Entity> FOREIGN_KEY_ATTRIBUTE = ENTITY_ID.entityAttribute("foreign_key");
     static final Attribute<LocalDate> LOCAL_DATE_ATTRIBUTE = ENTITY_ID.localDateAttribute("local_date");
