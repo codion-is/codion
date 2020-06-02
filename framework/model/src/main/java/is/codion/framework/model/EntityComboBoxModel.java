@@ -10,7 +10,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,9 +22,9 @@ import java.util.function.Predicate;
 public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
-   * @return the id of the entity this combo box model is based on
+   * @return the type of the entity this combo box model is based on
    */
-  EntityId getEntityId();
+  EntityType getEntityType();
 
   /**
    * @return the connection provider used by this combo box model

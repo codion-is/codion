@@ -5,7 +5,7 @@ package is.codion.framework.demos.chinook.domain;
 
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.plugin.jasperreports.model.JasperReportWrapper;
 
@@ -14,18 +14,18 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static is.codion.framework.domain.entity.Entities.entityId;
+import static is.codion.framework.domain.entity.Entities.entityType;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public interface Chinook {
 
-  EntityId T_ARTIST = entityId("artist@chinook");
+  EntityType T_ARTIST = entityType("artist@chinook");
   Attribute<Long> ARTIST_ARTISTID = T_ARTIST.longAttribute("artistid");
   Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
   Attribute<Integer> ARTIST_NR_OF_ALBUMS = T_ARTIST.integerAttribute("nr_of_albums");
   Attribute<Integer> ARTIST_NR_OF_TRACKS = T_ARTIST.integerAttribute("nr_of_tracks");
 
-  EntityId T_ALBUM = entityId("album@chinook");
+  EntityType T_ALBUM = entityType("album@chinook");
   Attribute<Long> ALBUM_ALBUMID = T_ALBUM.longAttribute("albumid");
   Attribute<String> ALBUM_TITLE = T_ALBUM.stringAttribute("title");
   Attribute<Long> ALBUM_ARTISTID = T_ALBUM.longAttribute("artistid");
@@ -34,7 +34,7 @@ public interface Chinook {
   Attribute<Image> ALBUM_COVER_IMAGE = T_ALBUM.attribute("coverimage", Image.class);
   Attribute<Integer> ALBUM_NUMBER_OF_TRACKS = T_ALBUM.integerAttribute("nr_of_tracks");
 
-  EntityId T_EMPLOYEE = entityId("employee@chinook");
+  EntityType T_EMPLOYEE = entityType("employee@chinook");
   Attribute<Long> EMPLOYEE_EMPLOYEEID = T_EMPLOYEE.longAttribute("employeeid");
   Attribute<String> EMPLOYEE_LASTNAME = T_EMPLOYEE.stringAttribute("lastname");
   Attribute<String> EMPLOYEE_FIRSTNAME = T_EMPLOYEE.stringAttribute("firstname");
@@ -52,7 +52,7 @@ public interface Chinook {
   Attribute<String> EMPLOYEE_FAX = T_EMPLOYEE.stringAttribute("fax");
   Attribute<String> EMPLOYEE_EMAIL = T_EMPLOYEE.stringAttribute("email");
 
-  EntityId T_CUSTOMER = entityId("customer@chinook");
+  EntityType T_CUSTOMER = entityType("customer@chinook");
   Attribute<Long> CUSTOMER_CUSTOMERID = T_CUSTOMER.longAttribute("customerid");
   Attribute<String> CUSTOMER_FIRSTNAME = T_CUSTOMER.stringAttribute("firstname");
   Attribute<String> CUSTOMER_LASTNAME = T_CUSTOMER.stringAttribute("lastname");
@@ -70,15 +70,15 @@ public interface Chinook {
 
   JasperReportWrapper CUSTOMER_REPORT = classPathReport(Chinook.class, "customer_report.jasper");
 
-  EntityId T_GENRE = entityId("genre@chinook");
+  EntityType T_GENRE = entityType("genre@chinook");
   Attribute<Long> GENRE_GENREID = T_GENRE.longAttribute("genreid");
   Attribute<String> GENRE_NAME = T_GENRE.stringAttribute("name");
 
-  EntityId T_MEDIATYPE = entityId("mediatype@chinook");
+  EntityType T_MEDIATYPE = entityType("mediatype@chinook");
   Attribute<Long> MEDIATYPE_MEDIATYPEID = T_MEDIATYPE.longAttribute("mediatypeid");
   Attribute<String> MEDIATYPE_NAME = T_MEDIATYPE.stringAttribute("name");
 
-  EntityId T_TRACK = entityId("track@chinook");
+  EntityType T_TRACK = entityType("track@chinook");
   Attribute<Long> TRACK_TRACKID = T_TRACK.longAttribute("trackid");
   Attribute<String> TRACK_NAME = T_TRACK.stringAttribute("name");
   Attribute<Entity> TRACK_ARTIST_DENORM = T_TRACK.entityAttribute("artist_denorm");
@@ -104,7 +104,7 @@ public interface Chinook {
             return getMinutes(milliseconds) + " min " + getSeconds(milliseconds) + " sec";
           };
 
-  EntityId T_INVOICE = entityId("invoice@chinook");
+  EntityType T_INVOICE = entityType("invoice@chinook");
   Attribute<Long> INVOICE_INVOICEID = T_INVOICE.longAttribute("invoiceid");
   Attribute<Long> INVOICE_CUSTOMERID = T_INVOICE.longAttribute("customerid");
   Attribute<Entity> INVOICE_CUSTOMER_FK = T_INVOICE.entityAttribute("customer_fk");
@@ -117,7 +117,7 @@ public interface Chinook {
   Attribute<BigDecimal> INVOICE_TOTAL = T_INVOICE.bigDecimalAttribute("total");
   Attribute<BigDecimal> INVOICE_TOTAL_SUB = T_INVOICE.bigDecimalAttribute("total_sub");
 
-  EntityId T_INVOICELINE = entityId("invoiceline@chinook");
+  EntityType T_INVOICELINE = entityType("invoiceline@chinook");
   Attribute<Long> INVOICELINE_INVOICELINEID = T_INVOICELINE.longAttribute("invoicelineid");
   Attribute<Long> INVOICELINE_INVOICEID = T_INVOICELINE.longAttribute("invoiceid");
   Attribute<Entity> INVOICELINE_INVOICE_FK = T_INVOICELINE.entityAttribute("invoice_fk");
@@ -138,11 +138,11 @@ public interface Chinook {
             return unitPrice.multiply(BigDecimal.valueOf(quantity));
           };
 
-  EntityId T_PLAYLIST = entityId("playlist@chinook");
+  EntityType T_PLAYLIST = entityType("playlist@chinook");
   Attribute<Long> PLAYLIST_PLAYLISTID = T_PLAYLIST.longAttribute("playlistid");
   Attribute<String> PLAYLIST_NAME = T_PLAYLIST.stringAttribute("name");
 
-  EntityId T_PLAYLISTTRACK = entityId("playlisttrack@chinook");
+  EntityType T_PLAYLISTTRACK = entityType("playlisttrack@chinook");
   Attribute<Long> PLAYLISTTRACK_ID = T_PLAYLISTTRACK.longAttribute("playlisttrackid");
   Attribute<Long> PLAYLISTTRACK_PLAYLISTID = T_PLAYLISTTRACK.longAttribute("playlistid");
   Attribute<Entity> PLAYLISTTRACK_PLAYLIST_FK = T_PLAYLISTTRACK.entityAttribute("playlist_fk");

@@ -17,7 +17,7 @@ import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -62,9 +62,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   }
 
   /**
-   * @return the id of the entity this table model is based on
+   * @return the type of the entity this table model is based on
    */
-  EntityId getEntityId();
+  EntityType getEntityType();
 
   /**
    * @return the connection provider used by this table model
@@ -103,7 +103,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @see #deleteSelected()
    * @see #update(java.util.List)
    * @throws IllegalStateException in case an {@link EntityEditModel} has already been associated with this {@link EntityTableModel}
-   * @throws IllegalArgumentException in case the given {@link EntityEditModel} is not based on the same entityId as this {@link EntityTableModel}
+   * @throws IllegalArgumentException in case the given {@link EntityEditModel} is not based on the same entityType as this {@link EntityTableModel}
    */
   void setEditModel(E editModel);
 
@@ -119,10 +119,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * For every entity in this table model, replaces the foreign key instance bearing the primary
    * key with the corresponding entity from {@code foreignKeyValues}, useful when property
    * values have been changed in the referenced entity that must be reflected in the table model.
-   * @param foreignKeyEntityId the entityId of the foreign key values
+   * @param foreignKeyEntityType the entityType of the foreign key values
    * @param foreignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(EntityId foreignKeyEntityId, Collection<Entity> foreignKeyValues);
+  void replaceForeignKeyValues(EntityType foreignKeyEntityType, Collection<Entity> foreignKeyValues);
 
   /**
    * Adds the given entities to the bottom of this table model.

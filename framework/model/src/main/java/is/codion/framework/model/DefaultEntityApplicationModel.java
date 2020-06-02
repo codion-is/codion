@@ -13,7 +13,7 @@ import is.codion.common.state.States;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -115,8 +115,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   }
 
   @Override
-  public final boolean containsEntityModel(final EntityId entityId) {
-    return entityModels.stream().anyMatch(entityModel -> entityModel.getEntityId().equals(entityId));
+  public final boolean containsEntityModel(final EntityType entityType) {
+    return entityModels.stream().anyMatch(entityModel -> entityModel.getEntityType().equals(entityType));
   }
 
   @Override
@@ -155,14 +155,14 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   }
 
   @Override
-  public final M getEntityModel(final EntityId entityId) {
+  public final M getEntityModel(final EntityType entityType) {
     for (final M entityModel : entityModels) {
-      if (entityModel.getEntityId().equals(entityId)) {
+      if (entityModel.getEntityType().equals(entityType)) {
         return entityModel;
       }
     }
 
-    throw new IllegalArgumentException("EntityModel for type " + entityId + " not  found in model: " + this);
+    throw new IllegalArgumentException("EntityModel for type " + entityType + " not  found in model: " + this);
   }
 
   @Override

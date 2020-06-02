@@ -6,7 +6,6 @@ package is.codion.framework.domain.entity;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,9 +17,9 @@ import java.util.Set;
 public interface Entity extends Comparable<Entity>, Serializable {
 
   /**
-   * @return the entityId
+   * @return the entity type
    */
-  EntityId getEntityId();
+  EntityType getEntityType();
 
   /**
    * Returns the primary key of this entity.
@@ -113,10 +112,10 @@ public interface Entity extends Comparable<Entity>, Serializable {
   void clearKeyValues();
 
   /**
-   * @param entityId the entityId
+   * @param entityType the entity type
    * @return true if this entity is of the given type
    */
-  boolean is(EntityId entityId);
+  boolean is(EntityType entityType);
 
   /**
    * @param entity the entity to compare to
@@ -138,12 +137,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @return true if the reference entity has been loaded
    */
   boolean isLoaded(Attribute<Entity> foreignKeyAttribute);
-
-  /**
-   * @param property the property for which to retrieve the color
-   * @return the color to use when displaying this property in a table
-   */
-  Object getColor(Property<?> property);
 
   /**
    * Reverts the value associated with the given attribute to its original value.
@@ -207,12 +200,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
   Set<Attribute<?>> originalKeySet();
 
   /**
-   * @param attribute the attribute
-   * @return the property associated with the given attribute
-   */
-  Property<?> getProperty(Attribute<?> attribute);
-
-  /**
    * @return the number of values in this map
    */
   int size();
@@ -251,9 +238,9 @@ public interface Entity extends Comparable<Entity>, Serializable {
   interface Key extends Serializable {
 
     /**
-     * @return the entityId
+     * @return the entity type
      */
-    EntityId getEntityId();
+    EntityType getEntityType();
 
     /**
      * @return a List containing the properties comprising this key

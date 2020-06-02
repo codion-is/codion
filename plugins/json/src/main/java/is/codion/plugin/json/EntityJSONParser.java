@@ -7,7 +7,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -35,7 +35,7 @@ import static java.util.Collections.emptyList;
  */
 public final class EntityJSONParser {
 
-  private static final String ENTITY_ID = "entityId";
+  private static final String ENTITY_TYPE = "entityType";
   private static final String VALUES = "values";
   private static final String ORIGINAL_VALUES = "originalValues";
   private static final String JSON_TIME_FORMAT = "HH:mm";
@@ -267,12 +267,12 @@ public final class EntityJSONParser {
    * @throws IllegalArgumentException in case of an undefined entity
    */
   public Entity.Key parseKey(final JSONObject keyObject) {
-    final EntityId entityId = Entities.entityId(keyObject.getString(ENTITY_ID));
-    final Entity.Key key = entities.key(entityId);
-    final EntityDefinition definition = entities.getDefinition(entityId);
+    final EntityType entityType = Entities.entityType(keyObject.getString(ENTITY_TYPE));
+    final Entity.Key key = entities.key(entityType);
+    final EntityDefinition definition = entities.getDefinition(entityType);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final Attribute<Object> attribute = entityId.objectAttribute(propertyValues.names().get(j).toString());
+      final Attribute<Object> attribute = entityType.objectAttribute(propertyValues.names().get(j).toString());
       key.put(attribute, parseValue(definition.getProperty(attribute), propertyValues));
     }
 
@@ -322,7 +322,7 @@ public final class EntityJSONParser {
 
   private JSONObject toJSONObject(final Entity entity) {
     final JSONObject jsonEntity = new JSONObject();
-    jsonEntity.put(ENTITY_ID, entity.getEntityId().getName());
+    jsonEntity.put(ENTITY_TYPE, entity.getEntityType().getName());
     jsonEntity.put(VALUES, serializeValues(entity));
     if (entity.isModified()) {
       jsonEntity.put(ORIGINAL_VALUES, serializeOriginalValues(entity));
@@ -333,7 +333,7 @@ public final class EntityJSONParser {
 
   private JSONObject toJSONObject(final Entity.Key key) {
     final JSONObject jsonKey = new JSONObject();
-    jsonKey.put(ENTITY_ID, key.getEntityId().getName());
+    jsonKey.put(ENTITY_TYPE, key.getEntityType().getName());
     jsonKey.put(VALUES, serializeValues(key));
 
     return jsonKey;
@@ -341,7 +341,7 @@ public final class EntityJSONParser {
 
   private JSONObject serializeValues(final Entity entity) {
     final JSONObject propertyValues = new JSONObject();
-    final EntityDefinition definition = entities.getDefinition(entity.getEntityId());
+    final EntityDefinition definition = entities.getDefinition(entity.getEntityType());
     for (final Attribute<?> attribute : entity.keySet()) {
       final Property<?> property = definition.getProperty(attribute);
       if (include(property, entity)) {
@@ -354,7 +354,7 @@ public final class EntityJSONParser {
 
   private JSONObject serializeValues(final Entity.Key key) {
     final JSONObject propertyValues = new JSONObject();
-    for (final ColumnProperty<?> property : entities.getDefinition(key.getEntityId()).getPrimaryKeyProperties()) {
+    for (final ColumnProperty<?> property : entities.getDefinition(key.getEntityType()).getPrimaryKeyProperties()) {
       propertyValues.put(property.getAttribute().getName(), serializeValue(key.get(property.getAttribute()), property.getAttribute()));
     }
 
@@ -363,7 +363,7 @@ public final class EntityJSONParser {
 
   private JSONObject serializeOriginalValues(final Entity entity) {
     final JSONObject originalValues = new JSONObject();
-    for (final Property<?> property : entities.getDefinition(entity.getEntityId()).getProperties()) {
+    for (final Property<?> property : entities.getDefinition(entity.getEntityType()).getProperties()) {
       if (entity.isModified(property.getAttribute()) && (!(property instanceof ForeignKeyProperty) || includeForeignKeyValues)) {
         originalValues.put(property.getAttribute().getName(), serializeValue(entity.getOriginal(property.getAttribute()), property.getAttribute()));
       }
@@ -393,18 +393,18 @@ public final class EntityJSONParser {
    * @throws IllegalArgumentException in case of an undefined entity
    */
   private Entity parseEntity(final JSONObject entityObject) {
-    final EntityId entityId = Entities.entityId(entityObject.getString(ENTITY_ID));
+    final EntityType entityType = Entities.entityType(entityObject.getString(ENTITY_TYPE));
 
-    return entities.getDefinition(entityId).entity(parseValues(entityObject, entityId, VALUES),
-            entityObject.isNull(ORIGINAL_VALUES) ? null : parseValues(entityObject, entityId, ORIGINAL_VALUES));
+    return entities.getDefinition(entityType).entity(parseValues(entityObject, entityType, VALUES),
+            entityObject.isNull(ORIGINAL_VALUES) ? null : parseValues(entityObject, entityType, ORIGINAL_VALUES));
   }
 
-  private Map<Attribute<?>, Object> parseValues(final JSONObject entityObject, final EntityId entityId, final String valuesKey) {
+  private Map<Attribute<?>, Object> parseValues(final JSONObject entityObject, final EntityType entityType, final String valuesKey) {
     final Map<Attribute<?>, Object> valueMap = new HashMap<>();
     final JSONObject propertyValues = entityObject.getJSONObject(valuesKey);
     for (int j = 0; j < propertyValues.names().length(); j++) {
-      final Attribute<Object> attribute = entityId.objectAttribute(propertyValues.names().get(j).toString());
-      final EntityDefinition entityDefinition = entities.getDefinition(entityId);
+      final Attribute<Object> attribute = entityType.objectAttribute(propertyValues.names().get(j).toString());
+      final EntityDefinition entityDefinition = entities.getDefinition(entityType);
       valueMap.put(attribute, parseValue(entityDefinition.getProperty(attribute), propertyValues));
     }
 

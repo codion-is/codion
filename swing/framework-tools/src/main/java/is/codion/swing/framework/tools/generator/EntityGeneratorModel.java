@@ -50,7 +50,7 @@ public class EntityGeneratorModel {
   private static final String EQUALS = " = \"";
   private static final String TABLE_SCHEMA = "TABLE_SCHEM";
   private static final String FOREIGN_KEY_PROPERTY_SUFFIX = "_FK";
-  private static final String ENTITY_ID_PREFIX = "T_";
+  private static final String ENTITY_TYPE_PREFIX = "T_";
   private static final String PROPERTIES_COLUMN_PROPERTY = "        columnProperty(";
 
   static final Integer SCHEMA_COLUMN_ID = 0;
@@ -151,7 +151,7 @@ public class EntityGeneratorModel {
     Database.closeSilently(connection);
   }
 
-  public static final String getEntityId(final Table table) {
+  public static final String getEntityType(final Table table) {
     return table.getSchema() + "." + table.getTableName();
   }
 
@@ -212,7 +212,7 @@ public class EntityGeneratorModel {
 
   private static void appendEntityDefinition(final StringBuilder builder, final Table table) {
     builder.append("void " + getDefineMethodName(table) + "() {").append(Util.LINE_SEPARATOR);
-    builder.append("  define(").append(getEntityIdConstant(table)).append(",").append(Util.LINE_SEPARATOR);
+    builder.append("  define(").append(getEntityTypeConstant(table)).append(",").append(Util.LINE_SEPARATOR);
     for (final Column column : table.columns) {
       builder.append("  ").append(getPropertyDefinition(table, column))
               .append(table.columns.indexOf(column) < table.columns.size() - 1 ? "," : "").append(Util.LINE_SEPARATOR);
@@ -239,7 +239,7 @@ public class EntityGeneratorModel {
 
   private static String getConstants(final Table table) {
     final String schemaName = table.getSchema().getName();
-    final StringBuilder builder = new StringBuilder(PUBLIC_STATIC_FINAL_STRING).append(getEntityIdConstant(table))
+    final StringBuilder builder = new StringBuilder(PUBLIC_STATIC_FINAL_STRING).append(getEntityTypeConstant(table))
             .append(EQUALS).append(schemaName.toLowerCase()).append(".").append(table.getTableName().toLowerCase())
             .append("\";").append(Util.LINE_SEPARATOR);
     for (final Column column : table.columns) {
@@ -269,7 +269,7 @@ public class EntityGeneratorModel {
     final String foreignKeyId = getPropertyIdConstant(table, column, true);
     final String caption = getCaption(column);
     builder.append("        foreignKeyProperty(").append(foreignKeyId).append(", \"").append(caption)
-            .append("\", ").append(getEntityIdConstant(column.getForeignKeyColumn().getReferencedTable()))
+            .append("\", ").append(getEntityTypeConstant(column.getForeignKeyColumn().getReferencedTable()))
             .append(",").append(Util.LINE_SEPARATOR);
     builder.append("        ").append(columnPropertyDefinition).append(")");
 
@@ -333,8 +333,8 @@ public class EntityGeneratorModel {
     }
   }
 
-  private static String getEntityIdConstant(final Table table) {
-    return ENTITY_ID_PREFIX + table.getTableName().toUpperCase();
+  private static String getEntityTypeConstant(final Table table) {
+    return ENTITY_TYPE_PREFIX + table.getTableName().toUpperCase();
   }
 
   private static String getPropertyIdConstant(final Table table, final Column column, final boolean isForeignKey) {

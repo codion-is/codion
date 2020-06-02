@@ -17,7 +17,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ValueChange;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -64,9 +64,9 @@ public interface EntityEditModel extends Refreshable {
   PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("codion.client.editModelPostEditEvents", false);
 
   /**
-   * @return the id of the entity this edit model is based on
+   * @return the type of the entity this edit model is based on
    */
-  EntityId getEntityId();
+  EntityType getEntityType();
 
   /**
    * @return the connection provider used by this edit model

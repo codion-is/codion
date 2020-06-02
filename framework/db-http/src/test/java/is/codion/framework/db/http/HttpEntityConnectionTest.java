@@ -18,7 +18,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.identity.Identities;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -108,7 +108,7 @@ public final class HttpEntityConnectionTest {
   }
 
   @Test
-  public void selectByKeyDifferentEntityIds() throws IOException, DatabaseException {
+  public void selectByKeyDifferentEntityTypes() throws IOException, DatabaseException {
     final Entity.Key deptKey = connection.getEntities().key(TestDomain.T_DEPARTMENT, 10);
     final Entity.Key empKey = connection.getEntities().key(TestDomain.T_EMP, 8);
 
@@ -172,7 +172,7 @@ public final class HttpEntityConnectionTest {
   }
 
   @Test
-  public void deleteByKeyDifferentEntityIds() throws IOException, DatabaseException {
+  public void deleteByKeyDifferentEntityTypes() throws IOException, DatabaseException {
     final Entity.Key deptKey = connection.getEntities().key(TestDomain.T_DEPARTMENT, 40);
     final Entity.Key empKey = connection.getEntities().key(TestDomain.T_EMP, 1);
     try {
@@ -190,7 +190,7 @@ public final class HttpEntityConnectionTest {
   @Test
   public void selectDependencies() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final Map<EntityId, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
+    final Map<EntityType, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
     assertNotNull(dependentEntities);
     assertTrue(dependentEntities.containsKey(TestDomain.T_EMP));
     assertFalse(dependentEntities.get(TestDomain.T_EMP).isEmpty());

@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- * Factory for {@link Attribute} instances associated with this identity.
+ * Defines a Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
  */
-public interface EntityId extends Identity {
+public interface EntityType extends Identity {
 
   /**
    * Creates a new {@link Attribute}, associated with this Identity.

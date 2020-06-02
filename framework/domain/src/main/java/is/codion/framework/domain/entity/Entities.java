@@ -40,11 +40,11 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   Identity getDomainId();
 
   /**
-   * Creates a new {@link Entity} instance with the given entityId
-   * @param entityId the entityId
+   * Creates a new {@link Entity} instance with the given entityType
+   * @param entityType the entityType
    * @return a new {@link Entity} instance
    */
-  Entity entity(EntityId entityId);
+  Entity entity(EntityType entityType);
 
   /**
    * Creates a new {@link Entity} instance with the given primary key
@@ -54,51 +54,51 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   Entity entity(Entity.Key key);
 
   /**
-   * Creates a new {@link Entity.Key} instance with the given entityId
-   * @param entityId the entityId
+   * Creates a new {@link Entity.Key} instance with the given entityType
+   * @param entityType the entityType
    * @return a new {@link Entity.Key} instance
    */
-  Entity.Key key(EntityId entityId);
+  Entity.Key key(EntityType entityType);
 
   /**
-   * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
-   * @param entityId the entityId
+   * Creates a new {@link Entity.Key} instance with the given entityType, initialised with the given value
+   * @param entityType the entityType
    * @param value the key value, assumes a single integer key
    * @return a new {@link Entity.Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or value is null
+   * @throws NullPointerException in case entityType or value is null
    */
-  Entity.Key key(EntityId entityId, Integer value);
+  Entity.Key key(EntityType entityType, Integer value);
 
   /**
-   * Creates a new {@link Entity.Key} instance with the given entityId, initialised with the given value
-   * @param entityId the entityId
+   * Creates a new {@link Entity.Key} instance with the given entityType, initialised with the given value
+   * @param entityType the entityType
    * @param value the key value, assumes a single long key
    * @return a new {@link Entity.Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or value is null
+   * @throws NullPointerException in case entityType or value is null
    */
-  Entity.Key key(EntityId entityId, Long value);
+  Entity.Key key(EntityType entityType, Long value);
 
   /**
-   * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
-   * @param entityId the entityId
+   * Creates new {@link Entity.Key} instances with the given entityType, initialised with the given values
+   * @param entityType the entityType
    * @param values the key values, assumes a single integer key
    * @return new {@link Entity.Key} instances
    * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or values is null
+   * @throws NullPointerException in case entityType or values is null
    */
-  List<Entity.Key> keys(EntityId entityId, Integer... values);
+  List<Entity.Key> keys(EntityType entityType, Integer... values);
 
   /**
-   * Creates new {@link Entity.Key} instances with the given entityId, initialised with the given values
-   * @param entityId the entityId
+   * Creates new {@link Entity.Key} instances with the given entityType, initialised with the given values
+   * @param entityType the entityType
    * @param values the key values, assumes a single integer key
    * @return new {@link Entity.Key} instances
    * @throws IllegalArgumentException in case the given primary key is a composite key
-   * @throws NullPointerException in case entityId or values is null
+   * @throws NullPointerException in case entityType or values is null
    */
-  List<Entity.Key> keys(EntityId entityId, Long... values);
+  List<Entity.Key> keys(EntityType entityType, Long... values);
 
   /**
    * Copies the given entities, with new copied instances of all foreign key value entities.
@@ -131,11 +131,11 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   /**
    * Creates an empty Entity instance returning the given string on a call to toString(), all other
    * method calls are routed to an empty Entity instance.
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @param toStringValue the string to return by a call to toString() on the resulting entity
    * @return an empty entity wrapping a string
    */
-  Entity createToStringEntity(EntityId entityId, String toStringValue);
+  Entity createToStringEntity(EntityType entityType, String toStringValue);
 
   /**
    * Transforms the given entities into beans according to the information found in this Entities instance
@@ -185,10 +185,10 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
    * @param name the identity name
-   * @return a {@link EntityId} instance with the given name
+   * @return a {@link EntityType} instance with the given name
    */
-  static EntityId entityId(final String name) {
-    return new DefaultEntityId(name);
+  static EntityType entityType(final String name) {
+    return new DefaultEntityType(name);
   }
 
   /**
@@ -238,15 +238,17 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * Returns all updatable {@link ColumnProperty}s which value is missing or the original value differs from the one in the comparison
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
    * Note that only eagerly loaded blob values are included in this comparison.
+   * @param definition the entity definition
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @return the updatable column properties which values differ from the ones in the comparison entity
    * @see BlobProperty#isEagerlyLoaded()
    */
-  static List<ColumnProperty<?>> getModifiedColumnProperties(final Entity entity, final Entity comparison) {
+  static List<ColumnProperty<?>> getModifiedColumnProperties(final EntityDefinition definition, final Entity entity, final Entity comparison) {
+    requireNonNull(definition);
     requireNonNull(entity);
     requireNonNull(comparison);
-    return comparison.keySet().stream().map(entity::getProperty).filter(property -> {
+    return comparison.keySet().stream().map(definition::getProperty).filter(property -> {
       final boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
       final boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
 
@@ -405,23 +407,23 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   }
 
   /**
-   * Returns a LinkedHashMap containing the given entities mapped to their entityIds,
+   * Returns a LinkedHashMap containing the given entities mapped to their entityTypes,
    * respecting the iteration order of the given collection
-   * @param entities the entities to map by entityId
-   * @return a Map of entities mapped to entityId
+   * @param entities the entities to map by entityType
+   * @return a Map of entities mapped to entityType
    */
-  static LinkedHashMap<EntityId, List<Entity>> mapToEntityId(final Collection<Entity> entities) {
-    return map(entities, Entity::getEntityId);
+  static LinkedHashMap<EntityType, List<Entity>> mapToEntityType(final Collection<Entity> entities) {
+    return map(entities, Entity::getEntityType);
   }
 
   /**
-   * Returns a LinkedHashMap containing the given entity keys mapped to their entityIds,
+   * Returns a LinkedHashMap containing the given entity keys mapped to their entityTypes,
    * respecting the iteration order of the given collection
-   * @param keys the entity keys to map by entityId
-   * @return a Map of entity keys mapped to entityId
+   * @param keys the entity keys to map by entityType
+   * @return a Map of entity keys mapped to entityType
    */
-  static LinkedHashMap<EntityId, List<Entity.Key>> mapKeysToEntityId(final Collection<Entity.Key> keys) {
-    return map(keys, Entity.Key::getEntityId);
+  static LinkedHashMap<EntityType, List<Entity.Key>> mapKeysToEntityType(final Collection<Entity.Key> keys) {
+    return map(keys, Entity.Key::getEntityType);
   }
 
   /**

@@ -10,7 +10,7 @@ import is.codion.common.model.table.SortingDirective;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -174,8 +174,8 @@ public final class EntityLookupField extends JTextField {
 
   /**
    * Performs a lookup for the given entity type, using a EntityLookupField displayed
-   * in a dialog, using the default search properties for the given entityId.
-   * @param entityId the entityId of the entity to perform a lookup for
+   * in a dialog, using the default search properties for the given entityType.
+   * @param entityType the entityType of the entity to perform a lookup for
    * @param connectionProvider the connection provider
    * @param dialogParent the component serving as the dialog parent
    * @param lookupCaption the caption for the lookup field
@@ -184,17 +184,17 @@ public final class EntityLookupField extends JTextField {
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
-  public static Entity lookupEntity(final EntityId entityId, final EntityConnectionProvider connectionProvider,
+  public static Entity lookupEntity(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                     final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
-    final List<Entity> entities = lookupEntities(entityId, connectionProvider, true, dialogParent, lookupCaption, dialogTitle);
+    final List<Entity> entities = lookupEntities(entityType, connectionProvider, true, dialogParent, lookupCaption, dialogTitle);
 
     return entities.isEmpty() ? null : entities.get(0);
   }
 
   /**
    * Performs a lookup for the given entity type, using a EntityLookupField displayed
-   * in a dialog, using the default search properties for the given entityId.
-   * @param entityId the entityId of the entity to perform a lookup for
+   * in a dialog, using the default search properties for the given entityType.
+   * @param entityType the entityType of the entity to perform a lookup for
    * @param connectionProvider the connection provider
    * @param dialogParent the component serving as the dialog parent
    * @param lookupCaption the caption for the lookup field
@@ -203,9 +203,9 @@ public final class EntityLookupField extends JTextField {
    * @see EntityLookupField
    * @see EntityDefinition#getSearchProperties()
    */
-  public static List<Entity> lookupEntities(final EntityId entityId, final EntityConnectionProvider connectionProvider,
+  public static List<Entity> lookupEntities(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent, final String lookupCaption, final String dialogTitle) {
-    return lookupEntities(entityId, connectionProvider, false, dialogParent, lookupCaption, dialogTitle);
+    return lookupEntities(entityType, connectionProvider, false, dialogParent, lookupCaption, dialogTitle);
   }
 
   private void selectEntities(final List<Entity> entities) {
@@ -326,10 +326,10 @@ public final class EntityLookupField extends JTextField {
     Dialogs.displayInDialog(this, messagePanel, SwingMessages.get("OptionPane.messageDialogTitle"), closeEvent);
   }
 
-  private static List<Entity> lookupEntities(final EntityId entityId, final EntityConnectionProvider connectionProvider,
+  private static List<Entity> lookupEntities(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                              final boolean singleSelection, final JComponent dialogParent,
                                              final String lookupCaption, final String dialogTitle) {
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityId, connectionProvider);
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(entityType, connectionProvider);
     lookupModel.getMultipleSelectionEnabledValue().set(!singleSelection);
     final ComponentValuePanel<Entity, EntityLookupField> inputPanel = new ComponentValuePanel<>(lookupCaption,
             new ComponentValue(lookupModel, null));
@@ -498,7 +498,7 @@ public final class EntityLookupField extends JTextField {
      */
     public TableSelectionProvider(final EntityLookupModel lookupModel) {
       requireNonNull(lookupModel, LOOKUP_MODEL);
-      final SwingEntityTableModel tableModel = new SwingEntityTableModel(lookupModel.getEntityId(), lookupModel.getConnectionProvider()) {
+      final SwingEntityTableModel tableModel = new SwingEntityTableModel(lookupModel.getEntityType(), lookupModel.getConnectionProvider()) {
         @Override
         protected List<Entity> performQuery() {
           return emptyList();

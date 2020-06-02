@@ -105,8 +105,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public EntityId getEntityId() {
-    return definition.getEntityId();
+  public EntityType getEntityType() {
+    return definition.getEntityType();
   }
 
   @Override
@@ -124,8 +124,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean is(final EntityId entityId) {
-    return definition.getEntityId().equals(entityId);
+  public boolean is(final EntityType entityType) {
+    return definition.getEntityType().equals(entityType);
   }
 
   /**
@@ -323,11 +323,6 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public Object getColor(final Property<?> property) {
-    return definition.getColorProvider().getColor(this, property);
-  }
-
-  @Override
   public Key getReferencedKey(final Attribute<Entity> foreignKeyAttribute) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     final ForeignKeyProperty foreignKeyProperty = definition.getForeignKeyProperty(foreignKeyAttribute);
@@ -356,11 +351,6 @@ final class DefaultEntity implements Entity {
     }
 
     return unmodifiableSet(originalValues.keySet());
-  }
-
-  @Override
-  public Property<?> getProperty(final Attribute<?> attribute) {
-    return definition.getProperty(attribute);
   }
 
   @Override
@@ -490,10 +480,10 @@ final class DefaultEntity implements Entity {
 
   private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity value) {
     final Entity entity = value;
-    final EntityId foreignEntityId = property.getForeignEntityId();
-    if (!Objects.equals(foreignEntityId, entity.getEntityId())) {
-      throw new IllegalArgumentException("Entity of type " + foreignEntityId +
-              " expected for property " + this + ", got: " + entity.getEntityId());
+    final EntityType foreignEntityType = property.getForeignEntityType();
+    if (!Objects.equals(foreignEntityType, entity.getEntityType())) {
+      throw new IllegalArgumentException("Entity of type " + foreignEntityType +
+              " expected for property " + this + ", got: " + entity.getEntityType());
     }
   }
 
@@ -630,7 +620,7 @@ final class DefaultEntity implements Entity {
   private Key initializeAndCacheCompositeReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
     final EntityDefinition foreignEntityDefinition = definition.getForeignDefinition(foreignKeyProperty.getAttribute());
     if (!foreignEntityDefinition.hasPrimaryKey()) {
-      throw new IllegalArgumentException("Entity '" + foreignEntityDefinition.getEntityId() + "' has no primary key defined");
+      throw new IllegalArgumentException("Entity '" + foreignEntityDefinition.getEntityType() + "' has no primary key defined");
     }
     final List<ColumnProperty<?>> foreignProperties = foreignEntityDefinition.getPrimaryKeyProperties();
     final List<ColumnProperty<?>> columnProperties = foreignKeyProperty.getColumnProperties();
@@ -789,7 +779,7 @@ final class DefaultEntity implements Entity {
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getDomainId().getName());
-    stream.writeObject(definition.getEntityId().getName());
+    stream.writeObject(definition.getEntityType().getName());
     final boolean isModified = isModifiedInternal(true);
     stream.writeBoolean(isModified);
     final List<Property<?>> properties = definition.getProperties();
@@ -815,11 +805,11 @@ final class DefaultEntity implements Entity {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final Identity domainId = Identities.identity((String) stream.readObject());
-    final EntityId entityId = Entities.entityId((String) stream.readObject());
+    final EntityType entityType = Entities.entityType((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
-    definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
+    definition = DefaultEntities.getEntities(domainId).getDefinition(entityType);
     if (definition == null) {
-      throw new IllegalArgumentException("Undefined entity: " + entityId);
+      throw new IllegalArgumentException("Undefined entity: " + entityType);
     }
     values = new HashMap<>();
     final List<Property<?>> properties = definition.getProperties();

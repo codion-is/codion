@@ -25,7 +25,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -182,16 +182,16 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectDependencies() throws Exception {
-    final Map<EntityId, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
+    final Map<EntityType, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
     assertTrue(empty.isEmpty());
     final List<Entity> accounting = connection.select(T_DEPARTMENT, DEPARTMENT_NAME, "ACCOUNTING");
-    final Map<EntityId, Collection<Entity>> emps = connection.selectDependencies(accounting);
+    final Map<EntityType, Collection<Entity>> emps = connection.selectDependencies(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(T_EMP));
     assertEquals(7, emps.get(T_EMP).size());
 
     final Entity emp = connection.selectSingle(T_EMP, EMP_NAME, "KING");
-    final Map<EntityId, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
+    final Map<EntityType, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
     assertTrue(deps.isEmpty());//soft foreign key reference
   }
 
@@ -228,7 +228,7 @@ public class DefaultLocalEntityConnectionTest {
             Conditions.customCondition(DEPARTMENT_CONDITION_ID,
                     asList(DEPARTMENT_ID, DEPARTMENT_ID), asList(10, 20))));
     assertEquals(2, result.size());
-    result = connection.select(selectCondition(JOINED_QUERY_ENTITY_ID,
+    result = connection.select(selectCondition(JOINED_QUERY_ENTITY_TYPE,
             Conditions.customCondition(JOINED_QUERY_CONDITION_ID)));
     assertEquals(7, result.size());
 
@@ -329,13 +329,13 @@ public class DefaultLocalEntityConnectionTest {
     rowCount = connection.selectRowCount(condition(T_DEPARTMENT, deptNoCondition));
     assertEquals(2, rowCount);
 
-    rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_ID));
+    rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_TYPE));
     assertEquals(16, rowCount);
     deptNoCondition = Conditions.propertyCondition(JOINED_DEPTNO, Operator.GREATER_THAN, 30);
-    rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_ID, deptNoCondition));
+    rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_TYPE, deptNoCondition));
     assertEquals(4, rowCount);
 
-    rowCount = connection.selectRowCount(condition(GROUP_BY_QUERY_ENTITY_ID));
+    rowCount = connection.selectRowCount(condition(GROUP_BY_QUERY_ENTITY_TYPE));
     assertEquals(4, rowCount);
   }
 

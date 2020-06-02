@@ -79,7 +79,7 @@ public class SwingEntityEditModelTest {
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getItems().isEmpty());
-    assertEquals(deptProperty.getForeignEntityId(), model.getEntityId());
+    assertEquals(deptProperty.getForeignEntityType(), model.getEntityType());
   }
 
   @Test

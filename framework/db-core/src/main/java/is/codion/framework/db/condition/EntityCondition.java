@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 
@@ -13,9 +13,9 @@ import java.io.Serializable;
 public interface EntityCondition extends Serializable {
 
   /**
-   * @return the entityId
+   * @return the entity type
    */
-  EntityId getEntityId();
+  EntityType getEntityType();
 
   /**
    * @return the underlying {@link Condition} object, may not be null

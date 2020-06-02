@@ -11,7 +11,7 @@ import is.codion.common.event.Events;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import org.slf4j.Logger;
@@ -30,18 +30,6 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default EntityModel implementation.
- *
- * <pre>
- * String entityId = "some.entity";
- * String clientTypeId = "JavadocDemo";
- * User user = Users.user("scott", "tiger");
- *
- * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeId);
- *
- * EntityModel model = new DefaultEntityModel(entityId, connectionProvider);
- *
- * EntityPanel panel = new EntityPanel(model);
- * </pre>
  * @param <M> the type of {@link DefaultEntityModel} used for detail models
  * @param <E> the type of {@link DefaultEntityEditModel} used by this {@link EntityModel}
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
@@ -123,12 +111,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    */
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + getEntityId();
+    return getClass().getSimpleName() + ": " + getEntityType();
   }
 
   @Override
-  public final EntityId getEntityId() {
-    return editModel.getEntityId();
+  public final EntityType getEntityType() {
+    return editModel.getEntityType();
   }
 
   @Override
@@ -195,8 +183,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final boolean containsDetailModel(final EntityId entityId) {
-    return detailModels.stream().anyMatch(detailModel -> detailModel.getEntityId().equals(entityId));
+  public final boolean containsDetailModel(final EntityType entityType) {
+    return detailModels.stream().anyMatch(detailModel -> detailModel.getEntityType().equals(entityType));
   }
 
   @Override
@@ -247,14 +235,14 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M getDetailModel(final EntityId entityId) {
+  public final M getDetailModel(final EntityType entityType) {
     for (final M detailModel : detailModels) {
-      if (detailModel.getEntityId().equals(entityId)) {
+      if (detailModel.getEntityType().equals(entityType)) {
         return detailModel;
       }
     }
 
-    throw new IllegalArgumentException("No detail model for entity " + entityId + " found in model: " + this);
+    throw new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + this);
   }
 
   @Override
@@ -269,7 +257,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
     else {
       detailModelForeignKeys.put(detailModel,
-              connectionProvider.getEntities().getDefinition(detailModel.getEntityId()).getForeignKeyProperty(foreignKeyAttribute));
+              connectionProvider.getEntities().getDefinition(detailModel.getEntityType()).getForeignKeyProperty(foreignKeyAttribute));
     }
   }
 
@@ -323,9 +311,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void initialize(final EntityId foreignKeyEntityId, final List<Entity> foreignKeyValues) {
+  public final void initialize(final EntityType foreignKeyEntityType, final List<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
-            editModel.getEntityDefinition().getForeignKeyReferences(foreignKeyEntityId);
+            editModel.getEntityDefinition().getForeignKeyReferences(foreignKeyEntityType);
     if (!foreignKeyProperties.isEmpty()) {
       initialize(foreignKeyProperties.get(0), foreignKeyValues);
     }
@@ -412,7 +400,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Initializes all linked detail models according to the active entities in this master model
    * @see #getActiveEntities()
    * @see #addLinkedDetailModel(EntityModel)
-   * @see #initialize(EntityId, List)
+   * @see #initialize(EntityType, List)
    */
   protected final void initializeDetailModels() {
     final List<Entity> activeEntities = getActiveEntities();
@@ -421,7 +409,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
         detailModel.initialize(detailModelForeignKeys.get(detailModel), activeEntities);
       }
       else {
-        detailModel.initialize(getEntityId(), activeEntities);
+        detailModel.initialize(getEntityType(), activeEntities);
       }
     }
   }
@@ -438,7 +426,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (containsTableModel() && searchOnMasterInsert) {
       ForeignKeyProperty foreignKeyProperty = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKeyProperty == null) {
-        foreignKeyProperty = editModel.getEntityDefinition().getForeignKeyReferences(masterModel.getEntityId()).get(0);
+        foreignKeyProperty = editModel.getEntityDefinition().getForeignKeyReferences(masterModel.getEntityType()).get(0);
       }
       tableModel.setForeignKeyConditionValues(foreignKeyProperty, insertedEntities);
     }
@@ -451,7 +439,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   protected final void onMasterUpdate(final Map<Entity.Key, Entity> updatedEntities) {
     editModel.replaceForeignKeyValues(updatedEntities.values());
     if (containsTableModel()) {
-      tableModel.replaceForeignKeyValues(masterModel.getEntityId(), updatedEntities.values());
+      tableModel.replaceForeignKeyValues(masterModel.getEntityType(), updatedEntities.values());
     }
   }
 
@@ -471,8 +459,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void setTableEditModel(final E editModel, final EntityTableModel<E> tableModel) {
-    if (tableModel != null && !editModel.getEntityId().equals(tableModel.getEntityId())) {
-      throw new IllegalArgumentException("Table model entityId mismatch, found: " + tableModel.getEntityId() + ", required: " + editModel.getEntityId());
+    if (tableModel != null && !editModel.getEntityType().equals(tableModel.getEntityType())) {
+      throw new IllegalArgumentException("Table model entityType mismatch, found: " + tableModel.getEntityType() + ", required: " + editModel.getEntityType());
     }
     if (tableModel != null) {
       if (tableModel.hasEditModel()) {

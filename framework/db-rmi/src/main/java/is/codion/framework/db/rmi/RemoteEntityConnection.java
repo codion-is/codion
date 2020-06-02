@@ -13,7 +13,7 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -199,18 +199,18 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Selects a single entity
-   * @param entityId the entity type
+   * @param entityType the entity type
    * @param attribute the attribute to use as a condition
    * @param value the value to use in the condition
    * @param <T> the value type
-   * @return an entity of the type {@code entityId}, having the
+   * @return an entity of the type {@code entityType}, having the
    * value of {@code attribute} as {@code value}
    * @throws DatabaseException in case of a db exception
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  <T> Entity selectSingle(EntityId entityId, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
+  <T> Entity selectSingle(EntityType entityType, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -255,36 +255,36 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
-   * @param entityId the entity type
+   * @param entityType the entity type
    * @param attribute the condition attribute
    * @param value the value to use as condition
    * @param <T> the value type
-   * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
+   * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<Entity> select(EntityId entityId, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
+  <T> List<Entity> select(EntityType entityType, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
-   * @param entityId the entity type
+   * @param entityType the entity type
    * @param attribute the condition attribute
    * @param values the values to use as condition
    * @param <T> the value type
-   * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
+   * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<Entity> select(EntityId entityId, Attribute<T> attribute, Collection<T> values) throws RemoteException, DatabaseException;
+  <T> List<Entity> select(EntityType entityType, Attribute<T> attribute, Collection<T> values) throws RemoteException, DatabaseException;
 
   /**
-   * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIds
+   * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityTypes
    * @param entities the entities for which to retrieve dependencies
    * @return the entities that depend on {@code entities}
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  Map<EntityId, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws RemoteException, DatabaseException;
+  Map<EntityType, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Selects the number of rows returned according to the given condition

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 
 import static java.util.Objects.requireNonNull;
 
@@ -13,31 +13,31 @@ class DefaultEntityCondition implements EntityCondition {
 
   private static final Condition.EmptyCondition EMPTY_CONDITION = new Condition.EmptyCondition();
 
-  private final EntityId entityId;
+  private final EntityType entityType;
   private final Condition condition;
 
   /**
    * Instantiates a new empty {@link DefaultEntityCondition}.
    * Using an empty condition means all underlying records should be selected
-   * @param entityId the id of the entity to select
+   * @param entityType the type of the entity to select
    */
-  DefaultEntityCondition(final EntityId entityId) {
-    this(entityId, null);
+  DefaultEntityCondition(final EntityType entityType) {
+    this(entityType, null);
   }
 
   /**
    * Instantiates a new {@link EntityCondition}
-   * @param entityId the id of the entity to select
+   * @param entityType the type of the entity to select
    * @param condition the Condition object
    */
-  DefaultEntityCondition(final EntityId entityId, final Condition condition) {
-    this.entityId = requireNonNull(entityId, "entityId");
+  DefaultEntityCondition(final EntityType entityType, final Condition condition) {
+    this.entityType = requireNonNull(entityType, "entityType");
     this.condition = condition == null ? EMPTY_CONDITION : condition;
   }
 
   @Override
-  public final EntityId getEntityId() {
-    return entityId;
+  public final EntityType getEntityType() {
+    return entityType;
   }
 
   @Override
@@ -47,6 +47,6 @@ class DefaultEntityCondition implements EntityCondition {
 
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + " [" + entityId + "]";
+    return getClass().getSimpleName() + " [" + entityType + "]";
   }
 }

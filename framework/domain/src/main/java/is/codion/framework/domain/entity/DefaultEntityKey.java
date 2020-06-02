@@ -60,7 +60,7 @@ final class DefaultEntityKey implements Entity.Key {
    */
   DefaultEntityKey(final EntityDefinition definition) {
     if (definition.hasPrimaryKey()) {
-      throw new IllegalArgumentException("Can not create an empty key for entity '" + definition.getEntityId() + "'");
+      throw new IllegalArgumentException("Can not create an empty key for entity '" + definition.getEntityType() + "'");
     }
     this.values = new HashMap<>();
     this.definition = definition;
@@ -90,7 +90,7 @@ final class DefaultEntityKey implements Entity.Key {
     this.values = values == null ? new HashMap<>() : new HashMap<>(values);
     final List<ColumnProperty<?>> properties = definition.getPrimaryKeyProperties();
     if (properties.isEmpty()) {
-      throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
+      throw new IllegalArgumentException("Entity '" + definition.getEntityType() + "' has no primary key defined");
     }
     this.definition = definition;
     this.compositeKey = properties.size() > 1;
@@ -98,8 +98,8 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   @Override
-  public EntityId getEntityId() {
-    return definition.getEntityId();
+  public EntityType getEntityType() {
+    return definition.getEntityType();
   }
 
   @Override
@@ -153,7 +153,7 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   /**
-   * Key objects are equal if the entityIds match as well as all property values.
+   * Key objects are equal if the entity types match as well as all property values.
    * Empty keys are only equal to themselves.
    * @param object the object to compare with
    * @return true if object is equal to this key
@@ -167,17 +167,17 @@ final class DefaultEntityKey implements Entity.Key {
       return false;
     }
     if (object.getClass() ==  DefaultEntityKey.class) {
-      final EntityId entityId = definition.getEntityId();
+      final EntityType entityType = definition.getEntityType();
       final DefaultEntityKey otherKey = (DefaultEntityKey) object;
       if (compositeKey) {
-        return otherKey.isCompositeKey() && entityId.equals(otherKey.getEntityId()) && this.values.equals(otherKey.values);
+        return otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) && this.values.equals(otherKey.values);
       }
       if (singleIntegerKey) {
         return otherKey.isSingleIntegerKey() && isNull() == otherKey.isNull()
-                && hashCode() == otherKey.hashCode() && entityId.equals(otherKey.getEntityId());
+                && hashCode() == otherKey.hashCode() && entityType.equals(otherKey.getEntityType());
       }
       //single non-integer key
-      return !otherKey.isCompositeKey() && entityId.equals(otherKey.getEntityId()) && Objects.equals(getFirstValue(), otherKey.getFirstValue());
+      return !otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) && Objects.equals(getFirstValue(), otherKey.getFirstValue());
     }
 
     return false;
@@ -312,7 +312,7 @@ final class DefaultEntityKey implements Entity.Key {
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getDomainId().getName());
-    stream.writeObject(definition.getEntityId().getName());
+    stream.writeObject(definition.getEntityType().getName());
     final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
       stream.writeObject(values.get(primaryKeyProperties.get(i).getAttribute()));
@@ -321,10 +321,10 @@ final class DefaultEntityKey implements Entity.Key {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final Identity domainId = Identities.identity((String) stream.readObject());
-    final EntityId entityId = Entities.entityId((String) stream.readObject());
-    definition = DefaultEntities.getEntities(domainId).getDefinition(entityId);
+    final EntityType entityType = Entities.entityType((String) stream.readObject());
+    definition = DefaultEntities.getEntities(domainId).getDefinition(entityType);
     if (definition == null) {
-      throw new IllegalArgumentException("Undefined entity: " + entityId);
+      throw new IllegalArgumentException("Undefined entity: " + entityType);
     }
     values = new HashMap<>();
     final List<ColumnProperty<?>> properties = definition.getPrimaryKeyProperties();
@@ -340,10 +340,10 @@ final class DefaultEntityKey implements Entity.Key {
   private static Map<Attribute<?>, Object> createSingleValueMap(final EntityDefinition definition, final Object value) {
     final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     if (primaryKeyProperties.isEmpty()) {
-      throw new IllegalArgumentException("Entity '" + definition.getEntityId() + "' has no primary key defined");
+      throw new IllegalArgumentException("Entity '" + definition.getEntityType() + "' has no primary key defined");
     }
     if (primaryKeyProperties.size() > 1) {
-      throw new IllegalArgumentException(definition.getEntityId() + " has a composite primary key");
+      throw new IllegalArgumentException(definition.getEntityType() + " has a composite primary key");
     }
     final ColumnProperty<Object> keyProperty = (ColumnProperty<Object>) primaryKeyProperties.get(0);
     final Map<Attribute<?>, Object> valueMap = new HashMap<>(1);

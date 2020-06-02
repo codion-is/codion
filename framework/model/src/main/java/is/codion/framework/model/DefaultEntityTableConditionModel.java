@@ -20,7 +20,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -45,7 +45,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private final Event<String> simpleConditionStringChangedEvent = Events.event();
   private final Event<?> simpleSearchPerformedEvent = Events.event();
 
-  private final EntityId entityId;
+  private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
   private final Map<Attribute<?>, ColumnConditionModel<Entity, Property<?>>> propertyFilterModels = new LinkedHashMap<>();
   private final Map<Attribute<?>, ColumnConditionModel<Entity, ? extends Property<?>>> propertyConditionModels = new HashMap<>();
@@ -56,29 +56,29 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   /**
    * Instantiates a new DefaultEntityTableConditionModel
-   * @param entityId the id of the underlying entity
+   * @param entityType the id of the underlying entity
    * @param connectionProvider a EntityConnectionProvider instance, required if the searchable properties include
    * foreign key properties
    * @param filterModelProvider provides the column filter models for this table condition model
    * @param conditionModelProvider provides the column condition models for this table condition model
    */
-  public DefaultEntityTableConditionModel(final EntityId entityId, final EntityConnectionProvider connectionProvider,
+  public DefaultEntityTableConditionModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                           final PropertyFilterModelProvider filterModelProvider,
                                           final PropertyConditionModelProvider conditionModelProvider) {
-    requireNonNull(entityId, "entityId");
+    requireNonNull(entityType, "entityType");
     requireNonNull(connectionProvider, "connectionProvider");
-    this.entityId = entityId;
+    this.entityType = entityType;
     this.connectionProvider = connectionProvider;
-    initializeFilterModels(entityId, filterModelProvider);
-    initializeColumnPropertyConditionModels(entityId, conditionModelProvider);
-    initializeForeignKeyPropertyConditionModels(entityId, connectionProvider, conditionModelProvider);
+    initializeFilterModels(entityType, filterModelProvider);
+    initializeColumnPropertyConditionModels(entityType, conditionModelProvider);
+    initializeForeignKeyPropertyConditionModels(entityType, connectionProvider, conditionModelProvider);
     rememberCondition();
     bindEvents();
   }
 
   @Override
-  public EntityId getEntityId() {
-    return entityId;
+  public EntityType getEntityType() {
+    return entityType;
   }
 
   @Override
@@ -302,7 +302,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
 
   private void setConditionString(final String searchString) {
     final Collection<ColumnProperty<?>> searchProperties =
-            connectionProvider.getEntities().getDefinition(entityId).getSearchProperties();
+            connectionProvider.getEntities().getDefinition(entityType).getSearchProperties();
     for (final ColumnProperty<?> searchProperty : searchProperties) {
       final ColumnConditionModel<?, ?> conditionModel = getPropertyConditionModel(searchProperty.getAttribute());
       conditionModel.setCaseSensitive(false);
@@ -320,9 +320,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     return propertyConditionModels.values().stream().map(DefaultEntityTableConditionModel::toString).collect(joining());
   }
 
-  private void initializeFilterModels(final EntityId entityId, final PropertyFilterModelProvider filterModelProvider) {
+  private void initializeFilterModels(final EntityType entityType, final PropertyFilterModelProvider filterModelProvider) {
     if (filterModelProvider != null) {
-      for (final Property<?> property : connectionProvider.getEntities().getDefinition(entityId).getProperties()) {
+      for (final Property<?> property : connectionProvider.getEntities().getDefinition(entityType).getProperties()) {
         if (!property.isHidden()) {
           final ColumnConditionModel<Entity, Property<?>> filterModel = filterModelProvider.initializePropertyFilterModel(property);
           this.propertyFilterModels.put(filterModel.getColumnIdentifier().getAttribute(), filterModel);
@@ -331,9 +331,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private void initializeColumnPropertyConditionModels(final EntityId entityId, final PropertyConditionModelProvider conditionModelProvider) {
+  private void initializeColumnPropertyConditionModels(final EntityType entityType, final PropertyConditionModelProvider conditionModelProvider) {
     for (final ColumnProperty<?> columnProperty :
-            connectionProvider.getEntities().getDefinition(entityId).getColumnProperties()) {
+            connectionProvider.getEntities().getDefinition(entityType).getColumnProperties()) {
       if (!columnProperty.isForeignKeyProperty() && !columnProperty.isAggregateColumn()) {
         final ColumnConditionModel<Entity, ColumnProperty<?>> conditionModel =
                 conditionModelProvider.initializePropertyConditionModel(columnProperty);
@@ -344,10 +344,10 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private void initializeForeignKeyPropertyConditionModels(final EntityId entityId, final EntityConnectionProvider connectionProvider,
+  private void initializeForeignKeyPropertyConditionModels(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                                            final PropertyConditionModelProvider conditionModelProvider) {
     for (final ForeignKeyProperty foreignKeyProperty :
-            connectionProvider.getEntities().getDefinition(entityId).getForeignKeyProperties()) {
+            connectionProvider.getEntities().getDefinition(entityType).getForeignKeyProperties()) {
       final ColumnConditionModel<Entity, ForeignKeyProperty> conditionModel =
               conditionModelProvider.initializeForeignKeyConditionModel(foreignKeyProperty, connectionProvider);
       if (conditionModel != null) {

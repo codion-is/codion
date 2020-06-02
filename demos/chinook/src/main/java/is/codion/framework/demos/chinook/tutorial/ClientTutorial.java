@@ -9,7 +9,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -28,7 +28,7 @@ import java.awt.Color;
 import java.util.List;
 
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
-import static is.codion.framework.domain.entity.Entities.entityId;
+import static is.codion.framework.domain.entity.Entities.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
@@ -44,12 +44,12 @@ public final class ClientTutorial {
 
   public static final class Chinook extends Domain {
 
-    public static final EntityId T_ARTIST = entityId("chinook.artist");
+    public static final EntityType T_ARTIST = entityType("chinook.artist");
     public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
     public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
     public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = T_ARTIST.integerAttribute("nr_of_albums");
 
-    public static final EntityId T_ALBUM = entityId("chinook.album");
+    public static final EntityType T_ALBUM = entityType("chinook.album");
     public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
     public static final Attribute<String> ALBUM_TITLE = T_ARTIST.stringAttribute("title");
     public static final Attribute<Integer> ALBUM_ARTISTID = T_ARTIST.integerAttribute("artistid");

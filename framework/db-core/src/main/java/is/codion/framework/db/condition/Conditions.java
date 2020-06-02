@@ -9,7 +9,7 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.ConditionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -47,14 +47,14 @@ public final class Conditions {
   }
 
   /**
-   * Creates a {@link EntityCondition} instance specifying the entities of the type identified by {@code entityId},
+   * Creates a {@link EntityCondition} instance specifying the entities of the type identified by {@code entityType},
    * using the given {@link Condition}
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @param condition the column condition
    * @return a condition based on the given column condition
    */
-  public static EntityCondition condition(final EntityId entityId, final Condition condition) {
-    return new DefaultEntityCondition(entityId, condition);
+  public static EntityCondition condition(final EntityType entityType, final Condition condition) {
+    return new DefaultEntityCondition(entityType, condition);
   }
 
   /**
@@ -64,31 +64,31 @@ public final class Conditions {
    */
   public static EntityCondition condition(final List<Entity.Key> keys) {
     final List<Entity.Key> keyList = checkKeysParameter(keys);
-    return new DefaultEntityCondition(keyList.get(0).getEntityId(), createKeyCondition(keyList));
+    return new DefaultEntityCondition(keyList.get(0).getEntityType(), createKeyCondition(keyList));
   }
 
   /**
-   * Creates a {@link EntitySelectCondition} instance specifying all entities of the type identified by {@code entityId}
-   * @param entityId the entityId
+   * Creates a {@link EntitySelectCondition} instance specifying all entities of the type identified by {@code entityType}
+   * @param entityType the entityType
    * @return a condition specifying all entities of the given type
    */
-  public static EntityCondition condition(final EntityId entityId) {
-    return new DefaultEntityCondition(entityId);
+  public static EntityCondition condition(final EntityType entityType) {
+    return new DefaultEntityCondition(entityType);
   }
 
   /**
-   * Creates a {@link EntityCondition} instance for specifying entities of the type identified by {@code entityId}
+   * Creates a {@link EntityCondition} instance for specifying entities of the type identified by {@code entityType}
    * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
    * Note that {@code value} may be a single value, a Collection of values or null.
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @param attribute the attribute
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return a condition based on the given value
    */
-  public static EntityCondition condition(final EntityId entityId, final Attribute<?> attribute,
+  public static EntityCondition condition(final EntityType entityType, final Attribute<?> attribute,
                                           final Operator operator, final Object value) {
-    return new DefaultEntityCondition(entityId, propertyCondition(attribute, operator, value));
+    return new DefaultEntityCondition(entityType, propertyCondition(attribute, operator, value));
   }
 
   /**
@@ -108,78 +108,78 @@ public final class Conditions {
    */
   public static EntitySelectCondition selectCondition(final List<Entity.Key> keys) {
     final List<Entity.Key> keyList = checkKeysParameter(keys);
-    return new DefaultEntitySelectCondition(keyList.get(0).getEntityId(), createKeyCondition(keyList));
+    return new DefaultEntitySelectCondition(keyList.get(0).getEntityType(), createKeyCondition(keyList));
   }
 
   /**
-   * Creates a {@link EntitySelectCondition} instance for selecting all entities of the type identified by {@code entityId}
-   * @param entityId the entityId
+   * Creates a {@link EntitySelectCondition} instance for selecting all entities of the type identified by {@code entityType}
+   * @param entityType the entityType
    * @return a select condition encompassing all entities of the given type
    */
-  public static EntitySelectCondition selectCondition(final EntityId entityId) {
-    return new DefaultEntitySelectCondition(entityId);
+  public static EntitySelectCondition selectCondition(final EntityType entityType) {
+    return new DefaultEntitySelectCondition(entityType);
   }
 
   /**
-   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId},
+   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityType},
    * using the given {@link Condition}
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @param condition the column condition
    * @return a select condition based on the given column condition
    */
-  public static EntitySelectCondition selectCondition(final EntityId entityId, final Condition condition) {
-    return new DefaultEntitySelectCondition(entityId, condition);
+  public static EntitySelectCondition selectCondition(final EntityType entityType, final Condition condition) {
+    return new DefaultEntitySelectCondition(entityType, condition);
   }
 
   /**
-   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityId}
+   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityType}
    * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
    * Note that {@code value} may be a single value, a Collection of values or null.
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @param attribute the attribute
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @return a select condition based on the given value
    */
-  public static EntitySelectCondition selectCondition(final EntityId entityId, final Attribute<?> attribute,
+  public static EntitySelectCondition selectCondition(final EntityType entityType, final Attribute<?> attribute,
                                                       final Operator operator, final Object value) {
-    return selectCondition(entityId, propertyCondition(attribute, operator, value));
+    return selectCondition(entityType, propertyCondition(attribute, operator, value));
   }
 
   /**
-   * Creates a {@link EntityUpdateCondition} instance for updating all entities of the type identified by {@code entityId}
-   * @param entityId the entityId
+   * Creates a {@link EntityUpdateCondition} instance for updating all entities of the type identified by {@code entityType}
+   * @param entityType the entityType
    * @return an update condition encompassing all entities of the given type
    */
-  public static EntityUpdateCondition updateCondition(final EntityId entityId) {
-    return new DefaultEntityUpdateCondition(entityId);
+  public static EntityUpdateCondition updateCondition(final EntityType entityType) {
+    return new DefaultEntityUpdateCondition(entityType);
   }
 
   /**
-   * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityId}
+   * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityType}
    * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
    * Note that {@code value} may be a single value, a Collection of values or null.
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @param attribute the attribute
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
    * @param <T> the value type
    * @return an update condition based on the given value
    */
-  public static <T> EntityUpdateCondition updateCondition(final EntityId entityId, final Attribute<T> attribute,
+  public static <T> EntityUpdateCondition updateCondition(final EntityType entityType, final Attribute<T> attribute,
                                                           final Operator operator, final T value) {
-    return updateCondition(entityId, propertyCondition(attribute, operator, value));
+    return updateCondition(entityType, propertyCondition(attribute, operator, value));
   }
 
   /**
-   * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityId},
+   * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityType},
    * using the given {@link Condition}
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @param condition the column condition
    * @return an update condition based on the given column condition
    */
-  public static EntityUpdateCondition updateCondition(final EntityId entityId, final Condition condition) {
-    return new DefaultEntityUpdateCondition(entityId, condition);
+  public static EntityUpdateCondition updateCondition(final EntityType entityType, final Condition condition) {
+    return new DefaultEntityUpdateCondition(entityType, condition);
   }
 
   /**

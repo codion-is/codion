@@ -192,7 +192,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void setEditModelWrongEntityId() {
+  public void setEditModelWrongEntityType() {
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     assertThrows(IllegalArgumentException.class, () -> tableModel.setEditModel(createDepartmentEditModel()));
   }
@@ -242,8 +242,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void getEntityId() {
-    assertEquals(TestDomain.T_DETAIL, testModel.getEntityId());
+  public void getEntityType() {
+    assertEquals(TestDomain.T_DETAIL, testModel.getEntityType());
   }
 
   @Test

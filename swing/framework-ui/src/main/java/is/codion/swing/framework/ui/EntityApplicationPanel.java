@@ -26,7 +26,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
@@ -298,12 +298,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @return the first entity panel found based on the given entity type, null if none is found
    */
-  public final EntityPanel getEntityPanel(final EntityId entityId) {
+  public final EntityPanel getEntityPanel(final EntityType entityType) {
     return entityPanels.stream().filter(entityPanel ->
-            entityPanel.getModel().getEntityId().equals(entityId)).findFirst().orElse(null);
+            entityPanel.getModel().getEntityType().equals(entityType)).findFirst().orElse(null);
   }
 
   /**
@@ -658,8 +658,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
     final Entities entities = applicationModel.getEntities();
     for (final EntityDefinition definition : entities.getDefinitions()) {
-      if (definition.getForeignKeyProperties().isEmpty() || referencesOnlySelf(applicationModel.getEntities(), definition.getEntityId())) {
-        root.add(new EntityDependencyTreeNode(definition.getEntityId(), entities));
+      if (definition.getForeignKeyProperties().isEmpty() || referencesOnlySelf(applicationModel.getEntities(), definition.getEntityType())) {
+        root.add(new EntityDependencyTreeNode(definition.getEntityType(), entities));
       }
     }
 
@@ -939,8 +939,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final Comparator<String> comparator = Text.getSpaceAwareCollator();
     final Entities entities = applicationModel.getEntities();
     supportPanelBuilders.sort((ep1, ep2) -> {
-      final String thisCompare = ep1.getCaption() == null ? entities.getDefinition(ep1.getEntityId()).getCaption() : ep1.getCaption();
-      final String thatCompare = ep2.getCaption() == null ? entities.getDefinition(ep2.getEntityId()).getCaption() : ep2.getCaption();
+      final String thisCompare = ep1.getCaption() == null ? entities.getDefinition(ep1.getEntityType()).getCaption() : ep1.getCaption();
+      final String thatCompare = ep2.getCaption() == null ? entities.getDefinition(ep2.getEntityType()).getCaption() : ep2.getCaption();
 
       return comparator.compare(thisCompare, thatCompare);
     });
@@ -948,7 +948,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             FrameworkMessages.get(FrameworkMessages.SUPPORT_TABLES_MNEMONIC).charAt(0));
     supportPanelBuilders.forEach(panelProvider -> controls.add(Controls.control(() -> displayEntityPanelDialog(panelProvider),
             panelProvider.getCaption() == null ?
-                    entities.getDefinition(panelProvider.getEntityId()).getCaption() : panelProvider.getCaption())));
+                    entities.getDefinition(panelProvider.getEntityType()).getCaption() : panelProvider.getCaption())));
 
     return controls;
   }
@@ -984,7 +984,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         }
       }
       final JDialog dialog = new JDialog(getParentWindow(), panelProvider.getCaption() == null ?
-              applicationModel.getEntities().getDefinition(panelProvider.getEntityId()).getCaption() : panelProvider.getCaption());
+              applicationModel.getEntities().getDefinition(panelProvider.getEntityType()).getCaption() : panelProvider.getCaption());
       dialog.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosed(final WindowEvent e) {
@@ -1050,7 +1050,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     for (final EntityPanelBuilder panelBuilder : entityPanelBuilders) {
       final SwingEntityModel entityModel = initializeEntityModel(applicationModel, panelBuilder.getModelBuilder());
       final EntityPanel entityPanel;
-      if (applicationModel.containsEntityModel(panelBuilder.getEntityId())) {
+      if (applicationModel.containsEntityModel(panelBuilder.getEntityType())) {
         entityPanel = panelBuilder.createPanel(entityModel);
       }
       else {
@@ -1083,8 +1083,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
     }
     else {
-      if (applicationModel.containsEntityModel(modelBuilder.getEntityId())) {
-        entityModel = applicationModel.getEntityModel(modelBuilder.getEntityId());
+      if (applicationModel.containsEntityModel(modelBuilder.getEntityType())) {
+        entityModel = applicationModel.getEntityModel(modelBuilder.getEntityType());
       }
       else {
         entityModel = modelBuilder.createModel(applicationModel.getConnectionProvider());
@@ -1538,25 +1538,25 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return username;
   }
 
-  private static boolean referencesOnlySelf(final Entities entities, final EntityId entityId) {
-    return entities.getDefinition(entityId).getForeignKeyProperties().stream()
-            .allMatch(fkProperty -> fkProperty.getForeignEntityId().equals(entityId));
+  private static boolean referencesOnlySelf(final Entities entities, final EntityType entityType) {
+    return entities.getDefinition(entityType).getForeignKeyProperties().stream()
+            .allMatch(fkProperty -> fkProperty.getForeignEntityType().equals(entityType));
   }
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
 
     private final Entities entities;
 
-    private EntityDependencyTreeNode(final EntityId entityId, final Entities entities) {
-      super(requireNonNull(entityId, "entityId"));
+    private EntityDependencyTreeNode(final EntityType entityType, final Entities entities) {
+      super(requireNonNull(entityType, "entityType"));
       this.entities = entities;
     }
 
     /**
-     * @return the id of the entity this node represents
+     * @return the type of the entity this node represents
      */
-    public EntityId getEntityId() {
-      return (EntityId) getUserObject();
+    public EntityType getEntityType() {
+      return (EntityType) getUserObject();
     }
 
     @Override
@@ -1572,9 +1572,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (final EntityDefinition definition : entities.getDefinitions()) {
         for (final ForeignKeyProperty fkProperty : definition.getForeignKeyProperties()) {
-          if (fkProperty.getForeignEntityId().equals(getEntityId()) && !fkProperty.isSoftReference()
-                  && !foreignKeyCycle(fkProperty.getForeignEntityId())) {
-            childrenList.add(new EntityDependencyTreeNode(definition.getEntityId(), entities));
+          if (fkProperty.getForeignEntityType().equals(getEntityType()) && !fkProperty.isSoftReference()
+                  && !foreignKeyCycle(fkProperty.getForeignEntityType())) {
+            childrenList.add(new EntityDependencyTreeNode(definition.getEntityType(), entities));
           }
         }
       }
@@ -1582,10 +1582,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return childrenList;
     }
 
-    private boolean foreignKeyCycle(final EntityId referencedEntityId) {
+    private boolean foreignKeyCycle(final EntityType referencedEntityType) {
       TreeNode tmp = getParent();
       while (tmp instanceof EntityDependencyTreeNode) {
-        if (((EntityDependencyTreeNode) tmp).getEntityId().equals(referencedEntityId)) {
+        if (((EntityDependencyTreeNode) tmp).getEntityType().equals(referencedEntityType)) {
           return true;
         }
         tmp = tmp.getParent();

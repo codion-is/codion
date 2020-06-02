@@ -30,9 +30,8 @@ public class EntityJSONParserTest {
     final EntityJSONParser parser = new EntityJSONParser(ENTITIES);
 
     final String keyJSON = parser.serializeKeys(singletonList(key));
-    assertEquals("[{\"values\":{\"deptno\":42},\"entityId\":\"scott.dept\"}]", keyJSON);
     final Entity.Key keyParsed = parser.deserializeKeys(keyJSON).get(0);
-    assertEquals(key.getEntityId(), keyParsed.getEntityId());
+    assertEquals(key.getEntityType(), keyParsed.getEntityType());
     assertEquals(key.getFirstProperty(), keyParsed.getFirstProperty());
     assertEquals(key.getFirstValue(), keyParsed.getFirstValue());
   }

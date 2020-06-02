@@ -16,7 +16,7 @@ import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.tests.TestDomain;
 
@@ -40,7 +40,7 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   public void test() {
-    assertEquals(TestDomain.T_EMP, conditionModel.getEntityId());
+    assertEquals(TestDomain.T_EMP, conditionModel.getEntityType());
     conditionModel.setConjunction(Conjunction.OR);
     assertEquals(Conjunction.OR, conditionModel.getConjunction());
     assertEquals(9, conditionModel.getPropertyFilterModels().size());
@@ -78,8 +78,8 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   public void getPropertyConditionModelNonExisting() {
-    final EntityId entityId = Entities.entityId("test");
-    assertThrows(IllegalArgumentException.class, () -> assertNull(conditionModel.getPropertyConditionModel(entityId.integerAttribute("bla bla"))));
+    final EntityType entityType = Entities.entityType("test");
+    assertThrows(IllegalArgumentException.class, () -> assertNull(conditionModel.getPropertyConditionModel(entityType.integerAttribute("bla bla"))));
   }
 
   @Test

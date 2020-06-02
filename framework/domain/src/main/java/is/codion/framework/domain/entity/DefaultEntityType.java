@@ -13,13 +13,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-final class DefaultEntityId implements EntityId {
+final class DefaultEntityType implements EntityType {
 
   private static final long serialVersionUID = 1;
 
   private final Identity identity;
 
-  DefaultEntityId(final String name) {
+  DefaultEntityType(final String name) {
     this.identity = Identities.identity(name);
   }
 
@@ -111,7 +111,7 @@ final class DefaultEntityId implements EntityId {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    final DefaultEntityId that = (DefaultEntityId) object;
+    final DefaultEntityType that = (DefaultEntityType) object;
 
     return getName().equals(that.getName());
   }

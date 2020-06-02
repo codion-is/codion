@@ -19,7 +19,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -110,7 +110,7 @@ public final class DefaultEntityEditModelTest {
     final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(
             ENTITIES.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(model);
-    assertEquals(TestDomain.T_DEPARTMENT, model.getEntityId());
+    assertEquals(TestDomain.T_DEPARTMENT, model.getEntityType());
   }
 
   @Test
@@ -142,7 +142,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void constructorNullEntityId() {
+  public void constructorNullEntityType() {
     assertThrows(NullPointerException.class, () -> new TestEntityEditModel(null, CONNECTION_PROVIDER));
   }
 
@@ -219,7 +219,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.addBeforeRefreshListener(listener);
     employeeEditModel.addAfterRefreshListener(listener);
 
-    assertEquals(TestDomain.T_EMP, employeeEditModel.getEntityId());
+    assertEquals(TestDomain.T_EMP, employeeEditModel.getEntityType());
 
     employeeEditModel.refresh();
     assertTrue(employeeEditModel.isEntityNew());
@@ -499,8 +499,8 @@ public final class DefaultEntityEditModelTest {
 
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
-    public TestEntityEditModel(final EntityId entityId, final EntityConnectionProvider connectionProvider) {
-      super(entityId, connectionProvider);
+    public TestEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+      super(entityType, connectionProvider);
     }
 
     @Override

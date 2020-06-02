@@ -15,7 +15,7 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Property;
 
@@ -24,7 +24,7 @@ import java.util.List;
 import static is.codion.common.db.Operator.LIKE;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
-import static is.codion.framework.domain.entity.Entities.entityId;
+import static is.codion.framework.domain.entity.Entities.entityType;
 import static is.codion.framework.domain.entity.Entities.getKeys;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
@@ -40,15 +40,15 @@ public final class EntitiesTutorial {
   /** The domain class, which contains the domain model definition */
   public static final class Chinook extends Domain {
 
-    //EntityIdentity constant for the table entityId ('T_' prefix)
+    //EntityType constant for the table entityType ('T_' prefix)
     //and an Attribute for each column
-    public static final EntityId T_ARTIST = entityId("chinook.artist");
+    public static final EntityType T_ARTIST = entityType("chinook.artist");
     public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
     public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
 
-    //EntityIdentity constant for the table entityId ('T_' prefix),
+    //EntityType constant for the table entityType ('T_' prefix),
     //and an Attribute for each column and one for the foreign key relation
-    public static final EntityId T_ALBUM = entityId("chinook.album");
+    public static final EntityType T_ALBUM = entityType("chinook.album");
     public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
     public static final Attribute<String> ALBUM_TITLE = T_ALBUM.stringAttribute("title");
     public static final Attribute<Integer> ALBUM_ARTISTID = T_ALBUM.integerAttribute("artistid");
@@ -116,9 +116,8 @@ public final class EntitiesTutorial {
 
     //for more complex queries we use a EntitySelectCondition, provided
     //by the Conditions factory class.
-    //we create a select condition, where we specify the id of the entity
-    //we're selecting, the id of the property we're searching by, the type
-    //of condition and the value.
+    //we create a select condition, where we specify the type of the entity
+    //we're selecting, the attributes we're searching by, the type of condition and the value.
     EntitySelectCondition artistsCondition = selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "An%");
     //and we set the order by clause
     artistsCondition.setOrderBy(orderBy().ascending(ARTIST_NAME));

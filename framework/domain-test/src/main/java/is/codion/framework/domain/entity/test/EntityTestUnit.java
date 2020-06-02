@@ -17,7 +17,7 @@ import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -125,22 +125,22 @@ public class EntityTestUnit {
   }
 
   /**
-   * Runs the insert/update/select/delete tests for the given entityId
-   * @param entityId the id of the entity to test
+   * Runs the insert/update/select/delete tests for the given entityType
+   * @param entityType the type of the entity to test
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
-  public final void test(final EntityId entityId) throws DatabaseException {
+  public final void test(final EntityType entityType) throws DatabaseException {
     try {
       connection.beginTransaction();
-      final Map<EntityId, Entity> foreignKeyEntities = initializeReferencedEntities(entityId, new HashMap<>());
+      final Map<EntityType, Entity> foreignKeyEntities = initializeReferencedEntities(entityType, new HashMap<>());
       Entity testEntity = null;
-      final EntityDefinition entityDefinition = getEntities().getDefinition(entityId);
+      final EntityDefinition entityDefinition = getEntities().getDefinition(entityType);
       if (!entityDefinition.isReadOnly()) {
-        testEntity = testInsert(requireNonNull(initializeTestEntity(entityId, foreignKeyEntities), "test entity"));
+        testEntity = testInsert(requireNonNull(initializeTestEntity(entityType, foreignKeyEntities), "test entity"));
         assertTrue(testEntity.getKey().isNotNull());
-        testUpdate(testEntity, initializeReferencedEntities(entityId, foreignKeyEntities));
+        testUpdate(testEntity, initializeReferencedEntities(entityType, foreignKeyEntities));
       }
-      testSelect(entityId, testEntity);
+      testSelect(entityType, testEntity);
       if (!entityDefinition.isReadOnly()) {
         testDelete(testEntity);
       }
@@ -152,26 +152,26 @@ public class EntityTestUnit {
 
   /**
    * @param entities the domain model entities
-   * @param entityId the entityId
-   * @param referenceEntities entities referenced by the given  entityId
+   * @param entityType the entityType
+   * @param referenceEntities entities referenced by the given entityType
    * @return a Entity instance containing randomized values, based on the property definitions
    */
-  public static Entity createRandomEntity(final Entities entities, final EntityId entityId, final Map<EntityId, Entity> referenceEntities) {
-    return createEntity(entities, entityId, property -> createRandomValue(property, referenceEntities));
+  public static Entity createRandomEntity(final Entities entities, final EntityType entityType, final Map<EntityType, Entity> referenceEntities) {
+    return createEntity(entities, entityType, property -> createRandomValue(property, referenceEntities));
   }
 
   /**
    * @param entities the domain model entities
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @param valueProvider the value provider
    * @return an Entity instance initialized with values provided by the given value provider
    */
-  public static Entity createEntity(final Entities entities, final EntityId entityId, final Function<Property<?>, Object> valueProvider) {
+  public static Entity createEntity(final Entities entities, final EntityType entityType, final Function<Property<?>, Object> valueProvider) {
     requireNonNull(entities);
-    requireNonNull(entityId);
-    final Entity entity = entities.entity(entityId);
-    populateEntity(entities, entity, entities.getDefinition(entityId).getWritableColumnProperties(
-            !entities.getDefinition(entityId).isKeyGenerated(), true), valueProvider);
+    requireNonNull(entityType);
+    final Entity entity = entities.entity(entityType);
+    populateEntity(entities, entity, entities.getDefinition(entityType).getWritableColumnProperties(
+            !entities.getDefinition(entityType).isKeyGenerated(), true), valueProvider);
 
     return entity;
   }
@@ -183,11 +183,11 @@ public class EntityTestUnit {
    * @param entity the entity to randomize
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
-  public static void randomize(final Entities entities, final Entity entity, final Map<EntityId, Entity> foreignKeyEntities) {
+  public static void randomize(final Entities entities, final Entity entity, final Map<EntityType, Entity> foreignKeyEntities) {
     requireNonNull(entities);
     requireNonNull(entity);
     populateEntity(entities, entity,
-            entities.getDefinition(entity.getEntityId()).getWritableColumnProperties(false, true),
+            entities.getDefinition(entity.getEntityType()).getWritableColumnProperties(false, true),
             property -> createRandomValue(property, foreignKeyEntities));
   }
 
@@ -197,7 +197,7 @@ public class EntityTestUnit {
    * @param referenceEntities entities referenced by the given property
    * @return a random value
    */
-  public static Object createRandomValue(final Property<?> property, final Map<EntityId, Entity> referenceEntities) {
+  public static Object createRandomValue(final Property<?> property, final Map<EntityType, Entity> referenceEntities) {
     requireNonNull(property, "property");
     if (property instanceof ForeignKeyProperty) {
       return getReferenceEntity((ForeignKeyProperty) property, referenceEntities);
@@ -259,23 +259,23 @@ public class EntityTestUnit {
   }
 
   /**
-   * This method should return an instance of the entity specified by {@code entityId}
-   * @param entityId the entityId for which to initialize an entity instance
+   * This method should return an instance of the entity specified by {@code entityType}
+   * @param entityType the entityType for which to initialize an entity instance
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return the entity instance to use for testing the entity type
    */
-  protected Entity initializeTestEntity(final EntityId entityId, final Map<EntityId, Entity> foreignKeyEntities) {
-    return createRandomEntity(getEntities(), entityId, foreignKeyEntities);
+  protected Entity initializeTestEntity(final EntityType entityType, final Map<EntityType, Entity> foreignKeyEntities) {
+    return createRandomEntity(getEntities(), entityType, foreignKeyEntities);
   }
 
   /**
    * Initializes a new Entity of the given type, by default this method creates a Entity filled with random values.
-   * @param entityId the entityId
+   * @param entityType the entityType
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return a entity of the given type
    */
-  protected Entity initializeReferenceEntity(final EntityId entityId, final Map<EntityId, Entity> foreignKeyEntities) {
-    return createRandomEntity(getEntities(), entityId, foreignKeyEntities);
+  protected Entity initializeReferenceEntity(final EntityType entityType, final Map<EntityType, Entity> foreignKeyEntities) {
+    return createRandomEntity(getEntities(), entityType, foreignKeyEntities);
   }
 
   /**
@@ -283,30 +283,30 @@ public class EntityTestUnit {
    * @param testEntity the entity to modify
    * @param foreignKeyEntities the entities referenced via foreign keys
    */
-  protected void modifyEntity(final Entity testEntity, final Map<EntityId, Entity> foreignKeyEntities) {
+  protected void modifyEntity(final Entity testEntity, final Map<EntityType, Entity> foreignKeyEntities) {
     randomize(getEntities(), testEntity, foreignKeyEntities);
   }
 
   /**
-   * Initializes the entities referenced by the entity identified by {@code entityId}
-   * @param entityId the id of the entity for which to initialize the referenced entities
+   * Initializes the entities referenced by the entity identified by {@code entityType}
+   * @param entityType the type of the entity for which to initialize the referenced entities
    * @param foreignKeyEntities foreign key entities already created
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    * @see #initializeReferenceEntity(String, Map)
-   * @return the Entities to reference mapped to their respective entityIds
+   * @return the Entities to reference mapped to their respective entityTypes
    */
-  private Map<EntityId, Entity> initializeReferencedEntities(final EntityId entityId, final Map<EntityId, Entity> foreignKeyEntities)
+  private Map<EntityType, Entity> initializeReferencedEntities(final EntityType entityType, final Map<EntityType, Entity> foreignKeyEntities)
           throws DatabaseException {
-    for (final ForeignKeyProperty foreignKeyProperty : getEntities().getDefinition(entityId).getForeignKeyProperties()) {
-      final EntityId foreignEntityId = foreignKeyProperty.getForeignEntityId();
-      if (!foreignKeyEntities.containsKey(foreignEntityId)) {
-        if (!Objects.equals(entityId, foreignEntityId)) {
-          foreignKeyEntities.put(foreignEntityId, null);//short circuit recursion, value replaced below
-          initializeReferencedEntities(foreignEntityId, foreignKeyEntities);
+    for (final ForeignKeyProperty foreignKeyProperty : getEntities().getDefinition(entityType).getForeignKeyProperties()) {
+      final EntityType foreignEntityType = foreignKeyProperty.getForeignEntityType();
+      if (!foreignKeyEntities.containsKey(foreignEntityType)) {
+        if (!Objects.equals(entityType, foreignEntityType)) {
+          foreignKeyEntities.put(foreignEntityType, null);//short circuit recursion, value replaced below
+          initializeReferencedEntities(foreignEntityType, foreignKeyEntities);
         }
-        final Entity referencedEntity = initializeReferenceEntity(foreignEntityId, foreignKeyEntities);
+        final Entity referencedEntity = initializeReferenceEntity(foreignEntityType, foreignKeyEntities);
         if (referencedEntity != null) {
-          foreignKeyEntities.put(foreignEntityId, insertOrSelect(referencedEntity));
+          foreignKeyEntities.put(foreignEntityType, insertOrSelect(referencedEntity));
         }
       }
     }
@@ -326,7 +326,7 @@ public class EntityTestUnit {
       return connection.selectSingle(key);
     }
     catch (final RecordNotFoundException e) {
-      fail("Inserted entity of type " + testEntity.getEntityId() + " not returned by select after insert");
+      fail("Inserted entity of type " + testEntity.getEntityType() + " not returned by select after insert");
       throw e;
     }
   }
@@ -334,17 +334,17 @@ public class EntityTestUnit {
   /**
    * Tests selecting the given entity, if {@code testEntity} is null
    * then selecting many entities is tested.
-   * @param entityId the entityId in case {@code testEntity} is null
+   * @param entityType the entityType in case {@code testEntity} is null
    * @param testEntity the entity to test selecting
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
-  private void testSelect(final EntityId entityId, final Entity testEntity) throws DatabaseException {
+  private void testSelect(final EntityType entityType, final Entity testEntity) throws DatabaseException {
     if (testEntity != null) {
       assertEquals(testEntity, connection.selectSingle(testEntity.getKey()),
-              "Entity of type " + testEntity.getEntityId() + " failed equals comparison");
+              "Entity of type " + testEntity.getEntityType() + " failed equals comparison");
     }
     else {
-      connection.select(selectCondition(entityId).setFetchCount(SELECT_FETCH_COUNT));
+      connection.select(selectCondition(entityType).setFetchCount(SELECT_FETCH_COUNT));
     }
   }
 
@@ -354,7 +354,7 @@ public class EntityTestUnit {
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
-  private void testUpdate(final Entity testEntity, final Map<EntityId, Entity> foreignKeyEntities) throws DatabaseException {
+  private void testUpdate(final Entity testEntity, final Map<EntityType, Entity> foreignKeyEntities) throws DatabaseException {
     modifyEntity(testEntity, foreignKeyEntities);
     if (!testEntity.isModified()) {
       return;
@@ -362,7 +362,7 @@ public class EntityTestUnit {
 
     final Entity updated = connection.update(testEntity);
     assertEquals(testEntity.getKey(), updated.getKey());
-    for (final ColumnProperty<?> property : getEntities().getDefinition(testEntity.getEntityId()).getColumnProperties()) {
+    for (final ColumnProperty<?> property : getEntities().getDefinition(testEntity.getEntityType()).getColumnProperties()) {
       if (property.isUpdatable()) {
         final Object beforeUpdate = testEntity.get(property.getAttribute());
         final Object afterUpdate = updated.get(property.getAttribute());
@@ -398,7 +398,7 @@ public class EntityTestUnit {
     catch (final RecordNotFoundException e) {
       caught = true;
     }
-    assertTrue(caught, "Entity of type " + testEntity.getEntityId() + " failed delete test");
+    assertTrue(caught, "Entity of type " + testEntity.getEntityType() + " failed delete test");
   }
 
   /**
@@ -441,7 +441,7 @@ public class EntityTestUnit {
         entity.put(property.getAttribute(), valueProvider.apply(property));
       }
     }
-    for (final ForeignKeyProperty property : entities.getDefinition(entity.getEntityId()).getForeignKeyProperties()) {
+    for (final ForeignKeyProperty property : entities.getDefinition(entity.getEntityType()).getForeignKeyProperties()) {
       final Entity value = (Entity) valueProvider.apply(property);
       if (value != null) {
         entity.put(property.getAttribute(), value);
@@ -470,8 +470,8 @@ public class EntityTestUnit {
     return bytes;
   }
 
-  private static Object getReferenceEntity(final ForeignKeyProperty property, final Map<EntityId, Entity> referenceEntities) {
-    return referenceEntities == null ? null : referenceEntities.get(property.getForeignEntityId());
+  private static Object getReferenceEntity(final ForeignKeyProperty property, final Map<EntityType, Entity> referenceEntities) {
+    return referenceEntities == null ? null : referenceEntities.get(property.getForeignEntityType());
   }
 
   private static Object getRandomListValue(final ValueListProperty property) {

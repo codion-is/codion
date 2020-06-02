@@ -14,7 +14,7 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
@@ -190,17 +190,17 @@ public interface EntityConnection {
 
   /**
    * Selects a single entity
-   * @param entityId the entity type
+   * @param entityType the entity type
    * @param attribute attribute to use as a condition
    * @param value the value to use in the condition
    * @param <T> the value type
-   * @return an entity of the type {@code entityId}, having the
+   * @return an entity of the type {@code entityType}, having the
    * value of {@code attribute} as {@code value}
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  <T> Entity selectSingle(EntityId entityId, Attribute<T> attribute, T value) throws DatabaseException;
+  <T> Entity selectSingle(EntityType entityType, Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -241,34 +241,34 @@ public interface EntityConnection {
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
-   * @param entityId the entity type
+   * @param entityType the entity type
    * @param attribute the condition attribute
    * @param value the value to use as condition
    * @param <T> the value type
-   * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
+   * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  <T> List<Entity> select(EntityId entityId, Attribute<T> attribute, T value) throws DatabaseException;
+  <T> List<Entity> select(EntityType entityType, Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
-   * @param entityId the entity type
+   * @param entityType the entity type
    * @param attribute the condition attribute
    * @param values the values to use as condition
    * @param <T> the value type
-   * @return entities of the type {@code entityId} according to {@code attribute} and {@code values}
+   * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  <T> List<Entity> select(EntityId entityId, Attribute<T> attribute, Collection<T> values) throws DatabaseException;
+  <T> List<Entity> select(EntityType entityType, Attribute<T> attribute, Collection<T> values) throws DatabaseException;
 
   /**
-   * Returns the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityIds
+   * Returns the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes
    * @param entities the entities for which to retrieve dependencies, must be of same type
    * @return the entities that depend on {@code entities}
    * @throws DatabaseException in case of a database exception
    * @see ForeignKeyProperty#isSoftReference()
    */
-  Map<EntityId, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws DatabaseException;
+  Map<EntityType, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws DatabaseException;
 
   /**
    * Selects the number of rows returned according to the given condition

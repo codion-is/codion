@@ -23,7 +23,7 @@ import is.codion.framework.domain.entity.Entity;
  *
  * EntityConnection connection = LocalEntityConnections.createConnection(domain, database, user);
  *
- * List&lt;Entity&gt; entities = connection.select(Conditions.selectCondition(Domain.ENTITY_ID));
+ * List&lt;Entity&gt; entities = connection.select(Conditions.selectCondition(Domain.ENTITY_TYPE));
  *
  * connection.disconnect();
  * </pre>

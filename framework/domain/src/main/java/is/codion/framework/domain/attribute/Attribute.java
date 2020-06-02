@@ -3,14 +3,14 @@
  */
 package is.codion.framework.domain.attribute;
 
-import is.codion.framework.domain.entity.EntityId;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
 
 /**
  * Typed {@link Attribute} to base a {@link Property} on.
- * Note that Attributes are equal if their names and entityIds are equal, the typeClass does not factor into equality.
+ * Note that Attributes are equal if their names and entityTypes are equal, the typeClass does not factor into equality.
  * @param <T> the attribute type
  */
 public interface Attribute<T> extends Serializable {
@@ -32,9 +32,9 @@ public interface Attribute<T> extends Serializable {
   Class<T> getTypeClass();
 
   /**
-   * @return the id of the entity this Attribute is associated with
+   * @return the type of the entity this Attribute is associated with
    */
-  EntityId getEntityId();
+  EntityType getEntityType();
 
   /**
    * @param value the value to validate

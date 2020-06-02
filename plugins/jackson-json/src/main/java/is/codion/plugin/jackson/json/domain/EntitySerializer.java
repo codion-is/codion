@@ -38,8 +38,8 @@ final class EntitySerializer extends StdSerializer<Entity> {
           throws IOException {
     requireNonNull(entity, "entity");
     generator.writeStartObject();
-    generator.writeFieldName("entityId");
-    mapper.writeValue(generator, entity.getEntityId().getName());
+    generator.writeFieldName("entityType");
+    mapper.writeValue(generator, entity.getEntityType().getName());
     generator.writeFieldName("values");
     mapper.writeValue(generator, getValueMap(entity));
     if (entity.isModified()) {
@@ -59,7 +59,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
 
   private Map<String, Object> getValueMap(final Entity entity) {
     final Map<String, Object> valueMap = new HashMap<>();
-    final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityId());
+    final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityType());
     for (final Attribute<?> attribute : entity.keySet()) {
       final Property<?> property = definition.getProperty(attribute);
       if (include(property, entity)) {
@@ -72,7 +72,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
 
   private Map<String, Object> getOriginalValueMap(final Entity entity) {
     final Map<String, Object> valueMap = new HashMap<>();
-    final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityId());
+    final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityType());
     for (final Attribute<?> attribute : entity.originalKeySet()) {
       final Property<?> property = definition.getProperty(attribute);
       if (include(property, entity)) {
