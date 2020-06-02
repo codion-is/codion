@@ -786,7 +786,7 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     final SteppedComboBox<Item<T>> box = EntityInputComponents.createValueListComboBox(
-            (ValueListProperty) property, getEditModel().value(attribute), sorted, enabledState);
+            (ValueListProperty<T>) property, getEditModel().value(attribute), sorted, enabledState);
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter((JComponent) box.getEditor().getEditorComponent());
       transferFocusOnEnter(box);
@@ -939,8 +939,8 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates an uneditable JTextField bound to {@code attribute}
-   * @param attribute the attribute to bind
+   * Creates an uneditable JTextField bound to {@code foreignKeyAttribute}
+   * @param foreignKeyAttribute the attribute to bind
    * @return an uneditable JTextField bound to the attribute
    */
   protected final JTextField createForeignKeyField(final Attribute<Entity> foreignKeyAttribute) {
