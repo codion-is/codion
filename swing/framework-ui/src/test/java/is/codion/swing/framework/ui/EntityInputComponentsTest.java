@@ -91,10 +91,11 @@ public class EntityInputComponentsTest {
   public void createBooleanComboBox() {
     //set default values
     editModel.setEntity(null);
+    editModel.put(TestDomain.DETAIL_BOOLEAN, true);
     final BooleanComboBoxModel boxModel = (BooleanComboBoxModel)
             EntityInputComponents.createBooleanComboBox(DOMAIN.getDefinition(TestDomain.T_DETAIL).getProperty(
                     TestDomain.DETAIL_BOOLEAN), editModel.value(TestDomain.DETAIL_BOOLEAN)).getModel();
-    assertTrue(boxModel.getSelectedValue().getValue());//default value is true
+    assertTrue(boxModel.getSelectedValue().getValue());
     boxModel.setSelectedItem(null);
     assertNull(editModel.get(TestDomain.DETAIL_BOOLEAN));
 

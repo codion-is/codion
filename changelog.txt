@@ -6179,3 +6179,4 @@
   EntityEditComponentPanel, removed redundant create method overloads with Property parameter
   EntityInputComponents refactored, now type safe
   EntityEditComponentPanel, now fully type safe
+  SelectedItemValue, bug fix, did not select correctly

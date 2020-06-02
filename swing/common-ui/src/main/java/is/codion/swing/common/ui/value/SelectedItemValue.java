@@ -58,7 +58,7 @@ final class SelectedItemValue<T> extends AbstractComponentValue<T, JComboBox<Ite
 
   @Override
   protected void setComponentValue(final JComboBox<Item<T>> component, final T value) {
-    component.setSelectedItem(value);
+    ((ItemComboBoxModel<T>) component.getModel()).setSelectedItem(value);
   }
 
   private static <T> JComboBox<Item<T>> createComboBox(final T currentValue, final List<Item<T>> values) {
