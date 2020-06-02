@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.empdept.ui;
 
-import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -22,30 +22,30 @@ public class DepartmentEditPanel extends EntityEditPanel {
   // tag::initializeUI[]
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(EmpDept.DEPARTMENT_ID);
+    setInitialFocusAttribute(Department.ID);
 
-    final JTextField departmentIdField = createTextField(EmpDept.DEPARTMENT_ID);
+    final JTextField departmentIdField = createTextField(Department.ID);
     departmentIdField.setColumns(10);
-    TextFields.upperCase(createTextField(EmpDept.DEPARTMENT_NAME));
-    TextFields.upperCase(createTextField(EmpDept.DEPARTMENT_LOCATION));
+    TextFields.upperCase(createTextField(Department.NAME));
+    TextFields.upperCase(createTextField(Department.LOCATION));
 
     //we don't allow editing of the department number since it's a primary key
     getEditModel().getPrimaryKeyNullObserver().addListener(() -> {
       if (getEditModel().isEntityNew()) {
         departmentIdField.setEnabled(true);
-        setInitialFocusAttribute(EmpDept.DEPARTMENT_ID);
+        setInitialFocusAttribute(Department.ID);
       }
       else {
         departmentIdField.setEnabled(false);
-        setInitialFocusAttribute(EmpDept.DEPARTMENT_NAME);
+        setInitialFocusAttribute(Department.NAME);
       }
     });
 
     setLayout(new GridLayout(3, 1, 5, 5));
 
-    addPropertyPanel(EmpDept.DEPARTMENT_ID);
-    addPropertyPanel(EmpDept.DEPARTMENT_NAME);
-    addPropertyPanel(EmpDept.DEPARTMENT_LOCATION);
+    addPropertyPanel(Department.ID);
+    addPropertyPanel(Department.NAME);
+    addPropertyPanel(Department.LOCATION);
   }
 }
 // end::initializeUI[]

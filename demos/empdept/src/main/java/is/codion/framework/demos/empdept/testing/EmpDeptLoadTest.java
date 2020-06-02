@@ -8,6 +8,8 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.domain.EmpDept.Department;
+import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.demos.empdept.ui.EmpDeptAppPanel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -43,12 +45,12 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
             EntityConnectionProviders.connectionProvider().setDomainClassName(EmpDept.class.getName())
                     .setClientTypeId(EmpDeptLoadTest.class.getSimpleName())
                     .setUser(getUser()));
-    final EntityModel deptModel = new SwingEntityModel(EmpDept.T_DEPARTMENT, applicationModel.getConnectionProvider());
-    deptModel.addDetailModel(new SwingEntityModel(EmpDept.T_EMPLOYEE, applicationModel.getConnectionProvider()));
+    final EntityModel deptModel = new SwingEntityModel(Department.TYPE, applicationModel.getConnectionProvider());
+    deptModel.addDetailModel(new SwingEntityModel(Employee.TYPE, applicationModel.getConnectionProvider()));
     applicationModel.addEntityModel(deptModel);
 
-    final EntityModel model = applicationModel.getEntityModel(EmpDept.T_DEPARTMENT);
-    model.addLinkedDetailModel(model.getDetailModel(EmpDept.T_EMPLOYEE));
+    final EntityModel model = applicationModel.getEntityModel(Department.TYPE);
+    model.addLinkedDetailModel(model.getDetailModel(Employee.TYPE));
     try {
       model.refresh();
     }
@@ -60,7 +62,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
   private static final class SelectDepartment extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {
     @Override
     protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) {
-      selectRandomRow(application.getEntityModel(EmpDept.T_DEPARTMENT).getTableModel());
+      selectRandomRow(application.getEntityModel(Department.TYPE).getTableModel());
     }
     @Override
     public int getDefaultWeight() {
@@ -75,9 +77,9 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     @Override
     protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws ScenarioException {
       try {
-        final SwingEntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
+        final SwingEntityModel departmentModel = application.getEntityModel(Department.TYPE);
         selectRandomRow(departmentModel.getTableModel());
-        final SwingEntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
+        final SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
         if (employeeModel.getTableModel().getRowCount() > 0) {
           employeeModel.getConnectionProvider().getConnection().beginTransaction();
           try {
@@ -116,12 +118,12 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     @Override
     protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws ScenarioException {
       try {
-        final SwingEntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
+        final SwingEntityModel departmentModel = application.getEntityModel(Department.TYPE);
         selectRandomRow(departmentModel.getTableModel());
-        final SwingEntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
+        final SwingEntityModel employeeModel = departmentModel.getDetailModel(Employee.TYPE);
         final Map<EntityType, Entity> references = new HashMap<>();
-        references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectionModel().getSelectedItem());
-        employeeModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(application.getEntities(), EmpDept.T_EMPLOYEE, references));
+        references.put(Department.TYPE, departmentModel.getTableModel().getSelectionModel().getSelectedItem());
+        employeeModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(application.getEntities(), Employee.TYPE, references));
         employeeModel.getEditModel().insert();
       }
       catch (final Exception e) {
@@ -138,8 +140,8 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     @Override
     protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) throws ScenarioException {
       try {
-        final SwingEntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
-        departmentModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(application.getEntities(), EmpDept.T_DEPARTMENT, null));
+        final SwingEntityModel departmentModel = application.getEntityModel(Department.TYPE);
+        departmentModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(application.getEntities(), Department.TYPE, null));
         departmentModel.getEditModel().insert();
       }
       catch (final Exception e) {

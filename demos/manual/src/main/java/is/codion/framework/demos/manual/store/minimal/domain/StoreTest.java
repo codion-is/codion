@@ -15,11 +15,11 @@ public class StoreTest extends EntityTestUnit {
 
   @Test
   void customer() throws Exception {
-    test(Store.T_CUSTOMER);
+    test(Store.Customer.TYPE);
   }
 
   @Test
   void address() throws Exception {
-    test(Store.T_ADDRESS);
+    test(Store.Address.TYPE);
   }
 }

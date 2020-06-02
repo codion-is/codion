@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.empdept.ui;
 
-import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
@@ -27,29 +27,29 @@ public class EmployeeEditPanel extends EntityEditPanel {
   // tag::initializeUI[]
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(EmpDept.EMPLOYEE_NAME);
+    setInitialFocusAttribute(Employee.NAME);
 
-    final JTextField nameField = TextFields.upperCase(createTextField(EmpDept.EMPLOYEE_NAME));
+    final JTextField nameField = TextFields.upperCase(createTextField(Employee.NAME));
     nameField.setColumns(8);
-    createValueListComboBox(EmpDept.EMPLOYEE_JOB);
-    final JComboBox managerBox = createForeignKeyComboBox(EmpDept.EMPLOYEE_MGR_FK);
+    createValueListComboBox(Employee.JOB);
+    final JComboBox managerBox = createForeignKeyComboBox(Employee.MGR_FK);
     managerBox.setPreferredSize(TextFields.getPreferredTextFieldSize());
-    createForeignKeyComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
-    createTextField(EmpDept.EMPLOYEE_SALARY);
-    createTextField(EmpDept.EMPLOYEE_COMMISSION);
-    createTemporalInputPanel(EmpDept.EMPLOYEE_HIREDATE, CalendarButton.YES);
+    createForeignKeyComboBox(Employee.DEPARTMENT_FK);
+    createTextField(Employee.SALARY);
+    createTextField(Employee.COMMISSION);
+    createTemporalInputPanel(Employee.HIREDATE, CalendarButton.YES);
 
     setLayout(new FlexibleGridLayout(3, 3, 5, 5, FixRowHeights.YES, FixColumnWidths.NO));
 
-    addPropertyPanel(EmpDept.EMPLOYEE_NAME);
-    addPropertyPanel(EmpDept.EMPLOYEE_JOB);
-    addPropertyPanel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    addPropertyPanel(Employee.NAME);
+    addPropertyPanel(Employee.JOB);
+    addPropertyPanel(Employee.DEPARTMENT_FK);
 
-    addPropertyPanel(EmpDept.EMPLOYEE_MGR_FK);
-    addPropertyPanel(EmpDept.EMPLOYEE_SALARY);
-    addPropertyPanel(EmpDept.EMPLOYEE_COMMISSION);
+    addPropertyPanel(Employee.MGR_FK);
+    addPropertyPanel(Employee.SALARY);
+    addPropertyPanel(Employee.COMMISSION);
 
-    addPropertyPanel(EmpDept.EMPLOYEE_HIREDATE);
+    addPropertyPanel(Employee.HIREDATE);
     add(new JLabel());
     add(new JLabel());
   }

@@ -5,6 +5,7 @@ package is.codion.framework.demos.empdept.ui;
 
 import is.codion.common.state.StateObserver;
 import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
@@ -28,11 +29,11 @@ public class DepartmentTablePanel extends EntityTablePanel {
   // tag::viewEmployeeReport[]
   public void viewEmployeeReport() throws Exception {
     final Collection<Integer> departmentNumbers =
-            Entities.getDistinctValues(EmpDept.DEPARTMENT_ID,
+            Entities.getDistinctValues(Department.ID,
                     getTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
-    EntityReports.viewJdbcReport(DepartmentTablePanel.this, EmpDept.EMPLOYEE_REPORT,
+    EntityReports.viewJdbcReport(DepartmentTablePanel.this, EmpDept.Employee.EMPLOYEE_REPORT,
             reportParameters, JRViewer::new, "Employee Report", getTableModel().getConnectionProvider());
   }
   // end::viewEmployeeReport[]

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.empdept.javafx;
 
-import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.javafx.framework.model.FXEntityEditModel;
 import is.codion.javafx.framework.ui.EntityEditView;
 
@@ -18,17 +18,17 @@ public final class DepartmentEditView extends EntityEditView {
 
   @Override
   protected Node initializeEditPanel() {
-    setInitialFocusAttribute(EmpDept.DEPARTMENT_ID);
+    setInitialFocusAttribute(Department.ID);
 
-    createTextField(EmpDept.DEPARTMENT_ID);
-    createTextField(EmpDept.DEPARTMENT_NAME);
-    createTextField(EmpDept.DEPARTMENT_LOCATION);
+    createTextField(Department.ID);
+    createTextField(Department.NAME);
+    createTextField(Department.LOCATION);
 
     final GridPane gridPane = new GridPane();
 
-    gridPane.add(createPropertyPanel(EmpDept.DEPARTMENT_ID), 0, 0);
-    gridPane.add(createPropertyPanel(EmpDept.DEPARTMENT_NAME), 0, 1);
-    gridPane.add(createPropertyPanel(EmpDept.DEPARTMENT_LOCATION), 0, 2);
+    gridPane.add(createPropertyPanel(Department.ID), 0, 0);
+    gridPane.add(createPropertyPanel(Department.NAME), 0, 1);
+    gridPane.add(createPropertyPanel(Department.LOCATION), 0, 2);
 
     return gridPane;
   }

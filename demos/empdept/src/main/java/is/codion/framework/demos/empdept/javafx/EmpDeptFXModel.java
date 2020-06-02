@@ -4,7 +4,8 @@
 package is.codion.framework.demos.empdept.javafx;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.domain.EmpDept.Department;
+import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.javafx.framework.model.FXEntityApplicationModel;
 import is.codion.javafx.framework.model.FXEntityEditModel;
 import is.codion.javafx.framework.model.FXEntityListModel;
@@ -19,11 +20,11 @@ public final class EmpDeptFXModel extends FXEntityApplicationModel {
 
   protected void setupEntityModels() {
     final FXEntityModel departmentModel = new FXEntityModel(
-            new FXEntityEditModel(EmpDept.T_DEPARTMENT, getConnectionProvider()),
-            new FXEntityListModel(EmpDept.T_DEPARTMENT, getConnectionProvider()));
+            new FXEntityEditModel(Department.TYPE, getConnectionProvider()),
+            new FXEntityListModel(Department.TYPE, getConnectionProvider()));
     final FXEntityModel employeeModel = new FXEntityModel(
-            new FXEntityEditModel(EmpDept.T_EMPLOYEE, getConnectionProvider()),
-            new FXEntityListModel(EmpDept.T_EMPLOYEE, getConnectionProvider()));
+            new FXEntityEditModel(Employee.TYPE, getConnectionProvider()),
+            new FXEntityListModel(Employee.TYPE, getConnectionProvider()));
     departmentModel.addDetailModel(employeeModel);
 
     addEntityModel(departmentModel);

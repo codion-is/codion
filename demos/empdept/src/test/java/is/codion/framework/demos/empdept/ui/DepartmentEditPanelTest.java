@@ -18,7 +18,7 @@ public class DepartmentEditPanelTest extends EntityEditPanelTestUnit {
           Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
 
   public DepartmentEditPanelTest() {
-    super(new SwingEntityEditModel(EmpDept.T_DEPARTMENT,
+    super(new SwingEntityEditModel(EmpDept.Department.TYPE,
                     EntityConnectionProviders.connectionProvider().setDomainClassName(EmpDept.class.getName())
                             .setClientTypeId(DepartmentEditPanelTest.class.getName()).setUser(UNIT_TEST_USER)),
             DepartmentEditPanel.class);

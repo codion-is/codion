@@ -19,7 +19,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
-import static is.codion.framework.demos.manual.store.minimal.domain.Store.*;
+import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
+import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
 import static java.util.Arrays.asList;
 
 public class StoreDatabase {
@@ -37,33 +38,33 @@ public class StoreDatabase {
     EntityConnection connection = connectionProvider.getConnection();
 
     List<Entity> customersNamedDoe =
-            connection.select(T_CUSTOMER, CUSTOMER_LAST_NAME, "Doe");
+            connection.select(Customer.TYPE, Customer.LAST_NAME, "Doe");
 
     List<Entity> doesAddresses =
-            connection.select(T_ADDRESS, ADDRESS_CUSTOMER_FK, customersNamedDoe);
+            connection.select(Address.TYPE, Address.CUSTOMER_FK, customersNamedDoe);
 
     List<Entity> customersWithoutEmail =
-            connection.select(selectCondition(T_CUSTOMER, CUSTOMER_EMAIL, Operator.LIKE, null));
+            connection.select(selectCondition(Customer.TYPE, Customer.EMAIL, Operator.LIKE, null));
 
     //The domain model entities, a factory for Entity instances.
     Entities entities = connection.getEntities();
 
-    Entity customer = entities.entity(T_CUSTOMER);
-    customer.put(CUSTOMER_FIRST_NAME, "Peter");
-    customer.put(CUSTOMER_LAST_NAME, "Jackson");
+    Entity customer = entities.entity(Customer.TYPE);
+    customer.put(Customer.FIRST_NAME, "Peter");
+    customer.put(Customer.LAST_NAME, "Jackson");
 
     Entity.Key customerKey = connection.insert(customer);
     //select to get generated and default column values
     customer = connection.selectSingle(customerKey);
 
-    Entity address = entities.entity(T_ADDRESS);
-    address.put(ADDRESS_CUSTOMER_FK, customer);
-    address.put(ADDRESS_STREET, "Elm st.");
-    address.put(ADDRESS_CITY, "Boston");
+    Entity address = entities.entity(Address.TYPE);
+    address.put(Address.CUSTOMER_FK, customer);
+    address.put(Address.STREET, "Elm st.");
+    address.put(Address.CITY, "Boston");
 
     Entity.Key addressKey = connection.insert(address);
 
-    customer.put(CUSTOMER_EMAIL, "mail@email.com");
+    customer.put(Customer.EMAIL, "mail@email.com");
 
     customer = connection.update(customer);
 

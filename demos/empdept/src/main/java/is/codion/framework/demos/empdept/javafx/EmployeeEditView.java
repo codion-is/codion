@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.empdept.javafx;
 
-import is.codion.framework.demos.empdept.domain.EmpDept;
+import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.javafx.framework.model.FXEntityEditModel;
 import is.codion.javafx.framework.ui.EntityEditView;
 
@@ -18,25 +18,25 @@ public final class EmployeeEditView extends EntityEditView {
 
   @Override
   protected Node initializeEditPanel() {
-    setInitialFocusAttribute(EmpDept.EMPLOYEE_ID);
+    setInitialFocusAttribute(Employee.ID);
 
-    createTextField(EmpDept.EMPLOYEE_ID);
-    createTextField(EmpDept.EMPLOYEE_NAME);
-    createValueListComboBox(EmpDept.EMPLOYEE_JOB);
-    createTextField(EmpDept.EMPLOYEE_SALARY);
-    createForeignKeyComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
-    createDatePicker(EmpDept.EMPLOYEE_HIREDATE);
-    createForeignKeyComboBox(EmpDept.EMPLOYEE_MGR_FK);
+    createTextField(Employee.ID);
+    createTextField(Employee.NAME);
+    createValueListComboBox(Employee.JOB);
+    createTextField(Employee.SALARY);
+    createForeignKeyComboBox(Employee.DEPARTMENT_FK);
+    createDatePicker(Employee.HIREDATE);
+    createForeignKeyComboBox(Employee.MGR_FK);
 
     final GridPane gridPane = new GridPane();
 
-    gridPane.add(createPropertyPanel(EmpDept.EMPLOYEE_ID), 0, 0);
-    gridPane.add(createPropertyPanel(EmpDept.EMPLOYEE_NAME), 0, 1);
-    gridPane.add(createPropertyPanel(EmpDept.EMPLOYEE_JOB), 0, 2);
-    gridPane.add(createPropertyPanel(EmpDept.EMPLOYEE_SALARY), 0, 3);
-    gridPane.add(createPropertyPanel(EmpDept.EMPLOYEE_DEPARTMENT_FK), 0, 4);
-    gridPane.add(createPropertyPanel(EmpDept.EMPLOYEE_HIREDATE), 0, 5);
-    gridPane.add(createPropertyPanel(EmpDept.EMPLOYEE_MGR_FK), 0, 6);
+    gridPane.add(createPropertyPanel(Employee.ID), 0, 0);
+    gridPane.add(createPropertyPanel(Employee.NAME), 0, 1);
+    gridPane.add(createPropertyPanel(Employee.JOB), 0, 2);
+    gridPane.add(createPropertyPanel(Employee.SALARY), 0, 3);
+    gridPane.add(createPropertyPanel(Employee.DEPARTMENT_FK), 0, 4);
+    gridPane.add(createPropertyPanel(Employee.HIREDATE), 0, 5);
+    gridPane.add(createPropertyPanel(Employee.MGR_FK), 0, 6);
 
     return gridPane;
   }
