@@ -3,6 +3,9 @@
  */
 package is.codion.framework.demos.manual.store.domain;
 
+import is.codion.framework.demos.manual.store.domain.Store.Address;
+import is.codion.framework.demos.manual.store.domain.Store.Customer;
+import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
@@ -21,28 +24,28 @@ public class StoreTest extends EntityTestUnit {
 
   @Test
   public void customer() throws Exception {
-    test(Store.T_CUSTOMER);
+    test(Customer.TYPE);
   }
 
   @Test
   public void address() throws Exception {
-    test(Store.T_ADDRESS);
+    test(Address.TYPE);
   }
 
   @Test
   public void customerAddress() throws Exception {
-    test(Store.T_CUSTOMER_ADDRESS);
+    test(CustomerAddress.TYPE);
   }
 
   @Override
   protected Entity initializeReferenceEntity(EntityType entityType,
                                              Map<EntityType, Entity> foreignKeyEntities) {
     //see if the currently running test requires an ADDRESS entity
-    if (entityType.equals(Store.T_ADDRESS)) {
-      Entity address = getEntities().entity(Store.T_ADDRESS);
-      address.put(Store.ADDRESS_ID, 21);
-      address.put(Store.ADDRESS_STREET, "One Way");
-      address.put(Store.ADDRESS_CITY, "Sin City");
+    if (entityType.equals(Address.TYPE)) {
+      Entity address = getEntities().entity(Address.TYPE);
+      address.put(Address.ID, 21);
+      address.put(Address.STREET, "One Way");
+      address.put(Address.CITY, "Sin City");
 
       return address;
     }
@@ -53,31 +56,31 @@ public class StoreTest extends EntityTestUnit {
   @Override
   protected Entity initializeTestEntity(EntityType entityType,
                                         Map<EntityType, Entity> foreignKeyEntities) {
-    if (entityType.equals(Store.T_ADDRESS)) {
+    if (entityType.equals(Address.TYPE)) {
       //Initialize a entity representing the table STORE.ADDRESS,
       //which can be used for the testing
-      Entity address = getEntities().entity(Store.T_ADDRESS);
-      address.put(Store.ADDRESS_ID, 42);
-      address.put(Store.ADDRESS_STREET, "Street");
-      address.put(Store.ADDRESS_CITY, "City");
+      Entity address = getEntities().entity(Address.TYPE);
+      address.put(Address.ID, 42);
+      address.put(Address.STREET, "Street");
+      address.put(Address.CITY, "City");
 
       return address;
     }
-    else if (entityType.equals(Store.T_CUSTOMER)) {
+    else if (entityType.equals(Customer.TYPE)) {
       //Initialize a entity representing the table STORE.CUSTOMER,
       //which can be used for the testing
-      Entity customer = getEntities().entity(Store.T_CUSTOMER);
-      customer.put(Store.CUSTOMER_ID, UUID.randomUUID().toString());
-      customer.put(Store.CUSTOMER_FIRST_NAME, "Robert");
-      customer.put(Store.CUSTOMER_LAST_NAME, "Ford");
-      customer.put(Store.CUSTOMER_IS_ACTIVE, true);
+      Entity customer = getEntities().entity(Customer.TYPE);
+      customer.put(Customer.ID, UUID.randomUUID().toString());
+      customer.put(Customer.FIRST_NAME, "Robert");
+      customer.put(Customer.LAST_NAME, "Ford");
+      customer.put(Customer.IS_ACTIVE, true);
 
       return customer;
     }
-    else if (entityType.equals(Store.T_CUSTOMER_ADDRESS)) {
-      Entity customerAddress = getEntities().entity(Store.T_CUSTOMER_ADDRESS);
-      customerAddress.put(Store.CUSTOMER_ADDRESS_CUSTOMER_FK, foreignKeyEntities.get(Store.T_CUSTOMER));
-      customerAddress.put(Store.CUSTOMER_ADDRESS_ADDRESS_FK, foreignKeyEntities.get(Store.T_ADDRESS));
+    else if (entityType.equals(CustomerAddress.TYPE)) {
+      Entity customerAddress = getEntities().entity(CustomerAddress.TYPE);
+      customerAddress.put(CustomerAddress.CUSTOMER_FK, foreignKeyEntities.get(Customer.TYPE));
+      customerAddress.put(CustomerAddress.ADDRESS_FK, foreignKeyEntities.get(Address.TYPE));
 
       return customerAddress;
     }
@@ -88,15 +91,15 @@ public class StoreTest extends EntityTestUnit {
   @Override
   protected void modifyEntity(Entity testEntity,
                               Map<EntityType, Entity> foreignKeyEntities) {
-    if (testEntity.is(Store.T_ADDRESS)) {
-      testEntity.put(Store.ADDRESS_STREET, "New Street");
-      testEntity.put(Store.ADDRESS_CITY, "New City");
+    if (testEntity.is(Address.TYPE)) {
+      testEntity.put(Address.STREET, "New Street");
+      testEntity.put(Address.CITY, "New City");
     }
-    else if (testEntity.is(Store.T_CUSTOMER)) {
+    else if (testEntity.is(Customer.TYPE)) {
       //It is sufficient to change the value of a single property, but the more the merrier
-      testEntity.put(Store.CUSTOMER_FIRST_NAME, "Jesse");
-      testEntity.put(Store.CUSTOMER_LAST_NAME, "James");
-      testEntity.put(Store.CUSTOMER_IS_ACTIVE, false);
+      testEntity.put(Customer.FIRST_NAME, "Jesse");
+      testEntity.put(Customer.LAST_NAME, "James");
+      testEntity.put(Customer.IS_ACTIVE, false);
     }
   }
 }

@@ -24,25 +24,31 @@ import static is.codion.framework.domain.property.Properties.*;
 
 public final class Store extends Domain {
 
-  public static final EntityType T_ADDRESS = type("store.address");
-  public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("id");
-  public static final Attribute<String> ADDRESS_STREET = T_ADDRESS.stringAttribute("street");
-  public static final Attribute<String> ADDRESS_CITY = T_ADDRESS.stringAttribute("city");
-  public static final Attribute<Boolean> ADDRESS_VALID = T_ADDRESS.booleanAttribute("valid");
+  public interface Address {
+    EntityType TYPE = type("store.address");
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<String> STREET = TYPE.stringAttribute("street");
+    Attribute<String> CITY = TYPE.stringAttribute("city");
+    Attribute<Boolean> VALID = TYPE.booleanAttribute("valid");
+  }
 
-  public static final EntityType T_CUSTOMER = type("store.customer");
-  public static final Attribute<String> CUSTOMER_ID = T_CUSTOMER.stringAttribute("id");
-  public static final Attribute<String> CUSTOMER_FIRST_NAME = T_CUSTOMER.stringAttribute("first_name");
-  public static final Attribute<String> CUSTOMER_LAST_NAME = T_CUSTOMER.stringAttribute("last_name");
-  public static final Attribute<String> CUSTOMER_EMAIL = T_CUSTOMER.stringAttribute("email");
-  public static final Attribute<Boolean> CUSTOMER_IS_ACTIVE = T_CUSTOMER.booleanAttribute("is_active");
+  public interface Customer {
+    EntityType TYPE = type("store.customer");
+    Attribute<String> ID = TYPE.stringAttribute("id");
+    Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
+    Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
+    Attribute<String> EMAIL = TYPE.stringAttribute("email");
+    Attribute<Boolean> IS_ACTIVE = TYPE.booleanAttribute("is_active");
+  }
 
-  public static final EntityType T_CUSTOMER_ADDRESS = type("store.customer_address");
-  public static final Attribute<Integer> CUSTOMER_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("id");
-  public static final Attribute<String> CUSTOMER_ADDRESS_CUSTOMER_ID = T_CUSTOMER_ADDRESS.stringAttribute("customer_id");
-  public static final Attribute<Entity> CUSTOMER_ADDRESS_CUSTOMER_FK = T_CUSTOMER_ADDRESS.entityAttribute("customer_fk");
-  public static final Attribute<Integer> CUSTOMER_ADDRESS_ADDRESS_ID = T_CUSTOMER_ADDRESS.integerAttribute("address_id");
-  public static final Attribute<Entity> CUSTOMER_ADDRESS_ADDRESS_FK = T_CUSTOMER_ADDRESS.entityAttribute("address_fk");
+  public interface CustomerAddress {
+    EntityType TYPE = type("store.customer_address");
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
+    Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
+    Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("address_id");
+    Attribute<Entity> ADDRESS_FK = TYPE.entityAttribute("address_fk");
+  }
 
   public Store() {
     customer();
@@ -52,14 +58,14 @@ public final class Store extends Domain {
 
   private void customer() {
     // tag::customer[]
-    define(T_CUSTOMER,
-            primaryKeyProperty(CUSTOMER_ID),
-            columnProperty(CUSTOMER_FIRST_NAME, "First name")
+    define(Customer.TYPE,
+            primaryKeyProperty(Customer.ID),
+            columnProperty(Customer.FIRST_NAME, "First name")
                     .nullable(false).maximumLength(40),
-            columnProperty(CUSTOMER_LAST_NAME, "Last name")
+            columnProperty(Customer.LAST_NAME, "Last name")
                     .nullable(false).maximumLength(40),
-            columnProperty(CUSTOMER_EMAIL, "Email"),
-            columnProperty(CUSTOMER_IS_ACTIVE, "Is active")
+            columnProperty(Customer.EMAIL, "Email"),
+            columnProperty(Customer.IS_ACTIVE, "Is active")
                     .columnHasDefaultValue(true).defaultValue(true))
             .keyGenerator(new UUIDKeyGenerator())
             .stringProvider(new CustomerToString())
@@ -69,16 +75,16 @@ public final class Store extends Domain {
 
   private void address() {
     // tag::address[]
-    define(T_ADDRESS,
-            primaryKeyProperty(ADDRESS_ID),
-            columnProperty(ADDRESS_STREET, "Street")
+    define(Address.TYPE,
+            primaryKeyProperty(Address.ID),
+            columnProperty(Address.STREET, "Street")
                     .nullable(false).maximumLength(120),
-            columnProperty(ADDRESS_CITY, "City")
+            columnProperty(Address.CITY, "City")
                     .nullable(false).maximumLength(50),
-            columnProperty(ADDRESS_VALID, "Valid")
+            columnProperty(Address.VALID, "Valid")
                     .columnHasDefaultValue(true).nullable(false))
-            .stringProvider(new StringProvider(ADDRESS_STREET)
-                    .addText(", ").addValue(ADDRESS_CITY))
+            .stringProvider(new StringProvider(Address.STREET)
+                    .addText(", ").addValue(Address.CITY))
             .keyGenerator(automatic("store.address"))
             .smallDataset(true)
             .caption("Address");
@@ -87,13 +93,13 @@ public final class Store extends Domain {
 
   private void customerAddress() {
     // tag::customerAddress[]
-    define(T_CUSTOMER_ADDRESS,
-            primaryKeyProperty(CUSTOMER_ADDRESS_ID),
-            foreignKeyProperty(CUSTOMER_ADDRESS_CUSTOMER_FK, "Customer", T_CUSTOMER,
-                    columnProperty(CUSTOMER_ADDRESS_CUSTOMER_ID))
+    define(CustomerAddress.TYPE,
+            primaryKeyProperty(CustomerAddress.ID),
+            foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer", Customer.TYPE,
+                    columnProperty(CustomerAddress.CUSTOMER_ID))
                     .nullable(false),
-            foreignKeyProperty(CUSTOMER_ADDRESS_ADDRESS_FK, "Address", T_ADDRESS,
-                    columnProperty(CUSTOMER_ADDRESS_ADDRESS_ID))
+            foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address", Address.TYPE,
+                    columnProperty(CustomerAddress.ADDRESS_ID))
                     .nullable(false))
             .keyGenerator(automatic("store.customer_address"))
             .caption("Customer address");
@@ -108,12 +114,12 @@ public final class Store extends Domain {
     @Override
     public String apply(Entity customer) {
       StringBuilder builder =
-              new StringBuilder(customer.get(CUSTOMER_LAST_NAME))
+              new StringBuilder(customer.get(Customer.LAST_NAME))
                       .append(", ")
-                      .append(customer.get(CUSTOMER_FIRST_NAME));
-      if (customer.isNotNull(CUSTOMER_EMAIL)) {
+                      .append(customer.get(Customer.FIRST_NAME));
+      if (customer.isNotNull(Customer.EMAIL)) {
         builder.append(" <")
-                .append(customer.get(CUSTOMER_EMAIL))
+                .append(customer.get(Customer.EMAIL))
                 .append(">");
       }
 
@@ -128,7 +134,7 @@ public final class Store extends Domain {
     @Override
     public void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
                              DatabaseConnection connection) throws SQLException {
-      entity.put(CUSTOMER_ID, UUID.randomUUID().toString());
+      entity.put(Customer.ID, UUID.randomUUID().toString());
     }
   }
   // end::keyGenerator[]

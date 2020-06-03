@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.manual.store.ui;
 
-import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
@@ -19,16 +19,16 @@ public class AddressEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Store.ADDRESS_STREET);
+    setInitialFocusAttribute(Address.STREET);
 
-    createTextField(Store.ADDRESS_STREET).setColumns(25);
-    createTextField(Store.ADDRESS_CITY).setColumns(25);
-    createCheckBox(Store.ADDRESS_VALID, null, IncludeCaption.NO);
+    createTextField(Address.STREET).setColumns(25);
+    createTextField(Address.CITY).setColumns(25);
+    createCheckBox(Address.VALID, null, IncludeCaption.NO);
 
     setLayout(new GridLayout(3, 1, 5, 5));
-    addPropertyPanel(Store.ADDRESS_STREET);
-    addPropertyPanel(Store.ADDRESS_CITY);
-    addPropertyPanel(Store.ADDRESS_VALID);
+    addPropertyPanel(Address.STREET);
+    addPropertyPanel(Address.CITY);
+    addPropertyPanel(Address.VALID);
   }
 }
 // end::addressEditPanel[]

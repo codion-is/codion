@@ -4,6 +4,9 @@
 package is.codion.framework.demos.manual.store.domain;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.demos.manual.store.domain.Store.Address;
+import is.codion.framework.demos.manual.store.domain.Store.Customer;
+import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
@@ -16,16 +19,16 @@ public final class StoreTest extends EntityTestUnit {
 
   @Test
   void customer() throws DatabaseException {
-    test(Store.T_CUSTOMER);
+    test(Customer.TYPE);
   }
 
   @Test
   void address() throws DatabaseException {
-    test(Store.T_ADDRESS);
+    test(Address.TYPE);
   }
 
   @Test
   public void customerAddress() throws Exception {
-    test(Store.T_CUSTOMER_ADDRESS);
+    test(CustomerAddress.TYPE);
   }
 }

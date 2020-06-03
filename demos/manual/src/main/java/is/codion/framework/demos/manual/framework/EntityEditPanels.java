@@ -34,19 +34,19 @@ import static is.codion.framework.domain.entity.Entities.type;
 
 public final class EntityEditPanels {
 
-  private static final class Domain {
-    static final EntityType ENTITY_TYPE = type("entityType");
-    static final Attribute<Boolean> BOOLEAN_ATTRIBUTE = ENTITY_TYPE.booleanAttribute("boolean");
-    static final Attribute<Entity> FOREIGN_KEY_ATTRIBUTE = ENTITY_TYPE.entityAttribute("foreign_key");
-    static final Attribute<LocalDate> LOCAL_DATE_ATTRIBUTE = ENTITY_TYPE.localDateAttribute("local_date");
-    static final Attribute<Integer> INTEGER_ATTRIBUTE = ENTITY_TYPE.integerAttribute("integer");
-    static final Attribute<Long> LONG_ATTRIBUTE = ENTITY_TYPE.longAttribute("long");
-    static final Attribute<Double> DOUBLE_ATTRIBUTE = ENTITY_TYPE.doubleAttribute("double");
-    static final Attribute<BigDecimal> BIG_DECIMAL_ATTRIBUTE = ENTITY_TYPE.bigDecimalAttribute("big_decimal");
-    static final Attribute<String> TEXT_ATTRIBUTE = ENTITY_TYPE.stringAttribute("text");
-    static final Attribute<String> LONG_TEXT_ATTRIBUTE = ENTITY_TYPE.stringAttribute("long_text");
-    static final Attribute<String> FORMATTED_TEXT_ATTRIBUTE = ENTITY_TYPE.stringAttribute("formatted_text");
-    static final Attribute<String> VALUE_LIST_ATTRIBUTE = ENTITY_TYPE.stringAttribute("value_list");
+  interface Demo {
+    EntityType TYPE = type("entityType");
+    Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
+    Attribute<Entity> FOREIGN_KEY = TYPE.entityAttribute("foreign_key");
+    Attribute<LocalDate> LOCAL_DATE = TYPE.localDateAttribute("local_date");
+    Attribute<Integer> INTEGER = TYPE.integerAttribute("integer");
+    Attribute<Long> LONG = TYPE.longAttribute("long");
+    Attribute<Double> DOUBLE = TYPE.doubleAttribute("double");
+    Attribute<BigDecimal> BIG_DECIMAL = TYPE.bigDecimalAttribute("big_decimal");
+    Attribute<String> TEXT = TYPE.stringAttribute("text");
+    Attribute<String> LONG_TEXT = TYPE.stringAttribute("long_text");
+    Attribute<String> FORMATTED_TEXT = TYPE.stringAttribute("formatted_text");
+    Attribute<String> VALUE_LIST = TYPE.stringAttribute("value_list");
   }
 
   private static final class EditPanelDemo extends EntityEditPanel {
@@ -58,69 +58,69 @@ public final class EntityEditPanels {
 
     private void booleanValue() {
       // tag::booleanValue[]
-      JCheckBox checkBox = createCheckBox(Domain.BOOLEAN_ATTRIBUTE, null, IncludeCaption.NO);
+      JCheckBox checkBox = createCheckBox(Demo.BOOLEAN, null, IncludeCaption.NO);
 
-      NullableCheckBox nullableCheckBox = createNullableCheckBox(Domain.BOOLEAN_ATTRIBUTE);
+      NullableCheckBox nullableCheckBox = createNullableCheckBox(Demo.BOOLEAN);
 
-      JComboBox comboBox = createBooleanComboBox(Domain.BOOLEAN_ATTRIBUTE);
+      JComboBox comboBox = createBooleanComboBox(Demo.BOOLEAN);
       // end::booleanValue[]
     }
 
     private void foreignKeyValue() {
       // tag::foreignKeyValue[]
-      EntityComboBox comboBox = createForeignKeyComboBox(Domain.FOREIGN_KEY_ATTRIBUTE);
+      EntityComboBox comboBox = createForeignKeyComboBox(Demo.FOREIGN_KEY);
 
-      EntityLookupField lookupField = createForeignKeyLookupField(Domain.FOREIGN_KEY_ATTRIBUTE);
+      EntityLookupField lookupField = createForeignKeyLookupField(Demo.FOREIGN_KEY);
 
       //readOnly
-      JTextField textField = createForeignKeyField(Domain.FOREIGN_KEY_ATTRIBUTE);
+      JTextField textField = createForeignKeyField(Demo.FOREIGN_KEY);
       // end::foreignKeyValue[]
     }
 
     private void temporalValue() {
       // tag::temporalValue[]
-      JTextField textField = createTextField(Domain.LOCAL_DATE_ATTRIBUTE);
+      JTextField textField = createTextField(Demo.LOCAL_DATE);
 
-      TemporalInputPanel inputPanel = createTemporalInputPanel(Domain.LOCAL_DATE_ATTRIBUTE);
+      TemporalInputPanel inputPanel = createTemporalInputPanel(Demo.LOCAL_DATE);
       // end::temporalValue[]
     }
 
     private void numericalValue() {
       // tag::numericalValue[]
-      IntegerField integerField = (IntegerField) createTextField(Domain.INTEGER_ATTRIBUTE);
+      IntegerField integerField = (IntegerField) createTextField(Demo.INTEGER);
 
-      LongField longField = (LongField) createTextField(Domain.LONG_ATTRIBUTE);
+      LongField longField = (LongField) createTextField(Demo.LONG);
 
-      DecimalField doubleField = (DecimalField) createTextField(Domain.DOUBLE_ATTRIBUTE);
+      DecimalField doubleField = (DecimalField) createTextField(Demo.DOUBLE);
 
-      DecimalField bigDecimalField = (DecimalField) createTextField(Domain.BIG_DECIMAL_ATTRIBUTE);
+      DecimalField bigDecimalField = (DecimalField) createTextField(Demo.BIG_DECIMAL);
       // end::numericalValue[]
     }
 
     private void textValue() {
       // tag::textValue[]
-      JTextField textField = createTextField(Domain.TEXT_ATTRIBUTE);
+      JTextField textField = createTextField(Demo.TEXT);
 
-      JTextArea textArea = createTextArea(Domain.LONG_TEXT_ATTRIBUTE, 5, 20);
+      JTextArea textArea = createTextArea(Demo.LONG_TEXT, 5, 20);
 
-      TextInputPanel inputPanel = createTextInputPanel(Domain.LONG_TEXT_ATTRIBUTE);
+      TextInputPanel inputPanel = createTextInputPanel(Demo.LONG_TEXT);
 
       JFormattedTextField formattedField = (JFormattedTextField)
-              createTextField(Domain.FORMATTED_TEXT_ATTRIBUTE, UpdateOn.KEYSTROKE, "###:###");
+              createTextField(Demo.FORMATTED_TEXT, UpdateOn.KEYSTROKE, "###:###");
       // end::textValue[]
     }
 
     private void valueList() {
       // tag::valueList[]
-      SteppedComboBox comboBox = createValueListComboBox(Domain.VALUE_LIST_ATTRIBUTE);
+      SteppedComboBox comboBox = createValueListComboBox(Demo.VALUE_LIST);
       // end::valueList[]
     }
 
     private void panelLabel() {
       // tag::panelLabel[]
-      JLabel label = createLabel(Domain.TEXT_ATTRIBUTE);
+      JLabel label = createLabel(Demo.TEXT);
 
-      JPanel propertyPanel = createPropertyPanel(Domain.TEXT_ATTRIBUTE);
+      JPanel propertyPanel = createPropertyPanel(Demo.TEXT);
       // end::panelLabel[]
     }
 

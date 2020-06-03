@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.manual.store.ui;
 
-import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.plugin.jasperreports.model.JasperReports;
@@ -44,7 +44,7 @@ public class CustomerTablePanel extends EntityTablePanel {
       return;
     }
 
-    Collection<String> customerIds = Entities.getValues(Store.CUSTOMER_ID, selectedCustomers);
+    Collection<String> customerIds = Entities.getValues(Customer.ID, selectedCustomers);
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIds);
 
