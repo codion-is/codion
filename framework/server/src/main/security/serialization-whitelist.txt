@@ -1,6 +1,6 @@
 [B
 [C
-[Lis.codion.framework.domain.attribute.Attribute;
+[Lis.codion.framework.domain.entity.Attribute;
 [Ljava.lang.Object;
 [Ljava.lang.String;
 [Ljava.util.Map$Entry;
