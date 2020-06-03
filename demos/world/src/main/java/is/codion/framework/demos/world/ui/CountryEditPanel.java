@@ -1,7 +1,7 @@
 package is.codion.framework.demos.world.ui;
 
-import is.codion.framework.demos.world.domain.World.City;
-import is.codion.framework.demos.world.domain.World.Country;
+import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.CountryEditModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.ui.EntityComboBox;

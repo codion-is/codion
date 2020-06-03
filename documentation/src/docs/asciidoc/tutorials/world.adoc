@@ -40,16 +40,25 @@ image::tutorials/world/lookup.png[]
 [#_domain]
 == Domain
 
+=== API
+
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/world/domain/World.java[tag=**]
+include::{dir-source}/is/codion/framework/demos/world/domain/api/World.java[tag=**]
+----
+
+=== Implementation
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tag=**]
 ----
 
 === Domain unit test
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/world/domain/WorldTest.java[tag=**]
+include::{dir-test-source}/is/codion/framework/demos/world/domain/WorldImplTest.java[tag=**]
 ----
 
 == Model

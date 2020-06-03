@@ -3,11 +3,11 @@ package is.codion.framework.demos.world.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.world.domain.World.City;
-import is.codion.framework.demos.world.domain.World.Continent;
-import is.codion.framework.demos.world.domain.World.Country;
-import is.codion.framework.demos.world.domain.World.CountryLanguage;
-import is.codion.framework.demos.world.domain.World.Lookup;
+import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.Continent;
+import is.codion.framework.demos.world.domain.api.World.Country;
+import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
+import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.demos.world.model.CountryCustomModel;
 import is.codion.framework.demos.world.model.CountryModel;
 import is.codion.framework.demos.world.model.WorldAppModel;
@@ -72,7 +72,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     Icons.ICONS_CLASSNAME.set(IkonliFoundationIcons.class.getName());
     FrameworkIcons.FRAMEWORK_ICONS_CLASSNAME.set(IkonliFoundationFrameworkIcons.class.getName());
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.World");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
     new WorldAppPanel().startApplication("World", null, MaximizeFrame.NO,
             new Dimension(1024, 720), Users.parseUser("scott:tiger"));
   }

@@ -81,7 +81,7 @@ public final class EmpDept extends Domain {
 
   // tag::defineDepartment[]
   void department() {
-    /*Defining the entity type T_DEPARTMENT*/
+    /*Defining the entity Department.TYPE*/
     define(Department.TYPE,
             primaryKeyProperty(Department.ID, "Department no.")
                     .updatable(true).nullable(false).beanProperty("id"),
@@ -99,7 +99,7 @@ public final class EmpDept extends Domain {
 
   // tag::defineEmployee[]
   void employee() {
-    /*Defining the entity type T_EMPLOYEE*/
+    /*Defining the entity Employee.TYPE*/
     define(Employee.TYPE,
             primaryKeyProperty(Employee.ID, "Employee no.").beanProperty("id"),
             columnProperty(Employee.NAME, "Name")

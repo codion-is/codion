@@ -1,8 +1,8 @@
 package is.codion.framework.demos.world.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.world.domain.World.City;
-import is.codion.framework.demos.world.domain.World.CountryLanguage;
+import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 public final class CountryCustomModel extends SwingEntityModel {

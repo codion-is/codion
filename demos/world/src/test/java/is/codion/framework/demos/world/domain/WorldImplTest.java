@@ -1,6 +1,9 @@
 package is.codion.framework.demos.world.domain;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.Country;
+import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
@@ -9,33 +12,33 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-public final class WorldTest extends EntityTestUnit {
+public final class WorldImplTest extends EntityTestUnit {
 
-  public WorldTest() {
-    super(World.class.getName());
+  public WorldImplTest() {
+    super(WorldImpl.class.getName());
   }
 
   @Test
   public void country() throws DatabaseException {
-    test(World.Country.TYPE);
+    test(Country.TYPE);
   }
 
   @Test
   public void city() throws DatabaseException {
-    test(World.City.TYPE);
+    test(City.TYPE);
   }
 
   @Test
   public void countryLanguage() throws DatabaseException {
-    test(World.CountryLanguage.TYPE);
+    test(CountryLanguage.TYPE);
   }
 
   @Override
   protected Entity initializeTestEntity(EntityType entityType, Map<EntityType, Entity> foreignKeyEntities) {
     Entity entity = super.initializeTestEntity(entityType, foreignKeyEntities);
-    if (entityType.equals(World.Country.TYPE)) {
-      entity.put(World.Country.CODE, "XXX");
-      entity.put(World.Country.CONTINENT, "Asia");
+    if (entityType.equals(Country.TYPE)) {
+      entity.put(Country.CODE, "XXX");
+      entity.put(Country.CONTINENT, "Asia");
     }
 
     return entity;
@@ -44,22 +47,22 @@ public final class WorldTest extends EntityTestUnit {
   @Override
   protected void modifyEntity(Entity testEntity, Map<EntityType, Entity> foreignKeyEntities) {
     super.modifyEntity(testEntity, foreignKeyEntities);
-    if (testEntity.is(World.Country.TYPE)) {
-      testEntity.put(World.Country.CONTINENT, "Europe");
+    if (testEntity.is(Country.TYPE)) {
+      testEntity.put(Country.CONTINENT, "Europe");
     }
   }
 
   @Override
   protected Entity initializeReferenceEntity(EntityType entityType, Map<EntityType, Entity> foreignKeyEntities) {
-    if (entityType.equals(World.Country.TYPE)) {
-      Entity iceland = getEntities().entity(World.Country.TYPE);
-      iceland.put(World.Country.CODE, "ISL");
+    if (entityType.equals(Country.TYPE)) {
+      Entity iceland = getEntities().entity(Country.TYPE);
+      iceland.put(Country.CODE, "ISL");
 
       return iceland;
     }
-    if (entityType.equals(World.City.TYPE)) {
-      Entity reykjavik = getEntities().entity(World.City.TYPE);
-      reykjavik.put(World.City.ID, 1449);
+    if (entityType.equals(City.TYPE)) {
+      Entity reykjavik = getEntities().entity(City.TYPE);
+      reykjavik.put(City.ID, 1449);
 
       return reykjavik;
     }
