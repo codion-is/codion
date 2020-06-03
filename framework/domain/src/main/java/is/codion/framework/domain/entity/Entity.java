@@ -4,7 +4,6 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import java.io.Serializable;

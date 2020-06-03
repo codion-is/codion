@@ -104,7 +104,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting the values of a single column.
 
-{url-entity-connection}#selectValues-is.codion.framework.domain.attribute.Attribute-is.codion.framework.db.condition.EntityCondition-[selectValues(Attribute attribute, EntityCondition condition)]
+{url-entity-connection}#selectValues-is.codion.framework.domain.entity.Attribute-is.codion.framework.db.condition.EntityCondition-[selectValues(Attribute attribute, EntityCondition condition)]
 
 [source,java,indent=0]
 ----

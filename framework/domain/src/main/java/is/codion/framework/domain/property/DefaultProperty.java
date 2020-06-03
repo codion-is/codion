@@ -5,7 +5,8 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.Formats;
 import is.codion.common.Util;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -142,6 +143,11 @@ abstract class DefaultProperty<T> implements Property<T> {
   @Override
   public Attribute<T> getAttribute() {
     return attribute;
+  }
+
+  @Override
+  public final EntityType getEntityType() {
+    return attribute.getEntityType();
   }
 
   @Override

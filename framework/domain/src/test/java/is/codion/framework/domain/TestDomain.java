@@ -5,7 +5,7 @@ package is.codion.framework.domain;
 
 import is.codion.common.DateFormats;
 import is.codion.common.item.Item;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Department;
 import is.codion.framework.domain.entity.Employee;
 import is.codion.framework.domain.entity.Entity;

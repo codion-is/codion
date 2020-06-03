@@ -3,8 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.attribute.Attribute;
-
 import static java.util.Objects.requireNonNull;
 
 /**

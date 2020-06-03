@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.property;
 
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 
 final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements BlobProperty {
 

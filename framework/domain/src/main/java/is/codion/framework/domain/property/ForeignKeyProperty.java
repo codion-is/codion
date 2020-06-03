@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.property;
 
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -32,6 +32,11 @@ public interface ForeignKeyProperty extends Property<Entity> {
    * @return true if all reference properties comprising this foreign key property are updatable
    */
   boolean isUpdatable();
+
+  /**
+   * @return the entity type
+   */
+  EntityType getEntityType();
 
   /**
    * @return the type of the entity referenced by this foreign key

@@ -5,7 +5,8 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.math.RoundingMode;
@@ -81,6 +82,11 @@ public interface Property<T> extends Serializable {
    * @return the attribute this property is based on
    */
   <T> Attribute<T> getAttribute();
+
+  /**
+   * @return the type of the entity this Property is associated with
+   */
+  EntityType getEntityType();
 
   /**
    * @return the caption

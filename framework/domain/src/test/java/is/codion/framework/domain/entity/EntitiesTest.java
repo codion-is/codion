@@ -4,7 +4,7 @@
 package is.codion.framework.entities.entity;
 
 import is.codion.framework.domain.TestDomain;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;

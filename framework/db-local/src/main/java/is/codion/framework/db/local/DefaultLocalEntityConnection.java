@@ -27,7 +27,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.db.condition.WhereCondition;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -614,10 +614,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entities.iterator().next().getEntityType());
     for (final ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
-        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getAttribute().getEntityType(),
+        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getEntityType(),
                 foreignKeyReference.getAttribute(), LIKE, entities));
         if (!dependencies.isEmpty()) {
-          dependencyMap.put(foreignKeyReference.getAttribute().getEntityType(), dependencies);
+          dependencyMap.put(foreignKeyReference.getEntityType(), dependencies);
         }
       }
     }

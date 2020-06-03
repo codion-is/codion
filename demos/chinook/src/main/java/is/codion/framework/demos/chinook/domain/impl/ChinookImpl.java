@@ -11,7 +11,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.DerivedProperty;
