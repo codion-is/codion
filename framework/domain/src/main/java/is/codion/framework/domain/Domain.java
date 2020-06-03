@@ -99,7 +99,7 @@ public abstract class Domain implements EntityDefinition.Provider {
   }
 
   /**
-   * Retrieves the procedure with the given id.
+   * Retrieves the procedure of the given type.
    * @param <C> the type of the database connection this procedure requires
    * @param <T> the argument type
    * @param procedureType the procedure type
@@ -111,7 +111,7 @@ public abstract class Domain implements EntityDefinition.Provider {
   }
 
   /**
-   * Retrieves the function with the given id.
+   * Retrieves the function of the given type.
    * @param <C> the type of the database connection this function requires
    * @param <T> the argument type
    * @param <R> the result type
