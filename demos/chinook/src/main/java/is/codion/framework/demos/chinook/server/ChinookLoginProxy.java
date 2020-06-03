@@ -90,10 +90,10 @@ public final class ChinookLoginProxy implements LoginProxy {
     final EntityConnection connection = getConnectionFromPool();
     try {
       final int rows = connection.selectRowCount(
-              condition(Authentication.T_USER, combination(AND,
-                      propertyCondition(Authentication.USER_USERNAME,
+              condition(Authentication.User.TYPE, combination(AND,
+                      propertyCondition(Authentication.User.USERNAME,
                               LIKE, user.getUsername()).setCaseSensitive(false),
-                      propertyCondition(Authentication.USER_PASSWORD_HASH,
+                      propertyCondition(Authentication.User.PASSWORD_HASH,
                               LIKE, valueOf(user.getPassword()).hashCode()))));
       if (rows == 0) {
         throw new ServerAuthenticationException("Wrong username or password");
@@ -118,18 +118,20 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   private static final class Authentication extends Domain {
 
-    private static final EntityType T_USER = type("chinook.user");
-    private static final Attribute<Integer> USER_USERID = T_USER.integerAttribute("userid");
-    private static final Attribute<String> USER_USERNAME = T_USER.stringAttribute("username");
-    private static final Attribute<Integer> USER_PASSWORD_HASH = T_USER.integerAttribute("passwordhash");
+    interface User {
+      EntityType TYPE = type("chinook.user");
+      Attribute<Integer> ID = TYPE.integerAttribute("userid");
+      Attribute<String> USERNAME = TYPE.stringAttribute("username");
+      Attribute<Integer> PASSWORD_HASH = TYPE.integerAttribute("passwordhash");
+    }
 
     private Authentication() {
-      define(T_USER,
-              primaryKeyProperty(USER_USERID),
-              columnProperty(USER_USERNAME)
+      define(User.TYPE,
+              primaryKeyProperty(User.ID),
+              columnProperty(User.USERNAME)
                       .nullable(false)
                       .maximumLength(20),
-              columnProperty(USER_PASSWORD_HASH)
+              columnProperty(User.PASSWORD_HASH)
                       .nullable(false))
               .keyGenerator(automatic("chinook.user"));
     }

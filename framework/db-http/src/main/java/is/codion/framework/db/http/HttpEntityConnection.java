@@ -9,6 +9,8 @@ import is.codion.common.db.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
 import is.codion.common.db.exception.RecordNotFoundException;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.user.User;
@@ -20,7 +22,6 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.identity.Identity;
 
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequestInterceptor;
@@ -59,7 +60,6 @@ import java.util.UUID;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 /**
@@ -72,7 +72,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpEntityConnection.class);
 
-  private static final String DOMAIN_ID = "domainId";
+  private static final String DOMAIN_TYPE_NAME = "domainTypeName";
   private static final String CLIENT_TYPE_ID = "clientTypeId";
   private static final String CLIENT_ID = "clientId";
   private static final String CONTENT_TYPE = "Content-Type";
@@ -85,7 +85,7 @@ final class HttpEntityConnection implements EntityConnection {
           .setConnectTimeout(2000)
           .build();
 
-  private final Identity domainId;
+  private final String domainTypeName;
   private final User user;
   private final boolean httpsEnabled;
   private final String baseurl;
@@ -100,7 +100,7 @@ final class HttpEntityConnection implements EntityConnection {
 
   /**
    * Instantiates a new {@link HttpEntityConnection} instance
-   * @param domainId the id of the domain model
+   * @param domainTypeName the name of the domain model type
    * @param serverHostName the http server host name
    * @param serverPort the http server port
    * @param httpsEnabled if true then https is used
@@ -108,10 +108,10 @@ final class HttpEntityConnection implements EntityConnection {
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  HttpEntityConnection(final Identity domainId, final String serverHostName, final int serverPort,
+  HttpEntityConnection(final String domainTypeName, final String serverHostName, final int serverPort,
                        final ClientHttps httpsEnabled, final User user, final String clientTypeId, final UUID clientId,
                        final HttpClientConnectionManager connectionManager) {
-    this.domainId = Objects.requireNonNull(domainId, DOMAIN_ID);
+    this.domainTypeName = Objects.requireNonNull(domainTypeName, DOMAIN_TYPE_NAME);
     this.user = Objects.requireNonNull(user, "user");
     this.httpsEnabled = ClientHttps.TRUE.equals(httpsEnabled);
     this.baseurl = Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities";
@@ -205,10 +205,10 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> T executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
-    Objects.requireNonNull(functionId);
+  public <T, R> R executeFunction(final FunctionType<EntityConnection, T, R> functionType, final T... arguments) throws DatabaseException {
+    Objects.requireNonNull(functionType);
     try {
-      return executeOperation("function", "functionId", functionId, arguments);
+      return onResponse(execute(createHttpPost("function", asList(functionType, arguments))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -220,10 +220,10 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
-    Objects.requireNonNull(procedureId);
+  public <T> void executeProcedure(final ProcedureType<EntityConnection, T> procedureType, final T... arguments) throws DatabaseException {
+    Objects.requireNonNull(procedureType);
     try {
-      executeOperation("procedure", "procedureId", procedureId, arguments);
+      onResponse(execute(createHttpPost("procedure", asList(procedureType, arguments))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -497,13 +497,6 @@ final class HttpEntityConnection implements EntityConnection {
     }
   }
 
-  private <T> T executeOperation(final String path, final String operationIdParam, final String operationId,
-                                 final Object... arguments) throws Exception {
-    return onResponse(execute(createHttpPost(createURIBuilder(path)
-                    .addParameter(operationIdParam, operationId),
-            Util.notNull(arguments) ? asList(arguments) : emptyList())));
-  }
-
   private CloseableHttpResponse execute(final HttpUriRequest operation) throws IOException {
     synchronized (httpClient) {
       try {
@@ -524,7 +517,7 @@ final class HttpEntityConnection implements EntityConnection {
             .setDefaultRequestConfig(REQUEST_CONFIG)
             .setConnectionManager(connectionManager)
             .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
-              request.setHeader(DOMAIN_ID, domainId.getName());
+              request.setHeader(DOMAIN_TYPE_NAME, domainTypeName);
               request.setHeader(CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(CLIENT_ID, clientIdString);
               request.setHeader(CONTENT_TYPE, APPLICATION_OCTET_STREAM);

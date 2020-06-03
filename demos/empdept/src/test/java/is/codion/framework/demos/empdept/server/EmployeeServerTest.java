@@ -12,7 +12,7 @@ import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.ConnectionValidationException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.user.Users;
-import is.codion.framework.demos.empdept.domain.Employee;
+import is.codion.framework.demos.empdept.domain.EmployeeBean;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.server.EntityServerConfiguration;
 
@@ -58,7 +58,7 @@ public final class EmployeeServerTest {
     final List<Entity> employees = employeeService.getEmployees();
     assertEquals(16, employees.size());
 
-    final List<Employee> employeeBeans = employeeService.getEmployeeBeans();
+    final List<EmployeeBean> employeeBeans = employeeService.getEmployeeBeans();
     assertEquals(16, employeeBeans.size());
 
     employeeServer.disconnect(clientId);

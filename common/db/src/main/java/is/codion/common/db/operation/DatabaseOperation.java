@@ -9,9 +9,9 @@ package is.codion.common.db.operation;
 public interface DatabaseOperation {
 
   /**
-   * @return this operations id
+   * @return this operations type
    */
-  String getId();
+  OperationType getType();
 
   /**
    * @return the name of this operation

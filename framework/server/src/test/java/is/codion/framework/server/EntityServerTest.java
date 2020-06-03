@@ -24,7 +24,6 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.identity.Identities;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -49,7 +48,7 @@ public class EntityServerTest {
 
   private static final User ADMIN_USER = Users.parseUser("scott:tiger");
   private static final Map<String, Object> CONNECTION_PARAMS =
-          Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, Identities.identity("TestDomain"));
+          Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain");
   private static Server<RemoteEntityConnection, EntityServerAdmin> server;
   private static EntityServerAdmin admin;
 
@@ -59,7 +58,8 @@ public class EntityServerTest {
   public static synchronized void setUp() throws Exception {
     final String serverName = CONFIGURATION.getServerName();
     EntityServer.startServer(CONFIGURATION);
-    server = (Server) LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
+    server = (Server<RemoteEntityConnection, EntityServerAdmin>)
+            LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
@@ -139,7 +139,7 @@ public class EntityServerTest {
 
     try {
       server.connect(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID",
-              Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, new EmptyDomain().getDomainId())));
+              Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, new EmptyDomain().getDomainType().getName())));
       fail();
     }
     catch (final LoginException ignored) {}

@@ -27,7 +27,8 @@ import javax.swing.UIManager;
 import java.awt.Color;
 import java.util.List;
 
-import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.*;
+import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Album;
+import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Artist;
 import static is.codion.framework.domain.entity.Entities.type;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
@@ -44,39 +45,43 @@ public final class ClientTutorial {
 
   public static final class Chinook extends Domain {
 
-    public static final EntityType T_ARTIST = type("chinook.artist");
-    public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
-    public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
-    public static final Attribute<Integer> ARTIST_NR_OF_ALBUMS = T_ARTIST.integerAttribute("nr_of_albums");
+    public interface Artist {
+      EntityType TYPE = type("chinook.artist");
+      Attribute<Integer> ID = TYPE.integerAttribute("artistid");
+      Attribute<String> NAME = TYPE.stringAttribute("name");
+      Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("nr_of_albums");
+    }
 
-    public static final EntityType T_ALBUM = type("chinook.album");
-    public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
-    public static final Attribute<String> ALBUM_TITLE = T_ARTIST.stringAttribute("title");
-    public static final Attribute<Integer> ALBUM_ARTISTID = T_ARTIST.integerAttribute("artistid");
-    public static final Attribute<Entity> ALBUM_ARTIST_FK = T_ARTIST.entityAttribute("artist_fk");
+    public interface Album {
+      EntityType TYPE = type("chinook.album");
+      Attribute<Integer> ID = TYPE.integerAttribute("albumid");
+      Attribute<String> TITLE = Artist.TYPE.stringAttribute("title");
+      Attribute<Integer> ARTIST_ID = Artist.TYPE.integerAttribute("artistid");
+      Attribute<Entity> ARTIST_FK = Artist.TYPE.entityAttribute("artist_fk");
+    }
 
     public Chinook() {
-      define(T_ARTIST,
-              primaryKeyProperty(ARTIST_ID),
-              columnProperty(ARTIST_NAME, "Name")
+      define(Artist.TYPE,
+              primaryKeyProperty(Artist.ID),
+              columnProperty(Artist.NAME, "Name")
                       .searchProperty(true).nullable(false).maximumLength(120),
-              subqueryProperty(ARTIST_NR_OF_ALBUMS, "Albums",
+              subqueryProperty(Artist.NUMBER_OF_ALBUMS, "Albums",
                       "select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid"))
               .keyGenerator(automatic("chinook.artist"))
-              .stringProvider(new StringProvider(ARTIST_NAME))
+              .stringProvider(new StringProvider(Artist.NAME))
               .caption("Artists");
 
-      define(T_ALBUM,
-              primaryKeyProperty(ALBUM_ALBUMID),
-              foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
-                      columnProperty(ALBUM_ARTISTID))
+      define(Album.TYPE,
+              primaryKeyProperty(Album.ID),
+              foreignKeyProperty(Album.ARTIST_FK, "Artist", Artist.TYPE,
+                      columnProperty(Album.ARTIST_ID))
                       .nullable(false),
-              columnProperty(ALBUM_TITLE, "Title")
+              columnProperty(Album.TITLE, "Title")
                       .nullable(false).maximumLength(160))
               .keyGenerator(automatic("chinook.artist"))
-              .stringProvider(new StringProvider(ALBUM_ARTIST_FK)
-                      .addText(" - ").addValue(ALBUM_TITLE))
+              .stringProvider(new StringProvider(Album.ARTIST_FK)
+                      .addText(" - ").addValue(Album.TITLE))
               .caption("Albums");
     }
   }
@@ -89,10 +94,10 @@ public final class ClientTutorial {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(ARTIST_NAME);
-      JTextField nameField = createTextField(ARTIST_NAME);
+      setInitialFocusAttribute(Artist.NAME);
+      JTextField nameField = createTextField(Artist.NAME);
       nameField.setColumns(15);
-      addPropertyPanel(ARTIST_NAME);
+      addPropertyPanel(Artist.NAME);
     }
   }
 
@@ -104,16 +109,16 @@ public final class ClientTutorial {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusAttribute(ALBUM_ARTIST_FK);
-      EntityLookupField artistLookupField = createForeignKeyLookupField(ALBUM_ARTIST_FK);
+      setInitialFocusAttribute(Album.ARTIST_FK);
+      EntityLookupField artistLookupField = createForeignKeyLookupField(Album.ARTIST_FK);
       artistLookupField.setColumns(15);
-      JTextField titleField = createTextField(ALBUM_TITLE);
+      JTextField titleField = createTextField(Album.TITLE);
       removeTransferFocusOnEnter(titleField);
       titleField.setAction(getInsertControl());
       titleField.setColumns(15);
       setLayout(gridLayout(2, 1));
-      addPropertyPanel(ALBUM_ARTIST_FK);
-      addPropertyPanel(ALBUM_TITLE);
+      addPropertyPanel(Album.ARTIST_FK);
+      addPropertyPanel(Album.TITLE);
     }
   }
 
@@ -121,8 +126,8 @@ public final class ClientTutorial {
 
     @Override
     protected SwingEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
-      SwingEntityModel artistModel = new SwingEntityModel(T_ARTIST, connectionProvider);
-      SwingEntityModel albumModel = new SwingEntityModel(T_ALBUM, connectionProvider);
+      SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
+      SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
       artistModel.addDetailModel(albumModel);
       artistModel.refresh();
 
@@ -134,8 +139,8 @@ public final class ClientTutorial {
 
     @Override
     protected List<EntityPanel> initializeEntityPanels(final SwingEntityApplicationModel applicationModel) {
-      SwingEntityModel artistModel = applicationModel.getEntityModel(T_ARTIST);
-      SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
+      SwingEntityModel artistModel = applicationModel.getEntityModel(Artist.TYPE);
+      SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
       EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
       EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.getEditModel()));
       artistPanel.addDetailPanel(albumPanel);

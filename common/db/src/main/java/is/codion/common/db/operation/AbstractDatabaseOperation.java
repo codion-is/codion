@@ -6,28 +6,27 @@ package is.codion.common.db.operation;
 /**
  * A base Operation implementation
  */
-public abstract class AbstractDatabaseOperation implements DatabaseOperation {
+abstract class AbstractDatabaseOperation implements DatabaseOperation {
 
-  private final String id;
-  private final String name;
+  private final OperationType type;
 
   /**
    * Instantiates a new AbstractOperation
-   * @param id a unique operation id
-   * @param name the operation name
+   * @param type a unique operation type
    */
-  public AbstractDatabaseOperation(final String id, final String name) {
-    this.id = id;
-    this.name = name;
-  }
-
-  @Override
-  public final String getId() {
-    return id;
+  AbstractDatabaseOperation(final OperationType type) {
+    this.type = type;
   }
 
   @Override
   public final String getName() {
-    return this.name;
+    return type.getName();
+  }
+
+  /**
+   * @return this operations type
+   */
+  protected OperationType getOperationType() {
+    return type;
   }
 }

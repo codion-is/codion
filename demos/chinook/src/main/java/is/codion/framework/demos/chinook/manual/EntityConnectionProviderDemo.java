@@ -14,7 +14,7 @@ import is.codion.framework.db.http.HttpEntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
-import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -61,7 +61,7 @@ public class EntityConnectionProviderDemo {
 
     Entities entities = entityConnection.getEntities();
 
-    Entity track = entityConnection.selectSingle(entities.key(Chinook.T_TRACK, 42L));
+    Entity track = entityConnection.selectSingle(entities.key(Track.TYPE, 42L));
 
     connectionProvider.disconnect();
     // end::remote[]
@@ -80,7 +80,7 @@ public class EntityConnectionProviderDemo {
 
     Entities entities = entityConnection.getEntities();
 
-    entityConnection.selectSingle(entities.key(Chinook.T_TRACK, 42L));
+    entityConnection.selectSingle(entities.key(Track.TYPE, 42L));
 
     connectionProvider.disconnect();
     // end::http[]

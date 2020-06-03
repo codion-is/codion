@@ -6,6 +6,9 @@ package is.codion.framework.domain;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseOperation;
 import is.codion.common.db.operation.DatabaseProcedure;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.OperationType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.domain.entity.DefaultEntities;
@@ -33,6 +36,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class Domain implements EntityDefinition.Provider {
 
+  private final DomainType<?> domainType;
   private final DomainEntities entities;
   private final DomainReports reports = new DomainReports();
   private final DomainOperations operations = new DomainOperations();
@@ -42,30 +46,24 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @see Class#getSimpleName()
    */
   protected Domain() {
-    this.entities = new DomainEntities(Identities.identity(getClass().getSimpleName()));
-  }
-
-  /**
-   * Instantiates a new Domain
-   * @param domainName the domain identifier
-   */
-  protected Domain(final String domainName) {
-    this(Identities.identity(domainName));
+    this.domainType = new DomainType<>(getClass());
+    this.entities = new DomainEntities(Identities.identity(domainType.getName()));
   }
 
   /**
    * Instantiates a new Domain
    * @param domainId the domain identifier
    */
-  protected Domain(final Identity domainId) {
-    this.entities = new DomainEntities(requireNonNull(domainId, "domainId"));
+  protected Domain(final DomainType<?> domainType) {
+    this.domainType = domainType;
+    this.entities = new DomainEntities(Identities.identity(domainType.getName()));
   }
 
   /**
-   * @return the domainId
+   * @return the domain type
    */
-  public final Identity getDomainId() {
-    return entities.getDomainId();
+  public final DomainType<?> getDomainType() {
+    return domainType;
   }
 
   /**
@@ -103,24 +101,24 @@ public abstract class Domain implements EntityDefinition.Provider {
   /**
    * Retrieves the procedure with the given id.
    * @param <C> the type of the database connection this procedure requires
-   * @param procedureId the procedure id
+   * @param procedureType the procedure type
    * @return the procedure
    * @throws IllegalArgumentException in case the procedure is not found
    */
-  public final <C> DatabaseProcedure<C> getProcedure(final String procedureId) {
-    return operations.getProcedure(procedureId);
+  public final <C, T> DatabaseProcedure<C, T> getProcedure(final ProcedureType<C, T> procedureType) {
+    return operations.getProcedure(procedureType);
   }
 
   /**
    * Retrieves the function with the given id.
    * @param <C> the type of the database connection this function requires
    * @param <T> the result type
-   * @param functionId the function id
+   * @param functionType the function type
    * @return the function
    * @throws IllegalArgumentException in case the function is not found
    */
-  public final <C, T> DatabaseFunction<C, T> getFunction(final String functionId) {
-    return operations.getFunction(functionId);
+  public final <C, T, R> DatabaseFunction<C, T, R> getFunction(final FunctionType<C, T, R> functionType) {
+    return operations.getFunction(functionType);
   }
 
   /**
@@ -200,35 +198,35 @@ public abstract class Domain implements EntityDefinition.Provider {
 
   private static final class DomainOperations {
 
-    private final Map<String, DatabaseOperation> operations = new HashMap<>();
+    private final Map<OperationType, DatabaseOperation> operations = new HashMap<>();
 
     private void addOperation(final DatabaseOperation operation) {
       requireNonNull(operation, "operation");
-      if (operations.containsKey(operation.getId())) {
-        throw new IllegalArgumentException("Operation already defined: " + operations.get(operation.getId()).getName());
+      if (operations.containsKey(operation.getType())) {
+        throw new IllegalArgumentException("Operation already defined: " + operations.get(operation.getType()).getName());
       }
 
-      operations.put(operation.getId(), operation);
+      operations.put(operation.getType(), operation);
     }
 
-    private <C> DatabaseProcedure<C> getProcedure(final String procedureId) {
-      requireNonNull(procedureId, "procedureId");
-      final DatabaseOperation operation = operations.get(procedureId);
+    private <C, T> DatabaseProcedure<C, T> getProcedure(final ProcedureType<C, T> procedureType) {
+      requireNonNull(procedureType, "procedureType");
+      final DatabaseOperation operation = operations.get(procedureType);
       if (operation == null) {
-        throw new IllegalArgumentException("Procedure not found: " + procedureId);
+        throw new IllegalArgumentException("Procedure not found: " + procedureType);
       }
 
-      return (DatabaseProcedure<C>) operation;
+      return (DatabaseProcedure<C, T>) operation;
     }
 
-    private <C, T> DatabaseFunction<C, T> getFunction(final String functionId) {
-      requireNonNull(functionId, "functionId");
-      final DatabaseOperation operation = operations.get(functionId);
+    private <C, T, R> DatabaseFunction<C, T, R> getFunction(final FunctionType<C, T, R> functionType) {
+      requireNonNull(functionType, "functionType");
+      final DatabaseOperation operation = operations.get(functionType);
       if (operation == null) {
-        throw new IllegalArgumentException("Function not found: " + functionId);
+        throw new IllegalArgumentException("Function not found: " + functionType);
       }
 
-      return (DatabaseFunction<C, T>) operation;
+      return (DatabaseFunction<C, T, R>) operation;
     }
   }
 

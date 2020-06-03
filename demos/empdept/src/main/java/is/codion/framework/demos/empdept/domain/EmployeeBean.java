@@ -7,18 +7,18 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public final class Employee implements Serializable {
+public final class EmployeeBean implements Serializable {
 
   private static final long serialVersionUID = 1;
 
   private Integer id;
   private String name;
   private String job;
-  private Employee manager;
+  private EmployeeBean manager;
   private LocalDate hiredate;
   private BigDecimal salary;
   private Double commission;
-  private Department department;
+  private DepartmentBean department;
 
   public Integer getId() {
     return id;
@@ -44,11 +44,11 @@ public final class Employee implements Serializable {
     this.job = job;
   }
 
-  public Employee getManager() {
+  public EmployeeBean getManager() {
     return manager;
   }
 
-  public void setManager(final Employee manager) {
+  public void setManager(final EmployeeBean manager) {
     this.manager = manager;
   }
 
@@ -76,11 +76,11 @@ public final class Employee implements Serializable {
     this.commission = commission;
   }
 
-  public Department getDepartment() {
+  public DepartmentBean getDepartment() {
     return department;
   }
 
-  public void setDepartment(final Department department) {
+  public void setDepartment(final DepartmentBean department) {
     this.department = department;
   }
 }

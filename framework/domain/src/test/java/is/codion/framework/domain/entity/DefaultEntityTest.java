@@ -7,6 +7,7 @@ import is.codion.common.FileUtil;
 import is.codion.common.Serializer;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.property.Properties;
@@ -583,7 +584,7 @@ public class DefaultEntityTest {
     final TransientProperty.Builder<?> transientProperty = Properties.transientProperty(trans);
     class TestDomain extends Domain {
       public TestDomain() {
-        super("transient");
+        super(new DomainType<>("transient"));
         define(entityType,
                 Properties.primaryKeyProperty(id),
                 transientProperty);  }

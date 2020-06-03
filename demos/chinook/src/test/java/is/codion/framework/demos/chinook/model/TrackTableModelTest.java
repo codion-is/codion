@@ -26,11 +26,11 @@ public final class TrackTableModelTest {
     final EntityConnectionProvider connectionProvider = createConnectionProvider();
 
     final Entity masterOfPuppets = connectionProvider.getConnection()
-            .selectSingle(Chinook.T_ALBUM, Chinook.ALBUM_TITLE, "Master Of Puppets");
+            .selectSingle(Chinook.Album.TYPE, Chinook.Album.TITLE, "Master Of Puppets");
 
     final TrackTableModel trackTableModel = new TrackTableModel(connectionProvider);
-    final ColumnConditionModel albumConditionModel =
-            trackTableModel.getConditionModel().getPropertyConditionModel(Chinook.TRACK_ALBUM_FK);
+    final ColumnConditionModel<Entity, ?> albumConditionModel =
+            trackTableModel.getConditionModel().getPropertyConditionModel(Chinook.Track.ALBUM_FK);
 
     albumConditionModel.setLikeValue(masterOfPuppets);
 
@@ -41,7 +41,7 @@ public final class TrackTableModelTest {
     trackTableModel.raisePriceOfSelected(BigDecimal.ONE);
 
     trackTableModel.getItems().forEach(track ->
-            assertEquals(BigDecimal.valueOf(1.99), track.get(Chinook.TRACK_UNITPRICE)));
+            assertEquals(BigDecimal.valueOf(1.99), track.get(Chinook.Track.UNITPRICE)));
   }
 
   private EntityConnectionProvider createConnectionProvider() {

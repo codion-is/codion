@@ -41,14 +41,14 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
             @Override
             protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
-                final SwingEntityModel customerModel = application.getEntityModel(T_CUSTOMER);
+                final SwingEntityModel customerModel = application.getEntityModel(Customer.TYPE);
                 customerModel.getTableModel().refresh();
                 selectRandomRows(customerModel.getTableModel(), RANDOM.nextInt(6) + 2);
-                final SwingEntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
+                final SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
                 selectRandomRows(invoiceModel.getTableModel(), RANDOM.nextInt(6) + 2);
-                final SwingEntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(T_INVOICELINE).getTableModel();
+                final SwingEntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(InvoiceLine.TYPE).getTableModel();
                 final List<Entity> invoiceLines = invoiceLineTableModel.getItems();
-                Entities.put(INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
+                Entities.put(InvoiceLine.QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
 
                 invoiceLineTableModel.update(invoiceLines);
 
@@ -65,10 +65,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
             @Override
             protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
-                final SwingEntityModel genreModel = application.getEntityModel(T_GENRE);
+                final SwingEntityModel genreModel = application.getEntityModel(Genre.TYPE);
                 genreModel.getTableModel().refresh();
                 selectRandomRow(genreModel.getTableModel());
-                final SwingEntityModel trackModel = genreModel.getDetailModel(T_TRACK);
+                final SwingEntityModel trackModel = genreModel.getDetailModel(Track.TYPE);
                 selectRandomRows(trackModel.getTableModel(), 2);
                 genreModel.getConnectionProvider().getConnection().selectDependencies(trackModel.getTableModel().getSelectionModel().getSelectedItems());
               }
@@ -88,15 +88,15 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
             @Override
             protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
-                final SwingEntityTableModel customerModel = application.getEntityModel(T_CUSTOMER).getTableModel();
+                final SwingEntityTableModel customerModel = application.getEntityModel(Customer.TYPE).getTableModel();
                 customerModel.refresh();
                 selectRandomRow(customerModel);
 
                 final Collection<Long> customerIDs =
-                        Entities.getDistinctValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
+                        Entities.getDistinctValues(Customer.ID, customerModel.getSelectionModel().getSelectedItems());
                 final HashMap<String, Object> reportParameters = new HashMap<>();
                 reportParameters.put("CUSTOMER_IDS", customerIDs);
-                customerModel.getConnectionProvider().getConnection().fillReport(CUSTOMER_REPORT, reportParameters);
+                customerModel.getConnectionProvider().getConnection().fillReport(Customer.CUSTOMER_REPORT, reportParameters);
               }
               catch (final Exception e) {
                 throw new ScenarioException(e);
@@ -114,10 +114,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
             @Override
             protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
-                final SwingEntityModel customerModel = application.getEntityModel(T_CUSTOMER);
+                final SwingEntityModel customerModel = application.getEntityModel(Customer.TYPE);
                 customerModel.getTableModel().refresh();
                 selectRandomRow(customerModel.getTableModel());
-                final SwingEntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
+                final SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
                 selectRandomRow(invoiceModel.getTableModel());
               }
               catch (final Exception e) {
@@ -136,10 +136,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
             @Override
             protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
-                final SwingEntityModel artistModel = application.getEntityModel(T_ARTIST);
+                final SwingEntityModel artistModel = application.getEntityModel(Artist.TYPE);
                 artistModel.getTableModel().refresh();
                 selectRandomRow(artistModel.getTableModel());
-                final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
+                final SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
                 selectRandomRow(albumModel.getTableModel());
               }
               catch (final Exception e) {
@@ -157,37 +157,37 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
           new AbstractEntityUsageScenario<ChinookApplicationModel>("insertDeleteAlbum") {
             @Override
             protected void perform(final ChinookApplicationModel application) throws ScenarioException {
-              final SwingEntityModel artistModel = application.getEntityModel(T_ARTIST);
+              final SwingEntityModel artistModel = application.getEntityModel(Artist.TYPE);
               artistModel.getTableModel().refresh();
               selectRandomRow(artistModel.getTableModel());
               final Entity artist = artistModel.getTableModel().getSelectionModel().getSelectedItem();
-              final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
+              final SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
               final EntityEditModel albumEditModel = albumModel.getEditModel();
-              final Entity album = application.getEntities().entity(T_ALBUM);
-              album.put(ALBUM_ARTIST_FK, artist);
-              album.put(ALBUM_TITLE, "Title");
+              final Entity album = application.getEntities().entity(Album.TYPE);
+              album.put(Album.ARTIST_FK, artist);
+              album.put(Album.TITLE, "Title");
 
               albumEditModel.setEntity(album);
               try {
                 final Entity insertedAlbum = albumEditModel.insert();
-                final SwingEntityEditModel trackEditModel = albumModel.getDetailModel(T_TRACK).getEditModel();
-                final EntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_GENRE_FK);
+                final SwingEntityEditModel trackEditModel = albumModel.getDetailModel(Track.TYPE).getEditModel();
+                final EntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(Track.GENRE_FK);
                 selectRandomItem(genreComboBoxModel);
-                final EntityComboBoxModel mediaTypeComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_MEDIATYPE_FK);
+                final EntityComboBoxModel mediaTypeComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(Track.MEDIATYPE_FK);
                 selectRandomItem(mediaTypeComboBoxModel);
                 for (int i = 0; i < 10; i++) {
-                  trackEditModel.put(TRACK_ALBUM_FK, insertedAlbum);
-                  trackEditModel.put(TRACK_NAME, "Track " + i);
-                  trackEditModel.put(TRACK_BYTES, 10000000);
-                  trackEditModel.put(TRACK_COMPOSER, "Composer");
-                  trackEditModel.put(TRACK_MILLISECONDS, 1000000);
-                  trackEditModel.put(TRACK_UNITPRICE, BigDecimal.valueOf(2));
-                  trackEditModel.put(TRACK_GENRE_FK, genreComboBoxModel.getSelectedValue());
-                  trackEditModel.put(TRACK_MEDIATYPE_FK, mediaTypeComboBoxModel.getSelectedValue());
+                  trackEditModel.put(Track.ALBUM_FK, insertedAlbum);
+                  trackEditModel.put(Track.NAME, "Track " + i);
+                  trackEditModel.put(Track.BYTES, 10000000);
+                  trackEditModel.put(Track.COMPOSER, "Composer");
+                  trackEditModel.put(Track.MILLISECONDS, 1000000);
+                  trackEditModel.put(Track.UNITPRICE, BigDecimal.valueOf(2));
+                  trackEditModel.put(Track.GENRE_FK, genreComboBoxModel.getSelectedValue());
+                  trackEditModel.put(Track.MEDIATYPE_FK, mediaTypeComboBoxModel.getSelectedValue());
                   trackEditModel.insert();
                 }
 
-                final SwingEntityTableModel trackTableModel = albumModel.getDetailModel(T_TRACK).getTableModel();
+                final SwingEntityTableModel trackTableModel = albumModel.getDetailModel(Track.TYPE).getTableModel();
                 trackTableModel.getSelectionModel().selectAll();
                 trackTableModel.deleteSelected();
                 albumEditModel.delete();
@@ -243,24 +243,24 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
      *   INVOICE
      *     INVOICELINE
      */
-    final SwingEntityModel artistModel = applicationModel.getEntityModel(T_ARTIST);
-    final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
-    final SwingEntityModel trackModel = albumModel.getDetailModel(T_TRACK);
+    final SwingEntityModel artistModel = applicationModel.getEntityModel(Artist.TYPE);
+    final SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+    final SwingEntityModel trackModel = albumModel.getDetailModel(Track.TYPE);
     artistModel.addLinkedDetailModel(albumModel);
     albumModel.addLinkedDetailModel(trackModel);
 
-    final SwingEntityModel playlistModel = applicationModel.getEntityModel(T_PLAYLIST);
-    final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(T_PLAYLISTTRACK);
+    final SwingEntityModel playlistModel = applicationModel.getEntityModel(Playlist.TYPE);
+    final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);
     playlistModel.addLinkedDetailModel(playlistTrackModel);
 
-    final SwingEntityModel customerModel = applicationModel.getEntityModel(T_CUSTOMER);
-    final SwingEntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
-    final SwingEntityModel invoicelineModel = invoiceModel.getDetailModel(T_INVOICELINE);
+    final SwingEntityModel customerModel = applicationModel.getEntityModel(Customer.TYPE);
+    final SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
+    final SwingEntityModel invoicelineModel = invoiceModel.getDetailModel(InvoiceLine.TYPE);
     customerModel.addLinkedDetailModel(invoiceModel);
     invoiceModel.addLinkedDetailModel(invoicelineModel);
 
-    final SwingEntityModel genreModel = new SwingEntityModel(T_GENRE, applicationModel.getConnectionProvider());
-    final SwingEntityModel genreTrackModel = new SwingEntityModel(T_TRACK, applicationModel.getConnectionProvider());
+    final SwingEntityModel genreModel = new SwingEntityModel(Genre.TYPE, applicationModel.getConnectionProvider());
+    final SwingEntityModel genreTrackModel = new SwingEntityModel(Track.TYPE, applicationModel.getConnectionProvider());
     genreModel.addDetailModel(genreTrackModel);
     genreModel.addLinkedDetailModel(genreTrackModel);
 

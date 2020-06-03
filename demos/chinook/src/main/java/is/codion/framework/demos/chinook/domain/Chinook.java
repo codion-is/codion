@@ -3,6 +3,9 @@
  */
 package is.codion.framework.demos.chinook.domain;
 
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -13,146 +16,176 @@ import java.awt.Image;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
+import static is.codion.common.db.operation.Operations.functionType;
+import static is.codion.common.db.operation.Operations.procedureType;
 import static is.codion.framework.domain.entity.Entities.type;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public interface Chinook {
 
-  EntityType T_ARTIST = type("artist@chinook");
-  Attribute<Long> ARTIST_ARTISTID = T_ARTIST.longAttribute("artistid");
-  Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
-  Attribute<Integer> ARTIST_NR_OF_ALBUMS = T_ARTIST.integerAttribute("nr_of_albums");
-  Attribute<Integer> ARTIST_NR_OF_TRACKS = T_ARTIST.integerAttribute("nr_of_tracks");
+  interface Artist {
+    EntityType TYPE = type("artist@chinook");
+    Attribute<Long> ID = TYPE.longAttribute("artistid");
+    Attribute<String> NAME = TYPE.stringAttribute("name");
+    Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("nr_of_albums");
+    Attribute<Integer> NUMBER_OF_TRACKS = TYPE.integerAttribute("nr_of_tracks");
+  }
 
-  EntityType T_ALBUM = type("album@chinook");
-  Attribute<Long> ALBUM_ALBUMID = T_ALBUM.longAttribute("albumid");
-  Attribute<String> ALBUM_TITLE = T_ALBUM.stringAttribute("title");
-  Attribute<Long> ALBUM_ARTISTID = T_ALBUM.longAttribute("artistid");
-  Attribute<Entity> ALBUM_ARTIST_FK = T_ALBUM.entityAttribute("artist_fk");
-  Attribute<byte[]> ALBUM_COVER = T_ALBUM.blobAttribute("cover");
-  Attribute<Image> ALBUM_COVER_IMAGE = T_ALBUM.attribute("coverimage", Image.class);
-  Attribute<Integer> ALBUM_NUMBER_OF_TRACKS = T_ALBUM.integerAttribute("nr_of_tracks");
+  interface Album {
+    EntityType TYPE = type("album@chinook");
+    Attribute<Long> ID = TYPE.longAttribute("albumid");
+    Attribute<String> TITLE = TYPE.stringAttribute("title");
+    Attribute<Long> ARTIST_ID = TYPE.longAttribute("artistid");
+    Attribute<Entity> ARTIST_FK = TYPE.entityAttribute("artist_fk");
+    Attribute<byte[]> COVER = TYPE.blobAttribute("cover");
+    Attribute<Image> COVERIMAGE = TYPE.attribute("coverimage", Image.class);
+    Attribute<Integer> NUMBER_OF_TRACKS = TYPE.integerAttribute("nr_of_tracks");
+  }
 
-  EntityType T_EMPLOYEE = type("employee@chinook");
-  Attribute<Long> EMPLOYEE_EMPLOYEEID = T_EMPLOYEE.longAttribute("employeeid");
-  Attribute<String> EMPLOYEE_LASTNAME = T_EMPLOYEE.stringAttribute("lastname");
-  Attribute<String> EMPLOYEE_FIRSTNAME = T_EMPLOYEE.stringAttribute("firstname");
-  Attribute<String> EMPLOYEE_TITLE = T_EMPLOYEE.stringAttribute("title");
-  Attribute<Long> EMPLOYEE_REPORTSTO = T_EMPLOYEE.longAttribute("reportsto");
-  Attribute<Entity> EMPLOYEE_REPORTSTO_FK = T_EMPLOYEE.entityAttribute("reportsto_fk");
-  Attribute<LocalDate> EMPLOYEE_BIRTHDATE = T_EMPLOYEE.localDateAttribute("birthdate");
-  Attribute<LocalDate> EMPLOYEE_HIREDATE = T_EMPLOYEE.localDateAttribute("hiredate");
-  Attribute<String> EMPLOYEE_ADDRESS = T_EMPLOYEE.stringAttribute("address");
-  Attribute<String> EMPLOYEE_CITY = T_EMPLOYEE.stringAttribute("city");
-  Attribute<String> EMPLOYEE_STATE = T_EMPLOYEE.stringAttribute("state");
-  Attribute<String> EMPLOYEE_COUNTRY = T_EMPLOYEE.stringAttribute("country");
-  Attribute<String> EMPLOYEE_POSTALCODE = T_EMPLOYEE.stringAttribute("postalcode");
-  Attribute<String> EMPLOYEE_PHONE = T_EMPLOYEE.stringAttribute("phone");
-  Attribute<String> EMPLOYEE_FAX = T_EMPLOYEE.stringAttribute("fax");
-  Attribute<String> EMPLOYEE_EMAIL = T_EMPLOYEE.stringAttribute("email");
+  interface Employee {
+    EntityType TYPE = type("employee@chinook");
+    Attribute<Long> ID = TYPE.longAttribute("employeeid");
+    Attribute<String> LASTNAME = TYPE.stringAttribute("lastname");
+    Attribute<String> FIRSTNAME = TYPE.stringAttribute("firstname");
+    Attribute<String> TITLE = TYPE.stringAttribute("title");
+    Attribute<Long> REPORTSTO = TYPE.longAttribute("reportsto");
+    Attribute<Entity> REPORTSTO_FK = TYPE.entityAttribute("reportsto_fk");
+    Attribute<LocalDate> BIRTHDATE = TYPE.localDateAttribute("birthdate");
+    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
+    Attribute<String> ADDRESS = TYPE.stringAttribute("address");
+    Attribute<String> CITY = TYPE.stringAttribute("city");
+    Attribute<String> STATE = TYPE.stringAttribute("state");
+    Attribute<String> COUNTRY = TYPE.stringAttribute("country");
+    Attribute<String> POSTALCODE = TYPE.stringAttribute("postalcode");
+    Attribute<String> PHONE = TYPE.stringAttribute("phone");
+    Attribute<String> FAX = TYPE.stringAttribute("fax");
+    Attribute<String> EMAIL = TYPE.stringAttribute("email");
+  }
 
-  EntityType T_CUSTOMER = type("customer@chinook");
-  Attribute<Long> CUSTOMER_CUSTOMERID = T_CUSTOMER.longAttribute("customerid");
-  Attribute<String> CUSTOMER_FIRSTNAME = T_CUSTOMER.stringAttribute("firstname");
-  Attribute<String> CUSTOMER_LASTNAME = T_CUSTOMER.stringAttribute("lastname");
-  Attribute<String> CUSTOMER_COMPANY = T_CUSTOMER.stringAttribute("company");
-  Attribute<String> CUSTOMER_ADDRESS = T_CUSTOMER.stringAttribute("address");
-  Attribute<String> CUSTOMER_CITY = T_CUSTOMER.stringAttribute("city");
-  Attribute<String> CUSTOMER_STATE = T_CUSTOMER.stringAttribute("state");
-  Attribute<String> CUSTOMER_COUNTRY = T_CUSTOMER.stringAttribute("country");
-  Attribute<String> CUSTOMER_POSTALCODE = T_CUSTOMER.stringAttribute("postalcode");
-  Attribute<String> CUSTOMER_PHONE = T_CUSTOMER.stringAttribute("phone");
-  Attribute<String> CUSTOMER_FAX = T_CUSTOMER.stringAttribute("fax");
-  Attribute<String> CUSTOMER_EMAIL = T_CUSTOMER.stringAttribute("email");
-  Attribute<Long> CUSTOMER_SUPPORTREPID = T_CUSTOMER.longAttribute("supportrepid");
-  Attribute<Entity> CUSTOMER_SUPPORTREP_FK = T_CUSTOMER.entityAttribute("supportrep_fk");
+  interface Customer {
+    EntityType TYPE = type("customer@chinook");
+    Attribute<Long> ID = TYPE.longAttribute("customerid");
+    Attribute<String> FIRSTNAME = TYPE.stringAttribute("firstname");
+    Attribute<String> LASTNAME = TYPE.stringAttribute("lastname");
+    Attribute<String> COMPANY = TYPE.stringAttribute("company");
+    Attribute<String> ADDRESS = TYPE.stringAttribute("address");
+    Attribute<String> CITY = TYPE.stringAttribute("city");
+    Attribute<String> STATE = TYPE.stringAttribute("state");
+    Attribute<String> COUNTRY = TYPE.stringAttribute("country");
+    Attribute<String> POSTALCODE = TYPE.stringAttribute("postalcode");
+    Attribute<String> PHONE = TYPE.stringAttribute("phone");
+    Attribute<String> FAX = TYPE.stringAttribute("fax");
+    Attribute<String> EMAIL = TYPE.stringAttribute("email");
+    Attribute<Long> SUPPORTREP_ID = TYPE.longAttribute("supportrepid");
+    Attribute<Entity> SUPPORTREP_FK = TYPE.entityAttribute("supportrep_fk");
 
-  JasperReportWrapper CUSTOMER_REPORT = classPathReport(Chinook.class, "customer_report.jasper");
+    JasperReportWrapper CUSTOMER_REPORT = classPathReport(Chinook.class, "customer_report.jasper");
+  }
 
-  EntityType T_GENRE = type("genre@chinook");
-  Attribute<Long> GENRE_GENREID = T_GENRE.longAttribute("genreid");
-  Attribute<String> GENRE_NAME = T_GENRE.stringAttribute("name");
+  interface Genre {
+    EntityType TYPE = type("genre@chinook");
+    Attribute<Long> ID = TYPE.longAttribute("genreid");
+    Attribute<String> NAME = TYPE.stringAttribute("name");
+  }
 
-  EntityType T_MEDIATYPE = type("mediatype@chinook");
-  Attribute<Long> MEDIATYPE_MEDIATYPEID = T_MEDIATYPE.longAttribute("mediatypeid");
-  Attribute<String> MEDIATYPE_NAME = T_MEDIATYPE.stringAttribute("name");
+  interface MediaType {
+    EntityType TYPE = type("mediatype@chinook");
+    Attribute<Long> ID = TYPE.longAttribute("mediatypeid");
+    Attribute<String> NAME = TYPE.stringAttribute("name");
+  }
 
-  EntityType T_TRACK = type("track@chinook");
-  Attribute<Long> TRACK_TRACKID = T_TRACK.longAttribute("trackid");
-  Attribute<String> TRACK_NAME = T_TRACK.stringAttribute("name");
-  Attribute<Entity> TRACK_ARTIST_DENORM = T_TRACK.entityAttribute("artist_denorm");
-  Attribute<Long> TRACK_ALBUMID = T_TRACK.longAttribute("albumid");
-  Attribute<Entity> TRACK_ALBUM_FK = T_TRACK.entityAttribute("album_fk");
-  Attribute<Long> TRACK_MEDIATYPEID = T_TRACK.longAttribute("mediatypeid");
-  Attribute<Entity> TRACK_MEDIATYPE_FK = T_TRACK.entityAttribute("mediatype_fk");
-  Attribute<Long> TRACK_GENREID = T_TRACK.longAttribute("genreid");
-  Attribute<Entity> TRACK_GENRE_FK = T_TRACK.entityAttribute("genre_fk");
-  Attribute<String> TRACK_COMPOSER = T_TRACK.stringAttribute("composer");
-  Attribute<Integer> TRACK_MILLISECONDS = T_TRACK.integerAttribute("milliseconds");
-  Attribute<String> TRACK_MINUTES_SECONDS_DERIVED = T_TRACK.stringAttribute("minutes_seconds_transient");
-  Attribute<Integer> TRACK_BYTES = T_TRACK.integerAttribute("bytes");
-  Attribute<BigDecimal> TRACK_UNITPRICE = T_TRACK.bigDecimalAttribute("unitprice");
+  interface Track {
+    EntityType TYPE = type("track@chinook");
+    Attribute<Long> ID = TYPE.longAttribute("trackid");
+    Attribute<String> NAME = TYPE.stringAttribute("name");
+    Attribute<Entity> ARTIST_DENORM = TYPE.entityAttribute("artist_denorm");
+    Attribute<Long> ALBUM_ID = TYPE.longAttribute("albumid");
+    Attribute<Entity> ALBUM_FK = TYPE.entityAttribute("album_fk");
+    Attribute<Long> MEDIATYPE_ID = TYPE.longAttribute("mediatypeid");
+    Attribute<Entity> MEDIATYPE_FK = TYPE.entityAttribute("mediatype_fk");
+    Attribute<Long> GENRE_ID = TYPE.longAttribute("genreid");
+    Attribute<Entity> GENRE_FK = TYPE.entityAttribute("genre_fk");
+    Attribute<String> COMPOSER = TYPE.stringAttribute("composer");
+    Attribute<Integer> MILLISECONDS = TYPE.integerAttribute("milliseconds");
+    Attribute<String> MINUTES_SECONDS_DERIVED = TYPE.stringAttribute("minutes_seconds_derived");
+    Attribute<Integer> BYTES = TYPE.integerAttribute("bytes");
+    Attribute<BigDecimal> UNITPRICE = TYPE.bigDecimalAttribute("unitprice");
 
-  DerivedProperty.Provider<String> TRACK_MIN_SEC_PROVIDER =
-          linkedValues -> {
-            final Integer milliseconds = (Integer) linkedValues.get(TRACK_MILLISECONDS);
-            if (milliseconds == null || milliseconds <= 0) {
-              return "";
-            }
+    DerivedProperty.Provider<String> MIN_SEC_PROVIDER =
+            linkedValues -> {
+              final Integer milliseconds = (Integer) linkedValues.get(MILLISECONDS);
+              if (milliseconds == null || milliseconds <= 0) {
+                return "";
+              }
 
-            return getMinutes(milliseconds) + " min " + getSeconds(milliseconds) + " sec";
-          };
+              return getMinutes(milliseconds) + " min " + getSeconds(milliseconds) + " sec";
+            };
+  }
 
-  EntityType T_INVOICE = type("invoice@chinook");
-  Attribute<Long> INVOICE_INVOICEID = T_INVOICE.longAttribute("invoiceid");
-  Attribute<Long> INVOICE_CUSTOMERID = T_INVOICE.longAttribute("customerid");
-  Attribute<Entity> INVOICE_CUSTOMER_FK = T_INVOICE.entityAttribute("customer_fk");
-  Attribute<LocalDateTime> INVOICE_INVOICEDATE = T_INVOICE.localDateTimeAttribute("invoicedate");
-  Attribute<String> INVOICE_BILLINGADDRESS = T_INVOICE.stringAttribute("billingaddress");
-  Attribute<String> INVOICE_BILLINGCITY = T_INVOICE.stringAttribute("billingcity");
-  Attribute<String> INVOICE_BILLINGSTATE = T_INVOICE.stringAttribute("billingstate");
-  Attribute<String> INVOICE_BILLINGCOUNTRY = T_INVOICE.stringAttribute("billingcountry");
-  Attribute<String> INVOICE_BILLINGPOSTALCODE = T_INVOICE.stringAttribute("billingpostalcode");
-  Attribute<BigDecimal> INVOICE_TOTAL = T_INVOICE.bigDecimalAttribute("total");
-  Attribute<BigDecimal> INVOICE_TOTAL_SUB = T_INVOICE.bigDecimalAttribute("total_sub");
+  interface Invoice {
+    EntityType TYPE = type("invoice@chinook");
+    Attribute<Long> ID = TYPE.longAttribute("invoiceid");
+    Attribute<Long> CUSTOMER_ID = TYPE.longAttribute("customerid");
+    Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
+    Attribute<LocalDateTime> INVOICEDATE = TYPE.localDateTimeAttribute("invoicedate");
+    Attribute<String> BILLINGADDRESS = TYPE.stringAttribute("billingaddress");
+    Attribute<String> BILLINGCITY = TYPE.stringAttribute("billingcity");
+    Attribute<String> BILLINGSTATE = TYPE.stringAttribute("billingstate");
+    Attribute<String> BILLINGCOUNTRY = TYPE.stringAttribute("billingcountry");
+    Attribute<String> BILLINGPOSTALCODE = TYPE.stringAttribute("billingpostalcode");
+    Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
+    Attribute<BigDecimal> TOTAL_SUBQUERY = TYPE.bigDecimalAttribute("total_sub");
+  }
 
-  EntityType T_INVOICELINE = type("invoiceline@chinook");
-  Attribute<Long> INVOICELINE_INVOICELINEID = T_INVOICELINE.longAttribute("invoicelineid");
-  Attribute<Long> INVOICELINE_INVOICEID = T_INVOICELINE.longAttribute("invoiceid");
-  Attribute<Entity> INVOICELINE_INVOICE_FK = T_INVOICELINE.entityAttribute("invoice_fk");
-  Attribute<Long> INVOICELINE_TRACKID = T_INVOICELINE.longAttribute("trackid");
-  Attribute<Entity> INVOICELINE_TRACK_FK = T_INVOICELINE.entityAttribute("track_fk");
-  Attribute<BigDecimal> INVOICELINE_UNITPRICE = T_INVOICELINE.bigDecimalAttribute("unitprice");
-  Attribute<Integer> INVOICELINE_QUANTITY = T_INVOICELINE.integerAttribute("quantity");
-  Attribute<BigDecimal> INVOICELINE_TOTAL = T_INVOICELINE.bigDecimalAttribute("total");
+  interface InvoiceLine {
+    EntityType TYPE = type("invoiceline@chinook");
+    Attribute<Long> ID = TYPE.longAttribute("invoicelineid");
+    Attribute<Long> INVOICE_ID = TYPE.longAttribute("invoiceid");
+    Attribute<Entity> INVOICE_FK = TYPE.entityAttribute("invoice_fk");
+    Attribute<Long> TRACK_ID = TYPE.longAttribute("trackid");
+    Attribute<Entity> TRACK_FK = TYPE.entityAttribute("track_fk");
+    Attribute<BigDecimal> UNITPRICE = TYPE.bigDecimalAttribute("unitprice");
+    Attribute<Integer> QUANTITY = TYPE.integerAttribute("quantity");
+    Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
 
-  DerivedProperty.Provider<BigDecimal> INVOICELINE_TOTAL_PROVIDER =
-          linkedValues -> {
-            final Integer quantity = (Integer) linkedValues.get(INVOICELINE_QUANTITY);
-            final BigDecimal unitPrice = (BigDecimal) linkedValues.get(INVOICELINE_UNITPRICE);
-            if (unitPrice == null || quantity == null) {
-              return null;
-            }
+    DerivedProperty.Provider<BigDecimal> TOTAL_PROVIDER =
+            linkedValues -> {
+              final Integer quantity = (Integer) linkedValues.get(QUANTITY);
+              final BigDecimal unitPrice = (BigDecimal) linkedValues.get(UNITPRICE);
+              if (unitPrice == null || quantity == null) {
+                return null;
+              }
 
-            return unitPrice.multiply(BigDecimal.valueOf(quantity));
-          };
+              return unitPrice.multiply(BigDecimal.valueOf(quantity));
+            };
+  }
 
-  EntityType T_PLAYLIST = type("playlist@chinook");
-  Attribute<Long> PLAYLIST_PLAYLISTID = T_PLAYLIST.longAttribute("playlistid");
-  Attribute<String> PLAYLIST_NAME = T_PLAYLIST.stringAttribute("name");
+  interface Playlist {
+    EntityType TYPE = type("playlist@chinook");
+    Attribute<Long> ID = TYPE.longAttribute("playlistid");
+    Attribute<String> NAME = TYPE.stringAttribute("name");
+  }
 
-  EntityType T_PLAYLISTTRACK = type("playlisttrack@chinook");
-  Attribute<Long> PLAYLISTTRACK_ID = T_PLAYLISTTRACK.longAttribute("playlisttrackid");
-  Attribute<Long> PLAYLISTTRACK_PLAYLISTID = T_PLAYLISTTRACK.longAttribute("playlistid");
-  Attribute<Entity> PLAYLISTTRACK_PLAYLIST_FK = T_PLAYLISTTRACK.entityAttribute("playlist_fk");
-  Attribute<Long> PLAYLISTTRACK_TRACKID = T_PLAYLISTTRACK.longAttribute("trackid");
-  Attribute<Entity> PLAYLISTTRACK_TRACK_FK = T_PLAYLISTTRACK.entityAttribute("track_fk");
-  Attribute<Entity> PLAYLISTTRACK_ALBUM_DENORM = T_PLAYLISTTRACK.entityAttribute("album_denorm");
-  Attribute<Entity> PLAYLISTTRACK_ARTIST_DENORM = T_PLAYLISTTRACK.entityAttribute("artist_denorm");
+  interface PlaylistTrack {
+    EntityType TYPE = type("playlisttrack@chinook");
+    Attribute<Long> ID = TYPE.longAttribute("playlisttrackid");
+    Attribute<Long> PLAYLIST_ID = TYPE.longAttribute("playlistid");
+    Attribute<Entity> PLAYLIST_FK = TYPE.entityAttribute("playlist_fk");
+    Attribute<Long> TRACK_ID = TYPE.longAttribute("trackid");
+    Attribute<Entity> TRACK_FK = TYPE.entityAttribute("track_fk");
+    Attribute<Entity> ALBUM_DENORM = TYPE.entityAttribute("album_denorm");
+    Attribute<Entity> ARTIST_DENORM = TYPE.entityAttribute("artist_denorm");
+  }
 
-  String P_UPDATE_TOTALS = "chinook.update_totals_procedure";
-  String F_RAISE_PRICE = "chinook.raise_price_function";
+  interface Procedures {
+    ProcedureType<EntityConnection, Void> UPDATE_TOTALS = procedureType("chinook.update_totals_procedure");
+  }
+
+  interface Functions {
+    FunctionType<EntityConnection, Object, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price_function");
+  }
 
   static Integer getMinutes(final Integer milliseconds) {
     if (milliseconds == null) {

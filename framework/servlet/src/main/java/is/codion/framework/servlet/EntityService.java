@@ -5,6 +5,8 @@ package is.codion.framework.servlet;
 
 import is.codion.common.Serializer;
 import is.codion.common.Util;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
@@ -19,8 +21,6 @@ import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.identity.Identities;
-import is.codion.framework.domain.identity.Identity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -58,7 +57,7 @@ public final class EntityService extends Application {
   private static final Logger LOG = LoggerFactory.getLogger(EntityService.class);
 
   public static final String AUTHORIZATION = "Authorization";
-  public static final String DOMAIN_ID = "domainId";
+  public static final String DOMAIN_TYPE_NAME = "domainTypeName";
   public static final String CLIENT_TYPE_ID = "clientTypeId";
   public static final String CLIENT_ID = "clientId";
   public static final String BASIC_PREFIX = "basic ";
@@ -215,11 +214,12 @@ public final class EntityService extends Application {
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("procedure")
-  public Response procedure(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                            @QueryParam("procedureId") final String procedureId) {
+  public Response procedure(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
-      connection.executeProcedure(procedureId, EntityService.<List<Object>>deserialize(request).toArray());
+      final List<Object> parameters = deserialize(request);
+
+      connection.executeProcedure((ProcedureType) parameters.get(0), (Object[]) parameters.get(1));
 
       return Response.ok().build();
     }
@@ -240,13 +240,12 @@ public final class EntityService extends Application {
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("function")
-  public Response function(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                           @QueryParam("functionId") final String functionId) {
+  public Response function(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
+      final List<Object> parameters = deserialize(request);
 
-      return Response.ok(Serializer.serialize(connection.executeFunction(functionId,
-              EntityService.<List<Object>>deserialize(request).toArray()))).build();
+      return Response.ok(Serializer.serialize(connection.executeFunction((FunctionType) parameters.get(0), (Object[]) parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -555,13 +554,13 @@ public final class EntityService extends Application {
     }
 
     final MultivaluedMap<String, String> headerValues = headers.getRequestHeaders();
-    final Identity domainId = Identities.identity(getDomainId(headerValues));
+    final String domainTypeName = getDomainTypeName(headerValues);
     final String clientTypeId = getClientTypeId(headerValues);
     final UUID clientId = getClientId(headerValues, request.getSession());
     final User user = getUser(headerValues);
-    final Map<String, Object> parameters = Map.of(
-            RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId,
-            Server.CLIENT_HOST_KEY, getRemoteHost(request));
+    final Map<String, Object> parameters = new HashMap<>(2);
+    parameters.put(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName);
+    parameters.put(Server.CLIENT_HOST_KEY, getRemoteHost(request));
 
     return server.connect(ConnectionRequest.connectionRequest(user, clientId, clientTypeId, parameters));
   }
@@ -593,8 +592,8 @@ public final class EntityService extends Application {
     }
   }
 
-  private static String getDomainId(final MultivaluedMap<String, String> headers) throws ServerAuthenticationException {
-    return checkHeaderParameter(headers.get(DOMAIN_ID), DOMAIN_ID);
+  private static String getDomainTypeName(final MultivaluedMap<String, String> headers) throws ServerAuthenticationException {
+    return checkHeaderParameter(headers.get(DOMAIN_TYPE_NAME), DOMAIN_TYPE_NAME);
   }
 
   private static String getClientTypeId(final MultivaluedMap<String, String> headers) throws ServerAuthenticationException {

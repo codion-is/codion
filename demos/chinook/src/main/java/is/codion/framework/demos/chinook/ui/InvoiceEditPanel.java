@@ -15,9 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.time.LocalDateTime;
 
 import static is.codion.common.model.table.SortingDirective.ASCENDING;
-import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
+import static is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static is.codion.swing.common.ui.textfield.TextFields.selectAllOnFocusGained;
@@ -36,36 +38,36 @@ public class InvoiceEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(INVOICE_CUSTOMER_FK);
-    final EntityLookupField customerField = createForeignKeyLookupField(INVOICE_CUSTOMER_FK);
+    setInitialFocusAttribute(Invoice.CUSTOMER_FK);
+    final EntityLookupField customerField = createForeignKeyLookupField(Invoice.CUSTOMER_FK);
     configureCustomerLookup(customerField);
     customerField.setColumns(16);
-    final TemporalInputPanel datePanel = createTemporalInputPanel(INVOICE_INVOICEDATE);
+    final TemporalInputPanel<LocalDateTime> datePanel = createTemporalInputPanel(Invoice.INVOICEDATE);
     datePanel.getInputField().setColumns(12);
-    final JTextField addressField = createTextField(INVOICE_BILLINGADDRESS);
+    final JTextField addressField = createTextField(Invoice.BILLINGADDRESS);
     selectAllOnFocusGained(addressField);
     addressField.setColumns(16);
-    final JTextField cityField = createTextField(INVOICE_BILLINGCITY);
+    final JTextField cityField = createTextField(Invoice.BILLINGCITY);
     selectAllOnFocusGained(cityField);
     cityField.setColumns(16);
-    final JTextField stateField = createTextField(INVOICE_BILLINGSTATE);
+    final JTextField stateField = createTextField(Invoice.BILLINGSTATE);
     selectAllOnFocusGained(stateField);
     stateField.setColumns(16);
-    final JTextField countryField = createTextField(INVOICE_BILLINGCOUNTRY);
+    final JTextField countryField = createTextField(Invoice.BILLINGCOUNTRY);
     selectAllOnFocusGained(countryField);
     countryField.setColumns(16);
-    final JTextField postalcodeField = createTextField(INVOICE_BILLINGPOSTALCODE);
+    final JTextField postalcodeField = createTextField(Invoice.BILLINGPOSTALCODE);
     selectAllOnFocusGained(postalcodeField);
     postalcodeField.setColumns(16);
 
     final JPanel centerPanel = new JPanel(gridLayout(4, 2));
-    centerPanel.add(createPropertyPanel(INVOICE_CUSTOMER_FK));
-    centerPanel.add(createPropertyPanel(INVOICE_INVOICEDATE));
-    centerPanel.add(createPropertyPanel(INVOICE_BILLINGADDRESS));
-    centerPanel.add(createPropertyPanel(INVOICE_BILLINGCITY));
-    centerPanel.add(createPropertyPanel(INVOICE_BILLINGSTATE));
-    centerPanel.add(createPropertyPanel(INVOICE_BILLINGCOUNTRY));
-    centerPanel.add(createPropertyPanel(INVOICE_BILLINGPOSTALCODE));
+    centerPanel.add(createPropertyPanel(Invoice.CUSTOMER_FK));
+    centerPanel.add(createPropertyPanel(Invoice.INVOICEDATE));
+    centerPanel.add(createPropertyPanel(Invoice.BILLINGADDRESS));
+    centerPanel.add(createPropertyPanel(Invoice.BILLINGCITY));
+    centerPanel.add(createPropertyPanel(Invoice.BILLINGSTATE));
+    centerPanel.add(createPropertyPanel(Invoice.BILLINGCOUNTRY));
+    centerPanel.add(createPropertyPanel(Invoice.BILLINGPOSTALCODE));
 
     final JPanel centerBasePanel = new JPanel(borderLayout());
     centerBasePanel.add(centerPanel, BorderLayout.CENTER);
@@ -81,8 +83,8 @@ public class InvoiceEditPanel extends EntityEditPanel {
     final EntityLookupField.TableSelectionProvider customerSelectionProvider =
             new EntityLookupField.TableSelectionProvider(customerField.getModel());
     final SwingEntityTableModel tableModel = customerSelectionProvider.getTable().getModel();
-    tableModel.setColumns(CUSTOMER_LASTNAME, CUSTOMER_FIRSTNAME, CUSTOMER_EMAIL);
-    tableModel.setSortingDirective(CUSTOMER_LASTNAME, ASCENDING);
+    tableModel.setColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
+    tableModel.setSortingDirective(Customer.LASTNAME, ASCENDING);
     customerSelectionProvider.setPreferredSize(new Dimension(500, 300));
     customerField.setSelectionProvider(customerSelectionProvider);
   }

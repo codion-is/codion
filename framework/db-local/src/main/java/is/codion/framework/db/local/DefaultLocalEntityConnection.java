@@ -14,11 +14,14 @@ import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.exception.UpdateException;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.user.User;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
@@ -623,40 +626,40 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> T executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
+  public <T, R> R executeFunction(final FunctionType<EntityConnection, T, R> functionType, final T... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
-      logAccess("executeFunction: " + functionId, arguments);
+      logAccess("executeFunction: " + functionType, arguments);
       synchronized (connection) {
-        return (T) domain.getFunction(functionId).execute(this, arguments);
+        return (R) domain.getFunction(functionType).execute(this, arguments);
       }
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(functionId, arguments == null ? null : asList(arguments), e), e);
+      LOG.error(createLogMessage(functionType.getName(), arguments == null ? null : asList(arguments), e), e);
       throw e;
     }
     finally {
-      logExit("executeFunction: " + functionId, exception);
+      logExit("executeFunction: " + functionType, exception);
     }
   }
 
   @Override
-  public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
+  public <T> void executeProcedure(final ProcedureType<EntityConnection, T> procedureType, final T... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
-      logAccess("executeProcedure: " + procedureId, arguments);
+      logAccess("executeProcedure: " + procedureType, arguments);
       synchronized (connection) {
-        domain.getProcedure(procedureId).execute(this, arguments);
+        domain.getProcedure(procedureType).execute(this, arguments);
       }
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(procedureId, arguments == null ? null : asList(arguments), e), e);
+      LOG.error(createLogMessage(procedureType.getName(), arguments == null ? null : asList(arguments), e), e);
       throw e;
     }
     finally {
-      logExit("executeProcedure: " + procedureId, exception);
+      logExit("executeProcedure: " + procedureType, exception);
     }
   }
 

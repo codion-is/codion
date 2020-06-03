@@ -4,9 +4,12 @@
 package is.codion.framework.db.rmi;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.user.User;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
@@ -79,23 +82,25 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Executes the function with the given id
-   * @param functionId the function id
+   * @param functionType the function id
    * @param arguments the arguments, if any
-   * @param <T> the result type
-   * @return the function return argument
+   * @param <T> the argument type
+   * @param <R> the return type
+   * @return the function return arguments
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
    */
-  <T> T executeFunction(String functionId, Object... arguments) throws RemoteException, DatabaseException;
+  <T, R> R executeFunction(FunctionType<EntityConnection, T, R> functionType, T... arguments) throws RemoteException, DatabaseException;
 
   /**
    * Executes the procedure with the given id
-   * @param procedureId the procedure id
+   * @param procedureType the procedure type
    * @param arguments the arguments, if any
+   * @param <T> the argument type
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
    */
-  void executeProcedure(String procedureId, Object... arguments) throws RemoteException, DatabaseException;
+  <T> void executeProcedure(ProcedureType<EntityConnection, T> procedureType, T... arguments) throws RemoteException, DatabaseException;
 
   /**
    * Inserts the given entity, returning the primary key of the inserted entity.

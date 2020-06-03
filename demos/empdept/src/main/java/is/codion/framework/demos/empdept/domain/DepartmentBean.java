@@ -5,7 +5,7 @@ package is.codion.framework.demos.empdept.domain;
 
 import java.io.Serializable;
 
-public final class Department implements Serializable {
+public final class DepartmentBean implements Serializable {
 
   private static final long serialVersionUID = 1;
 

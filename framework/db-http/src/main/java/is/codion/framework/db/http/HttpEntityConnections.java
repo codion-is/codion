@@ -5,7 +5,6 @@ package is.codion.framework.db.http;
 
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.identity.Identity;
 
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 
@@ -20,7 +19,7 @@ public final class HttpEntityConnections {
 
   /**
    * Instantiates a new http based {@link EntityConnection} instance
-   * @param domainId the id of the domain model
+   * @param domainTypeName the name of the domain model type
    * @param serverHostName the http server host name
    * @param serverPort the http server port
    * @param user the user
@@ -28,16 +27,16 @@ public final class HttpEntityConnections {
    * @param clientId the client id
    * @return a http based EntityConnection
    */
-  public static HttpEntityConnection createConnection(final Identity domainId, final String serverHostName,
+  public static HttpEntityConnection createConnection(final String domainTypeName, final String serverHostName,
                                                       final int serverPort, final User user,
                                                       final String clientTypeId, final UUID clientId) {
-    return new HttpEntityConnection(domainId, serverHostName, serverPort, ClientHttps.FALSE, user, clientTypeId, clientId,
+    return new HttpEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.FALSE, user, clientTypeId, clientId,
             new BasicHttpClientConnectionManager());
   }
 
   /**
    * Instantiates a new https based {@link EntityConnection} instance
-   * @param domainId the id of the domain model
+   * @param domainTypeName the name of the domain model type
    * @param serverHostName the http server host name
    * @param serverPort the http server port
    * @param user the user
@@ -45,10 +44,10 @@ public final class HttpEntityConnections {
    * @param clientId the client id
    * @return a http based EntityConnection
    */
-  public static HttpEntityConnection createSecureConnection(final Identity domainId, final String serverHostName,
+  public static HttpEntityConnection createSecureConnection(final String domainTypeName, final String serverHostName,
                                                             final int serverPort, final User user,
                                                             final String clientTypeId, final UUID clientId) {
-    return new HttpEntityConnection(domainId, serverHostName, serverPort, ClientHttps.TRUE, user, clientTypeId, clientId,
+    return new HttpEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.TRUE, user, clientTypeId, clientId,
             new BasicHttpClientConnectionManager());
   }
 }

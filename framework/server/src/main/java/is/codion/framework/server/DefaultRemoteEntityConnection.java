@@ -5,9 +5,12 @@ package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
@@ -88,16 +91,16 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
+  public <T> void executeProcedure(final ProcedureType<EntityConnection, T> procedureType, final T... arguments) throws DatabaseException {
     synchronized (connectionProxy) {
-      connectionProxy.executeProcedure(procedureId, arguments);
+      connectionProxy.executeProcedure(procedureType, arguments);
     }
   }
 
   @Override
-  public <T> T executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
+  public <T, R> R executeFunction(final FunctionType<EntityConnection, T, R> functionType, final T... arguments) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.executeFunction(functionId, arguments);
+      return connectionProxy.executeFunction(functionType, arguments);
     }
   }
 

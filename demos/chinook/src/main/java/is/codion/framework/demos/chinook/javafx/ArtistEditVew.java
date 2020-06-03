@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.chinook.javafx;
 
-import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.javafx.framework.model.FXEntityEditModel;
 import is.codion.javafx.framework.ui.EntityEditView;
 
@@ -18,11 +18,11 @@ public final class ArtistEditVew extends EntityEditView {
 
   @Override
   protected Node initializeEditPanel() {
-    setInitialFocusAttribute(Chinook.ARTIST_NAME);
-    createTextField(Chinook.ARTIST_NAME);
+    setInitialFocusAttribute(Artist.NAME);
+    createTextField(Artist.NAME);
 
     final BorderPane pane = new BorderPane();
-    pane.setCenter(createPropertyPanel(Chinook.ARTIST_NAME));
+    pane.setCenter(createPropertyPanel(Artist.NAME));
 
     return pane;
   }

@@ -8,9 +8,16 @@ import is.codion.common.db.exception.DatabaseException;
 /**
  * A database function
  * @param <C> the connection type required by this function
- * @param <T> the result type
+ * @param <T> the argument type
+ * @param <R> the return type
  */
-public interface DatabaseFunction<C, T> extends DatabaseOperation {
+public interface DatabaseFunction<C, T, R> extends DatabaseOperation {
+
+ /**
+   * @return this functions type
+   */
+  @Override
+  FunctionType<C, T, R> getType();
 
   /**
    * Executes this function with the given connection
@@ -19,5 +26,5 @@ public interface DatabaseFunction<C, T> extends DatabaseOperation {
    * @return the function return argument
    * @throws DatabaseException in case of an exception during the execution
    */
-  T execute(C connection, Object... arguments) throws DatabaseException;
+  R execute(C connection, T... arguments) throws DatabaseException;
 }

@@ -29,42 +29,42 @@ public class TrackEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(TRACK_ALBUM_FK);
+    setInitialFocusAttribute(Track.ALBUM_FK);
 
-    createForeignKeyLookupField(TRACK_ALBUM_FK).setColumns(18);
-    createTextField(TRACK_NAME).setColumns(18);
-    final EntityComboBox mediaTypeBox = createForeignKeyComboBox(TRACK_MEDIATYPE_FK);
+    createForeignKeyLookupField(Track.ALBUM_FK).setColumns(18);
+    createTextField(Track.NAME).setColumns(18);
+    final EntityComboBox mediaTypeBox = createForeignKeyComboBox(Track.MEDIATYPE_FK);
     setPreferredHeight(mediaTypeBox, getPreferredTextFieldHeight());
-    final Action newMediaTypeAction = new EntityPanelBuilder(T_MEDIATYPE).setEditPanelClass(MediaTypeEditPanel.class)
+    final Action newMediaTypeAction = new EntityPanelBuilder(MediaType.TYPE).setEditPanelClass(MediaTypeEditPanel.class)
             .createEditPanelAction(mediaTypeBox);
     final JPanel mediaTypePanel = Components.createEastButtonPanel(mediaTypeBox, newMediaTypeAction);
-    final EntityComboBox genreBox = createForeignKeyComboBox(TRACK_GENRE_FK);
+    final EntityComboBox genreBox = createForeignKeyComboBox(Track.GENRE_FK);
     setPreferredHeight(genreBox, getPreferredTextFieldHeight());
-    final Action newGenreAction = new EntityPanelBuilder(T_GENRE)
+    final Action newGenreAction = new EntityPanelBuilder(Genre.TYPE)
             .setEditPanelClass(GenreEditPanel.class).createEditPanelAction(genreBox);
     final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction);
-    createTextInputPanel(TRACK_COMPOSER).getTextField().setColumns(18);
-    final IntegerField millisecondsField = (IntegerField) createTextField(TRACK_MILLISECONDS);
+    createTextInputPanel(Track.COMPOSER).getTextField().setColumns(18);
+    final IntegerField millisecondsField = (IntegerField) createTextField(Track.MILLISECONDS);
     millisecondsField.setGroupingUsed(true);
-    final IntegerField bytesField = (IntegerField) createTextField(TRACK_BYTES);
+    final IntegerField bytesField = (IntegerField) createTextField(Track.BYTES);
     bytesField.setGroupingUsed(true);
     bytesField.setColumns(18);
-    createTextField(TRACK_UNITPRICE).setColumns(18);
+    createTextField(Track.UNITPRICE).setColumns(18);
 
     final ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();
-    minutesSecondsValue.link(getEditModel().value(TRACK_MILLISECONDS));
+    minutesSecondsValue.link(getEditModel().value(Track.MILLISECONDS));
     final JPanel durationPanel = new JPanel(gridLayout(1, 2));
-    durationPanel.add(createPropertyPanel(TRACK_MILLISECONDS, millisecondsField));
+    durationPanel.add(createPropertyPanel(Track.MILLISECONDS, millisecondsField));
     durationPanel.add(minutesSecondsValue.getComponent());
 
     setLayout(flexibleGridLayout(4, 2));
-    addPropertyPanel(TRACK_ALBUM_FK);
-    addPropertyPanel(TRACK_NAME);
-    add(createPropertyPanel(TRACK_GENRE_FK, genrePanel));
-    addPropertyPanel(TRACK_COMPOSER);
-    add(createPropertyPanel(TRACK_MEDIATYPE_FK, mediaTypePanel));
-    addPropertyPanel(TRACK_BYTES);
-    addPropertyPanel(TRACK_UNITPRICE);
+    addPropertyPanel(Track.ALBUM_FK);
+    addPropertyPanel(Track.NAME);
+    add(createPropertyPanel(Track.GENRE_FK, genrePanel));
+    addPropertyPanel(Track.COMPOSER);
+    add(createPropertyPanel(Track.MEDIATYPE_FK, mediaTypePanel));
+    addPropertyPanel(Track.BYTES);
+    addPropertyPanel(Track.UNITPRICE);
     add(durationPanel);
   }
 }

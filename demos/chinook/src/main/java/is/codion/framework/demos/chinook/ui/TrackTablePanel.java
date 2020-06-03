@@ -66,7 +66,7 @@ public class TrackTablePanel extends EntityTablePanel {
     public ComponentValue createComponentValue(final Property property,
                                                final SwingEntityEditModel editModel,
                                                final Object initialValue) {
-      if (property.is(Chinook.TRACK_MILLISECONDS)) {
+      if (property.is(Chinook.Track.MILLISECONDS)) {
         return new MinutesSecondsPanelValue();
       }
 
