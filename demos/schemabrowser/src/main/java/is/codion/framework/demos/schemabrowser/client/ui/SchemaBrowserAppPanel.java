@@ -6,7 +6,11 @@ package is.codion.framework.demos.schemabrowser.client.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Column;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.ColumnConstraint;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Constraint;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Schema;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -19,14 +23,14 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
   @Override
   protected void setupEntityPanelBuilders() {
-    final EntityPanelBuilder columnConstraintProvider = new EntityPanelBuilder(SchemaBrowser.T_COLUMN_CONSTRAINT);
-    final EntityPanelBuilder constraintProvider = new EntityPanelBuilder(SchemaBrowser.T_CONSTRAINT);
+    final EntityPanelBuilder columnConstraintProvider = new EntityPanelBuilder(ColumnConstraint.TYPE);
+    final EntityPanelBuilder constraintProvider = new EntityPanelBuilder(Constraint.TYPE);
     constraintProvider.addDetailPanelBuilder(columnConstraintProvider);
-    final EntityPanelBuilder columnProvider = new EntityPanelBuilder(SchemaBrowser.T_COLUMN);
-    final EntityPanelBuilder dbObjectProvider = new EntityPanelBuilder(SchemaBrowser.T_TABLE);
+    final EntityPanelBuilder columnProvider = new EntityPanelBuilder(Column.TYPE);
+    final EntityPanelBuilder dbObjectProvider = new EntityPanelBuilder(Table.TYPE);
     dbObjectProvider.addDetailPanelBuilder(columnProvider);
     dbObjectProvider.addDetailPanelBuilder(constraintProvider);
-    final EntityPanelBuilder schemaProvider = new EntityPanelBuilder(SchemaBrowser.T_SCHEMA);
+    final EntityPanelBuilder schemaProvider = new EntityPanelBuilder(Schema.TYPE);
     schemaProvider.addDetailPanelBuilder(dbObjectProvider).setDetailSplitPanelResizeWeight(0.3);
     addEntityPanelBuilder(schemaProvider);
   }

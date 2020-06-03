@@ -9,6 +9,11 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Column;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.ColumnConstraint;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Constraint;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Schema;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.swing.common.tools.loadtest.UsageScenario;
 import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -45,14 +50,14 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
             new SchemaBrowserAppPanel.SchemaBrowserApplicationModel(
                     EntityConnectionProviders.connectionProvider().setDomainClassName(SchemaBrowser.class.getName())
                             .setClientTypeId(getClass().getSimpleName()).setUser(getUser()));
-    final SwingEntityModel schemaModel = applicationModel.getEntityModel(SchemaBrowser.T_SCHEMA);
-    final SwingEntityModel dbObjectModel = schemaModel.getDetailModel(SchemaBrowser.T_TABLE);
+    final SwingEntityModel schemaModel = applicationModel.getEntityModel(Schema.TYPE);
+    final SwingEntityModel dbObjectModel = schemaModel.getDetailModel(Table.TYPE);
     schemaModel.addLinkedDetailModel(dbObjectModel);
-    final SwingEntityModel columnModel = dbObjectModel.getDetailModel(SchemaBrowser.T_COLUMN);
-    final SwingEntityModel constraintModel = dbObjectModel.getDetailModel(SchemaBrowser.T_CONSTRAINT);
+    final SwingEntityModel columnModel = dbObjectModel.getDetailModel(Column.TYPE);
+    final SwingEntityModel constraintModel = dbObjectModel.getDetailModel(Constraint.TYPE);
     dbObjectModel.addDetailModel(columnModel);
     dbObjectModel.addDetailModel(constraintModel);
-    final SwingEntityModel columnConstraintModel = dbObjectModel.getDetailModel(SchemaBrowser.T_COLUMN_CONSTRAINT);
+    final SwingEntityModel columnConstraintModel = dbObjectModel.getDetailModel(ColumnConstraint.TYPE);
     constraintModel.addDetailModel(columnConstraintModel);
     dbObjectModel.addLinkedDetailModel(columnModel);
 
