@@ -27,7 +27,6 @@ public final class EmployeeServer extends EntityServer {
 
   public EmployeeServer(final EntityServerConfiguration configuration) throws RemoteException {
     super(configuration);
-    domain.registerEntities();
   }
 
   @Override
