@@ -146,7 +146,7 @@ final class DefaultEntity implements Entity {
    */
   @Override
   public <T> T get(final Attribute<T> attribute) {
-    return (T) get(definition.getProperty(attribute));
+    return get(definition.getProperty(attribute));
   }
 
   @Override
@@ -199,7 +199,7 @@ final class DefaultEntity implements Entity {
 
   @Override
   public <T> T getOriginal(final Attribute<T> attribute) {
-    return (T) getOriginal(definition.getProperty(attribute));
+    return getOriginal(definition.getProperty(attribute));
   }
 
   @Override
@@ -399,10 +399,10 @@ final class DefaultEntity implements Entity {
   private <T> T get(final Property<T> property) {
     requireNonNull(property, "property");
     if (property instanceof MirrorProperty) {
-      return (T) get(definition.getProperty(property.getAttribute()).getAttribute());
+      return get(definition.getProperty(property.getAttribute()).getAttribute());
     }
     if (property instanceof DerivedProperty) {
-      return (T) getDerivedValue((DerivedProperty<T>) property);
+      return getDerivedValue((DerivedProperty<T>) property);
     }
 
     return (T) values.get(property.getAttribute());
@@ -532,7 +532,7 @@ final class DefaultEntity implements Entity {
     final List<ForeignKeyProperty> propertyForeignKeyProperties =
             definition.getForeignKeyProperties(columnProperty.getAttribute());
     for (final ForeignKeyProperty foreignKeyProperty : propertyForeignKeyProperties) {
-      final Entity foreignKeyEntity = (Entity) get(foreignKeyProperty);
+      final Entity foreignKeyEntity = get(foreignKeyProperty);
       if (foreignKeyEntity != null) {
         final Entity.Key referencedKey = foreignKeyEntity.getKey();
         final ColumnProperty<?> keyProperty =
@@ -709,13 +709,13 @@ final class DefaultEntity implements Entity {
       return singletonMap(sourceAttribute, get(sourceAttribute));
     }
     else {
-      final Map<Attribute<?>, Object> values = new HashMap<>(sourceAttributes.size());
+      final Map<Attribute<?>, Object> sourceValues = new HashMap<>(sourceAttributes.size());
       for (int i = 0; i < sourceAttributes.size(); i++) {
         final Attribute<?> sourceAttribute = sourceAttributes.get(i);
-        values.put(sourceAttribute, get(sourceAttribute));
+        sourceValues.put(sourceAttribute, get(sourceAttribute));
       }
 
-      return values;
+      return sourceValues;
     }
   }
 

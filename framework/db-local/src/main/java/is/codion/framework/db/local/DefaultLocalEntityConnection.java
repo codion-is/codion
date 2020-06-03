@@ -631,7 +631,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     try {
       logAccess("executeFunction: " + functionType, arguments);
       synchronized (connection) {
-        return (R) domain.getFunction(functionType).execute(this, arguments);
+        return domain.getFunction(functionType).execute(this, arguments);
       }
     }
     catch (final DatabaseException e) {

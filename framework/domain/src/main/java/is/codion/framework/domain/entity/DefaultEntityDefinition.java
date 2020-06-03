@@ -668,16 +668,16 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     private Map<Attribute<?>, Property<?>> initializePropertyMap(final Property.Builder<?>... propertyBuilders) {
-      final Map<Attribute<?>, Property<?>> propertyMap = new LinkedHashMap<>(propertyBuilders.length);
+      final Map<Attribute<?>, Property<?>> map = new LinkedHashMap<>(propertyBuilders.length);
       for (final Property.Builder<?> propertyBuilder : propertyBuilders) {
-        validateAndAddProperty(propertyBuilder, propertyMap);
+        validateAndAddProperty(propertyBuilder, map);
         if (propertyBuilder instanceof ForeignKeyProperty.Builder) {
-          initializeForeignKeyProperty(propertyMap, (ForeignKeyProperty.Builder) propertyBuilder);
+          initializeForeignKeyProperty(map, (ForeignKeyProperty.Builder) propertyBuilder);
         }
       }
-      validatePrimaryKeyProperties(propertyMap);
+      validatePrimaryKeyProperties(map);
 
-      return unmodifiableMap(propertyMap);
+      return unmodifiableMap(map);
     }
 
     private void initializeForeignKeyProperty(final Map<Attribute<?>, Property<?>> propertyMap,
@@ -770,17 +770,17 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     private Map<Attribute<?>, List<DenormalizedProperty<?>>> getDenormalizedProperties() {
-      final Map<Attribute<?>, List<DenormalizedProperty<?>>> denormalizedPropertiesMap = new HashMap<>(properties.size());
+      final Map<Attribute<?>, List<DenormalizedProperty<?>>> map = new HashMap<>(properties.size());
       for (final Property<?> property : properties) {
         if (property instanceof DenormalizedProperty) {
           final DenormalizedProperty<?> denormalizedProperty = (DenormalizedProperty<?>) property;
           final Collection<DenormalizedProperty<?>> denormalizedProperties =
-                  denormalizedPropertiesMap.computeIfAbsent(denormalizedProperty.getEntityAttribute(), attribute -> new ArrayList<>());
+                  map.computeIfAbsent(denormalizedProperty.getEntityAttribute(), attribute -> new ArrayList<>());
           denormalizedProperties.add(denormalizedProperty);
         }
       }
 
-      return denormalizedPropertiesMap;
+      return map;
     }
 
     private Map<Attribute<?>, Set<DerivedProperty<?>>> initializeDerivedProperties() {
