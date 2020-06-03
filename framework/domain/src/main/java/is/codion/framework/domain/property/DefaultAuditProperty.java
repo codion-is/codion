@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.property;
 
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 
 class DefaultAuditProperty<T> extends DefaultColumnProperty<T> implements AuditProperty<T> {
 

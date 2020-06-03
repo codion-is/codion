@@ -7,7 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;

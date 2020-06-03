@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.TestDomain;
-import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Properties;
 

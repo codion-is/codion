@@ -16,7 +16,7 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
 import static is.codion.common.Conjunction.AND;

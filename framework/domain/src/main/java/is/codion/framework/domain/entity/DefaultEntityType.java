@@ -3,9 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.attribute.Attributes;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,7 +30,7 @@ final class DefaultEntityType implements EntityType {
 
   @Override
   public <T> Attribute<T> attribute(final String name, final Class<T> typeClass) {
-    return Attributes.attribute(name, typeClass, this);
+    return new DefaultAttribute<>(name, typeClass, this);
   }
 
   @Override
@@ -43,57 +40,57 @@ final class DefaultEntityType implements EntityType {
 
   @Override
   public Attribute<Long> longAttribute(final String name) {
-    return Attributes.attribute(name, Long.class, this);
+    return attribute(name, Long.class);
   }
 
   @Override
   public Attribute<Integer> integerAttribute(final String name) {
-    return Attributes.attribute(name, Integer.class, this);
+    return attribute(name, Integer.class);
   }
 
   @Override
   public Attribute<Double> doubleAttribute(final String name) {
-    return Attributes.attribute(name, Double.class, this);
+    return attribute(name, Double.class);
   }
 
   @Override
   public Attribute<BigDecimal> bigDecimalAttribute(final String name) {
-    return Attributes.attribute(name, BigDecimal.class, this);
+    return attribute(name, BigDecimal.class);
   }
 
   @Override
   public Attribute<LocalDate> localDateAttribute(final String name) {
-    return Attributes.attribute(name, LocalDate.class, this);
+    return attribute(name, LocalDate.class);
   }
 
   @Override
   public Attribute<LocalTime> localTimeAttribute(final String name) {
-    return Attributes.attribute(name, LocalTime.class, this);
+    return attribute(name, LocalTime.class);
   }
 
   @Override
   public Attribute<LocalDateTime> localDateTimeAttribute(final String name) {
-    return Attributes.attribute(name, LocalDateTime.class, this);
+    return attribute(name, LocalDateTime.class);
   }
 
   @Override
   public Attribute<String> stringAttribute(final String name) {
-    return Attributes.attribute(name, String.class, this);
+    return attribute(name, String.class);
   }
 
   @Override
   public Attribute<Boolean> booleanAttribute(final String name) {
-    return Attributes.attribute(name, Boolean.class, this);
+    return attribute(name, Boolean.class);
   }
 
   @Override
   public Attribute<Entity> entityAttribute(final String name) {
-    return Attributes.entityAttribute(name, this);
+    return new DefaultEntityAttribute(name, this);
   }
 
   @Override
   public Attribute<byte[]> blobAttribute(final String name) {
-    return Attributes.blobAttribute(name, this);
+    return new DefaultBlobAttribute(name, this);
   }
 
   @Override

@@ -4,7 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.db.result.ResultPacker;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 
 import java.math.BigDecimal;
 import java.sql.Blob;

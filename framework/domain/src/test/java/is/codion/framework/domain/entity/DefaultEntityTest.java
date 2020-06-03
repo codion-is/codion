@@ -9,7 +9,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
-import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.TransientProperty;
 

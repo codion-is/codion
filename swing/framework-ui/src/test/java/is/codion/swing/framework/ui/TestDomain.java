@@ -5,7 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;

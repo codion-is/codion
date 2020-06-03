@@ -4,7 +4,7 @@
 package is.codion.framework.demos.chinook.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ValueChange;
 import is.codion.swing.framework.model.SwingEntityEditModel;

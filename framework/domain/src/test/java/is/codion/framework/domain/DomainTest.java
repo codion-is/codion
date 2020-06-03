@@ -11,7 +11,7 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.Operations;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.event.EventListener;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Department;
 import is.codion.framework.domain.entity.Employee;

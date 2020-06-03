@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.entity.exception;
 
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 
 import static java.util.Objects.requireNonNull;
 

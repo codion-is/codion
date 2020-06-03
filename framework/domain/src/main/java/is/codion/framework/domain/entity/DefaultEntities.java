@@ -4,7 +4,6 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Util;
-import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 

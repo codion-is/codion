@@ -6,7 +6,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.model.Refreshable;
 import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;

@@ -4,7 +4,6 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Text;
-import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -710,12 +709,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     private void validate(final Property<?> property, final Map<Attribute<?>, Property<?>> propertyMap) {
-      if (!entityType.equals(property.getAttribute().getEntityType())) {
+      if (!entityType.equals(property.getEntityType())) {
         throw new IllegalArgumentException("Attribute entityType (" +
-                property.getAttribute().getEntityType() + ") does not match the definition entityType: " + entityType);
+                property.getEntityType() + ") does not match the definition entityType: " + entityType);
       }
       if (propertyMap.containsKey(property.getAttribute())) {
-        throw new IllegalArgumentException("Property with id " + property.getAttribute()
+        throw new IllegalArgumentException("Property " + property.getAttribute()
                 + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
                 + " has already been defined as: " + propertyMap.get(property.getAttribute()) + " in entity: " + entityType);
       }

@@ -6217,3 +6217,4 @@
   DomainType added
   Identity removed
   Entities.register() removed
+  attribute package merged with entity package

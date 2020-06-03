@@ -9,7 +9,7 @@ import is.codion.common.item.Item;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.PropertyValue;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;

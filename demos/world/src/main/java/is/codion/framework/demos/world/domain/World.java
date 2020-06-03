@@ -2,7 +2,7 @@ package is.codion.framework.demos.world.domain;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.attribute.Attribute;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
