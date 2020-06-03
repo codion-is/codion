@@ -198,7 +198,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === executeProcedure
 
-** {url-entity-connection}#executeProcedure-java.lang.String-java.lang.Object...-[executeProcedure(String procedureId, Object... arguments)]
+** {url-entity-connection}#executeProcedure-is.codion.common.db.operation.ProcedureType-java.lang.Object...-[executeProcedure(ProcedureType procedureType, Object... arguments)]
 
 [source,java,indent=0]
 ----
@@ -207,7 +207,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === executeFunction
 
-** {url-entity-connection}#executeFunction-java.lang.String-java.lang.Object...-[executeFunction(String functionId, Object... arguments)]
+** {url-entity-connection}#executeFunction-is.codion.common.db.operation.FunctionType-java.lang.Object...-[executeFunction(FunctionType functionType, Object... arguments)]
 
 [source,java,indent=0]
 ----

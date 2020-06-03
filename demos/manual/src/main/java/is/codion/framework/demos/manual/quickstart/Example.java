@@ -76,21 +76,21 @@ public final class Example {
     // tag::address[]
     public interface Address {
       EntityType TYPE = type("store.address");
-      Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("id");
-      Attribute<String> ADDRESS_STREET = TYPE.stringAttribute("street");
-      Attribute<String> ADDRESS_CITY = TYPE.stringAttribute("city");
+      Attribute<Integer> ID = TYPE.integerAttribute("id");
+      Attribute<String> STREET = TYPE.stringAttribute("street");
+      Attribute<String> CITY = TYPE.stringAttribute("city");
     }
 
     void address() {
       define(Address.TYPE,
-              primaryKeyProperty(Address.ADDRESS_ID),
-              columnProperty(Address.ADDRESS_STREET, "Street")
+              primaryKeyProperty(Address.ID),
+              columnProperty(Address.STREET, "Street")
                       .nullable(false).maximumLength(120),
-              columnProperty(Address.ADDRESS_CITY, "City")
+              columnProperty(Address.CITY, "City")
                       .nullable(false).maximumLength(50))
               .keyGenerator(automatic("store.address"))
-              .stringProvider(new StringProvider(Address.ADDRESS_STREET)
-                      .addText(", ").addValue(Address.ADDRESS_CITY));
+              .stringProvider(new StringProvider(Address.STREET)
+                      .addText(", ").addValue(Address.CITY));
     }
     // end::address[]
     // tag::customerAddress[]
@@ -229,8 +229,8 @@ public final class Example {
     Entity address = customerAddress.getForeignKey(CustomerAddress.ADDRESS_FK);
 
     String lastName = johnDoe.get(Customer.LAST_NAME);
-    String street = address.get(Address.ADDRESS_STREET);
-    String city = address.get(Address.ADDRESS_CITY);
+    String street = address.get(Address.STREET);
+    String city = address.get(Address.CITY);
     // end::select[]
   }
 
@@ -251,8 +251,8 @@ public final class Example {
     connection.insert(customer);
 
     Entity address = entities.entity(Address.TYPE);
-    address.put(Address.ADDRESS_STREET, "Elm Street 321");
-    address.put(Address.ADDRESS_CITY, "Syracuse");
+    address.put(Address.STREET, "Elm Street 321");
+    address.put(Address.CITY, "Syracuse");
 
     connection.insert(address);
 

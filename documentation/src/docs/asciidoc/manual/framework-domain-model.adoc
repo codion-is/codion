@@ -109,7 +109,7 @@ NOTE: The order of the properties must be the same as the order of the respectiv
 ----
 foreignKeyProperty(Detail.MASTER_FK, "Master", Master.TYPE,
         asList(
-                columnProperty(DETAIL.MASTER_ID_1),
+                columnProperty(Detail.MASTER_ID_1),
                 columnProperty(Detail.MASTER_ID_2)
         ));
 ----

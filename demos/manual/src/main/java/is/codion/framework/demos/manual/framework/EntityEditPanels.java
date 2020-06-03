@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.manual.framework;
 
+import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -62,7 +63,7 @@ public final class EntityEditPanels {
 
       NullableCheckBox nullableCheckBox = createNullableCheckBox(Demo.BOOLEAN);
 
-      JComboBox comboBox = createBooleanComboBox(Demo.BOOLEAN);
+      JComboBox<Item<Boolean>> comboBox = createBooleanComboBox(Demo.BOOLEAN);
       // end::booleanValue[]
     }
 
@@ -81,7 +82,7 @@ public final class EntityEditPanels {
       // tag::temporalValue[]
       JTextField textField = createTextField(Demo.LOCAL_DATE);
 
-      TemporalInputPanel inputPanel = createTemporalInputPanel(Demo.LOCAL_DATE);
+      TemporalInputPanel<LocalDate> inputPanel = createTemporalInputPanel(Demo.LOCAL_DATE);
       // end::temporalValue[]
     }
 
@@ -112,7 +113,7 @@ public final class EntityEditPanels {
 
     private void valueList() {
       // tag::valueList[]
-      SteppedComboBox comboBox = createValueListComboBox(Demo.VALUE_LIST);
+      SteppedComboBox<Item<String>> comboBox = createValueListComboBox(Demo.VALUE_LIST);
       // end::valueList[]
     }
 

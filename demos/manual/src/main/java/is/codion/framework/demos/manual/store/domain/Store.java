@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.plugin.jasperreports.model.JasperReportWrapper;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -21,6 +22,7 @@ import java.util.function.Function;
 import static is.codion.framework.domain.entity.Entities.type;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
+import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
 
 public final class Store extends Domain {
 
@@ -49,6 +51,9 @@ public final class Store extends Domain {
     Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("address_id");
     Attribute<Entity> ADDRESS_FK = TYPE.entityAttribute("address_fk");
   }
+
+  public static final JasperReportWrapper CUSTOMER_REPORT =
+            fileReport("reports/customer.jasper");
 
   public Store() {
     customer();
