@@ -3,7 +3,7 @@ package is.codion.framework.demos.world.model;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.world.domain.World;
+import is.codion.framework.demos.world.domain.World.Lookup;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import static java.util.Collections.singletonList;
 public final class LookupTableModel extends SwingEntityTableModel {
 
   public LookupTableModel(EntityConnectionProvider connectionProvider) {
-    super(World.T_LOOKUP, connectionProvider);
+    super(Lookup.TYPE, connectionProvider);
     configureConditionModels();
   }
 

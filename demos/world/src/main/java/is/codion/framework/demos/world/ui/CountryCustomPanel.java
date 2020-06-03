@@ -1,7 +1,9 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.common.model.table.ColumnSummary;
-import is.codion.framework.demos.world.domain.World;
+import is.codion.framework.demos.world.domain.World.City;
+import is.codion.framework.demos.world.domain.World.Country;
+import is.codion.framework.demos.world.domain.World.CountryLanguage;
 import is.codion.framework.demos.world.model.CountryCustomModel;
 import is.codion.framework.demos.world.model.CountryEditModel;
 import is.codion.framework.demos.world.model.CountryTableModel;
@@ -35,10 +37,10 @@ public final class CountryCustomPanel extends EntityPanel {
   @Override
   protected void initializeUI() {
     SwingEntityModel countryModel = getModel();
-    countryModel.getTableModel().getColumnSummaryModel(World.COUNTRY_POPULATION).setSummary(ColumnSummary.SUM);
-    SwingEntityModel cityModel = countryModel.getDetailModel(World.T_CITY);
-    cityModel.getTableModel().getColumnSummaryModel(World.CITY_POPULATION).setSummary(ColumnSummary.SUM);
-    SwingEntityModel countryLanguageModel = countryModel.getDetailModel(World.T_COUNTRYLANGUAGE);
+    countryModel.getTableModel().getColumnSummaryModel(Country.POPULATION).setSummary(ColumnSummary.SUM);
+    SwingEntityModel cityModel = countryModel.getDetailModel(City.TYPE);
+    cityModel.getTableModel().getColumnSummaryModel(City.POPULATION).setSummary(ColumnSummary.SUM);
+    SwingEntityModel countryLanguageModel = countryModel.getDetailModel(CountryLanguage.TYPE);
 
     countryModel.addLinkedDetailModel(cityModel);
     countryModel.addLinkedDetailModel(countryLanguageModel);

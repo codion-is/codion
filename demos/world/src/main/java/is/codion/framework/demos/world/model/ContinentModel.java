@@ -1,7 +1,7 @@
 package is.codion.framework.demos.world.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.world.domain.World;
+import is.codion.framework.demos.world.domain.World.Continent;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 import org.jfree.data.category.CategoryDataset;
@@ -17,7 +17,7 @@ public final class ContinentModel extends SwingEntityModel {
   private final DefaultCategoryDataset lifeExpectancyDataset = new DefaultCategoryDataset();
 
   public ContinentModel(EntityConnectionProvider connectionProvider) {
-    super(World.T_CONTINENT, connectionProvider);
+    super(Continent.TYPE, connectionProvider);
     getTableModel().addRefreshListener(this::refreshChartDatasets);
   }
 
@@ -44,20 +44,20 @@ public final class ContinentModel extends SwingEntityModel {
     lifeExpectancyDataset.clear();
     getTableModel().getItems().forEach(continent -> {
       populationDataset.setValue(
-            continent.get(World.CONTINENT_CONTINENT),
-            continent.get(World.CONTINENT_POPULATION));
+            continent.get(Continent.CONTINENT),
+            continent.get(Continent.POPULATION));
       surfaceAreaDataset.setValue(
-            continent.get(World.CONTINENT_CONTINENT),
-            continent.get(World.CONTINENT_SURFACE_AREA));
+            continent.get(Continent.CONTINENT),
+            continent.get(Continent.SURFACE_AREA));
       gnpDataset.setValue(
-            continent.get(World.CONTINENT_CONTINENT),
-            continent.get(World.CONTINENT_GNP));
+            continent.get(Continent.CONTINENT),
+            continent.get(Continent.GNP));
       lifeExpectancyDataset.addValue(
-              continent.get(World.CONTINENT_MIN_LIFE_EXPECTANCY),
-              "Lowest", continent.get(World.CONTINENT_CONTINENT));
+              continent.get(Continent.MIN_LIFE_EXPECTANCY),
+              "Lowest", continent.get(Continent.CONTINENT));
       lifeExpectancyDataset.addValue(
-              continent.get(World.CONTINENT_MAX_LIFE_EXPECTANCY),
-              "Highest",continent.get(World.CONTINENT_CONTINENT));
+              continent.get(Continent.MAX_LIFE_EXPECTANCY),
+              "Highest",continent.get(Continent.CONTINENT));
     });
   }
 }
