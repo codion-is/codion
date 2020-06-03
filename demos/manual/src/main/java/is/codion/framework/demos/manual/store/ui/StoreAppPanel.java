@@ -7,7 +7,9 @@ import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.demos.manual.store.domain.Store.Address;
+import is.codion.framework.demos.manual.store.domain.Store.Customer;
+import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
 import is.codion.framework.demos.manual.store.model.CustomerAddressModel;
 import is.codion.framework.demos.manual.store.model.CustomerModel;
 import is.codion.framework.demos.manual.store.model.StoreAppModel;
@@ -28,7 +30,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
   @Override
   protected List<EntityPanel> initializeEntityPanels(final StoreAppModel applicationModel) {
     CustomerModel customerModel =
-            (CustomerModel) applicationModel.getEntityModel(Store.T_CUSTOMER);
+            (CustomerModel) applicationModel.getEntityModel(Customer.TYPE);
     //populate model with rows from database
     customerModel.refresh();
 
@@ -37,7 +39,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
             new CustomerTablePanel(customerModel.getTableModel()));
 
     CustomerAddressModel customerAddressModel =
-            (CustomerAddressModel) customerModel.getDetailModel(Store.T_CUSTOMER_ADDRESS);
+            (CustomerAddressModel) customerModel.getDetailModel(CustomerAddress.TYPE);
     EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
             new CustomerAddressEditPanel(customerAddressModel.getEditModel()));
 
@@ -48,7 +50,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
 
   @Override
   protected void setupEntityPanelBuilders() {
-    addSupportPanelBuilder(new EntityPanelBuilder(Store.T_ADDRESS)
+    addSupportPanelBuilder(new EntityPanelBuilder(Address.TYPE)
             .setEditPanelClass(AddressEditPanel.class));
   }
 

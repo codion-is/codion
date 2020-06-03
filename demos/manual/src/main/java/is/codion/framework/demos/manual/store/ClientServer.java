@@ -13,6 +13,7 @@ import is.codion.framework.db.http.ClientHttps;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -52,7 +53,7 @@ public final class ClientServer {
 
     EntityConnection connection = connectionProvider.getConnection();
 
-    List<Entity> customers = connection.select(selectCondition(Store.T_CUSTOMER));
+    List<Entity> customers = connection.select(selectCondition(Customer.TYPE));
     customers.forEach(System.out::println);
 
     connection.disconnect();
@@ -86,7 +87,7 @@ public final class ClientServer {
 
     EntityConnection connection = connectionProvider.getConnection();
 
-    List<Entity> customers = connection.select(selectCondition(Store.T_CUSTOMER));
+    List<Entity> customers = connection.select(selectCondition(Customer.TYPE));
     customers.forEach(System.out::println);
 
     connection.disconnect();

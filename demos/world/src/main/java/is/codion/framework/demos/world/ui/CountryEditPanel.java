@@ -1,6 +1,7 @@
 package is.codion.framework.demos.world.ui;
 
-import is.codion.framework.demos.world.domain.World;
+import is.codion.framework.demos.world.domain.World.City;
+import is.codion.framework.demos.world.domain.World.Country;
 import is.codion.framework.demos.world.model.CountryEditModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -24,52 +25,52 @@ public final class CountryEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(World.COUNTRY_CODE);
+    setInitialFocusAttribute(Country.CODE);
 
-    upperCase(createTextField(World.COUNTRY_CODE)).setColumns(12);
-    upperCase(createTextField(World.COUNTRY_CODE2)).setColumns(12);
-    createTextField(World.COUNTRY_NAME).setColumns(12);
-    setPreferredWidth(createValueListComboBox(World.COUNTRY_CONTINENT), 120);
-    setPreferredWidth(createAttributeComboBox(World.COUNTRY_REGION), 120);
-    createTextField(World.COUNTRY_SURFACEAREA);
-    createTextField(World.COUNTRY_INDEPYEAR);
-    createTextField(World.COUNTRY_POPULATION);
-    createTextField(World.COUNTRY_LIFEEXPECTANCY);
-    createTextField(World.COUNTRY_GNP);
-    createTextField(World.COUNTRY_GNPOLD);
-    createTextField(World.COUNTRY_LOCALNAME).setColumns(12);
-    setPreferredWidth(createAttributeComboBox(World.COUNTRY_GOVERNMENTFORM, null, Editable.YES), 120);
-    createTextField(World.COUNTRY_HEADOFSTATE).setColumns(12);
+    upperCase(createTextField(Country.CODE)).setColumns(12);
+    upperCase(createTextField(Country.CODE_2)).setColumns(12);
+    createTextField(Country.NAME).setColumns(12);
+    setPreferredWidth(createValueListComboBox(Country.CONTINENT), 120);
+    setPreferredWidth(createAttributeComboBox(Country.REGION), 120);
+    createTextField(Country.SURFACEAREA);
+    createTextField(Country.INDEPYEAR);
+    createTextField(Country.POPULATION);
+    createTextField(Country.LIFE_EXPECTANCY);
+    createTextField(Country.GNP);
+    createTextField(Country.GNPOLD);
+    createTextField(Country.LOCALNAME).setColumns(12);
+    setPreferredWidth(createAttributeComboBox(Country.GOVERNMENTFORM, null, Editable.YES), 120);
+    createTextField(Country.HEADOFSTATE).setColumns(12);
     EntityComboBox capitalComboBox =
-            setPreferredWidth(createForeignKeyComboBox(World.COUNTRY_CAPITAL_FK), 120);
+            setPreferredWidth(createForeignKeyComboBox(Country.CAPITAL_FK), 120);
     //create a panel with a button for adding a new city
     JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
             new CityPanelBuilder().createEditPanelAction(capitalComboBox));
 
     setLayout(gridLayout(4, 5));
 
-    addPropertyPanel(World.COUNTRY_CODE);
-    addPropertyPanel(World.COUNTRY_CODE2);
-    addPropertyPanel(World.COUNTRY_NAME);
-    addPropertyPanel(World.COUNTRY_CONTINENT);
-    addPropertyPanel(World.COUNTRY_REGION);
-    addPropertyPanel(World.COUNTRY_SURFACEAREA);
-    addPropertyPanel(World.COUNTRY_INDEPYEAR);
-    addPropertyPanel(World.COUNTRY_POPULATION);
-    addPropertyPanel(World.COUNTRY_LIFEEXPECTANCY);
-    addPropertyPanel(World.COUNTRY_GNP);
-    addPropertyPanel(World.COUNTRY_GNPOLD);
-    addPropertyPanel(World.COUNTRY_LOCALNAME);
-    addPropertyPanel(World.COUNTRY_GOVERNMENTFORM);
-    addPropertyPanel(World.COUNTRY_HEADOFSTATE);
-    add(createPropertyPanel(World.COUNTRY_CAPITAL_FK, capitalPanel));
+    addPropertyPanel(Country.CODE);
+    addPropertyPanel(Country.CODE_2);
+    addPropertyPanel(Country.NAME);
+    addPropertyPanel(Country.CONTINENT);
+    addPropertyPanel(Country.REGION);
+    addPropertyPanel(Country.SURFACEAREA);
+    addPropertyPanel(Country.INDEPYEAR);
+    addPropertyPanel(Country.POPULATION);
+    addPropertyPanel(Country.LIFE_EXPECTANCY);
+    addPropertyPanel(Country.GNP);
+    addPropertyPanel(Country.GNPOLD);
+    addPropertyPanel(Country.LOCALNAME);
+    addPropertyPanel(Country.GOVERNMENTFORM);
+    addPropertyPanel(Country.HEADOFSTATE);
+    add(createPropertyPanel(Country.CAPITAL_FK, capitalPanel));
   }
 
   /** A EntityPanelBuilder for adding a new city */
   private final class CityPanelBuilder extends EntityPanelBuilder {
 
     public CityPanelBuilder() {
-      super(World.T_CITY);
+      super(City.TYPE);
       setEditPanelClass(CityEditPanel.class);
     }
 
@@ -79,15 +80,15 @@ public final class CountryEditPanel extends EntityEditPanel {
       Entity country = CountryEditPanel.this.getEditModel().getEntityCopy();
       if (country.getKey().isNotNull()) {
         //if a country is selected, then we don't allow it to be changed
-        editPanel.getEditModel().put(World.CITY_COUNTRY_FK, country);
+        editPanel.getEditModel().put(City.COUNTRY_FK, country);
         //initialize the panel components, so we can configure the country component
         editPanel.initializePanel();
         //disable the country selection component
-        JComponent countryComponent = editPanel.getComponent(World.CITY_COUNTRY_FK);
+        JComponent countryComponent = editPanel.getComponent(City.COUNTRY_FK);
         countryComponent.setEnabled(false);
         countryComponent.setFocusable(false);
         //and change the initial focus property
-        editPanel.setInitialFocusAttribute(World.CITY_NAME);
+        editPanel.setInitialFocusAttribute(City.NAME);
       }
     }
   }

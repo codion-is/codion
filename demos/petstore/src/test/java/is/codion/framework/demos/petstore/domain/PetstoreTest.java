@@ -17,36 +17,36 @@ public class PetstoreTest extends EntityTestUnit {
 
   @Test
   public void address() throws Exception {
-    test(T_ADDRESS);
+    test(Address.TYPE);
   }
 
   @Test
   public void category() throws Exception {
-    test(T_CATEGORY);
+    test(Category.TYPE);
   }
 
   @Test
   public void item() throws Exception {
-    test(T_ITEM);
+    test(Item.TYPE);
   }
 
   @Test
   public void product() throws Exception {
-    test(T_PRODUCT);
+    test(Product.TYPE);
   }
 
   @Test
   public void sellerInfo() throws Exception {
-    test(T_SELLER_CONTACT_INFO);
+    test(SellerContactInfo.TYPE);
   }
 
   @Test
   public void tag() throws Exception {
-    test(T_TAG);
+    test(Tag.TYPE);
   }
 
   @Test
   public void tagItem() throws Exception {
-    test(T_TAG_ITEM);
+    test(TagItem.TYPE);
   }
 }

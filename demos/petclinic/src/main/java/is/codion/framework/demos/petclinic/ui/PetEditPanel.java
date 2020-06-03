@@ -13,7 +13,8 @@ import javax.swing.Action;
 import javax.swing.JPanel;
 import java.awt.GridLayout;
 
-import static is.codion.framework.demos.petclinic.domain.Clinic.*;
+import static is.codion.framework.demos.petclinic.domain.Clinic.Pet;
+import static is.codion.framework.demos.petclinic.domain.Clinic.PetType;
 
 public final class PetEditPanel extends EntityEditPanel {
 
@@ -23,22 +24,22 @@ public final class PetEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(PET_NAME);
+    setInitialFocusAttribute(Pet.NAME);
 
-    createForeignKeyComboBox(PET_OWNER_FK);
-    createTextField(PET_NAME).setColumns(12);
-    createTextField(PET_BIRTH_DATE);
-    final EntityComboBox petTypeBox = createForeignKeyComboBox(PET_PET_TYPE_FK);
+    createForeignKeyComboBox(Pet.OWNER_FK);
+    createTextField(Pet.NAME).setColumns(12);
+    createTextField(Pet.BIRTH_DATE);
+    final EntityComboBox petTypeBox = createForeignKeyComboBox(Pet.PET_TYPE_FK);
 
-    final Action newPetTypeAction = new EntityPanelBuilder(T_PET_TYPE).setEditPanelClass(PetTypeEditPanel.class)
+    final Action newPetTypeAction = new EntityPanelBuilder(PetType.TYPE).setEditPanelClass(PetTypeEditPanel.class)
             .createEditPanelAction(petTypeBox);
     final JPanel petTypePanel = Components.createEastButtonPanel(petTypeBox, newPetTypeAction);
 
     setLayout(new GridLayout(2, 2, 5, 5));
 
-    addPropertyPanel(PET_OWNER_FK);
-    addPropertyPanel(PET_NAME);
-    addPropertyPanel(PET_BIRTH_DATE);
-    add(createPropertyPanel(PET_PET_TYPE_FK, petTypePanel));
+    addPropertyPanel(Pet.OWNER_FK);
+    addPropertyPanel(Pet.NAME);
+    addPropertyPanel(Pet.BIRTH_DATE);
+    add(createPropertyPanel(Pet.PET_TYPE_FK, petTypePanel));
   }
 }

@@ -3,11 +3,11 @@
  */
 package is.codion.framework.demos.petstore.ui;
 
-import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static is.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.framework.demos.petstore.domain.Petstore.Category;
 
 public class CategoryEditPanel extends EntityEditPanel {
 
@@ -17,15 +17,15 @@ public class CategoryEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(CATEGORY_NAME);
+    setInitialFocusAttribute(Category.NAME);
 
-    createTextField(CATEGORY_NAME).setColumns(10);
-    createTextField(CATEGORY_DESCRIPTION).setColumns(18);
-    createTextField(CATEGORY_IMAGE_URL);
+    createTextField(Category.NAME).setColumns(10);
+    createTextField(Category.DESCRIPTION).setColumns(18);
+    createTextField(Category.IMAGE_URL);
 
-    setLayout(new FlexibleGridLayout(2, 2, 5, 5));
-    addPropertyPanel(CATEGORY_NAME);
-    addPropertyPanel(CATEGORY_DESCRIPTION);
-    addPropertyPanel(CATEGORY_IMAGE_URL);
+    setLayout(Layouts.flexibleGridLayout(2, 2));
+    addPropertyPanel(Category.NAME);
+    addPropertyPanel(Category.DESCRIPTION);
+    addPropertyPanel(Category.IMAGE_URL);
   }
 }

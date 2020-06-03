@@ -8,6 +8,7 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.model.CustomerEditModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -26,17 +27,17 @@ public final class Misc {
 
     CustomerEditModel editModel = new CustomerEditModel(connectionProvider);
 
-    editModel.put(Store.CUSTOMER_ID, UUID.randomUUID().toString());
-    editModel.put(Store.CUSTOMER_FIRST_NAME, "Björn");
-    editModel.put(Store.CUSTOMER_LAST_NAME, "Sigurðsson");
-    editModel.put(Store.CUSTOMER_IS_ACTIVE, true);
+    editModel.put(Customer.ID, UUID.randomUUID().toString());
+    editModel.put(Customer.FIRST_NAME, "Björn");
+    editModel.put(Customer.LAST_NAME, "Sigurðsson");
+    editModel.put(Customer.IS_ACTIVE, true);
 
     //inserts and returns the inserted entity
     Entity customer = editModel.insert();
 
     //modify some property values
-    editModel.put(Store.CUSTOMER_FIRST_NAME, "John");
-    editModel.put(Store.CUSTOMER_LAST_NAME, "Doe");
+    editModel.put(Customer.FIRST_NAME, "John");
+    editModel.put(Customer.LAST_NAME, "Doe");
 
     //updates and returns the updated entity
     customer = editModel.update();

@@ -3,7 +3,11 @@ package is.codion.framework.demos.world.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.world.domain.World;
+import is.codion.framework.demos.world.domain.World.City;
+import is.codion.framework.demos.world.domain.World.Continent;
+import is.codion.framework.demos.world.domain.World.Country;
+import is.codion.framework.demos.world.domain.World.CountryLanguage;
+import is.codion.framework.demos.world.domain.World.Lookup;
 import is.codion.framework.demos.world.model.CountryCustomModel;
 import is.codion.framework.demos.world.model.CountryModel;
 import is.codion.framework.demos.world.model.WorldAppModel;
@@ -26,30 +30,30 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   // tag::setupEntityPanelBuilders[]
   @Override
   protected void setupEntityPanelBuilders() {
-    final SwingEntityModelBuilder countryModelBuilder = new SwingEntityModelBuilder(World.T_COUNTRY);
+    final SwingEntityModelBuilder countryModelBuilder = new SwingEntityModelBuilder(Country.TYPE);
     countryModelBuilder.setModelClass(CountryModel.class);
     EntityPanelBuilder countryPanelBuilder = new EntityPanelBuilder(countryModelBuilder);
     countryPanelBuilder.setEditPanelClass(CountryEditPanel.class);
     countryPanelBuilder.setTablePanelClass(CountryTablePanel.class);
 
-    final SwingEntityModelBuilder countryCustomModelBuilder = new SwingEntityModelBuilder(World.T_COUNTRY);
+    final SwingEntityModelBuilder countryCustomModelBuilder = new SwingEntityModelBuilder(Country.TYPE);
     countryCustomModelBuilder.setModelClass(CountryCustomModel.class);
     EntityPanelBuilder countryCustomPanelBuilder = new EntityPanelBuilder(countryCustomModelBuilder)
             .setPanelClass(CountryCustomPanel.class)
             .setCaption("Custom Country");
 
-    EntityPanelBuilder cityPanelBuilder = new EntityPanelBuilder(World.T_CITY);
+    EntityPanelBuilder cityPanelBuilder = new EntityPanelBuilder(City.TYPE);
     cityPanelBuilder.setEditPanelClass(CityEditPanel.class);
 
-    EntityPanelBuilder countryLanguagePanelBuilder = new EntityPanelBuilder(World.T_COUNTRYLANGUAGE);
+    EntityPanelBuilder countryLanguagePanelBuilder = new EntityPanelBuilder(CountryLanguage.TYPE);
     countryLanguagePanelBuilder.setEditPanelClass(CountryLanguageEditPanel.class);
 
     countryPanelBuilder.addDetailPanelBuilder(cityPanelBuilder);
     countryPanelBuilder.addDetailPanelBuilder(countryLanguagePanelBuilder);
 
-    EntityPanelBuilder continentPanelBuilder = new EntityPanelBuilder(World.T_CONTINENT)
+    EntityPanelBuilder continentPanelBuilder = new EntityPanelBuilder(Continent.TYPE)
             .setPanelClass(ContinentPanel.class);
-    EntityPanelBuilder lookupPanelBuilder = new EntityPanelBuilder(World.T_LOOKUP)
+    EntityPanelBuilder lookupPanelBuilder = new EntityPanelBuilder(Lookup.TYPE)
             .setTablePanelClass(LookupTablePanel.class)
             .setRefreshOnInit(false);
 

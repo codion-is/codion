@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.manual.store.ui;
 
-import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;
@@ -20,21 +20,21 @@ public class CustomerEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     //the firstName field should receive the focus whenever the panel is initialized
-    setInitialFocusAttribute(Store.CUSTOMER_FIRST_NAME);
+    setInitialFocusAttribute(Customer.FIRST_NAME);
 
-    createTextField(Store.CUSTOMER_FIRST_NAME).setColumns(15);
-    createTextField(Store.CUSTOMER_LAST_NAME).setColumns(15);
-    createTextField(Store.CUSTOMER_EMAIL).setColumns(15);
-    createCheckBox(Store.CUSTOMER_IS_ACTIVE, null, IncludeCaption.NO);
+    createTextField(Customer.FIRST_NAME).setColumns(15);
+    createTextField(Customer.LAST_NAME).setColumns(15);
+    createTextField(Customer.EMAIL).setColumns(15);
+    createCheckBox(Customer.IS_ACTIVE, null, IncludeCaption.NO);
 
     setLayout(new GridLayout(4,1));
     //the createControlPanel method creates a panel containing the
     //component associated with the property as well as a JLabel with the
     //property caption as defined in the domain model
-    addPropertyPanel(Store.CUSTOMER_FIRST_NAME);
-    addPropertyPanel(Store.CUSTOMER_LAST_NAME);
-    addPropertyPanel(Store.CUSTOMER_EMAIL);
-    addPropertyPanel(Store.CUSTOMER_IS_ACTIVE);
+    addPropertyPanel(Customer.FIRST_NAME);
+    addPropertyPanel(Customer.LAST_NAME);
+    addPropertyPanel(Customer.EMAIL);
+    addPropertyPanel(Customer.IS_ACTIVE);
   }
 }
 // end::customerEditPanel[]

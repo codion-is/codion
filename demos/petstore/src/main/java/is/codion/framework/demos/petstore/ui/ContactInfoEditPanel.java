@@ -3,11 +3,11 @@
  */
 package is.codion.framework.demos.petstore.ui;
 
-import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static is.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.framework.demos.petstore.domain.Petstore.SellerContactInfo;
 
 public class ContactInfoEditPanel extends EntityEditPanel {
 
@@ -17,15 +17,15 @@ public class ContactInfoEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(SELLER_CONTACT_INFO_LAST_NAME);
+    setInitialFocusAttribute(SellerContactInfo.LAST_NAME);
 
-    createTextField(SELLER_CONTACT_INFO_LAST_NAME).setColumns(10);
-    createTextField(SELLER_CONTACT_INFO_FIRST_NAME);
-    createTextField(SELLER_CONTACT_INFO_EMAIL);
+    createTextField(SellerContactInfo.LAST_NAME).setColumns(10);
+    createTextField(SellerContactInfo.FIRST_NAME);
+    createTextField(SellerContactInfo.EMAIL);
 
-    setLayout(new FlexibleGridLayout(3, 1, 5, 5));
-    addPropertyPanel(SELLER_CONTACT_INFO_LAST_NAME);
-    addPropertyPanel(SELLER_CONTACT_INFO_FIRST_NAME);
-    addPropertyPanel(SELLER_CONTACT_INFO_EMAIL);
+    setLayout(Layouts.flexibleGridLayout(3, 1));
+    addPropertyPanel(SellerContactInfo.LAST_NAME);
+    addPropertyPanel(SellerContactInfo.FIRST_NAME);
+    addPropertyPanel(SellerContactInfo.EMAIL);
   }
 }

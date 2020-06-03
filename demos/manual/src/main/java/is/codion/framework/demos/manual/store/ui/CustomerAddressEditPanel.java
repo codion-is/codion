@@ -3,7 +3,8 @@
  */
 package is.codion.framework.demos.manual.store.ui;
 
-import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.demos.manual.store.domain.Store.Address;
+import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -23,18 +24,18 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(Store.CUSTOMER_ADDRESS_ADDRESS_FK);
+    setInitialFocusAttribute(CustomerAddress.ADDRESS_FK);
 
     EntityComboBox addressComboBox =
-            createForeignKeyComboBox(Store.CUSTOMER_ADDRESS_ADDRESS_FK);
+            createForeignKeyComboBox(CustomerAddress.ADDRESS_FK);
     Components.setPreferredWidth(addressComboBox, 200);
-    Action newAddressAction = new EntityPanelBuilder(Store.T_ADDRESS).setEditPanelClass(AddressEditPanel.class)
+    Action newAddressAction = new EntityPanelBuilder(Address.TYPE).setEditPanelClass(AddressEditPanel.class)
             .createEditPanelAction(addressComboBox);
     JPanel addressPanel = Components.createEastButtonPanel(addressComboBox, newAddressAction);
 
     setLayout(new BorderLayout(5, 5));
 
-    add(createPropertyPanel(Store.CUSTOMER_ADDRESS_ADDRESS_FK, addressPanel));
+    add(createPropertyPanel(CustomerAddress.ADDRESS_FK, addressPanel));
   }
 }
 // end::customerAddressEditPanel[]

@@ -17,25 +17,25 @@ public final class WorldTest extends EntityTestUnit {
 
   @Test
   public void country() throws DatabaseException {
-    test(World.T_COUNTRY);
+    test(World.Country.TYPE);
   }
 
   @Test
   public void city() throws DatabaseException {
-    test(World.T_CITY);
+    test(World.City.TYPE);
   }
 
   @Test
   public void countryLanguage() throws DatabaseException {
-    test(World.T_COUNTRYLANGUAGE);
+    test(World.CountryLanguage.TYPE);
   }
 
   @Override
   protected Entity initializeTestEntity(EntityType entityType, Map<EntityType, Entity> foreignKeyEntities) {
     Entity entity = super.initializeTestEntity(entityType, foreignKeyEntities);
-    if (entityType.equals(World.T_COUNTRY)) {
-      entity.put(World.COUNTRY_CODE, "XXX");
-      entity.put(World.COUNTRY_CONTINENT, "Asia");
+    if (entityType.equals(World.Country.TYPE)) {
+      entity.put(World.Country.CODE, "XXX");
+      entity.put(World.Country.CONTINENT, "Asia");
     }
 
     return entity;
@@ -44,22 +44,22 @@ public final class WorldTest extends EntityTestUnit {
   @Override
   protected void modifyEntity(Entity testEntity, Map<EntityType, Entity> foreignKeyEntities) {
     super.modifyEntity(testEntity, foreignKeyEntities);
-    if (testEntity.is(World.T_COUNTRY)) {
-      testEntity.put(World.COUNTRY_CONTINENT, "Europe");
+    if (testEntity.is(World.Country.TYPE)) {
+      testEntity.put(World.Country.CONTINENT, "Europe");
     }
   }
 
   @Override
   protected Entity initializeReferenceEntity(EntityType entityType, Map<EntityType, Entity> foreignKeyEntities) {
-    if (entityType.equals(World.T_COUNTRY)) {
-      Entity iceland = getEntities().entity(World.T_COUNTRY);
-      iceland.put(World.COUNTRY_CODE, "ISL");
+    if (entityType.equals(World.Country.TYPE)) {
+      Entity iceland = getEntities().entity(World.Country.TYPE);
+      iceland.put(World.Country.CODE, "ISL");
 
       return iceland;
     }
-    if (entityType.equals(World.T_CITY)) {
-      Entity reykjavik = getEntities().entity(World.T_CITY);
-      reykjavik.put(World.CITY_ID, 1449);
+    if (entityType.equals(World.City.TYPE)) {
+      Entity reykjavik = getEntities().entity(World.City.TYPE);
+      reykjavik.put(World.City.ID, 1449);
 
       return reykjavik;
     }

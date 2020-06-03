@@ -1,6 +1,6 @@
 package is.codion.framework.demos.world.ui;
 
-import is.codion.framework.demos.world.domain.World;
+import is.codion.framework.demos.world.domain.World.City;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
@@ -15,18 +15,18 @@ public final class CityEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(World.CITY_COUNTRY_FK);
+    setInitialFocusAttribute(City.COUNTRY_FK);
 
-    setPreferredWidth(createForeignKeyComboBox(World.CITY_COUNTRY_FK), 120);
-    createTextField(World.CITY_NAME).setColumns(12);
-    createTextField(World.CITY_DISTRICT).setColumns(12);
-    createTextField(World.CITY_POPULATION);
+    setPreferredWidth(createForeignKeyComboBox(City.COUNTRY_FK), 120);
+    createTextField(City.NAME).setColumns(12);
+    createTextField(City.DISTRICT).setColumns(12);
+    createTextField(City.POPULATION);
 
     setLayout(gridLayout(2, 2));
 
-    addPropertyPanel(World.CITY_COUNTRY_FK);
-    addPropertyPanel(World.CITY_NAME);
-    addPropertyPanel(World.CITY_DISTRICT);
-    addPropertyPanel(World.CITY_POPULATION);
+    addPropertyPanel(City.COUNTRY_FK);
+    addPropertyPanel(City.NAME);
+    addPropertyPanel(City.DISTRICT);
+    addPropertyPanel(City.POPULATION);
   }
 }

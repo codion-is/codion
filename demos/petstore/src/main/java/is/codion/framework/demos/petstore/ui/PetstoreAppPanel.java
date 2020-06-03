@@ -25,26 +25,26 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
      *     ITEM
      *       ITEMTAG
      */
-    final EntityPanelBuilder tagItemProvider = new EntityPanelBuilder(T_TAG_ITEM)
+    final EntityPanelBuilder tagItemProvider = new EntityPanelBuilder(TagItem.TYPE)
             .setEditPanelClass(TagItemEditPanel.class);
-    final EntityPanelBuilder itemProvider = new EntityPanelBuilder(T_ITEM)
+    final EntityPanelBuilder itemProvider = new EntityPanelBuilder(Item.TYPE)
             .setEditPanelClass(ItemEditPanel.class);
     itemProvider.addDetailPanelBuilder(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
-    final EntityPanelBuilder productProvider = new EntityPanelBuilder(T_PRODUCT)
+    final EntityPanelBuilder productProvider = new EntityPanelBuilder(Product.TYPE)
             .setEditPanelClass(ProductEditPanel.class);
     productProvider.addDetailPanelBuilder(itemProvider).setDetailSplitPanelResizeWeight(0.3);
-    final EntityPanelBuilder categoryProvider = new EntityPanelBuilder(T_CATEGORY)
+    final EntityPanelBuilder categoryProvider = new EntityPanelBuilder(Category.TYPE)
             .setEditPanelClass(CategoryEditPanel.class);
     categoryProvider.addDetailPanelBuilder(productProvider).setDetailSplitPanelResizeWeight(0.3);
 
     addEntityPanelBuilder(categoryProvider);
 
-    final EntityPanelBuilder addressProvider = new EntityPanelBuilder(T_ADDRESS)
+    final EntityPanelBuilder addressProvider = new EntityPanelBuilder(Address.TYPE)
             .setEditPanelClass(AddressEditPanel.class);
-    final EntityPanelBuilder contactInfoProvider = new EntityPanelBuilder(T_SELLER_CONTACT_INFO)
+    final EntityPanelBuilder contactInfoProvider = new EntityPanelBuilder(SellerContactInfo.TYPE)
             .setEditPanelClass(ContactInfoEditPanel.class);
     contactInfoProvider.addDetailPanelBuilder(itemProvider);
-    final EntityPanelBuilder tagProvider = new EntityPanelBuilder(T_TAG)
+    final EntityPanelBuilder tagProvider = new EntityPanelBuilder(Tag.TYPE)
             .setEditPanelClass(TagEditPanel.class);
     tagProvider.addDetailPanelBuilder(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 

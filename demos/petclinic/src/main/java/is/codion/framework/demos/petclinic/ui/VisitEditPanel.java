@@ -11,7 +11,7 @@ import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 
-import static is.codion.framework.demos.petclinic.domain.Clinic.*;
+import static is.codion.framework.demos.petclinic.domain.Clinic.Visit;
 
 public final class VisitEditPanel extends EntityEditPanel {
 
@@ -21,19 +21,19 @@ public final class VisitEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(VISIT_PET_FK);
+    setInitialFocusAttribute(Visit.PET_FK);
 
-    createForeignKeyComboBox(VISIT_PET_FK);
-    createTextField(VISIT_DATE);
-    createTextArea(VISIT_DESCRIPTION, 4, 20);
+    createForeignKeyComboBox(Visit.PET_FK);
+    createTextField(Visit.DATE);
+    createTextArea(Visit.DESCRIPTION, 4, 20);
 
     JPanel northPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-    northPanel.add(createPropertyPanel(VISIT_PET_FK));
-    northPanel.add(createPropertyPanel(VISIT_DATE));
+    northPanel.add(createPropertyPanel(Visit.PET_FK));
+    northPanel.add(createPropertyPanel(Visit.DATE));
 
     setLayout(new BorderLayout(5, 5));
     add(northPanel, BorderLayout.NORTH);
-    add(createPropertyPanel(VISIT_DESCRIPTION,
-            new JScrollPane(getComponent(VISIT_DESCRIPTION))), BorderLayout.CENTER);
+    add(createPropertyPanel(Visit.DESCRIPTION,
+            new JScrollPane(getComponent(Visit.DESCRIPTION))), BorderLayout.CENTER);
   }
 }

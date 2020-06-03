@@ -17,9 +17,9 @@ public final class PetclinicAppModel extends SwingEntityApplicationModel {
   }
 
   private void setupEntityModels(final EntityConnectionProvider connectionProvider) {
-    SwingEntityModel ownersModel = new SwingEntityModel(T_OWNER, connectionProvider);
-    SwingEntityModel petsModel = new SwingEntityModel(T_PET, connectionProvider);
-    SwingEntityModel visitModel = new SwingEntityModel(T_VISIT, connectionProvider);
+    SwingEntityModel ownersModel = new SwingEntityModel(Owner.TYPE, connectionProvider);
+    SwingEntityModel petsModel = new SwingEntityModel(Pet.TYPE, connectionProvider);
+    SwingEntityModel visitModel = new SwingEntityModel(Visit.TYPE, connectionProvider);
 
     ownersModel.addDetailModel(petsModel);
     petsModel.addDetailModel(visitModel);

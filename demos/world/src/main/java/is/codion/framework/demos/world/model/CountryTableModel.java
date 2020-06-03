@@ -6,6 +6,8 @@ import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.World;
+import is.codion.framework.demos.world.domain.World.City;
+import is.codion.framework.demos.world.domain.World.CountryLanguage;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -20,7 +22,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
   private final DefaultPieDataset languagesDataset = new DefaultPieDataset();
 
   public CountryTableModel(EntityConnectionProvider connectionProvider) {
-    super(World.T_COUNTRY, connectionProvider);
+    super(World.Country.TYPE, connectionProvider);
     configureConditionModels();
     bindEvents();
   }
@@ -54,17 +56,17 @@ public final class CountryTableModel extends SwingEntityTableModel {
       if (!selectedCountries.isEmpty()) {
         final EntityConnection connection = getConnectionProvider().getConnection();
 
-        List<Entity> cities = connection.select(World.T_CITY,
-                World.CITY_COUNTRY_FK, selectedCountries);
+        List<Entity> cities = connection.select(City.TYPE,
+                City.COUNTRY_FK, selectedCountries);
         cities.forEach(city -> citiesDataset.setValue(
-                city.get(World.CITY_NAME),
-                city.get(World.CITY_POPULATION)));
+                city.get(City.NAME),
+                city.get(City.POPULATION)));
 
-        List<Entity> languages = connection.select(World.T_COUNTRYLANGUAGE,
-                World.COUNTRYLANGUAGE_COUNTRY_FK, selectedCountries);
+        List<Entity> languages = connection.select(CountryLanguage.TYPE,
+                CountryLanguage.COUNTRY_FK, selectedCountries);
         languages.forEach(language -> languagesDataset.setValue(
-                language.get(World.COUNTRYLANGUAGE_LANGUAGE),
-                language.get(World.COUNTRYLANGUAGE_NO_OF_SPEAKERS)));
+                language.get(CountryLanguage.LANGUAGE),
+                language.get(CountryLanguage.NO_OF_SPEAKERS)));
       }
     }
     catch (DatabaseException e) {

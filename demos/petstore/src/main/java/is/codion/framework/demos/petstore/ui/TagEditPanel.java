@@ -3,11 +3,10 @@
  */
 package is.codion.framework.demos.petstore.ui;
 
-import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.framework.demos.petstore.domain.Petstore.Tag;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-
-import static is.codion.framework.demos.petstore.domain.Petstore.TAG_TAG;
 
 public class TagEditPanel extends EntityEditPanel {
 
@@ -17,11 +16,11 @@ public class TagEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(TAG_TAG);
+    setInitialFocusAttribute(Tag.TAG);
 
-    createTextField(TAG_TAG).setColumns(16);
+    createTextField(Tag.TAG).setColumns(16);
 
-    setLayout(new FlexibleGridLayout(1, 1, 5, 5));
-    addPropertyPanel(TAG_TAG);
+    setLayout(Layouts.flexibleGridLayout(1, 1));
+    addPropertyPanel(Tag.TAG);
   }
 }

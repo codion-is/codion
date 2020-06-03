@@ -34,9 +34,9 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 
   @Override
   protected List<EntityPanel> initializeEntityPanels(final PetclinicAppModel applicationModel) {
-    SwingEntityModel ownersModel = applicationModel.getEntityModel(T_OWNER);
-    SwingEntityModel petsModel = ownersModel.getDetailModel(T_PET);
-    SwingEntityModel visitsModel = petsModel.getDetailModel(T_VISIT);
+    SwingEntityModel ownersModel = applicationModel.getEntityModel(Owner.TYPE);
+    SwingEntityModel petsModel = ownersModel.getDetailModel(Pet.TYPE);
+    SwingEntityModel visitsModel = petsModel.getDetailModel(Visit.TYPE);
 
     EntityPanel ownersPanel = new EntityPanel(ownersModel,
             new OwnerEditPanel(ownersModel.getEditModel()));
@@ -56,20 +56,20 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
   @Override
   protected void setupEntityPanelBuilders() {
     EntityPanelBuilder petTypePanelBuilder =
-            new EntityPanelBuilder(T_PET_TYPE)
+            new EntityPanelBuilder(PetType.TYPE)
                     .setEditPanelClass(PetTypeEditPanel.class)
                     .setCaption("Pet types");
     EntityPanelBuilder specialtiesPanelBuilder =
-            new EntityPanelBuilder(T_SPECIALTY)
+            new EntityPanelBuilder(Specialty.TYPE)
                     .setEditPanelClass(SpecialtyEditPanel.class)
                     .setCaption("Specialties");
 
     EntityPanelBuilder vetsPanelBuilder =
-            new EntityPanelBuilder(T_VET)
+            new EntityPanelBuilder(Vet.TYPE)
                     .setEditPanelClass(VetEditPanel.class)
                     .setCaption("Vets");
     SwingEntityModelBuilder vetSpecialtyModelBuilder =
-            new SwingEntityModelBuilder(T_VET_SPECIALTY)
+            new SwingEntityModelBuilder(VetSpecialty.TYPE)
                     .setEditModelClass(VetSpecialtyEditModel.class);
     EntityPanelBuilder vetSpecialtiesPanelBuilder =
             new EntityPanelBuilder(vetSpecialtyModelBuilder)

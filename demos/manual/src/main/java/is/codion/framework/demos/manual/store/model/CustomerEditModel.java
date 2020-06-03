@@ -4,14 +4,14 @@
 package is.codion.framework.demos.manual.store.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.manual.store.domain.Store;
+import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 // tag::customerEditModel[]
 public class CustomerEditModel extends SwingEntityEditModel {
 
   public CustomerEditModel(EntityConnectionProvider connectionProvider) {
-    super(Store.T_CUSTOMER, connectionProvider);
+    super(Customer.TYPE, connectionProvider);
   }
 }
 // end::customerEditModel[]
