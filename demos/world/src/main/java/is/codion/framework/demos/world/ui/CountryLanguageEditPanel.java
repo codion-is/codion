@@ -1,6 +1,6 @@
 package is.codion.framework.demos.world.ui;
 
-import is.codion.framework.demos.world.domain.World.CountryLanguage;
+import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityInputComponents.IncludeCaption;

@@ -46,7 +46,7 @@ EntityType constants for the Entities and Attribute constants for the properties
 
 [source,java]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=entityTypesAndAttributes]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=entityTypesAndAttributes]
 ----
 
 === Property
@@ -63,14 +63,14 @@ If no primary key properties are specified the entity is somewhat restricted, it
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=primaryKey]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=primaryKey]
 ----
 
 In case of composite primary keys you create a ColumnProperty and specify the primary key index. Note that in the example below the column with primary key index 0 is a foreign key column and wrapped in a foreignKeyProperty(), which are discussed a bit later.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=compositePrimaryKey]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=compositePrimaryKey]
 ----
 
 === ColumnProperty
@@ -79,7 +79,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[ta
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=columnProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=columnProperty]
 ----
 
 === BlobProperty
@@ -88,7 +88,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[ta
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=blobProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=blobProperty]
 ----
 
 [#_foreignkeyproperty]
@@ -98,7 +98,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[ta
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=foreignKeyPropertyCapital]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=foreignKeyPropertyCapital]
 ----
 
 Referring to an entity with composite primary key.
@@ -131,7 +131,7 @@ For databases supporting *Types.BOOLEAN* you simply use *Properties.columnProper
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=booleanProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=booleanProperty]
 ----
 
 For databases lacking native boolean support we use the *Properties.booleanProperty* method, specifying the underlying true/false values.
@@ -167,7 +167,7 @@ An entity can include a property value from a entity referenced via foreign key,
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=denormalizedViewProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=denormalizedViewProperty]
 ----
 
 === DenormalizedProperty
@@ -207,7 +207,7 @@ customer.get(Customer.CITY);//now this returns "Canastota"
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=subqueryProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=subqueryProperty]
 ----
 
 === TransientProperty
@@ -220,12 +220,12 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[ta
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=derivedProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=derivedProperty]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=derivedPropertyProvider]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=derivedPropertyProvider]
 ----
 
 == Domain
@@ -234,7 +234,7 @@ Each entity type is defined by calling {url-javadoc}/is/codion/framework/domain/
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=defineCity]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=defineCity]
 ----
 
 === Examples
@@ -268,7 +268,7 @@ When sequences are used without triggers the framework can fetch the value from 
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=sequence]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=sequence]
 ----
 
 === Queried
@@ -324,7 +324,7 @@ include::{dir-source}/is/codion/framework/demos/manual/store/domain/Store.java[t
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=colorProvider]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=colorProvider]
 ----
 
 == Validation
@@ -335,7 +335,7 @@ The *DefaultEntityValidator* implementation provides basic range and null valida
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[tags=validator]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=validator]
 ----
 
 == Examples

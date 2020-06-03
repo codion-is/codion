@@ -5,9 +5,9 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.world.domain.World;
-import is.codion.framework.demos.world.domain.World.City;
-import is.codion.framework.demos.world.domain.World.CountryLanguage;
+import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.Country;
+import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -22,7 +22,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
   private final DefaultPieDataset languagesDataset = new DefaultPieDataset();
 
   public CountryTableModel(EntityConnectionProvider connectionProvider) {
-    super(World.Country.TYPE, connectionProvider);
+    super(Country.TYPE, connectionProvider);
     configureConditionModels();
     bindEvents();
   }

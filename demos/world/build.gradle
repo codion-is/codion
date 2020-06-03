@@ -48,7 +48,7 @@ test {
         addExports = testAddExports;
     }
     systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "is.codion.framework.demos.world.domain.World"
+    systemProperty "codion.client.domainClass", "is.codion.framework.demos.world.domain.WorldImpl"
 }
 
 task runClientLocal(type: ModularJavaExec) {

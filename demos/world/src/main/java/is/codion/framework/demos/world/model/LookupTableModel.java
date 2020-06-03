@@ -3,7 +3,7 @@ package is.codion.framework.demos.world.model;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.world.domain.World.Lookup;
+import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.io.File;

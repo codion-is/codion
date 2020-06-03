@@ -1,8 +1,8 @@
 package is.codion.framework.demos.world.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.world.domain.World.City;
-import is.codion.framework.demos.world.domain.World.Country;
+import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;

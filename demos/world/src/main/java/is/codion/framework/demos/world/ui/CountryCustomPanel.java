@@ -1,9 +1,9 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.common.model.table.ColumnSummary;
-import is.codion.framework.demos.world.domain.World.City;
-import is.codion.framework.demos.world.domain.World.Country;
-import is.codion.framework.demos.world.domain.World.CountryLanguage;
+import is.codion.framework.demos.world.domain.api.World.City;
+import is.codion.framework.demos.world.domain.api.World.Country;
+import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.demos.world.model.CountryCustomModel;
 import is.codion.framework.demos.world.model.CountryEditModel;
 import is.codion.framework.demos.world.model.CountryTableModel;
