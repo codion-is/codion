@@ -24,122 +24,122 @@ public final class ClinicImpl extends Domain {
   }
 
   private void vet() {
-    define(T_VET,
-            primaryKeyProperty(VET_ID),
-            columnProperty(VET_FIRST_NAME, "First name")
+    define(Vet.TYPE,
+            primaryKeyProperty(Vet.ID),
+            columnProperty(Vet.FIRST_NAME, "First name")
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(VET_LAST_NAME, "Last name")
+            columnProperty(Vet.LAST_NAME, "Last name")
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false))
-            .keyGenerator(automatic(T_VET.getName()))
+            .keyGenerator(automatic(Vet.TYPE.getName()))
             .caption("Vets")
-            .stringProvider(new StringProvider(VET_LAST_NAME)
-                    .addText(", ").addValue(VET_FIRST_NAME))
-            .orderBy(orderBy().ascending(VET_LAST_NAME, VET_FIRST_NAME))
+            .stringProvider(new StringProvider(Vet.LAST_NAME)
+                    .addText(", ").addValue(Vet.FIRST_NAME))
+            .orderBy(orderBy().ascending(Vet.LAST_NAME, Vet.FIRST_NAME))
             .smallDataset(true);
   }
 
   private void specialty() {
-    define(T_SPECIALTY,
-            primaryKeyProperty(SPECIALTY_ID),
-            columnProperty(SPECIALTY_NAME, "Name")
+    define(Specialty.TYPE,
+            primaryKeyProperty(Specialty.ID),
+            columnProperty(Specialty.NAME, "Name")
                     .searchProperty(true)
                     .maximumLength(80)
                     .nullable(false))
-            .keyGenerator(automatic(T_SPECIALTY.getName()))
+            .keyGenerator(automatic(Specialty.TYPE.getName()))
             .caption("Specialties")
-            .stringProvider(new StringProvider(SPECIALTY_NAME))
+            .stringProvider(new StringProvider(Specialty.NAME))
             .smallDataset(true);
   }
 
   private void vetSpecialty() {
-    define(T_VET_SPECIALTY,
-            foreignKeyProperty(VET_SPECIALTY_VET_FK, "Vet", T_VET,
-                    columnProperty(VET_SPECIALTY_VET)
+    define(VetSpecialty.TYPE,
+            foreignKeyProperty(VetSpecialty.VET_FK, "Vet", Vet.TYPE,
+                    columnProperty(VetSpecialty.VET)
                             .primaryKeyIndex(0))
                     .nullable(false),
-            foreignKeyProperty(VET_SPECIALTY_SPECIALTY_FK, "Specialty", T_SPECIALTY,
-                    primaryKeyProperty(VET_SPECIALTY_SPECIALTY)
+            foreignKeyProperty(VetSpecialty.SPECIALTY_FK, "Specialty", Specialty.TYPE,
+                    primaryKeyProperty(VetSpecialty.SPECIALTY)
                             .primaryKeyIndex(1))
                     .nullable(false))
             .caption("Vet specialties")
-            .stringProvider(new StringProvider(VET_SPECIALTY_VET_FK).addText(" - ")
-                    .addValue(VET_SPECIALTY_SPECIALTY_FK));
+            .stringProvider(new StringProvider(VetSpecialty.VET_FK).addText(" - ")
+                    .addValue(VetSpecialty.SPECIALTY_FK));
   }
 
   private void petType() {
-    define(T_PET_TYPE,
-            primaryKeyProperty(PET_TYPE_ID),
-            columnProperty(PET_TYPE_NAME, "Name")
+    define(PetType.TYPE,
+            primaryKeyProperty(PetType.ID),
+            columnProperty(PetType.NAME, "Name")
                     .searchProperty(true)
                     .maximumLength(80)
                     .nullable(false))
-            .keyGenerator(automatic(T_PET_TYPE.getName()))
+            .keyGenerator(automatic(PetType.TYPE.getName()))
             .caption("Pet types")
-            .stringProvider(new StringProvider(PET_TYPE_NAME))
-            .orderBy(orderBy().ascending(PET_TYPE_NAME))
+            .stringProvider(new StringProvider(PetType.NAME))
+            .orderBy(orderBy().ascending(PetType.NAME))
             .smallDataset(true);
   }
 
   private void owner() {
-    define(T_OWNER,
-            primaryKeyProperty(OWNER_ID),
-            columnProperty(OWNER_FIRST_NAME, "First name")
+    define(Owner.TYPE,
+            primaryKeyProperty(Owner.ID),
+            columnProperty(Owner.FIRST_NAME, "First name")
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(OWNER_LAST_NAME, "Last name")
+            columnProperty(Owner.LAST_NAME, "Last name")
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(OWNER_ADDRESS, "Address")
+            columnProperty(Owner.ADDRESS, "Address")
                     .maximumLength(255),
-            columnProperty(OWNER_CITY, "City")
+            columnProperty(Owner.CITY, "City")
                     .maximumLength(80),
-            columnProperty(OWNER_TELEPHONE, "Telephone")
+            columnProperty(Owner.TELEPHONE, "Telephone")
                     .maximumLength(20))
-            .keyGenerator(automatic(T_OWNER.getName()))
+            .keyGenerator(automatic(Owner.TYPE.getName()))
             .caption("Owners")
-            .stringProvider(new StringProvider(OWNER_LAST_NAME).addText(", ")
-                    .addValue(OWNER_FIRST_NAME))
-            .orderBy(orderBy().ascending(OWNER_LAST_NAME, OWNER_FIRST_NAME));
+            .stringProvider(new StringProvider(Owner.LAST_NAME).addText(", ")
+                    .addValue(Owner.FIRST_NAME))
+            .orderBy(orderBy().ascending(Owner.LAST_NAME, Owner.FIRST_NAME));
   }
 
   private void pet() {
-    define(T_PET,
-            primaryKeyProperty(PET_ID),
-            columnProperty(PET_NAME, "Name")
+    define(Pet.TYPE,
+            primaryKeyProperty(Pet.ID),
+            columnProperty(Pet.NAME, "Name")
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(PET_BIRTH_DATE, "Birth date"),
-            foreignKeyProperty(PET_PET_TYPE_FK, "Pet type", T_PET_TYPE,
-                    columnProperty(PET_PET_TYPE_ID))
+            columnProperty(Pet.BIRTH_DATE, "Birth date"),
+            foreignKeyProperty(Pet.PET_TYPE_FK, "Pet type", PetType.TYPE,
+                    columnProperty(Pet.PET_TYPE_ID))
                     .nullable(false),
-            foreignKeyProperty(PET_OWNER_FK, "Owner", T_OWNER,
-                    columnProperty(PET_OWNER_ID))
+            foreignKeyProperty(Pet.OWNER_FK, "Owner", Owner.TYPE,
+                    columnProperty(Pet.OWNER_ID))
                     .nullable(false))
-            .keyGenerator(automatic(T_PET.getName()))
+            .keyGenerator(automatic(Pet.TYPE.getName()))
             .caption("Pets")
-            .stringProvider(new StringProvider(PET_NAME))
-            .orderBy(orderBy().ascending(PET_NAME));
+            .stringProvider(new StringProvider(Pet.NAME))
+            .orderBy(orderBy().ascending(Pet.NAME));
   }
 
   private void visit() {
-    define(T_VISIT,
-            primaryKeyProperty(VISIT_ID),
-            foreignKeyProperty(VISIT_PET_FK, "Pet", T_PET,
-                    columnProperty(VISIT_PET_ID))
+    define(Visit.TYPE,
+            primaryKeyProperty(Visit.ID),
+            foreignKeyProperty(Visit.PET_FK, "Pet", Pet.TYPE,
+                    columnProperty(Visit.PET_ID))
                     .nullable(false),
-            columnProperty(VISIT_DATE, "Date")
+            columnProperty(Visit.DATE, "Date")
                     .nullable(false),
-            columnProperty(VISIT_DESCRIPTION, "Description")
+            columnProperty(Visit.DESCRIPTION, "Description")
                     .maximumLength(255))
-            .keyGenerator(automatic(T_VISIT.getName()))
-            .orderBy(orderBy().ascending(VISIT_PET_ID).descending(VISIT_DATE))
+            .keyGenerator(automatic(Visit.TYPE.getName()))
+            .orderBy(orderBy().ascending(Visit.PET_ID).descending(Visit.DATE))
             .caption("Visits");
   }
 }

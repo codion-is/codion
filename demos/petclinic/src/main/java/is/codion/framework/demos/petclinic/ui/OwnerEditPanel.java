@@ -8,7 +8,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
 
-import static is.codion.framework.demos.petclinic.domain.Clinic.*;
+import static is.codion.framework.demos.petclinic.domain.Clinic.Owner;
 
 public final class OwnerEditPanel extends EntityEditPanel {
 
@@ -18,20 +18,20 @@ public final class OwnerEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(OWNER_FIRST_NAME);
+    setInitialFocusAttribute(Owner.FIRST_NAME);
 
-    createTextField(OWNER_FIRST_NAME).setColumns(12);
-    createTextField(OWNER_LAST_NAME).setColumns(12);
-    createTextField(OWNER_ADDRESS).setColumns(12);
-    createTextField(OWNER_CITY).setColumns(12);
-    createTextField(OWNER_TELEPHONE).setColumns(12);
+    createTextField(Owner.FIRST_NAME).setColumns(12);
+    createTextField(Owner.LAST_NAME).setColumns(12);
+    createTextField(Owner.ADDRESS).setColumns(12);
+    createTextField(Owner.CITY).setColumns(12);
+    createTextField(Owner.TELEPHONE).setColumns(12);
 
     setLayout(new GridLayout(3, 2, 5, 5));
 
-    addPropertyPanel(OWNER_FIRST_NAME);
-    addPropertyPanel(OWNER_LAST_NAME);
-    addPropertyPanel(OWNER_ADDRESS);
-    addPropertyPanel(OWNER_CITY);
-    addPropertyPanel(OWNER_TELEPHONE);
+    addPropertyPanel(Owner.FIRST_NAME);
+    addPropertyPanel(Owner.LAST_NAME);
+    addPropertyPanel(Owner.ADDRESS);
+    addPropertyPanel(Owner.CITY);
+    addPropertyPanel(Owner.TELEPHONE);
   }
 }

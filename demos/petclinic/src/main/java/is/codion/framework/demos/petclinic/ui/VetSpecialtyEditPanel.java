@@ -3,13 +3,11 @@
  */
 package is.codion.framework.demos.petclinic.ui;
 
+import is.codion.framework.demos.petclinic.domain.Clinic.VetSpecialty;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
-
-import static is.codion.framework.demos.petclinic.domain.Clinic.VET_SPECIALTY_SPECIALTY_FK;
-import static is.codion.framework.demos.petclinic.domain.Clinic.VET_SPECIALTY_VET_FK;
 
 public final class VetSpecialtyEditPanel extends EntityEditPanel {
 
@@ -19,14 +17,14 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(VET_SPECIALTY_VET_FK);
+    setInitialFocusAttribute(VetSpecialty.VET_FK);
 
-    createForeignKeyComboBox(VET_SPECIALTY_VET_FK);
-    createForeignKeyComboBox(VET_SPECIALTY_SPECIALTY_FK);
+    createForeignKeyComboBox(VetSpecialty.VET_FK);
+    createForeignKeyComboBox(VetSpecialty.SPECIALTY_FK);
 
     setLayout(new GridLayout(1, 2, 5, 5));
 
-    addPropertyPanel(VET_SPECIALTY_VET_FK);
-    addPropertyPanel(VET_SPECIALTY_SPECIALTY_FK);
+    addPropertyPanel(VetSpecialty.VET_FK);
+    addPropertyPanel(VetSpecialty.SPECIALTY_FK);
   }
 }
