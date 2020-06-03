@@ -386,7 +386,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   }
 
   /**
-   * Returns a LinkedHashMap containing the given entities mapped to the value of the property with id {@code attribute},
+   * Returns a LinkedHashMap containing the given entities mapped to the value of {@code attribute},
    * respecting the iteration order of the given collection
    * @param <K> the key type
    * @param attribute the attribute which value should be used for mapping
@@ -403,7 +403,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities to map by entityType
    * @return a Map of entities mapped to entityType
    */
-  static LinkedHashMap<EntityType, List<Entity>> mapToEntityType(final Collection<Entity> entities) {
+  static LinkedHashMap<EntityType, List<Entity>> mapToType(final Collection<Entity> entities) {
     return map(entities, Entity::getEntityType);
   }
 
@@ -413,7 +413,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param keys the entity keys to map by entityType
    * @return a Map of entity keys mapped to entityType
    */
-  static LinkedHashMap<EntityType, List<Entity.Key>> mapKeysToEntityType(final Collection<Entity.Key> keys) {
+  static LinkedHashMap<EntityType, List<Entity.Key>> mapKeysToType(final Collection<Entity.Key> keys) {
     return map(keys, Entity.Key::getEntityType);
   }
 

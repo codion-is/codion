@@ -261,7 +261,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entities.isEmpty()) {
       return emptyList();
     }
-    final Map<EntityType, List<Entity>> entitiesByEntityType = mapToEntityType(entities);
+    final Map<EntityType, List<Entity>> entitiesByEntityType = mapToType(entities);
     checkIfReadOnly(entitiesByEntityType.keySet());
 
     final List<Object> statementValues = new ArrayList<>();
@@ -418,7 +418,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (keys.isEmpty()) {
       return 0;
     }
-    final Map<EntityType, List<Entity.Key>> keysByEntityType = mapKeysToEntityType(keys);
+    final Map<EntityType, List<Entity.Key>> keysByEntityType = mapKeysToType(keys);
     checkIfReadOnly(keysByEntityType.keySet());
 
     PreparedStatement statement = null;
@@ -484,7 +484,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         final List<Entity> result = new ArrayList<>();
-        for (final List<Entity.Key> entityTypeKeys : mapKeysToEntityType(keys).values()) {
+        for (final List<Entity.Key> entityTypeKeys : mapKeysToType(keys).values()) {
           result.addAll(doSelect(selectCondition(entityTypeKeys)));
         }
         commitIfTransactionIsNotOpen();
