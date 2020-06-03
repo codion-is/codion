@@ -4,7 +4,6 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
@@ -35,9 +34,9 @@ import static java.util.stream.Collectors.toList;
 public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
-   * @return the domain id
+   * @return the domain name
    */
-  Identity getDomainId();
+  String getDomainName();
 
   /**
    * Creates a new {@link Entity} instance with the given entityType
@@ -179,7 +178,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   /**
    * Registers this instance, required for serialization of entities.
    * @return this Entities instance
-   * @see #getDomainId()
+   * @see #getDomainName()
    */
   Entities register();
 

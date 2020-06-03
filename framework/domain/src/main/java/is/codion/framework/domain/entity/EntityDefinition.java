@@ -6,7 +6,6 @@ package is.codion.framework.domain.entity;
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -55,9 +54,9 @@ public interface EntityDefinition extends Serializable {
   ConditionProvider getConditionProvider(String conditionId);
 
   /**
-   * @return the id of the domain this entity type belongs to
+   * @return the name of the domain this entity type belongs to
    */
-  Identity getDomainId();
+  String getDomainName();
 
   /**
    * @return the validator for this entity type
@@ -485,11 +484,11 @@ public interface EntityDefinition extends Serializable {
     EntityDefinition get();
 
     /**
-     * @param domainId the domain id
+     * @param domainName the domain name
      * @return this {@link Builder} instance
      * @throws IllegalStateException in case the domain id has already been set
      */
-    Builder domainId(Identity domainId);
+    Builder domainName(String domainName);
 
     /**
      * @param validator the validator for this entity type

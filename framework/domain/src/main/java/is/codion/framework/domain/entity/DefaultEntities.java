@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.Util;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -34,9 +33,9 @@ public abstract class DefaultEntities implements Entities {
 
   private static final long serialVersionUID = 1;
 
-  private static final Map<Identity, Entities> REGISTERED_ENTITIES = new HashMap<>();
+  private static final Map<String, Entities> REGISTERED_ENTITIES = new HashMap<>();
 
-  private final Identity domainId;
+  private final String domainName;
   private final Map<EntityType, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
   private Map<Class<?>, EntityDefinition> beanEntities;
@@ -46,15 +45,15 @@ public abstract class DefaultEntities implements Entities {
 
   /**
    * Instantiates a new DefaultEntities for the given domainId
-   * @param domainId the domainId
+   * @param domainName the domainId
    */
-  protected DefaultEntities(final Identity domainId) {
-    this.domainId = requireNonNull(domainId, "domainId");
+  protected DefaultEntities(final String domainName) {
+    this.domainName = requireNonNull(domainName, "domainId");
   }
 
   @Override
-  public final Identity getDomainId() {
-    return domainId;
+  public final String getDomainName() {
+    return domainName;
   }
 
   @Override
@@ -242,22 +241,22 @@ public abstract class DefaultEntities implements Entities {
 
   @Override
   public final Entities register() {
-    REGISTERED_ENTITIES.put(domainId, this);
+    REGISTERED_ENTITIES.put(domainName, this);
 
     return this;
   }
 
   /**
    * Retrieves the Entities for the domain with the given id.
-   * @param domainId the id of the domain for which to retrieve the entity definitions
-   * @return the Entities instance registered for the given domainId
+   * @param domainName the id of the domain for which to retrieve the entity definitions
+   * @return the Entities instance registered for the given domainName
    * @throws IllegalArgumentException in case the domain has not been registered
    * @see #register()
    */
-  static Entities getEntities(final Identity domainId) {
-    final Entities entities = REGISTERED_ENTITIES.get(domainId);
+  static Entities getEntities(final String domainName) {
+    final Entities entities = REGISTERED_ENTITIES.get(domainName);
     if (entities == null) {
-      throw new IllegalArgumentException("Entities for domain '" + domainId + "' have not been registered");
+      throw new IllegalArgumentException("Entities for domain '" + domainName + "' have not been registered");
     }
 
     return entities;
@@ -271,7 +270,7 @@ public abstract class DefaultEntities implements Entities {
                                                   final Property.Builder<?>... propertyBuilders) {
     final EntityDefinition.Builder definitionBuilder =
             new DefaultEntityDefinition(entityType, tableName, propertyBuilders).builder();
-    addDefinition((DefaultEntityDefinition) definitionBuilder.domainId(domainId).get());
+    addDefinition((DefaultEntityDefinition) definitionBuilder.domainName(domainName).get());
 
     return definitionBuilder;
   }

@@ -8,8 +8,6 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.identity.Identities;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -778,7 +776,7 @@ final class DefaultEntity implements Entity {
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.getDomainId().getName());
+    stream.writeObject(definition.getDomainName());
     stream.writeObject(definition.getEntityType().getName());
     final boolean isModified = isModifiedInternal(true);
     stream.writeBoolean(isModified);
@@ -804,10 +802,10 @@ final class DefaultEntity implements Entity {
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    final Identity domainId = Identities.identity((String) stream.readObject());
+    final String domainName = (String) stream.readObject();
     final EntityType entityType = Entities.type((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
-    definition = DefaultEntities.getEntities(domainId).getDefinition(entityType);
+    definition = DefaultEntities.getEntities(domainName).getDefinition(entityType);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityType);
     }
