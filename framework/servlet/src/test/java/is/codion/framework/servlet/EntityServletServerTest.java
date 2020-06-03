@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
-import static java.util.Collections.emptyList;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -60,7 +60,7 @@ public class EntityServletServerTest {
   private static final String TEST_CLIENT_TYPE_ID = "EntityServletServerTest";
 
   private static final String[] HEADERS = new String[] {
-          EntityService.DOMAIN_ID, new TestDomain().getDomainId().getName(),
+          EntityService.DOMAIN_TYPE_NAME, new TestDomain().getDomainType().getName(),
           EntityService.CLIENT_TYPE_ID, TEST_CLIENT_TYPE_ID,
           EntityService.CLIENT_ID, UUID.randomUUID().toString(),
           "Content-Type", MediaType.APPLICATION_OCTET_STREAM,
@@ -102,7 +102,7 @@ public class EntityServletServerTest {
     HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(new String[] {
-                    EntityService.DOMAIN_ID, new TestDomain().getDomainId().getName(),
+                    EntityService.DOMAIN_TYPE_NAME, new TestDomain().getDomainType().getName(),
                     EntityService.CLIENT_TYPE_ID, "EntityServletServerTest",
                     EntityService.CLIENT_ID, UUID.randomUUID().toString(),
                     "Content-Type", MediaType.APPLICATION_OCTET_STREAM
@@ -116,7 +116,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(new String[] {
-                    EntityService.DOMAIN_ID, new TestDomain().getDomainId().getName(),
+                    EntityService.DOMAIN_TYPE_NAME, new TestDomain().getDomainType().getName(),
                     EntityService.CLIENT_TYPE_ID, "EntityServletServerTest",
                     "Content-Type", MediaType.APPLICATION_OCTET_STREAM,
                     "Authorization", AUTHORIZATION_HEADER
@@ -129,7 +129,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(new String[] {
-                    EntityService.DOMAIN_ID, new TestDomain().getDomainId().getName(),
+                    EntityService.DOMAIN_TYPE_NAME, new TestDomain().getDomainType().getName(),
                     EntityService.CLIENT_TYPE_ID, "EntityServletServerTest",
                     EntityService.CLIENT_ID, UUID.randomUUID().toString(),
                     "Content-Type", MediaType.APPLICATION_OCTET_STREAM,
@@ -240,18 +240,18 @@ public class EntityServletServerTest {
 
     //function
     request = HttpRequest.newBuilder()
-            .uri(URI.create(SERVER_BASEURL + "/function?functionId=" + TestDomain.FUNCTION_ID))
+            .uri(URI.create(SERVER_BASEURL + "/function"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(emptyList()))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(asList(TestDomain.FUNCTION_ID, new Object[0])))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
 
     //procedure
     request = HttpRequest.newBuilder()
-            .uri(URI.create(SERVER_BASEURL + "/procedure?procedureId=" + TestDomain.PROCEDURE_ID))
+            .uri(URI.create(SERVER_BASEURL + "/procedure"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(emptyList()))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(asList(TestDomain.PROCEDURE_ID, new Object[0])))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());

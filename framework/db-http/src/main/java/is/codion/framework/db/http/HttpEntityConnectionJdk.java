@@ -9,6 +9,8 @@ import is.codion.common.db.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
 import is.codion.common.db.exception.RecordNotFoundException;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.user.User;
@@ -46,7 +48,6 @@ import java.util.concurrent.ThreadFactory;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 /**
@@ -62,8 +63,6 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   private static final String AUTHORIZATION = "Authorization";
   private static final String BASIC = "Basic ";
-  private static final String FUNCTION_ID_PARAM = "functionId";
-  private static final String PROCEDURE_ID_PARAM = "procedureId";
   private static final String DOMAIN_ID = "domainId";
   private static final String CLIENT_TYPE_ID = "clientTypeId";
   private static final String CLIENT_ID = "clientId";
@@ -187,10 +186,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public List executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
-    Objects.requireNonNull(functionId);
+  public <T, R> R executeFunction(final FunctionType<EntityConnection, T, R> functionType, final T... arguments) throws DatabaseException {
+    Objects.requireNonNull(functionType);
     try {
-      return executeOperation("function", FUNCTION_ID_PARAM, functionId, arguments);
+      return handleResponse(execute(createRequest("function", asList(functionType, arguments))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -202,10 +201,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
-    Objects.requireNonNull(procedureId);
+  public <T> void executeProcedure(final ProcedureType<EntityConnection, T> procedureType, final T... arguments) throws DatabaseException {
+    Objects.requireNonNull(procedureType);
     try {
-      executeOperation("procedure", PROCEDURE_ID_PARAM, procedureId, arguments);
+      handleResponse(execute(createRequest("procedure", Arrays.asList(procedureType, arguments))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -477,12 +476,6 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
-  }
-
-  private List executeOperation(final String path, final String operationIdParam, final String operationId,
-                                final Object... arguments) throws Exception {
-    return handleResponse(execute(createRequest(path + "?" + operationIdParam + "=" + operationId,
-            Util.notNull(arguments) ? Arrays.asList(arguments) : emptyList())));
   }
 
   private HttpResponse execute(final HttpRequest operation) throws Exception {
