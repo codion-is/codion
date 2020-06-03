@@ -242,7 +242,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       throw new IllegalStateException("User has not been set for this connection provider");
     }
     entityConnection = connect();
-    entities = entityConnection.getEntities().register();
+    entities = entityConnection.getEntities();
     onConnectEvent.onEvent(entityConnection);
   }
 }

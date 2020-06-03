@@ -6189,3 +6189,4 @@
   OperationType, ProcedureType and FunctionType added, for type safe execution
   DomainType added
   Identity removed
+  Entities.register() removed

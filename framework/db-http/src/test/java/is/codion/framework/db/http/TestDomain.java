@@ -50,7 +50,6 @@ public final class TestDomain extends Domain {
     employee();
     operations();
     addReport(REPORT);
-    registerEntities();
   }
 
   public static final EntityType T_DEPARTMENT = type("scott.dept");

@@ -8,6 +8,8 @@ import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
@@ -33,7 +36,7 @@ public abstract class DefaultEntities implements Entities {
 
   private static final long serialVersionUID = 1;
 
-  private static final Map<String, Entities> REGISTERED_ENTITIES = new HashMap<>();
+  private static final Map<String, Entities> REGISTERED_ENTITIES = new ConcurrentHashMap<>();
 
   private final String domainName;
   private final Map<EntityType, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
@@ -49,6 +52,7 @@ public abstract class DefaultEntities implements Entities {
    */
   protected DefaultEntities(final String domainName) {
     this.domainName = requireNonNull(domainName, "domainId");
+    register(domainName);
   }
 
   @Override
@@ -239,19 +243,11 @@ public abstract class DefaultEntities implements Entities {
     }
   }
 
-  @Override
-  public final Entities register() {
-    REGISTERED_ENTITIES.put(domainName, this);
-
-    return this;
-  }
-
   /**
    * Retrieves the Entities for the domain with the given id.
    * @param domainName the id of the domain for which to retrieve the entity definitions
    * @return the Entities instance registered for the given domainName
    * @throws IllegalArgumentException in case the domain has not been registered
-   * @see #register()
    */
   static Entities getEntities(final String domainName) {
     final Entities entities = REGISTERED_ENTITIES.get(domainName);
@@ -371,6 +367,15 @@ public abstract class DefaultEntities implements Entities {
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private void register(final String domainName) {
+    REGISTERED_ENTITIES.put(domainName, this);
+  }
+
+  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    stream.defaultReadObject();
+    register(domainName);
   }
 
   private static final class BeanProperty implements Serializable {

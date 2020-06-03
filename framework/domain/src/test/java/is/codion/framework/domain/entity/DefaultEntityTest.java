@@ -39,7 +39,7 @@ public class DefaultEntityTest {
 
   private final String masterName = "master";
 
-  private static final Entities ENTITIES = new TestDomain().registerEntities();
+  private static final Entities ENTITIES = new TestDomain().getEntities();
 
   @Test
   public void construction() {
@@ -589,7 +589,7 @@ public class DefaultEntityTest {
                 Properties.primaryKeyProperty(id),
                 transientProperty);  }
     }
-    final Entities entities = new TestDomain().registerEntities();
+    final Entities entities = new TestDomain().getEntities();
 
     final Entity entity = entities.entity(entityType);
     entity.put(id, 42);

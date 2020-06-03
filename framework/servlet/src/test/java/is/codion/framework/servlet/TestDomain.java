@@ -32,7 +32,6 @@ public final class TestDomain extends Domain {
     department();
     employee();
     operations();
-    registerEntities();
   }
 
   public static final EntityType T_DEPARTMENT = type("scott.dept");
