@@ -47,7 +47,7 @@ public final class EmployeeServer extends EntityServer {
     }
 
     @Override
-    public List<Entity> getEmployees() throws DatabaseException {
+    public List<Entity> getEmployees() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
         return connectionProxy.select(selectCondition(EmpDept.Employee.TYPE));
       }
