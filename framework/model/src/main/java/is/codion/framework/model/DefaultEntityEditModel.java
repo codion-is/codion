@@ -305,7 +305,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void replaceForeignKeyValues(final Collection<Entity> entities) {
-    final Map<EntityType, List<Entity>> entitiesByEntityType = Entities.mapToEntityType(entities);
+    final Map<EntityType, List<Entity>> entitiesByEntityType = Entities.mapToType(entities);
     for (final Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
       final List<ForeignKeyProperty> foreignKeyProperties = getEntityDefinition()
               .getForeignKeyReferences(entityTypeEntities.getKey());
@@ -342,7 +342,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void setForeignKeyValues(final Collection<Entity> entities) {
-    final Map<EntityType, List<Entity>> entitiesByEntityType = Entities.mapToEntityType(entities);
+    final Map<EntityType, List<Entity>> entitiesByEntityType = Entities.mapToType(entities);
     for (final Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition()
               .getForeignKeyReferences(entityTypeEntities.getKey())) {

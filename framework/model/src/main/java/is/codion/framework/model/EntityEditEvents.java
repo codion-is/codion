@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static is.codion.common.Util.map;
-import static is.codion.framework.domain.entity.Entities.mapToEntityType;
+import static is.codion.framework.domain.entity.Entities.mapToType;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -141,7 +141,7 @@ public final class EntityEditEvents {
     }
 
     private void notifyInserted(final List<Entity> insertedEntities) {
-      mapToEntityType(insertedEntities).forEach((entityType, inserted) -> {
+      mapToType(insertedEntities).forEach((entityType, inserted) -> {
         final WeakObserver<List<Entity>> event = insertEvents.get(entityType);
         if (event != null) {
           event.onEvent(inserted);
@@ -161,7 +161,7 @@ public final class EntityEditEvents {
     }
 
     private void notifyDeleted(final List<Entity> deletedEntities) {
-      mapToEntityType(deletedEntities).forEach((entityType, entities) -> {
+      mapToType(deletedEntities).forEach((entityType, entities) -> {
         final WeakObserver<List<Entity>> event = deleteEvents.get(entityType);
         if (event != null) {
           event.onEvent(entities);

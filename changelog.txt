@@ -6191,3 +6191,4 @@
   Identity removed
   Entities.register() removed
   attribute package merged with entity package
+  Entities.mapToEntityType() and mapKeysToEntityType() renamed mapToType() and mapKeysToType() respectively

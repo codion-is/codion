@@ -327,14 +327,14 @@ public final class EntitiesTest {
   }
 
   @Test
-  public void mapToEntitId() {
+  public void mapToType() {
     final Entity one = entities.entity(TestDomain.T_EMP);
     final Entity two = entities.entity(TestDomain.T_DEPARTMENT);
     final Entity three = entities.entity(TestDomain.T_DETAIL);
     final Entity four = entities.entity(TestDomain.T_EMP);
 
     final Collection<Entity> entities = asList(one, two, three, four);
-    final Map<EntityType, List<Entity>> map = Entities.mapToEntityType(entities);
+    final Map<EntityType, List<Entity>> map = Entities.mapToType(entities);
 
     Collection<Entity> mapped = map.get(TestDomain.T_EMP);
     assertTrue(mapped.contains(one));
