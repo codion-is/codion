@@ -10,13 +10,13 @@ The domain model is based around five classes; {url-javadoc}/is/codion/framework
 
 == Entities
 
-The *Entity* class is a map like structure, which maps column values to the attribute representing each column. Each table is represented by a entity type, identified by a EntityType constant with a name unique within the domain.
+The *Entity* class is a map like structure, which maps column values to the attribute representing each column. Each table is represented by a EntityType constant with a name unique within the domain.
 
 NOTE: Typically, the *entityType* name contains the underlying table name, but you can use whatever identifying string you want and specify the table name via a *tableName* parameter when defining the entity.
 
 == Attributes
 
-Each column in a table is associated with a {url-javadoc}/is/codion/framework/domain/attribute/Attribute.html[Attribute] constant, which has a name and denotes the value type. The {url-javadoc}/is/codion/framework/domain/property/Attributes.html[Attributes] class provides factory methods for constructing Attribute objects and is usually statically imported, as will be assumed in the following examples.
+Each column in a table is associated with a {url-javadoc}/is/codion/framework/domain/attribute/Attribute.html[Attribute] constant, which has a name and denotes the value type. The {url-javadoc}/is/codion/framework/domain/entity/EntityType.html[EntityType] class provides factory methods for constructing Attribute objects for that entity type.
 
 NOTE: Typically, the *attribute* name is the underlying column name, but as with the *entityType* you can use whatever value you want and specify the column name via the *columnName()* method when instantiating the associated Property.
 
@@ -42,7 +42,7 @@ Each column is represented by the {url-javadoc}/is/codion/framework/domain/prope
 
 === Example
 
-String constants for the Entities and Attribute constants for the properties in the World demo, here the *entityTypes* have a *T_* prefix (for *Type* or *Table*) whereas the *attributes* are prefixed by their respective table names.
+EntityType constants for the Entities and Attribute constants for the properties in the World demo.
 
 [source,java]
 ----
@@ -107,10 +107,10 @@ NOTE: The order of the properties must be the same as the order of the respectiv
 
 [source,java]
 ----
-foreignKeyProperty(MASTER_FK, "Master", T_MASTER,
+foreignKeyProperty(Detail.MASTER_FK, "Master", Master.TYPE,
         asList(
-                columnProperty(MASTER_ID_1),
-                columnProperty(MASTER_ID_2)
+                columnProperty(DETAIL.MASTER_ID_1),
+                columnProperty(Detail.MASTER_ID_2)
         ));
 ----
 
@@ -118,9 +118,9 @@ The above assumes the below master definition.
 
 [source,java]
 ----
-define(T_MASTER,
-    columnProperty(ID_1).primaryKeyIndex(0),
-    columnProperty(ID_2).primaryKeyIndex(1)
+define(Master.TYPE,
+    columnProperty(Master.ID_1).primaryKeyIndex(0),
+    columnProperty(Master.ID_2).primaryKeyIndex(1)
     ...
 );
 ----
@@ -138,27 +138,27 @@ For databases lacking native boolean support we use the *Properties.booleanPrope
 
 [source,java]
 ----
-booleanProperty(CUSTOMER_IS_ACTIVE, Types.INTEGER, "Is active", 1, 0)
+booleanProperty(Customer.IS_ACTIVE, Types.INTEGER, "Is active", 1, 0)
 ----
 
 For boolean columns using unconventional types you can specify the true and false values.
 
 [source,java]
 ----
-booleanProperty(CUSTOMER_IS_ACTIVE, Types.VARCHAR, "Is active", "true", "false")
+booleanProperty(Customer.IS_ACTIVE, Types.VARCHAR, "Is active", "true", "false")
 ----
 
 [source,java]
 ----
-booleanProperty(CUSTOMER_IS_ACTIVE, Types.CHAR, "Is active", 'T', 'F')
+booleanProperty(Customer.IS_ACTIVE, Types.CHAR, "Is active", 'T', 'F')
 ----
 
 Note that boolean properties always use the boolean Java type, the framework handles translating to and from the actual column values.
 [source,java]
 ----
-entity.put(CUSTOMER_IS_ACTIVE, true);
+entity.put(Customer.IS_ACTIVE, true);
 
-boolean isActive = entity.get(CUSTOMER_IS_ACTIVE);
+boolean isActive = entity.get(Customer.IS_ACTIVE);
 ----
 
 === DenormalizedViewProperty
@@ -176,7 +176,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/World.java[ta
 
 [source,java]
 ----
-denormalizedProperty(CUSTOMER_CITY, CUSTOMER_ADDRESS_FK, ADDRESS_CITY, "City")
+denormalizedProperty(Customer.CITY, Customer.ADDRESS_FK, Address.CITY, "City")
 ----
 
 NOTE: The property is not kept in sync if the value of the denormalized property is modified in the referenced entity.
@@ -185,20 +185,20 @@ NOTE: The property is not kept in sync if the value of the denormalized property
 ----
 Entities entities = getEntities();
 
-Entity address = entities.entity(T_ADDRESS);
-address.put(ADDRESS_CITY, "Syracuse");
+Entity address = entities.entity(Address.TYPE);
+address.put(Address.CITY, "Syracuse");
 
-Entity customer = entities.entity(T_CUSTOMER);
-customer.put(CUSTOMER_ADDRESS_FK, address);
+Entity customer = entities.entity(Customer.TYPE);
+customer.put(Customer.ADDRESS_FK, address);
 
-customer.get(CUSTOMER_CITY);//returns "Syracuse"
+customer.get(Customer.CITY);//returns "Syracuse"
 
 //NB
-address.put(ADDRESS_CITY, "Canastota");
-customer.get(CUSTOMER_CITY, still returns "Syracuse"
+address.put(Address.CITY, "Canastota");
+customer.get(Customer.CITY, still returns "Syracuse"
 
-customer.put(CUSTOMER_ADDRESS_FK, address);//set the referenced value again
-customer.get(CUSTOMER_CITY);//now this returns "Canastota"
+customer.put(Customer.ADDRESS_FK, address);//set the referenced value again
+customer.get(Customer.CITY);//now this returns "Canastota"
 ----
 
 === SubqueryProperty
@@ -290,7 +290,7 @@ The framework can automatically increment the primary key value by selecting the
 
 [source,java]
 ----
-.keyGenerator(increment(T_EMPLOYEE, EMPLOYEE_ID))
+.keyGenerator(increment("scott.emp", "empno"))
 ----
 
 === Custom
