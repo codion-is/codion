@@ -14,9 +14,9 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -101,14 +101,14 @@ public class EntityServletServerTest {
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
             .build();
-    final Identity domainId = new TestDomain().getDomainId();
+    final DomainType<?> domainType = new TestDomain().getDomainType();
     final String clientTypeId = "EntityServletServerTest";
     final UUID clientId = UUID.randomUUID();
     final CloseableHttpClient client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_ID, domainId.getName());
+              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainType.getName());
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientId.toString());
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -141,20 +141,20 @@ public class EntityServletServerTest {
     //test with missing authentication info
     URIBuilder uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
-    uriBuilder.addParameter("domainId", ENTITIES.getDomainId().getName());
+    uriBuilder.addParameter("domainTypeName", ENTITIES.getDomainId().getName());
     CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
     client.close();
 
-    final Identity domainId = new TestDomain().getDomainId();
+    final DomainType<?> domainType = new TestDomain().getDomainType();
     final String clientTypeId = "EntityServletServerTest";
     //test with missing clientId header
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_ID, domainId.getName());
+              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainType.getName());
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
@@ -173,7 +173,7 @@ public class EntityServletServerTest {
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_ID, domainId.getName());
+              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainType.getName());
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -191,7 +191,7 @@ public class EntityServletServerTest {
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_ID, domainId.getName());
+              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainType.getName());
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);

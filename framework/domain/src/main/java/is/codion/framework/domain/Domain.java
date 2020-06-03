@@ -36,6 +36,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class Domain implements EntityDefinition.Provider {
 
+  private final DomainType<?> domainType;
   private final DomainEntities entities;
   private final DomainReports reports = new DomainReports();
   private final DomainOperations operations = new DomainOperations();
@@ -45,30 +46,24 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @see Class#getSimpleName()
    */
   protected Domain() {
-    this.entities = new DomainEntities(Identities.identity(getClass().getSimpleName()));
-  }
-
-  /**
-   * Instantiates a new Domain
-   * @param domainName the domain identifier
-   */
-  protected Domain(final String domainName) {
-    this(Identities.identity(domainName));
+    this.domainType = new DomainType<>(getClass());
+    this.entities = new DomainEntities(Identities.identity(domainType.getName()));
   }
 
   /**
    * Instantiates a new Domain
    * @param domainId the domain identifier
    */
-  protected Domain(final Identity domainId) {
-    this.entities = new DomainEntities(requireNonNull(domainId, "domainId"));
+  protected Domain(final DomainType<?> domainType) {
+    this.domainType = domainType;
+    this.entities = new DomainEntities(Identities.identity(domainType.getName()));
   }
 
   /**
-   * @return the domainId
+   * @return the domain type
    */
-  public final Identity getDomainId() {
-    return entities.getDomainId();
+  public final DomainType<?> getDomainType() {
+    return domainType;
   }
 
   /**

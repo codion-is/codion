@@ -38,9 +38,9 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
 
   /**
-   * A key for specifying the id of the domain required by a remote client
+   * A key for specifying the domain type required by a remote client
    */
-  public static final String REMOTE_CLIENT_DOMAIN_ID = "codion.client.domainId";
+  public static final String REMOTE_CLIENT_DOMAIN_TYPE = "codion.client.domainType";
 
   private Server<RemoteEntityConnection, Remote> server;
   private ServerInformation serverInformation;
@@ -113,8 +113,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       return (EntityConnection) Proxy.newProxyInstance(EntityConnection.class.getClassLoader(),
               new Class[] {EntityConnection.class}, new RemoteEntityConnectionHandler(
                       getServer().connect(ConnectionRequest.connectionRequest(getUser(), getClientId(), getClientTypeId(),
-                              getClientVersion(), Collections.singletonMap(REMOTE_CLIENT_DOMAIN_ID,
-                                      getDomainId(getDomainClassName()))))));
+                              getClientVersion(), Collections.singletonMap(REMOTE_CLIENT_DOMAIN_TYPE,
+                                      getDomainTypeName(getDomainClassName()))))));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);

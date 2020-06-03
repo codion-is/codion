@@ -21,8 +21,6 @@ import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.identity.Identities;
-import is.codion.framework.domain.identity.Identity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +58,7 @@ public final class EntityService extends Application {
   private static final Logger LOG = LoggerFactory.getLogger(EntityService.class);
 
   public static final String AUTHORIZATION = "Authorization";
-  public static final String DOMAIN_ID = "domainId";
+  public static final String DOMAIN_TYPE_NAME = "domainTypeName";
   public static final String CLIENT_TYPE_ID = "clientTypeId";
   public static final String CLIENT_ID = "clientId";
   public static final String BASIC_PREFIX = "basic ";
@@ -557,12 +555,12 @@ public final class EntityService extends Application {
     }
 
     final MultivaluedMap<String, String> headerValues = headers.getRequestHeaders();
-    final Identity domainId = Identities.identity(getDomainId(headerValues));
+    final String domainTypeName = getDomainTypeName(headerValues);
     final String clientTypeId = getClientTypeId(headerValues);
     final UUID clientId = getClientId(headerValues, request.getSession());
     final User user = getUser(headerValues);
     final Map<String, Object> parameters = new HashMap<>(2);
-    parameters.put(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_ID, domainId);
+    parameters.put(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName);
     parameters.put(Server.CLIENT_HOST_KEY, getRemoteHost(request));
 
     return server.connect(ConnectionRequest.connectionRequest(user, clientId, clientTypeId, parameters));
@@ -595,8 +593,8 @@ public final class EntityService extends Application {
     }
   }
 
-  private static String getDomainId(final MultivaluedMap<String, String> headers) throws ServerAuthenticationException {
-    return checkHeaderParameter(headers.get(DOMAIN_ID), DOMAIN_ID);
+  private static String getDomainTypeName(final MultivaluedMap<String, String> headers) throws ServerAuthenticationException {
+    return checkHeaderParameter(headers.get(DOMAIN_TYPE_NAME), DOMAIN_TYPE_NAME);
   }
 
   private static String getClientTypeId(final MultivaluedMap<String, String> headers) throws ServerAuthenticationException {

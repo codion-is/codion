@@ -6187,3 +6187,4 @@
   Entities.entityType() renamed type
   Interesting new entity type convention introduced to some demo domains
   OperationType, ProcedureType and FunctionType added, for type safe execution
+  DomainType added
