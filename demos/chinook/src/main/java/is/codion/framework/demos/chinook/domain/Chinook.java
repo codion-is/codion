@@ -3,6 +3,10 @@
  */
 package is.codion.framework.demos.chinook.domain;
 
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.Operations;
+import is.codion.common.db.operation.ProcedureType;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -13,6 +17,7 @@ import java.awt.Image;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static is.codion.framework.domain.entity.Entities.type;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
@@ -151,8 +156,8 @@ public interface Chinook {
   Attribute<Entity> PLAYLISTTRACK_ALBUM_DENORM = T_PLAYLISTTRACK.entityAttribute("album_denorm");
   Attribute<Entity> PLAYLISTTRACK_ARTIST_DENORM = T_PLAYLISTTRACK.entityAttribute("artist_denorm");
 
-  String P_UPDATE_TOTALS = "chinook.update_totals_procedure";
-  String F_RAISE_PRICE = "chinook.raise_price_function";
+  ProcedureType<EntityConnection, Void> P_UPDATE_TOTALS = Operations.procedureType("chinook.update_totals_procedure");
+  FunctionType<EntityConnection, Object, List<Entity>> F_RAISE_PRICE = Operations.functionType("chinook.raise_price_function");
 
   static Integer getMinutes(final Integer milliseconds) {
     if (milliseconds == null) {

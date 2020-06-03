@@ -7,8 +7,8 @@ import is.codion.common.db.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.AbstractDatabaseFunction;
 import is.codion.common.db.operation.AbstractDatabaseProcedure;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.EntitySelectCondition;
-import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.attribute.Attribute;
@@ -344,15 +344,15 @@ public final class ChinookImpl extends Domain implements Chinook {
   }
 
   private static final class UpdateTotalsProcedure
-          extends AbstractDatabaseProcedure<LocalEntityConnection> {
+          extends AbstractDatabaseProcedure<EntityConnection, Void> {
 
     private UpdateTotalsProcedure() {
-      super(P_UPDATE_TOTALS, "Update invoice totals");
+      super(P_UPDATE_TOTALS);
     }
 
     @Override
-    public void execute(final LocalEntityConnection entityConnection,
-                        final Object... arguments) throws DatabaseException {
+    public void execute(final EntityConnection entityConnection,
+                        final Void... arguments) throws DatabaseException {
       try {
         entityConnection.beginTransaction();
         final EntitySelectCondition selectCondition = selectCondition(T_INVOICE);
@@ -376,14 +376,14 @@ public final class ChinookImpl extends Domain implements Chinook {
   }
 
   private static final class RaisePriceFunction
-          extends AbstractDatabaseFunction<LocalEntityConnection, List<Entity>> {
+          extends AbstractDatabaseFunction<EntityConnection, Object, List<Entity>> {
 
     private RaisePriceFunction() {
-      super(F_RAISE_PRICE, "Raise track prices");
+      super(F_RAISE_PRICE);
     }
 
     @Override
-    public List<Entity> execute(final LocalEntityConnection entityConnection,
+    public List<Entity> execute(final EntityConnection entityConnection,
                                 final Object... arguments) throws DatabaseException {
       final List<Long> trackIds = (List<Long>) arguments[0];
       final BigDecimal priceIncrease = (BigDecimal) arguments[1];

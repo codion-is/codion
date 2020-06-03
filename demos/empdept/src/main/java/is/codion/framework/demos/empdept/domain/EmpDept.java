@@ -38,7 +38,6 @@ public final class EmpDept extends Domain {
     Attribute<String> NAME = TYPE.stringAttribute("dname");
     Attribute<String> LOCATION = TYPE.stringAttribute("loc");
   }
-
   // end::departmentConstants[]
 
   // tag::employeeConstants[]
@@ -69,7 +68,6 @@ public final class EmpDept extends Domain {
                     item("MANAGER", "Manager"), item("PRESIDENT", "President"),
                     item("SALESMAN", "Salesman"));
   }
-
   // end::employeeConstants[]
 
   // tag::constructor[]
@@ -94,7 +92,7 @@ public final class EmpDept extends Domain {
             .smallDataset(true)
             .orderBy(orderBy().ascending(Department.NAME))
             .stringProvider(new StringProvider(Department.NAME))
-            .beanClass(Department.class)
+            .beanClass(DepartmentBean.class)
             .caption("Departments");
   }
   // end::defineDepartment[]
@@ -123,7 +121,7 @@ public final class EmpDept extends Domain {
             .keyGenerator(increment("scott.emp", Employee.ID.getName()))
             .orderBy(orderBy().ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringProvider(new StringProvider(Employee.NAME))
-            .beanClass(Employee.class)
+            .beanClass(EmployeeBean.class)
             .caption("Employee")
             .colorProvider((entity, property) -> {
               if (property.is(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {

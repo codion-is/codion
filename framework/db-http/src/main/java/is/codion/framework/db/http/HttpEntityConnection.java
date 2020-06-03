@@ -9,6 +9,8 @@ import is.codion.common.db.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
 import is.codion.common.db.exception.RecordNotFoundException;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.user.User;
@@ -59,7 +61,6 @@ import java.util.UUID;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 /**
@@ -205,10 +206,10 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> T executeFunction(final String functionId, final Object... arguments) throws DatabaseException {
-    Objects.requireNonNull(functionId);
+  public <T, R> R executeFunction(final FunctionType<EntityConnection, T, R> functionType, final T... arguments) throws DatabaseException {
+    Objects.requireNonNull(functionType);
     try {
-      return executeOperation("function", "functionId", functionId, arguments);
+      return onResponse(execute(createHttpPost("function", asList(functionType, arguments))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -220,10 +221,10 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public void executeProcedure(final String procedureId, final Object... arguments) throws DatabaseException {
-    Objects.requireNonNull(procedureId);
+  public <T> void executeProcedure(final ProcedureType<EntityConnection, T> procedureType, final T... arguments) throws DatabaseException {
+    Objects.requireNonNull(procedureType);
     try {
-      executeOperation("procedure", "procedureId", procedureId, arguments);
+      onResponse(execute(createHttpPost("procedure", asList(procedureType, arguments))));
     }
     catch (final DatabaseException e) {
       throw e;
@@ -495,13 +496,6 @@ final class HttpEntityConnection implements EntityConnection {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
-  }
-
-  private <T> T executeOperation(final String path, final String operationIdParam, final String operationId,
-                                 final Object... arguments) throws Exception {
-    return onResponse(execute(createHttpPost(createURIBuilder(path)
-                    .addParameter(operationIdParam, operationId),
-            Util.notNull(arguments) ? asList(arguments) : emptyList())));
   }
 
   private CloseableHttpResponse execute(final HttpUriRequest operation) throws IOException {

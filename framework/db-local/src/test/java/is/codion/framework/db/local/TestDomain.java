@@ -6,6 +6,9 @@ package is.codion.framework.db.local;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.operation.AbstractDatabaseFunction;
 import is.codion.common.db.operation.AbstractDatabaseProcedure;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.Operations;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.AbstractReportWrapper;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
@@ -48,8 +51,8 @@ public final class TestDomain extends Domain {
     }
   };
 
-  public static final String PROCEDURE_ID = "procedureId";
-  public static final String FUNCTION_ID = "functionId";
+  public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = Operations.procedureType("procedureId");
+  public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = Operations.functionType("functionId");
 
   public TestDomain() {
     department();
@@ -192,13 +195,13 @@ public final class TestDomain extends Domain {
   }
 
   private void operations() {
-    addOperation(new AbstractDatabaseProcedure<EntityConnection>(PROCEDURE_ID, "executeProcedure") {
+    addOperation(new AbstractDatabaseProcedure<EntityConnection, Object>(PROCEDURE_ID) {
       @Override
       public void execute(final EntityConnection connection, final Object... arguments) {}
     });
-    addOperation(new AbstractDatabaseFunction<EntityConnection, List>(FUNCTION_ID, "executeFunction") {
+    addOperation(new AbstractDatabaseFunction<EntityConnection, Object, List<Object>>(FUNCTION_ID) {
       @Override
-      public List execute(final EntityConnection connection, final Object... arguments) {
+      public List<Object> execute(final EntityConnection connection, final Object... arguments) {
         return null;
       }
     });

@@ -5,6 +5,8 @@ package is.codion.framework.servlet;
 
 import is.codion.common.Serializer;
 import is.codion.common.Util;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
@@ -32,7 +34,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -216,11 +217,12 @@ public final class EntityService extends Application {
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("procedure")
-  public Response procedure(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                            @QueryParam("procedureId") final String procedureId) {
+  public Response procedure(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
-      connection.executeProcedure(procedureId, EntityService.<List<Object>>deserialize(request).toArray());
+      final List<Object> parameters = deserialize(request);
+
+      connection.executeProcedure((ProcedureType) parameters.get(0), (Object[]) parameters.get(1));
 
       return Response.ok().build();
     }
@@ -241,13 +243,12 @@ public final class EntityService extends Application {
   @Consumes(MediaType.APPLICATION_OCTET_STREAM)
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   @Path("function")
-  public Response function(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                           @QueryParam("functionId") final String functionId) {
+  public Response function(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
+      final List<Object> parameters = deserialize(request);
 
-      return Response.ok(Serializer.serialize(connection.executeFunction(functionId,
-              EntityService.<List<Object>>deserialize(request).toArray()))).build();
+      return Response.ok(Serializer.serialize(connection.executeFunction((FunctionType) parameters.get(0), (Object[]) parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

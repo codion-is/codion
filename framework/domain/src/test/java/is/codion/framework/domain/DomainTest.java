@@ -7,6 +7,9 @@ import is.codion.common.DateFormats;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.operation.AbstractDatabaseProcedure;
 import is.codion.common.db.operation.DatabaseOperation;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.Operations;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.event.EventListener;
 import is.codion.framework.domain.attribute.Attribute;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
@@ -595,7 +598,8 @@ public class DomainTest {
 
   @Test
   public void addOperationExisting() {
-    final DatabaseOperation operation = new AbstractDatabaseProcedure<DatabaseConnection>("operationId", "test") {
+    final ProcedureType<DatabaseConnection, Object> procedureType = Operations.procedureType("operationId");
+    final DatabaseOperation operation = new AbstractDatabaseProcedure<DatabaseConnection, Object>(procedureType) {
       @Override
       public void execute(final DatabaseConnection databaseConnection, final Object... arguments) {}
     };
@@ -605,12 +609,14 @@ public class DomainTest {
 
   @Test
   public void getFunctionNonExisting() {
-    assertThrows(IllegalArgumentException.class, () -> domain.getFunction("nonexistingfunctionid"));
+    final FunctionType<?, ?, ?> functionType = Operations.functionType("nonexisting");
+    assertThrows(IllegalArgumentException.class, () -> domain.getFunction(functionType));
   }
 
   @Test
   public void getProcedureNonExisting() {
-    assertThrows(IllegalArgumentException.class, () -> domain.getProcedure("nonexistingprocedureid"));
+    final ProcedureType<?, ?> procedureType = Operations.procedureType("nonexisting");
+    assertThrows(IllegalArgumentException.class, () -> domain.getProcedure(procedureType));
   }
 
   @Test

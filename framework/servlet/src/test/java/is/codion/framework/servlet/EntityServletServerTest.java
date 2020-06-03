@@ -58,7 +58,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
-import static java.util.Collections.emptyList;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -298,19 +298,17 @@ public class EntityServletServerTest {
     response.close();
 
     uriBuilder = createURIBuilder();
-    uriBuilder.setPath("function")
-            .addParameter("functionId", TestDomain.FUNCTION_ID);
+    uriBuilder.setPath("function");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(emptyList())));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(asList(TestDomain.FUNCTION_ID, new Object[0]))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
 
     uriBuilder = createURIBuilder();
-    uriBuilder.setPath("procedure")
-            .addParameter("procedureId", TestDomain.PROCEDURE_ID);
+    uriBuilder.setPath("procedure");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(emptyList())));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(asList(TestDomain.PROCEDURE_ID, new Object[0]))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
@@ -323,10 +321,9 @@ public class EntityServletServerTest {
     clientIdValue.set(UUID.randomUUID());
 
     uriBuilder = createURIBuilder();
-    uriBuilder.setPath("procedure")
-            .addParameter("procedureId", TestDomain.PROCEDURE_ID);
+    uriBuilder.setPath("procedure");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(emptyList())));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(asList(TestDomain.PROCEDURE_ID, new Object[0]))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();

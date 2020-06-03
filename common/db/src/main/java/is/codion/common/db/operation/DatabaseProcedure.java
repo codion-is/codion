@@ -8,8 +8,15 @@ import is.codion.common.db.exception.DatabaseException;
 /**
  * A database procedure
  * @param <C> the connection type required by this procedure
+ * @param <T> the procedure argument type
  */
-public interface DatabaseProcedure<C> extends DatabaseOperation {
+public interface DatabaseProcedure<C, T> extends DatabaseOperation {
+
+  /**
+   * @return this procedures type
+   */
+  @Override
+  ProcedureType<C, T> getType();
 
   /**
    * Executes this procedure with the given connection
@@ -17,5 +24,5 @@ public interface DatabaseProcedure<C> extends DatabaseOperation {
    * @param arguments the procedure arguments, if any
    * @throws DatabaseException in case of an exception during the execution
    */
-  void execute(C connection, Object... arguments) throws DatabaseException;
+  void execute(C connection, T... arguments) throws DatabaseException;
 }

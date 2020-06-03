@@ -4,6 +4,8 @@
 package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.user.User;
@@ -80,21 +82,23 @@ public interface EntityConnection {
 
   /**
    * Executes the function with the given id
-   * @param functionId the function id
+   * @param functionType the function id
    * @param arguments the arguments, if any
-   * @param <T> the result type
+   * @param <T> the argument type
+   * @param <R> the return type
    * @return the function return arguments
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <T> T executeFunction(String functionId, Object... arguments) throws DatabaseException;
+  <T, R> R executeFunction(FunctionType<EntityConnection, T, R> functionType, T... arguments) throws DatabaseException;
 
   /**
    * Executes the procedure with the given id
-   * @param procedureId the procedure id
+   * @param procedureType the procedure type
    * @param arguments the arguments, if any
+   * @param <T> the argument type
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  void executeProcedure(String procedureId, Object... arguments) throws DatabaseException;
+  <T> void executeProcedure(ProcedureType<EntityConnection, T> procedureType, T... arguments) throws DatabaseException;
 
   /**
    * Inserts the given entity, returning the primary key of the inserted entity.
