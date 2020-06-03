@@ -4,8 +4,6 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.identity.Identities;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import java.io.IOException;
@@ -311,7 +309,7 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.getDomainId().getName());
+    stream.writeObject(definition.getDomainName());
     stream.writeObject(definition.getEntityType().getName());
     final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
     for (int i = 0; i < primaryKeyProperties.size(); i++) {
@@ -320,9 +318,9 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    final Identity domainId = Identities.identity((String) stream.readObject());
+    final String domainName = (String) stream.readObject();
     final EntityType entityType = Entities.type((String) stream.readObject());
-    definition = DefaultEntities.getEntities(domainId).getDefinition(entityType);
+    definition = DefaultEntities.getEntities(domainName).getDefinition(entityType);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityType);
     }

@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.Text;
 import is.codion.framework.domain.attribute.Attribute;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -46,9 +45,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private final EntityType entityType;
 
   /**
-   * The domainId
+   * The domain name
    */
-  private Identity domainId;
+  private String domainName;
 
   /**
    * The caption to use for the entity type
@@ -204,8 +203,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Identity getDomainId() {
-    return domainId;
+  public String getDomainName() {
+    return domainName;
   }
 
   @Override
@@ -829,12 +828,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder domainId(final Identity domainId) {
-      requireNonNull(domainId, "domainId");
-      if (definition.domainId != null) {
-        throw new IllegalStateException("Domain id has already been set: " + definition.domainId);
+    public Builder domainName(final String domainName) {
+      requireNonNull(domainName, "domainName");
+      if (definition.domainName != null) {
+        throw new IllegalStateException("Domain name has already been set: " + definition.domainName);
       }
-      definition.domainId = domainId;
+      definition.domainName = domainName;
       return this;
     }
 

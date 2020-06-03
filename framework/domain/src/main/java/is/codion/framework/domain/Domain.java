@@ -15,8 +15,6 @@ import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.identity.Identities;
-import is.codion.framework.domain.identity.Identity;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
@@ -47,7 +45,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    */
   protected Domain() {
     this.domainType = new DomainType<>(getClass());
-    this.entities = new DomainEntities(Identities.identity(domainType.getName()));
+    this.entities = new DomainEntities(domainType.getName());
   }
 
   /**
@@ -56,7 +54,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    */
   protected Domain(final DomainType<?> domainType) {
     this.domainType = domainType;
-    this.entities = new DomainEntities(Identities.identity(domainType.getName()));
+    this.entities = new DomainEntities(domainType.getName());
   }
 
   /**
@@ -184,8 +182,8 @@ public abstract class Domain implements EntityDefinition.Provider {
 
     private static final long serialVersionUID = 1;
 
-    private DomainEntities(final Identity domainId) {
-      super(domainId);
+    private DomainEntities(final String domainName) {
+      super(domainName);
     }
 
     protected EntityDefinition.Builder defineInternal(final EntityType entityType, final String tableName,

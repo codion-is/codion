@@ -141,7 +141,7 @@ public class EntityServletServerTest {
     //test with missing authentication info
     URIBuilder uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
-    uriBuilder.addParameter("domainTypeName", ENTITIES.getDomainId().getName());
+    uriBuilder.addParameter("domainTypeName", ENTITIES.getDomainName());
     CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
