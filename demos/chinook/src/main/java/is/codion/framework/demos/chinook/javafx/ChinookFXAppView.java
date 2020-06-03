@@ -6,7 +6,14 @@ package is.codion.framework.demos.chinook.javafx;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.Chinook.Album;
+import is.codion.framework.demos.chinook.domain.Chinook.Artist;
+import is.codion.framework.demos.chinook.domain.Chinook.Customer;
+import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
+import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
+import is.codion.framework.demos.chinook.domain.Chinook.Playlist;
+import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
+import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.javafx.framework.model.FXEntityModel;
 import is.codion.javafx.framework.ui.EntityApplicationView;
 import is.codion.javafx.framework.ui.EntityView;
@@ -21,11 +28,11 @@ public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
   protected void initializeEntityViews() {
     final ChinookFXAppModel model = getModel();
 
-    final FXEntityModel artistModel = model.getEntityModel(Chinook.T_ARTIST);
+    final FXEntityModel artistModel = model.getEntityModel(Artist.TYPE);
     final EntityView artists = new EntityView(artistModel, new ArtistEditVew(artistModel.getEditModel()));
-    final FXEntityModel albumModel = artistModel.getDetailModel(Chinook.T_ALBUM);
+    final FXEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
     final EntityView albums = new EntityView(albumModel);
-    final FXEntityModel trackModel = albumModel.getDetailModel(Chinook.T_TRACK);
+    final FXEntityModel trackModel = albumModel.getDetailModel(Track.TYPE);
     final EntityView tracks = new EntityView(trackModel);
 
     artists.addDetailView(albums);
@@ -34,9 +41,9 @@ public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
     addEntityView(artists);
 
     //playlists
-    final FXEntityModel playlistModel = model.getEntityModel(Chinook.T_PLAYLIST);
+    final FXEntityModel playlistModel = model.getEntityModel(Playlist.TYPE);
     final EntityView playlists = new EntityView(playlistModel);
-    final FXEntityModel playlisttrackModel = playlistModel.getDetailModel(Chinook.T_PLAYLISTTRACK);
+    final FXEntityModel playlisttrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);
     final EntityView playlisttracks = new EntityView(playlisttrackModel);
 
     playlists.addDetailView(playlisttracks);
@@ -44,11 +51,11 @@ public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
     addEntityView(playlists);
 
     //customers
-    final FXEntityModel customerModel = model.getEntityModel(Chinook.T_CUSTOMER);
+    final FXEntityModel customerModel = model.getEntityModel(Customer.TYPE);
     final EntityView customers = new EntityView(customerModel);
-    final FXEntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
+    final FXEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
     final EntityView invoices = new EntityView(invoiceModel);
-    final FXEntityModel invoicelineModel = invoiceModel.getDetailModel(Chinook.T_INVOICELINE);
+    final FXEntityModel invoicelineModel = invoiceModel.getDetailModel(InvoiceLine.TYPE);
     final EntityView invoicelines = new EntityView(invoicelineModel);
 
     customers.addDetailView(invoices);

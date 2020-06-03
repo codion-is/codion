@@ -23,7 +23,8 @@ import java.util.List;
 
 import static is.codion.common.db.Operator.LIKE;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
-import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.*;
+import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
+import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.entity.Entities.getKeys;
 import static is.codion.framework.domain.entity.Entities.type;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
@@ -42,51 +43,55 @@ public final class EntitiesTutorial {
 
     //EntityType constant for the table entityType ('T_' prefix)
     //and an Attribute for each column
-    public static final EntityType T_ARTIST = type("chinook.artist");
-    public static final Attribute<Integer> ARTIST_ID = T_ARTIST.integerAttribute("artistid");
-    public static final Attribute<String> ARTIST_NAME = T_ARTIST.stringAttribute("name");
+    public interface Artist {
+      EntityType TYPE = type("chinook.artist");
+      Attribute<Integer> ID = TYPE.integerAttribute("artistid");
+      Attribute<String> NAME = TYPE.stringAttribute("name");
+    }
 
     //EntityType constant for the table entityType ('T_' prefix),
     //and an Attribute for each column and one for the foreign key relation
-    public static final EntityType T_ALBUM = type("chinook.album");
-    public static final Attribute<Integer> ALBUM_ALBUMID = T_ALBUM.integerAttribute("albumid");
-    public static final Attribute<String> ALBUM_TITLE = T_ALBUM.stringAttribute("title");
-    public static final Attribute<Integer> ALBUM_ARTISTID = T_ALBUM.integerAttribute("artistid");
-    public static final Attribute<Entity> ALBUM_ARTIST_FK = T_ALBUM.entityAttribute("artist_fk");
+    public interface Album {
+      EntityType TYPE = type("chinook.album");
+      Attribute<Integer> ID = TYPE.integerAttribute("albumid");
+      Attribute<String> TITLE = TYPE.stringAttribute("title");
+      Attribute<Integer> ARTIST_ID = TYPE.integerAttribute("artistid");
+      Attribute<Entity> ARTIST_FK = TYPE.entityAttribute("artist_fk");
+    }
 
     public Chinook() {
       //create properties for the columns in the table 'chinook.artist'
-      Property.Builder artistId = primaryKeyProperty(ARTIST_ID);
-      Property.Builder artistName = columnProperty(ARTIST_NAME, "Name");
+      Property.Builder<Integer> artistId = primaryKeyProperty(Artist.ID);
+      Property.Builder<String> artistName = columnProperty(Artist.NAME, "Name");
       artistName.nullable(false).maximumLength(120);
 
       //define an entity based on the table 'chinook.artist',
       //with the above properties
-      define(T_ARTIST, artistId, artistName)
+      define(Artist.TYPE, artistId, artistName)
               .keyGenerator(automatic("chinook.artist"))
-              .stringProvider(new StringProvider(ARTIST_NAME))
+              .stringProvider(new StringProvider(Artist.NAME))
               .smallDataset(true)
               .caption("Artist");
 
       //create properties for the columns in the table 'chinook.album'
-      Property.Builder albumId = primaryKeyProperty(ALBUM_ALBUMID);
-      Property.Builder albumTitle = columnProperty(ALBUM_TITLE, "Title");
+      Property.Builder<Integer> albumId = primaryKeyProperty(Album.ID);
+      Property.Builder<String> albumTitle = columnProperty(Album.TITLE, "Title");
       albumTitle.nullable(false).maximumLength(160);
       //we wrap the actual 'artistid' column property in a foreign key
       //referencing the entity identified by T_ARTIST
-      Property.Builder albumArtist =
-              foreignKeyProperty(ALBUM_ARTIST_FK, "Artist", T_ARTIST,
-                      columnProperty(ALBUM_ARTISTID));
+      Property.Builder<Entity> albumArtist =
+              foreignKeyProperty(Album.ARTIST_FK, "Artist", Artist.TYPE,
+                      columnProperty(Album.ARTIST_ID));
       albumArtist.nullable(false);
 
       //define an entity based on the table 'chinook.album',
       //with the above properties
-      define(T_ALBUM, albumId, albumTitle, albumArtist)
+      define(Album.TYPE, albumId, albumTitle, albumArtist)
               .keyGenerator(automatic("chinook.album"))
               .stringProvider(new StringProvider()
-                      .addValue(ALBUM_ARTIST_FK)
+                      .addValue(Album.ARTIST_FK)
                       .addText(" - ")
-                      .addValue(ALBUM_TITLE))
+                      .addValue(Album.TITLE))
               .caption("Album");
     }
   }
@@ -104,13 +109,13 @@ public final class EntitiesTutorial {
     //select the artist Metallica by name, the selectSingle() method
     //throws a RecordNotFoundException if no record is found and a
     //MultipleRecordsFoundException if more than one are found
-    Entity metallica = connection.selectSingle(T_ARTIST, ARTIST_NAME, "Metallica");
+    Entity metallica = connection.selectSingle(Artist.TYPE, Artist.NAME, "Metallica");
 
     //select all albums by Metallica, by using select() with the
     //Metallica Entity as condition value, basically asking for the
     //records where the given foreign key references that specific Entity
     //select() returns an empty list if none are found
-    List<Entity> albums = connection.select(T_ALBUM, ALBUM_ARTIST_FK, metallica);
+    List<Entity> albums = connection.select(Album.TYPE, Album.ARTIST_FK, metallica);
 
     albums.forEach(System.out::println);
 
@@ -118,17 +123,17 @@ public final class EntitiesTutorial {
     //by the Conditions factory class.
     //we create a select condition, where we specify the type of the entity
     //we're selecting, the attributes we're searching by, the type of condition and the value.
-    EntitySelectCondition artistsCondition = selectCondition(T_ARTIST, ARTIST_NAME, LIKE, "An%");
+    EntitySelectCondition artistsCondition = selectCondition(Artist.TYPE, Artist.NAME, LIKE, "An%");
     //and we set the order by clause
-    artistsCondition.setOrderBy(orderBy().ascending(ARTIST_NAME));
+    artistsCondition.setOrderBy(orderBy().ascending(Artist.NAME));
 
     List<Entity> artistsStartingWithAn = connection.select(artistsCondition);
 
     artistsStartingWithAn.forEach(System.out::println);
 
     //create a select condition
-    EntitySelectCondition albumsCondition = selectCondition(T_ALBUM, ALBUM_ARTIST_FK, LIKE, artistsStartingWithAn);
-    albumsCondition.setOrderBy(orderBy().ascending(ALBUM_ARTISTID).descending(ALBUM_TITLE));
+    EntitySelectCondition albumsCondition = selectCondition(Album.TYPE, Album.ARTIST_FK, LIKE, artistsStartingWithAn);
+    albumsCondition.setOrderBy(orderBy().ascending(Album.ARTIST_ID).descending(Album.TITLE));
 
     List<Entity> albumsByArtistsStartingWithAn = connection.select(albumsCondition);
 
@@ -146,9 +151,9 @@ public final class EntitiesTutorial {
     Entities entities = connectionProvider.getEntities();
 
     //lets create a new band
-    Entity myBand = entities.entity(T_ARTIST);
+    Entity myBand = entities.entity(Artist.TYPE);
     //and give the band a name
-    myBand.put(ARTIST_NAME, "My band name");
+    myBand.put(Artist.NAME, "My band name");
 
     //we start a transaction
     connection.beginTransaction();
@@ -163,11 +168,11 @@ public final class EntitiesTutorial {
     connection.insert(myBand);
 
     //now for our first album
-    Entity album = entities.entity(T_ALBUM);
+    Entity album = entities.entity(Album.TYPE);
     //set the album artist by setting the artist foreign key to my band
-    album.put(ALBUM_ARTIST_FK, myBand);
+    album.put(Album.ARTIST_FK, myBand);
     //and set the title
-    album.put(ALBUM_TITLE, "My first album");
+    album.put(Album.TITLE, "My first album");
 
     //and insert the album
     connection.insert(album);
@@ -176,8 +181,8 @@ public final class EntitiesTutorial {
     connection.commitTransaction();
 
     //lets rename our album and our band as well
-    myBand.put(ARTIST_NAME, "A proper name");
-    album.put(ALBUM_TITLE, "A proper title");
+    myBand.put(Artist.NAME, "A proper name");
+    album.put(Album.TITLE, "A proper title");
 
     //and perform the update, note that we only have to use transactions
     //when we're performing multiple insert/update or delete calls,

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
@@ -16,8 +16,6 @@ import net.sf.jasperreports.swing.JRViewer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import static is.codion.framework.demos.chinook.domain.Chinook.CUSTOMER_CUSTOMERID;
 
 public class CustomerTablePanel extends EntityTablePanel {
 
@@ -35,12 +33,12 @@ public class CustomerTablePanel extends EntityTablePanel {
   }
 
   private void viewCustomerReport() throws Exception {
-    final Collection<Long> customerIDs = Entities.getDistinctValues(CUSTOMER_CUSTOMERID,
+    final Collection<Long> customerIDs = Entities.getDistinctValues(Customer.ID,
             getTableModel().getSelectionModel().getSelectedItems());
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
 
-    EntityReports.viewJdbcReport(CustomerTablePanel.this, Chinook.CUSTOMER_REPORT,
+    EntityReports.viewJdbcReport(CustomerTablePanel.this, Customer.CUSTOMER_REPORT,
             reportParameters, JRViewer::new, null, getTableModel().getConnectionProvider());
   }
 }

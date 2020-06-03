@@ -7,7 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
 import is.codion.common.user.Users;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.Chinook.Employee;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.demos.chinook.ui.EmployeeEditPanel;
 import is.codion.framework.model.EntityEditModel;
@@ -40,7 +40,7 @@ public final class MultiPanelDemo {
 
     EntityEditModel.POST_EDIT_EVENTS.set(true);
 
-    SwingEntityModel employeeModel = new SwingEntityModel(Chinook.T_EMPLOYEE, connectionProvider);
+    SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, connectionProvider);
     employeeModel.refresh();
 
     JPanel basePanel = new JPanel(gridLayout(2, 2));

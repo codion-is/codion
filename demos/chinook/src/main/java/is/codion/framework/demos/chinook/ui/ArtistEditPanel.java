@@ -6,7 +6,7 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static is.codion.framework.demos.chinook.domain.Chinook.ARTIST_NAME;
+import static is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public class ArtistEditPanel extends EntityEditPanel {
@@ -17,11 +17,11 @@ public class ArtistEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(ARTIST_NAME);
+    setInitialFocusAttribute(Artist.NAME);
 
-    createTextField(ARTIST_NAME).setColumns(18);
+    createTextField(Artist.NAME).setColumns(18);
 
     setLayout(gridLayout(1, 1));
-    addPropertyPanel(ARTIST_NAME);
+    addPropertyPanel(Artist.NAME);
   }
 }

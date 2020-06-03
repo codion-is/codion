@@ -3,10 +3,10 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
+import is.codion.framework.demos.chinook.domain.Chinook.Genre;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static is.codion.framework.demos.chinook.domain.Chinook.GENRE_NAME;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public class GenreEditPanel extends EntityEditPanel {
@@ -17,11 +17,11 @@ public class GenreEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(GENRE_NAME);
+    setInitialFocusAttribute(Genre.NAME);
 
-    createTextField(GENRE_NAME).setColumns(12);
+    createTextField(Genre.NAME).setColumns(12);
 
     setLayout(gridLayout(1, 1));
-    addPropertyPanel(GENRE_NAME);
+    addPropertyPanel(Genre.NAME);
   }
 }

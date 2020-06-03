@@ -18,56 +18,56 @@ public class ChinookTest extends EntityTestUnit {
 
   @Test
   public void album() throws Exception {
-    test(T_ALBUM);
+    test(Album.TYPE);
   }
 
   @Test
   public void artist() throws Exception {
-    test(T_ARTIST);
+    test(Artist.TYPE);
   }
 
   @Test
   public void customer() throws Exception {
-    test(T_CUSTOMER);
+    test(Customer.TYPE);
   }
 
   @Test
   public void employee() throws Exception {
-    test(T_EMPLOYEE);
+    test(Employee.TYPE);
   }
 
   @Test
   public void genre() throws Exception {
-    test(T_GENRE);
+    test(Genre.TYPE);
   }
 
   @Test
   public void invoce() throws Exception {
-    test(T_INVOICE);
+    test(Invoice.TYPE);
   }
 
   @Test
   public void invoiceLine() throws Exception {
-    test(T_INVOICELINE);
+    test(InvoiceLine.TYPE);
   }
 
   @Test
   public void mediaType() throws Exception {
-    test(T_MEDIATYPE);
+    test(MediaType.TYPE);
   }
 
   @Test
   public void playlist() throws Exception {
-    test(T_PLAYLIST);
+    test(Playlist.TYPE);
   }
 
   @Test
   public void playlistTrack() throws Exception {
-    test(T_PLAYLISTTRACK);
+    test(PlaylistTrack.TYPE);
   }
 
   @Test
   public void track() throws Exception {
-    test(T_TRACK);
+    test(Track.TYPE);
   }
 }
