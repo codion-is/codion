@@ -322,7 +322,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   static <T> List<T> getValues(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
-    return entities.stream().map(entity -> (T) entity.get(attribute)).collect(toList());
+    return entities.stream().map(entity -> entity.get(attribute)).collect(toList());
   }
 
   /**
@@ -335,7 +335,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   static <T> List<T> getDistinctValues(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
-    return entities.stream().map(entity -> (T) entity.get(attribute)).distinct().filter(Objects::nonNull).collect(toList());
+    return entities.stream().map(entity -> entity.get(attribute)).distinct().filter(Objects::nonNull).collect(toList());
   }
 
   /**
@@ -348,7 +348,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   static <T> List<T> getDistinctValuesIncludingNull(final Attribute<T> attribute, final Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     requireNonNull(entities, "entities");
-    return entities.stream().map(entity -> (T) entity.get(attribute)).distinct().collect(toList());
+    return entities.stream().map(entity -> entity.get(attribute)).distinct().collect(toList());
   }
 
   /**
@@ -394,7 +394,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @return a Map of entities mapped to property value
    */
   static <K> LinkedHashMap<K, List<Entity>> mapToValue(final Attribute<K> attribute, final Collection<Entity> entities) {
-    return map(entities, value -> (K) value.get(attribute));
+    return map(entities, value -> value.get(attribute));
   }
 
   /**

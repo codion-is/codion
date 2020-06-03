@@ -24,6 +24,8 @@ public final class Operations {
 
   private static final class DefaultProcedureType<C, T> implements ProcedureType<C, T>, Serializable {
 
+    private static final long serialVersionUID = 1;
+
     private final String name;
 
     private DefaultProcedureType(final String name) {
@@ -55,6 +57,8 @@ public final class Operations {
   }
 
   private static final class DefaultFunctionType<C, T, R> implements FunctionType<C, T, R>, Serializable {
+
+    private static final long serialVersionUID = 1;
 
     private final String name;
 

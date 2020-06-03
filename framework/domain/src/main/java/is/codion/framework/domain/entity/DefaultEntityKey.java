@@ -232,7 +232,7 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   private Object putInternal(final ColumnProperty<Object> property, final Object value) {
-    final Object newValue = property.prepareValue((Object) property.getAttribute().validateType(value));
+    final Object newValue = property.prepareValue(property.getAttribute().validateType(value));
     values.put(property.getAttribute(), newValue);
     if (singleIntegerKey) {
       setHashCode((Integer) value);

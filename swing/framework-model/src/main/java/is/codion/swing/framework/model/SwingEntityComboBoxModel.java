@@ -459,7 +459,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
         return null;
       }
 
-      return (T) getSelectedValue().get(attribute);
+      return getSelectedValue().get(attribute);
     }
 
     /**

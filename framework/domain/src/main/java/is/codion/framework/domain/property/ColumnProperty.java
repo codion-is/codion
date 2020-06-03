@@ -157,6 +157,7 @@ public interface ColumnProperty<T> extends Property<T> {
 
   /**
    * Provides setters for ColumnProperty properties
+   * @param <T> the underlying type
    */
   interface Builder<T> extends Property.Builder<T> {
 

@@ -6,6 +6,7 @@ package is.codion.common.db.operation;
 /**
  * A base Procedure implementation
  * @param <C> the connection type to use when executing this function
+ * @param <T> the procedure argument type
  */
 public abstract class AbstractDatabaseProcedure<C, T> extends AbstractDatabaseOperation implements DatabaseProcedure<C, T> {
 
