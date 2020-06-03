@@ -3,11 +3,11 @@
  */
 package is.codion.framework.demos.petstore.ui;
 
-import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import static is.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.framework.demos.petstore.domain.Petstore.Product;
 
 public class ProductEditPanel extends EntityEditPanel {
 
@@ -17,15 +17,15 @@ public class ProductEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(PRODUCT_CATEGORY_FK);
+    setInitialFocusAttribute(Product.CATEGORY_FK);
 
-    createForeignKeyComboBox(PRODUCT_CATEGORY_FK);
-    createTextField(PRODUCT_NAME);
-    createTextField(PRODUCT_DESCRIPTION).setColumns(16);
+    createForeignKeyComboBox(Product.CATEGORY_FK);
+    createTextField(Product.NAME);
+    createTextField(Product.DESCRIPTION).setColumns(16);
 
-    setLayout(new FlexibleGridLayout(3, 1, 5, 5));
-    addPropertyPanel(PRODUCT_CATEGORY_FK);
-    addPropertyPanel(PRODUCT_NAME);
-    addPropertyPanel(PRODUCT_DESCRIPTION);
+    setLayout(Layouts.flexibleGridLayout(3, 1));
+    addPropertyPanel(Product.CATEGORY_FK);
+    addPropertyPanel(Product.NAME);
+    addPropertyPanel(Product.DESCRIPTION);
   }
 }

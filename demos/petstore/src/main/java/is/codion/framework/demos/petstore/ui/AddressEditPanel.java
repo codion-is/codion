@@ -3,13 +3,13 @@
  */
 package is.codion.framework.demos.petstore.ui;
 
-import is.codion.swing.common.ui.layout.FlexibleGridLayout;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JLabel;
 
-import static is.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.framework.demos.petstore.domain.Petstore.Address;
 
 public class AddressEditPanel extends EntityEditPanel {
 
@@ -19,24 +19,24 @@ public class AddressEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusAttribute(ADDRESS_CITY);
+    setInitialFocusAttribute(Address.CITY);
 
-    createTextField(ADDRESS_CITY).setColumns(12);
-    createTextField(ADDRESS_STATE).setColumns(12);
-    createTextField(ADDRESS_ZIP).setColumns(12);
-    createTextField(ADDRESS_STREET_1).setColumns(12);
-    createTextField(ADDRESS_STREET_2).setColumns(12);
-    createTextField(ADDRESS_LATITUDE);
-    createTextField(ADDRESS_LONGITUDE);
+    createTextField(Address.CITY).setColumns(12);
+    createTextField(Address.STATE).setColumns(12);
+    createTextField(Address.ZIP).setColumns(12);
+    createTextField(Address.STREET_1).setColumns(12);
+    createTextField(Address.STREET_2).setColumns(12);
+    createTextField(Address.LATITUDE);
+    createTextField(Address.LONGITUDE);
 
-    setLayout(new FlexibleGridLayout(4, 2, 5, 5));
-    addPropertyPanel(ADDRESS_CITY);
-    addPropertyPanel(ADDRESS_STATE);
+    setLayout(Layouts.flexibleGridLayout(4, 2));
+    addPropertyPanel(Address.CITY);
+    addPropertyPanel(Address.STATE);
     add(new JLabel());
-    addPropertyPanel(ADDRESS_ZIP);
-    addPropertyPanel(ADDRESS_STREET_1);
-    addPropertyPanel(ADDRESS_STREET_2);
-    addPropertyPanel(ADDRESS_LATITUDE);
-    addPropertyPanel(ADDRESS_LONGITUDE);
+    addPropertyPanel(Address.ZIP);
+    addPropertyPanel(Address.STREET_1);
+    addPropertyPanel(Address.STREET_2);
+    addPropertyPanel(Address.LATITUDE);
+    addPropertyPanel(Address.LONGITUDE);
   }
 }

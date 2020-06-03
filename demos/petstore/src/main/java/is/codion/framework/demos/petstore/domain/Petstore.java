@@ -29,203 +29,217 @@ public final class Petstore extends Domain {
     tagItem();
   }
 
-  public static final EntityType T_ADDRESS = type("address");
-  public static final Attribute<Integer> ADDRESS_ID = T_ADDRESS.integerAttribute("Address id");
-  public static final Attribute<String> ADDRESS_STREET_1 = T_ADDRESS.stringAttribute("Street 1");
-  public static final Attribute<String> ADDRESS_STREET_2 = T_ADDRESS.stringAttribute("Street 2");
-  public static final Attribute<String> ADDRESS_CITY = T_ADDRESS.stringAttribute("City");
-  public static final Attribute<String> ADDRESS_STATE = T_ADDRESS.stringAttribute("State");
-  public static final Attribute<Integer> ADDRESS_ZIP = T_ADDRESS.integerAttribute("Zip");
-  public static final Attribute<Double> ADDRESS_LATITUDE = T_ADDRESS.doubleAttribute("Latitude");
-  public static final Attribute<Double> ADDRESS_LONGITUDE = T_ADDRESS.doubleAttribute("Longitude");
+  public interface Address {
+    EntityType TYPE = type("address");
+    Attribute<Integer> ID = TYPE.integerAttribute("Address id");
+    Attribute<String> STREET_1 = TYPE.stringAttribute("Street 1");
+    Attribute<String> STREET_2 = TYPE.stringAttribute("Street 2");
+    Attribute<String> CITY = TYPE.stringAttribute("City");
+    Attribute<String> STATE = TYPE.stringAttribute("State");
+    Attribute<Integer> ZIP = TYPE.integerAttribute("Zip");
+    Attribute<Double> LATITUDE = TYPE.doubleAttribute("Latitude");
+    Attribute<Double> LONGITUDE = TYPE.doubleAttribute("Longitude");
+  }
 
   void address() {
-    define(T_ADDRESS, "petstore.address",
-            primaryKeyProperty(ADDRESS_ID)
+    define(Address.TYPE, "petstore.address",
+            primaryKeyProperty(Address.ID)
                     .columnName("addressid"),
-            columnProperty(ADDRESS_STREET_1, ADDRESS_STREET_1.getName())
+            columnProperty(Address.STREET_1, Address.STREET_1.getName())
                     .columnName("street1").maximumLength(55).nullable(false),
-            columnProperty(ADDRESS_STREET_2, ADDRESS_STREET_2.getName())
+            columnProperty(Address.STREET_2, Address.STREET_2.getName())
                     .columnName("street2").maximumLength(55),
-            columnProperty(ADDRESS_CITY, ADDRESS_CITY.getName())
+            columnProperty(Address.CITY, Address.CITY.getName())
                     .columnName("city").maximumLength(55).nullable(false),
-            columnProperty(ADDRESS_STATE, ADDRESS_STATE.getName())
+            columnProperty(Address.STATE, Address.STATE.getName())
                     .columnName("state").maximumLength(25).nullable(false),
-            columnProperty(ADDRESS_ZIP, ADDRESS_ZIP.getName())
+            columnProperty(Address.ZIP, Address.ZIP.getName())
                     .columnName("zip").nullable(false),
-            columnProperty(ADDRESS_LATITUDE, ADDRESS_LATITUDE.getName())
+            columnProperty(Address.LATITUDE, Address.LATITUDE.getName())
                     .columnName("latitude").nullable(false).maximumFractionDigits(2),
-            columnProperty(ADDRESS_LONGITUDE, ADDRESS_LONGITUDE.getName())
+            columnProperty(Address.LONGITUDE, Address.LONGITUDE.getName())
                     .columnName("longitude").nullable(false).maximumFractionDigits(2))
             .keyGenerator(increment("petstore.address", "addressid"))
-            .orderBy(orderBy().ascending(ADDRESS_CITY, ADDRESS_STREET_1, ADDRESS_STREET_2))
-            .stringProvider(new StringProvider(ADDRESS_STREET_1).addText(" ")
-                    .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
-                    .addValue(ADDRESS_ZIP).addText(", ").addValue(ADDRESS_STATE))
+            .orderBy(orderBy().ascending(Address.CITY, Address.STREET_1, Address.STREET_2))
+            .stringProvider(new StringProvider(Address.STREET_1).addText(" ")
+                    .addValue(Address.STREET_2).addText(", ").addValue(Address.CITY).addText(" ")
+                    .addValue(Address.ZIP).addText(", ").addValue(Address.STATE))
             .caption("Addresses");
   }
 
-  public static final EntityType T_CATEGORY = type("category");
-  public static final Attribute<Integer> CATEGORY_ID = T_CATEGORY.integerAttribute("Category id");
-  public static final Attribute<String> CATEGORY_NAME = T_CATEGORY.stringAttribute("Name");
-  public static final Attribute<String> CATEGORY_DESCRIPTION = T_CATEGORY.stringAttribute("Description");
-  public static final Attribute<String> CATEGORY_IMAGE_URL = T_CATEGORY.stringAttribute("Image URL");
+  public interface Category {
+    EntityType TYPE = type("category");
+    Attribute<Integer> ID = TYPE.integerAttribute("Category id");
+    Attribute<String> NAME = TYPE.stringAttribute("Name");
+    Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
+    Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
+  }
 
   void category() {
-    define(T_CATEGORY, "petstore.category",
-            primaryKeyProperty(CATEGORY_ID)
+    define(Category.TYPE, "petstore.category",
+            primaryKeyProperty(Category.ID)
                     .columnName("categoryid"),
-            columnProperty(CATEGORY_NAME, CATEGORY_NAME.getName())
+            columnProperty(Category.NAME, Category.NAME.getName())
                     .columnName("name").maximumLength(25).nullable(false),
-            columnProperty(CATEGORY_DESCRIPTION, CATEGORY_DESCRIPTION.getName())
+            columnProperty(Category.DESCRIPTION, Category.DESCRIPTION.getName())
                     .columnName("description").maximumLength(255).nullable(false),
-            columnProperty(CATEGORY_IMAGE_URL, CATEGORY_IMAGE_URL.getName())
+            columnProperty(Category.IMAGE_URL, Category.IMAGE_URL.getName())
                     .columnName("imageurl").hidden(true))
             .keyGenerator(increment("petstore.category", "categoryid"))
-            .orderBy(orderBy().ascending(CATEGORY_NAME))
-            .stringProvider(new StringProvider(CATEGORY_NAME))
+            .orderBy(orderBy().ascending(Category.NAME))
+            .stringProvider(new StringProvider(Category.NAME))
             .caption("Categories");
   }
 
-  public static final EntityType T_PRODUCT = type("product");
-  public static final Attribute<Integer> PRODUCT_ID = T_PRODUCT.integerAttribute("Product id");
-  public static final Attribute<Integer> PRODUCT_CATEGORY_ID = T_PRODUCT.integerAttribute("Category id");
-  public static final Attribute<Entity> PRODUCT_CATEGORY_FK = T_PRODUCT.entityAttribute("Category");
-  public static final Attribute<String> PRODUCT_NAME = T_PRODUCT.stringAttribute("Name");
-  public static final Attribute<String> PRODUCT_DESCRIPTION = T_PRODUCT.stringAttribute("Description");
-  public static final Attribute<String> PRODUCT_IMAGE_URL = T_PRODUCT.stringAttribute("Image URL");
+  public interface Product {
+    EntityType TYPE = type("product");
+    Attribute<Integer> ID = TYPE.integerAttribute("Product id");
+    Attribute<Integer> CATEGORY_ID = TYPE.integerAttribute("Category id");
+    Attribute<Entity> CATEGORY_FK = TYPE.entityAttribute("Category");
+    Attribute<String> NAME = TYPE.stringAttribute("Name");
+    Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
+    Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
+  }
 
   void product() {
-    define(T_PRODUCT, "petstore.product",
-            primaryKeyProperty(PRODUCT_ID)
+    define(Product.TYPE, "petstore.product",
+            primaryKeyProperty(Product.ID)
                     .columnName("productid"),
-            foreignKeyProperty(PRODUCT_CATEGORY_FK, PRODUCT_CATEGORY_FK.getName(), T_CATEGORY,
-                    columnProperty(PRODUCT_CATEGORY_ID)
+            foreignKeyProperty(Product.CATEGORY_FK, Product.CATEGORY_FK.getName(), Category.TYPE,
+                    columnProperty(Product.CATEGORY_ID)
                             .columnName("categoryid")).nullable(false),
-            columnProperty(PRODUCT_NAME, PRODUCT_NAME.getName())
+            columnProperty(Product.NAME, Product.NAME.getName())
                     .columnName("name").maximumLength(25).nullable(false),
-            columnProperty(PRODUCT_DESCRIPTION, PRODUCT_DESCRIPTION.getName())
+            columnProperty(Product.DESCRIPTION, Product.DESCRIPTION.getName())
                     .columnName("description").maximumLength(255).nullable(false),
-            columnProperty(PRODUCT_IMAGE_URL, PRODUCT_IMAGE_URL.getName())
+            columnProperty(Product.IMAGE_URL, Product.IMAGE_URL.getName())
                     .columnName("imageurl").maximumLength(55).hidden(true))
             .keyGenerator(increment("petstore.product", "productid"))
-            .orderBy(orderBy().ascending(PRODUCT_NAME))
-            .stringProvider(new StringProvider(PRODUCT_CATEGORY_FK)
-                    .addText(" - ").addValue(PRODUCT_NAME))
+            .orderBy(orderBy().ascending(Product.NAME))
+            .stringProvider(new StringProvider(Product.CATEGORY_FK)
+                    .addText(" - ").addValue(Product.NAME))
             .caption("Products");
   }
 
-  public static final EntityType T_SELLER_CONTACT_INFO = type("sellercontactinfo");
-  public static final Attribute<Integer> SELLER_CONTACT_INFO_ID = T_SELLER_CONTACT_INFO.integerAttribute("Contactinfo id");
-  public static final Attribute<String> SELLER_CONTACT_INFO_FIRST_NAME = T_SELLER_CONTACT_INFO.stringAttribute("First name");
-  public static final Attribute<String> SELLER_CONTACT_INFO_LAST_NAME = T_SELLER_CONTACT_INFO.stringAttribute("Last name");
-  public static final Attribute<String> SELLER_CONTACT_INFO_EMAIL = T_SELLER_CONTACT_INFO.stringAttribute("Email");
+  public interface SellerContactInfo {
+    EntityType TYPE = type("sellercontactinfo");
+    Attribute<Integer> ID = TYPE.integerAttribute("Contactinfo id");
+    Attribute<String> FIRST_NAME = TYPE.stringAttribute("First name");
+    Attribute<String> LAST_NAME = TYPE.stringAttribute("Last name");
+    Attribute<String> EMAIL = TYPE.stringAttribute("Email");
+  }
 
   void sellerContactInfo() {
-    define(T_SELLER_CONTACT_INFO, "petstore.sellercontactinfo",
-            primaryKeyProperty(SELLER_CONTACT_INFO_ID)
+    define(SellerContactInfo.TYPE, "petstore.sellercontactinfo",
+            primaryKeyProperty(SellerContactInfo.ID)
                     .columnName("contactinfoid"),
-            columnProperty(SELLER_CONTACT_INFO_FIRST_NAME, SELLER_CONTACT_INFO_FIRST_NAME.getName())
+            columnProperty(SellerContactInfo.FIRST_NAME, SellerContactInfo.FIRST_NAME.getName())
                     .searchProperty(true).columnName("firstname").maximumLength(24).nullable(false),
-            columnProperty(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_LAST_NAME.getName())
+            columnProperty(SellerContactInfo.LAST_NAME, SellerContactInfo.LAST_NAME.getName())
                     .searchProperty(true).columnName("lastname").maximumLength(24).nullable(false),
-            columnProperty(SELLER_CONTACT_INFO_EMAIL, SELLER_CONTACT_INFO_EMAIL.getName())
+            columnProperty(SellerContactInfo.EMAIL, SellerContactInfo.EMAIL.getName())
                     .columnName("email").maximumLength(24).nullable(false))
             .keyGenerator(increment("petstore.sellercontactinfo", "contactinfoid"))
             .orderBy(orderBy()
-                    .ascending(SELLER_CONTACT_INFO_LAST_NAME, SELLER_CONTACT_INFO_FIRST_NAME))
-            .stringProvider(new StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
-                    .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
+                    .ascending(SellerContactInfo.LAST_NAME, SellerContactInfo.FIRST_NAME))
+            .stringProvider(new StringProvider(SellerContactInfo.LAST_NAME)
+                    .addText(", ").addValue(SellerContactInfo.FIRST_NAME))
             .caption("Seller info");
   }
 
-  public static final EntityType T_ITEM = type("item");
-  public static final Attribute<Integer> ITEM_ID = T_ITEM.integerAttribute("Item id");
-  public static final Attribute<Integer> ITEM_PRODUCT_ID = T_ITEM.integerAttribute("Product id");
-  public static final Attribute<Entity> ITEM_PRODUCT_FK = T_ITEM.entityAttribute("Product");
-  public static final Attribute<String> ITEM_NAME = T_ITEM.stringAttribute("Name");
-  public static final Attribute<String> ITEM_DESCRIPTION = T_ITEM.stringAttribute("Description");
-  public static final Attribute<String> ITEM_IMAGE_URL = T_ITEM.stringAttribute("Image URL");
-  public static final Attribute<String> ITEM_IMAGE_THUMB_URL = T_ITEM.stringAttribute("Image thumbnail URL");
-  public static final Attribute<BigDecimal> ITEM_PRICE = T_ITEM.bigDecimalAttribute("Price");
-  public static final Attribute<Integer> ITEM_C0NTACT_INFO_ID = T_ITEM.integerAttribute("Contactinfo id");
-  public static final Attribute<Entity> ITEM_C0NTACT_INFO_FK = T_ITEM.entityAttribute("Contact info");
-  public static final Attribute<Integer> ITEM_ADDRESS_ID = T_ITEM.integerAttribute("Address id");
-  public static final Attribute<Entity> ITEM_ADDRESS_FK = T_ITEM.entityAttribute("Address");
-  public static final Attribute<Boolean> ITEM_DISABLED = T_ITEM.booleanAttribute("Disabled");
+  public interface Item {
+    EntityType TYPE = type("item");
+    Attribute<Integer> ID = TYPE.integerAttribute("Item id");
+    Attribute<Integer> PRODUCT_ID = TYPE.integerAttribute("Product id");
+    Attribute<Entity> PRODUCT_FK = TYPE.entityAttribute("Product");
+    Attribute<String> NAME = TYPE.stringAttribute("Name");
+    Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
+    Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
+    Attribute<String> IMAGE_THUMB_URL = TYPE.stringAttribute("Image thumbnail URL");
+    Attribute<BigDecimal> PRICE = TYPE.bigDecimalAttribute("Price");
+    Attribute<Integer> C0NTACT_INFO_ID = TYPE.integerAttribute("Contactinfo id");
+    Attribute<Entity> C0NTACT_INFO_FK = TYPE.entityAttribute("Contact info");
+    Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("Address id");
+    Attribute<Entity> ADDRESS_FK = TYPE.entityAttribute("Address");
+    Attribute<Boolean> DISABLED = TYPE.booleanAttribute("Disabled");
+  }
 
   void item() {
-    define(T_ITEM, "petstore.item",
-            primaryKeyProperty(ITEM_ID)
+    define(Item.TYPE, "petstore.item",
+            primaryKeyProperty(Item.ID)
                     .columnName("itemid"),
-            foreignKeyProperty(ITEM_PRODUCT_FK, ITEM_PRODUCT_FK.getName(), T_PRODUCT,
-                    columnProperty(ITEM_PRODUCT_ID)
+            foreignKeyProperty(Item.PRODUCT_FK, Item.PRODUCT_FK.getName(), Product.TYPE,
+                    columnProperty(Item.PRODUCT_ID)
                             .columnName("productid"))
                     .fetchDepth(2).nullable(false),
-            columnProperty(ITEM_NAME, ITEM_NAME.getName())
+            columnProperty(Item.NAME, Item.NAME.getName())
                     .columnName("name").maximumLength(30).nullable(false),
-            columnProperty(ITEM_DESCRIPTION, ITEM_DESCRIPTION.getName())
+            columnProperty(Item.DESCRIPTION, Item.DESCRIPTION.getName())
                     .columnName("description").maximumLength(500).nullable(false),
-            columnProperty(ITEM_IMAGE_URL, ITEM_IMAGE_URL.getName())
+            columnProperty(Item.IMAGE_URL, Item.IMAGE_URL.getName())
                     .columnName("imageurl").maximumLength(55).hidden(true),
-            columnProperty(ITEM_IMAGE_THUMB_URL, ITEM_IMAGE_THUMB_URL.getName())
+            columnProperty(Item.IMAGE_THUMB_URL, Item.IMAGE_THUMB_URL.getName())
                     .columnName("imagethumburl").maximumLength(55).hidden(true),
-            columnProperty(ITEM_PRICE, ITEM_PRICE.getName())
+            columnProperty(Item.PRICE, Item.PRICE.getName())
                     .columnName("price").nullable(false).maximumFractionDigits(2),
-            foreignKeyProperty(ITEM_C0NTACT_INFO_FK, ITEM_C0NTACT_INFO_FK.getName(), T_SELLER_CONTACT_INFO,
-                    columnProperty(ITEM_C0NTACT_INFO_ID).columnName("contactinfo_contactinfoid"))
+            foreignKeyProperty(Item.C0NTACT_INFO_FK, Item.C0NTACT_INFO_FK.getName(), SellerContactInfo.TYPE,
+                    columnProperty(Item.C0NTACT_INFO_ID).columnName("contactinfo_contactinfoid"))
                     .nullable(false),
-            foreignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
-                    columnProperty(ITEM_ADDRESS_ID).columnName("address_addressid"))
+            foreignKeyProperty(Item.ADDRESS_FK, "Address", Address.TYPE,
+                    columnProperty(Item.ADDRESS_ID).columnName("address_addressid"))
                     .nullable(false),
-            booleanProperty(ITEM_DISABLED, INTEGER, ITEM_DISABLED.getName(), 1, 0)
+            booleanProperty(Item.DISABLED, INTEGER, Item.DISABLED.getName(), 1, 0)
                     .columnName("disabled").defaultValue(false))
             .keyGenerator(increment("petstore.item", "itemid"))
-            .orderBy(orderBy().ascending(ITEM_NAME))
-            .stringProvider(new StringProvider(ITEM_PRODUCT_FK)
-                    .addText(" - ").addValue(ITEM_NAME))
+            .orderBy(orderBy().ascending(Item.NAME))
+            .stringProvider(new StringProvider(Item.PRODUCT_FK)
+                    .addText(" - ").addValue(Item.NAME))
             .caption("Items");
   }
 
-  public static final EntityType T_TAG = type("tag");
-  public static final Attribute<Integer> TAG_ID = T_TAG.integerAttribute("Tag id");
-  public static final Attribute<String> TAG_TAG = T_TAG.stringAttribute("Tag");
-  public static final Attribute<Integer> TAG_REFCOUNT = T_TAG.integerAttribute("Reference count");
+  public interface Tag {
+    EntityType TYPE = type("tag");
+    Attribute<Integer> ID = TYPE.integerAttribute("Tag id");
+    Attribute<String> TAG = TYPE.stringAttribute("Tag");
+    Attribute<Integer> REFCOUNT = TYPE.integerAttribute("Reference count");
+  }
 
   void tag() {
-    define(T_TAG, "petstore.tag",
-            primaryKeyProperty(TAG_ID)
+    define(Tag.TYPE, "petstore.tag",
+            primaryKeyProperty(Tag.ID)
                     .columnName("tagid"),
-            columnProperty(TAG_TAG, TAG_TAG.getName())
+            columnProperty(Tag.TAG, Tag.TAG.getName())
                     .columnName("tag").maximumLength(30).nullable(false),
-            subqueryProperty(TAG_REFCOUNT, TAG_REFCOUNT.getName(),
+            subqueryProperty(Tag.REFCOUNT, Tag.REFCOUNT.getName(),
                     "select count(*) from petstore.tag_item where tagid = tag.tagid")
                     .columnName("refcount"))
             .keyGenerator(increment("petstore.tag", "tagid"))
-            .orderBy(orderBy().ascending(TAG_TAG))
+            .orderBy(orderBy().ascending(Tag.TAG))
             .selectTableName("petstore.tag tag")
-            .stringProvider(new StringProvider(TAG_TAG))
+            .stringProvider(new StringProvider(Tag.TAG))
             .caption("Tags");
   }
 
-  public static final EntityType T_TAG_ITEM = type("tag_item");
-  public static final Attribute<Integer> TAG_ITEM_ITEM_ID = T_TAG_ITEM.integerAttribute("Item id");
-  public static final Attribute<Entity> TAG_ITEM_ITEM_FK = T_TAG_ITEM.entityAttribute("Item");
-  public static final Attribute<Integer> TAG_ITEM_TAG_ID = T_TAG_ITEM.integerAttribute("Tag id");
-  public static final Attribute<Entity> TAG_ITEM_TAG_FK = T_TAG_ITEM.entityAttribute("Tag");
+  public interface TagItem {
+    EntityType TYPE = type("tag_item");
+    Attribute<Integer> ITEM_ID = TYPE.integerAttribute("Item id");
+    Attribute<Entity> ITEM_FK = TYPE.entityAttribute("Item");
+    Attribute<Integer> TAG_ID = TYPE.integerAttribute("Tag id");
+    Attribute<Entity> TAG_FK = TYPE.entityAttribute("Tag");
+  }
 
   void tagItem() {
-    define(T_TAG_ITEM, "petstore.tag_item",
-            foreignKeyProperty(TAG_ITEM_ITEM_FK, TAG_ITEM_ITEM_FK.getName(), T_ITEM,
-                    primaryKeyProperty(TAG_ITEM_ITEM_ID)
+    define(TagItem.TYPE, "petstore.tag_item",
+            foreignKeyProperty(TagItem.ITEM_FK, TagItem.ITEM_FK.getName(), Item.TYPE,
+                    primaryKeyProperty(TagItem.ITEM_ID)
                             .columnName("itemid").primaryKeyIndex(0))
                     .nullable(false),
-            foreignKeyProperty(TAG_ITEM_TAG_FK, TAG_ITEM_TAG_FK.getName(), T_TAG,
-                    primaryKeyProperty(TAG_ITEM_TAG_ID)
+            foreignKeyProperty(TagItem.TAG_FK, TagItem.TAG_FK.getName(), Tag.TYPE,
+                    primaryKeyProperty(TagItem.TAG_ID)
                             .columnName("tagid").primaryKeyIndex(1))
                     .nullable(false))
-            .stringProvider(new StringProvider(TAG_ITEM_ITEM_FK)
-                    .addText(" - ").addValue(TAG_ITEM_TAG_FK))
+            .stringProvider(new StringProvider(TagItem.ITEM_FK)
+                    .addText(" - ").addValue(TagItem.TAG_FK))
             .caption("Item tags");
   }
 }
