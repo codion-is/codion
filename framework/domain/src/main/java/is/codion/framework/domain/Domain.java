@@ -52,7 +52,7 @@ public abstract class Domain implements EntityDefinition.Provider {
 
   /**
    * Instantiates a new Domain
-   * @param domainId the domain identifier
+   * @param domainType the domain type
    */
   protected Domain(final DomainType<?> domainType) {
     this.domainType = domainType;
@@ -101,6 +101,7 @@ public abstract class Domain implements EntityDefinition.Provider {
   /**
    * Retrieves the procedure with the given id.
    * @param <C> the type of the database connection this procedure requires
+   * @param <T> the argument type
    * @param procedureType the procedure type
    * @return the procedure
    * @throws IllegalArgumentException in case the procedure is not found
@@ -112,7 +113,8 @@ public abstract class Domain implements EntityDefinition.Provider {
   /**
    * Retrieves the function with the given id.
    * @param <C> the type of the database connection this function requires
-   * @param <T> the result type
+   * @param <T> the argument type
+   * @param <R> the result type
    * @param functionType the function type
    * @return the function
    * @throws IllegalArgumentException in case the function is not found

@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
  * operations specified by a single {@link Domain} model.
- * {@link #executeFunction(String, Object...)} and {@link #executeProcedure(String, Object...)}
+ * {@link #executeFunction(FunctionType, Object[])} and {@link #executeProcedure(ProcedureType, Object[])}
  * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(List)},
  * {@link #update(Entity)}, {@link #update(List)}, {@link #delete(Entity.Key)} and {@link #delete(List)}
  * perform a commit unless they are run within a transaction.

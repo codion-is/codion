@@ -205,10 +205,9 @@ public final class EntityService extends Application {
   }
 
   /**
-   * Executes the procedure identified by {@code procedureId}, with the given parameters
+   * Executes a procedure with the given parameters
    * @param request the servlet request
    * @param headers the headers
-   * @param procedureId the procedure id
    * @return a response
    */
   @POST
@@ -231,10 +230,9 @@ public final class EntityService extends Application {
   }
 
   /**
-   * Executes the function identified by {@code functionId}, with the given parameters
+   * Executes a function with the given parameters
    * @param request the servlet request
    * @param headers the headers
-   * @param functionId the function id
    * @return a response
    */
   @POST
