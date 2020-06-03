@@ -14,7 +14,6 @@ public abstract class AbstractDatabaseFunction<C, T, R> extends AbstractDatabase
   /**
    * Instantiates a new AbstractDatabaseFunction.
    * @param type the function type
-   * @param name the function name
    */
   public AbstractDatabaseFunction(final FunctionType<C, T, R> type) {
     super(type);
