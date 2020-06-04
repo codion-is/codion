@@ -203,12 +203,12 @@ final class DefaultEntityKey implements Entity.Key {
   }
 
   @Override
-  public boolean isNull(final Attribute<?> attribute) {
+  public <T> boolean isNull(final Attribute<T> attribute) {
     return values.get(attribute) == null;
   }
 
   @Override
-  public boolean isNotNull(final Attribute<?> attribute) {
+  public <T> boolean isNotNull(final Attribute<T> attribute) {
     return !isNull(attribute);
   }
 

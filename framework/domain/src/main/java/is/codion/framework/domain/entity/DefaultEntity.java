@@ -150,12 +150,12 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean isNull(final Attribute<?> attribute) {
+  public <T> boolean isNull(final Attribute<T> attribute) {
     return isNull(definition.getProperty(attribute));
   }
 
   @Override
-  public boolean isNotNull(final Attribute<?> attribute) {
+  public <T> boolean isNotNull(final Attribute<T> attribute) {
     return !isNull(attribute);
   }
 
@@ -203,7 +203,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public void save(final Attribute<?> attribute) {
+  public <T> void save(final Attribute<T> attribute) {
     requireNonNull(attribute, ATTRIBUTE);
     removeOriginalValue(attribute);
   }
@@ -332,7 +332,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean containsKey(final Attribute<?> attribute) {
+  public <T> boolean containsKey(final Attribute<T> attribute) {
     return values.containsKey(requireNonNull(attribute, ATTRIBUTE));
   }
 
@@ -755,7 +755,7 @@ final class DefaultEntity implements Entity {
     originalValues.put(property, originalValue);
   }
 
-  private void removeOriginalValue(final Attribute<?> attribute) {
+  private <T> void removeOriginalValue(final Attribute<T> attribute) {
     if (originalValues != null) {
       originalValues.remove(attribute);
       if (originalValues.isEmpty()) {
