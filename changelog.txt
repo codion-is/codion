@@ -6226,3 +6226,8 @@
   DatabaseFunction and DatabaseProcedure, major cleanup, abstract classes removed
   DatabaseOperation removed, Operations removed, methods moved to respective interfaces
   Entities.type() renamed entityType() and moved to EntityType
+  Entity.addValueListener() removed, DefaultEntityEditModel now handles all value change notifications
+  EntityDefinition.getDerivedProperties() and related methods now Attribute based
+  ValueChange moved to framework model module, ValueChange.isInitialization() removed
+  ValueChange finally type safe
+  EntityComponentValidators type safe

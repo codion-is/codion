@@ -4,9 +4,6 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Util;
-import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.Events;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -21,6 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +26,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static is.codion.framework.domain.entity.ValueChanges.valueChange;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -71,11 +68,6 @@ final class DefaultEntity implements Entity {
    * The primary key of this entity
    */
   private Key key;
-
-  /**
-   * Fired when a value changes, null until initialized by a call to {@link #getValueChangeEvent()}.
-   */
-  private Event<ValueChange> valueChangeEvent;
 
   /**
    * Instantiates a new DefaultEntity
@@ -232,7 +224,6 @@ final class DefaultEntity implements Entity {
     if (values.containsKey(requireNonNull(attribute, ATTRIBUTE))) {
       final T value = (T) values.remove(attribute);
       removeOriginalValue(attribute);
-      onValueChanged(attribute, null, value, false);
 
       return value;
     }
@@ -241,28 +232,27 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public final void setAs(final Entity entity) {
+  public final Collection<Attribute<?>> setAs(final Entity entity) {
     if (entity == this) {
-      return;
+      return Collections.emptyList();
     }
-    final Set<Attribute<?>> affectedProperties = new HashSet<>(keySet());
+    final Set<Attribute<?>> affectedAttributes = new HashSet<>(keySet());
     clear();
     if (entity != null) {
       final Collection<Attribute<?>> sourceAttributes = entity.keySet();
-      affectedProperties.addAll(sourceAttributes);
-      for (final Attribute<?> property : sourceAttributes) {
-        values.put(property, entity.get(property));
+      affectedAttributes.addAll(sourceAttributes);
+      for (final Attribute<?> attribute : sourceAttributes) {
+        values.put(attribute, entity.get(attribute));
       }
       if (entity.isModified()) {
         originalValues = new HashMap<>();
-        for (final Attribute<?> property : entity.originalKeySet()) {
-          originalValues.put(property, entity.getOriginal(property));
+        for (final Attribute<?> attribute : entity.originalKeySet()) {
+          originalValues.put(attribute, entity.getOriginal(attribute));
         }
       }
     }
-    for (final Attribute<?> attribute : affectedProperties) {
-      onValueChanged(attribute, values.get(attribute), null, true);
-    }
+
+    return affectedAttributes;
   }
 
   @Override
@@ -374,18 +364,6 @@ final class DefaultEntity implements Entity {
     return false;
   }
 
-  @Override
-  public void addValueListener(final EventDataListener<ValueChange> valueListener) {
-    getValueChangeEvent().addDataListener(valueListener);
-  }
-
-  @Override
-  public void removeValueListener(final EventDataListener<ValueChange> valueListener) {
-    if (valueChangeEvent != null) {
-      valueChangeEvent.removeDataListener(valueListener);
-    }
-  }
-
   private void clear() {
     values.clear();
     if (originalValues != null) {
@@ -442,7 +420,6 @@ final class DefaultEntity implements Entity {
       updateOriginalValue(property.getAttribute(), newValue, previousValue);
     }
     onValuePut(property, newValue);
-    onValueChanged(property.getAttribute(), newValue, previousValue, initialization);
 
     return previousValue;
   }
@@ -497,27 +474,6 @@ final class DefaultEntity implements Entity {
     toString = null;
     if (property instanceof ForeignKeyProperty) {
       propagateForeignKeyValues((ForeignKeyProperty) property, (Entity) value);
-    }
-  }
-
-  /**
-   * Fires notifications for a value change for the given attribute as well as for properties derived from it.
-   * @param attribute the attribute which value is changing
-   * @param currentValue the new value
-   * @param previousValue the previous value, if any
-   * @param initialization true if the value is being initialized, that is, no previous value exists
-   * @see #addValueListener(EventDataListener)
-   */
-  private void onValueChanged(final Attribute<?> attribute, final Object currentValue, final Object previousValue, final boolean initialization) {
-    if (valueChangeEvent != null) {
-      valueChangeEvent.onEvent(valueChange(attribute, currentValue, previousValue, initialization));
-      if (definition.hasDerivedProperties()) {
-        final Collection<DerivedProperty<?>> derivedProperties = definition.getDerivedProperties(attribute);
-        for (final DerivedProperty<?> derivedProperty : derivedProperties) {
-          final Object derivedValue = getDerivedValue(derivedProperty);
-          valueChangeEvent.onEvent(valueChange(derivedProperty.getAttribute(), derivedValue, derivedValue));
-        }
-      }
     }
   }
 
@@ -738,14 +694,6 @@ final class DefaultEntity implements Entity {
     }
 
     return false;
-  }
-
-  private Event<ValueChange> getValueChangeEvent() {
-    if (valueChangeEvent == null) {
-      valueChangeEvent = Events.event();
-    }
-
-    return valueChangeEvent;
   }
 
   private void setOriginalValue(final Attribute<?> property, final Object originalValue) {

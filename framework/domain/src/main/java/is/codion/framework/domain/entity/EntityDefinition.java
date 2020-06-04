@@ -8,7 +8,6 @@ import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
-import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
@@ -18,7 +17,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -150,34 +148,29 @@ public interface EntityDefinition extends Serializable {
   List<Property<?>> getProperties();
 
   /**
-   * @return a Set containing all the properties in this entity
-   */
-  Set<Property<?>> getPropertySet();
-
-  /**
    * @return true if this entity has a defined primary key
    */
   boolean hasPrimaryKey();
 
   /**
-   * @return true if this entity contains any properties which values are derived from other properties
+   * @return true if this entity contains any attribute which values are derived from other attribute
    */
-  boolean hasDerivedProperties();
+  boolean hasDerivedAttributes();
 
   /**
-   * Returns true if this entity contains properties which values are derived from the value of the given property
+   * Returns true if this entity contains attributes which values are derived from the value of the given attribute
    * @param attribute the attribute
-   * @return true if any properties are derived from the given property
+   * @return true if any properties are derived from the given attribute
    */
-  boolean hasDerivedProperties(Attribute<?> attribute);
+  boolean hasDerivedAttributes(Attribute<?> attribute);
 
   /**
-   * Returns the properties which values are derived from the value of the given property,
-   * an empty collection if no such derived properties exist
+   * Returns the attributes which values are derived from the value of the given attribute,
+   * an empty collection if no such derived attributes exist
    * @param attribute the attribute
-   * @return a collection containing the properties which are derived from the given property
+   * @return a collection containing the attributes which are derived from the given attribute
    */
-  Collection<DerivedProperty<?>> getDerivedProperties(Attribute<?> attribute);
+  Collection<Attribute<?>> getDerivedAttributes(Attribute<?> attribute);
 
   /**
    * Returns a list containing all primary key attributes associated with this entity type.

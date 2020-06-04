@@ -25,7 +25,6 @@ import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
-import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
@@ -341,20 +340,20 @@ public class DomainTest {
   }
 
   @Test
-  public void hasDerivedProperties() {
+  public void hasDerivedAttributes() {
     final EntityDefinition definition = domain.getDefinition(TestDomain.T_DETAIL);
-    assertFalse(definition.hasDerivedProperties(TestDomain.DETAIL_BOOLEAN));
-    assertTrue(definition.hasDerivedProperties(TestDomain.DETAIL_INT));
+    assertFalse(definition.hasDerivedAttributes(TestDomain.DETAIL_BOOLEAN));
+    assertTrue(definition.hasDerivedAttributes(TestDomain.DETAIL_INT));
   }
 
   @Test
-  public void getDerivedProperties() {
+  public void getDerivedAttributes() {
     final EntityDefinition definition = domain.getDefinition(TestDomain.T_DETAIL);
-    Collection<DerivedProperty<?>> derivedProperties = definition.getDerivedProperties(TestDomain.DETAIL_BOOLEAN);
-    assertTrue(derivedProperties.isEmpty());
-    derivedProperties = definition.getDerivedProperties(TestDomain.DETAIL_INT);
-    assertEquals(1, derivedProperties.size());
-    assertTrue(derivedProperties.contains(definition.getProperty(TestDomain.DETAIL_INT_DERIVED)));
+    Collection<Attribute<?>> derivedAttributes = definition.getDerivedAttributes(TestDomain.DETAIL_BOOLEAN);
+    assertTrue(derivedAttributes.isEmpty());
+    derivedAttributes = definition.getDerivedAttributes(TestDomain.DETAIL_INT);
+    assertEquals(1, derivedAttributes.size());
+    assertTrue(derivedAttributes.contains(TestDomain.DETAIL_INT_DERIVED));
   }
 
   @Test

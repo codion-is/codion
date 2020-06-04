@@ -6,7 +6,7 @@ package is.codion.framework.demos.chinook.model;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ValueChange;
+import is.codion.framework.model.ValueChange;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.time.LocalDateTime;
@@ -35,8 +35,8 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
     addValueEditListener(Invoice.CUSTOMER_FK, this::setAddress);
   }
 
-  private void setAddress(final ValueChange valueChange) {
-    final Entity customer = (Entity) valueChange.getValue();
+  private void setAddress(final ValueChange<Entity> valueChange) {
+    final Entity customer = valueChange.getValue();
     if (customer == null) {
       put(Invoice.BILLINGADDRESS, null);
       put(Invoice.BILLINGCITY, null);

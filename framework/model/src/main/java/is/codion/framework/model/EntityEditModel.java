@@ -19,7 +19,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.ValueChange;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -527,31 +526,35 @@ public interface EntityEditModel extends Refreshable {
    * when the value actually changes.
    * @param attribute the attribute for which to monitor value edits
    * @param listener a listener notified each time the value of the given property is edited via this model
+   * @param <T> the value type
    */
-  void addValueEditListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
+  <T> void addValueEditListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener);
 
   /**
    * Removes the given listener.
    * @param attribute the attribute
    * @param listener the listener to remove
+   * @param <T> the value type
    */
-  void removeValueEditListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
+  <T> void removeValueEditListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener);
 
   /**
    * Adds a listener notified each time the value associated with the given attribute changes, either
    * via editing or when the active entity is set.
    * @param attribute the attribute for which to monitor value changes
    * @param listener a listener notified each time the value of the {@code attribute} changes
+   * @param <T> the value type
    * @see #setEntity(Entity)
    */
-  void addValueListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
+  <T> void addValueListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener);
 
   /**
    * Removes the given listener.
    * @param attribute the attribute for which to remove the listener
    * @param listener the listener to remove
+   * @param <T> the value type
    */
-  void removeValueListener(Attribute<?> attribute, EventDataListener<ValueChange> listener);
+  <T> void removeValueListener(Attribute<T> attribute, EventDataListener<ValueChange<T>> listener);
 
   /**
    * @param listener a listener notified each time the entity is set
