@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.FileUtil;
 import is.codion.common.Serializer;
-import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
@@ -407,17 +406,6 @@ public class DefaultEntityTest {
 
     employee.put(TestDomain.EMP_NAME, "noname");
     assertEquals(employee.get(TestDomain.EMP_NAME), "noname");
-
-    final EventDataListener<ValueChange> valueListener = valueChange -> {
-      if (valueChange.getAttribute().equals(TestDomain.EMP_DEPARTMENT_FK)) {
-        assertTrue(employee.isNull(TestDomain.EMP_DEPARTMENT_FK));
-        assertTrue(employee.isNull(TestDomain.EMP_DEPARTMENT));
-      }
-    };
-    employee.addValueListener(valueListener);
-    employee.put(TestDomain.EMP_DEPARTMENT_FK, null);
-
-    employee.removeValueListener(valueListener);
   }
 
   @Test

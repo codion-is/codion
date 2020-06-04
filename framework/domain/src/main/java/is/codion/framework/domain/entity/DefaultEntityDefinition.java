@@ -411,28 +411,23 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Set<Property<?>> getPropertySet() {
-    return entityProperties.propertySet;
-  }
-
-  @Override
   public boolean hasPrimaryKey() {
     return !entityProperties.primaryKeyProperties.isEmpty();
   }
 
   @Override
-  public boolean hasDerivedProperties() {
-    return !entityProperties.derivedProperties.isEmpty();
+  public boolean hasDerivedAttributes() {
+    return !entityProperties.derivedAttributes.isEmpty();
   }
 
   @Override
-  public boolean hasDerivedProperties(final Attribute<?> attribute) {
-    return entityProperties.derivedProperties.containsKey(attribute);
+  public boolean hasDerivedAttributes(final Attribute<?> attribute) {
+    return entityProperties.derivedAttributes.containsKey(attribute);
   }
 
   @Override
-  public Collection<DerivedProperty<?>> getDerivedProperties(final Attribute<?> property) {
-    final Collection<DerivedProperty<?>> derived = entityProperties.derivedProperties.get(property);
+  public Collection<Attribute<?>> getDerivedAttributes(final Attribute<?> attribute) {
+    final Collection<Attribute<?>> derived = entityProperties.derivedAttributes.get(attribute);
 
     return derived == null ? emptyList() : derived;
   }
@@ -639,7 +634,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private final Map<Attribute<?>, Property<?>> propertyMap;
     private final List<Property<?>> properties;
-    private final Set<Property<?>> propertySet;
     private final List<Property<?>> visibleProperties;
     private final List<ColumnProperty<?>> columnProperties;
     private final List<ColumnProperty<?>> lazyLoadedBlobProperties;
@@ -650,7 +644,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private final List<ForeignKeyProperty> foreignKeyProperties;
     private final Map<Attribute<Entity>, ForeignKeyProperty> foreignKeyPropertyMap;
     private final Map<Attribute<?>, List<ForeignKeyProperty>> columnPropertyForeignKeyProperties;
-    private final Map<Attribute<?>, Set<DerivedProperty<?>>> derivedProperties;
+    private final Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes;
     private final List<TransientProperty<?>> transientProperties;
     private final Map<Attribute<?>, List<DenormalizedProperty<?>>> denormalizedProperties;
 
@@ -658,7 +652,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
       this.entityType = entityType;
       this.propertyMap = initializePropertyMap(propertyBuilders);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
-      this.propertySet = new HashSet<>(propertyMap.values());
       this.visibleProperties = unmodifiableList(getVisibleProperties());
       this.columnProperties = unmodifiableList(getColumnProperties());
       this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties();
@@ -669,7 +662,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
       this.foreignKeyProperties = unmodifiableList(getForeignKeyProperties());
       this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap();
       this.columnPropertyForeignKeyProperties = initializeColumnPropertyForeignKeyProperties();
-      this.derivedProperties = initializeDerivedProperties();
+      this.derivedAttributes = initializeDerivedAttributes();
       this.transientProperties = unmodifiableList(getTransientProperties());
       this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties());
     }
@@ -790,12 +783,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
       return map;
     }
 
-    private Map<Attribute<?>, Set<DerivedProperty<?>>> initializeDerivedProperties() {
-      final Map<Attribute<?>, Set<DerivedProperty<?>>> derivedPropertyMap = new HashMap<>();
+    private Map<Attribute<?>, Set<Attribute<?>>> initializeDerivedAttributes() {
+      final Map<Attribute<?>, Set<Attribute<?>>> derivedPropertyMap = new HashMap<>();
       for (final Property<?> property : properties) {
         if (property instanceof DerivedProperty) {
           for (final Attribute<?> sourceAttribute : ((DerivedProperty<?>) property).getSourceAttributes()) {
-            derivedPropertyMap.computeIfAbsent(sourceAttribute, attribute -> new HashSet<>()).add((DerivedProperty<?>) property);
+            derivedPropertyMap.computeIfAbsent(sourceAttribute, attribute -> new HashSet<>()).add(property.getAttribute());
           }
         }
       }

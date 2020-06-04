@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.TestDomain;
-import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Properties;
 
 import org.junit.jupiter.api.Test;
@@ -134,11 +133,11 @@ public class DefaultEntityDefinitionTest {
     final Domain domain = new TestDomain();
 
     final EntityDefinition definition = domain.getDefinition(entityType);
-    Collection<DerivedProperty<?>> linked = definition.getDerivedProperties(name);
-    assertTrue(linked.contains(definition.getProperty(derived)));
+    Collection<Attribute<?>> linked = definition.getDerivedAttributes(name);
+    assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
-    linked = definition.getDerivedProperties(info);
-    assertTrue(linked.contains(definition.getProperty(derived)));
+    linked = definition.getDerivedAttributes(info);
+    assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
   }
 
@@ -280,8 +279,8 @@ public class DefaultEntityDefinitionTest {
     final Domain domain = new TestDomain();
 
     final EntityDefinition definition = domain.getDefinition(entityType);
-    assertTrue(definition.hasDerivedProperties(attribute1));
-    assertTrue(definition.hasDerivedProperties(attribute2));
+    assertTrue(definition.hasDerivedAttributes(attribute1));
+    assertTrue(definition.hasDerivedAttributes(attribute2));
   }
 
   @Test

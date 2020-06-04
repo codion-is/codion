@@ -3,10 +3,10 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -44,6 +44,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
 
   /**
    * Returns the original value associated with the property based on {@code attribute}.
+   * If the value has not been modified the current value is returned.
    * @param attribute the attribute for which to retrieve the original value
    * @param <T> the value type
    * @return the original value of the given property
@@ -125,10 +126,10 @@ public interface Entity extends Comparable<Entity>, Serializable {
   /**
    * After a call to this method this Entity contains the same values and original values as the source entity.
    * A null argument to this method clears the destination entity of all values and original values.
-   * Value change events for affected properties are fired after all values have been set, in no particular order.
    * @param entity the entity to copy or null for clearing the destination map
+   * @return the affected attributes
    */
-  void setAs(Entity entity);
+  Collection<Attribute<?>> setAs(Entity entity);
 
   /**
    * Returns true if the entity referenced via the given foreign key attribute has been loaded
@@ -220,20 +221,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @return true if one or more values have been modified.
    */
   boolean isModified();
-
-  /**
-   * Adds a listener notified each time a value changes
-   * Adding the same listener multiple times has no effect.
-   * @param valueListener the listener
-   * @see ValueChange
-   */
-  void addValueListener(EventDataListener<ValueChange> valueListener);
-
-  /**
-   * Removes the given value listener if it has been registered with this Entity.
-   * @param valueListener the listener to remove
-   */
-  void removeValueListener(EventDataListener<ValueChange> valueListener);
 
   /**
    * A class representing a primary key.

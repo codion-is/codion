@@ -363,7 +363,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     final boolean initialization = !entity.containsKey(attribute);
     final T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
-      getValueEditEvent(attribute).onEvent(valueChange(attribute, value, previousValue, initialization));
+      notifyValueEdit(attribute, valueChange(attribute, value, previousValue, initialization));
     }
   }
 
@@ -373,7 +373,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     T value = null;
     if (entity.containsKey(attribute)) {
       value = entity.remove(attribute);
-      getValueEditEvent(attribute).onEvent(valueChange(attribute, null, value));
+      notifyValueEdit(attribute, valueChange(attribute, null, value));
     }
 
     return value;
@@ -942,7 +942,18 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private void doSetEntity(final Entity entity) {
-    getEntity().setAs(entity == null ? getDefaultEntity() : entity);
+    final Collection<Attribute<?>> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity() : entity);
+    for (final Attribute<?> affectedAttribute : affectedAttributes) {
+      onValueChange(valueChange(affectedAttribute, this.entity.get(affectedAttribute), null, true));
+      if (getEntityDefinition().hasDerivedAttributes()) {
+        final Collection<Attribute<?>> derivedAttributes = getEntityDefinition().getDerivedAttributes(affectedAttribute);
+        for (final Attribute<?> derivedAttribute : derivedAttributes) {
+          final Object derivedValue = this.entity.get(derivedAttribute);
+          onValueChange(valueChange(derivedAttribute, derivedValue, derivedValue, true));
+        }
+      }
+    }
+
     entitySetEvent.onEvent(entity);
   }
 
@@ -968,7 +979,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     afterDeleteEvent.addListener(entitiesChangedEvent);
     afterInsertEvent.addListener(entitiesChangedEvent);
     afterUpdateEvent.addListener(entitiesChangedEvent);
-    entity.addValueListener(this::onValueChange);
+  }
+
+  private <T> void notifyValueEdit(final Attribute<T> attribute, final ValueChange valueChange) {
+    onValueChange(valueChange);
+    getValueEditEvent(attribute).onEvent(valueChange);
   }
 
   private void onValueChange(final ValueChange valueChange) {
