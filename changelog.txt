@@ -6203,3 +6203,4 @@
   EntityDefinition.getDerivedProperties() and related methods now Attribute based
   ValueChange moved to framework model module, ValueChange.isInitialization() removed
   ValueChange finally type safe
+  EntityComponentValidators type safe
