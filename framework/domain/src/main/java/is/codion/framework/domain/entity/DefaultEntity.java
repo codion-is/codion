@@ -802,7 +802,7 @@ final class DefaultEntity implements Entity {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final String domainName = (String) stream.readObject();
-    final EntityType entityType = Entities.type((String) stream.readObject());
+    final EntityType entityType = EntityType.entityType((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
     definition = DefaultEntities.getEntities(domainName).getDefinition(entityType);
     if (definition == null) {

@@ -113,4 +113,12 @@ public interface EntityType extends Serializable {
    * @return a new {@link Attribute}
    */
   Attribute<byte[]> blobAttribute(String name);
+
+  /**
+   * @param name the entity type name
+   * @return a {@link EntityType} instance with the given name
+   */
+  static EntityType entityType(final String name) {
+    return new DefaultEntityType(name);
+  }
 }

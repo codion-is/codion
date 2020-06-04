@@ -6198,3 +6198,4 @@
   Entity.Key.getProperties() replaced with getAttributes(), getFirstProperty() with getFirstAttribute(), setAs() removed, Entities.copyKey() removed
   DatabaseFunction and DatabaseProcedure, major cleanup, abstract classes removed
   DatabaseOperation removed, Operations removed, methods moved to respective interfaces
+  Entities.type() renamed entityType() and moved to EntityType

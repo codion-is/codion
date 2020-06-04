@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
@@ -27,7 +27,7 @@ import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
 public final class Store extends Domain {
 
   public interface Address {
-    EntityType TYPE = type("store.address");
+    EntityType TYPE = entityType("store.address");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> STREET = TYPE.stringAttribute("street");
     Attribute<String> CITY = TYPE.stringAttribute("city");
@@ -35,7 +35,7 @@ public final class Store extends Domain {
   }
 
   public interface Customer {
-    EntityType TYPE = type("store.customer");
+    EntityType TYPE = entityType("store.customer");
     Attribute<String> ID = TYPE.stringAttribute("id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
     Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
@@ -44,7 +44,7 @@ public final class Store extends Domain {
   }
 
   public interface CustomerAddress {
-    EntityType TYPE = type("store.customer_address");
+    EntityType TYPE = entityType("store.customer_address");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
     Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");

@@ -24,7 +24,7 @@ import static is.codion.common.db.Operator.LIKE;
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.framework.db.condition.Conditions.*;
 import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
@@ -119,7 +119,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   private static final class Authentication extends Domain {
 
     interface User {
-      EntityType TYPE = type("chinook.user");
+      EntityType TYPE = entityType("chinook.user");
       Attribute<Integer> ID = TYPE.integerAttribute("userid");
       Attribute<String> USERNAME = TYPE.stringAttribute("username");
       Attribute<Integer> PASSWORD_HASH = TYPE.integerAttribute("passwordhash");

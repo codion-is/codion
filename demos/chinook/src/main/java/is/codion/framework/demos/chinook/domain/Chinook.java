@@ -20,13 +20,13 @@ import java.util.List;
 
 import static is.codion.common.db.operation.FunctionType.functionType;
 import static is.codion.common.db.operation.ProcedureType.procedureType;
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public interface Chinook {
 
   interface Artist {
-    EntityType TYPE = type("artist@chinook");
+    EntityType TYPE = entityType("artist@chinook");
     Attribute<Long> ID = TYPE.longAttribute("artistid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("number_of_albums");
@@ -34,7 +34,7 @@ public interface Chinook {
   }
 
   interface Album {
-    EntityType TYPE = type("album@chinook");
+    EntityType TYPE = entityType("album@chinook");
     Attribute<Long> ID = TYPE.longAttribute("albumid");
     Attribute<String> TITLE = TYPE.stringAttribute("title");
     Attribute<Long> ARTIST_ID = TYPE.longAttribute("artistid");
@@ -45,7 +45,7 @@ public interface Chinook {
   }
 
   interface Employee {
-    EntityType TYPE = type("employee@chinook");
+    EntityType TYPE = entityType("employee@chinook");
     Attribute<Long> ID = TYPE.longAttribute("employeeid");
     Attribute<String> LASTNAME = TYPE.stringAttribute("lastname");
     Attribute<String> FIRSTNAME = TYPE.stringAttribute("firstname");
@@ -65,7 +65,7 @@ public interface Chinook {
   }
 
   interface Customer {
-    EntityType TYPE = type("customer@chinook");
+    EntityType TYPE = entityType("customer@chinook");
     Attribute<Long> ID = TYPE.longAttribute("customerid");
     Attribute<String> FIRSTNAME = TYPE.stringAttribute("firstname");
     Attribute<String> LASTNAME = TYPE.stringAttribute("lastname");
@@ -85,19 +85,19 @@ public interface Chinook {
   }
 
   interface Genre {
-    EntityType TYPE = type("genre@chinook");
+    EntityType TYPE = entityType("genre@chinook");
     Attribute<Long> ID = TYPE.longAttribute("genreid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
 
   interface MediaType {
-    EntityType TYPE = type("mediatype@chinook");
+    EntityType TYPE = entityType("mediatype@chinook");
     Attribute<Long> ID = TYPE.longAttribute("mediatypeid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
 
   interface Track {
-    EntityType TYPE = type("track@chinook");
+    EntityType TYPE = entityType("track@chinook");
     Attribute<Long> ID = TYPE.longAttribute("trackid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<Entity> ARTIST_DENORM = TYPE.entityAttribute("artist_denorm");
@@ -125,7 +125,7 @@ public interface Chinook {
   }
 
   interface Invoice {
-    EntityType TYPE = type("invoice@chinook");
+    EntityType TYPE = entityType("invoice@chinook");
     Attribute<Long> ID = TYPE.longAttribute("invoiceid");
     Attribute<Long> CUSTOMER_ID = TYPE.longAttribute("customerid");
     Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
@@ -140,7 +140,7 @@ public interface Chinook {
   }
 
   interface InvoiceLine {
-    EntityType TYPE = type("invoiceline@chinook");
+    EntityType TYPE = entityType("invoiceline@chinook");
     Attribute<Long> ID = TYPE.longAttribute("invoicelineid");
     Attribute<Long> INVOICE_ID = TYPE.longAttribute("invoiceid");
     Attribute<Entity> INVOICE_FK = TYPE.entityAttribute("invoice_fk");
@@ -163,13 +163,13 @@ public interface Chinook {
   }
 
   interface Playlist {
-    EntityType TYPE = type("playlist@chinook");
+    EntityType TYPE = entityType("playlist@chinook");
     Attribute<Long> ID = TYPE.longAttribute("playlistid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
 
   interface PlaylistTrack {
-    EntityType TYPE = type("playlisttrack@chinook");
+    EntityType TYPE = entityType("playlisttrack@chinook");
     Attribute<Long> ID = TYPE.longAttribute("playlisttrackid");
     Attribute<Long> PLAYLIST_ID = TYPE.longAttribute("playlistid");
     Attribute<Entity> PLAYLIST_FK = TYPE.entityAttribute("playlist_fk");

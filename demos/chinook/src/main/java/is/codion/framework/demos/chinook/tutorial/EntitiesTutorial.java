@@ -26,7 +26,7 @@ import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.entity.Entities.getKeys;
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -44,7 +44,7 @@ public final class EntitiesTutorial {
     // EntityType constant for the table entityType
     // and an Attribute for each column
     public interface Artist {
-      EntityType TYPE = type("chinook.artist");
+      EntityType TYPE = entityType("chinook.artist");
       Attribute<Integer> ID = TYPE.integerAttribute("artistid");
       Attribute<String> NAME = TYPE.stringAttribute("name");
     }
@@ -52,7 +52,7 @@ public final class EntitiesTutorial {
     // EntityType constant for the table entityType and an Attribute
     // for each column and one for the foreign key relation
     public interface Album {
-      EntityType TYPE = type("chinook.album");
+      EntityType TYPE = entityType("chinook.album");
       Attribute<Integer> ID = TYPE.integerAttribute("albumid");
       Attribute<String> TITLE = TYPE.stringAttribute("title");
       Attribute<Integer> ARTIST_ID = TYPE.integerAttribute("artistid");

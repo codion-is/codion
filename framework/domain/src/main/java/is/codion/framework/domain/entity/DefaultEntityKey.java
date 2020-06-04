@@ -304,7 +304,7 @@ final class DefaultEntityKey implements Entity.Key {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final String domainName = (String) stream.readObject();
-    final EntityType entityType = Entities.type((String) stream.readObject());
+    final EntityType entityType = EntityType.entityType((String) stream.readObject());
     definition = DefaultEntities.getEntities(domainName).getDefinition(entityType);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityType);

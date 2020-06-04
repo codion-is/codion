@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.Comparator;
 
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +22,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void test() {
-    final EntityType entityType = type("entityType");
+    final EntityType entityType = entityType("entityType");
     final Attribute<Integer> id = entityType.integerAttribute("id");
     final Attribute<String> name = entityType.stringAttribute("name");
     final StringProvider stringProvider = new StringProvider(name);
@@ -68,13 +68,13 @@ public class DefaultEntityDefinitionTest {
   public void foreignKeyPropertyCountMismatch() {
     class TestDomain extends Domain {
       public TestDomain() {
-        final EntityType entityType1 = type("test.composite_key_master");
+        final EntityType entityType1 = entityType("test.composite_key_master");
         final Attribute<Integer> first = entityType1.integerAttribute("first");
         final Attribute<Integer> second = entityType1.integerAttribute("second");
         define(entityType1,
                 Properties.columnProperty(first).primaryKeyIndex(0),
                 Properties.columnProperty(second).primaryKeyIndex(1));
-        final EntityType entityType2 = type("test.composite_reference");
+        final EntityType entityType2 = entityType("test.composite_reference");
         final Attribute<Entity> reference_fk = entityType2.entityAttribute("reference_fk");
         final Attribute<?> reference = entityType2.integerAttribute("reference");
         define(entityType2,
@@ -90,7 +90,7 @@ public class DefaultEntityDefinitionTest {
   public void duplicateAttributes() {
     class TestDomain extends Domain {
       public TestDomain() {
-        final EntityType entityType = type("entityType");
+        final EntityType entityType = entityType("entityType");
         define(entityType, "tableName",
                 Properties.primaryKeyProperty(entityType.integerAttribute("id")),
                 Properties.columnProperty(entityType.stringAttribute("name")),
@@ -104,7 +104,7 @@ public class DefaultEntityDefinitionTest {
   public void duplicateForeignKeyAttributes() {
     class TestDomain extends Domain {
       public TestDomain() {
-        final EntityType entityType = type("entityType");
+        final EntityType entityType = entityType("entityType");
         define(entityType, "tableName",
                 Properties.primaryKeyProperty(entityType.integerAttribute("id")),
                 Properties.columnProperty(entityType.stringAttribute("name")),
@@ -117,7 +117,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void derivedProperty() {
-    final EntityType entityType = type("entityType");
+    final EntityType entityType = entityType("entityType");
     final Attribute<Integer> name = entityType.integerAttribute("name");
     final Attribute<String> info = entityType.stringAttribute("info");
     final Attribute<String> derived = entityType.stringAttribute("derived");
@@ -144,7 +144,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testGroupingProperties() {
-    final EntityType entityType = type("entityType");
+    final EntityType entityType = entityType("entityType");
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityType,
@@ -163,7 +163,7 @@ public class DefaultEntityDefinitionTest {
   public void testSetGroupByClauseWithGroupingProperties() {
     class TestDomain extends Domain {
       public TestDomain() {
-        final EntityType entityType = type("entityType");
+        final EntityType entityType = entityType("entityType");
         define(entityType,
                 Properties.primaryKeyProperty(entityType.integerAttribute("p0")).aggregateColumn(true),
                 Properties.columnProperty(entityType.integerAttribute("p1")).groupingColumn(true),
@@ -176,7 +176,7 @@ public class DefaultEntityDefinitionTest {
   @Test
   public void testSetHavingClause() {
     final String havingClause = "p1 > 1";
-    final EntityType entityType = type("entityType");
+    final EntityType entityType = entityType("entityType");
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityType,
@@ -194,7 +194,7 @@ public class DefaultEntityDefinitionTest {
     final String havingClause = "p1 > 1";
     class TestDomain extends Domain {
       public TestDomain() {
-        final EntityType entityType = type("entityType");
+        final EntityType entityType = entityType("entityType");
         define(entityType,
                 Properties.primaryKeyProperty(entityType.integerAttribute("p0"))).havingClause(havingClause)
                 .havingClause(havingClause);
@@ -205,8 +205,8 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testForeignKeyWithNoPrimaryKey() {
-    final EntityType entityType1 = type("testForeignKeyWithNoPrimaryKey");
-    final EntityType entityType2 = type("testForeignKeyWithNoPrimaryKey2");
+    final EntityType entityType1 = entityType("testForeignKeyWithNoPrimaryKey");
+    final EntityType entityType2 = entityType("testForeignKeyWithNoPrimaryKey2");
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityType1,
@@ -224,9 +224,9 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends Domain {
       public TestDomain() {
         setStrictForeignKeys(false);
-        final EntityType entityType = type("entityType");
+        final EntityType entityType = entityType("entityType");
         define(entityType,
-                Properties.foreignKeyProperty(entityType.entityAttribute("fkAttribute"), "caption", type("parent"),
+                Properties.foreignKeyProperty(entityType.entityAttribute("fkAttribute"), "caption", entityType("parent"),
                         Properties.primaryKeyProperty(entityType.integerAttribute("attribute"))));
         setStrictForeignKeys(true);
       }
@@ -238,7 +238,7 @@ public class DefaultEntityDefinitionTest {
   public void testAttributeConflict() {
     class TestDomain extends Domain {
       public TestDomain() {
-        final EntityType entityType = type("entityType");
+        final EntityType entityType = entityType("entityType");
         define(entityType,
                 Properties.primaryKeyProperty(entityType.integerAttribute("pk")),
                 Properties.columnProperty(entityType.integerAttribute("col")),
@@ -252,11 +252,11 @@ public class DefaultEntityDefinitionTest {
   public void testAttributeConflictInForeignKey() {
     class TestDomain extends Domain {
       public TestDomain() {
-        final EntityType entityType = type("entityType");
+        final EntityType entityType = entityType("entityType");
         define(entityType,
                 Properties.primaryKeyProperty(entityType.integerAttribute("pk")),
                 Properties.columnProperty(entityType.integerAttribute("col")),
-                Properties.foreignKeyProperty(entityType.entityAttribute("fk"), "cap", type("parent"),
+                Properties.foreignKeyProperty(entityType.entityAttribute("fk"), "cap", entityType("parent"),
                         Properties.columnProperty(entityType.integerAttribute("col"))));
       }
     }
@@ -265,7 +265,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testLinkedProperties() {
-    final EntityType entityType = type("entityType");
+    final EntityType entityType = entityType("entityType");
     final Attribute<Integer> attribute1 = entityType.integerAttribute("1");
     final Attribute<Integer> attribute2 = entityType.integerAttribute("2");
     class TestDomain extends Domain {
@@ -287,7 +287,7 @@ public class DefaultEntityDefinitionTest {
   @Test
   public void getColor() {
     final String colorBlue = "blue";
-    final EntityType entityType = type("entityType");
+    final EntityType entityType = entityType("entityType");
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityType,
@@ -305,7 +305,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   void testDefaultStringProvider() {
-    final EntityType entityType = type("entityType");
+    final EntityType entityType = entityType("entityType");
     final Attribute<Integer> attribute = entityType.integerAttribute("attribute");
     class TestDomain extends Domain {
       public TestDomain() {
@@ -324,7 +324,7 @@ public class DefaultEntityDefinitionTest {
   public void nullStringProvider() {
     class TestDomain extends Domain {
       public TestDomain() {
-        final EntityType entityType = type("entityType");
+        final EntityType entityType = entityType("entityType");
         define(entityType,
                 Properties.primaryKeyProperty(entityType.integerAttribute("attribute"))).stringProvider(null);
       }
@@ -334,7 +334,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void setToStringProvider() {
-    final EntityType entityType = type("entityType");
+    final EntityType entityType = entityType("entityType");
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityType,
@@ -349,7 +349,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void defaultKeyGenerator() {
-    final EntityType entityType = type("defaultKeyGenerator");
+    final EntityType entityType = entityType("defaultKeyGenerator");
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityType,
@@ -368,7 +368,7 @@ public class DefaultEntityDefinitionTest {
   public void nullKeyGenerator() {
     class TestDomain extends Domain {
       public TestDomain() {
-        final EntityType entityType = type("entityType");
+        final EntityType entityType = entityType("entityType");
         define(entityType,
                 Properties.primaryKeyProperty(entityType.integerAttribute("attribute"))).keyGenerator(null);
       }
@@ -378,7 +378,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void keyGenerator() {
-    final EntityType entityType = type("entityType");
+    final EntityType entityType = entityType("entityType");
     class TestDomain extends Domain {
       public TestDomain() {
         define(entityType,
