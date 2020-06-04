@@ -15,7 +15,7 @@ public final class UserPreferences {
 
   private static final String KEY = "key";
 
-  private static Preferences userPreferences;
+  private static Preferences preferences;
 
   private UserPreferences() {}
 
@@ -25,7 +25,7 @@ public final class UserPreferences {
    * @return the user preference associated with the given key
    */
   public static String getUserPreference(final String key, final String defaultValue) {
-    return getUserPreferences().get(requireNonNull(key, KEY), defaultValue);
+    return getPreferences().get(requireNonNull(key, KEY), defaultValue);
   }
 
   /**
@@ -33,7 +33,7 @@ public final class UserPreferences {
    * @param value the preference value to associate with the given key
    */
   public static void putUserPreference(final String key, final String value) {
-    getUserPreferences().put(requireNonNull(key, KEY), value);
+    getPreferences().put(requireNonNull(key, KEY), value);
   }
 
   /**
@@ -41,7 +41,7 @@ public final class UserPreferences {
    * @param key the key to use to identify the preference to remove
    */
   public static void removeUserPreference(final String key) {
-    getUserPreferences().remove(requireNonNull(key, KEY));
+    getPreferences().remove(requireNonNull(key, KEY));
   }
 
   /**
@@ -49,14 +49,14 @@ public final class UserPreferences {
    * @throws BackingStoreException in case of a backing store failure
    */
   public static void flushUserPreferences() throws BackingStoreException {
-    getUserPreferences().flush();
+    getPreferences().flush();
   }
 
-  private static synchronized Preferences getUserPreferences() {
-    if (userPreferences == null) {
-      userPreferences = Preferences.userRoot();
+  private static synchronized Preferences getPreferences() {
+    if (preferences == null) {
+      preferences = Preferences.userRoot();
     }
 
-    return userPreferences;
+    return preferences;
   }
 }
