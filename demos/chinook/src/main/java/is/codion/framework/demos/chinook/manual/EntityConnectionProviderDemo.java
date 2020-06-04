@@ -40,7 +40,7 @@ public class EntityConnectionProviderDemo {
     DatabaseConnection databaseConnection =
             entityConnection.getDatabaseConnection();
 
-    //the underlying JDBC connection is available in a local connection
+    // the underlying JDBC connection is available in a local connection
     Connection connection = databaseConnection.getConnection();
 
     connectionProvider.disconnect();

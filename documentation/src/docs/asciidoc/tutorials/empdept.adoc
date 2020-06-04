@@ -17,7 +17,7 @@ image::tutorials/empdept/departments.png[]
 
 == Domain
 
-We start by creating a class named EmpDept in a package of our choosing, extending Domain and define the identity and attribute constants required for the department {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity], which is based on the SCOTT.DEPT table. The identity constant defines the entity itself and will be referred to as the *entityType* (here prefixed with T_), the attributes represent the columns in the table. The entityType in this example contains the actual table name (scott.dept), but the table name can be specified via a __tableName__ parameter when the entity is defined. The attribute names are the actual column names from the table, but that is not required either.
+We start by creating a class named EmpDept in a package of our choosing, extending Domain and define the identity and attribute constants required for the department {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity], which is based on the SCOTT.DEPT table. The EntityType constant represents the entity type, the attributes represent the columns in the table. The entityType in this example contains the actual table name (scott.dept), but the table name can be specified via a __tableName__ parameter when the entity is defined. The attribute names are the actual column names from the table, but that is not required either.
 
 [source,java]
 ----

@@ -13,8 +13,8 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.DefaultEntityEditModel;
 import is.codion.framework.model.DefaultEntityModel;
@@ -96,7 +96,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void getDetailModelNotFound() {
-    assertThrows(IllegalArgumentException.class, () -> departmentModel.getDetailModel(Entities.type("undefined")));
+    assertThrows(IllegalArgumentException.class, () -> departmentModel.getDetailModel(EntityType.entityType("undefined")));
   }
 
   @Test

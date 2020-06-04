@@ -167,14 +167,6 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   <V> Entity fromBean(V bean);
 
   /**
-   * @param name the entity type name
-   * @return a {@link EntityType} instance with the given name
-   */
-  static EntityType type(final String name) {
-    return new DefaultEntityType(name);
-  }
-
-  /**
    * Returns true if the entity has a null primary key or a null original primary key,
    * which is the best guess about an entity being new, as in, not existing in a database.
    * @param entity the entity

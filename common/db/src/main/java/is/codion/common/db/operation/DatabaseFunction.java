@@ -11,17 +11,11 @@ import is.codion.common.db.exception.DatabaseException;
  * @param <T> the argument type
  * @param <R> the return type
  */
-public interface DatabaseFunction<C, T, R> extends DatabaseOperation {
-
- /**
-   * @return this functions type
-   */
-  @Override
-  FunctionType<C, T, R> getType();
+public interface DatabaseFunction<C, T, R> {
 
   /**
    * Executes this function with the given connection
-   * @param connection the connection to use when executing
+   * @param connection the connection being used to execute this function
    * @param arguments the function arguments, if any
    * @return the function return argument
    * @throws DatabaseException in case of an exception during the execution

@@ -5,10 +5,9 @@ package is.codion.framework.domain;
 
 import is.codion.common.DateFormats;
 import is.codion.common.db.connection.DatabaseConnection;
-import is.codion.common.db.operation.AbstractDatabaseProcedure;
-import is.codion.common.db.operation.DatabaseOperation;
+import is.codion.common.db.operation.DatabaseFunction;
+import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.Operations;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.event.EventListener;
 import is.codion.framework.domain.entity.Attribute;
@@ -43,7 +42,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -201,7 +200,7 @@ public class DomainTest {
 
   @Test
   public void key() {
-    final EntityType entityType = type("DomainTest.key");
+    final EntityType entityType = entityType("DomainTest.key");
     final Attribute<Integer> attribute1 = entityType.attribute("id1", Integer.class);
     final Attribute<Integer> attribute2 = entityType.attribute("id2", Integer.class);
     final Attribute<Integer> attribute3 = entityType.attribute("id3", Integer.class);
@@ -258,7 +257,7 @@ public class DomainTest {
   @Test
   public void keyWithSameIndex() {
     assertThrows(IllegalArgumentException.class, () -> {
-      final EntityType entityType = type("keyWithSameIndex");
+      final EntityType entityType = entityType("keyWithSameIndex");
       domain.define(entityType,
               Properties.primaryKeyProperty(entityType.attribute("1", Integer.class)).primaryKeyIndex(0),
               Properties.primaryKeyProperty(entityType.attribute("2", Integer.class)).primaryKeyIndex(1),
@@ -269,7 +268,7 @@ public class DomainTest {
   @Test
   public void keyWithSameIndex2() {
     assertThrows(IllegalArgumentException.class, () -> {
-      final EntityType entityType = type("keyWithSameIndex2");
+      final EntityType entityType = entityType("keyWithSameIndex2");
       domain.define(entityType,
               Properties.primaryKeyProperty(entityType.attribute("1", Integer.class)),
               Properties.primaryKeyProperty(entityType.attribute("2", Integer.class)),
@@ -384,7 +383,7 @@ public class DomainTest {
 
   @Test
   public void redefine() {
-    final EntityType entityType = type("entityType");
+    final EntityType entityType = entityType("entityType");
     final Attribute<Integer> attribute = entityType.attribute("attribute", Integer.class);
     domain.define(entityType, Properties.primaryKeyProperty(attribute));
     assertThrows(IllegalArgumentException.class, () -> domain.define(entityType, Properties.primaryKeyProperty(attribute)));
@@ -528,10 +527,10 @@ public class DomainTest {
   @Test
   public void foreignKeyReferencingUndefinedEntity() {
     assertThrows(IllegalArgumentException.class, () -> {
-      final EntityType entityType = type("test.entity");
+      final EntityType entityType = entityType("test.entity");
       domain.define(entityType,
               Properties.primaryKeyProperty(entityType.attribute("id", Integer.class)),
-              Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption", type("test.referenced_entity"),
+              Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption", entityType("test.referenced_entity"),
                       Properties.columnProperty(entityType.attribute("fk_id", Integer.class))));
     });
   }
@@ -539,29 +538,29 @@ public class DomainTest {
   @Test
   public void foreignKeyReferencingUndefinedEntityNonStrict() {
     domain.setStrictForeignKeys(false);
-    final EntityType entityType = type("test.entity");
+    final EntityType entityType = entityType("test.entity");
     domain.define(entityType,
             Properties.primaryKeyProperty(entityType.attribute("id", Integer.class)),
-            Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption", type("test.referenced_entity"),
+            Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption", entityType("test.referenced_entity"),
                     Properties.columnProperty(entityType.attribute("fk_id", Integer.class))));
     domain.setStrictForeignKeys(true);
   }
 
   @Test
   public void hasSingleIntegerPrimaryKey() {
-    EntityType entityType = type("hasSingleIntegerPrimaryKey");
+    EntityType entityType = entityType("hasSingleIntegerPrimaryKey");
     domain.define(entityType,
             Properties.columnProperty(entityType.attribute("test", Integer.class))
                     .primaryKeyIndex(0));
     assertTrue(domain.getDefinition(entityType).hasSingleIntegerPrimaryKey());
-    entityType = type("hasSingleIntegerPrimaryKey2");
+    entityType = entityType("hasSingleIntegerPrimaryKey2");
     domain.define(entityType,
             Properties.columnProperty(entityType.attribute("test", Integer.class))
                     .primaryKeyIndex(0),
             Properties.columnProperty(entityType.attribute("test2", Integer.class))
                     .primaryKeyIndex(1));
     assertFalse(domain.getDefinition(entityType).hasSingleIntegerPrimaryKey());
-    entityType = type("hasSingleIntegerPrimaryKey3");
+    entityType = entityType("hasSingleIntegerPrimaryKey3");
     domain.define(entityType,
             Properties.columnProperty(entityType.attribute("test", String.class))
                     .primaryKeyIndex(0));
@@ -571,7 +570,7 @@ public class DomainTest {
   @Test
   public void havingClause() {
     final String havingClause = "p1 > 1";
-    final EntityType entityType = type("entityType3");
+    final EntityType entityType = entityType("entityType3");
     domain.define(entityType,
             Properties.primaryKeyProperty(entityType.attribute("p0", Integer.class))).havingClause(havingClause);
     assertEquals(havingClause, domain.getDefinition(entityType).getHavingClause());
@@ -597,37 +596,42 @@ public class DomainTest {
   }
 
   @Test
-  public void addOperationExisting() {
-    final ProcedureType<DatabaseConnection, Object> procedureType = Operations.procedureType("operationId");
-    final DatabaseOperation operation = new AbstractDatabaseProcedure<DatabaseConnection, Object>(procedureType) {
-      @Override
-      public void execute(final DatabaseConnection databaseConnection, final Object... arguments) {}
-    };
-    domain.addOperation(operation);
-    assertThrows(IllegalArgumentException.class, () -> domain.addOperation(operation));
+  public void addProcedureExisting() {
+    final ProcedureType<DatabaseConnection, Object> procedureType = ProcedureType.procedureType("operationId");
+    final DatabaseProcedure<DatabaseConnection, Object> operation = (databaseConnection, arguments) -> {};
+    domain.addProcedure(procedureType, operation);
+    assertThrows(IllegalArgumentException.class, () -> domain.addProcedure(procedureType, operation));
+  }
+
+  @Test
+  public void addFunctionExisting() {
+    final FunctionType<DatabaseConnection, Object, Object> functionType = FunctionType.functionType("operationId");
+    final DatabaseFunction<DatabaseConnection, Object, Object> function = (databaseConnection, arguments) -> null;
+    domain.addFunction(functionType, function);
+    assertThrows(IllegalArgumentException.class, () -> domain.addFunction(functionType, function));
   }
 
   @Test
   public void getFunctionNonExisting() {
-    final FunctionType<?, ?, ?> functionType = Operations.functionType("nonexisting");
+    final FunctionType<?, ?, ?> functionType = FunctionType.functionType("nonexisting");
     assertThrows(IllegalArgumentException.class, () -> domain.getFunction(functionType));
   }
 
   @Test
   public void getProcedureNonExisting() {
-    final ProcedureType<?, ?> procedureType = Operations.procedureType("nonexisting");
+    final ProcedureType<?, ?> procedureType = ProcedureType.procedureType("nonexisting");
     assertThrows(IllegalArgumentException.class, () -> domain.getProcedure(procedureType));
   }
 
   @Test
   public void conditionProvider() {
-    final EntityType nullConditionProvider1 = type("nullConditionProvider1");
+    final EntityType nullConditionProvider1 = entityType("nullConditionProvider1");
     assertThrows(IllegalArgumentException.class, () -> domain.define(nullConditionProvider1,
             Properties.primaryKeyProperty(nullConditionProvider1.integerAttribute("id"))).conditionProvider(null, (attributes, values) -> null));
-    final EntityType nullConditionProvider2 = type("nullConditionProvider2");
+    final EntityType nullConditionProvider2 = entityType("nullConditionProvider2");
     assertThrows(NullPointerException.class, () -> domain.define(nullConditionProvider2,
             Properties.primaryKeyProperty(nullConditionProvider2.integerAttribute("id"))).conditionProvider("id", null));
-    final EntityType nullConditionProvider3 = type("nullConditionProvider3");
+    final EntityType nullConditionProvider3 = entityType("nullConditionProvider3");
     assertThrows(IllegalStateException.class, () -> domain.define(nullConditionProvider3,
             Properties.primaryKeyProperty(nullConditionProvider3.integerAttribute("id")))
             .conditionProvider("id", (attributes, values) -> null)

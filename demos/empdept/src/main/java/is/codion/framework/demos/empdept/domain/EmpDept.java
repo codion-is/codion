@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -32,7 +32,7 @@ public final class EmpDept extends Domain {
 
   /** Entity type for the table scott.dept*/
   public interface Department {
-    EntityType TYPE = type("scott.dept");
+    EntityType TYPE = entityType("scott.dept");
     /** Attributes for the columns in the scott.dept table*/
     Attribute<Integer> ID = TYPE.integerAttribute("deptno");
     Attribute<String> NAME = TYPE.stringAttribute("dname");
@@ -43,7 +43,7 @@ public final class EmpDept extends Domain {
   // tag::employeeConstants[]
   /** Entity type for the table scott.emp*/
   public interface Employee {
-    EntityType TYPE = type("scott.emp");
+    EntityType TYPE = entityType("scott.emp");
     /** Attributes for the columns in the scott.emp table*/
     Attribute<Integer> ID = TYPE.integerAttribute("empno");
     Attribute<String> NAME = TYPE.stringAttribute("ename");

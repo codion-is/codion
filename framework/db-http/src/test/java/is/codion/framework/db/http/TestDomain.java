@@ -3,11 +3,7 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.operation.AbstractDatabaseFunction;
-import is.codion.common.db.operation.AbstractDatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.Operations;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.AbstractReportWrapper;
 import is.codion.common.db.reports.ReportException;
@@ -24,7 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -52,7 +48,7 @@ public final class TestDomain extends Domain {
     addReport(REPORT);
   }
 
-  public static final EntityType T_DEPARTMENT = type("scott.dept");
+  public static final EntityType T_DEPARTMENT = entityType("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -71,7 +67,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final EntityType T_EMP = type("scott.emp");
+  public static final EntityType T_EMP = entityType("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
@@ -113,19 +109,11 @@ public final class TestDomain extends Domain {
             .caption("Employee");
   }
 
-  public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = Operations.functionType("functionId");
-  public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = Operations.procedureType("procedureId");
+  public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = FunctionType.functionType("functionId");
+  public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
 
   void operations() {
-    addOperation(new AbstractDatabaseProcedure<EntityConnection, Object>(PROCEDURE_ID) {
-      @Override
-      public void execute(final EntityConnection connection, final Object... objects) throws DatabaseException {}
-    });
-    addOperation(new AbstractDatabaseFunction<EntityConnection, Object, List<Object>>(FUNCTION_ID) {
-      @Override
-      public List<Object> execute(final EntityConnection connection, final Object... objects) throws DatabaseException {
-        return emptyList();
-      }
-    });
+    addProcedure(PROCEDURE_ID, (connection, objects) -> {});
+    addFunction(FUNCTION_ID, (connection, objects) -> emptyList());
   }
 }

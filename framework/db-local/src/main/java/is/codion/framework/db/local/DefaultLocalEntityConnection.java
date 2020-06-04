@@ -631,7 +631,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     try {
       logAccess("executeFunction: " + functionType, arguments);
       synchronized (connection) {
-        return domain.getFunction(functionType).execute(this, arguments);
+        return functionType.execute(this, domain.getFunction(functionType), arguments);
       }
     }
     catch (final DatabaseException e) {
@@ -650,7 +650,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     try {
       logAccess("executeProcedure: " + procedureType, arguments);
       synchronized (connection) {
-        domain.getProcedure(procedureType).execute(this, arguments);
+        procedureType.execute(this, domain.getProcedure(procedureType), arguments);
       }
     }
     catch (final DatabaseException e) {

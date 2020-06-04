@@ -8,7 +8,7 @@ import is.codion.framework.domain.entity.EntityType;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static java.util.Arrays.asList;
 
 /**
@@ -24,7 +24,7 @@ public interface World {
   );
 
   interface City {
-    EntityType TYPE = type("world.city");
+    EntityType TYPE = entityType("world.city");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
@@ -34,7 +34,7 @@ public interface World {
   }
 
   interface Country {
-    EntityType TYPE = type("world.country");
+    EntityType TYPE = entityType("world.country");
     Attribute<String> CODE = TYPE.stringAttribute("code");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<String> CONTINENT = TYPE.stringAttribute("continent");
@@ -58,7 +58,7 @@ public interface World {
   }
 
   interface CountryLanguage {
-    EntityType TYPE = type("world.countrylanguage");
+    EntityType TYPE = entityType("world.countrylanguage");
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
     Attribute<Entity> COUNTRY_FK = TYPE.entityAttribute("country_fk");
     Attribute<String> LANGUAGE = TYPE.stringAttribute("language");
@@ -68,7 +68,7 @@ public interface World {
   }
 
   interface Continent {
-    EntityType TYPE = type("continent");
+    EntityType TYPE = entityType("continent");
     Attribute<String> CONTINENT = TYPE.stringAttribute("continent");
     Attribute<Integer> SURFACE_AREA = TYPE.integerAttribute("sum(surfacearea)");
     Attribute<Long> POPULATION = TYPE.longAttribute("sum(population)");
@@ -80,7 +80,7 @@ public interface World {
   }
 
   interface Lookup {
-    EntityType TYPE = type("world.country_city_v");
+    EntityType TYPE = entityType("world.country_city_v");
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
     Attribute<String> COUNTRY_NAME = TYPE.stringAttribute("countryname");
     Attribute<String> COUNTRY_CONTINENT = TYPE.stringAttribute("continent");

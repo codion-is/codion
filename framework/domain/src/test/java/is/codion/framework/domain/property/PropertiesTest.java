@@ -15,14 +15,14 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.property.Properties.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class PropertiesTest {
 
-  private static final EntityType ENTITY_TYPE = type("entityType");
-  private static final EntityType REFERENCED_ENTITY_TYPE = type("referencedEntityType");
+  private static final EntityType ENTITY_TYPE = entityType("entityType");
+  private static final EntityType REFERENCED_ENTITY_TYPE = entityType("referencedEntityType");
 
   @Test
   public void derivedPropertyWithoutLinkedProperties() {

@@ -217,12 +217,6 @@ final class DefaultEntityKey implements Entity.Key {
     return values.size();
   }
 
-  private void clear() {
-    values.clear();
-    cachedHashCode = null;
-    hashCodeDirty = true;
-  }
-
   private Object putInternal(final ColumnProperty<Object> property, final Object value) {
     final Object newValue = property.prepareValue(property.getAttribute().validateType(value));
     values.put(property.getAttribute(), newValue);
@@ -310,7 +304,7 @@ final class DefaultEntityKey implements Entity.Key {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final String domainName = (String) stream.readObject();
-    final EntityType entityType = Entities.type((String) stream.readObject());
+    final EntityType entityType = EntityType.entityType((String) stream.readObject());
     definition = DefaultEntities.getEntities(domainName).getDefinition(entityType);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityType);

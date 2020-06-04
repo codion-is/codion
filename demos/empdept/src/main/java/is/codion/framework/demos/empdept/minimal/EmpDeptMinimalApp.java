@@ -29,7 +29,7 @@ import java.awt.GridLayout;
 import java.time.LocalDate;
 import java.util.Locale;
 
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -47,7 +47,7 @@ public final class EmpDeptMinimalApp {
     /*
      * We start by defining attributes for the columns in the SCOTT.DEPT table.
      */
-    public static final EntityType T_DEPT = type("scott.dept");
+    public static final EntityType T_DEPT = entityType("scott.dept");
     public static final Attribute<Integer> DEPT_DEPTNO = T_DEPT.integerAttribute("deptno");
     public static final Attribute<String> DEPT_DNAME = T_DEPT.stringAttribute("dname");
     public static final Attribute<String> DEPT_LOC = T_DEPT.stringAttribute("loc");
@@ -55,7 +55,7 @@ public final class EmpDeptMinimalApp {
     /*
      * And for the columns in the SCOTT.EMP table.
      */
-    public static final EntityType T_EMP = type("scott.emp");
+    public static final EntityType T_EMP = entityType("scott.emp");
     public static final Attribute<Integer> EMP_EMPNO = T_EMP.integerAttribute("empno");
     public static final Attribute<String> EMP_ENAME = T_EMP.stringAttribute("ename");
     public static final Attribute<Integer> EMP_DEPTNO = T_EMP.integerAttribute("deptno");

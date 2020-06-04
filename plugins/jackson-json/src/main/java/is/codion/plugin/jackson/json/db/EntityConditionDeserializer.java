@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 
 final class EntityConditionDeserializer extends StdDeserializer<EntityCondition> {
 
@@ -35,7 +35,7 @@ final class EntityConditionDeserializer extends StdDeserializer<EntityCondition>
   @Override
   public EntityCondition deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityConditionNode = parser.getCodec().readTree(parser);
-    final EntityType entityType = type(entityConditionNode.get("entityType").asText());
+    final EntityType entityType = entityType(entityConditionNode.get("entityType").asText());
     final JsonNode conditionNode = entityConditionNode.get("condition");
 
     final Condition condition = conditionDeserializer.deserialize(

@@ -5,8 +5,8 @@ package is.codion.framework.demos.chinook.domain.impl;
 
 import is.codion.common.db.Operator;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.operation.AbstractDatabaseFunction;
-import is.codion.common.db.operation.AbstractDatabaseProcedure;
+import is.codion.common.db.operation.DatabaseFunction;
+import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.demos.chinook.domain.Chinook;
@@ -48,8 +48,8 @@ public final class ChinookImpl extends Domain implements Chinook {
     playlist();
     playlistTrack();
     addReport(Customer.CUSTOMER_REPORT);
-    addOperation(new UpdateTotalsProcedure());
-    addOperation(new RaisePriceFunction());
+    addProcedure(Procedures.UPDATE_TOTALS, new UpdateTotalsProcedure());
+    addFunction(Functions.RAISE_PRICE, new RaisePriceFunction());
   }
 
   void artist() {
@@ -343,12 +343,7 @@ public final class ChinookImpl extends Domain implements Chinook {
             .caption("Playlist tracks");
   }
 
-  private static final class UpdateTotalsProcedure
-          extends AbstractDatabaseProcedure<EntityConnection, Void> {
-
-    private UpdateTotalsProcedure() {
-      super(Procedures.UPDATE_TOTALS);
-    }
+  private static final class UpdateTotalsProcedure implements DatabaseProcedure<EntityConnection, Void> {
 
     @Override
     public void execute(final EntityConnection entityConnection,
@@ -375,12 +370,7 @@ public final class ChinookImpl extends Domain implements Chinook {
     }
   }
 
-  private static final class RaisePriceFunction
-          extends AbstractDatabaseFunction<EntityConnection, Object, List<Entity>> {
-
-    private RaisePriceFunction() {
-      super(Functions.RAISE_PRICE);
-    }
+  private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, Object, List<Entity>> {
 
     @Override
     public List<Entity> execute(final EntityConnection entityConnection,

@@ -64,8 +64,8 @@ public final class EntityConnectionDemo {
     Entity mediaType = track.getForeignKey(Track.MEDIATYPE_FK);
     Entity album = track.getForeignKey(Track.ALBUM_FK);
 
-    //fetch depth for TRACK_ALBUM_FK is 2, which means two levels of
-    //references are fetched, so we have the artist here as well
+    // fetch depth for TRACK_ALBUM_FK is 2, which means two levels of
+    // references are fetched, so we have the artist here as well
     Entity artist = album.getForeignKey(Album.ARTIST_FK);
     // end::fetchDepthEntity[]
   }
@@ -80,8 +80,8 @@ public final class EntityConnectionDemo {
 
     Entity track = tracks.get(0);
 
-    //this 'genre' instance contains only the primary key, since the
-    //condition fetch depth limit prevented it from being selected
+    // this 'genre' instance contains only the primary key, since the
+    // condition fetch depth limit prevented it from being selected
     Entity genre = track.getForeignKey(Track.GENRE_FK);
     // end::fetchDepthCondition[]
   }
@@ -99,8 +99,8 @@ public final class EntityConnectionDemo {
     Entity genre = track.getForeignKey(Track.GENRE_FK);
     Entity mediaType = track.getForeignKey(Track.MEDIATYPE_FK);
 
-    //this 'album' instance contains only the primary key, since the
-    //condition fetch depth limit prevented it from being selected
+    // this 'album' instance contains only the primary key, since the
+    // condition fetch depth limit prevented it from being selected
     Entity album = track.getForeignKey(Track.ALBUM_FK);
     // end::fetchDepthConditionForeignKey[]
   }
@@ -146,8 +146,8 @@ public final class EntityConnectionDemo {
     // tag::selectSingleValue[]
     Entity aliceInChains = connection.selectSingle(Artist.TYPE, Artist.NAME, "Alice In Chains");
 
-    //we only have one album by Alice in Chains
-    //otherwise this would throw an exception
+    // we only have one album by Alice in Chains
+    // otherwise this would throw an exception
     Entity albumFacelift = connection.selectSingle(Album.TYPE, Album.ARTIST_FK, aliceInChains);
     // end::selectSingleValue[]
   }

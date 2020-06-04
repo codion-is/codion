@@ -26,7 +26,7 @@ import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.entity.Entities.getKeys;
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -41,18 +41,18 @@ public final class EntitiesTutorial {
   /** The domain class, which contains the domain model definition */
   public static final class Chinook extends Domain {
 
-    //EntityType constant for the table entityType ('T_' prefix)
-    //and an Attribute for each column
+    // EntityType constant for the table entityType
+    // and an Attribute for each column
     public interface Artist {
-      EntityType TYPE = type("chinook.artist");
+      EntityType TYPE = entityType("chinook.artist");
       Attribute<Integer> ID = TYPE.integerAttribute("artistid");
       Attribute<String> NAME = TYPE.stringAttribute("name");
     }
 
-    //EntityType constant for the table entityType ('T_' prefix),
-    //and an Attribute for each column and one for the foreign key relation
+    // EntityType constant for the table entityType and an Attribute
+    // for each column and one for the foreign key relation
     public interface Album {
-      EntityType TYPE = type("chinook.album");
+      EntityType TYPE = entityType("chinook.album");
       Attribute<Integer> ID = TYPE.integerAttribute("albumid");
       Attribute<String> TITLE = TYPE.stringAttribute("title");
       Attribute<Integer> ARTIST_ID = TYPE.integerAttribute("artistid");
@@ -60,32 +60,32 @@ public final class EntitiesTutorial {
     }
 
     public Chinook() {
-      //create properties for the columns in the table 'chinook.artist'
+      // create properties for the columns in the table 'chinook.artist'
       Property.Builder<Integer> artistId = primaryKeyProperty(Artist.ID);
       Property.Builder<String> artistName = columnProperty(Artist.NAME, "Name");
       artistName.nullable(false).maximumLength(120);
 
-      //define an entity based on the table 'chinook.artist',
-      //with the above properties
+      // define an entity based on the table 'chinook.artist',
+      // with the above properties
       define(Artist.TYPE, artistId, artistName)
               .keyGenerator(automatic("chinook.artist"))
               .stringProvider(new StringProvider(Artist.NAME))
               .smallDataset(true)
               .caption("Artist");
 
-      //create properties for the columns in the table 'chinook.album'
+      // create properties for the columns in the table 'chinook.album'
       Property.Builder<Integer> albumId = primaryKeyProperty(Album.ID);
       Property.Builder<String> albumTitle = columnProperty(Album.TITLE, "Title");
       albumTitle.nullable(false).maximumLength(160);
-      //we wrap the actual 'artistid' column property in a foreign key
-      //referencing the entity identified by T_ARTIST
+      // we wrap the actual 'artistid' column property in a foreign key
+      // referencing the entity identified by T_ARTIST
       Property.Builder<Entity> albumArtist =
               foreignKeyProperty(Album.ARTIST_FK, "Artist", Artist.TYPE,
                       columnProperty(Album.ARTIST_ID));
       albumArtist.nullable(false);
 
-      //define an entity based on the table 'chinook.album',
-      //with the above properties
+      // define an entity based on the table 'chinook.album',
+      // with the above properties
       define(Album.TYPE, albumId, albumTitle, albumArtist)
               .keyGenerator(automatic("chinook.album"))
               .stringProvider(new StringProvider()
@@ -101,37 +101,37 @@ public final class EntitiesTutorial {
    * @throws DatabaseException in case of an exception
    */
   private static void selectingEntities(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    //fetch the connection from the provider, note that the provider always
-    //returns the same connection or a new one if the previous one has been
-    //disconnected or has become invalid for some reason
+    // fetch the connection from the provider, note that the provider always
+    // returns the same connection or a new one if the previous one has been
+    // disconnected or has become invalid for some reason
     EntityConnection connection = connectionProvider.getConnection();
 
-    //select the artist Metallica by name, the selectSingle() method
-    //throws a RecordNotFoundException if no record is found and a
-    //MultipleRecordsFoundException if more than one are found
+    // select the artist Metallica by name, the selectSingle() method
+    // throws a RecordNotFoundException if no record is found and a
+    // MultipleRecordsFoundException if more than one are found
     Entity metallica = connection.selectSingle(Artist.TYPE, Artist.NAME, "Metallica");
 
-    //select all albums by Metallica, by using select() with the
-    //Metallica Entity as condition value, basically asking for the
-    //records where the given foreign key references that specific Entity
-    //select() returns an empty list if none are found
+    // select all albums by Metallica, by using select() with the
+    // Metallica Entity as condition value, basically asking for the
+    // records where the given foreign key references that specific Entity
+    // select() returns an empty list if none are found
     List<Entity> albums = connection.select(Album.TYPE, Album.ARTIST_FK, metallica);
 
     albums.forEach(System.out::println);
 
-    //for more complex queries we use a EntitySelectCondition, provided
-    //by the Conditions factory class.
-    //we create a select condition, where we specify the type of the entity
-    //we're selecting, the attributes we're searching by, the type of condition and the value.
+    // for more complex queries we use a EntitySelectCondition, provided
+    // by the Conditions factory class.
+    // we create a select condition, where we specify the type of the entity
+    // we're selecting, the attributes we're searching by, the type of condition and the value.
     EntitySelectCondition artistsCondition = selectCondition(Artist.TYPE, Artist.NAME, LIKE, "An%");
-    //and we set the order by clause
+    // and we set the order by clause
     artistsCondition.setOrderBy(orderBy().ascending(Artist.NAME));
 
     List<Entity> artistsStartingWithAn = connection.select(artistsCondition);
 
     artistsStartingWithAn.forEach(System.out::println);
 
-    //create a select condition
+    // create a select condition
     EntitySelectCondition albumsCondition = selectCondition(Album.TYPE, Album.ARTIST_FK, LIKE, artistsStartingWithAn);
     albumsCondition.setOrderBy(orderBy().ascending(Album.ARTIST_ID).descending(Album.TITLE));
 
@@ -150,50 +150,50 @@ public final class EntitiesTutorial {
     //this Entities object serves as a factory for Entity instances
     Entities entities = connectionProvider.getEntities();
 
-    //lets create a new band
+    // lets create a new band
     Entity myBand = entities.entity(Artist.TYPE);
-    //and give the band a name
+    // and give the band a name
     myBand.put(Artist.NAME, "My band name");
 
-    //we start a transaction
+    // we start a transaction
     connection.beginTransaction();
 
-    //we insert the Entity, the insert() method returns the primary key
-    //of the inserted record, but we don't need it right now so we ignore it.
-    //Note that because we're running with a local connection in a single VM
-    //the primary key of the entity instance is populated during insert,
-    //with a remote connection the insert happens in another VM, so you have
-    //to select the entity after insert to get an instance containing
-    //the generated key value or use the key received via the return value
+    // we insert the Entity, the insert() method returns the primary key
+    // of the inserted record, but we don't need it right now so we ignore it.
+    // Note that because we're running with a local connection in a single VM
+    // the primary key of the entity instance is populated during insert,
+    // with a remote connection the insert happens in another VM, so you have
+    // to select the entity after insert to get an instance containing
+    // the generated key value or use the key received via the return value
     connection.insert(myBand);
 
-    //now for our first album
+    // now for our first album
     Entity album = entities.entity(Album.TYPE);
-    //set the album artist by setting the artist foreign key to my band
+    // set the album artist by setting the artist foreign key to my band
     album.put(Album.ARTIST_FK, myBand);
-    //and set the title
+    // and set the title
     album.put(Album.TITLE, "My first album");
 
-    //and insert the album
+    // and insert the album
     connection.insert(album);
 
-    //and finally we commit
+    // and finally we commit
     connection.commitTransaction();
 
-    //lets rename our album and our band as well
+    // lets rename our album and our band as well
     myBand.put(Artist.NAME, "A proper name");
     album.put(Album.TITLE, "A proper title");
 
-    //and perform the update, note that we only have to use transactions
-    //when we're performing multiple insert/update or delete calls,
-    //here we're just doing one so this call automatically happens within
-    //a single transaction
+    // and perform the update, note that we only have to use transactions
+    // when we're performing multiple insert/update or delete calls,
+    // here we're just doing one so this call automatically happens within
+    // a single transaction
     connection.update(asList(myBand, album));
 
-    //finally we clean up after ourselves by deleting our imaginary band and album,
-    //note that the order of the entities matters, since we can't delete
-    //the artist before the album, this method deletes records in the
-    //same order as the are received
+    // finally we clean up after ourselves by deleting our imaginary band and album,
+    // note that the order of the entities matters, since we can't delete
+    // the artist before the album, this method deletes records in the
+    // same order as the are received
     connection.delete(getKeys(asList(album, myBand)));
   }
 
@@ -201,9 +201,9 @@ public final class EntitiesTutorial {
     // Configure the database
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
-    //initialize a connection provider, this class is responsible
-    //for supplying a valid connection or throwing an exception
-    //in case a connection can not be established
+    // initialize a connection provider, this class is responsible
+    // for supplying a valid connection or throwing an exception
+    // in case a connection can not be established
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(Databases.getInstance())
                     .setDomainClassName(Chinook.class.getName())

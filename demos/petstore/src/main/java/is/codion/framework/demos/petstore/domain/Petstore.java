@@ -11,7 +11,7 @@ import is.codion.framework.domain.entity.StringProvider;
 
 import java.math.BigDecimal;
 
-import static is.codion.framework.domain.entity.Entities.type;
+import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -30,7 +30,7 @@ public final class Petstore extends Domain {
   }
 
   public interface Address {
-    EntityType TYPE = type("address");
+    EntityType TYPE = entityType("address");
     Attribute<Integer> ID = TYPE.integerAttribute("Address id");
     Attribute<String> STREET_1 = TYPE.stringAttribute("Street 1");
     Attribute<String> STREET_2 = TYPE.stringAttribute("Street 2");
@@ -68,7 +68,7 @@ public final class Petstore extends Domain {
   }
 
   public interface Category {
-    EntityType TYPE = type("category");
+    EntityType TYPE = entityType("category");
     Attribute<Integer> ID = TYPE.integerAttribute("Category id");
     Attribute<String> NAME = TYPE.stringAttribute("Name");
     Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
@@ -92,7 +92,7 @@ public final class Petstore extends Domain {
   }
 
   public interface Product {
-    EntityType TYPE = type("product");
+    EntityType TYPE = entityType("product");
     Attribute<Integer> ID = TYPE.integerAttribute("Product id");
     Attribute<Integer> CATEGORY_ID = TYPE.integerAttribute("Category id");
     Attribute<Entity> CATEGORY_FK = TYPE.entityAttribute("Category");
@@ -122,7 +122,7 @@ public final class Petstore extends Domain {
   }
 
   public interface SellerContactInfo {
-    EntityType TYPE = type("sellercontactinfo");
+    EntityType TYPE = entityType("sellercontactinfo");
     Attribute<Integer> ID = TYPE.integerAttribute("Contactinfo id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("First name");
     Attribute<String> LAST_NAME = TYPE.stringAttribute("Last name");
@@ -148,7 +148,7 @@ public final class Petstore extends Domain {
   }
 
   public interface Item {
-    EntityType TYPE = type("item");
+    EntityType TYPE = entityType("item");
     Attribute<Integer> ID = TYPE.integerAttribute("Item id");
     Attribute<Integer> PRODUCT_ID = TYPE.integerAttribute("Product id");
     Attribute<Entity> PRODUCT_FK = TYPE.entityAttribute("Product");
@@ -198,7 +198,7 @@ public final class Petstore extends Domain {
   }
 
   public interface Tag {
-    EntityType TYPE = type("tag");
+    EntityType TYPE = entityType("tag");
     Attribute<Integer> ID = TYPE.integerAttribute("Tag id");
     Attribute<String> TAG = TYPE.stringAttribute("Tag");
     Attribute<Integer> REFCOUNT = TYPE.integerAttribute("Reference count");
@@ -221,7 +221,7 @@ public final class Petstore extends Domain {
   }
 
   public interface TagItem {
-    EntityType TYPE = type("tag_item");
+    EntityType TYPE = entityType("tag_item");
     Attribute<Integer> ITEM_ID = TYPE.integerAttribute("Item id");
     Attribute<Entity> ITEM_FK = TYPE.entityAttribute("Item");
     Attribute<Integer> TAG_ID = TYPE.integerAttribute("Tag id");
