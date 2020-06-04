@@ -299,7 +299,8 @@ public class DefaultEntityDefinitionTest {
 
     final Entity entity = entities.entity(entityType);
     final EntityDefinition definition = entities.getDefinition(entityType);
-    assertEquals(colorBlue, definition.getColorProvider().getColor(entity, entity.getKey().getFirstProperty()));
+    assertEquals(colorBlue, definition.getColorProvider().getColor(entity,
+            definition.getProperty(entity.getKey().getFirstAttribute())));
   }
 
   @Test

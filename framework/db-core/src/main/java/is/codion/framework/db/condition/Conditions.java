@@ -10,7 +10,6 @@ import is.codion.framework.domain.entity.ConditionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -282,35 +281,35 @@ public final class Conditions {
       final PropertyCondition propertyCondition = (PropertyCondition) condition;
       final Property<?> property = definition.getProperty(propertyCondition.getAttribute());
       if (property instanceof ForeignKeyProperty) {
-        return foreignKeyCondition((ForeignKeyProperty) property, propertyCondition.getOperator(),
-                propertyCondition.getValues());
+        return foreignKeyCondition(((ForeignKeyProperty) property).getColumnAttributes(),
+                propertyCondition.getOperator(), propertyCondition.getValues());
       }
     }
 
     return condition;
   }
 
-  private static Condition compositeKeyCondition(final List<Entity.Key> keys, final List<ColumnProperty<?>> properties,
+  private static Condition compositeKeyCondition(final List<Entity.Key> keys, final List<Attribute<?>> attributes,
                                                  final Operator operator) {
     if (keys.size() == 1) {
-      return singleCompositeCondition(properties, operator, keys.get(0));
+      return singleCompositeCondition(attributes, operator, keys.get(0));
     }
 
-    return multipleCompositeCondition(properties, operator, keys);
+    return multipleCompositeCondition(attributes, operator, keys);
   }
 
   /** Assumes {@code keys} is not empty. */
   private static Condition createKeyCondition(final List<Entity.Key> keys) {
     final Entity.Key firstKey = keys.get(0);
     if (firstKey.isCompositeKey()) {
-      return compositeKeyCondition(keys, firstKey.getProperties(), LIKE);
+      return compositeKeyCondition(keys, firstKey.getAttributes(), LIKE);
     }
 
-    return propertyCondition(firstKey.getFirstProperty().getAttribute(), LIKE, getValues(keys));
+    return propertyCondition(firstKey.getFirstAttribute(), LIKE, getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */
-  private static Condition multipleCompositeCondition(final List<ColumnProperty<?>> properties, final Operator operator,
+  private static Condition multipleCompositeCondition(final List<Attribute<?>> properties, final Operator operator,
                                                       final List<Entity.Key> keys) {
     final Condition.Combination conditionCombination = combination(OR);
     for (int i = 0; i < keys.size(); i++) {
@@ -320,12 +319,12 @@ public final class Conditions {
     return conditionCombination;
   }
 
-  private static Condition singleCompositeCondition(final List<ColumnProperty<?>> properties, final Operator operator,
+  private static Condition singleCompositeCondition(final List<Attribute<?>> attributes, final Operator operator,
                                                     final Entity.Key entityKey) {
     final Condition.Combination conditionCombination = combination(AND);
-    for (int i = 0; i < properties.size(); i++) {
-      conditionCombination.add(propertyCondition(properties.get(i).getAttribute(), operator,
-              entityKey == null ? null : entityKey.get(entityKey.getProperties().get(i).getAttribute())));
+    for (int i = 0; i < attributes.size(); i++) {
+      conditionCombination.add(propertyCondition(attributes.get(i), operator,
+              entityKey == null ? null : entityKey.get(entityKey.getAttributes().get(i))));
     }
 
     return conditionCombination;
@@ -339,22 +338,21 @@ public final class Conditions {
     return keys;
   }
 
-  private static Condition foreignKeyCondition(final ForeignKeyProperty foreignKeyProperty,
+  private static Condition foreignKeyCondition(final List<Attribute<?>> foreignKeyColumnAttributes,
                                                final Operator operator, final Collection<Object> values) {
     final List<Entity.Key> keys = getKeys(values);
-    if (foreignKeyProperty.isCompositeKey()) {
-      return compositeKeyCondition(keys, foreignKeyProperty.getColumnProperties(), operator);
+    if (foreignKeyColumnAttributes.size() > 1) {
+      return compositeKeyCondition(keys, foreignKeyColumnAttributes, operator);
     }
 
     if (keys.size() == 1) {
       final Entity.Key entityKey = keys.get(0);
 
-      return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getAttribute(), operator,
+      return propertyCondition(foreignKeyColumnAttributes.get(0), operator,
               entityKey == null ? null : entityKey.getFirstValue());
     }
 
-    return propertyCondition(foreignKeyProperty.getColumnProperties().get(0).getAttribute(), operator,
-            getValues(keys));
+    return propertyCondition(foreignKeyColumnAttributes.get(0), operator, getValues(keys));
   }
 
   private static List<Entity.Key> getKeys(final Object value) {

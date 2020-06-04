@@ -70,7 +70,8 @@ final class EntityPopupMenu extends JPopupMenu {
     Text.collate(primaryKeyProperties);
     for (final ColumnProperty<?> property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property.getAttribute());
-      final StringBuilder builder = new StringBuilder("[PK] ").append(property.getAttribute()).append(": ").append(entity.getAsString(property.getAttribute()));
+      final StringBuilder builder = new StringBuilder("[PK] ")
+              .append(property.getAttribute()).append(": ").append(entity.getAsString(property.getAttribute()));
       if (modified) {
         builder.append(getOriginalValue(entity, property));
       }
@@ -97,7 +98,7 @@ final class EntityPopupMenu extends JPopupMenu {
           final boolean isLoaded = entity.isLoaded(attribute);
           final boolean valid = isValid(validator, entity, definition, property);
           final boolean modified = entity.isModified(attribute);
-          final String toolTipText = getForeignKeyColumnNames(property);
+          final String toolTipText = getForeignKeyAttributeNames(property);
           if (!fkValueNull) {
             final Entity referencedEntity;
             if (isLoaded) {
@@ -137,9 +138,8 @@ final class EntityPopupMenu extends JPopupMenu {
     }
   }
 
-  private static String getForeignKeyColumnNames(final ForeignKeyProperty foreignKeyProperty) {
-    return foreignKeyProperty.getColumnProperties().stream()
-            .map(ColumnProperty::getColumnName).collect(joining(", "));
+  private static String getForeignKeyAttributeNames(final ForeignKeyProperty foreignKeyProperty) {
+    return foreignKeyProperty.getColumnAttributes().stream().map(Attribute::getName).collect(joining(", "));
   }
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property<?>> properties,

@@ -5,7 +5,6 @@ package is.codion.plugin.jackson.json.domain;
 
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ColumnProperty;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -40,8 +39,7 @@ final class EntityKeySerializer extends StdSerializer<Entity.Key> {
 
   private static Map<String, Object> getValueMap(final Entity.Key key) {
     final Map<String, Object> valueMap = new HashMap<>();
-    for (final ColumnProperty<?> property : key.getProperties()) {
-      final Attribute<?> attribute = property.getAttribute();
+    for (final Attribute<?> attribute : key.getAttributes()) {
       valueMap.put(attribute.getName(), key.get(attribute));
     }
 

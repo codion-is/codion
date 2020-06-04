@@ -124,7 +124,7 @@ public final class EntityObjectMapperTest {
     assertEquals("[{\"entityType\":\"scott.dept\",\"values\":{\"deptno\":42}}]", keyJSON);
     final Entity.Key keyParsed = mapper.readValue(keyJSON,  new TypeReference<List<Entity.Key>>(){}).get(0);
     assertEquals(key.getEntityType(), keyParsed.getEntityType());
-    assertEquals(key.getFirstProperty(), keyParsed.getFirstProperty());
+    assertEquals(key.getFirstAttribute(), keyParsed.getFirstAttribute());
     assertEquals(key.getFirstValue(), keyParsed.getFirstValue());
   }
 

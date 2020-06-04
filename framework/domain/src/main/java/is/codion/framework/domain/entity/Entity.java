@@ -149,8 +149,9 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * Saves the value associated with the given attribute, that is, removes the original value.
    * If no original value exists calling this method has no effect.
    * @param attribute the attribute for which to save the value
+   * @param <T> the value type
    */
-  void save(Attribute<?> attribute);
+  <T> void save(Attribute<T> attribute);
 
   /**
    * Saves all the value modifications that have been made.
@@ -169,24 +170,27 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * Returns true if a null value is mapped to the given attribute or if no mapping is found.
    * In case of foreign key attributes the value of the underlying reference attribute is checked.
    * @param attribute the attribute
+   * @param <T> the value type
    * @return true if the value mapped to the given attribute is null or no value is mapped
    */
-  boolean isNull(Attribute<?> attribute);
+  <T> boolean isNull(Attribute<T> attribute);
 
   /**
    * Returns true if a this Entity contains a non-null value mapped to the given attribute
    * In case of foreign key attributes the value of the underlying reference attribute is checked.
    * @param attribute the attribute
+   * @param <T> the value type
    * @return true if a non-null value is mapped to the given attribute
    */
-  boolean isNotNull(Attribute<?> attribute);
+  <T> boolean isNotNull(Attribute<T> attribute);
 
   /**
    * Returns true if this Entity contains a value for the given attribute, that value can be null.
    * @param attribute the attribute
+   * @param <T> the value type
    * @return true if a value is mapped to this attribute
    */
-  boolean containsKey(Attribute<?> attribute);
+  <T> boolean containsKey(Attribute<T> attribute);
 
   /**
    * @return an unmodifiable view of the keys mapping the values in this Entity
@@ -242,9 +246,9 @@ public interface Entity extends Comparable<Entity>, Serializable {
     EntityType getEntityType();
 
     /**
-     * @return a List containing the properties comprising this key
+     * @return a List containing the attributes comprising this key
      */
-    List<ColumnProperty<?>> getProperties();
+    List<Attribute<?>> getAttributes();
 
     /**
      * @return true if this key contains no values or if it contains a null value for a non-nullable key property
@@ -259,16 +263,18 @@ public interface Entity extends Comparable<Entity>, Serializable {
     /**
      * Returns true if a null value is mapped to the given property or no mapping exists.
      * @param attribute the attribute
+     * @param <T> the value type
      * @return true if the value mapped to the given property is null or none exists
      */
-    boolean isNull(Attribute<?> attribute);
+    <T> boolean isNull(Attribute<T> attribute);
 
     /**
      * Returns true if a non-null value is mapped to the given property.
      * @param attribute the attribute
+     * @param <T> the value type
      * @return true if a non-null value is mapped to the given property
      */
-    boolean isNotNull(Attribute<?> attribute);
+    <T> boolean isNotNull(Attribute<T> attribute);
 
     /**
      * @return true if this primary key is based on a single integer column
@@ -283,7 +289,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
     /**
      * @return the first key property, useful for single property keys
      */
-    ColumnProperty<?> getFirstProperty();
+    Attribute<?> getFirstAttribute();
 
     /**
      * @return the first value contained in this key, useful for single property keys
@@ -306,17 +312,8 @@ public interface Entity extends Comparable<Entity>, Serializable {
     <T> T get(Attribute<T> attribute);
 
     /**
-     * After a call to this method this Key contains the same values as the source key.
-     * A null argument to this method clears the destination key of all values.
-     * Value change events for affected properties are fired after all values have been set, in no particular order.
-     * @param sourceKey the key to copy or null for clearing the destination key
-     */
-    void setAs(Key sourceKey);
-
-    /**
      * @return the number of values in this key
      */
     int size();
   }
-
 }

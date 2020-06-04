@@ -180,6 +180,13 @@ public interface EntityDefinition extends Serializable {
   Collection<DerivedProperty<?>> getDerivedProperties(Attribute<?> attribute);
 
   /**
+   * Returns a list containing all primary key attributes associated with this entity type.
+   * If the entity has no primary key attributes defined, an empty list is returned.
+   * @return the primary key attributes of this entity type, sorted by primary key column index
+   */
+  List<Attribute<?>> getPrimaryKeyAttributes();
+
+  /**
    * Returns a list containing all primary key properties associated with this entity type.
    * If the entity has no primary key properties defined, an empty list is returned.
    * @return the primary key properties of this entity type, sorted by primary key column index

@@ -20,8 +20,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   private static final long serialVersionUID = 1;
 
   private final EntityType foreignEntityType;
+  private final List<Attribute<?>> attributes;
   private final List<ColumnProperty<?>> columnProperties;
-  private final boolean compositeReference;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
 
@@ -51,10 +51,11 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     validateParameters(attribute, foreignEntityType, columnPropertyBuilders);
     this.columnPropertyBuilders = columnPropertyBuilders;
     this.columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyProperty(true));
-    this.compositeReference = columnPropertyBuilders.size() > 1;
     this.foreignEntityType = foreignEntityType;
     this.columnProperties = unmodifiableList(columnPropertyBuilders.stream()
             .map(ColumnProperty.Builder::get).collect(toList()));
+    this.attributes = unmodifiableList(columnPropertyBuilders.stream()
+            .map(builder -> builder.get().getAttribute()).collect(toList()));
   }
 
   @Override
@@ -73,13 +74,13 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   @Override
-  public List<ColumnProperty<?>> getColumnProperties() {
-    return columnProperties;
+  public List<Attribute<?>> getColumnAttributes() {
+    return attributes;
   }
 
   @Override
-  public boolean isCompositeKey() {
-    return compositeReference;
+  public List<ColumnProperty<?>> getColumnProperties() {
+    return columnProperties;
   }
 
   @Override

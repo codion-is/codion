@@ -8,7 +8,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -354,8 +353,8 @@ public final class EntityJSONParser {
 
   private JSONObject serializeValues(final Entity.Key key) {
     final JSONObject propertyValues = new JSONObject();
-    for (final ColumnProperty<?> property : entities.getDefinition(key.getEntityType()).getPrimaryKeyProperties()) {
-      propertyValues.put(property.getAttribute().getName(), serializeValue(key.get(property.getAttribute()), property.getAttribute()));
+    for (final Attribute<?> attribute : entities.getDefinition(key.getEntityType()).getPrimaryKeyAttributes()) {
+      propertyValues.put(attribute.getName(), serializeValue(key.get(attribute), attribute));
     }
 
     return propertyValues;

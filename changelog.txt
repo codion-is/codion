@@ -6220,3 +6220,6 @@
   attribute package merged with entity package
   Entities.mapToEntityType() and mapKeysToEntityType() renamed mapToType() and mapKeysToType() respectively
 0.16.3
+  Entity, Entity.Key, removed a few generic wildcard types
+  ForeignKeyProperty.getColumnAttributes() added, isCompositeKey() removed
+  Entity.Key.getProperties() replaced with getAttributes(), getFirstProperty() with getFirstAttribute(), setAs() removed, Entities.copyKey() removed
