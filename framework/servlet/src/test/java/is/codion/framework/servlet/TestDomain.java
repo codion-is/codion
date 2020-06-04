@@ -4,7 +4,6 @@
 package is.codion.framework.servlet;
 
 import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.Operations;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
@@ -91,8 +90,8 @@ public final class TestDomain extends Domain {
             .caption("Employee");
   }
 
-  public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = Operations.functionType("functionId");
-  public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = Operations.procedureType("procedureId");
+  public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = FunctionType.functionType("functionId");
+  public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
 
   void operations() {
     addProcedure(PROCEDURE_ID, (connection, objects) -> {});

@@ -8,7 +8,6 @@ import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.Operations;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.event.EventListener;
 import is.codion.framework.domain.entity.Attribute;
@@ -598,7 +597,7 @@ public class DomainTest {
 
   @Test
   public void addProcedureExisting() {
-    final ProcedureType<DatabaseConnection, Object> procedureType = Operations.procedureType("operationId");
+    final ProcedureType<DatabaseConnection, Object> procedureType = ProcedureType.procedureType("operationId");
     final DatabaseProcedure<DatabaseConnection, Object> operation = (databaseConnection, arguments) -> {};
     domain.addProcedure(procedureType, operation);
     assertThrows(IllegalArgumentException.class, () -> domain.addProcedure(procedureType, operation));
@@ -606,7 +605,7 @@ public class DomainTest {
 
   @Test
   public void addFunctionExisting() {
-    final FunctionType<DatabaseConnection, Object, Object> functionType = Operations.functionType("operationId");
+    final FunctionType<DatabaseConnection, Object, Object> functionType = FunctionType.functionType("operationId");
     final DatabaseFunction<DatabaseConnection, Object, Object> function = (databaseConnection, arguments) -> null;
     domain.addFunction(functionType, function);
     assertThrows(IllegalArgumentException.class, () -> domain.addFunction(functionType, function));
@@ -614,13 +613,13 @@ public class DomainTest {
 
   @Test
   public void getFunctionNonExisting() {
-    final FunctionType<?, ?, ?> functionType = Operations.functionType("nonexisting");
+    final FunctionType<?, ?, ?> functionType = FunctionType.functionType("nonexisting");
     assertThrows(IllegalArgumentException.class, () -> domain.getFunction(functionType));
   }
 
   @Test
   public void getProcedureNonExisting() {
-    final ProcedureType<?, ?> procedureType = Operations.procedureType("nonexisting");
+    final ProcedureType<?, ?> procedureType = ProcedureType.procedureType("nonexisting");
     assertThrows(IllegalArgumentException.class, () -> domain.getProcedure(procedureType));
   }
 

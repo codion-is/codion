@@ -18,8 +18,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static is.codion.common.db.operation.Operations.functionType;
-import static is.codion.common.db.operation.Operations.procedureType;
+import static is.codion.common.db.operation.FunctionType.functionType;
+import static is.codion.common.db.operation.ProcedureType.procedureType;
 import static is.codion.framework.domain.entity.Entities.type;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 

@@ -5,7 +5,6 @@ package is.codion.framework.db.local;
 
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.Operations;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.AbstractReportWrapper;
 import is.codion.common.db.reports.ReportException;
@@ -49,8 +48,8 @@ public final class TestDomain extends Domain {
     }
   };
 
-  public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = Operations.procedureType("procedureId");
-  public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = Operations.functionType("functionId");
+  public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
+  public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = FunctionType.functionType("functionId");
 
   public TestDomain() {
     department();

@@ -11,7 +11,12 @@ import java.io.Serializable;
  * @param <C> the connection type
  * @param <T> the procedure argument type
  */
-public interface ProcedureType<C, T> extends OperationType, Serializable {
+public interface ProcedureType<C, T> extends Serializable {
+
+  /**
+   * @return the procedure name
+   */
+  String getName();
 
   /**
    * Executes the given procedure.
@@ -21,4 +26,8 @@ public interface ProcedureType<C, T> extends OperationType, Serializable {
    * @throws DatabaseException in case of an exception
    */
   void execute(C connection, DatabaseProcedure<C, T> procedure, T... arguments) throws DatabaseException;
+
+  static <C, T> ProcedureType<C, T> procedureType(final String name) {
+    return new DefaultProcedureType<>(name);
+  }
 }
