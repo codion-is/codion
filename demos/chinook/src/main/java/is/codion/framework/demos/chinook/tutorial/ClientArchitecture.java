@@ -31,15 +31,15 @@ public final class ClientArchitecture {
    * @param connectionProvider the connection provider
    */
   static SwingEntityModel artistModel(EntityConnectionProvider connectionProvider) {
-    //initialize a default edit model
+    // initialize a default edit model
     SwingEntityEditModel artistEditModel = new SwingEntityEditModel(Artist.TYPE, connectionProvider);
-    //initialize a default table model
+    // initialize a default table model
     SwingEntityTableModel artistTableModel = new SwingEntityTableModel(Artist.TYPE, connectionProvider);
-    //initialize a default model using the edit and table models
+    // initialize a default model using the edit and table models
     SwingEntityModel artistModel = new SwingEntityModel(artistEditModel, artistTableModel);
 
-    //Note that this does the same as the above, that is, initializes
-    //a SwingEntityModel with a default edit and table model
+    // Note that this does the same as the above, that is, initializes
+    // a SwingEntityModel with a default edit and table model
     SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
 
     artistModel.addDetailModel(albumModel);
@@ -54,16 +54,16 @@ public final class ClientArchitecture {
    * @param connectionProvider the connection provider
    */
   static EntityPanel artistPanel(EntityConnectionProvider connectionProvider) {
-    //initialize the EntityModel to base the panel on
+    // initialize the EntityModel to base the panel on
     SwingEntityModel artistModel = artistModel(connectionProvider);
-    //fetch the edit model
+    // fetch the edit model
     SwingEntityEditModel artistEditModel = artistModel.getEditModel();
-    //fetch the table model
+    // fetch the table model
     SwingEntityTableModel artistTableModel = artistModel.getTableModel();
-    //fetch the album detail model
+    // fetch the album detail model
     SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
 
-    //create a EntityEditPanel instance, based on the artist edit model
+    // create a EntityEditPanel instance, based on the artist edit model
     EntityEditPanel artistEditPanel = new EntityEditPanel(artistEditModel) {
       @Override
       protected void initializeUI() {
@@ -71,14 +71,14 @@ public final class ClientArchitecture {
         addPropertyPanel(Artist.NAME);
       }
     };
-    //create a EntityTablePanel instance, based on the artist table model
+    // create a EntityTablePanel instance, based on the artist table model
     EntityTablePanel artistTablePanel = new EntityTablePanel(artistTableModel);
-    //create a EntityPanel instance, based on the artist model and
-    //the edit and table panels from above
+    // create a EntityPanel instance, based on the artist model and
+    // the edit and table panels from above
     EntityPanel artistPanel = new EntityPanel(artistModel, artistEditPanel, artistTablePanel);
 
-    //create a new EntityPanel, without an edit panel and
-    //with a default EntityTablePanel
+    // create a new EntityPanel, without an edit panel and
+    // with a default EntityTablePanel
     EntityPanel albumPanel = new EntityPanel(albumModel);
 
     artistPanel.addDetailPanel(albumPanel);
@@ -91,21 +91,21 @@ public final class ClientArchitecture {
     // Configure the database
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
-    //initialize a connection provider, this class is responsible
-    //for supplying a valid connection or throwing an exception
-    //in case a connection can not be established
+    // initialize a connection provider, this class is responsible
+    // for supplying a valid connection or throwing an exception
+    // in case a connection can not be established
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(Databases.getInstance())
                     .setDomainClassName(ChinookImpl.class.getName())
                     .setUser(Users.parseUser("scott:tiger"));
 
     final EntityPanel artistPanel = artistPanel(connectionProvider);
-    //lazy initialization of the UI
+    // lazy initialization of the UI
     artistPanel.initializePanel();
-    //fetch data from the database
+    // fetch data from the database
     artistPanel.getModel().refresh();
 
-    //uncomment the below line to display the panel
+    // uncomment the below line to display the panel
 //    displayInDialog(null, artistPanel, "Artists");
 
     connectionProvider.disconnect();

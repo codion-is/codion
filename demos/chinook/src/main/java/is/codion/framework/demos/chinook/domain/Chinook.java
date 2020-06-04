@@ -29,8 +29,8 @@ public interface Chinook {
     EntityType TYPE = type("artist@chinook");
     Attribute<Long> ID = TYPE.longAttribute("artistid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
-    Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("nr_of_albums");
-    Attribute<Integer> NUMBER_OF_TRACKS = TYPE.integerAttribute("nr_of_tracks");
+    Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("number_of_albums");
+    Attribute<Integer> NUMBER_OF_TRACKS = TYPE.integerAttribute("number_of_tracks");
   }
 
   interface Album {
@@ -41,7 +41,7 @@ public interface Chinook {
     Attribute<Entity> ARTIST_FK = TYPE.entityAttribute("artist_fk");
     Attribute<byte[]> COVER = TYPE.blobAttribute("cover");
     Attribute<Image> COVERIMAGE = TYPE.attribute("coverimage", Image.class);
-    Attribute<Integer> NUMBER_OF_TRACKS = TYPE.integerAttribute("nr_of_tracks");
+    Attribute<Integer> NUMBER_OF_TRACKS = TYPE.integerAttribute("number_of_tracks");
   }
 
   interface Employee {

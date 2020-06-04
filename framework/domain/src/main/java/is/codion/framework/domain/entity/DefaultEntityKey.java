@@ -217,12 +217,6 @@ final class DefaultEntityKey implements Entity.Key {
     return values.size();
   }
 
-  private void clear() {
-    values.clear();
-    cachedHashCode = null;
-    hashCodeDirty = true;
-  }
-
   private Object putInternal(final ColumnProperty<Object> property, final Object value) {
     final Object newValue = property.prepareValue(property.getAttribute().validateType(value));
     values.put(property.getAttribute(), newValue);

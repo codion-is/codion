@@ -49,7 +49,7 @@ public final class ClientTutorial {
       EntityType TYPE = type("chinook.artist");
       Attribute<Integer> ID = TYPE.integerAttribute("artistid");
       Attribute<String> NAME = TYPE.stringAttribute("name");
-      Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("nr_of_albums");
+      Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("number_of_albums");
     }
 
     public interface Album {
