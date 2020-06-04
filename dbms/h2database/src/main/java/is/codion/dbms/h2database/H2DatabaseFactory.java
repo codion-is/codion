@@ -40,7 +40,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
     return new H2Database(jdbcUrl, Text.parseCommaSeparatedValues(H2Database.DATABASE_INIT_SCRIPT.get()));
   }
 
-  public Database createDatabase(final String jdbcUrl, final String initScript) {
+  public static Database createDatabase(final String jdbcUrl, final String initScript) {
     return new H2Database(jdbcUrl, initScript == null ? emptyList() : singletonList(initScript));
   }
 
