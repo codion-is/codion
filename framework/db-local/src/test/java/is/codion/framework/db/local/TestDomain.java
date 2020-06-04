@@ -4,8 +4,6 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.connection.DatabaseConnection;
-import is.codion.common.db.operation.AbstractDatabaseFunction;
-import is.codion.common.db.operation.AbstractDatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.Operations;
 import is.codion.common.db.operation.ProcedureType;
@@ -195,16 +193,8 @@ public final class TestDomain extends Domain {
   }
 
   private void operations() {
-    addOperation(new AbstractDatabaseProcedure<EntityConnection, Object>(PROCEDURE_ID) {
-      @Override
-      public void execute(final EntityConnection connection, final Object... arguments) {}
-    });
-    addOperation(new AbstractDatabaseFunction<EntityConnection, Object, List<Object>>(FUNCTION_ID) {
-      @Override
-      public List<Object> execute(final EntityConnection connection, final Object... arguments) {
-        return null;
-      }
-    });
+    addProcedure(PROCEDURE_ID, (connection, arguments) -> {});
+    addFunction(FUNCTION_ID, (connection, arguments) -> null);
   }
 
   public static final EntityType GROUP_BY_QUERY_ENTITY_TYPE = type("groupByQueryEntityType");

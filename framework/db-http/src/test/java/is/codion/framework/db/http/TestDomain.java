@@ -3,9 +3,6 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.operation.AbstractDatabaseFunction;
-import is.codion.common.db.operation.AbstractDatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.Operations;
 import is.codion.common.db.operation.ProcedureType;
@@ -117,15 +114,7 @@ public final class TestDomain extends Domain {
   public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = Operations.procedureType("procedureId");
 
   void operations() {
-    addOperation(new AbstractDatabaseProcedure<EntityConnection, Object>(PROCEDURE_ID) {
-      @Override
-      public void execute(final EntityConnection connection, final Object... objects) throws DatabaseException {}
-    });
-    addOperation(new AbstractDatabaseFunction<EntityConnection, Object, List<Object>>(FUNCTION_ID) {
-      @Override
-      public List<Object> execute(final EntityConnection connection, final Object... objects) throws DatabaseException {
-        return emptyList();
-      }
-    });
+    addProcedure(PROCEDURE_ID, (connection, objects) -> {});
+    addFunction(FUNCTION_ID, (connection, objects) -> emptyList());
   }
 }

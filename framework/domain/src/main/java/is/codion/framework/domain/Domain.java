@@ -4,10 +4,8 @@
 package is.codion.framework.domain;
 
 import is.codion.common.db.operation.DatabaseFunction;
-import is.codion.common.db.operation.DatabaseOperation;
 import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
-import is.codion.common.db.operation.OperationType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
@@ -30,14 +28,16 @@ import static java.util.Objects.requireNonNull;
  * Override to define a domain model.
  * @see #define(EntityType, Property.Builder[])
  * @see #addReport(ReportWrapper)
- * @see #addOperation(DatabaseOperation)
+ * @see #addProcedure(ProcedureType, DatabaseProcedure)
+ * @see #addFunction(FunctionType, DatabaseFunction)
  */
 public abstract class Domain implements EntityDefinition.Provider {
 
   private final DomainType<?> domainType;
   private final DomainEntities entities;
   private final DomainReports reports = new DomainReports();
-  private final DomainOperations operations = new DomainOperations();
+  private final DomainProcedures procedures = new DomainProcedures();
+  private final DomainFunctions functions = new DomainFunctions();
 
   /**
    * Instantiates a new Domain with the simple name of the class as domain id
@@ -94,7 +94,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case the procedure is not found
    */
   public final <C, T> DatabaseProcedure<C, T> getProcedure(final ProcedureType<C, T> procedureType) {
-    return operations.getProcedure(procedureType);
+    return procedures.getProcedure(procedureType);
   }
 
   /**
@@ -107,7 +107,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case the function is not found
    */
   public final <C, T, R> DatabaseFunction<C, T, R> getFunction(final FunctionType<C, T, R> functionType) {
-    return operations.getFunction(functionType);
+    return functions.getFunction(functionType);
   }
 
   /**
@@ -150,12 +150,23 @@ public abstract class Domain implements EntityDefinition.Provider {
   }
 
   /**
-   * Adds the given Operation to this domain
-   * @param operation the operation to add
-   * @throws IllegalArgumentException in case an operation with the same id has already been added
+   * Adds the given procedure to this domain
+   * @param type the procedure type to identify the procedure
+   * @param procedure the procedure to add
+   * @throws IllegalArgumentException in case an procedure with the same id has already been added
    */
-  protected final void addOperation(final DatabaseOperation operation) {
-    operations.addOperation(operation);
+  protected final <C, T> void addProcedure(final ProcedureType<C, T> type, final DatabaseProcedure<C, T> procedure) {
+    procedures.addProcedure(type, procedure);
+  }
+
+  /**
+   * Adds the given function to this domain
+   * @param type the function type to identify the function
+   * @param function the function to add
+   * @throws IllegalArgumentException in case an function with the same id has already been added
+   */
+  protected final <C, T, R> void addFunction(final FunctionType<C, T, R> type, final DatabaseFunction<C, T, R> function) {
+    functions.addFunction(type, function);
   }
 
   /**
@@ -185,37 +196,51 @@ public abstract class Domain implements EntityDefinition.Provider {
     }
   }
 
-  private static final class DomainOperations {
+  private static final class DomainProcedures {
 
-    private final Map<OperationType, DatabaseOperation> operations = new HashMap<>();
+    private final Map<ProcedureType<?, ?>, DatabaseProcedure<?, ?>> procedures = new HashMap<>();
 
-    private void addOperation(final DatabaseOperation operation) {
-      requireNonNull(operation, "operation");
-      if (operations.containsKey(operation.getType())) {
-        throw new IllegalArgumentException("Operation already defined: " + operations.get(operation.getType()).getName());
+    private void addProcedure(final ProcedureType<?, ?> type, final DatabaseProcedure<?, ?> procedure) {
+      requireNonNull(procedure, "procedure");
+      if (procedures.containsKey(type)) {
+        throw new IllegalArgumentException("Procedure already defined: " + type);
       }
 
-      operations.put(operation.getType(), operation);
+      procedures.put(type, procedure);
     }
 
     private <C, T> DatabaseProcedure<C, T> getProcedure(final ProcedureType<C, T> procedureType) {
       requireNonNull(procedureType, "procedureType");
-      final DatabaseOperation operation = operations.get(procedureType);
+      final DatabaseProcedure<C, T> operation = (DatabaseProcedure<C, T>) procedures.get(procedureType);
       if (operation == null) {
         throw new IllegalArgumentException("Procedure not found: " + procedureType);
       }
 
-      return (DatabaseProcedure<C, T>) operation;
+      return operation;
+    }
+  }
+
+  private static final class DomainFunctions {
+
+    private final Map<FunctionType<?, ?, ?>, DatabaseFunction<?, ?, ?>> functions = new HashMap<>();
+
+    private void addFunction(final FunctionType<?, ?, ?> type, final DatabaseFunction<?, ?, ?> function) {
+      requireNonNull(function, "function");
+      if (functions.containsKey(type)) {
+        throw new IllegalArgumentException("Function already defined: " + type);
+      }
+
+      functions.put(type, function);
     }
 
     private <C, T, R> DatabaseFunction<C, T, R> getFunction(final FunctionType<C, T, R> functionType) {
       requireNonNull(functionType, "functionType");
-      final DatabaseOperation operation = operations.get(functionType);
+      final DatabaseFunction<C, T, R> operation = (DatabaseFunction<C, T, R>) functions.get(functionType);
       if (operation == null) {
         throw new IllegalArgumentException("Function not found: " + functionType);
       }
 
-      return (DatabaseFunction<C, T, R>) operation;
+      return operation;
     }
   }
 

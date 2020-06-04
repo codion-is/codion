@@ -3,6 +3,8 @@
  */
 package is.codion.common.db.operation;
 
+import is.codion.common.db.exception.DatabaseException;
+
 import java.io.Serializable;
 
 /**
@@ -10,4 +12,15 @@ import java.io.Serializable;
  * @param <T> the function argument type
  * @param <R> the function result type
  */
-public interface FunctionType<C, T, R> extends OperationType, Serializable {}
+public interface FunctionType<C, T, R> extends OperationType, Serializable {
+
+  /**
+   * Executes the given function.
+   * @param connection the connection being used
+   * @param function the function to execute
+   * @param arguments the function arguments, if any
+   * @return the function result
+   * @throws DatabaseException in case of an exception
+   */
+  R execute(C connection, DatabaseFunction<C, T, R> function, T... arguments) throws DatabaseException;
+}

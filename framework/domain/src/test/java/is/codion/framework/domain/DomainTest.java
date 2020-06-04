@@ -5,8 +5,8 @@ package is.codion.framework.domain;
 
 import is.codion.common.DateFormats;
 import is.codion.common.db.connection.DatabaseConnection;
-import is.codion.common.db.operation.AbstractDatabaseProcedure;
-import is.codion.common.db.operation.DatabaseOperation;
+import is.codion.common.db.operation.DatabaseFunction;
+import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.Operations;
 import is.codion.common.db.operation.ProcedureType;
@@ -597,14 +597,19 @@ public class DomainTest {
   }
 
   @Test
-  public void addOperationExisting() {
+  public void addProcedureExisting() {
     final ProcedureType<DatabaseConnection, Object> procedureType = Operations.procedureType("operationId");
-    final DatabaseOperation operation = new AbstractDatabaseProcedure<DatabaseConnection, Object>(procedureType) {
-      @Override
-      public void execute(final DatabaseConnection databaseConnection, final Object... arguments) {}
-    };
-    domain.addOperation(operation);
-    assertThrows(IllegalArgumentException.class, () -> domain.addOperation(operation));
+    final DatabaseProcedure<DatabaseConnection, Object> operation = (databaseConnection, arguments) -> {};
+    domain.addProcedure(procedureType, operation);
+    assertThrows(IllegalArgumentException.class, () -> domain.addProcedure(procedureType, operation));
+  }
+
+  @Test
+  public void addFunctionExisting() {
+    final FunctionType<DatabaseConnection, Object, Object> functionType = Operations.functionType("operationId");
+    final DatabaseFunction<DatabaseConnection, Object, Object> function = (databaseConnection, arguments) -> null;
+    domain.addFunction(functionType, function);
+    assertThrows(IllegalArgumentException.class, () -> domain.addFunction(functionType, function));
   }
 
   @Test
