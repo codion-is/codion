@@ -42,15 +42,16 @@ public interface ForeignKeyProperty extends Property<Entity> {
   EntityType getForeignEntityType();
 
   /**
+   * Returns an unmodifiable list containing the attributes that comprise this foreign key
+   * @return the reference attributes
+   */
+  List<Attribute<?>> getColumnAttributes();
+
+  /**
    * Returns an unmodifiable list containing the properties that comprise this foreign key
    * @return the reference properties
    */
   List<ColumnProperty<?>> getColumnProperties();
-
-  /**
-   * @return true if this foreign key is based on multiple columns
-   */
-  boolean isCompositeKey();
 
   /**
    * @return the default query fetch depth for this foreign key

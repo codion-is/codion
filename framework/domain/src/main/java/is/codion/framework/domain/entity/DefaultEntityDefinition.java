@@ -438,6 +438,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
+  public List<Attribute<?>> getPrimaryKeyAttributes() {
+    return entityProperties.primaryKeyAttribues;
+  }
+
+  @Override
   public List<ColumnProperty<?>> getPrimaryKeyProperties() {
     return entityProperties.primaryKeyProperties;
   }
@@ -639,6 +644,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private final List<ColumnProperty<?>> columnProperties;
     private final List<ColumnProperty<?>> lazyLoadedBlobProperties;
     private final List<ColumnProperty<?>> selectableColumnProperties;
+    private final List<Attribute<?>> primaryKeyAttribues;
     private final List<ColumnProperty<?>> primaryKeyProperties;
     private final Map<Attribute<?>, ColumnProperty<?>> primaryKeyPropertyMap;
     private final List<ForeignKeyProperty> foreignKeyProperties;
@@ -658,6 +664,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
       this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties();
       this.selectableColumnProperties = unmodifiableList(getSelectableProperties());
       this.primaryKeyProperties = unmodifiableList(getPrimaryKeyProperties());
+      this.primaryKeyAttribues = unmodifiableList(getPrimaryKeyAttributes());
       this.primaryKeyPropertyMap = initializePrimaryKeyPropertyMap();
       this.foreignKeyProperties = unmodifiableList(getForeignKeyProperties());
       this.foreignKeyPropertyMap = initializeForeignKeyPropertyMap();
@@ -731,8 +738,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private Map<Attribute<?>, List<ForeignKeyProperty>> initializeColumnPropertyForeignKeyProperties() {
       final Map<Attribute<?>, List<ForeignKeyProperty>> foreignKeyMap = new HashMap<>();
       foreignKeyProperties.forEach(foreignKeyProperty ->
-              foreignKeyProperty.getColumnProperties().forEach(columnProperty ->
-                      foreignKeyMap.computeIfAbsent(columnProperty.getAttribute(),
+              foreignKeyProperty.getColumnAttributes().forEach(attribute ->
+                      foreignKeyMap.computeIfAbsent(attribute,
                               columnAttribute -> new ArrayList<>()).add(foreignKeyProperty)));
 
       return foreignKeyMap;
@@ -805,6 +812,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
                 return index1.compareTo(index2);
               }).collect(toList());
+    }
+
+    private List<Attribute<Object>> getPrimaryKeyAttributes() {
+      return this.primaryKeyProperties.stream().map((Function<ColumnProperty<?>,
+              Attribute<Object>>) Property::getAttribute).collect(toList());
     }
 
     private List<ColumnProperty<?>> getSelectableProperties() {

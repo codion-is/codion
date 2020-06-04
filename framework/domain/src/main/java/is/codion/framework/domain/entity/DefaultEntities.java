@@ -143,15 +143,6 @@ public abstract class DefaultEntities implements Entities {
   }
 
   @Override
-  public final Entity.Key copyKey(final Entity.Key key) {
-    requireNonNull(key, "key");
-    final Entity.Key copy = key(key.getEntityType());
-    copy.setAs(key);
-
-    return copy;
-  }
-
-  @Override
   public final Entity createToStringEntity(final EntityType entityType, final String toStringValue) {
     final Entity entity = entity(entityType);
     return (Entity) Proxy.newProxyInstance(Entity.class.getClassLoader(), new Class[] {Entity.class}, (proxy, method, args) -> {
@@ -290,11 +281,11 @@ public abstract class DefaultEntities implements Entities {
                   + "' referenced by entity '" + entityType + "' via foreign key property '"
                   + foreignKeyProperty.getAttribute() + "' has not been defined");
         }
-        if (foreignEntity.getPrimaryKeyProperties().isEmpty()) {
+        if (foreignEntity.getPrimaryKeyAttributes().isEmpty()) {
           throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityType()
                   + "' can not be referenced via foreign key, since it has no primary key");
         }
-        if (foreignKeyProperty.getColumnProperties().size() != foreignEntity.getPrimaryKeyProperties().size()) {
+        if (foreignKeyProperty.getColumnAttributes().size() != foreignEntity.getPrimaryKeyAttributes().size()) {
           throw new IllegalArgumentException("Number of column properties in '" +
                   entityType + "." + foreignKeyProperty.getAttribute() +
                   "' does not match the number of foreign properties in the referenced entity '" +

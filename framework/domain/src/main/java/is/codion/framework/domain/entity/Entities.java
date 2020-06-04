@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 
 import static is.codion.common.Util.map;
 import static is.codion.common.Util.nullOrEmpty;
@@ -120,13 +119,6 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   Entity deepCopyEntity(Entity entity);
 
   /**
-   * Copies the given key.
-   * @param key the key to copy
-   * @return a copy of the given key
-   */
-  Entity.Key copyKey(Entity.Key key);
-
-  /**
    * Creates an empty Entity instance returning the given string on a call to toString(), all other
    * method calls are routed to an empty Entity instance.
    * @param entityType the entityType
@@ -209,8 +201,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
     }
 
     return entities.stream().anyMatch(entity ->
-            definition.getPrimaryKeyProperties().stream()
-                    .map((Function<ColumnProperty<?>, Attribute<Object>>) Property::getAttribute).anyMatch(entity::isModified));
+            definition.getPrimaryKeyAttributes().stream().anyMatch(entity::isModified));
   }
 
   /**
@@ -306,7 +297,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
     final List<T> list = new ArrayList<>(keys.size());
     for (int i = 0; i < keys.size(); i++) {
       final Entity.Key key = keys.get(i);
-      list.add((T) key.get(key.getFirstProperty().getAttribute()));
+      list.add((T) key.get(key.getFirstAttribute()));
     }
 
     return list;

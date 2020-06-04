@@ -32,7 +32,7 @@ public class EntityJSONParserTest {
     final String keyJSON = parser.serializeKeys(singletonList(key));
     final Entity.Key keyParsed = parser.deserializeKeys(keyJSON).get(0);
     assertEquals(key.getEntityType(), keyParsed.getEntityType());
-    assertEquals(key.getFirstProperty(), keyParsed.getFirstProperty());
+    assertEquals(key.getFirstAttribute(), keyParsed.getFirstAttribute());
     assertEquals(key.getFirstValue(), keyParsed.getFirstValue());
   }
 

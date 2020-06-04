@@ -246,9 +246,9 @@ public interface Entity extends Comparable<Entity>, Serializable {
     EntityType getEntityType();
 
     /**
-     * @return a List containing the properties comprising this key
+     * @return a List containing the attributes comprising this key
      */
-    List<ColumnProperty<?>> getProperties();
+    List<Attribute<?>> getAttributes();
 
     /**
      * @return true if this key contains no values or if it contains a null value for a non-nullable key property
@@ -289,7 +289,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
     /**
      * @return the first key property, useful for single property keys
      */
-    ColumnProperty<?> getFirstProperty();
+    Attribute<?> getFirstAttribute();
 
     /**
      * @return the first value contained in this key, useful for single property keys
@@ -310,14 +310,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
      * @return the value associated with the given property
      */
     <T> T get(Attribute<T> attribute);
-
-    /**
-     * After a call to this method this Key contains the same values as the source key.
-     * A null argument to this method clears the destination key of all values.
-     * Value change events for affected properties are fired after all values have been set, in no particular order.
-     * @param sourceKey the key to copy or null for clearing the destination key
-     */
-    void setAs(Key sourceKey);
 
     /**
      * @return the number of values in this key
