@@ -22,7 +22,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.ValueChange;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -40,7 +39,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import static is.codion.framework.domain.entity.ValueChanges.valueChange;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -360,10 +358,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final <T> void put(final Attribute<T> attribute, final T value) {
     requireNonNull(attribute, "attribute");
-    final boolean initialization = !entity.containsKey(attribute);
     final T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
-      notifyValueEdit(attribute, valueChange(attribute, value, previousValue, initialization));
+      notifyValueEdit(attribute, new DefaultValueChange(attribute, value, previousValue));
     }
   }
 
@@ -373,7 +370,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     T value = null;
     if (entity.containsKey(attribute)) {
       value = entity.remove(attribute);
-      notifyValueEdit(attribute, valueChange(attribute, null, value));
+      notifyValueEdit(attribute, new DefaultValueChange(attribute, null, value));
     }
 
     return value;
@@ -944,12 +941,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private void doSetEntity(final Entity entity) {
     final Collection<Attribute<?>> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity() : entity);
     for (final Attribute<?> affectedAttribute : affectedAttributes) {
-      onValueChange(valueChange(affectedAttribute, this.entity.get(affectedAttribute), null, true));
+      onValueChange(new DefaultValueChange(affectedAttribute, this.entity.get(affectedAttribute), null));
       if (getEntityDefinition().hasDerivedAttributes()) {
         final Collection<Attribute<?>> derivedAttributes = getEntityDefinition().getDerivedAttributes(affectedAttribute);
         for (final Attribute<?> derivedAttribute : derivedAttributes) {
           final Object derivedValue = this.entity.get(derivedAttribute);
-          onValueChange(valueChange(derivedAttribute, derivedValue, derivedValue, true));
+          onValueChange(new DefaultValueChange(derivedAttribute, derivedValue, derivedValue));
         }
       }
     }

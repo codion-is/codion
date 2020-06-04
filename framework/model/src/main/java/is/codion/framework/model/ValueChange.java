@@ -1,7 +1,10 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.model;
+
+import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 
 /**
  * Represents a change in a {@link Entity} value.
@@ -22,9 +25,4 @@ public interface ValueChange {
    * @return the previous value
    */
   Object getPreviousValue();
-
-  /**
-   * @return true if the property had no associated value prior to this value change
-   */
-  boolean isInitialization();
 }
