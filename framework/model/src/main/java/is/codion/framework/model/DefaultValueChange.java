@@ -7,22 +7,22 @@ import is.codion.framework.domain.entity.Attribute;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultValueChange implements ValueChange {
+final class DefaultValueChange<T> implements ValueChange<T> {
 
   /**
    * The attribute associated with the changed value
    */
-  private final Attribute<?> attribute;
+  private final Attribute<T> attribute;
 
   /**
    * The new value
    */
-  private final Object value;
+  private final T value;
 
   /**
    * The old value
    */
-  private final Object previousValue;
+  private final T previousValue;
 
   /**
    * Instantiates a new DefaultValueChange
@@ -30,24 +30,24 @@ final class DefaultValueChange implements ValueChange {
    * @param value the new value
    * @param previousValue the previous value
    */
-  DefaultValueChange(final Attribute<?> attribute, final Object value, final Object previousValue) {
+  DefaultValueChange(final Attribute<T> attribute, final T value, final T previousValue) {
     this.attribute = requireNonNull(attribute, "attribute");
     this.value = value;
     this.previousValue = previousValue;
   }
 
   @Override
-  public Attribute<?> getAttribute() {
+  public Attribute<T> getAttribute() {
     return attribute;
   }
 
   @Override
-  public Object getValue() {
+  public T getValue() {
     return value;
   }
 
   @Override
-  public Object getPreviousValue() {
+  public T getPreviousValue() {
     return previousValue;
   }
 

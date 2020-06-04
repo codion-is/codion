@@ -35,8 +35,8 @@ public final class InvoiceEditModel extends SwingEntityEditModel {
     addValueEditListener(Invoice.CUSTOMER_FK, this::setAddress);
   }
 
-  private void setAddress(final ValueChange valueChange) {
-    final Entity customer = (Entity) valueChange.getValue();
+  private void setAddress(final ValueChange<Entity> valueChange) {
+    final Entity customer = valueChange.getValue();
     if (customer == null) {
       put(Invoice.BILLINGADDRESS, null);
       put(Invoice.BILLINGCITY, null);

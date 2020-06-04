@@ -9,20 +9,20 @@ import is.codion.framework.domain.entity.Entity;
 /**
  * Represents a change in a {@link Entity} value.
  */
-public interface ValueChange {
+public interface ValueChange<T> {
 
   /**
    * @return the attribute associated with the changed value
    */
-  Attribute<?> getAttribute();
+  Attribute<T> getAttribute();
 
   /**
    * @return the new value
    */
-  Object getValue();
+  T getValue();
 
   /**
    * @return the previous value
    */
-  Object getPreviousValue();
+  T getPreviousValue();
 }

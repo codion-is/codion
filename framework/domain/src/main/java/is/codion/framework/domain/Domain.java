@@ -153,6 +153,8 @@ public abstract class Domain implements EntityDefinition.Provider {
    * Adds the given procedure to this domain
    * @param type the procedure type to identify the procedure
    * @param procedure the procedure to add
+   * @param <C> the connection type
+   * @param <T> the argument type
    * @throws IllegalArgumentException in case an procedure with the same id has already been added
    */
   protected final <C, T> void addProcedure(final ProcedureType<C, T> type, final DatabaseProcedure<C, T> procedure) {
@@ -163,6 +165,9 @@ public abstract class Domain implements EntityDefinition.Provider {
    * Adds the given function to this domain
    * @param type the function type to identify the function
    * @param function the function to add
+   * @param <C> the connection type
+   * @param <T> the argument type
+   * @param <R> the result type
    * @throws IllegalArgumentException in case an function with the same id has already been added
    */
   protected final <C, T, R> void addFunction(final FunctionType<C, T, R> type, final DatabaseFunction<C, T, R> function) {
