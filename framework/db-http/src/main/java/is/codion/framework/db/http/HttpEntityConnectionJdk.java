@@ -63,7 +63,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   private static final String AUTHORIZATION = "Authorization";
   private static final String BASIC = "Basic ";
-  private static final String DOMAIN_ID = "domainId";
+  private static final String DOMAIN_TYPE_NAME = "domainTypeName";
   private static final String CLIENT_TYPE_ID = "clientTypeId";
   private static final String CLIENT_ID = "clientId";
   private static final String CONTENT_TYPE = "Content-Type";
@@ -90,13 +90,13 @@ final class HttpEntityConnectionJdk implements EntityConnection {
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  HttpEntityConnectionJdk(final String domainId, final String serverHostName, final int serverPort,
+  HttpEntityConnectionJdk(final String domainName, final String serverHostName, final int serverPort,
                           final boolean httpsEnabled, final User user, final String clientTypeId, final UUID clientId) {
     this.user = Objects.requireNonNull(user, "user");
     this.baseurl = (httpsEnabled ? HTTPS : HTTP) + Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/";
     this.httpClient = createHttpClient();
     this.headers = new String[] {
-            DOMAIN_ID, Objects.requireNonNull(domainId, DOMAIN_ID),
+            DOMAIN_TYPE_NAME, Objects.requireNonNull(domainName, DOMAIN_TYPE_NAME),
             CLIENT_TYPE_ID, Objects.requireNonNull(clientTypeId, CLIENT_TYPE_ID),
             CLIENT_ID, Objects.requireNonNull(clientId, CLIENT_ID).toString(),
             CONTENT_TYPE, APPLICATION_OCTET_STREAM,
