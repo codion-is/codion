@@ -527,13 +527,13 @@ final class DefaultEntityDefinition implements EntityDefinition {
   public Entity entity(final Function<Attribute<?>, Object> valueProvider) {
     requireNonNull(valueProvider);
     final Entity entity = entity();
-    for (final ColumnProperty property : entityProperties.columnProperties) {
+    for (@SuppressWarnings("rawtypes") final ColumnProperty property : entityProperties.columnProperties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
         entity.put(property.getAttribute(), valueProvider.apply(property.getAttribute()));
       }
     }
-    for (final TransientProperty transientProperty : entityProperties.transientProperties) {
+    for (@SuppressWarnings("rawtypes") final TransientProperty transientProperty : entityProperties.transientProperties) {
       if (!(transientProperty instanceof DerivedProperty)) {
         entity.put(transientProperty.getAttribute(), valueProvider.apply(transientProperty.getAttribute()));
       }
