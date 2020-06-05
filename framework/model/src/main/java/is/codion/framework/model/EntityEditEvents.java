@@ -171,15 +171,15 @@ public final class EntityEditEvents {
     }
 
     private WeakObserver<List<Entity>> getInsertObserver(final EntityType entityType) {
-      return insertEvents.computeIfAbsent(requireNonNull(entityType), eId -> new WeakObserver<>());
+      return insertEvents.computeIfAbsent(requireNonNull(entityType), type -> new WeakObserver<>());
     }
 
     private WeakObserver<Map<Key, Entity>> getUpdateObserver(final EntityType entityType) {
-      return updateEvents.computeIfAbsent(requireNonNull(entityType), eId -> new WeakObserver<>());
+      return updateEvents.computeIfAbsent(requireNonNull(entityType), type -> new WeakObserver<>());
     }
 
     private WeakObserver<List<Entity>> getDeleteObserver(final EntityType entityType) {
-      return deleteEvents.computeIfAbsent(requireNonNull(entityType), eId -> new WeakObserver<>());
+      return deleteEvents.computeIfAbsent(requireNonNull(entityType), type -> new WeakObserver<>());
     }
 
     private static final class WeakObserver<T> {

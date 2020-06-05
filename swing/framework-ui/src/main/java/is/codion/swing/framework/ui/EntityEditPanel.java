@@ -699,8 +699,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    *      createTextField(DomainModel.USER_NAME);
    *      createTextField(DomainModel.USER_ADDRESS);
    *      setLayout(new GridLayout(2, 1, 5, 5);
-   *      addPropertyPanel(DomainModel.USER_NAME);
-   *      addPropertyPanel(DomainModel.USER_ADDRESS);
+   *      addInputPanel(DomainModel.USER_NAME);
+   *      addInputPanel(DomainModel.USER_ADDRESS);
    *  }
    * </pre>
    */

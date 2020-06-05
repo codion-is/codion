@@ -39,18 +39,18 @@ final class DefaultEntity implements Entity {
   private static final String ATTRIBUTE = "attribute";
 
   /**
-   * Holds the values contained in this value map.
+   * Holds the values contained in this entity.
    */
   private Map<Attribute<?>, Object> values;
 
   /**
-   * Holds the original value for properties which values have changed since they were first set.
+   * Holds the original value for attributes which values have changed since they were first set.
    */
   private Map<Attribute<?>, Object> originalValues;
 
   /**
    * Used to cache the return value of the frequently called toString(),
-   * invalidated each time a property value changes
+   * invalidated each time a attribute value changes
    */
   private String toString;
 
@@ -117,11 +117,6 @@ final class DefaultEntity implements Entity {
     return definition.getEntityType().equals(entityType);
   }
 
-  /**
-   * Returns true if one or more writable properties have been modified, read only and non-updatable properties
-   * are excluded unless they are transient.
-   * @return true if one or more properties have been modified since the entity was instantiated
-   */
   @Override
   public boolean isModified() {
     return isModifiedInternal(false);
@@ -132,10 +127,6 @@ final class DefaultEntity implements Entity {
     return putInternal(definition.getProperty(attribute), value);
   }
 
-  /**
-   * @param attribute the attribute for which to retrieve the value
-   * @return the value of the property based on {@code attribute}
-   */
   @Override
   public <T> T get(final Attribute<T> attribute) {
     return get(definition.getProperty(attribute));
@@ -614,17 +605,17 @@ final class DefaultEntity implements Entity {
     return referencedPrimaryKey;
   }
 
-  private Key getCachedReferencedKey(final Attribute<Entity> fkAttribute) {
+  private Key getCachedReferencedKey(final Attribute<Entity> foreignKeyAttribute) {
     if (referencedKeyCache == null) {
       return null;
     }
 
-    return referencedKeyCache.get(fkAttribute);
+    return referencedKeyCache.get(foreignKeyAttribute);
   }
 
-  private void removeCachedReferencedKey(final Attribute<Entity> fkAttribute) {
+  private void removeCachedReferencedKey(final Attribute<Entity> foreignKeyAttribute) {
     if (referencedKeyCache != null) {
-      referencedKeyCache.remove(fkAttribute);
+      referencedKeyCache.remove(foreignKeyAttribute);
       if (referencedKeyCache.isEmpty()) {
         referencedKeyCache = null;
       }
@@ -774,7 +765,7 @@ final class DefaultEntity implements Entity {
   }
 
   private static Map<Attribute<?>, Object> validatePropertiesAndValues(final EntityDefinition definition,
-                                                                      final Map<Attribute<?>, Object> propertyValues) {
+                                                                       final Map<Attribute<?>, Object> propertyValues) {
     requireNonNull(definition, "definition");
     if (propertyValues != null && !propertyValues.isEmpty()) {
       for (final Map.Entry<Attribute<?>, Object> valueEntry : propertyValues.entrySet()) {

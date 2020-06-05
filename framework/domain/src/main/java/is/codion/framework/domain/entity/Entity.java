@@ -21,32 +21,32 @@ public interface Entity extends Comparable<Entity>, Serializable {
 
   /**
    * Returns the primary key of this entity.
-   * If the entity has no primary key properties defined, this key contains not values.
+   * If the entity has no primary key attribute defined, this key contains not values.
    * @return the primary key of this entity
    */
   Key getKey();
 
   /**
    * Returns the primary key of this entity, in its original state.
-   * If the entity has no primary key properties defined, this key contains not values.
+   * If the entity has no primary key attributes defined, this key contains not values.
    * @return the primary key of this entity in its original state
    */
   Key getOriginalKey();
 
   /**
-   * Returns the value associated with the property based on {@code attribute}.
+   * Returns the value associated with {@code attribute}.
    * @param attribute the attribute for which to retrieve the value
    * @param <T> the value type
-   * @return the value of the given property
+   * @return the value of the given attribute
    */
   <T> T get(Attribute<T> attribute);
 
   /**
-   * Returns the original value associated with the property based on {@code attribute}.
+   * Returns the original value associated with {@code attribute}.
    * If the value has not been modified the current value is returned.
    * @param attribute the attribute for which to retrieve the original value
    * @param <T> the value type
-   * @return the original value of the given property
+   * @return the original value of the given attribute
    */
   <T> T getOriginal(Attribute<T> attribute);
 
@@ -66,7 +66,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * been loaded, an "empty" entity is returned, containing only the primary
    * key value. Null is returned only if the actual reference property is null.
    * @param foreignKeyAttribute the attribute for which to retrieve the value
-   * @return the value of the property based on {@code foreignKeyAttribute},
+   * @return the value of {@code foreignKeyAttribute},
    * assuming it is an Entity
    * @throws IllegalArgumentException if the attribute is not a foreign key attribute
    * @see #isLoaded(Attribute)
@@ -217,7 +217,9 @@ public interface Entity extends Comparable<Entity>, Serializable {
   <T> T remove(Attribute<T> attribute);
 
   /**
-   * @return true if one or more values have been modified.
+   * Returns true if one or more writable attributes have been modified, read only and non-updatable attributes
+   * are excluded unless they are transient.
+   * @return true if one or more attributes have been modified since the entity was instantiated
    */
   boolean isModified();
 }

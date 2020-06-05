@@ -46,7 +46,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -295,7 +294,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementValues.addAll(updateCondition.getValues());
             final int updatedRows = executeStatement(statement, updateQuery, statementProperties, statementValues);
             if (updatedRows == 0) {
-              throw new UpdateException("Update did not affect any rows");
+              throw new UpdateException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
             }
 
             statement.close();
@@ -703,10 +702,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityType());
     checkIfReadOnly(entityDefinition.getEntityType());
     final ColumnProperty<byte[]> blobProperty = entityDefinition.getColumnProperty(blobAttribute);
-    if (blobProperty.getColumnType() != Types.BLOB) {
-      throw new IllegalArgumentException("Property " + blobProperty.getAttribute() + " in entity " +
-              primaryKey.getEntityType() + " does not have column type BLOB");
-    }
     final WhereCondition whereCondition = whereCondition(condition(primaryKey), entityDefinition);
     final String updateQuery = "update " + entityDefinition.getTableName() + " set " + blobProperty.getColumnName() + " = ?" +
             WHERE_SPACE_PREFIX_POSTFIX + whereCondition.getWhereClause();
@@ -747,10 +742,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public byte[] readBlob(final Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
     final EntityDefinition entityDefinition = getEntityDefinition(requireNonNull(primaryKey, "primaryKey").getEntityType());
     final ColumnProperty<byte[]> blobProperty = entityDefinition.getColumnProperty(blobAttribute);
-    if (blobProperty.getColumnType() != Types.BLOB) {
-      throw new IllegalArgumentException("Property " + blobProperty.getAttribute() + " in entity " +
-              primaryKey.getEntityType() + " does not have column type BLOB");
-    }
     PreparedStatement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
@@ -1123,7 +1114,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private String columnsClause(final EntityType entityType, final List<Attribute<?>> selectAttributes,
                                final List<ColumnProperty<?>> propertiesToSelect) {
     if (selectAttributes.isEmpty()) {
-      return allColumnsClauseCache.computeIfAbsent(entityType, eId -> Queries.columnsClause(propertiesToSelect));
+      return allColumnsClauseCache.computeIfAbsent(entityType, type -> Queries.columnsClause(propertiesToSelect));
     }
 
     return Queries.columnsClause(propertiesToSelect);

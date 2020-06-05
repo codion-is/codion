@@ -192,8 +192,8 @@ public final class TestDomain extends Domain {
   }
 
   private void operations() {
-    addProcedure(PROCEDURE_ID, (connection, arguments) -> {});
-    addFunction(FUNCTION_ID, (connection, arguments) -> null);
+    defineProcedure(PROCEDURE_ID, (connection, arguments) -> {});
+    definedFunction(FUNCTION_ID, (connection, arguments) -> null);
   }
 
   public static final EntityType GROUP_BY_QUERY_ENTITY_TYPE = entityType("groupByQueryEntityType");

@@ -113,7 +113,7 @@ public final class TestDomain extends Domain {
   public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
 
   void operations() {
-    addProcedure(PROCEDURE_ID, (connection, objects) -> {});
-    addFunction(FUNCTION_ID, (connection, objects) -> emptyList());
+    defineProcedure(PROCEDURE_ID, (connection, objects) -> {});
+    definedFunction(FUNCTION_ID, (connection, objects) -> emptyList());
   }
 }
