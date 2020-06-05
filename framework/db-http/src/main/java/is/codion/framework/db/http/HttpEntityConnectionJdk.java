@@ -22,6 +22,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -216,12 +217,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public Entity.Key insert(final Entity entity) throws DatabaseException {
+  public Key insert(final Entity entity) throws DatabaseException {
     return insert(singletonList(entity)).get(0);
   }
 
   @Override
-  public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
+  public List<Key> insert(final List<Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       return handleResponse(execute(createRequest("insert", entities)));
@@ -271,12 +272,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public boolean delete(final Entity.Key entityKey) throws DatabaseException {
+  public boolean delete(final Key entityKey) throws DatabaseException {
     return delete(singletonList(entityKey)) == 1;
   }
 
   @Override
-  public int delete(final List<Entity.Key> keys) throws DatabaseException {
+  public int delete(final List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
       return handleResponse(execute(createRequest("deleteByKey", keys)));
@@ -327,7 +328,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public Entity selectSingle(final Entity.Key key) throws DatabaseException {
+  public Entity selectSingle(final Key key) throws DatabaseException {
     return selectSingle(selectCondition(key));
   }
 
@@ -345,7 +346,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public List<Entity> select(final List<Entity.Key> keys) throws DatabaseException {
+  public List<Entity> select(final List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
       return handleResponse(execute(createRequest("selectByKey", keys)));
@@ -432,7 +433,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData)
+  public void writeBlob(final Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData)
           throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
@@ -450,7 +451,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(final Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     try {

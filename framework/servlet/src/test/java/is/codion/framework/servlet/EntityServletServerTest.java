@@ -14,6 +14,7 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -164,7 +165,7 @@ public class EntityServletServerTest {
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
-    List<Entity.Key> queryKeys = Serializer.deserialize(response.body());
+    List<Key> queryKeys = Serializer.deserialize(response.body());
     assertEquals(1, queryKeys.size());
     assertEquals(department.getKey(), queryKeys.get(0));
 
