@@ -6208,3 +6208,4 @@
   DefaultEntity now fully type safe
   SwingFilteredComboBoxModel, nullValue now String, renamed nullString, somewhat hacky
   Entity.Key moved up to package level
+  CredentialsServer Collections.synchronizedMap() replaced with ConcurrentHashMap

@@ -16,12 +16,10 @@ import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,7 +46,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
   public static final String LOCALHOST = "127.0.0.1";
 
   private final Registry registry;
-  private final Map<UUID, UserExpiration> authenticationTokens = Collections.synchronizedMap(new HashMap<>());
+  private final Map<UUID, UserExpiration> authenticationTokens = new ConcurrentHashMap<>();
   private final TaskScheduler expiredCleaner;
   private final int tokenValidity;
 
@@ -74,9 +72,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
    * @param user the user credentials associated with the token
    */
   public void addAuthenticationToken(final UUID authenticationToken, final User user) {
-    synchronized (authenticationTokens) {
-      authenticationTokens.put(authenticationToken, new UserExpiration(user, System.currentTimeMillis() + tokenValidity));
-    }
+    authenticationTokens.put(authenticationToken, new UserExpiration(user, System.currentTimeMillis() + tokenValidity));
   }
 
   @Override
@@ -88,16 +84,14 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
         return null;
       }
 
-      synchronized (authenticationTokens) {
-        final UserExpiration userExpiration = authenticationTokens.remove(authenticationToken);
-        if (userExpiration == null || userExpiration.isExpired()) {
-          LOG.debug("Request failed, authentication token: " + authenticationToken + " invalid or expired");
+      final UserExpiration userExpiration = authenticationTokens.remove(authenticationToken);
+      if (userExpiration == null || userExpiration.isExpired()) {
+        LOG.debug("Request failed, authentication token: " + authenticationToken + " invalid or expired");
 
-          return null;
-        }
-
-        return userExpiration.user;
+        return null;
       }
+
+      return userExpiration.user;
     }
     catch (final ServerNotActiveException e) {
       LOG.debug("Request denied, unable to get request host", e);
@@ -111,11 +105,9 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
   public void exit() {
     try {
       expiredCleaner.stop();
-      synchronized (authenticationTokens) {
-        authenticationTokens.clear();
-        registry.unbind(CredentialsService.class.getSimpleName());
-        UnicastRemoteObject.unexportObject(registry, true);
-      }
+      authenticationTokens.clear();
+      registry.unbind(CredentialsService.class.getSimpleName());
+      UnicastRemoteObject.unexportObject(registry, true);
     }
     catch (final Exception e) {
       LOG.error("Error on exit", e);
@@ -123,12 +115,10 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
   }
 
   private void removeExpired() {
-    synchronized (authenticationTokens) {
-      for (final Map.Entry<UUID, UserExpiration> entry : new ArrayList<>(authenticationTokens.entrySet())) {
-        if (entry.getValue().isExpired()) {
-          authenticationTokens.remove(entry.getKey());
-          LOG.debug("Expired token removed for user: " + entry.getValue().user);
-        }
+    for (final Map.Entry<UUID, UserExpiration> entry : authenticationTokens.entrySet()) {
+      if (entry.getValue().isExpired()) {
+        authenticationTokens.remove(entry.getKey());
+        LOG.debug("Expired token removed for user: " + entry.getValue().user);
       }
     }
   }
