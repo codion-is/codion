@@ -295,7 +295,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementValues.addAll(updateCondition.getValues());
             final int updatedRows = executeStatement(statement, updateQuery, statementProperties, statementValues);
             if (updatedRows == 0) {
-              throw new UpdateException("Update did not affect any rows");
+              throw new UpdateException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
             }
 
             statement.close();
@@ -1123,7 +1123,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private String columnsClause(final EntityType entityType, final List<Attribute<?>> selectAttributes,
                                final List<ColumnProperty<?>> propertiesToSelect) {
     if (selectAttributes.isEmpty()) {
-      return allColumnsClauseCache.computeIfAbsent(entityType, eId -> Queries.columnsClause(propertiesToSelect));
+      return allColumnsClauseCache.computeIfAbsent(entityType, type -> Queries.columnsClause(propertiesToSelect));
     }
 
     return Queries.columnsClause(propertiesToSelect);

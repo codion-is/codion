@@ -6212,3 +6212,4 @@
   EntityEditPanel, propertyPanel renamed inputPanel
   DecimalField split into DoubleField and BigDecimalField
   DecimalDocumentFilter and DecimalDocument now shared between DoubleField and BigDecimalField
+  Domain.addFunction() and addProcedure() renamed defineFunction() and defineProcedure() respectively

@@ -48,8 +48,8 @@ public final class ChinookImpl extends Domain implements Chinook {
     playlist();
     playlistTrack();
     addReport(Customer.CUSTOMER_REPORT);
-    addProcedure(Procedures.UPDATE_TOTALS, new UpdateTotalsProcedure());
-    addFunction(Functions.RAISE_PRICE, new RaisePriceFunction());
+    defineProcedure(Procedures.UPDATE_TOTALS, new UpdateTotalsProcedure());
+    definedFunction(Functions.RAISE_PRICE, new RaisePriceFunction());
   }
 
   void artist() {

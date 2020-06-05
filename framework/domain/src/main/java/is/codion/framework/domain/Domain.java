@@ -28,8 +28,8 @@ import static java.util.Objects.requireNonNull;
  * Override to define a domain model.
  * @see #define(EntityType, Property.Builder[])
  * @see #addReport(ReportWrapper)
- * @see #addProcedure(ProcedureType, DatabaseProcedure)
- * @see #addFunction(FunctionType, DatabaseFunction)
+ * @see #defineProcedure(ProcedureType, DatabaseProcedure)
+ * @see #definedFunction(FunctionType, DatabaseFunction)
  */
 public abstract class Domain implements EntityDefinition.Provider {
 
@@ -157,7 +157,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @param <T> the argument type
    * @throws IllegalArgumentException in case an procedure with the same id has already been added
    */
-  protected final <C, T> void addProcedure(final ProcedureType<C, T> type, final DatabaseProcedure<C, T> procedure) {
+  protected final <C, T> void defineProcedure(final ProcedureType<C, T> type, final DatabaseProcedure<C, T> procedure) {
     procedures.addProcedure(type, procedure);
   }
 
@@ -170,7 +170,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @param <R> the result type
    * @throws IllegalArgumentException in case an function with the same id has already been added
    */
-  protected final <C, T, R> void addFunction(final FunctionType<C, T, R> type, final DatabaseFunction<C, T, R> function) {
+  protected final <C, T, R> void definedFunction(final FunctionType<C, T, R> type, final DatabaseFunction<C, T, R> function) {
     functions.addFunction(type, function);
   }
 
