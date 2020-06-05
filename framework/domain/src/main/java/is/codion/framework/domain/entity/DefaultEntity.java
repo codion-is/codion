@@ -591,7 +591,7 @@ final class DefaultEntity implements Entity {
       keyValues.put(foreignColumnProperty.getAttribute(), value);
     }
 
-    return cacheReferencedKey(foreignKeyProperty.getAttribute(), new DefaultEntityKey(foreignEntityDefinition, keyValues));
+    return cacheReferencedKey(foreignKeyProperty.getAttribute(), new DefaultKey(foreignEntityDefinition, keyValues));
   }
 
   private Key initializeAndCacheSingleReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
@@ -602,7 +602,7 @@ final class DefaultEntity implements Entity {
     }
 
     return cacheReferencedKey(foreignKeyProperty.getAttribute(),
-            new DefaultEntityKey(definition.getForeignDefinition(foreignKeyProperty.getAttribute()), value));
+            new DefaultKey(definition.getForeignDefinition(foreignKeyProperty.getAttribute()), value));
   }
 
   private Key cacheReferencedKey(final Attribute<Entity> foreignKeyAttribute, final Key referencedPrimaryKey) {
@@ -638,7 +638,7 @@ final class DefaultEntity implements Entity {
    */
   private Key initializeKey(final boolean originalValues) {
     if (!definition.hasPrimaryKey()) {
-      return new DefaultEntityKey(definition);
+      return new DefaultKey(definition);
     }
     final List<Attribute<?>> primaryKeyAttributes = definition.getPrimaryKeyAttributes();
     if (primaryKeyAttributes.size() > 1) {
@@ -648,10 +648,10 @@ final class DefaultEntity implements Entity {
         keyValues.put(attribute, originalValues ? getOriginal(attribute) : values.get(attribute));
       }
 
-      return new DefaultEntityKey(definition, keyValues);
+      return new DefaultKey(definition, keyValues);
     }
 
-    return new DefaultEntityKey(definition, originalValues ? getOriginal(primaryKeyAttributes.get(0)) : values.get(primaryKeyAttributes.get(0)));
+    return new DefaultKey(definition, originalValues ? getOriginal(primaryKeyAttributes.get(0)) : values.get(primaryKeyAttributes.get(0)));
   }
 
   private <T> T getDerivedValue(final DerivedProperty<T> derivedProperty) {

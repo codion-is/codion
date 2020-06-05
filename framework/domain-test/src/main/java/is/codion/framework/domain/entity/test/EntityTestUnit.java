@@ -18,6 +18,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -321,7 +322,7 @@ public class EntityTestUnit {
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
   private Entity testInsert(final Entity testEntity) throws DatabaseException {
-    final Entity.Key key = connection.insert(testEntity);
+    final Key key = connection.insert(testEntity);
     try {
       return connection.selectSingle(key);
     }

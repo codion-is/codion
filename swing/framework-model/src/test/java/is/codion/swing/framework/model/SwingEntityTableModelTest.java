@@ -8,6 +8,7 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
@@ -212,10 +213,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.setSortingDirective(TestDomain.EMP_NAME, SortingDirective.ASCENDING);
     assertEquals(SortingDirective.ASCENDING, tableModel.getSortingState(TestDomain.EMP_NAME).getDirective());
 
-    final Entity.Key pk1 = getConnectionProvider().getEntities().key(TestDomain.T_EMP, 10);//ADAMS
+    final Key pk1 = getConnectionProvider().getEntities().key(TestDomain.T_EMP, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
 
-    final Entity.Key pk2 = getConnectionProvider().getEntities().key(TestDomain.T_EMP, -66);
+    final Key pk2 = getConnectionProvider().getEntities().key(TestDomain.T_EMP, -66);
     assertEquals(-1, tableModel.indexOf(pk2));
   }
 

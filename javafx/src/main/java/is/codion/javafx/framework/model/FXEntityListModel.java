@@ -18,6 +18,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -249,7 +250,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void refreshEntities(final List<Entity.Key> keys) {
+  public final void refreshEntities(final List<Key> keys) {
     try {
       replaceEntities(getConnectionProvider().getConnection().select(keys));
     }
@@ -351,14 +352,14 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
+  public final Collection<Entity> getEntitiesByKey(final Collection<Key> keys) {
     return getItems().stream().filter(entity -> keys.stream()
             .anyMatch(key -> entity.getKey().equals(key))).collect(Collectors.toList());
   }
 
   @Override
-  public final void setSelectedByKey(final Collection<Entity.Key> keys) {
-    final List<Entity.Key> keyList = new ArrayList<>(keys);
+  public final void setSelectedByKey(final Collection<Key> keys) {
+    final List<Key> keyList = new ArrayList<>(keys);
     final List<Entity> toSelect = new ArrayList<>(keys.size());
     stream().filter(entity -> keyList.contains(entity.getKey())).forEach(entity -> {
       toSelect.add(entity);
@@ -368,7 +369,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final Entity getEntityByKey(final Entity.Key primaryKey) {
+  public final Entity getEntityByKey(final Key primaryKey) {
     return getFilteredList().stream().filter(entity -> entity.getKey().equals(primaryKey)).findFirst().orElse(null);
   }
 
@@ -378,7 +379,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final int indexOf(final Entity.Key primaryKey) {
+  public final int indexOf(final Key primaryKey) {
     return indexOf(getEntityByKey(primaryKey));
   }
 
@@ -506,7 +507,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
   }
 
-  private void onUpdate(final Map<Entity.Key, Entity> updatedEntities) {
+  private void onUpdate(final Map<Key, Entity> updatedEntities) {
     replaceEntitiesByKey(new HashMap<>(updatedEntities));
   }
 
@@ -520,7 +521,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * Replace the entities identified by the Entity.Key map keys with their respective value
    * @param entityMap the entities to replace mapped to the corresponding primary key found in this table model
    */
-  private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entityMap) {
+  private void replaceEntitiesByKey(final Map<Key, Entity> entityMap) {
     final List<Integer> selected = getSelectionModel().getSelectedIndexes();
     replaceAll(entity -> {
       final Entity toReplaceWith = entityMap.get(entity.getKey());

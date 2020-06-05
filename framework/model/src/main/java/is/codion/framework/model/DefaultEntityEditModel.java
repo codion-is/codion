@@ -22,6 +22,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -54,8 +55,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private final Event<List<Entity>> beforeInsertEvent = Events.event();
   private final Event<List<Entity>> afterInsertEvent = Events.event();
-  private final Event<Map<Entity.Key, Entity>> beforeUpdateEvent = Events.event();
-  private final Event<Map<Entity.Key, Entity>> afterUpdateEvent = Events.event();
+  private final Event<Map<Key, Entity>> beforeUpdateEvent = Events.event();
+  private final Event<Map<Key, Entity>> afterUpdateEvent = Events.event();
   private final Event<List<Entity>> beforeDeleteEvent = Events.event();
   private final Event<List<Entity>> afterDeleteEvent = Events.event();
   private final Event<?> entitiesChangedEvent = Events.event();
@@ -703,22 +704,22 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void removeBeforeUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
+  public final void removeBeforeUpdateListener(final EventDataListener<Map<Key, Entity>> listener) {
     beforeUpdateEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addBeforeUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
+  public final void addBeforeUpdateListener(final EventDataListener<Map<Key, Entity>> listener) {
     beforeUpdateEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeAfterUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
+  public final void removeAfterUpdateListener(final EventDataListener<Map<Key, Entity>> listener) {
     afterUpdateEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addAfterUpdateListener(final EventDataListener<Map<Entity.Key, Entity>> listener) {
+  public final void addAfterUpdateListener(final EventDataListener<Map<Key, Entity>> listener) {
     afterUpdateEvent.addDataListener(listener);
   }
 
@@ -795,7 +796,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @return a list containing the primary keys of the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  protected List<Entity.Key> doInsert(final List<Entity> entities) throws DatabaseException {
+  protected List<Key> doInsert(final List<Entity> entities) throws DatabaseException {
     return connectionProvider.getConnection().insert(entities);
   }
 
@@ -882,7 +883,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entitiesToUpdate the entities about to be updated
    * @see #addBeforeUpdateListener(EventDataListener)
    */
-  protected final void notifyBeforeUpdate(final Map<Entity.Key, Entity> entitiesToUpdate) {
+  protected final void notifyBeforeUpdate(final Map<Key, Entity> entitiesToUpdate) {
     beforeUpdateEvent.onEvent(entitiesToUpdate);
   }
 
@@ -891,7 +892,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param updatedEntities the updated entities
    * @see #addAfterUpdateListener(EventDataListener)
    */
-  protected final void notifyAfterUpdate(final Map<Entity.Key, Entity> updatedEntities) {
+  protected final void notifyAfterUpdate(final Map<Key, Entity> updatedEntities) {
     afterUpdateEvent.onEvent(updatedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyUpdated(updatedEntities);
@@ -1001,10 +1002,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entitiesAfterUpdate the entities after update
    * @return the updated entities mapped to their respective original primary keys
    */
-  private static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(final List<Entity> entitiesBeforeUpdate,
-                                                                 final List<Entity> entitiesAfterUpdate) {
+  private static Map<Key, Entity> mapToOriginalPrimaryKey(final List<Entity> entitiesBeforeUpdate,
+                                                          final List<Entity> entitiesAfterUpdate) {
     final List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
-    final Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
+    final Map<Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
     for (final Entity entity : entitiesBeforeUpdate) {
       keyMap.put(entity.getOriginalKey(), findAndRemove(entity.getKey(), entitiesAfterUpdateCopy.listIterator()));
     }
@@ -1012,7 +1013,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return keyMap;
   }
 
-  private static Entity findAndRemove(final Entity.Key primaryKey, final ListIterator<Entity> iterator) {
+  private static Entity findAndRemove(final Key primaryKey, final ListIterator<Entity> iterator) {
     while (iterator.hasNext()) {
       final Entity current = iterator.next();
       if (current.getKey().equals(primaryKey)) {

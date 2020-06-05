@@ -5,6 +5,7 @@ package is.codion.plugin.jackson.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Key;
 import is.codion.plugin.jackson.json.TestDomain;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -94,22 +95,22 @@ public final class EntityObjectMapperTest {
   public void key() throws JsonProcessingException {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
-    final Entity.Key deptKey = entities.key(TestDomain.T_DEPARTMENT);
+    final Key deptKey = entities.key(TestDomain.T_DEPARTMENT);
     deptKey.put(TestDomain.DEPARTMENT_ID, 1);
 
     String jsonString = mapper.writeValueAsString(deptKey);
 
-    final Entity.Key key = mapper.readValue(jsonString, Entity.Key.class);
+    final Key key = mapper.readValue(jsonString, Key.class);
     assertEquals(TestDomain.T_DEPARTMENT, key.getEntityType());
     assertEquals(1, key.getFirstValue());
 
-    final Entity.Key entityKey = entities.key(TestDomain.T_ENTITY);
+    final Key entityKey = entities.key(TestDomain.T_ENTITY);
     entityKey.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
     entityKey.put(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
 
     jsonString = mapper.writeValueAsString(entityKey);
 
-    final Entity.Key readKey = mapper.readValue(jsonString, Entity.Key.class);
+    final Key readKey = mapper.readValue(jsonString, Key.class);
 
     assertEquals(entityKey, readKey);
   }
@@ -118,11 +119,11 @@ public final class EntityObjectMapperTest {
   public void keyOld() throws Exception {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
-    final Entity.Key key = entities.key(TestDomain.T_DEPARTMENT, 42);
+    final Key key = entities.key(TestDomain.T_DEPARTMENT, 42);
 
     final String keyJSON = mapper.writeValueAsString(singletonList(key));
     assertEquals("[{\"entityType\":\"scott.dept\",\"values\":{\"deptno\":42}}]", keyJSON);
-    final Entity.Key keyParsed = mapper.readValue(keyJSON,  new TypeReference<List<Entity.Key>>(){}).get(0);
+    final Key keyParsed = mapper.readValue(keyJSON,  new TypeReference<List<Key>>(){}).get(0);
     assertEquals(key.getEntityType(), keyParsed.getEntityType());
     assertEquals(key.getFirstAttribute(), keyParsed.getFirstAttribute());
     assertEquals(key.getFirstValue(), keyParsed.getFirstValue());

@@ -17,6 +17,7 @@ import is.codion.common.value.Values;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -223,7 +224,7 @@ public class EntityServletServerTest {
     httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(singletonList(department))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    final List<Entity.Key> queryKeys = deserializeResponse(response);
+    final List<Key> queryKeys = deserializeResponse(response);
     assertEquals(1, queryKeys.size());
     assertEquals(department.getKey(), queryKeys.get(0));
     response.close();
@@ -244,7 +245,7 @@ public class EntityServletServerTest {
     httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(singletonList(department))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    final List<Entity.Key> keys = deserializeResponse(response);
+    final List<Key> keys = deserializeResponse(response);
     assertEquals(1, keys.size());
     assertEquals(department.getKey(), keys.get(0));
     response.close();

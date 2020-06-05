@@ -18,6 +18,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
@@ -208,7 +209,7 @@ public class DomainTest {
             Properties.primaryKeyProperty(attribute2).primaryKeyIndex(1),
             Properties.primaryKeyProperty(attribute3).primaryKeyIndex(2).nullable(true));
 
-    final Entity.Key key = entities.key(entityType);
+    final Key key = entities.key(entityType);
     assertEquals(0, key.hashCode());
     assertTrue(key.isCompositeKey());
     assertTrue(key.isNull());
@@ -238,17 +239,17 @@ public class DomainTest {
 
     assertThrows(NullPointerException.class, () -> entities.key(null));
 
-    final Entity.Key noPk = entities.key(TestDomain.T_NO_PK);
+    final Key noPk = entities.key(TestDomain.T_NO_PK);
     assertThrows(IllegalArgumentException.class, () -> noPk.put(TestDomain.NO_PK_COL1, 1));
     assertThrows(IllegalArgumentException.class, () -> noPk.get(TestDomain.NO_PK_COL1));
   }
 
    @Test
    public void keys() {
-    final List<Entity.Key> intKeys = entities.keys(TestDomain.T_EMP, 1, 2, 3, 4);
+    final List<Key> intKeys = entities.keys(TestDomain.T_EMP, 1, 2, 3, 4);
     assertEquals(4, intKeys.size());
     assertEquals(3, intKeys.get(2).getFirstValue());
-    final List<Entity.Key> longKeys = entities.keys(TestDomain.T_DETAIL, 1L, 2L, 3L, 4L);
+    final List<Key> longKeys = entities.keys(TestDomain.T_DETAIL, 1L, 2L, 3L, 4L);
     assertEquals(4, longKeys.size());
     assertEquals(3L, longKeys.get(2).getFirstValue());
    }
@@ -277,7 +278,7 @@ public class DomainTest {
 
   @Test
   public void entity() {
-    final Entity.Key key = entities.key(TestDomain.T_MASTER, 10L);
+    final Key key = entities.key(TestDomain.T_MASTER, 10L);
 
     final Entity master = entities.entity(key);
     assertEquals(TestDomain.T_MASTER, master.getEntityType());

@@ -368,7 +368,7 @@ public interface EntityDefinition extends Serializable {
    * @param key the primary key
    * @return a new {@link Entity} instance
    */
-  Entity entity(Entity.Key key);
+  Entity entity(Key key);
 
   /**
    * Instantiates a new {@link Entity} using the values provided by {@code valueProvider}.
@@ -393,28 +393,28 @@ public interface EntityDefinition extends Serializable {
   Entity entity(Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues);
 
   /**
-   * Creates a new {@link Entity.Key} instance based on this definition
-   * @return a new {@link Entity.Key} instance
+   * Creates a new {@link Key} instance based on this definition
+   * @return a new {@link Key} instance
    */
-  Entity.Key key();
+  Key key();
 
   /**
-   * Creates a new {@link Entity.Key} instance based on this definition, initialised with the given value
+   * Creates a new {@link Key} instance based on this definition, initialised with the given value
    * @param value the key value, assumes a single integer key
-   * @return a new {@link Entity.Key} instance
+   * @return a new {@link Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Entity.Key key(Integer value);
+  Key key(Integer value);
 
   /**
-   * Creates a new {@link Entity.Key} instance based on this definition, initialised with the given value
+   * Creates a new {@link Key} instance based on this definition, initialised with the given value
    * @param value the key value, assumes a single long key
-   * @return a new {@link Entity.Key} instance
+   * @return a new {@link Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Entity.Key key(Long value);
+  Key key(Long value);
 
   /**
    * Returns the {@link BeanHelper} associated with this entity type.

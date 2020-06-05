@@ -7,6 +7,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -74,7 +75,7 @@ public final class EntityConnections {
    */
   public static void batchInsert(final EntityConnection connection, final Iterator<Entity> entities, final int batchSize,
                                  final EventDataListener<Integer> progressReporter,
-                                 final EventDataListener<List<Entity.Key>> onInsertBatchListener)
+                                 final EventDataListener<List<Key>> onInsertBatchListener)
           throws DatabaseException {
     requireNonNull(connection, "connection");
     requireNonNull(entities, "entities");
@@ -87,7 +88,7 @@ public final class EntityConnections {
       while (batch.size() < batchSize && entities.hasNext()) {
         batch.add(entities.next());
       }
-      final List<Entity.Key> insertedKeys = connection.insert(batch);
+      final List<Key> insertedKeys = connection.insert(batch);
       progress += insertedKeys.size();
       batch.clear();
       if (progressReporter != null) {

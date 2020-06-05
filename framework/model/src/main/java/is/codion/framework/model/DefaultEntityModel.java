@@ -12,6 +12,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import org.slf4j.Logger;
@@ -436,7 +437,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Replaces the updated master entities wherever they are referenced
    * @param updatedEntities the updated entities
    */
-  protected final void onMasterUpdate(final Map<Entity.Key, Entity> updatedEntities) {
+  protected final void onMasterUpdate(final Map<Key, Entity> updatedEntities) {
     editModel.replaceForeignKeyValues(updatedEntities.values());
     if (containsTableModel()) {
       tableModel.replaceForeignKeyValues(masterModel.getEntityType(), updatedEntities.values());
@@ -493,7 +494,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     detailModels.forEach(detailModel -> detailModel.onMasterInsert(insertedEntities));
   }
 
-  private void onUpdate(final Map<Entity.Key, Entity> updatedEntities) {
+  private void onUpdate(final Map<Key, Entity> updatedEntities) {
     detailModels.forEach(detailModel -> detailModel.onMasterUpdate(updatedEntities));
   }
 

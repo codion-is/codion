@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -110,7 +111,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  Entity.Key insert(Entity entity) throws RemoteException, DatabaseException;
+  Key insert(Entity entity) throws RemoteException, DatabaseException;
 
   /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
@@ -122,7 +123,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity.Key> insert(List<Entity> entities) throws RemoteException, DatabaseException;
+  List<Key> insert(List<Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Updates the given entity according to its properties. Returns the updated entity.
@@ -166,7 +167,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  boolean delete(Entity.Key entityKey) throws RemoteException, DatabaseException;
+  boolean delete(Key entityKey) throws RemoteException, DatabaseException;
 
   /**
    * Deletes the entities according to the given primary keys.
@@ -176,7 +177,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  int delete(List<Entity.Key> entityKeys) throws RemoteException, DatabaseException;
+  int delete(List<Key> entityKeys) throws RemoteException, DatabaseException;
 
   /**
    * Deletes the entities specified by the given condition
@@ -226,7 +227,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  Entity selectSingle(Entity.Key key) throws RemoteException, DatabaseException;
+  Entity selectSingle(Key key) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity according to the specified condition, throws a DatabaseException
@@ -247,7 +248,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> select(List<Entity.Key> keys) throws RemoteException, DatabaseException;
+  List<Entity> select(List<Key> keys) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities according to the specified condition
@@ -324,7 +325,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  void writeBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws RemoteException, DatabaseException;
+  void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws RemoteException, DatabaseException;
 
   /**
    * Reads the blob specified by the property identified by {@code attribute} from the given entity
@@ -334,5 +335,5 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  byte[] readBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute) throws RemoteException, DatabaseException;
+  byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws RemoteException, DatabaseException;
 }

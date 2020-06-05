@@ -26,7 +26,7 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * A repository specifying the {@link EntityDefinition}s for a given domain.
- * Factory for {@link Entity} and {@link Entity.Key} instances.
+ * Factory for {@link Entity} and {@link Key} instances.
  * Helper class for working with Entity instances and related classes
  */
 public interface Entities extends EntityDefinition.Provider, Serializable {
@@ -48,54 +48,54 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param key the primary key
    * @return a new {@link Entity} instance
    */
-  Entity entity(Entity.Key key);
+  Entity entity(Key key);
 
   /**
-   * Creates a new {@link Entity.Key} instance with the given entityType
+   * Creates a new {@link Key} instance with the given entityType
    * @param entityType the entityType
-   * @return a new {@link Entity.Key} instance
+   * @return a new {@link Key} instance
    */
-  Entity.Key key(EntityType entityType);
+  Key key(EntityType entityType);
 
   /**
-   * Creates a new {@link Entity.Key} instance with the given entityType, initialised with the given value
+   * Creates a new {@link Key} instance with the given entityType, initialised with the given value
    * @param entityType the entityType
    * @param value the key value, assumes a single integer key
-   * @return a new {@link Entity.Key} instance
+   * @return a new {@link Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Entity.Key key(EntityType entityType, Integer value);
+  Key key(EntityType entityType, Integer value);
 
   /**
-   * Creates a new {@link Entity.Key} instance with the given entityType, initialised with the given value
+   * Creates a new {@link Key} instance with the given entityType, initialised with the given value
    * @param entityType the entityType
    * @param value the key value, assumes a single long key
-   * @return a new {@link Entity.Key} instance
+   * @return a new {@link Key} instance
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Entity.Key key(EntityType entityType, Long value);
+  Key key(EntityType entityType, Long value);
 
   /**
-   * Creates new {@link Entity.Key} instances with the given entityType, initialised with the given values
+   * Creates new {@link Key} instances with the given entityType, initialised with the given values
    * @param entityType the entityType
    * @param values the key values, assumes a single integer key
-   * @return new {@link Entity.Key} instances
+   * @return new {@link Key} instances
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or values is null
    */
-  List<Entity.Key> keys(EntityType entityType, Integer... values);
+  List<Key> keys(EntityType entityType, Integer... values);
 
   /**
-   * Creates new {@link Entity.Key} instances with the given entityType, initialised with the given values
+   * Creates new {@link Key} instances with the given entityType, initialised with the given values
    * @param entityType the entityType
    * @param values the key values, assumes a single integer key
-   * @return new {@link Entity.Key} instances
+   * @return new {@link Key} instances
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or values is null
    */
-  List<Entity.Key> keys(EntityType entityType, Long... values);
+  List<Key> keys(EntityType entityType, Long... values);
 
   /**
    * Copies the given entities, with new copied instances of all foreign key value entities.
@@ -165,8 +165,8 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    */
   static boolean isEntityNew(final Entity entity) {
     requireNonNull(entity);
-    final Entity.Key key = entity.getKey();
-    final Entity.Key originalKey = entity.getOriginalKey();
+    final Key key = entity.getKey();
+    final Key originalKey = entity.getOriginalKey();
 
     return key.isNull() || originalKey.isNull();
   }
@@ -226,9 +226,9 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
    */
-  static List<Entity.Key> getKeys(final List<Entity> entities) {
+  static List<Key> getKeys(final List<Entity> entities) {
     requireNonNull(entities, "entities");
-    final List<Entity.Key> keys = new ArrayList<>(entities.size());
+    final List<Key> keys = new ArrayList<>(entities.size());
     for (int i = 0; i < entities.size(); i++) {
       keys.add(entities.get(i).getKey());
     }
@@ -242,10 +242,10 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param foreignKeyAttribute the foreign key attribute
    * @return the primary keys of the referenced entities
    */
-  static Set<Entity.Key> getReferencedKeys(final List<Entity> entities, final Attribute<Entity> foreignKeyAttribute) {
-    final Set<Entity.Key> keySet = new HashSet<>();
+  static Set<Key> getReferencedKeys(final List<Entity> entities, final Attribute<Entity> foreignKeyAttribute) {
+    final Set<Key> keySet = new HashSet<>();
     for (int i = 0; i < entities.size(); i++) {
-      final Entity.Key key = entities.get(i).getReferencedKey(foreignKeyAttribute);
+      final Key key = entities.get(i).getReferencedKey(foreignKeyAttribute);
       if (key != null) {
         keySet.add(key);
       }
@@ -259,9 +259,9 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities with their original values
    */
-  static List<Entity.Key> getOriginalKeys(final List<Entity> entities) {
+  static List<Key> getOriginalKeys(final List<Entity> entities) {
     requireNonNull(entities, "entities");
-    final List<Entity.Key> keys = new ArrayList<>(entities.size());
+    final List<Key> keys = new ArrayList<>(entities.size());
     for (int i = 0; i < entities.size(); i++) {
       keys.add(entities.get(i).getOriginalKey());
     }
@@ -275,11 +275,11 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param keys the keys
    * @return the actual property values of the given keys
    */
-  static <T> List<T> getValues(final List<Entity.Key> keys) {
+  static <T> List<T> getValues(final List<Key> keys) {
     requireNonNull(keys, "keys");
     final List<T> list = new ArrayList<>(keys.size());
     for (int i = 0; i < keys.size(); i++) {
-      final Entity.Key key = keys.get(i);
+      final Key key = keys.get(i);
       list.add((T) key.get(key.getFirstAttribute()));
     }
 
@@ -334,9 +334,9 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param <T> the value type
    * @return the previous property values mapped to the primary key of the entity
    */
-  static <T> Map<Entity.Key, T> put(final Attribute<T> attribute, final T value, final Collection<Entity> entities) {
+  static <T> Map<Key, T> put(final Attribute<T> attribute, final T value, final Collection<Entity> entities) {
     requireNonNull(entities, "entities");
-    final Map<Entity.Key, T> previousValues = new HashMap<>(entities.size());
+    final Map<Key, T> previousValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
       previousValues.put(entity.getKey(), entity.put(attribute, value));
     }
@@ -349,9 +349,9 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities to map
    * @return the mapped entities
    */
-  static Map<Entity.Key, Entity> mapToKey(final Collection<Entity> entities) {
+  static Map<Key, Entity> mapToKey(final Collection<Entity> entities) {
     requireNonNull(entities, "entities");
-    final Map<Entity.Key, Entity> entityMap = new HashMap<>();
+    final Map<Key, Entity> entityMap = new HashMap<>();
     for (final Entity entity : entities) {
       entityMap.put(entity.getKey(), entity);
     }
@@ -387,8 +387,8 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param keys the entity keys to map by entityType
    * @return a Map of entity keys mapped to entityType
    */
-  static LinkedHashMap<EntityType, List<Entity.Key>> mapKeysToType(final Collection<Entity.Key> keys) {
-    return map(keys, Entity.Key::getEntityType);
+  static LinkedHashMap<EntityType, List<Key>> mapKeysToType(final Collection<Key> keys) {
+    return map(keys, Key::getEntityType);
   }
 
   /**

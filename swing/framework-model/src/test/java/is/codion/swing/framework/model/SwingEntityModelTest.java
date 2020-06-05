@@ -6,6 +6,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.tests.AbstractEntityModelTest;
@@ -92,8 +93,8 @@ public final class SwingEntityModelTest
     final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(
             getConnectionProvider().getEntities().getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK));
     departmentsComboBoxModel.refresh();
-    final Entity.Key primaryKey = getConnectionProvider().getEntities().key(TestDomain.T_DEPARTMENT, 40);//operations, no employees
-    final List<Entity.Key> keys = new ArrayList<>();
+    final Key primaryKey = getConnectionProvider().getEntities().key(TestDomain.T_DEPARTMENT, 40);//operations, no employees
+    final List<Key> keys = new ArrayList<>();
     keys.add(primaryKey);
     departmentModel.getTableModel().setSelectedByKey(keys);
     final Entity operations = departmentModel.getTableModel().getSelectionModel().getSelectedItem();

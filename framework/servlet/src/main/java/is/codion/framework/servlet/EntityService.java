@@ -21,6 +21,7 @@ import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Key;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -355,7 +356,7 @@ public final class EntityService extends Application {
   public Response selectByKey(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Entity.Key> keys = deserialize(request);
+      final List<Key> keys = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.select(keys))).build();
     }
@@ -488,7 +489,7 @@ public final class EntityService extends Application {
   public Response deleteByKey(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
-      final List<Entity.Key> keys = deserialize(request);
+      final List<Key> keys = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.delete(keys))).build();
     }
@@ -513,7 +514,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Object> parameters = deserialize(request);
 
-      connection.writeBlob((Entity.Key) parameters.get(0), (Attribute<byte[]>) parameters.get(1), (byte[]) parameters.get(2));
+      connection.writeBlob((Key) parameters.get(0), (Attribute<byte[]>) parameters.get(1), (byte[]) parameters.get(2));
 
       return Response.ok().build();
     }
@@ -538,7 +539,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Object> parameters = deserialize(request);
 
-      return Response.ok(Serializer.serialize(connection.readBlob((Entity.Key) parameters.get(0), (Attribute<byte[]>) parameters.get(1)))).build();
+      return Response.ok(Serializer.serialize(connection.readBlob((Key) parameters.get(0), (Attribute<byte[]>) parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
