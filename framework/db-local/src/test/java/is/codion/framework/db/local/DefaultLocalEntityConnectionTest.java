@@ -26,6 +26,7 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,7 +75,7 @@ public class DefaultLocalEntityConnectionTest {
   public void delete() throws Exception {
     try {
       connection.beginTransaction();
-      final Entity.Key key = ENTITIES.key(T_DEPARTMENT, 40);
+      final Key key = ENTITIES.key(T_DEPARTMENT, 40);
       assertEquals(0, connection.delete(new ArrayList<>()));
       assertTrue(connection.delete(key));
       try {
@@ -88,7 +89,7 @@ public class DefaultLocalEntityConnectionTest {
     }
     try {
       connection.beginTransaction();
-      final Entity.Key key = ENTITIES.key(T_DEPARTMENT, 40);
+      final Key key = ENTITIES.key(T_DEPARTMENT, 40);
       assertEquals(1, connection.delete(condition(key)));
       try {
         connection.selectSingle(key);
@@ -113,7 +114,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void deleteReferentialIntegrity() {
-    final Entity.Key key = ENTITIES.key(T_DEPARTMENT, 10);
+    final Key key = ENTITIES.key(T_DEPARTMENT, 10);
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(key));
   }
 
@@ -150,7 +151,7 @@ public class DefaultLocalEntityConnectionTest {
     noPk.put(NO_PK_COL3, "10");
     noPk.put(NO_PK_COL4, 10);
 
-    final Entity.Key key = connection.insert(noPk);
+    final Key key = connection.insert(noPk);
     assertEquals(0, key.size());
   }
 
@@ -286,8 +287,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectByKey() throws DatabaseException {
-    final Entity.Key deptKey = ENTITIES.key(T_DEPARTMENT, 10);
-    final Entity.Key empKey = ENTITIES.key(T_EMP, 8);
+    final Key deptKey = ENTITIES.key(T_DEPARTMENT, 10);
+    final Key empKey = ENTITIES.key(T_EMP, 8);
 
     final List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -464,7 +465,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void insertEmptyList() throws DatabaseException {
-    final List<Entity.Key> pks = connection.insert(new ArrayList<>());
+    final List<Key> pks = connection.insert(new ArrayList<>());
     assertTrue(pks.isEmpty());
   }
 

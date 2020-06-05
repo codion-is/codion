@@ -85,12 +85,12 @@ final class DefaultEntityType implements EntityType {
 
   @Override
   public Attribute<Entity> entityAttribute(final String name) {
-    return new DefaultEntityAttribute(name, this);
+    return attribute(name, Entity.class);
   }
 
   @Override
   public Attribute<byte[]> blobAttribute(final String name) {
-    return new DefaultBlobAttribute(name, this);
+    return attribute(name, byte[].class);
   }
 
   @Override

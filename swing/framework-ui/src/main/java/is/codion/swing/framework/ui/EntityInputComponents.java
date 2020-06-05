@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.DateFormats;
 import is.codion.common.item.Item;
 import is.codion.common.item.Items;
+import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Nullable;
@@ -18,7 +19,6 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
-import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityLookupModel;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
@@ -843,7 +843,7 @@ public final class EntityInputComponents {
     final ItemComboBoxModel<T> model = sorted == Sorted.YES ?
             new ItemComboBoxModel<>(property.getValues()) : new ItemComboBoxModel<>(null, property.getValues());
     if (property.isNullable() && !model.containsItem(Items.item(null))) {
-      model.addItem(Items.item(null, EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
+      model.addItem(Items.item(null, FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
     }
 
     return model;

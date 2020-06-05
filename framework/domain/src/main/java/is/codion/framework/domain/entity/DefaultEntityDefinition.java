@@ -519,7 +519,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Entity entity(final Entity.Key key) {
+  public Entity entity(final Key key) {
     return new DefaultEntity(this, key);
   }
 
@@ -552,22 +552,22 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Entity.Key key() {
+  public Key key() {
     if (hasPrimaryKey()) {
-      return new DefaultEntityKey(this, null);
+      return new DefaultKey(this, null);
     }
 
-    return new DefaultEntityKey(this);
+    return new DefaultKey(this);
   }
 
   @Override
-  public Entity.Key key(final Integer value) {
-    return new DefaultEntityKey(this, value);
+  public Key key(final Integer value) {
+    return new DefaultKey(this, value);
   }
 
   @Override
-  public Entity.Key key(final Long value) {
-    return new DefaultEntityKey(this, value);
+  public Key key(final Long value) {
+    return new DefaultKey(this, value);
   }
 
   @Override
@@ -807,9 +807,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
               }).collect(toList());
     }
 
-    private List<Attribute<Object>> getPrimaryKeyAttributes() {
+    private List<Attribute<?>> getPrimaryKeyAttributes() {
       return this.primaryKeyProperties.stream().map((Function<ColumnProperty<?>,
-              Attribute<Object>>) Property::getAttribute).collect(toList());
+              Attribute<?>>) Property::getAttribute).collect(toList());
     }
 
     private List<ColumnProperty<?>> getSelectableProperties() {

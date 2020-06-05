@@ -20,6 +20,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
@@ -133,14 +134,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Entity.Key insert(final Entity entity) throws RemoteException, DatabaseException {
+  public Key insert(final Entity entity) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.insert(entity);
     }
   }
 
   @Override
-  public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
+  public List<Key> insert(final List<Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.insert(entities);
     }
@@ -168,14 +169,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public boolean delete(final Entity.Key entityKey) throws RemoteException, DatabaseException {
+  public boolean delete(final Key entityKey) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.delete(entityKey);
     }
   }
 
   @Override
-  public int delete(final List<Entity.Key> entityKeys) throws DatabaseException {
+  public int delete(final List<Key> entityKeys) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.delete(entityKeys);
     }
@@ -203,7 +204,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Entity selectSingle(final Entity.Key key) throws DatabaseException {
+  public Entity selectSingle(final Key key) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectSingle(key);
     }
@@ -217,7 +218,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public List<Entity> select(final List<Entity.Key> keys) throws DatabaseException {
+  public List<Entity> select(final List<Key> keys) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(keys);
     }
@@ -254,14 +255,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData) throws DatabaseException {
+  public void writeBlob(final Key primaryKey, final Attribute<byte[]> blobAttribute, final byte[] blobData) throws DatabaseException {
     synchronized (connectionProxy) {
       connectionProxy.writeBlob(primaryKey, blobAttribute, blobData);
     }
   }
 
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(final Key primaryKey, final Attribute<byte[]> blobAttribute) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.readBlob(primaryKey, blobAttribute);
     }

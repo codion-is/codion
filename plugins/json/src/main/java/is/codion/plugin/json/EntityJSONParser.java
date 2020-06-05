@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -140,13 +141,13 @@ public final class EntityJSONParser {
    * @param keys the keys
    * @return a JSON string representation of the given entity keys
    */
-  public String serializeKeys(final Collection<Entity.Key> keys) {
+  public String serializeKeys(final Collection<Key> keys) {
     if (nullOrEmpty(keys)) {
       return "";
     }
 
     final JSONArray jsonArray = new JSONArray();
-    for (final Entity.Key key : keys) {
+    for (final Key key : keys) {
       jsonArray.put(toJSONObject(key));
     }
 
@@ -167,7 +168,7 @@ public final class EntityJSONParser {
    * @param key the key
    * @return a JSON serialized representation of the key
    */
-  public String serializeKey(final Entity.Key key) {
+  public String serializeKey(final Key key) {
     return toJSONObject(key).toString();
   }
 
@@ -227,13 +228,13 @@ public final class EntityJSONParser {
    * @param jsonString the JSON string to parse
    * @return a List containing the Entity.Key instances represented by the given JSON string
    */
-  public List<Entity.Key> deserializeKeys(final String jsonString) {
+  public List<Key> deserializeKeys(final String jsonString) {
     if (nullOrEmpty(jsonString)) {
       return emptyList();
     }
 
     final JSONArray jsonArray = new JSONArray(jsonString);
-    final List<Entity.Key> keys = new ArrayList<>();
+    final List<Key> keys = new ArrayList<>();
     for (int i = 0; i < jsonArray.length(); i++) {
       keys.add(parseKey(jsonArray.getJSONObject(i)));
     }
@@ -255,7 +256,7 @@ public final class EntityJSONParser {
    * @param keyObject the JSON object string representing the entity
    * @return the Entity.Key represented by the given JSON object
    */
-  public Entity.Key parseKey(final String keyObject) {
+  public Key parseKey(final String keyObject) {
     return parseKey(new JSONObject(keyObject));
   }
 
@@ -265,9 +266,9 @@ public final class EntityJSONParser {
    * @return the Entity.Key represented by the given JSON object
    * @throws IllegalArgumentException in case of an undefined entity
    */
-  public Entity.Key parseKey(final JSONObject keyObject) {
+  public Key parseKey(final JSONObject keyObject) {
     final EntityType entityType = EntityType.entityType(keyObject.getString(ENTITY_TYPE));
-    final Entity.Key key = entities.key(entityType);
+    final Key key = entities.key(entityType);
     final EntityDefinition definition = entities.getDefinition(entityType);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
@@ -330,7 +331,7 @@ public final class EntityJSONParser {
     return jsonEntity;
   }
 
-  private JSONObject toJSONObject(final Entity.Key key) {
+  private JSONObject toJSONObject(final Key key) {
     final JSONObject jsonKey = new JSONObject();
     jsonKey.put(ENTITY_TYPE, key.getEntityType().getName());
     jsonKey.put(VALUES, serializeValues(key));
@@ -351,7 +352,7 @@ public final class EntityJSONParser {
     return propertyValues;
   }
 
-  private JSONObject serializeValues(final Entity.Key key) {
+  private JSONObject serializeValues(final Key key) {
     final JSONObject propertyValues = new JSONObject();
     for (final Attribute<?> attribute : entities.getDefinition(key.getEntityType()).getPrimaryKeyAttributes()) {
       propertyValues.put(attribute.getName(), serializeValue(key.get(attribute), attribute));

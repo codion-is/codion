@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.ConditionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -41,7 +42,7 @@ public final class Conditions {
    * @param key the primary key
    * @return a condition specifying the entity with the given primary key
    */
-  public static EntityCondition condition(final Entity.Key key) {
+  public static EntityCondition condition(final Key key) {
     return condition(singletonList(requireNonNull(key, "key")));
   }
 
@@ -61,8 +62,8 @@ public final class Conditions {
    * @param keys the primary keys
    * @return a condition specifying the entities having the given primary keys
    */
-  public static EntityCondition condition(final List<Entity.Key> keys) {
-    final List<Entity.Key> keyList = checkKeysParameter(keys);
+  public static EntityCondition condition(final List<Key> keys) {
+    final List<Key> keyList = checkKeysParameter(keys);
     return new DefaultEntityCondition(keyList.get(0).getEntityType(), createKeyCondition(keyList));
   }
 
@@ -95,7 +96,7 @@ public final class Conditions {
    * @param key the key
    * @return a select condition based on the given key
    */
-  public static EntitySelectCondition selectCondition(final Entity.Key key) {
+  public static EntitySelectCondition selectCondition(final Key key) {
     return selectCondition(singletonList(requireNonNull(key, "key")));
   }
 
@@ -105,8 +106,8 @@ public final class Conditions {
    * @param keys the keys
    * @return a select condition based on the given keys
    */
-  public static EntitySelectCondition selectCondition(final List<Entity.Key> keys) {
-    final List<Entity.Key> keyList = checkKeysParameter(keys);
+  public static EntitySelectCondition selectCondition(final List<Key> keys) {
+    final List<Key> keyList = checkKeysParameter(keys);
     return new DefaultEntitySelectCondition(keyList.get(0).getEntityType(), createKeyCondition(keyList));
   }
 
@@ -289,7 +290,7 @@ public final class Conditions {
     return condition;
   }
 
-  private static Condition compositeKeyCondition(final List<Entity.Key> keys, final List<Attribute<?>> attributes,
+  private static Condition compositeKeyCondition(final List<Key> keys, final List<Attribute<?>> attributes,
                                                  final Operator operator) {
     if (keys.size() == 1) {
       return singleCompositeCondition(attributes, operator, keys.get(0));
@@ -299,8 +300,8 @@ public final class Conditions {
   }
 
   /** Assumes {@code keys} is not empty. */
-  private static Condition createKeyCondition(final List<Entity.Key> keys) {
-    final Entity.Key firstKey = keys.get(0);
+  private static Condition createKeyCondition(final List<Key> keys) {
+    final Key firstKey = keys.get(0);
     if (firstKey.isCompositeKey()) {
       return compositeKeyCondition(keys, firstKey.getAttributes(), LIKE);
     }
@@ -310,7 +311,7 @@ public final class Conditions {
 
   /** Assumes {@code keys} is not empty. */
   private static Condition multipleCompositeCondition(final List<Attribute<?>> properties, final Operator operator,
-                                                      final List<Entity.Key> keys) {
+                                                      final List<Key> keys) {
     final Condition.Combination conditionCombination = combination(OR);
     for (int i = 0; i < keys.size(); i++) {
       conditionCombination.add(singleCompositeCondition(properties, operator, keys.get(i)));
@@ -320,7 +321,7 @@ public final class Conditions {
   }
 
   private static Condition singleCompositeCondition(final List<Attribute<?>> attributes, final Operator operator,
-                                                    final Entity.Key entityKey) {
+                                                    final Key entityKey) {
     final Condition.Combination conditionCombination = combination(AND);
     for (int i = 0; i < attributes.size(); i++) {
       conditionCombination.add(propertyCondition(attributes.get(i), operator,
@@ -330,7 +331,7 @@ public final class Conditions {
     return conditionCombination;
   }
 
-  private static List<Entity.Key> checkKeysParameter(final List<Entity.Key> keys) {
+  private static List<Key> checkKeysParameter(final List<Key> keys) {
     if (nullOrEmpty(keys)) {
       throw new IllegalArgumentException("Entity key condition requires at least one key");
     }
@@ -340,13 +341,13 @@ public final class Conditions {
 
   private static Condition foreignKeyCondition(final List<Attribute<?>> foreignKeyColumnAttributes,
                                                final Operator operator, final Collection<Object> values) {
-    final List<Entity.Key> keys = getKeys(values);
+    final List<Key> keys = getKeys(values);
     if (foreignKeyColumnAttributes.size() > 1) {
       return compositeKeyCondition(keys, foreignKeyColumnAttributes, operator);
     }
 
     if (keys.size() == 1) {
-      final Entity.Key entityKey = keys.get(0);
+      final Key entityKey = keys.get(0);
 
       return propertyCondition(foreignKeyColumnAttributes.get(0), operator,
               entityKey == null ? null : entityKey.getFirstValue());
@@ -355,8 +356,8 @@ public final class Conditions {
     return propertyCondition(foreignKeyColumnAttributes.get(0), operator, getValues(keys));
   }
 
-  private static List<Entity.Key> getKeys(final Object value) {
-    final List<Entity.Key> keys = new ArrayList<>();
+  private static List<Key> getKeys(final Object value) {
+    final List<Key> keys = new ArrayList<>();
     if (value instanceof Collection) {
       if (((Collection<Object>) value).isEmpty()) {
         keys.add(null);
@@ -374,9 +375,9 @@ public final class Conditions {
     return keys;
   }
 
-  private static Entity.Key getKey(final Object value) {
-    if (value == null || value instanceof Entity.Key) {
-      return (Entity.Key) value;
+  private static Key getKey(final Object value) {
+    if (value == null || value instanceof Key) {
+      return (Key) value;
     }
     else if (value instanceof Entity) {
       return ((Entity) value).getKey();

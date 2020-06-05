@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
@@ -21,7 +22,7 @@ public class SwingPropertyConditionModelProvider extends DefaultPropertyConditio
           final ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
     if (connectionProvider.getEntities().getDefinition(foreignKeyProperty.getForeignEntityType()).isSmallDataset()) {
       final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityType(), connectionProvider);
-      comboBoxModel.setNullValue(connectionProvider.getEntities().createToStringEntity(foreignKeyProperty.getForeignEntityType(), ""));
+      comboBoxModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
 
       return new SwingForeignKeyConditionModel(foreignKeyProperty, comboBoxModel);
     }

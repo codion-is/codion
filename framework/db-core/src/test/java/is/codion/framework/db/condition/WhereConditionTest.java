@@ -9,6 +9,7 @@ import is.codion.framework.db.TestDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import org.junit.jupiter.api.Test;
@@ -142,7 +143,7 @@ public final class WhereConditionTest {
             TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, null), empDefinition);
     assertEquals("deptno is null", condition.getWhereClause());
 
-    final Entity.Key master1 = ENTITIES.key(TestDomain.T_MASTER);
+    final Key master1 = ENTITIES.key(TestDomain.T_MASTER);
     master1.put(TestDomain.MASTER_ID_1, null);
     master1.put(TestDomain.MASTER_ID_2, null);
 
@@ -158,7 +159,7 @@ public final class WhereConditionTest {
     assertEquals("(master_id is null and master_id_2 = ?)",
             condition.getWhereClause());
 
-    final Entity.Key deptKey = ENTITIES.key(TestDomain.T_DEPARTMENT, 42);
+    final Key deptKey = ENTITIES.key(TestDomain.T_DEPARTMENT, 42);
 
     condition = whereCondition(selectCondition(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, deptKey), empDefinition);

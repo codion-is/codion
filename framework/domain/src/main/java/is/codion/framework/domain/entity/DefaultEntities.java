@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,33 +79,33 @@ public abstract class DefaultEntities implements Entities {
   }
 
   @Override
-  public final Entity entity(final Entity.Key key) {
+  public final Entity entity(final Key key) {
     return getDefinition(key.getEntityType()).entity(key);
   }
 
   @Override
-  public final Entity.Key key(final EntityType entityType) {
+  public final Key key(final EntityType entityType) {
     return getDefinition(entityType).key();
   }
 
   @Override
-  public final Entity.Key key(final EntityType entityType, final Integer value) {
+  public final Key key(final EntityType entityType, final Integer value) {
     return getDefinition(entityType).key(value);
   }
 
   @Override
-  public final Entity.Key key(final EntityType entityType, final Long value) {
+  public final Key key(final EntityType entityType, final Long value) {
     return getDefinition(entityType).key(value);
   }
 
   @Override
-  public final List<Entity.Key> keys(final EntityType entityType, final Integer... values) {
+  public final List<Key> keys(final EntityType entityType, final Integer... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> key(entityType, value)).collect(toList());
   }
 
   @Override
-  public final List<Entity.Key> keys(final EntityType entityType, final Long... values) {
+  public final List<Key> keys(final EntityType entityType, final Long... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> key(entityType, value)).collect(toList());
   }
@@ -140,18 +139,6 @@ public abstract class DefaultEntities implements Entities {
     }
 
     return copy;
-  }
-
-  @Override
-  public final Entity createToStringEntity(final EntityType entityType, final String toStringValue) {
-    final Entity entity = entity(entityType);
-    return (Entity) Proxy.newProxyInstance(Entity.class.getClassLoader(), new Class[] {Entity.class}, (proxy, method, args) -> {
-      if ("toString".equals(method.getName())) {
-        return toStringValue;
-      }
-
-      return method.invoke(entity, args);
-    });
   }
 
   @Override
@@ -223,7 +210,7 @@ public abstract class DefaultEntities implements Entities {
           value = fromBean(value);
         }
 
-        entity.put(property.getAttribute(), value);
+        entity.put((Attribute<Object>) property.getAttribute(), value);
       }
 
       return definition.<V>getBeanHelper().fromBean(bean, entity);

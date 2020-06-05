@@ -4,9 +4,9 @@
 package is.codion.plugin.jackson.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
+final class EntityKeyDeserializer extends StdDeserializer<Key> {
 
   private static final long serialVersionUID = 1;
 
@@ -27,19 +27,19 @@ final class EntityKeyDeserializer extends StdDeserializer<Entity.Key> {
   private final EntityObjectMapper entityObjectMapper;
 
   EntityKeyDeserializer(final Entities entities, final EntityObjectMapper entityObjectMapper) {
-    super(Entity.Key.class);
+    super(Key.class);
     this.entities = entities;
     this.entityObjectMapper = entityObjectMapper;
   }
 
   @Override
-  public Entity.Key deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
+  public Key deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final ObjectCodec codec = parser.getCodec();
     final JsonNode node = codec.readTree(parser);
     final EntityType entityType = EntityType.entityType(node.get("entityType").asText());
     final EntityDefinition definition = entities.getDefinition(entityType);
     final JsonNode values = node.get("values");
-    final Entity.Key key = entities.key(entityType);
+    final Key key = entities.key(entityType);
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();

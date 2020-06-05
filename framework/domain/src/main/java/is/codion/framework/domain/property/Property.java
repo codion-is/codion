@@ -78,10 +78,9 @@ public interface Property<T> extends Serializable {
   /**
    * The {@link Attribute} this property is based on, should be unique within an Entity.
    * By default the {@link Attribute#getName()} serves as column name for database properties.
-   * @param <T> the attribute type
    * @return the attribute this property is based on
    */
-  <T> Attribute<T> getAttribute();
+  Attribute<T> getAttribute();
 
   /**
    * @return the type of the entity this Property is associated with

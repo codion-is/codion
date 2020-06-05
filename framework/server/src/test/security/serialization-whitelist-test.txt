@@ -89,8 +89,6 @@ is.codion.framework.domain.entity.StringProvider$StringValueProvider
 is.codion.framework.domain.entity.DefaultEntityType
 is.codion.framework.domain.identity.DefaultIdentity
 is.codion.framework.domain.entity.DefaultAttribute
-is.codion.framework.domain.entity.DefaultBlobAttribute
-is.codion.framework.domain.entity.DefaultEntityAttribute
 is.codion.framework.domain.property.DefaultColumnProperty
 is.codion.framework.domain.property.DefaultDerivedProperty
 is.codion.framework.domain.property.DefaultForeignKeyProperty

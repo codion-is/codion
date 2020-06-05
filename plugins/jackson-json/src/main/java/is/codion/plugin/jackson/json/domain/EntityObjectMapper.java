@@ -5,6 +5,7 @@ package is.codion.plugin.jackson.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Key;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- * Entity object mapper for mapping {@link Entity} and {@link Entity.Key} to and from JSON.
+ * Entity object mapper for mapping {@link Entity} and {@link Key} to and from JSON.
  */
 public final class EntityObjectMapper extends ObjectMapper {
 
@@ -36,8 +37,8 @@ public final class EntityObjectMapper extends ObjectMapper {
     entityDeserializer = new EntityDeserializer(entities, this);
     module.addSerializer(Entity.class, entitySerializer);
     module.addDeserializer(Entity.class, entityDeserializer);
-    module.addSerializer(Entity.Key.class, new EntityKeySerializer(this));
-    module.addDeserializer(Entity.Key.class, new EntityKeyDeserializer(entities, this));
+    module.addSerializer(Key.class, new EntityKeySerializer(this));
+    module.addDeserializer(Key.class, new EntityKeyDeserializer(entities, this));
     module.addSerializer(LocalTime.class, new LocalTimeSerializer());
     module.addSerializer(LocalDate.class, new LocalDateSerializer());
     module.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());

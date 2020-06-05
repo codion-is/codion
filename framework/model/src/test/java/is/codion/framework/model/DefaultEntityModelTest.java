@@ -19,6 +19,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -185,7 +186,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void replaceEntities(final Collection<Entity> entities) {}
     @Override
-    public void refreshEntities(final List<Entity.Key> keys) {}
+    public void refreshEntities(final List<Key> keys) {}
     @Override
     public EntityTableConditionModel getConditionModel() {return null;}
     @Override
@@ -227,15 +228,15 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void setInsertAction(final InsertAction insertAction) {}
     @Override
-    public Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {return null;}
+    public Collection<Entity> getEntitiesByKey(final Collection<Key> keys) {return null;}
     @Override
-    public void setSelectedByKey(final Collection<Entity.Key> keys) {}
+    public void setSelectedByKey(final Collection<Key> keys) {}
     @Override
     public Iterator<Entity> getSelectedEntitiesIterator() {return null;}
     @Override
-    public Entity getEntityByKey(final Entity.Key primaryKey) {return null;}
+    public Entity getEntityByKey(final Key primaryKey) {return null;}
     @Override
-    public int indexOf(final Entity.Key primaryKey) {return 0;}
+    public int indexOf(final Key primaryKey) {return 0;}
     @Override
     public void savePreferences() {}
     @Override

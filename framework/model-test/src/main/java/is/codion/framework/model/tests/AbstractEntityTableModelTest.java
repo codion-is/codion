@@ -12,6 +12,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityTableModel;
@@ -55,9 +56,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
-    final List<Entity.Key> keys = tableModel.getEntities().keys(TestDomain.T_EMP, 1, 2);
-    final Entity.Key pk1 = keys.get(0);
-    final Entity.Key pk2 = keys.get(1);
+    final List<Key> keys = tableModel.getEntities().keys(TestDomain.T_EMP, 1, 2);
+    final Key pk1 = keys.get(0);
+    final Key pk2 = keys.get(1);
 
     tableModel.setSelectedByKey(singletonList(pk1));
     final Entity selectedPK1 = tableModel.getSelectionModel().getSelectedItem();
@@ -148,8 +149,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
 
     final Entities entities = tableModel.getEntities();
-    final Entity.Key pk1 = entities.key(TestDomain.T_EMP, 1);
-    final Entity.Key pk2 = entities.key(TestDomain.T_EMP, 2);
+    final Key pk1 = entities.key(TestDomain.T_EMP, 1);
+    final Key pk2 = entities.key(TestDomain.T_EMP, 2);
     try {
       tableModel.getConnectionProvider().getConnection().beginTransaction();
       tableModel.setSelectedByKey(singletonList(pk1));
@@ -178,10 +179,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
 
     final Entities entities = tableModel.getEntities();
-    final Entity.Key pk1 = entities.key(TestDomain.T_EMP, 1);
+    final Key pk1 = entities.key(TestDomain.T_EMP, 1);
     assertNotNull(tableModel.getEntityByKey(pk1));
 
-    final Entity.Key pk2 = entities.key(TestDomain.T_EMP, -66);
+    final Key pk2 = entities.key(TestDomain.T_EMP, -66);
     assertNull(tableModel.getEntityByKey(pk2));
   }
 
@@ -298,7 +299,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     Entity tmpEnt = entities.entity(TestDomain.T_DETAIL);
     tmpEnt.put(TestDomain.DETAIL_ID, 3L);
     assertEquals("c", testModel.getEntityByKey(tmpEnt.getKey()).get(TestDomain.DETAIL_STRING));
-    final List<Entity.Key> keys = new ArrayList<>();
+    final List<Key> keys = new ArrayList<>();
     keys.add(tmpEnt.getKey());
     tmpEnt = entities.entity(TestDomain.T_DETAIL);
     tmpEnt.put(TestDomain.DETAIL_ID, 2L);

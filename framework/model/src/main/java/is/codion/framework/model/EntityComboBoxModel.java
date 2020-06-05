@@ -11,6 +11,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,7 +36,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param primaryKey the primary key of the entity to fetch from this model
    * @return the entity with the given key if found in the model, null otherwise
    */
-  Entity getEntity(Entity.Key primaryKey);
+  Entity getEntity(Key primaryKey);
 
   /**
    * Use this method to retrieve the default foreign key filter condition model if you
@@ -103,7 +104,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * in the model this method returns silently without changing the selection
    * @param primaryKey the primary key of the entity to select
    */
-  void setSelectedEntityByKey(Entity.Key primaryKey);
+  void setSelectedEntityByKey(Key primaryKey);
 
   /**
    * Forces a refresh of this model, disregarding the staticData directive

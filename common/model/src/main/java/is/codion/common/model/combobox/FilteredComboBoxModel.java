@@ -3,9 +3,11 @@
  */
 package is.codion.common.model.combobox;
 
+import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.Refreshable;
+import is.codion.common.value.PropertyValue;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -17,6 +19,14 @@ import java.util.function.Predicate;
  * @see #setIncludeCondition(Predicate)
  */
 public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable {
+
+  /**
+   * Specifies the value used by default to represent a null value in combo box models.
+   * Using the value null indicates that no null value item should be used.<br>
+   * Value type: String<br>
+   * Default value: -
+   */
+  PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("is.codion.common.model.combobox.comboBoxNullValueItem", "-");
 
   /**
    * @param listener a listener notified each time the selection changes
@@ -69,13 +79,13 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
    * Returns true if the value representing null is selected, false if no such value has been
    * specified or if it is not selected.
    * @return true if the value representing null is selected, false otherwise
-   * @see #setNullValue(Object)
+   * @see #setNullString(String)
    */
   boolean isNullValueSelected();
 
   /**
    * @return the selected item, null in case the value representing null is selected
-   * @see #setNullValue(Object)
+   * @see #setNullString(String)
    */
   T getSelectedValue();
 
@@ -94,14 +104,14 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
 
   /**
    * Sets the value which should represent a null value, a refresh is required for it to show up
-   * @param nullValue a value which is used to represent a null value
+   * @param nullString a value which is used to represent a null value
    */
-  void setNullValue(T nullValue);
+  void setNullString(String nullString);
 
   /**
    * @return the value representing the null value, null if no such value has been specified
    */
-  T getNullValue();
+  String getNullString();
 
   /**
    * Specifies whether or not filtering can change the selected item, if true then
@@ -137,10 +147,10 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, Refreshable 
    * @param index the index
    * @return the item at the given index
    */
-  T getElementAt(int index);
+  Object getElementAt(int index);
 
   /**
    * @return the selected item
    */
-  T getSelectedItem();
+  Object getSelectedItem();
 }

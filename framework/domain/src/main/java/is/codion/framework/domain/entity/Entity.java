@@ -7,7 +7,6 @@ import is.codion.framework.domain.property.ColumnProperty;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -77,7 +76,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
   /**
    * Returns the primary key of the entity referenced by the given {@link Attribute},
    * if the reference is null this method returns null.
-   * @param foreignKeyAttribute the foreign key attribute for which to retrieve the underlying {@link Entity.Key}
+   * @param foreignKeyAttribute the foreign key attribute for which to retrieve the underlying {@link Key}
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
   Key getReferencedKey(Attribute<Entity> foreignKeyAttribute);
@@ -221,86 +220,4 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @return true if one or more values have been modified.
    */
   boolean isModified();
-
-  /**
-   * A class representing a primary key.
-   */
-  interface Key extends Serializable {
-
-    /**
-     * @return the entity type
-     */
-    EntityType getEntityType();
-
-    /**
-     * @return a List containing the attributes comprising this key
-     */
-    List<Attribute<?>> getAttributes();
-
-    /**
-     * @return true if this key contains no values or if it contains a null value for a non-nullable key property
-     */
-    boolean isNull();
-
-    /**
-     * @return true if no non-nullable values are null
-     */
-    boolean isNotNull();
-
-    /**
-     * Returns true if a null value is mapped to the given property or no mapping exists.
-     * @param attribute the attribute
-     * @param <T> the value type
-     * @return true if the value mapped to the given property is null or none exists
-     */
-    <T> boolean isNull(Attribute<T> attribute);
-
-    /**
-     * Returns true if a non-null value is mapped to the given property.
-     * @param attribute the attribute
-     * @param <T> the value type
-     * @return true if a non-null value is mapped to the given property
-     */
-    <T> boolean isNotNull(Attribute<T> attribute);
-
-    /**
-     * @return true if this primary key is based on a single integer column
-     */
-    boolean isSingleIntegerKey();
-
-    /**
-     * @return true if this key is comprised of multiple properties.
-     */
-    boolean isCompositeKey();
-
-    /**
-     * @return the first key property, useful for single property keys
-     */
-    Attribute<?> getFirstAttribute();
-
-    /**
-     * @return the first value contained in this key, useful for single property keys
-     */
-    Object getFirstValue();
-
-    /**
-     * @param attribute the attribute
-     * @param value the value to associate with the property
-     * @param <T> the value type
-     * @return the previous value
-     */
-    <T> T put(Attribute<T> attribute, T value);
-
-    /**
-     * @param attribute the attribute
-     * @param <T> the value type
-     * @return the value associated with the given property
-     */
-    <T> T get(Attribute<T> attribute);
-
-    /**
-     * @return the number of values in this key
-     */
-    int size();
-  }
 }

@@ -14,6 +14,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.minimal.domain.Store;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Key;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -53,7 +54,7 @@ public class StoreDatabase {
     customer.put(Customer.FIRST_NAME, "Peter");
     customer.put(Customer.LAST_NAME, "Jackson");
 
-    Entity.Key customerKey = connection.insert(customer);
+    Key customerKey = connection.insert(customer);
     //select to get generated and default column values
     customer = connection.selectSingle(customerKey);
 
@@ -62,7 +63,7 @@ public class StoreDatabase {
     address.put(Address.STREET, "Elm st.");
     address.put(Address.CITY, "Boston");
 
-    Entity.Key addressKey = connection.insert(address);
+    Key addressKey = connection.insert(address);
 
     customer.put(Customer.EMAIL, "mail@email.com");
 

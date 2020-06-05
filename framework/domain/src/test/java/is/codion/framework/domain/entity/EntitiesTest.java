@@ -9,6 +9,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 
@@ -407,7 +408,7 @@ public final class EntitiesTest {
     emp3.put(TestDomain.EMP_DEPARTMENT_FK, dept2);
     final Entity emp4 = entities.entity(TestDomain.T_EMP);
 
-    final Set<Entity.Key> referencedKeys = Entities.getReferencedKeys(asList(emp1, emp2, emp3, emp4),
+    final Set<Key> referencedKeys = Entities.getReferencedKeys(asList(emp1, emp2, emp3, emp4),
             TestDomain.EMP_DEPARTMENT_FK);
     assertEquals(2, referencedKeys.size());
     referencedKeys.forEach(key -> assertEquals(TestDomain.T_DEPARTMENT, key.getEntityType()));
@@ -423,7 +424,7 @@ public final class EntitiesTest {
     noPk.put(TestDomain.NO_PK_COL1, 1);
     noPk.put(TestDomain.NO_PK_COL2, 2);
     noPk.put(TestDomain.NO_PK_COL3, 3);
-    final List<Entity.Key> keys = Entities.getKeys(singletonList(noPk));
+    final List<Key> keys = Entities.getKeys(singletonList(noPk));
     assertEquals(0, keys.get(0).size());
   }
 }

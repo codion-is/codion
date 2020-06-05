@@ -6,6 +6,7 @@ package is.codion.framework.model;
 import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public final class EntityEditEvents {
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
-  public static void addUpdateListener(final EntityType entityType, final EventDataListener<Map<Entity.Key, Entity>> listener) {
+  public static void addUpdateListener(final EntityType entityType, final EventDataListener<Map<Key, Entity>> listener) {
     EDIT_OBSERVER.addUpdateListener(entityType, listener);
   }
 
@@ -73,7 +74,7 @@ public final class EntityEditEvents {
    * @param entityType the entityType
    * @param listener the listener to remove
    */
-  public static void removeUpdateListener(final EntityType entityType, final EventDataListener<Map<Entity.Key, Entity>> listener) {
+  public static void removeUpdateListener(final EntityType entityType, final EventDataListener<Map<Key, Entity>> listener) {
     EDIT_OBSERVER.removeUpdateListener(entityType, listener);
   }
 
@@ -98,7 +99,7 @@ public final class EntityEditEvents {
    * Notifies update
    * @param updatedEntities the updated entities mapped to their original primary key
    */
-  public static void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities) {
+  public static void notifyUpdated(final Map<Key, Entity> updatedEntities) {
     EDIT_OBSERVER.notifyUpdated(requireNonNull(updatedEntities));
   }
 
@@ -113,7 +114,7 @@ public final class EntityEditEvents {
   private static final class EntityEditObserver {
 
     private final Map<EntityType, WeakObserver<List<Entity>>> insertEvents = new ConcurrentHashMap<>();
-    private final Map<EntityType, WeakObserver<Map<Entity.Key, Entity>>> updateEvents = new ConcurrentHashMap<>();
+    private final Map<EntityType, WeakObserver<Map<Key, Entity>>> updateEvents = new ConcurrentHashMap<>();
     private final Map<EntityType, WeakObserver<List<Entity>>> deleteEvents = new ConcurrentHashMap<>();
 
     private void addInsertListener(final EntityType entityType, final EventDataListener<List<Entity>> listener) {
@@ -124,11 +125,11 @@ public final class EntityEditEvents {
       getInsertObserver(entityType).removeDataListener(listener);
     }
 
-    private void addUpdateListener(final EntityType entityType, final EventDataListener<Map<Entity.Key, Entity>> listener) {
+    private void addUpdateListener(final EntityType entityType, final EventDataListener<Map<Key, Entity>> listener) {
       getUpdateObserver(entityType).addDataListener(listener);
     }
 
-    private void removeUpdateListener(final EntityType entityType, final EventDataListener<Map<Entity.Key, Entity>> listener) {
+    private void removeUpdateListener(final EntityType entityType, final EventDataListener<Map<Key, Entity>> listener) {
       getUpdateObserver(entityType).removeDataListener(listener);
     }
 
@@ -149,11 +150,11 @@ public final class EntityEditEvents {
       });
     }
 
-    private void notifyUpdated(final Map<Entity.Key, Entity> updatedEntities) {
+    private void notifyUpdated(final Map<Key, Entity> updatedEntities) {
       map(updatedEntities.entrySet(), entry -> entry.getKey().getEntityType()).forEach((entityType, updated) -> {
-        final Map<Entity.Key, Entity> updateMap = new HashMap<>();
+        final Map<Key, Entity> updateMap = new HashMap<>();
         updated.forEach(entry -> updateMap.put(entry.getKey(), entry.getValue()));
-        final WeakObserver<Map<Entity.Key, Entity>> event = updateEvents.get(entityType);
+        final WeakObserver<Map<Key, Entity>> event = updateEvents.get(entityType);
         if (event != null) {
           event.onEvent(updateMap);
         }
@@ -173,7 +174,7 @@ public final class EntityEditEvents {
       return insertEvents.computeIfAbsent(requireNonNull(entityType), eId -> new WeakObserver<>());
     }
 
-    private WeakObserver<Map<Entity.Key, Entity>> getUpdateObserver(final EntityType entityType) {
+    private WeakObserver<Map<Key, Entity>> getUpdateObserver(final EntityType entityType) {
       return updateEvents.computeIfAbsent(requireNonNull(entityType), eId -> new WeakObserver<>());
     }
 

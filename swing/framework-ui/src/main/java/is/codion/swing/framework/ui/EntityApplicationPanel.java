@@ -416,7 +416,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final Integer defaultFontSize = getDefaultFontSize();
     comboBoxModel.setSelectedItem(defaultFontSize);
 
-    final JComboBox comboBox = new JComboBox(comboBoxModel);
+    final JComboBox<Item<Integer>> comboBox = new JComboBox<>(comboBoxModel);
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,
@@ -436,7 +436,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             resourceBundle.getString("select_font_size"), JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE, null, null, null);
     if (option == JOptionPane.OK_OPTION) {
-      UserPreferences.putUserPreference(applicationFontSizeProperty, comboBoxModel.getSelectedItem().getValue().toString());
+      UserPreferences.putUserPreference(applicationFontSizeProperty, ((Item<Integer>) comboBoxModel.getSelectedItem()).getValue().toString());
       JOptionPane.showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
     }
   }

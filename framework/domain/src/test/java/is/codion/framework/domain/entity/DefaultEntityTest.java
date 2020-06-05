@@ -94,7 +94,7 @@ public class DefaultEntityTest {
     assertTrue(entityFromFile.isModified(TestDomain.DETAIL_STRING));
     assertEquals(originalStringValue, entityFromFile.getOriginal(TestDomain.DETAIL_STRING));
 
-    final Entity.Key key = entity.getKey();
+    final Key key = entity.getKey();
     final File tmp2 = File.createTempFile("DefaultEntityTest", "serialization");
     FileUtil.serializeToFile(singletonList(key), tmp2);
     final List<Object> keyFromFile = FileUtil.deserializeFromFile(tmp2);
@@ -168,8 +168,8 @@ public class DefaultEntityTest {
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 2);
 
-    final Entity.Key referencedKey = detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
-    final Entity.Key cachedKey = detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+    final Key referencedKey = detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+    final Key cachedKey = detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
 
     assertSame(cachedKey, referencedKey);
   }
@@ -220,7 +220,7 @@ public class DefaultEntityTest {
 
   @Test
   public void singleKeyNull() {
-    final Entity.Key key = ENTITIES.key(TestDomain.T_DETAIL);
+    final Key key = ENTITIES.key(TestDomain.T_DETAIL);
     assertTrue(key.isNull());
     key.put(TestDomain.DETAIL_ID, null);
     assertTrue(key.isNull());
@@ -230,7 +230,7 @@ public class DefaultEntityTest {
 
   @Test
   public void compositeKeySingleValueConstructor() {
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityKey(ENTITIES.getDefinition(TestDomain.T_COMPOSITE_MASTER), 1));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultKey(ENTITIES.getDefinition(TestDomain.T_COMPOSITE_MASTER), 1));
   }
 
   @Test
@@ -239,9 +239,9 @@ public class DefaultEntityTest {
     noPk.put(TestDomain.NO_PK_COL1, 1);
     noPk.put(TestDomain.NO_PK_COL2, 2);
     noPk.put(TestDomain.NO_PK_COL3, 3);
-    final Entity.Key key = noPk.getKey();
+    final Key key = noPk.getKey();
     assertEquals(0, key.size());
-    final Entity.Key originalKey = noPk.getOriginalKey();
+    final Key originalKey = noPk.getOriginalKey();
     assertEquals(0, originalKey.size());
   }
 
@@ -500,45 +500,45 @@ public class DefaultEntityTest {
 
   @Test
   public void keyInvalidPropertyGet() {
-    final Entity.Key empKey1 = ENTITIES.key(TestDomain.T_EMP);
+    final Key empKey1 = ENTITIES.key(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () -> empKey1.get(TestDomain.EMP_NAME));
   }
 
   @Test
   public void keyInvalidPropertyPut() {
-    final Entity.Key empKey1 = ENTITIES.key(TestDomain.T_EMP);
+    final Key empKey1 = ENTITIES.key(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () -> empKey1.put(TestDomain.EMP_NAME, "test"));
   }
 
   @Test
   public void keyEquality() {
-    final List<Entity.Key> keys = ENTITIES.keys(TestDomain.T_EMP, 1, 2);
-    final Entity.Key empKey1 = keys.get(0);
-    final Entity.Key empKey2 = keys.get(1);
+    final List<Key> keys = ENTITIES.keys(TestDomain.T_EMP, 1, 2);
+    final Key empKey1 = keys.get(0);
+    final Key empKey2 = keys.get(1);
     assertNotEquals(empKey1, empKey2);
 
     empKey2.put(TestDomain.EMP_ID, 1);
     assertEquals(empKey1, empKey2);
 
-    final Entity.Key deptKey = ENTITIES.key(TestDomain.T_DEPARTMENT, 1);
+    final Key deptKey = ENTITIES.key(TestDomain.T_DEPARTMENT, 1);
     assertNotEquals(empKey1, deptKey);
 
-    final Entity.Key compMasterKey = ENTITIES.key(TestDomain.T_COMPOSITE_MASTER);
+    final Key compMasterKey = ENTITIES.key(TestDomain.T_COMPOSITE_MASTER);
     compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID, 1);
     compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
     assertEquals(compMasterKey, compMasterKey);
     assertNotEquals(empKey1, compMasterKey);
     assertNotEquals(compMasterKey, new Object());
 
-    final Entity.Key compMasterKey2 = ENTITIES.key(TestDomain.T_COMPOSITE_MASTER);
+    final Key compMasterKey2 = ENTITIES.key(TestDomain.T_COMPOSITE_MASTER);
     compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID, 1);
     assertNotEquals(compMasterKey, compMasterKey2);
 
     compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
     assertEquals(compMasterKey, compMasterKey2);
 
-    final Entity.Key detailKey = ENTITIES.key(TestDomain.T_DETAIL, 1L);
-    final Entity.Key detailKey2 = ENTITIES.key(TestDomain.T_DETAIL, 2L);
+    final Key detailKey = ENTITIES.key(TestDomain.T_DETAIL, 1L);
+    final Key detailKey2 = ENTITIES.key(TestDomain.T_DETAIL, 2L);
     assertNotEquals(detailKey, detailKey2);
 
     detailKey2.put(TestDomain.DETAIL_ID, 1L);
@@ -547,8 +547,8 @@ public class DefaultEntityTest {
 
   @Test
   public void nullKeyEquals() {
-    final Entity.Key nullKey = ENTITIES.key(TestDomain.T_EMP);
-    final Entity.Key zeroKey = ENTITIES.key(TestDomain.T_EMP, 0);
+    final Key nullKey = ENTITIES.key(TestDomain.T_EMP);
+    final Key zeroKey = ENTITIES.key(TestDomain.T_EMP, 0);
     assertNotEquals(nullKey, zeroKey);
   }
 

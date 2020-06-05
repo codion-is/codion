@@ -19,6 +19,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -169,7 +170,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Refreshes the entities with the given keys by re-selecting them from the underlying database.
    * @param keys the keys of the entities to refresh
    */
-  void refreshEntities(List<Entity.Key> keys);
+  void refreshEntities(List<Key> keys);
 
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
@@ -309,13 +310,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param keys the primary key values to use as condition
    * @return the entities having the primary key values as in {@code keys}
    */
-  Collection<Entity> getEntitiesByKey(Collection<Entity.Key> keys);
+  Collection<Entity> getEntitiesByKey(Collection<Key> keys);
 
   /**
    * Sets the selected entities according to the primary keys in {@code primaryKeys}
    * @param keys the primary keys of the entities to select
    */
-  void setSelectedByKey(Collection<Entity.Key> keys);
+  void setSelectedByKey(Collection<Key> keys);
 
   /**
    * Returns an Iterator which iterates through the selected entities
@@ -327,13 +328,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param primaryKey the primary key to search by
    * @return the entity with the given primary key from the table model, null if it's not found
    */
-  Entity getEntityByKey(Entity.Key primaryKey);
+  Entity getEntityByKey(Key primaryKey);
 
   /**
    * @param primaryKey the primary key
    * @return the row index of the entity with the given primary key, -1 if not found
    */
-  int indexOf(Entity.Key primaryKey);
+  int indexOf(Key primaryKey);
 
   /**
    * Saves any user preferences

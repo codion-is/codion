@@ -19,6 +19,7 @@ import is.codion.framework.db.condition.EntityUpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.EntityServletServerFactory;
@@ -94,22 +95,22 @@ public final class HttpEntityConnectionTest {
     entity.put(TestDomain.DEPARTMENT_ID, 33);
     entity.put(TestDomain.DEPARTMENT_NAME, "name");
     entity.put(TestDomain.DEPARTMENT_LOCATION, "loc");
-    final Entity.Key key = connection.insert(entity);
+    final Key key = connection.insert(entity);
     assertEquals(33, key.getFirstValue());
     connection.delete(key);
   }
 
   @Test
   public void selectByKey() throws IOException, DatabaseException {
-    final Entity.Key key = connection.getEntities().key(TestDomain.T_DEPARTMENT, 10);
+    final Key key = connection.getEntities().key(TestDomain.T_DEPARTMENT, 10);
     final List<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
   @Test
   public void selectByKeyDifferentEntityTypes() throws IOException, DatabaseException {
-    final Entity.Key deptKey = connection.getEntities().key(TestDomain.T_DEPARTMENT, 10);
-    final Entity.Key empKey = connection.getEntities().key(TestDomain.T_EMP, 8);
+    final Key deptKey = connection.getEntities().key(TestDomain.T_DEPARTMENT, 10);
+    final Key empKey = connection.getEntities().key(TestDomain.T_EMP, 8);
 
     final List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -172,8 +173,8 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void deleteByKeyDifferentEntityTypes() throws IOException, DatabaseException {
-    final Entity.Key deptKey = connection.getEntities().key(TestDomain.T_DEPARTMENT, 40);
-    final Entity.Key empKey = connection.getEntities().key(TestDomain.T_EMP, 1);
+    final Key deptKey = connection.getEntities().key(TestDomain.T_DEPARTMENT, 40);
+    final Key empKey = connection.getEntities().key(TestDomain.T_EMP, 1);
     try {
       connection.beginTransaction();
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());

@@ -20,6 +20,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -64,7 +65,7 @@ public final class DefaultEntityEditModelTest {
     final AtomicInteger deleteEvents = new AtomicInteger();
 
     final EventDataListener<List<Entity>> insertListener = inserted -> insertEvents.incrementAndGet();
-    final EventDataListener<Map<Entity.Key, Entity>> updateListener = udpated -> updateEvents.incrementAndGet();
+    final EventDataListener<Map<Key, Entity>> updateListener = udpated -> updateEvents.incrementAndGet();
     final EventDataListener<List<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
 
     EntityEditEvents.addInsertListener(TestDomain.T_EMP, insertListener);
@@ -381,7 +382,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
       employeeEditModel.put(TestDomain.EMP_NAME, "BJORN");
       final List<Entity> toUpdate = singletonList(employeeEditModel.getEntityCopy());
-      final EventDataListener<Map<Entity.Key, Entity>> listener = updatedEntities ->
+      final EventDataListener<Map<Key, Entity>> listener = updatedEntities ->
               assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
       employeeEditModel.addAfterUpdateListener(listener);
       employeeEditModel.setUpdateEnabled(false);

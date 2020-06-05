@@ -23,9 +23,10 @@ public interface EntityValidator extends Serializable {
    * by default this method simply returns {@code property.isNullable()}
    * @param entity the entity being validated
    * @param property the property
+   * @param <T> the value type
    * @return true if the property accepts a null value
    */
-  boolean isNullable(Entity entity, Property<?> property);
+  <T> boolean isNullable(Entity entity, Property<T> property);
 
   /**
    * Returns true if the given entity contains only valid values.
@@ -48,9 +49,10 @@ public interface EntityValidator extends Serializable {
    * @param entity the entity to validate
    * @param definition the definition of the entity to validate
    * @param property the property the value is associated with
+   * @param <T> the value type
    * @throws ValidationException if the given value is not valid for the given property
    */
-  void validate(Entity entity, EntityDefinition definition, Property<?> property) throws ValidationException;
+  <T> void validate(Entity entity, EntityDefinition definition, Property<T> property) throws ValidationException;
 
   /**
    * Validates the given entities, assumes they are all of the same type.
@@ -65,21 +67,23 @@ public interface EntityValidator extends Serializable {
    * @param entity the entity
    * @param definition the definition of the entity to validate
    * @param property the property
+   * @param <T> the value type
    * @throws NullValidationException in case the property value is null and the property is not nullable
    * @see Property.Builder#nullable(boolean)
    * @see Property#isNullable()
    */
-  void performNullValidation(Entity entity, EntityDefinition definition, Property<?> property) throws NullValidationException;
+  <T> void performNullValidation(Entity entity, EntityDefinition definition, Property<T> property) throws NullValidationException;
 
   /**
    * Performs a range validation on the given number based property
    * @param entity the entity
    * @param property the property
+   * @param <T> the value type
    * @throws RangeValidationException in case the value of the given property is outside the legal range
    * @see Property.Builder#maximumValue(double)
    * @see Property.Builder#minimumValue(double)
    */
-  void performRangeValidation(Entity entity, Property<?> property) throws RangeValidationException;
+  <T extends Number> void performRangeValidation(Entity entity, Property<T> property) throws RangeValidationException;
 
   /**
    * Performs a length validation on the given string based property
@@ -88,7 +92,7 @@ public interface EntityValidator extends Serializable {
    * @throws LengthValidationException in case the length of the value of the given property
    * @see Property.Builder#maximumLength(int)
    */
-  void performLengthValidation(Entity entity, Property<?> property) throws LengthValidationException;
+  void performLengthValidation(Entity entity, Property<String> property) throws LengthValidationException;
 
   /**
    * Notifies all re-validation listeners that a re-validation is called for, for example

@@ -5,6 +5,7 @@ package is.codion.plugin.json;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.Key;
 
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
@@ -25,12 +26,12 @@ public class EntityJSONParserTest {
 
   @Test
   public void key() throws Exception {
-    final Entity.Key key = ENTITIES.key(TestDomain.T_DEPARTMENT, 42);
+    final Key key = ENTITIES.key(TestDomain.T_DEPARTMENT, 42);
 
     final EntityJSONParser parser = new EntityJSONParser(ENTITIES);
 
     final String keyJSON = parser.serializeKeys(singletonList(key));
-    final Entity.Key keyParsed = parser.deserializeKeys(keyJSON).get(0);
+    final Key keyParsed = parser.deserializeKeys(keyJSON).get(0);
     assertEquals(key.getEntityType(), keyParsed.getEntityType());
     assertEquals(key.getFirstAttribute(), keyParsed.getFirstAttribute());
     assertEquals(key.getFirstValue(), keyParsed.getFirstValue());
@@ -189,7 +190,7 @@ public class EntityJSONParserTest {
     final List<Entity> entities = emptyList();
     assertEquals("", parser.serialize(entities));
     assertEquals("", parser.serialize(null));
-    final List<Entity.Key> keys = emptyList();
+    final List<Key> keys = emptyList();
     assertEquals("", parser.serializeKeys(keys));
     assertEquals("", parser.serializeKeys(null));
   }

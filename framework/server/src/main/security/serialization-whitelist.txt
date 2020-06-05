@@ -89,14 +89,12 @@ is.codion.framework.db.condition.DefaultPropertyCondition
 is.codion.framework.db.condition.Condition$EmptyCondition
 is.codion.framework.domain.Domain
 is.codion.framework.domain.entity.DefaultEntity
-is.codion.framework.domain.entity.DefaultEntityKey
 is.codion.framework.domain.entity.DefaultEntityType
+is.codion.framework.domain.entity.DefaultKey
 is.codion.framework.domain.identity.DefaultIdentity
 is.codion.framework.domain.entity.DefaultOrderBy
 is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByAttribute
 is.codion.framework.domain.entity.DefaultAttribute
-is.codion.framework.domain.entity.DefaultBlobAttribute
-is.codion.framework.domain.entity.DefaultEntityAttribute
 is.codion.framework.demos.chinook.domain.Chinook
 is.codion.framework.demos.empdept.domain.EmpDept
 is.codion.plugin.jasperreports.model.AbstractJasperReportWrapper

@@ -161,7 +161,7 @@ final class DefaultEntity implements Entity {
   public Entity getForeignKey(final Attribute<Entity> entityAttribute) {
     final Entity value = (Entity) values.get(entityAttribute);
     if (value == null) {//possibly not loaded
-      final Entity.Key referencedKey = getReferencedKey(entityAttribute);
+      final Key referencedKey = getReferencedKey(entityAttribute);
       if (referencedKey != null) {
         return new DefaultEntity(definition.getForeignDefinition(entityAttribute), referencedKey);
       }
@@ -399,7 +399,7 @@ final class DefaultEntity implements Entity {
       return ((ValueListProperty<T>) property).getCaption(get(property));
     }
     if (property instanceof ForeignKeyProperty && !isLoaded(((ForeignKeyProperty) property).getAttribute())) {
-      final Entity.Key referencedKey = getReferencedKey(((ForeignKeyProperty) property).getAttribute());
+      final Key referencedKey = getReferencedKey(((ForeignKeyProperty) property).getAttribute());
       if (referencedKey != null) {
         return referencedKey.toString();
       }
@@ -408,11 +408,11 @@ final class DefaultEntity implements Entity {
     return property.formatValue(get(property));
   }
 
-  private Object putInternal(final Property<?> property, final Object value) {
+  private <T> T putInternal(final Property<T> property, final T value) {
     requireNonNull(property, ATTRIBUTE);
-    final Object newValue = validateAndPrepareForPut(property, value);
+    final T newValue = validateAndPrepareForPut(property, value);
     final boolean initialization = !values.containsKey(property.getAttribute());
-    final Object previousValue = values.put(property.getAttribute(), newValue);
+    final T previousValue = (T) values.put(property.getAttribute(), newValue);
     if (!initialization && Objects.equals(previousValue, newValue)) {
       return newValue;
     }
@@ -430,7 +430,7 @@ final class DefaultEntity implements Entity {
    * @param property the property
    * @return true if the value associated with the property is null
    */
-  private boolean isNull(final Property<?> property) {
+  private <T> boolean isNull(final Property<T> property) {
     if (property instanceof ForeignKeyProperty) {
       return isForeignKeyNull(((ForeignKeyProperty) property).getAttribute());
     }
@@ -438,7 +438,7 @@ final class DefaultEntity implements Entity {
     return get(property) == null;
   }
 
-  private Object validateAndPrepareForPut(final Property property, final Object value) {
+  private <T> T validateAndPrepareForPut(final Property<T> property, final T value) {
     if (property instanceof DerivedProperty) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
@@ -461,7 +461,7 @@ final class DefaultEntity implements Entity {
     }
   }
 
-  private void onValuePut(final Property<?> property, final Object value) {
+  private <T> void onValuePut(final Property<T> property, final T value) {
     if (property instanceof ColumnProperty) {
       final ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
       if (columnProperty.isPrimaryKeyProperty()) {
@@ -490,7 +490,7 @@ final class DefaultEntity implements Entity {
     for (final ForeignKeyProperty foreignKeyProperty : propertyForeignKeyProperties) {
       final Entity foreignKeyEntity = get(foreignKeyProperty);
       if (foreignKeyEntity != null) {
-        final Entity.Key referencedKey = foreignKeyEntity.getKey();
+        final Key referencedKey = foreignKeyEntity.getKey();
         final Attribute<?> keyAttribute =
                 referencedKey.getAttributes().get(foreignKeyProperty.getColumnAttributes().indexOf(attribute));
         //if the value isn't equal to the value in the foreign key,
@@ -591,7 +591,7 @@ final class DefaultEntity implements Entity {
       keyValues.put(foreignColumnProperty.getAttribute(), value);
     }
 
-    return cacheReferencedKey(foreignKeyProperty.getAttribute(), new DefaultEntityKey(foreignEntityDefinition, keyValues));
+    return cacheReferencedKey(foreignKeyProperty.getAttribute(), new DefaultKey(foreignEntityDefinition, keyValues));
   }
 
   private Key initializeAndCacheSingleReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
@@ -602,7 +602,7 @@ final class DefaultEntity implements Entity {
     }
 
     return cacheReferencedKey(foreignKeyProperty.getAttribute(),
-            new DefaultEntityKey(definition.getForeignDefinition(foreignKeyProperty.getAttribute()), value));
+            new DefaultKey(definition.getForeignDefinition(foreignKeyProperty.getAttribute()), value));
   }
 
   private Key cacheReferencedKey(final Attribute<Entity> foreignKeyAttribute, final Key referencedPrimaryKey) {
@@ -614,7 +614,7 @@ final class DefaultEntity implements Entity {
     return referencedPrimaryKey;
   }
 
-  private Key getCachedReferencedKey(final Attribute<?> fkAttribute) {
+  private Key getCachedReferencedKey(final Attribute<Entity> fkAttribute) {
     if (referencedKeyCache == null) {
       return null;
     }
@@ -622,7 +622,7 @@ final class DefaultEntity implements Entity {
     return referencedKeyCache.get(fkAttribute);
   }
 
-  private void removeCachedReferencedKey(final Attribute<?> fkAttribute) {
+  private void removeCachedReferencedKey(final Attribute<Entity> fkAttribute) {
     if (referencedKeyCache != null) {
       referencedKeyCache.remove(fkAttribute);
       if (referencedKeyCache.isEmpty()) {
@@ -638,7 +638,7 @@ final class DefaultEntity implements Entity {
    */
   private Key initializeKey(final boolean originalValues) {
     if (!definition.hasPrimaryKey()) {
-      return new DefaultEntityKey(definition);
+      return new DefaultKey(definition);
     }
     final List<Attribute<?>> primaryKeyAttributes = definition.getPrimaryKeyAttributes();
     if (primaryKeyAttributes.size() > 1) {
@@ -648,10 +648,10 @@ final class DefaultEntity implements Entity {
         keyValues.put(attribute, originalValues ? getOriginal(attribute) : values.get(attribute));
       }
 
-      return new DefaultEntityKey(definition, keyValues);
+      return new DefaultKey(definition, keyValues);
     }
 
-    return new DefaultEntityKey(definition, originalValues ? getOriginal(primaryKeyAttributes.get(0)) : values.get(primaryKeyAttributes.get(0)));
+    return new DefaultKey(definition, originalValues ? getOriginal(primaryKeyAttributes.get(0)) : values.get(primaryKeyAttributes.get(0)));
   }
 
   private <T> T getDerivedValue(final DerivedProperty<T> derivedProperty) {
@@ -696,7 +696,7 @@ final class DefaultEntity implements Entity {
     return false;
   }
 
-  private void setOriginalValue(final Attribute<?> property, final Object originalValue) {
+  private <T> void setOriginalValue(final Attribute<T> property, final Object originalValue) {
     if (originalValues == null) {
       originalValues = new HashMap<>();
     }
@@ -712,7 +712,7 @@ final class DefaultEntity implements Entity {
     }
   }
 
-  private void updateOriginalValue(final Attribute<?> attribute, final Object value, final Object previousValue) {
+  private <T> void updateOriginalValue(final Attribute<T> attribute, final T value, final T previousValue) {
     final boolean modified = isModified(attribute);
     if (modified && Objects.equals(getOriginal(attribute), value)) {
       removeOriginalValue(attribute);//we're back to the original value

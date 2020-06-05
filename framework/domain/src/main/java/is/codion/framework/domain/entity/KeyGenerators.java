@@ -73,20 +73,18 @@ public final class KeyGenerators {
 
   private abstract static class AbstractQueriedKeyGenerator implements KeyGenerator {
 
-    protected final void selectAndPut(final Entity entity, final ColumnProperty<?> keyProperty,
-                                      final DatabaseConnection connection) throws SQLException {
-      final Object value;
+    protected final <T> void selectAndPut(final Entity entity, final ColumnProperty<T> keyProperty,
+                                          final DatabaseConnection connection) throws SQLException {
       switch (keyProperty.getColumnType()) {
         case Types.INTEGER:
-          value = connection.selectInteger(getQuery(connection.getDatabase()));
+          entity.put((Attribute<Integer>) keyProperty.getAttribute(), connection.selectInteger(getQuery(connection.getDatabase())));
           break;
         case Types.BIGINT:
-          value = connection.selectLong(getQuery(connection.getDatabase()));
+          entity.put((Attribute<Long>) keyProperty.getAttribute(), connection.selectLong(getQuery(connection.getDatabase())));
           break;
         default:
           throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes", null, null);
       }
-      entity.put(keyProperty.getAttribute(), value);
     }
 
     protected abstract String getQuery(Database database);

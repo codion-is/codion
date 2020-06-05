@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
@@ -29,7 +30,7 @@ import java.util.Map;
  * operations specified by a single {@link Domain} model.
  * {@link #executeFunction(FunctionType, Object[])} and {@link #executeProcedure(ProcedureType, Object[])}
  * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(List)},
- * {@link #update(Entity)}, {@link #update(List)}, {@link #delete(Entity.Key)} and {@link #delete(List)}
+ * {@link #update(Entity)}, {@link #update(List)}, {@link #delete(Key)} and {@link #delete(List)}
  * perform a commit unless they are run within a transaction.
  * @see #beginTransaction()
  * @see #rollbackTransaction()
@@ -107,7 +108,7 @@ public interface EntityConnection {
    * @return the primary key of the inserted entity
    * @throws DatabaseException in case of a database exception
    */
-  Entity.Key insert(Entity entity) throws DatabaseException;
+  Key insert(Entity entity) throws DatabaseException;
 
   /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
@@ -117,7 +118,7 @@ public interface EntityConnection {
    * @return the primary key values of the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity.Key> insert(List<Entity> entities) throws DatabaseException;
+  List<Key> insert(List<Entity> entities) throws DatabaseException;
 
   /**
    * Updates the given entity according to its properties. Returns the updated entity.
@@ -159,7 +160,7 @@ public interface EntityConnection {
    * @return true if a record was deleted, false otherwise
    * @throws DatabaseException in case of a database exception
    */
-  boolean delete(Entity.Key entityKey) throws DatabaseException;
+  boolean delete(Key entityKey) throws DatabaseException;
 
   /**
    * Deletes the entities with the given primary keys.
@@ -168,7 +169,7 @@ public interface EntityConnection {
    * @return the number of deleted rows
    * @throws DatabaseException in case of a database exception
    */
-  int delete(List<Entity.Key> entityKeys) throws DatabaseException;
+  int delete(List<Key> entityKeys) throws DatabaseException;
 
   /**
    * Deletes the entities specified by the given condition.
@@ -214,7 +215,7 @@ public interface EntityConnection {
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  Entity selectSingle(Entity.Key key) throws DatabaseException;
+  Entity selectSingle(Key key) throws DatabaseException;
 
   /**
    * Selects a single entity according to the specified condition, throws a DatabaseException
@@ -233,7 +234,7 @@ public interface EntityConnection {
    * @return entities according to {@code keys}
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> select(List<Entity.Key> keys) throws DatabaseException;
+  List<Entity> select(List<Key> keys) throws DatabaseException;
 
   /**
    * Selects entities according to the specified condition
@@ -305,7 +306,7 @@ public interface EntityConnection {
    * @throws is.codion.common.db.exception.UpdateException in case multiple rows were affected
    * @throws DatabaseException in case of a database exception
    */
-  void writeBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws DatabaseException;
+  void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws DatabaseException;
 
   /**
    * Reads the blob specified by the property identified by {@code attribute} from the given entity,
@@ -315,5 +316,5 @@ public interface EntityConnection {
    * @return a byte array containing the blob data or null if no blob data is found
    * @throws DatabaseException in case of a database exception
    */
-  byte[] readBlob(Entity.Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException;
+  byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException;
 }

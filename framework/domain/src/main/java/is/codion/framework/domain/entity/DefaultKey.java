@@ -16,7 +16,7 @@ import java.util.Objects;
 /**
  * A class representing a primary key for entities.
  */
-final class DefaultEntityKey implements Entity.Key {
+final class DefaultKey implements Key {
 
   private static final long serialVersionUID = 1;
 
@@ -55,7 +55,7 @@ final class DefaultEntityKey implements Entity.Key {
    * @param definition the entity definition
    * @throws IllegalArgumentException in case the entity has a primary key defined
    */
-  DefaultEntityKey(final EntityDefinition definition) {
+  DefaultKey(final EntityDefinition definition) {
     if (definition.hasPrimaryKey()) {
       throw new IllegalArgumentException("Can not create an empty key for entity '" + definition.getEntityType() + "'");
     }
@@ -71,7 +71,7 @@ final class DefaultEntityKey implements Entity.Key {
    * @param value the value
    * @throws IllegalArgumentException in case this key is a composite key or if the entity has no primary key
    */
-  DefaultEntityKey(final EntityDefinition definition, final Object value) {
+  DefaultKey(final EntityDefinition definition, final Object value) {
     this.values = createSingleValueMap(definition, value);
     this.definition = definition;
     this.singleIntegerKey = definition.getPrimaryKeyAttributes().get(0).isInteger();
@@ -83,7 +83,7 @@ final class DefaultEntityKey implements Entity.Key {
    * @param values the values associated with their respective attributes
    * @throws IllegalArgumentException in case the entity has no primary key
    */
-  DefaultEntityKey(final EntityDefinition definition, final Map<Attribute<?>, Object> values) {
+  DefaultKey(final EntityDefinition definition, final Map<Attribute<?>, Object> values) {
     this.values = values == null ? new HashMap<>() : new HashMap<>(values);
     final List<Attribute<?>> attributes = definition.getPrimaryKeyAttributes();
     if (attributes.isEmpty()) {
@@ -163,9 +163,9 @@ final class DefaultEntityKey implements Entity.Key {
     if (object == null || !definition.hasPrimaryKey()) {
       return false;
     }
-    if (object.getClass() ==  DefaultEntityKey.class) {
+    if (object.getClass() ==  DefaultKey.class) {
       final EntityType entityType = definition.getEntityType();
-      final DefaultEntityKey otherKey = (DefaultEntityKey) object;
+      final DefaultKey otherKey = (DefaultKey) object;
       if (compositeKey) {
         return otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) && this.values.equals(otherKey.values);
       }

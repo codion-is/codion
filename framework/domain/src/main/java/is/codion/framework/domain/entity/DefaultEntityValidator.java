@@ -70,7 +70,7 @@ public class DefaultEntityValidator implements EntityValidator {
   }
 
   @Override
-  public boolean isNullable(final Entity entity, final Property<?> property) {
+  public <T> boolean isNullable(final Entity entity, final Property<T> property) {
     return property.isNullable();
   }
 
@@ -90,22 +90,22 @@ public class DefaultEntityValidator implements EntityValidator {
   }
 
   @Override
-  public void validate(final Entity entity, final EntityDefinition definition, final Property<?> property) throws ValidationException {
+  public <T> void validate(final Entity entity, final EntityDefinition definition, final Property<T> property) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (performNullValidation && !isForeignKeyProperty(property)) {
       performNullValidation(entity, definition, property);
     }
     if (property.getAttribute().isNumerical()) {
-      performRangeValidation(entity, property);
+      performRangeValidation(entity, (Property<Number>) property);
     }
     else if (property.getAttribute().isString()) {
-      performLengthValidation(entity, property);
+      performLengthValidation(entity, (Property<String>) property);
     }
   }
 
   @Override
-  public final void performRangeValidation(final Entity entity, final Property<?> property) throws RangeValidationException {
+  public final <T extends Number> void performRangeValidation(final Entity entity, final Property<T> property) throws RangeValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (entity.isNull(property.getAttribute())) {
@@ -124,8 +124,8 @@ public class DefaultEntityValidator implements EntityValidator {
   }
 
   @Override
-  public final void performNullValidation(final Entity entity, final EntityDefinition definition,
-                                          final Property<?> property) throws NullValidationException {
+  public final <T> void performNullValidation(final Entity entity, final EntityDefinition definition,
+                                              final Property<T> property) throws NullValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (!isNullable(entity, property) && entity.isNull(property.getAttribute())) {
@@ -144,7 +144,7 @@ public class DefaultEntityValidator implements EntityValidator {
   }
 
   @Override
-  public final void performLengthValidation(final Entity entity, final Property<?> property) throws LengthValidationException {
+  public final void performLengthValidation(final Entity entity, final Property<String> property) throws LengthValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (entity.isNull(property.getAttribute())) {

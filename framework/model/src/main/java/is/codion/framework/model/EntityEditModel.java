@@ -19,6 +19,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -46,14 +47,6 @@ public interface EntityEditModel extends Refreshable {
    * Default value: false
    */
   PropertyValue<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue("codion.client.warnAboutUnsavedData", false);
-
-  /**
-   * Specifies the value used by default to represent a null value in combo box models.
-   * Using the value null indicates that no null value item should be used.<br>
-   * Value type: String<br>
-   * Default value: -
-   */
-  PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("codion.client.comboBoxNullValueItem", "-");
 
   /**
    * Specifies whether edit models post their insert, update and delete events to the {@link EntityEditEvents}<br>
@@ -105,7 +98,7 @@ public interface EntityEditModel extends Refreshable {
    * as in, every time a property value changes.
    * @return true if the active entity is new, that is, does not represent a persistent row
    * @see #getPrimaryKeyNullObserver
-   * @see Entity.Key#isNull()
+   * @see Key#isNull()
    */
   boolean isEntityNew();
 
@@ -593,26 +586,26 @@ public interface EntityEditModel extends Refreshable {
   /**
    * @param listener a listener to be notified before an update is performed
    */
-  void addBeforeUpdateListener(EventDataListener<Map<Entity.Key, Entity>> listener);
+  void addBeforeUpdateListener(EventDataListener<Map<Key, Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeBeforeUpdateListener(EventDataListener<Map<Entity.Key, Entity>> listener);
+  void removeBeforeUpdateListener(EventDataListener<Map<Key, Entity>> listener);
 
   /**
    * @param listener a listener to be notified each time an update has been performed,
    * with the updated entities, mapped to their respective original primary keys, that is,
    * the primary keys before the update was performed
    */
-  void addAfterUpdateListener(EventDataListener<Map<Entity.Key, Entity>> listener);
+  void addAfterUpdateListener(EventDataListener<Map<Key, Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeAfterUpdateListener(EventDataListener<Map<Entity.Key, Entity>> listener);
+  void removeAfterUpdateListener(EventDataListener<Map<Key, Entity>> listener);
 
   /**
    * @param listener a listener to be notified before a delete is performed

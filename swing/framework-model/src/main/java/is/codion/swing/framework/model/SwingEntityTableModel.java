@@ -21,6 +21,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -358,7 +359,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
     final Property<?> columnIdentifier = getColumnModel().getColumnIdentifier(modelColumnIndex);
 
-    entity.put(columnIdentifier.getAttribute(), value);
+    entity.put((Attribute<Object>) columnIdentifier.getAttribute(), value);
     try {
       update(singletonList(entity));
     }
@@ -403,12 +404,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final Entity getEntityByKey(final Entity.Key primaryKey) {
+  public final Entity getEntityByKey(final Key primaryKey) {
     return getVisibleItems().stream().filter(entity -> entity.getKey().equals(primaryKey)).findFirst().orElse(null);
   }
 
   @Override
-  public final int indexOf(final Entity.Key primaryKey) {
+  public final int indexOf(final Key primaryKey) {
     return indexOf(getEntityByKey(primaryKey));
   }
 
@@ -438,7 +439,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final void refreshEntities(final List<Entity.Key> keys) {
+  public final void refreshEntities(final List<Key> keys) {
     try {
       replaceEntities(getConnectionProvider().getConnection().select(keys));
     }
@@ -478,9 +479,9 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final void setSelectedByKey(final Collection<Entity.Key> keys) {
+  public final void setSelectedByKey(final Collection<Key> keys) {
     requireNonNull(keys, "keys");
-    final List<Entity.Key> keyList = new ArrayList<>(keys);
+    final List<Key> keyList = new ArrayList<>(keys);
     final List<Integer> indexes = new ArrayList<>();
     for (final Entity visibleEntity : getVisibleItems()) {
       final int index = keyList.indexOf(visibleEntity.getKey());
@@ -497,7 +498,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
+  public final Collection<Entity> getEntitiesByKey(final Collection<Key> keys) {
     requireNonNull(keys, "keys");
     return getItems().stream().filter(entity -> keys.contains(entity.getKey())).collect(Collectors.toList());
   }
@@ -714,7 +715,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
   }
 
-  private void onUpdate(final Map<Entity.Key, Entity> updatedEntities) {
+  private void onUpdate(final Map<Key, Entity> updatedEntities) {
     replaceEntitiesByKey(new HashMap<>(updatedEntities));
   }
 
@@ -742,11 +743,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * Note that this does not trigger {@link #filterContents()}, that must be done explicitly.
    * @param entitiesByKey the entities to replace mapped to the corresponding primary key found in this table model
    */
-  private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entitiesByKey) {
+  private void replaceEntitiesByKey(final Map<Key, Entity> entitiesByKey) {
     for (final Entity entity : getItems()) {
-      final Iterator<Map.Entry<Entity.Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
+      final Iterator<Map.Entry<Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
       while (mapIterator.hasNext()) {
-        final Map.Entry<Entity.Key, Entity> entry = mapIterator.next();
+        final Map.Entry<Key, Entity> entry = mapIterator.next();
         if (entity.getKey().equals(entry.getKey())) {
           mapIterator.remove();
           entity.setAs(entry.getValue());
