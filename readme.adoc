@@ -183,10 +183,10 @@ public class StoreDemo {
       createTextField(Customer.EMAIL).setColumns(12);
       createCheckBox(Customer.IS_ACTIVE, null, IncludeCaption.NO);
       setLayout(gridLayout(2, 2));
-      addPropertyPanel(Customer.FIRST_NAME);
-      addPropertyPanel(Customer.LAST_NAME);
-      addPropertyPanel(Customer.EMAIL);
-      addPropertyPanel(Customer.IS_ACTIVE);
+      addInputPanel(Customer.FIRST_NAME);
+      addInputPanel(Customer.LAST_NAME);
+      addInputPanel(Customer.EMAIL);
+      addInputPanel(Customer.IS_ACTIVE);
     }
   }
 
@@ -203,9 +203,9 @@ public class StoreDemo {
       createTextField(Address.STREET).setColumns(12);
       createTextField(Address.CITY).setColumns(12);
       setLayout(gridLayout(3, 1));
-      addPropertyPanel(Address.CUSTOMER_FK);
-      addPropertyPanel(Address.STREET);
-      addPropertyPanel(Address.CITY);
+      addInputPanel(Address.CUSTOMER_FK);
+      addInputPanel(Address.STREET);
+      addInputPanel(Address.CITY);
     }
   }
 
@@ -293,7 +293,7 @@ Entity customer = entities.entity(Customer.TYPE);
 customer.put(Customer.FIRST_NAME, "Peter");
 customer.put(Customer.LAST_NAME, "Jackson");
 
-Entity.Key customerKey = connection.insert(customer);
+Key customerKey = connection.insert(customer);
 //select to get generated and default column values
 customer = connection.selectSingle(customerKey);
 
@@ -302,7 +302,7 @@ address.put(Address.CUSTOMER_FK, customer);
 address.put(Address.STREET, "Elm st.");
 address.put(Address.CITY, "Boston");
 
-Entity.Key addressKey = connection.insert(address);
+Key addressKey = connection.insert(address);
 
 customer.put(Customer.EMAIL, "mail@email.com");
 

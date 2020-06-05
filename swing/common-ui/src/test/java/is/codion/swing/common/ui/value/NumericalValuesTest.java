@@ -8,7 +8,8 @@ import is.codion.common.event.Events;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
-import is.codion.swing.common.ui.textfield.DecimalField;
+import is.codion.swing.common.ui.textfield.BigDecimalField;
+import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 
@@ -157,55 +158,54 @@ public class NumericalValuesTest {  private Long longValue;
   @Test
   public void testBigDecimal() {
     final DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance();
-    format.setParseBigDecimal(true);
     format.setMaximumFractionDigits(4);
 
-    final DecimalField decimalField = new DecimalField(format);
-    decimalField.setSeparators('.', ',');
+    final BigDecimalField bigDecimalField = new BigDecimalField(format);
+    bigDecimalField.setSeparators('.', ',');
 
-    decimalField.setBigDecimal(BigDecimal.valueOf(3.14));
-    assertEquals("3.14", decimalField.getText());
+    bigDecimalField.setBigDecimal(BigDecimal.valueOf(3.14));
+    assertEquals("3.14", bigDecimalField.getText());
 
-    decimalField.setText("42.4242");
-    assertEquals(BigDecimal.valueOf(42.4242), decimalField.getBigDecimal());
+    bigDecimalField.setText("42.4242");
+    assertEquals(BigDecimal.valueOf(42.4242), bigDecimalField.getBigDecimal());
   }
 
   @Test
   public void testDouble() throws Exception {
-    final DecimalField decimalField = new DecimalField();
-    decimalField.setSeparators('.', ',');
+    final DoubleField doubleField = new DoubleField();
+    doubleField.setSeparators('.', ',');
     final Value<Double> doublePropertyValue = Values.propertyValue(this, "doubleValue",
             Double.class, doubleValueChangedEvent);
-    doublePropertyValue.link(NumericalValues.doubleValue(decimalField));
-    assertNull(decimalField.getDouble());
+    doublePropertyValue.link(NumericalValues.doubleValue(doubleField));
+    assertNull(doubleField.getDouble());
     setDoubleValue(2.2);
-    assertEquals(Double.valueOf(2.2), decimalField.getDouble());
-    decimalField.setText("42.2");
+    assertEquals(Double.valueOf(2.2), doubleField.getDouble());
+    doubleField.setText("42.2");
     assertEquals(Double.valueOf(42.2), this.doubleValue);
-    decimalField.setText("");
+    doubleField.setText("");
     assertNull(this.doubleValue);
   }
 
   @Test
   public void testDoublePrimitive() throws Exception {
-    final DecimalField decimalField = new DecimalField();
-    decimalField.setSeparators('.', ',');
+    final DoubleField doubleField = new DoubleField();
+    doubleField.setSeparators('.', ',');
     final Value doublePrimitivePropertyValue = Values.propertyValue(this, "doublePrimitiveValue",
             double.class, doublePrimitiveValueValueChangedEvent);
-    doublePrimitivePropertyValue.link(NumericalValues.doubleValue(decimalField, Nullable.NO));
-    assertEquals((Double) 0.0, decimalField.getDouble());
+    doublePrimitivePropertyValue.link(NumericalValues.doubleValue(doubleField, Nullable.NO));
+    assertEquals((Double) 0.0, doubleField.getDouble());
     setDoublePrimitiveValue(2.2);
-    assertEquals(Double.valueOf(2.2), decimalField.getDouble());
-    decimalField.setText("42.2");
+    assertEquals(Double.valueOf(2.2), doubleField.getDouble());
+    doubleField.setText("42.2");
     assertEquals(42.2, this.doublePrimitiveValue);
-    decimalField.setText("");
+    doubleField.setText("");
     assertEquals(0.0, this.doublePrimitiveValue);
   }
 
   @Test
   public void doubleComponentValue() {
     final Double value = 10.4;
-    ComponentValue<Double, DecimalField> componentValue = NumericalValues.doubleValue(value);
+    ComponentValue<Double, DoubleField> componentValue = NumericalValues.doubleValue(value);
     assertEquals(value, componentValue.get());
     componentValue = NumericalValues.doubleValue();
     assertNull(componentValue.get());
@@ -213,7 +213,7 @@ public class NumericalValuesTest {  private Long longValue;
 
   @Test
   public void parseDouble() {
-    final ComponentValue<Double, DecimalField> componentValue = NumericalValues.doubleValue();
+    final ComponentValue<Double, DoubleField> componentValue = NumericalValues.doubleValue();
     assertNull(componentValue.get());
 
     componentValue.getComponent().setGroupingUsed(false);
@@ -378,50 +378,49 @@ public class NumericalValuesTest {  private Long longValue;
 
   @Test
   public void doubleTextUiValue() {
-    final DecimalField decimalField = new DecimalField();
-    decimalField.setSeparators('.', ',');
-    final Value<Double> value = NumericalValues.doubleValue(decimalField);
+    final DoubleField doubleField = new DoubleField();
+    doubleField.setSeparators('.', ',');
+    final Value<Double> value = NumericalValues.doubleValue(doubleField);
 
     assertNull(value.get());
-    decimalField.setText("122.2");
+    doubleField.setText("122.2");
     assertEquals(Double.valueOf(122.2), value.get());
-    decimalField.setText("");
+    doubleField.setText("");
     assertNull(value.get());
 
     value.set(42.2);
-    assertEquals("42.2", decimalField.getText());
+    assertEquals("42.2", doubleField.getText());
   }
 
   @Test
   public void doublePrimitiveTextUiValue() {
-    final DecimalField decimalField = new DecimalField();
-    decimalField.setSeparators('.', ',');
-    final Value<Double> value = NumericalValues.doubleValue(decimalField, Nullable.NO);
+    final DoubleField doubleField = new DoubleField();
+    doubleField.setSeparators('.', ',');
+    final Value<Double> value = NumericalValues.doubleValue(doubleField, Nullable.NO);
 
     assertEquals(Double.valueOf(0), value.get());
-    decimalField.setText("122.2");
+    doubleField.setText("122.2");
     assertEquals(Double.valueOf(122.2), value.get());
-    decimalField.setText("");
+    doubleField.setText("");
     assertEquals(Double.valueOf(0), value.get());
 
     value.set(42.2);
-    assertEquals("42.2", decimalField.getText());
+    assertEquals("42.2", doubleField.getText());
   }
 
   @Test
   public void bigDecimalTextUiValue() {
-    final DecimalField decimalField = new DecimalField();
-    decimalField.setParseBigDecimal(true);
-    decimalField.setSeparators('.', ',');
-    final Value<BigDecimal> value = NumericalValues.bigDecimalValue(decimalField);
+    final BigDecimalField bigDecimalField = new BigDecimalField();
+    bigDecimalField.setSeparators('.', ',');
+    final Value<BigDecimal> value = NumericalValues.bigDecimalValue(bigDecimalField);
 
     assertNull(value.get());
-    decimalField.setText("122.2");
+    bigDecimalField.setText("122.2");
     assertEquals(BigDecimal.valueOf(122.2), value.get());
-    decimalField.setText("");
+    bigDecimalField.setText("");
     assertNull(value.get());
 
     value.set(BigDecimal.valueOf(42.2));
-    assertEquals("42.2", decimalField.getText());
+    assertEquals("42.2", bigDecimalField.getText());
   }
 }

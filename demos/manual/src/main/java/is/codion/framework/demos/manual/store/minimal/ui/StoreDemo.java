@@ -37,10 +37,10 @@ public class StoreDemo {
       createTextField(Customer.EMAIL).setColumns(12);
       createCheckBox(Customer.IS_ACTIVE, null, IncludeCaption.NO);
       setLayout(gridLayout(2, 2));
-      addPropertyPanel(Customer.FIRST_NAME);
-      addPropertyPanel(Customer.LAST_NAME);
-      addPropertyPanel(Customer.EMAIL);
-      addPropertyPanel(Customer.IS_ACTIVE);
+      addInputPanel(Customer.FIRST_NAME);
+      addInputPanel(Customer.LAST_NAME);
+      addInputPanel(Customer.EMAIL);
+      addInputPanel(Customer.IS_ACTIVE);
     }
   }
 
@@ -57,9 +57,9 @@ public class StoreDemo {
       createTextField(Address.STREET).setColumns(12);
       createTextField(Address.CITY).setColumns(12);
       setLayout(gridLayout(3, 1));
-      addPropertyPanel(Address.CUSTOMER_FK);
-      addPropertyPanel(Address.STREET);
-      addPropertyPanel(Address.CITY);
+      addInputPanel(Address.CUSTOMER_FK);
+      addInputPanel(Address.STREET);
+      addInputPanel(Address.CITY);
     }
   }
 

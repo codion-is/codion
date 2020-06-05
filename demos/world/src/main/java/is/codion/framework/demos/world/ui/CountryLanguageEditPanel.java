@@ -25,9 +25,9 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
 
     setLayout(gridLayout(2, 4));
 
-    addPropertyPanel(CountryLanguage.COUNTRY_FK);
-    addPropertyPanel(CountryLanguage.LANGUAGE);
-    addPropertyPanel(CountryLanguage.IS_OFFICIAL);
-    addPropertyPanel(CountryLanguage.PERCENTAGE);
+    addInputPanel(CountryLanguage.COUNTRY_FK);
+    addInputPanel(CountryLanguage.LANGUAGE);
+    addInputPanel(CountryLanguage.IS_OFFICIAL);
+    addInputPanel(CountryLanguage.PERCENTAGE);
   }
 }

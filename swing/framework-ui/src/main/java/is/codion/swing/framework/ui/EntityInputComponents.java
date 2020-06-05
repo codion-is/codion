@@ -29,7 +29,8 @@ import is.codion.swing.common.ui.combobox.AutoCompletion;
 import is.codion.swing.common.ui.combobox.MaximumMatch;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.textfield.DecimalField;
+import is.codion.swing.common.ui.textfield.BigDecimalField;
+import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LengthDocumentFilter;
 import is.codion.swing.common.ui.textfield.LongField;
@@ -686,10 +687,10 @@ public final class EntityInputComponents {
       ((Value<Integer>) value).link(NumericalValues.integerValue((IntegerField) textField, Nullable.YES, updateOn));
     }
     else if (property.getAttribute().isDouble()) {
-      ((Value<Double>) value).link(NumericalValues.doubleValue((DecimalField) textField, Nullable.YES, updateOn));
+      ((Value<Double>) value).link(NumericalValues.doubleValue((DoubleField) textField, Nullable.YES, updateOn));
     }
     else if (property.getAttribute().isBigDecimal()) {
-      ((Value<BigDecimal>) value).link(NumericalValues.bigDecimalValue((DecimalField) textField, updateOn));
+      ((Value<BigDecimal>) value).link(NumericalValues.bigDecimalValue((BigDecimalField) textField, updateOn));
     }
     else if (property.getAttribute().isLong()) {
       ((Value<Long>) value).link(NumericalValues.longValue((LongField) textField, Nullable.YES, updateOn));
@@ -777,13 +778,16 @@ public final class EntityInputComponents {
   private static JTextField createTextField(final Property<?> property, final String formatMaskString,
                                             final ValueContainsLiterals valueContainsLiterals) {
     if (property.getAttribute().isInteger()) {
-      return initializeIntField(property);
+      return initializeIntegerField((Property<Integer>) property);
     }
-    else if (property.getAttribute().isDecimal()) {
-      return initializeDecimalField(property);
+    else if (property.getAttribute().isDouble()) {
+      return initializeDoubleField((Property<Double>) property);
+    }
+    else if (property.getAttribute().isBigDecimal()) {
+      return initializeBigDecimalField((Property<BigDecimal>) property);
     }
     else if (property.getAttribute().isLong()) {
-      return initializeLongField(property);
+      return initializeLongField((Property<Long>) property);
     }
     else if (property.getAttribute().isTemporal()) {
       return TextFields.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
@@ -803,8 +807,8 @@ public final class EntityInputComponents {
     return TextFields.createFormattedField(formatMaskString, valueContainsLiterals);
   }
 
-  private static JTextField initializeDecimalField(final Property<?> property) {
-    final DecimalField field = new DecimalField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
+  private static JTextField initializeDoubleField(final Property<Double> property) {
+    final DoubleField field = new DoubleField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
       field.setRange(Math.min(property.getMinimumValue(), 0), property.getMaximumValue());
     }
@@ -812,7 +816,16 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JTextField initializeIntField(final Property<?> property) {
+  private static JTextField initializeBigDecimalField(final Property<BigDecimal> property) {
+    final BigDecimalField field = new BigDecimalField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
+    if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
+      field.setRange(Math.min(property.getMinimumValue(), 0), property.getMaximumValue());
+    }
+
+    return field;
+  }
+
+  private static JTextField initializeIntegerField(final Property<Integer> property) {
     final IntegerField field = new IntegerField(cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
       field.setRange(property.getMinimumValue(), property.getMaximumValue());
@@ -821,7 +834,7 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JTextField initializeLongField(final Property<?> property) {
+  private static JTextField initializeLongField(final Property<Long> property) {
     final LongField field = new LongField(cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
       field.setRange(property.getMinimumValue(), property.getMaximumValue());
@@ -830,7 +843,7 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JCheckBox initializeCheckBox(final Property<?> property, final Value<Boolean> value,
+  private static JCheckBox initializeCheckBox(final Property<Boolean> property, final Value<Boolean> value,
                                               final StateObserver enabledState, final JCheckBox checkBox) {
     value.link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
     linkToEnabledState(enabledState, checkBox);

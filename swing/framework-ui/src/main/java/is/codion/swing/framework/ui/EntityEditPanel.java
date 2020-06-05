@@ -433,10 +433,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     return panelInitialized;
   }
 
-  //#############################################################################################
-  // Begin - control methods, see setupControls
-  //#############################################################################################
-
   /**
    * Saves the active entity, that is, if no entity is selected it performs a insert otherwise the user
    * is asked whether to update the selected entity or insert a new one
@@ -585,10 +581,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
 
     return false;
   }
-
-  //#############################################################################################
-  // End - control methods
-  //#############################################################################################
 
   /**
    * Override to add UI level validation, called before insert/update

@@ -68,7 +68,7 @@ public final class ClientArchitecture {
       @Override
       protected void initializeUI() {
         createTextField(Artist.NAME).setColumns(15);
-        addPropertyPanel(Artist.NAME);
+        addInputPanel(Artist.NAME);
       }
     };
     // create a EntityTablePanel instance, based on the artist table model

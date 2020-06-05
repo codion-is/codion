@@ -28,12 +28,12 @@ public final class VisitEditPanel extends EntityEditPanel {
     createTextArea(Visit.DESCRIPTION, 4, 20);
 
     JPanel northPanel = new JPanel(new GridLayout(1, 2, 5, 5));
-    northPanel.add(createPropertyPanel(Visit.PET_FK));
-    northPanel.add(createPropertyPanel(Visit.DATE));
+    northPanel.add(createInputPanel(Visit.PET_FK));
+    northPanel.add(createInputPanel(Visit.DATE));
 
     setLayout(new BorderLayout(5, 5));
     add(northPanel, BorderLayout.NORTH);
-    add(createPropertyPanel(Visit.DESCRIPTION,
+    add(createInputPanel(Visit.DESCRIPTION,
             new JScrollPane(getComponent(Visit.DESCRIPTION))), BorderLayout.CENTER);
   }
 }

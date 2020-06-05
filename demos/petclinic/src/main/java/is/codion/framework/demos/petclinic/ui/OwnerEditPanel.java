@@ -28,10 +28,10 @@ public final class OwnerEditPanel extends EntityEditPanel {
 
     setLayout(new GridLayout(3, 2, 5, 5));
 
-    addPropertyPanel(Owner.FIRST_NAME);
-    addPropertyPanel(Owner.LAST_NAME);
-    addPropertyPanel(Owner.ADDRESS);
-    addPropertyPanel(Owner.CITY);
-    addPropertyPanel(Owner.TELEPHONE);
+    addInputPanel(Owner.FIRST_NAME);
+    addInputPanel(Owner.LAST_NAME);
+    addInputPanel(Owner.ADDRESS);
+    addInputPanel(Owner.CITY);
+    addInputPanel(Owner.TELEPHONE);
   }
 }

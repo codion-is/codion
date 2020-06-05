@@ -42,8 +42,8 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
     quantityField.setAction(getSaveControl());
 
     setLayout(borderLayout());
-    add(createPropertyPanel(InvoiceLine.TRACK_FK), BorderLayout.WEST);
-    add(createPropertyPanel(InvoiceLine.QUANTITY), BorderLayout.CENTER);
-    add(createPropertyPanel(new JLabel(" "), tableSearchField), BorderLayout.EAST);
+    add(createInputPanel(InvoiceLine.TRACK_FK), BorderLayout.WEST);
+    add(createInputPanel(InvoiceLine.QUANTITY), BorderLayout.CENTER);
+    add(createInputPanel(new JLabel(" "), tableSearchField), BorderLayout.EAST);
   }
 }

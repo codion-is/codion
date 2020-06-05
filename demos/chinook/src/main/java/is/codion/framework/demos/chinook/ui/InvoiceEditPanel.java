@@ -61,13 +61,13 @@ public class InvoiceEditPanel extends EntityEditPanel {
     postalcodeField.setColumns(16);
 
     final JPanel centerPanel = new JPanel(gridLayout(4, 2));
-    centerPanel.add(createPropertyPanel(Invoice.CUSTOMER_FK));
-    centerPanel.add(createPropertyPanel(Invoice.INVOICEDATE));
-    centerPanel.add(createPropertyPanel(Invoice.BILLINGADDRESS));
-    centerPanel.add(createPropertyPanel(Invoice.BILLINGCITY));
-    centerPanel.add(createPropertyPanel(Invoice.BILLINGSTATE));
-    centerPanel.add(createPropertyPanel(Invoice.BILLINGCOUNTRY));
-    centerPanel.add(createPropertyPanel(Invoice.BILLINGPOSTALCODE));
+    centerPanel.add(createInputPanel(Invoice.CUSTOMER_FK));
+    centerPanel.add(createInputPanel(Invoice.INVOICEDATE));
+    centerPanel.add(createInputPanel(Invoice.BILLINGADDRESS));
+    centerPanel.add(createInputPanel(Invoice.BILLINGCITY));
+    centerPanel.add(createInputPanel(Invoice.BILLINGSTATE));
+    centerPanel.add(createInputPanel(Invoice.BILLINGCOUNTRY));
+    centerPanel.add(createInputPanel(Invoice.BILLINGPOSTALCODE));
 
     final JPanel centerBasePanel = new JPanel(borderLayout());
     centerBasePanel.add(centerPanel, BorderLayout.CENTER);

@@ -26,9 +26,9 @@ public class AddressEditPanel extends EntityEditPanel {
     createCheckBox(Address.VALID, null, IncludeCaption.NO);
 
     setLayout(new GridLayout(3, 1, 5, 5));
-    addPropertyPanel(Address.STREET);
-    addPropertyPanel(Address.CITY);
-    addPropertyPanel(Address.VALID);
+    addInputPanel(Address.STREET);
+    addInputPanel(Address.CITY);
+    addInputPanel(Address.VALID);
   }
 }
 // end::addressEditPanel[]

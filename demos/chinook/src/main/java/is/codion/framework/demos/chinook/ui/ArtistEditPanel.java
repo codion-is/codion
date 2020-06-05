@@ -22,6 +22,6 @@ public class ArtistEditPanel extends EntityEditPanel {
     createTextField(Artist.NAME).setColumns(18);
 
     setLayout(gridLayout(1, 1));
-    addPropertyPanel(Artist.NAME);
+    addInputPanel(Artist.NAME);
   }
 }

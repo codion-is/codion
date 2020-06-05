@@ -21,6 +21,6 @@ public class TagEditPanel extends EntityEditPanel {
     createTextField(Tag.TAG).setColumns(16);
 
     setLayout(Layouts.flexibleGridLayout(1, 1));
-    addPropertyPanel(Tag.TAG);
+    addInputPanel(Tag.TAG);
   }
 }

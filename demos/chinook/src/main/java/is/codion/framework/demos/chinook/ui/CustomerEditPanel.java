@@ -38,17 +38,17 @@ public class CustomerEditPanel extends EntityEditPanel {
     setPreferredHeight(createForeignKeyComboBox(Customer.SUPPORTREP_FK), getPreferredTextFieldHeight());
 
     setLayout(flexibleGridLayout(4, 3));
-    addPropertyPanel(Customer.FIRSTNAME);
-    addPropertyPanel(Customer.LASTNAME);
-    addPropertyPanel(Customer.COMPANY);
-    addPropertyPanel(Customer.ADDRESS);
-    addPropertyPanel(Customer.CITY);
-    addPropertyPanel(Customer.STATE);
-    addPropertyPanel(Customer.COUNTRY);
-    addPropertyPanel(Customer.POSTALCODE);
-    addPropertyPanel(Customer.PHONE);
-    addPropertyPanel(Customer.FAX);
-    addPropertyPanel(Customer.EMAIL);
-    addPropertyPanel(Customer.SUPPORTREP_FK);
+    addInputPanel(Customer.FIRSTNAME);
+    addInputPanel(Customer.LASTNAME);
+    addInputPanel(Customer.COMPANY);
+    addInputPanel(Customer.ADDRESS);
+    addInputPanel(Customer.CITY);
+    addInputPanel(Customer.STATE);
+    addInputPanel(Customer.COUNTRY);
+    addInputPanel(Customer.POSTALCODE);
+    addInputPanel(Customer.PHONE);
+    addInputPanel(Customer.FAX);
+    addInputPanel(Customer.EMAIL);
+    addInputPanel(Customer.SUPPORTREP_FK);
   }
 }

@@ -25,7 +25,7 @@ import java.text.ParsePosition;
 /**
  * A text field for numbers.
  */
-public class NumberField extends JTextField {
+public class NumberField<T extends Number> extends JTextField {
 
   /**
    * Specifies whether NumberFields disable grouping by default.<br>
@@ -40,7 +40,7 @@ public class NumberField extends JTextField {
    * @param document the document to use
    * @param columns the number of columns
    */
-  public NumberField(final NumberDocument document, final int columns) {
+  public NumberField(final NumberDocument<T> document, final int columns) {
     super(document, null, columns);
     document.setCaret(getCaret());
     if (document.getFormat() instanceof DecimalFormat) {
@@ -56,21 +56,21 @@ public class NumberField extends JTextField {
    * @param groupingUsed true if grouping should be used false otherwise
    */
   public final void setGroupingUsed(final boolean groupingUsed) {
-    ((NumberDocument) getDocument()).getFormat().setGroupingUsed(groupingUsed);
+    getTypedDocument().getFormat().setGroupingUsed(groupingUsed);
   }
 
   /**
    * @param number the number to display in this field
    */
-  public final void setNumber(final Number number) {
-    ((NumberDocument) getDocument()).setNumber(number);
+  public final void setNumber(final T number) {
+    getTypedDocument().setNumber(number);
   }
 
   /**
    * @return the number being displayed in this field
    */
-  public final Number getNumber() {
-    return ((NumberDocument) getDocument()).getNumber();
+  public final T getNumber() {
+    return getTypedDocument().getNumber();
   }
 
   /**
@@ -79,21 +79,21 @@ public class NumberField extends JTextField {
    * @param max the maximum value
    */
   public final void setRange(final double min, final double max) {
-    ((NumberDocumentFilter) ((NumberDocument) getDocument()).getDocumentFilter()).setRange(min, max);
+    getTypedDocument().getDocumentFilter().setRange(min, max);
   }
 
   /**
    * @return the minimum value this field should accept
    */
   public final double getMinimumValue() {
-    return ((NumberDocumentFilter) ((NumberDocument) getDocument()).getDocumentFilter()).getMinimumValue();
+    return getTypedDocument().getDocumentFilter().getMinimumValue();
   }
 
   /**
    * @return the maximum value this field should accept
    */
   public final double getMaximumValue() {
-    return ((NumberDocumentFilter) ((NumberDocument) getDocument()).getDocumentFilter()).getMaximumValue();
+    return getTypedDocument().getDocumentFilter().getMaximumValue();
   }
 
   /**
@@ -103,15 +103,23 @@ public class NumberField extends JTextField {
    * @throws IllegalArgumentException in case both separators are the same character
    */
   public final void setSeparators(final char decimalSeparator, final char groupingSeparator) {
-    ((NumberDocument) getDocument()).setSeparators(decimalSeparator, groupingSeparator);
+    getTypedDocument().setSeparators(decimalSeparator, groupingSeparator);
+  }
+
+  /**
+   * Can't override getDocument() with type cast since it's called before setting the document with a class cast exception.
+   * @return the typed document.
+   */
+  protected final NumberDocument<T> getTypedDocument() {
+    return (NumberDocument<T>) super.getDocument();
   }
 
   /**
    * A Document implementation for numerical values
    */
-  protected static class NumberDocument extends PlainDocument {
+  protected static class NumberDocument<T extends Number> extends PlainDocument {
 
-    protected NumberDocument(final NumberDocumentFilter documentFilter) {
+    protected NumberDocument(final NumberDocumentFilter<T> documentFilter) {
       super.setDocumentFilter(documentFilter);
     }
 
@@ -124,17 +132,22 @@ public class NumberField extends JTextField {
       throw new UnsupportedOperationException("Changing the DocumentFilter of NumberDocument and its descendants is not allowed");
     }
 
-    protected final NumberFormat getFormat() {
-      return ((NumberDocumentFilter) getDocumentFilter()).getFormat();
+    @Override
+    public final NumberDocumentFilter<T> getDocumentFilter() {
+      return (NumberDocumentFilter<T>) super.getDocumentFilter();
     }
 
-    protected final void setNumber(final Number number) {
+    protected final NumberFormat getFormat() {
+      return getDocumentFilter().getFormat();
+    }
+
+    protected final void setNumber(final T number) {
       setText(number == null ? "" : getFormat().format(number));
     }
 
-    protected final Number getNumber() {
+    protected final T getNumber() {
       try {
-        return ((NumberDocumentFilter) getDocumentFilter()).parseNumber(getText(0, getLength()));
+        return getDocumentFilter().parseNumber(getText(0, getLength()));
       }
       catch (final BadLocationException e) {
         throw new RuntimeException(e);
@@ -174,7 +187,7 @@ public class NumberField extends JTextField {
     }
 
     private void setCaret(final Caret caret) {
-      ((NumberDocumentFilter) getDocumentFilter()).setCaret(caret);
+      getDocumentFilter().setCaret(caret);
     }
 
     private void setSeparators(final char decimalSeparator, final char groupingSeparator) {
@@ -184,7 +197,7 @@ public class NumberField extends JTextField {
       final DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
       symbols.setDecimalSeparator(decimalSeparator);
       symbols.setGroupingSeparator(groupingSeparator);
-      final Number number = getNumber();
+      final T number = getNumber();
       ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
       setNumber(number);
     }
@@ -193,7 +206,7 @@ public class NumberField extends JTextField {
   /**
    * A DocumentFilter for restricting input to numerical values
    */
-  protected static class NumberDocumentFilter extends DocumentFilter {
+  protected static class NumberDocumentFilter<T extends Number> extends DocumentFilter {
 
     private static final String MINUS_SIGN = "-";
 
@@ -320,13 +333,13 @@ public class NumberField extends JTextField {
      * @param text the text to parse
      * @return a number if the format can parse it, null otherwise
      */
-    private Number parseNumber(final String text) {
+    private T parseNumber(final String text) {
       if (text.isEmpty()) {
         return null;
       }
 
       final ParsePosition position = new ParsePosition(0);
-      final Number number = format.parse(text, position);
+      final T number = (T) format.parse(text, position);
       if (position.getIndex() != text.length() || position.getErrorIndex() != -1) {
         return null;
       }
@@ -390,7 +403,7 @@ public class NumberField extends JTextField {
     }
 
     private void skipGroupingSeparator(final boolean forward) {
-      final NumberDocument numberDocument = (NumberDocument) getDocument();
+      final NumberDocument<?> numberDocument = getTypedDocument();
       final char groupingSeparator = ((DecimalFormat) numberDocument.getFormat()).getDecimalFormatSymbols().getGroupingSeparator();
       try {
         final int caretPosition = getCaretPosition();

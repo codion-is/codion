@@ -131,8 +131,8 @@ public final class Example {
         setInitialFocusAttribute(Customer.FIRST_NAME);
         createTextField(Customer.FIRST_NAME).setColumns(12);
         createTextField(Customer.LAST_NAME).setColumns(12);
-        addPropertyPanel(Customer.FIRST_NAME);
-        addPropertyPanel(Customer.LAST_NAME);
+        addInputPanel(Customer.FIRST_NAME);
+        addInputPanel(Customer.LAST_NAME);
       }
     }
 
@@ -159,8 +159,8 @@ public final class Example {
         setInitialFocusAttribute(CustomerAddress.CUSTOMER_FK);
         createForeignKeyComboBox(CustomerAddress.CUSTOMER_FK);
         createForeignKeyComboBox(CustomerAddress.ADDRESS_FK);
-        addPropertyPanel(CustomerAddress.CUSTOMER_FK);
-        addPropertyPanel(CustomerAddress.ADDRESS_FK);
+        addInputPanel(CustomerAddress.CUSTOMER_FK);
+        addInputPanel(CustomerAddress.ADDRESS_FK);
       }
     }
 

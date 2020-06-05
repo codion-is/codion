@@ -22,6 +22,6 @@ public class MediaTypeEditPanel extends EntityEditPanel {
     createTextField(MediaType.NAME).setColumns(12);
 
     setLayout(gridLayout(1, 1));
-    addPropertyPanel(MediaType.NAME);
+    addInputPanel(MediaType.NAME);
   }
 }

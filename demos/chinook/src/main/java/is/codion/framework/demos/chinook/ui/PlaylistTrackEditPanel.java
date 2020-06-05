@@ -30,7 +30,7 @@ public class PlaylistTrackEditPanel extends EntityEditPanel {
     trackLookupField.setColumns(30);
 
     setLayout(gridLayout(2, 1));
-    addPropertyPanel(PlaylistTrack.PLAYLIST_FK);
-    addPropertyPanel(PlaylistTrack.TRACK_FK);
+    addInputPanel(PlaylistTrack.PLAYLIST_FK);
+    addInputPanel(PlaylistTrack.TRACK_FK);
   }
 }

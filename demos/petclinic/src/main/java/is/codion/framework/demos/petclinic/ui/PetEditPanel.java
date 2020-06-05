@@ -31,15 +31,16 @@ public final class PetEditPanel extends EntityEditPanel {
     createTextField(Pet.BIRTH_DATE);
     final EntityComboBox petTypeBox = createForeignKeyComboBox(Pet.PET_TYPE_FK);
 
-    final Action newPetTypeAction = new EntityPanelBuilder(PetType.TYPE).setEditPanelClass(PetTypeEditPanel.class)
+    final Action newPetTypeAction = new EntityPanelBuilder(PetType.TYPE)
+            .setEditPanelClass(PetTypeEditPanel.class)
             .createEditPanelAction(petTypeBox);
     final JPanel petTypePanel = Components.createEastButtonPanel(petTypeBox, newPetTypeAction);
 
     setLayout(new GridLayout(2, 2, 5, 5));
 
-    addPropertyPanel(Pet.OWNER_FK);
-    addPropertyPanel(Pet.NAME);
-    addPropertyPanel(Pet.BIRTH_DATE);
-    add(createPropertyPanel(Pet.PET_TYPE_FK, petTypePanel));
+    addInputPanel(Pet.OWNER_FK);
+    addInputPanel(Pet.NAME);
+    addInputPanel(Pet.BIRTH_DATE);
+    add(createInputPanel(Pet.PET_TYPE_FK, petTypePanel));
   }
 }

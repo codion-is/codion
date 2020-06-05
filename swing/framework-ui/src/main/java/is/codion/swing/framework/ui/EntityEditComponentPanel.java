@@ -140,7 +140,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return the attribute the given component is associated with, null if the component has not been
    * associated with a attribute
    */
-  public final Attribute<?> getComponentAttribute(final JComponent component) {
+  public final Attribute<?> getAttribute(final JComponent component) {
     return components.entrySet().stream().filter(entry -> entry.getValue() == component)
             .findFirst().map(Map.Entry::getKey).orElse(null);
   }
@@ -222,8 +222,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @see #requestComponentFocus(Attribute)
    */
   public void selectInputComponent() {
-    final List<Attribute<?>> attributes = getSelectComponentAttributes();
-    final List<Property<?>> properties = Properties.sort(getEditModel().getEntityDefinition().getProperties(attributes));
+    final List<Property<?>> properties =
+            Properties.sort(getEditModel().getEntityDefinition().getProperties(getSelectComponentAttributes()));
     final Property<?> property = properties.size() == 1 ?  properties.get(0) :
             Dialogs.selectValue(this, properties, Messages.get(Messages.SELECT_INPUT_FIELD));
     if (property != null) {
@@ -254,12 +254,12 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Adds a property panel for the given property to this panel
+   * Adds a panel for the given attribute to this panel
    * @param attribute the attribute
-   * @see #createPropertyPanel(Attribute)
+   * @see #createInputPanel(Attribute)
    */
-  protected final void addPropertyPanel(final Attribute<?> attribute) {
-    add(createPropertyPanel(attribute));
+  protected final void addInputPanel(final Attribute<?> attribute) {
+    add(createInputPanel(attribute));
   }
 
   /**
@@ -268,15 +268,15 @@ public class EntityEditComponentPanel extends JPanel {
    * The default layout of the resulting panel is with the label on top and inputComponent below.
    * @param attribute the attribute from which property to retrieve the label caption
    * @return a panel containing a label and a component
-   * @throws IllegalArgumentException in case no component has been associated with the given property
+   * @throws IllegalArgumentException in case no component has been associated with the given attribute
    */
-  protected final JPanel createPropertyPanel(final Attribute<?> attribute) {
+  protected final JPanel createInputPanel(final Attribute<?> attribute) {
     final JComponent component = getComponent(attribute);
     if (component == null) {
-      throw new IllegalArgumentException("No component associated with property: " + attribute);
+      throw new IllegalArgumentException("No component associated with attribute: " + attribute);
     }
 
-    return createPropertyPanel(attribute, component);
+    return createInputPanel(attribute, component);
   }
 
   /**
@@ -287,8 +287,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @param inputComponent a component bound to the property with id {@code attribute}
    * @return a panel containing a label and a component
    */
-  protected final JPanel createPropertyPanel(final Attribute<?> attribute, final JComponent inputComponent) {
-    return createPropertyPanel(attribute, inputComponent, BorderLayout.NORTH);
+  protected final JPanel createInputPanel(final Attribute<?> attribute, final JComponent inputComponent) {
+    return createInputPanel(attribute, inputComponent, BorderLayout.NORTH);
   }
 
   /**
@@ -300,9 +300,9 @@ public class EntityEditComponentPanel extends JPanel {
    * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
    * @return a panel containing a label and a component
    */
-  protected final JPanel createPropertyPanel(final Attribute<?> attribute, final JComponent inputComponent,
-                                             final String labelBorderLayoutConstraints) {
-    return createPropertyPanel(attribute, inputComponent, labelBorderLayoutConstraints, JLabel.LEADING);
+  protected final JPanel createInputPanel(final Attribute<?> attribute, final JComponent inputComponent,
+                                          final String labelBorderLayoutConstraints) {
+    return createInputPanel(attribute, inputComponent, labelBorderLayoutConstraints, JLabel.LEADING);
   }
 
   /**
@@ -315,9 +315,9 @@ public class EntityEditComponentPanel extends JPanel {
    * @param labelAlignment the label alignment
    * @return a panel containing a label and a component
    */
-  protected final JPanel createPropertyPanel(final Attribute<?> attribute, final JComponent inputComponent,
-                                             final String labelBorderLayoutConstraints, final int labelAlignment) {
-    return createPropertyPanel(createLabel(attribute, labelAlignment), inputComponent, labelBorderLayoutConstraints);
+  protected final JPanel createInputPanel(final Attribute<?> attribute, final JComponent inputComponent,
+                                          final String labelBorderLayoutConstraints, final int labelAlignment) {
+    return createInputPanel(createLabel(attribute, labelAlignment), inputComponent, labelBorderLayoutConstraints);
   }
 
   /**
@@ -327,8 +327,8 @@ public class EntityEditComponentPanel extends JPanel {
    * @param inputComponent a input component
    * @return a panel containing a label and a component
    */
-  protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent) {
-    return createPropertyPanel(labelComponent, inputComponent, BorderLayout.NORTH);
+  protected final JPanel createInputPanel(final JComponent labelComponent, final JComponent inputComponent) {
+    return createInputPanel(labelComponent, inputComponent, BorderLayout.NORTH);
   }
 
   /**
@@ -340,8 +340,8 @@ public class EntityEditComponentPanel extends JPanel {
    * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
    * @return a panel containing a label and a component
    */
-  protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent,
-                                             final String labelBorderLayoutConstraints) {
+  protected final JPanel createInputPanel(final JComponent labelComponent, final JComponent inputComponent,
+                                          final String labelBorderLayoutConstraints) {
     requireNonNull(labelComponent, "labelComponent");
     requireNonNull(inputComponent, "inputComponent");
     if (labelComponent instanceof JLabel) {

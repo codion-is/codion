@@ -164,8 +164,8 @@ public final class EmpDeptMinimalApp {
 
       setLayout(new GridLayout(2, 1, 5, 5));
 
-      addPropertyPanel(EmpDept.DEPT_DNAME);
-      addPropertyPanel(EmpDept.DEPT_LOC);
+      addInputPanel(EmpDept.DEPT_DNAME);
+      addInputPanel(EmpDept.DEPT_LOC);
     }
   }
 
@@ -192,13 +192,13 @@ public final class EmpDeptMinimalApp {
 
       setLayout(new GridLayout(4, 2, 5, 5));
 
-      addPropertyPanel(EmpDept.EMP_ENAME);
-      addPropertyPanel(EmpDept.EMP_DEPT_FK);
-      addPropertyPanel(EmpDept.EMP_JOB);
-      addPropertyPanel(EmpDept.EMP_MGR_FK);
-      addPropertyPanel(EmpDept.EMP_HIREDATE);
-      addPropertyPanel(EmpDept.EMP_SAL);
-      addPropertyPanel(EmpDept.EMP_COMM);
+      addInputPanel(EmpDept.EMP_ENAME);
+      addInputPanel(EmpDept.EMP_DEPT_FK);
+      addInputPanel(EmpDept.EMP_JOB);
+      addInputPanel(EmpDept.EMP_MGR_FK);
+      addInputPanel(EmpDept.EMP_HIREDATE);
+      addInputPanel(EmpDept.EMP_SAL);
+      addInputPanel(EmpDept.EMP_COMM);
     }
   }
 

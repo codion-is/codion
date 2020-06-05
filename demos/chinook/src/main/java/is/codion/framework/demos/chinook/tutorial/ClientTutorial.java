@@ -97,7 +97,7 @@ public final class ClientTutorial {
       setInitialFocusAttribute(Artist.NAME);
       JTextField nameField = createTextField(Artist.NAME);
       nameField.setColumns(15);
-      addPropertyPanel(Artist.NAME);
+      addInputPanel(Artist.NAME);
     }
   }
 
@@ -117,8 +117,8 @@ public final class ClientTutorial {
       titleField.setAction(getInsertControl());
       titleField.setColumns(15);
       setLayout(gridLayout(2, 1));
-      addPropertyPanel(Album.ARTIST_FK);
-      addPropertyPanel(Album.TITLE);
+      addInputPanel(Album.ARTIST_FK);
+      addInputPanel(Album.TITLE);
     }
   }
 
