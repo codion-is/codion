@@ -31,7 +31,7 @@ import static java.util.Collections.singletonList;
  */
 public final class FXEntityListSelectionModel implements SelectionModel<Entity> {
 
-  private final Event selectionChangedEvent = Events.event();
+  private final Event<?> selectionChangedEvent = Events.event();
   private final Event<Integer> selectedIndexChangedEvent = Events.event();
   private final Event<List<Integer>> selectedIndexesChangedEvent = Events.event();
   private final Event<Entity> selectedItemChangedEvent = Events.event();

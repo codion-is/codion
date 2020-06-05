@@ -62,8 +62,8 @@ public class EntityGeneratorModel {
   private final SchemaModel schemaModel;
   private final TableModel tableModel;
   private final Value<String> definitionTextValue = Values.value();
-  private final Event refreshStartedEvent = Events.event();
-  private final Event refreshEndedEvent = Events.event();
+  private final Event<?> refreshStartedEvent = Events.event();
+  private final Event<?> refreshEndedEvent = Events.event();
 
   /**
    * Instantiates a new EntityGeneratorModel.

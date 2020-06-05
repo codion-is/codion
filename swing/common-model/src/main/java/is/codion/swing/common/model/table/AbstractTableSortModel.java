@@ -45,7 +45,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   /**
    * Fired when a column sorting state changes
    */
-  private final Event sortingChangedEvent = Events.event();
+  private final Event<?> sortingChangedEvent = Events.event();
 
   /**
    * holds the column sorting states

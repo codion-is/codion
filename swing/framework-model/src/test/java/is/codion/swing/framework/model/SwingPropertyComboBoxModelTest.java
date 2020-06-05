@@ -30,7 +30,7 @@ public final class SwingPropertyComboBoxModelTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private final SwingFilteredComboBoxModel comboBoxModel;
-  private final Event refreshEvent = Events.event();
+  private final Event<?> refreshEvent = Events.event();
 
   public SwingPropertyComboBoxModelTest() {
     final ColumnProperty property = DOMAIN.getDefinition(TestDomain.T_DEPARTMENT).getColumnProperty(TestDomain.DEPARTMENT_NAME);

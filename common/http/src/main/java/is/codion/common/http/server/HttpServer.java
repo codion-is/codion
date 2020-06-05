@@ -30,8 +30,8 @@ public class HttpServer extends org.eclipse.jetty.server.Server {
 
   private static final Logger LOG = LoggerFactory.getLogger(HttpServer.class);
 
-  private final Event serverStartedEvent = Events.event();
-  private final Event serverStoppedEvent = Events.event();
+  private final Event<?> serverStartedEvent = Events.event();
+  private final Event<?> serverStoppedEvent = Events.event();
 
   private final HandlerList handlers;
   private final int port;

@@ -112,7 +112,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
       final JPanel datePanel = new JPanel(Layouts.borderLayout());
       datePanel.add(calendarPanel, BorderLayout.NORTH);
 
-      final Event closeEvent = Events.event();
+      final Event<?> closeEvent = Events.event();
       final State cancel = States.state();
       final Calendar returnTime = Calendar.getInstance();
       returnTime.setTime(cal.getTime());

@@ -50,12 +50,12 @@ import static java.util.stream.Collectors.toList;
  */
 public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C, TableColumn> {
 
-  private final Event filterEvent = Events.event();
-  private final Event sortEvent = Events.event();
-  private final Event refreshStartedEvent = Events.event();
-  private final Event refreshDoneEvent = Events.event();
-  private final Event tableDataChangedEvent = Events.event();
-  private final Event tableModelClearedEvent = Events.event();
+  private final Event<?> filterEvent = Events.event();
+  private final Event<?> sortEvent = Events.event();
+  private final Event<?> refreshStartedEvent = Events.event();
+  private final Event<?> refreshDoneEvent = Events.event();
+  private final Event<?> tableDataChangedEvent = Events.event();
+  private final Event<?> tableModelClearedEvent = Events.event();
   private final Event<List<Integer>> rowsDeletedEvent = Events.event();
 
   /**

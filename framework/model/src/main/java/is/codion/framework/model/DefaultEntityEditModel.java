@@ -652,7 +652,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final <T> void removeValueEditListener(final Attribute<T> attribute, final EventDataListener<ValueChange<T>> listener) {
     if (valueEditEventMap.containsKey(attribute)) {
-      valueEditEventMap.get(attribute).removeDataListener((EventDataListener<?>) listener);
+      valueEditEventMap.get(attribute).removeDataListener(listener);
     }
   }
 

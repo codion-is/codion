@@ -28,7 +28,7 @@ import static java.util.stream.Collectors.toList;
  */
 public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel implements SelectionModel<R> {
 
-  private final Event selectionChangedEvent = Events.event();
+  private final Event<?> selectionChangedEvent = Events.event();
   private final Event<Integer> selectedIndexChangedEvent = Events.event();
   private final Event<List<Integer>> selectedIndexesChangedEvent = Events.event();
   private final Event<R> selectedItemChangedEvent = Events.event();

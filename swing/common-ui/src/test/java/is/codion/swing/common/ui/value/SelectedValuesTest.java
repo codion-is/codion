@@ -23,11 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class SelectedValuesTest {
 
   private String selectedItem;
-  private final Event selectedItemChangedEvent = Events.event();
+  private final Event<String> selectedItemChangedEvent = Events.event();
 
   @Test
   public void selectedItemValueLink() throws Exception {
-    final JComboBox box = new JComboBox(new String[] {"b", "d", "s"});
+    final JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
     Values.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent).link(SelectedValues.selectedValue(box));
     assertNull(selectedItem);
     setSelectedItem("s");
@@ -53,8 +53,8 @@ public class SelectedValuesTest {
 
   @Test
   public void selectedValue() {
-    final JComboBox box = new JComboBox(new String[] {null, "one", "two", "three"});
-    final Value<Object> value = SelectedValues.selectedValue(box);
+    final JComboBox<String> box = new JComboBox<>(new String[] {null, "one", "two", "three"});
+    final Value<String> value = SelectedValues.selectedValue(box);
 
     assertNull(value.get());
     box.setSelectedIndex(1);

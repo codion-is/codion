@@ -1288,8 +1288,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED_EXCEPTION))
             .append(", ").append(entity.getEntityType());
     for (final ColumnProperty<?> property : modifiedProperties) {
-      builder.append(" \n").append(property).append(": ").append((Object) entity.getOriginal(property.getAttribute()))
-              .append(" -> ").append((Object) modified.get(property.getAttribute()));
+      builder.append(" \n").append(property).append(": ").append(entity.getOriginal(property.getAttribute()))
+              .append(" -> ").append(modified.get(property.getAttribute()));
     }
 
     return builder.toString();
