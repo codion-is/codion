@@ -12,7 +12,7 @@ import java.text.NumberFormat;
 /**
  * A text field for integers.
  */
-public final class IntegerField extends NumberField {
+public final class IntegerField extends NumberField<Integer> {
 
   /**
    * Constructs a new IntegerField.
@@ -43,28 +43,28 @@ public final class IntegerField extends NumberField {
    * @param columns the number of columns
    */
   public IntegerField(final NumberFormat format, final int columns) {
-    super(new NumberDocument(new NumberDocumentFilter(format)), columns);
+    super(new NumberDocument<>(new NumberDocumentFilter<>(format)), columns);
   }
 
   /**
    * @return the value
    */
   public Integer getInteger() {
-    return ((NumberDocument) getDocument()).getInteger();
+    return getTypedDocument().getInteger();
   }
 
   /**
    * @param value the value to set
    */
   public void setInteger(final Integer value) {
-    ((NumberDocument) getDocument()).setNumber(value);
+    getTypedDocument().setNumber(value);
   }
 
   /**
    * @param listener a listener notified when the value changes
    */
   public void addIntegerListener(final EventDataListener<Integer> listener) {
-    final NumberDocument document = (NumberDocument) getDocument();
+    final NumberDocument<Integer> document = getTypedDocument();
     document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getInteger()));
   }
 }

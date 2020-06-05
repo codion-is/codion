@@ -24,8 +24,8 @@ public class ContactInfoEditPanel extends EntityEditPanel {
     createTextField(SellerContactInfo.EMAIL);
 
     setLayout(Layouts.flexibleGridLayout(3, 1));
-    addPropertyPanel(SellerContactInfo.LAST_NAME);
-    addPropertyPanel(SellerContactInfo.FIRST_NAME);
-    addPropertyPanel(SellerContactInfo.EMAIL);
+    addInputPanel(SellerContactInfo.LAST_NAME);
+    addInputPanel(SellerContactInfo.FIRST_NAME);
+    addInputPanel(SellerContactInfo.EMAIL);
   }
 }

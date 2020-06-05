@@ -23,6 +23,6 @@ public final class SpecialtyEditPanel extends EntityEditPanel {
 
     setLayout(new GridLayout(1, 1, 5, 5));
 
-    addPropertyPanel(Specialty.NAME);
+    addInputPanel(Specialty.NAME);
   }
 }

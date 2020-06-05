@@ -25,9 +25,9 @@ public class TagItemEditPanel extends EntityEditPanel {
     setInitialFocusComponent(itemBox);
     itemBox.setPopupWidth(240);
     Components.setPreferredWidth(itemBox, 180);
-    addPropertyPanel(TagItem.ITEM_FK);
+    addInputPanel(TagItem.ITEM_FK);
     final EntityComboBox itemTagBox = createForeignKeyComboBox(TagItem.TAG_FK);
-    add(createPropertyPanel(TagItem.TAG_FK, Components.createEastButtonPanel(itemTagBox,
+    add(createInputPanel(TagItem.TAG_FK, Components.createEastButtonPanel(itemTagBox,
             new EntityPanelBuilder(Tag.TYPE).setEditPanelClass(TagEditPanel.class)
                     .createEditPanelAction(itemTagBox))));
   }

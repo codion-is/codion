@@ -54,17 +54,17 @@ public class TrackEditPanel extends EntityEditPanel {
     final ComponentValue<Integer, MinutesSecondsPanel> minutesSecondsValue = new MinutesSecondsPanelValue();
     minutesSecondsValue.link(getEditModel().value(Track.MILLISECONDS));
     final JPanel durationPanel = new JPanel(gridLayout(1, 2));
-    durationPanel.add(createPropertyPanel(Track.MILLISECONDS, millisecondsField));
+    durationPanel.add(createInputPanel(Track.MILLISECONDS, millisecondsField));
     durationPanel.add(minutesSecondsValue.getComponent());
 
     setLayout(flexibleGridLayout(4, 2));
-    addPropertyPanel(Track.ALBUM_FK);
-    addPropertyPanel(Track.NAME);
-    add(createPropertyPanel(Track.GENRE_FK, genrePanel));
-    addPropertyPanel(Track.COMPOSER);
-    add(createPropertyPanel(Track.MEDIATYPE_FK, mediaTypePanel));
-    addPropertyPanel(Track.BYTES);
-    addPropertyPanel(Track.UNITPRICE);
+    addInputPanel(Track.ALBUM_FK);
+    addInputPanel(Track.NAME);
+    add(createInputPanel(Track.GENRE_FK, genrePanel));
+    addInputPanel(Track.COMPOSER);
+    add(createInputPanel(Track.MEDIATYPE_FK, mediaTypePanel));
+    addInputPanel(Track.BYTES);
+    addInputPanel(Track.UNITPRICE);
     add(durationPanel);
   }
 }

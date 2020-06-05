@@ -6209,3 +6209,5 @@
   SwingFilteredComboBoxModel, nullValue now String, renamed nullString, somewhat hacky
   Entity.Key moved up to package level
   CredentialsServer Collections.synchronizedMap() replaced with ConcurrentHashMap
+  EntityEditPanel, propertyPanel renamed inputPanel
+  DecimalField split into DoubleField and BigDecimalField

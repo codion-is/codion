@@ -23,6 +23,6 @@ public final class PetTypeEditPanel extends EntityEditPanel {
 
     setLayout(new GridLayout(1, 1, 5, 5));
 
-    addPropertyPanel(PetType.NAME);
+    addInputPanel(PetType.NAME);
   }
 }

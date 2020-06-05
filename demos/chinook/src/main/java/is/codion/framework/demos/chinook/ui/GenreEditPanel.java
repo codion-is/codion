@@ -22,6 +22,6 @@ public class GenreEditPanel extends EntityEditPanel {
     createTextField(Genre.NAME).setColumns(12);
 
     setLayout(gridLayout(1, 1));
-    addPropertyPanel(Genre.NAME);
+    addInputPanel(Genre.NAME);
   }
 }

@@ -12,7 +12,7 @@ import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.Modal;
-import is.codion.swing.common.ui.textfield.DecimalField;
+import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.value.ComponentValue;
 import is.codion.swing.common.ui.value.ComponentValuePanel;
 import is.codion.swing.common.ui.value.NumericalValues;
@@ -22,6 +22,7 @@ import is.codion.swing.framework.ui.EntityComponentValues;
 import is.codion.swing.framework.ui.EntityTableConditionPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
+import javax.swing.JComponent;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class TrackTablePanel extends EntityTablePanel {
   }
 
   private BigDecimal getAmountFromUser() {
-    final ComponentValuePanel<BigDecimal, DecimalField> inputPanel =
+    final ComponentValuePanel<BigDecimal, BigDecimalField> inputPanel =
             new ComponentValuePanel<>("Amount",
                     NumericalValues.bigDecimalValue());
     Dialogs.displayInDialog(this, inputPanel, "Price Raise", Modal.YES,
@@ -63,11 +64,11 @@ public class TrackTablePanel extends EntityTablePanel {
   private static final class TrackComponentValues extends EntityComponentValues {
 
     @Override
-    public ComponentValue createComponentValue(final Property property,
-                                               final SwingEntityEditModel editModel,
-                                               final Object initialValue) {
+    public <T, C extends JComponent> ComponentValue<T, C> createComponentValue(final Property<T> property,
+                                                                               final SwingEntityEditModel editModel,
+                                                                               final T initialValue) {
       if (property.is(Chinook.Track.MILLISECONDS)) {
-        return new MinutesSecondsPanelValue();
+        return (ComponentValue<T, C>) new MinutesSecondsPanelValue();
       }
 
       return super.createComponentValue(property, editModel, initialValue);

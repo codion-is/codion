@@ -86,15 +86,15 @@ public final class EntityEditPanelTest {
 
       setLayout(new FlexibleGridLayout(3, 3, 5, 5, FixRowHeights.YES, FixColumnWidths.NO));
 
-      addPropertyPanel(TestDomain.EMP_NAME);
-      addPropertyPanel(TestDomain.EMP_JOB);
-      addPropertyPanel(TestDomain.EMP_DEPARTMENT_FK);
+      addInputPanel(TestDomain.EMP_NAME);
+      addInputPanel(TestDomain.EMP_JOB);
+      addInputPanel(TestDomain.EMP_DEPARTMENT_FK);
 
-      addPropertyPanel(TestDomain.EMP_MGR_FK);
-      addPropertyPanel(TestDomain.EMP_SALARY);
-      addPropertyPanel(TestDomain.EMP_COMMISSION);
+      addInputPanel(TestDomain.EMP_MGR_FK);
+      addInputPanel(TestDomain.EMP_SALARY);
+      addInputPanel(TestDomain.EMP_COMMISSION);
 
-      addPropertyPanel(TestDomain.EMP_HIREDATE);
+      addInputPanel(TestDomain.EMP_HIREDATE);
     }
   }
 }

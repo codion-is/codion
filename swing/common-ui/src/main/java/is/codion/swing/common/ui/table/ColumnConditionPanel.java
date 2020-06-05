@@ -23,7 +23,8 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
-import is.codion.swing.common.ui.textfield.DecimalField;
+import is.codion.swing.common.ui.textfield.BigDecimalField;
+import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.TextFields;
@@ -376,19 +377,19 @@ public class ColumnConditionPanel<R, C> extends JPanel {
         return integerField;
       }
       else if (typeClass.equals(Double.class)) {
-        final DecimalField decimalField = new DecimalField(DEFAULT_FIELD_COLUMNS);
-        value.link(NumericalValues.doubleValue(decimalField));
+        final DoubleField doubleField = new DoubleField(DEFAULT_FIELD_COLUMNS);
+        value.link(NumericalValues.doubleValue(doubleField));
 
-        return decimalField;
+        return doubleField;
       }
       else if (typeClass.equals(BigDecimal.class)) {
         final DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance();
         format.setParseBigDecimal(true);
 
-        final DecimalField decimalField = new DecimalField(format, DEFAULT_FIELD_COLUMNS);
-        value.link(NumericalValues.bigDecimalValue(decimalField));
+        final BigDecimalField bigDecimalField = new BigDecimalField(format, DEFAULT_FIELD_COLUMNS);
+        value.link(NumericalValues.bigDecimalValue(bigDecimalField));
 
-        return decimalField;
+        return bigDecimalField;
       }
       else if (typeClass.equals(Long.class)) {
         final LongField longField = new LongField(DEFAULT_FIELD_COLUMNS);

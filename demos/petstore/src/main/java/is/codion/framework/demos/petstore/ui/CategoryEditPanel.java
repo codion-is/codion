@@ -24,8 +24,8 @@ public class CategoryEditPanel extends EntityEditPanel {
     createTextField(Category.IMAGE_URL);
 
     setLayout(Layouts.flexibleGridLayout(2, 2));
-    addPropertyPanel(Category.NAME);
-    addPropertyPanel(Category.DESCRIPTION);
-    addPropertyPanel(Category.IMAGE_URL);
+    addInputPanel(Category.NAME);
+    addInputPanel(Category.DESCRIPTION);
+    addInputPanel(Category.IMAGE_URL);
   }
 }

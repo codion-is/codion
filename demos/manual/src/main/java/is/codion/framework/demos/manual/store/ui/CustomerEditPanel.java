@@ -31,10 +31,10 @@ public class CustomerEditPanel extends EntityEditPanel {
     //the createControlPanel method creates a panel containing the
     //component associated with the property as well as a JLabel with the
     //property caption as defined in the domain model
-    addPropertyPanel(Customer.FIRST_NAME);
-    addPropertyPanel(Customer.LAST_NAME);
-    addPropertyPanel(Customer.EMAIL);
-    addPropertyPanel(Customer.IS_ACTIVE);
+    addInputPanel(Customer.FIRST_NAME);
+    addInputPanel(Customer.LAST_NAME);
+    addInputPanel(Customer.EMAIL);
+    addInputPanel(Customer.IS_ACTIVE);
   }
 }
 // end::customerEditPanel[]

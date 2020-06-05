@@ -9,7 +9,8 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
-import is.codion.swing.common.ui.textfield.DecimalField;
+import is.codion.swing.common.ui.textfield.BigDecimalField;
+import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
@@ -92,9 +93,9 @@ public final class EntityEditPanels {
 
       LongField longField = (LongField) createTextField(Demo.LONG);
 
-      DecimalField doubleField = (DecimalField) createTextField(Demo.DOUBLE);
+      DoubleField doubleField = (DoubleField) createTextField(Demo.DOUBLE);
 
-      DecimalField bigDecimalField = (DecimalField) createTextField(Demo.BIG_DECIMAL);
+      BigDecimalField bigDecimalField = (BigDecimalField) createTextField(Demo.BIG_DECIMAL);
       // end::numericalValue[]
     }
 
@@ -121,7 +122,7 @@ public final class EntityEditPanels {
       // tag::panelLabel[]
       JLabel label = createLabel(Demo.TEXT);
 
-      JPanel propertyPanel = createPropertyPanel(Demo.TEXT);
+      JPanel propertyPanel = createInputPanel(Demo.TEXT);
       // end::panelLabel[]
     }
 

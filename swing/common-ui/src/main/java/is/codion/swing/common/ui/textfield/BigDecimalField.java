@@ -10,16 +10,16 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 /**
- * A text field for decimals, e.i. Double or BigDecimal.
+ * A text field for BigDecimal.
  */
-public final class DecimalField extends NumberField {
+public final class BigDecimalField extends NumberField<BigDecimal> {
 
   private static final int MAXIMUM_FRACTION_DIGITS = 340;
 
   /**
    * Instantiates a new DecimalField.
    */
-  public DecimalField() {
+  public BigDecimalField() {
     this(0);
   }
 
@@ -27,7 +27,7 @@ public final class DecimalField extends NumberField {
    * Instantiates a new DecimalField
    * @param columns the number of columns
    */
-  public DecimalField(final int columns) {
+  public BigDecimalField(final int columns) {
     this(createDefaultFormat(), columns);
   }
 
@@ -35,7 +35,7 @@ public final class DecimalField extends NumberField {
    * Instantiates a new DecimalField
    * @param format the format to use
    */
-  public DecimalField(final DecimalFormat format) {
+  public BigDecimalField(final DecimalFormat format) {
     this(format, 0);
   }
 
@@ -44,36 +44,23 @@ public final class DecimalField extends NumberField {
    * @param format the format to use
    * @param columns the number of columns
    */
-  public DecimalField(final DecimalFormat format, final int columns) {
-    super(new DecimalDocument(format), columns);
+  public BigDecimalField(final DecimalFormat format, final int columns) {
+    super(new BigDecimalDocument(format), columns);
+    ((DecimalFormat) getTypedDocument().getFormat()).setParseBigDecimal(true);
   }
 
   /**
    * @return the maximum number of fraction digits this field shows
    */
   public int getMaximumFractionDigits() {
-    return ((DecimalDocument) getDocument()).getMaximumFractionDigits();
+    return ((BigDecimalDocument) getTypedDocument()).getMaximumFractionDigits();
   }
 
   /**
    * @param maximumFractionDigits the maximum number of fraction digits this field shows
    */
   public void setMaximumFractionDigits(final int maximumFractionDigits) {
-    ((DecimalDocument) getDocument()).setMaximumFractionDigits(maximumFractionDigits);
-  }
-
-  /**
-   * @return the current value
-   */
-  public Double getDouble() {
-    return ((DecimalDocument) getDocument()).getDouble();
-  }
-
-  /**
-   * @param value the value to set
-   */
-  public void setDouble(final Double value) {
-    ((DecimalDocument) getDocument()).setNumber(value);
+    ((BigDecimalDocument) getTypedDocument()).setMaximumFractionDigits(maximumFractionDigits);
   }
 
   /**
@@ -81,38 +68,21 @@ public final class DecimalField extends NumberField {
    * @see DecimalFormat#setParseBigDecimal(boolean)
    */
   public BigDecimal getBigDecimal() {
-    return ((DecimalDocument) getDocument()).getBigDecimal();
+    return getTypedDocument().getBigDecimal();
   }
 
   /**
    * @param value the value to set
    */
   public void setBigDecimal(final BigDecimal value) {
-    ((DecimalDocument) getDocument()).setNumber(value);
-  }
-
-  /**
-   * Sets whether this field parses a BigDecimal
-   * @param parseBigDecimal if true then this field parses a BigDecimal
-   */
-  public void setParseBigDecimal(final boolean parseBigDecimal) {
-    ((DecimalFormat) ((DecimalDocument) getDocument()).getFormat()).setParseBigDecimal(parseBigDecimal);
+    getTypedDocument().setNumber(value);
   }
 
   /**
    * @param listener a listener notified when the value changes
-   */
-  public void addDoubleListener(final EventDataListener<Double> listener) {
-    final NumberDocument document = (NumberDocument) getDocument();
-    document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getDouble()));
-  }
-
-  /**
-   * @param listener a listener notified when the value changes
-   * @see #setParseBigDecimal(boolean)
    */
   public void addBigDecimalListener(final EventDataListener<BigDecimal> listener) {
-    final NumberDocument document = (NumberDocument) getDocument();
+    final NumberDocument<BigDecimal> document = getTypedDocument();
     document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getBigDecimal()));
   }
 
@@ -123,10 +93,10 @@ public final class DecimalField extends NumberField {
     return format;
   }
 
-  private static final class DecimalDocument extends NumberDocument {
+  private static final class BigDecimalDocument extends NumberDocument<BigDecimal> {
 
-    private DecimalDocument(final DecimalFormat format) {
-      super(new DecimalDocumentFilter(format));
+    private BigDecimalDocument(final DecimalFormat format) {
+      super(new BigDecimalDocumentFilter(format));
     }
 
     private int getMaximumFractionDigits() {
@@ -144,9 +114,9 @@ public final class DecimalField extends NumberField {
     }
   }
 
-  private static final class DecimalDocumentFilter extends NumberDocumentFilter {
+  private static final class BigDecimalDocumentFilter extends NumberDocumentFilter<BigDecimal> {
 
-    private DecimalDocumentFilter(final DecimalFormat format) {
+    private BigDecimalDocumentFilter(final DecimalFormat format) {
       super(format);
     }
 

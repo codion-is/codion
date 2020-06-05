@@ -43,18 +43,18 @@ public class ItemEditPanel extends EntityEditPanel {
     createNullableCheckBox(Item.DISABLED, null, IncludeCaption.NO);
 
     setLayout(Layouts.flexibleGridLayout(3, 3));
-    addPropertyPanel(Item.PRODUCT_FK);
-    addPropertyPanel(Item.NAME);
-    add(createPropertyPanel(Item.DESCRIPTION));
-    addPropertyPanel(Item.PRICE);
-    add(createPropertyPanel(Item.C0NTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
+    addInputPanel(Item.PRODUCT_FK);
+    addInputPanel(Item.NAME);
+    add(createInputPanel(Item.DESCRIPTION));
+    addInputPanel(Item.PRICE);
+    add(createInputPanel(Item.C0NTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
             new EntityPanelBuilder(SellerContactInfo.TYPE).setEditPanelClass(ContactInfoEditPanel.class)
                     .createEditPanelAction(contactInfoBox))));
-    add(createPropertyPanel(Item.ADDRESS_FK, Components.createEastButtonPanel(addressBox,
+    add(createInputPanel(Item.ADDRESS_FK, Components.createEastButtonPanel(addressBox,
             new EntityPanelBuilder(Address.TYPE).setEditPanelClass(AddressEditPanel.class)
                     .createEditPanelAction(addressBox))));
-    addPropertyPanel(Item.IMAGE_URL);
-    addPropertyPanel(Item.IMAGE_THUMB_URL);
-    addPropertyPanel(Item.DISABLED);
+    addInputPanel(Item.IMAGE_URL);
+    addInputPanel(Item.IMAGE_THUMB_URL);
+    addInputPanel(Item.DISABLED);
   }
 }

@@ -35,7 +35,7 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
 
     setLayout(new BorderLayout(5, 5));
 
-    add(createPropertyPanel(CustomerAddress.ADDRESS_FK, addressPanel));
+    add(createInputPanel(CustomerAddress.ADDRESS_FK, addressPanel));
   }
 }
 // end::customerAddressEditPanel[]

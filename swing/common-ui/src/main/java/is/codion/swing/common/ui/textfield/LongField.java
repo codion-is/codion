@@ -12,7 +12,7 @@ import java.text.NumberFormat;
 /**
  * A text field for longs.
  */
-public final class LongField extends NumberField {
+public final class LongField extends NumberField<Long> {
 
   /**
    * Instantiates a new LongField.
@@ -43,28 +43,28 @@ public final class LongField extends NumberField {
    * @param columns the number of columns
    */
   public LongField(final NumberFormat format, final int columns) {
-    super(new NumberDocument(new NumberDocumentFilter(format)), columns);
+    super(new NumberDocument<>(new NumberDocumentFilter<>(format)), columns);
   }
 
   /**
    * @return the value
    */
   public Long getLong() {
-    return ((NumberDocument) getDocument()).getLong();
+    return getTypedDocument().getLong();
   }
 
   /**
    * @param value the value to set
    */
   public void setLong(final Long value) {
-    ((NumberDocument) getDocument()).setNumber(value);
+    getTypedDocument().setNumber(value);
   }
 
   /**
    * @param listener a listener notified when the value changes
    */
   public void addLongListener(final EventDataListener<Long> listener) {
-    final NumberDocument document = (NumberDocument) getDocument();
+    final NumberDocument<Long> document = getTypedDocument();
     document.addDocumentListener((DocumentAdapter) e -> listener.onEvent(document.getLong()));
   }
 }

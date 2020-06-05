@@ -22,6 +22,6 @@ public class PlaylistEditPanel extends EntityEditPanel {
     createTextField(Playlist.NAME).setColumns(12);
 
     setLayout(gridLayout(1, 1));
-    addPropertyPanel(Playlist.NAME);
+    addInputPanel(Playlist.NAME);
   }
 }

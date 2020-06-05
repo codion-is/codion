@@ -4,6 +4,7 @@
 package is.codion.framework.demos.empdept.ui;
 
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixRowHeights;
@@ -32,7 +33,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     final JTextField nameField = TextFields.upperCase(createTextField(Employee.NAME));
     nameField.setColumns(8);
     createValueListComboBox(Employee.JOB);
-    final JComboBox managerBox = createForeignKeyComboBox(Employee.MGR_FK);
+    final JComboBox<Entity> managerBox = createForeignKeyComboBox(Employee.MGR_FK);
     managerBox.setPreferredSize(TextFields.getPreferredTextFieldSize());
     createForeignKeyComboBox(Employee.DEPARTMENT_FK);
     createTextField(Employee.SALARY);
@@ -41,15 +42,15 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
     setLayout(new FlexibleGridLayout(3, 3, 5, 5, FixRowHeights.YES, FixColumnWidths.NO));
 
-    addPropertyPanel(Employee.NAME);
-    addPropertyPanel(Employee.JOB);
-    addPropertyPanel(Employee.DEPARTMENT_FK);
+    addInputPanel(Employee.NAME);
+    addInputPanel(Employee.JOB);
+    addInputPanel(Employee.DEPARTMENT_FK);
 
-    addPropertyPanel(Employee.MGR_FK);
-    addPropertyPanel(Employee.SALARY);
-    addPropertyPanel(Employee.COMMISSION);
+    addInputPanel(Employee.MGR_FK);
+    addInputPanel(Employee.SALARY);
+    addInputPanel(Employee.COMMISSION);
 
-    addPropertyPanel(Employee.HIREDATE);
+    addInputPanel(Employee.HIREDATE);
     add(new JLabel());
     add(new JLabel());
   }

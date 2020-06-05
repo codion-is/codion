@@ -49,21 +49,21 @@ public final class CountryEditPanel extends EntityEditPanel {
 
     setLayout(gridLayout(4, 5));
 
-    addPropertyPanel(Country.CODE);
-    addPropertyPanel(Country.CODE_2);
-    addPropertyPanel(Country.NAME);
-    addPropertyPanel(Country.CONTINENT);
-    addPropertyPanel(Country.REGION);
-    addPropertyPanel(Country.SURFACEAREA);
-    addPropertyPanel(Country.INDEPYEAR);
-    addPropertyPanel(Country.POPULATION);
-    addPropertyPanel(Country.LIFE_EXPECTANCY);
-    addPropertyPanel(Country.GNP);
-    addPropertyPanel(Country.GNPOLD);
-    addPropertyPanel(Country.LOCALNAME);
-    addPropertyPanel(Country.GOVERNMENTFORM);
-    addPropertyPanel(Country.HEADOFSTATE);
-    add(createPropertyPanel(Country.CAPITAL_FK, capitalPanel));
+    addInputPanel(Country.CODE);
+    addInputPanel(Country.CODE_2);
+    addInputPanel(Country.NAME);
+    addInputPanel(Country.CONTINENT);
+    addInputPanel(Country.REGION);
+    addInputPanel(Country.SURFACEAREA);
+    addInputPanel(Country.INDEPYEAR);
+    addInputPanel(Country.POPULATION);
+    addInputPanel(Country.LIFE_EXPECTANCY);
+    addInputPanel(Country.GNP);
+    addInputPanel(Country.GNPOLD);
+    addInputPanel(Country.LOCALNAME);
+    addInputPanel(Country.GOVERNMENTFORM);
+    addInputPanel(Country.HEADOFSTATE);
+    add(createInputPanel(Country.CAPITAL_FK, capitalPanel));
   }
 
   /** A EntityPanelBuilder for adding a new city */

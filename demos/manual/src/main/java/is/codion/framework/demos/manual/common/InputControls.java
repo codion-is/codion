@@ -13,7 +13,8 @@ import is.codion.swing.common.model.textfield.DocumentAdapter;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.textfield.DecimalField;
+import is.codion.swing.common.ui.textfield.BigDecimalField;
+import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
@@ -123,7 +124,7 @@ public final class InputControls {
     // tag::doubleField[]
     Value<Double> doubleValue = Values.value();
 
-    DecimalField doubleField = new DecimalField();
+    DoubleField doubleField = new DoubleField();
 
     doubleValue.link(NumericalValues.doubleValue(doubleField));
     // end::doubleField[]
@@ -133,7 +134,7 @@ public final class InputControls {
     // tag::bigDecimalField[]
     Value<BigDecimal> bigDecimalValue = Values.value();
 
-    DecimalField bigDecimalField = new DecimalField();
+    BigDecimalField bigDecimalField = new BigDecimalField();
 
     bigDecimalValue.link(NumericalValues.bigDecimalValue(bigDecimalField));
     // end::bigDecimalField[]

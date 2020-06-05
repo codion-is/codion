@@ -24,9 +24,9 @@ public final class CityEditPanel extends EntityEditPanel {
 
     setLayout(gridLayout(2, 2));
 
-    addPropertyPanel(City.COUNTRY_FK);
-    addPropertyPanel(City.NAME);
-    addPropertyPanel(City.DISTRICT);
-    addPropertyPanel(City.POPULATION);
+    addInputPanel(City.COUNTRY_FK);
+    addInputPanel(City.NAME);
+    addInputPanel(City.DISTRICT);
+    addInputPanel(City.POPULATION);
   }
 }

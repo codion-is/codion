@@ -30,13 +30,13 @@ public class AddressEditPanel extends EntityEditPanel {
     createTextField(Address.LONGITUDE);
 
     setLayout(Layouts.flexibleGridLayout(4, 2));
-    addPropertyPanel(Address.CITY);
-    addPropertyPanel(Address.STATE);
+    addInputPanel(Address.CITY);
+    addInputPanel(Address.STATE);
     add(new JLabel());
-    addPropertyPanel(Address.ZIP);
-    addPropertyPanel(Address.STREET_1);
-    addPropertyPanel(Address.STREET_2);
-    addPropertyPanel(Address.LATITUDE);
-    addPropertyPanel(Address.LONGITUDE);
+    addInputPanel(Address.ZIP);
+    addInputPanel(Address.STREET_1);
+    addInputPanel(Address.STREET_2);
+    addInputPanel(Address.LATITUDE);
+    addInputPanel(Address.LONGITUDE);
   }
 }

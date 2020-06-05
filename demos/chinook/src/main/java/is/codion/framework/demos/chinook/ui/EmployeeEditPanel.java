@@ -40,19 +40,19 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createTextField(Employee.TITLE).setColumns(16);
 
     setLayout(flexibleGridLayout(4, 4));
-    addPropertyPanel(Employee.FIRSTNAME);
-    addPropertyPanel(Employee.LASTNAME);
-    addPropertyPanel(Employee.BIRTHDATE);
-    addPropertyPanel(Employee.ADDRESS);
-    addPropertyPanel(Employee.CITY);
-    addPropertyPanel(Employee.STATE);
-    addPropertyPanel(Employee.COUNTRY);
-    addPropertyPanel(Employee.POSTALCODE);
-    addPropertyPanel(Employee.PHONE);
-    addPropertyPanel(Employee.FAX);
-    addPropertyPanel(Employee.EMAIL);
-    addPropertyPanel(Employee.REPORTSTO_FK);
-    addPropertyPanel(Employee.HIREDATE);
-    addPropertyPanel(Employee.TITLE);
+    addInputPanel(Employee.FIRSTNAME);
+    addInputPanel(Employee.LASTNAME);
+    addInputPanel(Employee.BIRTHDATE);
+    addInputPanel(Employee.ADDRESS);
+    addInputPanel(Employee.CITY);
+    addInputPanel(Employee.STATE);
+    addInputPanel(Employee.COUNTRY);
+    addInputPanel(Employee.POSTALCODE);
+    addInputPanel(Employee.PHONE);
+    addInputPanel(Employee.FAX);
+    addInputPanel(Employee.EMAIL);
+    addInputPanel(Employee.REPORTSTO_FK);
+    addInputPanel(Employee.HIREDATE);
+    addInputPanel(Employee.TITLE);
   }
 }

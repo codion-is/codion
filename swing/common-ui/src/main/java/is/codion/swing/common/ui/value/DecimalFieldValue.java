@@ -4,16 +4,16 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.value.Nullable;
-import is.codion.swing.common.ui.textfield.DecimalField;
+import is.codion.swing.common.ui.textfield.DoubleField;
 
-final class DecimalFieldValue extends AbstractTextComponentValue<Double, DecimalField> {
+final class DecimalFieldValue extends AbstractTextComponentValue<Double, DoubleField> {
 
-  DecimalFieldValue(final DecimalField decimalField, final Nullable nullable, final UpdateOn updateOn) {
-    super(decimalField, nullable, updateOn);
+  DecimalFieldValue(final DoubleField doubleField, final Nullable nullable, final UpdateOn updateOn) {
+    super(doubleField, nullable, updateOn);
   }
 
   @Override
-  protected Double getComponentValue(final DecimalField component) {
+  protected Double getComponentValue(final DoubleField component) {
     final Number number = component.getNumber();
     if (number == null) {
       return isNullable() ? null : 0d;
@@ -23,7 +23,7 @@ final class DecimalFieldValue extends AbstractTextComponentValue<Double, Decimal
   }
 
   @Override
-  protected void setComponentValue(final DecimalField component, final Double value) {
+  protected void setComponentValue(final DoubleField component, final Double value) {
     component.setNumber(value);
   }
 }

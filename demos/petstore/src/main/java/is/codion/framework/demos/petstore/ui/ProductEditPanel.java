@@ -24,8 +24,8 @@ public class ProductEditPanel extends EntityEditPanel {
     createTextField(Product.DESCRIPTION).setColumns(16);
 
     setLayout(Layouts.flexibleGridLayout(3, 1));
-    addPropertyPanel(Product.CATEGORY_FK);
-    addPropertyPanel(Product.NAME);
-    addPropertyPanel(Product.DESCRIPTION);
+    addInputPanel(Product.CATEGORY_FK);
+    addInputPanel(Product.NAME);
+    addInputPanel(Product.DESCRIPTION);
   }
 }

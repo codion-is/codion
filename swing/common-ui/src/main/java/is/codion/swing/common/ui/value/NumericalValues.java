@@ -8,7 +8,8 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.value.Nullable;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
-import is.codion.swing.common.ui.textfield.DecimalField;
+import is.codion.swing.common.ui.textfield.BigDecimalField;
+import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
 
@@ -28,7 +29,7 @@ public final class NumericalValues {
   /**
    * @return a BigDecimal based ComponentValue
    */
-  public static ComponentValue<BigDecimal, DecimalField> bigDecimalValue() {
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalValue() {
     return bigDecimalValue(null, Formats.getBigDecimalNumberFormat());
   }
 
@@ -36,7 +37,7 @@ public final class NumericalValues {
    * @param initialValue the initial value
    * @return a BigDecimal based ComponentValue
    */
-  public static ComponentValue<BigDecimal, DecimalField> bigDecimalValue(final BigDecimal initialValue) {
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalValue(final BigDecimal initialValue) {
     return bigDecimalValue(initialValue, Formats.getBigDecimalNumberFormat());
   }
 
@@ -45,30 +46,30 @@ public final class NumericalValues {
    * @param format the number format to use
    * @return a BigDecimal based ComponentValue
    */
-  public static ComponentValue<BigDecimal, DecimalField> bigDecimalValue(final BigDecimal initialValue,
-                                                                         final DecimalFormat format) {
-    final DecimalField decimalField = new DecimalField(format);
-    decimalField.setBigDecimal(initialValue);
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalValue(final BigDecimal initialValue,
+                                                                            final DecimalFormat format) {
+    final BigDecimalField bigDecimalField = new BigDecimalField(format);
+    bigDecimalField.setBigDecimal(initialValue);
 
-    return bigDecimalValue(decimalField);
+    return bigDecimalValue(bigDecimalField);
   }
 
   /**
-   * @param decimalField the component
+   * @param bigDecimalField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<BigDecimal, DecimalField> bigDecimalValue(final DecimalField decimalField) {
-    return bigDecimalValue(decimalField, UpdateOn.KEYSTROKE);
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalValue(final BigDecimalField bigDecimalField) {
+    return bigDecimalValue(bigDecimalField, UpdateOn.KEYSTROKE);
   }
 
   /**
-   * @param decimalField the component
+   * @param bigDecimalField the component
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<BigDecimal, DecimalField> bigDecimalValue(final DecimalField decimalField,
-                                                                         final UpdateOn updateOn) {
-    return new BigDecimalFieldValue(decimalField, updateOn);
+  public static ComponentValue<BigDecimal, BigDecimalField> bigDecimalValue(final BigDecimalField bigDecimalField,
+                                                                            final UpdateOn updateOn) {
+    return new BigDecimalFieldValue(bigDecimalField, updateOn);
   }
 
   /**
@@ -83,7 +84,7 @@ public final class NumericalValues {
    * Instantiates a new Double based ComponentValue.
    * @return a Double based ComponentValue
    */
-  public static ComponentValue<Double, DecimalField> doubleValue() {
+  public static ComponentValue<Double, DoubleField> doubleValue() {
     return doubleValue(null, new DecimalFormat());
   }
 
@@ -92,7 +93,7 @@ public final class NumericalValues {
    * @param initialValue the initial value
    * @return a Double based ComponentValue
    */
-  public static ComponentValue<Double, DecimalField> doubleValue(final Double initialValue) {
+  public static ComponentValue<Double, DoubleField> doubleValue(final Double initialValue) {
     return doubleValue(initialValue, new DecimalFormat());
   }
 
@@ -102,40 +103,40 @@ public final class NumericalValues {
    * @param format the number format to use
    * @return a Double based ComponentValue
    */
-  public static ComponentValue<Double, DecimalField> doubleValue(final Double initialValue,
-                                                                 final DecimalFormat format) {
-    final DecimalField decimalField = new DecimalField(format);
-    decimalField.setDouble(initialValue);
+  public static ComponentValue<Double, DoubleField> doubleValue(final Double initialValue,
+                                                                final DecimalFormat format) {
+    final DoubleField doubleField = new DoubleField(format);
+    doubleField.setDouble(initialValue);
 
-    return doubleValue(decimalField, Nullable.YES);
+    return doubleValue(doubleField, Nullable.YES);
   }
 
   /**
-   * @param decimalField the component
+   * @param doubleField the component
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField) {
-    return doubleValue(decimalField, Nullable.YES);
+  public static ComponentValue<Double, DoubleField> doubleValue(final DoubleField doubleField) {
+    return doubleValue(doubleField, Nullable.YES);
   }
 
   /**
-   * @param decimalField the component
+   * @param doubleField the component
    * @param nullable if {@link Nullable#NO} then the resulting Value translates null to 0
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField, final Nullable nullable) {
-    return doubleValue(decimalField, nullable, UpdateOn.KEYSTROKE);
+  public static ComponentValue<Double, DoubleField> doubleValue(final DoubleField doubleField, final Nullable nullable) {
+    return doubleValue(doubleField, nullable, UpdateOn.KEYSTROKE);
   }
 
   /**
-   * @param decimalField the component
+   * @param doubleField the component
    * @param nullable if {@link Nullable#NO} then the resulting Value translates null to 0
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
-  public static ComponentValue<Double, DecimalField> doubleValue(final DecimalField decimalField, final Nullable nullable,
-                                                                 final UpdateOn updateOn) {
-    return new DecimalFieldValue(decimalField, nullable, updateOn);
+  public static ComponentValue<Double, DoubleField> doubleValue(final DoubleField doubleField, final Nullable nullable,
+                                                                final UpdateOn updateOn) {
+    return new DecimalFieldValue(doubleField, nullable, updateOn);
   }
 
   /**

@@ -27,8 +27,8 @@ public class AlbumEditPanel extends EntityEditPanel {
     createTextField(Album.TITLE).setColumns(18);
 
     final JPanel inputPanel = new JPanel(gridLayout(2, 1));
-    inputPanel.add(createPropertyPanel(Album.ARTIST_FK));
-    inputPanel.add(createPropertyPanel(Album.TITLE));
+    inputPanel.add(createInputPanel(Album.ARTIST_FK));
+    inputPanel.add(createInputPanel(Album.TITLE));
 
     setLayout(borderLayout());
 
