@@ -36,7 +36,7 @@ public class NumericalValuesTest {  private Long longValue;
   private final Event<Integer> intValueChangedEvent = Events.event();
 
   private Double doubleValue;
-  private final Event doubleValueChangedEvent = Events.event();
+  private final Event<Double> doubleValueChangedEvent = Events.event();
   private double doublePrimitiveValue;
   private final Event doublePrimitiveValueValueChangedEvent = Events.event();
 
@@ -174,7 +174,7 @@ public class NumericalValuesTest {  private Long longValue;
   public void testDouble() throws Exception {
     final DecimalField decimalField = new DecimalField();
     decimalField.setSeparators('.', ',');
-    final Value doublePropertyValue = Values.propertyValue(this, "doubleValue",
+    final Value<Double> doublePropertyValue = Values.propertyValue(this, "doubleValue",
             Double.class, doubleValueChangedEvent);
     doublePropertyValue.link(NumericalValues.doubleValue(decimalField));
     assertNull(decimalField.getDouble());

@@ -112,7 +112,7 @@ public class DefaultEntityValidator implements EntityValidator {
       return;
     }
 
-    final Number value = (Number) entity.get(property.getAttribute());
+    final Number value = entity.get(property.getAttribute());
     if (value.doubleValue() < (property.getMinimumValue() == null ? Double.NEGATIVE_INFINITY : property.getMinimumValue())) {
       throw new RangeValidationException(property.getAttribute(), value, "'" + property + "' " +
               MESSAGES.getString("property_value_too_small") + " " + property.getMinimumValue());
@@ -152,7 +152,7 @@ public class DefaultEntityValidator implements EntityValidator {
     }
 
     final int maxLength = property.getMaximumLength();
-    final String value = (String) entity.get(property.getAttribute());
+    final String value = entity.get(property.getAttribute());
     if (maxLength != -1 && value.length() > maxLength) {
       throw new LengthValidationException(property.getAttribute(), value, "'" + property + "' " +
               MESSAGES.getString("property_value_too_long") + " " + maxLength);

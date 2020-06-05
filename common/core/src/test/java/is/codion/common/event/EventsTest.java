@@ -13,7 +13,7 @@ public class EventsTest {
 
   @Test
   public void test() throws Exception {
-    final Event event = Events.event();
+    final Event<?> event = Events.event();
     final AtomicInteger counter = new AtomicInteger();
     final EventListener listener = counter::incrementAndGet;
     event.addListener(listener);

@@ -218,9 +218,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private M applicationModel;
   private JTabbedPane applicationTabPane;
 
-  private final Event applicationStartedEvent = Events.event();
+  private final Event<?> applicationStartedEvent = Events.event();
   private final Event<Boolean> alwaysOnTopChangedEvent = Events.event();
-  private final Event onExitEvent = Events.event();
+  private final Event<?> onExitEvent = Events.event();
 
   private final Map<EntityPanelBuilder, EntityPanel> persistentEntityPanels = new HashMap<>();
 

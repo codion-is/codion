@@ -58,7 +58,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
   private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
 
   private final ServerInformation serverInformation;
-  private final Event shutdownEvent = Events.event();
+  private final Event<?> shutdownEvent = Events.event();
   private volatile int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
 
@@ -279,10 +279,10 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
   private void startAuxiliaryServers(final Collection<String> auxiliaryServerProviderClassNames) {
     try {
       for (final String auxiliaryServerProviderClassName : auxiliaryServerProviderClassNames) {
-        final AuxiliaryServerFactory auxiliaryServerFactory = getAuxiliaryServerProvider(auxiliaryServerProviderClassName);
+        final AuxiliaryServerFactory<?> auxiliaryServerFactory = getAuxiliaryServerProvider(auxiliaryServerProviderClassName);
         final AuxiliaryServer auxiliaryServer = auxiliaryServerFactory.createServer(this);
         auxiliaryServers.add(auxiliaryServer);
-        newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable) () ->
+        newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable<?>) () ->
                 startAuxiliaryServer(auxiliaryServer)).get();
       }
     }

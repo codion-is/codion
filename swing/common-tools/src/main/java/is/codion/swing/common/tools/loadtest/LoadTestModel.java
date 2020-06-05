@@ -62,7 +62,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private final Event<Integer> loginDelayFactorChangedEvent = Events.event();
   private final Event<Integer> applicationCountChangedEvent = Events.event();
   private final Event<Integer> applicationBatchSizeChangedEvent = Events.event();
-  private final Event shutdownEvent = Events.event();
+  private final Event<?> shutdownEvent = Events.event();
 
   private int maximumThinkTime;
   private int minimumThinkTime;

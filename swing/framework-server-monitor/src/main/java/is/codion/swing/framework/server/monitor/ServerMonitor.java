@@ -50,9 +50,9 @@ public final class ServerMonitor {
   private static final double THOUSAND = 1000;
   private static final String GC_EVENT_PREFIX = "GC ";
 
-  private final Event serverShutDownEvent = Events.event();
-  private final Event statisticsUpdatedEvent = Events.event();
-  private final Event logLevelChangedEvent = Events.event();
+  private final Event<?> serverShutDownEvent = Events.event();
+  private final Event<?> statisticsUpdatedEvent = Events.event();
+  private final Event<Object> logLevelChangedEvent = Events.event();
   private final Event<Integer> connectionLimitChangedEvent = Events.event();
 
   private final String hostName;
@@ -391,14 +391,14 @@ public final class ServerMonitor {
   /**
    * @return a listener notified when the log level has changed
    */
-  public EventObserver getLogLevelObserver() {
+  public EventObserver<Object> getLogLevelObserver() {
     return logLevelChangedEvent.getObserver();
   }
 
   private EntityServerAdmin connectServer(final String serverName) throws RemoteException, ServerAuthenticationException {
     final long time = System.currentTimeMillis();
     try {
-      final Server<?, EntityServerAdmin> theServer = (Server) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
+      final Server<?, EntityServerAdmin> theServer = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
       final EntityServerAdmin serverAdmin = theServer.getServerAdmin(serverAdminUser);
       //just some simple call to validate the remote connection
       serverAdmin.getUsedMemory();

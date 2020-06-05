@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.Entity;
 
 /**
  * Represents a change in a {@link Entity} value.
+ * @param <T> the value type
  */
 public interface ValueChange<T> {
 

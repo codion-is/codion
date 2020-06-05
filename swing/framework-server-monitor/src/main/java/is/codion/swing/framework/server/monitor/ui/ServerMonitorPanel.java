@@ -259,10 +259,10 @@ public final class ServerMonitorPanel extends JPanel {
     return memoryField;
   }
 
-  private JComboBox initializeLogLevelField() {
-    final DefaultComboBoxModel comboModel = new DefaultComboBoxModel(model.getLogLevels().toArray());
+  private JComboBox<Object> initializeLogLevelField() {
+    final DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.getLogLevels().toArray());
 
-    final JComboBox box = new JComboBox(comboModel);
+    final JComboBox<Object> box = new JComboBox<>(comboModel);
     Values.propertyValue(model, "logLevel", Object.class, model.getLogLevelObserver())
             .link(SelectedValues.selectedValue(box));
 

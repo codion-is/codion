@@ -391,7 +391,7 @@ final class EntityConnectionHandler implements InvocationHandler {
         if (property.isPrimaryKeyProperty() || modified) {
           final StringBuilder valueString = new StringBuilder();
           if (modified) {
-            valueString.append((Object) entity.getOriginal(property.getAttribute())).append("->");
+            valueString.append(entity.getOriginal(property.getAttribute())).append("->");
           }
           valueString.append(entity.getAsString(property.getAttribute()));
           builder.append(property.getAttribute()).append(":").append(valueString).append(",");

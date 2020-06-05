@@ -32,8 +32,8 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   private final Value<Object> upperBoundValue = Values.value();
   private final Value<Object> lowerBoundValue = Values.value();
   private final Value<Operator> operatorValue = Values.value(Operator.LIKE);
-  private final Event conditionChangedEvent = Events.event();
-  private final Event conditionModelClearedEvent = Events.event();
+  private final Event<?> conditionChangedEvent = Events.event();
+  private final Event<?> conditionModelClearedEvent = Events.event();
 
   private final State enabledState = States.state();
   private final State lockedState = States.state();

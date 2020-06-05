@@ -129,7 +129,7 @@ final class DefaultEntity implements Entity {
 
   @Override
   public <T> T put(final Attribute<T> attribute, final T value) {
-    return (T) putInternal(definition.getProperty(attribute), value);
+    return putInternal(definition.getProperty(attribute), value);
   }
 
   /**

@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 public class DefaultColumnSummaryModel implements ColumnSummaryModel {
 
   private final Event<Summary> summaryChangedEvent = Events.event();
-  private final Event summaryValueChangedEvent = Events.event();
+  private final Event<?> summaryValueChangedEvent = Events.event();
 
   private final ColumnValueProvider valueProvider;
 

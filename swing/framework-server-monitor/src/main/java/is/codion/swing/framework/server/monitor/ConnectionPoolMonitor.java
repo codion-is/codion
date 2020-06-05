@@ -29,7 +29,7 @@ public final class ConnectionPoolMonitor {
 
   private static final int THOUSAND = 1000;
 
-  private final Event statisticsUpdatedEvent = Events.event();
+  private final Event<?> statisticsUpdatedEvent = Events.event();
   private final Event<Boolean> collectSnapshotStatisticsChangedEvent = Events.event();
 
   private final String username;

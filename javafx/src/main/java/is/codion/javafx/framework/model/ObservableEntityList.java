@@ -47,9 +47,9 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
   private final SortedList<Entity> sortedList;
   private final FilteredList<Entity> filteredList;
 
-  private final Event refreshEvent = Events.event();
-  private final Event selectionChangedEvent = Events.event();
-  private final Event filteringDoneEvent = Events.event();
+  private final Event<?> refreshEvent = Events.event();
+  private final Event<?> selectionChangedEvent = Events.event();
+  private final Event<?> filteringDoneEvent = Events.event();
 
   private FXEntityListSelectionModel selectionModel;
 
