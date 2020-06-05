@@ -119,15 +119,6 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   Entity deepCopyEntity(Entity entity);
 
   /**
-   * Creates an empty Entity instance returning the given string on a call to toString(), all other
-   * method calls are routed to an empty Entity instance.
-   * @param entityType the entityType
-   * @param toStringValue the string to return by a call to toString() on the resulting entity
-   * @return an empty entity wrapping a string
-   */
-  Entity createToStringEntity(EntityType entityType, String toStringValue);
-
-  /**
    * Transforms the given entities into beans according to the information found in this Entities instance
    * @param <V> the bean type
    * @param entities the entities to transform

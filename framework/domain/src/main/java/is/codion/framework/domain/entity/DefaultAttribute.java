@@ -140,8 +140,8 @@ class DefaultAttribute<T> implements Attribute<T> {
   }
 
   @Override
-  public boolean isEntity() {
-    return false;
+  public final boolean isEntity() {
+    return typeClass.equals(Entity.class);
   }
 
   @Override

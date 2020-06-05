@@ -77,7 +77,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
   /**
    * Returns the primary key of the entity referenced by the given {@link Attribute},
    * if the reference is null this method returns null.
-   * @param foreignKeyAttribute the foreign key attribute for which to retrieve the underlying {@link Entity.Key}
+   * @param foreignKeyAttribute the foreign key attribute for which to retrieve the underlying {@link Key}
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
   Key getReferencedKey(Attribute<Entity> foreignKeyAttribute);
@@ -223,7 +223,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
   boolean isModified();
 
   /**
-   * A class representing a primary key.
+   * Represents a primary key.
    */
   interface Key extends Serializable {
 

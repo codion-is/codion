@@ -89,7 +89,7 @@ public final class SwingEntityComboBoxModelTest {
   public void foreignKeyFilterComboBoxModel() throws Exception {
     final EntityConnectionProvider connectionProvider = comboBoxModel.getConnectionProvider();
     final SwingEntityComboBoxModel empBox = new SwingEntityComboBoxModel(TestDomain.T_EMP, connectionProvider);
-    empBox.setNullValue(connectionProvider.getEntities().createToStringEntity(TestDomain.T_EMP, "-"));
+    empBox.setNullString("-");
     empBox.refresh();
     assertEquals(17, empBox.getSize());
     final SwingEntityComboBoxModel deptBox = empBox.createForeignKeyFilterComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
@@ -242,7 +242,7 @@ public final class SwingEntityComboBoxModelTest {
     comboBoxModel.refresh();
     comboBoxModel.setSelectedItem(comboBoxModel.getElementAt(0));
     comboBoxModel.setSelectedItem("SCOTT");
-    assertEquals(comboBoxModel.getSelectedItem().get(TestDomain.EMP_NAME), "SCOTT");
+    assertEquals(comboBoxModel.getSelectedValue().get(TestDomain.EMP_NAME), "SCOTT");
   }
 
   @Test

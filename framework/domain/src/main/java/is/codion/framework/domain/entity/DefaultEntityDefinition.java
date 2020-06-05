@@ -807,9 +807,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
               }).collect(toList());
     }
 
-    private List<Attribute<Object>> getPrimaryKeyAttributes() {
+    private List<Attribute<?>> getPrimaryKeyAttributes() {
       return this.primaryKeyProperties.stream().map((Function<ColumnProperty<?>,
-              Attribute<Object>>) Property::getAttribute).collect(toList());
+              Attribute<?>>) Property::getAttribute).collect(toList());
     }
 
     private List<ColumnProperty<?>> getSelectableProperties() {

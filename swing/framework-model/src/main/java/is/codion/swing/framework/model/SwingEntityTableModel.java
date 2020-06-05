@@ -358,7 +358,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
     final Property<?> columnIdentifier = getColumnModel().getColumnIdentifier(modelColumnIndex);
 
-    entity.put(columnIdentifier.getAttribute(), value);
+    entity.put((Attribute<Object>) columnIdentifier.getAttribute(), value);
     try {
       update(singletonList(entity));
     }

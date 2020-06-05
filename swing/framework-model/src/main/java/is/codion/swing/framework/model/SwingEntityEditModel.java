@@ -11,7 +11,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultEntityEditModel;
@@ -33,7 +32,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * Holds the ComboBoxModels used by this {@link EntityEditModel},
    * @see is.codion.common.model.Refreshable
    */
-  private final Map<Attribute<?>, FilteredComboBoxModel> comboBoxModels = new HashMap<>();
+  private final Map<Attribute<?>, FilteredComboBoxModel<?>> comboBoxModels = new HashMap<>();
 
   /**
    * Instantiates a new {@link SwingEntityEditModel} based on the entity identified by {@code entityType}.
@@ -108,13 +107,14 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   /**
    * Returns a {@link FilteredComboBoxModel} for the given attribute,
    * @param attribute the attribute
+   * @param <T> the value type
    * @return a {@link FilteredComboBoxModel} for the given attribute
    */
-  public final FilteredComboBoxModel getComboBoxModel(final Attribute<?> attribute) {
+  public final <T> FilteredComboBoxModel<T> getComboBoxModel(final Attribute<T> attribute) {
     requireNonNull(attribute, "attribute");
-    FilteredComboBoxModel comboBoxModel = comboBoxModels.get(attribute);
+    FilteredComboBoxModel<T> comboBoxModel = (FilteredComboBoxModel<T>) comboBoxModels.get(attribute);
     if (comboBoxModel == null) {
-      comboBoxModel = createComboBoxModel(getEntityDefinition().getColumnProperty(attribute));
+      comboBoxModel = createComboBoxModel(attribute);
       comboBoxModels.put(attribute, comboBoxModel);
       comboBoxModel.refresh();
     }
@@ -140,7 +140,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * if the underlying property is nullable
    * @param foreignKeyProperty the foreign key property for which to create a {@link SwingEntityComboBoxModel}
    * @return a {@link SwingEntityComboBoxModel} for the given property
-   * @see EntityEditModel#COMBO_BOX_NULL_VALUE_ITEM
+   * @see FilteredComboBoxModel#COMBO_BOX_NULL_VALUE_ITEM
    * @see Property#isNullable()
    */
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyProperty foreignKeyProperty) {
@@ -148,26 +148,25 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     final SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityType(),
             getConnectionProvider());
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
-      model.setNullValue(getEntities().createToStringEntity(foreignKeyProperty.getForeignEntityType(),
-              EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get()));
+      model.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     }
 
     return model;
   }
 
   /**
-   * Creates a combo box model containing the current values of the given property.
+   * Creates a combo box model containing the current values of the given attribute.
    * This default implementation returns a sorted {@link SwingPropertyComboBoxModel} with the default nullValueItem
-   * if the underlying property is nullable
-   * @param property the property
-   * @return a combo box model based on the given property
+   * if the underlying attribute is nullable
+   * @param attribute the attribute
+   * @param <T> the value type
+   * @return a combo box model based on the given attribute
    */
-  public SwingPropertyComboBoxModel createComboBoxModel(final ColumnProperty<?> property) {
-    requireNonNull(property, "property");
-    final SwingPropertyComboBoxModel model = new SwingPropertyComboBoxModel(getEntityType(),
-            getConnectionProvider(), property, null);
-    model.setNullValue(getValidator().isNullable(getEntity(), property) ?
-            EntityEditModel.COMBO_BOX_NULL_VALUE_ITEM.get() : null);
+  public <T> SwingPropertyComboBoxModel<T> createComboBoxModel(final Attribute<T> attribute) {
+    requireNonNull(attribute, "attribute");
+    final SwingPropertyComboBoxModel<T> model = new SwingPropertyComboBoxModel<>(getConnectionProvider(), attribute, null);
+    model.setNullString(getValidator().isNullable(getEntity(), getEntityDefinition().getProperty(attribute)) ?
+            FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get() : null);
     model.refresh();
     addEntitiesChangedListener(model::refresh);
 

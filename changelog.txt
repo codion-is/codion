@@ -6204,3 +6204,6 @@
   ValueChange moved to framework model module, ValueChange.isInitialization() removed
   ValueChange finally type safe
   EntityComponentValidators type safe
+  DefaultEntityAttribute and DefaultBlobAttribute removed
+  DefaultEntity now fully type safe
+  SwingFilteredComboBoxModel, nullValue now String, renamed nullString, somewhat hacky

@@ -9,6 +9,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
+import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -176,14 +177,14 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final void setSelectedEntityByKey(final Entity.Key key) {
-    requireNonNull(key, "key");
-    final int indexOfKey = getIndexOfKey(key);
+  public final void setSelectedEntityByKey(final Entity.Key primaryKey) {
+    requireNonNull(primaryKey, "primaryKey");
+    final int indexOfKey = getIndexOfKey(primaryKey);
     if (indexOfKey >= 0) {
       setSelectedItem(getElementAt(indexOfKey));
     }
     else {
-      final int filteredIndexOfKey = getFilteredIndexOfKey(key);
+      final int filteredIndexOfKey = getFilteredIndexOfKey(primaryKey);
       if (filteredIndexOfKey >= 0) {
         setSelectedItem(getFilteredItems().get(filteredIndexOfKey));
       }
@@ -241,7 +242,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     final ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKeyAttribute);
     final SwingEntityComboBoxModel foreignKeyModel =
             new SwingEntityComboBoxModel(foreignKeyProperty.getForeignEntityType(), connectionProvider);
-    foreignKeyModel.setNullValue(entities.createToStringEntity(foreignKeyProperty.getForeignEntityType(), "-"));
+    foreignKeyModel.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKeyAttribute, foreignKeyModel);
 
@@ -354,7 +355,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   private int getIndexOfKey(final Entity.Key primaryKey) {
     final int size = getSize();
-    for (int index = 0; index < size; index++) {
+    final int startIndex = getNullString() != null ? 1 : 0;
+    for (int index = startIndex; index < size; index++) {
       final Entity item = getElementAt(index);
       if (item != null && item.getKey().equals(primaryKey)) {
         return index;

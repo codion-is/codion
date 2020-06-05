@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -143,18 +142,6 @@ public abstract class DefaultEntities implements Entities {
   }
 
   @Override
-  public final Entity createToStringEntity(final EntityType entityType, final String toStringValue) {
-    final Entity entity = entity(entityType);
-    return (Entity) Proxy.newProxyInstance(Entity.class.getClassLoader(), new Class[] {Entity.class}, (proxy, method, args) -> {
-      if ("toString".equals(method.getName())) {
-        return toStringValue;
-      }
-
-      return method.invoke(entity, args);
-    });
-  }
-
-  @Override
   public final <V> List<V> toBeans(final List<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
       return emptyList();
@@ -223,7 +210,7 @@ public abstract class DefaultEntities implements Entities {
           value = fromBean(value);
         }
 
-        entity.put(property.getAttribute(), value);
+        entity.put((Attribute<Object>) property.getAttribute(), value);
       }
 
       return definition.<V>getBeanHelper().fromBean(bean, entity);

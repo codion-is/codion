@@ -24,7 +24,7 @@ public class SwingFilteredComboBoxModelTest {
 
   private SwingFilteredComboBoxModel<String> testModel;
 
-  private static final String NULL = "null";
+  private static final String NULL = "nullitem";
   private static final String ANNA = "anna";
   private static final String KALLI = "kalli";
   private static final String SIGGI = "siggi";
@@ -226,7 +226,7 @@ public class SwingFilteredComboBoxModelTest {
     assertTrue(testModel.isVisible(null));
     testModel.refresh();
     assertEquals(5, testModel.getVisibleItems().size());
-    assertEquals(testModel.getNullValue(), NULL);
+    assertEquals(testModel.getNullString(), NULL);
     testModel.setSelectedItem(null);
     assertEquals(testModel.getSelectedItem(), NULL);
     assertTrue(testModel.isNullValueSelected());
@@ -275,7 +275,7 @@ public class SwingFilteredComboBoxModelTest {
   @BeforeEach
   public void setUp() throws Exception {
     testModel = new SwingFilteredComboBoxModel<>();
-    testModel.setNullValue(NULL);
+    testModel.setNullString(NULL);
     final List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);

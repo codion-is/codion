@@ -48,14 +48,6 @@ public interface EntityEditModel extends Refreshable {
   PropertyValue<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue("codion.client.warnAboutUnsavedData", false);
 
   /**
-   * Specifies the value used by default to represent a null value in combo box models.
-   * Using the value null indicates that no null value item should be used.<br>
-   * Value type: String<br>
-   * Default value: -
-   */
-  PropertyValue<String> COMBO_BOX_NULL_VALUE_ITEM = Configuration.stringValue("codion.client.comboBoxNullValueItem", "-");
-
-  /**
    * Specifies whether edit models post their insert, update and delete events to the {@link EntityEditEvents}<br>
    * Value type: Boolean<br>
    * Default value: false
