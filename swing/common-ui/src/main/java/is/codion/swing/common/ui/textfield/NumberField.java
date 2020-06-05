@@ -24,6 +24,7 @@ import java.text.ParsePosition;
 
 /**
  * A text field for numbers.
+ * @param <T> the Number type
  */
 public class NumberField<T extends Number> extends JTextField {
 
