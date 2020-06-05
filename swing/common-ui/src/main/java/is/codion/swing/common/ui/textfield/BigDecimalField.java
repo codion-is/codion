@@ -45,7 +45,7 @@ public final class BigDecimalField extends NumberField<BigDecimal> {
    * @param columns the number of columns
    */
   public BigDecimalField(final DecimalFormat format, final int columns) {
-    super(new BigDecimalDocument(format), columns);
+    super(new DecimalDocument<>(format), columns);
     ((DecimalFormat) getTypedDocument().getFormat()).setParseBigDecimal(true);
   }
 
@@ -53,14 +53,14 @@ public final class BigDecimalField extends NumberField<BigDecimal> {
    * @return the maximum number of fraction digits this field shows
    */
   public int getMaximumFractionDigits() {
-    return ((BigDecimalDocument) getTypedDocument()).getMaximumFractionDigits();
+    return ((DecimalDocument<BigDecimal>) getTypedDocument()).getMaximumFractionDigits();
   }
 
   /**
    * @param maximumFractionDigits the maximum number of fraction digits this field shows
    */
   public void setMaximumFractionDigits(final int maximumFractionDigits) {
-    ((BigDecimalDocument) getTypedDocument()).setMaximumFractionDigits(maximumFractionDigits);
+    ((DecimalDocument<BigDecimal>) getTypedDocument()).setMaximumFractionDigits(maximumFractionDigits);
   }
 
   /**
@@ -91,43 +91,5 @@ public final class BigDecimalField extends NumberField<BigDecimal> {
     format.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGITS);
 
     return format;
-  }
-
-  private static final class BigDecimalDocument extends NumberDocument<BigDecimal> {
-
-    private BigDecimalDocument(final DecimalFormat format) {
-      super(new BigDecimalDocumentFilter(format));
-    }
-
-    private int getMaximumFractionDigits() {
-      final int maximumFractionDigits = getFormat().getMaximumFractionDigits();
-
-      return maximumFractionDigits == MAXIMUM_FRACTION_DIGITS ? -1 : maximumFractionDigits;
-    }
-
-    private void setMaximumFractionDigits(final int maximumFractionDigits) {
-      if (maximumFractionDigits < 1 && maximumFractionDigits != -1) {
-        throw new IllegalArgumentException("Maximum fraction digits must be larger than 0, or -1 for no maximum");
-      }
-      getFormat().setMaximumFractionDigits(maximumFractionDigits == -1 ? MAXIMUM_FRACTION_DIGITS : maximumFractionDigits);
-      setText("");
-    }
-  }
-
-  private static final class BigDecimalDocumentFilter extends NumberDocumentFilter<BigDecimal> {
-
-    private BigDecimalDocumentFilter(final DecimalFormat format) {
-      super(format);
-    }
-
-    @Override
-    protected FormatResult format(final String string) {
-      final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
-      if (string.equals(Character.toString(decimalSeparator))) {
-        return new FormatResult(1, "0" + decimalSeparator);
-      }
-
-      return super.format(string);
-    }
   }
 }
