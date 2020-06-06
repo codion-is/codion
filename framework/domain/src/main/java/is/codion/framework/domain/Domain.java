@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class Domain implements EntityDefinition.Provider {
 
-  private final DomainType domainType;
+  private final String domainName;
   private final DomainEntities entities;
   private final DomainReports reports = new DomainReports();
   private final DomainProcedures procedures = new DomainProcedures();
@@ -44,24 +44,24 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @see Class#getSimpleName()
    */
   protected Domain() {
-    this.domainType = domainType(getClass().getSimpleName());
-    this.entities = new DomainEntities(domainType.getName());
+    this.domainName = getClass().getSimpleName();
+    this.entities = new DomainEntities(domainName);
   }
 
   /**
    * Instantiates a new Domain
    * @param domainType the domain type
    */
-  protected Domain(final DomainType domainType) {
-    this.domainType = requireNonNull(domainType, "domainType");
-    this.entities = new DomainEntities(domainType.getName());
+  protected Domain(final String domainName) {
+    this.domainName = requireNonNull(domainName, "domainName");
+    this.entities = new DomainEntities(domainName);
   }
 
   /**
-   * @return the domain type
+   * @return the domain name
    */
-  public final DomainType getDomainType() {
-    return domainType;
+  public final String getDomainName() {
+    return domainName;
   }
 
   /**
@@ -108,10 +108,6 @@ public abstract class Domain implements EntityDefinition.Provider {
    */
   public final <C, T, R> DatabaseFunction<C, T, R> getFunction(final FunctionType<C, T, R> functionType) {
     return functions.getFunction(functionType);
-  }
-
-  public static DomainType domainType(final String name) {
-    return new DefaultDomainType(name);
   }
 
   /**

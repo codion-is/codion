@@ -139,7 +139,7 @@ public class EntityServerTest {
 
     try {
       server.connect(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID",
-              Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, new EmptyDomain().getDomainType().getName())));
+              Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, new EmptyDomain().getDomainName())));
       fail();
     }
     catch (final LoginException ignored) {}

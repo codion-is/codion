@@ -23,7 +23,6 @@ import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -68,7 +67,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
 
   private final EntityServerConfiguration configuration;
-  private final Map<DomainType, Domain> domainModels;
+  private final Map<String, Domain> domainModels;
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
@@ -412,16 +411,16 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
     }
 
-    return domainModels.get(Domain.domainType(domainTypeName));
+    return domainModels.get(domainTypeName);
   }
 
-  private static Map<DomainType, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
-    final Map<DomainType, Domain> domains = new HashMap<>();
+  private static Map<String, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
+    final Map<String, Domain> domains = new HashMap<>();
     try {
       for (final String className : domainModelClassNames) {
         LOG.info("Server loading and registering domain model class '" + className + " from classpath");
         final Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
-        domains.put(domain.getDomainType(), domain);
+        domains.put(domain.getDomainName(), domain);
       }
 
       return unmodifiableMap(domains);

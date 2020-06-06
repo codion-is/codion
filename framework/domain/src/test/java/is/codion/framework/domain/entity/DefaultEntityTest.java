@@ -559,7 +559,7 @@ public class DefaultEntityTest {
     final TransientProperty.Builder<?> transientProperty = Properties.transientProperty(trans);
     class TestDomain extends Domain {
       public TestDomain() {
-        super(Domain.domainType("transient"));
+        super("transient");
         define(entityType,
                 Properties.primaryKeyProperty(id),
                 transientProperty);  }

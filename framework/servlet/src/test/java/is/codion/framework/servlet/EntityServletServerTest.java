@@ -14,7 +14,6 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
-import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
@@ -102,14 +101,14 @@ public class EntityServletServerTest {
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
             .build();
-    final DomainType domainType = new TestDomain().getDomainType();
+    final String domainName = new TestDomain().getDomainName();
     final String clientTypeId = "EntityServletServerTest";
     final UUID clientId = UUID.randomUUID();
     final CloseableHttpClient client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainType.getName());
+              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainName);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientId.toString());
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -148,14 +147,14 @@ public class EntityServletServerTest {
     response.close();
     client.close();
 
-    final DomainType domainType = new TestDomain().getDomainType();
+    final String domainName = new TestDomain().getDomainName();
     final String clientTypeId = "EntityServletServerTest";
     //test with missing clientId header
     client = HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainType.getName());
+              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainName);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             })
@@ -174,7 +173,7 @@ public class EntityServletServerTest {
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainType.getName());
+              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainName);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -192,7 +191,7 @@ public class EntityServletServerTest {
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainType.getName());
+              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainName);
               request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
               request.setHeader("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
