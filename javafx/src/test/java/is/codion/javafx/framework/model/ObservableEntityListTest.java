@@ -44,8 +44,8 @@ public final class ObservableEntityListTest {
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
-    list.setSelectCondition(Conditions.propertyCondition(TestDomain.DEPARTMENT_NAME,
-            Operator.NOT_LIKE, asList("SALES", "OPERATIONS")));
+    list.setSelectCondition(Conditions.attributeCondition(TestDomain.DEPARTMENT_NAME,
+            Operator.NOT_LIKE, "SALES", "OPERATIONS"));
     list.refresh();
     assertEquals(2, list.size());
   }

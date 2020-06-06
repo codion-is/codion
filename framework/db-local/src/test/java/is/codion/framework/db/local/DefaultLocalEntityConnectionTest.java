@@ -104,8 +104,8 @@ public class DefaultLocalEntityConnectionTest {
       connection.beginTransaction();
       //scott, james, adams
       assertEquals(3, connection.delete(condition(T_EMP, combination(Conjunction.AND,
-              propertyCondition(EMP_NAME, Operator.LIKE, "%S%"),
-              propertyCondition(EMP_JOB, Operator.LIKE, "CLERK")))));
+              attributeCondition(EMP_NAME, Operator.LIKE, "%S%"),
+              attributeCondition(EMP_JOB, Operator.LIKE, "CLERK")))));
     }
     finally {
       connection.rollbackTransaction();
@@ -171,7 +171,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void deleteByConditionWithForeignKeys() throws DatabaseException {
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(condition(T_DEPARTMENT,
-            Conditions.propertyCondition(DEPARTMENT_NAME, Operator.LIKE, "ACCOUNTING"))));
+            Conditions.attributeCondition(DEPARTMENT_NAME, Operator.LIKE, "ACCOUNTING"))));
   }
 
   @Test
@@ -326,13 +326,13 @@ public class DefaultLocalEntityConnectionTest {
   public void selectRowCount() throws Exception {
     int rowCount = connection.selectRowCount(condition(T_DEPARTMENT));
     assertEquals(4, rowCount);
-    Condition deptNoCondition = Conditions.propertyCondition(DEPARTMENT_ID, Operator.GREATER_THAN, 30);
+    Condition deptNoCondition = Conditions.attributeCondition(DEPARTMENT_ID, Operator.GREATER_THAN, 30);
     rowCount = connection.selectRowCount(condition(T_DEPARTMENT, deptNoCondition));
     assertEquals(2, rowCount);
 
     rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_TYPE));
     assertEquals(16, rowCount);
-    deptNoCondition = Conditions.propertyCondition(JOINED_DEPTNO, Operator.GREATER_THAN, 30);
+    deptNoCondition = Conditions.attributeCondition(JOINED_DEPTNO, Operator.GREATER_THAN, 30);
     rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_TYPE, deptNoCondition));
     assertEquals(4, rowCount);
 
@@ -561,21 +561,26 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectValuesNonColumnProperty() throws Exception {
-    assertThrows(IllegalArgumentException.class, () -> connection.selectValues(EMP_DEPARTMENT_LOCATION, condition(T_EMP)));
+    assertThrows(IllegalArgumentException.class, () -> connection.selectValues(EMP_DEPARTMENT_LOCATION));
   }
 
   @Test
   public void selectValues() throws Exception {
-    List<String> result = connection.selectValues(DEPARTMENT_NAME, condition(T_DEPARTMENT));
+    List<String> result = connection.selectValues(DEPARTMENT_NAME);
     assertEquals("ACCOUNTING", result.get(0));
     assertEquals("OPERATIONS", result.get(1));
     assertEquals("RESEARCH", result.get(2));
     assertEquals("SALES", result.get(3));
 
-    result = connection.selectValues(DEPARTMENT_NAME, condition(T_DEPARTMENT,
-            Conditions.propertyCondition(DEPARTMENT_ID, Operator.LIKE, 10)));
+    result = connection.selectValues(DEPARTMENT_NAME, Conditions.attributeCondition(DEPARTMENT_ID, Operator.LIKE, 10));
     assertTrue(result.contains("ACCOUNTING"));
     assertFalse(result.contains("SALES"));
+  }
+
+  @Test
+  public void selectValuesIncorrectAttribute() throws Exception {
+    assertThrows(IllegalArgumentException.class, () -> connection.selectValues(DEPARTMENT_NAME,
+            attributeCondition(EMP_ID, Operator.LIKE, 1)));
   }
 
   @Test
@@ -864,8 +869,8 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(6, entities.size());
     entities = connection.select(selectCondition(T_NO_PK,
             combination(Conjunction.OR,
-                    propertyCondition(NO_PK_COL1, Operator.LIKE, 2),
-                    propertyCondition(NO_PK_COL3, Operator.LIKE, "5"))));
+                    attributeCondition(NO_PK_COL1, Operator.LIKE, 2),
+                    attributeCondition(NO_PK_COL3, Operator.LIKE, "5"))));
     assertEquals(4, entities.size());
   }
 

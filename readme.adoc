@@ -286,6 +286,10 @@ List<Entity> doesAddresses =
 List<Entity> customersWithoutEmail =
         connection.select(selectCondition(Customer.TYPE, Customer.EMAIL, Operator.LIKE, null));
 
+List<String> activeCustomerEmailAddresses =
+        connection.selectValues(Customer.EMAIL,
+                attributeCondition(Customer.IS_ACTIVE, Operator.LIKE, true));
+
 //The domain model entities, a factory for Entity instances.
 Entities entities = connection.getEntities();
 

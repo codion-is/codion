@@ -9,6 +9,7 @@ import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.user.User;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
@@ -181,17 +182,29 @@ public interface EntityConnection {
   int delete(EntityCondition condition) throws DatabaseException;
 
   /**
-   * Selects ordered and distinct non-null values of the given property, note that the given property
-   * must be of type {@link ColumnProperty}.
+   * Selects ordered and distinct non-null values of the given attribute, note that the attribute
+   * must be associated with a {@link ColumnProperty}.
    * @param attribute attribute
-   * @param condition the condition
    * @param <T> the value type
-   * @return the values for the given attribute
+   * @return the values of the given attribute
    * @throws DatabaseException in case of a database exception
    * @throws IllegalArgumentException in case the given property is not a column based attribute
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  <T> List<T> selectValues(Attribute<T> attribute, EntityCondition condition) throws DatabaseException;
+  <T> List<T> selectValues(Attribute<T> attribute) throws DatabaseException;
+
+  /**
+   * Selects ordered and distinct non-null values of the given attribute, note that the attribute
+   * must be associated with a {@link ColumnProperty}.
+   * @param attribute attribute
+   * @param condition the condition, null if all values should be selected
+   * @param <T> the value type
+   * @return the values of the given attribute
+   * @throws DatabaseException in case of a database exception
+   * @throws IllegalArgumentException in case the given property is not a column based attribute
+   * @throws UnsupportedOperationException in case the entity is based on a select query
+   */
+  <T> List<T> selectValues(Attribute<T> attribute, Condition condition) throws DatabaseException;
 
   /**
    * Selects a single entity

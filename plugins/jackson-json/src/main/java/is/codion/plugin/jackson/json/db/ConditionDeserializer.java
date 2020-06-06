@@ -16,12 +16,12 @@ final class ConditionDeserializer implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final PropertyConditionDeserializer propertyConditionDeserializer;
+  private final AttributeConditionDeserializer attributeConditionDeserializer;
   private final ConditionCombinationDeserializer conditionCombinationDeserializer;
   private final CustomConditionDeserializer customConditionDeserializer;
 
   ConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
-    this.propertyConditionDeserializer = new PropertyConditionDeserializer(entityObjectMapper);
+    this.attributeConditionDeserializer = new AttributeConditionDeserializer(entityObjectMapper);
     this.conditionCombinationDeserializer = new ConditionCombinationDeserializer(this);
     this.customConditionDeserializer = new CustomConditionDeserializer(entityObjectMapper);
   }
@@ -33,7 +33,7 @@ final class ConditionDeserializer implements Serializable {
       return conditionCombinationDeserializer.deserialize(definition, conditionNode);
     }
     else if ("property".equals(typeString)) {
-      return propertyConditionDeserializer.deserialize(definition, conditionNode);
+      return attributeConditionDeserializer.deserialize(definition, conditionNode);
     }
     else if ("custom".equals(typeString)) {
       return customConditionDeserializer.deserialize(definition, conditionNode);

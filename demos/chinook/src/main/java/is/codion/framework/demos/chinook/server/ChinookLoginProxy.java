@@ -91,9 +91,9 @@ public final class ChinookLoginProxy implements LoginProxy {
     try {
       final int rows = connection.selectRowCount(
               condition(Authentication.User.TYPE, combination(AND,
-                      propertyCondition(Authentication.User.USERNAME,
+                      attributeCondition(Authentication.User.USERNAME,
                               LIKE, user.getUsername()).setCaseSensitive(false),
-                      propertyCondition(Authentication.User.PASSWORD_HASH,
+                      attributeCondition(Authentication.User.PASSWORD_HASH,
                               LIKE, valueOf(user.getPassword()).hashCode()))));
       if (rows == 0) {
         throw new ServerAuthenticationException("Wrong username or password");

@@ -14,6 +14,7 @@ import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.rmi.server.exception.ServerException;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
@@ -335,7 +336,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Object> parameters = deserialize(request);
 
-      return Response.ok(Serializer.serialize(connection.selectValues((Attribute<?>) parameters.get(0), (EntityCondition) parameters.get(1)))).build();
+      return Response.ok(Serializer.serialize(connection.selectValues((Attribute<?>) parameters.get(0), (Condition) parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

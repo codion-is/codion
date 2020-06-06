@@ -20,7 +20,7 @@ final class EntitySelectConditionDeserializer extends StdDeserializer<EntitySele
 
   EntitySelectConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
     super(EntitySelectCondition.class);
-    this.conditionSerializer = new ConditionSerializer(new PropertyConditionSerializer(entityObjectMapper), entityObjectMapper);
+    this.conditionSerializer = new ConditionSerializer(new AttributeConditionSerializer(entityObjectMapper), entityObjectMapper);
   }
 
   @Override

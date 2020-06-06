@@ -3,9 +3,9 @@
  */
 package is.codion.plugin.jackson.json.db;
 
+import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.CustomCondition;
-import is.codion.framework.db.condition.PropertyCondition;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -17,14 +17,14 @@ final class ConditionSerializer implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final PropertyConditionSerializer propertyConditionSerializer;
+  private final AttributeConditionSerializer attributeConditionSerializer;
   private final ConditionCombinationSerializer conditionCombinationSerializer;
   private final CustomConditionSerializer customConditionSerializer;
 
-  ConditionSerializer(final PropertyConditionSerializer propertyConditionSerializer,
+  ConditionSerializer(final AttributeConditionSerializer attributeConditionSerializer,
                       final EntityObjectMapper entityObjectMapper) {
-    this.propertyConditionSerializer = propertyConditionSerializer;
-    this.conditionCombinationSerializer = new ConditionCombinationSerializer(propertyConditionSerializer);
+    this.attributeConditionSerializer = attributeConditionSerializer;
+    this.conditionCombinationSerializer = new ConditionCombinationSerializer(attributeConditionSerializer);
     this.customConditionSerializer = new CustomConditionSerializer(entityObjectMapper);
   }
 
@@ -33,9 +33,9 @@ final class ConditionSerializer implements Serializable {
       final Condition.Combination combination = (Condition.Combination) condition;
       conditionCombinationSerializer.serialize(combination, generator);
     }
-    else if (condition instanceof PropertyCondition) {
-      final PropertyCondition propertyCondition = (PropertyCondition) condition;
-      propertyConditionSerializer.serialize(propertyCondition, generator);
+    else if (condition instanceof AttributeCondition) {
+      final AttributeCondition attributeCondition = (AttributeCondition) condition;
+      attributeConditionSerializer.serialize(attributeCondition, generator);
     }
     else if (condition instanceof CustomCondition) {
       final CustomCondition customCondition = (CustomCondition) condition;

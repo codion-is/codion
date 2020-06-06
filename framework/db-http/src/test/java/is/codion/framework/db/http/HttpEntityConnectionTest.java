@@ -203,7 +203,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectValues() throws IOException, DatabaseException {
-    final List<String> values = connection.selectValues(TestDomain.DEPARTMENT_NAME, condition(TestDomain.T_DEPARTMENT));
+    final List<String> values = connection.selectValues(TestDomain.DEPARTMENT_NAME);
     assertEquals(4, values.size());
   }
 

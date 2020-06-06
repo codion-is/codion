@@ -4,8 +4,8 @@
 package is.codion.plugin.jackson.json.db;
 
 import is.codion.common.db.Operator;
+import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.db.condition.PropertyCondition;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.Property;
@@ -19,17 +19,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-final class PropertyConditionDeserializer implements Serializable {
+final class AttributeConditionDeserializer implements Serializable {
 
   private static final long serialVersionUID = 1;
 
   private final EntityObjectMapper entityObjectMapper;
 
-  PropertyConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
+  AttributeConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  PropertyCondition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
+  AttributeCondition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
     final String attributeName = conditionNode.get("attribute").asText();
     final Property<?> property = definition.getProperty(definition.getEntityType().objectAttribute(attributeName));
     final JsonNode valuesNode = conditionNode.get("values");
@@ -47,7 +47,7 @@ final class PropertyConditionDeserializer implements Serializable {
     }
     final boolean nullCondition = values.isEmpty();
 
-    return Conditions.propertyCondition(definition.getEntityType().objectAttribute(conditionNode.get("attribute").asText()),
+    return Conditions.attributeCondition(definition.getEntityType().objectAttribute(conditionNode.get("attribute").asText()),
             Operator.valueOf(conditionNode.get("operator").asText()), nullCondition ? null : values);
   }
 }

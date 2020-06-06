@@ -47,8 +47,8 @@ public final class EntityConnectionDemo {
     List<Entity> artists = connection.select(condition);
 
     condition = selectCondition(Album.TYPE, combination(AND,
-            propertyCondition(Album.ARTIST_FK, LIKE, artists),
-            propertyCondition(Album.TITLE, NOT_LIKE, "%live%")
+            attributeCondition(Album.ARTIST_FK, LIKE, artists),
+            attributeCondition(Album.TITLE, NOT_LIKE, "%live%")
                     .setCaseSensitive(false)));
 
     List<Entity> nonLiveAlbums = connection.select(condition);
@@ -129,8 +129,8 @@ public final class EntityConnectionDemo {
     Entity ironMaiden = connection.selectSingle(selectCondition(Artist.TYPE, Artist.NAME, LIKE, "Iron Maiden"));
 
     Entity liveAlbum = connection.selectSingle(selectCondition(Album.TYPE, combination(AND,
-            propertyCondition(Album.ARTIST_FK, LIKE, ironMaiden),
-            propertyCondition(Album.TITLE, LIKE, "%live after%")
+            attributeCondition(Album.ARTIST_FK, LIKE, ironMaiden),
+            attributeCondition(Album.TITLE, LIKE, "%live after%")
                     .setCaseSensitive(false))));
     // end::selectSingleCondition[]
   }
@@ -156,7 +156,7 @@ public final class EntityConnectionDemo {
   static void selectValues(EntityConnection connection) throws DatabaseException {
     // tag::selectValues[]
     List<String> customerUsStates = connection.selectValues(Customer.STATE,
-            condition(Customer.TYPE, Customer.COUNTRY, LIKE, "USA"));
+            attributeCondition(Customer.COUNTRY, LIKE, "USA"));
     // end::selectValues[]
   }
 
