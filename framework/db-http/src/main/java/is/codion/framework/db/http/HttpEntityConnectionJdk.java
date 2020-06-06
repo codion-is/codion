@@ -15,6 +15,7 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
@@ -307,9 +308,13 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T> List<T> selectValues(final Attribute<T> attribute, final EntityCondition condition) throws DatabaseException {
+  public <T> List<T> selectValues(final Attribute<T> attribute) throws DatabaseException {
+    return selectValues(attribute, null);
+  }
+
+  @Override
+  public <T> List<T> selectValues(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
     Objects.requireNonNull(attribute);
-    Objects.requireNonNull(condition);
     try {
       return handleResponse(execute(createRequest("values", asList(attribute, condition))));
     }
