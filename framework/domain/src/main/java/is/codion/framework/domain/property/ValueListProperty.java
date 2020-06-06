@@ -8,7 +8,7 @@ import is.codion.common.item.Item;
 import java.util.List;
 
 /**
- * A property based on a list of values, each with a displayable caption.
+ * A property based on a list of valid values.
  * @param <T> the value type
  */
 public interface ValueListProperty<T> extends ColumnProperty<T> {
