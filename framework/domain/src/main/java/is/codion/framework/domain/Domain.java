@@ -33,18 +33,18 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class Domain implements EntityDefinition.Provider {
 
-  private final DomainType<?> domainType;
+  private final DomainType domainType;
   private final DomainEntities entities;
   private final DomainReports reports = new DomainReports();
   private final DomainProcedures procedures = new DomainProcedures();
   private final DomainFunctions functions = new DomainFunctions();
 
   /**
-   * Instantiates a new Domain with the simple name of the class as domain id
+   * Instantiates a new Domain with the simple name of the class as domain name
    * @see Class#getSimpleName()
    */
   protected Domain() {
-    this.domainType = new DomainType<>(getClass());
+    this.domainType = domainType(getClass().getSimpleName());
     this.entities = new DomainEntities(domainType.getName());
   }
 
@@ -52,15 +52,15 @@ public abstract class Domain implements EntityDefinition.Provider {
    * Instantiates a new Domain
    * @param domainType the domain type
    */
-  protected Domain(final DomainType<?> domainType) {
-    this.domainType = domainType;
+  protected Domain(final DomainType domainType) {
+    this.domainType = requireNonNull(domainType, "domainType");
     this.entities = new DomainEntities(domainType.getName());
   }
 
   /**
    * @return the domain type
    */
-  public final DomainType<?> getDomainType() {
+  public final DomainType getDomainType() {
     return domainType;
   }
 
@@ -108,6 +108,10 @@ public abstract class Domain implements EntityDefinition.Provider {
    */
   public final <C, T, R> DatabaseFunction<C, T, R> getFunction(final FunctionType<C, T, R> functionType) {
     return functions.getFunction(functionType);
+  }
+
+  public static DomainType domainType(final String name) {
+    return new DefaultDomainType(name);
   }
 
   /**
@@ -270,5 +274,4 @@ public abstract class Domain implements EntityDefinition.Provider {
       return reports.contains(requireNonNull(reportWrapper, "reportWrapper"));
     }
   }
-
 }

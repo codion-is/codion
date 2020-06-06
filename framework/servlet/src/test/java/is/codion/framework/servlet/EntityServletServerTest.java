@@ -102,7 +102,7 @@ public class EntityServletServerTest {
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
             .build();
-    final DomainType<?> domainType = new TestDomain().getDomainType();
+    final DomainType domainType = new TestDomain().getDomainType();
     final String clientTypeId = "EntityServletServerTest";
     final UUID clientId = UUID.randomUUID();
     final CloseableHttpClient client = HttpClientBuilder.create()
@@ -148,7 +148,7 @@ public class EntityServletServerTest {
     response.close();
     client.close();
 
-    final DomainType<?> domainType = new TestDomain().getDomainType();
+    final DomainType domainType = new TestDomain().getDomainType();
     final String clientTypeId = "EntityServletServerTest";
     //test with missing clientId header
     client = HttpClientBuilder.create()

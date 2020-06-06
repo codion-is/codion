@@ -68,7 +68,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
 
   private final EntityServerConfiguration configuration;
-  private final Map<DomainType<?>, Domain> domainModels;
+  private final Map<DomainType, Domain> domainModels;
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
@@ -412,11 +412,11 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
     }
 
-    return domainModels.get(new DomainType<>(domainTypeName));
+    return domainModels.get(Domain.domainType(domainTypeName));
   }
 
-  private static Map<DomainType<?>, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
-    final Map<DomainType<?>, Domain> domains = new HashMap<>();
+  private static Map<DomainType, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
+    final Map<DomainType, Domain> domains = new HashMap<>();
     try {
       for (final String className : domainModelClassNames) {
         LOG.info("Server loading and registering domain model class '" + className + " from classpath");
