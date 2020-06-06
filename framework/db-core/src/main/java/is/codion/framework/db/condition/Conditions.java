@@ -88,7 +88,7 @@ public final class Conditions {
    */
   public static EntityCondition condition(final EntityType entityType, final Attribute<?> attribute,
                                           final Operator operator, final Object value) {
-    return new DefaultEntityCondition(entityType, propertyCondition(attribute, operator, value));
+    return new DefaultEntityCondition(entityType, attributeCondition(attribute, operator, value));
   }
 
   /**
@@ -143,7 +143,7 @@ public final class Conditions {
    */
   public static EntitySelectCondition selectCondition(final EntityType entityType, final Attribute<?> attribute,
                                                       final Operator operator, final Object value) {
-    return selectCondition(entityType, propertyCondition(attribute, operator, value));
+    return selectCondition(entityType, attributeCondition(attribute, operator, value));
   }
 
   /**
@@ -168,7 +168,7 @@ public final class Conditions {
    */
   public static <T> EntityUpdateCondition updateCondition(final EntityType entityType, final Attribute<T> attribute,
                                                           final Operator operator, final T value) {
-    return updateCondition(entityType, propertyCondition(attribute, operator, value));
+    return updateCondition(entityType, attributeCondition(attribute, operator, value));
   }
 
   /**
@@ -241,11 +241,11 @@ public final class Conditions {
    * @param attribute the attribute
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
-   * @return a property condition based on the given value
+   * @return a attribute condition based on the given value
    */
-  public static PropertyCondition propertyCondition(final Attribute<?> attribute, final Operator operator,
-                                                    final Object value) {
-    return new DefaultPropertyCondition(attribute, operator, value);
+  public static AttributeCondition attributeCondition(final Attribute<?> attribute, final Operator operator,
+                                                      final Object value) {
+    return new DefaultAttributeCondition(attribute, operator, value);
   }
 
   /**
@@ -260,8 +260,8 @@ public final class Conditions {
   }
 
   /**
-   * Expands the given condition, that is, transforms property conditions based on foreign key
-   * properties into column property conditions
+   * Expands the given condition, that is, transforms attribute conditions based on foreign key
+   * attributes into column attribute conditions
    * @param condition the condition
    * @param definition the entity definition
    * @return an expanded Condition
@@ -278,12 +278,12 @@ public final class Conditions {
 
       return condition;
     }
-    if (condition instanceof PropertyCondition) {
-      final PropertyCondition propertyCondition = (PropertyCondition) condition;
-      final Property<?> property = definition.getProperty(propertyCondition.getAttribute());
+    if (condition instanceof AttributeCondition) {
+      final AttributeCondition attributeCondition = (AttributeCondition) condition;
+      final Property<?> property = definition.getProperty(attributeCondition.getAttribute());
       if (property instanceof ForeignKeyProperty) {
         return foreignKeyCondition(((ForeignKeyProperty) property).getColumnAttributes(),
-                propertyCondition.getOperator(), propertyCondition.getValues());
+                attributeCondition.getOperator(), attributeCondition.getValues());
       }
     }
 
@@ -306,7 +306,7 @@ public final class Conditions {
       return compositeKeyCondition(keys, firstKey.getAttributes(), LIKE);
     }
 
-    return propertyCondition(firstKey.getFirstAttribute(), LIKE, getValues(keys));
+    return attributeCondition(firstKey.getFirstAttribute(), LIKE, getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */
@@ -324,7 +324,7 @@ public final class Conditions {
                                                     final Key entityKey) {
     final Condition.Combination conditionCombination = combination(AND);
     for (int i = 0; i < attributes.size(); i++) {
-      conditionCombination.add(propertyCondition(attributes.get(i), operator,
+      conditionCombination.add(attributeCondition(attributes.get(i), operator,
               entityKey == null ? null : entityKey.get(entityKey.getAttributes().get(i))));
     }
 
@@ -349,11 +349,11 @@ public final class Conditions {
     if (keys.size() == 1) {
       final Key entityKey = keys.get(0);
 
-      return propertyCondition(foreignKeyColumnAttributes.get(0), operator,
+      return attributeCondition(foreignKeyColumnAttributes.get(0), operator,
               entityKey == null ? null : entityKey.getFirstValue());
     }
 
-    return propertyCondition(foreignKeyColumnAttributes.get(0), operator, getValues(keys));
+    return attributeCondition(foreignKeyColumnAttributes.get(0), operator, getValues(keys));
   }
 
   private static List<Key> getKeys(final Object value) {

@@ -10,7 +10,7 @@ import is.codion.framework.domain.property.ColumnProperty;
 /**
  * A Condition based on a single {@link Attribute}.
  */
-public interface PropertyCondition extends Condition {
+public interface AttributeCondition extends Condition {
 
   /**
    * @return the attribute
@@ -33,5 +33,5 @@ public interface PropertyCondition extends Condition {
    * @param caseSensitive false if this condition should not be case-sensitive
    * @return this condition
    */
-  PropertyCondition setCaseSensitive(boolean caseSensitive);
+  AttributeCondition setCaseSensitive(boolean caseSensitive);
 }

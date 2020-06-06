@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Conditions.propertyCondition;
+import static is.codion.framework.db.condition.Conditions.attributeCondition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
@@ -360,7 +360,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final Object conditionValue = conditionModel.getOperator().getValues().equals(Operator.Values.TWO) ?
             asList(conditionModel.getLowerBound(), conditionModel.getUpperBound()) : conditionModel.getUpperBound();
 
-    return propertyCondition(conditionModel.getColumnIdentifier().getAttribute(), conditionModel.getOperator(), conditionValue)
+    return attributeCondition(conditionModel.getColumnIdentifier().getAttribute(), conditionModel.getOperator(), conditionValue)
             .setCaseSensitive(conditionModel.isCaseSensitive());
   }
 
@@ -378,7 +378,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private static String boundToString(final Object object) {
     final StringBuilder stringBuilder = new StringBuilder();
     if (object instanceof Collection) {
-      for (final Object obj : (Collection) object) {
+      for (final Object obj : (Collection<Object>) object) {
         stringBuilder.append(boundToString(obj));
       }
     }

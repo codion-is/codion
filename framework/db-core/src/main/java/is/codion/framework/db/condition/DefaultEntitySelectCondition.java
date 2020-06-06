@@ -40,7 +40,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
    * Instantiates a new {@link DefaultEntitySelectCondition}
    * @param entityType the type of the entity to select
    * @param condition the Condition object
-   * @see DefaultPropertyCondition
+   * @see DefaultAttributeCondition
    * @see EntityKeyCondition
    */
   DefaultEntitySelectCondition(final EntityType entityType, final Condition condition) {

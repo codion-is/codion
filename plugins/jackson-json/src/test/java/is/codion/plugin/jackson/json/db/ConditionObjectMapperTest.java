@@ -39,13 +39,13 @@ public final class ConditionObjectMapperTest {
 
     final EntityCondition entityCondition = condition(TestDomain.T_EMP,
             Conditions.combination(Conjunction.AND,
-                    Conditions.propertyCondition(TestDomain.EMP_DEPARTMENT_FK,
+                    Conditions.attributeCondition(TestDomain.EMP_DEPARTMENT_FK,
                             Operator.NOT_LIKE, asList(dept1, dept2)),
-                    Conditions.propertyCondition(TestDomain.EMP_NAME,
+                    Conditions.attributeCondition(TestDomain.EMP_NAME,
                             Operator.LIKE, "Loc"),
-                    Conditions.propertyCondition(TestDomain.EMP_ID,
+                    Conditions.attributeCondition(TestDomain.EMP_ID,
                             Operator.WITHIN_RANGE, asList(10, 40)),
-                    Conditions.propertyCondition(TestDomain.EMP_COMMISSION,
+                    Conditions.attributeCondition(TestDomain.EMP_COMMISSION,
                             Operator.NOT_LIKE, null)));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
@@ -65,7 +65,7 @@ public final class ConditionObjectMapperTest {
   public void nullCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
     final EntityCondition entityCondition = condition(TestDomain.T_EMP,
-            Conditions.propertyCondition(TestDomain.EMP_COMMISSION, Operator.NOT_LIKE, null));
+            Conditions.attributeCondition(TestDomain.EMP_COMMISSION, Operator.NOT_LIKE, null));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
     final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);

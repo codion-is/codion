@@ -20,7 +20,7 @@ final class EntityConditionSerializer extends StdSerializer<EntityCondition> {
 
   public EntityConditionSerializer(final EntityObjectMapper entityObjectMapper) {
     super(EntityCondition.class);
-    this.conditionSerializer = new ConditionSerializer(new PropertyConditionSerializer(entityObjectMapper), entityObjectMapper);
+    this.conditionSerializer = new ConditionSerializer(new AttributeConditionSerializer(entityObjectMapper), entityObjectMapper);
   }
 
   @Override

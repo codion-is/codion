@@ -134,7 +134,7 @@ public final class EmpDeptMinimalApp {
             final ForeignKeyProperty foreignKeyProperty) {
       final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is(EmpDept.EMP_MGR_FK)) {
-        comboBoxModel.setSelectConditionProvider(() -> Conditions.propertyCondition(
+        comboBoxModel.setSelectConditionProvider(() -> Conditions.attributeCondition(
                 EmpDept.EMP_JOB, Operator.LIKE, asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }

@@ -3,8 +3,8 @@
  */
 package is.codion.plugin.jackson.json.db;
 
+import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.PropertyCondition;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 
@@ -16,10 +16,10 @@ final class ConditionCombinationSerializer implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final PropertyConditionSerializer propertyConditionSerializer;
+  private final AttributeConditionSerializer attributeConditionSerializer;
 
-  ConditionCombinationSerializer(final PropertyConditionSerializer propertyConditionSerializer) {
-    this.propertyConditionSerializer = propertyConditionSerializer;
+  ConditionCombinationSerializer(final AttributeConditionSerializer attributeConditionSerializer) {
+    this.attributeConditionSerializer = attributeConditionSerializer;
   }
 
   void serialize(final Condition.Combination combination, final JsonGenerator generator) throws IOException {
@@ -32,8 +32,8 @@ final class ConditionCombinationSerializer implements Serializable {
       if (condition instanceof Condition.Combination) {
         serialize((Condition.Combination) condition, generator);
       }
-      else if (condition instanceof PropertyCondition) {
-        propertyConditionSerializer.serialize((PropertyCondition) condition, generator);
+      else if (condition instanceof AttributeCondition) {
+        attributeConditionSerializer.serialize((AttributeCondition) condition, generator);
       }
     }
     generator.writeEndArray();

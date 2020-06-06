@@ -19,7 +19,7 @@ import is.codion.framework.domain.entity.Key;
 import java.sql.SQLException;
 import java.util.List;
 
-import static is.codion.framework.db.condition.Conditions.propertyCondition;
+import static is.codion.framework.db.condition.Conditions.attributeCondition;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
@@ -50,7 +50,7 @@ public class StoreDatabase {
 
     List<String> activeCustomerEmailAddresses =
             connection.selectValues(Customer.EMAIL,
-                    propertyCondition(Customer.IS_ACTIVE, Operator.LIKE, true));
+                    attributeCondition(Customer.IS_ACTIVE, Operator.LIKE, true));
 
     //The domain model entities, a factory for Entity instances.
     Entities entities = connection.getEntities();

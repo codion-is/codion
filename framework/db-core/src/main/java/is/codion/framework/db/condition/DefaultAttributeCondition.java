@@ -19,9 +19,9 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Encapsulates a query condition based on a single property with one or more values.
+ * Encapsulates a query condition based on a single attribute with one or more values.
  */
-final class DefaultPropertyCondition implements PropertyCondition {
+final class DefaultAttributeCondition implements AttributeCondition {
 
   private static final long serialVersionUID = 1;
 
@@ -55,12 +55,12 @@ final class DefaultPropertyCondition implements PropertyCondition {
   private boolean caseSensitive = true;
 
   /**
-   * Instantiates a new PropertyCondition instance
+   * Instantiates a new DefaultAttributeCondition instance
    * @param attribute attribute
    * @param operator the condition operator
    * @param value the value, can be a Collection
    */
-  DefaultPropertyCondition(final Attribute<?> attribute, final Operator operator, final Object value) {
+  DefaultAttributeCondition(final Attribute<?> attribute, final Operator operator, final Object value) {
     requireNonNull(attribute, "attribute");
     requireNonNull(operator, "operator");
     this.attribute = attribute;
@@ -68,7 +68,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
     this.nullCondition = value == null;
     this.values = initializeValues(value);
     if (this.values.isEmpty()) {
-      throw new IllegalArgumentException("No values specified for PropertyCondition: " + attribute);
+      throw new IllegalArgumentException("No values specified for AttributeCondition: " + attribute);
     }
   }
 
@@ -102,11 +102,14 @@ final class DefaultPropertyCondition implements PropertyCondition {
 
   @Override
   public String getConditionString(final ColumnProperty<?> property) {
+    if (!attribute.getEntityType().equals(property.getEntityType())) {
+      throw new IllegalArgumentException("Property '" + property + "' is not based on attribute: " + attribute);
+    }
     return createColumnPropertyConditionString((ColumnProperty<Object>) property, operator, getValues(), nullCondition, caseSensitive);
   }
 
   @Override
-  public PropertyCondition setCaseSensitive(final boolean caseSensitive) {
+  public AttributeCondition setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
     return this;
   }
