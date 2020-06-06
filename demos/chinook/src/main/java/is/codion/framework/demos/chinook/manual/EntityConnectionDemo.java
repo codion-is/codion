@@ -156,7 +156,7 @@ public final class EntityConnectionDemo {
   static void selectValues(EntityConnection connection) throws DatabaseException {
     // tag::selectValues[]
     List<String> customerUsStates = connection.selectValues(Customer.STATE,
-            condition(Customer.TYPE, Customer.COUNTRY, LIKE, "USA"));
+            propertyCondition(Customer.COUNTRY, LIKE, "USA"));
     // end::selectValues[]
   }
 

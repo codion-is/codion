@@ -22,6 +22,7 @@ import is.codion.common.db.result.ResultIterator;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
@@ -528,15 +529,24 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> List<T> selectValues(final Attribute<T> attribute, final EntityCondition condition) throws DatabaseException {
-    requireNonNull(condition, CONDITION_PARAM_NAME);
-    final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityType());
+  public <T> List<T> selectValues(final Attribute<T> attribute) throws DatabaseException {
+    return selectValues(attribute, null);
+  }
+
+  @Override
+  public <T> List<T> selectValues(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
+    requireNonNull(attribute, "attribute");
+    final EntityDefinition entityDefinition = getEntityDefinition(attribute.getEntityType());
     if (entityDefinition.getSelectQuery() != null) {
       throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
-    final WhereCondition combinedCondition = whereCondition(condition(condition.getEntityType(), combination(Conjunction.AND,
-            expand(condition.getCondition(), entityDefinition),
-            propertyCondition(attribute, NOT_LIKE, null))), entityDefinition);
+    final Condition.Combination combination = combination(Conjunction.AND);
+    if (condition != null) {
+      condition.getAttributes().forEach(conditionAttribute -> validateAttribute(attribute.getEntityType(), conditionAttribute));
+      combination.add(expand(condition, entityDefinition));
+    }
+    combination.add(propertyCondition(attribute, NOT_LIKE, null));
+    final WhereCondition combinedCondition = whereCondition(condition(attribute.getEntityType(), combination), entityDefinition);
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
     final String columnName = propertyToSelect.getColumnName();
     final String selectQuery = selectQuery(entityDefinition.getSelectTableName(),
@@ -1284,6 +1294,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     return builder.toString();
+  }
+
+  private static void validateAttribute(final EntityType entityType, final Attribute<?> conditionAttribute) {
+    if (!conditionAttribute.getEntityType().equals(entityType)) {
+      throw new IllegalArgumentException("Condition attribute entity type " + entityType + " required, got " + conditionAttribute.getEntityType());
+    }
   }
 
   private static final class BlobPacker implements ResultPacker<Blob> {

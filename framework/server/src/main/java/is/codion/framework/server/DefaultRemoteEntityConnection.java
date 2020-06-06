@@ -11,6 +11,7 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
@@ -190,7 +191,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> List<T> selectValues(final Attribute<T> attribute, final EntityCondition condition) throws DatabaseException {
+  public <T> List<T> selectValues(final Attribute<T> attribute) throws RemoteException, DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.selectValues(attribute);
+    }
+  }
+
+  @Override
+  public <T> List<T> selectValues(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectValues(attribute, condition);
     }

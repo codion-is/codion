@@ -111,7 +111,7 @@ final class DefaultPropertyCondition implements PropertyCondition {
     return this;
   }
 
-  private static List<Object> initializeValues(final Object value) {
+  private List<Object> initializeValues(final Object value) {
     final List<Object> values = new ArrayList<>();
     if (value instanceof Collection) {
       values.addAll((Collection<Object>) value);

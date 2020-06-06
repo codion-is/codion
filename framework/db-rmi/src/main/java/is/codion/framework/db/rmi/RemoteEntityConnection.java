@@ -10,6 +10,7 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
@@ -190,18 +191,31 @@ public interface RemoteEntityConnection extends Remote {
   int delete(EntityCondition condition) throws RemoteException, DatabaseException;
 
   /**
-   * Selects ordered and distinct non-null values of the given property
+   * Selects ordered and distinct non-null values of the given attribute, note that the attribute
+   * must be associated with a {@link ColumnProperty}.
    * @param attribute the attribute
-   * @param condition the condition
    * @param <T> the value type
-   * @return the values for the given attribute
+   * @return all the values of the given attribute
    * @throws DatabaseException in case of a db exception
    * @throws IllegalArgumentException in case the given property is not a column based attribute
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<T> selectValues(Attribute<T> attribute, EntityCondition condition)
-          throws RemoteException, DatabaseException;
+  <T> List<T> selectValues(Attribute<T> attribute) throws RemoteException, DatabaseException;
+
+  /**
+   * Selects ordered and distinct non-null values of the given attribute, note that the attribute
+   * must be associated with a {@link ColumnProperty}.
+   * @param attribute the attribute
+   * @param condition the condition, null if all values should be selected
+   * @param <T> the value type
+   * @return the values of the given attribute
+   * @throws DatabaseException in case of a db exception
+   * @throws IllegalArgumentException in case the given property is not a column based attribute
+   * @throws UnsupportedOperationException in case the entity is based on a select query
+   * @throws RemoteException in case of a remote exception
+   */
+  <T> List<T> selectValues(Attribute<T> attribute, Condition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity

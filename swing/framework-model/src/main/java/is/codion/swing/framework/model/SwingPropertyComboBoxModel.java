@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -61,7 +60,7 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
     @Override
     public Collection<T> get() {
       try {
-        return connectionProvider.getConnection().selectValues(attribute, condition(attribute.getEntityType()));
+        return connectionProvider.getConnection().selectValues(attribute);
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);
