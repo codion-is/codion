@@ -81,14 +81,14 @@ public interface ForeignKeyProperty extends Property<Entity> {
 
     /**
      * @param fetchDepth the default query fetch depth for this foreign key
-     * @return this ForeignKeyProperty instance
+     * @return this instance
      */
     ForeignKeyProperty.Builder fetchDepth(int fetchDepth);
 
     /**
      * @param softReference true if this foreign key is not based on a physical (table) foreign key
      * and should not prevent deletion
-     * @return this ForeignKeyProperty instance
+     * @return this instance
      */
     ForeignKeyProperty.Builder softReference(boolean softReference);
 
