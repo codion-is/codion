@@ -483,13 +483,6 @@ public interface EntityDefinition extends Serializable {
     EntityDefinition get();
 
     /**
-     * @param domainName the domain name
-     * @return this {@link Builder} instance
-     * @throws IllegalStateException in case the domain id has already been set
-     */
-    Builder domainName(String domainName);
-
-    /**
      * @param validator the validator for this entity type
      * @return this {@link Builder} instance
      */

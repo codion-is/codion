@@ -29,39 +29,39 @@ import static java.util.Objects.requireNonNull;
  * @see #define(EntityType, Property.Builder[])
  * @see #addReport(ReportWrapper)
  * @see #defineProcedure(ProcedureType, DatabaseProcedure)
- * @see #definedFunction(FunctionType, DatabaseFunction)
+ * @see #defineFunction(FunctionType, DatabaseFunction)
  */
 public abstract class Domain implements EntityDefinition.Provider {
 
-  private final DomainType<?> domainType;
+  private final String domainName;
   private final DomainEntities entities;
   private final DomainReports reports = new DomainReports();
   private final DomainProcedures procedures = new DomainProcedures();
   private final DomainFunctions functions = new DomainFunctions();
 
   /**
-   * Instantiates a new Domain with the simple name of the class as domain id
+   * Instantiates a new Domain with the simple name of the class as domain name
    * @see Class#getSimpleName()
    */
   protected Domain() {
-    this.domainType = new DomainType<>(getClass());
-    this.entities = new DomainEntities(domainType.getName());
+    this.domainName = getClass().getSimpleName();
+    this.entities = new DomainEntities(domainName);
   }
 
   /**
    * Instantiates a new Domain
    * @param domainType the domain type
    */
-  protected Domain(final DomainType<?> domainType) {
-    this.domainType = domainType;
-    this.entities = new DomainEntities(domainType.getName());
+  protected Domain(final String domainName) {
+    this.domainName = requireNonNull(domainName, "domainName");
+    this.entities = new DomainEntities(domainName);
   }
 
   /**
-   * @return the domain type
+   * @return the domain name
    */
-  public final DomainType<?> getDomainType() {
-    return domainType;
+  public final String getDomainName() {
+    return domainName;
   }
 
   /**
@@ -170,7 +170,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @param <R> the result type
    * @throws IllegalArgumentException in case an function with the same id has already been added
    */
-  protected final <C, T, R> void definedFunction(final FunctionType<C, T, R> type, final DatabaseFunction<C, T, R> function) {
+  protected final <C, T, R> void defineFunction(final FunctionType<C, T, R> type, final DatabaseFunction<C, T, R> function) {
     functions.addFunction(type, function);
   }
 
@@ -270,5 +270,4 @@ public abstract class Domain implements EntityDefinition.Provider {
       return reports.contains(requireNonNull(reportWrapper, "reportWrapper"));
     }
   }
-
 }

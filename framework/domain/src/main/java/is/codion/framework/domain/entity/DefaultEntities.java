@@ -242,8 +242,8 @@ public abstract class DefaultEntities implements Entities {
   protected final EntityDefinition.Builder define(final EntityType entityType, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
     final EntityDefinition.Builder definitionBuilder =
-            new DefaultEntityDefinition(entityType, tableName, propertyBuilders).builder();
-    addDefinition((DefaultEntityDefinition) definitionBuilder.domainName(domainName).get());
+            new DefaultEntityDefinition(domainName, entityType, tableName, propertyBuilders).builder();
+    addDefinition((DefaultEntityDefinition) definitionBuilder.get());
 
     return definitionBuilder;
   }

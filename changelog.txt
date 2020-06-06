@@ -6245,3 +6245,6 @@
   EntityConnection.selectValues() overloaded without condition parameter
   PropertyCondition renamed AttributeCondition
   Condition.attributeCondition() value parameter is now back to vararg values
+  DomainType now interface, DefaultDomainType added with factory method in Domain
+  EntityDefinition.domainName now final
+  DomainType removed

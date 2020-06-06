@@ -95,6 +95,6 @@ public final class TestDomain extends Domain {
 
   void operations() {
     defineProcedure(PROCEDURE_ID, (connection, objects) -> {});
-    definedFunction(FUNCTION_ID, (connection, objects) -> emptyList());
+    defineFunction(FUNCTION_ID, (connection, objects) -> emptyList());
   }
 }

@@ -46,7 +46,7 @@ public final class ConditionObjectMapperTest {
                     Conditions.attributeCondition(TestDomain.EMP_ID,
                             Operator.WITHIN_RANGE, 10, 40),
                     Conditions.attributeCondition(TestDomain.EMP_COMMISSION,
-                            Operator.NOT_LIKE, null)));
+                            Operator.NOT_LIKE, (Object) null)));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
     final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);
@@ -65,7 +65,7 @@ public final class ConditionObjectMapperTest {
   public void nullCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
     final EntityCondition entityCondition = condition(TestDomain.T_EMP,
-            Conditions.attributeCondition(TestDomain.EMP_COMMISSION, Operator.NOT_LIKE, null));
+            Conditions.attributeCondition(TestDomain.EMP_COMMISSION, Operator.NOT_LIKE, (Object) null));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
     final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);

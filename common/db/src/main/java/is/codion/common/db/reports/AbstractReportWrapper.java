@@ -37,7 +37,7 @@ public abstract class AbstractReportWrapper<T, R, P> implements ReportWrapper<T,
 
   @Override
   public final boolean equals(final Object obj) {
-    return obj instanceof AbstractReportWrapper && ((AbstractReportWrapper) obj).getFullReportPath().equals(getFullReportPath());
+    return obj instanceof AbstractReportWrapper && ((AbstractReportWrapper<?, ?, ?>) obj).getFullReportPath().equals(getFullReportPath());
   }
 
   @Override
