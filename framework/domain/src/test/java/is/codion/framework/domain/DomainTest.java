@@ -607,8 +607,8 @@ public class DomainTest {
   public void defineFunctionExisting() {
     final FunctionType<DatabaseConnection, Object, Object> functionType = FunctionType.functionType("operationId");
     final DatabaseFunction<DatabaseConnection, Object, Object> function = (databaseConnection, arguments) -> null;
-    domain.definedFunction(functionType, function);
-    assertThrows(IllegalArgumentException.class, () -> domain.definedFunction(functionType, function));
+    domain.defineFunction(functionType, function);
+    assertThrows(IllegalArgumentException.class, () -> domain.defineFunction(functionType, function));
   }
 
   @Test
