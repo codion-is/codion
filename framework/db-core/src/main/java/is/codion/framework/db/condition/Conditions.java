@@ -237,15 +237,15 @@ public final class Conditions {
 
   /**
    * Creates a {@link Condition} for the given property, with the operator specified by the {@code operator}
-   * and {@code value}. Note that {@code value} may be a single value, a Collection of values or null.
+   * and {@code value}. Note that {@code values} may be a single value, a Collection of values or null.
    * @param attribute the attribute
    * @param operator the condition operator
-   * @param value the condition value, can be a Collection of values
+   * @param values the condition values, Collections are accepted
    * @return a attribute condition based on the given value
    */
   public static AttributeCondition attributeCondition(final Attribute<?> attribute, final Operator operator,
-                                                      final Object value) {
-    return new DefaultAttributeCondition(attribute, operator, value);
+                                                      final Object... values) {
+    return new DefaultAttributeCondition(attribute, operator, values);
   }
 
   /**

@@ -17,7 +17,7 @@ import is.codion.framework.domain.property.Property;
 public class DefaultPropertyConditionModelProvider implements PropertyConditionModelProvider {
 
   @Override
-  public ColumnConditionModel<Entity, ColumnProperty> initializePropertyConditionModel(final ColumnProperty property) {
+  public ColumnConditionModel<Entity, ColumnProperty<?>> initializePropertyConditionModel(final ColumnProperty<?> property) {
     return new DefaultColumnConditionModel<>(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
             property.getFormat(), property.getDateTimeFormatPattern());
   }

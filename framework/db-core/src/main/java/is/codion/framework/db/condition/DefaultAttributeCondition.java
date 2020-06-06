@@ -58,15 +58,15 @@ final class DefaultAttributeCondition implements AttributeCondition {
    * Instantiates a new DefaultAttributeCondition instance
    * @param attribute attribute
    * @param operator the condition operator
-   * @param value the value, can be a Collection
+   * @param values the values, can be a Collection
    */
-  DefaultAttributeCondition(final Attribute<?> attribute, final Operator operator, final Object value) {
+  DefaultAttributeCondition(final Attribute<?> attribute, final Operator operator, final Object... values) {
     requireNonNull(attribute, "attribute");
     requireNonNull(operator, "operator");
     this.attribute = attribute;
     this.operator = operator;
-    this.nullCondition = value == null;
-    this.values = initializeValues(value);
+    this.nullCondition = values == null || values.length == 1 && values[0] == null;
+    this.values = initializeValues(values == null ? new Object[] {null} : values);
     if (this.values.isEmpty()) {
       throw new IllegalArgumentException("No values specified for AttributeCondition: " + attribute);
     }
@@ -114,13 +114,15 @@ final class DefaultAttributeCondition implements AttributeCondition {
     return this;
   }
 
-  private List<Object> initializeValues(final Object value) {
+  private List<Object> initializeValues(final Object... conditionValues) {
     final List<Object> values = new ArrayList<>();
-    if (value instanceof Collection) {
-      values.addAll((Collection<Object>) value);
-    }
-    else {
-      values.add(value);
+    for (final Object value : conditionValues) {
+      if (value instanceof Collection) {
+        values.addAll((Collection<Object>) value);
+      }
+      else {
+        values.add(value);
+      }
     }
     //replace Entity with Entity.Key
     for (int i = 0; i < values.size(); i++) {
