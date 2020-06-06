@@ -39,14 +39,14 @@ final class DefaultEntityDefinition implements EntityDefinition {
   private static final long serialVersionUID = 1;
 
   /**
+   * The domain name
+   */
+  private final String domainName;
+
+  /**
    * The entity type
    */
   private final EntityType entityType;
-
-  /**
-   * The domain name
-   */
-  private String domainName;
 
   /**
    * The caption to use for the entity type
@@ -169,7 +169,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * Defines a new entity type with the entityType name serving as the initial entity caption.
    */
-  DefaultEntityDefinition(final EntityType entityType, final String tableName, final Property.Builder<?>... propertyBuilders) {
+  DefaultEntityDefinition(final String domainName, final EntityType entityType, final String tableName,
+                          final Property.Builder<?>... propertyBuilders) {
+    this.domainName = requireNonNull(domainName, "domainName");
     this.entityType = requireNonNull(entityType, "entityType");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.entityProperties = new EntityProperties(entityType, propertyBuilders);
@@ -829,16 +831,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     @Override
     public EntityDefinition get() {
       return definition;
-    }
-
-    @Override
-    public Builder domainName(final String domainName) {
-      requireNonNull(domainName, "domainName");
-      if (definition.domainName != null) {
-        throw new IllegalStateException("Domain name has already been set: " + definition.domainName);
-      }
-      definition.domainName = domainName;
-      return this;
     }
 
     @Override
