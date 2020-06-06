@@ -260,7 +260,7 @@ public interface Property<T> extends Serializable {
     Property.Builder<T> minimumValue(double minimumValue);
 
     /**
-     * Sets the maximum fraction digits to show for this property, only applicable to properties based on Types.DOUBLE.
+     * Sets the maximum fraction digits to show for this property, only applicable to properties based on decimal types.
      * This setting is overridden during subsequent calls to {@link #format(Format)}.
      * Note that values associated with this property are automatically rounded to {@code maximumFractionDigits} digits.
      * @param maximumFractionDigits the maximum fraction digits

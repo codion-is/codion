@@ -642,7 +642,7 @@ public final class EntityInputComponents {
    * @return a text field for the given property
    */
   public static <T> JTextField createTextField(final Property<T> property, final Value<T> value,
-                                           final String formatMaskString, final UpdateOn updateOn) {
+                                               final String formatMaskString, final UpdateOn updateOn) {
     return createTextField(property, value, formatMaskString, updateOn, null);
   }
 
@@ -657,8 +657,8 @@ public final class EntityInputComponents {
    * @return a text field for the given property
    */
   public static <T> JTextField createTextField(final Property<T> property, final Value<T> value,
-                                           final String formatMaskString, final UpdateOn updateOn,
-                                           final StateObserver enabledState) {
+                                               final String formatMaskString, final UpdateOn updateOn,
+                                               final StateObserver enabledState) {
     return createTextField(property, value, formatMaskString, updateOn, enabledState, ValueContainsLiterals.NO);
   }
 
@@ -675,8 +675,8 @@ public final class EntityInputComponents {
    * @return a text field for the given property
    */
   public static <T> JTextField createTextField(final Property<T> property, final Value<T> value, final String formatMaskString,
-                                           final UpdateOn updateOn, final StateObserver enabledState,
-                                           final ValueContainsLiterals valueContainsLiterals) {
+                                               final UpdateOn updateOn, final StateObserver enabledState,
+                                               final ValueContainsLiterals valueContainsLiterals) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiterals);
@@ -705,7 +705,7 @@ public final class EntityInputComponents {
       ((Value<LocalDateTime>) value).link(TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
     else {
-      throw new IllegalArgumentException("Not a text based property: " + property);
+      throw new IllegalArgumentException("Property type does not support text fields: " + property);
     }
 
     return textField;
@@ -807,7 +807,7 @@ public final class EntityInputComponents {
     return TextFields.createFormattedField(formatMaskString, valueContainsLiterals);
   }
 
-  private static JTextField initializeDoubleField(final Property<Double> property) {
+  private static DoubleField initializeDoubleField(final Property<Double> property) {
     final DoubleField field = new DoubleField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
       field.setRange(Math.min(property.getMinimumValue(), 0), property.getMaximumValue());
@@ -816,7 +816,7 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JTextField initializeBigDecimalField(final Property<BigDecimal> property) {
+  private static BigDecimalField initializeBigDecimalField(final Property<BigDecimal> property) {
     final BigDecimalField field = new BigDecimalField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
       field.setRange(Math.min(property.getMinimumValue(), 0), property.getMaximumValue());
@@ -825,7 +825,7 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JTextField initializeIntegerField(final Property<Integer> property) {
+  private static IntegerField initializeIntegerField(final Property<Integer> property) {
     final IntegerField field = new IntegerField(cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
       field.setRange(property.getMinimumValue(), property.getMaximumValue());
@@ -834,7 +834,7 @@ public final class EntityInputComponents {
     return field;
   }
 
-  private static JTextField initializeLongField(final Property<Long> property) {
+  private static LongField initializeLongField(final Property<Long> property) {
     final LongField field = new LongField(cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMinimumValue() != null && property.getMaximumValue() != null) {
       field.setRange(property.getMinimumValue(), property.getMaximumValue());
