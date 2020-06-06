@@ -20,7 +20,7 @@ public interface EntityType extends Serializable {
   String getName();
 
   /**
-   * Creates a new {@link Attribute}, associated with this Identity.
+   * Creates a new {@link Attribute}, associated with this EntityType.
    * @param name the attribute name
    * @param typeClass the class representing the attribute value type
    * @param <T> the attribute type
@@ -29,86 +29,86 @@ public interface EntityType extends Serializable {
   <T> Attribute<T> attribute(String name, Class<T> typeClass);
 
   /**
-   * Creates a new {@link Attribute} associated with this Identity.
+   * Creates a new {@link Attribute} associated with this EntityType.
    * Use this when you don't have access to an actual Attribute instance, only its name
-   * and identity, but need to access the value associated with it.
+   * and EntityType, but need to access the value associated with it.
    * @param name the attribute name
    * @return a new {@link Attribute}
    */
   Attribute<Object> objectAttribute(String name);
 
   /**
-   * Creates a new Long based attribute, associated with this Identity.
+   * Creates a new Long based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new Long based attribute.
    */
   Attribute<Long> longAttribute(String name);
 
   /**
-   * Creates a new Integer based attribute, associated with this Identity.
+   * Creates a new Integer based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new Integer based attribute.
    */
   Attribute<Integer> integerAttribute(String name);
 
   /**
-   * Creates a new Double based attribute, associated with this Identity.
+   * Creates a new Double based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new Double based attribute.
    */
   Attribute<Double> doubleAttribute(String name);
 
   /**
-   * Creates a new BigDecimal based attribute, associated with this Identity.
+   * Creates a new BigDecimal based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new BigDecimal based attribute.
    */
   Attribute<BigDecimal> bigDecimalAttribute(String name);
 
   /**
-   * Creates a new LocalDate based attribute, associated with this Identity.
+   * Creates a new LocalDate based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new LocalDate based attribute.
    */
   Attribute<LocalDate> localDateAttribute(String name);
 
   /**
-   * Creates a new LocalTime based attribute, associated with this Identity.
+   * Creates a new LocalTime based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new LocalTime based attribute.
    */
   Attribute<LocalTime> localTimeAttribute(String name);
 
   /**
-   * Creates a new LocalDateTime based attribute, associated with this Identity.
+   * Creates a new LocalDateTime based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new LocalDateTime based attribute.
    */
   Attribute<LocalDateTime> localDateTimeAttribute(String name);
 
   /**
-   * Creates a new String based attribute, associated with this Identity.
+   * Creates a new String based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new String based attribute.
    */
   Attribute<String> stringAttribute(String name);
 
   /**
-   * Creates a new Boolean based attribute, associated with this Identity.
+   * Creates a new Boolean based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new Boolean based attribute.
    */
   Attribute<Boolean> booleanAttribute(String name);
 
   /**
-   * Creates a new {@link Attribute}, associated with this Identity.
+   * Creates a new {@link Attribute}, associated with this EntityType.
    * @param name the attribute name
    * @return a new {@link Attribute}
    */
   Attribute<Entity> entityAttribute(String name);
 
   /**
-   * Creates a new {@link Attribute}, associated with this Identity.
+   * Creates a new {@link Attribute}, associated with this EntityType.
    * @param name the attribute name
    * @return a new {@link Attribute}
    */
