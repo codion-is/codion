@@ -195,7 +195,7 @@ public final class EntityInputComponents {
       case Types.BIGINT:
       case Types.CHAR:
       case Types.VARCHAR:
-        return createTextField(property, value, null, UpdateOn.KEYSTROKE, enabledState);
+        return createTextField(property, value, UpdateOn.KEYSTROKE, enabledState);
       case Types.BLOB:
       default:
         throw new IllegalArgumentException("No input component available for property: " +
@@ -529,16 +529,19 @@ public final class EntityInputComponents {
     }
 
     final String formatString = property.getDateTimeFormatPattern();
-    final JFormattedTextField field = (JFormattedTextField) createTextField(property, value,
-            DateFormats.getDateMask(formatString), updateOn, enabledState);
+    final JFormattedTextField textField = (JFormattedTextField) createTextField(property, enabledState,
+            DateFormats.getDateMask(formatString), ValueContainsLiterals.YES);
     if (property.getAttribute().isDate()) {
-      return (TemporalInputPanel<T>) new LocalDateInputPanel(field, formatString, calendarButton, enabledState);
+      ((Value<LocalDate>) value).link(TemporalValues.localDateValue(textField, property.getDateTimeFormatPattern(), updateOn));
+      return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, formatString, calendarButton, enabledState);
     }
     else if (property.getAttribute().isTimestamp()) {
-      return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(field, formatString, calendarButton, enabledState);
+      ((Value<LocalDateTime>) value).link(TemporalValues.localDateTimeValue(textField, property.getDateTimeFormatPattern(), updateOn));
+      return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(textField, formatString, calendarButton, enabledState);
     }
     else if (property.getAttribute().isTime()) {
-      return (TemporalInputPanel<T>) new LocalTimeInputPanel(field, formatString, enabledState);
+      ((Value<LocalTime>) value).link(TemporalValues.localTimeValue(textField, property.getDateTimeFormatPattern(), updateOn));
+      return (TemporalInputPanel<T>) new LocalTimeInputPanel(textField, formatString, enabledState);
     }
 
     throw new IllegalArgumentException("Can not create a date input panel for a non-date property");
@@ -556,7 +559,7 @@ public final class EntityInputComponents {
                                                     final UpdateOn updateOn, final ButtonFocusable buttonFocusable) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    final JTextField field = createTextField(property, value, null, updateOn);
+    final JTextField field = createTextField(property, value, updateOn);
     final TextInputPanel panel = new TextInputPanel(field, property.getCaption(), null, buttonFocusable);
     panel.setMaxLength(property.getMaximumLength());
 
@@ -629,57 +632,35 @@ public final class EntityInputComponents {
    * @return a text field for the given property
    */
   public static <T> JTextField createTextField(final Property<T> property, final Value<T> value) {
-    return createTextField(property, value, null, UpdateOn.KEYSTROKE);
+    return createTextField(property, value, UpdateOn.KEYSTROKE);
   }
 
   /**
    * Creates a text field based on the given property
    * @param property the property
    * @param value the value to bind to the field
-   * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param updateOn specifies when the underlying value should be updated
    * @param <T> the property type
    * @return a text field for the given property
    */
-  public static <T> JTextField createTextField(final Property<T> property, final Value<T> value,
-                                               final String formatMaskString, final UpdateOn updateOn) {
-    return createTextField(property, value, formatMaskString, updateOn, null);
+  public static <T> JTextField createTextField(final Property<T> property, final Value<T> value, final UpdateOn updateOn) {
+    return createTextField(property, value, updateOn, null);
   }
 
   /**
    * Creates a text field based on the given property
    * @param property the property
    * @param value the value to bind to the field
-   * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param updateOn specifies when the underlying value should be updated
    * @param enabledState the state controlling the enabled state of the panel
    * @param <T> the property type
    * @return a text field for the given property
    */
   public static <T> JTextField createTextField(final Property<T> property, final Value<T> value,
-                                               final String formatMaskString, final UpdateOn updateOn,
-                                               final StateObserver enabledState) {
-    return createTextField(property, value, formatMaskString, updateOn, enabledState, ValueContainsLiterals.NO);
-  }
-
-  /**
-   * Creates a text field based on the given property
-   * @param property the property
-   * @param value the value to bind to the field
-   * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
-   * @param updateOn specifies when the underlying value should be updated
-   * @param enabledState the state controlling the enabled state of the panel
-   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
-   * associated with a the format mask
-   * @param <T> the property type
-   * @return a text field for the given property
-   */
-  public static <T> JTextField createTextField(final Property<T> property, final Value<T> value, final String formatMaskString,
-                                               final UpdateOn updateOn, final StateObserver enabledState,
-                                               final ValueContainsLiterals valueContainsLiterals) {
+                                               final UpdateOn updateOn, final StateObserver enabledState) {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
-    final JTextField textField = createTextField(property, enabledState, formatMaskString, valueContainsLiterals);
+    final JTextField textField = createTextField(property, enabledState, null, null);
     if (property.getAttribute().isString()) {
       ((Value<String>) value).link(TextValues.textValue(textField, property.getFormat(), updateOn));
     }
@@ -707,6 +688,55 @@ public final class EntityInputComponents {
     else {
       throw new IllegalArgumentException("Property type does not support text fields: " + property);
     }
+
+    return textField;
+  }
+
+  /**
+   * Creates a masked text field based on the given String property
+   * @param property the property
+   * @param value the value to bind to the field
+   * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
+   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
+   * associated with a the format mask
+   * @return a text field for the given property
+   */
+  public static JFormattedTextField createMaskedTextField(final Property<String> property, final Value<String> value, final String formatMaskString,
+                                                          final ValueContainsLiterals valueContainsLiterals) {
+    return createMaskedTextField(property, value, formatMaskString, valueContainsLiterals, UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * Creates a masked text field based on the given String property
+   * @param property the property
+   * @param value the value to bind to the field
+   * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
+   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
+   * associated with a the format mask
+   * @param updateOn specifies when the underlying value should be updated
+   * @return a text field for the given property
+   */
+  public static JFormattedTextField createMaskedTextField(final Property<String> property, final Value<String> value, final String formatMaskString,
+                                                          final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn) {
+    return createMaskedTextField(property, value, formatMaskString, valueContainsLiterals, updateOn, null);
+  }
+
+  /**
+   * Creates a masked text field based on the given String property
+   * @param property the property
+   * @param value the value to bind to the field
+   * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
+   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
+   * associated with a the format mask
+   * @param updateOn specifies when the underlying value should be updated
+   * @param enabledState the state controlling the enabled state of the panel
+   * @return a text field for the given property
+   */
+  public static JFormattedTextField createMaskedTextField(final Property<String> property, final Value<String> value, final String formatMaskString,
+                                                          final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn,
+                                                          final StateObserver enabledState) {
+    final JFormattedTextField textField = (JFormattedTextField) createTextField(property, enabledState, formatMaskString, valueContainsLiterals);
+    value.link(TextValues.textValue(textField, null, updateOn));
 
     return textField;
   }

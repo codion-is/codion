@@ -192,7 +192,7 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Selects ordered and distinct non-null values of the given attribute, note that the attribute
-   * must be associated with a {@link ColumnProperty}.
+   * must be associated with a {@link is.codion.framework.domain.property.ColumnProperty}.
    * @param attribute the attribute
    * @param <T> the value type
    * @return all the values of the given attribute
@@ -205,7 +205,7 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Selects ordered and distinct non-null values of the given attribute, note that the attribute
-   * must be associated with a {@link ColumnProperty}.
+   * must be associated with a {@link is.codion.framework.domain.property.ColumnProperty}.
    * @param attribute the attribute
    * @param condition the condition, null if all values should be selected
    * @param <T> the value type

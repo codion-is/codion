@@ -13,9 +13,9 @@ import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.LongField;
+import is.codion.swing.common.ui.textfield.TextFields.ValueContainsLiterals;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
-import is.codion.swing.common.ui.value.UpdateOn;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -107,8 +107,9 @@ public final class EntityEditPanels {
 
       TextInputPanel inputPanel = createTextInputPanel(Demo.LONG_TEXT);
 
-      JFormattedTextField formattedField = (JFormattedTextField)
-              createTextField(Demo.FORMATTED_TEXT, UpdateOn.KEYSTROKE, "###:###");
+      JFormattedTextField formattedField =
+              createMaskedTextField(Demo.FORMATTED_TEXT, "###:###",
+                      ValueContainsLiterals.YES);
       // end::textValue[]
     }
 

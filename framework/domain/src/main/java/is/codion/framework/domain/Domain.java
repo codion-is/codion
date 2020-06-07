@@ -50,7 +50,7 @@ public abstract class Domain implements EntityDefinition.Provider {
 
   /**
    * Instantiates a new Domain
-   * @param domainType the domain type
+   * @param domainName the domain name
    */
   protected Domain(final String domainName) {
     this.domainName = requireNonNull(domainName, "domainName");
