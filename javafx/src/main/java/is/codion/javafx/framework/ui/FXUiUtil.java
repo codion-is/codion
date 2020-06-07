@@ -85,7 +85,6 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A factory class for UI related things.
- * todo make Attribute based
  */
 public final class FXUiUtil {
 
@@ -241,57 +240,69 @@ public final class FXUiUtil {
       if (control instanceof ComboBox) {
         final Value<Entity> entityValue = PropertyValues.selectedValue(((ComboBox<Entity>) control).getSelectionModel());
         entityValue.set((Entity) defaultValue);
+
         return (Value<T>) entityValue;
       }
       else if (control instanceof EntityLookupField) {
         final Value<Collection<Entity>> entityValue = PropertyValues.lookupValue(((EntityLookupField) control).getModel());
         entityValue.set(defaultValue == null ? emptyList() : singletonList((Entity) defaultValue));
+
         return (Value<T>) entityValue;
       }
     }
     if (property instanceof ValueListProperty) {
       final Value<T> listValue = PropertyValues.selectedItemValue(((ComboBox<Item<T>>) control).getSelectionModel());
       listValue.set(defaultValue);
-      return (Value<T>) listValue;
+
+      return listValue;
     }
 
     switch (property.getType()) {
       case Types.BOOLEAN:
         final Value<Boolean> booleanValue = PropertyValues.booleanPropertyValue(((CheckBox) control).selectedProperty());
         booleanValue.set((Boolean) defaultValue);
+
         return (Value<T>) booleanValue;
       case Types.DATE:
         final Value<LocalDate> dateValue = Values.value((LocalDate) defaultValue);
         dateValue.link(createDateValue((Property<LocalDate>) property, (DatePicker) control));
+
         return (Value<T>) dateValue;
       case Types.TIMESTAMP:
         final Value<LocalDateTime> dateTimeValue = Values.value((LocalDateTime) defaultValue);
         dateTimeValue.link(createTimestampValue((Property<LocalDateTime>) property, (TextField) control));
+
         return (Value<T>) dateTimeValue;
       case Types.TIME:
         final Value<LocalTime> timeValue = Values.value((LocalTime) defaultValue);
         timeValue.link(createTimeValue((Property<LocalTime>) property, (TextField) control));
+
         return (Value<T>) timeValue;
       case Types.DOUBLE:
         final StringValue<Double> doubleValue = createDoubleValue((Property<Double>) property, (TextField) control);
         doubleValue.set((Double) defaultValue);
+
         return (Value<T>) doubleValue;
       case Types.DECIMAL:
         final StringValue<BigDecimal> bigDecimalValue = createBigDecimalValue((Property<BigDecimal>) property, (TextField) control);
         bigDecimalValue.set((BigDecimal) defaultValue);
+
         return (Value<T>) bigDecimalValue;
       case Types.INTEGER:
         final StringValue<Integer> integerValue = createIntegerValue((Property<Integer>) property, (TextField) control);
         integerValue.set((Integer) defaultValue);
+
         return (Value<T>) integerValue;
       case Types.BIGINT:
         final StringValue<Long> longValue = createLongValue((Property<Long>) property, (TextField) control);
         longValue.set((Long) defaultValue);
+
         return (Value<T>) longValue;
       case Types.CHAR:
       case Types.VARCHAR:
         final StringValue<String> stringValue = createStringValue((TextField) control);
         stringValue.set((String) defaultValue);
+
         return (Value<T>) stringValue;
       default:
         throw new IllegalArgumentException("Unsupported property type: " + property.getType());

@@ -117,7 +117,7 @@ public final class PropertyConditionView extends BorderPane {
   private Control createUpperBoundControl() {
     final Control control = createControl();
     if (!(control instanceof EntityLookupField)) {
-      model.getUpperBoundValue().link(FXUiUtil.createValue(model.getColumnIdentifier(), control, null));
+      model.getUpperBoundValue().link(FXUiUtil.createValue((Property<Object>) model.getColumnIdentifier(), control, null));
     }
 
     return control;
@@ -129,7 +129,7 @@ public final class PropertyConditionView extends BorderPane {
       return null;
     }
     final Control control = createControl();
-    model.getLowerBoundValue().link(FXUiUtil.createValue(model.getColumnIdentifier(), control, null));
+    model.getLowerBoundValue().link(FXUiUtil.createValue((Property<Object>) model.getColumnIdentifier(), control, null));
 
     return control;
   }
@@ -145,7 +145,7 @@ public final class PropertyConditionView extends BorderPane {
       control = new EntityLookupField(((DefaultForeignKeyConditionModel) model).getEntityLookupModel());
     }
     else {
-      control = FXUiUtil.createControl(model.getColumnIdentifier(), null);
+      control = FXUiUtil.createControl((Property<Object>) model.getColumnIdentifier(), null);
     }
     if (!(control instanceof EntityLookupField)) {
       control.setOnKeyReleased(event -> {

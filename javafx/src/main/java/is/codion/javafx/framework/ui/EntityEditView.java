@@ -234,7 +234,7 @@ public abstract class EntityEditView extends BorderPane {
         textField = FXUiUtil.createTextField((Property<String>) property, editModel);
         break;
       default:
-        throw new IllegalArgumentException("Text field type for property: " + attribute + " is not defined");
+        throw new IllegalArgumentException("Text field type for attribute: " + attribute + " is not implemented");
     }
 
     controls.put(attribute, textField);
