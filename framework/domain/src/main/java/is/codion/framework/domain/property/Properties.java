@@ -10,7 +10,9 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.text.Collator;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static is.codion.framework.domain.property.AuditProperty.AuditAction.INSERT;
 import static is.codion.framework.domain.property.AuditProperty.AuditAction.UPDATE;
@@ -79,7 +81,7 @@ public final class Properties {
   public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute,
                                                               final String caption, final EntityType foreignEntityType,
                                                               final ColumnProperty.Builder<?> columnPropertyBuilder) {
-    return new DefaultForeignKeyProperty(attribute, caption, foreignEntityType, columnPropertyBuilder).builder();
+    return foreignKeyProperty(attribute, caption, foreignEntityType, Collections.singletonList(columnPropertyBuilder));
   }
 
   /**
@@ -95,7 +97,11 @@ public final class Properties {
   public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute,
                                                               final String caption, final EntityType foreignEntityType,
                                                               final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
-    return new DefaultForeignKeyProperty(attribute, caption, foreignEntityType, columnPropertyBuilders).builder();
+    columnPropertyBuilders.forEach(builder -> builder.setForeignKeyProperty(true));
+
+    return new DefaultForeignKeyProperty(attribute, caption, foreignEntityType,
+            columnPropertyBuilders.stream().map(ColumnProperty.Builder::get).collect(Collectors.toList()))
+            .builder(columnPropertyBuilders);
   }
 
   /**

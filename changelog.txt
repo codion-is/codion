@@ -6249,3 +6249,5 @@
   EntityDefinition.domainName now final
   DomainType removed
   EntityInputComponents.createMaskedTextField() split from createTextField()
+  DefaultForeignKeyProperty.columnPropertyBuilders moved to Builder
+  ForeignKeyProperty.isInsertable() removed, unused

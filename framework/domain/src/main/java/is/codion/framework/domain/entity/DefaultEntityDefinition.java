@@ -170,11 +170,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
    * Defines a new entity type with the entityType name serving as the initial entity caption.
    */
   DefaultEntityDefinition(final String domainName, final EntityType entityType, final String tableName,
-                          final Property.Builder<?>... propertyBuilders) {
+                          final List<Property<?>> properties) {
     this.domainName = requireNonNull(domainName, "domainName");
     this.entityType = requireNonNull(entityType, "entityType");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
-    this.entityProperties = new EntityProperties(entityType, propertyBuilders);
+    this.entityProperties = new EntityProperties(entityType, properties);
     this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
     this.groupByClause = initializeGroupByClause();
     this.caption = entityType.getName();
@@ -650,9 +650,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private final List<TransientProperty<?>> transientProperties;
     private final Map<Attribute<?>, List<DenormalizedProperty<?>>> denormalizedProperties;
 
-    private EntityProperties(final EntityType entityType, final Property.Builder<?>... propertyBuilders) {
+    private EntityProperties(final EntityType entityType, final List<Property<?>> properties) {
       this.entityType = entityType;
-      this.propertyMap = initializePropertyMap(propertyBuilders);
+      this.propertyMap = initializePropertyMap(properties);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
       this.visibleProperties = unmodifiableList(getVisibleProperties());
       this.columnProperties = unmodifiableList(getColumnProperties());
@@ -669,12 +669,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
       this.denormalizedProperties = unmodifiableMap(getDenormalizedProperties());
     }
 
-    private Map<Attribute<?>, Property<?>> initializePropertyMap(final Property.Builder<?>... propertyBuilders) {
-      final Map<Attribute<?>, Property<?>> map = new LinkedHashMap<>(propertyBuilders.length);
-      for (final Property.Builder<?> propertyBuilder : propertyBuilders) {
-        validateAndAddProperty(propertyBuilder, map);
-        if (propertyBuilder instanceof ForeignKeyProperty.Builder) {
-          initializeForeignKeyProperty(map, (ForeignKeyProperty.Builder) propertyBuilder);
+    private Map<Attribute<?>, Property<?>> initializePropertyMap(final List<Property<?>> properties) {
+      final Map<Attribute<?>, Property<?>> map = new LinkedHashMap<>(properties.size());
+      for (final Property<?> property : properties) {
+        validateAndAddProperty(property, map);
+        if (property instanceof ForeignKeyProperty) {
+          initializeForeignKeyProperty(map, (ForeignKeyProperty) property);
         }
       }
       validatePrimaryKeyProperties(map);
@@ -683,16 +683,15 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     private void initializeForeignKeyProperty(final Map<Attribute<?>, Property<?>> propertyMap,
-                                              final ForeignKeyProperty.Builder foreignKeyPropertyBuilder) {
-      for (final ColumnProperty.Builder<?> propertyBuilder : foreignKeyPropertyBuilder.getColumnPropertyBuilders()) {
-        if (!(propertyBuilder.get() instanceof MirrorProperty)) {
-          validateAndAddProperty(propertyBuilder, propertyMap);
+                                              final ForeignKeyProperty foreignKeyProperty) {
+      for (final ColumnProperty<?> property : foreignKeyProperty.getColumnProperties()) {
+        if (!(property instanceof MirrorProperty)) {
+          validateAndAddProperty(property, propertyMap);
         }
       }
     }
 
-    private void validateAndAddProperty(final Property.Builder<?> propertyBuilder, final Map<Attribute<?>, Property<?>> propertyMap) {
-      final Property<?> property = propertyBuilder.get();
+    private void validateAndAddProperty(final Property<?> property, final Map<Attribute<?>, Property<?>> propertyMap) {
       validate(property, propertyMap);
       propertyMap.put(property.getAttribute(), property);
     }
