@@ -6227,3 +6227,4 @@
   Entity.keySet() and originalKeySet() replaced with entrySet() and originalEntrySet()
   Key.size() removed
   DefaultKey bug fixed, did not initialize hashCode to null for an empty key
+  Entity.size() removed, methods reordered

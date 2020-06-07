@@ -160,7 +160,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * Returns true if this entity contains attributes which values are derived from the value of the given attribute
    * @param attribute the attribute
-   * @return true if any properties are derived from the given attribute
+   * @return true if any attribute values are derived from the given attribute
    */
   boolean hasDerivedAttributes(Attribute<?> attribute);
 

@@ -311,6 +311,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public <T> ColumnProperty<T> getPrimaryKeyProperty(final Attribute<T> attribute) {
+    requireNonNull(attribute, "attribute");
     final ColumnProperty<T> property = (ColumnProperty<T>) entityProperties.primaryKeyPropertyMap.get(attribute);
     if (property == null) {
       throw new IllegalArgumentException("Primary key property " + attribute + " not found in entity: " + entityType);

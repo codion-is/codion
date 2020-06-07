@@ -331,11 +331,6 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public int size() {
-    return values.size();
-  }
-
-  @Override
   public boolean isForeignKeyNull(final Attribute<Entity> foreignKeyAttribute) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     final ForeignKeyProperty foreignKeyProperty = definition.getForeignKeyProperty(foreignKeyAttribute);
