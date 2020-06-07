@@ -10,7 +10,6 @@ import is.codion.framework.domain.entity.EntityType;
 import java.util.List;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -24,17 +23,6 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   private final List<ColumnProperty<?>> columnProperties;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
-
-  /**
-   * @param attribute the attribute
-   * @param caption the caption
-   * @param foreignEntityType the type of the entity referenced by this foreign key
-   * @param columnProperty the underlying column property comprising this foreign key
-   */
-  DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
-                            final EntityType foreignEntityType, final ColumnProperty<?> columnProperty) {
-    this(attribute, caption, foreignEntityType, singletonList(columnProperty));
-  }
 
   /**
    * @param attribute the attribute, note that this is not a column
