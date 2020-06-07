@@ -915,7 +915,7 @@ public final class FXUiUtil {
 
   private static SortedList<Entity> createEntityListModel(final ForeignKeyProperty property,
                                                           final EntityConnectionProvider connectionProvider) {
-    final ObservableEntityList entityList = new ObservableEntityList(property.getForeignEntityType(), connectionProvider);
+    final ObservableEntityList entityList = new ObservableEntityList(property.getReferencedEntityType(), connectionProvider);
     entityList.refresh();
 
     return entityList.getSortedList();

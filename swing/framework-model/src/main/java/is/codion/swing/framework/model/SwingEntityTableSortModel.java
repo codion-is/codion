@@ -40,7 +40,7 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Pr
   @Override
   protected Comparator<?> initializeColumnComparator(final Property<?> property) {
     if (property instanceof ForeignKeyProperty) {
-      return definitionProvider.getDefinition(((ForeignKeyProperty) property).getForeignEntityType()).getComparator();
+      return definitionProvider.getDefinition(((ForeignKeyProperty) property).getReferencedEntityType()).getComparator();
     }
 
     return super.initializeColumnComparator(property);

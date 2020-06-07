@@ -75,7 +75,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   public FXEntityListModel createForeignKeyListModel(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty);
-    return new FXEntityListModel(foreignKeyProperty.getForeignEntityType(), getConnectionProvider());
+    return new FXEntityListModel(foreignKeyProperty.getReferencedEntityType(), getConnectionProvider());
     //todo
 //    if (getValidator().isNullable(getEntity(), foreignKeyProperty.getAttribute())) {
 //      model.setNullValue(Domain.createToStringEntity(foreignKeyProperty.getForeignEntityType(),

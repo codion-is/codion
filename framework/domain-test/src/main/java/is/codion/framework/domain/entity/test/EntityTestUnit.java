@@ -299,15 +299,15 @@ public class EntityTestUnit {
   private Map<EntityType, Entity> initializeReferencedEntities(final EntityType entityType, final Map<EntityType, Entity> foreignKeyEntities)
           throws DatabaseException {
     for (final ForeignKeyProperty foreignKeyProperty : getEntities().getDefinition(entityType).getForeignKeyProperties()) {
-      final EntityType foreignEntityType = foreignKeyProperty.getForeignEntityType();
-      if (!foreignKeyEntities.containsKey(foreignEntityType)) {
-        if (!Objects.equals(entityType, foreignEntityType)) {
-          foreignKeyEntities.put(foreignEntityType, null);//short circuit recursion, value replaced below
-          initializeReferencedEntities(foreignEntityType, foreignKeyEntities);
+      final EntityType referencedEntityType = foreignKeyProperty.getReferencedEntityType();
+      if (!foreignKeyEntities.containsKey(referencedEntityType)) {
+        if (!Objects.equals(entityType, referencedEntityType)) {
+          foreignKeyEntities.put(referencedEntityType, null);//short circuit recursion, value replaced below
+          initializeReferencedEntities(referencedEntityType, foreignKeyEntities);
         }
-        final Entity referencedEntity = initializeReferenceEntity(foreignEntityType, foreignKeyEntities);
+        final Entity referencedEntity = initializeReferenceEntity(referencedEntityType, foreignKeyEntities);
         if (referencedEntity != null) {
-          foreignKeyEntities.put(foreignEntityType, insertOrSelect(referencedEntity));
+          foreignKeyEntities.put(referencedEntityType, insertOrSelect(referencedEntity));
         }
       }
     }
@@ -472,7 +472,7 @@ public class EntityTestUnit {
   }
 
   private static Object getReferenceEntity(final ForeignKeyProperty property, final Map<EntityType, Entity> referenceEntities) {
-    return referenceEntities == null ? null : referenceEntities.get(property.getForeignEntityType());
+    return referenceEntities == null ? null : referenceEntities.get(property.getReferencedEntityType());
   }
 
   private static Object getRandomListValue(final ValueListProperty property) {

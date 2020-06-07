@@ -34,7 +34,7 @@ public interface ForeignKeyProperty extends Property<Entity> {
   /**
    * @return the type of the entity referenced by this foreign key
    */
-  EntityType getForeignEntityType();
+  EntityType getReferencedEntityType();
 
   /**
    * Returns an unmodifiable list containing the attributes that comprise this foreign key

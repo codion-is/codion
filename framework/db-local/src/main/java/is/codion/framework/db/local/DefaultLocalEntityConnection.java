@@ -1063,7 +1063,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       final List<ForeignKeyProperty> foreignKeyReferences = new ArrayList<>();
       for (final EntityDefinition entityDefinition : domain.getEntities().getDefinitions()) {
         for (final ForeignKeyProperty foreignKeyProperty : entityDefinition.getForeignKeyProperties()) {
-          if (foreignKeyProperty.getForeignEntityType().equals(entityType)) {
+          if (foreignKeyProperty.getReferencedEntityType().equals(entityType)) {
             foreignKeyReferences.add(foreignKeyProperty);
           }
         }

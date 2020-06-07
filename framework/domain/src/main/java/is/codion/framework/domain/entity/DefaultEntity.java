@@ -439,9 +439,9 @@ final class DefaultEntity implements Entity {
 
   private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity value) {
     final Entity entity = value;
-    final EntityType foreignEntityType = property.getForeignEntityType();
-    if (!Objects.equals(foreignEntityType, entity.getEntityType())) {
-      throw new IllegalArgumentException("Entity of type " + foreignEntityType +
+    final EntityType referencedEntityType = property.getReferencedEntityType();
+    if (!Objects.equals(referencedEntityType, entity.getEntityType())) {
+      throw new IllegalArgumentException("Entity of type " + referencedEntityType +
               " expected for property " + this + ", got: " + entity.getEntityType());
     }
   }
