@@ -272,7 +272,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final Control getDeleteControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC);
     return Controls.control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
-            States.aggregateState(Conjunction.AND,
+            States.combination(Conjunction.AND,
                     activeState,
                     getEditModel().getDeleteEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver()),
@@ -296,7 +296,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final Control getUpdateControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC);
     return Controls.control(this::update, FrameworkMessages.get(FrameworkMessages.UPDATE),
-            States.aggregateState(Conjunction.AND,
+            States.combination(Conjunction.AND,
                     activeState,
                     getEditModel().getUpdateEnabledObserver(),
                     getEditModel().getEntityNewObserver().getReversedObserver(),
@@ -311,7 +311,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     return Controls.control(this::insert, FrameworkMessages.get(FrameworkMessages.INSERT),
-            States.aggregateState(Conjunction.AND, activeState, getEditModel().getInsertEnabledObserver()),
+            States.combination(Conjunction.AND, activeState, getEditModel().getInsertEnabledObserver()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, frameworkIcons().add());
   }
@@ -322,11 +322,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final Control getSaveControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.SAVE_MNEMONIC);
-    final State insertUpdateState = States.aggregateState(Conjunction.OR, getEditModel().getInsertEnabledObserver(),
-            States.aggregateState(Conjunction.AND, getEditModel().getUpdateEnabledObserver(),
+    final State insertUpdateState = States.combination(Conjunction.OR, getEditModel().getInsertEnabledObserver(),
+            States.combination(Conjunction.AND, getEditModel().getUpdateEnabledObserver(),
                     getEditModel().getModifiedObserver()));
     return Controls.control(this::save, FrameworkMessages.get(FrameworkMessages.SAVE),
-            States.aggregateState(Conjunction.AND, activeState, insertUpdateState),
+            States.combination(Conjunction.AND, activeState, insertUpdateState),
             FrameworkMessages.get(FrameworkMessages.SAVE_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, frameworkIcons().add());
   }

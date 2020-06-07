@@ -11,7 +11,9 @@ import is.codion.common.state.States;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -220,5 +222,52 @@ public class ValuesTest {
   public void setReadOnlyPropertyValue() {
     final Value<Integer> modelValue = Values.propertyValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     assertThrows(IllegalStateException.class, () -> modelValue.set(42));
+  }
+
+  @Test
+  public void valueSet() {
+    ValueSet<Integer> valueSet = Values.valueSet();
+
+    assertFalse(valueSet.isNullable());
+
+    assertTrue(valueSet.add(1));
+    assertFalse(valueSet.add(1));
+    assertTrue(valueSet.remove(1));
+    assertFalse(valueSet.remove(1));
+
+    final Set<Integer> initialValues = new HashSet<>();
+    initialValues.add(1);
+    initialValues.add(2);
+
+    valueSet = Values.valueSet(initialValues);
+    assertEquals(initialValues, valueSet.get());
+
+    assertFalse(valueSet.add(1));
+    assertFalse(valueSet.add(2));
+    assertTrue(valueSet.add(3));
+    assertTrue(valueSet.remove(1));
+    assertTrue(valueSet.remove(2));
+
+    valueSet.set(initialValues);
+    assertTrue(valueSet.remove(1));
+    assertTrue(valueSet.remove(2));
+    assertTrue(valueSet.add(3));
+
+    valueSet.clear();
+    assertTrue(valueSet.add(3));
+    assertFalse(valueSet.remove(1));
+    assertFalse(valueSet.remove(2));
+
+    assertTrue(valueSet.add(null));
+    assertFalse(valueSet.add(null));
+    assertTrue(valueSet.remove(null));
+
+    valueSet.clear();
+    valueSet.add(1);
+    valueSet.add(2);
+
+    valueSet.set(null);
+    assertTrue(valueSet.add(1));
+    assertTrue(valueSet.add(2));
   }
 }

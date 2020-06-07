@@ -31,13 +31,13 @@ public final class States {
   }
 
   /**
-   * Instantiates a new State.AggregateState object.
+   * Instantiates a new State.Combination object.
    * @param conjunction the conjunction to use
-   * @param stateObservers the state observers to base this aggregate state on
-   * @return a new State.AggregateState
+   * @param stateObservers the state observers to base this state combination on
+   * @return a new State.Combination
    */
-  public static State.AggregateState aggregateState(final Conjunction conjunction, final StateObserver... stateObservers) {
-    return new DefaultAggregateState(conjunction, stateObservers);
+  public static State.Combination combination(final Conjunction conjunction, final StateObserver... stateObservers) {
+    return new DefaultStateCombination(conjunction, stateObservers);
   }
 
   /**

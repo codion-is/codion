@@ -32,26 +32,26 @@ public interface State extends StateObserver {
   StateObserver getObserver();
 
   /**
-   * A state which behaves according to a set of states, either ANDing or ORing those together
+   * A state which combines a number of states, either ANDing or ORing those together
    * when determining its own state.
    */
-  interface AggregateState extends State {
+  interface Combination extends State {
 
     /**
-     * Returns the {@link Conjunction} used when aggregating the states.
+     * Returns the {@link Conjunction} used when combining the states.
      * @return the type of this aggregate state
      */
     Conjunction getConjunction();
 
     /**
-     * Adds a state to this aggregate state
-     * @param state the state to add to this aggregate state
+     * Adds a state to this state combination
+     * @param state the state to add to this state combination
      */
     void addState(StateObserver state);
 
     /**
-     * Removes a state from this aggregate state
-     * @param state the state to remove from this aggregate state
+     * Removes a state from this state combination
+     * @param state the state to remove from this state combination
      */
     void removeState(StateObserver state);
   }

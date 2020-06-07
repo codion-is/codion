@@ -294,7 +294,7 @@ public abstract class EntityEditView extends BorderPane {
   private Button createUpdateButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.UPDATE));
     button.setOnAction(event -> update(true));
-    final State existingAndModifiedState = States.aggregateState(Conjunction.AND,
+    final State existingAndModifiedState = States.combination(Conjunction.AND,
             editModel.getEntityNewObserver().getReversedObserver(),
             editModel.getModifiedObserver());
     FXUiUtil.link(button.disableProperty(), existingAndModifiedState.getReversedObserver());

@@ -106,14 +106,14 @@ public class StatesTest {
   }
 
   @Test
-  public void aggregateStateSetActive() {
-    final State.AggregateState orState = States.aggregateState(Conjunction.OR);
+  public void stateCombinationSetActive() {
+    final State.Combination orState = States.combination(Conjunction.OR);
     assertThrows(UnsupportedOperationException.class, () -> orState.set(true));
   }
 
   @Test
-  public void aggregateState() {
-    State.AggregateState orState = States.aggregateState(Conjunction.OR);
+  public void stateCombination() {
+    State.Combination orState = States.combination(Conjunction.OR);
     final State stateOne = States.state();
     final State stateTwo = States.state();
     final State stateThree = States.state();
@@ -121,9 +121,9 @@ public class StatesTest {
     orState.addState(stateTwo);
     orState.addState(stateThree);
 
-    State.AggregateState andState = States.aggregateState(Conjunction.AND, stateOne, stateTwo, stateThree);
+    State.Combination andState = States.combination(Conjunction.AND, stateOne, stateTwo, stateThree);
     assertEquals(Conjunction.AND, andState.getConjunction());
-    assertEquals("Aggregate and false, false, false, false", andState.toString());
+    assertEquals("Combination and false, false, false, false", andState.toString());
 
     assertFalse(orState.get(), "Or state should be inactive");
     assertFalse(andState.get(), "And state should be inactive");
@@ -154,12 +154,12 @@ public class StatesTest {
     stateOne.set(false);
     stateTwo.set(false);
     stateThree.set(false);
-    orState = States.aggregateState(Conjunction.OR);
+    orState = States.combination(Conjunction.OR);
     orState.addState(stateOne);
     orState.addState(stateTwo);
     orState.addState(stateThree);
-    andState = States.aggregateState(Conjunction.AND, stateOne, stateTwo, stateThree);
-    assertEquals("Aggregate and false, false, false, false", andState.toString());
+    andState = States.combination(Conjunction.AND, stateOne, stateTwo, stateThree);
+    assertEquals("Combination and false, false, false, false", andState.toString());
 
     assertFalse(orState.get(), "Or state should be inactive");
     assertFalse(andState.get(), "And state should be inactive");
@@ -196,13 +196,13 @@ public class StatesTest {
   }
 
   @Test
-  public void aggregateStateDataListener() {
+  public void stateCombinationDataListener() {
     final State one = States.state();
     final State two = States.state();
     final State three = States.state();
 
-    final State aggregateAnd = States.aggregateState(Conjunction.AND, one, two, three);
-    aggregateAnd.addDataListener(newValue -> assertEquals(aggregateAnd.get(), newValue));
+    final State combinationAnd = States.combination(Conjunction.AND, one, two, three);
+    combinationAnd.addDataListener(newValue -> assertEquals(combinationAnd.get(), newValue));
     one.set(true);
     two.set(true);
     three.set(true);
@@ -210,8 +210,8 @@ public class StatesTest {
     two.set(false);
     three.set(false);
 
-    final State aggregateOr = States.aggregateState(Conjunction.OR, one, two, three);
-    aggregateOr.addDataListener(newValue -> assertEquals(aggregateOr.get(), newValue));
+    final State combinationOr = States.combination(Conjunction.OR, one, two, three);
+    combinationOr.addDataListener(newValue -> assertEquals(combinationOr.get(), newValue));
     one.set(true);
     one.set(false);
     two.set(true);
@@ -221,30 +221,30 @@ public class StatesTest {
   }
 
   @Test
-  public void aggregateStateEvents() {
+  public void stateCombinationEvents() {
     final State stateOne = States.state(false);
     final State stateTwo = States.state(true);
-    final State.AggregateState aggregate = States.aggregateState(Conjunction.OR, stateOne, stateTwo);
+    final State.Combination combination = States.combination(Conjunction.OR, stateOne, stateTwo);
     final AtomicInteger stateChangeEvents = new AtomicInteger();
-    aggregate.addListener(stateChangeEvents::incrementAndGet);
-    assertTrue(aggregate.get());
+    combination.addListener(stateChangeEvents::incrementAndGet);
+    assertTrue(combination.get());
 
-    aggregate.removeState(stateTwo);
+    combination.removeState(stateTwo);
 
-    assertFalse(aggregate.get());
+    assertFalse(combination.get());
     assertEquals(1, stateChangeEvents.get());
 
-    aggregate.addState(stateTwo);
-    assertTrue(aggregate.get());
+    combination.addState(stateTwo);
+    assertTrue(combination.get());
     assertEquals(2, stateChangeEvents.get());
 
-    aggregate.removeState(stateOne);
-    assertTrue(aggregate.get());
+    combination.removeState(stateOne);
+    assertTrue(combination.get());
     assertEquals(2, stateChangeEvents.get());
 
-    aggregate.addState(stateOne);
+    combination.addState(stateOne);
     stateTwo.set(false);
-    assertFalse(aggregate.get());
+    assertFalse(combination.get());
     assertEquals(3, stateChangeEvents.get());
   }
 }

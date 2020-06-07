@@ -18,9 +18,9 @@ import java.text.Format;
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
  * as well as relevant events and states.
  * @param <R> the type of rows
- * @param <C> the type of objects used to identify columns
+ * @param <K> the type of objects used to identify columns
  */
-public interface ColumnConditionModel<R, C> {
+public interface ColumnConditionModel<R, K> {
 
   /**
    * Specifies whether wildcards are automatically added to string conditions<br>
@@ -64,7 +64,7 @@ public interface ColumnConditionModel<R, C> {
   /**
    * @return the column identifier
    */
-  C getColumnIdentifier();
+  K getColumnIdentifier();
 
   /**
    * @return true if this filter is be case sensitive

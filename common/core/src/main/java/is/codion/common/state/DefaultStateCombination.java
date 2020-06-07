@@ -11,17 +11,17 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultAggregateState extends DefaultState implements State.AggregateState {
+final class DefaultStateCombination extends DefaultState implements State.Combination {
 
   private final Object lock = new Object();
-  private final List<AggregateStateListener> stateListeners = new ArrayList<>();
+  private final List<StateCombinationListener> stateListeners = new ArrayList<>();
   private final Conjunction conjunction;
 
-  private DefaultAggregateState(final Conjunction conjunction) {
+  private DefaultStateCombination(final Conjunction conjunction) {
     this.conjunction = requireNonNull(conjunction, "conjunction");
   }
 
-  DefaultAggregateState(final Conjunction conjunction, final StateObserver... states) {
+  DefaultStateCombination(final Conjunction conjunction, final StateObserver... states) {
     this(conjunction);
     if (states != null) {
       for (final StateObserver state : states) {
@@ -33,9 +33,9 @@ final class DefaultAggregateState extends DefaultState implements State.Aggregat
   @Override
   public String toString() {
     synchronized (lock) {
-      final StringBuilder stringBuilder = new StringBuilder("Aggregate");
+      final StringBuilder stringBuilder = new StringBuilder("Combination");
       stringBuilder.append(toString(conjunction)).append(super.toString());
-      for (final AggregateStateListener listener : stateListeners) {
+      for (final StateCombinationListener listener : stateListeners) {
         stringBuilder.append(", ").append(listener.getState());
       }
 
@@ -54,7 +54,7 @@ final class DefaultAggregateState extends DefaultState implements State.Aggregat
     synchronized (lock) {
       if (findListener(state) == null) {
         final boolean value = get();
-        stateListeners.add(new AggregateStateListener(state));
+        stateListeners.add(new StateCombinationListener(state));
         ((DefaultStateObserver) getObserver()).notifyObservers(value, get());
       }
     }
@@ -65,7 +65,7 @@ final class DefaultAggregateState extends DefaultState implements State.Aggregat
     requireNonNull(state, "state");
     synchronized (lock) {
       final boolean value = get();
-      final AggregateStateListener listener = findListener(state);
+      final StateCombinationListener listener = findListener(state);
       if (listener != null) {
         state.removeDataListener(listener);
         stateListeners.remove(listener);
@@ -83,11 +83,11 @@ final class DefaultAggregateState extends DefaultState implements State.Aggregat
 
   @Override
   public void set(final boolean value) {
-    throw new UnsupportedOperationException("The state of aggregate states can't be set");
+    throw new UnsupportedOperationException("The state of state combination can't be set");
   }
 
   private boolean get(final Conjunction conjunction, final StateObserver exclude, final boolean excludeReplacement) {
-    for (final AggregateStateListener listener : stateListeners) {
+    for (final StateCombinationListener listener : stateListeners) {
       final StateObserver state = listener.getState();
       final boolean value = state.equals(exclude) ? excludeReplacement : state.get();
       if (conjunction == Conjunction.AND) {
@@ -103,14 +103,14 @@ final class DefaultAggregateState extends DefaultState implements State.Aggregat
     return conjunction == Conjunction.AND;
   }
 
-  private AggregateStateListener findListener(final StateObserver state) {
+  private StateCombinationListener findListener(final StateObserver state) {
     return stateListeners.stream().filter(listener -> listener.getState().equals(state)).findFirst().orElse(null);
   }
 
-  private final class AggregateStateListener implements EventDataListener<Boolean> {
+  private final class StateCombinationListener implements EventDataListener<Boolean> {
     private final StateObserver state;
 
-    private AggregateStateListener(final StateObserver state) {
+    private StateCombinationListener(final StateObserver state) {
       this.state = state;
       this.state.addDataListener(this);
     }
