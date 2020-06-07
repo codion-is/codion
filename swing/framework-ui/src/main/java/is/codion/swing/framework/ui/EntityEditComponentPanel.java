@@ -39,6 +39,7 @@ import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -535,53 +536,66 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a JTextField bound to {@code attribute}
    * @param attribute the attribute to bind
    * @param updateOn specifies when the underlying value should be updated
-   * @param maskString if specified then a JFormattedTextField with the given mask is returned
-   * @param <T> the attribute type
-   * @return a text field bound to the attribute
-   */
-  protected final <T> JTextField createTextField(final Attribute<T> attribute, final UpdateOn updateOn,
-                                                 final String maskString) {
-    return createTextField(attribute, updateOn, maskString, null);
-  }
-
-  /**
-   * Creates a JTextField bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param updateOn specifies when the underlying value should be updated
-   * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
    * @param <T> the attribute type
    * @return a text field bound to the attribute
    */
   protected final <T> JTextField createTextField(final Attribute<T> attribute, final UpdateOn updateOn,
-                                                 final String maskString, final StateObserver enabledState) {
-    return createTextField(attribute, updateOn, maskString, enabledState, ValueContainsLiterals.NO);
-  }
-
-  /**
-   * Creates a JTextField bound to {@code attribute}
-   * @param attribute the attribute to bind
-   * @param updateOn specifies when the underlying value should be updated
-   * @param maskString if specified then a JFormattedTextField with the given mask is returned
-   * @param enabledState a state for controlling the enabled state of the component
-   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
-   * associated with a the format mask, only applicable if {@code maskString} is specified
-   * @param <T> the attribute type
-   * @return a text field bound to the attribute
-   */
-  protected final <T> JTextField createTextField(final Attribute<T> attribute, final UpdateOn updateOn,
-                                                 final String maskString, final StateObserver enabledState,
-                                                 final ValueContainsLiterals valueContainsLiterals) {
+                                                 final StateObserver enabledState) {
     final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
     final JTextField textField = EntityInputComponents.createTextField(property,
-            getEditModel().value(attribute), maskString, updateOn,
-            enabledState, valueContainsLiterals);
-    if (attribute.isString() && maskString != null) {
-      EntityComponentValidators.addFormattedValidator(property, textField, getEditModel());
+            getEditModel().value(attribute), updateOn, enabledState);
+    EntityComponentValidators.addValidator(property, textField, getEditModel());
+    if (TRANSFER_FOCUS_ON_ENTER.get()) {
+      transferFocusOnEnter(textField);
     }
-    else {
-      EntityComponentValidators.addValidator(property, textField, getEditModel());
-    }
+    setComponent(attribute, textField);
+
+    return textField;
+  }
+
+  /**
+   * Creates a JFormattedTextField bound to {@code attribute}
+   * @param attribute the attribute to bind
+   * @param formatMaskString the format mask
+   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
+   * @return a text field bound to the attribute
+   */
+  protected final JFormattedTextField createMaskedTextField(final Attribute<String> attribute, final String formatMaskString,
+                                                            final ValueContainsLiterals valueContainsLiterals) {
+    return createMaskedTextField(attribute, formatMaskString, valueContainsLiterals, UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * Creates a JFormattedTextField bound to {@code attribute}
+   * @param attribute the attribute to bind
+   * @param formatMaskString the format mask
+   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
+   * @param updateOn specifies when the underlying value should be updated
+   * @return a text field bound to the attribute
+   */
+  protected final JFormattedTextField createMaskedTextField(final Attribute<String> attribute, final String formatMaskString,
+                                                            final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn) {
+    return createMaskedTextField(attribute, formatMaskString, valueContainsLiterals, updateOn, null);
+  }
+
+  /**
+   * Creates a JFormattedTextField bound to {@code attribute}
+   * @param attribute the attribute to bind
+   * @param formatMaskString the format mask
+   * @param valueContainsLiterals specifies whether or not the value should contain any literal characters
+   * @param updateOn specifies when the underlying value should be updated
+   * @param enabledState a state for controlling the enabled state of the component, only applicable if {@code maskString} is specified
+   * @return a text field bound to the attribute
+   */
+  protected final JFormattedTextField createMaskedTextField(final Attribute<String> attribute, final String formatMaskString,
+                                                            final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn,
+                                                            final StateObserver enabledState) {
+    requireNonNull(formatMaskString, "formatMaskString");
+    final Property<String> property = getEditModel().getEntityDefinition().getProperty(attribute);
+    final JFormattedTextField textField = EntityInputComponents.createMaskedTextField(property,
+            getEditModel().value(attribute), formatMaskString, valueContainsLiterals, updateOn, enabledState);
+    EntityComponentValidators.addFormattedValidator(property, textField, getEditModel());
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter(textField);
     }

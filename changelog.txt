@@ -6221,3 +6221,4 @@
   DomainType now interface, DefaultDomainType added with factory method in Domain
   EntityDefinition.domainName now final
   DomainType removed
+  EntityInputComponents.createMaskedTextField() split from createTextField()
