@@ -491,7 +491,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
     final StateObserver selectionNotEmpty = tableModel.getSelectionModel().getSelectionNotEmptyObserver();
     final StateObserver updateEnabled = tableModel.getEditModel().getUpdateEnabledObserver();
-    final StateObserver enabled = States.aggregateState(Conjunction.AND, selectionNotEmpty, updateEnabled);
+    final StateObserver enabled = States.combination(Conjunction.AND, selectionNotEmpty, updateEnabled);
     final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.UPDATE),
             (char) 0, enabled, frameworkIcons().edit());
     controls.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
@@ -525,7 +525,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       throw new IllegalStateException("Table model is read only or does not allow delete");
     }
     return control(this::delete, FrameworkMessages.get(FrameworkMessages.DELETE),
-            States.aggregateState(Conjunction.AND,
+            States.combination(Conjunction.AND,
                     tableModel.getEditModel().getDeleteEnabledObserver(),
                     tableModel.getSelectionModel().getSelectionNotEmptyObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,

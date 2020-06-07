@@ -8,7 +8,7 @@ package is.codion.common.item;
  */
 public final class Items {
 
-  private static final Item NULL_ITEM = new DefaultItem(null, "");
+  private static final Item<Object> NULL_ITEM = new DefaultItem<>(null, "");
 
   private Items() {}
 
@@ -20,7 +20,7 @@ public final class Items {
    */
   public static <T> Item<T> item(final T value) {
     if (value == null) {
-      return NULL_ITEM;
+      return (Item<T>) NULL_ITEM;
     }
 
     return item(value, value.toString());

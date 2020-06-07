@@ -7,6 +7,9 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.common.state.States;
 
+import java.util.Collections;
+import java.util.Set;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -44,6 +47,25 @@ public final class Values {
    */
   public static <V> Value<V> value(final V initialValue, final V nullValue) {
     return new DefaultValue<>(initialValue, nullValue);
+  }
+
+  /**
+   * Instantiates a new empty ValueSet
+   * @param <V> the value type
+   * @return a ValueSet
+   */
+  public static <V> ValueSet<V> valueSet() {
+    return valueSet(Collections.emptySet());
+  }
+
+  /**
+   * Instantiates a new ValueSet
+   * @param initialValues the initial values, may not be null
+   * @param <V> the value type
+   * @return a ValueSet
+   */
+  public static <V> ValueSet<V> valueSet(final Set<V> initialValues) {
+    return new DefaultValueSet<>(initialValues);
   }
 
   /**

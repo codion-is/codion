@@ -69,7 +69,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final State insertEnabledState = States.state(true);
   private final State updateEnabledState = States.state(true);
   private final State deleteEnabledState = States.state(true);
-  private final State readOnlyState = States.aggregateState(Conjunction.AND,
+  private final State readOnlyState = States.combination(Conjunction.AND,
           insertEnabledState.getReversedObserver(), updateEnabledState.getReversedObserver(), deleteEnabledState.getReversedObserver());
 
   /**
