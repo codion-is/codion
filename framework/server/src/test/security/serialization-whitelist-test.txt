@@ -37,6 +37,7 @@ java.time.ZonedDateTime
 java.util.ArrayList
 java.util.Arrays$ArrayList
 java.util.Collections$EmptyList
+java.util.Collections$SingletonList
 java.util.Collections$SingletonMap
 java.util.Collections$UnmodifiableCollection
 java.util.Collections$UnmodifiableList

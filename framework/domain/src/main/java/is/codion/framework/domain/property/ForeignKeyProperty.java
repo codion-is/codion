@@ -22,11 +22,6 @@ public interface ForeignKeyProperty extends Property<Entity> {
   Attribute<Entity> getAttribute();
 
   /**
-   * @return true if all reference properties comprising this foreign key property are insertable
-   */
-  boolean isInsertable();
-
-  /**
    * @return true if all reference properties comprising this foreign key property are updatable
    */
   boolean isUpdatable();
@@ -73,11 +68,6 @@ public interface ForeignKeyProperty extends Property<Entity> {
      * @return the property
      */
     ForeignKeyProperty get();
-
-    /**
-     * @return the builders for the underlying column properties comprising this foreign key
-     */
-    List<ColumnProperty.Builder<?>> getColumnPropertyBuilders();
 
     /**
      * @param fetchDepth the default query fetch depth for this foreign key

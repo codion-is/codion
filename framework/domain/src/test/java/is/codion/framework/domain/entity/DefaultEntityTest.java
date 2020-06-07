@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.FileUtil;
 import is.codion.common.Serializer;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.TestDomain;
@@ -12,7 +11,6 @@ import is.codion.framework.domain.property.TransientProperty;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -82,9 +80,7 @@ public class DefaultEntityTest {
     final Entity entity = getDetailEntity(10, 34, 23.4, originalStringValue, LocalDate.now(),
             LocalDateTime.now(), true, referencedEntityValue);
     entity.put(TestDomain.DETAIL_STRING, "a new String value");
-    final File tmp = File.createTempFile("DefaultEntityTest", "serialization");
-    FileUtil.serializeToFile(singletonList(entity), tmp);
-    final List<Object> fromFile = FileUtil.deserializeFromFile(tmp);
+    final List<Object> fromFile = Serializer.deserialize(Serializer.serialize(singletonList(entity)));
     assertEquals(1, fromFile.size());
     final Entity entityFromFile = (Entity) fromFile.get(0);
     assertTrue(entity.is(TestDomain.T_DETAIL));
@@ -94,9 +90,8 @@ public class DefaultEntityTest {
     assertEquals(originalStringValue, entityFromFile.getOriginal(TestDomain.DETAIL_STRING));
 
     final Key key = entity.getKey();
-    final File tmp2 = File.createTempFile("DefaultEntityTest", "serialization");
-    FileUtil.serializeToFile(singletonList(key), tmp2);
-    final List<Object> keyFromFile = FileUtil.deserializeFromFile(tmp2);
+    final byte[] serialized = Serializer.serialize(singletonList(key));
+    final List<Object> keyFromFile = Serializer.deserialize(serialized);
     assertEquals(1, keyFromFile.size());
     assertEquals(key, keyFromFile.get(0));
 
