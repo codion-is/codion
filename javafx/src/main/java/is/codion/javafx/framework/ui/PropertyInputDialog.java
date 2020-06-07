@@ -24,12 +24,13 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
    * @param property the property
    * @param defaultValue the default value to present to the user
    * @param connectionProvider the connection provider
+   * @param <T> the value type
    */
-  public PropertyInputDialog(final Property property, final Object defaultValue,
-                             final EntityConnectionProvider connectionProvider) {
+  public <T> PropertyInputDialog(final Property<T> property, final T defaultValue,
+                                 final EntityConnectionProvider connectionProvider) {
     setTitle(property.getCaption());
     this.control = FXUiUtil.createControl(property, connectionProvider);
-    final Value value = FXUiUtil.createValue(property, control, defaultValue);
+    final Value<T> value = FXUiUtil.createValue(property, control, defaultValue);
     if (control instanceof TextField) {
       ((TextField) control).selectAll();
     }
