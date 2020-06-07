@@ -311,6 +311,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public <T> ColumnProperty<T> getPrimaryKeyProperty(final Attribute<T> attribute) {
+    requireNonNull(attribute, "attribute");
     final ColumnProperty<T> property = (ColumnProperty<T>) entityProperties.primaryKeyPropertyMap.get(attribute);
     if (property == null) {
       throw new IllegalArgumentException("Primary key property " + attribute + " not found in entity: " + entityType);
@@ -389,7 +390,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   @Override
   public List<ForeignKeyProperty> getForeignKeyReferences(final EntityType foreignEntityType) {
     return getForeignKeyProperties().stream().filter(foreignKeyProperty ->
-            foreignKeyProperty.getForeignEntityType().equals(foreignEntityType)).collect(toList());
+            foreignKeyProperty.getReferencedEntityType().equals(foreignEntityType)).collect(toList());
   }
 
   @Override
@@ -600,8 +601,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
     if (foreignEntityDefinitions.containsKey(foreignKeyAttribute)) {
       throw new IllegalStateException("Foreign definition has already been set for " + foreignKeyAttribute);
     }
-    if (!foreignKeyProperty.getForeignEntityType().equals(definition.getEntityType())) {
-      throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.getForeignEntityType() +
+    if (!foreignKeyProperty.getReferencedEntityType().equals(definition.getEntityType())) {
+      throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.getReferencedEntityType() +
               " expected for " + foreignKeyAttribute);
     }
     foreignEntityDefinitions.put(foreignKeyAttribute, definition);

@@ -33,7 +33,7 @@ public class SwingEntityEditModelTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private SwingEntityEditModel employeeEditModel;
-  private ColumnProperty jobProperty;
+  private ColumnProperty<String> jobProperty;
   private ForeignKeyProperty deptProperty;
 
   @BeforeEach
@@ -45,7 +45,7 @@ public class SwingEntityEditModelTest {
 
   @Test
   public void getComboBoxModel() {
-    final FilteredComboBoxModel<String> model = (FilteredComboBoxModel<String>) employeeEditModel.getComboBoxModel(jobProperty.getAttribute());
+    final FilteredComboBoxModel<String> model = employeeEditModel.getComboBoxModel(jobProperty.getAttribute());
     model.setNullString("null");
     assertNotNull(model);
     assertTrue(employeeEditModel.containsComboBoxModel(jobProperty.getAttribute()));
@@ -79,12 +79,7 @@ public class SwingEntityEditModelTest {
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getItems().isEmpty());
-    assertEquals(deptProperty.getForeignEntityType(), model.getEntityType());
-  }
-
-  @Test
-  public void getForeignKeyComboBoxModelNonFKProperty() {
-    assertThrows(IllegalArgumentException.class, () -> employeeEditModel.getForeignKeyComboBoxModel(jobProperty.getAttribute()));
+    assertEquals(deptProperty.getReferencedEntityType(), model.getEntityType());
   }
 
   @Test

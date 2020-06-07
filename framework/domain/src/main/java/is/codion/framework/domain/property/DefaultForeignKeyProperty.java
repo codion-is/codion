@@ -18,7 +18,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   private static final long serialVersionUID = 1;
 
-  private final EntityType foreignEntityType;
+  private final EntityType referencedEntityType;
   private final List<Attribute<?>> attributes;
   private final List<ColumnProperty<?>> columnProperties;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
@@ -27,15 +27,15 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   /**
    * @param attribute the attribute, note that this is not a column
    * @param caption the property caption
-   * @param foreignEntityType the type of the entity referenced by this foreign key
+   * @param referencedEntityType the type of the entity referenced by this foreign key
    * @param columnProperties the underlying column properties comprising this foreign key
    */
   DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
-                            final EntityType foreignEntityType, final List<ColumnProperty<?>> columnProperties) {
+                            final EntityType referencedEntityType, final List<ColumnProperty<?>> columnProperties) {
     super(attribute, caption);
-    requireNonNull(foreignEntityType, "foreignEntityType");
-    validateParameters(attribute, foreignEntityType, columnProperties);
-    this.foreignEntityType = foreignEntityType;
+    requireNonNull(referencedEntityType, "foreignEntityType");
+    validateParameters(attribute, referencedEntityType, columnProperties);
+    this.referencedEntityType = referencedEntityType;
     this.columnProperties = unmodifiableList(columnProperties);
     this.attributes = unmodifiableList(columnProperties.stream().map(Property::getAttribute).collect(toList()));
   }
@@ -46,8 +46,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   @Override
-  public EntityType getForeignEntityType() {
-    return foreignEntityType;
+  public EntityType getReferencedEntityType() {
+    return referencedEntityType;
   }
 
   @Override

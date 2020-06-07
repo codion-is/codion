@@ -213,7 +213,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
     requireNonNull(definition);
     requireNonNull(entity);
     requireNonNull(comparison);
-    return comparison.keySet().stream().map(definition::getProperty).filter(property -> {
+    return comparison.entrySet().stream().map(entry -> definition.getProperty(entry.getKey())).filter(property -> {
       final boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
       final boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
 

@@ -266,22 +266,22 @@ public abstract class DefaultEntities implements Entities {
   private void validateForeignKeyProperties(final EntityDefinition definition) {
     for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
       final EntityType entityType = definition.getEntityType();
-      if (!entityType.equals(foreignKeyProperty.getForeignEntityType()) && strictForeignKeys) {
-        final EntityDefinition foreignEntity = entityDefinitions.get(foreignKeyProperty.getForeignEntityType());
+      if (!entityType.equals(foreignKeyProperty.getReferencedEntityType()) && strictForeignKeys) {
+        final EntityDefinition foreignEntity = entityDefinitions.get(foreignKeyProperty.getReferencedEntityType());
         if (foreignEntity == null) {
-          throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityType()
+          throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getReferencedEntityType()
                   + "' referenced by entity '" + entityType + "' via foreign key property '"
                   + foreignKeyProperty.getAttribute() + "' has not been defined");
         }
         if (foreignEntity.getPrimaryKeyAttributes().isEmpty()) {
-          throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getForeignEntityType()
+          throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getReferencedEntityType()
                   + "' can not be referenced via foreign key, since it has no primary key");
         }
         if (foreignKeyProperty.getColumnAttributes().size() != foreignEntity.getPrimaryKeyAttributes().size()) {
           throw new IllegalArgumentException("Number of column properties in '" +
                   entityType + "." + foreignKeyProperty.getAttribute() +
                   "' does not match the number of foreign properties in the referenced entity '" +
-                  foreignKeyProperty.getForeignEntityType() + "'");
+                  foreignKeyProperty.getReferencedEntityType() + "'");
         }
       }
     }
@@ -291,9 +291,9 @@ public abstract class DefaultEntities implements Entities {
     for (final DefaultEntityDefinition definition : entityDefinitions.values()) {
       for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
         final Attribute<Entity> foreignKeyAttribute = foreignKeyProperty.getAttribute();
-        final EntityDefinition foreignDefinition = entityDefinitions.get(foreignKeyProperty.getForeignEntityType());
-        if (foreignDefinition != null && !definition.hasForeignDefinition(foreignKeyAttribute)) {
-          definition.setForeignDefinition(foreignKeyAttribute, foreignDefinition);
+        final EntityDefinition referencedDefinition = entityDefinitions.get(foreignKeyProperty.getReferencedEntityType());
+        if (referencedDefinition != null && !definition.hasForeignDefinition(foreignKeyAttribute)) {
+          definition.setForeignDefinition(foreignKeyAttribute, referencedDefinition);
         }
       }
     }
@@ -335,7 +335,7 @@ public abstract class DefaultEntities implements Entities {
         final String beanProperty = property.getBeanProperty();
         Class<?> typeClass = property.getAttribute().getTypeClass();
         if (property instanceof ForeignKeyProperty) {
-          typeClass = getDefinition(((ForeignKeyProperty) property).getForeignEntityType()).getBeanClass();
+          typeClass = getDefinition(((ForeignKeyProperty) property).getReferencedEntityType()).getBeanClass();
         }
         if (beanProperty != null && typeClass != null) {
           final Method getter = Util.getGetMethod(typeClass, beanProperty, beanClass);

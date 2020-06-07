@@ -152,7 +152,7 @@ public class DefaultLocalEntityConnectionTest {
     noPk.put(NO_PK_COL4, 10);
 
     final Key key = connection.insert(noPk);
-    assertEquals(0, key.size());
+    assertTrue(key.isNull());
   }
 
   @Test

@@ -7,6 +7,7 @@ import is.codion.framework.domain.property.ColumnProperty;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -20,18 +21,13 @@ public interface Entity extends Comparable<Entity>, Serializable {
   EntityType getEntityType();
 
   /**
-   * Returns the primary key of this entity.
-   * If the entity has no primary key attribute defined, this key contains not values.
-   * @return the primary key of this entity
+   * Sets the value of the given attribute, returning the old value if any
+   * @param attribute the attribute
+   * @param value the value
+   * @param <T> the value type
+   * @return the previous value
    */
-  Key getKey();
-
-  /**
-   * Returns the primary key of this entity, in its original state.
-   * If the entity has no primary key attributes defined, this key contains not values.
-   * @return the primary key of this entity in its original state
-   */
-  Key getOriginalKey();
+  <T> T put(Attribute<T> attribute, T value);
 
   /**
    * Returns the value associated with {@code attribute}.
@@ -58,6 +54,70 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @return a String representation of the value of {@code attribute}
    */
   <T> String getAsString(Attribute<T> attribute);
+
+  /**
+   * Reverts the value associated with the given attribute to its original value.
+   * If the value has not been modified then calling this method has no effect.
+   * @param attribute the attribute for which to revert the value
+   * @param <T> the value type
+   */
+  <T> void revert(Attribute<T> attribute);
+
+  /**
+   * Reverts all value modifications that have been made.
+   * This entity will be unmodified after a call to this method.
+   * If no modifications have been made then calling this method has no effect.
+   */
+  void revertAll();
+
+  /**
+   * Saves the value associated with the given attribute, that is, removes the original value.
+   * If no original value exists calling this method has no effect.
+   * @param attribute the attribute for which to save the value
+   * @param <T> the value type
+   */
+  <T> void save(Attribute<T> attribute);
+
+  /**
+   * Saves all the value modifications that have been made.
+   * This value map will be unmodified after a call to this method.
+   */
+  void saveAll();
+
+  /**
+   * Removes the given property and value from this Entity along with the original value if any.
+   * If no value is mapped to the given property, this method has no effect.
+   * @param attribute the attribute to remove
+   * @param <T> the value type
+   * @return the previous value mapped to the given key
+   */
+  <T> T remove(Attribute<T> attribute);
+
+  /**
+   * Returns true if a null value is mapped to the given attribute or if no mapping is found.
+   * In case of foreign key attributes the value of the underlying reference attribute is checked.
+   * @param attribute the attribute
+   * @param <T> the value type
+   * @return true if the value mapped to the given attribute is null or no value is mapped
+   */
+  <T> boolean isNull(Attribute<T> attribute);
+
+  /**
+   * Returns true if a this Entity contains a non-null value mapped to the given attribute
+   * In case of foreign key attributes the value of the underlying reference attribute is checked.
+   * @param attribute the attribute
+   * @param <T> the value type
+   * @return true if a non-null value is mapped to the given attribute
+   */
+  <T> boolean isNotNull(Attribute<T> attribute);
+
+  /**
+   * Returns true if this Entity contains a value for the given attribute, that value can be null.
+   * @param attribute the attribute
+   * @param <T> the value type
+   * @return true if a value is mapped to this attribute
+   */
+  <T> boolean containsKey(Attribute<T> attribute);
 
   /**
    * Returns the Entity instance referenced by the given foreign key attribute.
@@ -90,19 +150,17 @@ public interface Entity extends Comparable<Entity>, Serializable {
   boolean isForeignKeyNull(Attribute<Entity> foreignKeyAttribute);
 
   /**
-   * Sets the value of the given attribute, returning the old value if any
-   * @param attribute the attribute
-   * @param value the value
-   * @param <T> the value type
-   * @return the previous value
-   */
-  <T> T put(Attribute<T> attribute, T value);
-
-  /**
    * @param attribute the attribute
    * @return true if the value associated with the given attribute has been modified
    */
   boolean isModified(Attribute<?> attribute);
+
+  /**
+   * Returns true if one or more writable attributes have been modified, read only and non-updatable attributes
+   * are excluded unless they are transient.
+   * @return true if one or more attributes have been modified since the entity was instantiated
+   */
+  boolean isModified();
 
   /**
    * Clears the primary key values from this entity,
@@ -138,88 +196,27 @@ public interface Entity extends Comparable<Entity>, Serializable {
   boolean isLoaded(Attribute<Entity> foreignKeyAttribute);
 
   /**
-   * Reverts the value associated with the given attribute to its original value.
-   * If the value has not been modified then calling this method has no effect.
-   * @param attribute the attribute for which to revert the value
-   * @param <T> the value type
+   * Returns the primary key of this entity.
+   * If the entity has no primary key attribute defined, this key contains not values.
+   * @return the primary key of this entity
    */
-  <T> void revert(Attribute<T> attribute);
+  Key getKey();
 
   /**
-   * Saves the value associated with the given attribute, that is, removes the original value.
-   * If no original value exists calling this method has no effect.
-   * @param attribute the attribute for which to save the value
-   * @param <T> the value type
+   * Returns the primary key of this entity, in its original state.
+   * If the entity has no primary key attributes defined, this key contains not values.
+   * @return the primary key of this entity in its original state
    */
-  <T> void save(Attribute<T> attribute);
+  Key getOriginalKey();
 
   /**
-   * Saves all the value modifications that have been made.
-   * This value map will be unmodified after a call to this method.
+   * @return an unmodifiable view of the entries in this Entity
    */
-  void saveAll();
+  Set<Map.Entry<Attribute<?>, Object>> entrySet();
 
   /**
-   * Reverts all value modifications that have been made.
-   * This entity will be unmodified after a call to this method.
-   * If no modifications have been made then calling this method has no effect.
+   * @return an unmodifiable view of the original entries values in this Entity, that is,
+   * the original values of attributes that have been modified
    */
-  void revertAll();
-
-  /**
-   * Returns true if a null value is mapped to the given attribute or if no mapping is found.
-   * In case of foreign key attributes the value of the underlying reference attribute is checked.
-   * @param attribute the attribute
-   * @param <T> the value type
-   * @return true if the value mapped to the given attribute is null or no value is mapped
-   */
-  <T> boolean isNull(Attribute<T> attribute);
-
-  /**
-   * Returns true if a this Entity contains a non-null value mapped to the given attribute
-   * In case of foreign key attributes the value of the underlying reference attribute is checked.
-   * @param attribute the attribute
-   * @param <T> the value type
-   * @return true if a non-null value is mapped to the given attribute
-   */
-  <T> boolean isNotNull(Attribute<T> attribute);
-
-  /**
-   * Returns true if this Entity contains a value for the given attribute, that value can be null.
-   * @param attribute the attribute
-   * @param <T> the value type
-   * @return true if a value is mapped to this attribute
-   */
-  <T> boolean containsKey(Attribute<T> attribute);
-
-  /**
-   * @return an unmodifiable view of the keys mapping the values in this Entity
-   */
-  Set<Attribute<?>> keySet();
-
-  /**
-   * @return an unmodifiable view of the keys mapping the original values in this Entity
-   */
-  Set<Attribute<?>> originalKeySet();
-
-  /**
-   * @return the number of values in this map
-   */
-  int size();
-
-  /**
-   * Removes the given property and value from this Entity along with the original value if any.
-   * If no value is mapped to the given property, this method has no effect.
-   * @param attribute the attribute to remove
-   * @param <T> the value type
-   * @return the previous value mapped to the given key
-   */
-  <T> T remove(Attribute<T> attribute);
-
-  /**
-   * Returns true if one or more writable attributes have been modified, read only and non-updatable attributes
-   * are excluded unless they are transient.
-   * @return true if one or more attributes have been modified since the entity was instantiated
-   */
-  boolean isModified();
+  Set<Map.Entry<Attribute<?>, Object>> originalEntrySet();
 }

@@ -234,9 +234,9 @@ public class DefaultEntityTest {
     noPk.put(TestDomain.NO_PK_COL2, 2);
     noPk.put(TestDomain.NO_PK_COL3, 3);
     final Key key = noPk.getKey();
-    assertEquals(0, key.size());
+    assertTrue(key.isNull());
     final Key originalKey = noPk.getOriginalKey();
-    assertEquals(0, originalKey.size());
+    assertTrue(originalKey.isNull());
   }
 
   @Test

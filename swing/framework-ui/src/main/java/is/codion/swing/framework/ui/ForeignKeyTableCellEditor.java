@@ -28,7 +28,7 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor {
   @Override
   protected JComponent initializeEditorComponent() {
     final ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) getProperty();
-    final EntityType foreignEntityType = foreignKeyProperty.getForeignEntityType();
+    final EntityType foreignEntityType = foreignKeyProperty.getReferencedEntityType();
 
     if (connectionProvider.getEntities().getDefinition(foreignEntityType).isSmallDataset()) {
       return EntityInputComponents.createForeignKeyComboBox(foreignKeyProperty, getCellValue(),

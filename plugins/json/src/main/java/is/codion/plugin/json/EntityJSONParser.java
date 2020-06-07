@@ -342,10 +342,10 @@ public final class EntityJSONParser {
   private JSONObject serializeValues(final Entity entity) {
     final JSONObject propertyValues = new JSONObject();
     final EntityDefinition definition = entities.getDefinition(entity.getEntityType());
-    for (final Attribute<?> attribute : entity.keySet()) {
-      final Property<?> property = definition.getProperty(attribute);
+    for (final Map.Entry<Attribute<?>, Object> entry : entity.entrySet()) {
+      final Property<?> property = definition.getProperty(entry.getKey());
       if (include(property, entity)) {
-        propertyValues.put(property.getAttribute().getName(), serializeValue(entity.get(property.getAttribute()), property.getAttribute()));
+        propertyValues.put(property.getAttribute().getName(), serializeValue(entry.getValue(), property.getAttribute()));
       }
     }
 
@@ -363,9 +363,11 @@ public final class EntityJSONParser {
 
   private JSONObject serializeOriginalValues(final Entity entity) {
     final JSONObject originalValues = new JSONObject();
-    for (final Property<?> property : entities.getDefinition(entity.getEntityType()).getProperties()) {
+    final EntityDefinition definition = entities.getDefinition(entity.getEntityType());
+    for (final Map.Entry<Attribute<?>, Object> entry : entity.originalEntrySet()) {
+      final Property<?> property = definition.getProperty(entry.getKey());
       if (entity.isModified(property.getAttribute()) && (!(property instanceof ForeignKeyProperty) || includeForeignKeyValues)) {
-        originalValues.put(property.getAttribute().getName(), serializeValue(entity.getOriginal(property.getAttribute()), property.getAttribute()));
+        originalValues.put(property.getAttribute().getName(), serializeValue(entry.getValue(), property.getAttribute()));
       }
     }
 
