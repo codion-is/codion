@@ -241,6 +241,7 @@ public abstract class DefaultEntities implements Entities {
 
   protected final EntityDefinition.Builder define(final EntityType entityType, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
+    requireNonNull(propertyBuilders, "propertyBuilders");
     final ArrayList<Property<?>> properties = new ArrayList<>();
     for (final Property.Builder<?> builder : propertyBuilders) {
       properties.add(builder.get());
