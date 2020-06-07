@@ -6229,3 +6229,4 @@
   DefaultKey bug fixed, did not initialize hashCode to null for an empty key
   Entity.size() removed, methods reordered
   ForeignKeyProperty.getForeignEntityType() renamed getReferencedEntityType()
+  FXUiUtil, EntityEditView, EntityTestUnit, type safety improved

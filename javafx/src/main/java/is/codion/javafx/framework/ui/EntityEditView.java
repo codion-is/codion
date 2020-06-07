@@ -33,7 +33,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
+import java.math.BigDecimal;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -208,27 +210,28 @@ public abstract class EntityEditView extends BorderPane {
   /**
    * Creates a {@link TextField} for the given attribute
    * @param attribute the attribute
+   * @param <T> the value type
    * @return a {@link TextField} for the given attribute
    */
-  protected final TextField createTextField(final Attribute<?> attribute) {
+  protected final <T> TextField createTextField(final Attribute<T> attribute) {
     checkControl(attribute);
     final Property<?> property = getEditModel().getEntityDefinition().getProperty(attribute);
     final TextField textField;
     switch (property.getType()) {
       case Types.INTEGER:
-        textField = FXUiUtil.createIntegerField(property, editModel);
+        textField = FXUiUtil.createIntegerField((Property<Integer>) property, editModel);
         break;
       case Types.BIGINT:
-        textField = FXUiUtil.createLongField(property, editModel);
+        textField = FXUiUtil.createLongField((Property<Long>) property, editModel);
         break;
       case Types.DOUBLE:
-        textField = FXUiUtil.createDoubleField(property, editModel);
+        textField = FXUiUtil.createDoubleField((Property<Double>) property, editModel);
         break;
       case Types.DECIMAL:
-        textField = FXUiUtil.createBigDecimalField(property, editModel);
+        textField = FXUiUtil.createBigDecimalField((Property<BigDecimal>) property, editModel);
         break;
       case Types.VARCHAR:
-        textField = FXUiUtil.createTextField(property, editModel);
+        textField = FXUiUtil.createTextField((Property<String>) property, editModel);
         break;
       default:
         throw new IllegalArgumentException("Text field type for property: " + attribute + " is not defined");
@@ -244,7 +247,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param attribute the attribute
    * @return a {@link DatePicker} based on the given attribute
    */
-  protected final DatePicker createDatePicker(final Attribute<?> attribute) {
+  protected final DatePicker createDatePicker(final Attribute<LocalDate> attribute) {
     checkControl(attribute);
     final DatePicker picker = FXUiUtil.createDatePicker(getEditModel()
             .getEntityDefinition().getProperty(attribute), editModel);

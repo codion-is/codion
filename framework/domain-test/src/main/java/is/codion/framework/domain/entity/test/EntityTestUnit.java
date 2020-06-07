@@ -437,7 +437,7 @@ public class EntityTestUnit {
   private static void populateEntity(final Entities entities, final Entity entity, final Collection<ColumnProperty<?>> properties,
                                      final Function<Property<?>, Object> valueProvider) {
     requireNonNull(valueProvider, "valueProvider");
-    for (final ColumnProperty property : properties) {
+    for (@SuppressWarnings("rawtypes") final ColumnProperty property : properties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()) {
         entity.put(property.getAttribute(), valueProvider.apply(property));
       }
@@ -475,9 +475,9 @@ public class EntityTestUnit {
     return referenceEntities == null ? null : referenceEntities.get(property.getReferencedEntityType());
   }
 
-  private static Object getRandomListValue(final ValueListProperty property) {
-    final List<Item> items = property.getValues();
-    final Item item = items.get(RANDOM.nextInt(items.size()));
+  private static <T> T getRandomListValue(final ValueListProperty<T> property) {
+    final List<Item<T>> items = property.getValues();
+    final Item<T> item = items.get(RANDOM.nextInt(items.size()));
 
     return item.getValue();
   }

@@ -85,6 +85,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A factory class for UI related things.
+ * todo make Attribute based
  */
 public final class FXUiUtil {
 
@@ -232,65 +233,66 @@ public final class FXUiUtil {
    * @param property the property
    * @param control the control
    * @param defaultValue the default to set after instantiation
+   * @param <T> the value type
    * @return the {@link Value} instance
    */
-  public static Value createValue(final Property<?> property, final Control control, final Object defaultValue) {
+  public static <T> Value<T> createValue(final Property<T> property, final Control control, final T defaultValue) {
     if (property instanceof ForeignKeyProperty) {
       if (control instanceof ComboBox) {
         final Value<Entity> entityValue = PropertyValues.selectedValue(((ComboBox<Entity>) control).getSelectionModel());
         entityValue.set((Entity) defaultValue);
-        return entityValue;
+        return (Value<T>) entityValue;
       }
       else if (control instanceof EntityLookupField) {
         final Value<Collection<Entity>> entityValue = PropertyValues.lookupValue(((EntityLookupField) control).getModel());
         entityValue.set(defaultValue == null ? emptyList() : singletonList((Entity) defaultValue));
-        return entityValue;
+        return (Value<T>) entityValue;
       }
     }
     if (property instanceof ValueListProperty) {
-      final Value<Object> listValue = PropertyValues.selectedItemValue(((ComboBox<Item<Object>>) control).getSelectionModel());
+      final Value<T> listValue = PropertyValues.selectedItemValue(((ComboBox<Item<T>>) control).getSelectionModel());
       listValue.set(defaultValue);
-      return listValue;
+      return (Value<T>) listValue;
     }
 
     switch (property.getType()) {
       case Types.BOOLEAN:
         final Value<Boolean> booleanValue = PropertyValues.booleanPropertyValue(((CheckBox) control).selectedProperty());
         booleanValue.set((Boolean) defaultValue);
-        return booleanValue;
+        return (Value<T>) booleanValue;
       case Types.DATE:
         final Value<LocalDate> dateValue = Values.value((LocalDate) defaultValue);
-        dateValue.link(createDateValue(property, (DatePicker) control));
-        return dateValue;
+        dateValue.link(createDateValue((Property<LocalDate>) property, (DatePicker) control));
+        return (Value<T>) dateValue;
       case Types.TIMESTAMP:
         final Value<LocalDateTime> dateTimeValue = Values.value((LocalDateTime) defaultValue);
-        dateTimeValue.link(createTimestampValue(property, (TextField) control));
-        return dateTimeValue;
+        dateTimeValue.link(createTimestampValue((Property<LocalDateTime>) property, (TextField) control));
+        return (Value<T>) dateTimeValue;
       case Types.TIME:
         final Value<LocalTime> timeValue = Values.value((LocalTime) defaultValue);
-        timeValue.link(createTimeValue(property, (TextField) control));
-        return timeValue;
+        timeValue.link(createTimeValue((Property<LocalTime>) property, (TextField) control));
+        return (Value<T>) timeValue;
       case Types.DOUBLE:
-        final StringValue<Double> doubleValue = createDoubleValue(property, (TextField) control);
+        final StringValue<Double> doubleValue = createDoubleValue((Property<Double>) property, (TextField) control);
         doubleValue.set((Double) defaultValue);
-        return doubleValue;
+        return (Value<T>) doubleValue;
       case Types.DECIMAL:
-        final StringValue<BigDecimal> bigDecimalValue = createBigDecimalValue(property, (TextField) control);
+        final StringValue<BigDecimal> bigDecimalValue = createBigDecimalValue((Property<BigDecimal>) property, (TextField) control);
         bigDecimalValue.set((BigDecimal) defaultValue);
-        return bigDecimalValue;
+        return (Value<T>) bigDecimalValue;
       case Types.INTEGER:
-        final StringValue<Integer> integerValue = createIntegerValue(property, (TextField) control);
+        final StringValue<Integer> integerValue = createIntegerValue((Property<Integer>) property, (TextField) control);
         integerValue.set((Integer) defaultValue);
-        return integerValue;
+        return (Value<T>) integerValue;
       case Types.BIGINT:
-        final StringValue<Long> longValue = createLongValue(property, (TextField) control);
+        final StringValue<Long> longValue = createLongValue((Property<Long>) property, (TextField) control);
         longValue.set((Long) defaultValue);
-        return longValue;
+        return (Value<T>) longValue;
       case Types.CHAR:
       case Types.VARCHAR:
         final StringValue<String> stringValue = createStringValue((TextField) control);
         stringValue.set((String) defaultValue);
-        return stringValue;
+        return (Value<T>) stringValue;
       default:
         throw new IllegalArgumentException("Unsupported property type: " + property.getType());
     }
@@ -337,14 +339,15 @@ public final class FXUiUtil {
    * Instantiates a {@link Control} based on the given property.
    * @param property the property
    * @param connectionProvider the {@link EntityConnectionProvider} instance to use
+   * @param <T> the value type
    * @return a {@link Control} based on the given property
    */
-  public static Control createControl(final Property property, final EntityConnectionProvider connectionProvider) {
+  public static <T> Control createControl(final Property<T> property, final EntityConnectionProvider connectionProvider) {
     if (property instanceof ForeignKeyProperty) {
       return new ComboBox<>(createEntityListModel((ForeignKeyProperty) property, connectionProvider));
     }
     if (property instanceof ValueListProperty) {
-      return new ComboBox<>(createValueListComboBoxModel((ValueListProperty) property));
+      return new ComboBox<>(createValueListComboBoxModel((ValueListProperty<T>) property));
     }
 
     switch (property.getType()) {
@@ -372,7 +375,7 @@ public final class FXUiUtil {
    * @param editModel the edit model
    * @return a {@link CheckBox} based on the given property and edit model
    */
-  public static CheckBox createCheckBox(final Property property, final FXEntityEditModel editModel) {
+  public static CheckBox createCheckBox(final Property<Boolean> property, final FXEntityEditModel editModel) {
     return createCheckBox(property, editModel, null);
   }
 
@@ -383,7 +386,7 @@ public final class FXUiUtil {
    * @param enabledState the {@link State} instance controlling the enabled state of the check box
    * @return a {@link CheckBox} based on the given property and edit model
    */
-  public static CheckBox createCheckBox(final Property property, final FXEntityEditModel editModel,
+  public static CheckBox createCheckBox(final Property<Boolean> property, final FXEntityEditModel editModel,
                                         final StateObserver enabledState) {
     final CheckBox checkBox = createCheckBox(enabledState);
     editModel.<Boolean>value(property.getAttribute()).link(createBooleanValue(checkBox));
@@ -406,7 +409,7 @@ public final class FXUiUtil {
    * @param editModel the edit model
    * @return a {@link TextField} based on the given property
    */
-  public static TextField createTextField(final Property property, final FXEntityEditModel editModel) {
+  public static TextField createTextField(final Property<String> property, final FXEntityEditModel editModel) {
     return createTextField(property, editModel, null);
   }
 
@@ -417,7 +420,7 @@ public final class FXUiUtil {
    * @param enabledState the {@link State} instance controlling the enabled state of the text field
    * @return a {@link TextField} based on the given property
    */
-  public static TextField createTextField(final Property property, final FXEntityEditModel editModel,
+  public static TextField createTextField(final Property<String> property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
     editModel.<String>value(property.getAttribute()).link(createStringValue(textField));
@@ -440,7 +443,7 @@ public final class FXUiUtil {
    * @param editModel the edit model
    * @return a {@link TextField} for {@link Long} values, based on the given property
    */
-  public static TextField createLongField(final Property property, final FXEntityEditModel editModel) {
+  public static TextField createLongField(final Property<Long> property, final FXEntityEditModel editModel) {
     return createLongField(property, editModel, null);
   }
 
@@ -451,7 +454,7 @@ public final class FXUiUtil {
    * @param enabledState the {@link State} instance controlling the enabled state of the text field
    * @return a {@link TextField} for {@link Long} values, based on the given property
    */
-  public static TextField createLongField(final Property property, final FXEntityEditModel editModel,
+  public static TextField createLongField(final Property<Long> property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
     editModel.<Long>value(property.getAttribute()).link(createLongValue(property, textField));
@@ -465,10 +468,10 @@ public final class FXUiUtil {
    * @param textField the text field
    * @return a {@link StringValue} for {@link Long} values, based on the given property
    */
-  public static StringValue<Long> createLongValue(final Property property, final TextField textField) {
+  public static StringValue<Long> createLongValue(final Property<Long> property, final TextField textField) {
     final StringValue<Long> propertyValue = PropertyValues.longPropertyValue(textField.textProperty(),
             (NumberFormat) property.getFormat());
-    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
 
     return propertyValue;
   }
@@ -479,7 +482,7 @@ public final class FXUiUtil {
    * @param editModel the edit model
    * @return a {@link TextField} for {@link Integer} values, based on the given property
    */
-  public static TextField createIntegerField(final Property property, final FXEntityEditModel editModel) {
+  public static TextField createIntegerField(final Property<Integer> property, final FXEntityEditModel editModel) {
     return createIntegerField(property, editModel, null);
   }
 
@@ -490,7 +493,7 @@ public final class FXUiUtil {
    * @param enabledState the {@link State} instance controlling the enabled state of the text field
    * @return a {@link TextField} for {@link Integer} values, based on the given property
    */
-  public static TextField createIntegerField(final Property property, final FXEntityEditModel editModel,
+  public static TextField createIntegerField(final Property<Integer> property, final FXEntityEditModel editModel,
                                              final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
     editModel.<Integer>value(property.getAttribute()).link(createIntegerValue(property, textField));
@@ -504,10 +507,10 @@ public final class FXUiUtil {
    * @param textField the text field
    * @return a {@link StringValue} for {@link Integer} values, based on the given property
    */
-  public static StringValue<Integer> createIntegerValue(final Property property, final TextField textField) {
+  public static StringValue<Integer> createIntegerValue(final Property<Integer> property, final TextField textField) {
     final StringValue<Integer> propertyValue = PropertyValues.integerPropertyValue(textField.textProperty(),
             (NumberFormat) property.getFormat());
-    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
 
     return propertyValue;
   }
@@ -518,7 +521,7 @@ public final class FXUiUtil {
    * @param editModel the edit model
    * @return a {@link TextField} for {@link Double} values, based on the given property
    */
-  public static TextField createDoubleField(final Property property, final FXEntityEditModel editModel) {
+  public static TextField createDoubleField(final Property<Double> property, final FXEntityEditModel editModel) {
     return createDoubleField(property, editModel, null);
   }
 
@@ -529,7 +532,7 @@ public final class FXUiUtil {
    * @param enabledState the {@link State} instance controlling the enabled state of the text field
    * @return a {@link TextField} for {@link Double} values, based on the given property
    */
-  public static TextField createDoubleField(final Property property, final FXEntityEditModel editModel,
+  public static TextField createDoubleField(final Property<Double> property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
     editModel.<Double>value(property.getAttribute()).link(createDoubleValue(property, textField));
@@ -543,7 +546,7 @@ public final class FXUiUtil {
    * @param editModel the edit model
    * @return a {@link TextField} for {@link BigDecimal} values, based on the given property
    */
-  public static TextField createBigDecimalField(final Property property, final FXEntityEditModel editModel) {
+  public static TextField createBigDecimalField(final Property<BigDecimal> property, final FXEntityEditModel editModel) {
     return createBigDecimalField(property, editModel, null);
   }
 
@@ -554,7 +557,7 @@ public final class FXUiUtil {
    * @param enabledState the {@link State} instance controlling the enabled state of the text field
    * @return a {@link TextField} for {@link BigDecimal} values, based on the given property
    */
-  public static TextField createBigDecimalField(final Property property, final FXEntityEditModel editModel,
+  public static TextField createBigDecimalField(final Property<BigDecimal> property, final FXEntityEditModel editModel,
                                                 final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
     editModel.<BigDecimal>value(property.getAttribute()).link(createBigDecimalValue(property, textField));
@@ -568,10 +571,10 @@ public final class FXUiUtil {
    * @param textField the text field
    * @return a {@link StringValue} for {@link Double} values, based on the given property
    */
-  public static StringValue<Double> createDoubleValue(final Property property, final TextField textField) {
+  public static StringValue<Double> createDoubleValue(final Property<Double> property, final TextField textField) {
     final StringValue<Double> propertyValue = PropertyValues.doublePropertyValue(textField.textProperty(),
             (NumberFormat) property.getFormat());
-    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
 
     return propertyValue;
   }
@@ -582,10 +585,10 @@ public final class FXUiUtil {
    * @param textField the text field
    * @return a {@link StringValue} for {@link java.math.BigDecimal} values, based on the given property
    */
-  public static StringValue<BigDecimal> createBigDecimalValue(final Property property, final TextField textField) {
+  public static StringValue<BigDecimal> createBigDecimalValue(final Property<BigDecimal> property, final TextField textField) {
     final StringValue<BigDecimal> propertyValue = PropertyValues.bigDecimalPropertyValue(textField.textProperty(),
             (DecimalFormat) property.getFormat());
-    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+    textField.textFormatterProperty().setValue(new TextFormatter<>(propertyValue.getConverter()));
 
     return propertyValue;
   }
@@ -596,7 +599,7 @@ public final class FXUiUtil {
    * @param editModel the edit model
    * @return a {@link DatePicker} based on the given property
    */
-  public static DatePicker createDatePicker(final Property property, final FXEntityEditModel editModel) {
+  public static DatePicker createDatePicker(final Property<LocalDate> property, final FXEntityEditModel editModel) {
     return createDatePicker(property, editModel, null);
   }
 
@@ -607,7 +610,7 @@ public final class FXUiUtil {
    * @param enabledState the {@link State} instance controlling the enabled state of the date picker
    * @return a {@link DatePicker} based on the given property
    */
-  public static DatePicker createDatePicker(final Property property, final FXEntityEditModel editModel,
+  public static DatePicker createDatePicker(final Property<LocalDate> property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final DatePicker picker = createDatePicker(enabledState);
     editModel.<LocalDate>value(property.getAttribute()).link(createDateValue(property, picker));
@@ -621,7 +624,7 @@ public final class FXUiUtil {
    * @param picker the date picker
    * @return a {@link StringValue} for {@link LocalDate} values, based on the given property
    */
-  public static StringValue<LocalDate> createDateValue(final Property property, final DatePicker picker) {
+  public static StringValue<LocalDate> createDateValue(final Property<LocalDate> property, final DatePicker picker) {
     final StringValue<LocalDate> dateValue = PropertyValues.datePropertyValue(picker.getEditor().textProperty(), property.getDateTimeFormatter());
     picker.setConverter(dateValue.getConverter());
     picker.setPromptText(property.getDateTimeFormatPattern().toLowerCase());
@@ -635,7 +638,7 @@ public final class FXUiUtil {
    * @param textField the text field
    * @return a {@link StringValue} for {@link LocalDateTime} values, based on the given property
    */
-  public static StringValue<LocalDateTime> createTimestampValue(final Property property, final TextField textField) {
+  public static StringValue<LocalDateTime> createTimestampValue(final Property<LocalDateTime> property, final TextField textField) {
     final StringValue<LocalDateTime> timestampValue = PropertyValues.timestampPropertyValue(textField.textProperty(), property.getDateTimeFormatter());
     textField.setTextFormatter(new TextFormatter<>(timestampValue.getConverter()));
 
@@ -648,7 +651,7 @@ public final class FXUiUtil {
    * @param textField the text field
    * @return a {@link StringValue} for {@link LocalTime} values, based on the given property
    */
-  public static StringValue<LocalTime> createTimeValue(final Property property, final TextField textField) {
+  public static StringValue<LocalTime> createTimeValue(final Property<LocalTime> property, final TextField textField) {
     final StringValue<LocalTime> timeValue = PropertyValues.timePropertyValue(textField.textProperty(), property.getDateTimeFormatter());
     textField.setTextFormatter(new TextFormatter<>(timeValue.getConverter()));
 
@@ -751,19 +754,21 @@ public final class FXUiUtil {
   /**
    * Instantiates a {@link TextField} based on the given property
    * @param property the property
+   * @param <T> the value type
    * @return a {@link TextField} based on the given property
    */
-  public static TextField createTextField(final Property property) {
-    return createTextField(property, (StateObserver) null);
+  public static <T> TextField createTextField(final Property<T> property) {
+    return createTextField(property, null);
   }
 
   /**
    * Instantiates a {@link TextField} based on the given property
    * @param property the property
    * @param enabledState the {@link State} instance controlling the enabled state of the text field
+   * @param <T> the value type
    * @return a {@link TextField} based on the given property
    */
-  public static TextField createTextField(final Property property, final StateObserver enabledState) {
+  public static <T> TextField createTextField(final Property<T> property, final StateObserver enabledState) {
     final TextField textField = new TextField();
     textField.textProperty().addListener(new ValidationChangeListener(property, textField.textProperty()));
     if (enabledState != null) {
@@ -923,11 +928,11 @@ public final class FXUiUtil {
 
   private static final class ValidationChangeListener implements ChangeListener<String> {
 
-    private final Property property;
+    private final Property<?> property;
     private final StringProperty stringProperty;
     private final State ignoreChange = States.state();
 
-    private ValidationChangeListener(final Property property, final StringProperty stringProperty) {
+    private ValidationChangeListener(final Property<?> property, final StringProperty stringProperty) {
       this.property = property;
       this.stringProperty = stringProperty;
     }
@@ -950,7 +955,7 @@ public final class FXUiUtil {
       }
     }
 
-    private static boolean isValid(final Property property, final String value) {
+    private static boolean isValid(final Property<?> property, final String value) {
       final int maxLength = property.getMaximumLength();
       if (maxLength > -1 && value != null && value.length() > maxLength) {
         return false;
@@ -988,7 +993,7 @@ public final class FXUiUtil {
       return true;
     }
 
-    private static boolean isWithinRange(final Property property, final Number value) {
+    private static boolean isWithinRange(final Property<?> property, final Number value) {
       final double min = property.getMinimumValue() != null ? Math.min(property.getMinimumValue(), 0) : Double.NEGATIVE_INFINITY;
       final double max = property.getMaximumValue() == null ? Double.POSITIVE_INFINITY : property.getMaximumValue();
       final double doubleValue = value.doubleValue();
