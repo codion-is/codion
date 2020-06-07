@@ -61,7 +61,7 @@ final class DefaultKey implements Key {
     }
     this.values = new HashMap<>();
     this.definition = definition;
-    this.cachedHashCode = 0;
+    this.cachedHashCode = null;
     this.hashCodeDirty = false;
   }
 
@@ -212,11 +212,6 @@ final class DefaultKey implements Key {
     return !isNull(attribute);
   }
 
-  @Override
-  public int size() {
-    return values.size();
-  }
-
   private Object putInternal(final ColumnProperty<Object> property, final Object value) {
     final Object newValue = property.prepareValue(property.getAttribute().validateType(value));
     values.put(property.getAttribute(), newValue);
@@ -246,7 +241,7 @@ final class DefaultKey implements Key {
   }
 
   private Integer computeHashCode() {
-    if (size() == 0) {
+    if (values.size() == 0) {
       return null;
     }
     if (isCompositeKey()) {

@@ -81,9 +81,4 @@ public interface Key extends Serializable {
    * @return the value associated with the given property
    */
   <T> T get(Attribute<T> attribute);
-
-  /**
-   * @return the number of values in this key
-   */
-  int size();
 }

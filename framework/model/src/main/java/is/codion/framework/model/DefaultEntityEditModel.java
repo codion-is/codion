@@ -636,7 +636,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       return false;
     }
 
-    return !getEntity().originalKeySet().isEmpty();
+    return !getEntity().originalEntrySet().isEmpty();
   }
 
   @Override

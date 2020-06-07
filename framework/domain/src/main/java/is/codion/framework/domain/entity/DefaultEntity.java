@@ -205,7 +205,7 @@ final class DefaultEntity implements Entity {
 
   @Override
   public void revertAll() {
-    for (final Attribute<?> attribute : keySet()) {
+    for (final Attribute<?> attribute : values.keySet()) {
       revert(attribute);
     }
   }
@@ -227,18 +227,17 @@ final class DefaultEntity implements Entity {
     if (entity == this) {
       return Collections.emptyList();
     }
-    final Set<Attribute<?>> affectedAttributes = new HashSet<>(keySet());
+    final Set<Attribute<?>> affectedAttributes = new HashSet<>(values.keySet());
     clear();
     if (entity != null) {
-      final Collection<Attribute<?>> sourceAttributes = entity.keySet();
-      affectedAttributes.addAll(sourceAttributes);
-      for (final Attribute<?> attribute : sourceAttributes) {
-        values.put(attribute, entity.get(attribute));
+      for (final Map.Entry<Attribute<?>, Object> entry : entity.entrySet()) {
+        values.put(entry.getKey(), entry.getValue());
+        affectedAttributes.add(entry.getKey());
       }
       if (entity.isModified()) {
         originalValues = new HashMap<>();
-        for (final Attribute<?> attribute : entity.originalKeySet()) {
-          originalValues.put(attribute, entity.getOriginal(attribute));
+        for (final Map.Entry<Attribute<?>, Object> entry : entity.originalEntrySet()) {
+          originalValues.put(entry.getKey(), entry.getValue());
         }
       }
     }
@@ -318,17 +317,17 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public Set<Attribute<?>> keySet() {
-    return unmodifiableSet(values.keySet());
+  public Set<Map.Entry<Attribute<?>, Object>> entrySet() {
+    return unmodifiableSet(values.entrySet());
   }
 
   @Override
-  public Set<Attribute<?>> originalKeySet() {
+  public Set<Map.Entry<Attribute<?>, Object>> originalEntrySet() {
     if (originalValues == null) {
       return emptySet();
     }
 
-    return unmodifiableSet(originalValues.keySet());
+    return unmodifiableSet(originalValues.entrySet());
   }
 
   @Override
@@ -671,16 +670,18 @@ final class DefaultEntity implements Entity {
   }
 
   private boolean writablePropertiesModified(final boolean overrideModifiesEntity) {
-    for (final Attribute<?> attribute : originalKeySet()) {
-      final Property<?> property = definition.getProperty(attribute);
-      if (property instanceof ColumnProperty) {
-        final ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
-        if (columnProperty.isInsertable() && columnProperty.isUpdatable()) {
-          return true;
+    if (originalValues != null) {
+      for (final Attribute<?> attribute : originalValues.keySet()) {
+        final Property<?> property = definition.getProperty(attribute);
+        if (property instanceof ColumnProperty) {
+          final ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
+          if (columnProperty.isInsertable() && columnProperty.isUpdatable()) {
+            return true;
+          }
         }
-      }
-      if (property instanceof TransientProperty) {
-        return overrideModifiesEntity || ((TransientProperty<?>) property).isModifiesEntity();
+        if (property instanceof TransientProperty) {
+          return overrideModifiesEntity || ((TransientProperty<?>) property).isModifiesEntity();
+        }
       }
     }
 

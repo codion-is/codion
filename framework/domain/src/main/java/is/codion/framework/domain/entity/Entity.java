@@ -7,6 +7,7 @@ import is.codion.framework.domain.property.ColumnProperty;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -193,14 +194,15 @@ public interface Entity extends Comparable<Entity>, Serializable {
   <T> boolean containsKey(Attribute<T> attribute);
 
   /**
-   * @return an unmodifiable view of the keys mapping the values in this Entity
+   * @return an unmodifiable view of the entries in this Entity
    */
-  Set<Attribute<?>> keySet();
+  Set<Map.Entry<Attribute<?>, Object>> entrySet();
 
   /**
-   * @return an unmodifiable view of the keys mapping the original values in this Entity
+   * @return an unmodifiable view of the original entries values in this Entity, that is,
+   * the original values of attributes that have been modified
    */
-  Set<Attribute<?>> originalKeySet();
+  Set<Map.Entry<Attribute<?>, Object>> originalEntrySet();
 
   /**
    * @return the number of values in this map

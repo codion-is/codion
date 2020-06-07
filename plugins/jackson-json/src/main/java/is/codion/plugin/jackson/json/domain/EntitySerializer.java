@@ -60,10 +60,10 @@ final class EntitySerializer extends StdSerializer<Entity> {
   private Map<String, Object> getValueMap(final Entity entity) {
     final Map<String, Object> valueMap = new HashMap<>();
     final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityType());
-    for (final Attribute<?> attribute : entity.keySet()) {
-      final Property<?> property = definition.getProperty(attribute);
+    for (final Map.Entry<Attribute<?>, Object> entry : entity.entrySet()) {
+      final Property<?> property = definition.getProperty(entry.getKey());
       if (include(property, entity)) {
-        valueMap.put(property.getAttribute().getName(), entity.get(property.getAttribute()));
+        valueMap.put(property.getAttribute().getName(), entry.getValue());
       }
     }
 
@@ -73,10 +73,10 @@ final class EntitySerializer extends StdSerializer<Entity> {
   private Map<String, Object> getOriginalValueMap(final Entity entity) {
     final Map<String, Object> valueMap = new HashMap<>();
     final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityType());
-    for (final Attribute<?> attribute : entity.originalKeySet()) {
-      final Property<?> property = definition.getProperty(attribute);
+    for (final Map.Entry<Attribute<?>, Object> entry : entity.originalEntrySet()) {
+      final Property<?> property = definition.getProperty(entry.getKey());
       if (include(property, entity)) {
-        valueMap.put(property.getAttribute().getName(), entity.getOriginal(property.getAttribute()));
+        valueMap.put(property.getAttribute().getName(), entry.getValue());
       }
     }
 
