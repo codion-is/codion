@@ -13,6 +13,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -496,6 +497,16 @@ public final class DefaultEntityEditModelTest {
     assertNotSame(employeeEditModel.getForeignKey(TestDomain.EMP_MGR_FK), blake);
     employeeEditModel.replaceForeignKeyValues(singletonList(blake));
     assertSame(employeeEditModel.getForeignKey(TestDomain.EMP_MGR_FK), blake);
+  }
+
+  @Test
+  public void value() {
+    final Value<Integer> value = employeeEditModel.value(TestDomain.EMP_MGR);
+    assertSame(value, employeeEditModel.value(TestDomain.EMP_MGR));
+    value.set(42);
+    assertEquals(42, employeeEditModel.get(TestDomain.EMP_MGR));
+    employeeEditModel.put(TestDomain.EMP_MGR, 2);
+    assertEquals(2, value.get());
   }
 
   private static final class TestEntityEditModel extends DefaultEntityEditModel {

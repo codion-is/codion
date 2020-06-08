@@ -153,8 +153,7 @@ public interface EntityEditModel extends Refreshable {
   <T> T get(Attribute<T> attribute);
 
   /**
-   * Returns the value associated with the given attribute assuming it
-   * is an {@link Entity} instance
+   * Returns the value associated with the given attribute.
    * @param foreignKeyAttribute the attribute
    * @return the value assuming it is an {@link Entity}
    * @throws ClassCastException in case the value was not an {@link Entity}
@@ -162,7 +161,8 @@ public interface EntityEditModel extends Refreshable {
   Entity getForeignKey(Attribute<Entity> foreignKeyAttribute);
 
   /**
-   * Instantiates a new Value based on {@code attribute} in this edit model
+   * Returns a Value based on {@code attribute} in this edit model, note that
+   * subsequent calls for the same attribute may return the same value.
    * @param attribute the attribute
    * @param <V> the value type
    * @return a Value based on the given edit model value
