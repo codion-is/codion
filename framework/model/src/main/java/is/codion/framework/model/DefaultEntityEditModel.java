@@ -88,6 +88,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Map<ForeignKeyProperty, EntityLookupModel> entityLookupModels = new HashMap<>();
 
   /**
+   * Holds the edit model values created via {@link #value(Attribute)}
+   */
+  private final Map<Attribute<?>, Value<?>> editModelValues = new HashMap<>();
+
+  /**
    * Contains true if values should persist for the given property when the model is cleared
    */
   private final Map<Attribute<?>, Boolean> persistentValues = new HashMap<>();
@@ -615,7 +620,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final <V> Value<V> value(final Attribute<V> attribute) {
-    return new EditModelValue<>(this, attribute);
+    return (Value<V>) editModelValues.computeIfAbsent(attribute,
+            valueAttribute -> new EditModelValue<>(this, attribute));
   }
 
   @Override
