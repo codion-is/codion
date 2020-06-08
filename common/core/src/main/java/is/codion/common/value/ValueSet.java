@@ -20,7 +20,7 @@ public interface ValueSet<V> extends Value<Set<V>> {
 
   /**
    * Removes a value from this set, returns true if the set contained the value before removing.
-   * @param value
+   * @param value the value to remove
    * @return true if the value was removed
    */
   boolean remove(V value);
