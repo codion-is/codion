@@ -4,8 +4,10 @@
 package is.codion.plugin.jasperreports.model;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.db.reports.Reports;
 import is.codion.common.http.server.HttpServer;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
@@ -63,7 +65,7 @@ public class JasperReportsTest {
   public void fillDataSourceReport() throws ReportException, MalformedURLException, JRException {
     ReportWrapper.CACHE_REPORTS.set(false);
     ReportWrapper.REPORT_PATH.set(REPORT_PATH);
-    final ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> wrapper = JasperReports.fileReport("empdept_employees.jasper");
+    final ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> wrapper = JasperReports.fileReportWrapper("empdept_employees.jasper");
     final JRDataSource dataSource = new JRDataSource() {
       boolean done = false;
       @Override
@@ -87,8 +89,8 @@ public class JasperReportsTest {
   public void fillJdbcReportInvalidReport() throws Exception {
     ReportWrapper.CACHE_REPORTS.set(false);
     ReportWrapper.REPORT_PATH.set(REPORT_PATH);
-    assertThrows(ReportException.class, () -> CONNECTION_PROVIDER.getConnection().fillReport(
-            JasperReports.fileReport("non_existing.jasper"), new HashMap<>()));
+    final Report nonExisting = Reports.report("test");
+    assertThrows(ReportException.class, () -> CONNECTION_PROVIDER.getConnection().fillReport(nonExisting, new HashMap<>()));
   }
 
   @Test

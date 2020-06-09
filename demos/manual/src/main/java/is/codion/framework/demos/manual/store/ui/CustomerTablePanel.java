@@ -3,10 +3,10 @@
  */
 package is.codion.framework.demos.manual.store.ui;
 
+import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.plugin.jasperreports.model.JasperReports;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -48,8 +48,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIds);
 
-    EntityReports.viewJdbcReport(this,
-            JasperReports.fileReport("customer_report.jasper"),
+    EntityReports.viewJdbcReport(this, Store.CUSTOMER_REPORT,
             reportParameters, JRViewer::new,  "Customer Report",
             getTableModel().getConnectionProvider());
   }

@@ -6,8 +6,9 @@ package is.codion.framework.db.http;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.AbstractReportWrapper;
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.db.reports.Reports;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
@@ -29,23 +30,23 @@ import static java.util.Collections.emptyList;
 
 public final class TestDomain extends Domain {
 
-  public static final ReportWrapper<Object, String, String> REPORT = new AbstractReportWrapper<Object, String, String>("report.path") {
-    @Override
-    public String fillReport(final Connection connection, final String parameters) throws ReportException {
-      return "result";
-    }
-
-    @Override
-    public Object loadReport() throws ReportException {
-      return null;
-    }
-  };
+  public static final Report<Object, String, String> REPORT = Reports.report("report");
 
   public TestDomain() {
     department();
     employee();
     operations();
-    addReport(REPORT);
+    defineReport(REPORT, new AbstractReportWrapper<Object, String, String>("report.path") {
+      @Override
+      public String fillReport(final Connection connection, final String parameters) throws ReportException {
+        return "result";
+      }
+
+      @Override
+      public Object loadReport() throws ReportException {
+        return null;
+      }
+    });
   }
 
   public static final EntityType T_DEPARTMENT = entityType("scott.dept");

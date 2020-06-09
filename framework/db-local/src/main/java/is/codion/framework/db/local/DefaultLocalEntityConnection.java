@@ -16,8 +16,8 @@ import is.codion.common.db.exception.UniqueConstraintException;
 import is.codion.common.db.exception.UpdateException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.user.User;
@@ -674,16 +674,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T, R, P> R fillReport(final ReportWrapper<T, R, P> reportWrapper, final P reportParameters) throws ReportException {
-    requireNonNull(reportWrapper, "reportWrapper");
+  public <T, R, P> R fillReport(final Report<T, R, P> report, final P reportParameters) throws ReportException {
+    requireNonNull(report, "report");
     Exception exception = null;
     synchronized (connection) {
       try {
-        logAccess("fillReport", new Object[] {reportWrapper});
-        if (!domain.containsReport(reportWrapper)) {
-          throw new ReportException("Undefined report: " + reportWrapper);
-        }
-        final R result = reportWrapper.fillReport(connection.getConnection(), reportParameters);
+        logAccess("fillReport", new Object[] {report});
+        final R result = report.fillReport(connection.getConnection(), domain.getReportWrapper(report), reportParameters);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -691,13 +688,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(null, singletonList(reportWrapper), e), e);
+        LOG.error(createLogMessage(null, singletonList(report), e), e);
         throw new ReportException(e);
       }
       catch (final ReportException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(null, singletonList(reportWrapper), e), e);
+        LOG.error(createLogMessage(null, singletonList(report), e), e);
         throw e;
       }
       finally {

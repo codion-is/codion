@@ -9,9 +9,9 @@ final class ClassPathJasperReportWrapper extends AbstractJasperReportWrapper {
 
   private static final long serialVersionUID = 1;
 
-  private final Class resourceClass;
+  private final Class<?> resourceClass;
 
-  ClassPathJasperReportWrapper(final Class resourceClass, final String reportPath) {
+  ClassPathJasperReportWrapper(final Class<?> resourceClass, final String reportPath) {
     super(reportPath);
     this.resourceClass = resourceClass;
   }

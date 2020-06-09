@@ -10,7 +10,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.DerivedProperty;
-import is.codion.plugin.jasperreports.model.JasperReportWrapper;
+import is.codion.plugin.jasperreports.model.JRReport;
+import is.codion.plugin.jasperreports.model.JasperReports;
 
 import java.awt.Image;
 import java.math.BigDecimal;
@@ -21,7 +22,6 @@ import java.util.List;
 import static is.codion.common.db.operation.FunctionType.functionType;
 import static is.codion.common.db.operation.ProcedureType.procedureType;
 import static is.codion.framework.domain.entity.EntityType.entityType;
-import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public interface Chinook {
 
@@ -81,7 +81,7 @@ public interface Chinook {
     Attribute<Long> SUPPORTREP_ID = TYPE.longAttribute("supportrepid");
     Attribute<Entity> SUPPORTREP_FK = TYPE.entityAttribute("supportrep_fk");
 
-    JasperReportWrapper CUSTOMER_REPORT = classPathReport(Chinook.class, "customer_report.jasper");
+    JRReport CUSTOMER_REPORT = JasperReports.report("customer_report");
   }
 
   interface Genre {
