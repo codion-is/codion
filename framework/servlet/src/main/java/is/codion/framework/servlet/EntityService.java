@@ -7,7 +7,7 @@ import is.codion.common.Serializer;
 import is.codion.common.Util;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.db.reports.Report;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
@@ -269,7 +269,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Object> parameters = deserialize(request);
 
-      return Response.ok(Serializer.serialize(connection.fillReport((ReportWrapper<?, ?, Object>) parameters.get(0), parameters.get(1)))).build();
+      return Response.ok(Serializer.serialize(connection.fillReport((Report<?, ?, Object>) parameters.get(0), parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

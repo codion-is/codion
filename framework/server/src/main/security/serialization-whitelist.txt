@@ -78,6 +78,7 @@ net.sf.jasperreports.engine.type.WhenResourceMissingTypeEnum
 is.codion.common.Conjunction
 is.codion.common.db.Operator
 is.codion.common.db.reports.AbstractReportWrapper
+is.codion.common.db.reports.DefaultReport
 is.codion.common.rmi.client.DefaultConnectionRequest
 is.codion.common.user.DefaultUser
 is.codion.common.version.DefaultVersion
@@ -97,6 +98,7 @@ is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByAttribute
 is.codion.framework.domain.entity.DefaultAttribute
 is.codion.framework.demos.chinook.domain.Chinook
 is.codion.framework.demos.empdept.domain.EmpDept
+is.codion.plugin.jasperreports.model.DefaultJRReport
 is.codion.plugin.jasperreports.model.AbstractJasperReportWrapper
 is.codion.plugin.jasperreports.model.ClassPathJasperReportWrapper
 is.codion.plugin.jasperreports.model.FileJasperReportWrapper

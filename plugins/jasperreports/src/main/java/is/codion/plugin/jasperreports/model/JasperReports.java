@@ -24,12 +24,20 @@ public final class JasperReports {
   private JasperReports() {}
 
   /**
+   * @param name the report name
+   * @return a JRReport
+   */
+  public static JRReport report(final String name) {
+    return new DefaultJRReport(name);
+  }
+
+  /**
    * Instantiates a ReportWrapper for a classpath based report.
    * @param resourceClass the class owning the report resource
    * @param reportPath the report classpath
    * @return a report wrapper
    */
-  public static JasperReportWrapper classPathReport(final Class resourceClass, final String reportPath) {
+  public static JasperReportWrapper classPathReportWrapper(final Class<?> resourceClass, final String reportPath) {
     return new ClassPathJasperReportWrapper(resourceClass, reportPath);
   }
 
@@ -38,7 +46,7 @@ public final class JasperReports {
    * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}
    * @return a report wrapper
    */
-  public static JasperReportWrapper fileReport(final String reportPath) {
+  public static JasperReportWrapper fileReportWrapper(final String reportPath) {
     return new FileJasperReportWrapper(reportPath);
   }
 

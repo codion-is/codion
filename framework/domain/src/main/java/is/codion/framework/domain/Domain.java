@@ -7,6 +7,7 @@ import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.framework.domain.entity.DefaultEntities;
@@ -17,9 +18,7 @@ import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -27,7 +26,7 @@ import static java.util.Objects.requireNonNull;
  * Represents an application domain model, entities, reports and database operations.
  * Override to define a domain model.
  * @see #define(EntityType, Property.Builder[])
- * @see #addReport(ReportWrapper)
+ * @see #defineReport(Report, ReportWrapper)
  * @see #defineProcedure(ProcedureType, DatabaseProcedure)
  * @see #defineFunction(FunctionType, DatabaseFunction)
  */
@@ -81,8 +80,13 @@ public abstract class Domain implements EntityDefinition.Provider {
     return entities.getDefinitions();
   }
 
-  public final boolean containsReport(final ReportWrapper<?, ?, ?> reportWrapper) {
-    return reports.containsReport(reportWrapper);
+  public final <T, R, P> ReportWrapper<T, R, P> getReportWrapper(final Report<T, R, P> report) throws ReportException {
+    final ReportWrapper<T, R, P> reportWrapper = reports.getReport(report);
+    if (reportWrapper == null) {
+      throw new ReportException("Undefined report: " + report);
+    }
+
+    return reportWrapper;
   }
 
   /**
@@ -141,12 +145,16 @@ public abstract class Domain implements EntityDefinition.Provider {
 
   /**
    * Adds a report to this domain model.
-   * @param reportWrapper the report to add
+   * @param report the report to add
+   * @param reportWrapper the report wrapper to associate with the report
+   * @param <T> the report type
+   * @param <R> the report result type
+   * @param <P> the report parameters type
    * @throws RuntimeException in case loading the report failed
    * @throws IllegalArgumentException in case the report has already been added
    */
-  protected final void addReport(final ReportWrapper<?, ?, ?> reportWrapper) {
-    reports.addReport(reportWrapper);
+  protected final <T, R, P> void defineReport(final Report<T, R, P> report, final ReportWrapper<T, R, P> reportWrapper) {
+    reports.addReport(report, reportWrapper);
   }
 
   /**
@@ -251,23 +259,25 @@ public abstract class Domain implements EntityDefinition.Provider {
 
   private static final class DomainReports {
 
-    private final Set<ReportWrapper<?, ?, ?>> reports = new HashSet<>();
+    private final Map<Report<?, ?, ?>, ReportWrapper<?, ?, ?>> reports = new HashMap<>();
 
-    private void addReport(final ReportWrapper<?, ?, ?> report) {
-      if (containsReport(report)) {
+    private <T, R, P> void addReport(final Report<T, R, P> report, final ReportWrapper<T, R, P> reportWrapper) {
+      requireNonNull(report, "report");
+      requireNonNull(reportWrapper, "reportWrapper");
+      if (reports.containsKey(report)) {
         throw new IllegalArgumentException("Report has already been added: " + report);
       }
       try {
-        report.loadReport();
-        reports.add(report);
+        reportWrapper.loadReport();
+        reports.put(report, reportWrapper);
       }
       catch (final ReportException e) {
         throw new RuntimeException(e);
       }
     }
 
-    private boolean containsReport(final ReportWrapper<?, ?, ?> reportWrapper) {
-      return reports.contains(requireNonNull(reportWrapper, "reportWrapper"));
+    private <T, R, P> ReportWrapper<T, R, P> getReport(final Report<T, R, P> report) {
+      return (ReportWrapper<T, R, P>) reports.get(requireNonNull(report, "report"));
     }
   }
 }

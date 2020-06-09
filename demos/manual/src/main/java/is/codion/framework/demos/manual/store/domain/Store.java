@@ -4,6 +4,7 @@
 package is.codion.framework.demos.manual.store.domain;
 
 import is.codion.common.db.connection.DatabaseConnection;
+import is.codion.common.db.reports.Report;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -11,18 +12,21 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.plugin.jasperreports.model.JasperReportWrapper;
+import is.codion.plugin.jasperreports.model.JasperReports;
+
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
 import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
-import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
 
 public final class Store extends Domain {
 
@@ -52,8 +56,8 @@ public final class Store extends Domain {
     Attribute<Entity> ADDRESS_FK = TYPE.entityAttribute("address_fk");
   }
 
-  public static final JasperReportWrapper CUSTOMER_REPORT =
-            fileReport("reports/customer.jasper");
+  public static final Report<JasperReport, JasperPrint, Map<String, Object>> CUSTOMER_REPORT =
+          JasperReports.report("customer_report");
 
   public Store() {
     customer();
