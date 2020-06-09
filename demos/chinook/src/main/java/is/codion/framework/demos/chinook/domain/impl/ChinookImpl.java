@@ -7,8 +7,8 @@ import is.codion.common.db.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
-import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
@@ -343,10 +343,10 @@ public final class ChinookImpl extends Domain implements Chinook {
             .caption("Playlist tracks");
   }
 
-  private static final class UpdateTotalsProcedure implements DatabaseProcedure<EntityConnection, Void> {
+  private static final class UpdateTotalsProcedure implements DatabaseProcedure<LocalEntityConnection, Void> {
 
     @Override
-    public void execute(final EntityConnection entityConnection,
+    public void execute(final LocalEntityConnection entityConnection,
                         final Void... arguments) throws DatabaseException {
       try {
         entityConnection.beginTransaction();
@@ -370,10 +370,10 @@ public final class ChinookImpl extends Domain implements Chinook {
     }
   }
 
-  private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, Object, List<Entity>> {
+  private static final class RaisePriceFunction implements DatabaseFunction<LocalEntityConnection, Object, List<Entity>> {
 
     @Override
-    public List<Entity> execute(final EntityConnection entityConnection,
+    public List<Entity> execute(final LocalEntityConnection entityConnection,
                                 final Object... arguments) throws DatabaseException {
       final List<Long> trackIds = (List<Long>) arguments[0];
       final BigDecimal priceIncrease = (BigDecimal) arguments[1];

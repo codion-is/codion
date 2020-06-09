@@ -207,7 +207,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T, R> R executeFunction(final FunctionType<EntityConnection, T, R> functionType, final T... arguments) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final T... arguments) throws DatabaseException {
     Objects.requireNonNull(functionType);
     try {
       return onResponse(execute(createHttpPost("function", asList(functionType, arguments))));
@@ -222,7 +222,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> void executeProcedure(final ProcedureType<EntityConnection, T> procedureType, final T... arguments) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final T... arguments) throws DatabaseException {
     Objects.requireNonNull(procedureType);
     try {
       onResponse(execute(createHttpPost("procedure", asList(procedureType, arguments))));

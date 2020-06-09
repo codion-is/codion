@@ -93,14 +93,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> void executeProcedure(final ProcedureType<EntityConnection, T> procedureType, final T... arguments) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final T... arguments) throws DatabaseException {
     synchronized (connectionProxy) {
       connectionProxy.executeProcedure(procedureType, arguments);
     }
   }
 
   @Override
-  public <T, R> R executeFunction(final FunctionType<EntityConnection, T, R> functionType, final T... arguments) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final T... arguments) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.executeFunction(functionType, arguments);
     }

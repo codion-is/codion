@@ -86,21 +86,23 @@ public interface EntityConnection {
    * Executes the function with the given id
    * @param functionType the function id
    * @param arguments the arguments, if any
+   * @param <C> the connection type
    * @param <T> the argument type
    * @param <R> the return type
    * @return the function return arguments
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <T, R> R executeFunction(FunctionType<EntityConnection, T, R> functionType, T... arguments) throws DatabaseException;
+  <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T... arguments) throws DatabaseException;
 
   /**
    * Executes the procedure with the given id
    * @param procedureType the procedure type
    * @param arguments the arguments, if any
+   * @param <C> the connection type
    * @param <T> the argument type
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <T> void executeProcedure(ProcedureType<EntityConnection, T> procedureType, T... arguments) throws DatabaseException;
+  <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T... arguments) throws DatabaseException;
 
   /**
    * Inserts the given entity, returning the primary key of the inserted entity.
