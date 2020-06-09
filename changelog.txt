@@ -6234,3 +6234,4 @@
   ValueSet added
   DefaultEntityEditModel.value() no longer creates new instances if a value has already been created for the given attribute
   ColumnProperty.Builder.valueConverter() added column type parameter
+  EntityConnection.executeFunction() and executeProcedure(), added connection type parameter, accept EntityConnection and subclasses

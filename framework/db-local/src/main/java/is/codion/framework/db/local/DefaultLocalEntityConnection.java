@@ -636,12 +636,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T, R> R executeFunction(final FunctionType<EntityConnection, T, R> functionType, final T... arguments) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R executeFunction(final FunctionType<C, T, R> functionType, final T... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
       logAccess("executeFunction: " + functionType, arguments);
       synchronized (connection) {
-        return functionType.execute(this, domain.getFunction(functionType), arguments);
+        return functionType.execute((C) this, domain.getFunction(functionType), arguments);
       }
     }
     catch (final DatabaseException e) {
@@ -655,12 +655,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> void executeProcedure(final ProcedureType<EntityConnection, T> procedureType, final T... arguments) throws DatabaseException {
+  public <C extends EntityConnection, T> void executeProcedure(final ProcedureType<C, T> procedureType, final T... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
       logAccess("executeProcedure: " + procedureType, arguments);
       synchronized (connection) {
-        procedureType.execute(this, domain.getProcedure(procedureType), arguments);
+        procedureType.execute((C) this, domain.getProcedure(procedureType), arguments);
       }
     }
     catch (final DatabaseException e) {
