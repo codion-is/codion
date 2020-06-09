@@ -239,9 +239,10 @@ public interface ColumnProperty<T> extends Property<T> {
     /**
      * Set a value converter, for converting to and from a sql representation of the value
      * @param valueConverter the converter
+     * @param <C> the column value type
      * @return this instance
      */
-    ColumnProperty.Builder<T> valueConverter(ValueConverter<T, Object> valueConverter);
+    <C> ColumnProperty.Builder<T> valueConverter(ValueConverter<T, C> valueConverter);
 
     /**
      * If true then this property is included when searching for an entity by a string value.

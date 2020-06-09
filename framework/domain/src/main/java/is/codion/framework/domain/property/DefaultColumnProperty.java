@@ -469,7 +469,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> valueConverter(final ValueConverter<T, Object> valueConverter) {
+    public final <C> ColumnProperty.Builder<T> valueConverter(final ValueConverter<T, C> valueConverter) {
       requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueConverter = (ValueConverter<Object, Object>) valueConverter;
       return this;
