@@ -21,7 +21,7 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = 'is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+ext.execMainClass = 'is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
 
 test {
     systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
@@ -29,7 +29,7 @@ test {
 }
 
 startScripts {
-    mainClassName = mainClass
+    mainClassName = execMainClass
     //overwrite the defaults to leave out initScript
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=local',
@@ -39,15 +39,15 @@ startScripts {
 }
 
 clientRMIScript {
-    mainClassName = mainClass
+    mainClassName = execMainClass
 }
 
 clientHttpScript {
-    mainClassName = mainClass
+    mainClassName = execMainClass
 }
 
 runClientLocal {
-    main = mainClass
+    mainClass = execMainClass
     //overwrite the defaults to leave out initScript
     systemProperties = [
             'codion.client.connectionType': 'local',
@@ -57,9 +57,9 @@ runClientLocal {
 }
 
 runClientRMI {
-    main = mainClass
+    mainClass = execMainClass
 }
 
 runClientHttp {
-    main = mainClass
+    mainClass = execMainClass
 }

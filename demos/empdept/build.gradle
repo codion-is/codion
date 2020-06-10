@@ -37,8 +37,8 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = 'is.codion.framework.demos.empdept.ui.EmpDeptAppPanel'
-ext.loadTestMainClass = 'is.codion.framework.demos.empdept.testing.EmpDeptLoadTest'
+ext.execMainClass = 'is.codion.framework.demos.empdept.ui.EmpDeptAppPanel'
+ext.execLoadTestMainClass = 'is.codion.framework.demos.empdept.testing.EmpDeptLoadTest'
 
 test {
     systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
@@ -65,32 +65,32 @@ task buildReports(dependsOn: 'compileJava') {
 classes.finalizedBy buildReports
 
 startScripts {
-    mainClassName = mainClass
+    mainClassName = execMainClass
 }
 
 clientRMIScript {
-    mainClassName = mainClass
+    mainClassName = execMainClass
 }
 
 clientHttpScript {
-    mainClassName = mainClass
+    mainClassName = execMainClass
 }
 
 loadTestRMIScript {
-    mainClassName = loadTestMainClass
+    mainClassName = execLoadTestMainClass
 }
 
 loadTestHttpScript {
-    mainClassName = loadTestMainClass
+    mainClassName = execLoadTestMainClass
 }
 
 runClientLocal {
-    main = mainClass
+    mainClass = execMainClass
 }
 
 task runClientLocalFX(type: JavaExec) {
     group 'run'
-    main = 'is.codion.framework.demos.empdept.javafx.EmpDeptFX'
+    mainClass = 'is.codion.framework.demos.empdept.javafx.EmpDeptFX'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
             'codion.client.connectionType': 'local',
@@ -101,17 +101,17 @@ task runClientLocalFX(type: JavaExec) {
 }
 
 runClientRMI {
-    main = mainClass
+    mainClass = execMainClass
 }
 
 runClientHttp {
-    main = mainClass
+    mainClass = execMainClass
 }
 
 runLoadTestRMI {
-    main = loadTestMainClass
+    mainClass = execLoadTestMainClass
 }
 
 runLoadTestHttp {
-    main = loadTestMainClass
+    mainClass = execLoadTestMainClass
 }

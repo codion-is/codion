@@ -22,28 +22,28 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = 'is.codion.framework.demos.manual.store.ui.StoreAppPanel'
+ext.execMainClass = 'is.codion.framework.demos.manual.store.ui.StoreAppPanel'
 
 startScripts {
-    mainClassName = mainClass
+    mainClassName = execMainClass
 }
 
 clientRMIScript {
-    mainClassName = mainClass
+    mainClassName = execMainClass
 }
 
 clientHttpScript {
-    mainClassName = mainClass
+    mainClassName = execMainClass
 }
 
 runClientLocal {
-    main = mainClass
+    mainClass = execMainClass
 }
 
 runClientRMI {
-    main = mainClass
+    mainClass = execMainClass
 }
 
 runClientHttp {
-    main = mainClass
+    mainClass = execMainClass
 }
