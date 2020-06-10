@@ -42,6 +42,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -183,6 +184,21 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   @Override
   public T getModel() {
     return (T) super.getModel();
+  }
+
+  @Override
+  public void setModel(final TableModel dataModel) {
+    if (this.tableModel != null) {
+      throw new IllegalStateException("Table model has already been set");
+    }
+    if (!(dataModel instanceof AbstractFilteredTableModel)) {
+      throw new IllegalArgumentException("FilteredTable model must be a AbstractFilteredTableModel instance");
+    }
+    final List<R> selection = ((AbstractFilteredTableModel<R, C>) dataModel).getSelectionModel().getSelectedItems();
+    super.setModel(dataModel);
+    if (!selection.isEmpty()) {
+      ((AbstractFilteredTableModel<R, C>) dataModel).getSelectionModel().setSelectedItems(selection);
+    }
   }
 
   /**
