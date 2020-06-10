@@ -6,6 +6,7 @@ package is.codion.framework.db;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
 import is.codion.common.user.User;
@@ -299,7 +300,7 @@ public interface EntityConnection {
   int selectRowCount(EntityCondition condition) throws DatabaseException;
 
   /**
-   * Takes a Report object using a JDBC datasource and returns an initialized report result object
+   * Takes a ReportType object using a JDBC datasource and returns an initialized report result object
    * @param reportType the report to fill
    * @param reportParameters the report parameters, if any
    * @param <T> the report type
@@ -308,7 +309,7 @@ public interface EntityConnection {
    * @return the filled result object
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.reports.ReportException in case of a report exception
-   * @see is.codion.common.db.reports.ReportWrapper#fillReport(java.sql.Connection, Object)
+   * @see Report#fillReport(java.sql.Connection, Object)
    */
   <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException;
 

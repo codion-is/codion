@@ -3,22 +3,22 @@
  */
 package is.codion.plugin.nextreports.model;
 
-import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.db.reports.Report;
 
 /**
- * Factory for {@link ReportWrapper} based on NextReports.
+ * Factory for {@link Report} based on NextReports.
  */
 public final class NextReports {
 
   private NextReports() {}
 
   /**
-   * Instantiates a new {@link ReportWrapper} based on NextReports.
-   * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}.
+   * Instantiates a new {@link Report} based on NextReports.
+   * @param reportPath the report path, relative to the central report path {@link Report#REPORT_PATH}.
    * @param format the format
    * @return a report wrapper
    */
-  public static NextReportWrapper nextReportsWrapper(final String reportPath, final String format) {
-    return new DefaultNextReportWrapper(reportPath, format);
+  public static NextReport nextReport(final String reportPath, final String format) {
+    return new DefaultNextReport(reportPath, format);
   }
 }

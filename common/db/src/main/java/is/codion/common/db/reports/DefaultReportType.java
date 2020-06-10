@@ -23,8 +23,8 @@ class DefaultReportType<T, R, P> implements ReportType<T, R, P> {
   }
 
   @Override
-  public R fillReport(final Connection connection, final ReportWrapper<T, R, P> reportWrapper, final P parameters) throws ReportException {
-    return reportWrapper.fillReport(connection, parameters);
+  public R fillReport(final Connection connection, final Report<T, R, P> report, final P parameters) throws ReportException {
+    return report.fillReport(connection, parameters);
   }
 
   @Override

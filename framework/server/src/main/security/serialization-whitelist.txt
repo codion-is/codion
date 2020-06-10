@@ -77,7 +77,7 @@ net.sf.jasperreports.engine.type.TextAdjustEnum
 net.sf.jasperreports.engine.type.WhenResourceMissingTypeEnum
 is.codion.common.Conjunction
 is.codion.common.db.Operator
-is.codion.common.db.reports.AbstractReportWrapper
+is.codion.common.db.reports.AbstractReport
 is.codion.common.db.reports.DefaultReportType
 is.codion.common.rmi.client.DefaultConnectionRequest
 is.codion.common.user.DefaultUser
@@ -99,6 +99,6 @@ is.codion.framework.domain.entity.DefaultAttribute
 is.codion.framework.demos.chinook.domain.Chinook
 is.codion.framework.demos.empdept.domain.EmpDept
 is.codion.plugin.jasperreports.model.DefaultJRReportType
-is.codion.plugin.jasperreports.model.AbstractJasperReportWrapper
-is.codion.plugin.jasperreports.model.ClassPathJasperReportWrapper
-is.codion.plugin.jasperreports.model.FileJasperReportWrapper
+is.codion.plugin.jasperreports.model.AbstractJRReport
+is.codion.plugin.jasperreports.model.ClassPathJRReport
+is.codion.plugin.jasperreports.model.FileJasperJRReport

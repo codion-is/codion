@@ -4,9 +4,9 @@
 package is.codion.plugin.jasperreports.model;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
-import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.db.reports.Reports;
 import is.codion.common.http.server.HttpServer;
 import is.codion.common.http.server.HttpServerConfiguration;
@@ -52,8 +52,8 @@ public class JasperReportsTest {
 
   @Test
   public void fillJdbcReport() throws ReportException, DatabaseException {
-    ReportWrapper.CACHE_REPORTS.set(false);
-    ReportWrapper.REPORT_PATH.set(REPORT_PATH);
+    Report.CACHE_REPORTS.set(false);
+    Report.REPORT_PATH.set(REPORT_PATH);
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
     final LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.getConnection();
@@ -63,9 +63,9 @@ public class JasperReportsTest {
 
   @Test
   public void fillDataSourceReport() throws ReportException, MalformedURLException, JRException {
-    ReportWrapper.CACHE_REPORTS.set(false);
-    ReportWrapper.REPORT_PATH.set(REPORT_PATH);
-    final ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> wrapper = JasperReports.fileReportWrapper("empdept_employees.jasper");
+    Report.CACHE_REPORTS.set(false);
+    Report.REPORT_PATH.set(REPORT_PATH);
+    final Report<JasperReport, JasperPrint, Map<String, Object>> wrapper = JasperReports.fileReport("empdept_employees.jasper");
     final JRDataSource dataSource = new JRDataSource() {
       boolean done = false;
       @Override
@@ -87,16 +87,16 @@ public class JasperReportsTest {
 
   @Test
   public void fillJdbcReportInvalidReport() throws Exception {
-    ReportWrapper.CACHE_REPORTS.set(false);
-    ReportWrapper.REPORT_PATH.set(REPORT_PATH);
+    Report.CACHE_REPORTS.set(false);
+    Report.REPORT_PATH.set(REPORT_PATH);
     final ReportType nonExisting = Reports.reportType("test");
     assertThrows(ReportException.class, () -> CONNECTION_PROVIDER.getConnection().fillReport(nonExisting, new HashMap<>()));
   }
 
   @Test
   public void urlReport() throws Exception {
-    ReportWrapper.CACHE_REPORTS.set(false);
-    ReportWrapper.REPORT_PATH.set("http://localhost:1234");
+    Report.CACHE_REPORTS.set(false);
+    Report.REPORT_PATH.set("http://localhost:1234");
     final HttpServerConfiguration configuration = HttpServerConfiguration.configuration(1234, ServerHttps.FALSE);
     configuration.setDocumentRoot(REPORT_PATH);
     final HttpServer server = new HttpServer(configuration);

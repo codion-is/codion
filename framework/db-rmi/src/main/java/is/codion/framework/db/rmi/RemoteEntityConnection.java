@@ -6,6 +6,7 @@ package is.codion.framework.db.rmi;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
 import is.codion.common.user.User;
@@ -318,7 +319,7 @@ public interface RemoteEntityConnection extends Remote {
   int selectRowCount(EntityCondition condition) throws RemoteException, DatabaseException;
 
   /**
-   * Takes a Report object using a JDBC datasource and returns an initialized ReportResult object
+   * Takes a ReportType object using a JDBC datasource and returns an initialized ReportResult object
    * @param reportType the report to fill
    * @param reportParameters the report parameters, if any
    * @param <T> the report type
@@ -328,7 +329,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws is.codion.common.db.reports.ReportException in case of a report exception
    * @throws RemoteException in case of a remote exception
-   * @see is.codion.common.db.reports.ReportWrapper#fillReport(java.sql.Connection, Object)
+   * @see Report#fillReport(java.sql.Connection, Object)
    */
   <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws RemoteException, DatabaseException, ReportException;
 

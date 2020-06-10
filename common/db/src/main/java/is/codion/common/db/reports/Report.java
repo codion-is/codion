@@ -17,7 +17,7 @@ import static is.codion.common.Util.nullOrEmpty;
  * @param <R> the report result type
  * @param <P> the report parameters type
  */
-public interface ReportWrapper<T, R, P> extends Serializable {
+public interface Report<T, R, P> extends Serializable {
 
   /**
    * The report path used for file based report generation.
@@ -48,7 +48,7 @@ public interface ReportWrapper<T, R, P> extends Serializable {
   T loadReport() throws ReportException;
 
   /**
-   * @return the value associated with {@link ReportWrapper#REPORT_PATH}
+   * @return the value associated with {@link Report#REPORT_PATH}
    * @throws IllegalArgumentException in case it is not specified
    */
   static String getReportPath() {
@@ -63,9 +63,9 @@ public interface ReportWrapper<T, R, P> extends Serializable {
   /**
    * Returns a full report path, combined from the report location specified by {@link #REPORT_PATH}
    * and the given report path.
-   * @param reportPath the report path relative to {@link ReportWrapper#REPORT_PATH}.
+   * @param reportPath the report path relative to {@link Report#REPORT_PATH}.
    * @return a full report path
-   * @throws IllegalArgumentException in case {@link ReportWrapper#REPORT_PATH} is not specified
+   * @throws IllegalArgumentException in case {@link Report#REPORT_PATH} is not specified
    */
   static String getFullReportPath(final String reportPath) {
     final String slash = "/";

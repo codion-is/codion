@@ -32,7 +32,7 @@ import static is.codion.framework.domain.entity.Entities.getModifiedEntities;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
-import static is.codion.plugin.jasperreports.model.JasperReports.classPathReportWrapper;
+import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public final class ChinookImpl extends Domain implements Chinook {
 
@@ -48,7 +48,7 @@ public final class ChinookImpl extends Domain implements Chinook {
     invoiceLine();
     playlist();
     playlistTrack();
-    defineReport(Customer.CUSTOMER_REPORT, classPathReportWrapper(Chinook.class, "customer_report.jasper"));
+    defineReport(Customer.CUSTOMER_REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
     defineProcedure(Procedures.UPDATE_TOTALS, new UpdateTotalsProcedure());
     defineFunction(Functions.RAISE_PRICE, new RaisePriceFunction());
   }

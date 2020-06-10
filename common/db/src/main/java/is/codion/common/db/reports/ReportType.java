@@ -21,10 +21,10 @@ public interface ReportType<T, R, P> extends Serializable {
   /**
    * Fills the given report.
    * @param connection the connection
-   * @param reportWrapper the report to fill
+   * @param report the report to fill
    * @param parameters the parameters
    * @return a report result
    * @throws ReportException in case of an exception
    */
-  R fillReport(Connection connection, ReportWrapper<T, R, P> reportWrapper, P parameters) throws ReportException;
+  R fillReport(Connection connection, Report<T, R, P> report, P parameters) throws ReportException;
 }

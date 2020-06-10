@@ -680,7 +680,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         logAccess("fillReport", new Object[] {reportType});
-        final R result = reportType.fillReport(connection.getConnection(), domain.getReportWrapper(reportType), reportParameters);
+        final R result = reportType.fillReport(connection.getConnection(), domain.getReport(reportType), reportParameters);
         commitIfTransactionIsNotOpen();
 
         return result;

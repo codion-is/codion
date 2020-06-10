@@ -22,7 +22,7 @@ import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
-import static is.codion.plugin.jasperreports.model.JasperReports.classPathReportWrapper;
+import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static java.util.Arrays.asList;
 
 // tag::departmentConstants[]
@@ -75,7 +75,7 @@ public final class EmpDept extends Domain {
   public EmpDept() {
     department();
     employee();
-    defineReport(Employee.EMPLOYEE_REPORT, classPathReportWrapper(EmpDept.class, "empdept_employees.jasper"));
+    defineReport(Employee.EMPLOYEE_REPORT, classPathReport(EmpDept.class, "empdept_employees.jasper"));
   }
   // end::constructor[]
 

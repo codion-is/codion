@@ -3,9 +3,9 @@
  */
 package is.codion.plugin.jasperreports.model;
 
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
-import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.db.reports.Reports;
 
 import net.sf.jasperreports.engine.JasperPrint;
@@ -30,9 +30,9 @@ final class DefaultJRReportType implements JRReportType {
   }
 
   @Override
-  public JasperPrint fillReport(final Connection connection, final ReportWrapper<JasperReport, JasperPrint,
-          Map<String, Object>> reportWrapper, final Map<String, Object> parameters) throws ReportException {
-    return reportType.fillReport(connection, reportWrapper, parameters);
+  public JasperPrint fillReport(final Connection connection, final Report<JasperReport, JasperPrint,
+            Map<String, Object>> report, final Map<String, Object> parameters) throws ReportException {
+    return reportType.fillReport(connection, report, parameters);
   }
 
   @Override

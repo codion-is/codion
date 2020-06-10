@@ -15,8 +15,8 @@ import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.property.Properties.*;
-import static is.codion.plugin.jasperreports.model.JasperReports.classPathReportWrapper;
-import static is.codion.plugin.jasperreports.model.JasperReports.fileReportWrapper;
+import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
+import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends Domain {
@@ -58,10 +58,10 @@ public final class TestDomain extends Domain {
   public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
 
-  public static final JasperReportWrapper EMPLOYEE_FILE_REPORT =
-          fileReportWrapper("/empdept_employees.jasper");
-  public static final JasperReportWrapper EMPLOYEE_CLASSPATH_REPORT =
-          classPathReportWrapper(TestDomain.class, "/empdept_employees.jasper");
+  public static final JRReport EMPLOYEE_FILE_REPORT =
+          fileReport("/empdept_employees.jasper");
+  public static final JRReport EMPLOYEE_CLASSPATH_REPORT =
+          classPathReport(TestDomain.class, "/empdept_employees.jasper");
 
   void employee() {
     define(T_EMP,

@@ -5,7 +5,7 @@ package is.codion.framework.db.http;
 
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.reports.AbstractReportWrapper;
+import is.codion.common.db.reports.AbstractReport;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
 import is.codion.common.db.reports.Reports;
@@ -36,7 +36,7 @@ public final class TestDomain extends Domain {
     department();
     employee();
     operations();
-    defineReport(REPORT, new AbstractReportWrapper<Object, String, String>("report.path") {
+    defineReport(REPORT, new AbstractReport<Object, String, String>("report.path") {
       @Override
       public String fillReport(final Connection connection, final String parameters) throws ReportException {
         return "result";
