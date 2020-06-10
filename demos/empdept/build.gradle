@@ -44,9 +44,9 @@ dependencies {
 }
 
 ext {
-    mainClass = "$moduleName/is.codion.framework.demos.empdept.ui.EmpDeptAppPanel"
+    execMainClass = "$moduleName/is.codion.framework.demos.empdept.ui.EmpDeptAppPanel"
     fxMainClass = "$moduleName/is.codion.framework.demos.empdept.javafx.EmpDeptFX"
-    loadTestMainClass = "$moduleName/is.codion.framework.demos.empdept.testing.EmpDeptLoadTest"
+    execLoadTestMainClass = "$moduleName/is.codion.framework.demos.empdept.testing.EmpDeptLoadTest"
     testAddModules = ['is.codion.swing.framework.ui.test']
     testAddReads = ['is.codion.framework.demos.empdept': 'is.codion.swing.framework.ui.test']
     testAddExports = [
@@ -78,6 +78,10 @@ test {
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.empdept.domain.EmpDept"
 }
 
+application {
+    mainClassName = execMainClass
+}
+
 task buildReports(dependsOn: 'compileJava') {
     group 'build'
     def jasperSourceDir = file('src/main/reports')
@@ -99,7 +103,7 @@ classes.finalizedBy buildReports
 
 task runClientLocal(type: ModularJavaExec) {
     group 'run'
-    main = mainClass
+    mainClass = execMainClass
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
@@ -110,8 +114,8 @@ task runClientLocal(type: ModularJavaExec) {
 
 task runClientLocalFX(type: ModularJavaExec) {
     group 'run'
-    main = 'is.codion.framework.demos.empdept.javafx.EmpDeptFX'
-    main = fxMainClass
+    mainClass = 'is.codion.framework.demos.empdept.javafx.EmpDeptFX'
+    mainClass = fxMainClass
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
@@ -122,7 +126,7 @@ task runClientLocalFX(type: ModularJavaExec) {
 
 task runClientRMI(type: ModularJavaExec) {
     group 'run'
-    main = mainClass
+    mainClass = execMainClass
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : 'localhost',
@@ -134,7 +138,7 @@ task runClientRMI(type: ModularJavaExec) {
 
 task runClientHttp(type: ModularJavaExec) {
     group 'run'
-    main = mainClass
+    mainClass = execMainClass
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
@@ -145,7 +149,7 @@ task runClientHttp(type: ModularJavaExec) {
 
 task runLoadTestRMI(type: ModularJavaExec) {
     group 'run'
-    main = loadTestMainClass
+    mainClass = execLoadTestMainClass
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : 'localhost',
@@ -157,7 +161,7 @@ task runLoadTestRMI(type: ModularJavaExec) {
 
 task runLoadTestHttp(type: ModularJavaExec) {
     group 'run'
-    main = loadTestMainClass
+    mainClass = execLoadTestMainClass
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',

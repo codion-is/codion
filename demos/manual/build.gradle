@@ -24,15 +24,19 @@ dependencies {
     runtimeOnly "com.h2database:h2:${h2Version}"
 }
 
-ext.mainClass = "$moduleName/is.codion.framework.demos.manual.store.ui.StoreAppPanel"
+ext.execMainClass = "$moduleName/is.codion.framework.demos.manual.store.ui.StoreAppPanel"
+
+application {
+    mainClassName = execMainClass
+}
 
 startScripts {
-    mainClassName = mainClass
+    mainClassName = execMainClass
 }
 
 task runClientLocal(type: ModularJavaExec) {
     group 'run'
-    main = mainClass
+    mainClass = execMainClass
     systemProperties = [
             'jminor.client.connectionType': 'local',
             'jminor.db.url'               : 'jdbc:h2:mem:h2db',

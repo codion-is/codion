@@ -61,7 +61,3 @@ test {
     systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
     systemProperty "codion.test.user", "scott:tiger"
 }
-
-application {
-    mainClassName = 'dummyModule/dummy.class.Name'
-}
