@@ -105,8 +105,8 @@ final class DefaultKey implements Key {
   }
 
   @Override
-  public Attribute<?> getFirstAttribute() {
-    return definition.getPrimaryKeyAttributes().get(0);
+  public <T> Attribute<T> getFirstAttribute() {
+    return (Attribute<T>) definition.getPrimaryKeyAttributes().get(0);
   }
 
   @Override

@@ -21,14 +21,15 @@ public final class BooleanValues {
    * Creates a boolean value based on the given button model.
    * If the button model is a {@link NullableToggleButtonModel} the value will be nullable otherwise not
    * @param buttonModel the button model
+   * @param <T> the attribute type
    * @return a Value bound to the given button model
    */
-  public static ComponentValue<Boolean, ? extends ButtonModel> booleanButtonModelValue(final ButtonModel buttonModel) {
+  public static <T extends ButtonModel> ComponentValue<Boolean, T> booleanButtonModelValue(final ButtonModel buttonModel) {
     if (buttonModel instanceof NullableToggleButtonModel) {
-      return new BooleanNullableButtonModelValue((NullableToggleButtonModel) buttonModel);
+      return (ComponentValue<Boolean, T>) new BooleanNullableButtonModelValue((NullableToggleButtonModel) buttonModel);
     }
 
-    return new BooleanButtonModelValue(buttonModel);
+    return (ComponentValue<Boolean, T>) new BooleanButtonModelValue(buttonModel);
   }
 
   /**

@@ -129,20 +129,22 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @return the component associated with the given attribute, null if no component has been
    * associated with the given attribute
    */
-  public final JComponent getComponent(final Attribute<?> attribute) {
+  public final <T> JComponent getComponent(final Attribute<T> attribute) {
     return components.get(attribute);
   }
 
   /**
    * @param component the component
+   * @param <T> the attribute type
    * @return the attribute the given component is associated with, null if the component has not been
    * associated with a attribute
    */
-  public final Attribute<?> getAttribute(final JComponent component) {
-    return components.entrySet().stream().filter(entry -> entry.getValue() == component)
+  public final <T> Attribute<T> getAttribute(final JComponent component) {
+    return (Attribute<T>) components.entrySet().stream().filter(entry -> entry.getValue() == component)
             .findFirst().map(Map.Entry::getKey).orElse(null);
   }
 
@@ -162,9 +164,10 @@ public class EntityEditComponentPanel extends JPanel {
    * that should receive the initial focus in this edit panel.
    * This is overridden by setInitialFocusComponent().
    * @param attribute the component attribute
+   * @param <T> the attribute type
    * @see #setInitialFocusComponent(javax.swing.JComponent)
    */
-  public final void setInitialFocusAttribute(final Attribute<?> attribute) {
+  public final <T> void setInitialFocusAttribute(final Attribute<T> attribute) {
     this.initialFocusAttribute = attribute;
   }
 
@@ -183,10 +186,11 @@ public class EntityEditComponentPanel extends JPanel {
    * Sets the component associated with the given attribute as the component
    * that should receive the focus after an insert is performed in this edit panel.
    * This is overridden by setAfterInsertFocusComponent().
+   * @param <T> the attribute type
    * @param attribute the component attribute
    * @see #setAfterInsertFocusComponent(JComponent)
    */
-  public final void setAfterInsertFocusAttribute(final Attribute<?> attribute) {
+  public final <T> void setAfterInsertFocusAttribute(final Attribute<T> attribute) {
     this.afterInsertFocusAttribute = attribute;
   }
 
@@ -208,8 +212,9 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Request focus for the component associated with the given attribute
    * @param attribute the attribute of the component to select
+   * @param <T> the attribute type
    */
-  public final void requestComponentFocus(final Attribute<?> attribute) {
+  public final <T> void requestComponentFocus(final Attribute<T> attribute) {
     final JComponent component = getComponent(attribute);
     if (component != null) {
       component.requestFocus();
@@ -235,8 +240,9 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Specifies that the given attribute should be excluded when presenting a component selection list.
    * @param attribute the attribute to exclude from selection
+   * @param <T> the attribute type
    */
-  public final void excludeComponentFromSelection(final Attribute<?> attribute) {
+  public final <T> void excludeComponentFromSelection(final Attribute<T> attribute) {
     getEditModel().getEntityDefinition().getProperty(attribute);//just validating that the attribute exists
     excludeFromSelection.add(attribute);
   }
@@ -245,8 +251,9 @@ public class EntityEditComponentPanel extends JPanel {
    * Associates the given input component with the given attribute.
    * @param attribute the attribute
    * @param component the input component
+   * @param <T> the attribute type
    */
-  protected final void setComponent(final Attribute<?> attribute, final JComponent component) {
+  protected final <T> void setComponent(final Attribute<T> attribute, final JComponent component) {
     getEditModel().getEntityDefinition().getProperty(attribute);
     if (components.containsKey(attribute)) {
       throw new IllegalStateException("Component already set for attribute: " + attribute);
@@ -257,9 +264,10 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Adds a panel for the given attribute to this panel
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @see #createInputPanel(Attribute)
    */
-  protected final void addInputPanel(final Attribute<?> attribute) {
+  protected final <T> void addInputPanel(final Attribute<T> attribute) {
     add(createInputPanel(attribute));
   }
 
@@ -268,10 +276,11 @@ public class EntityEditComponentPanel extends JPanel {
    * The label text is the caption of the property based on {@code attribute}.
    * The default layout of the resulting panel is with the label on top and inputComponent below.
    * @param attribute the attribute from which property to retrieve the label caption
+   * @param <T> the attribute type
    * @return a panel containing a label and a component
    * @throws IllegalArgumentException in case no component has been associated with the given attribute
    */
-  protected final JPanel createInputPanel(final Attribute<?> attribute) {
+  protected final <T> JPanel createInputPanel(final Attribute<T> attribute) {
     final JComponent component = getComponent(attribute);
     if (component == null) {
       throw new IllegalArgumentException("No component associated with attribute: " + attribute);
@@ -286,9 +295,10 @@ public class EntityEditComponentPanel extends JPanel {
    * The default layout of the resulting panel is with the label on top and {@code inputComponent} below.
    * @param attribute the attribute from which property to retrieve the label caption
    * @param inputComponent a component bound to the property with id {@code attribute}
+   * @param <T> the attribute type
    * @return a panel containing a label and a component
    */
-  protected final JPanel createInputPanel(final Attribute<?> attribute, final JComponent inputComponent) {
+  protected final <T> JPanel createInputPanel(final Attribute<T> attribute, final JComponent inputComponent) {
     return createInputPanel(attribute, inputComponent, BorderLayout.NORTH);
   }
 
@@ -299,10 +309,11 @@ public class EntityEditComponentPanel extends JPanel {
    * @param inputComponent a component bound to the property with id {@code attribute}
    * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
    * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
+   * @param <T> the attribute type
    * @return a panel containing a label and a component
    */
-  protected final JPanel createInputPanel(final Attribute<?> attribute, final JComponent inputComponent,
-                                          final String labelBorderLayoutConstraints) {
+  protected final <T> JPanel createInputPanel(final Attribute<T> attribute, final JComponent inputComponent,
+                                              final String labelBorderLayoutConstraints) {
     return createInputPanel(attribute, inputComponent, labelBorderLayoutConstraints, JLabel.LEADING);
   }
 
@@ -314,10 +325,11 @@ public class EntityEditComponentPanel extends JPanel {
    * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
    * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
    * @param labelAlignment the label alignment
+   * @param <T> the attribute type
    * @return a panel containing a label and a component
    */
-  protected final JPanel createInputPanel(final Attribute<?> attribute, final JComponent inputComponent,
-                                          final String labelBorderLayoutConstraints, final int labelAlignment) {
+  protected final <T> JPanel createInputPanel(final Attribute<T> attribute, final JComponent inputComponent,
+                                              final String labelBorderLayoutConstraints, final int labelAlignment) {
     return createInputPanel(createLabel(attribute, labelAlignment), inputComponent, labelBorderLayoutConstraints);
   }
 
@@ -981,9 +993,10 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a JLabel with a caption from {@code attribute}, if a input component exists
    * for the given attribute this label is associated with it via {@link JLabel#setLabelFor(Component)}.
    * @param attribute the attribute from which to retrieve the caption
+   * @param <T> the attribute type
    * @return a JLabel for the given attribute
    */
-  protected final JLabel createLabel(final Attribute<?> attribute) {
+  protected final <T> JLabel createLabel(final Attribute<T> attribute) {
     return createLabel(attribute, JLabel.LEFT);
   }
 
@@ -992,9 +1005,10 @@ public class EntityEditComponentPanel extends JPanel {
    * for the given attribute this label is associated with it via {@link JLabel#setLabelFor(Component)}.
    * @param attribute the attribute from which to retrieve the caption
    * @param horizontalAlignment the horizontal text alignment
+   * @param <T> the attribute type
    * @return a JLabel for the given attribute
    */
-  protected final JLabel createLabel(final Attribute<?> attribute, final int horizontalAlignment) {
+  protected final <T> JLabel createLabel(final Attribute<T> attribute, final int horizontalAlignment) {
     return setLabelForComponent(EntityInputComponents.createLabel(getEditModel().getEntityDefinition()
             .getProperty(attribute), horizontalAlignment), getComponent(attribute));
   }

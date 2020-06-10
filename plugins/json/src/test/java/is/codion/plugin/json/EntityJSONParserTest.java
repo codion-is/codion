@@ -124,8 +124,8 @@ public class EntityJSONParserTest {
     assertEquals("A NAME", emp1Deserialized.getOriginal(TestDomain.EMP_NAME));
     assertEquals(BigDecimal.valueOf(2500.55), emp1Deserialized.getOriginal(TestDomain.EMP_SALARY));
 
-    assertTrue(((Entity) emp1Deserialized.getOriginal(TestDomain.EMP_DEPARTMENT_FK)).valuesEqual(dept10));
-    assertTrue(((Entity) emp1Deserialized.getOriginal(TestDomain.EMP_MGR_FK)).valuesEqual(mgr30));
+    assertTrue(emp1Deserialized.getOriginal(TestDomain.EMP_DEPARTMENT_FK).valuesEqual(dept10));
+    assertTrue(emp1Deserialized.getOriginal(TestDomain.EMP_MGR_FK).valuesEqual(mgr30));
 
     final Entity emp2 = ENTITIES.entity(TestDomain.T_EMP);
     emp2.put(TestDomain.EMP_COMMISSION, 300.5);

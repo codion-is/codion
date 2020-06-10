@@ -58,9 +58,10 @@ public interface Key extends Serializable {
   boolean isCompositeKey();
 
   /**
+   * @param <T> the attribute type
    * @return the first key property, useful for single property keys
    */
-  Attribute<?> getFirstAttribute();
+  <T> Attribute<T> getFirstAttribute();
 
   /**
    * @return the first value contained in this key, useful for single property keys

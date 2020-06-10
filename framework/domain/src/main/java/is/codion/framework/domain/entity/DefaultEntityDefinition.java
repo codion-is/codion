@@ -404,7 +404,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<ForeignKeyProperty> getForeignKeyProperties(final Attribute<?> columnAttribute) {
+  public <T> List<ForeignKeyProperty> getForeignKeyProperties(final Attribute<T> columnAttribute) {
     return entityProperties.columnPropertyForeignKeyProperties.computeIfAbsent(columnAttribute, attribute -> Collections.emptyList());
   }
 
@@ -424,12 +424,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public boolean hasDerivedAttributes(final Attribute<?> attribute) {
+  public <T>boolean hasDerivedAttributes(final Attribute<T> attribute) {
     return entityProperties.derivedAttributes.containsKey(attribute);
   }
 
   @Override
-  public Collection<Attribute<?>> getDerivedAttributes(final Attribute<?> attribute) {
+  public <T> Collection<Attribute<?>> getDerivedAttributes(final Attribute<T> attribute) {
     final Collection<Attribute<?>> derived = entityProperties.derivedAttributes.get(attribute);
 
     return derived == null ? emptyList() : derived;
@@ -492,12 +492,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public boolean hasDenormalizedProperties(final Attribute<?> foreignKeyAttribute) {
+  public <T> boolean hasDenormalizedProperties(final Attribute<T> foreignKeyAttribute) {
     return hasDenormalizedProperties && entityProperties.denormalizedProperties.containsKey(foreignKeyAttribute);
   }
 
   @Override
-  public List<DenormalizedProperty<?>> getDenormalizedProperties(final Attribute<?> foreignKeyAttribute) {
+  public <T> List<DenormalizedProperty<?>> getDenormalizedProperties(final Attribute<T> foreignKeyAttribute) {
     return entityProperties.denormalizedProperties.get(foreignKeyAttribute);
   }
 

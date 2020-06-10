@@ -4,6 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 
@@ -92,7 +93,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setForeignKeyFetchDepth(final Attribute<?> foreignKeyAttribute, final int fetchDepth) {
+  public EntitySelectCondition setForeignKeyFetchDepth(final Attribute<Entity> foreignKeyAttribute, final int fetchDepth) {
     if (foreignKeyFetchDepths == null) {
       foreignKeyFetchDepths = new HashMap<>();
     }
@@ -101,7 +102,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public Integer getForeignKeyFetchDepth(final Attribute<?> foreignKeyAttribute) {
+  public Integer getForeignKeyFetchDepth(final Attribute<Entity> foreignKeyAttribute) {
     if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKeyAttribute)) {
       return foreignKeyFetchDepths.get(foreignKeyAttribute);
     }

@@ -143,7 +143,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public final boolean isModified(final Attribute<?> attribute) {
+  public final <T> boolean isModified(final Attribute<T> attribute) {
     requireNonNull(attribute, ATTRIBUTE);
     return originalValues != null && originalValues.containsKey(attribute);
   }

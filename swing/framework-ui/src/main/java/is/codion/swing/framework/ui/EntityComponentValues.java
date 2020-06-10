@@ -28,6 +28,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Provides {@link ComponentValue} implementations.
  */
@@ -46,6 +48,8 @@ public class EntityComponentValues {
    */
   public <T, C extends JComponent> ComponentValue<T, C> createComponentValue(final Property<T> property, final SwingEntityEditModel editModel,
                                                                              final T initialValue) {
+    requireNonNull(property, "property");
+    requireNonNull(editModel, "editModel");
     if (property instanceof ForeignKeyProperty) {
       return (ComponentValue<T, C>) createEntityComponentValue((ForeignKeyProperty) property, editModel, (Entity) initialValue);
     }
@@ -85,14 +89,18 @@ public class EntityComponentValues {
    * @param foreignKeyProperty the property
    * @param editModel the edit model involved in the updating
    * @param initialValue the current value to initialize the ComponentValue with
+   * @param <T> the component type
    * @return a Entity InputProvider
    */
-  protected ComponentValue<Entity, ?> createEntityComponentValue(final ForeignKeyProperty foreignKeyProperty,
-                                                                 final SwingEntityEditModel editModel, final Entity initialValue) {
+  protected <T extends JComponent> ComponentValue<Entity, T> createEntityComponentValue(final ForeignKeyProperty foreignKeyProperty,
+                                                                                        final SwingEntityEditModel editModel,
+                                                                                        final Entity initialValue) {
     if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKeyProperty.getReferencedEntityType()).isSmallDataset()) {
-      return new EntityComboBox.ComponentValue(editModel.createForeignKeyComboBoxModel(foreignKeyProperty), initialValue);
+      return (ComponentValue<Entity, T>) new EntityComboBox.ComponentValue(
+              editModel.createForeignKeyComboBoxModel(foreignKeyProperty), initialValue);
     }
 
-    return new EntityLookupField.ComponentValue(editModel.createForeignKeyLookupModel(foreignKeyProperty), initialValue);
+    return (ComponentValue<Entity, T>) new EntityLookupField.ComponentValue(
+            editModel.createForeignKeyLookupModel(foreignKeyProperty), initialValue);
   }
 }
