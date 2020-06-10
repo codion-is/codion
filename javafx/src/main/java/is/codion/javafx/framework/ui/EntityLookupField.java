@@ -76,20 +76,18 @@ public final class EntityLookupField extends TextField {
       if (nullOrEmpty(model.getSearchString())) {
         model.setSelectedEntities(null);
       }
-      else {
-        if (!model.searchStringRepresentsSelected()) {
-          final List<Entity> queryResult;
-          queryResult = model.performQuery();
-          if (queryResult.size() == 1) {
-            model.setSelectedEntities(queryResult);
+      else if (!model.searchStringRepresentsSelected()) {
+        final List<Entity> queryResult;
+        queryResult = model.performQuery();
+        if (queryResult.size() == 1) {
+          model.setSelectedEntities(queryResult);
+        }
+        else if (promptUser) {
+          if (queryResult.isEmpty()) {
+            showEmptyResultMessage();
           }
-          else if (promptUser) {
-            if (queryResult.isEmpty()) {
-              showEmptyResultMessage();
-            }
-            else {
-              selectEntities(queryResult);
-            }
+          else {
+            selectEntities(queryResult);
           }
         }
       }

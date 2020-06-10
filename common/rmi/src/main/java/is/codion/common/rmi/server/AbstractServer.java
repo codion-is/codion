@@ -284,8 +284,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
         final AuxiliaryServerFactory<?> auxiliaryServerFactory = getAuxiliaryServerProvider(auxiliaryServerProviderClassName);
         final AuxiliaryServer auxiliaryServer = auxiliaryServerFactory.createServer(this);
         auxiliaryServers.add(auxiliaryServer);
-        newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit((Callable<?>) () ->
-                startAuxiliaryServer(auxiliaryServer)).get();
+        final Callable<?> starter = () -> startAuxiliaryServer(auxiliaryServer);
+        newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit(starter).get();
       }
     }
     catch (final Exception e) {
