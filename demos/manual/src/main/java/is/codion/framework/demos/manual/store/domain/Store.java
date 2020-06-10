@@ -4,7 +4,7 @@
 package is.codion.framework.demos.manual.store.domain;
 
 import is.codion.common.db.connection.DatabaseConnection;
-import is.codion.common.db.reports.Report;
+import is.codion.common.db.reports.ReportType;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -56,8 +56,8 @@ public final class Store extends Domain {
     Attribute<Entity> ADDRESS_FK = TYPE.entityAttribute("address_fk");
   }
 
-  public static final Report<JasperReport, JasperPrint, Map<String, Object>> CUSTOMER_REPORT =
-          JasperReports.report("customer_report");
+  public static final ReportType<JasperReport, JasperPrint, Map<String, Object>> CUSTOMER_REPORT =
+          JasperReports.reportType("customer_report");
 
   public Store() {
     customer();

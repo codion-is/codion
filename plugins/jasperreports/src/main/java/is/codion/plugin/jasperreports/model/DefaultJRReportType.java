@@ -3,8 +3,8 @@
  */
 package is.codion.plugin.jasperreports.model;
 
-import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportType;
 import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.db.reports.Reports;
 
@@ -14,25 +14,25 @@ import net.sf.jasperreports.engine.JasperReport;
 import java.sql.Connection;
 import java.util.Map;
 
-final class DefaultJRReport implements JRReport {
+final class DefaultJRReportType implements JRReportType {
 
   private static final long serialVersionUID = 1;
 
-  private final Report<JasperReport, JasperPrint, Map<String, Object>> report;
+  private final ReportType<JasperReport, JasperPrint, Map<String, Object>> reportType;
 
-  DefaultJRReport(final String name) {
-    this.report = Reports.report(name);
+  DefaultJRReportType(final String name) {
+    this.reportType = Reports.reportType(name);
   }
 
   @Override
   public String getName() {
-    return report.getName();
+    return reportType.getName();
   }
 
   @Override
   public JasperPrint fillReport(final Connection connection, final ReportWrapper<JasperReport, JasperPrint,
           Map<String, Object>> reportWrapper, final Map<String, Object> parameters) throws ReportException {
-    return report.fillReport(connection, reportWrapper, parameters);
+    return reportType.fillReport(connection, reportWrapper, parameters);
   }
 
   @Override
@@ -40,17 +40,17 @@ final class DefaultJRReport implements JRReport {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof DefaultJRReport)) {
+    if (!(o instanceof DefaultJRReportType)) {
       return false;
     }
 
-    final DefaultJRReport that = (DefaultJRReport) o;
+    final DefaultJRReportType that = (DefaultJRReportType) o;
 
-    return report.equals(that.report);
+    return reportType.equals(that.reportType);
   }
 
   @Override
   public int hashCode() {
-    return report.hashCode();
+    return reportType.hashCode();
   }
 }

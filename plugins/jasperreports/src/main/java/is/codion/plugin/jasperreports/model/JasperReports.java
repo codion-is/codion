@@ -27,8 +27,8 @@ public final class JasperReports {
    * @param name the report name
    * @return a JRReport
    */
-  public static JRReport report(final String name) {
-    return new DefaultJRReport(name);
+  public static JRReportType reportType(final String name) {
+    return new DefaultJRReportType(name);
   }
 
   /**

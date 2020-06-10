@@ -4,7 +4,7 @@
 package is.codion.common.db.reports;
 
 /**
- * A factory for {@link Report} instances.
+ * A factory for {@link ReportType} instances.
  */
 public final class Reports {
 
@@ -18,7 +18,7 @@ public final class Reports {
    * @param <P> the report parameters type
    * @return a report
    */
-  public static <T, R, P> Report<T, R, P> report(final String name) {
-    return new DefaultReport<>(name);
+  public static <T, R, P> ReportType<T, R, P> reportType(final String name) {
+    return new DefaultReportType<>(name);
   }
 }

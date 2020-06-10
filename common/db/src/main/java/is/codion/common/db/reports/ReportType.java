@@ -11,7 +11,7 @@ import java.sql.Connection;
  * @param <R> the report result type
  * @param <P> the report parameters type
  */
-public interface Report<T, R, P> extends Serializable {
+public interface ReportType<T, R, P> extends Serializable {
 
   /**
    * @return the report name

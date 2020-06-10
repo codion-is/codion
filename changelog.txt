@@ -6237,3 +6237,4 @@
   EntityConnection.executeFunction() and executeProcedure(), added connection type parameter, accept EntityConnection and subclasses
   Report added, Domain.addReport() replaced with defineReport()
   FilteredTablePanel, now respects the selected items in the model on construction (JTable superclass clears the selection)
+  Report renamed ReportType

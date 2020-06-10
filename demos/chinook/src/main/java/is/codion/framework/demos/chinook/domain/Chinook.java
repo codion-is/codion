@@ -10,7 +10,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.DerivedProperty;
-import is.codion.plugin.jasperreports.model.JRReport;
+import is.codion.plugin.jasperreports.model.JRReportType;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
 import java.awt.Image;
@@ -81,7 +81,7 @@ public interface Chinook {
     Attribute<Long> SUPPORTREP_ID = TYPE.longAttribute("supportrepid");
     Attribute<Entity> SUPPORTREP_FK = TYPE.entityAttribute("supportrep_fk");
 
-    JRReport CUSTOMER_REPORT = JasperReports.report("customer_report");
+    JRReportType CUSTOMER_REPORT = JasperReports.reportType("customer_report");
   }
 
   interface Genre {

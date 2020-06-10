@@ -9,7 +9,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
-import is.codion.plugin.jasperreports.model.JRReport;
+import is.codion.plugin.jasperreports.model.JRReportType;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
 import java.awt.Color;
@@ -61,7 +61,7 @@ public final class EmpDept extends Domain {
     /**Attribute for the denormalized department location property*/
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 
-    JRReport EMPLOYEE_REPORT = JasperReports.report("employee_report");
+    JRReportType EMPLOYEE_REPORT = JasperReports.reportType("employee_report");
 
     List<Item<String>> JOB_VALUES = asList(
                     item("ANALYST", "Analyst"), item("CLERK", "Clerk"),

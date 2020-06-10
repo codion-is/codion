@@ -7,13 +7,13 @@ import java.sql.Connection;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultReport<T, R, P> implements Report<T, R, P> {
+class DefaultReportType<T, R, P> implements ReportType<T, R, P> {
 
   private static final long serialVersionUID = 1;
 
   private final String name;
 
-  DefaultReport(final String name) {
+  DefaultReportType(final String name) {
     this.name = requireNonNull(name);
   }
 
@@ -32,11 +32,11 @@ class DefaultReport<T, R, P> implements Report<T, R, P> {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof DefaultReport)) {
+    if (!(o instanceof DefaultReportType)) {
       return false;
     }
 
-    final DefaultReport<?, ?, ?> that = (DefaultReport<?, ?, ?>) o;
+    final DefaultReportType<?, ?, ?> that = (DefaultReportType<?, ?, ?>) o;
 
     return name.equals(that.name);
   }

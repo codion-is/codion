@@ -6,8 +6,8 @@ package is.codion.framework.db.http;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.AbstractReportWrapper;
-import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportType;
 import is.codion.common.db.reports.Reports;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
@@ -30,7 +30,7 @@ import static java.util.Collections.emptyList;
 
 public final class TestDomain extends Domain {
 
-  public static final Report<Object, String, String> REPORT = Reports.report("report");
+  public static final ReportType<Object, String, String> REPORT = Reports.reportType("report");
 
   public TestDomain() {
     department();
