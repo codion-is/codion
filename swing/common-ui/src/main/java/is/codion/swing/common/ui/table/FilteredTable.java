@@ -68,6 +68,7 @@ import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -111,6 +112,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   private static final int SEARCH_FIELD_COLUMNS = 8;
   private static final int SORT_ICON_SIZE = 5;
   private static final int COLUMN_RESIZE_AMOUNT = 10;
+  private static final List<Integer> RESIZE_KEYS = asList(KeyEvent.VK_PLUS, KeyEvent.VK_ADD, KeyEvent.VK_MINUS, KeyEvent.VK_SUBTRACT);
   private static final RowColumn NULL_COORDINATE = RowColumn.rowColumn(-1, -1);
 
   /**
@@ -779,14 +781,14 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   }
 
   private final class MoveResizeColumnKeyListener extends KeyAdapter {
+
     @Override
     public void keyPressed(final KeyEvent e) {
       if (e.isControlDown() && e.isShiftDown() && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT)) {
         moveSelectedColumn(e.getKeyCode() == KeyEvent.VK_LEFT);
         e.consume();
       }
-      else if (e.isControlDown() && (e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_ADD
-              || e.getKeyCode() == KeyEvent.VK_MINUS || e.getKeyCode() == KeyEvent.VK_SUBTRACT)) {
+      else if (e.isControlDown() && (RESIZE_KEYS.contains(e.getKeyCode()))) {
         resizeSelectedColumn(e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_ADD);
         e.consume();
       }
