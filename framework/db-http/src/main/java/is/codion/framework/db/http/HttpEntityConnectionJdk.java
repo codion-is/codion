@@ -11,8 +11,8 @@ import is.codion.common.db.exception.MultipleRecordsFoundException;
 import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
@@ -423,10 +423,10 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T, R, P> R fillReport(final Report<T, R, P> report, final P reportParameters) throws DatabaseException, ReportException {
-    Objects.requireNonNull(report, "report");
+  public <T, R, P> R fillReport(final ReportType<T, R, P> reportType, final P reportParameters) throws DatabaseException, ReportException {
+    Objects.requireNonNull(reportType, "reportType");
     try {
-      return handleResponse(execute(createRequest("report", Arrays.asList(report, reportParameters))));
+      return handleResponse(execute(createRequest("report", Arrays.asList(reportType, reportParameters))));
     }
     catch (final ReportException | DatabaseException e) {
       throw e;
