@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.manual.store.ui;
 
-import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.db.reports.Report;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -68,7 +68,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.manual.store.domain.Store");
-    ReportWrapper.REPORT_PATH.set("http://test.io");
+    Report.REPORT_PATH.set("http://test.io");
     new StoreAppPanel().startApplication("Store", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
   }

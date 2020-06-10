@@ -4,9 +4,9 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportComponentProvider;
 import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportType;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
@@ -32,7 +32,7 @@ public final class EntityReports {
   /**
    * Shows a report viewer for report printing
    * @param component the component for which to set the wait cursor while the report is being filled
-   * @param report the report
+   * @param reportType the report
    * @param reportParameters the report parameters, if any
    * @param uiWrapper the ui wrapper
    * @param reportTitle the title to display on the frame
@@ -40,12 +40,12 @@ public final class EntityReports {
    * @param <R> the report result type
    * @param <P> the report parameters type
    */
-  public static <R, P> void viewJdbcReport(final JComponent component, final Report<?, R, P> report,
+  public static <R, P> void viewJdbcReport(final JComponent component, final ReportType<?, R, P> reportType,
                                            final P reportParameters, final ReportComponentProvider<R, JComponent> uiWrapper,
                                            final String reportTitle, final EntityConnectionProvider connectionProvider) {
     try {
       Components.showWaitCursor(component);
-      viewReport(connectionProvider.getConnection().fillReport(report, reportParameters), uiWrapper, reportTitle);
+      viewReport(connectionProvider.getConnection().fillReport(reportType, reportParameters), uiWrapper, reportTitle);
     }
     catch (final ReportException | DatabaseException e) {
       throw new RuntimeException(e);

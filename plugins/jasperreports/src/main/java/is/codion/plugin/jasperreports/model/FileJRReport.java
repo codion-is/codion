@@ -11,11 +11,11 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import java.io.File;
 import java.net.URL;
 
-final class FileJasperReportWrapper extends AbstractJasperReportWrapper {
+final class FileJRReport extends AbstractJRReport {
 
   private static final long serialVersionUID = 1;
 
-  FileJasperReportWrapper(final String reportPath) {
+  FileJRReport(final String reportPath) {
     super(reportPath);
   }
 

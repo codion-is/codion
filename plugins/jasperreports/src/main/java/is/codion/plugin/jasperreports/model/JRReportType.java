@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.jasperreports.model;
 
-import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.db.reports.ReportType;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -11,6 +11,6 @@ import net.sf.jasperreports.engine.JasperReport;
 import java.util.Map;
 
 /**
- * A JasperReport wrapper.
+ * A Jasper Reports report.
  */
-public interface JasperReportWrapper extends ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> {}
+public interface JRReportType extends ReportType<JasperReport, JasperPrint, Map<String, Object>> {}

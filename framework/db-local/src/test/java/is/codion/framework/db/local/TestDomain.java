@@ -6,10 +6,10 @@ package is.codion.framework.db.local;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.reports.AbstractReportWrapper;
+import is.codion.common.db.reports.AbstractReport;
 import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.db.reports.ReportType;
 import is.codion.common.db.reports.Reports;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
@@ -38,7 +38,7 @@ import static java.util.Arrays.asList;
 
 public final class TestDomain extends Domain {
 
-  public static final Report<Object, String, Map<String, Object>> REPORT = Reports.report("report");
+  public static final ReportType<Object, String, Map<String, Object>> REPORT = Reports.reportType("report");
 
   public static final ProcedureType<EntityConnection, Object> PROCEDURE_ID = ProcedureType.procedureType("procedureId");
   public static final FunctionType<EntityConnection, Object, List<Object>> FUNCTION_ID = FunctionType.functionType("functionId");
@@ -52,8 +52,8 @@ public final class TestDomain extends Domain {
     joinedQuery();
     groupByQuery();
     noPkEntity();
-    ReportWrapper.REPORT_PATH.set("path/to/reports");
-    defineReport(REPORT, new AbstractReportWrapper<Object, String, Map<String, Object>>("report.path") {
+    Report.REPORT_PATH.set("path/to/reports");
+    defineReport(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path") {
       @Override
       public String fillReport(final Connection connection, final Map<String, Object> parameters) throws ReportException {
         return "result";

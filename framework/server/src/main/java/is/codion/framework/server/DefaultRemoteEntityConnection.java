@@ -7,8 +7,8 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportType;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
@@ -86,9 +86,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T, R, P> R fillReport(final Report<T, R, P> report, final P reportParameters) throws ReportException, DatabaseException {
+  public <T, R, P> R fillReport(final ReportType<T, R, P> reportType, final P reportParameters) throws ReportException, DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.fillReport(report, reportParameters);
+      return connectionProxy.fillReport(reportType, reportParameters);
     }
   }
 

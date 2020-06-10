@@ -8,6 +8,7 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
+import is.codion.common.db.reports.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
@@ -318,8 +319,8 @@ public interface RemoteEntityConnection extends Remote {
   int selectRowCount(EntityCondition condition) throws RemoteException, DatabaseException;
 
   /**
-   * Takes a Report object using a JDBC datasource and returns an initialized ReportResult object
-   * @param report the report to fill
+   * Takes a ReportType object using a JDBC datasource and returns an initialized ReportResult object
+   * @param reportType the report to fill
    * @param reportParameters the report parameters, if any
    * @param <T> the report type
    * @param <R> the report result type
@@ -328,9 +329,9 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws is.codion.common.db.reports.ReportException in case of a report exception
    * @throws RemoteException in case of a remote exception
-   * @see is.codion.common.db.reports.ReportWrapper#fillReport(java.sql.Connection, Object)
+   * @see Report#fillReport(java.sql.Connection, Object)
    */
-  <T, R, P> R fillReport(Report<T, R, P> report, P reportParameters) throws RemoteException, DatabaseException, ReportException;
+  <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws RemoteException, DatabaseException, ReportException;
 
   /**
    * Writes {@code blobData} in the blob field specified by the property identified by {@code attribute}

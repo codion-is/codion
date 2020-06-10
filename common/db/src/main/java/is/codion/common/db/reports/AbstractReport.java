@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  * @param <R> the report result type
  * @param <P> the report parameters type
  */
-public abstract class AbstractReportWrapper<T, R, P> implements ReportWrapper<T, R, P> {
+public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
 
   private static final long serialVersionUID = 1;
 
@@ -23,10 +23,10 @@ public abstract class AbstractReportWrapper<T, R, P> implements ReportWrapper<T,
   protected final String reportPath;
 
   /**
-   * Instantiates a new AbstractReportWrapper.
-   * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}.
+   * Instantiates a new AbstractReport.
+   * @param reportPath the report path, relative to the central report path {@link Report#REPORT_PATH}.
    */
-  public AbstractReportWrapper(final String reportPath) {
+  public AbstractReport(final String reportPath) {
     this.reportPath = requireNonNull(reportPath, "reportPath");
   }
 
@@ -37,7 +37,7 @@ public abstract class AbstractReportWrapper<T, R, P> implements ReportWrapper<T,
 
   @Override
   public final boolean equals(final Object obj) {
-    return obj instanceof AbstractReportWrapper && ((AbstractReportWrapper<?, ?, ?>) obj).getFullReportPath().equals(getFullReportPath());
+    return obj instanceof AbstractReport && ((AbstractReport<?, ?, ?>) obj).getFullReportPath().equals(getFullReportPath());
   }
 
   @Override
@@ -46,11 +46,11 @@ public abstract class AbstractReportWrapper<T, R, P> implements ReportWrapper<T,
   }
 
   /**
-   * This default implementation uses {@link ReportWrapper#getFullReportPath(String)}.
+   * This default implementation uses {@link Report#getFullReportPath(String)}.
    * @return a unique path for this report
    */
   protected String getFullReportPath() {
-    return ReportWrapper.getFullReportPath(reportPath);
+    return Report.getFullReportPath(reportPath);
   }
 
   /**
@@ -58,7 +58,7 @@ public abstract class AbstractReportWrapper<T, R, P> implements ReportWrapper<T,
    * Caches the report if report caching is enabled.
    * @return the report
    * @throws ReportException in case of an exception
-   * @see ReportWrapper#CACHE_REPORTS
+   * @see Report#CACHE_REPORTS
    */
   protected final T loadAndCacheReport() throws ReportException {
     if (CACHE_REPORTS.get()) {

@@ -4,8 +4,8 @@
 package is.codion.plugin.nextreports.model;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.dbms.h2database.H2DatabaseFactory;
@@ -34,9 +34,9 @@ public class NextReportsTest {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
             new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", System.getProperty("codion.db.initScript")))
             .setDomainClassName(NextDomain.class.getName()).setUser(UNIT_TEST_USER);
-    ReportWrapper.REPORT_PATH.set("src/test/reports/");
+    Report.REPORT_PATH.set("src/test/reports/");
     final LocalEntityConnection connection = (LocalEntityConnection) connectionProvider.getConnection();
-    final NextReportsResult result = NextReports.nextReportsWrapper("test-report.report", ReportRunner.CSV_FORMAT)
+    final NextReportsResult result = NextReports.nextReport("test-report.report", ReportRunner.CSV_FORMAT)
             .fillReport(connection.getDatabaseConnection().getConnection(), Collections.emptyMap());
     File file = null;
     try {

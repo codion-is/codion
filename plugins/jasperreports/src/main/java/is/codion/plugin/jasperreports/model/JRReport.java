@@ -11,6 +11,6 @@ import net.sf.jasperreports.engine.JasperReport;
 import java.util.Map;
 
 /**
- * A Jasper Reports report.
+ * A JasperReport.
  */
 public interface JRReport extends Report<JasperReport, JasperPrint, Map<String, Object>> {}

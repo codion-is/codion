@@ -3,12 +3,11 @@
  */
 package is.codion.plugin.nextreports.model;
 
-import is.codion.common.db.reports.AbstractReportWrapper;
+import is.codion.common.db.reports.AbstractReport;
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportWrapper;
 
 import ro.nextreports.engine.FluentReportRunner;
-import ro.nextreports.engine.Report;
 import ro.nextreports.engine.querybuilder.sql.dialect.DialectFactory;
 import ro.nextreports.engine.querybuilder.sql.dialect.OracleDialect;
 import ro.nextreports.engine.util.ReportUtil;
@@ -25,9 +24,9 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A NextReports {@link ReportWrapper} implementation
+ * A NextReports {@link Report} implementation
  */
-final class DefaultNextReportWrapper extends AbstractReportWrapper<Report, NextReportsResult, Map<String, Object>> implements NextReportWrapper {
+final class DefaultNextReport extends AbstractReport<ro.nextreports.engine.Report, NextReportsResult, Map<String, Object>> implements NextReport {
 
   private static final long serialVersionUID = 1;
 
@@ -37,7 +36,7 @@ final class DefaultNextReportWrapper extends AbstractReportWrapper<Report, NextR
 
   private final String format;
 
-  DefaultNextReportWrapper(final String reportPath, final String format) {
+  DefaultNextReport(final String reportPath, final String format) {
     super(reportPath);
     this.format = requireNonNull(format, "format");
   }
@@ -70,7 +69,7 @@ final class DefaultNextReportWrapper extends AbstractReportWrapper<Report, NextR
   }
 
   @Override
-  public Report loadReport() throws ReportException {
+  public ro.nextreports.engine.Report loadReport() throws ReportException {
     try {
       return ReportUtil.loadReport(new FileInputStream(getFullReportPath()));
     }

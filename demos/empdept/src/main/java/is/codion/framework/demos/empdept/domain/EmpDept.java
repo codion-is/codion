@@ -9,7 +9,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
-import is.codion.plugin.jasperreports.model.JRReport;
+import is.codion.plugin.jasperreports.model.JRReportType;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
 import java.awt.Color;
@@ -22,7 +22,7 @@ import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
-import static is.codion.plugin.jasperreports.model.JasperReports.classPathReportWrapper;
+import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static java.util.Arrays.asList;
 
 // tag::departmentConstants[]
@@ -61,7 +61,7 @@ public final class EmpDept extends Domain {
     /**Attribute for the denormalized department location property*/
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 
-    JRReport EMPLOYEE_REPORT = JasperReports.report("employee_report");
+    JRReportType EMPLOYEE_REPORT = JasperReports.reportType("employee_report");
 
     List<Item<String>> JOB_VALUES = asList(
                     item("ANALYST", "Analyst"), item("CLERK", "Clerk"),
@@ -75,7 +75,7 @@ public final class EmpDept extends Domain {
   public EmpDept() {
     department();
     employee();
-    defineReport(Employee.EMPLOYEE_REPORT, classPathReportWrapper(EmpDept.class, "empdept_employees.jasper"));
+    defineReport(Employee.EMPLOYEE_REPORT, classPathReport(EmpDept.class, "empdept_employees.jasper"));
   }
   // end::constructor[]
 

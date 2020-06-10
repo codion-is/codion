@@ -9,7 +9,7 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportWrapper;
+import is.codion.common.db.reports.ReportType;
 import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
  * Represents an application domain model, entities, reports and database operations.
  * Override to define a domain model.
  * @see #define(EntityType, Property.Builder[])
- * @see #defineReport(Report, ReportWrapper)
+ * @see #defineReport(ReportType, Report)
  * @see #defineProcedure(ProcedureType, DatabaseProcedure)
  * @see #defineFunction(FunctionType, DatabaseFunction)
  */
@@ -80,13 +80,13 @@ public abstract class Domain implements EntityDefinition.Provider {
     return entities.getDefinitions();
   }
 
-  public final <T, R, P> ReportWrapper<T, R, P> getReportWrapper(final Report<T, R, P> report) throws ReportException {
-    final ReportWrapper<T, R, P> reportWrapper = reports.getReport(report);
-    if (reportWrapper == null) {
-      throw new ReportException("Undefined report: " + report);
+  public final <T, R, P> Report<T, R, P> getReport(final ReportType<T, R, P> reportType) throws ReportException {
+    final Report<T, R, P> report = reports.getReport(reportType);
+    if (report == null) {
+      throw new ReportException("Undefined report: " + reportType);
     }
 
-    return reportWrapper;
+    return report;
   }
 
   /**
@@ -145,16 +145,16 @@ public abstract class Domain implements EntityDefinition.Provider {
 
   /**
    * Adds a report to this domain model.
-   * @param report the report to add
-   * @param reportWrapper the report wrapper to associate with the report
+   * @param reportType the report to add
+   * @param report the actual report to associate with the report type
    * @param <T> the report type
    * @param <R> the report result type
    * @param <P> the report parameters type
    * @throws RuntimeException in case loading the report failed
    * @throws IllegalArgumentException in case the report has already been added
    */
-  protected final <T, R, P> void defineReport(final Report<T, R, P> report, final ReportWrapper<T, R, P> reportWrapper) {
-    reports.addReport(report, reportWrapper);
+  protected final <T, R, P> void defineReport(final ReportType<T, R, P> reportType, final Report<T, R, P> report) {
+    reports.addReport(reportType, report);
   }
 
   /**
@@ -259,25 +259,25 @@ public abstract class Domain implements EntityDefinition.Provider {
 
   private static final class DomainReports {
 
-    private final Map<Report<?, ?, ?>, ReportWrapper<?, ?, ?>> reports = new HashMap<>();
+    private final Map<ReportType<?, ?, ?>, Report<?, ?, ?>> reports = new HashMap<>();
 
-    private <T, R, P> void addReport(final Report<T, R, P> report, final ReportWrapper<T, R, P> reportWrapper) {
+    private <T, R, P> void addReport(final ReportType<T, R, P> reportType, final Report<T, R, P> report) {
+      requireNonNull(reportType, "report");
       requireNonNull(report, "report");
-      requireNonNull(reportWrapper, "reportWrapper");
-      if (reports.containsKey(report)) {
-        throw new IllegalArgumentException("Report has already been added: " + report);
+      if (reports.containsKey(reportType)) {
+        throw new IllegalArgumentException("Report has already been added: " + reportType);
       }
       try {
-        reportWrapper.loadReport();
-        reports.put(report, reportWrapper);
+        report.loadReport();
+        reports.put(reportType, report);
       }
       catch (final ReportException e) {
         throw new RuntimeException(e);
       }
     }
 
-    private <T, R, P> ReportWrapper<T, R, P> getReport(final Report<T, R, P> report) {
-      return (ReportWrapper<T, R, P>) reports.get(requireNonNull(report, "report"));
+    private <T, R, P> Report<T, R, P> getReport(final ReportType<T, R, P> reportType) {
+      return (Report<T, R, P>) reports.get(requireNonNull(reportType, "report"));
     }
   }
 }

@@ -7,8 +7,8 @@ import is.codion.common.db.Operator;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportWrapper;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
 import is.codion.common.rmi.server.ServerConfiguration;
@@ -252,7 +252,7 @@ public final class HttpEntityConnectionTest {
     ServerConfiguration.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.TRUSTSTORE.set("../../framework/server/src/main/security/truststore.jks");
     ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
-    ReportWrapper.REPORT_PATH.set("report/path");
+    Report.REPORT_PATH.set("report/path");
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/keystore.jks");
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
@@ -274,7 +274,7 @@ public final class HttpEntityConnectionTest {
     ServerConfiguration.SERVER_HOST_NAME.set(null);
     ServerConfiguration.TRUSTSTORE.set(null);
     ServerConfiguration.TRUSTSTORE_PASSWORD.set(null);
-    ReportWrapper.REPORT_PATH.set(null);
+    Report.REPORT_PATH.set(null);
     HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);

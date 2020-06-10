@@ -3,10 +3,16 @@
  */
 package is.codion.common.db.reports;
 
+import is.codion.common.Configuration;
+import is.codion.common.value.PropertyValue;
+
 import java.io.Serializable;
 import java.sql.Connection;
 
+import static is.codion.common.Util.nullOrEmpty;
+
 /**
+ * A simple wrapper for a report
  * @param <T> the report type
  * @param <R> the report result type
  * @param <P> the report parameters type
@@ -14,17 +20,61 @@ import java.sql.Connection;
 public interface Report<T, R, P> extends Serializable {
 
   /**
-   * @return the report name
+   * The report path used for file based report generation.
    */
-  String getName();
+  PropertyValue<String> REPORT_PATH = Configuration.stringValue("codion.report.path", null);
 
   /**
-   * Fills the given report.
-   * @param connection the connection
-   * @param reportWrapper the report to fill
-   * @param parameters the parameters
-   * @return a report result
+   * Specifies whether to cache reports when loaded from disk/network, this prevents "hot deploy" of reports.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  PropertyValue<Boolean> CACHE_REPORTS = Configuration.booleanValue("codion.report.cacheReports", true);
+
+  /**
+   * Loads and fills the report using the given database connection
+   * @param connection the connection to use for the report generation
+   * @param parameters the report parameters, if any
+   * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  R fillReport(Connection connection, ReportWrapper<T, R, P> reportWrapper, P parameters) throws ReportException;
+  R fillReport(Connection connection, P parameters) throws ReportException;
+
+  /**
+   * Loads the report this report wrapper is based on.
+   * @return a loaded report object
+   * @throws ReportException in case of an exception
+   */
+  T loadReport() throws ReportException;
+
+  /**
+   * @return the value associated with {@link Report#REPORT_PATH}
+   * @throws IllegalArgumentException in case it is not specified
+   */
+  static String getReportPath() {
+    final String path = REPORT_PATH.get();
+    if (nullOrEmpty(path)) {
+      throw new IllegalArgumentException(REPORT_PATH + " property is not specified");
+    }
+
+    return path;
+  }
+
+  /**
+   * Returns a full report path, combined from the report location specified by {@link #REPORT_PATH}
+   * and the given report path.
+   * @param reportPath the report path relative to {@link Report#REPORT_PATH}.
+   * @return a full report path
+   * @throws IllegalArgumentException in case {@link Report#REPORT_PATH} is not specified
+   */
+  static String getFullReportPath(final String reportPath) {
+    final String slash = "/";
+    final String reportLocation = getReportPath();
+    final StringBuilder builder = new StringBuilder(reportLocation);
+    if (!reportLocation.endsWith(slash) && !reportPath.startsWith(slash)) {
+      builder.append(slash);
+    }
+
+    return builder.append(reportPath).toString();
+  }
 }

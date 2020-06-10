@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.jasperreports.model;
 
-import is.codion.common.db.reports.AbstractReportWrapper;
+import is.codion.common.db.reports.AbstractReport;
 import is.codion.common.db.reports.ReportException;
 
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -16,11 +16,11 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractJasperReportWrapper extends AbstractReportWrapper<JasperReport, JasperPrint, Map<String, Object>> implements JasperReportWrapper  {
+abstract class AbstractJRReport extends AbstractReport<JasperReport, JasperPrint, Map<String, Object>> implements JRReport {
 
   private static final long serialVersionUID = 1;
 
-  protected AbstractJasperReportWrapper(final String reportPath) {
+  protected AbstractJRReport(final String reportPath) {
     super(reportPath);
   }
 

@@ -3,8 +3,8 @@
  */
 package is.codion.plugin.jasperreports.model;
 
+import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
-import is.codion.common.db.reports.ReportWrapper;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -17,7 +17,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Factory for {@link ReportWrapper} based on JasperReports.
+ * Factory for {@link Report} based on JasperReports.
  */
 public final class JasperReports {
 
@@ -27,56 +27,56 @@ public final class JasperReports {
    * @param name the report name
    * @return a JRReport
    */
-  public static JRReport report(final String name) {
-    return new DefaultJRReport(name);
+  public static JRReportType reportType(final String name) {
+    return new DefaultJRReportType(name);
   }
 
   /**
-   * Instantiates a ReportWrapper for a classpath based report.
+   * Instantiates a JRReport for a classpath based report.
    * @param resourceClass the class owning the report resource
    * @param reportPath the report classpath
    * @return a report wrapper
    */
-  public static JasperReportWrapper classPathReportWrapper(final Class<?> resourceClass, final String reportPath) {
-    return new ClassPathJasperReportWrapper(resourceClass, reportPath);
+  public static JRReport classPathReport(final Class<?> resourceClass, final String reportPath) {
+    return new ClassPathJRReport(resourceClass, reportPath);
   }
 
   /**
-   * Instantiates a ReportWrapper for a file based report, either loaded from a URL or from the filesystem.
-   * @param reportPath the report path, relative to the central report path {@link ReportWrapper#REPORT_PATH}
+   * Instantiates a JRReport for a file based report, either loaded from a URL or from the filesystem.
+   * @param reportPath the report path, relative to the central report path {@link Report#REPORT_PATH}
    * @return a report wrapper
    */
-  public static JasperReportWrapper fileReportWrapper(final String reportPath) {
-    return new FileJasperReportWrapper(reportPath);
+  public static JRReport fileReport(final String reportPath) {
+    return new FileJRReport(reportPath);
   }
 
   /**
    * Fills the report using the data source wrapped by the given data wrapper
-   * @param reportWrapper the report wrapper
+   * @param report the report
    * @param dataSource the data provider to use for the report generation
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  public static JasperPrint fillReport(final ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> reportWrapper,
+  public static JasperPrint fillReport(final Report<JasperReport, JasperPrint, Map<String, Object>> report,
                                        final JRDataSource dataSource) throws ReportException {
-    return fillReport(reportWrapper, dataSource, new HashMap<>());
+    return fillReport(report, dataSource, new HashMap<>());
   }
 
   /**
-   * Fills the report using the data source wrapped by the given data wrapper
-   * @param reportWrapper the report wrapper
+   * Fills the report using the given data.
+   * @param report the report
    * @param dataSource the data provider to use for the report generation
    * @param reportParameters the report parameters
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  public static JasperPrint fillReport(final ReportWrapper<JasperReport, JasperPrint, Map<String, Object>> reportWrapper,
+  public static JasperPrint fillReport(final Report<JasperReport, JasperPrint, Map<String, Object>> report,
                                        final JRDataSource dataSource, final Map<String, Object> reportParameters) throws ReportException {
-    requireNonNull(reportWrapper, "reportWrapper");
+    requireNonNull(report, "report");
     requireNonNull(dataSource, "dataSource");
     requireNonNull(reportParameters, "reportParameters");
     try {
-      return JasperFillManager.fillReport(reportWrapper.loadReport(), reportParameters, dataSource);
+      return JasperFillManager.fillReport(report.loadReport(), reportParameters, dataSource);
     }
     catch (final Exception e) {
       throw new ReportException(e);

@@ -14,7 +14,7 @@ import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.model.CustomerEditModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.plugin.jasperreports.model.JasperReportWrapper;
+import is.codion.plugin.jasperreports.model.JRReport;
 import is.codion.plugin.jasperreports.model.JasperReports;
 import is.codion.plugin.jasperreports.model.JasperReportsDataSource;
 
@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
-import static is.codion.plugin.jasperreports.model.JasperReports.fileReportWrapper;
+import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
 
 public final class Misc {
 
@@ -44,7 +44,7 @@ public final class Misc {
     JasperReportsDataSource<Entity> dataSource = new JasperReportsDataSource<>(customerIterator,
             (entity, reportField) -> entity.get(Customer.TYPE.objectAttribute(reportField.getName())));
 
-    JasperReportWrapper customerReport = fileReportWrapper("reports/customer.jasper");
+    JRReport customerReport = fileReport("reports/customer.jasper");
 
     JasperPrint jasperPrint = JasperReports.fillReport(customerReport, dataSource);
     // end::jasperReportDataSource[]
