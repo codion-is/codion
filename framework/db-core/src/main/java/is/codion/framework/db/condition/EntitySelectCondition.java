@@ -4,6 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.List;
@@ -78,7 +79,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param foreignKeyAttribute the foreign key attribute
    * @return the number of levels of foreign key values to fetch
    */
-  Integer getForeignKeyFetchDepth(Attribute<?> foreignKeyAttribute);
+  Integer getForeignKeyFetchDepth(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * Limit the levels of foreign keys to fetch via the given foreign key property
@@ -86,7 +87,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param fetchDepth the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForeignKeyFetchDepth(Attribute<?> foreignKeyAttribute, int fetchDepth);
+  EntitySelectCondition setForeignKeyFetchDepth(Attribute<Entity> foreignKeyAttribute, int fetchDepth);
 
   /**
    * Limit the levels of foreign keys to fetch

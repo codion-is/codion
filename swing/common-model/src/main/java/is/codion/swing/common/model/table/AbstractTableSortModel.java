@@ -195,8 +195,8 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     }
 
     private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortingDirective directive) {
-      final Comparable valueOne = getComparable(rowOne, columnIdentifier);
-      final Comparable valueTwo = getComparable(rowTwo, columnIdentifier);
+      final Comparable<?> valueOne = getComparable(rowOne, columnIdentifier);
+      final Comparable<?> valueTwo = getComparable(rowTwo, columnIdentifier);
       final int comparison;
       // Define null less than everything, except null.
       if (valueOne == null && valueTwo == null) {

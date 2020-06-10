@@ -101,8 +101,8 @@ final class DefaultAttributeCondition implements AttributeCondition {
   }
 
   @Override
-  public String getConditionString(final ColumnProperty<?> property) {
-    if (!attribute.getEntityType().equals(property.getEntityType())) {
+  public <T> String getConditionString(final ColumnProperty<T> property) {
+    if (!attribute.equals(property.getAttribute())) {
       throw new IllegalArgumentException("Property '" + property + "' is not based on attribute: " + attribute);
     }
     return createColumnPropertyConditionString((ColumnProperty<Object>) property, operator, getValues(), nullCondition, caseSensitive);
@@ -114,28 +114,28 @@ final class DefaultAttributeCondition implements AttributeCondition {
     return this;
   }
 
-  private List<Object> initializeValues(final Object... conditionValues) {
-    final List<Object> values = new ArrayList<>();
+  private static List<Object> initializeValues(final Object... conditionValues) {
+    final List<Object> valueList = new ArrayList<>();
     for (final Object value : conditionValues) {
       if (value instanceof Collection) {
-        values.addAll((Collection<Object>) value);
+        valueList.addAll((Collection<Object>) value);
       }
       else {
-        values.add(value);
+        valueList.add(value);
       }
     }
     //replace Entity with Entity.Key
-    for (int i = 0; i < values.size(); i++) {
-      final Object val = values.get(i);
-      if (val instanceof Entity) {
-        values.set(i, ((Entity) val).getKey());
+    for (int i = 0; i < valueList.size(); i++) {
+      final Object value = valueList.get(i);
+      if (value instanceof Entity) {
+        valueList.set(i, ((Entity) value).getKey());
       }
       else {//assume it's all or nothing
         break;
       }
     }
 
-    return values;
+    return valueList;
   }
 
   private static String createColumnPropertyConditionString(final ColumnProperty<Object> property,

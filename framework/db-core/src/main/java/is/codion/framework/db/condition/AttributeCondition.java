@@ -25,9 +25,10 @@ public interface AttributeCondition extends Condition {
   /**
    * Returns the condition string represented by this condition
    * @param property the underlying property
+   * @param <T> the attribute type
    * @return the condition string
    */
-  String getConditionString(ColumnProperty<?> property);
+  <T> String getConditionString(ColumnProperty<T> property);
 
   /**
    * @param caseSensitive false if this condition should not be case-sensitive

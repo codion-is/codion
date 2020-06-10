@@ -5,7 +5,7 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.CancelException;
-import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.control.ControlList;
@@ -67,7 +67,7 @@ public class TrackTablePanel extends EntityTablePanel {
     public <T, C extends JComponent> ComponentValue<T, C> createComponentValue(final Property<T> property,
                                                                                final SwingEntityEditModel editModel,
                                                                                final T initialValue) {
-      if (property.is(Chinook.Track.MILLISECONDS)) {
+      if (property.is(Track.MILLISECONDS)) {
         return (ComponentValue<T, C>) new MinutesSecondsPanelValue();
       }
 

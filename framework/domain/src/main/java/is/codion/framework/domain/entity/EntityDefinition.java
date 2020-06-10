@@ -160,17 +160,19 @@ public interface EntityDefinition extends Serializable {
   /**
    * Returns true if this entity contains attributes which values are derived from the value of the given attribute
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @return true if any attribute values are derived from the given attribute
    */
-  boolean hasDerivedAttributes(Attribute<?> attribute);
+  <T> boolean hasDerivedAttributes(Attribute<T> attribute);
 
   /**
    * Returns the attributes which values are derived from the value of the given attribute,
    * an empty collection if no such derived attributes exist
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @return a collection containing the attributes which are derived from the given attribute
    */
-  Collection<Attribute<?>> getDerivedAttributes(Attribute<?> attribute);
+  <T> Collection<Attribute<?>> getDerivedAttributes(Attribute<T> attribute);
 
   /**
    * Returns a list containing all primary key attributes associated with this entity type.
@@ -233,17 +235,19 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * @param foreignKeyAttribute the id of the foreign key property
+   * @param <T> the attribute type
    * @return true if this entity type has any denormalized properties associated with the give foreign key
    */
-  boolean hasDenormalizedProperties(Attribute<?> foreignKeyAttribute);
+  <T> boolean hasDenormalizedProperties(Attribute<T> foreignKeyAttribute);
 
   /**
    * Retrieves the denormalized properties which values originate from the entity referenced by the given foreign key property
    * @param foreignKeyAttribute the foreign key attribute
+   * @param <T> the attribute type
    * @return a list containing the denormalized properties which values originate from the entity
    * referenced by the given foreign key property
    */
-  List<DenormalizedProperty<?>> getDenormalizedProperties(Attribute<?> foreignKeyAttribute);
+  <T> List<DenormalizedProperty<?>> getDenormalizedProperties(Attribute<T> foreignKeyAttribute);
 
   /**
    * Returns the properties to search by when searching for entities of this type by a string value
@@ -347,9 +351,10 @@ public interface EntityDefinition extends Serializable {
 
   /**
    * @param columnAttribute the column attribute
+   * @param <T> the attribute type
    * @return the ForeignKeyProperties based on the given column property
    */
-  List<ForeignKeyProperty> getForeignKeyProperties(Attribute<?> columnAttribute);
+  <T> List<ForeignKeyProperty> getForeignKeyProperties(Attribute<T> columnAttribute);
 
   /**
    * Returns the color provider, never null

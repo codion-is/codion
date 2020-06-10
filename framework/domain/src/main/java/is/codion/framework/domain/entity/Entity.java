@@ -151,9 +151,10 @@ public interface Entity extends Comparable<Entity>, Serializable {
 
   /**
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @return true if the value associated with the given attribute has been modified
    */
-  boolean isModified(Attribute<?> attribute);
+  <T> boolean isModified(Attribute<T> attribute);
 
   /**
    * Returns true if one or more writable attributes have been modified, read only and non-updatable attributes

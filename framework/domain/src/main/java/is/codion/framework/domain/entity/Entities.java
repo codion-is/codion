@@ -466,9 +466,10 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @param attribute the attribute to check
+   * @param <T> the attribute type
    * @return true if the value is missing or the original value differs from the one in the comparison entity
    */
-  static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final Attribute<?> attribute) {
+  static <T> boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final Attribute<T> attribute) {
     requireNonNull(entity);
     requireNonNull(comparison);
     requireNonNull(attribute);
@@ -476,8 +477,8 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
       return true;
     }
 
-    final Object originalValue = entity.getOriginal(attribute);
-    final Object comparisonValue = comparison.get(attribute);
+    final T originalValue = entity.getOriginal(attribute);
+    final T comparisonValue = comparison.get(attribute);
     if (attribute.isBlob()) {
       return !Arrays.equals((byte[]) originalValue, (byte[]) comparisonValue);
     }

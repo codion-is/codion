@@ -178,8 +178,8 @@ final class Queries {
     return "order by " + columnsClause;
   }
 
-  private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByAttribute property) {
-    return entityDefinition.getColumnProperty(property.getAttribute()).getColumnName() + (property.isAscending() ? "" : " desc");
+  private static String getColumnOrderByClause(final EntityDefinition entityDefinition, final OrderBy.OrderByAttribute orderByAttribute) {
+    return entityDefinition.getColumnProperty(orderByAttribute.getAttribute()).getColumnName() + (orderByAttribute.isAscending() ? "" : " desc");
   }
 
   private static void addForUpdate(final StringBuilder queryBuilder, final Database database) {
