@@ -31,7 +31,7 @@ public final class JulProxy implements LoggerProxy {
   }
 
   @Override
-  public List getLogLevels() {
+  public List<Object> getLogLevels() {
     return asList(Level.ALL, Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE, Level.FINER, Level.FINEST, Level.OFF);
   }
 }

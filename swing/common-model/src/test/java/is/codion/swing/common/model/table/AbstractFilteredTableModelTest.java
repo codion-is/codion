@@ -80,23 +80,23 @@ public final class AbstractFilteredTableModelTest {
     final ColumnConditionModel<List<String>, Integer> filterModel =
             new DefaultColumnConditionModel<List<String>, Integer>(0, String.class, "%") {
               @Override
-              protected Comparable getComparable(final List<String> row) {
+              protected Comparable<?> getComparable(final List<String> row) {
                 return row.get(0);
               }
             };
     return new TestAbstractFilteredTableModel(new AbstractTableSortModel<List<String>, Integer>(singletonList(column)) {
       @Override
-      public Class getColumnClass(final Integer columnIdentifier) {
+      public Class<?> getColumnClass(final Integer columnIdentifier) {
         return String.class;
       }
 
       @Override
-      protected Comparable getComparable(final List<String> row, final Integer columnIdentifier) {
+      protected Comparable<?> getComparable(final List<String> row, final Integer columnIdentifier) {
         return row.get(columnIdentifier);
       }
 
       @Override
-      protected Comparator initializeColumnComparator(final Integer columnIdentifier) {
+      protected Comparator<?> initializeColumnComparator(final Integer columnIdentifier) {
         if (customComparator != null) {
           return customComparator;
         }

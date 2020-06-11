@@ -175,7 +175,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     @Override
     public void run() {
       try {
-        new LoadTestPanel(new EmpDeptLoadTest()).showFrame();
+        new LoadTestPanel<>(new EmpDeptLoadTest()).showFrame();
       }
       catch (final Exception e) {
         e.printStackTrace();

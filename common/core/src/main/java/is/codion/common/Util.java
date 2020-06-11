@@ -127,7 +127,7 @@ public final class Util {
    * @param maps the maps to check
    * @return true if one of the given maps is null or empty or if no arguments are provided, false otherwise
    */
-  public static boolean nullOrEmpty(final Map... maps) {
+  public static boolean nullOrEmpty(final Map<?, ?>... maps) {
     if (maps == null) {
       return true;
     }
@@ -139,7 +139,7 @@ public final class Util {
    * @param map the map to check
    * @return true if the given map is null or empty, false otherwise
    */
-  public static boolean nullOrEmpty(final Map map) {
+  public static boolean nullOrEmpty(final Map<?, ?> map) {
     return map == null || map.isEmpty();
   }
 
@@ -147,7 +147,7 @@ public final class Util {
    * @param collections the collections to check
    * @return true if one of the given collections is null or empty or if no arguments are provided, false otherwise
    */
-  public static boolean nullOrEmpty(final Collection... collections) {
+  public static boolean nullOrEmpty(final Collection<?>... collections) {
     if (collections == null) {
       return true;
     }
@@ -159,7 +159,7 @@ public final class Util {
    * @param collection the collection to check
    * @return true if the given collection is null or empty, false otherwise
    */
-  public static boolean nullOrEmpty(final Collection collection) {
+  public static boolean nullOrEmpty(final Collection<?> collection) {
     return collection == null || collection.isEmpty();
   }
 
@@ -212,7 +212,7 @@ public final class Util {
       return "";
     }
     final Properties props = System.getProperties();
-    final Enumeration propNames = props.propertyNames();
+    final Enumeration<?> propNames = props.propertyNames();
     final List<String> propertyNames = new ArrayList<>(props.size());
     while (propNames.hasMoreElements()) {
       propertyNames.add((String) propNames.nextElement());

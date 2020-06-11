@@ -75,7 +75,7 @@ public final class SerializationWhitelist {
   private static final class SerializationFilterDryRun implements sun.misc.ObjectInputFilter {
 
     private final String whitelistFile;
-    private final Set<Class> deserializedClasses = new HashSet<>();
+    private final Set<Class<?>> deserializedClasses = new HashSet<>();
 
     public SerializationFilterDryRun(final String whitelistFile) {
       this.whitelistFile = requireNonNull(whitelistFile, "whitelistFile");
@@ -83,7 +83,7 @@ public final class SerializationWhitelist {
 
     @Override
     public Status checkInput(final FilterInfo filterInfo) {
-      final Class clazz = filterInfo.serialClass();
+      final Class<?> clazz = filterInfo.serialClass();
       if (clazz != null) {
         deserializedClasses.add(clazz);
       }
@@ -128,7 +128,7 @@ public final class SerializationWhitelist {
 
     @Override
     public Status checkInput(final FilterInfo filterInfo) {
-      final Class clazz = filterInfo.serialClass();
+      final Class<?> clazz = filterInfo.serialClass();
       if (clazz == null) {
         return Status.ALLOWED;
       }

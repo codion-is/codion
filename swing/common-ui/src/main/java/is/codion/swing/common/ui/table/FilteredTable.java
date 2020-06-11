@@ -566,7 +566,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(column), this);
   }
 
-  private static void toggleFilterPanel(final Point position, final ColumnConditionPanel columnFilterPanel,
+  private static void toggleFilterPanel(final Point position, final ColumnConditionPanel<?, ?> columnFilterPanel,
                                         final Container parent) {
     if (columnFilterPanel.isDialogEnabled()) {
       columnFilterPanel.disableDialog();

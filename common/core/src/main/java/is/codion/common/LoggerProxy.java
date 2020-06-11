@@ -26,7 +26,7 @@ public interface LoggerProxy {
   /**
    * @return the available log levels
    */
-  List getLogLevels();
+  List<Object> getLogLevels();
 
   /**
    * @return the first available LoggerProxy implementation found, null if none is available

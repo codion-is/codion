@@ -26,7 +26,7 @@ public final class EntityTableColumn extends FXEntityListModel.PropertyTableColu
    * @param property the property
    * @param cellValueFactory the cell value factory for this column
    */
-  public EntityTableColumn(final FXEntityListModel listModel, final Property property,
+  public EntityTableColumn(final FXEntityListModel listModel, final Property<?> property,
                            final Callback<CellDataFeatures<Entity, Object>, ObservableValue<Object>> cellValueFactory) {
     super(property);
     this.conditionView = initializeConditionView(listModel);
@@ -58,9 +58,9 @@ public final class EntityTableColumn extends FXEntityListModel.PropertyTableColu
   }
 
   private PropertyConditionView initializeConditionView(final FXEntityListModel listModel) {
-    final Property property = getProperty();
+    final Property<?> property = getProperty();
     if (property instanceof ColumnProperty || property instanceof ForeignKeyProperty) {
-      final ColumnConditionModel<Entity, ? extends Property> conditionModel =
+      final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel =
               listModel.getConditionModel().getPropertyConditionModel(getProperty().getAttribute());
       if (conditionModel != null) {
         final PropertyConditionView view = new PropertyConditionView(conditionModel);

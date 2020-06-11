@@ -42,21 +42,21 @@ public final class DoubleField extends NumberField<Double> {
    * @param columns the number of columns
    */
   public DoubleField(final DecimalFormat format, final int columns) {
-    super(new DecimalDocument(format), columns);
+    super(new DecimalDocument<>(format), columns);
   }
 
   /**
    * @return the maximum number of fraction digits this field shows
    */
   public int getMaximumFractionDigits() {
-    return ((DecimalDocument) getTypedDocument()).getMaximumFractionDigits();
+    return ((DecimalDocument<Double>) getTypedDocument()).getMaximumFractionDigits();
   }
 
   /**
    * @param maximumFractionDigits the maximum number of fraction digits this field shows
    */
   public void setMaximumFractionDigits(final int maximumFractionDigits) {
-    ((DecimalDocument) getTypedDocument()).setMaximumFractionDigits(maximumFractionDigits);
+    ((DecimalDocument<Double>) getTypedDocument()).setMaximumFractionDigits(maximumFractionDigits);
   }
 
   /**

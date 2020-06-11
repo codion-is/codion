@@ -86,11 +86,12 @@ public final class FileUtil {
    * Serializes a Collection of Objects to a given file
    * @param objects the objects to serialize
    * @param file the file
+   * @param <T> the value type
    * @throws IOException in case the file can not be written
    */
-  public static void serializeToFile(final Collection objects, final File file) throws IOException {
+  public static <T> void serializeToFile(final Collection<T> objects, final File file) throws IOException {
     try (final ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
-      for (final Object object : objects) {
+      for (final T object : objects) {
         outputStream.writeObject(object);
       }
     }

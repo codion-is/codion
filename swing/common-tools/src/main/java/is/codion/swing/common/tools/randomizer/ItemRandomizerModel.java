@@ -64,14 +64,14 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
   @Override
   public void incrementWeight(final T item) {
-    final RandomItem randomItem = getRandomItem(item);
+    final RandomItem<T> randomItem = getRandomItem(item);
     randomItem.incrementWeight();
     weightsChangedEvent.onEvent(randomItem.getWeight());
   }
 
   @Override
   public void decrementWeight(final T item) {
-    final RandomItem randomItem = getRandomItem(item);
+    final RandomItem<T> randomItem = getRandomItem(item);
     randomItem.decrementWeight();
     weightsChangedEvent.onEvent(randomItem.getWeight());
   }
@@ -237,7 +237,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
     @Override
     public boolean equals(final Object obj) {
-      return obj instanceof ItemRandomizer.RandomItem && (((ItemRandomizer.RandomItem) obj).getItem().equals(item));
+      return obj instanceof ItemRandomizer.RandomItem && (((ItemRandomizer.RandomItem<T>) obj).getItem().equals(item));
     }
 
     @Override

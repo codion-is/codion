@@ -22,9 +22,10 @@ public interface ColumnSummaryModel {
     /**
      * Returns a String containing the summary information for the given column
      * @param valueProvider the object responsible for providing the values for the summary
+     * @param <T> the value type
      * @return a summary text
      */
-    String getSummary(ColumnValueProvider valueProvider);
+    <T extends Number> String getSummary(ColumnValueProvider<T> valueProvider);
   }
 
   /**
@@ -80,7 +81,7 @@ public interface ColumnSummaryModel {
   /**
    * Provides the values used when creating the summary value.
    */
-  interface ColumnValueProvider {
+  interface ColumnValueProvider<T> {
 
     /**
      * @param value the value
@@ -96,7 +97,7 @@ public interface ColumnSummaryModel {
     /**
      * @return the values to base the summary on
      */
-    Collection getValues();
+    Collection<T> getValues();
 
     /**
      * @return true if the values provided by {@code getValues()} is a subset of the total available values

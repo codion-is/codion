@@ -170,7 +170,7 @@ public final class Dialogs {
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final EventObserver closeEvent) {
+                                        final EventObserver<?> closeEvent) {
     return displayInDialog(owner, component, title, Modal.YES, closeEvent);
   }
 
@@ -184,7 +184,7 @@ public final class Dialogs {
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final Modal modal, final EventObserver closeEvent) {
+                                        final Modal modal, final EventObserver<?> closeEvent) {
     return displayInDialog(owner, component, title, modal, null, closeEvent, DisposeOnEscape.YES, null);
   }
 
@@ -270,7 +270,7 @@ public final class Dialogs {
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title, final Modal modal,
-                                        final Action enterAction, final EventObserver closeEvent) {
+                                        final Action enterAction, final EventObserver<?> closeEvent) {
     return displayInDialog(owner, component, title, modal, enterAction, closeEvent, DisposeOnEscape.NO, null);
   }
 
@@ -285,7 +285,7 @@ public final class Dialogs {
    * @return the dialog
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final EventObserver closeObserver, final EventDataListener<State> confirmCloseListener) {
+                                        final EventObserver<?> closeObserver, final EventDataListener<State> confirmCloseListener) {
     return displayInDialog(owner, component, title, Modal.YES, closeObserver, confirmCloseListener);
   }
 
@@ -301,7 +301,7 @@ public final class Dialogs {
    * @return the dialog
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final Modal modal, final EventObserver closeObserver,
+                                        final Modal modal, final EventObserver<?> closeObserver,
                                         final EventDataListener<State> confirmCloseListener) {
     final JDialog dialog = new JDialog(Windows.getParentWindow(owner), title);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -383,7 +383,7 @@ public final class Dialogs {
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final Modal modal, final Action enterAction, final EventObserver closeEvent,
+                                        final Modal modal, final Action enterAction, final EventObserver<?> closeEvent,
                                         final DisposeOnEscape disposeOnEscape) {
     return displayInDialog(owner, component, title, modal, enterAction, closeEvent, disposeOnEscape, null);
   }
@@ -402,7 +402,7 @@ public final class Dialogs {
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
-                                        final Modal modal, final Action enterAction, final EventObserver closeEvent,
+                                        final Modal modal, final Action enterAction, final EventObserver<?> closeEvent,
                                         final DisposeOnEscape disposeOnEscape, final Action onClosedAction) {
     final Window dialogOwner = owner instanceof Window ? (Window) owner : Windows.getParentWindow(owner);
     final JDialog dialog = new JDialog(dialogOwner, title, modal == Modal.YES ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS);

@@ -53,7 +53,7 @@ public final class PropertyStore {
    */
   public static final String VALUE_SEPARATOR = ";";
 
-  private final Map<String, PropertyValue> propertyValues = new HashMap<>();
+  private final Map<String, PropertyValue<?>> propertyValues = new HashMap<>();
 
   private final Properties properties = new Properties() {
     @Override
@@ -190,7 +190,7 @@ public final class PropertyStore {
    * @return the configuration value or null if none is found
    */
   public <V> PropertyValue<V> getPropertyValue(final String property) {
-    return propertyValues.get(property);
+    return (PropertyValue<V>) propertyValues.get(property);
   }
 
   /**

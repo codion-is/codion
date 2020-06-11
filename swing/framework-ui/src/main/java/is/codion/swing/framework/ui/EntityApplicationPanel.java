@@ -364,9 +364,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (loggerProxy == null) {
       throw new RuntimeException("No LoggerProxy implementation available");
     }
-    final DefaultComboBoxModel model = new DefaultComboBoxModel(loggerProxy.getLogLevels().toArray());
+    final DefaultComboBoxModel<Object> model = new DefaultComboBoxModel<>(loggerProxy.getLogLevels().toArray());
     model.setSelectedItem(loggerProxy.getLogLevel());
-    JOptionPane.showMessageDialog(this, new JComboBox(model),
+    JOptionPane.showMessageDialog(this, new JComboBox<>(model),
             resourceBundle.getString(SET_LOG_LEVEL), JOptionPane.QUESTION_MESSAGE);
     loggerProxy.setLogLevel(model.getSelectedItem());
 

@@ -238,7 +238,7 @@ public abstract class ProgressWorker<T> extends SwingWorker<T, Void> {
                                         final Consumer<Throwable> onException, final JPanel northPanel,
                                         final ControlList buttonControls) {
     final Window dialogOwner = Windows.getParentWindow(dialogParent);
-    final ProgressWorker worker = new ProgressWorker(dialogOwner, progressBarTitle, Indeterminate.YES, northPanel, buttonControls) {
+    final ProgressWorker<Object> worker = new ProgressWorker<Object>(dialogOwner, progressBarTitle, Indeterminate.YES, northPanel, buttonControls) {
       @Override
       protected Object doInBackground() throws Exception {
         task.perform();

@@ -35,7 +35,7 @@ import static is.codion.common.item.Items.item;
  */
 public final class PropertyConditionView extends BorderPane {
 
-  private final ColumnConditionModel<Entity, ? extends Property> model;
+  private final ColumnConditionModel<Entity, ? extends Property<?>> model;
   private final Pane operatorPane;
   private final Pane topPane;
   private final Label header;
@@ -49,7 +49,7 @@ public final class PropertyConditionView extends BorderPane {
    * Instantiates a new {@link PropertyConditionView}
    * @param model the {@link ColumnConditionModel} to base this view on
    */
-  public PropertyConditionView(final ColumnConditionModel<Entity, ? extends Property> model) {
+  public PropertyConditionView(final ColumnConditionModel<Entity, ? extends Property<?>> model) {
     this.model = model;
     this.header = new Label(model.getColumnIdentifier().getCaption());
     this.enabledBox = createEnabledBox();
@@ -145,7 +145,7 @@ public final class PropertyConditionView extends BorderPane {
       control = new EntityLookupField(((DefaultForeignKeyConditionModel) model).getEntityLookupModel());
     }
     else {
-      control = FXUiUtil.createControl((Property<Object>) model.getColumnIdentifier(), null);
+      control = FXUiUtil.createControl(model.getColumnIdentifier(), null);
     }
     if (!(control instanceof EntityLookupField)) {
       control.setOnKeyReleased(event -> {
@@ -191,7 +191,7 @@ public final class PropertyConditionView extends BorderPane {
     return borderPane;
   }
 
-  private static Collection<Item<Operator>> getOperators(final Property property) {
+  private static Collection<Item<Operator>> getOperators(final Property<?> property) {
     final Collection<Item<Operator>> types = new ArrayList<>();
     if (property instanceof ForeignKeyProperty) {
       types.add(item(Operator.LIKE, Operator.LIKE.getCaption()));

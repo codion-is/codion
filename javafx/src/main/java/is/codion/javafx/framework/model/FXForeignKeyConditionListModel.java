@@ -63,7 +63,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
       try {
         setUpdatingModel(true);
         final Object upper = getUpperBound();
-        if (upper instanceof Collection && !((Collection) upper).isEmpty()) {
+        if (upper instanceof Collection && !((Collection<Entity>) upper).isEmpty()) {
           listModel.getSelectionModel().setSelectedItem(((Collection<Entity>) upper).iterator().next());
         }
         else {
@@ -76,7 +76,7 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
     });
     listModel.addRefreshListener(() -> {
       final Object upper = getUpperBound();
-      if (upper instanceof Collection && !((Collection) upper).isEmpty()) {
+      if (upper instanceof Collection && !((Collection<Entity>) upper).isEmpty()) {
         listModel.getSelectionModel().setSelectedItem(((Collection<Entity>) upper).iterator().next());
       }
       else {

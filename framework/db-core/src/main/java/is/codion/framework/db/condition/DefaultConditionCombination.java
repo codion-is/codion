@@ -44,8 +44,8 @@ final class DefaultConditionCombination implements Condition.Combination {
   }
 
   @Override
-  public List getValues() {
-    final List values = new ArrayList<>();
+  public List<Object> getValues() {
+    final List<Object> values = new ArrayList<>();
     for (int i = 0; i < conditions.size(); i++) {
       values.addAll(conditions.get(i).getValues());
     }

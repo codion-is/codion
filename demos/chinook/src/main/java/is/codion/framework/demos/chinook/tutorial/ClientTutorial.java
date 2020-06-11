@@ -122,7 +122,7 @@ public final class ClientTutorial {
     }
   }
 
-  private static final class ApplicationPanel extends EntityApplicationPanel {
+  private static final class ApplicationPanel extends EntityApplicationPanel<SwingEntityApplicationModel> {
 
     @Override
     protected SwingEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {

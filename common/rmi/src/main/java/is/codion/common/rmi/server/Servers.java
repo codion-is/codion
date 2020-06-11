@@ -93,7 +93,7 @@ public final class Servers {
     for (final String serverHostName : hostNames.split(",")) {
       servers.addAll(getServersOnHost(serverHostName, registryPort, serverNamePrefix, requestedServerPort));
     }
-    servers.sort(new ServerComparator());
+    servers.sort(new ServerComparator<>());
 
     return servers;
   }

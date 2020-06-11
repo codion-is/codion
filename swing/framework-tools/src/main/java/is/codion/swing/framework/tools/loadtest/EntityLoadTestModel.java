@@ -79,7 +79,7 @@ public abstract class EntityLoadTestModel<M extends EntityApplicationModel> exte
    * Selects a random row in the given table model
    * @param tableModel the table model
    */
-  public static void selectRandomRow(final EntityTableModel tableModel) {
+  public static void selectRandomRow(final EntityTableModel<?> tableModel) {
     if (tableModel.getRowCount() == 0) {
       return;
     }
@@ -92,7 +92,7 @@ public abstract class EntityLoadTestModel<M extends EntityApplicationModel> exte
    * @param tableModel the table model
    * @param count the number of rows to select
    */
-  public static void selectRandomRows(final EntityTableModel tableModel, final int count) {
+  public static void selectRandomRows(final EntityTableModel<?> tableModel, final int count) {
     if (tableModel.getRowCount() == 0) {
       return;
     }
@@ -115,7 +115,7 @@ public abstract class EntityLoadTestModel<M extends EntityApplicationModel> exte
    * @param tableModel the table model
    * @param ratio the ratio of available rows to select
    */
-  public static void selectRandomRows(final EntityTableModel tableModel, final double ratio) {
+  public static void selectRandomRows(final EntityTableModel<?> tableModel, final double ratio) {
     if (tableModel.getRowCount() == 0) {
       return;
     }

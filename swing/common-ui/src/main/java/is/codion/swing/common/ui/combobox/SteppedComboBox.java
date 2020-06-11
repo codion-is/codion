@@ -78,7 +78,7 @@ public class SteppedComboBox<V> extends JComboBox<V> {
     @Override
     public void setVisible(final boolean visible) {
       if (visible) {
-        final Dimension popupSize = ((SteppedComboBox) comboBox).getPopupSize();
+        final Dimension popupSize = ((SteppedComboBox<?>) comboBox).getPopupSize();
         popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
         final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height,
                 popupSize.width + new JScrollBar(JScrollBar.VERTICAL).getWidth(), popupSize.height);

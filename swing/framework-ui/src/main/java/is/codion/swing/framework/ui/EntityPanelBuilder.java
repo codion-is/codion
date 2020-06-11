@@ -539,8 +539,8 @@ public class EntityPanelBuilder {
 
     private void addLookupKey() {
       JComponent keyComponent = component;
-      if (component instanceof JComboBox && ((JComboBox) component).isEditable()) {
-        keyComponent = (JComponent) ((JComboBox) component).getEditor().getEditorComponent();
+      if (component instanceof JComboBox && ((JComboBox<?>) component).isEditable()) {
+        keyComponent = (JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent();
       }
       KeyEvents.addKeyEvent(keyComponent, KeyEvent.VK_ADD, KeyEvent.CTRL_DOWN_MASK, this);
       KeyEvents.addKeyEvent(keyComponent, KeyEvent.VK_PLUS, KeyEvent.CTRL_DOWN_MASK, this);

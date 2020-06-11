@@ -65,7 +65,7 @@ import static java.util.Objects.requireNonNull;
  * A default UI component for the LoadTestModel class.
  * @see LoadTestModel
  */
-public final class LoadTestPanel extends JPanel {
+public final class LoadTestPanel<T> extends JPanel {
 
   private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
@@ -74,17 +74,17 @@ public final class LoadTestPanel extends JPanel {
   private static final int SPINNER_STEP_SIZE = 10;
   private static final double RESIZE_WEIGHT = 0.8;
 
-  private final LoadTest loadTestModel;
+  private final LoadTest<T> loadTestModel;
 
   private final JPanel scenarioBase = new JPanel(Layouts.gridLayout(0, 1));
   private final JPanel pluginPanel;
-  private final ItemRandomizerPanel scenarioPanel;
+  private final ItemRandomizerPanel<UsageScenario<T>> scenarioPanel;
 
   /**
    * Constructs a new LoadTestPanel.
    * @param loadTestModel the LoadTestModel to base this panel on
    */
-  public LoadTestPanel(final LoadTest loadTestModel) {
+  public LoadTestPanel(final LoadTest<T> loadTestModel) {
     this(loadTestModel, null);
   }
 
@@ -93,7 +93,7 @@ public final class LoadTestPanel extends JPanel {
    * @param loadTestModel the LoadTestModel to base this panel on
    * @param pluginPanel a panel to add as a plugin panel
    */
-  public LoadTestPanel(final LoadTest loadTestModel, final JPanel pluginPanel) {
+  public LoadTestPanel(final LoadTest<T> loadTestModel, final JPanel pluginPanel) {
     requireNonNull(loadTestModel, "loadTestModel");
     this.loadTestModel = loadTestModel;
     this.pluginPanel = pluginPanel;
@@ -104,7 +104,7 @@ public final class LoadTestPanel extends JPanel {
   /**
    * @return the load test model this panel is based on
    */
-  public LoadTest getModel() {
+  public LoadTest<T> getModel() {
     return loadTestModel;
   }
 
@@ -172,8 +172,8 @@ public final class LoadTestPanel extends JPanel {
     return southPanel;
   }
 
-  private ItemRandomizerPanel<UsageScenario> initializeScenarioPanel() {
-    final ItemRandomizerPanel<UsageScenario> panel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
+  private ItemRandomizerPanel<UsageScenario<T>> initializeScenarioPanel() {
+    final ItemRandomizerPanel<UsageScenario<T>> panel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
     panel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
     panel.addSelectedItemListener(this::onScenarioSelectionChanged);
 
@@ -362,16 +362,16 @@ public final class LoadTestPanel extends JPanel {
     return thinkTimePanel;
   }
 
-  private void onScenarioSelectionChanged(final List<ItemRandomizer.RandomItem<UsageScenario>> selectedScenarios) {
+  private void onScenarioSelectionChanged(final List<ItemRandomizer.RandomItem<UsageScenario<T>>> selectedScenarios) {
     scenarioBase.removeAll();
-    for (final ItemRandomizer.RandomItem<UsageScenario> selectedItem : selectedScenarios) {
+    for (final ItemRandomizer.RandomItem<UsageScenario<T>> selectedItem : selectedScenarios) {
       scenarioBase.add(createScenarioPanel(selectedItem.getItem()));
     }
     validate();
     repaint();
   }
 
-  private JPanel createScenarioPanel(final UsageScenario item) {
+  private JPanel createScenarioPanel(final UsageScenario<T> item) {
     final JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
             null, null, loadTestModel.getScenarioDurationDataset(item.getName()),
             PlotOrientation.VERTICAL, true, true, false);
@@ -417,9 +417,9 @@ public final class LoadTestPanel extends JPanel {
 
   private abstract static class ExceptionsAction extends AbstractAction {
     private final JTextArea exceptionsTextArea;
-    private final UsageScenario scenario;
+    private final UsageScenario<?> scenario;
 
-    private ExceptionsAction(final String name, final JTextArea exceptionsTextArea, final UsageScenario scenario) {
+    private ExceptionsAction(final String name, final JTextArea exceptionsTextArea, final UsageScenario<?> scenario) {
       super(name);
       this.exceptionsTextArea = exceptionsTextArea;
       this.scenario = scenario;
@@ -429,14 +429,14 @@ public final class LoadTestPanel extends JPanel {
       return exceptionsTextArea;
     }
 
-    UsageScenario getScenario() {
+    UsageScenario<?> getScenario() {
       return scenario;
     }
   }
 
   private static final class ClearExceptionsAction extends ExceptionsAction {
 
-    private ClearExceptionsAction(final JTextArea exceptionsArea, final UsageScenario scenario) {
+    private ClearExceptionsAction(final JTextArea exceptionsArea, final UsageScenario<?> scenario) {
       super("Clear", exceptionsArea, scenario);
     }
 
@@ -449,7 +449,7 @@ public final class LoadTestPanel extends JPanel {
 
   private static final class RefreshExceptionsAction extends ExceptionsAction {
 
-    private RefreshExceptionsAction(final JTextArea exceptionsArea, final UsageScenario scenario) {
+    private RefreshExceptionsAction(final JTextArea exceptionsArea, final UsageScenario<?> scenario) {
       super("Refresh", exceptionsArea, scenario);
     }
 

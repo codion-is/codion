@@ -168,7 +168,7 @@ public final class Components {
     // Traverse children
     final TreeNode node = (TreeNode) parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
-      final Enumeration e = node.children();
+      final Enumeration<Object> e = node.children();
       while (e.hasMoreElements()) {
         expandAll(tree, parent.pathByAddingChild(e.nextElement()));
       }
@@ -185,7 +185,7 @@ public final class Components {
   public static void collapseAll(final JTree tree, final TreePath parent) {
     final TreeNode node = (TreeNode) parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
-      final Enumeration e = node.children();
+      final Enumeration<Object> e = node.children();
       while (e.hasMoreElements()) {
         collapseAll(tree, parent.pathByAddingChild(e.nextElement()));
       }
@@ -334,7 +334,7 @@ public final class Components {
    */
   public static void setFontSize(final float multiplier) {
     final UIDefaults defaults = UIManager.getDefaults();
-    final Enumeration enumeration = defaults.keys();
+    final Enumeration<Object> enumeration = defaults.keys();
     while (enumeration.hasMoreElements()) {
       final Object key = enumeration.nextElement();
       final Object defaultValue = defaults.get(key);
