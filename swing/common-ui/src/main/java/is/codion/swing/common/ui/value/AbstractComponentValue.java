@@ -52,7 +52,7 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
       try {
         SwingUtilities.invokeAndWait(() -> setComponentValue(component, value));
       }
-      catch(final InterruptedException ex){
+      catch (final InterruptedException ex) {
         Thread.currentThread().interrupt();
         throw new RuntimeException(ex);
       }
