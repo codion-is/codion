@@ -255,9 +255,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T> void setComponent(final Attribute<T> attribute, final JComponent component) {
     getEditModel().getEntityDefinition().getProperty(attribute);
-    if (components.containsKey(attribute)) {
-      throw new IllegalStateException("Component already set for attribute: " + attribute);
-    }
+    requireNonNull(component, "component");
     components.put(attribute, component);
   }
 

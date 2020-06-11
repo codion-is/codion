@@ -6243,3 +6243,4 @@
   EntityComboBox.integerFieldSelector() bug fixed, value link was in the wrong direction, cleared selected value on instantiation
   SelecteItemValue bug fixed, did not handle null selection correctly
   NumberField.NumberDocument.setText() bug fixed, only sets the text if it has changed, prevents document mutation in cyclical value links
+  EntityEditComponentPanel.setComponent() no longer prevents setting the component if one has been set before
