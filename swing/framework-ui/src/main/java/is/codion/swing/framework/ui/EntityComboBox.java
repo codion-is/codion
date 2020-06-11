@@ -83,7 +83,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(attribute));
+    getModel().integerValueSelector(attribute).link(NumericalValues.integerValue(integerField));
 
     return integerField;
   }
@@ -97,7 +97,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(attribute, finder));
+    getModel().integerValueSelector(attribute, finder).link(NumericalValues.integerValue(integerField));
 
     return integerField;
   }
