@@ -17,8 +17,8 @@ import java.text.Normalizer;
  */
 class CompletionDocument extends PlainDocument {
 
-  private final JComboBox comboBox;
-  private final ComboBoxModel model;
+  private final JComboBox<?> comboBox;
+  private final ComboBoxModel<?> model;
   private final JTextComponent editor;
   private final boolean normalize;
   // flag to indicate if setSelectedItem has been called
@@ -27,7 +27,7 @@ class CompletionDocument extends PlainDocument {
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
 
-  protected CompletionDocument(final JComboBox comboBox, final Normalize normalize) {
+  protected CompletionDocument(final JComboBox<?> comboBox, final Normalize normalize) {
     this.comboBox = comboBox;
     this.normalize = normalize == Normalize.YES;
     model = comboBox.getModel();
@@ -82,11 +82,11 @@ class CompletionDocument extends PlainDocument {
     }
   }
 
-  protected final JComboBox getComboBox() {
+  protected final JComboBox<?> getComboBox() {
     return comboBox;
   }
 
-  protected final ComboBoxModel getModel() {
+  protected final ComboBoxModel<?> getModel() {
     return model;
   }
 

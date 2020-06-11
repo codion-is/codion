@@ -277,7 +277,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
     @Override
     public void run() {
       try {
-        new LoadTestPanel(new ChinookLoadTest()).showFrame();
+        new LoadTestPanel<>(new ChinookLoadTest()).showFrame();
       }
       catch (final Exception e) {
         throw new RuntimeException(e);

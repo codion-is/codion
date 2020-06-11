@@ -121,20 +121,21 @@ public class EntityTableView extends TableView<Entity> {
   /**
    * Specifies whether or not a property should be included in the update selected menu
    * @param property the property
+   * @param <T> the value type
    * @return true if the user should be able to update the property value for multiple entities at a time
    */
-  protected boolean includeUpdateSelectedProperty(final Property property) {
+  protected <T> boolean includeUpdateSelectedProperty(final Property<T> property) {
     return true;
   }
 
   private void initializeColumns() {
-    for (final Property property : getListModel().getEntityDefinition().getVisibleProperties()) {
+    for (final Property<?> property : getListModel().getEntityDefinition().getVisibleProperties()) {
       getColumns().add(new EntityTableColumn(listModel, property, getCellValueFactory(property)));
     }
     listModel.setColumns(getColumns());
   }
 
-  private Callback<TableColumn.CellDataFeatures<Entity, Object>, ObservableValue<Object>> getCellValueFactory(final Property property) {
+  private Callback<TableColumn.CellDataFeatures<Entity, Object>, ObservableValue<Object>> getCellValueFactory(final Property<?> property) {
     return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.getAttribute()));
   }
 
@@ -252,16 +253,16 @@ public class EntityTableView extends TableView<Entity> {
     return refresh;
   }
 
-  private void updateSelectedEntities(final Property property) {
+  private <T> void updateSelectedEntities(final Property<T> property) {
     final List<Entity> selectedEntities = listModel.getEntities().deepCopyEntities(listModel.getSelectionModel().getSelectedItems());
 
-    final List<?> values = Entities.getDistinctValues(property.getAttribute(), selectedEntities);
-    final Object defaultValue = values.size() == 1 ? values.iterator().next() : null;
+    final List<T> values = Entities.getDistinctValues(property.getAttribute(), selectedEntities);
+    final T defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
-    final PropertyInputDialog inputDialog = new PropertyInputDialog(property, defaultValue, listModel.getConnectionProvider());
+    final PropertyInputDialog<T> inputDialog = new PropertyInputDialog<>(property, defaultValue, listModel.getConnectionProvider());
 
     Platform.runLater(inputDialog.getControl()::requestFocus);
-    final Optional<PropertyInputDialog.InputResult> inputResult = inputDialog.showAndWait();
+    final Optional<PropertyInputDialog.InputResult<T>> inputResult = inputDialog.showAndWait();
     try {
       if (inputResult.isPresent() && inputResult.get().isInputAccepted()) {
         Entities.put(property.getAttribute(), inputResult.get().getValue(), selectedEntities);

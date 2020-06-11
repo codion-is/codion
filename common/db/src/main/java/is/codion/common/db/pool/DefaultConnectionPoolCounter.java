@@ -22,7 +22,7 @@ final class DefaultConnectionPoolCounter {
   private static final int SNAPSHOT_COLLECTION_INTERVAL_MS = 10;
   private static final int CHECK_OUT_TIMES_MAX_SIZE = 10000;
 
-  private final AbstractConnectionPool connectionPool;
+  private final AbstractConnectionPool<?> connectionPool;
   private final long creationDate = System.currentTimeMillis();
   private final LinkedList<Integer> checkOutTimes = new LinkedList<>();
   private final LinkedList<ConnectionPoolState> snapshotStatistics = new LinkedList<>();
@@ -39,7 +39,7 @@ final class DefaultConnectionPoolCounter {
   private final AtomicInteger connectionRequestsFailed = new AtomicInteger();
   private final AtomicInteger requestsFailedPerSecondCounter = new AtomicInteger();
 
-  DefaultConnectionPoolCounter(final AbstractConnectionPool connectionPool) {
+  DefaultConnectionPoolCounter(final AbstractConnectionPool<?> connectionPool) {
     this.connectionPool = connectionPool;
   }
 

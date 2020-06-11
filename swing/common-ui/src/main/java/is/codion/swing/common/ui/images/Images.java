@@ -20,9 +20,10 @@ public final class Images {
    * Loads an image from the given resource assuming it is on the classpath on the same level as the given class
    * @param resourceOwnerClass the class owning the given resource
    * @param resourceName the image name
+   * @param <T> the resource class type
    * @return an ImageIcon based on the given image
    */
-  public static ImageIcon loadIcon(final Class resourceOwnerClass, final String resourceName) {
+  public static <T> ImageIcon loadIcon(final Class<T> resourceOwnerClass, final String resourceName) {
     final URL url = resourceOwnerClass.getResource(resourceName);
     requireNonNull(url, "Resource: " + resourceName + " for " + resourceOwnerClass);
 

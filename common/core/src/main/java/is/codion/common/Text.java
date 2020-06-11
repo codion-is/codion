@@ -79,7 +79,7 @@ public final class Text {
    * @see Text#getSpaceAwareCollator()
    * @param values the list to sort (collate)
    */
-  public static void collate(final List values) {
+  public static void collate(final List<?> values) {
     values.sort(getSpaceAwareCollator());
   }
 
@@ -111,7 +111,7 @@ public final class Text {
    * @param collator the collator
    * @param list the list
    */
-  public static void collateSansSpaces(final Collator collator, final List list) {
+  public static void collateSansSpaces(final Collator collator, final List<?> list) {
     list.sort((o1, o2) -> collateSansSpaces(collator, o1.toString(), o2.toString()));
   }
 
@@ -181,10 +181,11 @@ public final class Text {
    * Fetch the entire contents of a resource text file, and return it in a String, using the default Charset.
    * @param resourceClass the resource class
    * @param resourceName the name of the resource to retrieve
+   * @param <T> the resource class type
    * @return the contents of the resource file
    * @throws IOException in case an IOException occurs
    */
-  public static String getTextFileContents(final Class resourceClass, final String resourceName) throws IOException {
+  public static <T> String getTextFileContents(final Class<T> resourceClass, final String resourceName) throws IOException {
     return getTextFileContents(resourceClass, resourceName, Charset.defaultCharset());
   }
 
@@ -193,10 +194,11 @@ public final class Text {
    * @param resourceClass the resource class
    * @param resourceName the name of the resource to retrieve
    * @param charset the Charset to use when reading the file contents
+   * @param <T> the resource class type
    * @return the contents of the resource file
    * @throws IOException in case an IOException occurs
    */
-  public static String getTextFileContents(final Class resourceClass, final String resourceName, final Charset charset) throws IOException {
+  public static <T> String getTextFileContents(final Class<T> resourceClass, final String resourceName, final Charset charset) throws IOException {
     requireNonNull(resourceClass, "resourceClass");
     requireNonNull(resourceName, "resourceName");
     final InputStream inputStream = resourceClass.getResourceAsStream(resourceName);

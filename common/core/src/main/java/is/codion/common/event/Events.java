@@ -23,9 +23,10 @@ public final class Events {
   /**
    * Instantiates a {@link EventListener} causing the given {@link EventDataListener} to be fired with null data on each occurrence.
    * @param listener the data listener
+   * @param <T> the value type
    * @return a {@link EventListener} causing the given {@link EventDataListener} to be fired with null data on each occurrence
    */
-  public static EventListener listener(final EventDataListener listener) {
+  public static <T> EventListener listener(final EventDataListener<T> listener) {
     return () -> listener.onEvent(null);
   }
 

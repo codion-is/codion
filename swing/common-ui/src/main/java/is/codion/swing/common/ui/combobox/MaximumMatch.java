@@ -17,14 +17,14 @@ public final class MaximumMatch extends CompletionDocument {
    * @param comboBox the combobox
    * @param normalize if YES then accented characters are normalized before matching
    */
-  private MaximumMatch(final JComboBox comboBox, final Normalize normalize) {
+  private MaximumMatch(final JComboBox<?> comboBox, final Normalize normalize) {
     super(comboBox, normalize);
   }
 
   /**
    * @param comboBox the combobox on which to enable maximum match
    */
-  public static void enable(final JComboBox comboBox) {
+  public static void enable(final JComboBox<?> comboBox) {
     enable(comboBox, Normalize.YES);
   }
 
@@ -32,7 +32,7 @@ public final class MaximumMatch extends CompletionDocument {
    * @param comboBox the combobox on which to enable maximum match
    * @param normalize if YES then accented characters are normalized before matching
    */
-  public static void enable(final JComboBox comboBox, final Normalize normalize) {
+  public static void enable(final JComboBox<?> comboBox, final Normalize normalize) {
     comboBox.setEditable(true);
     new MaximumMatch(comboBox, normalize);
   }

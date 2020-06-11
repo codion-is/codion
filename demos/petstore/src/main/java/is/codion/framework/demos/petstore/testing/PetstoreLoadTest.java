@@ -60,7 +60,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
     @Override
     public void run() {
       try {
-        new LoadTestPanel(new PetstoreLoadTest()).showFrame();
+        new LoadTestPanel<>(new PetstoreLoadTest()).showFrame();
       }
       catch (final Exception e) {
         e.printStackTrace();

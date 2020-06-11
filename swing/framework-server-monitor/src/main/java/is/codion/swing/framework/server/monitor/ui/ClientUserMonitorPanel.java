@@ -69,15 +69,15 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JSplitPane createCurrentConnectionsPanel() throws RemoteException {
-    final JList clientTypeList = new JList<>(model.getClientTypeListModel());
+    final JList<ClientMonitor> clientTypeList = new JList<>(model.getClientTypeListModel());
 
     clientTypeList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    clientTypeList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel((ClientMonitor) clientTypeList.getSelectedValue()));
+    clientTypeList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel(clientTypeList.getSelectedValue()));
 
-    final JList userList = new JList<>(model.getUserListModel());
+    final JList<ClientMonitor> userList = new JList<>(model.getUserListModel());
 
     userList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    userList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel((ClientMonitor) userList.getSelectedValue()));
+    userList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel(userList.getSelectedValue()));
 
     final JPanel clientTypeBase = new JPanel(Layouts.borderLayout());
     final JScrollPane clientTypeScroller = new JScrollPane(clientTypeList);
@@ -138,7 +138,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     configBase.add(configPanel, BorderLayout.CENTER);
     configBase.add(new JButton(Controls.control(model::resetHistory, "Reset")), BorderLayout.EAST);
 
-    final FilteredTable userHistoryTable = new FilteredTable(model.getUserHistoryTableModel());
+    final FilteredTable<?, ?, ?> userHistoryTable = new FilteredTable<>(model.getUserHistoryTableModel());
 
     final JPanel connectionHistoryPanel = new JPanel(Layouts.borderLayout());
     connectionHistoryPanel.add(new JScrollPane(userHistoryTable), BorderLayout.CENTER);

@@ -109,7 +109,7 @@ public interface ColumnConditionModel<R, K> {
    * @param comparable the value to check
    * @return true if the given value should be included or if this model is not enabled
    */
-  boolean include(Comparable comparable);
+  boolean include(Comparable<?> comparable);
 
   /**
    * @param locked true to lock this model, false to unlock
@@ -124,34 +124,39 @@ public interface ColumnConditionModel<R, K> {
   /**
    * @return the data type this condition model is based on
    */
-  Class getTypeClass();
+  Class<?> getTypeClass();
 
   /**
    * @param upper the new upper bound
+   * @param <T> the value type
    */
-  void setUpperBound(Object upper);
+  <T> void setUpperBound(T upper);
 
   /**
    * A shortcut method for setting the upper bound value, operator to LIKE
    * and enabling this model in case of a non-null value.
    * @param value the value to use as condition
+   * @param <T> the value type
    */
-  void setLikeValue(Object value);
+  <T> void setLikeValue(T value);
 
   /**
    * @return the upper bound
+   * @param <T> the value type
    */
-  Object getUpperBound();
+  <T> T getUpperBound();
 
   /**
    * @param value the lower bound
+   * @param <T> the value type
    */
-  void setLowerBound(Object value);
+  <T> void setLowerBound(T value);
 
   /**
    * @return the lower bound
+   * @param <T> the value type
    */
-  Object getLowerBound();
+  <T> T getLowerBound();
 
   /**
    * @return the search operator
@@ -197,14 +202,16 @@ public interface ColumnConditionModel<R, K> {
   void clearCondition();
 
   /**
+   * @param <T> the value type
    * @return a Value based on the upper bound value of this condition model
    */
-  Value getUpperBoundValue();
+  <T> Value<T> getUpperBoundValue();
 
   /**
+   * @param <T> the value type
    * @return a Value based on the lower bound value of this condition model
    */
-  Value getLowerBoundValue();
+  <T> Value<T> getLowerBoundValue();
 
   /**
    * @return an observer for this models locked state

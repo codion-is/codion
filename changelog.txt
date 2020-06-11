@@ -6271,3 +6271,4 @@
   SelecteItemValue bug fixed, did not handle null selection correctly
   NumberField.NumberDocument.setText() bug fixed, only sets the text if it has changed, prevents document mutation in cyclical value links
   EntityEditComponentPanel.setComponent() no longer prevents setting the component if one has been set before
+  Got rid of a bunch of raw value types

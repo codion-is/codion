@@ -178,7 +178,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   @Override
   public void removeSelectedIndexes(final Collection<Integer> indexes) {
     if (selectionModel instanceof MultipleSelectionModel) {
-      indexes.forEach(index -> ((MultipleSelectionModel) selectionModel).getSelectedIndices().remove(index));
+      indexes.forEach(index -> ((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices().remove(index));
     }
     else {
       throw new UnsupportedOperationException();

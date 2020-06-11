@@ -40,7 +40,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   private final State lowerBoundRequiredState = States.state();
 
   private final K columnIdentifier;
-  private final Class typeClass;
+  private final Class<?> typeClass;
   private final Format format;
   private final String dateTimeFormatPattern;
 
@@ -55,7 +55,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
    * @param typeClass the data type
    * @param wildcard the string to use as wildcard
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard) {
+  public DefaultColumnConditionModel(final K columnIdentifier, final Class<?> typeClass, final String wildcard) {
     this(columnIdentifier, typeClass, wildcard, null, null);
   }
 
@@ -67,7 +67,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimeFormatPattern the date/time format pattern to use in case of a date/time column
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard,
+  public DefaultColumnConditionModel(final K columnIdentifier, final Class<?> typeClass, final String wildcard,
                                      final Format format, final String dateTimeFormatPattern) {
     this(columnIdentifier, typeClass, wildcard, format, dateTimeFormatPattern, AUTOMATIC_WILDCARD.get());
   }
@@ -81,7 +81,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
    * @param dateTimeFormatPattern the date/time format pattern to use in case of a date/time column
    * @param automaticWildcard the automatic wildcard type to use
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final Class typeClass, final String wildcard,
+  public DefaultColumnConditionModel(final K columnIdentifier, final Class<?> typeClass, final String wildcard,
                                      final Format format, final String dateTimeFormatPattern,
                                      final AutomaticWildcard automaticWildcard) {
     this.columnIdentifier = requireNonNull(columnIdentifier, "columnIdentifier");
@@ -129,12 +129,12 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   @Override
-  public final Class getTypeClass() {
+  public final Class<?> getTypeClass() {
     return typeClass;
   }
 
   @Override
-  public final void setLikeValue(final Object value) {
+  public final <T> void setLikeValue(final T value) {
     setOperator(Operator.LIKE);
     setUpperBound(value);
     final boolean enableSearch = value != null;
@@ -144,26 +144,26 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   @Override
-  public final void setUpperBound(final Object value) {
+  public final <T> void setUpperBound(final T value) {
     validateType(value);
     checkLock();
     upperBoundValue.set(value);
   }
 
   @Override
-  public final Object getUpperBound() {
+  public final <T> T getUpperBound() {
     return getBoundValue(upperBoundValue.get());
   }
 
   @Override
-  public final void setLowerBound(final Object value) {
+  public final <T> void setLowerBound(final T value) {
     validateType(value);
     checkLock();
     lowerBoundValue.set(value);
   }
 
   @Override
-  public final Object getLowerBound() {
+  public final <T> T getLowerBound() {
     return getBoundValue(lowerBoundValue.get());
   }
 
@@ -245,13 +245,13 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   @Override
-  public Value getLowerBoundValue() {
-    return lowerBoundValue;
+  public <T> Value<T> getLowerBoundValue() {
+    return (Value<T>) lowerBoundValue;
   }
 
   @Override
-  public Value getUpperBoundValue() {
-    return upperBoundValue;
+  public <T> Value<T> getUpperBoundValue() {
+    return (Value<T>) upperBoundValue;
   }
 
   @Override
@@ -340,7 +340,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   @Override
-  public final boolean include(final Comparable comparable) {
+  public final boolean include(final Comparable<?> comparable) {
     if (!enabledState.get()) {
       return true;
     }
@@ -368,26 +368,26 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
    * @param row the row
    * @return a Comparable from the given row to compare with this condition model's value.
    */
-  protected Comparable getComparable(final R row) {
-    return (Comparable) row;
+  protected Comparable<?> getComparable(final R row) {
+    return (Comparable<?>) row;
   }
 
-  private Object getBoundValue(final Object upperBound) {
+  private <T> T getBoundValue(final Object upperBound) {
     if (typeClass.equals(String.class)) {
       if (upperBound == null || (upperBound instanceof String && ((String) upperBound).length() == 0)) {
         return null;
       }
       if (upperBound instanceof Collection) {
-        return upperBound;
+        return (T) upperBound;
       }
 
-      return addWildcard((String) upperBound);
+      return (T) addWildcard((String) upperBound);
     }
 
-    return upperBound;
+    return (T) upperBound;
   }
 
-  private boolean includeLike(final Comparable comparable) {
+  private boolean includeLike(final Comparable<?> comparable) {
     if (comparable == null) {
       return getUpperBound() == null;
     }
@@ -402,7 +402,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     return comparable.compareTo(getUpperBound()) == 0;
   }
 
-  private boolean includeNotLike(final Comparable comparable) {
+  private boolean includeNotLike(final Comparable<?> comparable) {
     if (comparable == null) {
       return getUpperBound() != null;
     }
@@ -418,7 +418,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   private boolean includeExactWildcard(final String value) {
-    String upperBoundString = (String) getUpperBound();
+    String upperBoundString = getUpperBound();
     if (upperBoundString == null) {
       upperBoundString = "";
     }
@@ -444,18 +444,18 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
 
   private String prepareForRegex(final String string) {
     //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replaceAll(wildcard, ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
+    return string.replaceAll(wildcard, ".*").replaceAll("\\$", ".").replaceAll("]", "\\\\]").replaceAll("\\[", "\\\\[");
   }
 
-  private boolean includeLessThan(final Comparable comparable) {
+  private boolean includeLessThan(final Comparable<?> comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) <= 0;
   }
 
-  private boolean includeGreaterThan(final Comparable comparable) {
+  private boolean includeGreaterThan(final Comparable<?> comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) >= 0;
   }
 
-  private boolean includeWithinRange(final Comparable comparable) {
+  private boolean includeWithinRange(final Comparable<?> comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }
@@ -478,7 +478,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     return lowerCompareResult >= 0 && upperCompareResult <= 0;
   }
 
-  private boolean includeOutsideRange(final Comparable comparable) {
+  private boolean includeOutsideRange(final Comparable<?> comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }
@@ -543,7 +543,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   private void validateType(final Object value) {
     if (value != null) {
       if (value instanceof Collection) {
-        for (final Object collValue : ((Collection) value)) {
+        for (final Object collValue : ((Collection<Object>) value)) {
           validateType(collValue);
         }
       }

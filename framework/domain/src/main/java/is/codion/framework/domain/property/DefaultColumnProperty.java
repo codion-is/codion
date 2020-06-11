@@ -175,27 +175,27 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
     switch (columnType) {
       case Types.INTEGER:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getInteger(resultSet, columnIndex)));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getInteger(resultSet, columnIndex));
       case Types.BIGINT:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getLong(resultSet, columnIndex)));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getLong(resultSet, columnIndex));
       case Types.DOUBLE:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getDouble(resultSet, columnIndex)));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getDouble(resultSet, columnIndex));
       case Types.DECIMAL:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getBigDecimal(resultSet, columnIndex)));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getBigDecimal(resultSet, columnIndex));
       case Types.DATE:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getDate(resultSet, columnIndex)));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getDate(resultSet, columnIndex));
       case Types.TIMESTAMP:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getTimestamp(resultSet, columnIndex)));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getTimestamp(resultSet, columnIndex));
       case Types.TIME:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getTime(resultSet, columnIndex)));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getTime(resultSet, columnIndex));
       case Types.VARCHAR:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getString(resultSet, columnIndex)));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getString(resultSet, columnIndex));
       case Types.BOOLEAN:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getBoolean(resultSet, columnIndex)));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getBoolean(resultSet, columnIndex));
       case Types.CHAR:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getCharacter(resultSet, columnIndex)));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getCharacter(resultSet, columnIndex));
       case Types.BLOB:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue((getBlob(resultSet, columnIndex)));
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getBlob(resultSet, columnIndex));
       case Types.JAVA_OBJECT:
         return ResultSet::getObject;
       default:

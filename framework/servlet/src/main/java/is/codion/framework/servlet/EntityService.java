@@ -67,7 +67,7 @@ public final class EntityService extends Application {
   public static final String X_FORWARDED_FOR = "X-Forwarded-For";
   public static final int BASIC_PREFIX_LENGTH = BASIC_PREFIX.length();
 
-  private static Server<RemoteEntityConnection, Remote> server;
+  private static Server<RemoteEntityConnection, ? extends Remote> server;
 
   /**
    * Returns the underlying domain entities
@@ -566,7 +566,7 @@ public final class EntityService extends Application {
     return server.connect(ConnectionRequest.connectionRequest(user, clientId, clientTypeId, parameters));
   }
 
-  static void setServer(final Server<RemoteEntityConnection, Remote> server) {
+  static void setServer(final Server<RemoteEntityConnection, ? extends Remote> server) {
     EntityService.server = server;
   }
 

@@ -18,18 +18,18 @@ public interface AuxiliaryServerFactory<T extends AuxiliaryServer> {
    * @param server the parent server
    * @return a server
    */
-  T createServer(Server server);
+  T createServer(Server<?, ?> server);
 
   /**
    * Returns the {@link AuxiliaryServerFactory} implementation found by the {@link ServiceLoader} of the given type.
    * @param classname the classname of the required auxiliary server factory
+   * @param <T> the auxiliary server type
    * @return a {@link AuxiliaryServerFactory} implementation of the given type from the {@link ServiceLoader}.
    * @throws IllegalStateException in case no such {@link AuxiliaryServerFactory} implementation is available.
    */
-  static AuxiliaryServerFactory getAuxiliaryServerProvider(final String classname) {
+  static <T extends AuxiliaryServer> AuxiliaryServerFactory<T> getAuxiliaryServerProvider(final String classname) {
     requireNonNull(classname, "classname");
-    final ServiceLoader<AuxiliaryServerFactory> loader = ServiceLoader.load(AuxiliaryServerFactory.class);
-    for (final AuxiliaryServerFactory serverProvider : loader) {
+    for (final AuxiliaryServerFactory<T> serverProvider : ServiceLoader.load(AuxiliaryServerFactory.class)) {
       if (serverProvider.getClass().getName().equals(classname)) {
         return serverProvider;
       }

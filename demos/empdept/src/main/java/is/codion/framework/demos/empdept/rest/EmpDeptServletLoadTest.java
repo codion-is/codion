@@ -57,7 +57,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   }
 
   public static void main(final String[] args) throws Exception {
-    new LoadTestPanel(new EmpDeptServletLoadTest(UNIT_TEST_USER)).showFrame();
+    new LoadTestPanel<>(new EmpDeptServletLoadTest(UNIT_TEST_USER)).showFrame();
   }
 
   private static final class UpdateLocation extends AbstractUsageScenario<EntityConnectionProvider> {

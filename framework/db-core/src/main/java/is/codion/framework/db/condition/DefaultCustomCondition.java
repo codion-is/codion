@@ -15,13 +15,13 @@ final class DefaultCustomCondition implements CustomCondition {
   private static final long serialVersionUID = 1;
 
   private final String conditionId;
-  private final ArrayList<Attribute<?>> attributes;
-  private final ArrayList values;
+  private final List<Attribute<?>> attributes;
+  private final List<Object> values;
 
-  DefaultCustomCondition(final String conditionId, final List<Attribute<?>> attributes, final List values) {
+  DefaultCustomCondition(final String conditionId, final List<Attribute<?>> attributes, final List<Object> values) {
     this.conditionId = requireNonNull(conditionId, "conditionId");
     this.attributes = new ArrayList<>(requireNonNull(attributes, "attributes"));
-    this.values = new ArrayList(requireNonNull(values, "values"));
+    this.values = new ArrayList<>(requireNonNull(values, "values"));
   }
 
   @Override
@@ -35,7 +35,7 @@ final class DefaultCustomCondition implements CustomCondition {
   }
 
   @Override
-  public List getValues() {
+  public List<Object> getValues() {
     return values;
   }
 }

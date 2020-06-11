@@ -62,19 +62,20 @@ public final class EntityTableCellRenderers {
    * Instantiates a new EntityTableCellRenderer for the given property
    * @param tableModel the table model
    * @param property the property
+   * @param <T> the value type
    * @return the table cell renderer
    * @see ColorProvider
    * @see EntityDefinition.Builder#colorProvider(ColorProvider)
    */
-  public static EntityTableCellRenderer createTableCellRenderer(final SwingEntityTableModel tableModel, final Property<?> property) {
+  public static <T> EntityTableCellRenderer createTableCellRenderer(final SwingEntityTableModel tableModel, final Property<T> property) {
     if (!Objects.equals(tableModel.getEntityType(), property.getEntityType())) {
       throw new IllegalArgumentException("Property " + property + " not found in entity : " + tableModel.getEntityType());
     }
     if (property.getAttribute().isBoolean()) {
-      return new BooleanRenderer(tableModel, property);
+      return new BooleanRenderer(tableModel, (Property<Boolean>) property);
     }
 
-    return new DefaultEntityTableCellRenderer(tableModel, property);
+    return new DefaultEntityTableCellRenderer<>(tableModel, property);
   }
 
   private static Color shade(final Color color, final int amount) {
@@ -90,7 +91,7 @@ public final class EntityTableCellRenderers {
     return new Color(r, g, b);
   }
 
-  private static Color getBackgroundColor(final SwingEntityTableModel tableModel, final Property property, final int row,
+  private static Color getBackgroundColor(final SwingEntityTableModel tableModel, final Property<?> property, final int row,
                                           final boolean indicateCondition) {
     final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getAttribute());
     final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getAttribute());
@@ -123,10 +124,10 @@ public final class EntityTableCellRenderers {
   /**
    * The default table cell renderer for a {@link EntityTablePanel}
    */
-  public static class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTableCellRenderer {
+  public static class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 
     private final SwingEntityTableModel tableModel;
-    private final Property property;
+    private final Property<T> property;
     private final Format format;
     private final DateTimeFormatter dateTimeFormatter;
 
@@ -138,21 +139,9 @@ public final class EntityTableCellRenderers {
      * @param tableModel the table model providing the data to render
      * @param property the property
      */
-    public DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property property) {
+    public DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<T> property) {
       this(tableModel, property, property.getFormat(), property.getDateTimeFormatter(),
               property.getAttribute().isNumerical() || property.getAttribute().isTemporal() ? RIGHT : LEFT);
-    }
-
-    /**
-     * Instantiates a new DefaultEntityTableCellRenderer based on the data provided by the given EntityTableModel
-     * @param tableModel the table model providing the data to render
-     * @param property the property
-     * @param format the format, overrides the format associated with the property
-     * @param dateTimeFormatter the date/time formatter
-     */
-    public DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property property, final Format format,
-                                          final DateTimeFormatter dateTimeFormatter) {
-      this(tableModel, property, format, dateTimeFormatter, LEFT);
     }
 
     /**
@@ -163,7 +152,7 @@ public final class EntityTableCellRenderers {
      * @param dateTimeFormatter the date/time formatter
      * @param horizontalAlignment the horizontal alignment
      */
-    public DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property property, final Format format,
+    public DefaultEntityTableCellRenderer(final SwingEntityTableModel tableModel, final Property<T> property, final Format format,
                                           final DateTimeFormatter dateTimeFormatter, final int horizontalAlignment) {
       this.tableModel = requireNonNull(tableModel, "tableModel");
       this.property = requireNonNull(property, "property");
@@ -242,11 +231,11 @@ public final class EntityTableCellRenderers {
     private static final Border focusedBorder = UIManager.getBorder("Table.focusCellHighlightBorder");
 
     private final SwingEntityTableModel tableModel;
-    private final Property property;
+    private final Property<Boolean> property;
 
     private boolean indicateCondition = true;
 
-    public BooleanRenderer(final SwingEntityTableModel tableModel, final Property property) {
+    public BooleanRenderer(final SwingEntityTableModel tableModel, final Property<Boolean> property) {
       super(new NullableToggleButtonModel());
       this.tableModel = tableModel;
       this.property = property;

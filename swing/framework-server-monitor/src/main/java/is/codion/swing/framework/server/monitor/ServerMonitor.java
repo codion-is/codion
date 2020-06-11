@@ -207,7 +207,7 @@ public final class ServerMonitor {
   /**
    * @return the available log levels
    */
-  public List getLogLevels() {
+  public List<Object> getLogLevels() {
     if (loggerProxy == null) {
       return emptyList();
     }

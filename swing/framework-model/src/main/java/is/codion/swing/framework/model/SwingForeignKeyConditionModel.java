@@ -67,7 +67,7 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
   private void setUpperAsSelected() {
     final Object upper = getUpperBound();
     if (upper instanceof Collection) {
-      final Collection upperCollection = (Collection) upper;
+      final Collection<Object> upperCollection = (Collection<Object>) upper;
       entityComboBoxModel.setSelectedItem(upperCollection.isEmpty() ? null : upperCollection.iterator().next());
     }
     else {

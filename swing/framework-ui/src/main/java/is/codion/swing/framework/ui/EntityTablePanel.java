@@ -1096,7 +1096,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       return new ForeignKeyTableCellEditor(tableModel.getConnectionProvider(), (ForeignKeyProperty) property);
     }
 
-    return new EntityTableCellEditor(property);
+    return new EntityTableCellEditor<>(property);
   }
 
   /**

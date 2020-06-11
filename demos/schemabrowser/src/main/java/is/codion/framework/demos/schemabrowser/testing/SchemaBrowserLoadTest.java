@@ -72,7 +72,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
     @Override
     public void run() {
       try {
-        new LoadTestPanel(new SchemaBrowserLoadTest()).showFrame();
+        new LoadTestPanel<>(new SchemaBrowserLoadTest()).showFrame();
       }
       catch (final Exception e) {
         e.printStackTrace();

@@ -16,7 +16,7 @@ import javafx.scene.control.TextField;
 /**
  * A {@link Dialog} implementation for receiving property values as input from user
  */
-public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputResult> {
+public final class PropertyInputDialog<T> extends Dialog<PropertyInputDialog.InputResult<T>> {
 
   private final Control control;
 
@@ -24,10 +24,9 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
    * @param property the property
    * @param defaultValue the default value to present to the user
    * @param connectionProvider the connection provider
-   * @param <T> the value type
    */
-  public <T> PropertyInputDialog(final Property<T> property, final T defaultValue,
-                                 final EntityConnectionProvider connectionProvider) {
+  public PropertyInputDialog(final Property<T> property, final T defaultValue,
+                             final EntityConnectionProvider connectionProvider) {
     setTitle(property.getCaption());
     this.control = FXUiUtil.createControl(property, connectionProvider);
     final Value<T> value = FXUiUtil.createValue(property, control, defaultValue);
@@ -35,7 +34,7 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
       ((TextField) control).selectAll();
     }
     initializeUI(control);
-    setResultConverter(dialogButton -> new InputResult(dialogButton != null &&
+    setResultConverter(dialogButton -> new InputResult<>(dialogButton != null &&
             dialogButton.getButtonData() == ButtonBar.ButtonData.OK_DONE, value.get()));
   }
 
@@ -54,16 +53,16 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
   /**
    * The result from a InputDialog
    */
-  public static final class InputResult {
+  public static final class InputResult<T> {
 
     private final boolean inputAccepted;
-    private final Object value;
+    private final T value;
 
     /**
      * @param inputAccepted true if the user accepted the input value
      * @param value the input value
      */
-    public InputResult(final boolean inputAccepted, final Object value) {
+    public InputResult(final boolean inputAccepted, final T value) {
       this.inputAccepted = inputAccepted;
       this.value = value;
     }
@@ -78,7 +77,7 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
     /**
      * @return the value
      */
-    public Object getValue() {
+    public T getValue() {
       return value;
     }
   }

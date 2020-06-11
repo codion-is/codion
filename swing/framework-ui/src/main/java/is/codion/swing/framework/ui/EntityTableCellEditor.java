@@ -22,14 +22,14 @@ import static java.util.Objects.requireNonNull;
 /**
  * A {@link TableCellEditor} implementation for {@link EntityTablePanel}.
  */
-class EntityTableCellEditor extends AbstractCellEditor implements TableCellEditor {
+class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEditor {
 
-  private final Property property;
-  private final Value cellValue = Values.value();
+  private final Property<T> property;
+  private final Value<T> cellValue = Values.value();
 
   private JComponent component;
 
-  EntityTableCellEditor(final Property property) {
+  EntityTableCellEditor(final Property<T> property) {
     this.property = requireNonNull(property, "property");
   }
 
@@ -39,7 +39,7 @@ class EntityTableCellEditor extends AbstractCellEditor implements TableCellEdito
     if (component == null) {
       component = initializeEditorComponent();
     }
-    cellValue.set(value);
+    cellValue.set((T) value);
 
     return component;
   }
@@ -58,11 +58,11 @@ class EntityTableCellEditor extends AbstractCellEditor implements TableCellEdito
     return false;
   }
 
-  protected final Property getProperty() {
+  protected final Property<T> getProperty() {
     return property;
   }
 
-  protected final Value getCellValue() {
+  protected final Value<T> getCellValue() {
     return cellValue;
   }
 

@@ -257,14 +257,14 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final Collection getValues(final C columnIdentifier) {
-    return getColumnValues(IntStream.range(0, getVisibleItemCount()).boxed(),
+  public final <T> Collection<T> getValues(final C columnIdentifier) {
+    return (Collection<T>) getColumnValues(IntStream.range(0, getVisibleItemCount()).boxed(),
             columnModel.getTableColumn(columnIdentifier).getModelIndex());
   }
 
   @Override
-  public final Collection getSelectedValues(final C columnIdentifier) {
-    return getColumnValues(getSelectionModel().getSelectedIndexes().stream(),
+  public final <T> Collection<T> getSelectedValues(final C columnIdentifier) {
+    return (Collection<T>) getColumnValues(getSelectionModel().getSelectedIndexes().stream(),
             columnModel.getTableColumn(columnIdentifier).getModelIndex());
   }
 
@@ -458,10 +458,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * Creates a ColumnValueProvider for the given column
    * @param columnIdentifier the column identifier
+   * @param <T> the value type
    * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}
    */
-  protected ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final C columnIdentifier) {
-    return new DefaultColumnValueProvider(columnIdentifier, this, null);
+  protected <T> ColumnSummaryModel.ColumnValueProvider<T> createColumnValueProvider(final C columnIdentifier) {
+    return new DefaultColumnValueProvider<>(columnIdentifier, this, null);
   }
 
   /**
@@ -534,7 +535,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private void bindEventsInternal() {
     addTableModelListener(e -> tableDataChangedEvent.onEvent());
-    for (final ColumnConditionModel conditionModel : columnModel.getColumnFilterModels()) {
+    for (final ColumnConditionModel<R, C> conditionModel : columnModel.getColumnFilterModels()) {
       conditionModel.addConditionChangedListener(this::filterContents);
     }
     sortModel.addSortingChangedListener(this::sort);
@@ -545,7 +546,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     });
   }
 
-  private List getColumnValues(final Stream<Integer> rowIndexStream, final int columnModelIndex) {
+  private List<Object> getColumnValues(final Stream<Integer> rowIndexStream, final int columnModelIndex) {
     return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
   }
 
@@ -614,10 +615,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * A default ColumnValueProvider implementation
    */
-  protected static final class DefaultColumnValueProvider implements ColumnSummaryModel.ColumnValueProvider {
+  protected static final class DefaultColumnValueProvider<T, C> implements ColumnSummaryModel.ColumnValueProvider<T> {
 
-    private final Object columnIdentifier;
-    private final FilteredTableModel tableModel;
+    private final C columnIdentifier;
+    private final FilteredTableModel<?, C, ?> tableModel;
     private final Format format;
     private final boolean numerical;
 
@@ -626,12 +627,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
      * @param tableModel the table model
      * @param format the format to use for presenting the summary value
      */
-    public DefaultColumnValueProvider(final Object columnIdentifier, final FilteredTableModel tableModel,
+    public DefaultColumnValueProvider(final C columnIdentifier, final FilteredTableModel<?, C, ?> tableModel,
                                       final Format format) {
       this.columnIdentifier = columnIdentifier;
       this.tableModel = tableModel;
       this.format = format;
-      final Class columnClass = tableModel.getSortModel().getColumnClass(columnIdentifier);
+      final Class<?> columnClass = tableModel.getSortModel().getColumnClass(columnIdentifier);
       this.numerical = Number.class.isAssignableFrom(columnClass);
     }
 
@@ -652,7 +653,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
 
     @Override
-    public Collection getValues() {
+    public Collection<T> getValues() {
       return isValueSubset() ? tableModel.getSelectedValues(columnIdentifier) : tableModel.getValues(columnIdentifier);
     }
 

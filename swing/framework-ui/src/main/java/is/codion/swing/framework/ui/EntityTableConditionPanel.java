@@ -109,7 +109,7 @@ public final class EntityTableConditionPanel extends JPanel {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().forEach((column, panel) -> {
         if (panel instanceof ColumnConditionPanel) {
-          ((ColumnConditionPanel) panel).setAdvanced(advanced);
+          ((ColumnConditionPanel<Entity, ?>) panel).setAdvanced(advanced);
         }
       });
     }
@@ -127,7 +127,7 @@ public final class EntityTableConditionPanel extends JPanel {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       for (final JPanel conditionPanel : ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().values()) {
         if (conditionPanel instanceof ColumnConditionPanel) {
-          return ((ColumnConditionPanel) conditionPanel).isAdvanced();
+          return ((ColumnConditionPanel<Entity, ?>) conditionPanel).isAdvanced();
         }
       }
     }
@@ -159,7 +159,7 @@ public final class EntityTableConditionPanel extends JPanel {
         final Property<?> property = conditionProperties.size() == 1 ? conditionProperties.get(0) :
                 Dialogs.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
         if (property != null) {
-          final ColumnConditionPanel<?, ?> conditionPanel = getConditionPanel(property.getAttribute());
+          final ColumnConditionPanel<Entity, Property<?>> conditionPanel = getConditionPanel(property.getAttribute());
           if (conditionPanel != null) {
             conditionPanel.requestInputFocus();
           }
@@ -211,12 +211,12 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param  attribute the attribute
    * @return the condition panel associated with the given property, null if none is specified
    */
-  public ColumnConditionPanel<?, Property<?>> getConditionPanel(final Attribute<?> attribute) {
+  public ColumnConditionPanel<Entity, Property<?>> getConditionPanel(final Attribute<?> attribute) {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       for (final TableColumn column : columns) {
         final Property<?> property = (Property<?>) column.getIdentifier();
         if (property.is(attribute)) {
-          return (ColumnConditionPanel) ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().get(column);
+          return (ColumnConditionPanel<Entity, Property<?>>) ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().get(column);
         }
       }
     }
