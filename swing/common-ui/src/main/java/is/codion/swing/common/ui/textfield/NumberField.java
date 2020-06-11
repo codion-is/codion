@@ -21,6 +21,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.Objects;
 
 /**
  * A text field for numbers.
@@ -179,8 +180,10 @@ public class NumberField<T extends Number> extends JTextField {
 
     protected final void setText(final String text) {
       try {
-        remove(0, getLength());
-        insertString(0, text, null);
+        if (!Objects.equals(getText(0, getLength()), text)) {
+          remove(0, getLength());
+          insertString(0, text, null);
+        }
       }
       catch (final BadLocationException e) {
         throw new RuntimeException(e);
