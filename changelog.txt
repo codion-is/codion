@@ -6240,3 +6240,4 @@
   Report renamed ReportType
   ReportWrapper renamed to Report (in previous commit)
   Removed a few wildcard generic parameters
+  EntityComboBox.integerFieldSelector() bug fixed, value link was in the wrong direction, cleared selected value on instantiation
