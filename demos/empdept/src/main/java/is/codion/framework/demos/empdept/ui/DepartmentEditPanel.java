@@ -9,7 +9,8 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JTextField;
-import java.awt.GridLayout;
+
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 // tag::constructor[]
 public class DepartmentEditPanel extends EntityEditPanel {
@@ -41,7 +42,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
       }
     });
 
-    setLayout(new GridLayout(3, 1, 5, 5));
+    setLayout(gridLayout(3, 1));
 
     addInputPanel(Department.ID);
     addInputPanel(Department.NAME);
