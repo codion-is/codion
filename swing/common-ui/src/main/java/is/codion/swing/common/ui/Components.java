@@ -168,7 +168,7 @@ public final class Components {
     // Traverse children
     final TreeNode node = (TreeNode) parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
-      final Enumeration<Object> e = node.children();
+      final Enumeration<? extends TreeNode> e = node.children();
       while (e.hasMoreElements()) {
         expandAll(tree, parent.pathByAddingChild(e.nextElement()));
       }
@@ -185,7 +185,7 @@ public final class Components {
   public static void collapseAll(final JTree tree, final TreePath parent) {
     final TreeNode node = (TreeNode) parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
-      final Enumeration<Object> e = node.children();
+      final Enumeration<? extends TreeNode> e = node.children();
       while (e.hasMoreElements()) {
         collapseAll(tree, parent.pathByAddingChild(e.nextElement()));
       }
