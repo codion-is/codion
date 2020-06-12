@@ -640,23 +640,24 @@ final class DefaultEntity implements Entity {
   }
 
   private <T> T getDerivedValue(final DerivedProperty<T> derivedProperty) {
-    return derivedProperty.getValueProvider().getValue(getSourceValues(derivedProperty.getSourceAttributes()));
+    return derivedProperty.getValueProvider().get(getSourceValues(derivedProperty));
   }
 
-  private Map<Attribute<?>, Object> getSourceValues(final List<Attribute<?>> sourceAttributes) {
+  private DerivedProperty.SourceValues getSourceValues(final DerivedProperty<?> derivedProperty) {
+    final List<Attribute<?>> sourceAttributes = derivedProperty.getSourceAttributes();
     if (sourceAttributes.size() == 1) {
       final Attribute<?> sourceAttribute = sourceAttributes.get(0);
 
-      return singletonMap(sourceAttribute, get(sourceAttribute));
+      return new DefaultSourceValues(derivedProperty.getAttribute(), singletonMap(sourceAttribute, get(sourceAttribute)));
     }
     else {
-      final Map<Attribute<?>, Object> sourceValues = new HashMap<>(sourceAttributes.size());
+      final Map<Attribute<?>, Object> values = new HashMap<>(sourceAttributes.size());
       for (int i = 0; i < sourceAttributes.size(); i++) {
         final Attribute<?> sourceAttribute = sourceAttributes.get(i);
-        sourceValues.put(sourceAttribute, get(sourceAttribute));
+        values.put(sourceAttribute, get(sourceAttribute));
       }
 
-      return sourceValues;
+      return new DefaultSourceValues(derivedProperty.getAttribute(), values);
     }
   }
 
@@ -783,5 +784,26 @@ final class DefaultEntity implements Entity {
     }
 
     return values;
+  }
+
+  private static final class DefaultSourceValues implements DerivedProperty.SourceValues {
+
+    private final Attribute<?> derivedAttribute;
+    private final Map<Attribute<?>, Object> values;
+
+    private DefaultSourceValues(final Attribute<?> derivedAttribute, final Map<Attribute<?>, Object> values) {
+      this.derivedAttribute = derivedAttribute;
+      this.values = values;
+    }
+
+    @Override
+    public <T> T get(final Attribute<T> attribute) {
+      if (!values.containsKey(attribute)) {
+        throw new IllegalArgumentException("Attribute " + attribute +
+                " is not specified as a source attribute for derived property: " + derivedAttribute);
+      }
+
+      return (T) values.get(attribute);
+    }
   }
 }

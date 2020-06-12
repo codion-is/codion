@@ -7,7 +7,6 @@ import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
@@ -18,7 +17,6 @@ import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.awt.Color;
-import java.util.Map;
 import java.util.Objects;
 
 import static is.codion.common.Util.notNull;
@@ -257,9 +255,9 @@ public final class WorldImpl extends Domain {
     private static final long serialVersionUID = 1;
 
     @Override
-    public Integer getValue(Map<Attribute<?>, Object> sourceValues) {
-      Double percentage = (Double) sourceValues.get(CountryLanguage.PERCENTAGE);
-      Entity country = (Entity) sourceValues.get(CountryLanguage.COUNTRY_FK);
+    public Integer get(final DerivedProperty.SourceValues sourceValues) {
+      Double percentage = sourceValues.get(CountryLanguage.PERCENTAGE);
+      Entity country = sourceValues.get(CountryLanguage.COUNTRY_FK);
       if (notNull(percentage, country) && country.isNotNull(Country.POPULATION)) {
         return Double.valueOf(country.get(Country.POPULATION) * (percentage / 100)).intValue();
       }
