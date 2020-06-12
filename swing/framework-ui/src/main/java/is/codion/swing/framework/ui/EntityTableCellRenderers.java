@@ -123,6 +123,7 @@ public final class EntityTableCellRenderers {
 
   /**
    * The default table cell renderer for a {@link EntityTablePanel}
+   * @param <T> the column value type
    */
   public static class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 

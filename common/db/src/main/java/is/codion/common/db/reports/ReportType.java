@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.sql.Connection;
 
 /**
+ * Identifies a report.
  * @param <T> the report type
  * @param <R> the report result type
  * @param <P> the report parameters type
