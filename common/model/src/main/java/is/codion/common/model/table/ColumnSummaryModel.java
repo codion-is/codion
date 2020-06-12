@@ -80,6 +80,7 @@ public interface ColumnSummaryModel {
 
   /**
    * Provides the values used when creating the summary value.
+   * @param <T> the value type
    */
   interface ColumnValueProvider<T> {
 

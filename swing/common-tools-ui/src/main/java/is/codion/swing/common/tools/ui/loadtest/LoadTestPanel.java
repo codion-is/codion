@@ -63,6 +63,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default UI component for the LoadTestModel class.
+ * @param <T> the load test application type
  * @see LoadTestModel
  */
 public final class LoadTestPanel<T> extends JPanel {

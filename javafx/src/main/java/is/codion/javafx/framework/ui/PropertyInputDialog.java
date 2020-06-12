@@ -52,6 +52,7 @@ public final class PropertyInputDialog<T> extends Dialog<PropertyInputDialog.Inp
 
   /**
    * The result from a InputDialog
+   * @param <T> the value type
    */
   public static final class InputResult<T> {
 
