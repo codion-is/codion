@@ -11,7 +11,6 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -24,7 +23,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
@@ -408,8 +406,8 @@ public final class ChinookImpl extends Domain implements Chinook {
     private static final long serialVersionUID = 1;
 
     @Override
-    public Image getValue(final Map<Attribute<?>, Object> sourceValues) {
-      final byte[] bytes = (byte[]) sourceValues.get(Album.COVER);
+    public Image get(final DerivedProperty.SourceValues sourceValues) {
+      final byte[] bytes = sourceValues.get(Album.COVER);
       if (bytes == null) {
         return null;
       }
