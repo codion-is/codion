@@ -116,12 +116,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds events signaling value changes made via {@link #put(Attribute, Object)} or {@link #remove(Attribute)}
    */
-  private final Map<Attribute<?>, Event> valueEditEventMap = new HashMap<>();
+  private final Map<Attribute<?>, Event<?>> valueEditEventMap = new HashMap<>();
 
   /**
    * Holds events signaling value changes in the underlying {@link Entity}
    */
-  private final Map<Attribute<?>, Event> valueChangeEventMap = new HashMap<>();
+  private final Map<Attribute<?>, Event<?>> valueChangeEventMap = new HashMap<>();
 
   /**
    * A state indicating whether the entity being edited is new
@@ -628,7 +628,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     if (isEntityNew()) {
       final EntityDefinition entityDefinition = getEntityDefinition();
       for (final ColumnProperty<?> property : entityDefinition.getColumnProperties()) {
-        if (!property.isForeignKeyProperty() && valueModified(property.getAttribute())) {
+        if (!property.isForeignKeyColumn() && valueModified(property.getAttribute())) {
           return true;
         }
       }
@@ -657,7 +657,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final <T> void removeValueEditListener(final Attribute<T> attribute, final EventDataListener<ValueChange<T>> listener) {
     if (valueEditEventMap.containsKey(attribute)) {
-      valueEditEventMap.get(attribute).removeDataListener(listener);
+      ((Event<ValueChange<T>>) valueEditEventMap.get(attribute)).removeDataListener(listener);
     }
   }
 
@@ -669,7 +669,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final <T> void removeValueListener(final Attribute<T> attribute, final EventDataListener<ValueChange<T>> listener) {
     if (valueChangeEventMap.containsKey(attribute)) {
-      valueChangeEventMap.get(attribute).removeDataListener(listener);
+      ((Event<ValueChange<T>>) valueChangeEventMap.get(attribute)).removeDataListener(listener);
     }
   }
 
@@ -944,6 +944,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return true;
   }
 
+  @SuppressWarnings("rawtypes")
   private void doSetEntity(final Entity entity) {
     final Collection<Attribute<?>> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity() : entity);
     for (final Attribute<?> affectedAttribute : affectedAttributes) {
@@ -965,11 +966,11 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private <T> Event<ValueChange<T>> getValueEditEvent(final Attribute<T> attribute) {
-    return valueEditEventMap.computeIfAbsent(attribute, k -> Events.event());
+    return (Event<ValueChange<T>>) valueEditEventMap.computeIfAbsent(attribute, k -> Events.event());
   }
 
   private <T> Event<ValueChange<T>> getValueChangeEvent(final Attribute<T> attribute) {
-    return valueChangeEventMap.computeIfAbsent(attribute, k -> Events.event());
+    return (Event<ValueChange<T>>) valueChangeEventMap.computeIfAbsent(attribute, k -> Events.event());
   }
 
   private void initializePersistentValues() {
@@ -994,7 +995,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     validState.set(validator.isValid(entity, getEntityDefinition()));
     primaryKeyNullState.set(entity.getKey().isNull());
     entityNewState.set(isEntityNew());
-    final Event<ValueChange<T>> valueChangeEvent = valueChangeEventMap.get(valueChange.getAttribute());
+    final Event<ValueChange<T>> valueChangeEvent = (Event<ValueChange<T>>) valueChangeEventMap.get(valueChange.getAttribute());
     if (valueChangeEvent != null) {
       valueChangeEvent.onEvent(valueChange);
     }

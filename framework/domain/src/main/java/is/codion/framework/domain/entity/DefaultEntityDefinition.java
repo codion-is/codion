@@ -359,14 +359,14 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return entityProperties.columnProperties.stream()
             .filter(property -> property.isInsertable() &&
                     (includeNonUpdatable || property.isUpdatable()) &&
-                    (includePrimaryKeyProperties || !property.isPrimaryKeyProperty()))
+                    (includePrimaryKeyProperties || !property.isPrimaryKeyColumn()))
             .collect(toList());
   }
 
   @Override
   public List<Property<?>> getUpdatableProperties() {
     final List<ColumnProperty<?>> writableColumnProperties = getWritableColumnProperties(!isKeyGenerated(), false);
-    writableColumnProperties.removeIf(property -> property.isForeignKeyProperty() || property.isDenormalized());
+    writableColumnProperties.removeIf(property -> property.isForeignKeyColumn() || property.isDenormalized());
     final List<Property<?>> updatable = new ArrayList<>(writableColumnProperties);
     for (final ForeignKeyProperty foreignKeyProperty : entityProperties.foreignKeyProperties) {
       if (foreignKeyProperty.isUpdatable()) {
@@ -533,7 +533,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     requireNonNull(valueProvider);
     final Entity entity = entity();
     for (@SuppressWarnings("rawtypes") final ColumnProperty property : entityProperties.columnProperties) {
-      if (!property.isForeignKeyProperty() && !property.isDenormalized()//these are set via their respective parent properties
+      if (!property.isForeignKeyColumn() && !property.isDenormalized()//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
         entity.put(property.getAttribute(), valueProvider.apply(property.getAttribute()));
       }
@@ -702,7 +702,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private static void validatePrimaryKeyProperties(final Map<Attribute<?>, Property<?>> propertyMap) {
       final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
       for (final Property<?> property : propertyMap.values()) {
-        if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyProperty()) {
+        if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) {
           final Integer index = ((ColumnProperty<?>) property).getPrimaryKeyIndex();
           if (usedPrimaryKeyIndexes.contains(index)) {
             throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
@@ -802,7 +802,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
     private List<ColumnProperty<?>> getPrimaryKeyProperties() {
       return properties.stream().filter(property -> property instanceof ColumnProperty
-              && ((ColumnProperty<?>) property).isPrimaryKeyProperty()).map(property -> (ColumnProperty<?>) property)
+              && ((ColumnProperty<?>) property).isPrimaryKeyColumn()).map(property -> (ColumnProperty<?>) property)
               .sorted((pk1, pk2) -> {
                 final Integer index1 = pk1.getPrimaryKeyIndex();
                 final Integer index2 = pk2.getPrimaryKeyIndex();

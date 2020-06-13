@@ -75,7 +75,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    */
   ForeignKeyProperty.Builder builder(final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
     requireNonNull(columnPropertyBuilders, "columnPropertyBuilders");
-    columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyProperty(true));
+    columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyColumn(true));
 
     return new DefaultForeignKeyPropertyBuilder(this, columnPropertyBuilders);
   }

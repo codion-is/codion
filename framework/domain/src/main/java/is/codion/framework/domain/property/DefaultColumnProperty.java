@@ -35,7 +35,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   private boolean columnHasDefaultValue = false;
   private boolean insertable = true;
   private boolean updatable = true;
-  private boolean foreignKeyProperty = false;
+  private boolean foreignKeyColumn = false;
   private boolean searchProperty = false;
 
   private final transient ResultPacker<T> resultPacker;
@@ -116,12 +116,12 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   @Override
-  public final boolean isForeignKeyProperty() {
-    return foreignKeyProperty;
+  public final boolean isForeignKeyColumn() {
+    return foreignKeyColumn;
   }
 
   @Override
-  public final boolean isPrimaryKeyProperty() {
+  public final boolean isPrimaryKeyColumn() {
     return primaryKeyIndex >= 0;
   }
 
@@ -485,8 +485,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final void setForeignKeyProperty(final boolean foreignKeyProperty) {
-      columnProperty.foreignKeyProperty = foreignKeyProperty;
+    public final void setForeignKeyColumn(final boolean foreignKeyColumn) {
+      columnProperty.foreignKeyColumn = foreignKeyColumn;
     }
   }
 }

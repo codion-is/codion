@@ -335,7 +335,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   private void initializePropertyConditionModels(final EntityType entityType, final ConditionModelFactory conditionModelProvider) {
     for (final ColumnProperty<?> columnProperty :
             connectionProvider.getEntities().getDefinition(entityType).getColumnProperties()) {
-      if (!columnProperty.isForeignKeyProperty() && !columnProperty.isAggregateColumn()) {
+      if (!columnProperty.isForeignKeyColumn() && !columnProperty.isAggregateColumn()) {
         final ColumnConditionModel<Entity, ColumnProperty<?>> conditionModel =
                 conditionModelProvider.createColumnConditionModel(columnProperty);
         if (conditionModel != null) {

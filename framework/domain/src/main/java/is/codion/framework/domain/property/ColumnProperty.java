@@ -43,7 +43,7 @@ public interface ColumnProperty<T> extends Property<T> {
   /**
    * @return true if this property is part of a primary key
    */
-  boolean isPrimaryKeyProperty();
+  boolean isPrimaryKeyColumn();
 
   /**
    * @return true if this column is a group by column
@@ -86,7 +86,7 @@ public interface ColumnProperty<T> extends Property<T> {
   /**
    * @return true if this property is part of a ForeignKeyProperty
    */
-  boolean isForeignKeyProperty();
+  boolean isForeignKeyColumn();
 
   /**
    * @return true if the underlying column has a default value
@@ -254,8 +254,8 @@ public interface ColumnProperty<T> extends Property<T> {
     ColumnProperty.Builder<T> searchProperty(boolean searchProperty);
 
     /**
-     * @param foreignKeyProperty true if this property is part of a foreign key
+     * @param foreignKeyColumn true if this property represents a column which is part of a foreign key
      */
-    void setForeignKeyProperty(boolean foreignKeyProperty);
+    void setForeignKeyColumn(boolean foreignKeyColumn);
   }
 }

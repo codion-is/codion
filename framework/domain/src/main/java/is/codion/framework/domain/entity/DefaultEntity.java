@@ -87,8 +87,7 @@ final class DefaultEntity implements Entity {
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
   DefaultEntity(final EntityDefinition definition, final Map<Attribute<?>, Object> values, final Map<Attribute<?>, Object> originalValues) {
-    final Map<Attribute<?>, Object> validatedValues = validatePropertiesAndValues(definition, values);
-    this.values = validatedValues == null ? new HashMap<>() : validatedValues;
+    this.values = validatePropertiesAndValues(definition, values == null ? new HashMap<>() : values);
     this.originalValues = validatePropertiesAndValues(definition, originalValues);
     this.definition = definition;
   }
@@ -226,6 +225,9 @@ final class DefaultEntity implements Entity {
   public final Collection<Attribute<?>> setAs(final Entity entity) {
     if (entity == this) {
       return Collections.emptyList();
+    }
+    if (entity != null && !definition.getEntityType().equals(entity.getEntityType())) {
+      throw new IllegalArgumentException("Entity of type: " + definition.getEntityType() + " expected, got: " + entity.getEntityType());
     }
     final Set<Attribute<?>> affectedAttributes = new HashSet<>(values.keySet());
     clear();
@@ -404,7 +406,19 @@ final class DefaultEntity implements Entity {
     if (!initialization) {
       updateOriginalValue(property.getAttribute(), newValue, previousValue);
     }
-    onValuePut(property, newValue);
+    if (property instanceof ColumnProperty) {
+      final ColumnProperty<T> columnProperty = (ColumnProperty<T>) property;
+      if (columnProperty.isPrimaryKeyColumn()) {
+        key = null;
+      }
+      if (columnProperty.isForeignKeyColumn()) {
+        removeInvalidForeignKeyValues(columnProperty.getAttribute(), newValue);
+      }
+    }
+    toString = null;
+    if (property instanceof ForeignKeyProperty) {
+      propagateForeignKeyValues((ForeignKeyProperty) property, (Entity) newValue);
+    }
 
     return previousValue;
   }
@@ -427,7 +441,7 @@ final class DefaultEntity implements Entity {
     if (property instanceof DerivedProperty) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
-    if (property instanceof ValueListProperty && value != null && !((ValueListProperty<Object>) property).isValid(value)) {
+    if (property instanceof ValueListProperty && value != null && !((ValueListProperty<T>) property).isValid(value)) {
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getAttribute());
     }
     if (value != null && property instanceof ForeignKeyProperty) {
@@ -446,22 +460,6 @@ final class DefaultEntity implements Entity {
     }
   }
 
-  private <T> void onValuePut(final Property<T> property, final T value) {
-    if (property instanceof ColumnProperty) {
-      final ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
-      if (columnProperty.isPrimaryKeyProperty()) {
-        key = null;
-      }
-      if (columnProperty.isForeignKeyProperty()) {
-        removeInvalidForeignKeyValues(columnProperty.getAttribute(), value);
-      }
-    }
-    toString = null;
-    if (property instanceof ForeignKeyProperty) {
-      propagateForeignKeyValues((ForeignKeyProperty) property, (Entity) value);
-    }
-  }
-
   private void propagateForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity newValue) {
     setForeignKeyValues(foreignKeyProperty, newValue);
     if (definition.hasDenormalizedProperties()) {
@@ -469,15 +467,14 @@ final class DefaultEntity implements Entity {
     }
   }
 
-  private void removeInvalidForeignKeyValues(final Attribute<?> attribute, final Object value) {
-    final List<ForeignKeyProperty> propertyForeignKeyProperties =
-            definition.getForeignKeyProperties(attribute);
+  private <T> void removeInvalidForeignKeyValues(final Attribute<T> attribute, final T value) {
+    final List<ForeignKeyProperty> propertyForeignKeyProperties = definition.getForeignKeyProperties(attribute);
     for (final ForeignKeyProperty foreignKeyProperty : propertyForeignKeyProperties) {
       final Entity foreignKeyEntity = get(foreignKeyProperty);
       if (foreignKeyEntity != null) {
         final Key referencedKey = foreignKeyEntity.getKey();
-        final Attribute<?> keyAttribute =
-                referencedKey.getAttributes().get(foreignKeyProperty.getColumnAttributes().indexOf(attribute));
+        final Attribute<T> keyAttribute = (Attribute<T>) referencedKey.getAttributes()
+                .get(foreignKeyProperty.getColumnAttributes().indexOf(attribute));
         //if the value isn't equal to the value in the foreign key,
         //that foreign key reference is invalid and is removed
         if (!Objects.equals(value, referencedKey.get(keyAttribute))) {
@@ -535,8 +532,8 @@ final class DefaultEntity implements Entity {
             definition.getDenormalizedProperties(foreignKeyProperty.getAttribute());
     if (denormalizedProperties != null) {
       for (int i = 0; i < denormalizedProperties.size(); i++) {
-        final DenormalizedProperty<?> denormalizedProperty = denormalizedProperties.get(i);
-        putInternal((Property<Object>) denormalizedProperty, referencedEntity == null ? null :
+        final DenormalizedProperty<Object> denormalizedProperty = (DenormalizedProperty<Object>) denormalizedProperties.get(i);
+        putInternal(denormalizedProperty, referencedEntity == null ? null :
                 referencedEntity.get(denormalizedProperty.getDenormalizedAttribute()));
       }
     }
