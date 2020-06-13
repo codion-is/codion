@@ -62,7 +62,9 @@ public final class EntitiesTutorial {
     public Chinook() {
       // create properties for the columns in the table 'chinook.artist'
       Property.Builder<Integer> artistId = primaryKeyProperty(Artist.ID);
+
       Property.Builder<String> artistName = columnProperty(Artist.NAME, "Name");
+
       artistName.nullable(false).maximumLength(120);
 
       // define an entity based on the table 'chinook.artist',
@@ -75,13 +77,17 @@ public final class EntitiesTutorial {
 
       // create properties for the columns in the table 'chinook.album'
       Property.Builder<Integer> albumId = primaryKeyProperty(Album.ID);
+
       Property.Builder<String> albumTitle = columnProperty(Album.TITLE, "Title");
+
       albumTitle.nullable(false).maximumLength(160);
+
       // we wrap the actual 'artistid' column property in a foreign key
       // referencing the entity identified by T_ARTIST
       Property.Builder<Entity> albumArtist =
               foreignKeyProperty(Album.ARTIST_FK, "Artist", Artist.TYPE,
                       columnProperty(Album.ARTIST_ID));
+
       albumArtist.nullable(false);
 
       // define an entity based on the table 'chinook.album',
@@ -124,6 +130,7 @@ public final class EntitiesTutorial {
     // we create a select condition, where we specify the type of the entity
     // we're selecting, the attributes we're searching by, the type of condition and the value.
     EntitySelectCondition artistsCondition = selectCondition(Artist.TYPE, Artist.NAME, LIKE, "An%");
+
     // and we set the order by clause
     artistsCondition.setOrderBy(orderBy().ascending(Artist.NAME));
 
@@ -152,6 +159,7 @@ public final class EntitiesTutorial {
 
     // lets create a new band
     Entity myBand = entities.entity(Artist.TYPE);
+
     // and give the band a name
     myBand.put(Artist.NAME, "My band name");
 
@@ -169,8 +177,10 @@ public final class EntitiesTutorial {
 
     // now for our first album
     Entity album = entities.entity(Album.TYPE);
+
     // set the album artist by setting the artist foreign key to my band
     album.put(Album.ARTIST_FK, myBand);
+
     // and set the title
     album.put(Album.TITLE, "My first album");
 

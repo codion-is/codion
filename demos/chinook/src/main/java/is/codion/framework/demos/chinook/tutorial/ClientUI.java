@@ -43,18 +43,23 @@ public final class ClientUI {
 
     // create a field for entering a artist name
     JTextField nameField = new JTextField(10);
+
     // create a String Value based on the artist name in the edit model
     Value<String> editModelNameValue = editModel.value(Artist.NAME);
+
     // create a String Value based on the text field
     Value<String> textFieldNameValue = TextValues.textValue(nameField);
+
     // link the two values
     editModelNameValue.link(textFieldNameValue);
+
     // add a insert action to the name field
     // so we can insert by pressing Enter
     nameField.addActionListener(Controls.control(() -> {
       try {
         // insert the entity
         editModel.insert();
+
         // clear the edit model after a successful insert
         editModel.setEntity(null);
       }
@@ -63,6 +68,7 @@ public final class ClientUI {
                 "Insert error", JOptionPane.ERROR_MESSAGE);
       }
     }));
+
     // show a message after insert
     editModel.addAfterInsertListener(insertedEntities ->
             JOptionPane.showMessageDialog(nameField,
@@ -84,25 +90,34 @@ public final class ClientUI {
     // based on a combobox model supplied by the edit model
     final SwingEntityComboBoxModel artistComboBoxModel = editModel.getForeignKeyComboBoxModel(Album.ARTIST_FK);
     EntityComboBox artistComboBox = new EntityComboBox(artistComboBoxModel);
+
     // limit the combo box width, due to long artist names
     Components.setPreferredWidth(artistComboBox, 240);
+
     // move focus with Enter key
     KeyEvents.transferFocusOnEnter(artistComboBox);
+
     // populate the combo box model
     artistComboBoxModel.refresh();
+
     // create a Entity Value based on the album artist in the edit model
     Value<Entity> editModelArtistValue = editModel.value(Album.ARTIST_FK);
+
     // create a Entity Value based on the combobox
     Value<Entity> comboBoxArtistValue = SelectedValues.selectedValue(artistComboBox);
+
     // link the two values
     editModelArtistValue.link(comboBoxArtistValue);
 
     // create a field for entering a album title
     JTextField titleField = new JTextField(10);
+
     // create a String Value based on the album title in the edit model
     Value<String> editModelNameValue = editModel.value(Album.TITLE);
+
     // create a String Value based on the text field
     Value<String> textFieldTitleValue = TextValues.textValue(titleField);
+
     // link the two values
     editModelNameValue.link(textFieldTitleValue);
 
@@ -111,8 +126,10 @@ public final class ClientUI {
     titleField.addActionListener(Controls.control(() -> {
       try {
         editModel.insert();
+
         // clear the edit model after a successful insert
         editModel.setEntity(null);
+
         // and set the focus on the combo box
         artistComboBox.requestFocusInWindow();
       }
@@ -121,6 +138,7 @@ public final class ClientUI {
                 "Error", JOptionPane.ERROR_MESSAGE);
       }
     }));
+
     // show a message after insert
     editModel.addAfterInsertListener(insertedEntities ->
             JOptionPane.showMessageDialog(titleField,
@@ -140,6 +158,7 @@ public final class ClientUI {
     // Configure the database
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
+
     // initialize a connection provider, this class is responsible
     // for supplying a valid connection or throwing an exception
     // in case a connection can not be established
