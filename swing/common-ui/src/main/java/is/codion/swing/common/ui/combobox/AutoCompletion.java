@@ -54,7 +54,6 @@ public final class AutoCompletion extends CompletionDocument {
     }
     else {
       offs = offs - str.length();
-      getComboBox().getToolkit().beep();
     }
     setTextAccordingToSelectedItem();
     highlightCompletedText(offs + str.length());

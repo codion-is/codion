@@ -59,7 +59,6 @@ public final class MaximumMatch extends CompletionDocument {
     else {
       item = getComboBox().getSelectedItem();
       offs = offs - str.length();
-      getComboBox().getToolkit().beep();
     }
 
     if (match) {

@@ -173,7 +173,6 @@ class CompletionDocument extends PlainDocument {
         // ignore delete key
         case KeyEvent.VK_DELETE:
           e.consume();
-          comboBox.getToolkit().beep();
           break;
         default:
           break;
