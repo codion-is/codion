@@ -26,12 +26,12 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(VetSpecialty.VET_FK);
 
     createForeignKeyComboBox(VetSpecialty.VET_FK);
-    final EntityComboBox specialtyComboBox = createForeignKeyComboBox(VetSpecialty.SPECIALTY_FK);
+    EntityComboBox specialtyComboBox = createForeignKeyComboBox(VetSpecialty.SPECIALTY_FK);
 
-    final Action newSpecialtyAction = new EntityPanelBuilder(VetSpecialty.TYPE)
+    Action newSpecialtyAction = new EntityPanelBuilder(VetSpecialty.TYPE)
             .setEditPanelClass(VetSpecialtyEditPanel.class)
             .createEditPanelAction(specialtyComboBox);
-    final JPanel specialtyPanel = createEastButtonPanel(specialtyComboBox, newSpecialtyAction);
+    JPanel specialtyPanel = createEastButtonPanel(specialtyComboBox, newSpecialtyAction);
 
     setLayout(Layouts.gridLayout(1, 2));
 
