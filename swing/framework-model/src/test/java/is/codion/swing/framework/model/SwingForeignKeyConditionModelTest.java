@@ -12,7 +12,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
-import is.codion.framework.model.DefaultPropertyFilterModelProvider;
+import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.tests.TestDomain;
 
@@ -32,16 +32,16 @@ public class SwingForeignKeyConditionModelTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_EMP,
-          CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(),
-          new SwingPropertyConditionModelProvider());
+          CONNECTION_PROVIDER, new DefaultFilterModelFactory(),
+          new SwingConditionModelFactory());
 
   @Test
   public void refresh() {
     conditionModel.refresh();
-    assertTrue(((SwingForeignKeyConditionModel) conditionModel.getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK))
+    assertTrue(((SwingForeignKeyConditionModel) conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK))
             .getEntityComboBoxModel().getSize() > 1);
     conditionModel.clear();
-    assertEquals(0, ((SwingForeignKeyConditionModel) conditionModel.getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK))
+    assertEquals(0, ((SwingForeignKeyConditionModel) conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK))
             .getEntityComboBoxModel().getSize());
   }
 

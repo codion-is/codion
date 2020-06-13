@@ -27,7 +27,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   @Override
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyProperty foreignKeyProperty) {
     final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
-    if (foreignKeyProperty.is(Employee.MGR_FK)) {
+    if (foreignKeyProperty.getAttribute().equals(Employee.MGR_FK)) {
       //Customize the null value so that it displays the chosen
       //text instead of the default '-' character
       comboBoxModel.setNullString("None");

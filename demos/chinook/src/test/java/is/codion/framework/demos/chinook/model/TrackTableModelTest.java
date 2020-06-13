@@ -30,7 +30,7 @@ public final class TrackTableModelTest {
 
     final TrackTableModel trackTableModel = new TrackTableModel(connectionProvider);
     final ColumnConditionModel<Entity, ?> albumConditionModel =
-            trackTableModel.getConditionModel().getPropertyConditionModel(Chinook.Track.ALBUM_FK);
+            trackTableModel.getTableConditionModel().getConditionModel(Chinook.Track.ALBUM_FK);
 
     albumConditionModel.setLikeValue(masterOfPuppets);
 

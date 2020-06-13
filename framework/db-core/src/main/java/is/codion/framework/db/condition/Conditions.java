@@ -306,7 +306,7 @@ public final class Conditions {
       return compositeKeyCondition(keys, firstKey.getAttributes(), LIKE);
     }
 
-    return attributeCondition(firstKey.getFirstAttribute(), LIKE, getValues(keys));
+    return attributeCondition(firstKey.getAttribute(), LIKE, getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */
@@ -350,7 +350,7 @@ public final class Conditions {
       final Key entityKey = keys.get(0);
 
       return attributeCondition(foreignKeyColumnAttributes.get(0), operator,
-              entityKey == null ? null : entityKey.getFirstValue());
+              entityKey == null ? null : new Object[] {entityKey.get()});
     }
 
     return attributeCondition(foreignKeyColumnAttributes.get(0), operator, getValues(keys));

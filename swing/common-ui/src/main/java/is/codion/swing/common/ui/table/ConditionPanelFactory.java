@@ -10,12 +10,12 @@ import javax.swing.table.TableColumn;
  * @param <R> the row type
  * @param <C> the type used as column identifier
  */
-public interface ColumnConditionPanelProvider<R, C> {
+public interface ConditionPanelFactory<R, C> {
 
   /**
    * Creates a ColumnConditionPanel for the given column
    * @param column the column
    * @return a ColumnConditionPanel
    */
-  ColumnConditionPanel<R, C> createColumnConditionPanel(TableColumn column);
+  ColumnConditionPanel<R, C> createConditionPanel(TableColumn column);
 }

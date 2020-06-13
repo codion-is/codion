@@ -12,18 +12,18 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
 /**
- * A default PropertyConditionModelProvider implementation.
+ * A default ConditionModelFactory implementation.
  */
-public class DefaultPropertyConditionModelProvider implements PropertyConditionModelProvider {
+public class DefaultConditionModelFactory implements ConditionModelFactory {
 
   @Override
-  public ColumnConditionModel<Entity, ColumnProperty<?>> initializePropertyConditionModel(final ColumnProperty<?> property) {
+  public ColumnConditionModel<Entity, ColumnProperty<?>> createColumnConditionModel(final ColumnProperty<?> property) {
     return new DefaultColumnConditionModel<>(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
             property.getFormat(), property.getDateTimeFormatPattern());
   }
 
   @Override
-  public ColumnConditionModel<Entity, ForeignKeyProperty> initializeForeignKeyConditionModel(
+  public ColumnConditionModel<Entity, ForeignKeyProperty> createForeignKeyConditionModel(
           final ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityType(), connectionProvider);
     lookupModel.getMultipleSelectionEnabledValue().set(true);

@@ -158,7 +158,7 @@ public class EntityTableView extends TableView<Entity> {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
     button.setOnAction(event -> listModel.refresh());
     FXUiUtil.link(button.disableProperty(),
-            listModel.getConditionModel().getConditionChangedObserver().getReversedObserver());
+            listModel.getTableConditionModel().getConditionObserver().getReversedObserver());
 
     return button;
   }
@@ -207,7 +207,7 @@ public class EntityTableView extends TableView<Entity> {
     final CheckMenuItem advanced = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.ADVANCED));
     advanced.selectedProperty().addListener((observable, oldValue, newValue) -> setConditionPaneAdvanced(newValue));
     final MenuItem clear = new MenuItem(FrameworkMessages.get(FrameworkMessages.CLEAR));
-    clear.setOnAction(event -> listModel.getConditionModel().clear());
+    clear.setOnAction(event -> listModel.getTableConditionModel().clear());
 
     final Menu searchMenu = new Menu(FrameworkMessages.get(FrameworkMessages.SEARCH));
     searchMenu.getItems().add(showConditionPane);

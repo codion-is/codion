@@ -136,11 +136,6 @@ abstract class DefaultProperty<T> implements Property<T> {
   }
 
   @Override
-  public final boolean is(final Attribute<?> attribute) {
-    return this.attribute.equals(attribute);
-  }
-
-  @Override
   public Attribute<T> getAttribute() {
     return attribute;
   }

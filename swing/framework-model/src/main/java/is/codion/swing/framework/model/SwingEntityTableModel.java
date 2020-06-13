@@ -29,7 +29,7 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
-import is.codion.framework.model.DefaultPropertyFilterModelProvider;
+import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
@@ -94,7 +94,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * The condition model
    */
-  private final EntityTableConditionModel conditionModel;
+  private final EntityTableConditionModel tableConditionModel;
 
   /**
    * Fired each time this model is refreshed
@@ -139,37 +139,37 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private boolean editable = false;
 
   /**
-   * Instantiates a new DefaultEntityTableModel with default column and condition models.
+   * Instantiates a new SwingEntityTableModel with default column and condition models.
    * @param entityType the entityType
    * @param connectionProvider the db provider
    */
   public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, new SwingEntityTableSortModel(connectionProvider.getEntities(), entityType),
             new DefaultEntityTableConditionModel(entityType, connectionProvider,
-                    new DefaultPropertyFilterModelProvider(), new SwingPropertyConditionModelProvider()));
+                    new DefaultFilterModelFactory(), new SwingConditionModelFactory()));
   }
 
   /**
    * Instantiates a new DefaultEntityTableModel.
    * @param entityType the entityType
-   * @param connectionProvider the db provider
-   * @param conditionModel the condition model
+   * @param connectionProvider the connection provider
+   * @param tableConditionModel the table condition model
    * @param sortModel the sort model
    * @throws NullPointerException in case conditionModel is null
-   * @throws IllegalArgumentException if {@code conditionModel} entityType does not match the one supplied as parameter
+   * @throws IllegalArgumentException if {@code tableConditionModel} entityType does not match the one supplied as parameter
    */
   public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Property<?>, TableColumn> sortModel,
-                               final EntityTableConditionModel conditionModel) {
-    super(sortModel, requireNonNull(conditionModel, "conditionModel").getPropertyFilterModels());
-    if (!conditionModel.getEntityType().equals(entityType)) {
-      throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityType()
+                               final EntityTableConditionModel tableConditionModel) {
+    super(sortModel, requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels());
+    if (!tableConditionModel.getEntityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.getEntityType()
               + ", tableModel: " + entityType);
     }
     this.entityType = entityType;
     this.entityDefinition = connectionProvider.getEntities().getDefinition(entityType);
     this.connectionProvider = connectionProvider;
-    this.conditionModel = conditionModel;
+    this.tableConditionModel = tableConditionModel;
     bindEventsInternal();
     applyPreferences();
   }
@@ -249,8 +249,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final EntityTableConditionModel getConditionModel() {
-    return conditionModel;
+  public final EntityTableConditionModel getTableConditionModel() {
+    return tableConditionModel;
   }
 
   @Override
@@ -312,7 +312,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final int getPropertyColumnIndex(final Attribute<?> attribute) {
+  public final int getColumnIndex(final Attribute<?> attribute) {
     return getColumnModel().getColumnIndex(getEntityDefinition().getProperty(attribute));
   }
 
@@ -399,8 +399,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public Color getPropertyBackgroundColor(final int row, final Property<?> property) {
-    return (Color) getEntityDefinition().getColorProvider().getColor(getItemAt(row), property);
+  public Color getBackgroundColor(final int row, final Attribute<?> attribute) {
+    return (Color) getEntityDefinition().getColorProvider().getColor(getItemAt(row), attribute);
   }
 
   @Override
@@ -451,7 +451,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    if (conditionModel.setConditionValues(foreignKeyProperty.getAttribute(), foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
+    if (tableConditionModel.setConditionValues(foreignKeyProperty.getAttribute(), foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
   }
@@ -598,7 +598,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       final List<Entity> queryResult = performQuery();
       clear();
       addEntitiesSorted(queryResult);
-      conditionModel.rememberCondition();
+      tableConditionModel.rememberCondition();
       refreshEvent.onEvent();
     }
     finally {
@@ -614,13 +614,13 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @see EntityTableConditionModel#getCondition()
    */
   protected List<Entity> performQuery() {
-    if (!getConditionModel().isEnabled() && queryConditionRequiredState.get()) {
+    if (!getTableConditionModel().isEnabled() && queryConditionRequiredState.get()) {
       return emptyList();
     }
 
     try {
       return connectionProvider.getConnection().select(selectCondition(entityType,
-              getConditionModel().getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
+              getTableConditionModel().getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -683,7 +683,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   private void bindEventsInternal() {
     getColumnModel().addColumnHiddenListener(this::onColumnHidden);
-    conditionModel.addSimpleConditionListener(this::refresh);
+    tableConditionModel.addSimpleConditionListener(this::refresh);
   }
 
   private void bindEditModelEvents() {
@@ -765,7 +765,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   private void onColumnHidden(final Property<?> property) {
     //disable the condition model for the column to be hidden, to prevent confusion
-    conditionModel.disable(property.getAttribute());
+    tableConditionModel.disable(property.getAttribute());
   }
 
   private org.json.JSONObject createPreferences() throws Exception {

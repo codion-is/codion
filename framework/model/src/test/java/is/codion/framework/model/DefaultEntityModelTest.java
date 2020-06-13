@@ -188,7 +188,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void refreshEntities(final List<Key> keys) {}
     @Override
-    public EntityTableConditionModel getConditionModel() {return null;}
+    public EntityTableConditionModel getTableConditionModel() {return null;}
     @Override
     public boolean isEditable() {return false;}
     @Override
@@ -206,9 +206,9 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public ColumnSummaryModel getColumnSummaryModel(final Attribute<?> attribute) {return null;}
     @Override
-    public Object getPropertyBackgroundColor(final int row, final Property property) {return null;}
+    public Object getBackgroundColor(final int row, final Attribute<?> attribute) {return null;}
     @Override
-    public int getPropertyColumnIndex(final Attribute<?> attribute) {return 0;}
+    public int getColumnIndex(final Attribute<?> attribute) {return 0;}
     @Override
     public int getFetchCount() {return 0;}
     @Override

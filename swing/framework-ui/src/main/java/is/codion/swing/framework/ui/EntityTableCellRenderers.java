@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -91,14 +92,14 @@ public final class EntityTableCellRenderers {
     return new Color(r, g, b);
   }
 
-  private static Color getBackgroundColor(final SwingEntityTableModel tableModel, final Property<?> property, final int row,
+  private static Color getBackgroundColor(final SwingEntityTableModel tableModel, final Attribute<?> attribute, final int row,
                                           final boolean indicateCondition) {
-    final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getAttribute());
-    final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getAttribute());
-    final boolean showCondition = indicateCondition && (propertyConditionEnabled || propertyFilterEnabled);
-    final Color cellColor = tableModel.getPropertyBackgroundColor(row, property);
+    final boolean conditionEnabled = tableModel.getTableConditionModel().isConditionEnabled(attribute);
+    final boolean filterEnabled = tableModel.getTableConditionModel().isFilterEnabled(attribute);
+    final boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
+    final Color cellColor = tableModel.getBackgroundColor(row, attribute);
     if (showCondition) {
-      return getConditionEnabledColor(row, propertyConditionEnabled, propertyFilterEnabled, cellColor);
+      return getConditionEnabledColor(row, conditionEnabled, filterEnabled, cellColor);
     }
     else if (cellColor != null) {
       return cellColor;
@@ -201,7 +202,7 @@ public final class EntityTableCellRenderers {
         return table.getSelectionBackground();
       }
 
-      return getBackgroundColor(tableModel, property, row, indicateCondition);
+      return getBackgroundColor(tableModel, property.getAttribute(), row, indicateCondition);
     }
 
     /**
@@ -260,7 +261,7 @@ public final class EntityTableCellRenderers {
         return table.getSelectionBackground();
       }
 
-      return getBackgroundColor(tableModel, property, row, indicateCondition);
+      return getBackgroundColor(tableModel, property.getAttribute(), row, indicateCondition);
     }
 
     @Override

@@ -10,9 +10,9 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
 /**
- * Specifies an object responsible for providing property condition models
+ * Specifies an object responsible for creating condition models
  */
-public interface PropertyConditionModelProvider {
+public interface ConditionModelFactory {
 
   /**
    * Initializes a {@link ColumnConditionModel} for the given property
@@ -20,7 +20,7 @@ public interface PropertyConditionModelProvider {
    * @return a {@link ColumnConditionModel} for the given property, null if searching
    * should not be allowed for this property
    */
-  ColumnConditionModel<Entity, ColumnProperty<?>> initializePropertyConditionModel(ColumnProperty<?> property);
+  ColumnConditionModel<Entity, ColumnProperty<?>> createColumnConditionModel(ColumnProperty<?> property);
 
   /**
    * Initializes a {@link ColumnConditionModel} for the given property
@@ -29,6 +29,6 @@ public interface PropertyConditionModelProvider {
    * @return a {@link ColumnConditionModel} for the given property, null if searching
    * should not be allowed for this property
    */
-  ColumnConditionModel<Entity, ForeignKeyProperty> initializeForeignKeyConditionModel(
+  ColumnConditionModel<Entity, ForeignKeyProperty> createForeignKeyConditionModel(
           ForeignKeyProperty property, EntityConnectionProvider connectionProvider);
 }

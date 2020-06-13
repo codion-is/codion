@@ -271,7 +271,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     editModel.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
     final Entity inserted = editModel.insert();
     final Entity upperBoundEntity;
-    final Object upperBound = employeeModel.getTableModel().getConditionModel().getPropertyConditionModel(TestDomain.EMP_DEPARTMENT_FK).getUpperBound();
+    final Object upperBound = employeeModel.getTableModel().getTableConditionModel().getConditionModel(TestDomain.EMP_DEPARTMENT_FK).getUpperBound();
     if (upperBound instanceof Collection) {
       upperBoundEntity = (Entity) ((Collection) upperBound).iterator().next();
     }

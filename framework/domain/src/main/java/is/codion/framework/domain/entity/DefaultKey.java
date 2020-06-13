@@ -105,13 +105,30 @@ final class DefaultKey implements Key {
   }
 
   @Override
-  public <T> Attribute<T> getFirstAttribute() {
+  public <T> Attribute<T> getAttribute() {
+    if (compositeKey) {
+      throw new IllegalStateException("Key for entity type " + definition.getEntityType() + " is a composite key");
+    }
+
     return (Attribute<T>) definition.getPrimaryKeyAttributes().get(0);
   }
 
   @Override
-  public Object getFirstValue() {
-    return values.get(getFirstAttribute());
+  public <T> T put(final T value) {
+    if (compositeKey) {
+      throw new IllegalStateException("Key for entity type " + definition.getEntityType() + " is a composite key");
+    }
+
+    return put((Attribute<T>) definition.getPrimaryKeyAttributes().get(0), value);
+  }
+
+  @Override
+  public <T> T get() {
+    if (compositeKey) {
+      throw new IllegalStateException("Key for entity type " + definition.getEntityType() + " is a composite key");
+    }
+
+    return (T) values.get(definition.getPrimaryKeyAttributes().get(0));
   }
 
   @Override
@@ -174,7 +191,7 @@ final class DefaultKey implements Key {
                 && hashCode() == otherKey.hashCode() && entityType.equals(otherKey.getEntityType());
       }
       //single non-integer key
-      return !otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) && Objects.equals(getFirstValue(), otherKey.getFirstValue());
+      return !otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) && Objects.equals(get(), otherKey.get());
     }
 
     return false;
@@ -269,7 +286,7 @@ final class DefaultKey implements Key {
   }
 
   private Integer computeSingleValueHashCode() {
-    final Object value = getFirstValue();
+    final Object value = get();
     if (value == null) {
       return null;
     }

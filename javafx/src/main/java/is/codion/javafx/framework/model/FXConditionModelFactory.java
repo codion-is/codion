@@ -8,22 +8,22 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.model.DefaultPropertyConditionModelProvider;
+import is.codion.framework.model.DefaultConditionModelFactory;
 
 /**
  * Provides foreign key condition models based on {@link ObservableEntityList} for
  * entities based on small datasets, see {@link EntityDefinition#isSmallDataset()}
  */
-public class FXConditionModelProvider extends DefaultPropertyConditionModelProvider {
+public class FXConditionModelFactory extends DefaultConditionModelFactory {
 
   @Override
-  public ColumnConditionModel<Entity, ForeignKeyProperty> initializeForeignKeyConditionModel(
+  public ColumnConditionModel<Entity, ForeignKeyProperty> createForeignKeyConditionModel(
           final ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
     if (connectionProvider.getEntities().getDefinition(foreignKeyProperty.getReferencedEntityType()).isSmallDataset()) {
       return new FXForeignKeyConditionListModel(foreignKeyProperty,
               new ObservableEntityList(foreignKeyProperty.getReferencedEntityType(), connectionProvider));
     }
 
-    return super.initializeForeignKeyConditionModel(foreignKeyProperty, connectionProvider);
+    return super.createForeignKeyConditionModel(foreignKeyProperty, connectionProvider);
   }
 }

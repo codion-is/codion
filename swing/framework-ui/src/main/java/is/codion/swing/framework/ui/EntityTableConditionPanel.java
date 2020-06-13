@@ -54,7 +54,7 @@ public final class EntityTableConditionPanel extends JPanel {
 
   private final Event<Boolean> advancedChangedEvent = Events.event();
 
-  private final EntityTableConditionModel conditionModel;
+  private final EntityTableConditionModel tableConditionModel;
   private final List<TableColumn> columns;
 
   private final JPanel advancedConditionPanel;
@@ -68,7 +68,7 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param tableModel the table model
    */
   public EntityTableConditionPanel(final SwingEntityTableModel tableModel) {
-    this(tableModel, new ConditionColumnSyncPanel(tableModel), initializeSimpleConditionPanel(tableModel.getConditionModel()));
+    this(tableModel, new ConditionColumnSyncPanel(tableModel), initializeSimpleConditionPanel(tableModel.getTableConditionModel()));
   }
 
   /**
@@ -82,7 +82,7 @@ public final class EntityTableConditionPanel extends JPanel {
     if (advancedConditionPanel == null && simpleConditionPanel == null) {
       throw new IllegalArgumentException("An advanced and/or a simple condition panel is required");
     }
-    this.conditionModel = tableModel.getConditionModel();
+    this.tableConditionModel = tableModel.getTableConditionModel();
     this.columns = tableModel.getColumnModel().getAllColumns();
     this.advancedConditionPanel = advancedConditionPanel;
     this.simpleConditionPanel = simpleConditionPanel;
@@ -91,14 +91,14 @@ public final class EntityTableConditionPanel extends JPanel {
     setLayout(new BorderLayout());
     layoutPanel(true);
     KeyEvents.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-            Controls.control(tableModel::refresh, conditionModel.getConditionChangedObserver()));
+            Controls.control(tableModel::refresh, tableConditionModel.getConditionObserver()));
   }
 
   /**
    * @return the condition model this condition panel is based on
    */
-  public EntityTableConditionModel getConditionModel() {
-    return conditionModel;
+  public EntityTableConditionModel getTableConditionModel() {
+    return tableConditionModel;
   }
 
   /**
@@ -187,7 +187,7 @@ public final class EntityTableConditionPanel extends JPanel {
    * @param searchText the search text
    */
   public void setSearchText(final String searchText) {
-    getConditionModel().setSimpleConditionString(searchText);
+    getTableConditionModel().setSimpleConditionString(searchText);
   }
 
   /**
@@ -200,7 +200,7 @@ public final class EntityTableConditionPanel extends JPanel {
       controls.add(Controls.toggleControl(this, "advanced",
               FrameworkMessages.get(FrameworkMessages.ADVANCED), advancedChangedEvent));
     }
-    controls.add(Controls.control(conditionModel::clearPropertyConditionModels, FrameworkMessages.get(FrameworkMessages.CLEAR)));
+    controls.add(Controls.control(tableConditionModel::clearConditionModels, FrameworkMessages.get(FrameworkMessages.CLEAR)));
     controls.addSeparator();
     controls.add(conditionRequiredControl);
 
@@ -215,7 +215,7 @@ public final class EntityTableConditionPanel extends JPanel {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       for (final TableColumn column : columns) {
         final Property<?> property = (Property<?>) column.getIdentifier();
-        if (property.is(attribute)) {
+        if (property.getAttribute().equals(attribute)) {
           return (ColumnConditionPanel<Entity, Property<?>>) ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().get(column);
         }
       }
@@ -279,7 +279,7 @@ public final class EntityTableConditionPanel extends JPanel {
 
     private ConditionColumnSyncPanel(final SwingEntityTableModel tableModel) {
       super(tableModel.getColumnModel());
-      this.conditionModel = tableModel.getConditionModel();
+      this.conditionModel = tableModel.getTableConditionModel();
       setVerticalFillerWidth(Components.getPreferredScrollBarWidth());
       resetPanel();
     }
@@ -287,8 +287,8 @@ public final class EntityTableConditionPanel extends JPanel {
     @Override
     protected JPanel initializeColumnPanel(final TableColumn column) {
       final Property<?> property = (Property<?>) column.getIdentifier();
-      if (conditionModel.containsPropertyConditionModel(property.getAttribute())) {
-        return initializeConditionPanel(conditionModel.getPropertyConditionModel(property.getAttribute()));
+      if (conditionModel.containsConditionModel(property.getAttribute())) {
+        return initializeConditionPanel(conditionModel.getConditionModel(property.getAttribute()));
       }
 
       return new JPanel();

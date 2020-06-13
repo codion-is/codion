@@ -22,7 +22,6 @@ import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -175,7 +174,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
    */
-  EntityTableConditionModel getConditionModel();
+  EntityTableConditionModel getTableConditionModel();
 
   /**
    * @return true if this table model is editable
@@ -227,17 +226,17 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * @param row the row for which to retrieve the background color
-   * @param property the property for which to retrieve the background color
-   * @return an Object representing the background color for this row and property, specified by the row entity
+   * @param attribute the attribute for which to retrieve the background color
+   * @return an Object representing the background color for this row and attribute, specified by the row entity
    * @see EntityDefinition.Builder#colorProvider(ColorProvider)
    */
-  Object getPropertyBackgroundColor(int row, Property<?> property);
+  Object getBackgroundColor(int row, Attribute<?> attribute);
 
   /**
    * @param attribute the attribute
    * @return the index of the column representing the given attribute
    */
-  int getPropertyColumnIndex(Attribute<?> attribute);
+  int getColumnIndex(Attribute<?> attribute);
 
   /**
    * Returns the maximum number of records to fetch via the underlying query the next time

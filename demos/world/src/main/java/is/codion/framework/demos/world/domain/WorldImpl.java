@@ -7,6 +7,7 @@ import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
@@ -14,7 +15,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.DerivedProperty;
-import is.codion.framework.domain.property.Property;
 
 import java.awt.Color;
 import java.util.Objects;
@@ -231,13 +231,13 @@ public final class WorldImpl extends Domain {
     private static final long serialVersionUID = 1;
 
     @Override
-    public Object getColor(Entity city, Property<?> property) {
-      if (property.is(City.POPULATION) &&
+    public Object getColor(Entity city, Attribute<?> attribute) {
+      if (attribute.equals(City.POPULATION) &&
               city.get(City.POPULATION) > 1_000_000) {
         //population YELLOW if > 1.000.000
         return Color.YELLOW;
       }
-      if (property.is(City.NAME) &&
+      if (attribute.equals(City.NAME) &&
               Objects.equals(city.get(City.ID),
                       city.getForeignKey(City.COUNTRY_FK).get(Country.CAPITAL))) {
         //name CYAN if capital city

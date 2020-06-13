@@ -216,9 +216,9 @@ public class DefaultEntityTest {
   public void singleKeyNull() {
     final Key key = ENTITIES.key(TestDomain.T_DETAIL);
     assertTrue(key.isNull());
-    key.put(TestDomain.DETAIL_ID, null);
+    key.put(null);
     assertTrue(key.isNull());
-    key.put(TestDomain.DETAIL_ID, 1L);
+    key.put(1L);
     assertTrue(key.isNotNull());
   }
 
@@ -501,7 +501,7 @@ public class DefaultEntityTest {
   @Test
   public void keyInvalidPropertyPut() {
     final Key empKey1 = ENTITIES.key(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> empKey1.put(TestDomain.EMP_NAME, "test"));
+    assertThrows(IllegalArgumentException.class, () -> empKey1.put("test"));
   }
 
   @Test
@@ -511,7 +511,7 @@ public class DefaultEntityTest {
     final Key empKey2 = keys.get(1);
     assertNotEquals(empKey1, empKey2);
 
-    empKey2.put(TestDomain.EMP_ID, 1);
+    empKey2.put(1);
     assertEquals(empKey1, empKey2);
 
     final Key deptKey = ENTITIES.key(TestDomain.T_DEPARTMENT, 1);
@@ -535,7 +535,7 @@ public class DefaultEntityTest {
     final Key detailKey2 = ENTITIES.key(TestDomain.T_DETAIL, 2L);
     assertNotEquals(detailKey, detailKey2);
 
-    detailKey2.put(TestDomain.DETAIL_ID, 1L);
+    detailKey2.put(1L);
     assertEquals(detailKey2, detailKey);
   }
 
@@ -588,7 +588,7 @@ public class DefaultEntityTest {
     assertNull(emp.get(TestDomain.EMP_DEPARTMENT_FK));
     assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
     final Entity empDept = emp.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
-    assertEquals(2, empDept.getKey().getFirstValue());
+    assertEquals(Integer.valueOf(2), empDept.getKey().get());
 
     final Entity dept2 = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     dept2.put(TestDomain.DEPARTMENT_ID, 3);

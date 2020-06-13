@@ -279,8 +279,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
     requireNonNull(keys, "keys");
     final List<T> list = new ArrayList<>(keys.size());
     for (int i = 0; i < keys.size(); i++) {
-      final Key key = keys.get(i);
-      list.add(key.get(key.getFirstAttribute()));
+      list.add(keys.get(i).get());
     }
 
     return list;

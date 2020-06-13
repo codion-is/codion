@@ -18,7 +18,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
   @Override
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(ForeignKeyProperty foreignKeyProperty) {
     SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
-    if (foreignKeyProperty.is(Country.CAPITAL_FK)) {
+    if (foreignKeyProperty.getAttribute().equals(Country.CAPITAL_FK)) {
       //only show cities for currently selected country
       addEntitySetListener(selectedCountry -> comboBoxModel.setIncludeCondition(
               city -> selectedCountry != null &&

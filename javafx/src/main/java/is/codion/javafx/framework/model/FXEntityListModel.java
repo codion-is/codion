@@ -59,7 +59,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private static final Logger LOG = LoggerFactory.getLogger(FXEntityListModel.class);
 
-  private final EntityTableConditionModel conditionModel;
+  private final EntityTableConditionModel tableConditionModel;
   private final State queryConditionRequiredState = States.state();
   private final Event<FXEntityEditModel> editModelSetEvent = Events.event();
 
@@ -81,28 +81,28 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   public FXEntityListModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, new DefaultEntityTableConditionModel(entityType, connectionProvider,
-            null, new FXConditionModelProvider()));
+            null, new FXConditionModelFactory()));
   }
 
   /**
    * Instantiates a new {@link FXEntityListModel} based on the given entityType
    * @param entityType the entityType
    * @param connectionProvider the connection provider
-   * @param conditionModel the {@link EntityTableConditionModel} to use
+   * @param tableConditionModel the {@link EntityTableConditionModel} to use
    * @throws IllegalArgumentException in case the condition model is based on a different entity
    */
   public FXEntityListModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
-                           final EntityTableConditionModel conditionModel) {
+                           final EntityTableConditionModel tableConditionModel) {
     super(entityType, connectionProvider);
-    requireNonNull(conditionModel);
-    if (!conditionModel.getEntityType().equals(entityType)) {
-      throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.getEntityType()
+    requireNonNull(tableConditionModel);
+    if (!tableConditionModel.getEntityType().equals(entityType)) {
+      throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + tableConditionModel.getEntityType()
               + ", tableModel: " + entityType);
     }
     if (getEntityDefinition().getVisibleProperties().isEmpty()) {
       throw new IllegalArgumentException("No visible properties defined for entity: " + entityType);
     }
-    this.conditionModel = conditionModel;
+    this.tableConditionModel = tableConditionModel;
     bindEvents();
   }
 
@@ -166,8 +166,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final EntityTableConditionModel getConditionModel() {
-    return conditionModel;
+  public final EntityTableConditionModel getTableConditionModel() {
+    return tableConditionModel;
   }
 
   @Override
@@ -187,7 +187,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> entities) {
-    if (conditionModel.setConditionValues(foreignKeyProperty.getAttribute(), entities) && refreshOnForeignKeyConditionValuesSet) {
+    if (tableConditionModel.setConditionValues(foreignKeyProperty.getAttribute(), entities) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
   }
@@ -300,12 +300,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final Color getPropertyBackgroundColor(final int row, final Property<?> property) {
-    return (Color) getEntityDefinition().getColorProvider().getColor(get(row), property);
+  public final Color getBackgroundColor(final int row, final Attribute<?> attribute) {
+    return (Color) getEntityDefinition().getColorProvider().getColor(get(row), attribute);
   }
 
   @Override
-  public final int getPropertyColumnIndex(final Attribute<?> attribute) {
+  public final int getColumnIndex(final Attribute<?> attribute) {
     throw new UnsupportedOperationException();
   }
 
@@ -440,13 +440,13 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   @Override
   protected List<Entity> performQuery() {
-    if (!conditionModel.isEnabled() && queryConditionRequiredState.get()) {
+    if (!tableConditionModel.isEnabled() && queryConditionRequiredState.get()) {
       return emptyList();
     }
 
     try {
       return getConnectionProvider().getConnection().select(selectCondition(
-              getEntityType(), conditionModel.getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
+              getEntityType(), tableConditionModel.getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -599,7 +599,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   private void bindEvents() {
-    addRefreshListener(conditionModel::rememberCondition);
+    addRefreshListener(tableConditionModel::rememberCondition);
   }
 
   /**

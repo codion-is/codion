@@ -291,15 +291,14 @@ public class DefaultEntityDefinitionTest {
       public TestDomain() {
         define(entityType,
                 Properties.primaryKeyProperty(entityType.integerAttribute("attribute")))
-                .colorProvider((entity1, property) -> colorBlue);
+                .colorProvider((entity1, attribute) -> colorBlue);
       }
     }
     final Entities entities = new TestDomain().getEntities();
 
     final Entity entity = entities.entity(entityType);
     final EntityDefinition definition = entities.getDefinition(entityType);
-    assertEquals(colorBlue, definition.getColorProvider().getColor(entity,
-            definition.getProperty(entity.getKey().getFirstAttribute())));
+    assertEquals(colorBlue, definition.getColorProvider().getColor(entity, entity.getKey().getAttribute()));
   }
 
   @Test

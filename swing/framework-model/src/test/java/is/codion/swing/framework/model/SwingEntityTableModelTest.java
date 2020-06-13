@@ -11,9 +11,9 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
+import is.codion.framework.model.DefaultConditionModelFactory;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
-import is.codion.framework.model.DefaultPropertyConditionModelProvider;
-import is.codion.framework.model.DefaultPropertyFilterModelProvider;
+import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.tests.AbstractEntityTableModelTest;
 import is.codion.framework.model.tests.TestDomain;
@@ -111,7 +111,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   public void nonMatchingConditionModelEntityType() {
     final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(TestDomain.T_DEPARTMENT, getConnectionProvider(),
-            new DefaultPropertyFilterModelProvider(), new DefaultPropertyConditionModelProvider());
+            new DefaultFilterModelFactory(), new DefaultConditionModelFactory());
     assertThrows(IllegalArgumentException.class, () -> new SwingEntityTableModel(TestDomain.T_EMP, getConnectionProvider(),
             new SwingEntityTableSortModel(getConnectionProvider().getEntities(), TestDomain.T_EMP), conditionModel));
   }
@@ -124,24 +124,24 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   public void testFiltering() {
     testModel.refresh();
-    final ColumnConditionModel<Entity, Property<?>> filterModel = testModel.getConditionModel().getPropertyFilterModel(TestDomain.DETAIL_STRING);
+    final ColumnConditionModel<Entity, Property<?>> filterModel = testModel.getTableConditionModel().getFilterModel(TestDomain.DETAIL_STRING);
     filterModel.setLikeValue("a");
     testModel.filterContents();
     assertEquals(4, testModel.getFilteredItems().size());
   }
 
   @Test
-  public void getPropertyColumnIndex() {
-    assertEquals(0, testModel.getPropertyColumnIndex(TestDomain.DETAIL_INT));
-    assertEquals(1, testModel.getPropertyColumnIndex(TestDomain.DETAIL_DOUBLE));
-    assertEquals(2, testModel.getPropertyColumnIndex(TestDomain.DETAIL_STRING));
-    assertEquals(3, testModel.getPropertyColumnIndex(TestDomain.DETAIL_DATE));
-    assertEquals(4, testModel.getPropertyColumnIndex(TestDomain.DETAIL_TIMESTAMP));
-    assertEquals(5, testModel.getPropertyColumnIndex(TestDomain.DETAIL_BOOLEAN));
-    assertEquals(6, testModel.getPropertyColumnIndex(TestDomain.DETAIL_BOOLEAN_NULLABLE));
-    assertEquals(7, testModel.getPropertyColumnIndex(TestDomain.DETAIL_MASTER_FK));
-    assertEquals(8, testModel.getPropertyColumnIndex(TestDomain.DETAIL_MASTER_NAME));
-    assertEquals(9, testModel.getPropertyColumnIndex(TestDomain.DETAIL_MASTER_CODE));
+  public void getColumnIndex() {
+    assertEquals(0, testModel.getColumnIndex(TestDomain.DETAIL_INT));
+    assertEquals(1, testModel.getColumnIndex(TestDomain.DETAIL_DOUBLE));
+    assertEquals(2, testModel.getColumnIndex(TestDomain.DETAIL_STRING));
+    assertEquals(3, testModel.getColumnIndex(TestDomain.DETAIL_DATE));
+    assertEquals(4, testModel.getColumnIndex(TestDomain.DETAIL_TIMESTAMP));
+    assertEquals(5, testModel.getColumnIndex(TestDomain.DETAIL_BOOLEAN));
+    assertEquals(6, testModel.getColumnIndex(TestDomain.DETAIL_BOOLEAN_NULLABLE));
+    assertEquals(7, testModel.getColumnIndex(TestDomain.DETAIL_MASTER_FK));
+    assertEquals(8, testModel.getColumnIndex(TestDomain.DETAIL_MASTER_NAME));
+    assertEquals(9, testModel.getColumnIndex(TestDomain.DETAIL_MASTER_CODE));
   }
 
   @Test
@@ -163,7 +163,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   public void isEditable() {
     testModel.setEditable(true);
     assertTrue(testModel.isCellEditable(0, 0));
-    assertFalse(testModel.isCellEditable(0, testModel.getPropertyColumnIndex(TestDomain.DETAIL_INT_DERIVED)));
+    assertFalse(testModel.isCellEditable(0, testModel.getColumnIndex(TestDomain.DETAIL_INT_DERIVED)));
     testModel.setEditable(false);
   }
 
@@ -238,8 +238,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
     final SwingEntityTableModel model = createTestTableModel();
     assertFalse(model.getColumnModel().isColumnVisible(getConnectionProvider().getEntities().getDefinition(TestDomain.T_DETAIL).getColumnProperty(TestDomain.DETAIL_STRING)));
-    assertEquals(0, model.getPropertyColumnIndex(TestDomain.DETAIL_DOUBLE));
-    assertEquals(1, model.getPropertyColumnIndex(TestDomain.DETAIL_INT));
+    assertEquals(0, model.getColumnIndex(TestDomain.DETAIL_DOUBLE));
+    assertEquals(1, model.getColumnIndex(TestDomain.DETAIL_INT));
     column = model.getColumnModel().getColumn(3);
     assertEquals(150, column.getPreferredWidth());
     column = model.getColumnModel().getColumn(5);
