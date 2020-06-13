@@ -408,7 +408,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public int selectRowCount(final EntityCondition condition) throws DatabaseException {
+  public int rowCount(final EntityCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       return handleResponse(execute(createRequest("count", condition)));
