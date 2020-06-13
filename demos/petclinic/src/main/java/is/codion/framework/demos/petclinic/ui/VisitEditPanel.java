@@ -14,7 +14,7 @@ import java.awt.BorderLayout;
 
 public final class VisitEditPanel extends EntityEditPanel {
 
-  public VisitEditPanel(final SwingEntityEditModel editModel) {
+  public VisitEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

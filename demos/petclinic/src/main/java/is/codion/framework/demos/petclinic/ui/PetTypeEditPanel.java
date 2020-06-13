@@ -10,7 +10,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 public final class PetTypeEditPanel extends EntityEditPanel {
 
-  public PetTypeEditPanel(final SwingEntityEditModel editModel) {
+  public PetTypeEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

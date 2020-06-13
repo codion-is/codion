@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 
 public final class PetEditPanel extends EntityEditPanel {
 
-  public PetEditPanel(final SwingEntityEditModel editModel) {
+  public PetEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 
@@ -28,12 +28,12 @@ public final class PetEditPanel extends EntityEditPanel {
     createForeignKeyComboBox(Pet.OWNER_FK);
     createTextField(Pet.NAME).setColumns(12);
     createTextField(Pet.BIRTH_DATE);
-    final EntityComboBox petTypeBox = createForeignKeyComboBox(Pet.PET_TYPE_FK);
+    EntityComboBox petTypeBox = createForeignKeyComboBox(Pet.PET_TYPE_FK);
 
-    final Action newPetTypeAction = new EntityPanelBuilder(PetType.TYPE)
+    Action newPetTypeAction = new EntityPanelBuilder(PetType.TYPE)
             .setEditPanelClass(PetTypeEditPanel.class)
             .createEditPanelAction(petTypeBox);
-    final JPanel petTypePanel = Components.createEastButtonPanel(petTypeBox, newPetTypeAction);
+    JPanel petTypePanel = Components.createEastButtonPanel(petTypeBox, newPetTypeAction);
 
     setLayout(Layouts.gridLayout(2, 2));
 

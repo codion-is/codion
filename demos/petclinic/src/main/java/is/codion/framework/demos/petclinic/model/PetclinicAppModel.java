@@ -13,12 +13,12 @@ import is.codion.swing.framework.model.SwingEntityModel;
 
 public final class PetclinicAppModel extends SwingEntityApplicationModel {
 
-  public PetclinicAppModel(final EntityConnectionProvider connectionProvider) {
+  public PetclinicAppModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
     setupEntityModels(connectionProvider);
   }
 
-  private void setupEntityModels(final EntityConnectionProvider connectionProvider) {
+  private void setupEntityModels(EntityConnectionProvider connectionProvider) {
     SwingEntityModel ownersModel = new SwingEntityModel(Owner.TYPE, connectionProvider);
     SwingEntityModel petsModel = new SwingEntityModel(Pet.TYPE, connectionProvider);
     SwingEntityModel visitModel = new SwingEntityModel(Visit.TYPE, connectionProvider);

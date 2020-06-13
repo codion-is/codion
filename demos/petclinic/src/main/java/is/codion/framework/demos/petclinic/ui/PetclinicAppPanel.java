@@ -36,12 +36,12 @@ import static java.util.Arrays.asList;
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
 
   @Override
-  protected PetclinicAppModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
+  protected PetclinicAppModel initializeApplicationModel(EntityConnectionProvider connectionProvider) {
     return new PetclinicAppModel(connectionProvider);
   }
 
   @Override
-  protected List<EntityPanel> initializeEntityPanels(final PetclinicAppModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(PetclinicAppModel applicationModel) {
     SwingEntityModel ownersModel = applicationModel.getEntityModel(Owner.TYPE);
     SwingEntityModel petsModel = ownersModel.getDetailModel(Pet.TYPE);
     SwingEntityModel visitsModel = petsModel.getDetailModel(Visit.TYPE);

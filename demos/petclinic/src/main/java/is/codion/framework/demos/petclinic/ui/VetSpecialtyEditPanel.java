@@ -17,7 +17,7 @@ import static is.codion.swing.common.ui.Components.createEastButtonPanel;
 
 public final class VetSpecialtyEditPanel extends EntityEditPanel {
 
-  public VetSpecialtyEditPanel(final SwingEntityEditModel editModel) {
+  public VetSpecialtyEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 

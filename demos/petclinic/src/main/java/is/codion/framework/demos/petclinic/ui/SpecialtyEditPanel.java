@@ -10,7 +10,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 public final class SpecialtyEditPanel extends EntityEditPanel {
 
-  public SpecialtyEditPanel(final SwingEntityEditModel editModel) {
+  public SpecialtyEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 
