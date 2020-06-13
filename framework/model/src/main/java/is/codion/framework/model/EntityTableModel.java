@@ -174,7 +174,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
    */
-  EntityTableConditionModel getConditionModel();
+  EntityTableConditionModel getTableConditionModel();
 
   /**
    * @return true if this table model is editable
@@ -230,13 +230,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @return an Object representing the background color for this row and attribute, specified by the row entity
    * @see EntityDefinition.Builder#colorProvider(ColorProvider)
    */
-  Object getAttributeBackgroundColor(int row, Attribute<?> attribute);
+  Object getBackgroundColor(int row, Attribute<?> attribute);
 
   /**
    * @param attribute the attribute
    * @return the index of the column representing the given attribute
    */
-  int getPropertyColumnIndex(Attribute<?> attribute);
+  int getColumnIndex(Attribute<?> attribute);
 
   /**
    * Returns the maximum number of records to fetch via the underlying query the next time

@@ -39,7 +39,7 @@ import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
-import is.codion.swing.common.ui.table.ColumnConditionPanelProvider;
+import is.codion.swing.common.ui.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.table.FilteredTable;
 import is.codion.swing.common.ui.table.FilteredTableSummaryPanel;
 import is.codion.swing.common.ui.value.ComponentValuePanel;
@@ -1200,7 +1200,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private FilteredTable<Entity, Property<?>, SwingEntityTableModel> createFilteredTable() {
     final FilteredTable<Entity, Property<?>, SwingEntityTableModel> filteredTable =
-            new FilteredTable<>(tableModel, new DefaultColumnConditionPanelProvider(tableModel));
+            new FilteredTable<>(tableModel, new DefaultConditionPanelFactory(tableModel));
     filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
@@ -1216,7 +1216,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
     final Control refresh = control(tableModel::refresh, null,
-            tableModel.getConditionModel().getConditionChangedObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
+            tableModel.getTableConditionModel().getConditionObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
                     + " (" + keyName + ")", 0, null, frameworkIcons().refreshRequired());
 
     KeyEvents.addKeyEvent(this, KeyEvent.VK_F5, 0, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, refresh);
@@ -1266,7 +1266,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     tableModel.getSelectionModel().addSelectionChangedListener(statusListener);
     tableModel.addFilteringListener(statusListener);
     tableModel.addTableDataChangedListener(statusListener);
-    tableModel.getConditionModel().addConditionChangedListener(this::onConditionChanged);
+    tableModel.getTableConditionModel().addConditionListener(this::onConditionChanged);
     if (conditionPanel != null) {
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
     }
@@ -1438,24 +1438,24 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       final Property<?> property = (Property<?>) tableColumn.getIdentifier();
       final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isIndicateCondition()
-              && tableModel.getConditionModel().isEnabled(property.getAttribute());
+              && tableModel.getTableConditionModel().isConditionEnabled(property.getAttribute());
       label.setFont(indicateSearch ? searchFont : defaultFont);
 
       return label;
     }
   }
 
-  private static final class DefaultColumnConditionPanelProvider implements ColumnConditionPanelProvider<Entity, Property<?>> {
+  private static final class DefaultConditionPanelFactory implements ConditionPanelFactory<Entity, Property<?>> {
 
     private final SwingEntityTableModel tableModel;
 
-    private DefaultColumnConditionPanelProvider(final SwingEntityTableModel tableModel) {
+    private DefaultConditionPanelFactory(final SwingEntityTableModel tableModel) {
       this.tableModel = requireNonNull(tableModel);
     }
 
     @Override
-    public ColumnConditionPanel<Entity, Property<?>> createColumnConditionPanel(final TableColumn column) {
-      return new PropertyFilterPanel(tableModel.getConditionModel().getPropertyFilterModel(
+    public ColumnConditionPanel<Entity, Property<?>> createConditionPanel(final TableColumn column) {
+      return new PropertyFilterPanel(tableModel.getTableConditionModel().getFilterModel(
               ((Property<?>) column.getIdentifier()).getAttribute()));
     }
   }

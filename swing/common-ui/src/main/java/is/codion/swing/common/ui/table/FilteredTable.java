@@ -123,7 +123,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * Provides filter panels
    */
-  private final ColumnConditionPanelProvider<R, C> conditionPanelProvider;
+  private final ConditionPanelFactory<R, C> conditionPanelFactory;
 
   /**
    * the property filter panels
@@ -172,12 +172,12 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
   /**
    * Instantiates a new FilteredTable using the given model
    * @param tableModel the table model
-   * @param conditionPanelProvider the column condition panel provider
+   * @param conditionPanelFactory the column condition panel factory
    */
-  public FilteredTable(final T tableModel, final ColumnConditionPanelProvider<R, C> conditionPanelProvider) {
+  public FilteredTable(final T tableModel, final ConditionPanelFactory<R, C> conditionPanelFactory) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.getColumnModel(), tableModel.getSelectionModel());
     this.tableModel = tableModel;
-    this.conditionPanelProvider = requireNonNull(conditionPanelProvider, "conditionPanelProvider");
+    this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
     this.searchField = initializeSearchField();
     initializeTableHeader();
     bindEvents();
@@ -560,7 +560,7 @@ public final class FilteredTable<R, C, T extends AbstractFilteredTableModel<R, C
     final int index = columnModel.getColumnIndexAtX(event.getX());
     final TableColumn column = columnModel.getColumn(index);
     if (!columnFilterPanels.containsKey(column)) {
-      columnFilterPanels.put(column, conditionPanelProvider.createColumnConditionPanel(column));
+      columnFilterPanels.put(column, conditionPanelFactory.createConditionPanel(column));
     }
 
     toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(column), this);

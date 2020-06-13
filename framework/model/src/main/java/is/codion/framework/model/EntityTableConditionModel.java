@@ -71,9 +71,9 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * @param attribute the column attribute
-   * @return true if the {@link ColumnConditionModel} behind column with index {@code columnIndex} is enabled
+   * @return true if the {@link ColumnConditionModel} associated with the given attribute is enabled
    */
-  boolean isEnabled(Attribute<?> attribute);
+  boolean isConditionEnabled(Attribute<?> attribute);
 
   /**
    * Enables the search for the given property
@@ -93,7 +93,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * A data model using this condition model should call this method each time the
    * model is refreshed according to the condition provided by this condition model.
    * @see #hasConditionChanged()
-   * @see #getConditionChangedObserver
+   * @see #getConditionObserver
    */
   void rememberCondition();
 
@@ -122,39 +122,39 @@ public interface EntityTableConditionModel extends Refreshable {
    * @return true if this EntityTableConditionModel contains a {@link ColumnConditionModel} associated
    * with {@code attribute}
    */
-  boolean containsPropertyConditionModel(Attribute<?> attribute);
+  boolean containsConditionModel(Attribute<?> attribute);
 
   /**
-   * @return a Collection containing the PropertyConditionModels available in this table condition model
+   * @return a Collection containing the {@link ColumnConditionModel}s available in this table condition model
    */
-  Collection<ColumnConditionModel<Entity, ? extends Property<?>>> getPropertyConditionModels();
+  Collection<ColumnConditionModel<Entity, ? extends Property<?>>> getConditionModels();
 
   /**
-   * Returns the {@link ColumnConditionModel} associated with the given property.
+   * Returns the {@link ColumnConditionModel} associated with the given attribute.
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} associated with {@code attribute}
    * @throws IllegalArgumentException in case no condition model is found
-   * @see #containsPropertyConditionModel(Attribute)
+   * @see #containsConditionModel(Attribute)
    */
-  ColumnConditionModel<Entity, ? extends Property<?>> getPropertyConditionModel(Attribute<?> attribute);
+  ColumnConditionModel<Entity, ? extends Property<?>> getConditionModel(Attribute<?> attribute);
 
   /**
-   * Clears the search state of all PropertyConditionModels, disables them and
+   * Clears the search state of all {@link ColumnConditionModel}, disables them and
    * resets the operator to {@link Operator#LIKE}
    */
-  void clearPropertyConditionModels();
+  void clearConditionModels();
 
   /**
    * @return a Collection containing the filter models available in this table condition model
    */
-  Collection<ColumnConditionModel<Entity, Property<?>>> getPropertyFilterModels();
+  Collection<ColumnConditionModel<Entity, Property<?>>> getFilterModels();
 
   /**
    * The filter model associated with {@code attribute}
-   * @param attribute the attribute for which to retrieve the PropertyFilterModel
-   * @return the PropertyFilterModel for the property with id {@code attribute}, null if none is found
+   * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
+   * @return the {@link ColumnConditionModel} for the {@code attribute}, null if none is found
    */
-  ColumnConditionModel<Entity, Property<?>> getPropertyFilterModel(Attribute<?> attribute);
+  ColumnConditionModel<Entity, Property<?>> getFilterModel(Attribute<?> attribute);
 
   /**
    * @param attribute column attribute
@@ -186,10 +186,10 @@ public interface EntityTableConditionModel extends Refreshable {
   void performSimpleSearch();
 
   /**
-   * @return a StateObserver indicating if the search state has changed since it was last remembered
+   * @return a StateObserver indicating if the search condition has changed since it was last remembered
    * @see #rememberCondition()
    */
-  StateObserver getConditionChangedObserver();
+  StateObserver getConditionObserver();
 
   /**
    * @return an EventObserver notified each time the simple search text changes
@@ -197,14 +197,14 @@ public interface EntityTableConditionModel extends Refreshable {
   EventObserver<String> getSimpleConditionStringObserver();
 
   /**
-   * @param listener a listener notified each time the search state changes
+   * @param listener a listener notified each time the search condition changes
    */
-  void addConditionChangedListener(EventListener listener);
+  void addConditionListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionChangedListener(EventListener listener);
+  void removeConditionListener(EventListener listener);
 
   /**
    * @param listener a listener notified each time a simple search is performed

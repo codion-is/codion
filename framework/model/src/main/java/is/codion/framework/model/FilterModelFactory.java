@@ -10,12 +10,12 @@ import is.codion.framework.domain.property.Property;
 /**
  * Specifies an object responsible for providing property filter models
  */
-public interface PropertyFilterModelProvider {
+public interface FilterModelFactory {
 
   /**
    * Initializes a ColumnConditionModel for the given property
    * @param property the Property for which to initialize a ColumnConditionModel
    * @return a ColumnConditionModel for the given property
    */
-  ColumnConditionModel<Entity, Property<?>> initializePropertyFilterModel(Property<?> property);
+  ColumnConditionModel<Entity, Property<?>> createFilterModel(Property<?> property);
 }

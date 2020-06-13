@@ -8,12 +8,12 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
 
 /**
- * A default PropertyFilterModelProvider implementation.
+ * A default FilterModelFactory implementation.
  */
-public class DefaultPropertyFilterModelProvider implements PropertyFilterModelProvider {
+public class DefaultFilterModelFactory implements FilterModelFactory {
 
   @Override
-  public ColumnConditionModel<Entity, Property<?>> initializePropertyFilterModel(final Property<?> property) {
+  public ColumnConditionModel<Entity, Property<?>> createFilterModel(final Property<?> property) {
     return new DefaultPropertyFilterModel(property);
   }
 }
