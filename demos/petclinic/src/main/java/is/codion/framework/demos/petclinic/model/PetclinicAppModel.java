@@ -4,10 +4,10 @@
 package is.codion.framework.demos.petclinic.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.petclinic.domain.Owner;
-import is.codion.framework.demos.petclinic.domain.Pet;
-import is.codion.framework.demos.petclinic.domain.Vet;
-import is.codion.framework.demos.petclinic.domain.Visit;
+import is.codion.framework.demos.petclinic.domain.api.Owner;
+import is.codion.framework.demos.petclinic.domain.api.Pet;
+import is.codion.framework.demos.petclinic.domain.api.Vet;
+import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 

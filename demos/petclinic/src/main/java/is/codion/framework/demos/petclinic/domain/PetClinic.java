@@ -1,15 +1,15 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.demos.petclinic.domain.impl;
+package is.codion.framework.demos.petclinic.domain;
 
-import is.codion.framework.demos.petclinic.domain.Owner;
-import is.codion.framework.demos.petclinic.domain.Pet;
-import is.codion.framework.demos.petclinic.domain.PetType;
-import is.codion.framework.demos.petclinic.domain.Specialty;
-import is.codion.framework.demos.petclinic.domain.Vet;
-import is.codion.framework.demos.petclinic.domain.VetSpecialty;
-import is.codion.framework.demos.petclinic.domain.Visit;
+import is.codion.framework.demos.petclinic.domain.api.Owner;
+import is.codion.framework.demos.petclinic.domain.api.Pet;
+import is.codion.framework.demos.petclinic.domain.api.PetType;
+import is.codion.framework.demos.petclinic.domain.api.Specialty;
+import is.codion.framework.demos.petclinic.domain.api.Vet;
+import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
+import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.StringProvider;
 
@@ -17,9 +17,9 @@ import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 
-public final class PetClinicImpl extends Domain {
+public final class PetClinic extends Domain {
 
-  public PetClinicImpl() {
+  public PetClinic() {
     vet();
     specialty();
     vetSpecialty();

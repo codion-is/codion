@@ -6,7 +6,7 @@ package is.codion.framework.demos.petclinic.model;
 import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.petclinic.domain.VetSpecialty;
+import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;

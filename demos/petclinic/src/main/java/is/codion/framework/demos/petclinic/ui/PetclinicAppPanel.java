@@ -7,13 +7,13 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.petclinic.domain.Owner;
-import is.codion.framework.demos.petclinic.domain.Pet;
-import is.codion.framework.demos.petclinic.domain.PetType;
-import is.codion.framework.demos.petclinic.domain.Specialty;
-import is.codion.framework.demos.petclinic.domain.Vet;
-import is.codion.framework.demos.petclinic.domain.VetSpecialty;
-import is.codion.framework.demos.petclinic.domain.Visit;
+import is.codion.framework.demos.petclinic.domain.api.Owner;
+import is.codion.framework.demos.petclinic.domain.api.Pet;
+import is.codion.framework.demos.petclinic.domain.api.PetType;
+import is.codion.framework.demos.petclinic.domain.api.Specialty;
+import is.codion.framework.demos.petclinic.domain.api.Vet;
+import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
+import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.demos.petclinic.model.PetclinicAppModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.Windows;
@@ -96,7 +96,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING.set(ReferentialIntegrityErrorHandling.DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(ColumnConditionModel.AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.impl.PetClinicImpl");
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.PetClinic");
     new PetclinicAppPanel().startApplication("Petclinic", null, MaximizeFrame.NO,
             Windows.getScreenSizeRatio(0.6), Users.parseUser("scott:tiger"));
   }
