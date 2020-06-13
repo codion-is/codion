@@ -333,7 +333,7 @@ public class EntityPanelBuilder {
 
   /**
    * Creates a new Action which shows the edit panel provided by this panel builder and if an insert is performed
-   * selects the new entity in the {@code lookupField}.
+   * adds the new entity to the {@code comboBox} and selects it.
    * @param comboBox the combo box in which to select the new entity, if created
    * @return the Action
    */
