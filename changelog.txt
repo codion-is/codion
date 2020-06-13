@@ -6279,3 +6279,6 @@
   Property.is() removed
   Key.getFirstValue() renamed get(), getFirstAttribute() renamed getAttribute(), set() added, all three throw exception in case of composite key
   Some sensible renaming of methods and classes, shorter and to the point
+  CompletionDocument now prevents being set more than once, some null checks added
+  DefaultEntityEditModel.validate(entity) no longer final
+  EntityConnection.selectRowCount() renamed rowCount()

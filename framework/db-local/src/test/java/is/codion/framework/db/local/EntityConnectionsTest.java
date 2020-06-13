@@ -64,8 +64,8 @@ public class EntityConnectionsTest {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
     EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.T_DEPARTMENT);
 
-    assertEquals(sourceConnection.selectRowCount(condition(TestDomain.T_DEPARTMENT)),
-            DESTINATION_CONNECTION.selectRowCount(condition(TestDomain.T_DEPARTMENT)));
+    assertEquals(sourceConnection.rowCount(condition(TestDomain.T_DEPARTMENT)),
+            DESTINATION_CONNECTION.rowCount(condition(TestDomain.T_DEPARTMENT)));
 
     EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.T_EMP);
     DESTINATION_CONNECTION.select(selectCondition(TestDomain.T_EMP));
@@ -82,8 +82,8 @@ public class EntityConnectionsTest {
 
     final EventDataListener<Integer> progressReporter = currentProgress -> {};
     EntityConnections.batchInsert(DESTINATION_CONNECTION, source.iterator(), 2, progressReporter, null);
-    assertEquals(sourceConnection.selectRowCount(condition(TestDomain.T_DEPARTMENT)),
-            DESTINATION_CONNECTION.selectRowCount(condition(TestDomain.T_DEPARTMENT)));
+    assertEquals(sourceConnection.rowCount(condition(TestDomain.T_DEPARTMENT)),
+            DESTINATION_CONNECTION.rowCount(condition(TestDomain.T_DEPARTMENT)));
 
     EntityConnections.batchInsert(DESTINATION_CONNECTION, Collections.emptyIterator(), 10, null, null);
     DESTINATION_CONNECTION.delete(condition(TestDomain.T_DEPARTMENT));

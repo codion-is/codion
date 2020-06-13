@@ -32,6 +32,9 @@ class CompletionDocument extends PlainDocument {
     this.normalize = normalize == Normalize.YES;
     model = comboBox.getModel();
     editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
+    if (editor.getDocument() instanceof CompletionDocument) {
+      throw new IllegalStateException("Completion has already been set for combo box");
+    }
     editor.setDocument(this);
     comboBox.addActionListener(e -> {
       if (!selecting) {

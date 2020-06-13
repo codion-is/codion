@@ -170,10 +170,10 @@ public final class EntityConnectionDemo {
     // end::selectDependencies[]
   }
 
-  static void selectRowCount(EntityConnection connection) throws DatabaseException {
-    // tag::selectRowCount[]
-    int numberOfItStaff = connection.selectRowCount(condition(Employee.TYPE, Employee.TITLE, LIKE, "IT Staff"));
-    // end::selectRowCount[]
+  static void rowCount(EntityConnection connection) throws DatabaseException {
+    // tag::rowCount[]
+    int numberOfItStaff = connection.rowCount(condition(Employee.TYPE, Employee.TITLE, LIKE, "IT Staff"));
+    // end::rowCount[]
   }
 
   static void insert(EntityConnection connection) throws DatabaseException {
@@ -290,7 +290,7 @@ public final class EntityConnectionDemo {
     selectSingleValue(connection);
     selectValues(connection);
     selectDependencies(connection);
-    selectRowCount(connection);
+    rowCount(connection);
     insert(connection);
     update(connection);
     updateConditionDemo(connection);

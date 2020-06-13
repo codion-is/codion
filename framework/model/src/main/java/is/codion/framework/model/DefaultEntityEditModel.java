@@ -418,20 +418,20 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void validate(final Entity entity) throws ValidationException {
-    validate(singletonList(entity));
+  public final void validate(final Collection<Entity> entities) throws ValidationException {
+    for (final Entity entityToValidate : entities) {
+      validate(entityToValidate);
+    }
   }
 
   @Override
-  public final void validate(final Collection<Entity> entities) throws ValidationException {
-    for (final Entity entityToValidate : entities) {
-      final EntityDefinition definition = getEntities().getDefinition(entityToValidate.getEntityType());
-      if (definition.getEntityType().equals(getEntityType())) {
-        validator.validate(entityToValidate, definition);
-      }
-      else {
-        definition.getValidator().validate(entityToValidate, definition);
-      }
+  public void validate(final Entity entity) throws ValidationException {
+    final EntityDefinition definition = getEntities().getDefinition(entity.getEntityType());
+    if (definition.getEntityType().equals(getEntityType())) {
+      validator.validate(entity, definition);
+    }
+    else {
+      definition.getValidator().validate(entity, definition);
     }
   }
 

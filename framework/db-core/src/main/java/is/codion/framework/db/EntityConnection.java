@@ -297,7 +297,7 @@ public interface EntityConnection {
    * @return the number of rows fitting the given condition
    * @throws DatabaseException in case of a database exception
    */
-  int selectRowCount(EntityCondition condition) throws DatabaseException;
+  int rowCount(EntityCondition condition) throws DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized report result object

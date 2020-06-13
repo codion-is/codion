@@ -23,18 +23,22 @@ public final class MaximumMatch extends CompletionDocument {
 
   /**
    * @param comboBox the combobox on which to enable maximum match
+   * @param <T> the type
    */
-  public static void enable(final JComboBox<?> comboBox) {
-    enable(comboBox, Normalize.YES);
+  public static <T> JComboBox<T> enable(final JComboBox<T> comboBox) {
+    return enable(comboBox, Normalize.YES);
   }
 
   /**
    * @param comboBox the combobox on which to enable maximum match
    * @param normalize if YES then accented characters are normalized before matching
+   * @param <T> the type
    */
-  public static void enable(final JComboBox<?> comboBox, final Normalize normalize) {
+  public static <T> JComboBox<T> enable(final JComboBox<T> comboBox, final Normalize normalize) {
     comboBox.setEditable(true);
     new MaximumMatch(comboBox, normalize);
+
+    return comboBox;
   }
 
   @Override

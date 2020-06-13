@@ -437,20 +437,20 @@ public interface EntityEditModel extends Refreshable {
   void validate() throws ValidationException;
 
   /**
-   * Validates the given entity, using the underlying validator.
-   * @param entity the entity to validate
-   * @throws ValidationException in case the entity is invalid
-   * @see #getValidator()
-   */
-  void validate(Entity entity) throws ValidationException;
-
-  /**
    * Validates the given entities, using the underlying validator.
    * @param entities the entities to validate
    * @throws ValidationException on finding the first invalid entity
    * @see #getValidator()
    */
   void validate(Collection<Entity> entities) throws ValidationException;
+
+  /**
+   * Validates the given entity, using the underlying validator.
+   * @param entity the entity to validate
+   * @throws ValidationException in case the entity is invalid
+   * @see #getValidator()
+   */
+  void validate(Entity entity) throws ValidationException;
 
   /**
    * Returns true if the value associated with the given property is valid, using the {@code validate} method.

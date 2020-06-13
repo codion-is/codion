@@ -4,19 +4,21 @@
 package is.codion.framework.demos.petclinic.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.petclinic.domain.api.Owner;
+import is.codion.framework.demos.petclinic.domain.api.Pet;
+import is.codion.framework.demos.petclinic.domain.api.Vet;
+import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 
-import static is.codion.framework.demos.petclinic.domain.Clinic.*;
-
 public final class PetclinicAppModel extends SwingEntityApplicationModel {
 
-  public PetclinicAppModel(final EntityConnectionProvider connectionProvider) {
+  public PetclinicAppModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
     setupEntityModels(connectionProvider);
   }
 
-  private void setupEntityModels(final EntityConnectionProvider connectionProvider) {
+  private void setupEntityModels(EntityConnectionProvider connectionProvider) {
     SwingEntityModel ownersModel = new SwingEntityModel(Owner.TYPE, connectionProvider);
     SwingEntityModel petsModel = new SwingEntityModel(Pet.TYPE, connectionProvider);
     SwingEntityModel visitModel = new SwingEntityModel(Visit.TYPE, connectionProvider);
@@ -24,6 +26,11 @@ public final class PetclinicAppModel extends SwingEntityApplicationModel {
     ownersModel.addDetailModel(petsModel);
     petsModel.addDetailModel(visitModel);
 
-    addEntityModels(ownersModel);
+    SwingEntityModel vetsModel = new SwingEntityModel(Vet.TYPE, connectionProvider);
+    SwingEntityModel vetSpecialtiesModel = new SwingEntityModel(new VetSpecialtyEditModel(connectionProvider));
+
+    vetsModel.addDetailModel(vetSpecialtiesModel);
+
+    addEntityModels(ownersModel, vetsModel);
   }
 }

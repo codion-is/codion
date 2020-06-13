@@ -131,6 +131,7 @@ public final class Components {
    * @return the component
    */
   public static <T extends JComponent> T setPreferredWidth(final T component, final int preferredWidth) {
+    requireNonNull(component, "component");
     component.setPreferredSize(new Dimension(preferredWidth, component.getPreferredSize().height));
 
     return component;
@@ -144,19 +145,22 @@ public final class Components {
    * @return the component
    */
   public static <T extends JComponent> T setPreferredHeight(final T component, final int preferredHeight) {
+    requireNonNull(component, "component");
     component.setPreferredSize(new Dimension(component.getPreferredSize().width, preferredHeight));
 
     return component;
   }
 
   /**
-   * Links the given BoundedRangeModels so that changes in {@code master} are reflected in {@code slave}
-   * @param master the master model
-   * @param slave the model to link with master
+   * Links the given BoundedRangeModels so that changes in {@code main} are reflected in {@code linked}
+   * @param main the main model
+   * @param linked the model to link with main
    */
-  public static void linkBoundedRangeModels(final BoundedRangeModel master, final BoundedRangeModel slave) {
-    master.addChangeListener(e -> slave.setRangeProperties(master.getValue(), master.getExtent(),
-            master.getMinimum(), master.getMaximum(), master.getValueIsAdjusting()));
+  public static void linkBoundedRangeModels(final BoundedRangeModel main, final BoundedRangeModel linked) {
+    requireNonNull(main, "main");
+    requireNonNull(linked, "linked");
+    main.addChangeListener(e -> linked.setRangeProperties(main.getValue(), main.getExtent(),
+            main.getMinimum(), main.getMaximum(), main.getValueIsAdjusting()));
   }
 
   /**
@@ -165,7 +169,8 @@ public final class Components {
    * @param parent the parent from which to exapand
    */
   public static void expandAll(final JTree tree, final TreePath parent) {
-    // Traverse children
+    requireNonNull(tree, "tree");
+    requireNonNull(parent, "parent");
     final TreeNode node = (TreeNode) parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
       final Enumeration<? extends TreeNode> e = node.children();
@@ -183,6 +188,8 @@ public final class Components {
    * @param parent the parent from which to collapse
    */
   public static void collapseAll(final JTree tree, final TreePath parent) {
+    requireNonNull(tree, "tree");
+    requireNonNull(parent, "parent");
     final TreeNode node = (TreeNode) parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
       final Enumeration<? extends TreeNode> e = node.children();
@@ -211,6 +218,8 @@ public final class Components {
    * @param onFocusAction the action to run when the focus has been requested
    */
   public static void addInitialFocusHack(final JComponent component, final Action onFocusAction) {
+    requireNonNull(component, "component");
+    requireNonNull(onFocusAction, "onFocusAction");
     component.addHierarchyListener(e -> {
       if (component.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
         SwingUtilities.getWindowAncestor(component).addWindowFocusListener(new WindowAdapter() {
@@ -233,6 +242,8 @@ public final class Components {
    * @return a panel displaying the given components in the NORTH an CENTER positions in a BorderLayout
    */
   public static JPanel createNorthCenterPanel(final JComponent north, final JComponent center) {
+    requireNonNull(north, "north");
+    requireNonNull(center, "center");
     final JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(north, BorderLayout.NORTH);
     panel.add(center, BorderLayout.CENTER);
@@ -247,6 +258,8 @@ public final class Components {
    * @return a panel displaying the given components in the WEST an CENTER positions in a BorderLayout
    */
   public static JPanel createWestCenterPanel(final JComponent west, final JComponent center) {
+    requireNonNull(west, "west");
+    requireNonNull(center, "center");
     final JPanel panel = new JPanel(Layouts.borderLayout());
     panel.add(west, BorderLayout.WEST);
     panel.add(center, BorderLayout.CENTER);
@@ -300,6 +313,8 @@ public final class Components {
    * @return a ok/cancel button panel
    */
   public static JPanel createOkCancelButtonPanel(final Action okAction, final Action cancelAction) {
+    requireNonNull(okAction, "okAction");
+    requireNonNull(cancelAction, "cancelAction");
     final JButton okButton = new JButton(okAction);
     final JButton cancelButton = new JButton(cancelAction);
     okButton.setText(Messages.get(Messages.OK));
@@ -381,6 +396,7 @@ public final class Components {
    * @param textComponent the text component
    */
   public static void addAcceptSingleFileDragAndDrop(final JTextComponent textComponent) {
+    requireNonNull(textComponent, "textComponent");
     textComponent.setDragEnabled(true);
     textComponent.setTransferHandler(new FileTransferHandler(textComponent));
   }
@@ -390,6 +406,7 @@ public final class Components {
    * @return true if the given transfer support instance represents a file or a list of files
    */
   public static boolean isFileDataFlavor(final TransferHandler.TransferSupport transferSupport) {
+    requireNonNull(transferSupport, "transferSupport");
     try {
       final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
 
@@ -404,15 +421,16 @@ public final class Components {
   /**
    * Returns the files described by the given transfer support object.
    * An empty list is returned if no files are found.
-   * @param support the drag'n drop transfer support
+   * @param transferSupport the drag'n drop transfer support
    * @return the files described by the given transfer support object
    * @throws RuntimeException in case of an exception
    */
-  public static List<File> getTransferFiles(final TransferHandler.TransferSupport support) {
+  public static List<File> getTransferFiles(final TransferHandler.TransferSupport transferSupport) {
+    requireNonNull(transferSupport, "transferSupport");
     try {
-      for (final DataFlavor flavor : support.getDataFlavors()) {
+      for (final DataFlavor flavor : transferSupport.getDataFlavors()) {
         if (flavor.isFlavorJavaFileListType()) {
-          final List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+          final List<File> files = (List<File>) transferSupport.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
 
           return files.isEmpty() ? emptyList() : files;
         }
@@ -420,7 +438,7 @@ public final class Components {
       //the code below is for handling unix/linux
       final List<File> files = new ArrayList<>();
       final DataFlavor nixFileDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-      final String data = (String) support.getTransferable().getTransferData(nixFileDataFlavor);
+      final String data = (String) transferSupport.getTransferable().getTransferData(nixFileDataFlavor);
       for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens(); ) {
         final String token = st.nextToken().trim();
         if (token.startsWith("#") || token.length() == 0) {// comment line, by RFC 2483

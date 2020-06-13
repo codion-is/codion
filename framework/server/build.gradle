@@ -132,7 +132,7 @@ task runServer(type: ModularJavaExec, dependsOn: createServerKeystore) {
             'codion.server.http.secure'                 : 'false',
             'codion.server.pooling.poolFactoryClass'    : 'is.codion.plugin.hikari.pool.HikariConnectionPoolProvider',
             'codion.server.auxiliaryServerFactoryClassNames'   : 'is.codion.framework.servlet.EntityServletServerFactory',
-            'codion.server.domain.classes'              : 'is.codion.framework.demos.empdept.domain.EmpDept,is.codion.framework.demos.chinook.domain.impl.ChinookImpl,is.codion.framework.demos.petclinic.domain.impl.ClinicImpl,is.codion.framework.demos.petstore.domain.Petstore,is.codion.framework.demos.schemabrowser.domain.SchemaBrowser,is.codion.framework.demos.world.domain.WorldImpl',
+            'codion.server.domain.classes'              : 'is.codion.framework.demos.empdept.domain.EmpDept,is.codion.framework.demos.chinook.domain.impl.ChinookImpl,is.codion.framework.demos.petclinic.domain.PetClinic,is.codion.framework.demos.petstore.domain.Petstore,is.codion.framework.demos.schemabrowser.domain.SchemaBrowser,is.codion.framework.demos.world.domain.WorldImpl',
             'codion.server.serializationFilterWhitelist': 'src/main/security/serialization-whitelist.txt',
             'codion.server.serializationFilterDryRun'   : 'false',
             'codion.server.loginProxyClasses'           : 'is.codion.framework.demos.chinook.server.ChinookLoginProxy',

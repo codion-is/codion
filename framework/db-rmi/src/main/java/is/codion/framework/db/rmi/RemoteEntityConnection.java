@@ -316,7 +316,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  int selectRowCount(EntityCondition condition) throws RemoteException, DatabaseException;
+  int rowCount(EntityCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized ReportResult object

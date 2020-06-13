@@ -3,16 +3,14 @@
  */
 package is.codion.framework.demos.petclinic.ui;
 
+import is.codion.framework.demos.petclinic.domain.api.Owner;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import java.awt.GridLayout;
-
-import static is.codion.framework.demos.petclinic.domain.Clinic.Owner;
-
 public final class OwnerEditPanel extends EntityEditPanel {
 
-  public OwnerEditPanel(final SwingEntityEditModel editModel) {
+  public OwnerEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 
@@ -26,7 +24,7 @@ public final class OwnerEditPanel extends EntityEditPanel {
     createTextField(Owner.CITY).setColumns(12);
     createTextField(Owner.TELEPHONE).setColumns(12);
 
-    setLayout(new GridLayout(3, 2, 5, 5));
+    setLayout(Layouts.gridLayout(3, 2));
 
     addInputPanel(Owner.FIRST_NAME);
     addInputPanel(Owner.LAST_NAME);

@@ -3,15 +3,14 @@
  */
 package is.codion.framework.demos.petclinic.ui;
 
-import is.codion.framework.demos.petclinic.domain.Clinic.Vet;
+import is.codion.framework.demos.petclinic.domain.api.Vet;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
-import java.awt.GridLayout;
-
 public final class VetEditPanel extends EntityEditPanel {
 
-  public VetEditPanel(final SwingEntityEditModel editModel) {
+  public VetEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
   }
 
@@ -22,7 +21,7 @@ public final class VetEditPanel extends EntityEditPanel {
     createTextField(Vet.FIRST_NAME).setColumns(12);
     createTextField(Vet.LAST_NAME).setColumns(12);
 
-    setLayout(new GridLayout(1, 2, 5, 5));
+    setLayout(Layouts.gridLayout(1, 2));
 
     addInputPanel(Vet.FIRST_NAME);
     addInputPanel(Vet.LAST_NAME);

@@ -117,6 +117,7 @@ public final class TextFields {
    * @return the text component
    */
   public static <T extends JTextComponent> T upperCase(final T textComponent) {
+    requireNonNull(textComponent, "textComponent");
     if (textComponent.getDocument() instanceof SizedDocument) {
       ((SizedDocument) textComponent.getDocument()).setDocumentCase(SizedDocument.DocumentCase.UPPERCASE);
     }
@@ -134,6 +135,7 @@ public final class TextFields {
    * @return the text component
    */
   public static <T extends JTextComponent> T lowerCase(final T textComponent) {
+    requireNonNull(textComponent, "textComponent");
     if (textComponent.getDocument() instanceof SizedDocument) {
       ((SizedDocument) textComponent.getDocument()).setDocumentCase(SizedDocument.DocumentCase.LOWERCASE);
     }
@@ -152,6 +154,7 @@ public final class TextFields {
    * @return the component
    */
   public static <T extends JTextComponent> T selectAllOnFocusGained(final T textComponent) {
+    requireNonNull(textComponent, "textComponent");
     textComponent.addFocusListener(new SelectAllListener(textComponent));
 
     return textComponent;
@@ -165,6 +168,7 @@ public final class TextFields {
    * @see #selectAllOnFocusGained(JTextComponent)
    */
   public static <T extends JTextComponent> T selectNoneOnFocusGained(final T textComponent) {
+    requireNonNull(textComponent, "textComponent");
     for (final FocusListener listener : textComponent.getFocusListeners()) {
       if (listener instanceof SelectAllListener) {
         textComponent.removeFocusListener(listener);
@@ -181,6 +185,7 @@ public final class TextFields {
    * @return the component
    */
   public static <T extends JTextComponent> T moveCaretToStartOnFocusGained(final T textComponent) {
+    requireNonNull(textComponent, "textComponent");
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
@@ -198,6 +203,7 @@ public final class TextFields {
    * @return the component
    */
   public static <T extends JTextComponent> T moveCaretToEndOnFocusGained(final T textComponent) {
+    requireNonNull(textComponent, "textComponent");
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
@@ -252,6 +258,7 @@ public final class TextFields {
    * @return the Action
    */
   public static Action getBrowseAction(final JTextField filenameField) {
+    requireNonNull(filenameField, "filenameField");
     return new AbstractAction("...") {
       @Override
       public void actionPerformed(final ActionEvent e) {

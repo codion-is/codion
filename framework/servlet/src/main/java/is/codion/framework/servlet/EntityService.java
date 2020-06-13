@@ -313,7 +313,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Serializer.serialize(connection.selectRowCount(deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.rowCount(deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
