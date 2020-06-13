@@ -3,6 +3,8 @@
  */
 package is.codion.common;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A collection of date format strings.
  */
@@ -42,6 +44,7 @@ public final class DateFormats {
    * @return a String representing the mask to use in JFormattedTextFields, i.e. "##-##-####"
    */
   public static String getDateMask(final String dateFormat) {
+    requireNonNull(dateFormat, "dateFormat");
     final StringBuilder stringBuilder = new StringBuilder(dateFormat.length());
     for (final Character character : dateFormat.toCharArray()) {
       stringBuilder.append(Character.isLetter(character) ? "#" : character);
