@@ -58,16 +58,29 @@ public interface Key extends Serializable {
   boolean isCompositeKey();
 
   /**
+   * Returns this keys attribute. Note that this method throws an exception if this key is a composite key.
    * @param <T> the attribute type
-   * @return the first key property, useful for single attribute keys
+   * @return the key attribute, useful for single attribute keys
+   * @throws IllegalStateException in case this is a composite key
    */
-  <T> Attribute<T> getFirstAttribute();
+  <T> Attribute<T> getAttribute();
 
   /**
+   * Sets the value of this key. Note that this method throws an exception if this key is a composite key.
+   * @param value the value to associate with the attribute
+   * @param <T> the value type
+   * @return the previous value
+   * @throws IllegalStateException in case this is a composite key
+   */
+  <T> T put(T value);
+
+  /**
+   * Returns the value of this key. Note that this method throws an exception if this key is a composite key.
    * @param <T> the value type
    * @return the first value contained in this key, useful for single attribute keys
+   * @throws IllegalStateException in case this is a composite key
    */
-  <T> T getFirstValue();
+  <T> T get();
 
   /**
    * @param attribute the attribute

@@ -96,13 +96,13 @@ public final class EntityObjectMapperTest {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
     final Key deptKey = entities.key(TestDomain.T_DEPARTMENT);
-    deptKey.put(TestDomain.DEPARTMENT_ID, 1);
+    deptKey.put(1);
 
     String jsonString = mapper.writeValueAsString(deptKey);
 
     final Key key = mapper.readValue(jsonString, Key.class);
     assertEquals(TestDomain.T_DEPARTMENT, key.getEntityType());
-    assertEquals(Integer.valueOf(1), key.getFirstValue());
+    assertEquals(Integer.valueOf(1), key.get());
 
     final Key entityKey = entities.key(TestDomain.T_ENTITY);
     entityKey.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
@@ -125,8 +125,8 @@ public final class EntityObjectMapperTest {
     assertEquals("[{\"entityType\":\"scott.dept\",\"values\":{\"deptno\":42}}]", keyJSON);
     final Key keyParsed = mapper.readValue(keyJSON,  new TypeReference<List<Key>>(){}).get(0);
     assertEquals(key.getEntityType(), keyParsed.getEntityType());
-    assertEquals(key.getFirstAttribute(), keyParsed.getFirstAttribute());
-    assertEquals((Integer) key.getFirstValue(), keyParsed.getFirstValue());
+    assertEquals(key.getAttribute(), keyParsed.getAttribute());
+    assertEquals((Integer) key.get(), keyParsed.get());
   }
 
   @Test

@@ -214,6 +214,10 @@ public class DomainTest {
     assertTrue(key.isCompositeKey());
     assertTrue(key.isNull());
 
+    assertThrows(IllegalStateException.class, () -> key.put(1));
+    assertThrows(IllegalStateException.class, key::get);
+    assertThrows(IllegalStateException.class, key::getAttribute);
+
     key.put(attribute1, 1);
     key.put(attribute2, 2);
     key.put(attribute3, 3);
@@ -248,10 +252,10 @@ public class DomainTest {
    public void keys() {
     final List<Key> intKeys = entities.keys(TestDomain.T_EMP, 1, 2, 3, 4);
     assertEquals(4, intKeys.size());
-    assertEquals(Integer.valueOf(3), intKeys.get(2).getFirstValue());
+    assertEquals(Integer.valueOf(3), intKeys.get(2).get());
     final List<Key> longKeys = entities.keys(TestDomain.T_DETAIL, 1L, 2L, 3L, 4L);
     assertEquals(4, longKeys.size());
-    assertEquals(Long.valueOf(3), longKeys.get(2).getFirstValue());
+    assertEquals(Long.valueOf(3), longKeys.get(2).get());
    }
 
   @Test

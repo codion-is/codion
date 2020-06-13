@@ -6250,3 +6250,4 @@
   Key.getFirstValue() now typed
   EntityTableModel.getPropertyBackgroundColor() now attribute based, renamed getAttributeBackgroundColor()
   Property.is() removed
+  Key.getFirstValue() renamed get(), getFirstAttribute() renamed getAttribute(), set() added, all three throw exception in case of composite key
