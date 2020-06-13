@@ -576,7 +576,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public int selectRowCount(final EntityCondition condition) throws DatabaseException {
+  public int rowCount(final EntityCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
     final EntityDefinition entityDefinition = getEntityDefinition(condition.getEntityType());
     final WhereCondition whereCondition = whereCondition(condition, entityDefinition);

@@ -323,20 +323,20 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void selectRowCount() throws Exception {
-    int rowCount = connection.selectRowCount(condition(T_DEPARTMENT));
+  public void rowCount() throws Exception {
+    int rowCount = connection.rowCount(condition(T_DEPARTMENT));
     assertEquals(4, rowCount);
     Condition deptNoCondition = Conditions.attributeCondition(DEPARTMENT_ID, Operator.GREATER_THAN, 30);
-    rowCount = connection.selectRowCount(condition(T_DEPARTMENT, deptNoCondition));
+    rowCount = connection.rowCount(condition(T_DEPARTMENT, deptNoCondition));
     assertEquals(2, rowCount);
 
-    rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_TYPE));
+    rowCount = connection.rowCount(condition(JOINED_QUERY_ENTITY_TYPE));
     assertEquals(16, rowCount);
     deptNoCondition = Conditions.attributeCondition(JOINED_DEPTNO, Operator.GREATER_THAN, 30);
-    rowCount = connection.selectRowCount(condition(JOINED_QUERY_ENTITY_TYPE, deptNoCondition));
+    rowCount = connection.rowCount(condition(JOINED_QUERY_ENTITY_TYPE, deptNoCondition));
     assertEquals(4, rowCount);
 
-    rowCount = connection.selectRowCount(condition(GROUP_BY_QUERY_ENTITY_TYPE));
+    rowCount = connection.rowCount(condition(GROUP_BY_QUERY_ENTITY_TYPE));
     assertEquals(4, rowCount);
   }
 
@@ -525,7 +525,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       connection.update(updateCondition);
-      assertEquals(0, connection.selectRowCount(selectCondition));
+      assertEquals(0, connection.rowCount(selectCondition));
       final List<Entity> afterUpdate = connection.select(Entities.getKeys(entities));
       for (final Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(EMP_COMMISSION));

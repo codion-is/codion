@@ -145,7 +145,7 @@ public final class HttpEntityConnectionTest {
     try {
       connection.beginTransaction();
       connection.update(updateCondition);
-      assertEquals(0, connection.selectRowCount(selectCondition));
+      assertEquals(0, connection.rowCount(selectCondition));
       final List<Entity> afterUpdate = connection.select(Entities.getKeys(entities));
       for (final Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(TestDomain.EMP_COMMISSION));
@@ -197,8 +197,8 @@ public final class HttpEntityConnectionTest {
   }
 
   @Test
-  public void selectRowCount() throws IOException, DatabaseException {
-    assertEquals(4, connection.selectRowCount(condition(TestDomain.T_DEPARTMENT)));
+  public void rowCount() throws IOException, DatabaseException {
+    assertEquals(4, connection.rowCount(condition(TestDomain.T_DEPARTMENT)));
   }
 
   @Test
