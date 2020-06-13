@@ -689,7 +689,7 @@ public final class FXUiUtil {
    */
   public static EntityLookupField createLookupField(final ForeignKeyProperty foreignKeyProperty,
                                                     final FXEntityEditModel editModel) {
-    final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty);
+    final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty.getAttribute());
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
     editModel.value(foreignKeyProperty.getAttribute()).link(PropertyValues.lookupValue(lookupModel));
 

@@ -21,12 +21,11 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Specifies a class for editing {@link Entity} instances.
@@ -49,7 +48,7 @@ public interface EntityEditModel extends Refreshable {
   PropertyValue<Boolean> WARN_ABOUT_UNSAVED_DATA = Configuration.booleanValue("codion.client.warnAboutUnsavedData", false);
 
   /**
-   * Specifies whether edit models post their insert, update and delete events to the {@link EntityEditEvents}<br>
+   * Specifies whether edit models post their insert, update and delete events to {@link EntityEditEvents}<br>
    * Value type: Boolean<br>
    * Default value: false
    */
@@ -123,10 +122,10 @@ public interface EntityEditModel extends Refreshable {
   boolean isNotNull(Attribute<?> attribute);
 
   /**
-   * @param property the property
+   * @param attribute the attribute
    * @return true if this value is allowed to be null in the underlying entity
    */
-  boolean isNullable(Property<?> property);
+  boolean isNullable(Attribute<?> attribute);
 
   /**
    * Sets the given value in the underlying Entity
@@ -256,12 +255,12 @@ public interface EntityEditModel extends Refreshable {
    * Creates a {@link EntityLookupModel} for looking up entities referenced by the given foreign key property,
    * using the search properties defined for that entity type, or if none are defined all string based searchable
    * properties in that entity.
-   * @param foreignKeyProperty the foreign key property for which to create a {@link EntityLookupModel}
-   * @return a {@link EntityLookupModel} for looking up entities of the type referenced by the given foreign key property,
+   * @param foreignKeyAttribute the foreign key attribute for which to create a {@link EntityLookupModel}
+   * @return a {@link EntityLookupModel} for looking up entities of the type referenced by the given foreign key attribute,
    * @throws IllegalStateException in case no searchable properties can be found for the entity type referenced by the
    * given foreign key property
    */
-  EntityLookupModel createForeignKeyLookupModel(ForeignKeyProperty foreignKeyProperty);
+  EntityLookupModel createForeignKeyLookupModel(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key property
@@ -278,38 +277,32 @@ public interface EntityEditModel extends Refreshable {
   EntityLookupModel getForeignKeyLookupModel(Attribute<Entity> foreignKeyAttribute);
 
   /**
-   * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityLookupModel}
-   * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
-   * has been initialized for the given property, a new one is created, associated with the attribute and returned.
-   */
-  EntityLookupModel getForeignKeyLookupModel(ForeignKeyProperty foreignKeyProperty);
-
-  /**
-   * Returns the default value for the given property, used when initializing a new default entity for this edit model.
-   * This method is only called for properties that are non-denormalized and are not part of a foreign key.
-   * If the default value of a property should be the last value used, call {@link #setPersistValue(Attribute, boolean)}
-   * with {@code true} for the given property or override {@link #isPersistValue} so that it
-   * returns {@code true} for that property in case the value should persist.
-   * @param property the property
+   * Returns the default value for the given attribute, used when initializing a new default entity for this edit model.
+   * This method is only called for attributes that are non-denormalized and are not part of a foreign key.
+   * If the default value of an attribute should be the last value used, call {@link #setPersistValue(Attribute, boolean)}
+   * with {@code true} for the given attribute or override {@link #isPersistValue} so that it
+   * returns {@code true} for that attribute in case the value should persist.
+   * @param attribute the attribute
    * @param <T> the value type
-   * @return the default value for the property
-   * @see Property.Builder#defaultValue(Object)
+   * @return the default value for the attribute
+   * @see is.codion.framework.domain.property.Property.Builder#defaultValue(Object)
+   * @see is.codion.framework.domain.property.Property.Builder#defaultValueSupplier(Supplier)
    * @see #setPersistValue(Attribute, boolean)
-   * @see #isPersistValue(Property)
+   * @see #isPersistValue(Attribute)
    */
-  <T> T getDefaultValue(Attribute<T> property);
+  <T> T getDefaultValue(Attribute<T> attribute);
 
   /**
-   * Returns true if the last available value for this property should be used when initializing
+   * Returns true if the last available value for this attribute should be used when initializing
    * a default entity.
    * Override for selective reset of field values when the model is cleared.
-   * For foreign key property values this method by default returns the value of the
-   * property {@link EntityEditModel#PERSIST_FOREIGN_KEY_VALUES}.
-   * @param property the property
+   * For foreign key attribute values this method by default returns the value of the
+   * attribute {@link EntityEditModel#PERSIST_FOREIGN_KEY_VALUES}.
+   * @param attribute the attribute
    * @return true if the given field value should be reset when the model is cleared
    * @see EntityEditModel#PERSIST_FOREIGN_KEY_VALUES
    */
-  boolean isPersistValue(Property<?> property);
+  boolean isPersistValue(Attribute<?> attribute);
 
   /**
    * @param attribute the attribute
@@ -423,12 +416,12 @@ public interface EntityEditModel extends Refreshable {
   EntityValidator getValidator();
 
   /**
-   * Validates the value associated with the given property, using the underlying validator.
-   * @param property the property the value is associated with
-   * @throws ValidationException if the given value is not valid for the given property
+   * Validates the value associated with the given attribute, using the underlying validator.
+   * @param attribute the attribute the value is associated with
+   * @throws ValidationException if the given value is not valid for the given attribute
    * @see #getValidator()
    */
-  void validate(Property<?> property) throws ValidationException;
+  void validate(Attribute<?> attribute) throws ValidationException;
 
   /**
    * Validates the current state of the entity
@@ -453,13 +446,13 @@ public interface EntityEditModel extends Refreshable {
   void validate(Entity entity) throws ValidationException;
 
   /**
-   * Returns true if the value associated with the given property is valid, using the {@code validate} method.
-   * @param property the property the value is associated with
+   * Returns true if the value associated with the given attribute is valid, using the {@link #validate(Attribute)} method.
+   * @param attribute the attribute the value is associated with
    * @return true if the value is valid
-   * @see #validate(Property)
+   * @see #validate(Attribute)
    * @see EntityValidator#validate(Entity, EntityDefinition)
    */
-  boolean isValid(Property<?> property);
+  boolean isValid(Attribute<?> attribute);
 
   /**
    * @return true if the underlying Entity contains only valid values

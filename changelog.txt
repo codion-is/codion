@@ -6282,3 +6282,5 @@
   CompletionDocument now prevents being set more than once, some null checks added
   DefaultEntityEditModel.validate(entity) no longer final
   EntityConnection.selectRowCount() renamed rowCount()
+  EntityEditModel, EntityTableModel, more methods now attribute based
+  Toolkit.beep() no longer called on invalid input

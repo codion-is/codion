@@ -97,10 +97,10 @@ public class EntityComponentValues {
                                                                                         final Entity initialValue) {
     if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKeyProperty.getReferencedEntityType()).isSmallDataset()) {
       return (ComponentValue<Entity, T>) new EntityComboBox.ComponentValue(
-              editModel.createForeignKeyComboBoxModel(foreignKeyProperty), initialValue);
+              editModel.createForeignKeyComboBoxModel(foreignKeyProperty.getAttribute()), initialValue);
     }
 
     return (ComponentValue<Entity, T>) new EntityLookupField.ComponentValue(
-            editModel.createForeignKeyLookupModel(foreignKeyProperty), initialValue);
+            editModel.createForeignKeyLookupModel(foreignKeyProperty.getAttribute()), initialValue);
   }
 }

@@ -684,11 +684,11 @@ final class DefaultEntity implements Entity {
     return false;
   }
 
-  private <T> void setOriginalValue(final Attribute<T> property, final Object originalValue) {
+  private <T> void setOriginalValue(final Attribute<T> attribute, final Object originalValue) {
     if (originalValues == null) {
       originalValues = new HashMap<>();
     }
-    originalValues.put(property, originalValue);
+    originalValues.put(attribute, originalValue);
   }
 
   private <T> void removeOriginalValue(final Attribute<T> attribute) {

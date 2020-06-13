@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -134,9 +133,9 @@ public final class EmpDeptMinimalApp {
      */
     @Override
     public SwingEntityComboBoxModel createForeignKeyComboBoxModel(
-            final ForeignKeyProperty foreignKeyProperty) {
-      final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
-      if (foreignKeyProperty.getAttribute().equals(Employee.MGR_FK)) {
+            final Attribute<Entity> foreignKeyAttribute) {
+      final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyAttribute);
+      if (foreignKeyAttribute.equals(Employee.MGR_FK)) {
         comboBoxModel.setSelectConditionProvider(() -> Conditions.attributeCondition(
                 Employee.JOB, Operator.LIKE, "MANAGER", "PRESIDENT"));
         comboBoxModel.refresh();

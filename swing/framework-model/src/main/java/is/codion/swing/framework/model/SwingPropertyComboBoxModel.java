@@ -16,12 +16,12 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A combo box model based on a single entity property.
+ * A combo box model based on a the values of a single attribute.
  * @param <T> the type of values in this combo box model
  */
 public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T> {
 
-  private final Supplier<Collection<T>> valueProvider;
+  private final Supplier<Collection<T>> valueSupplier;
 
   /**
    * @param connectionProvider a EntityConnectionProvider instance
@@ -30,29 +30,29 @@ public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T>
    */
   public SwingPropertyComboBoxModel(final EntityConnectionProvider connectionProvider,
                                     final Attribute<T> attribute, final String nullString) {
-    this(new DefaultValueProvider<>(connectionProvider, attribute), nullString);
+    this(new DefaultValueSupplier<>(connectionProvider, attribute), nullString);
   }
 
   /**
-   * @param valueProvider provides the values to show in this combo box model
+   * @param valueSupplier provides the values to show in this combo box model
    * @param nullString the String to use to represent a null value
    */
-  public SwingPropertyComboBoxModel(final Supplier<Collection<T>> valueProvider, final String nullString) {
+  public SwingPropertyComboBoxModel(final Supplier<Collection<T>> valueSupplier, final String nullString) {
     super(nullString);
-    this.valueProvider = valueProvider;
+    this.valueSupplier = valueSupplier;
   }
 
   @Override
   protected final List<T> initializeContents() {
-    return new ArrayList<>(valueProvider.get());
+    return new ArrayList<>(valueSupplier.get());
   }
 
-  private static final class DefaultValueProvider<T> implements Supplier<Collection<T>> {
+  private static final class DefaultValueSupplier<T> implements Supplier<Collection<T>> {
 
     private final EntityConnectionProvider connectionProvider;
     private final Attribute<T> attribute;
 
-    private DefaultValueProvider(final EntityConnectionProvider connectionProvider, final Attribute<T> attribute) {
+    private DefaultValueSupplier(final EntityConnectionProvider connectionProvider, final Attribute<T> attribute) {
       this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
       this.attribute = requireNonNull(attribute, "attribute");
     }

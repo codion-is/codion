@@ -178,14 +178,14 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   void removeRefreshListener(EventListener listener);
 
   /**
-   * Responsible for finding an Entity by the value of a given property.
+   * Responsible for finding an Entity by the value of a given attribute.
    * @param <T> the value type
    */
   interface Finder<T> {
 
     /**
      * Returns the first Entity in the given list with {@code value} associated with
-     * the given property. Only called for non-null {@code value}s.
+     * the given attribute. Only called for non-null {@code value}s.
      * @param entities the entities to search
      * @param attribute the attribute
      * @param value the value to search for, never null

@@ -22,6 +22,7 @@ public final class AutoCompletion extends CompletionDocument {
   /**
    * @param comboBox the combobox on which to enable autocompletion
    * @param <T> the type
+   * @return the combo box
    */
   public static <T> JComboBox<T> enable(final JComboBox<T> comboBox) {
     return enable(comboBox, Normalize.YES);
@@ -31,6 +32,7 @@ public final class AutoCompletion extends CompletionDocument {
    * @param comboBox the combobox on which to enable autocompletion
    * @param normalize if YES then accented characters are normalized before matching
    * @param <T> the type
+   * @return the combo box
    */
   public static <T> JComboBox<T> enable(final JComboBox<T> comboBox, final Normalize normalize) {
     comboBox.setEditable(true);
@@ -52,7 +54,6 @@ public final class AutoCompletion extends CompletionDocument {
     }
     else {
       offs = offs - str.length();
-      getComboBox().getToolkit().beep();
     }
     setTextAccordingToSelectedItem();
     highlightCompletedText(offs + str.length());
