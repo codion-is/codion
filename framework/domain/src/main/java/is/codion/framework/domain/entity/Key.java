@@ -22,7 +22,7 @@ public interface Key extends Serializable {
   List<Attribute<?>> getAttributes();
 
   /**
-   * @return true if this key contains no values or if it contains a null value for a non-nullable key property
+   * @return true if this key contains no values or if it contains a null value for a non-nullable key attribute
    */
   boolean isNull();
 
@@ -32,18 +32,18 @@ public interface Key extends Serializable {
   boolean isNotNull();
 
   /**
-   * Returns true if a null value is mapped to the given property or no mapping exists.
+   * Returns true if a null value is mapped to the given attribute or no mapping exists.
    * @param attribute the attribute
    * @param <T> the value type
-   * @return true if the value mapped to the given property is null or none exists
+   * @return true if the value mapped to the given attribute is null or none exists
    */
   <T> boolean isNull(Attribute<T> attribute);
 
   /**
-   * Returns true if a non-null value is mapped to the given property.
+   * Returns true if a non-null value is mapped to the given attribute.
    * @param attribute the attribute
    * @param <T> the value type
-   * @return true if a non-null value is mapped to the given property
+   * @return true if a non-null value is mapped to the given attribute
    */
   <T> boolean isNotNull(Attribute<T> attribute);
 
@@ -53,24 +53,25 @@ public interface Key extends Serializable {
   boolean isSingleIntegerKey();
 
   /**
-   * @return true if this key is comprised of multiple properties.
+   * @return true if this key is comprised of multiple attributes.
    */
   boolean isCompositeKey();
 
   /**
    * @param <T> the attribute type
-   * @return the first key property, useful for single property keys
+   * @return the first key property, useful for single attribute keys
    */
   <T> Attribute<T> getFirstAttribute();
 
   /**
-   * @return the first value contained in this key, useful for single property keys
+   * @param <T> the value type
+   * @return the first value contained in this key, useful for single attribute keys
    */
-  Object getFirstValue();
+  <T> T getFirstValue();
 
   /**
    * @param attribute the attribute
-   * @param value the value to associate with the property
+   * @param value the value to associate with the attribute
    * @param <T> the value type
    * @return the previous value
    */
@@ -79,7 +80,7 @@ public interface Key extends Serializable {
   /**
    * @param attribute the attribute
    * @param <T> the value type
-   * @return the value associated with the given property
+   * @return the value associated with the given attribute
    */
   <T> T get(Attribute<T> attribute);
 }

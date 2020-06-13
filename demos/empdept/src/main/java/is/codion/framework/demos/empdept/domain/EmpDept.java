@@ -123,8 +123,8 @@ public final class EmpDept extends Domain {
             .stringProvider(new StringProvider(Employee.NAME))
             .beanClass(EmployeeBean.class)
             .caption("Employee")
-            .colorProvider((entity, property) -> {
-              if (property.is(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {
+            .colorProvider((entity, attribute) -> {
+              if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {
                 return Color.CYAN;
               }
 

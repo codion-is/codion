@@ -67,7 +67,7 @@ public class TrackTablePanel extends EntityTablePanel {
     public <T, C extends JComponent> ComponentValue<T, C> createComponentValue(final Property<T> property,
                                                                                final SwingEntityEditModel editModel,
                                                                                final T initialValue) {
-      if (property.is(Track.MILLISECONDS)) {
+      if (property.getAttribute().equals(Track.MILLISECONDS)) {
         return (ComponentValue<T, C>) new MinutesSecondsPanelValue();
       }
 

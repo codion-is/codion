@@ -350,7 +350,7 @@ public final class Conditions {
       final Key entityKey = keys.get(0);
 
       return attributeCondition(foreignKeyColumnAttributes.get(0), operator,
-              entityKey == null ? null : entityKey.getFirstValue());
+              entityKey == null ? null : new Object[] {entityKey.getFirstValue()});
     }
 
     return attributeCondition(foreignKeyColumnAttributes.get(0), operator, getValues(keys));

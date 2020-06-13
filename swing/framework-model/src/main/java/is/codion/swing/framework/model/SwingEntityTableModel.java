@@ -399,8 +399,8 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public Color getPropertyBackgroundColor(final int row, final Property<?> property) {
-    return (Color) getEntityDefinition().getColorProvider().getColor(getItemAt(row), property);
+  public Color getAttributeBackgroundColor(final int row, final Attribute<?> attribute) {
+    return (Color) getEntityDefinition().getColorProvider().getColor(getItemAt(row), attribute);
   }
 
   @Override

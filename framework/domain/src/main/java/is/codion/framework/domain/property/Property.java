@@ -121,12 +121,6 @@ public interface Property<T> extends Serializable {
   String formatValue(T value);
 
   /**
-   * @param attribute the attribute
-   * @return true if this property is based on the given attribute
-   */
-  boolean is(Attribute<?> attribute);
-
-  /**
    * @return the data type ({@link java.sql.Types}) of the value of this property
    */
   int getType();

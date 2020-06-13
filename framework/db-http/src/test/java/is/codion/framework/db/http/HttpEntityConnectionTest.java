@@ -96,7 +96,7 @@ public final class HttpEntityConnectionTest {
     entity.put(TestDomain.DEPARTMENT_NAME, "name");
     entity.put(TestDomain.DEPARTMENT_LOCATION, "loc");
     final Key key = connection.insert(entity);
-    assertEquals(33, key.getFirstValue());
+    assertEquals(Integer.valueOf(33), key.getFirstValue());
     connection.delete(key);
   }
 

@@ -168,8 +168,8 @@ public final class TestDomain extends Domain {
             .conditionProvider(EMP_CONDITION_2_ID, (attributes, values) -> "1 = 1")
             .conditionProvider(EMP_CONDITION_3_ID, (attributes, values) -> " ename = 'CLARK'")
             .caption("Employee")
-            .colorProvider((entity, property) -> {
-              if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
+            .colorProvider((entity, attribute) -> {
+              if (attribute.equals(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
                 return CYAN;
               }
 

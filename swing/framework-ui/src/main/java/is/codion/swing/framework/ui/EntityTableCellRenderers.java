@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -91,12 +92,12 @@ public final class EntityTableCellRenderers {
     return new Color(r, g, b);
   }
 
-  private static Color getBackgroundColor(final SwingEntityTableModel tableModel, final Property<?> property, final int row,
+  private static Color getBackgroundColor(final SwingEntityTableModel tableModel, final Attribute<?> attribute, final int row,
                                           final boolean indicateCondition) {
-    final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(property.getAttribute());
-    final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(property.getAttribute());
+    final boolean propertyConditionEnabled = tableModel.getConditionModel().isEnabled(attribute);
+    final boolean propertyFilterEnabled = tableModel.getConditionModel().isFilterEnabled(attribute);
     final boolean showCondition = indicateCondition && (propertyConditionEnabled || propertyFilterEnabled);
-    final Color cellColor = tableModel.getPropertyBackgroundColor(row, property);
+    final Color cellColor = tableModel.getAttributeBackgroundColor(row, attribute);
     if (showCondition) {
       return getConditionEnabledColor(row, propertyConditionEnabled, propertyFilterEnabled, cellColor);
     }
@@ -201,7 +202,7 @@ public final class EntityTableCellRenderers {
         return table.getSelectionBackground();
       }
 
-      return getBackgroundColor(tableModel, property, row, indicateCondition);
+      return getBackgroundColor(tableModel, property.getAttribute(), row, indicateCondition);
     }
 
     /**
@@ -260,7 +261,7 @@ public final class EntityTableCellRenderers {
         return table.getSelectionBackground();
       }
 
-      return getBackgroundColor(tableModel, property, row, indicateCondition);
+      return getBackgroundColor(tableModel, property.getAttribute(), row, indicateCondition);
     }
 
     @Override

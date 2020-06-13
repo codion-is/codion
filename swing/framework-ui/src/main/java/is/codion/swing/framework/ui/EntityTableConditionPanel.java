@@ -215,7 +215,7 @@ public final class EntityTableConditionPanel extends JPanel {
     if (advancedConditionPanel instanceof AbstractTableColumnSyncPanel) {
       for (final TableColumn column : columns) {
         final Property<?> property = (Property<?>) column.getIdentifier();
-        if (property.is(attribute)) {
+        if (property.getAttribute().equals(attribute)) {
           return (ColumnConditionPanel<Entity, Property<?>>) ((AbstractTableColumnSyncPanel) advancedConditionPanel).getColumnPanels().get(column);
         }
       }

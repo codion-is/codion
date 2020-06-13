@@ -6247,3 +6247,6 @@
   Got rid of a bunch of raw value types
   DerivedProperty.SourceValues added for type safety
 0.16.4
+  Key.getFirstValue() now typed
+  EntityTableModel.getPropertyBackgroundColor() now attribute based, renamed getAttributeBackgroundColor()
+  Property.is() removed

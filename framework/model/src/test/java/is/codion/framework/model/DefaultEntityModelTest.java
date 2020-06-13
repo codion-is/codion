@@ -206,7 +206,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public ColumnSummaryModel getColumnSummaryModel(final Attribute<?> attribute) {return null;}
     @Override
-    public Object getPropertyBackgroundColor(final int row, final Property property) {return null;}
+    public Object getAttributeBackgroundColor(final int row, final Attribute<?> attribute) {return null;}
     @Override
     public int getPropertyColumnIndex(final Attribute<?> attribute) {return 0;}
     @Override

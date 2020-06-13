@@ -3,8 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.Property;
-
 import java.io.Serializable;
 
 /**
@@ -14,8 +12,8 @@ public interface ColorProvider extends Serializable {
 
   /**
    * @param entity the entity
-   * @param property the property
-   * @return the color to use for this entity and property
+   * @param attribute the attribute
+   * @return the color to use for this entity and attribute
    */
-  Object getColor(Entity entity, Property<?> property);
+  Object getColor(Entity entity, Attribute<?> attribute);
 }

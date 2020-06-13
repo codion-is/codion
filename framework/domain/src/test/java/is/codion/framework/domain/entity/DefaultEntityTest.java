@@ -588,7 +588,7 @@ public class DefaultEntityTest {
     assertNull(emp.get(TestDomain.EMP_DEPARTMENT_FK));
     assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
     final Entity empDept = emp.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
-    assertEquals(2, empDept.getKey().getFirstValue());
+    assertEquals(Integer.valueOf(2), empDept.getKey().getFirstValue());
 
     final Entity dept2 = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     dept2.put(TestDomain.DEPARTMENT_ID, 3);

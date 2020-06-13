@@ -110,8 +110,8 @@ final class DefaultKey implements Key {
   }
 
   @Override
-  public Object getFirstValue() {
-    return values.get(getFirstAttribute());
+  public <T> T getFirstValue() {
+    return (T) values.get(getFirstAttribute());
   }
 
   @Override

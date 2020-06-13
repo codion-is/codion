@@ -248,10 +248,10 @@ public class DomainTest {
    public void keys() {
     final List<Key> intKeys = entities.keys(TestDomain.T_EMP, 1, 2, 3, 4);
     assertEquals(4, intKeys.size());
-    assertEquals(3, intKeys.get(2).getFirstValue());
+    assertEquals(Integer.valueOf(3), intKeys.get(2).getFirstValue());
     final List<Key> longKeys = entities.keys(TestDomain.T_DETAIL, 1L, 2L, 3L, 4L);
     assertEquals(4, longKeys.size());
-    assertEquals(3L, longKeys.get(2).getFirstValue());
+    assertEquals(Long.valueOf(3), longKeys.get(2).getFirstValue());
    }
 
   @Test
