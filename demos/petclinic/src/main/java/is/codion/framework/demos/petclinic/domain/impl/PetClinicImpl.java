@@ -3,17 +3,23 @@
  */
 package is.codion.framework.demos.petclinic.domain.impl;
 
+import is.codion.framework.demos.petclinic.domain.Owner;
+import is.codion.framework.demos.petclinic.domain.Pet;
+import is.codion.framework.demos.petclinic.domain.PetType;
+import is.codion.framework.demos.petclinic.domain.Specialty;
+import is.codion.framework.demos.petclinic.domain.Vet;
+import is.codion.framework.demos.petclinic.domain.VetSpecialty;
+import is.codion.framework.demos.petclinic.domain.Visit;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.StringProvider;
 
-import static is.codion.framework.demos.petclinic.domain.Clinic.*;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 
-public final class ClinicImpl extends Domain {
+public final class PetClinicImpl extends Domain {
 
-  public ClinicImpl() {
+  public PetClinicImpl() {
     vet();
     specialty();
     vetSpecialty();
@@ -62,7 +68,7 @@ public final class ClinicImpl extends Domain {
                             .primaryKeyIndex(0))
                     .nullable(false),
             foreignKeyProperty(VetSpecialty.SPECIALTY_FK, "Specialty", Specialty.TYPE,
-                    primaryKeyProperty(VetSpecialty.SPECIALTY)
+                    columnProperty(VetSpecialty.SPECIALTY)
                             .primaryKeyIndex(1))
                     .nullable(false))
             .caption("Vet specialties")
@@ -115,7 +121,8 @@ public final class ClinicImpl extends Domain {
                     .searchProperty(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(Pet.BIRTH_DATE, "Birth date"),
+            columnProperty(Pet.BIRTH_DATE, "Birth date")
+                    .nullable(false),
             foreignKeyProperty(Pet.PET_TYPE_FK, "Pet type", PetType.TYPE,
                     columnProperty(Pet.PET_TYPE_ID))
                     .nullable(false),

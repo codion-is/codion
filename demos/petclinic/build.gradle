@@ -3,7 +3,7 @@ apply from: '../demos.gradle'
 dependencies {
     implementation project(':codion-swing-framework-ui')
 
-    implementation project(':codion-framework-db-local')
+    implementation project(':codion-plugin-ikonli-foundation')
 
     runtimeOnly project(':codion-plugin-logback-proxy')
 
@@ -22,7 +22,7 @@ ext.execMainClass = 'is.codion.framework.demos.petclinic.ui.PetclinicAppPanel'
 
 test {
     systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "is.codion.framework.demos.petstore.domain.impl.PetclinicImpl"
+    systemProperty "codion.client.domainClass", "is.codion.framework.demos.petstore.domain.impl.PetClinicImpl"
 }
 
 startScripts {

@@ -4,9 +4,8 @@
 package is.codion.framework.demos.petclinic.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.petclinic.domain.VetSpecialty;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-
-import static is.codion.framework.demos.petclinic.domain.Clinic.VetSpecialty;
 
 public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 

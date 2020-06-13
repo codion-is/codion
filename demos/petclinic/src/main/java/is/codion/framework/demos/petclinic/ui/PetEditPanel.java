@@ -3,7 +3,10 @@
  */
 package is.codion.framework.demos.petclinic.ui;
 
+import is.codion.framework.demos.petclinic.domain.Pet;
+import is.codion.framework.demos.petclinic.domain.PetType;
 import is.codion.swing.common.ui.Components;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -11,10 +14,6 @@ import is.codion.swing.framework.ui.EntityPanelBuilder;
 
 import javax.swing.Action;
 import javax.swing.JPanel;
-import java.awt.GridLayout;
-
-import static is.codion.framework.demos.petclinic.domain.Clinic.Pet;
-import static is.codion.framework.demos.petclinic.domain.Clinic.PetType;
 
 public final class PetEditPanel extends EntityEditPanel {
 
@@ -36,7 +35,7 @@ public final class PetEditPanel extends EntityEditPanel {
             .createEditPanelAction(petTypeBox);
     final JPanel petTypePanel = Components.createEastButtonPanel(petTypeBox, newPetTypeAction);
 
-    setLayout(new GridLayout(2, 2, 5, 5));
+    setLayout(Layouts.gridLayout(2, 2));
 
     addInputPanel(Pet.OWNER_FK);
     addInputPanel(Pet.NAME);

@@ -3,11 +3,10 @@
  */
 package is.codion.framework.demos.petclinic.ui;
 
-import is.codion.framework.demos.petclinic.domain.Clinic.Specialty;
+import is.codion.framework.demos.petclinic.domain.Specialty;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-
-import java.awt.GridLayout;
 
 public final class SpecialtyEditPanel extends EntityEditPanel {
 
@@ -21,7 +20,7 @@ public final class SpecialtyEditPanel extends EntityEditPanel {
 
     createTextField(Specialty.NAME).setColumns(12);
 
-    setLayout(new GridLayout(1, 1, 5, 5));
+    setLayout(Layouts.gridLayout(1, 1));
 
     addInputPanel(Specialty.NAME);
   }

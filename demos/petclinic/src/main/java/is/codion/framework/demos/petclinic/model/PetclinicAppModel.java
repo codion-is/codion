@@ -4,10 +4,12 @@
 package is.codion.framework.demos.petclinic.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.petclinic.domain.Owner;
+import is.codion.framework.demos.petclinic.domain.Pet;
+import is.codion.framework.demos.petclinic.domain.Vet;
+import is.codion.framework.demos.petclinic.domain.Visit;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
-
-import static is.codion.framework.demos.petclinic.domain.Clinic.*;
 
 public final class PetclinicAppModel extends SwingEntityApplicationModel {
 
@@ -24,6 +26,11 @@ public final class PetclinicAppModel extends SwingEntityApplicationModel {
     ownersModel.addDetailModel(petsModel);
     petsModel.addDetailModel(visitModel);
 
-    addEntityModels(ownersModel);
+    SwingEntityModel vetsModel = new SwingEntityModel(Vet.TYPE, connectionProvider);
+    SwingEntityModel vetSpecialtiesModel = new SwingEntityModel(new VetSpecialtyEditModel(connectionProvider));
+
+    vetsModel.addDetailModel(vetSpecialtiesModel);
+
+    addEntityModels(ownersModel, vetsModel);
   }
 }
