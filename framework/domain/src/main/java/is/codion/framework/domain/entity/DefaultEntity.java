@@ -651,13 +651,13 @@ final class DefaultEntity implements Entity {
       return new DefaultSourceValues(derivedProperty.getAttribute(), singletonMap(sourceAttribute, get(sourceAttribute)));
     }
     else {
-      final Map<Attribute<?>, Object> values = new HashMap<>(sourceAttributes.size());
+      final Map<Attribute<?>, Object> valueMap = new HashMap<>(sourceAttributes.size());
       for (int i = 0; i < sourceAttributes.size(); i++) {
         final Attribute<?> sourceAttribute = sourceAttributes.get(i);
-        values.put(sourceAttribute, get(sourceAttribute));
+        valueMap.put(sourceAttribute, get(sourceAttribute));
       }
 
-      return new DefaultSourceValues(derivedProperty.getAttribute(), values);
+      return new DefaultSourceValues(derivedProperty.getAttribute(), valueMap);
     }
   }
 
