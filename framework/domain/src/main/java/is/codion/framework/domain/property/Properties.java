@@ -117,8 +117,8 @@ public final class Properties {
   public static <T> TransientProperty.Builder<T> denormalizedViewProperty(final Attribute<T> attribute,
                                                                           final Attribute<Entity> entityAttribute,
                                                                           final Attribute<T> denormalizedAttribute, final String caption) {
-    final DerivedProperty.Provider<T> valueProvider = linkedValues -> {
-      final Entity foreignKeyValue = (Entity) linkedValues.get(entityAttribute);
+    final DerivedProperty.Provider<T> valueProvider = sourceValues -> {
+      final Entity foreignKeyValue = sourceValues.get(entityAttribute);
 
       return foreignKeyValue == null ? null : foreignKeyValue.get(denormalizedAttribute);
     };
