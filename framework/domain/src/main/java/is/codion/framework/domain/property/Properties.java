@@ -97,7 +97,7 @@ public final class Properties {
   public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute,
                                                               final String caption, final EntityType foreignEntityType,
                                                               final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
-    columnPropertyBuilders.forEach(builder -> builder.setForeignKeyProperty(true));
+    columnPropertyBuilders.forEach(builder -> builder.setForeignKeyColumn(true));
 
     return new DefaultForeignKeyProperty(attribute, caption, foreignEntityType,
             columnPropertyBuilders.stream().map(ColumnProperty.Builder::get).collect(Collectors.toList()))

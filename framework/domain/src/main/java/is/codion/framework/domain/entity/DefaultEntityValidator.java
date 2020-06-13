@@ -184,7 +184,7 @@ public class DefaultEntityValidator implements EntityValidator {
 
   private static boolean isNonGeneratedPrimaryKeyProperty(final EntityDefinition definition, final Property<?> property) {
     return (property instanceof ColumnProperty
-            && ((ColumnProperty<?>) property).isPrimaryKeyProperty()) && !definition.isKeyGenerated();
+            && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) && !definition.isKeyGenerated();
   }
 
   /**
@@ -192,11 +192,11 @@ public class DefaultEntityValidator implements EntityValidator {
    * @return true if the property is a part of a foreign key
    */
   private static boolean isForeignKeyProperty(final Property<?> property) {
-    return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isForeignKeyProperty();
+    return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isForeignKeyColumn();
   }
 
   private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property<?> property) {
-    return property instanceof ColumnProperty && !((ColumnProperty<?>) property).isPrimaryKeyProperty()
+    return property instanceof ColumnProperty && !((ColumnProperty<?>) property).isPrimaryKeyColumn()
             && !((ColumnProperty<?>) property).columnHasDefaultValue();
   }
 }

@@ -388,7 +388,7 @@ final class EntityConnectionHandler implements InvocationHandler {
       for (int i = 0; i < columnProperties.size(); i++) {
         final ColumnProperty<?> property = columnProperties.get(i);
         final boolean modified = entity.isModified(property.getAttribute());
-        if (property.isPrimaryKeyProperty() || modified) {
+        if (property.isPrimaryKeyColumn() || modified) {
           final StringBuilder valueString = new StringBuilder();
           if (modified) {
             valueString.append(entity.getOriginal(property.getAttribute())).append("->");

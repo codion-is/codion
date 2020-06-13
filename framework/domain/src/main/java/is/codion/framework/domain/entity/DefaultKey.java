@@ -115,25 +115,27 @@ final class DefaultKey implements Key {
 
   @Override
   public <T> T put(final T value) {
-    if (compositeKey) {
-      throw new IllegalStateException("Key for entity type " + definition.getEntityType() + " is a composite key");
-    }
-
-    return put((Attribute<T>) definition.getPrimaryKeyAttributes().get(0), value);
+    return put(getAttribute(), value);
   }
 
   @Override
   public <T> T get() {
-    if (compositeKey) {
-      throw new IllegalStateException("Key for entity type " + definition.getEntityType() + " is a composite key");
-    }
-
-    return (T) values.get(definition.getPrimaryKeyAttributes().get(0));
+    return (T) values.get(getAttribute());
   }
 
   @Override
   public <T> T put(final Attribute<T> attribute, final T value) {
-    return (T) putInternal(definition.getPrimaryKeyProperty((Attribute<Object>) attribute), value);
+    final ColumnProperty<T> property = definition.getPrimaryKeyProperty(attribute);
+    final T newValue = property.prepareValue(property.getAttribute().validateType(value));
+    values.put(property.getAttribute(), newValue);
+    if (singleIntegerKey) {
+      setHashCode((Integer) value);
+    }
+    else {
+      hashCodeDirty = true;
+    }
+
+    return newValue;
   }
 
   @Override
@@ -227,19 +229,6 @@ final class DefaultKey implements Key {
   @Override
   public <T> boolean isNotNull(final Attribute<T> attribute) {
     return !isNull(attribute);
-  }
-
-  private Object putInternal(final ColumnProperty<Object> property, final Object value) {
-    final Object newValue = property.prepareValue(property.getAttribute().validateType(value));
-    values.put(property.getAttribute(), newValue);
-    if (singleIntegerKey) {
-      setHashCode((Integer) value);
-    }
-    else {
-      hashCodeDirty = true;
-    }
-
-    return newValue;
   }
 
   private void setHashCode(final Integer value) {

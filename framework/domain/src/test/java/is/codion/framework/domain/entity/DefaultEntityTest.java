@@ -124,6 +124,8 @@ public class DefaultEntityTest {
     testEntity.setAs(test);
     assertNull(testEntity.get(TestDomain.DETAIL_MASTER_ID));
     assertNull(testEntity.get(TestDomain.DETAIL_MASTER_FK));
+
+    assertThrows(IllegalArgumentException.class, () -> testEntity.setAs(referencedEntityValue));
   }
 
   @Test
