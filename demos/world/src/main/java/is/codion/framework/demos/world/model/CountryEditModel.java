@@ -3,7 +3,8 @@ package is.codion.framework.demos.world.model;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
@@ -16,9 +17,9 @@ public final class CountryEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  public SwingEntityComboBoxModel createForeignKeyComboBoxModel(ForeignKeyProperty foreignKeyProperty) {
-    SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
-    if (foreignKeyProperty.getAttribute().equals(Country.CAPITAL_FK)) {
+  public SwingEntityComboBoxModel createForeignKeyComboBoxModel(Attribute<Entity> foreignKeyAttribute) {
+    SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyAttribute);
+    if (foreignKeyAttribute.equals(Country.CAPITAL_FK)) {
       //only show cities for currently selected country
       addEntitySetListener(selectedCountry -> comboBoxModel.setIncludeCondition(
               city -> selectedCountry != null &&

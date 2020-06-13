@@ -9,7 +9,6 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.SortingDirective;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultConditionModelFactory;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
@@ -93,16 +92,13 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(0, employeeTableModel.getRowCount());
     final Entity accounting = getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_ID, 10);
-    final ForeignKeyProperty deptFkProperty = getConnectionProvider().getEntities().getDefinition(TestDomain.T_EMP)
-            .getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
-    employeeTableModel.setForeignKeyConditionValues(deptFkProperty,
-            singletonList(accounting));
+    employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, singletonList(accounting));
     assertEquals(7, employeeTableModel.getRowCount());
     employeeTableModel.clear();
     employeeTableModel.setRefreshOnForeignKeyConditionValuesSet(false);
     final Entity sales = getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT,
             TestDomain.DEPARTMENT_ID, 30);
-    employeeTableModel.setForeignKeyConditionValues(deptFkProperty, Collections.singleton(sales));
+    employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, Collections.singleton(sales));
     assertEquals(0, employeeTableModel.getRowCount());
     employeeTableModel.refresh();
     assertEquals(4, employeeTableModel.getRowCount());
@@ -181,15 +177,15 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   public void testSortComparator() {
-    final Property masterFKProperty = getConnectionProvider().getEntities().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_MASTER_FK);
-    final Comparator comparator = ((SwingEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
+    final Property<Entity> masterFKProperty = getConnectionProvider().getEntities().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_MASTER_FK);
+    final Comparator<?> comparator = ((SwingEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
     //make sure we get the comparator from the entity referenced by the foreign key
     assertEquals(comparator, getConnectionProvider().getEntities().getDefinition(TestDomain.T_MASTER).getComparator());
   }
 
   @Test
   public void columnModel() {
-    final Property property = getConnectionProvider().getEntities().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_STRING);
+    final Property<String> property = getConnectionProvider().getEntities().getDefinition(TestDomain.T_DETAIL).getProperty(TestDomain.DETAIL_STRING);
     final TableColumn column = testModel.getColumnModel().getTableColumn(property);
     assertEquals(property, column.getIdentifier());
   }

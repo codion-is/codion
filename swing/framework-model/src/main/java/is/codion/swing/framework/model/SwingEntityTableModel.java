@@ -162,7 +162,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
                                final TableSortModel<Entity, Property<?>, TableColumn> sortModel,
                                final EntityTableConditionModel tableConditionModel) {
     super(sortModel, requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels());
-    if (!tableConditionModel.getEntityType().equals(entityType)) {
+    if (!tableConditionModel.getEntityType().equals(requireNonNull(entityType, "entityType"))) {
       throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.getEntityType()
               + ", tableModel: " + entityType);
     }
@@ -449,9 +449,10 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
-    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    if (tableConditionModel.setConditionValues(foreignKeyProperty.getAttribute(), foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
+  public void setForeignKeyConditionValues(final Attribute<Entity> foreignKeyAttribute, final Collection<Entity> foreignKeyValues) {
+    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+    getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
+    if (tableConditionModel.setConditionValues(foreignKeyAttribute, foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
   }

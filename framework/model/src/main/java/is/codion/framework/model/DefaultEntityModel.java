@@ -73,7 +73,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * Maps detail models to the foreign key property they are based on
    */
-  private final Map<M, ForeignKeyProperty> detailModelForeignKeys = new HashMap<>();
+  private final Map<M, Attribute<Entity>> detailModelForeignKeys = new HashMap<>();
 
   /**
    * The master model, if any, so that detail models can refer to their masters
@@ -257,13 +257,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       detailModelForeignKeys.remove(detailModel);
     }
     else {
-      detailModelForeignKeys.put(detailModel,
-              connectionProvider.getEntities().getDefinition(detailModel.getEntityType()).getForeignKeyProperty(foreignKeyAttribute));
+      detailModelForeignKeys.put(detailModel, foreignKeyAttribute);
     }
   }
 
   @Override
-  public final ForeignKeyProperty getDetailModelForeignKey(final M detailModel) {
+  public final Attribute<Entity> getDetailModelForeignKey(final M detailModel) {
     return detailModelForeignKeys.get(detailModel);
   }
 
@@ -316,16 +315,16 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     final List<ForeignKeyProperty> foreignKeyProperties =
             editModel.getEntityDefinition().getForeignKeyReferences(foreignKeyEntityType);
     if (!foreignKeyProperties.isEmpty()) {
-      initialize(foreignKeyProperties.get(0), foreignKeyValues);
+      initialize(foreignKeyProperties.get(0).getAttribute(), foreignKeyValues);
     }
   }
 
   @Override
-  public final void initialize(final ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
+  public final void initialize(final Attribute<Entity> foreignKeyAttribute, final List<Entity> foreignKeyValues) {
     if (containsTableModel()) {
-      tableModel.setForeignKeyConditionValues(foreignKeyProperty, foreignKeyValues);
+      tableModel.setForeignKeyConditionValues(foreignKeyAttribute, foreignKeyValues);
     }
-    onInitialization(foreignKeyProperty, foreignKeyValues);
+    onInitialization(foreignKeyAttribute, foreignKeyValues);
   }
 
   @Override
@@ -388,12 +387,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /**
    * By default this method sets the foreign key value in the edit model if the entity is new, using the first item in {@code foreignKeyValues}.
-   * @param foreignKeyProperty the foreign key referring to the master model doing the initialization
+   * @param foreignKeyAttribute the foreign key attribute referring to the master model doing the initialization
    * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model
    */
-  protected void onInitialization(final ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
+  protected void onInitialization(final Attribute<Entity> foreignKeyAttribute, final List<Entity> foreignKeyValues) {
     if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
-      editModel.put(foreignKeyProperty.getAttribute(), foreignKeyValues.get(0));
+      editModel.put(foreignKeyAttribute, foreignKeyValues.get(0));
     }
   }
 
@@ -417,7 +416,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   /**
    * Adds the inserted entities to the EntityComboBoxModels based on the inserted entity type,
-   * sets the value of the master foreign key property and filters the table model if applicable
+   * sets the value of the master foreign key attribute and filters the table model if applicable
    * @param insertedEntities the inserted entities
    * @see EntityModel#SEARCH_ON_MASTER_INSERT
    */
@@ -425,11 +424,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     editModel.addForeignKeyValues(insertedEntities);
     editModel.setForeignKeyValues(insertedEntities);
     if (containsTableModel() && searchOnMasterInsert) {
-      ForeignKeyProperty foreignKeyProperty = masterModel.getDetailModelForeignKey((M) this);
-      if (foreignKeyProperty == null) {
-        foreignKeyProperty = editModel.getEntityDefinition().getForeignKeyReferences(masterModel.getEntityType()).get(0);
+      Attribute<Entity> foreignKeyAttribute = masterModel.getDetailModelForeignKey((M) this);
+      if (foreignKeyAttribute == null) {
+        foreignKeyAttribute = editModel.getEntityDefinition().getForeignKeyReferences(masterModel.getEntityType()).get(0).getAttribute();
       }
-      tableModel.setForeignKeyConditionValues(foreignKeyProperty, insertedEntities);
+      tableModel.setForeignKeyConditionValues(foreignKeyAttribute, insertedEntities);
     }
   }
 

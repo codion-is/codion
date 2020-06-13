@@ -410,9 +410,9 @@ public class EntityEditComponentPanel extends JPanel {
   protected final JTextArea createTextArea(final Attribute<String> attribute, final int rows, final int columns,
                                            final UpdateOn updateOn, final StateObserver enabledState) {
     final Property<String> property = getEditModel().getEntityDefinition().getProperty(attribute);
-    final JTextArea textArea = EntityInputComponents.createTextArea(property,
-            getEditModel().value(property.getAttribute()), rows, columns, updateOn, enabledState);
-    EntityComponentValidators.addValidator(property, textArea, getEditModel());
+    final JTextArea textArea = EntityInputComponents.createTextArea(property, getEditModel().value(attribute),
+            rows, columns, updateOn, enabledState);
+    EntityComponentValidators.addValidator(attribute, textArea, getEditModel());
     setComponent(attribute, textArea);
 
     return textArea;
@@ -555,7 +555,7 @@ public class EntityEditComponentPanel extends JPanel {
     final Property<T> property = getEditModel().getEntityDefinition().getProperty(attribute);
     final JTextField textField = EntityInputComponents.createTextField(property,
             getEditModel().value(attribute), updateOn, enabledState);
-    EntityComponentValidators.addValidator(property, textField, getEditModel());
+    EntityComponentValidators.addValidator(attribute, textField, getEditModel());
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter(textField);
     }
@@ -605,7 +605,7 @@ public class EntityEditComponentPanel extends JPanel {
     final Property<String> property = getEditModel().getEntityDefinition().getProperty(attribute);
     final JFormattedTextField textField = EntityInputComponents.createMaskedTextField(property,
             getEditModel().value(attribute), formatMaskString, valueContainsLiterals, updateOn, enabledState);
-    EntityComponentValidators.addFormattedValidator(property, textField, getEditModel());
+    EntityComponentValidators.addFormattedValidator(attribute, textField, getEditModel());
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter(textField);
     }

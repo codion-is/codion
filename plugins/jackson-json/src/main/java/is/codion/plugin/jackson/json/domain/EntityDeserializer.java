@@ -118,13 +118,13 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   }
 
   /**
-   * Fetches the value of the given property from the given JsonNode
-   * @param property the property
+   * Fetches the value of the given attribute from the given JsonNode
+   * @param attribute the attribute
    * @param jsonNode the node containing the value
-   * @return the value for the given property
+   * @return the value for the given attribute
    * @throws JsonProcessingException in case of an error
    */
-  private Object parseValue(final Attribute<?> property, final JsonNode jsonNode) throws JsonProcessingException {
-    return parseValue(mapper, property, jsonNode);
+  private Object parseValue(final Attribute<?> attribute, final JsonNode jsonNode) throws JsonProcessingException {
+    return parseValue(mapper, attribute, jsonNode);
   }
 }

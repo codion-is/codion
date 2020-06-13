@@ -10,9 +10,7 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.tests.TestDomain;
@@ -25,43 +23,37 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SwingEntityEditModelTest {
 
-  private static final Domain DOMAIN = new TestDomain();
-
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private SwingEntityEditModel employeeEditModel;
-  private ColumnProperty<String> jobProperty;
-  private ForeignKeyProperty deptProperty;
 
   @BeforeEach
   public void setUp() {
-    jobProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
-    deptProperty = DOMAIN.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
     employeeEditModel = new SwingEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
   @Test
   public void getComboBoxModel() {
-    final FilteredComboBoxModel<String> model = employeeEditModel.getComboBoxModel(jobProperty.getAttribute());
+    final FilteredComboBoxModel<String> model = employeeEditModel.getComboBoxModel(TestDomain.EMP_JOB);
     model.setNullString("null");
     assertNotNull(model);
-    assertTrue(employeeEditModel.containsComboBoxModel(jobProperty.getAttribute()));
-    assertEquals(model, employeeEditModel.getComboBoxModel(jobProperty.getAttribute()));
+    assertTrue(employeeEditModel.containsComboBoxModel(TestDomain.EMP_JOB));
+    assertEquals(model, employeeEditModel.getComboBoxModel(TestDomain.EMP_JOB));
     employeeEditModel.refreshComboBoxModels();
     employeeEditModel.clearComboBoxModels();
-    assertTrue(employeeEditModel.getComboBoxModel(jobProperty.getAttribute()).isCleared());
+    assertTrue(employeeEditModel.getComboBoxModel(TestDomain.EMP_JOB).isCleared());
     employeeEditModel.refreshComboBoxModels();
     employeeEditModel.clear();
-    assertTrue(employeeEditModel.getComboBoxModel(jobProperty.getAttribute()).isCleared());
+    assertTrue(employeeEditModel.getComboBoxModel(TestDomain.EMP_JOB).isCleared());
   }
 
   @Test
   public void getForeignKeyComboBoxModel() {
-    assertFalse(employeeEditModel.containsComboBoxModel(deptProperty.getAttribute()));
-    final EntityComboBoxModel model = employeeEditModel.getForeignKeyComboBoxModel(deptProperty);
+    assertFalse(employeeEditModel.containsComboBoxModel(TestDomain.EMP_DEPARTMENT_FK));
+    final EntityComboBoxModel model = employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getItems().isEmpty());
@@ -75,10 +67,11 @@ public class SwingEntityEditModelTest {
 
   @Test
   public void createForeignKeyComboBoxModel() {
-    final EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(deptProperty);
+    final EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getItems().isEmpty());
+    final ForeignKeyProperty deptProperty = employeeEditModel.getEntities().getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
     assertEquals(deptProperty.getReferencedEntityType(), model.getEntityType());
   }
 

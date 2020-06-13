@@ -3,8 +3,8 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntityEditModel;
 
 import javax.swing.JComponent;
@@ -23,72 +23,72 @@ public final class EntityComponentValidators {
 
   /**
    * Adds a validator to the given text component, based on the given value link and edit model
-   * @param property the property of the value to validate
+   * @param attribute the attribute of the value to validate
    * @param textComponent the text component
    * @param editModel the edit model
    * @param <T> the value type
    */
-  public static <T> void addValidator(final Property<T> property, final JTextComponent textComponent, final EntityEditModel editModel) {
-    addValidator(property, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
+  public static <T> void addValidator(final Attribute<T> attribute, final JTextComponent textComponent, final EntityEditModel editModel) {
+    addValidator(attribute, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
   }
 
   /**
    * Adds a validator to the given text component, based on the given value link and edit model
-   * @param property the property of the value to validate
+   * @param attribute the attribute of the value to validate
    * @param textComponent the text component
    * @param editModel the edit model
    * @param <T> the value type
    */
-  public static <T> void addFormattedValidator(final Property<T> property, final JTextComponent textComponent,
+  public static <T> void addFormattedValidator(final Attribute<T> attribute, final JTextComponent textComponent,
                                                final EntityEditModel editModel) {
-    addFormattedValidator(property, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
+    addFormattedValidator(attribute, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
   }
 
   /**
    * Adds a validator to the given text component, based on the given value link and edit model
-   * @param property the property of the value to validate
+   * @param attribute the attribute of the value to validate
    * @param textComponent the text component
    * @param editModel the edit model
    * @param invalidBackgroundColor the background color indicating in invalid value
    * @param defaultToolTip the tooltip to use while the value is valid
    * @param <T> the value type
    */
-  public static <T> void addValidator(final Property<T> property, final JTextComponent textComponent,
+  public static <T> void addValidator(final Attribute<T> attribute, final JTextComponent textComponent,
                                       final EntityEditModel editModel, final Color invalidBackgroundColor,
                                       final String defaultToolTip) {
-    new TextValidator<>(property, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
+    new TextValidator<>(attribute, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
   }
 
   /**
    * Adds a validator to the given text component, based on the given value link and edit model
-   * @param property the property of the value to validate
+   * @param attribute the attribute of the value to validate
    * @param textComponent the text component
    * @param editModel the edit model
    * @param invalidBackgroundColor the background color indicating in invalid value
    * @param defaultToolTip the tooltip to use while the value is valid
    * @param <T> the value type
    */
-  public static <T> void addFormattedValidator(final Property<T> property, final JTextComponent textComponent,
+  public static <T> void addFormattedValidator(final Attribute<T> attribute, final JTextComponent textComponent,
                                                final EntityEditModel editModel, final Color invalidBackgroundColor,
                                                final String defaultToolTip) {
-    new FormattedTextValidator<>(property, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
+    new FormattedTextValidator<>(attribute, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
   }
 
   private abstract static class AbstractValidator<T> {
 
-    private final Property<T> property;
+    private final Attribute<T> attribute;
     private final JComponent component;
     private final EntityEditModel editModel;
     private final String defaultToolTip;
 
-    private AbstractValidator(final Property<T> property, final JComponent component, final EntityEditModel editModel,
+    private AbstractValidator(final Attribute<T> attribute, final JComponent component, final EntityEditModel editModel,
                               final String defaultToolTip) {
-      this.property = property;
+      this.attribute = attribute;
       this.component = component;
       this.editModel = editModel;
       this.defaultToolTip = defaultToolTip;
       this.editModel.getValidator().addRevalidationListener(this::validate);
-      this.editModel.addValueListener(property.getAttribute(), valueChange -> validate());
+      this.editModel.addValueListener(attribute, valueChange -> validate());
     }
 
     /**
@@ -98,7 +98,7 @@ public final class EntityComponentValidators {
      */
     protected final String getValidationMessage() {
       try {
-        editModel.validate(property);
+        editModel.validate(attribute);
         return null;
       }
       catch (final ValidationException e) {
@@ -107,11 +107,11 @@ public final class EntityComponentValidators {
     }
 
     protected boolean isNullable() {
-      return editModel.isNullable(property);
+      return editModel.isNullable(attribute);
     }
 
     protected boolean isNull() {
-      return editModel.isNull(property.getAttribute());
+      return editModel.isNull(attribute);
     }
 
     /**
@@ -162,15 +162,15 @@ public final class EntityComponentValidators {
 
     /**
      * Instantiates a new TextValidator
-     * @param property the property of the value to validate
+     * @param attribute the attribute of the value to validate
      * @param textComponent the text component bound to the value
      * @param editModel the edit model handling the value editing
      * @param invalidBackgroundColor the background color to use when the field value is invalid
      * @param defaultToolTip the default tooltip to show when the field value is valid
      */
-    protected TextValidator(final Property<T> property, final JTextComponent textComponent, final EntityEditModel editModel,
+    protected TextValidator(final Attribute<T> attribute, final JTextComponent textComponent, final EntityEditModel editModel,
                             final Color invalidBackgroundColor, final String defaultToolTip) {
-      super(property, textComponent, editModel, defaultToolTip);
+      super(attribute, textComponent, editModel, defaultToolTip);
       if (invalidBackgroundColor.equals(VALID_ENABLED_BACKGROUND_COLOR)) {
         throw new IllegalArgumentException("Invalid background color is the same as the valid background color");
       }
@@ -199,9 +199,9 @@ public final class EntityComponentValidators {
 
     private final String maskString;
 
-    private FormattedTextValidator(final Property<T> property, final JTextComponent textComponent, final EntityEditModel editModel,
+    private FormattedTextValidator(final Attribute<T> attribute, final JTextComponent textComponent, final EntityEditModel editModel,
                                    final Color invalidBackgroundColor, final String defaultToolTip) {
-      super(property, textComponent, editModel, invalidBackgroundColor, defaultToolTip);
+      super(attribute, textComponent, editModel, invalidBackgroundColor, defaultToolTip);
       this.maskString = textComponent.getText();
     }
 

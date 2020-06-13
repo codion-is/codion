@@ -85,7 +85,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds the EntityLookupModels used by this {@link EntityEditModel}
    */
-  private final Map<ForeignKeyProperty, EntityLookupModel> entityLookupModels = new HashMap<>();
+  private final Map<Attribute<Entity>, EntityLookupModel> entityLookupModels = new HashMap<>();
 
   /**
    * Holds the edit model values created via {@link #value(Attribute)}
@@ -188,9 +188,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public <T> T getDefaultValue(final Attribute<T> attribute) {
     final Property<T> property = getEntityDefinition().getProperty(attribute);
-    if (isPersistValue(property)) {
+    if (isPersistValue(attribute)) {
       if (property instanceof ForeignKeyProperty) {
-        return (T) entity.getForeignKey(((ForeignKeyProperty) property).getAttribute());
+        return (T) entity.getForeignKey((Attribute<Entity>) attribute);
       }
 
       return entity.get(attribute);
@@ -222,9 +222,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public boolean isPersistValue(final Property<?> property) {
-    if (persistentValues.containsKey(property.getAttribute())) {
-      return persistentValues.get(property.getAttribute());
+  public boolean isPersistValue(final Attribute<?> attribute) {
+    if (persistentValues.containsKey(attribute)) {
+      return persistentValues.get(attribute);
     }
 
     return false;
@@ -383,8 +383,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isNullable(final Property<?> property) {
-    return validator.isNullable(entity, property);
+  public final boolean isNullable(final Attribute<?> attribute) {
+    return validator.isNullable(entity, getEntityDefinition().getProperty(attribute));
   }
 
   @Override
@@ -408,8 +408,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void validate(final Property<?> property) throws ValidationException {
-    validator.validate(entity, getEntityDefinition(), property);
+  public final void validate(final Attribute<?> attribute) throws ValidationException {
+    final EntityDefinition entityDefinition = getEntityDefinition();
+    validator.validate(entity, entityDefinition, entityDefinition.getProperty(attribute));
   }
 
   @Override
@@ -436,9 +437,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isValid(final Property<?> property) {
+  public final boolean isValid(final Attribute<?> attribute) {
     try {
-      validator.validate(entity, getEntityDefinition(), requireNonNull(property, PROPERTY));
+      validate(attribute);
       return true;
     }
     catch (final ValidationException e) {
@@ -584,18 +585,21 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean containsLookupModel(final Attribute<Entity> foreignKeyAttribute) {
-    return entityLookupModels.containsKey(getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute));
+    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+    getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
+    return entityLookupModels.containsKey(foreignKeyAttribute);
   }
 
   @Override
-  public EntityLookupModel createForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty) {
+  public EntityLookupModel createForeignKeyLookupModel(final Attribute<Entity> foreignKeyAttribute) {
+    final ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
     final Collection<ColumnProperty<?>> searchProperties = getEntities()
-            .getDefinition(foreignKeyProperty.getReferencedEntityType()).getSearchProperties();
+            .getDefinition(property.getReferencedEntityType()).getSearchProperties();
     if (searchProperties.isEmpty()) {
-      throw new IllegalStateException("No search properties defined for entity: " + foreignKeyProperty.getReferencedEntityType());
+      throw new IllegalStateException("No search properties defined for entity: " + property.getReferencedEntityType());
     }
 
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(foreignKeyProperty.getReferencedEntityType(), connectionProvider, searchProperties);
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityType(), connectionProvider, searchProperties);
     lookupModel.getMultipleSelectionEnabledValue().set(false);
 
     return lookupModel;
@@ -604,13 +608,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final EntityLookupModel getForeignKeyLookupModel(final Attribute<Entity> foreignKeyAttribute) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
-    return getForeignKeyLookupModel(getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute));
-  }
-
-  @Override
-  public final EntityLookupModel getForeignKeyLookupModel(final ForeignKeyProperty foreignKeyProperty) {
-    requireNonNull(foreignKeyProperty, "foreignKeyProperty");
-    return entityLookupModels.computeIfAbsent(foreignKeyProperty, fk -> createForeignKeyLookupModel(foreignKeyProperty));
+    getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
+    return entityLookupModels.computeIfAbsent(foreignKeyAttribute, fk -> createForeignKeyLookupModel(foreignKeyAttribute));
   }
 
   @Override

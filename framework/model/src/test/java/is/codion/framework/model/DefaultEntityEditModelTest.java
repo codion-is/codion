@@ -109,8 +109,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void createForeignKeyLookupModel() {
-    final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(
-            ENTITIES.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK));
+    final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(model);
     assertEquals(TestDomain.T_DEPARTMENT, model.getEntityType());
   }
@@ -168,7 +167,7 @@ public final class DefaultEntityEditModelTest {
     assertFalse(employeeEditModel.getEntityCopy().isLoaded(TestDomain.EMP_DEPARTMENT_FK));
     dept = employeeEditModel.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
     assertNull(dept);
-    dept = (Entity) employeeEditModel.getDefaultValue(TestDomain.EMP_DEPARTMENT_FK);
+    dept = employeeEditModel.getDefaultValue(TestDomain.EMP_DEPARTMENT_FK);
     assertNotNull(dept);
   }
 
@@ -243,7 +242,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(employee);
     assertTrue(employeeEditModel.getEntityCopy().getKey().isNotNull(), "Active entity primary key is null after entity is set");
 
-    final Integer originalEmployeeId = (Integer) employeeEditModel.get(TestDomain.EMP_ID);
+    final Integer originalEmployeeId = employeeEditModel.get(TestDomain.EMP_ID);
     employeeEditModel.put(TestDomain.EMP_ID, null);
     assertTrue(primaryKeyNullState.get());
     employeeEditModel.put(TestDomain.EMP_ID, originalEmployeeId);
@@ -252,11 +251,11 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(null);
     assertTrue(entityNewState.get());
 
-    final Double originalCommission = (Double) employeeEditModel.get(TestDomain.EMP_COMMISSION);
+    final Double originalCommission = employeeEditModel.get(TestDomain.EMP_COMMISSION);
     final double commission = 1500.5;
-    final LocalDate originalHiredate = (LocalDate) employeeEditModel.get(TestDomain.EMP_HIREDATE);
+    final LocalDate originalHiredate = employeeEditModel.get(TestDomain.EMP_HIREDATE);
     final LocalDate hiredate = LocalDate.now();
-    final String originalName = (String) employeeEditModel.get(TestDomain.EMP_NAME);
+    final String originalName = employeeEditModel.get(TestDomain.EMP_NAME);
     final String name = "Mr. Mr";
 
     employeeEditModel.put(TestDomain.EMP_COMMISSION, commission);
@@ -283,13 +282,13 @@ public final class DefaultEntityEditModelTest {
     //test validation
     try {
       employeeEditModel.put(TestDomain.EMP_COMMISSION, 50d);
-      employeeEditModel.validate(ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(TestDomain.EMP_COMMISSION));
+      employeeEditModel.validate(TestDomain.EMP_COMMISSION);
       fail("Validation should fail on invalid commission value");
     }
     catch (final ValidationException e) {
       assertEquals(TestDomain.EMP_COMMISSION, e.getAttribute());
       assertEquals(50d, e.getValue());
-      final Property property = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(e.getAttribute());
+      final Property<?> property = ENTITIES.getDefinition(TestDomain.T_EMP).getProperty(e.getAttribute());
       assertTrue(e.getMessage().contains(property.toString()));
       assertTrue(e.getMessage().contains(property.getMinimumValue().toString()));
     }

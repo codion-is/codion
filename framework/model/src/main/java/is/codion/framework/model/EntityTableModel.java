@@ -21,7 +21,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -108,12 +107,12 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setEditModel(E editModel);
 
   /**
-   * Sets {@code foreignKeyValues} as the search condition values for the given foreignKeyProperty
+   * Sets {@code foreignKeyValues} as the search condition values for the given foreignKeyAttribute
    * and refreshes this table model.
-   * @param foreignKeyProperty the id of the foreign key property
+   * @param foreignKeyAttribute the foreign key attribute
    * @param foreignKeyValues the entities to use as condition values
    */
-  void setForeignKeyConditionValues(ForeignKeyProperty foreignKeyProperty, Collection<Entity> foreignKeyValues);
+  void setForeignKeyConditionValues(Attribute<Entity> foreignKeyAttribute, Collection<Entity> foreignKeyValues);
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
@@ -390,13 +389,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * @param refreshOnForeignKeyConditionValuesSet true if this table model should automatically refresh when foreign key condition values are set
-   * @see #setForeignKeyConditionValues(ForeignKeyProperty, Collection)
+   * @see #setForeignKeyConditionValues(Attribute, Collection)
    */
   void setRefreshOnForeignKeyConditionValuesSet(boolean refreshOnForeignKeyConditionValuesSet);
 
   /**
    * @return true if this table model automatically refreshes when foreign key condition values are set
-   * @see #setForeignKeyConditionValues(ForeignKeyProperty, Collection)
+   * @see #setForeignKeyConditionValues(Attribute, Collection)
    */
   boolean isRefreshOnForeignKeyConditionValuesSet();
 }

@@ -395,9 +395,10 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public ForeignKeyProperty getForeignKeyProperty(final Attribute<Entity> attribute) {
+    requireNonNull(attribute, "attribute");
     final ForeignKeyProperty property = entityProperties.foreignKeyPropertyMap.get(attribute);
     if (property == null) {
-      throw new IllegalArgumentException("Foreign key property with id: " + attribute + " not found in entity of type: " + entityType);
+      throw new IllegalArgumentException("Foreign key attribute: " + attribute + " not found in entity of type: " + entityType);
     }
 
     return property;
@@ -405,6 +406,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public <T> List<ForeignKeyProperty> getForeignKeyProperties(final Attribute<T> columnAttribute) {
+    requireNonNull(columnAttribute, "columnAttribute");
     return entityProperties.columnPropertyForeignKeyProperties.computeIfAbsent(columnAttribute, attribute -> Collections.emptyList());
   }
 

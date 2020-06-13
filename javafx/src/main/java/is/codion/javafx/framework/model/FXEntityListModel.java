@@ -186,8 +186,9 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setForeignKeyConditionValues(final ForeignKeyProperty foreignKeyProperty, final Collection<Entity> entities) {
-    if (tableConditionModel.setConditionValues(foreignKeyProperty.getAttribute(), entities) && refreshOnForeignKeyConditionValuesSet) {
+  public final void setForeignKeyConditionValues(final Attribute<Entity> foreignKeyAttribute, final Collection<Entity> entities) {
+    getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
+    if (tableConditionModel.setConditionValues(foreignKeyAttribute, entities) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
   }

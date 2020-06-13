@@ -90,8 +90,7 @@ public final class SwingEntityModelTest
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
     departmentModel.refresh();
     final SwingEntityEditModel employeeEditModel = employeeModel.getEditModel();
-    final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(
-            getConnectionProvider().getEntities().getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK));
+    final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     departmentsComboBoxModel.refresh();
     final Key primaryKey = getConnectionProvider().getEntities().key(TestDomain.T_DEPARTMENT, 40);//operations, no employees
     final List<Key> keys = new ArrayList<>();
