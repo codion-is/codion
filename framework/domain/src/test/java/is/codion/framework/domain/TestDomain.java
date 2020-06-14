@@ -13,6 +13,8 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.Properties;
+import is.codion.framework.domain.property.TransientProperty;
 
 import java.sql.Types;
 import java.time.LocalDate;
@@ -22,7 +24,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.KeyGenerators.queried;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
@@ -31,7 +32,10 @@ import static java.util.Arrays.asList;
 
 public final class TestDomain extends Domain {
 
+  public static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
+
   public TestDomain() {
+    super(DOMAIN);
     compositeMaster();
     compositeDetail();
     master();
@@ -39,9 +43,10 @@ public final class TestDomain extends Domain {
     department();
     employee();
     noPKEntity();
+    transientTest();
   }
 
-  public static final EntityType T_COMPOSITE_MASTER = entityType("domain.composite_master");
+  public static final EntityType T_COMPOSITE_MASTER = DOMAIN.entityType("domain.composite_master");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID = T_COMPOSITE_MASTER.integerAttribute("id");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID_2 = T_COMPOSITE_MASTER.integerAttribute("id2");
 
@@ -51,7 +56,7 @@ public final class TestDomain extends Domain {
             columnProperty(COMPOSITE_MASTER_ID_2).primaryKeyIndex(1));
   }
 
-  public static final EntityType T_COMPOSITE_DETAIL = entityType("domain.composite_detail");
+  public static final EntityType T_COMPOSITE_DETAIL = DOMAIN.entityType("domain.composite_detail");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = T_COMPOSITE_DETAIL.integerAttribute("master_id");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = T_COMPOSITE_DETAIL.integerAttribute("master_id2");
   public static final Attribute<Entity> COMPOSITE_DETAIL_MASTER_FK = T_COMPOSITE_DETAIL.entityAttribute("master_fk");
@@ -63,7 +68,7 @@ public final class TestDomain extends Domain {
                             columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1))));
   }
 
-  public static final EntityType T_MASTER = entityType("domain.master_entity");
+  public static final EntityType T_MASTER = DOMAIN.entityType("domain.master_entity");
   public static final Attribute<Long> MASTER_ID = T_MASTER.longAttribute("id");
   public static final Attribute<String> MASTER_NAME = T_MASTER.stringAttribute("name");
   public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
@@ -77,7 +82,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(MASTER_NAME));
   }
 
-  public static final EntityType T_DETAIL = entityType("domain.detail_entity");
+  public static final EntityType T_DETAIL = DOMAIN.entityType("domain.detail_entity");
   public static final Attribute<Long> DETAIL_ID = T_DETAIL.longAttribute("id");
   public static final Attribute<Integer> DETAIL_INT = T_DETAIL.integerAttribute("int");
   public static final Attribute<Double> DETAIL_DOUBLE = T_DETAIL.doubleAttribute("double");
@@ -123,7 +128,7 @@ public final class TestDomain extends Domain {
             denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK, MASTER_CODE, DETAIL_MASTER_CODE.getName()),
             valueListProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.getName(), linkedValues -> {
-              final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
+              final Integer intValue = linkedValues.get(DETAIL_INT);
               if (intValue == null) {
 
                 return null;
@@ -139,7 +144,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
-  public static final EntityType T_DEPARTMENT = entityType("domain.scott.dept");
+  public static final EntityType T_DEPARTMENT = DOMAIN.entityType("domain.scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -170,7 +175,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final EntityType T_EMP = entityType("domain.scott.emp");
+  public static final EntityType T_EMP = DOMAIN.entityType("domain.scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("emp_id");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("emp_name");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
@@ -222,8 +227,8 @@ public final class TestDomain extends Domain {
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION,
                     DEPARTMENT_LOCATION.getName()).preferredColumnWidth(100),
             derivedProperty(EMP_NAME_DEPARTMENT, null, linkedValues -> {
-              final String name = (String) linkedValues.get(EMP_NAME);
-              final Entity department = (Entity) linkedValues.get(EMP_DEPARTMENT_FK);
+              final String name = linkedValues.get(EMP_NAME);
+              final Entity department = linkedValues.get(EMP_DEPARTMENT_FK);
               if (name == null || department == null) {
                 return null;
               }
@@ -239,7 +244,7 @@ public final class TestDomain extends Domain {
             .caption("Employee");
   }
 
-  public static final EntityType T_NO_PK = entityType("no_pk");
+  public static final EntityType T_NO_PK = DOMAIN.entityType("no_pk");
   public static final Attribute<Integer> NO_PK_COL1 = T_NO_PK.integerAttribute("col1");
   public static final Attribute<Integer> NO_PK_COL2 = T_NO_PK.integerAttribute("col2");
   public static final Attribute<Integer> NO_PK_COL3 = T_NO_PK.integerAttribute("col3");
@@ -249,6 +254,18 @@ public final class TestDomain extends Domain {
             columnProperty(NO_PK_COL1),
             columnProperty(NO_PK_COL2),
             columnProperty(NO_PK_COL3));
+  }
+
+  public static final EntityType T_TRANS = DOMAIN.entityType("trans");
+
+  public static final Attribute<Integer> TRANS_ID = T_TRANS.integerAttribute("id");
+  public static final Attribute<Integer> TRANS_TRANS = T_TRANS.integerAttribute("trans");
+  public static final TransientProperty.Builder<Integer> TRANS_BUILDER = Properties.transientProperty(TRANS_TRANS);
+
+  void transientTest() {
+    define(T_TRANS,
+                Properties.primaryKeyProperty(TRANS_ID),
+                TRANS_BUILDER);
   }
 
   private static final class EntityToEmployee implements EntityDefinition.BeanHelper<Employee> {

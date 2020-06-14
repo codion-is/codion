@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
 
@@ -14,13 +15,25 @@ final class DefaultEntityType implements EntityType {
 
   private static final long serialVersionUID = 1;
 
+  private final String domainName;
   private final String name;
+  private final int hashCode;
 
-  DefaultEntityType(final String name) {
-    if (nullOrEmpty(name)) {
-      throw new IllegalArgumentException("name must be a non-empty string");
+  DefaultEntityType(final String domainName, final String typeName) {
+    if (nullOrEmpty(typeName)) {
+      throw new IllegalArgumentException("typeName must be a non-empty string");
     }
-    this.name = name;
+    if (nullOrEmpty(domainName)) {
+      throw new IllegalArgumentException("domainName must be a non-empty string");
+    }
+    this.domainName = domainName;
+    this.name = typeName;
+    this.hashCode = Objects.hash(typeName, domainName);
+  }
+
+  @Override
+  public String getDomainName() {
+    return domainName;
   }
 
   @Override
@@ -100,7 +113,7 @@ final class DefaultEntityType implements EntityType {
 
   @Override
   public int hashCode() {
-    return name.hashCode();
+    return hashCode;
   }
 
   @Override
@@ -113,6 +126,6 @@ final class DefaultEntityType implements EntityType {
     }
     final DefaultEntityType that = (DefaultEntityType) object;
 
-    return name.equals(that.name);
+    return name.equals(that.name) && domainName.equals(that.domainName);
   }
 }

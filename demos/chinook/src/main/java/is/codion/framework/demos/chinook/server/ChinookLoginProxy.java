@@ -16,6 +16,7 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -24,7 +25,7 @@ import static is.codion.common.db.Operator.LIKE;
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.framework.db.condition.Conditions.*;
 import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
@@ -118,14 +119,17 @@ public final class ChinookLoginProxy implements LoginProxy {
 
   private static final class Authentication extends Domain {
 
+    private static final DomainType DOMAIN = domainType(Authentication.class);
+
     interface User {
-      EntityType TYPE = entityType("chinook.user");
+      EntityType TYPE = DOMAIN.entityType("chinook.user");
       Attribute<Integer> ID = TYPE.integerAttribute("userid");
       Attribute<String> USERNAME = TYPE.stringAttribute("username");
       Attribute<Integer> PASSWORD_HASH = TYPE.integerAttribute("passwordhash");
     }
 
     private Authentication() {
+      super(DOMAIN);
       define(User.TYPE,
               primaryKeyProperty(User.ID),
               columnProperty(User.USERNAME)

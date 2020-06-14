@@ -6,6 +6,7 @@ package is.codion.framework.demos.chinook.domain;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -21,12 +22,14 @@ import java.util.List;
 
 import static is.codion.common.db.operation.FunctionType.functionType;
 import static is.codion.common.db.operation.ProcedureType.procedureType;
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.domain.DomainType.domainType;
 
 public interface Chinook {
 
+  DomainType DOMAIN = domainType(Chinook.class);
+
   interface Artist {
-    EntityType TYPE = entityType("artist@chinook");
+    EntityType TYPE = DOMAIN.entityType("artist@chinook");
     Attribute<Long> ID = TYPE.longAttribute("artistid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("number_of_albums");
@@ -34,7 +37,7 @@ public interface Chinook {
   }
 
   interface Album {
-    EntityType TYPE = entityType("album@chinook");
+    EntityType TYPE = DOMAIN.entityType("album@chinook");
     Attribute<Long> ID = TYPE.longAttribute("albumid");
     Attribute<String> TITLE = TYPE.stringAttribute("title");
     Attribute<Long> ARTIST_ID = TYPE.longAttribute("artistid");
@@ -45,7 +48,7 @@ public interface Chinook {
   }
 
   interface Employee {
-    EntityType TYPE = entityType("employee@chinook");
+    EntityType TYPE = DOMAIN.entityType("employee@chinook");
     Attribute<Long> ID = TYPE.longAttribute("employeeid");
     Attribute<String> LASTNAME = TYPE.stringAttribute("lastname");
     Attribute<String> FIRSTNAME = TYPE.stringAttribute("firstname");
@@ -65,7 +68,7 @@ public interface Chinook {
   }
 
   interface Customer {
-    EntityType TYPE = entityType("customer@chinook");
+    EntityType TYPE = DOMAIN.entityType("customer@chinook");
     Attribute<Long> ID = TYPE.longAttribute("customerid");
     Attribute<String> FIRSTNAME = TYPE.stringAttribute("firstname");
     Attribute<String> LASTNAME = TYPE.stringAttribute("lastname");
@@ -85,19 +88,19 @@ public interface Chinook {
   }
 
   interface Genre {
-    EntityType TYPE = entityType("genre@chinook");
+    EntityType TYPE = DOMAIN.entityType("genre@chinook");
     Attribute<Long> ID = TYPE.longAttribute("genreid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
 
   interface MediaType {
-    EntityType TYPE = entityType("mediatype@chinook");
+    EntityType TYPE = DOMAIN.entityType("mediatype@chinook");
     Attribute<Long> ID = TYPE.longAttribute("mediatypeid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
 
   interface Track {
-    EntityType TYPE = entityType("track@chinook");
+    EntityType TYPE = DOMAIN.entityType("track@chinook");
     Attribute<Long> ID = TYPE.longAttribute("trackid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<Entity> ARTIST_DENORM = TYPE.entityAttribute("artist_denorm");
@@ -115,7 +118,7 @@ public interface Chinook {
 
     DerivedProperty.Provider<String> MIN_SEC_PROVIDER =
             linkedValues -> {
-              final Integer milliseconds = (Integer) linkedValues.get(MILLISECONDS);
+              final Integer milliseconds = linkedValues.get(MILLISECONDS);
               if (milliseconds == null || milliseconds <= 0) {
                 return "";
               }
@@ -125,7 +128,7 @@ public interface Chinook {
   }
 
   interface Invoice {
-    EntityType TYPE = entityType("invoice@chinook");
+    EntityType TYPE = DOMAIN.entityType("invoice@chinook");
     Attribute<Long> ID = TYPE.longAttribute("invoiceid");
     Attribute<Long> CUSTOMER_ID = TYPE.longAttribute("customerid");
     Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
@@ -140,7 +143,7 @@ public interface Chinook {
   }
 
   interface InvoiceLine {
-    EntityType TYPE = entityType("invoiceline@chinook");
+    EntityType TYPE = DOMAIN.entityType("invoiceline@chinook");
     Attribute<Long> ID = TYPE.longAttribute("invoicelineid");
     Attribute<Long> INVOICE_ID = TYPE.longAttribute("invoiceid");
     Attribute<Entity> INVOICE_FK = TYPE.entityAttribute("invoice_fk");
@@ -151,9 +154,9 @@ public interface Chinook {
     Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
 
     DerivedProperty.Provider<BigDecimal> TOTAL_PROVIDER =
-            linkedValues -> {
-              final Integer quantity = (Integer) linkedValues.get(QUANTITY);
-              final BigDecimal unitPrice = (BigDecimal) linkedValues.get(UNITPRICE);
+            sourceValues -> {
+              final Integer quantity = sourceValues.get(QUANTITY);
+              final BigDecimal unitPrice = sourceValues.get(UNITPRICE);
               if (unitPrice == null || quantity == null) {
                 return null;
               }
@@ -163,13 +166,13 @@ public interface Chinook {
   }
 
   interface Playlist {
-    EntityType TYPE = entityType("playlist@chinook");
+    EntityType TYPE = DOMAIN.entityType("playlist@chinook");
     Attribute<Long> ID = TYPE.longAttribute("playlistid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
 
   interface PlaylistTrack {
-    EntityType TYPE = entityType("playlisttrack@chinook");
+    EntityType TYPE = DOMAIN.entityType("playlisttrack@chinook");
     Attribute<Long> ID = TYPE.longAttribute("playlisttrackid");
     Attribute<Long> PLAYLIST_ID = TYPE.longAttribute("playlistid");
     Attribute<Entity> PLAYLIST_FK = TYPE.entityAttribute("playlist_fk");

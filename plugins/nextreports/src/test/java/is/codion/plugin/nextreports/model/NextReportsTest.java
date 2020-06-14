@@ -13,6 +13,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 
 import org.junit.jupiter.api.Test;
 import ro.nextreports.engine.ReportRunner;
@@ -58,6 +59,8 @@ public class NextReportsTest {
   }
 
   public static final class NextDomain extends Domain {
-    public NextDomain() {}
+    public NextDomain() {
+      super(DomainType.domainType(NextDomain.class));
+    }
   }
 }

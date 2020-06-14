@@ -32,35 +32,27 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class Domain implements EntityDefinition.Provider {
 
-  private final String domainName;
+  private final DomainType domainType;
   private final DomainEntities entities;
   private final DomainReports reports = new DomainReports();
   private final DomainProcedures procedures = new DomainProcedures();
   private final DomainFunctions functions = new DomainFunctions();
 
   /**
-   * Instantiates a new Domain with the simple name of the class as domain name
-   * @see Class#getSimpleName()
+   * Instantiates a new Domain identified by the given {@link DomainType}.
+   * @param domainType the Domain model type to associate with this domain model
    */
-  protected Domain() {
-    this.domainName = getClass().getSimpleName();
-    this.entities = new DomainEntities(domainName);
+  protected Domain(final DomainType domainType) {
+    DefaultDomainType.register(domainType);
+    this.domainType = requireNonNull(domainType, "domainType");
+    this.entities = new DomainEntities(domainType);
   }
 
   /**
-   * Instantiates a new Domain
-   * @param domainName the domain name
+   * @return the domain type
    */
-  protected Domain(final String domainName) {
-    this.domainName = requireNonNull(domainName, "domainName");
-    this.entities = new DomainEntities(domainName);
-  }
-
-  /**
-   * @return the domain name
-   */
-  public final String getDomainName() {
-    return domainName;
+  public final DomainType getDomainType() {
+    return domainType;
   }
 
   /**
@@ -140,6 +132,9 @@ public abstract class Domain implements EntityDefinition.Provider {
    */
   protected final EntityDefinition.Builder define(final EntityType entityType, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
+    if (!domainType.getName().equals(entityType.getDomainName())) {
+      throw new IllegalArgumentException("Entity type '" + entityType + "' is not part of domain: " + domainType);
+    }
     return entities.defineInternal(entityType, tableName, propertyBuilders);
   }
 
@@ -195,8 +190,8 @@ public abstract class Domain implements EntityDefinition.Provider {
 
     private static final long serialVersionUID = 1;
 
-    private DomainEntities(final String domainName) {
-      super(domainName);
+    private DomainEntities(final DomainType domainType) {
+      super(domainType);
     }
 
     protected EntityDefinition.Builder defineInternal(final EntityType entityType, final String tableName,

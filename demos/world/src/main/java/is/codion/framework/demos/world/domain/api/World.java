@@ -1,6 +1,7 @@
 package is.codion.framework.demos.world.domain.api;
 
 import is.codion.common.item.Item;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -8,7 +9,6 @@ import is.codion.framework.domain.entity.EntityType;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.EntityType.entityType;
 import static java.util.Arrays.asList;
 
 /**
@@ -17,6 +17,8 @@ import static java.util.Arrays.asList;
 // tag::entityTypesAndAttributes[]
 public interface World {
 
+  DomainType DOMAIN = DomainType.domainType(World.class);
+
   List<Item<String>> CONTINENTS = asList(
           item("Africa"), item("Antarctica"), item("Asia"),
           item("Europe"), item("North America"), item("Oceania"),
@@ -24,7 +26,7 @@ public interface World {
   );
 
   interface City {
-    EntityType TYPE = entityType("world.city");
+    EntityType TYPE = DOMAIN.entityType("world.city");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
@@ -34,7 +36,7 @@ public interface World {
   }
 
   interface Country {
-    EntityType TYPE = entityType("world.country");
+    EntityType TYPE = DOMAIN.entityType("world.country");
     Attribute<String> CODE = TYPE.stringAttribute("code");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<String> CONTINENT = TYPE.stringAttribute("continent");
@@ -58,7 +60,7 @@ public interface World {
   }
 
   interface CountryLanguage {
-    EntityType TYPE = entityType("world.countrylanguage");
+    EntityType TYPE = DOMAIN.entityType("world.countrylanguage");
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
     Attribute<Entity> COUNTRY_FK = TYPE.entityAttribute("country_fk");
     Attribute<String> LANGUAGE = TYPE.stringAttribute("language");
@@ -68,7 +70,7 @@ public interface World {
   }
 
   interface Continent {
-    EntityType TYPE = entityType("continent");
+    EntityType TYPE = DOMAIN.entityType("continent");
     Attribute<String> CONTINENT = TYPE.stringAttribute("continent");
     Attribute<Integer> SURFACE_AREA = TYPE.integerAttribute("sum(surfacearea)");
     Attribute<Long> POPULATION = TYPE.longAttribute("sum(population)");
@@ -80,7 +82,7 @@ public interface World {
   }
 
   interface Lookup {
-    EntityType TYPE = entityType("world.country_city_v");
+    EntityType TYPE = DOMAIN.entityType("world.country_city_v");
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
     Attribute<String> COUNTRY_NAME = TYPE.stringAttribute("countryname");
     Attribute<String> COUNTRY_CONTINENT = TYPE.stringAttribute("continent");

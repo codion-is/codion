@@ -36,7 +36,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Key> {
   public Key deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final ObjectCodec codec = parser.getCodec();
     final JsonNode node = codec.readTree(parser);
-    final EntityType entityType = EntityType.entityType(node.get("entityType").asText());
+    final EntityType entityType = entities.getDomainType().getEntityType(node.get("entityType").asText());
     final EntityDefinition definition = entities.getDefinition(entityType);
     final JsonNode values = node.get("values");
     final Key key = entities.key(entityType);

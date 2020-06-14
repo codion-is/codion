@@ -4,19 +4,22 @@
 package is.codion.framework.demos.manual.store.minimal.domain;
 
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
 
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 
 public class Store extends Domain {
 
+  static final DomainType DOMAIN = domainType(Store.class);
+
   public interface Customer {
-    EntityType TYPE = entityType("store.customer");
+    EntityType TYPE = DOMAIN.entityType("store.customer");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
     Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
@@ -25,7 +28,7 @@ public class Store extends Domain {
   }
 
   public interface Address {
-    EntityType TYPE = entityType("store.address");
+    EntityType TYPE = DOMAIN.entityType("store.address");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<Integer> CUSTOMER_ID = TYPE.integerAttribute("customer_id");
     Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
@@ -34,6 +37,7 @@ public class Store extends Domain {
   }
 
   public Store() {
+    super(DOMAIN);
     define(Customer.TYPE,
             primaryKeyProperty(Customer.ID),
             columnProperty(Customer.FIRST_NAME, "First name")

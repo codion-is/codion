@@ -27,6 +27,7 @@ import static is.codion.framework.domain.property.Properties.*;
 public final class WorldImpl extends Domain {
 
   public WorldImpl() {
+    super(World.DOMAIN);
     //By default you can't define a foreign key referencing an entity which
     //has not been defined, to prevent mistakes. But sometimes we have to
     //deal with cyclical dependencies, such as here, where city references

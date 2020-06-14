@@ -5,6 +5,7 @@ package is.codion.framework.demos.schemabrowser.domain;
 
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -14,14 +15,17 @@ import java.sql.SQLException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
 public final class SchemaBrowser extends Domain {
 
+  static final DomainType DOMAIN = domainType(SchemaBrowser.class);
+
   public SchemaBrowser() {
+    super(DOMAIN);
     defineSchema();
     defineTable();
     defineColumn();
@@ -43,7 +47,7 @@ public final class SchemaBrowser extends Domain {
   }
 
   public interface Schema {
-    EntityType TYPE = entityType("schema");
+    EntityType TYPE = DOMAIN.entityType("schema");
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("schema_name"));
   }
 
@@ -57,7 +61,7 @@ public final class SchemaBrowser extends Domain {
   }
 
   public interface Table {
-    EntityType TYPE = entityType("table");
+    EntityType TYPE = DOMAIN.entityType("table");
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("table_name"));
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("table_schema"));
     Attribute<Entity> SCHEMA_FK = TYPE.entityAttribute(bundle.getString("table_schema_ref"));
@@ -75,7 +79,7 @@ public final class SchemaBrowser extends Domain {
   }
 
   public interface Column {
-    EntityType TYPE = entityType("column");
+    EntityType TYPE = DOMAIN.entityType("column");
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("column_schema"));
     Attribute<String> TABLE_NAME = TYPE.stringAttribute(bundle.getString("column_table_name"));
     Attribute<Entity> TABLE_FK = TYPE.entityAttribute(bundle.getString("column_table_ref"));
@@ -97,7 +101,7 @@ public final class SchemaBrowser extends Domain {
   }
 
   public interface Constraint {
-    EntityType TYPE = entityType("constraint");
+    EntityType TYPE = DOMAIN.entityType("constraint");
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("constraint_schema"));
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("constraint_name"));
     Attribute<String> CONSTRAINT_TYPE = TYPE.stringAttribute(bundle.getString("constraint_type"));
@@ -119,7 +123,7 @@ public final class SchemaBrowser extends Domain {
   }
 
   public interface ColumnConstraint {
-    EntityType TYPE = entityType("column_constraint");
+    EntityType TYPE = DOMAIN.entityType("column_constraint");
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("column_constraint_schema"));
     Attribute<String> CONSTRAINT_NAME = TYPE.stringAttribute(bundle.getString("column_constraint_constraint_name"));
     Attribute<Entity> CONSTRAINT_FK = TYPE.entityAttribute(bundle.getString("column_constraint_constraint_ref"));

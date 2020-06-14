@@ -32,12 +32,12 @@ import javax.swing.JTextField;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.domain.DomainType.domainType;
 
 public final class EntityEditPanels {
 
   interface Demo {
-    EntityType TYPE = entityType("entityType");
+    EntityType TYPE = domainType("domainType").entityType("entityType");
     Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
     Attribute<Entity> FOREIGN_KEY = TYPE.entityAttribute("foreign_key");
     Attribute<LocalDate> LOCAL_DATE = TYPE.localDateAttribute("local_date");

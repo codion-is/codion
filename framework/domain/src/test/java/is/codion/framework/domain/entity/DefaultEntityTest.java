@@ -4,10 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Serializer;
-import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.TestDomain;
-import is.codion.framework.domain.property.Properties;
-import is.codion.framework.domain.property.TransientProperty;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.domain.entity.EntityType.entityType;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -62,7 +58,7 @@ public class DefaultEntityTest {
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final EntityType entityType = entityType("entityType");
+    final EntityType entityType = TestDomain.DOMAIN.entityType("entityType");
     final Attribute<?> invalid = entityType.integerAttribute("invalid");
     final Map<Attribute<?>, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
@@ -550,32 +546,21 @@ public class DefaultEntityTest {
 
   @Test
   public void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
-    final EntityType entityType = entityType("entityType");
-    final Attribute<Integer> trans = entityType.integerAttribute("trans");
-    final Attribute<Integer> id = entityType.integerAttribute("id");
-    final TransientProperty.Builder<?> transientProperty = Properties.transientProperty(trans);
-    class TestDomain extends Domain {
-      public TestDomain() {
-        super("transient");
-        define(entityType,
-                Properties.primaryKeyProperty(id),
-                transientProperty);  }
-    }
     final Entities entities = new TestDomain().getEntities();
 
-    final Entity entity = entities.entity(entityType);
-    entity.put(id, 42);
-    entity.put(trans, null);
+    final Entity entity = entities.entity(TestDomain.T_TRANS);
+    entity.put(TestDomain.TRANS_ID, 42);
+    entity.put(TestDomain.TRANS_TRANS, null);
     entity.saveAll();
 
-    entity.put(trans, 1);
+    entity.put(TestDomain.TRANS_TRANS, 1);
     assertTrue(entity.isModified());
 
-    transientProperty.modifiesEntity(false);
+    TestDomain.TRANS_BUILDER.modifiesEntity(false);
     assertFalse(entity.isModified());
 
     final Entity deserialized = Serializer.deserialize(Serializer.serialize(entity));
-    assertTrue(deserialized.isModified(trans));
+    assertTrue(deserialized.isModified(TestDomain.TRANS_TRANS));
   }
 
   @Test

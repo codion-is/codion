@@ -5,6 +5,7 @@ package is.codion.framework.demos.empdept.domain;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -31,9 +32,12 @@ import static java.util.Arrays.asList;
  */
 public final class EmpDept extends Domain {
 
+  /** The domain type identifying this domain model*/
+  static final DomainType DOMAIN = domainType(EmpDept.class);
+
   /** Entity type for the table scott.dept*/
   public interface Department {
-    EntityType TYPE = entityType("scott.dept");
+    EntityType TYPE = DOMAIN.entityType("scott.dept");
     /** Attributes for the columns in the scott.dept table*/
     Attribute<Integer> ID = TYPE.integerAttribute("deptno");
     Attribute<String> NAME = TYPE.stringAttribute("dname");
@@ -44,7 +48,7 @@ public final class EmpDept extends Domain {
   // tag::employeeConstants[]
   /** Entity type for the table scott.emp*/
   public interface Employee {
-    EntityType TYPE = entityType("scott.emp");
+    EntityType TYPE = DOMAIN.entityType("scott.emp");
     /** Attributes for the columns in the scott.emp table*/
     Attribute<Integer> ID = TYPE.integerAttribute("empno");
     Attribute<String> NAME = TYPE.stringAttribute("ename");
@@ -73,6 +77,7 @@ public final class EmpDept extends Domain {
   // tag::constructor[]
   /** Initializes this domain model */
   public EmpDept() {
+    super(DOMAIN);
     department();
     employee();
     defineReport(Employee.EMPLOYEE_REPORT, classPathReport(EmpDept.class, "empdept_employees.jasper"));

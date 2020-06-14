@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.petclinic.domain;
 
+import is.codion.framework.demos.petclinic.domain.api.Clinic;
 import is.codion.framework.demos.petclinic.domain.api.Owner;
 import is.codion.framework.demos.petclinic.domain.api.Pet;
 import is.codion.framework.demos.petclinic.domain.api.PetType;
@@ -20,6 +21,7 @@ import static is.codion.framework.domain.property.Properties.*;
 public final class PetClinic extends Domain {
 
   public PetClinic() {
+    super(Clinic.DOMAIN);
     vet();
     specialty();
     vetSpecialty();

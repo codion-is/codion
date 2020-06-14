@@ -35,6 +35,7 @@ import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport
 public final class ChinookImpl extends Domain implements Chinook {
 
   public ChinookImpl() {
+    super(DOMAIN);
     artist();
     album();
     employee();
