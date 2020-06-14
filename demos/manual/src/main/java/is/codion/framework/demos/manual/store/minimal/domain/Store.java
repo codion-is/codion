@@ -38,6 +38,7 @@ public class Store extends Domain {
 
   public Store() {
     super(DOMAIN);
+
     define(Customer.TYPE,
             primaryKeyProperty(Customer.ID),
             columnProperty(Customer.FIRST_NAME, "First name")

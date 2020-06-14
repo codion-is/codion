@@ -64,18 +64,20 @@ And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic
 
 Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[ORM] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities* and *properties*. This simplifies a lot of things and completely eliminates the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
 
-In the following example we start by extending the *Domain* class, with three convenient static imports (omitting the rest of the imports for brevity). We then define *EntityType* constants for the entities and use those to create *Attribute* constants for their respective properties. These constants are used whenever we need to refer to the entity type and its values. Finally we use these *entityTypes* and *attributes* to define and configure two entities, with a master-detail relationship.
+In the following example we start by extending the *Domain* class, with three convenient static imports (omitting the rest of the imports for brevity). We then define a DomainType constant, for identifying this domain model, *EntityType* constants for the entities, using those to create *Attribute* constants for their respective properties. These constants are used whenever we need to refer to the entity type and its values. Finally we use these *entityTypes* and *attributes* to define and configure two entities, with a master-detail relationship.
 
 [source,java]
 ----
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 
 public class Store extends Domain {
 
+  static final DomainType DOMAIN = domainType(Store.class);
+
   public interface Customer {
-    EntityType TYPE = entityType("store.customer");
+    EntityType TYPE = DOMAIN.entityType("store.customer");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
     Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
@@ -84,7 +86,7 @@ public class Store extends Domain {
   }
 
   public interface Address {
-    EntityType TYPE = entityType("store.address");
+    EntityType TYPE = DOMAIN.entityType("store.address");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<Integer> CUSTOMER_ID = TYPE.integerAttribute("customer_id");
     Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
@@ -93,6 +95,8 @@ public class Store extends Domain {
   }
 
   public Store() {
+    super(DOMAIN);
+
     define(Customer.TYPE,
             primaryKeyProperty(Customer.ID),
             columnProperty(Customer.FIRST_NAME, "First name")
