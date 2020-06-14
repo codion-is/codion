@@ -51,7 +51,7 @@ public abstract class DefaultEntities implements Entities {
    */
   protected DefaultEntities(final DomainType domainType) {
     this.domainType = requireNonNull(domainType, "domainType");
-    register();
+    REGISTERED_ENTITIES.put(domainType, this);
   }
 
   @Override
@@ -227,10 +227,10 @@ public abstract class DefaultEntities implements Entities {
    * @return the Entities instance registered for the given domainType
    * @throws IllegalArgumentException in case the domain has not been registered
    */
-  static Entities getEntities(final DomainType domainType) {
-    final Entities entities = REGISTERED_ENTITIES.get(domainType);
+  static Entities getEntities(final String domainName) {
+    final Entities entities = REGISTERED_ENTITIES.get(DomainType.getDomainType(domainName));
     if (entities == null) {
-      throw new IllegalArgumentException("Entities for domain '" + domainType + "' have not been registered");
+      throw new IllegalArgumentException("Entities for domain '" + domainName + "' have not been registered");
     }
 
     return entities;
@@ -352,13 +352,9 @@ public abstract class DefaultEntities implements Entities {
     }
   }
 
-  private void register() {
-    REGISTERED_ENTITIES.put(domainType, this);
-  }
-
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
-    register();
+    REGISTERED_ENTITIES.put(domainType, this);
   }
 
   private static final class BeanProperty implements Serializable {

@@ -3,13 +3,12 @@
  */
 package is.codion.framework.demos.petclinic.domain.api;
 
-import is.codion.framework.demos.petclinic.domain.PetClinic;
 import is.codion.framework.domain.DomainType;
 
 /**
  * The domain model type.
  */
-public interface Clinic {
+public interface PetClinicApi {
 
-  DomainType DOMAIN = DomainType.domainType(PetClinic.class);
+  DomainType DOMAIN = DomainType.domainType("PetClinic");
 }

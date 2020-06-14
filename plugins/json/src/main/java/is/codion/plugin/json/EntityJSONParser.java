@@ -267,7 +267,7 @@ public final class EntityJSONParser {
    * @throws IllegalArgumentException in case of an undefined entity
    */
   public Key parseKey(final JSONObject keyObject) {
-    final EntityType entityType = entities.getDomainType().getEntityType(keyObject.getString(ENTITY_TYPE));
+    final EntityType entityType = entities.getDomainType().entityType(keyObject.getString(ENTITY_TYPE));
     final Key key = entities.key(entityType);
     final EntityDefinition definition = entities.getDefinition(entityType);
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
@@ -395,7 +395,7 @@ public final class EntityJSONParser {
    * @throws IllegalArgumentException in case of an undefined entity
    */
   private Entity parseEntity(final JSONObject entityObject) {
-    final EntityType entityType = entities.getDomainType().getEntityType(entityObject.getString(ENTITY_TYPE));
+    final EntityType entityType = entities.getDomainType().entityType(entityObject.getString(ENTITY_TYPE));
 
     return entities.getDefinition(entityType).entity(parseValues(entityObject, entityType, VALUES),
             entityObject.isNull(ORIGINAL_VALUES) ? null : parseValues(entityObject, entityType, ORIGINAL_VALUES));

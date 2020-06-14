@@ -43,7 +43,6 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @param domainType the Domain model type to associate with this domain model
    */
   protected Domain(final DomainType domainType) {
-    DefaultDomainType.register(domainType);
     this.domainType = requireNonNull(domainType, "domainType");
     this.entities = new DomainEntities(domainType);
   }

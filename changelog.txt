@@ -6260,3 +6260,4 @@
   ColumnProperty.isPrimaryKeyProperty() renamed to isPrimaryKeyColumn(), ColumnProperty.isForeignKeyProperty() renamed isForeignKeyColumn()
   DefaultEntity, DefaultKey, DefaultEntityEditModel, some minor refactoring
   DomainType added
+  DomainType now registered correctly

@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import java.io.IOException;
@@ -305,10 +304,9 @@ final class DefaultKey implements Key {
   }
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    final String domainName = (String) stream.readObject();
-    final DomainType domainType = DomainType.getDomainType(domainName);
-    final EntityType entityType = domainType.getEntityType((String) stream.readObject());
-    definition = DefaultEntities.getEntities(domainType).getDefinition(entityType);
+    final Entities entities = DefaultEntities.getEntities((String) stream.readObject());
+    final EntityType entityType = entities.getDomainType().entityType((String) stream.readObject());
+    definition = entities.getDefinition(entityType);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityType);
     }

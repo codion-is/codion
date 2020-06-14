@@ -6,7 +6,7 @@ package is.codion.framework.demos.petclinic.domain.api;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
-import static is.codion.framework.demos.petclinic.domain.api.Clinic.DOMAIN;
+import static is.codion.framework.demos.petclinic.domain.api.PetClinicApi.DOMAIN;
 
 public interface Specialty {
   EntityType TYPE = DOMAIN.entityType("petclinic.specialty");

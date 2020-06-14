@@ -5,7 +5,8 @@ package is.codion.framework.domain;
 
 import is.codion.framework.domain.entity.EntityType;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,10 +20,9 @@ final class DefaultDomainType implements DomainType {
   private static final Map<String, DomainType> DOMAIN_TYPES = new ConcurrentHashMap<>();
 
   private final String domainName;
+  private final Map<String, EntityType> entityTypes = new ConcurrentHashMap<>();
 
-  private final transient Map<String, EntityType> entityTypes = new HashMap<>();
-
-  DefaultDomainType(final String domainName) {
+  private DefaultDomainType(final String domainName) {
     if (nullOrEmpty(domainName)) {
       throw new IllegalArgumentException("domainName must be a non-empty string");
     }
@@ -36,28 +36,7 @@ final class DefaultDomainType implements DomainType {
 
   @Override
   public EntityType entityType(final String name) {
-    final EntityType entityType;
-    synchronized (entityTypes) {
-      if (entityTypes.containsKey(name)) {
-        throw new IllegalArgumentException("entityType with name '" + name + "' has already been defined for domain: " + domainName);
-      }
-      entityType = EntityType.entityType(name, this.domainName);
-      entityTypes.put(name, entityType);
-    }
-
-    return entityType;
-  }
-
-  @Override
-  public EntityType getEntityType(final String name) {
-    synchronized (entityTypes) {
-      final EntityType entityType = entityTypes.get(name);
-      if (entityType == null) {
-        throw new IllegalArgumentException("entityType with name '" + name + "' not found in domain: " + domainName);
-      }
-
-      return entityType;
-    }
+    return entityTypes.computeIfAbsent(name, entityTypeName -> EntityType.entityType(entityTypeName, this.domainName));
   }
 
   @Override
@@ -83,14 +62,19 @@ final class DefaultDomainType implements DomainType {
     return domainName;
   }
 
-  static void register(final DomainType domainType) {
-    DOMAIN_TYPES.put(requireNonNull(domainType, "domainType").getName(), domainType);
+  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    stream.defaultReadObject();
+    DOMAIN_TYPES.put(domainName, this);
+  }
+
+  static DomainType getOrCreateDomainType(final String domainName) {
+    return DOMAIN_TYPES.computeIfAbsent(domainName, DefaultDomainType::new);
   }
 
   static DomainType getDomainType(final String domainName) {
     final DomainType domainType = DOMAIN_TYPES.get(requireNonNull(domainName, "domainName"));
     if (domainType == null) {
-      throw new IllegalArgumentException("Undefined domain: " + domainName);
+      throw new IllegalArgumentException("Domain: " + domainName + " has not been defined");
     }
 
     return domainType;
