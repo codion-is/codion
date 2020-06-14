@@ -6,6 +6,7 @@ package is.codion.framework.demos.manual.store.domain;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.reports.ReportType;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -24,14 +25,16 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class Store extends Domain {
+  
+  static final DomainType STORE = domainType(Store.class);
 
   public interface Address {
-    EntityType TYPE = entityType("store.address");
+    EntityType TYPE = STORE.entityType("store.address");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> STREET = TYPE.stringAttribute("street");
     Attribute<String> CITY = TYPE.stringAttribute("city");
@@ -39,7 +42,7 @@ public final class Store extends Domain {
   }
 
   public interface Customer {
-    EntityType TYPE = entityType("store.customer");
+    EntityType TYPE = STORE.entityType("store.customer");
     Attribute<String> ID = TYPE.stringAttribute("id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
     Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
@@ -48,7 +51,7 @@ public final class Store extends Domain {
   }
 
   public interface CustomerAddress {
-    EntityType TYPE = entityType("store.customer_address");
+    EntityType TYPE = STORE.entityType("store.customer_address");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
     Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
@@ -60,6 +63,7 @@ public final class Store extends Domain {
           JasperReports.reportType("customer_report");
 
   public Store() {
+    super(STORE);
     customer();
     address();
     customerAddress();

@@ -55,7 +55,7 @@ public final class HttpEntityConnectionTest {
 
   private static EntityServer server;
 
-  private final HttpEntityConnection connection = new HttpEntityConnection("TestDomain",
+  private final HttpEntityConnection connection = new HttpEntityConnection(TestDomain.DOMAIN.getName(),
           HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
           HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
           HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get(),

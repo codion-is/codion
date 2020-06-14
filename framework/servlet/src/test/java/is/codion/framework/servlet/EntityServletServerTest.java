@@ -101,7 +101,7 @@ public class EntityServletServerTest {
             .setSocketTimeout(2000)
             .setConnectTimeout(2000)
             .build();
-    final String domainName = new TestDomain().getDomainName();
+    final String domainName = TestDomain.DOMAIN.getName();
     final String clientTypeId = "EntityServletServerTest";
     final UUID clientId = UUID.randomUUID();
     final CloseableHttpClient client = HttpClientBuilder.create()
@@ -141,13 +141,13 @@ public class EntityServletServerTest {
     //test with missing authentication info
     URIBuilder uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
-    uriBuilder.addParameter("domainTypeName", ENTITIES.getDomainName());
+    uriBuilder.addParameter("domainTypeName", TestDomain.DOMAIN.getName());
     CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
     response.close();
     client.close();
 
-    final String domainName = new TestDomain().getDomainName();
+    final String domainName = new TestDomain().getDomainType().getName();
     final String clientTypeId = "EntityServletServerTest";
     //test with missing clientId header
     client = HttpClientBuilder.create()

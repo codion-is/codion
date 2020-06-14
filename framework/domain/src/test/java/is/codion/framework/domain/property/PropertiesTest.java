@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.DateFormats;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -15,14 +16,14 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.property.Properties.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class PropertiesTest {
 
-  private static final EntityType ENTITY_TYPE = entityType("entityType");
-  private static final EntityType REFERENCED_ENTITY_TYPE = entityType("referencedEntityType");
+  private static final DomainType DOMAIN_TYPE = DomainType.domainType("domainType");
+  private static final EntityType ENTITY_TYPE = DOMAIN_TYPE.entityType("entityType");
+  private static final EntityType REFERENCED_ENTITY_TYPE = DOMAIN_TYPE.entityType("referencedEntityType");
 
   @Test
   public void derivedPropertyWithoutLinkedProperties() {

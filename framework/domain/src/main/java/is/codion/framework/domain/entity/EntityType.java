@@ -15,6 +15,11 @@ import java.time.LocalTime;
 public interface EntityType extends Serializable {
 
   /**
+   * @return the name of the domain this entity type is associated with
+   */
+  String getDomainName();
+
+  /**
    * @return the entity type name, unique within a domain.
    */
   String getName();
@@ -116,9 +121,10 @@ public interface EntityType extends Serializable {
 
   /**
    * @param name the entity type name
+   * @param domainName the name of the domain to associate this entity type with
    * @return a {@link EntityType} instance with the given name
    */
-  static EntityType entityType(final String name) {
-    return new DefaultEntityType(name);
+  static EntityType entityType(final String name, final String domainName) {
+    return new DefaultEntityType(domainName, name);
   }
 }

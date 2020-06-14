@@ -5,6 +5,7 @@ package is.codion.framework.db;
 
 import is.codion.common.item.Item;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -16,14 +17,16 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends Domain {
 
+  static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
+
   public TestDomain() {
+    super(DOMAIN);
     superEntity();
     master();
     detail();
@@ -31,7 +34,7 @@ public final class TestDomain extends Domain {
     employee();
   }
 
-  public static final EntityType T_SUPER = entityType("db.super_entity");
+  public static final EntityType T_SUPER = DOMAIN.entityType("db.super_entity");
   public static final Attribute<Integer> SUPER_ID = T_SUPER.integerAttribute("id");
 
   void superEntity() {
@@ -39,7 +42,7 @@ public final class TestDomain extends Domain {
             primaryKeyProperty(SUPER_ID));
   }
 
-  public static final EntityType T_MASTER = entityType("db.master_entity");
+  public static final EntityType T_MASTER = DOMAIN.entityType("db.master_entity");
   public static final Attribute<Integer> MASTER_ID_1 = T_MASTER.integerAttribute("id");
   public static final Attribute<Integer> MASTER_ID_2 = T_MASTER.integerAttribute("id2");
   public static final Attribute<Integer> MASTER_SUPER_ID = T_MASTER.integerAttribute("super_id");
@@ -59,7 +62,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(MASTER_NAME));
   }
 
-  public static final EntityType T_DETAIL = entityType("db.detail_entity");
+  public static final EntityType T_DETAIL = DOMAIN.entityType("db.detail_entity");
 
   public static final Attribute<Long> DETAIL_ID = T_DETAIL.longAttribute("id");
   public static final Attribute<Integer> DETAIL_INT = T_DETAIL.integerAttribute("int");
@@ -77,7 +80,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = T_DETAIL.integerAttribute("int_value_list");
   public static final Attribute<Integer> DETAIL_INT_DERIVED = T_DETAIL.integerAttribute("int_derived");
 
-  public static final EntityType DETAIL_SELECT_TABLE_NAME = entityType("db.entity_test_select");
+  public static final EntityType DETAIL_SELECT_TABLE_NAME = DOMAIN.entityType("db.entity_test_select");
 
   private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
           item(2, "2"), item(3, "3"));
@@ -116,7 +119,7 @@ public final class TestDomain extends Domain {
             .stringProvider(new StringProvider(DETAIL_STRING));
   }
 
-  public static final EntityType T_DEPARTMENT = entityType("db.scott.dept");
+  public static final EntityType T_DEPARTMENT = DOMAIN.entityType("db.scott.dept");
 
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
@@ -147,7 +150,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final EntityType T_EMP = entityType("db.scott.emp");
+  public static final EntityType T_EMP = DOMAIN.entityType("db.scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("emp_id");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("emp_name");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");

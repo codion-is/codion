@@ -89,6 +89,7 @@ is.codion.framework.db.condition.DefaultEntitySelectCondition
 is.codion.framework.db.condition.DefaultPropertyCondition
 is.codion.framework.db.condition.Condition$EmptyCondition
 is.codion.framework.domain.Domain
+is.codion.framework.domain.DefaultDomainType
 is.codion.framework.domain.entity.DefaultEntity
 is.codion.framework.domain.entity.DefaultEntityType
 is.codion.framework.domain.entity.DefaultKey

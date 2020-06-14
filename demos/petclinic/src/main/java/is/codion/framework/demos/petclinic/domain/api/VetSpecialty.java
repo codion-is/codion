@@ -7,10 +7,10 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.demos.petclinic.domain.api.Clinic.DOMAIN;
 
 public interface VetSpecialty {
-  EntityType TYPE = entityType("petclinic.vet_specialty");
+  EntityType TYPE = DOMAIN.entityType("petclinic.vet_specialty");
   Attribute<Integer> VET = TYPE.integerAttribute("vet");
   Attribute<Entity> VET_FK = TYPE.entityAttribute("vet_fk");
   Attribute<Integer> SPECIALTY = TYPE.integerAttribute("specialty");

@@ -6,10 +6,10 @@ package is.codion.framework.demos.petclinic.domain.api;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.demos.petclinic.domain.api.Clinic.DOMAIN;
 
 public interface Specialty {
-  EntityType TYPE = entityType("petclinic.specialty");
+  EntityType TYPE = DOMAIN.entityType("petclinic.specialty");
   Attribute<Integer> ID = TYPE.integerAttribute("id");
   Attribute<String> NAME = TYPE.stringAttribute("name");
 }

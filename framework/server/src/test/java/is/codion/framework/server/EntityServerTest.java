@@ -24,6 +24,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -139,7 +140,8 @@ public class EntityServerTest {
 
     try {
       server.connect(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "ClientTypeID",
-              Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, new EmptyDomain().getDomainName())));
+              Collections.singletonMap(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE,
+                      new EmptyDomain().getDomainType().getName())));
       fail();
     }
     catch (final LoginException ignored) {}
@@ -240,7 +242,7 @@ public class EntityServerTest {
   public void remoteEntityConnectionProvider() throws Exception {
     final RemoteEntityConnectionProvider provider = (RemoteEntityConnectionProvider)
             new RemoteEntityConnectionProvider("localhost", CONFIGURATION.getServerPort(), CONFIGURATION.getRegistryPort())
-            .setDomainClassName("TestDomain").setClientTypeId("TestClient").setUser(UNIT_TEST_USER);
+                    .setDomainClassName("TestDomain").setClientTypeId("TestClient").setUser(UNIT_TEST_USER);
 
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, provider.getConnectionType());
 
@@ -328,5 +330,9 @@ public class EntityServerTest {
     return configuration;
   }
 
-  public static class EmptyDomain extends Domain {}
+  public static class EmptyDomain extends Domain {
+    private EmptyDomain() {
+      super(DomainType.domainType(EmptyDomain.class));
+    }
+  }
 }

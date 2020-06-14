@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
@@ -32,9 +33,9 @@ import static java.util.stream.Collectors.toList;
 public interface Entities extends EntityDefinition.Provider, Serializable {
 
   /**
-   * @return the domain name
+   * @return the {@link DomainType} this {@link Entities} instance is associated with
    */
-  String getDomainName();
+  DomainType getDomainType();
 
   /**
    * Creates a new {@link Entity} instance with the given entityType

@@ -7,6 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -29,7 +30,7 @@ import java.util.List;
 
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Artist;
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
@@ -45,15 +46,17 @@ public final class ClientTutorial {
 
   public static final class Chinook extends Domain {
 
+    static final DomainType DOMAIN = domainType(Chinook.class);
+
     public interface Artist {
-      EntityType TYPE = entityType("chinook.artist");
+      EntityType TYPE = DOMAIN.entityType("chinook.artist");
       Attribute<Integer> ID = TYPE.integerAttribute("artistid");
       Attribute<String> NAME = TYPE.stringAttribute("name");
       Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("number_of_albums");
     }
 
     public interface Album {
-      EntityType TYPE = entityType("chinook.album");
+      EntityType TYPE = DOMAIN.entityType("chinook.album");
       Attribute<Integer> ID = TYPE.integerAttribute("albumid");
       Attribute<String> TITLE = Artist.TYPE.stringAttribute("title");
       Attribute<Integer> ARTIST_ID = Artist.TYPE.integerAttribute("artistid");
@@ -61,6 +64,7 @@ public final class ClientTutorial {
     }
 
     public Chinook() {
+      super(DOMAIN);
       define(Artist.TYPE,
               primaryKeyProperty(Artist.ID),
               columnProperty(Artist.NAME, "Name")

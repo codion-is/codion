@@ -12,6 +12,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -25,8 +26,8 @@ import static is.codion.common.db.Operator.LIKE;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
+import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.Entities.getKeys;
-import static is.codion.framework.domain.entity.EntityType.entityType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -41,10 +42,13 @@ public final class EntitiesTutorial {
   /** The domain class, which contains the domain model definition */
   public static final class Chinook extends Domain {
 
+    // DomainType for identifying this domain model
+    static final DomainType DOMAIN = domainType(Chinook.class);
+
     // EntityType constant for the table entityType
     // and an Attribute for each column
     public interface Artist {
-      EntityType TYPE = entityType("chinook.artist");
+      EntityType TYPE = DOMAIN.entityType("chinook.artist");
       Attribute<Integer> ID = TYPE.integerAttribute("artistid");
       Attribute<String> NAME = TYPE.stringAttribute("name");
     }
@@ -52,7 +56,7 @@ public final class EntitiesTutorial {
     // EntityType constant for the table entityType and an Attribute
     // for each column and one for the foreign key relation
     public interface Album {
-      EntityType TYPE = entityType("chinook.album");
+      EntityType TYPE = DOMAIN.entityType("chinook.album");
       Attribute<Integer> ID = TYPE.integerAttribute("albumid");
       Attribute<String> TITLE = TYPE.stringAttribute("title");
       Attribute<Integer> ARTIST_ID = TYPE.integerAttribute("artistid");
@@ -60,6 +64,7 @@ public final class EntitiesTutorial {
     }
 
     public Chinook() {
+      super(DOMAIN);
       // create properties for the columns in the table 'chinook.artist'
       Property.Builder<Integer> artistId = primaryKeyProperty(Artist.ID);
 

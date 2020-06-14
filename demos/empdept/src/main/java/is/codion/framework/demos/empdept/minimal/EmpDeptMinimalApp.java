@@ -10,6 +10,7 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -28,7 +29,7 @@ import java.awt.GridLayout;
 import java.time.LocalDate;
 import java.util.Locale;
 
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.property.Properties.*;
 
@@ -38,10 +39,15 @@ import static is.codion.framework.domain.property.Properties.*;
 public final class EmpDeptMinimalApp {
 
   /*
+   * The domain model identifier.
+   */
+  static final DomainType DOMAIN = domainType(EmpDeptMinimalApp.class);
+
+  /*
    * We start by defining attributes for the columns in the SCOTT.DEPT table.
    */
   interface Department {
-    EntityType TYPE = entityType("scott.dept");
+    EntityType TYPE = DOMAIN.entityType("scott.dept");
     Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
     Attribute<String> DNAME = TYPE.stringAttribute("dname");
     Attribute<String> LOC = TYPE.stringAttribute("loc");
@@ -51,7 +57,7 @@ public final class EmpDeptMinimalApp {
    * And for the columns in the SCOTT.EMP table.
    */
   interface Employee {
-    EntityType T_EMP = entityType("scott.emp");
+    EntityType T_EMP = DOMAIN.entityType("scott.emp");
     Attribute<Integer> EMPNO = T_EMP.integerAttribute("empno");
     Attribute<String> ENAME = T_EMP.stringAttribute("ename");
     Attribute<Integer> DEPTNO = T_EMP.integerAttribute("deptno");
@@ -70,6 +76,7 @@ public final class EmpDeptMinimalApp {
   private static final class EmpDept extends Domain {
 
     public EmpDept() {
+      super(DOMAIN);
       /*
        * We then define the entity based on the SCOTT.DEPT table
        */

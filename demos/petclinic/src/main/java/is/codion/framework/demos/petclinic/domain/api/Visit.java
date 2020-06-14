@@ -9,10 +9,10 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.time.LocalDate;
 
-import static is.codion.framework.domain.entity.EntityType.entityType;
+import static is.codion.framework.demos.petclinic.domain.api.Clinic.DOMAIN;
 
 public interface Visit {
-  EntityType TYPE = entityType("petclinic.visit");
+  EntityType TYPE = DOMAIN.entityType("petclinic.visit");
   Attribute<Integer> ID = TYPE.integerAttribute("id");
   Attribute<Integer> PET_ID = TYPE.integerAttribute("pet_id");
   Attribute<Entity> PET_FK = TYPE.entityAttribute("pet_fk");
