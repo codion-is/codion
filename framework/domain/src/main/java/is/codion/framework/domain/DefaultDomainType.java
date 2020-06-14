@@ -36,6 +36,7 @@ final class DefaultDomainType implements DomainType {
 
   @Override
   public EntityType entityType(final String name) {
+    requireNonNull(name, "name");
     return entityTypes.computeIfAbsent(name, entityTypeName -> EntityType.entityType(entityTypeName, this.domainName));
   }
 
