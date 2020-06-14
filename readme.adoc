@@ -64,7 +64,7 @@ And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic
 
 Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[ORM] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities* and *properties*. This simplifies a lot of things and completely eliminates the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
 
-In the following example we start by extending the *Domain* class, with three convenient static imports (omitting the rest of the imports for brevity). We then define a DomainType constant, for identifying this domain model, *EntityType* constants for the entities, using those to create *Attribute* constants for their respective properties. These constants are used whenever we need to refer to the entity type and its values. Finally we use these *entityTypes* and *attributes* to define and configure two entities, with a master-detail relationship.
+In the following example we start by extending the *Domain* class, with three convenient static imports (omitting the rest of the imports for brevity). We then define a *DomainType* constant, for identifying this domain model, *EntityType* constants for the entities, using those to create *Attribute* constants for their respective properties. These constants are used whenever we need to refer to the entity type and its values. Finally we use these *entityTypes* and *attributes* to define and configure two entities, with a master-detail relationship.
 
 [source,java]
 ----
