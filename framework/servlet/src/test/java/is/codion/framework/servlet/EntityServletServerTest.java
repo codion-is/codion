@@ -61,7 +61,7 @@ public class EntityServletServerTest {
   private static final String TEST_CLIENT_TYPE_ID = "EntityServletServerTest";
 
   private static final String[] HEADERS = new String[] {
-          EntityService.DOMAIN_TYPE_NAME, new TestDomain().getDomainName(),
+          EntityService.DOMAIN_TYPE_NAME, TestDomain.DOMAIN.getName(),
           EntityService.CLIENT_TYPE_ID, TEST_CLIENT_TYPE_ID,
           EntityService.CLIENT_ID, UUID.randomUUID().toString(),
           "Content-Type", MediaType.APPLICATION_OCTET_STREAM,
@@ -103,7 +103,7 @@ public class EntityServletServerTest {
     HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(new String[] {
-                    EntityService.DOMAIN_TYPE_NAME, new TestDomain().getDomainName(),
+                    EntityService.DOMAIN_TYPE_NAME, TestDomain.DOMAIN.getName(),
                     EntityService.CLIENT_TYPE_ID, "EntityServletServerTest",
                     EntityService.CLIENT_ID, UUID.randomUUID().toString(),
                     "Content-Type", MediaType.APPLICATION_OCTET_STREAM
@@ -117,7 +117,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(new String[] {
-                    EntityService.DOMAIN_TYPE_NAME, new TestDomain().getDomainName(),
+                    EntityService.DOMAIN_TYPE_NAME, TestDomain.DOMAIN.getName(),
                     EntityService.CLIENT_TYPE_ID, "EntityServletServerTest",
                     "Content-Type", MediaType.APPLICATION_OCTET_STREAM,
                     "Authorization", AUTHORIZATION_HEADER
@@ -130,7 +130,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(new String[] {
-                    EntityService.DOMAIN_TYPE_NAME, new TestDomain().getDomainName(),
+                    EntityService.DOMAIN_TYPE_NAME, TestDomain.DOMAIN.getName(),
                     EntityService.CLIENT_TYPE_ID, "EntityServletServerTest",
                     EntityService.CLIENT_ID, UUID.randomUUID().toString(),
                     "Content-Type", MediaType.APPLICATION_OCTET_STREAM,
