@@ -26,7 +26,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 
 public interface Chinook {
 
-  DomainType DOMAIN = domainType(Chinook.class);
+  DomainType DOMAIN = domainType("ChinookImpl");
 
   interface Artist {
     EntityType TYPE = DOMAIN.entityType("artist@chinook");

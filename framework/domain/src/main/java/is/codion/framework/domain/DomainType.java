@@ -22,19 +22,11 @@ public interface DomainType extends Serializable {
 
   /**
    * Instantiates a {@link EntityType} associated with this domain type.
+   * If this entity type has been defined previously that instance is returned.
    * @param name the entity type name
    * @return a {@link EntityType} with the given name
-   * @throws IllegalArgumentException in case an entity type with the given name already exists
    */
   EntityType entityType(String name);
-
-  /**
-   * Returns the {@link EntityType} with the given name.
-   * @param name the entity type name
-   * @return the {@link EntityType} with the given name.
-   * @throws IllegalArgumentException in case the entity type is not found
-   */
-  EntityType getEntityType(String name);
 
   /**
    * Returns a new {@link DomainType} using the given classes simple name as domain name.
@@ -46,12 +38,12 @@ public interface DomainType extends Serializable {
   }
 
   /**
-   * Returns a new {@link DomainType} instance with the given name.
+   * Returns a {@link DomainType} instance with the given name.
    * @param domainName domain name
    * @return a {@link DomainType} with the given name
    */
   static DomainType domainType(final String domainName) {
-    return new DefaultDomainType(domainName);
+    return DefaultDomainType.getOrCreateDomainType(domainName);
   }
 
   /**

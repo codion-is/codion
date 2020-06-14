@@ -17,7 +17,7 @@ import static java.util.Arrays.asList;
 // tag::entityTypesAndAttributes[]
 public interface World {
 
-  DomainType DOMAIN = DomainType.domainType(World.class);
+  DomainType DOMAIN = DomainType.domainType("WorldImpl");
 
   List<Item<String>> CONTINENTS = asList(
           item("Africa"), item("Antarctica"), item("Asia"),
