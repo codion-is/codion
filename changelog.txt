@@ -6261,3 +6261,4 @@
   DefaultEntity, DefaultKey, DefaultEntityEditModel, some minor refactoring
   DomainType added
   DomainType now registered correctly
+0.16.5
