@@ -33,7 +33,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
    * Instantiates a new {@link DefaultEntitySelectCondition}, which includes all the underlying entities
    * @param entityType the type of the entity to select
    */
-  DefaultEntitySelectCondition(final EntityType entityType) {
+  DefaultEntitySelectCondition(final EntityType<? extends Entity> entityType) {
     super(entityType);
   }
 
@@ -44,7 +44,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
    * @see DefaultAttributeCondition
    * @see EntityKeyCondition
    */
-  DefaultEntitySelectCondition(final EntityType entityType, final Condition condition) {
+  DefaultEntitySelectCondition(final EntityType<? extends Entity> entityType, final Condition condition) {
     super(entityType, condition);
   }
 

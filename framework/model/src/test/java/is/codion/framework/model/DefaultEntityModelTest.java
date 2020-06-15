@@ -92,10 +92,10 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
    */
   public static class TestEntityTableModel implements EntityTableModel<TestEntityEditModel>, FilteredTableModel<Entity, Property, Object> {
 
-    private final EntityType entityType;
+    private final EntityType<? extends Entity> entityType;
     private final EntityConnectionProvider connectionProvider;
 
-    public TestEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+    public TestEntityTableModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider) {
       this.entityType = entityType;
       this.connectionProvider = connectionProvider;
     }
@@ -173,7 +173,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void setForeignKeyConditionValues(final Attribute<Entity> foreignKeyAttribute, final Collection<Entity> foreignKeyValues) {}
     @Override
-    public void replaceForeignKeyValues(final EntityType foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {}
+    public void replaceForeignKeyValues(final EntityType<? extends Entity> foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {}
     @Override
     public void addEntities(final List<Entity> entities) {}
     @Override
@@ -285,7 +285,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void clear() {}
     @Override
-    public EntityType getEntityType() {return entityType;}
+    public EntityType<Entity> getEntityType() {return (EntityType<Entity>) entityType;}
     @Override
     public EntityConnectionProvider getConnectionProvider() {return connectionProvider;}
     @Override

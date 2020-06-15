@@ -155,7 +155,8 @@ public abstract class DefaultEntities implements Entities {
       throw new IllegalArgumentException("Entities of type " + type + " expected, got: " + entity.getEntityType());
     }
 
-    return (T) Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] {type.getEntityClass()}, new EntityInvoker(entity, this));
+    return (T) Proxy.newProxyInstance(entity.getClass().getClassLoader(),
+            new Class[] {type.getEntityClass()}, new EntityInvoker(entity, this));
   }
 
   /**

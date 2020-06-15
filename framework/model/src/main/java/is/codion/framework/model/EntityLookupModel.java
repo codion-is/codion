@@ -26,7 +26,7 @@ public interface EntityLookupModel {
   /**
    * @return the type of the entity this lookup model is based on
    */
-  EntityType getEntityType();
+  EntityType<Entity> getEntityType();
 
   /**
    * @return the connection provider used by this lookup model

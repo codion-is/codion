@@ -99,8 +99,8 @@ public interface Chinook {
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
 
-  interface Track {
-    EntityType<Entity> TYPE = DOMAIN.entityType("track@chinook");
+  interface Track extends Entity {
+    EntityType<Track> TYPE = DOMAIN.entityType("track@chinook", Track.class);
     Attribute<Long> ID = TYPE.longAttribute("trackid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<Entity> ARTIST_DENORM = TYPE.entityAttribute("artist_denorm");
@@ -125,6 +125,9 @@ public interface Chinook {
 
               return getMinutes(milliseconds) + " min " + getSeconds(milliseconds) + " sec";
             };
+
+    void setUnitPrice(BigDecimal unitPrice);
+    BigDecimal getUnitPrice();
   }
 
   interface Invoice extends Entity {

@@ -4,6 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.EntityModelBuilder;
 
@@ -25,7 +26,7 @@ public class SwingEntityModelBuilder
 
   private static final String CONNECTION_PROVIDER_PARAMETER = "connectionProvider";
 
-  private final EntityType entityType;
+  private final EntityType<? extends Entity> entityType;
 
   private final List<EntityModelBuilder<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel>>
           detailModelBuilders = new ArrayList<>();
@@ -38,13 +39,13 @@ public class SwingEntityModelBuilder
    * Instantiates a new SwingeEntityModelBuilder based on the given entityType
    * @param entityType the entityType
    */
-  public SwingEntityModelBuilder(final EntityType entityType) {
+  public SwingEntityModelBuilder(final EntityType<? extends Entity> entityType) {
     this.entityType = requireNonNull(entityType, "entityType");
   }
 
   @Override
-  public final EntityType getEntityType() {
-    return entityType;
+  public final EntityType<Entity> getEntityType() {
+    return (EntityType<Entity>) entityType;
   }
 
   @Override

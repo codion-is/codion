@@ -11,7 +11,6 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -246,7 +245,8 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .format(NumberFormat.getIntegerInstance()),
             columnProperty(Track.UNITPRICE, "Price")
                     .nullable(false)
-                    .maximumFractionDigits(2))
+                    .maximumFractionDigits(2)
+                    .beanProperty("unitPrice"))
             .keyGenerator(automatic("chinook.track"))
             .orderBy(orderBy().ascending(Track.NAME))
             .stringProvider(new StringProvider(Track.NAME))
@@ -351,18 +351,20 @@ public final class ChinookImpl extends Domain implements Chinook {
                         final Void... arguments) throws DatabaseException {
       try {
         entityConnection.beginTransaction();
-        final EntitySelectCondition selectCondition = selectCondition(Invoice.TYPE);
-        selectCondition.setForUpdate(true);
-        selectCondition.setForeignKeyFetchDepth(0);
-        final Entities entities = entityConnection.getEntities();
-        final List<Invoice> invoices = entities.castTo(Invoice.TYPE, entityConnection.select(selectCondition));
-        for (final Invoice invoice : invoices) {
-          invoice.setTotal(invoice.getSubtotal());
+
+        EntitySelectCondition selectCondition = selectCondition(Invoice.TYPE)
+                .setForUpdate(true).setForeignKeyFetchDepth(0);
+
+        List<Invoice> invoices = entityConnection.getEntities()
+                .castTo(Invoice.TYPE, entityConnection.select(selectCondition));
+
+        invoices.forEach(invoice -> invoice.setTotal(invoice.getSubtotal()));
+
+        List<Invoice> invoicesToUpdate = getModifiedEntities(invoices);
+        if (!invoicesToUpdate.isEmpty()) {
+          entityConnection.update(invoicesToUpdate);
         }
-        final List<Invoice> modifiedInvoices = getModifiedEntities(invoices);
-        if (!modifiedInvoices.isEmpty()) {
-          entityConnection.update(modifiedInvoices);
-        }
+
         entityConnection.commitTransaction();
       }
       catch (final DatabaseException exception) {
@@ -377,20 +379,21 @@ public final class ChinookImpl extends Domain implements Chinook {
     @Override
     public List<Entity> execute(final LocalEntityConnection entityConnection,
                                 final Object... arguments) throws DatabaseException {
-      final List<Long> trackIds = (List<Long>) arguments[0];
-      final BigDecimal priceIncrease = (BigDecimal) arguments[1];
+      List<Long> trackIds = (List<Long>) arguments[0];
+      BigDecimal priceIncrease = (BigDecimal) arguments[1];
       try {
         entityConnection.beginTransaction();
 
-        final EntitySelectCondition selectCondition = selectCondition(Track.TYPE,
-                Track.ID, Operator.LIKE, trackIds);
-        selectCondition.setForUpdate(true);
+        EntitySelectCondition selectCondition =
+                selectCondition(Track.TYPE, Track.ID, Operator.LIKE, trackIds)
+                        .setForUpdate(true);
 
-        final List<Entity> tracks = entityConnection.select(selectCondition);
-        tracks.forEach(track ->
-                track.put(Track.UNITPRICE,
-                        track.get(Track.UNITPRICE).add(priceIncrease)));
-        final List<Entity> updatedTracks = entityConnection.update(tracks);
+        List<Track> tracks = entityConnection.getEntities()
+                .castTo(Track.TYPE, entityConnection.select(selectCondition));
+
+        tracks.forEach(track -> track.setUnitPrice(track.getUnitPrice().add(priceIncrease)));
+
+        List<Entity> updatedTracks = entityConnection.update(tracks);
 
         entityConnection.commitTransaction();
 
@@ -410,7 +413,7 @@ public final class ChinookImpl extends Domain implements Chinook {
 
     @Override
     public Image get(final DerivedProperty.SourceValues sourceValues) {
-      final byte[] bytes = sourceValues.get(Album.COVER);
+      byte[] bytes = sourceValues.get(Album.COVER);
       if (bytes == null) {
         return null;
       }
@@ -431,7 +434,7 @@ public final class ChinookImpl extends Domain implements Chinook {
 
     @Override
     public String apply(final Entity customer) {
-      final StringBuilder builder = new StringBuilder();
+      StringBuilder builder = new StringBuilder();
       if (customer.isNotNull(Customer.LASTNAME)) {
         builder.append(customer.get(Customer.LASTNAME));
       }

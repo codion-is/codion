@@ -188,7 +188,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
     this.groupByClause = initializeGroupByClause();
     this.caption = entityType.getName();
-    resolveSettersAndGetters();
+    resolveGettersAndSetters();
   }
 
   @Override
@@ -198,12 +198,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public Attribute<?> getGetterAttribute(final Method method) {
-    return getters.get(requireNonNull(method, "method").toString());
+    return getters.get(requireNonNull(method, "method").getName());
   }
 
   @Override
   public Attribute<?> getSetterAttribute(final Method method) {
-    return setters.get(requireNonNull(method, "method").toString());
+    return setters.get(requireNonNull(method, "method").getName());
   }
 
   @Override
@@ -642,7 +642,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return String.join(", ", groupingColumnNames);
   }
 
-  private void resolveSettersAndGetters() {
+  private void resolveGettersAndSetters() {
     if (!entityType.getEntityClass().equals(Entity.class)) {
       for (final Method method : entityType.getEntityClass().getMethods()) {
         if (!ENTITY_METHODS.contains(method)) {
@@ -650,20 +650,20 @@ final class DefaultEntityDefinition implements EntityDefinition {
             final Optional<ForeignKeyProperty> foreignKeyProperty =
                     getForeignKeyProperties().stream().filter(fkProperty ->
                             fkProperty.getReferencedEntityType().getEntityClass().equals(method.getReturnType())).findFirst();
-            foreignKeyProperty.ifPresent(keyProperty -> getters.put(method.toString(), keyProperty.getAttribute()));
+            foreignKeyProperty.ifPresent(keyProperty -> getters.put(method.getName(), keyProperty.getAttribute()));
           }
           else if (method.getParameterCount() == 1 && Entity.class.isAssignableFrom(method.getParameterTypes()[0])) {
             final Optional<ForeignKeyProperty> foreignKeyProperty =
                     getForeignKeyProperties().stream().filter(fkProperty ->
                             fkProperty.getReferencedEntityType().getEntityClass().equals(method.getParameterTypes()[0])).findFirst();
-            foreignKeyProperty.ifPresent(keyProperty -> setters.put(method.toString(), keyProperty.getAttribute()));
+            foreignKeyProperty.ifPresent(keyProperty -> setters.put(method.getName(), keyProperty.getAttribute()));
           }
           else {
             Optional<Property<?>> optionalProperty = getProperties().stream().filter(property -> isGetter(method, property)).findFirst();
-            optionalProperty.ifPresent(property -> getters.put(method.toString(), property.getAttribute()));
+            optionalProperty.ifPresent(property -> getters.put(method.getName(), property.getAttribute()));
 
             optionalProperty = getProperties().stream().filter(property -> isSetter(method, property)).findFirst();
-            optionalProperty.ifPresent(property -> setters.put(method.toString(), property.getAttribute()));
+            optionalProperty.ifPresent(property -> setters.put(method.getName(), property.getAttribute()));
           }
         }
       }

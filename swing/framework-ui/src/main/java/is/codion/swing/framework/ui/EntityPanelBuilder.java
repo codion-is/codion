@@ -57,7 +57,7 @@ public class EntityPanelBuilder {
    * Instantiates a new EntityPanelBuilder for the given entity type
    * @param entityType the entityType
    */
-  public EntityPanelBuilder(final EntityType entityType) {
+  public EntityPanelBuilder(final EntityType<? extends Entity> entityType) {
     this(new SwingEntityModelBuilder(entityType));
   }
 
@@ -72,7 +72,7 @@ public class EntityPanelBuilder {
   /**
    * @return the entityType
    */
-  public final EntityType getEntityType() {
+  public final EntityType<? extends Entity> getEntityType() {
     return modelBuilder.getEntityType();
   }
 

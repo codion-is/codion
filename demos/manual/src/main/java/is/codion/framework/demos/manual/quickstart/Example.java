@@ -53,7 +53,7 @@ public final class Example {
 
     // tag::customer[]
     public interface Customer {
-      EntityType TYPE = DOMAIN.entityType("store.customer");
+      EntityType<Entity> TYPE = DOMAIN.entityType("store.customer");
       Attribute<String> ID = TYPE.stringAttribute("id");
       Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
       Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
@@ -79,7 +79,7 @@ public final class Example {
     // end::customer[]
     // tag::address[]
     public interface Address {
-      EntityType TYPE = DOMAIN.entityType("store.address");
+      EntityType<Entity> TYPE = DOMAIN.entityType("store.address");
       Attribute<Integer> ID = TYPE.integerAttribute("id");
       Attribute<String> STREET = TYPE.stringAttribute("street");
       Attribute<String> CITY = TYPE.stringAttribute("city");
@@ -99,7 +99,7 @@ public final class Example {
     // end::address[]
     // tag::customerAddress[]
     public interface CustomerAddress {
-      EntityType TYPE = DOMAIN.entityType("store.customer_address");
+      EntityType<Entity> TYPE = DOMAIN.entityType("store.customer_address");
       Attribute<Integer> ID = TYPE.integerAttribute("id");
       Attribute<Integer> CUSTOMER_ID = TYPE.integerAttribute("customer_id");
       Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");

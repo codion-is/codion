@@ -218,7 +218,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
 
             @Override
             public int getDefaultWeight() {
-              return 0;
+              return 1;
             }
           };
 

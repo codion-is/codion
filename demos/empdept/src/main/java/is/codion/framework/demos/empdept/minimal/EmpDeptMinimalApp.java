@@ -47,7 +47,7 @@ public final class EmpDeptMinimalApp {
    * We start by defining attributes for the columns in the SCOTT.DEPT table.
    */
   interface Department {
-    EntityType TYPE = DOMAIN.entityType("scott.dept");
+    EntityType<Entity> TYPE = DOMAIN.entityType("scott.dept");
     Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
     Attribute<String> DNAME = TYPE.stringAttribute("dname");
     Attribute<String> LOC = TYPE.stringAttribute("loc");
@@ -57,7 +57,7 @@ public final class EmpDeptMinimalApp {
    * And for the columns in the SCOTT.EMP table.
    */
   interface Employee {
-    EntityType T_EMP = DOMAIN.entityType("scott.emp");
+    EntityType<Entity> T_EMP = DOMAIN.entityType("scott.emp");
     Attribute<Integer> EMPNO = T_EMP.integerAttribute("empno");
     Attribute<String> ENAME = T_EMP.stringAttribute("ename");
     Attribute<Integer> DEPTNO = T_EMP.integerAttribute("deptno");

@@ -11,6 +11,7 @@ import is.codion.common.user.User;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.List;
@@ -108,7 +109,7 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    * @param entityType the entityType
    * @return true if this model contains a EntityModel for the given entityType
    */
-  boolean containsEntityModel(EntityType entityType);
+  boolean containsEntityModel(EntityType<? extends Entity> entityType);
 
   /**
    * @param entityModel the entity model
@@ -155,7 +156,7 @@ public interface EntityApplicationModel<M extends EntityModel> extends Refreshab
    * @param entityType the entityType
    * @return the EntityModel based on the given entityType
    */
-  M getEntityModel(EntityType entityType);
+  M getEntityModel(EntityType<? extends Entity> entityType);
 
   /**
    * @param listener a listener notified each time a login is performed

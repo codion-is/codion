@@ -49,7 +49,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   /**
    * the id of the underlying entity
    */
-  private final EntityType entityType;
+  private final EntityType<? extends Entity> entityType;
 
   /**
    * the EntityConnectionProvider instance used by this EntityComboBoxModel
@@ -109,7 +109,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    * @param entityType the type of the entity this combo box model should represent
    * @param connectionProvider a EntityConnectionProvider instance
    */
-  public SwingEntityComboBoxModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityComboBoxModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider) {
     requireNonNull(entityType, "entityType");
     requireNonNull(connectionProvider, "connectionProvider");
     this.entityType = entityType;
@@ -131,8 +131,8 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final EntityType getEntityType() {
-    return entityType;
+  public final EntityType<Entity> getEntityType() {
+    return (EntityType<Entity>) entityType;
   }
 
   @Override

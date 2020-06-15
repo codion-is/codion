@@ -95,7 +95,7 @@ final class DefaultKey implements Key {
   }
 
   @Override
-  public EntityType getEntityType() {
+  public EntityType<Entity> getEntityType() {
     return definition.getEntityType();
   }
 
@@ -183,7 +183,7 @@ final class DefaultKey implements Key {
       return false;
     }
     if (object.getClass() ==  DefaultKey.class) {
-      final EntityType entityType = definition.getEntityType();
+      final EntityType<Entity> entityType = definition.getEntityType();
       final DefaultKey otherKey = (DefaultKey) object;
       if (compositeKey) {
         return otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) && this.values.equals(otherKey.values);
@@ -305,7 +305,7 @@ final class DefaultKey implements Key {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final Entities entities = DefaultEntities.getEntities((String) stream.readObject());
-    final EntityType entityType = entities.getDomainType().entityType((String) stream.readObject());
+    final EntityType<Entity> entityType = entities.getDomainType().entityType((String) stream.readObject());
     definition = entities.getDefinition(entityType);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityType);

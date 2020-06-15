@@ -14,7 +14,7 @@ public interface Key extends Serializable {
   /**
    * @return the entity type
    */
-  EntityType getEntityType();
+  EntityType<Entity> getEntityType();
 
   /**
    * @return a List containing the attributes comprising this key

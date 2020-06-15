@@ -552,14 +552,6 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  public void updateWithConditionWrongType() {
-    final EntityUpdateCondition updateCondition = Conditions.updateCondition(T_EMP,
-            EMP_ID, Operator.LIKE, null)
-            .set(EMP_SALARY, "abcd");
-    assertThrows(IllegalArgumentException.class, () -> connection.update(updateCondition));
-  }
-
-  @Test
   public void selectValuesNonColumnProperty() throws Exception {
     assertThrows(IllegalArgumentException.class, () -> connection.selectValues(EMP_DEPARTMENT_LOCATION));
   }
@@ -887,27 +879,23 @@ public class DefaultLocalEntityConnectionTest {
 
       assertEquals("New Name", department.getName());
 
-      final List<Department> departmentsCasted = ENTITIES.castTo(Department.TYPE, connection.select(selectCondition(Department.TYPE)));
+      List<Department> departmentsCast = ENTITIES.castTo(Department.TYPE, connection.select(selectCondition(Department.TYPE)));
 
-      departmentsCasted.forEach(dept -> dept.setName(dept.getName() + "N"));
+      departmentsCast.forEach(dept -> dept.setName(dept.getName() + "N"));
 
-      ENTITIES.castTo(Department.TYPE, connection.update(departmentsCasted));
+      departmentsCast = ENTITIES.castTo(Department.TYPE, connection.update(departmentsCast));
 
-      final List<Department> newDepts = new ArrayList<>();
       final Department newDept1 = ENTITIES.castTo(Department.TYPE, ENTITIES.entity(Department.TYPE));
       newDept1.setId(-1);
       newDept1.setName("hello1");
       newDept1.setLocation("location");
-      newDepts.add(newDept1);
 
       final Department newDept2 = ENTITIES.castTo(Department.TYPE, ENTITIES.entity(Department.TYPE));
       newDept2.setId(-2);
       newDept2.setName("hello2");
       newDept2.setLocation("location");
 
-      newDepts.add(newDept2);
-
-      final List<Key> keys = connection.insert(newDepts);
+      final List<Key> keys = connection.insert(asList(newDept1, newDept2));
       assertEquals(Integer.valueOf(-1), keys.get(0).get());
       assertEquals(Integer.valueOf(-2), keys.get(1).get());
     }
