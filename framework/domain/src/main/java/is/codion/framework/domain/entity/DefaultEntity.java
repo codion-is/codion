@@ -93,7 +93,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public EntityType getEntityType() {
+  public EntityType<Entity> getEntityType() {
     return definition.getEntityType();
   }
 
@@ -112,7 +112,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean is(final EntityType entityType) {
+  public boolean is(final EntityType<? extends Entity> entityType) {
     return definition.getEntityType().equals(entityType);
   }
 
@@ -453,7 +453,7 @@ final class DefaultEntity implements Entity {
 
   private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity value) {
     final Entity entity = value;
-    final EntityType referencedEntityType = property.getReferencedEntityType();
+    final EntityType<? extends Entity> referencedEntityType = property.getReferencedEntityType();
     if (!Objects.equals(referencedEntityType, entity.getEntityType())) {
       throw new IllegalArgumentException("Entity of type " + referencedEntityType +
               " expected for property " + this + ", got: " + entity.getEntityType());
@@ -735,7 +735,7 @@ final class DefaultEntity implements Entity {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final Entities entities = DefaultEntities.getEntities((String) stream.readObject());
-    final EntityType entityType = entities.getDomainType().entityType((String) stream.readObject());
+    final EntityType<? extends Entity> entityType = entities.getDomainType().entityType((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
     definition = entities.getDefinition(entityType);
     if (definition == null) {

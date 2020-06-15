@@ -25,18 +25,21 @@ public interface World {
           item("South America")
   );
 
-  interface City {
-    EntityType TYPE = DOMAIN.entityType("world.city");
+  interface City extends Entity {
+    EntityType<City> TYPE = DOMAIN.entityType("world.city", City.class);
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
     Attribute<Entity> COUNTRY_FK = TYPE.entityAttribute("country_fk");
     Attribute<String> DISTRICT = TYPE.stringAttribute("district");
     Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
+
+    String getName();
+    Integer getPopulation();
   }
 
   interface Country {
-    EntityType TYPE = DOMAIN.entityType("world.country");
+    EntityType<Entity> TYPE = DOMAIN.entityType("world.country");
     Attribute<String> CODE = TYPE.stringAttribute("code");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<String> CONTINENT = TYPE.stringAttribute("continent");
@@ -59,19 +62,22 @@ public interface World {
     Attribute<byte[]> FLAG = TYPE.blobAttribute("flag");
   }
 
-  interface CountryLanguage {
-    EntityType TYPE = DOMAIN.entityType("world.countrylanguage");
+  interface CountryLanguage extends Entity {
+    EntityType<CountryLanguage> TYPE = DOMAIN.entityType("world.countrylanguage", CountryLanguage.class);
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
     Attribute<Entity> COUNTRY_FK = TYPE.entityAttribute("country_fk");
     Attribute<String> LANGUAGE = TYPE.stringAttribute("language");
     Attribute<Boolean> IS_OFFICIAL = TYPE.booleanAttribute("isofficial");
     Attribute<Double> PERCENTAGE = TYPE.doubleAttribute("percentage");
-    Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("no_of_speakers");
+    Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
+
+    String language();
+    Integer noOfSpeakers();
   }
 
-  interface Continent {
-    EntityType TYPE = DOMAIN.entityType("continent");
-    Attribute<String> CONTINENT = TYPE.stringAttribute("continent");
+  interface Continent extends Entity {
+    EntityType<Continent> TYPE = DOMAIN.entityType("continent", Continent.class);
+    Attribute<String> NAME = TYPE.stringAttribute("continent");
     Attribute<Integer> SURFACE_AREA = TYPE.integerAttribute("sum(surfacearea)");
     Attribute<Long> POPULATION = TYPE.longAttribute("sum(population)");
     Attribute<Double> MIN_LIFE_EXPECTANCY = TYPE.doubleAttribute("min(lifeexpectancy)");
@@ -79,10 +85,17 @@ public interface World {
     Attribute<Integer> MIN_INDEPENDENCE_YEAR = TYPE.integerAttribute("min(indepyear)");
     Attribute<Integer> MAX_INDEPENDENCE_YEAR = TYPE.integerAttribute("max(indepyear)");
     Attribute<Double> GNP = TYPE.doubleAttribute("sum(gnp)");
+
+    String name();
+    Long population();
+    Integer surfaceArea();
+    Double gnp();
+    Double minLifeExpectancy();
+    Double maxLifeExpectancy();
   }
 
   interface Lookup {
-    EntityType TYPE = DOMAIN.entityType("world.country_city_v");
+    EntityType<Entity> TYPE = DOMAIN.entityType("world.country_city_v");
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
     Attribute<String> COUNTRY_NAME = TYPE.stringAttribute("countryname");
     Attribute<String> COUNTRY_CONTINENT = TYPE.stringAttribute("continent");

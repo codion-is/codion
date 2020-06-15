@@ -13,6 +13,7 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -35,7 +36,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return the entity type
    */
-  EntityType getEntityType();
+  EntityType<Entity> getEntityType();
 
   /**
    * @return the name of the underlying table, with schema prefix if applicable
@@ -64,13 +65,6 @@ public interface EntityDefinition extends Serializable {
    * @return the caption to use when presenting entities of this type
    */
   String getCaption();
-
-  /**
-   * Returns the bean class associated with this entity type
-   * @param <V> the class type
-   * @return the bean class
-   */
-  <V> Class<V> getBeanClass();
 
   /**
    * @return true if the underlying table is small enough for displaying the contents in a combo box
@@ -340,7 +334,7 @@ public interface EntityDefinition extends Serializable {
    * @param foreignEntityType the id of the referenced entity
    * @return a List containing the properties, an empty list is returned in case no foreign key references are found
    */
-  List<ForeignKeyProperty> getForeignKeyReferences(EntityType foreignEntityType);
+  List<ForeignKeyProperty> getForeignKeyReferences(EntityType<?> foreignEntityType);
 
   /**
    * @param attribute the attribute
@@ -422,40 +416,20 @@ public interface EntityDefinition extends Serializable {
   Key key(Long value);
 
   /**
-   * Returns the {@link BeanHelper} associated with this entity type.
-   * @param <V> the bean type
-   * @return the bean helper
+   * Returns the Attribute for the getter this method represents,
+   * null if none exists.
+   * @param method the method
+   * @return the getter attribute
    */
-  <V> BeanHelper<V> getBeanHelper();
+  Attribute<?> getGetterAttribute(Method method);
 
   /**
-   * Helps with transforming from entities to beans and back. Called after the default
-   * transformation has finished.
-   * Use one of these if the default bean transformation is not enough.
-   * @param <V> the bean type
+   * Returns the Attribute for the setter this method represents,
+   * null if none exists.
+   * @param method the method
+   * @return the setter attribute
    */
-  interface BeanHelper<V> extends Serializable {
-
-    /**
-     * Called after the default transformation has finished.
-     * @param entity the entity
-     * @param bean the bean
-     * @return the entity
-     */
-    default V toBean(final Entity entity, final V bean) {
-      return bean;
-    }
-
-    /**
-     * Called after the default transformation has finished.
-     * @param bean the bean
-     * @param entity the entity
-     * @return the bean
-     */
-    default Entity fromBean(final V bean, final Entity entity) {
-      return entity;
-    }
-  }
+  Attribute<?> getSetterAttribute(Method method);
 
   /**
    * Provides {@link EntityDefinition}s for a domain model.
@@ -468,7 +442,7 @@ public interface EntityDefinition extends Serializable {
      * @return the entity definition
      * @throws IllegalArgumentException in case the definition is not found
      */
-    EntityDefinition getDefinition(EntityType entityType);
+    EntityDefinition getDefinition(EntityType<? extends Entity> entityType);
 
     /**
      * Returns all {@link EntityDefinition}s available in this provider
@@ -515,14 +489,6 @@ public interface EntityDefinition extends Serializable {
      * @return this {@link Builder} instance
      */
     Builder caption(String caption);
-
-    /**
-     * Sets the bean class to associate with this entity type
-     * @param beanClass the bean class
-     * @param <V> the class type
-     * @return this {@link Builder} instance
-     */
-    <V> Builder beanClass(Class<V> beanClass);
 
     /**
      * Specifies whether or not this entity should be regarded as based on a small dataset,
@@ -617,14 +583,5 @@ public interface EntityDefinition extends Serializable {
      * @return this {@link Builder} instance
      */
     Builder comparator(Comparator<Entity> comparator);
-
-    /**
-     * Sets the {@link BeanHelper} instance to use when transforming between entities and beans.
-     * Called after the default transformation has finished.
-     * @param beanHelper the bean helper
-     * @param <V> the bean type
-     * @return this {@link Builder} instance
-     */
-    <V> Builder beanHelper(BeanHelper<V> beanHelper);
   }
 }

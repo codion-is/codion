@@ -6,6 +6,7 @@ package is.codion.framework.domain.property;
 import is.codion.common.Formats;
 import is.codion.common.Util;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
@@ -18,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.function.Supplier;
 
+import static is.codion.common.Util.nullOrEmpty;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
 
@@ -128,6 +130,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     this.hidden = caption == null;
     this.format = initializeDefaultFormat();
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
+    this.beanProperty = attribute.getName();
   }
 
   @Override
@@ -141,7 +144,7 @@ abstract class DefaultProperty<T> implements Property<T> {
   }
 
   @Override
-  public final EntityType getEntityType() {
+  public final EntityType<Entity> getEntityType() {
     return attribute.getEntityType();
   }
 
@@ -362,7 +365,10 @@ abstract class DefaultProperty<T> implements Property<T> {
 
     @Override
     public final Property.Builder<T> beanProperty(final String beanProperty) {
-      property.beanProperty = requireNonNull(beanProperty, "beanProperty");
+      if (nullOrEmpty(beanProperty)) {
+        throw new IllegalArgumentException("beanProperty must be a non-empty string");
+      }
+      property.beanProperty = beanProperty;
       return this;
     }
 

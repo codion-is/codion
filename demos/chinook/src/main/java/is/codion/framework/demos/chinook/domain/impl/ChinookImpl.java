@@ -11,6 +11,7 @@ import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -353,11 +354,12 @@ public final class ChinookImpl extends Domain implements Chinook {
         final EntitySelectCondition selectCondition = selectCondition(Invoice.TYPE);
         selectCondition.setForUpdate(true);
         selectCondition.setForeignKeyFetchDepth(0);
-        final List<Entity> invoices = entityConnection.select(selectCondition);
-        for (final Entity invoice : invoices) {
-          invoice.put(Invoice.TOTAL, invoice.get(Invoice.TOTAL_SUBQUERY));
+        final Entities entities = entityConnection.getEntities();
+        final List<Invoice> invoices = entities.castTo(Invoice.TYPE, entityConnection.select(selectCondition));
+        for (final Invoice invoice : invoices) {
+          invoice.setTotal(invoice.getSubtotal());
         }
-        final List<Entity> modifiedInvoices = getModifiedEntities(invoices);
+        final List<Invoice> modifiedInvoices = getModifiedEntities(invoices);
         if (!modifiedInvoices.isEmpty()) {
           entityConnection.update(modifiedInvoices);
         }

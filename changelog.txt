@@ -6262,3 +6262,4 @@
   DomainType added
   DomainType now registered correctly
 0.16.5
+  EntityType now with generic type, Entities.castTo() added

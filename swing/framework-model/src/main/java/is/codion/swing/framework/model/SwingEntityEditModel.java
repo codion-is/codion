@@ -39,7 +39,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public SwingEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityEditModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getValidator());
   }
 
@@ -49,7 +49,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public SwingEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider, final EntityValidator validator) {
+  public SwingEntityEditModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider, final EntityValidator validator) {
     super(entityType, connectionProvider, validator);
   }
 
@@ -164,8 +164,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   @Override
   public final void addForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType, List<Entity>> mapped = Entities.mapToType(entities);
-    for (final Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
+    final Map<EntityType<Entity>, List<Entity>> mapped = Entities.mapToType(entities);
+    for (final Map.Entry<EntityType<Entity>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getAttribute())) {
           final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty.getAttribute());
@@ -179,8 +179,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   @Override
   public final void removeForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType, List<Entity>> mapped = Entities.mapToType(entities);
-    for (final Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
+    final Map<EntityType<Entity>, List<Entity>> mapped = Entities.mapToType(entities);
+    for (final Map.Entry<EntityType<Entity>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getAttribute())) {
           final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty.getAttribute());

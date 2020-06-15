@@ -31,7 +31,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public FXEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public FXEntityEditModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider) {
     super(entityType, connectionProvider);
   }
 
@@ -41,7 +41,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public FXEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
+  public FXEntityEditModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider,
                            final EntityValidator validator) {
     super(entityType, connectionProvider, validator);
   }
@@ -94,8 +94,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void addForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType, List<Entity>> mapped = Entities.mapToType(entities);
-    for (final Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
+    final Map<EntityType<Entity>, List<Entity>> mapped = Entities.mapToType(entities);
+    for (final Map.Entry<EntityType<Entity>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {
@@ -111,8 +111,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void removeForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType, List<Entity>> mapped = Entities.mapToType(entities);
-    for (final Map.Entry<EntityType, List<Entity>> entry : mapped.entrySet()) {
+    final Map<EntityType<Entity>, List<Entity>> mapped = Entities.mapToType(entities);
+    for (final Map.Entry<EntityType<Entity>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {

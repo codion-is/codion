@@ -18,7 +18,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
   /**
    * @return the entity type
    */
-  EntityType getEntityType();
+  EntityType<Entity> getEntityType();
 
   /**
    * Sets the value of the given attribute, returning the old value if any
@@ -173,7 +173,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param entityType the entity type
    * @return true if this entity is of the given type
    */
-  boolean is(EntityType entityType);
+  boolean is(EntityType<? extends Entity> entityType);
 
   /**
    * @param entity the entity to compare to

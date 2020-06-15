@@ -18,7 +18,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   private static final long serialVersionUID = 1;
 
-  private final EntityType referencedEntityType;
+  private final EntityType<Entity> referencedEntityType;
   private final List<Attribute<?>> attributes;
   private final List<ColumnProperty<?>> columnProperties;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
@@ -31,11 +31,11 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    * @param columnProperties the underlying column properties comprising this foreign key
    */
   DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
-                            final EntityType referencedEntityType, final List<ColumnProperty<?>> columnProperties) {
+                            final EntityType<? extends Entity> referencedEntityType, final List<ColumnProperty<?>> columnProperties) {
     super(attribute, caption);
     requireNonNull(referencedEntityType, "foreignEntityType");
     validateParameters(attribute, referencedEntityType, columnProperties);
-    this.referencedEntityType = referencedEntityType;
+    this.referencedEntityType = (EntityType<Entity>) referencedEntityType;
     this.columnProperties = unmodifiableList(columnProperties);
     this.attributes = unmodifiableList(columnProperties.stream().map(Property::getAttribute).collect(toList()));
   }
@@ -46,7 +46,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   @Override
-  public EntityType getReferencedEntityType() {
+  public EntityType<Entity> getReferencedEntityType() {
     return referencedEntityType;
   }
 
@@ -80,7 +80,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     return new DefaultForeignKeyPropertyBuilder(this, columnPropertyBuilders);
   }
 
-  private static void validateParameters(final Attribute<Entity> attribute, final EntityType foreignEntityType,
+  private static void validateParameters(final Attribute<Entity> attribute, final EntityType<? extends Entity> foreignEntityType,
                                          final List<ColumnProperty<?>> columnProperties) {
     if (nullOrEmpty(columnProperties)) {
       throw new IllegalArgumentException("No column properties specified");

@@ -36,19 +36,27 @@ public final class EmpDept extends Domain {
   static final DomainType DOMAIN = domainType(EmpDept.class);
 
   /** Entity type for the table scott.dept*/
-  public interface Department {
-    EntityType TYPE = DOMAIN.entityType("scott.dept");
+  public interface Department extends Entity {
+    EntityType<Department> TYPE = DOMAIN.entityType("scott.dept", Department.class);
     /** Attributes for the columns in the scott.dept table*/
     Attribute<Integer> ID = TYPE.integerAttribute("deptno");
     Attribute<String> NAME = TYPE.stringAttribute("dname");
     Attribute<String> LOCATION = TYPE.stringAttribute("loc");
+
+    /** Bean getters and setters */
+    Integer getId();
+    void setId(Integer id);
+    String getName();
+    void setName(String name);
+    String getLocation();
+    void setLocation(String location);
   }
   // end::departmentConstants[]
 
   // tag::employeeConstants[]
   /** Entity type for the table scott.emp*/
-  public interface Employee {
-    EntityType TYPE = DOMAIN.entityType("scott.emp");
+  public interface Employee extends Entity {
+    EntityType<Employee> TYPE = DOMAIN.entityType("scott.emp", Employee.class);
     /** Attributes for the columns in the scott.emp table*/
     Attribute<Integer> ID = TYPE.integerAttribute("empno");
     Attribute<String> NAME = TYPE.stringAttribute("ename");
@@ -71,6 +79,24 @@ public final class EmpDept extends Domain {
                     item("ANALYST", "Analyst"), item("CLERK", "Clerk"),
                     item("MANAGER", "Manager"), item("PRESIDENT", "President"),
                     item("SALESMAN", "Salesman"));
+
+    /** Bean getters and setters */
+    Integer getId();
+    void setId(Integer id);
+    String getName();
+    void setName(String name);
+    String getJob();
+    void setJob(String job);
+    Employee getManager();
+    void setManager(Employee manager);
+    LocalDate getHiredate();
+    void setHiredate(LocalDate hiredate);
+    BigDecimal getSalary();
+    void setSalary(BigDecimal salary);
+    Double getCommission();
+    void setCommission( Double commission);
+    Department getDepartment();
+    void setDepartment(Department department);
   }
   // end::employeeConstants[]
 
@@ -97,7 +123,6 @@ public final class EmpDept extends Domain {
             .smallDataset(true)
             .orderBy(orderBy().ascending(Department.NAME))
             .stringProvider(new StringProvider(Department.NAME))
-            .beanClass(DepartmentBean.class)
             .caption("Departments");
   }
   // end::defineDepartment[]
@@ -126,7 +151,6 @@ public final class EmpDept extends Domain {
             .keyGenerator(increment("scott.emp", Employee.ID.getName()))
             .orderBy(orderBy().ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringProvider(new StringProvider(Employee.NAME))
-            .beanClass(EmployeeBean.class)
             .caption("Employee")
             .colorProvider((entity, attribute) -> {
               if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {

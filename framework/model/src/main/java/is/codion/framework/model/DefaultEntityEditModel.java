@@ -150,7 +150,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public DefaultEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public DefaultEntityEditModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getValidator());
   }
 
@@ -160,7 +160,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public DefaultEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
+  public DefaultEntityEditModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider,
                                 final EntityValidator validator) {
     this.entity = connectionProvider.getEntities().entity(entityType);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
@@ -298,7 +298,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityType getEntityType() {
+  public final EntityType<Entity> getEntityType() {
     return entity.getEntityType();
   }
 
@@ -309,8 +309,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void replaceForeignKeyValues(final Collection<Entity> entities) {
-    final Map<EntityType, List<Entity>> entitiesByEntityType = Entities.mapToType(entities);
-    for (final Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
+    final Map<EntityType<Entity>, List<Entity>> entitiesByEntityType = Entities.mapToType(entities);
+    for (final Map.Entry<EntityType<Entity>, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
       final List<ForeignKeyProperty> foreignKeyProperties = getEntityDefinition()
               .getForeignKeyReferences(entityTypeEntities.getKey());
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
@@ -346,8 +346,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   @Override
   public final void setForeignKeyValues(final Collection<Entity> entities) {
-    final Map<EntityType, List<Entity>> entitiesByEntityType = Entities.mapToType(entities);
-    for (final Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
+    final Map<EntityType<Entity>, List<Entity>> entitiesByEntityType = Entities.mapToType(entities);
+    for (final Map.Entry<EntityType<Entity>, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition()
               .getForeignKeyReferences(entityTypeEntities.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?

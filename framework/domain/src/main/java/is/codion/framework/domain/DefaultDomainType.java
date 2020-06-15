@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain;
 
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ final class DefaultDomainType implements DomainType {
   private static final Map<String, DomainType> DOMAIN_TYPES = new ConcurrentHashMap<>();
 
   private final String domainName;
-  private final Map<String, EntityType> entityTypes = new ConcurrentHashMap<>();
+  private final Map<String, EntityType<? extends Entity>> entityTypes = new ConcurrentHashMap<>();
 
   private DefaultDomainType(final String domainName) {
     if (nullOrEmpty(domainName)) {
@@ -35,9 +36,14 @@ final class DefaultDomainType implements DomainType {
   }
 
   @Override
-  public EntityType entityType(final String name) {
-    requireNonNull(name, "name");
-    return entityTypes.computeIfAbsent(name, entityTypeName -> EntityType.entityType(entityTypeName, this.domainName));
+  public EntityType<Entity> entityType(final String name) {
+    return entityType(name, Entity.class);
+  }
+
+  @Override
+  public <T extends Entity> EntityType<T> entityType(final String name, final Class<T> entityClass) {
+    return (EntityType<T>) entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
+            EntityType.entityType(entityTypeName, this.domainName, entityClass));
   }
 
   @Override

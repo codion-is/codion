@@ -11,8 +11,8 @@ import java.time.LocalDate;
 
 import static is.codion.framework.demos.petclinic.domain.api.PetClinicApi.DOMAIN;
 
-public interface Pet {
-  EntityType TYPE = DOMAIN.entityType("petclinic.pet");
+public interface Pet extends Entity {
+  EntityType<Pet> TYPE = DOMAIN.entityType("petclinic.pet", Pet.class);
   Attribute<Integer> ID = TYPE.integerAttribute("id");
   Attribute<String> NAME = TYPE.stringAttribute("name");
   Attribute<LocalDate> BIRTH_DATE = TYPE.localDateAttribute("birth_date");

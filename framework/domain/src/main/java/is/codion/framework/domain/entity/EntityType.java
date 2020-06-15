@@ -12,7 +12,7 @@ import java.time.LocalTime;
 /**
  * Defines a Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
  */
-public interface EntityType extends Serializable {
+public interface EntityType<T extends Entity> extends Serializable {
 
   /**
    * @return the name of the domain this entity type is associated with
@@ -23,6 +23,11 @@ public interface EntityType extends Serializable {
    * @return the entity type name, unique within a domain.
    */
   String getName();
+
+  /**
+   * @return the entity type class
+   */
+  Class<T> getEntityClass();
 
   /**
    * Creates a new {@link Attribute}, associated with this EntityType.
@@ -124,7 +129,16 @@ public interface EntityType extends Serializable {
    * @param domainName the name of the domain to associate this entity type with
    * @return a {@link EntityType} instance with the given name
    */
-  static EntityType entityType(final String name, final String domainName) {
-    return new DefaultEntityType(domainName, name);
+  static EntityType<Entity> entityType(final String name, final String domainName) {
+    return new DefaultEntityType<>(domainName, name);
+  }
+
+  /**
+   * @param name the entity type name
+   * @param domainName the name of the domain to associate this entity type with
+   * @return a {@link EntityType} instance with the given name
+   */
+  static <T extends Entity> EntityType<T> entityType(final String name, final String domainName, final Class<T> entityClass) {
+    return new DefaultEntityType<>(domainName, name, entityClass);
   }
 }

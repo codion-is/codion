@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain;
 
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
@@ -26,7 +27,16 @@ public interface DomainType extends Serializable {
    * @param name the entity type name
    * @return a {@link EntityType} with the given name
    */
-  EntityType entityType(String name);
+  EntityType<Entity> entityType(String name);
+
+  /**
+   * Instantiates a {@link EntityType} associated with this domain type.
+   * If this entity type has been defined previously that instance is returned.
+   * @param name the entity type name
+   * @param <T> the Entity type
+   * @return a {@link EntityType} with the given name
+   */
+  <T extends Entity> EntityType<T> entityType(String name, Class<T> entityClass);
 
   /**
    * Returns a new {@link DomainType} using the given classes simple name as domain name.

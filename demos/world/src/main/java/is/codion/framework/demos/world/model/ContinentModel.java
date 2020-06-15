@@ -2,6 +2,7 @@ package is.codion.framework.demos.world.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.Continent;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 import org.jfree.data.category.CategoryDataset;
@@ -42,22 +43,23 @@ public final class ContinentModel extends SwingEntityModel {
     surfaceAreaDataset.clear();
     gnpDataset.clear();
     lifeExpectancyDataset.clear();
-    getTableModel().getItems().forEach(continent -> {
+    Entities entities = getConnectionProvider().getEntities();
+    entities.castTo(Continent.TYPE, getTableModel().getItems()).forEach(continent -> {
       populationDataset.setValue(
-            continent.get(Continent.CONTINENT),
-            continent.get(Continent.POPULATION));
+            continent.name(),
+            continent.population());
       surfaceAreaDataset.setValue(
-            continent.get(Continent.CONTINENT),
-            continent.get(Continent.SURFACE_AREA));
+            continent.name(),
+            continent.surfaceArea());
       gnpDataset.setValue(
-            continent.get(Continent.CONTINENT),
-            continent.get(Continent.GNP));
+            continent.name(),
+            continent.gnp());
       lifeExpectancyDataset.addValue(
-              continent.get(Continent.MIN_LIFE_EXPECTANCY),
-              "Lowest", continent.get(Continent.CONTINENT));
+              continent.minLifeExpectancy(),
+              "Lowest", continent.name());
       lifeExpectancyDataset.addValue(
-              continent.get(Continent.MAX_LIFE_EXPECTANCY),
-              "Highest",continent.get(Continent.CONTINENT));
+              continent.maxLifeExpectancy(),
+              "Highest",continent.name());
     });
   }
 }
