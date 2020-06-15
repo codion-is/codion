@@ -31,7 +31,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public FXEntityEditModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider) {
+  public FXEntityEditModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
     super(entityType, connectionProvider);
   }
 
@@ -41,7 +41,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public FXEntityEditModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider,
+  public FXEntityEditModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                            final EntityValidator validator) {
     super(entityType, connectionProvider, validator);
   }

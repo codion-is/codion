@@ -136,7 +136,7 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T> {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    final DefaultEntityType<? extends Entity> that = (DefaultEntityType<? extends Entity>) object;
+    final DefaultEntityType<?> that = (DefaultEntityType<?>) object;
 
     return name.equals(that.name) && domainName.equals(that.domainName);
   }

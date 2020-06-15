@@ -21,7 +21,7 @@ final class DefaultDomainType implements DomainType {
   private static final Map<String, DomainType> DOMAIN_TYPES = new ConcurrentHashMap<>();
 
   private final String domainName;
-  private final Map<String, EntityType<? extends Entity>> entityTypes = new ConcurrentHashMap<>();
+  private final Map<String, EntityType<?>> entityTypes = new ConcurrentHashMap<>();
 
   private DefaultDomainType(final String domainName) {
     if (nullOrEmpty(domainName)) {

@@ -116,7 +116,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final EntityType<Entity> getEntityType() {
+  public final EntityType<?> getEntityType() {
     return editModel.getEntityType();
   }
 
@@ -184,7 +184,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final boolean containsDetailModel(final EntityType<? extends Entity> entityType) {
+  public final boolean containsDetailModel(final EntityType<?> entityType) {
     return detailModels.stream().anyMatch(detailModel -> detailModel.getEntityType().equals(entityType));
   }
 
@@ -236,7 +236,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M getDetailModel(final EntityType<? extends Entity> entityType) {
+  public final M getDetailModel(final EntityType<?> entityType) {
     for (final M detailModel : detailModels) {
       if (detailModel.getEntityType().equals(entityType)) {
         return detailModel;
@@ -311,7 +311,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void initialize(final EntityType<? extends Entity> foreignKeyEntityType, final List<Entity> foreignKeyValues) {
+  public final void initialize(final EntityType<?> foreignKeyEntityType, final List<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
             editModel.getEntityDefinition().getForeignKeyReferences(foreignKeyEntityType);
     if (!foreignKeyProperties.isEmpty()) {

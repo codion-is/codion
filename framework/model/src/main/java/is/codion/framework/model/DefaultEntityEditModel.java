@@ -150,7 +150,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public DefaultEntityEditModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider) {
+  public DefaultEntityEditModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getValidator());
   }
 
@@ -160,7 +160,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public DefaultEntityEditModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider,
+  public DefaultEntityEditModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                                 final EntityValidator validator) {
     this.entity = connectionProvider.getEntities().entity(entityType);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
@@ -298,7 +298,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityType<Entity> getEntityType() {
+  public final EntityType<?> getEntityType() {
     return entity.getEntityType();
   }
 

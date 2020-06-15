@@ -221,7 +221,7 @@ public interface EntityConnection {
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  <T> Entity selectSingle(EntityType<? extends Entity> entityType, Attribute<T> attribute, T value) throws DatabaseException;
+  <T> Entity selectSingle(EntityType<?> entityType, Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -269,7 +269,7 @@ public interface EntityConnection {
    * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  <T> List<Entity> select(EntityType<? extends Entity> entityType, Attribute<T> attribute, T value) throws DatabaseException;
+  <T> List<Entity> select(EntityType<?> entityType, Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
@@ -280,7 +280,7 @@ public interface EntityConnection {
    * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  <T> List<Entity> select(EntityType<? extends Entity> entityType, Attribute<T> attribute, Collection<T> values) throws DatabaseException;
+  <T> List<Entity> select(EntityType<?> entityType, Attribute<T> attribute, Collection<T> values) throws DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes

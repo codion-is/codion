@@ -35,7 +35,7 @@ public abstract class DefaultEntities implements Entities {
   private static final Map<DomainType, Entities> REGISTERED_ENTITIES = new ConcurrentHashMap<>();
 
   private final DomainType domainType;
-  private final Map<EntityType<? extends Entity>, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
+  private final Map<EntityType<?>, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
   private transient boolean strictForeignKeys = EntityDefinition.STRICT_FOREIGN_KEYS.get();
 
@@ -54,7 +54,7 @@ public abstract class DefaultEntities implements Entities {
   }
 
   @Override
-  public final EntityDefinition getDefinition(final EntityType<? extends Entity> entityType) {
+  public final EntityDefinition getDefinition(final EntityType<?> entityType) {
     final EntityDefinition definition = entityDefinitions.get(requireNonNull(entityType, "entityType"));
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityType);
@@ -69,7 +69,7 @@ public abstract class DefaultEntities implements Entities {
   }
 
   @Override
-  public final Entity entity(final EntityType<? extends Entity> entityType) {
+  public final Entity entity(final EntityType<?> entityType) {
     return getDefinition(entityType).entity();
   }
 
@@ -79,28 +79,28 @@ public abstract class DefaultEntities implements Entities {
   }
 
   @Override
-  public final Key key(final EntityType<? extends Entity> entityType) {
+  public final Key key(final EntityType<?> entityType) {
     return getDefinition(entityType).key();
   }
 
   @Override
-  public final Key key(final EntityType<? extends Entity> entityType, final Integer value) {
+  public final Key key(final EntityType<?> entityType, final Integer value) {
     return getDefinition(entityType).key(value);
   }
 
   @Override
-  public final Key key(final EntityType<? extends Entity> entityType, final Long value) {
+  public final Key key(final EntityType<?> entityType, final Long value) {
     return getDefinition(entityType).key(value);
   }
 
   @Override
-  public final List<Key> keys(final EntityType<? extends Entity> entityType, final Integer... values) {
+  public final List<Key> keys(final EntityType<?> entityType, final Integer... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> key(entityType, value)).collect(toList());
   }
 
   @Override
-  public final List<Key> keys(final EntityType<? extends Entity> entityType, final Long... values) {
+  public final List<Key> keys(final EntityType<?> entityType, final Long... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> key(entityType, value)).collect(toList());
   }
@@ -178,7 +178,7 @@ public abstract class DefaultEntities implements Entities {
     this.strictForeignKeys = strictForeignKeys;
   }
 
-  protected final EntityDefinition.Builder define(final EntityType<? extends Entity> entityType, final String tableName,
+  protected final EntityDefinition.Builder define(final EntityType<?> entityType, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
     requireNonNull(propertyBuilders, "propertyBuilders");
     final ArrayList<Property<?>> properties = new ArrayList<>();
@@ -204,7 +204,7 @@ public abstract class DefaultEntities implements Entities {
 
   private void validateForeignKeyProperties(final EntityDefinition definition) {
     for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
-      final EntityType<? extends Entity> entityType = definition.getEntityType();
+      final EntityType<?> entityType = definition.getEntityType();
       if (!entityType.equals(foreignKeyProperty.getReferencedEntityType()) && strictForeignKeys) {
         final EntityDefinition foreignEntity = entityDefinitions.get(foreignKeyProperty.getReferencedEntityType());
         if (foreignEntity == null) {

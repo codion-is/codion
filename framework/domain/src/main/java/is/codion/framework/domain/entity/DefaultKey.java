@@ -96,7 +96,7 @@ final class DefaultKey implements Key {
 
   @Override
   public EntityType<Entity> getEntityType() {
-    return definition.getEntityType();
+    return (EntityType<Entity>) definition.getEntityType();
   }
 
   @Override
@@ -183,7 +183,7 @@ final class DefaultKey implements Key {
       return false;
     }
     if (object.getClass() ==  DefaultKey.class) {
-      final EntityType<Entity> entityType = definition.getEntityType();
+      final EntityType<?> entityType = definition.getEntityType();
       final DefaultKey otherKey = (DefaultKey) object;
       if (compositeKey) {
         return otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) && this.values.equals(otherKey.values);

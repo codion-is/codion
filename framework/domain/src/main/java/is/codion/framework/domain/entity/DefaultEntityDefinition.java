@@ -56,7 +56,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The entity type
    */
-  private final EntityType<Entity> entityType;
+  private final EntityType<?> entityType;
 
   /**
    * Bean property getters
@@ -179,7 +179,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * Defines a new entity type with the entityType name serving as the initial entity caption.
    */
-  DefaultEntityDefinition(final String domainName, final EntityType<? extends Entity> entityType, final String tableName,
+  DefaultEntityDefinition(final String domainName, final EntityType<?> entityType, final String tableName,
                           final List<Property<?>> properties) {
     this.domainName = requireNonNull(domainName, "domainName");
     this.entityType = (EntityType<Entity>) requireNonNull(entityType, "entityType");
@@ -192,7 +192,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public EntityType<Entity> getEntityType() {
+  public EntityType<?> getEntityType() {
     return entityType;
   }
 

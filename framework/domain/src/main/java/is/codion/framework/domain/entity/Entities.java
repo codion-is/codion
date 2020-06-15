@@ -42,7 +42,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entityType the entityType
    * @return a new {@link Entity} instance
    */
-  Entity entity(EntityType<? extends Entity> entityType);
+  Entity entity(EntityType<?> entityType);
 
   /**
    * Creates a new {@link Entity} instance with the given primary key
@@ -56,7 +56,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entityType the entityType
    * @return a new {@link Key} instance
    */
-  Key key(EntityType<? extends Entity> entityType);
+  Key key(EntityType<?> entityType);
 
   /**
    * Creates a new {@link Key} instance with the given entityType, initialised with the given value
@@ -66,7 +66,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Key key(EntityType<? extends Entity> entityType, Integer value);
+  Key key(EntityType<?> entityType, Integer value);
 
   /**
    * Creates a new {@link Key} instance with the given entityType, initialised with the given value
@@ -76,7 +76,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Key key(EntityType<? extends Entity> entityType, Long value);
+  Key key(EntityType<?> entityType, Long value);
 
   /**
    * Creates new {@link Key} instances with the given entityType, initialised with the given values
@@ -86,7 +86,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or values is null
    */
-  List<Key> keys(EntityType<? extends Entity> entityType, Integer... values);
+  List<Key> keys(EntityType<?> entityType, Integer... values);
 
   /**
    * Creates new {@link Key} instances with the given entityType, initialised with the given values
@@ -96,7 +96,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or values is null
    */
-  List<Key> keys(EntityType<? extends Entity> entityType, Long... values);
+  List<Key> keys(EntityType<?> entityType, Long... values);
 
   /**
    * Copies the given entities, with new copied instances of all foreign key value entities.
@@ -172,6 +172,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   /**
    * Returns all of the given entities which have been modified
    * @param entities the entities
+   * @param <T> the entity type
    * @return a List of entities that have been modified
    * @see Entity#isModified()
    */

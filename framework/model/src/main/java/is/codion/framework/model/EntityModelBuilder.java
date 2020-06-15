@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
 /**
@@ -18,7 +17,7 @@ public interface EntityModelBuilder<M extends EntityModel<M, E, T>, E extends En
   /**
    * @return the entityType of the models provided by this model provider
    */
-  EntityType<Entity> getEntityType();
+  EntityType<?> getEntityType();
 
   /**
    * Creates a {@link EntityModel} instance, based on the given connection provider

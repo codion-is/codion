@@ -205,7 +205,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> Entity selectSingle(final EntityType<? extends Entity> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(final EntityType<?> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectSingle(entityType, attribute, value);
     }
@@ -240,7 +240,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> List<Entity> select(final EntityType<? extends Entity> entityType, final Attribute<T> attribute,
+  public <T> List<Entity> select(final EntityType<?> entityType, final Attribute<T> attribute,
                                  final T value) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(entityType, attribute, value);
@@ -248,7 +248,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> List<Entity> select(final EntityType<? extends Entity> entityType, final Attribute<T> attribute,
+  public <T> List<Entity> select(final EntityType<?> entityType, final Attribute<T> attribute,
                                  final Collection<T> values) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(entityType, attribute, values);

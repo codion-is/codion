@@ -136,6 +136,8 @@ public interface EntityType<T extends Entity> extends Serializable {
   /**
    * @param name the entity type name
    * @param domainName the name of the domain to associate this entity type with
+   * @param entityClass the entity representation class
+   * @param <T> the entity representation type
    * @return a {@link EntityType} instance with the given name
    */
   static <T extends Entity> EntityType<T> entityType(final String name, final String domainName, final Class<T> entityClass) {

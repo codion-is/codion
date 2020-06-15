@@ -48,12 +48,12 @@ public final class EntityConnections {
    * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
    */
   public static void copyEntities(final EntityConnection source, final EntityConnection destination, final int batchSize,
-                                  final IncludePrimaryKeys includePrimaryKeys, final EntityType<? extends Entity>... entityTypes) throws DatabaseException {
+                                  final IncludePrimaryKeys includePrimaryKeys, final EntityType<?>... entityTypes) throws DatabaseException {
     requireNonNull(source, "source");
     requireNonNull(destination, "destination");
     requireNonNull(includePrimaryKeys, "includePrimaryKeys");
     requireNonNull(entityTypes);
-    for (final EntityType<? extends Entity> entityType : entityTypes) {
+    for (final EntityType<?> entityType : entityTypes) {
       final List<Entity> entities = source.select(selectCondition(entityType).setForeignKeyFetchDepth(0));
       if (includePrimaryKeys == IncludePrimaryKeys.NO) {
         entities.forEach(Entity::clearKeyValues);

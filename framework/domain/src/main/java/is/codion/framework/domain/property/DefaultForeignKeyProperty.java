@@ -31,7 +31,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    * @param columnProperties the underlying column properties comprising this foreign key
    */
   DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
-                            final EntityType<? extends Entity> referencedEntityType, final List<ColumnProperty<?>> columnProperties) {
+                            final EntityType<?> referencedEntityType, final List<ColumnProperty<?>> columnProperties) {
     super(attribute, caption);
     requireNonNull(referencedEntityType, "foreignEntityType");
     validateParameters(attribute, referencedEntityType, columnProperties);
@@ -80,7 +80,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     return new DefaultForeignKeyPropertyBuilder(this, columnPropertyBuilders);
   }
 
-  private static void validateParameters(final Attribute<Entity> attribute, final EntityType<? extends Entity> foreignEntityType,
+  private static void validateParameters(final Attribute<Entity> attribute, final EntityType<?> foreignEntityType,
                                          final List<ColumnProperty<?>> columnProperties) {
     if (nullOrEmpty(columnProperties)) {
       throw new IllegalArgumentException("No column properties specified");

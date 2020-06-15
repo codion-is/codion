@@ -17,6 +17,7 @@ public interface EntityUpdateCondition extends EntityCondition {
    * Adds a attribute value to update
    * @param attribute the attribute
    * @param value the new value
+   * @param <T> the value type
    * @return this {@link EntityUpdateCondition} instance
    */
   <T> EntityUpdateCondition set(Attribute<T> attribute, T value);

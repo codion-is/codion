@@ -89,11 +89,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private final Domain domain;
   private final DatabaseConnection connection;
-  private final Map<EntityType<? extends Entity>, List<ColumnProperty<?>>> insertablePropertiesCache = new HashMap<>();
-  private final Map<EntityType<? extends Entity>, List<ColumnProperty<?>>> updatablePropertiesCache = new HashMap<>();
-  private final Map<EntityType<? extends Entity>, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
-  private final Map<EntityType<? extends Entity>, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
-  private final Map<EntityType<? extends Entity>, String> allColumnsClauseCache = new HashMap<>();
+  private final Map<EntityType<?>, List<ColumnProperty<?>>> insertablePropertiesCache = new HashMap<>();
+  private final Map<EntityType<?>, List<ColumnProperty<?>>> updatablePropertiesCache = new HashMap<>();
+  private final Map<EntityType<?>, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
+  private final Map<EntityType<?>, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
+  private final Map<EntityType<?>, String> allColumnsClauseCache = new HashMap<>();
 
   private boolean optimisticLockingEnabled = true;
   private boolean limitForeignKeyFetchDepth = true;
@@ -455,7 +455,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(final EntityType<? extends Entity> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(final EntityType<?> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
     return selectSingle(selectCondition(entityType, attribute, LIKE, value));
   }
 
@@ -502,12 +502,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final EntityType<? extends Entity> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> List<Entity> select(final EntityType<?> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
     return select(selectCondition(entityType, attribute, LIKE, value));
   }
 
   @Override
-  public <T> List<Entity> select(final EntityType<? extends Entity> entityType, final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
+  public <T> List<Entity> select(final EntityType<?> entityType, final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
     return select(selectCondition(entityType, attribute, LIKE, values));
   }
 
@@ -1057,7 +1057,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param entityType the entityType
    * @return all foreign keys in the domain referencing entities of type {@code entityType}
    */
-  private Collection<ForeignKeyProperty> getForeignKeyReferences(final EntityType<? extends Entity> entityType) {
+  private Collection<ForeignKeyProperty> getForeignKeyReferences(final EntityType<?> entityType) {
     return foreignKeyReferenceCache.computeIfAbsent(entityType, e -> {
       final List<ForeignKeyProperty> foreignKeyReferences = new ArrayList<>();
       for (final EntityDefinition entityDefinition : domain.getEntities().getDefinitions()) {
@@ -1103,7 +1103,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entityDefinition.getWritableColumnProperties(true, false));
   }
 
-  private Attribute<?>[] getPrimaryKeyAndWritableColumnAttributes(final EntityType<? extends Entity> entityType) {
+  private Attribute<?>[] getPrimaryKeyAndWritableColumnAttributes(final EntityType<?> entityType) {
     return primaryKeyAndWritableColumnPropertiesCache.computeIfAbsent(entityType, e -> {
       final EntityDefinition entityDefinition = getEntityDefinition(entityType);
       final List<ColumnProperty<?>> writableAndPrimaryKeyProperties =
@@ -1120,7 +1120,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     });
   }
 
-  private String columnsClause(final EntityType<? extends Entity> entityType, final List<Attribute<?>> selectAttributes,
+  private String columnsClause(final EntityType<?> entityType, final List<Attribute<?>> selectAttributes,
                                final List<ColumnProperty<?>> propertiesToSelect) {
     if (selectAttributes.isEmpty()) {
       return allColumnsClauseCache.computeIfAbsent(entityType, type -> Queries.columnsClause(propertiesToSelect));
@@ -1295,7 +1295,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return builder.toString();
   }
 
-  private static void validateAttribute(final EntityType<? extends Entity> entityType, final Attribute<?> conditionAttribute) {
+  private static void validateAttribute(final EntityType<?> entityType, final Attribute<?> conditionAttribute) {
     if (!conditionAttribute.getEntityType().equals(entityType)) {
       throw new IllegalArgumentException("Condition attribute entity type " + entityType + " required, got " + conditionAttribute.getEntityType());
     }

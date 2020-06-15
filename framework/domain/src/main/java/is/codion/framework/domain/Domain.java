@@ -12,7 +12,6 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
 import is.codion.framework.domain.entity.DefaultEntities;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.Property;
@@ -63,7 +62,7 @@ public abstract class Domain implements EntityDefinition.Provider {
   }
 
   @Override
-  public final EntityDefinition getDefinition(final EntityType<? extends Entity> entityType) {
+  public final EntityDefinition getDefinition(final EntityType<?> entityType) {
     return entities.getDefinition(entityType);
   }
 
@@ -116,7 +115,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @throws IllegalArgumentException in case the entityType has already been used to define an entity type or if
    * no primary key property is specified
    */
-  protected final EntityDefinition.Builder define(final EntityType<? extends Entity> entityType, final Property.Builder<?>... propertyBuilders) {
+  protected final EntityDefinition.Builder define(final EntityType<?> entityType, final Property.Builder<?>... propertyBuilders) {
     return define(entityType, entityType.getName(), propertyBuilders);
   }
 
@@ -130,7 +129,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    * @return a {@link EntityDefinition.Builder}
    * @throws IllegalArgumentException in case the entityType has already been used to define an entity type
    */
-  protected final EntityDefinition.Builder define(final EntityType<? extends Entity> entityType, final String tableName,
+  protected final EntityDefinition.Builder define(final EntityType<?> entityType, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
     if (!domainType.getName().equals(entityType.getDomainName())) {
       throw new IllegalArgumentException("Entity type '" + entityType + "' is not part of domain: " + domainType);
@@ -194,7 +193,7 @@ public abstract class Domain implements EntityDefinition.Provider {
       super(domainType);
     }
 
-    protected EntityDefinition.Builder defineInternal(final EntityType<? extends Entity> entityType, final String tableName,
+    protected EntityDefinition.Builder defineInternal(final EntityType<?> entityType, final String tableName,
                                                       final Property.Builder<?>... propertyBuilders) {
       return super.define(entityType, tableName, propertyBuilders);
     }

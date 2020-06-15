@@ -173,7 +173,7 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @param entityType the entity type
    * @return true if this entity is of the given type
    */
-  boolean is(EntityType<? extends Entity> entityType);
+  boolean is(EntityType<?> entityType);
 
   /**
    * @param entity the entity to compare to

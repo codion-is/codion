@@ -347,7 +347,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(final EntityType<? extends Entity> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(final EntityType<?> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
     return selectSingle(selectCondition(entityType, attribute, Operator.LIKE, value));
   }
 
@@ -400,13 +400,13 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final EntityType<? extends Entity> entityType, final Attribute<T> attribute, final T value)
+  public <T> List<Entity> select(final EntityType<?> entityType, final Attribute<T> attribute, final T value)
           throws DatabaseException {
     return select(selectCondition(entityType, attribute, Operator.LIKE, value));
   }
 
   @Override
-  public <T> List<Entity> select(final EntityType<? extends Entity> entityType, final Attribute<T> attribute, final Collection<T> values)
+  public <T> List<Entity> select(final EntityType<?> entityType, final Attribute<T> attribute, final Collection<T> values)
           throws DatabaseException {
     return select(selectCondition(entityType, attribute, Operator.LIKE, values));
   }

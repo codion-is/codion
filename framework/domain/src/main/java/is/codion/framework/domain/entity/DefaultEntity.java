@@ -94,7 +94,7 @@ final class DefaultEntity implements Entity {
 
   @Override
   public EntityType<Entity> getEntityType() {
-    return definition.getEntityType();
+    return (EntityType<Entity>) definition.getEntityType();
   }
 
   @Override
@@ -112,7 +112,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean is(final EntityType<? extends Entity> entityType) {
+  public boolean is(final EntityType<?> entityType) {
     return definition.getEntityType().equals(entityType);
   }
 
@@ -453,7 +453,7 @@ final class DefaultEntity implements Entity {
 
   private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity value) {
     final Entity entity = value;
-    final EntityType<? extends Entity> referencedEntityType = property.getReferencedEntityType();
+    final EntityType<?> referencedEntityType = property.getReferencedEntityType();
     if (!Objects.equals(referencedEntityType, entity.getEntityType())) {
       throw new IllegalArgumentException("Entity of type " + referencedEntityType +
               " expected for property " + this + ", got: " + entity.getEntityType());

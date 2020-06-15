@@ -79,7 +79,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @param entityType the entityType
    * @param connectionProvider the connection provider
    */
-  public FXEntityListModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider) {
+  public FXEntityListModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, new DefaultEntityTableConditionModel(entityType, connectionProvider,
             null, new FXConditionModelFactory()));
   }
@@ -91,7 +91,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    * @param tableConditionModel the {@link EntityTableConditionModel} to use
    * @throws IllegalArgumentException in case the condition model is based on a different entity
    */
-  public FXEntityListModel(final EntityType<? extends Entity> entityType, final EntityConnectionProvider connectionProvider,
+  public FXEntityListModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                            final EntityTableConditionModel tableConditionModel) {
     super(entityType, connectionProvider);
     requireNonNull(tableConditionModel);
@@ -209,7 +209,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void replaceForeignKeyValues(final EntityType<? extends Entity> foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
+  public final void replaceForeignKeyValues(final EntityType<?> foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
     final List<ForeignKeyProperty> foreignKeyProperties =
             getEntityDefinition().getForeignKeyReferences(foreignKeyEntityType);
     for (final Entity entity : getItems()) {

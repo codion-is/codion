@@ -36,7 +36,7 @@ public interface EntityDefinition extends Serializable {
   /**
    * @return the entity type
    */
-  EntityType<Entity> getEntityType();
+  EntityType<?> getEntityType();
 
   /**
    * @return the name of the underlying table, with schema prefix if applicable
@@ -442,7 +442,7 @@ public interface EntityDefinition extends Serializable {
      * @return the entity definition
      * @throws IllegalArgumentException in case the definition is not found
      */
-    EntityDefinition getDefinition(EntityType<? extends Entity> entityType);
+    EntityDefinition getDefinition(EntityType<?> entityType);
 
     /**
      * Returns all {@link EntityDefinition}s available in this provider

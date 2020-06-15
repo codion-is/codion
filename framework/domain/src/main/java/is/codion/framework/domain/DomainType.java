@@ -33,6 +33,7 @@ public interface DomainType extends Serializable {
    * Instantiates a {@link EntityType} associated with this domain type.
    * If this entity type has been defined previously that instance is returned.
    * @param name the entity type name
+   * @param entityClass the entity representation class
    * @param <T> the Entity type
    * @return a {@link EntityType} with the given name
    */

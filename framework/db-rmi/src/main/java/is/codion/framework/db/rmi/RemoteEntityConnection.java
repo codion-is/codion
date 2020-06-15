@@ -233,7 +233,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  <T> Entity selectSingle(EntityType<? extends Entity> entityType, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
+  <T> Entity selectSingle(EntityType<?> entityType, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -286,7 +286,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<Entity> select(EntityType<? extends Entity> entityType, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
+  <T> List<Entity> select(EntityType<?> entityType, Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
@@ -298,7 +298,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a database exception
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<Entity> select(EntityType<? extends Entity> entityType, Attribute<T> attribute, Collection<T> values) throws RemoteException, DatabaseException;
+  <T> List<Entity> select(EntityType<?> entityType, Attribute<T> attribute, Collection<T> values) throws RemoteException, DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityTypes
