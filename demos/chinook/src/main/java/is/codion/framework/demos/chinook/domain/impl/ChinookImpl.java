@@ -358,10 +358,7 @@ public final class ChinookImpl extends Domain implements Chinook {
 
       invoices.forEach(Invoice::updateTotal);
 
-      List<Invoice> invoicesToUpdate = getModifiedEntities(invoices);
-      if (!invoicesToUpdate.isEmpty()) {
-        entityConnection.update(invoicesToUpdate);
-      }
+      entityConnection.update(getModifiedEntities(invoices));
     }
   }
 

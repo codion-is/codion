@@ -45,21 +45,11 @@ public final class ContinentModel extends SwingEntityModel {
     lifeExpectancyDataset.clear();
     Entities entities = getConnectionProvider().getEntities();
     entities.castTo(Continent.TYPE, getTableModel().getItems()).forEach(continent -> {
-      populationDataset.setValue(
-            continent.name(),
-            continent.population());
-      surfaceAreaDataset.setValue(
-            continent.name(),
-            continent.surfaceArea());
-      gnpDataset.setValue(
-            continent.name(),
-            continent.gnp());
-      lifeExpectancyDataset.addValue(
-              continent.minLifeExpectancy(),
-              "Lowest", continent.name());
-      lifeExpectancyDataset.addValue(
-              continent.maxLifeExpectancy(),
-              "Highest",continent.name());
+      populationDataset.setValue(continent.name(), continent.population());
+      surfaceAreaDataset.setValue(continent.name(), continent.surfaceArea());
+      gnpDataset.setValue(continent.name(), continent.gnp());
+      lifeExpectancyDataset.addValue(continent.minLifeExpectancy(), "Lowest", continent.name());
+      lifeExpectancyDataset.addValue( continent.maxLifeExpectancy(), "Highest", continent.name());
     });
   }
 }

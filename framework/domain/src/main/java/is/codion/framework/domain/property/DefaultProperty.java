@@ -129,7 +129,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     this.hidden = caption == null;
     this.format = initializeDefaultFormat();
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
-    this.beanProperty = toCamelCase(attribute.getName());
+    this.beanProperty = underscoreToCamelCase(attribute.getName());
   }
 
   @Override
@@ -324,10 +324,14 @@ abstract class DefaultProperty<T> implements Property<T> {
     return null;
   }
 
-  private static String toCamelCase(final String string) {
+  private static String underscoreToCamelCase(final String string) {
     final StringBuilder builder = new StringBuilder();
     boolean firstDone = false;
-    for (final String split : string.split("_")) {
+    final String[] strings = string.split("_");
+    if (strings.length == 1) {
+      return string;
+    }
+    for (final String split : strings) {
       if (!firstDone) {
         builder.append(Character.toLowerCase(split.charAt(0)));
         firstDone = true;

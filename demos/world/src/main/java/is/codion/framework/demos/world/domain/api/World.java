@@ -34,8 +34,8 @@ public interface World {
     Attribute<String> DISTRICT = TYPE.stringAttribute("district");
     Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
 
-    String getName();
-    Integer getPopulation();
+    String name();
+    Integer population();
   }
 
   interface Country {
