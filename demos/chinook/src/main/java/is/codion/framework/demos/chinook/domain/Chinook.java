@@ -10,7 +10,6 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.plugin.jasperreports.model.JRReportType;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
@@ -84,7 +83,7 @@ public interface Chinook {
     Attribute<Long> SUPPORTREP_ID = TYPE.longAttribute("supportrepid");
     Attribute<Entity> SUPPORTREP_FK = TYPE.entityAttribute("supportrep_fk");
 
-    JRReportType CUSTOMER_REPORT = JasperReports.reportType("customer_report");
+    JRReportType REPORT = JasperReports.reportType("customer_report");
   }
 
   interface Genre {
@@ -116,18 +115,9 @@ public interface Chinook {
     Attribute<Integer> BYTES = TYPE.integerAttribute("bytes");
     Attribute<BigDecimal> UNITPRICE = TYPE.bigDecimalAttribute("unitprice");
 
-    DerivedProperty.Provider<String> MIN_SEC_PROVIDER =
-            linkedValues -> {
-              final Integer milliseconds = linkedValues.get(MILLISECONDS);
-              if (milliseconds == null || milliseconds <= 0) {
-                return "";
-              }
-
-              return getMinutes(milliseconds) + " min " + getSeconds(milliseconds) + " sec";
-            };
-
-    void setUnitPrice(BigDecimal unitPrice);
-    BigDecimal getUnitPrice();
+    default void increasePrice(final BigDecimal priceIncrease) {
+      put(UNITPRICE, get(UNITPRICE).add(priceIncrease));
+    }
   }
 
   interface Invoice extends Entity {
@@ -142,10 +132,11 @@ public interface Chinook {
     Attribute<String> BILLINGCOUNTRY = TYPE.stringAttribute("billingcountry");
     Attribute<String> BILLINGPOSTALCODE = TYPE.stringAttribute("billingpostalcode");
     Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
-    Attribute<BigDecimal> TOTAL_SUBQUERY = TYPE.bigDecimalAttribute("subtotal");
+    Attribute<BigDecimal> TOTAL_SUBQUERY = TYPE.bigDecimalAttribute("total_subquery");
 
-    void setTotal(BigDecimal subtotal);
-    BigDecimal getSubtotal();
+    default void updateTotal() {
+      put(TOTAL, get(TOTAL_SUBQUERY));
+    }
   }
 
   interface InvoiceLine {
@@ -158,17 +149,6 @@ public interface Chinook {
     Attribute<BigDecimal> UNITPRICE = TYPE.bigDecimalAttribute("unitprice");
     Attribute<Integer> QUANTITY = TYPE.integerAttribute("quantity");
     Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
-
-    DerivedProperty.Provider<BigDecimal> TOTAL_PROVIDER =
-            sourceValues -> {
-              final Integer quantity = sourceValues.get(QUANTITY);
-              final BigDecimal unitPrice = sourceValues.get(UNITPRICE);
-              if (unitPrice == null || quantity == null) {
-                return null;
-              }
-
-              return unitPrice.multiply(BigDecimal.valueOf(quantity));
-            };
   }
 
   interface Playlist {

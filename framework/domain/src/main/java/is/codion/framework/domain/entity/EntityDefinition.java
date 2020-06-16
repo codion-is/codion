@@ -13,6 +13,7 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
@@ -416,7 +417,7 @@ public interface EntityDefinition extends Serializable {
   Key key(Long value);
 
   /**
-   * Returns the Attribute for the getter this method represents,
+   * Returns the Attribute for the getter this method represents in the {@link EntityType#getEntityClass()},
    * null if none exists.
    * @param method the method
    * @return the getter attribute
@@ -424,12 +425,19 @@ public interface EntityDefinition extends Serializable {
   Attribute<?> getGetterAttribute(Method method);
 
   /**
-   * Returns the Attribute for the setter this method represents,
+   * Returns the Attribute for the setter this method represents in the {@link EntityType#getEntityClass()},
    * null if none exists.
    * @param method the method
    * @return the setter attribute
    */
   Attribute<?> getSetterAttribute(Method method);
+
+  /**
+   * Returns the MethodHandle for the given default method in the {@link EntityType#getEntityClass()}.
+   * @param method the method
+   * @return a MethodHandle based on the method
+   */
+  MethodHandle getDefaultMethodHandle(Method method);
 
   /**
    * Provides {@link EntityDefinition}s for a domain model.

@@ -6265,3 +6265,4 @@
   EntityType now with generic type, Entities.castTo() added
   EntityType continued
   Removed a bunch of redundant <? extends Entity> clauses from EntityTypes
+  Cast entity instances now support default methods, hacky, some related improvements

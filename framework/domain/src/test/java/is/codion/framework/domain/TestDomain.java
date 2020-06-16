@@ -121,6 +121,12 @@ public final class TestDomain extends Domain {
     void setDouble(Double value);
     Master getMaster();
     void setMaster(Master master);
+
+    default void setAll(final Long id, final Double value, final Master master) {
+      setId(id);
+      setDouble(value);
+      setMaster(master);
+    }
   }
 
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";

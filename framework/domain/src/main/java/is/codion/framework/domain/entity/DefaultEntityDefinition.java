@@ -13,10 +13,14 @@ import is.codion.framework.domain.property.MirrorProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import static is.codion.common.Util.rejectNullOrEmpty;
@@ -40,13 +45,6 @@ import static java.util.stream.Collectors.toList;
 final class DefaultEntityDefinition implements EntityDefinition {
 
   private static final long serialVersionUID = 1;
-
-  static final Set<Method> ENTITY_METHODS = new HashSet<>();
-
-  static {
-    ENTITY_METHODS.addAll(Arrays.asList(Entity.class.getMethods()));
-    ENTITY_METHODS.addAll(Arrays.asList(Object.class.getMethods()));
-  }
 
   /**
    * The domain name
@@ -67,6 +65,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
    * Bean property setters
    */
   private final Map<String, Attribute<?>> setters = new HashMap<>();
+
+  /**
+   * Entity class default method handles
+   */
+  private transient Map<String, MethodHandle> defaultMethodHandles = new ConcurrentHashMap<>();
 
   /**
    * The caption to use for the entity type
@@ -188,7 +191,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
     this.groupByClause = initializeGroupByClause();
     this.caption = entityType.getName();
-    resolveGettersAndSetters();
+    resolveEntityClassMethods();
   }
 
   @Override
@@ -204,6 +207,12 @@ final class DefaultEntityDefinition implements EntityDefinition {
   @Override
   public Attribute<?> getSetterAttribute(final Method method) {
     return setters.get(requireNonNull(method, "method").getName());
+  }
+
+  @Override
+  public MethodHandle getDefaultMethodHandle(final Method method) {
+    return defaultMethodHandles.computeIfAbsent(requireNonNull(method, "method").getName(),
+            methodName -> createDefaultMethodHandle(method));
   }
 
   @Override
@@ -628,6 +637,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return new DefaultBuilder(this);
   }
 
+  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    stream.defaultReadObject();
+    defaultMethodHandles = new ConcurrentHashMap<>();
+  }
+
   /**
    * @return a list of grouping columns separated with a comma, to serve as a group by clause,
    * null if no grouping properties are defined
@@ -642,10 +656,13 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return String.join(", ", groupingColumnNames);
   }
 
-  private void resolveGettersAndSetters() {
+  private void resolveEntityClassMethods() {
     if (!entityType.getEntityClass().equals(Entity.class)) {
-      for (final Method method : entityType.getEntityClass().getMethods()) {
-        if (!ENTITY_METHODS.contains(method)) {
+      for (final Method method : entityType.getEntityClass().getDeclaredMethods()) {
+        if (method.isDefault()) {
+          defaultMethodHandles.put(method.getName(), createDefaultMethodHandle(method));
+        }
+        else {
           if (Entity.class.isAssignableFrom(method.getReturnType())) {
             final Optional<ForeignKeyProperty> foreignKeyProperty =
                     getForeignKeyProperties().stream().filter(fkProperty ->
@@ -667,6 +684,25 @@ final class DefaultEntityDefinition implements EntityDefinition {
           }
         }
       }
+    }
+  }
+
+  /**
+   * Hacky way to use default methods in interfaces via dynamic proxy.
+   * @param method the default method
+   * @return a MethodHandle for the given method
+   */
+  private static MethodHandle createDefaultMethodHandle(final Method method) {
+    try {
+      final Class<?> declaringClass = method.getDeclaringClass();
+      final Constructor<MethodHandles.Lookup> constructor =
+              MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+      constructor.setAccessible(true);
+
+      return constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE).unreflectSpecial(method, declaringClass);
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
     }
   }
 

@@ -96,7 +96,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
                         Entities.getDistinctValues(Customer.ID, customerModel.getSelectionModel().getSelectedItems());
                 final HashMap<String, Object> reportParameters = new HashMap<>();
                 reportParameters.put("CUSTOMER_IDS", customerIDs);
-                customerModel.getConnectionProvider().getConnection().fillReport(Customer.CUSTOMER_REPORT, reportParameters);
+                customerModel.getConnectionProvider().getConnection().fillReport(Customer.REPORT, reportParameters);
               }
               catch (final Exception e) {
                 throw new ScenarioException(e);

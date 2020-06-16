@@ -257,30 +257,40 @@ public abstract class DefaultEntities implements Entities {
 
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-      if (DefaultEntityDefinition.ENTITY_METHODS.contains(method)) {
-        return method.invoke(entity, args);
-      }
-
       final EntityDefinition definition = entities.getDefinition(entity.getEntityType());
+
       Attribute<?> attribute = definition.getGetterAttribute(method);
       if (attribute != null) {
-        final Object value = entity.get(attribute);
-        if (value instanceof Entity) {
-          final Entity entityValue = (Entity) value;
-
-          return entities.castTo(entityValue.getEntityType(), entityValue);
-        }
-
-        return value;
+        return getValue(attribute);
       }
+
       attribute = definition.getSetterAttribute(method);
       if (attribute != null) {
-        entity.put((Attribute<Object>) attribute, args[0]);
-
-        return null;
+        return setValue(args[0], attribute);
       }
 
-      throw new IllegalArgumentException("Unknown method: " + method);
+      if (method.isDefault()) {
+        return definition.getDefaultMethodHandle(method).bindTo(proxy).invokeWithArguments(args);
+      }
+
+      return method.invoke(entity, args);
+    }
+
+    private Object getValue(final Attribute<?> attribute) {
+      final Object value = entity.get(attribute);
+      if (value instanceof Entity) {
+        final Entity entityValue = (Entity) value;
+
+        return entities.castTo(entityValue.getEntityType(), entityValue);
+      }
+
+      return value;
+    }
+
+    private Object setValue(final Object value, final Attribute<?> attribute) {
+      entity.put((Attribute<Object>) attribute, value);
+
+      return null;
     }
   };
 }

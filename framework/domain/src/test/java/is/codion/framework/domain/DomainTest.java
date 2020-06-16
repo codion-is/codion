@@ -784,6 +784,12 @@ public class DomainTest {
     assertEquals(detailTyped.getDouble(), detail.get(Detail.DOUBLE));
     assertSame(detailTyped.getMaster(), detail.get(Detail.MASTER_FK));
 
+    detailTyped.setAll(3L, 3.2, mastersTyped.get(2));
+
+    assertEquals(detailTyped.getId(), 3L);
+    assertEquals(detailTyped.getDouble(), 3.2);
+    assertSame(detailTyped.getMaster(), mastersTyped.get(2));
+
     final Entity compositeMaster = entities.entity(TestDomain.T_COMPOSITE_MASTER);
     compositeMaster.put(TestDomain.COMPOSITE_MASTER_ID, 1);
     compositeMaster.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
