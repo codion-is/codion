@@ -8,6 +8,7 @@ import is.codion.framework.domain.property.ColumnProperty;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -36,6 +37,14 @@ public interface Entity extends Comparable<Entity>, Serializable {
    * @return the value of the given attribute
    */
   <T> T get(Attribute<T> attribute);
+
+  /**
+   * Returns the value associated with {@code attribute}, wrapped in an {@link Optional}.
+   * @param attribute the attribute for which to retrieve the value
+   * @param <T> the value type
+   * @return the value of the given attribute, wrapped in an {@link Optional}
+   */
+  <T> Optional<T> getOptional(Attribute<T> attribute);
 
   /**
    * Returns the original value associated with {@code attribute}.

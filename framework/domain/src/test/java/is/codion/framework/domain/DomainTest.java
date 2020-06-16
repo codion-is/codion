@@ -219,6 +219,7 @@ public class DomainTest {
 
     assertThrows(IllegalStateException.class, () -> key.put(1));
     assertThrows(IllegalStateException.class, key::get);
+    assertThrows(IllegalStateException.class, key::getOptional);
     assertThrows(IllegalStateException.class, key::getAttribute);
 
     key.put(attribute1, 1);
@@ -226,6 +227,7 @@ public class DomainTest {
     key.put(attribute3, 3);
     assertTrue(key.isNotNull());
     assertEquals(6, key.hashCode());
+    assertTrue(key.getOptional(attribute1).isPresent());
 
     key.put(attribute2, 3);
     assertEquals(7, key.hashCode());
@@ -235,8 +237,10 @@ public class DomainTest {
     assertEquals(4, key.hashCode());
     key.put(attribute2, null);
     assertTrue(key.isNull());
+    assertFalse(key.getOptional(attribute2).isPresent());
     assertEquals(0, key.hashCode());
     key.put(attribute2, 4);
+    assertTrue(key.getOptional(attribute2).isPresent());
     assertTrue(key.isNotNull());
     assertEquals(5, key.hashCode());
 

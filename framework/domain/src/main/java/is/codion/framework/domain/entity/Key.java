@@ -5,6 +5,7 @@ package is.codion.framework.domain.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents a primary key.
@@ -83,6 +84,14 @@ public interface Key extends Serializable {
   <T> T get();
 
   /**
+   * Returns the value of this key, wrapped in an {@link Optional}. Note that this method throws an exception if this key is a composite key.
+   * @param <T> the value type
+   * @return the first value contained in this key, wrapped in an {@link Optional}, useful for single attribute keys
+   * @throws IllegalStateException in case this is a composite key
+   */
+  <T> Optional<T> getOptional();
+
+  /**
    * @param attribute the attribute
    * @param value the value to associate with the attribute
    * @param <T> the value type
@@ -96,4 +105,11 @@ public interface Key extends Serializable {
    * @return the value associated with the given attribute
    */
   <T> T get(Attribute<T> attribute);
+
+  /**
+   * @param attribute the attribute
+   * @param <T> the value type
+   * @return the value associated with the given attribute, wrapped in an {@link Optional}
+   */
+  <T> Optional<T> getOptional(Attribute<T> attribute);
 }

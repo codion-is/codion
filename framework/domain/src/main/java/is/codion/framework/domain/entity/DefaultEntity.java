@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Collections.*;
@@ -129,6 +130,11 @@ final class DefaultEntity implements Entity {
   @Override
   public <T> T get(final Attribute<T> attribute) {
     return get(definition.getProperty(attribute));
+  }
+
+  @Override
+  public <T> Optional<T> getOptional(final Attribute<T> attribute) {
+    return Optional.ofNullable(get(attribute));
   }
 
   @Override

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A class representing a primary key for entities.
@@ -124,6 +125,11 @@ final class DefaultKey implements Key {
   }
 
   @Override
+  public <T> Optional<T> getOptional() {
+    return Optional.ofNullable(get());
+  }
+
+  @Override
   public <T> T put(final Attribute<T> attribute, final T value) {
     final ColumnProperty<T> property = definition.getPrimaryKeyProperty(attribute);
     final T newValue = property.prepareValue(property.getAttribute().validateType(value));
@@ -141,6 +147,11 @@ final class DefaultKey implements Key {
   @Override
   public <T> T get(final Attribute<T> attribute) {
     return (T) values.get(definition.getPrimaryKeyProperty(attribute).getAttribute());
+  }
+
+  @Override
+  public <T> Optional<T> getOptional(final Attribute<T> attribute) {
+    return Optional.ofNullable(get(attribute));
   }
 
   @Override

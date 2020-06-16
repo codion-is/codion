@@ -58,7 +58,7 @@ public class DefaultEntityTest {
 
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, null, invalidTypeOriginalValues));
 
-    final EntityType entityType = TestDomain.DOMAIN.entityType("entityType");
+    final EntityType<Entity> entityType = TestDomain.DOMAIN.entityType("entityType");
     final Attribute<?> invalid = entityType.integerAttribute("invalid");
     final Map<Attribute<?>, Object> invalidPropertyValues = new HashMap<>();
     invalidPropertyValues.put(invalid, 1);
@@ -252,6 +252,7 @@ public class DefaultEntityTest {
 
     //assert values
     assertEquals(testEntity.get(TestDomain.Detail.ID), detailId);
+    assertTrue(testEntity.getOptional(TestDomain.Detail.ID).isPresent());
     assertEquals(testEntity.get(TestDomain.Detail.INT), detailInt);
     assertEquals(testEntity.get(TestDomain.Detail.DOUBLE), detailDouble);
     assertEquals(testEntity.get(TestDomain.Detail.STRING), detailString);
@@ -282,6 +283,7 @@ public class DefaultEntityTest {
     testEntity.put(TestDomain.Detail.MASTER_FK, null);
     assertTrue(testEntity.isNull(TestDomain.Detail.MASTER_ID));
     assertTrue(testEntity.isNull(TestDomain.Detail.MASTER_NAME));
+    assertFalse(testEntity.getOptional(TestDomain.Detail.MASTER_NAME).isPresent());
     assertTrue(testEntity.isNull(TestDomain.Detail.MASTER_CODE));
     assertTrue(testEntity.isNull(TestDomain.Detail.MASTER_CODE_DENORM));
 
