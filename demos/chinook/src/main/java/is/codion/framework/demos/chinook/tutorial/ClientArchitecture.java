@@ -26,8 +26,8 @@ public final class ClientArchitecture {
 
   // tag::entityModel[]
   /**
-   * Creates a SwingEntityModel based on the Chinook.T_ARTIST entity
-   * with a detail model based on Chinook.T_ALBUM
+   * Creates a SwingEntityModel based on the {@link Artist#TYPE} entity
+   * with a detail model based on {@link Album#TYPE}
    * @param connectionProvider the connection provider
    */
   static SwingEntityModel artistModel(EntityConnectionProvider connectionProvider) {
@@ -49,8 +49,8 @@ public final class ClientArchitecture {
   // end::entityModel[]
   // tag::entityPanel[]
   /**
-   * Creates a EntityPanel based on the Chinook.T_ARTIST entity
-   * with a detail panel based on Chinook.T_ALBUM
+   * Creates a EntityPanel based on the {@link Artist#TYPE} entity
+   * with a detail panel based on {@link Album#TYPE}
    * @param connectionProvider the connection provider
    */
   static EntityPanel artistPanel(EntityConnectionProvider connectionProvider) {
