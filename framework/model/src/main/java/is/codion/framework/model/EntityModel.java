@@ -11,6 +11,7 @@ import is.codion.common.model.Refreshable;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -52,6 +53,11 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the connection provider used by this entity model
    */
   EntityConnectionProvider getConnectionProvider();
+
+  /**
+   * @return the underlying domain entities
+   */
+  Entities getEntities();
 
   /**
    * @return the {@link EntityEditModel} instance used by this {@link EntityModel}

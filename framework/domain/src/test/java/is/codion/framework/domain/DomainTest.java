@@ -696,12 +696,12 @@ public class DomainTest {
 
     final List<Department> deptBeans = entities.castTo(Department.TYPE, singletonList(department));
     final Department departmentBean = deptBeans.get(0);
-    assertEquals(deptNo, departmentBean.getDeptNo());
-    assertEquals(deptName, departmentBean.getName());
-    assertEquals(deptLocation, departmentBean.getLocation());
-    assertEquals(deptActive, departmentBean.isActive());
+    assertEquals(deptNo, departmentBean.deptNo());
+    assertEquals(deptName, departmentBean.name());
+    assertEquals(deptLocation, departmentBean.location());
+    assertEquals(deptActive, departmentBean.active());
 
-    departmentBean.setActive(false);
+    departmentBean.active(false);
 
     assertFalse(department.get(Department.ACTIVE));
 
@@ -731,7 +731,7 @@ public class DomainTest {
     assertEquals(id, employeeBean.getId());
     assertEquals(commission, employeeBean.getCommission());
     assertEquals(deptNo, employeeBean.getDeptno());
-    assertEquals(deptNo, employeeBean.getDepartment().getDeptNo());
+    assertEquals(deptNo, employeeBean.getDepartment().deptNo());
     assertEquals(hiredate, employeeBean.getHiredate());
     assertEquals(job, employeeBean.getJob());
     assertEquals(mgr, employeeBean.getMgr());
@@ -776,23 +776,23 @@ public class DomainTest {
     detail.put(Detail.MASTER_FK, master);
 
     final Detail detailTyped = entities.castTo(Detail.TYPE, detail);
-    assertEquals(detailTyped.getId(), 1L);
-    assertEquals(detailTyped.getDouble(), 1.2);
-    assertEquals(detailTyped.getMaster(), master);
+    assertEquals(detailTyped.getId().get(), 1L);
+    assertEquals(detailTyped.getDouble().get(), 1.2);
+    assertEquals(detailTyped.getMaster().get(), master);
 
     detailTyped.setId(2L);
     detailTyped.setDouble(2.1);
     detailTyped.setMaster(master1);
 
-    assertEquals(detailTyped.getId(), detail.get(Detail.ID));
-    assertEquals(detailTyped.getDouble(), detail.get(Detail.DOUBLE));
-    assertSame(detailTyped.getMaster(), detail.get(Detail.MASTER_FK));
+    assertEquals(detailTyped.getId().get(), detail.get(Detail.ID));
+    assertEquals(detailTyped.getDouble().get(), detail.get(Detail.DOUBLE));
+    assertSame(detailTyped.getMaster().get(), detail.get(Detail.MASTER_FK));
 
     detailTyped.setAll(3L, 3.2, mastersTyped.get(2));
 
-    assertEquals(detailTyped.getId(), 3L);
-    assertEquals(detailTyped.getDouble(), 3.2);
-    assertSame(detailTyped.getMaster(), mastersTyped.get(2));
+    assertEquals(detailTyped.getId().get(), 3L);
+    assertEquals(detailTyped.getDouble().get(), 3.2);
+    assertSame(detailTyped.getMaster().get(), mastersTyped.get(2));
 
     final Entity compositeMaster = entities.entity(TestDomain.T_COMPOSITE_MASTER);
     compositeMaster.put(TestDomain.COMPOSITE_MASTER_ID, 1);

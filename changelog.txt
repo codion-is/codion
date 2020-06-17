@@ -6270,3 +6270,4 @@
   Entity.getOptional() and Key.getOptional() added
   DomainType.extendDomain() added
   SwingEntityTableModel.isCellEditable() now handles ForeignKeyProperty as well
+  DefaultEntityDefinition.resolveEntityClassMethods(), simplified foreign key property handling, setters witout 'set' prefix and getters returning Optional supported
