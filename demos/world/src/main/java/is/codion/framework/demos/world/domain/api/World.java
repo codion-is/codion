@@ -7,6 +7,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.List;
+import java.util.Objects;
 
 import static is.codion.common.item.Items.item;
 import static java.util.Arrays.asList;
@@ -36,6 +37,10 @@ public interface World {
 
     String name();
     Integer population();
+
+    default boolean isCountry(final Entity country) {
+      return Objects.equals(get(COUNTRY_FK), country);
+    }
   }
 
   interface Country {

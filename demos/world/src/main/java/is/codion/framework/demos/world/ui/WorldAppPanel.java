@@ -32,7 +32,12 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   protected void setupEntityPanelBuilders() {
     final SwingEntityModelBuilder countryModelBuilder = new SwingEntityModelBuilder(Country.TYPE);
     countryModelBuilder.setModelClass(CountryModel.class);
-    EntityPanelBuilder countryPanelBuilder = new EntityPanelBuilder(countryModelBuilder);
+    EntityPanelBuilder countryPanelBuilder = new EntityPanelBuilder(countryModelBuilder) {
+      @Override
+      protected void configurePanel(final EntityPanel entityPanel) {
+        entityPanel.setDetailSplitPanelResizeWeight(0.7);
+      }
+    };
     countryPanelBuilder.setEditPanelClass(CountryEditPanel.class);
     countryPanelBuilder.setTablePanelClass(CountryTablePanel.class);
 
