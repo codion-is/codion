@@ -663,25 +663,10 @@ final class DefaultEntityDefinition implements EntityDefinition {
           defaultMethodHandles.put(method.getName(), createDefaultMethodHandle(method));
         }
         else {
-          if (Entity.class.isAssignableFrom(method.getReturnType())) {
-            final Optional<ForeignKeyProperty> foreignKeyProperty =
-                    getForeignKeyProperties().stream().filter(fkProperty ->
-                            fkProperty.getReferencedEntityType().getEntityClass().equals(method.getReturnType())).findFirst();
-            foreignKeyProperty.ifPresent(keyProperty -> getters.put(method.getName(), keyProperty.getAttribute()));
-          }
-          else if (method.getParameterCount() == 1 && Entity.class.isAssignableFrom(method.getParameterTypes()[0])) {
-            final Optional<ForeignKeyProperty> foreignKeyProperty =
-                    getForeignKeyProperties().stream().filter(fkProperty ->
-                            fkProperty.getReferencedEntityType().getEntityClass().equals(method.getParameterTypes()[0])).findFirst();
-            foreignKeyProperty.ifPresent(keyProperty -> setters.put(method.getName(), keyProperty.getAttribute()));
-          }
-          else {
-            Optional<Property<?>> optionalProperty = getProperties().stream().filter(property -> isGetter(method, property)).findFirst();
-            optionalProperty.ifPresent(property -> getters.put(method.getName(), property.getAttribute()));
-
-            optionalProperty = getProperties().stream().filter(property -> isSetter(method, property)).findFirst();
-            optionalProperty.ifPresent(property -> setters.put(method.getName(), property.getAttribute()));
-          }
+          getProperties().stream().filter(property -> isGetter(method, property)).findFirst()
+                  .ifPresent(property -> getters.put(method.getName(), property.getAttribute()));
+          getProperties().stream().filter(property -> isSetter(method, property)).findFirst()
+                  .ifPresent(property -> setters.put(method.getName(), property.getAttribute()));
         }
       }
     }
@@ -709,28 +694,38 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   private static boolean isGetter(final Method method, final Property<?> property) {
     final String beanProperty = property.getBeanProperty();
-    if (beanProperty == null) {
+    if (beanProperty == null || method.getParameterCount() > 0) {
       return false;
+    }
+
+    Class<?> typeClass = property.getAttribute().getTypeClass();
+    if (property instanceof ForeignKeyProperty) {
+      typeClass = ((ForeignKeyProperty) property).getReferencedEntityType().getEntityClass();
     }
 
     final String beanPropertyCamelCase = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
     final String methodName = method.getName();
 
-    return method.getReturnType().equals(property.getAttribute().getTypeClass())
+    return (method.getReturnType().equals(typeClass) || method.getReturnType().equals(Optional.class))
             && (methodName.equals(beanProperty) || methodName.equals("get" + beanPropertyCamelCase) ||
-            (methodName.equals("is" + beanPropertyCamelCase) && Boolean.class.equals(property.getAttribute().getTypeClass())));
+            (methodName.equals("is" + beanPropertyCamelCase) && Boolean.class.equals(typeClass)));
   }
 
   private static boolean isSetter(final Method method, final Property<?> property) {
-    String beanProperty = property.getBeanProperty();
-    if (beanProperty == null) {
+    final String beanProperty = property.getBeanProperty();
+    if (beanProperty == null || method.getParameterCount() != 1) {
       return false;
     }
 
-    beanProperty = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
+    Class<?> typeClass = property.getAttribute().getTypeClass();
+    if (property instanceof ForeignKeyProperty) {
+      typeClass = ((ForeignKeyProperty) property).getReferencedEntityType().getEntityClass();
+    }
 
-    return beanProperty != null && method.getName().equals("set" + beanProperty) &&
-            method.getParameterCount() == 1 && method.getParameterTypes()[0].equals(property.getAttribute().getTypeClass());
+    final String beanPropertyCamelCase = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
+    final String methodName = method.getName();
+
+    return method.getParameterTypes()[0].equals(typeClass) && (methodName.equals(beanProperty) || methodName.equals("set" + beanPropertyCamelCase));
   }
 
   private static final class EntityProperties implements Serializable {

@@ -10,6 +10,7 @@ import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
@@ -123,6 +124,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
+  }
+
+  @Override
+  public Entities getEntities() {
+    return connectionProvider.getEntities();
   }
 
   @Override

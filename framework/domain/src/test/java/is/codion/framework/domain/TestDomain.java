@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
@@ -119,11 +120,11 @@ public class TestDomain extends Domain {
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
     Attribute<Integer> MASTER_CODE_DENORM = TYPE.integerAttribute("master_code_denorm");
 
-    Long getId();
+    Optional<Long> getId();
     void setId(Long value);
-    Double getDouble();
+    Optional<Double> getDouble();
     void setDouble(Double value);
-    Master getMaster();
+    Optional<Master> getMaster();
     void setMaster(Master master);
 
     default void setAll(final Long id, final Double value, final Master master) {
@@ -159,7 +160,8 @@ public class TestDomain extends Domain {
                     .columnHasDefaultValue(true)
                     .defaultValue(true),
             foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.getName(), Master.TYPE,
-                    columnProperty(Detail.MASTER_ID)),
+                    columnProperty(Detail.MASTER_ID))
+                    .beanProperty("master"),
             denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_FK, Master.NAME, Detail.MASTER_NAME.getName()),
             denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_FK, Master.CODE, Detail.MASTER_CODE.getName()),
             valueListProperty(Detail.INT_VALUE_LIST, Detail.INT_VALUE_LIST.getName(), ITEMS),
@@ -188,11 +190,11 @@ public class TestDomain extends Domain {
     Attribute<Boolean> ACTIVE = TYPE.booleanAttribute("active");
     Attribute<byte[]> DATA = TYPE.blobAttribute("data");
 
-    Integer getDeptNo();
-    String getName();
-    String getLocation();
-    Boolean isActive();
-    void setActive(Boolean active);
+    Integer deptNo();
+    String name();
+    String location();
+    Boolean active();
+    void active(Boolean active);
   }
 
   final void department() {

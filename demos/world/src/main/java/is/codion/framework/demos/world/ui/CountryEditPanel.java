@@ -4,12 +4,16 @@ import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.CountryEditModel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.swing.common.ui.textfield.DoubleField;
+import is.codion.swing.common.ui.value.ComponentValue;
+import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityInputComponents.Editable;
 import is.codion.swing.framework.ui.EntityPanelBuilder;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import static is.codion.swing.common.ui.Components.createEastButtonPanel;
@@ -46,6 +50,12 @@ public final class CountryEditPanel extends EntityEditPanel {
     //create a panel with a button for adding a new city
     JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
             new CityPanelBuilder().createEditPanelAction(capitalComboBox));
+    //add a field displaying the avarage city population for the selected country
+    ComponentValue<Double, DoubleField> averageCityPopulationFieldValue = NumericalValues.doubleValue();
+    final DoubleField averageCityPopulationField = averageCityPopulationFieldValue.getComponent();
+    averageCityPopulationField.setEditable(false);
+    averageCityPopulationField.setFocusable(false);
+    ((CountryEditModel) getEditModel()).getAvarageCityPopulationValue().link(averageCityPopulationFieldValue);
 
     setLayout(gridLayout(4, 5));
 
@@ -64,6 +74,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     addInputPanel(Country.GOVERNMENTFORM);
     addInputPanel(Country.HEADOFSTATE);
     add(createInputPanel(Country.CAPITAL_FK, capitalPanel));
+    add(createInputPanel(new JLabel("Avg. city population"), averageCityPopulationField));
   }
 
   /** A EntityPanelBuilder for adding a new city */

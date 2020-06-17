@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Collections.unmodifiableCollection;
@@ -258,17 +259,18 @@ public abstract class DefaultEntities implements Entities {
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       final EntityDefinition definition = entities.getDefinition(entity.getEntityType());
-
-      Attribute<?> attribute = definition.getGetterAttribute(method);
-      if (attribute != null) {
-        return getValue(attribute);
+      if (method.getParameterCount() == 0) {
+        final Attribute<?> attribute = definition.getGetterAttribute(method);
+        if (attribute != null) {
+          return getValue(attribute, method.getReturnType().equals(Optional.class));
+        }
       }
-
-      attribute = definition.getSetterAttribute(method);
-      if (attribute != null) {
-        return setValue(args[0], attribute);
+      else if (method.getParameterCount() == 1) {
+        final Attribute<?> attribute = definition.getSetterAttribute(method);
+        if (attribute != null) {
+          return setValue(args[0], attribute);
+        }
       }
-
       if (method.isDefault()) {
         return definition.getDefaultMethodHandle(method).bindTo(proxy).invokeWithArguments(args);
       }
@@ -276,15 +278,15 @@ public abstract class DefaultEntities implements Entities {
       return method.invoke(entity, args);
     }
 
-    private Object getValue(final Attribute<?> attribute) {
-      final Object value = entity.get(attribute);
+    private Object getValue(final Attribute<?> attribute, final boolean optional) {
+      Object value = entity.get(attribute);
       if (value instanceof Entity) {
         final Entity entityValue = (Entity) value;
 
-        return entities.castTo(entityValue.getEntityType(), entityValue);
+        value = entities.castTo(entityValue.getEntityType(), entityValue);
       }
 
-      return value;
+      return optional ? Optional.ofNullable(value) : value;
     }
 
     private Object setValue(final Object value, final Attribute<?> attribute) {

@@ -6298,3 +6298,4 @@
   DomainType.extendDomain() added
   DefaultEntityDefinition.createDefaultMethodHandle() updated to work with modules, requires some massaging of the module system, with --add-reads for testing and running and --add-module in the server
   SwingEntityTableModel.isCellEditable() now handles ForeignKeyProperty as well
+  DefaultEntityDefinition.resolveEntityClassMethods(), simplified foreign key property handling, setters witout 'set' prefix and getters returning Optional supported
