@@ -360,7 +360,7 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
   public Map<String, String> getEntityDefinitions() {
     final Map<EntityType<?>, String> entityDefinitions = server.getEntityDefinitions();
     final Map<String, String> definitions = new HashMap<>();
-    entityDefinitions.forEach((key, value) -> definitions.put(key.getName(), value));
+    entityDefinitions.forEach((key, value) -> definitions.put(key.getDomainName() + ":" + key.getName(), value));
 
     return definitions;
   }
