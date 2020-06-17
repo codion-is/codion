@@ -814,4 +814,23 @@ public class DomainTest {
 
     Serializer.deserialize(Serializer.serialize(entities.castTo(Master.TYPE, entitiesToSer)));
   }
+
+  @Test
+  public void extendedDomain() {
+    final TestDomainExtended extended = new TestDomainExtended();
+    Entities entities = extended.getEntities();
+
+    entities.entity(TestDomainExtended.T_EXTENDED);
+
+    entities.entity(TestDomain.T_COMPOSITE_MASTER);
+
+    final TestDomainExtended.TestDomainSecondExtenion second = new TestDomainExtended.TestDomainSecondExtenion();
+    entities = second.getEntities();
+
+    entities.entity(TestDomainExtended.TestDomainSecondExtenion.T_SECOND_EXTENDED);
+
+    entities.entity(TestDomainExtended.T_EXTENDED);
+
+    entities.entity(TestDomain.T_COMPOSITE_MASTER);
+  }
 }

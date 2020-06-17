@@ -131,7 +131,7 @@ public abstract class Domain implements EntityDefinition.Provider {
    */
   protected final EntityDefinition.Builder define(final EntityType<?> entityType, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
-    if (!domainType.getName().equals(entityType.getDomainName())) {
+    if (!domainType.contains(entityType)) {
       throw new IllegalArgumentException("Entity type '" + entityType + "' is not part of domain: " + domainType);
     }
     return entities.defineInternal(entityType, tableName, propertyBuilders);

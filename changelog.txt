@@ -6268,3 +6268,4 @@
   Cast entity instances now support default methods, hacky, some related improvements
   DefaultProperty.underscoreToCamelCase() bug fixed, now returns if string contains no underscore
   Entity.getOptional() and Key.getOptional() added
+  DomainType.extendDomain() added

@@ -18,16 +18,21 @@ final class DefaultDomainType implements DomainType {
 
   private static final long serialVersionUID = 1;
 
-  private static final Map<String, DomainType> DOMAIN_TYPES = new ConcurrentHashMap<>();
+  private static final Map<String, DefaultDomainType> DOMAIN_TYPES = new ConcurrentHashMap<>();
 
   private final String domainName;
-  private final Map<String, EntityType<?>> entityTypes = new ConcurrentHashMap<>();
+  private final Map<String, EntityType<?>> entityTypes;
 
   private DefaultDomainType(final String domainName) {
+    this(null, domainName);
+  }
+
+  private DefaultDomainType(final DefaultDomainType domainToExtend, final String domainName) {
     if (nullOrEmpty(domainName)) {
       throw new IllegalArgumentException("domainName must be a non-empty string");
     }
     this.domainName = domainName;
+    this.entityTypes = domainToExtend == null ? new ConcurrentHashMap<>() : domainToExtend.entityTypes;
   }
 
   @Override
@@ -44,6 +49,11 @@ final class DefaultDomainType implements DomainType {
   public <T extends Entity> EntityType<T> entityType(final String name, final Class<T> entityClass) {
     return (EntityType<T>) entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
             EntityType.entityType(entityTypeName, this.domainName, entityClass));
+  }
+
+  @Override
+  public boolean contains(final EntityType<?> entityType) {
+    return entityTypes.containsKey(requireNonNull(entityType).getName());
   }
 
   @Override
@@ -75,7 +85,13 @@ final class DefaultDomainType implements DomainType {
   }
 
   static DomainType getOrCreateDomainType(final String domainName) {
-    return DOMAIN_TYPES.computeIfAbsent(domainName, DefaultDomainType::new);
+    return DOMAIN_TYPES.computeIfAbsent(requireNonNull(domainName), DefaultDomainType::new);
+  }
+
+  static DomainType getOrExtendDomainType(final DomainType domainToExtend, final String domainName) {
+    requireNonNull(domainToExtend);
+    return DOMAIN_TYPES.computeIfAbsent(domainName, name ->
+            new DefaultDomainType((DefaultDomainType) getDomainType(domainToExtend.getName()), domainName));
   }
 
   static DomainType getDomainType(final String domainName) {

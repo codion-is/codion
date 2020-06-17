@@ -28,12 +28,16 @@ import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
-public final class TestDomain extends Domain {
+public class TestDomain extends Domain {
 
   public static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
   public TestDomain() {
-    super(DOMAIN);
+    this(DOMAIN);
+  }
+
+  public TestDomain(final DomainType domain) {
+    super(domain);
     compositeMaster();
     compositeDetail();
     master();
@@ -48,7 +52,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<Integer> COMPOSITE_MASTER_ID = T_COMPOSITE_MASTER.integerAttribute("id");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID_2 = T_COMPOSITE_MASTER.integerAttribute("id2");
 
-  void compositeMaster() {
+  final void compositeMaster() {
     define(T_COMPOSITE_MASTER,
             columnProperty(COMPOSITE_MASTER_ID).primaryKeyIndex(0).nullable(true),
             columnProperty(COMPOSITE_MASTER_ID_2).primaryKeyIndex(1));
@@ -59,7 +63,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = T_COMPOSITE_DETAIL.integerAttribute("master_id2");
   public static final Attribute<Entity> COMPOSITE_DETAIL_MASTER_FK = T_COMPOSITE_DETAIL.entityAttribute("master_fk");
 
-  void compositeDetail() {
+  final void compositeDetail() {
     define(T_COMPOSITE_DETAIL,
             foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
                     asList(columnProperty(COMPOSITE_DETAIL_MASTER_ID).primaryKeyIndex(0),
@@ -76,7 +80,7 @@ public final class TestDomain extends Domain {
     String getName();
   }
 
-  void master() {
+  final void master() {
     define(Master.TYPE,
             primaryKeyProperty(Master.ID)
                     .beanProperty("id"),
@@ -134,7 +138,7 @@ public final class TestDomain extends Domain {
   private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
           item(2, "2"), item(3, "3"));
 
-  void detail() {
+  final void detail() {
     define(Detail.TYPE,
             primaryKeyProperty(Detail.ID)
                     .beanProperty("id"),
@@ -191,7 +195,7 @@ public final class TestDomain extends Domain {
     void setActive(Boolean active);
   }
 
-  void department() {
+  final void department() {
     define(Department.TYPE, "scott.dept",
             primaryKeyProperty(Department.NO, Department.NO.getName())
                     .updatable(true).nullable(false)
@@ -242,7 +246,7 @@ public final class TestDomain extends Domain {
     Double getSalary();
   }
 
-  void employee() {
+  final void employee() {
     define(Employee.TYPE, "scott.emp",
             primaryKeyProperty(Employee.ID, Employee.ID.getName())
                     .columnName("empno")
@@ -307,7 +311,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<Integer> NO_PK_COL2 = T_NO_PK.integerAttribute("col2");
   public static final Attribute<Integer> NO_PK_COL3 = T_NO_PK.integerAttribute("col3");
 
-  void noPKEntity() {
+  final void noPKEntity() {
     define(T_NO_PK,
             columnProperty(NO_PK_COL1),
             columnProperty(NO_PK_COL2),
@@ -320,7 +324,7 @@ public final class TestDomain extends Domain {
   public static final Attribute<Integer> TRANS_TRANS = T_TRANS.integerAttribute("trans");
   public static final TransientProperty.Builder<Integer> TRANS_BUILDER = Properties.transientProperty(TRANS_TRANS);
 
-  void transientTest() {
+  final void transientTest() {
     define(T_TRANS,
             Properties.primaryKeyProperty(TRANS_ID),
             TRANS_BUILDER);
