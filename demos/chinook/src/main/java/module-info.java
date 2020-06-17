@@ -18,7 +18,7 @@ module is.codion.framework.demos.chinook {
           to is.codion.framework.db.local;
   exports is.codion.framework.demos.chinook.tutorial
           to is.codion.framework.db.local;
-  //for loading of reports from classpath
+  //for loading of reports from classpath and accessing default methods in EntityType interfaces
   opens is.codion.framework.demos.chinook.domain
-          to is.codion.plugin.jasperreports;
+          to is.codion.plugin.jasperreports, is.codion.framework.domain;
 }

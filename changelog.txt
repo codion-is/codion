@@ -6296,3 +6296,4 @@
   DefaultProperty.underscoreToCamelCase() bug fixed, now returns if string contains no underscore
   Entity.getOptional() and Key.getOptional() added
   DomainType.extendDomain() added
+  DefaultEntityDefinition.createDefaultMethodHandle() updated to work with modules, requires some massaging of the module system, with --add-reads for testing and running and --add-module in the server
