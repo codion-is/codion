@@ -321,13 +321,19 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param rowIndex the row whose value to be queried
    * @param modelColumnIndex the column whose value to be queried
    * @return true if the cell is editable
-   * @see #setValueAt
+   * @see #setValueAt(Object, int, int)
    */
   @Override
   public boolean isCellEditable(final int rowIndex, final int modelColumnIndex) {
+    if (!editable || isReadOnly() || !isUpdateEnabled()) {
+      return false;
+    }
     final Property<?> property = getColumnModel().getColumnIdentifier(modelColumnIndex);
-    return editable && !isReadOnly() && isUpdateEnabled() && property instanceof ColumnProperty
-            && ((ColumnProperty<?>) property).isUpdatable();
+    if (property instanceof ForeignKeyProperty) {
+      return ((ForeignKeyProperty) property).isUpdatable();
+    }
+
+    return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
   }
 
   /**

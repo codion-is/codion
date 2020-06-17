@@ -8,6 +8,7 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.framework.demos.chinook.ui.ChinookAppPanel;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -35,6 +36,26 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
 
   private static final User UNIT_TEST_USER =
           Users.parseUser(System.getProperty("codion.test.user", "scott:tiger"));
+
+  private static final UsageScenario<ChinookApplicationModel> RAISE_PRICES =
+          new AbstractEntityUsageScenario<ChinookApplicationModel>("raisePrices") {
+            @Override
+            protected void perform(final ChinookApplicationModel application) throws ScenarioException {
+              try {
+                final SwingEntityModel artistModel = application.getEntityModel(Artist.TYPE);
+                artistModel.getTableModel().refresh();
+                selectRandomRows(artistModel.getTableModel(), 2);
+                final SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+                selectRandomRows(albumModel.getTableModel(), 0.5);
+                final TrackTableModel trackTableModel = (TrackTableModel) albumModel.getDetailModel(Track.TYPE).getTableModel();
+                selectRandomRows(trackTableModel, 4);
+                trackTableModel.raisePriceOfSelected(BigDecimal.valueOf(0.00001));
+              }
+              catch (final Exception e) {
+                throw new ScenarioException(e);
+              }
+            }
+          };
 
   private static final UsageScenario<ChinookApplicationModel> UPDATE_TOTALS =
           new AbstractEntityUsageScenario<ChinookApplicationModel>("updateTotals") {
@@ -215,16 +236,11 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
               }
               catch (final InterruptedException ignored) {/*ignored*/}
             }
-
-            @Override
-            public int getDefaultWeight() {
-              return 1;
-            }
           };
 
   public ChinookLoadTest() {
     super(UNIT_TEST_USER, asList(VIEW_GENRE, VIEW_CUSTOMER_REPORT, VIEW_INVOICE, VIEW_ALBUM,
-            UPDATE_TOTALS, INSERT_DELETE_ALBUM, LOGOUT_LOGIN));
+            UPDATE_TOTALS, INSERT_DELETE_ALBUM, LOGOUT_LOGIN, RAISE_PRICES));
   }
 
   @Override
