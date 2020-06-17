@@ -223,7 +223,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public List<Key> insert(final List<Entity> entities) throws DatabaseException {
+  public List<Key> insert(final List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       return handleResponse(execute(createRequest("insert", entities)));
@@ -243,7 +243,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public List<Entity> update(final List<Entity> entities) throws DatabaseException {
+  public List<Entity> update(final List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       return handleResponse(execute(createRequest("update", entities)));
@@ -328,7 +328,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(final EntityType entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
+  public <T> Entity selectSingle(final EntityType<?> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
     return selectSingle(selectCondition(entityType, attribute, Operator.LIKE, value));
   }
 
@@ -381,19 +381,19 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final EntityType entityType, final Attribute<T> attribute, final T value)
+  public <T> List<Entity> select(final EntityType<?> entityType, final Attribute<T> attribute, final T value)
           throws DatabaseException {
     return select(entityType, attribute, singletonList(value));
   }
 
   @Override
-  public <T> List<Entity> select(final EntityType entityType, final Attribute<T> attribute, final Collection<T> values)
+  public <T> List<Entity> select(final EntityType<?> entityType, final Attribute<T> attribute, final Collection<T> values)
           throws DatabaseException {
     return select(selectCondition(entityType, attribute, Operator.LIKE, values));
   }
 
   @Override
-  public Map<EntityType, Collection<Entity>> selectDependencies(final Collection<Entity> entities) throws DatabaseException {
+  public Map<EntityType<Entity>, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       return handleResponse(execute(createRequest("dependencies", entities)));
