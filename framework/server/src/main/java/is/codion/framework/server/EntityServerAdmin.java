@@ -9,7 +9,6 @@ import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.user.User;
-import is.codion.framework.domain.entity.EntityType;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -276,10 +275,10 @@ public interface EntityServerAdmin extends Remote {
   ThreadStatistics getThreadStatistics() throws RemoteException;
 
   /**
-   * @return a map containing all entityTypes, with their respective table names as an associated value
+   * @return a map containing all entityType names, with their respective table names as an associated value
    * @throws RemoteException in case of an exception
    */
-  Map<EntityType, String> getEntityDefinitions() throws RemoteException;
+  Map<String, String> getEntityDefinitions() throws RemoteException;
 
   /**
    * @param username the username

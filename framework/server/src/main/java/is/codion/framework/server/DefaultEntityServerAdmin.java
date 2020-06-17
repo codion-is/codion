@@ -32,6 +32,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -356,8 +357,12 @@ final class DefaultEntityServerAdmin extends UnicastRemoteObject implements Enti
   }
 
   @Override
-  public Map<EntityType, String> getEntityDefinitions() {
-    return server.getEntityDefinitions();
+  public Map<String, String> getEntityDefinitions() {
+    final Map<EntityType<?>, String> entityDefinitions = server.getEntityDefinitions();
+    final Map<String, String> definitions = new HashMap<>();
+    entityDefinitions.forEach((key, value) -> definitions.put(key.getName(), value));
+
+    return definitions;
   }
 
   private void initializeGarbageCollectionListener() {
