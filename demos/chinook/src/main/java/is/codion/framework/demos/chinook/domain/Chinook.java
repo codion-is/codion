@@ -134,8 +134,10 @@ public interface Chinook {
     Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
     Attribute<BigDecimal> TOTAL_SUBQUERY = TYPE.bigDecimalAttribute("total_subquery");
 
-    default void updateTotal() {
+    default Invoice updateTotal() {
       put(TOTAL, get(TOTAL_SUBQUERY));
+
+      return this;
     }
   }
 

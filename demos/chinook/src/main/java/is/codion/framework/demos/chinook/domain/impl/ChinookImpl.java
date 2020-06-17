@@ -24,9 +24,9 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
-import static is.codion.framework.domain.entity.Entities.getModifiedEntities;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -353,12 +353,11 @@ public final class ChinookImpl extends Domain implements Chinook {
     @Override
     public void execute(final LocalEntityConnection entityConnection,
                         final Void... arguments) throws DatabaseException {
-      List<Invoice> invoices = entityConnection.getEntities()
-              .castTo(Invoice.TYPE, entityConnection.select(ALL_INVOICES_CONDITION));
-
-      invoices.forEach(Invoice::updateTotal);
-
-      entityConnection.update(getModifiedEntities(invoices));
+      entityConnection.update(entityConnection.getEntities()
+              .castTo(Invoice.TYPE, entityConnection.select(ALL_INVOICES_CONDITION)).stream()
+              .map(Invoice::updateTotal)
+              .filter(Invoice::isModified)
+              .collect(Collectors.toList()));
     }
   }
 
