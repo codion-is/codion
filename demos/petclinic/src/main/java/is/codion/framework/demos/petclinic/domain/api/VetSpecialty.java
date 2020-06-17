@@ -9,8 +9,8 @@ import is.codion.framework.domain.entity.EntityType;
 
 import static is.codion.framework.demos.petclinic.domain.api.PetClinicApi.DOMAIN;
 
-public interface VetSpecialty {
-  EntityType TYPE = DOMAIN.entityType("petclinic.vet_specialty");
+public interface VetSpecialty extends Entity {
+  EntityType<VetSpecialty> TYPE = DOMAIN.entityType("petclinic.vet_specialty", VetSpecialty.class);
   Attribute<Integer> VET = TYPE.integerAttribute("vet");
   Attribute<Entity> VET_FK = TYPE.entityAttribute("vet_fk");
   Attribute<Integer> SPECIALTY = TYPE.integerAttribute("specialty");

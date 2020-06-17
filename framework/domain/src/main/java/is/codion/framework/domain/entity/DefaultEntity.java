@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Collections.*;
@@ -93,8 +94,8 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public EntityType getEntityType() {
-    return definition.getEntityType();
+  public EntityType<Entity> getEntityType() {
+    return (EntityType<Entity>) definition.getEntityType();
   }
 
   @Override
@@ -112,7 +113,7 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean is(final EntityType entityType) {
+  public boolean is(final EntityType<?> entityType) {
     return definition.getEntityType().equals(entityType);
   }
 
@@ -129,6 +130,11 @@ final class DefaultEntity implements Entity {
   @Override
   public <T> T get(final Attribute<T> attribute) {
     return get(definition.getProperty(attribute));
+  }
+
+  @Override
+  public <T> Optional<T> getOptional(final Attribute<T> attribute) {
+    return Optional.ofNullable(get(attribute));
   }
 
   @Override
@@ -453,7 +459,7 @@ final class DefaultEntity implements Entity {
 
   private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity value) {
     final Entity entity = value;
-    final EntityType referencedEntityType = property.getReferencedEntityType();
+    final EntityType<?> referencedEntityType = property.getReferencedEntityType();
     if (!Objects.equals(referencedEntityType, entity.getEntityType())) {
       throw new IllegalArgumentException("Entity of type " + referencedEntityType +
               " expected for property " + this + ", got: " + entity.getEntityType());
@@ -735,7 +741,7 @@ final class DefaultEntity implements Entity {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final Entities entities = DefaultEntities.getEntities((String) stream.readObject());
-    final EntityType entityType = entities.getDomainType().entityType((String) stream.readObject());
+    final EntityType<Entity> entityType = entities.getDomainType().entityType((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
     definition = entities.getDefinition(entityType);
     if (definition == null) {

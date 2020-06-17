@@ -164,7 +164,7 @@ public final class EntityConnectionDemo {
     // tag::selectDependencies[]
     List<Entity> employees = connection.select(selectCondition(Employee.TYPE));
 
-    Map<EntityType, Collection<Entity>> dependencies = connection.selectDependencies(employees);
+    Map<EntityType<Entity>, Collection<Entity>> dependencies = connection.selectDependencies(employees);
 
     Collection<Entity> customersDependingOnEmployees = dependencies.get(Customer.TYPE);
     // end::selectDependencies[]
@@ -249,7 +249,7 @@ public final class EntityConnectionDemo {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", asList(42, 43, 45));
 
-    JasperPrint jasperPrint = connection.fillReport(Customer.CUSTOMER_REPORT, reportParameters);
+    JasperPrint jasperPrint = connection.fillReport(Customer.REPORT, reportParameters);
     //end::report[]
   }
 

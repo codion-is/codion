@@ -29,7 +29,7 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return the type of the entity this table condition model is based on
    */
-  EntityType getEntityType();
+  EntityType<?> getEntityType();
 
   /**
    * Sets the search condition values of the condition model associated with {@code attribute}.

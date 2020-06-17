@@ -53,7 +53,7 @@ public final class Conditions {
    * @param condition the column condition
    * @return a condition based on the given column condition
    */
-  public static EntityCondition condition(final EntityType entityType, final Condition condition) {
+  public static EntityCondition condition(final EntityType<?> entityType, final Condition condition) {
     return new DefaultEntityCondition(entityType, condition);
   }
 
@@ -72,7 +72,7 @@ public final class Conditions {
    * @param entityType the entityType
    * @return a condition specifying all entities of the given type
    */
-  public static EntityCondition condition(final EntityType entityType) {
+  public static EntityCondition condition(final EntityType<?> entityType) {
     return new DefaultEntityCondition(entityType);
   }
 
@@ -86,7 +86,7 @@ public final class Conditions {
    * @param value the condition value, can be a Collection of values
    * @return a condition based on the given value
    */
-  public static EntityCondition condition(final EntityType entityType, final Attribute<?> attribute,
+  public static EntityCondition condition(final EntityType<?> entityType, final Attribute<?> attribute,
                                           final Operator operator, final Object value) {
     return new DefaultEntityCondition(entityType, attributeCondition(attribute, operator, value));
   }
@@ -116,7 +116,7 @@ public final class Conditions {
    * @param entityType the entityType
    * @return a select condition encompassing all entities of the given type
    */
-  public static EntitySelectCondition selectCondition(final EntityType entityType) {
+  public static EntitySelectCondition selectCondition(final EntityType<?> entityType) {
     return new DefaultEntitySelectCondition(entityType);
   }
 
@@ -127,7 +127,7 @@ public final class Conditions {
    * @param condition the column condition
    * @return a select condition based on the given column condition
    */
-  public static EntitySelectCondition selectCondition(final EntityType entityType, final Condition condition) {
+  public static EntitySelectCondition selectCondition(final EntityType<?> entityType, final Condition condition) {
     return new DefaultEntitySelectCondition(entityType, condition);
   }
 
@@ -141,7 +141,7 @@ public final class Conditions {
    * @param value the condition value, can be a Collection of values
    * @return a select condition based on the given value
    */
-  public static EntitySelectCondition selectCondition(final EntityType entityType, final Attribute<?> attribute,
+  public static EntitySelectCondition selectCondition(final EntityType<?> entityType, final Attribute<?> attribute,
                                                       final Operator operator, final Object value) {
     return selectCondition(entityType, attributeCondition(attribute, operator, value));
   }
@@ -151,7 +151,7 @@ public final class Conditions {
    * @param entityType the entityType
    * @return an update condition encompassing all entities of the given type
    */
-  public static EntityUpdateCondition updateCondition(final EntityType entityType) {
+  public static EntityUpdateCondition updateCondition(final EntityType<?> entityType) {
     return new DefaultEntityUpdateCondition(entityType);
   }
 
@@ -166,7 +166,7 @@ public final class Conditions {
    * @param <T> the value type
    * @return an update condition based on the given value
    */
-  public static <T> EntityUpdateCondition updateCondition(final EntityType entityType, final Attribute<T> attribute,
+  public static <T> EntityUpdateCondition updateCondition(final EntityType<?> entityType, final Attribute<T> attribute,
                                                           final Operator operator, final T value) {
     return updateCondition(entityType, attributeCondition(attribute, operator, value));
   }
@@ -178,7 +178,7 @@ public final class Conditions {
    * @param condition the column condition
    * @return an update condition based on the given column condition
    */
-  public static EntityUpdateCondition updateCondition(final EntityType entityType, final Condition condition) {
+  public static EntityUpdateCondition updateCondition(final EntityType<?> entityType, final Condition condition) {
     return new DefaultEntityUpdateCondition(entityType, condition);
   }
 

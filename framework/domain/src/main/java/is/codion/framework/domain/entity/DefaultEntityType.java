@@ -10,16 +10,22 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
-final class DefaultEntityType implements EntityType {
+final class DefaultEntityType<T extends Entity> implements EntityType<T> {
 
   private static final long serialVersionUID = 1;
 
   private final String domainName;
   private final String name;
+  private final Class<T> entityClass;
   private final int hashCode;
 
   DefaultEntityType(final String domainName, final String typeName) {
+    this(domainName, typeName, (Class<T>) Entity.class);
+  }
+
+  DefaultEntityType(final String domainName, final String typeName, final Class<T> entityClass) {
     if (nullOrEmpty(typeName)) {
       throw new IllegalArgumentException("typeName must be a non-empty string");
     }
@@ -28,6 +34,7 @@ final class DefaultEntityType implements EntityType {
     }
     this.domainName = domainName;
     this.name = typeName;
+    this.entityClass = requireNonNull(entityClass, "entityClass");
     this.hashCode = Objects.hash(typeName, domainName);
   }
 
@@ -39,6 +46,11 @@ final class DefaultEntityType implements EntityType {
   @Override
   public String getName() {
     return name;
+  }
+
+  @Override
+  public Class<T> getEntityClass() {
+    return entityClass;
   }
 
   @Override
@@ -124,7 +136,7 @@ final class DefaultEntityType implements EntityType {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    final DefaultEntityType that = (DefaultEntityType) object;
+    final DefaultEntityType<?> that = (DefaultEntityType<?>) object;
 
     return name.equals(that.name) && domainName.equals(that.domainName);
   }

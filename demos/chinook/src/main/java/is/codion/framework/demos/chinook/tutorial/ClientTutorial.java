@@ -49,14 +49,14 @@ public final class ClientTutorial {
     static final DomainType DOMAIN = domainType(Chinook.class);
 
     public interface Artist {
-      EntityType TYPE = DOMAIN.entityType("chinook.artist");
+      EntityType<Entity> TYPE = DOMAIN.entityType("chinook.artist");
       Attribute<Integer> ID = TYPE.integerAttribute("artistid");
       Attribute<String> NAME = TYPE.stringAttribute("name");
       Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("number_of_albums");
     }
 
     public interface Album {
-      EntityType TYPE = DOMAIN.entityType("chinook.album");
+      EntityType<Entity> TYPE = DOMAIN.entityType("chinook.album");
       Attribute<Integer> ID = TYPE.integerAttribute("albumid");
       Attribute<String> TITLE = Artist.TYPE.stringAttribute("title");
       Attribute<Integer> ARTIST_ID = Artist.TYPE.integerAttribute("artistid");

@@ -53,7 +53,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * The type of the entity this lookup model is based on
    */
-  private final EntityType entityType;
+  private final EntityType<?> entityType;
 
   /**
    * The properties to use when doing the lookup
@@ -91,7 +91,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
    * @see EntityDefinition#getSearchProperties()
    */
-  public DefaultEntityLookupModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public DefaultEntityLookupModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getSearchProperties());
   }
 
@@ -101,7 +101,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
    * @param lookupProperties the properties to search by, these must be string based
    */
-  public DefaultEntityLookupModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
+  public DefaultEntityLookupModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                                   final Collection<ColumnProperty<?>> lookupProperties) {
     requireNonNull(entityType, "entityType");
     requireNonNull(connectionProvider, "connectionProvider");
@@ -116,7 +116,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   @Override
-  public EntityType getEntityType() {
+  public EntityType<?> getEntityType() {
     return entityType;
   }
 
@@ -318,7 +318,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     return entities.stream().map(toStringProvider).collect(joining(multipleItemSeparatorValue.get()));
   }
 
-  private static void validateLookupProperties(final EntityType entityType, final Collection<ColumnProperty<?>> lookupProperties) {
+  private static void validateLookupProperties(final EntityType<?> entityType, final Collection<ColumnProperty<?>> lookupProperties) {
     for (final ColumnProperty<?> property : lookupProperties) {
       if (!entityType.equals(property.getEntityType())) {
         throw new IllegalArgumentException("Property '" + property + "' is not part of entity " + entityType);

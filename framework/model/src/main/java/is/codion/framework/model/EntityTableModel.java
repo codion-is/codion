@@ -63,7 +63,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the type of the entity this table model is based on
    */
-  EntityType getEntityType();
+  EntityType<?> getEntityType();
 
   /**
    * @return the connection provider used by this table model
@@ -121,7 +121,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param foreignKeyEntityType the entityType of the foreign key values
    * @param foreignKeyValues the foreign key entities
    */
-  void replaceForeignKeyValues(EntityType foreignKeyEntityType, Collection<Entity> foreignKeyValues);
+  void replaceForeignKeyValues(EntityType<?> foreignKeyEntityType, Collection<Entity> foreignKeyValues);
 
   /**
    * Adds the given entities to the bottom of this table model.

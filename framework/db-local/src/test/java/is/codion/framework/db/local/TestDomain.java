@@ -69,38 +69,48 @@ public final class TestDomain extends Domain {
     });
   }
 
-  public static final EntityType T_DEPARTMENT = DOMAIN.entityType("scott.dept");
-  public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
+  public interface Department extends Entity {
+    EntityType<Department> TYPE = DOMAIN.entityType("scott.dept", Department.class);
+    Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
+    Attribute<String> DNAME = TYPE.stringAttribute("dname");
+    Attribute<String> LOC = TYPE.stringAttribute("loc");
 
-  public static final String DEPARTMENT_CONDITION_ID = "condition";
-  public static final String DEPARTMENT_CONDITION_SALES_ID = "conditionSalesId";
-  public static final String DEPARTMENT_CONDITION_INVALID_COLUMN_ID = "conditionInvalidColumnId";
+    String DEPARTMENT_CONDITION_ID = "condition";
+    String DEPARTMENT_CONDITION_SALES_ID = "conditionSalesId";
+    String DEPARTMENT_CONDITION_INVALID_COLUMN_ID = "conditionInvalidColumnId";
+
+    void setName(String name);
+    String getName();
+    void setId(Integer id);
+    void setLocation(String location);
+  }
 
   void department() {
-    define(T_DEPARTMENT,
-            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
-                    .updatable(true).nullable(false),
-            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
-                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
-            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
-                    .preferredColumnWidth(150).maximumLength(13))
+    define(Department.TYPE,
+            primaryKeyProperty(Department.DEPTNO, Department.DEPTNO.getName())
+                    .updatable(true).nullable(false)
+                    .beanProperty("id"),
+            columnProperty(Department.DNAME, Department.DNAME.getName())
+                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false)
+                    .beanProperty("name"),
+            columnProperty(Department.LOC, Department.LOC.getName())
+                    .preferredColumnWidth(150).maximumLength(13)
+                    .beanProperty("location"))
             .smallDataset(true)
-            .stringProvider(new StringProvider(DEPARTMENT_NAME))
-            .conditionProvider(DEPARTMENT_CONDITION_ID, (attributes, values) -> {
+            .stringProvider(new StringProvider(Department.DNAME))
+            .conditionProvider(Department.DEPARTMENT_CONDITION_ID, (attributes, values) -> {
               final StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .conditionProvider(DEPARTMENT_CONDITION_SALES_ID, (attributes, values) -> "dname = 'SALES'")
-            .conditionProvider(DEPARTMENT_CONDITION_INVALID_COLUMN_ID, (attributes, values) -> "no_column is null")
+            .conditionProvider(Department.DEPARTMENT_CONDITION_SALES_ID, (attributes, values) -> "dname = 'SALES'")
+            .conditionProvider(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_ID, (attributes, values) -> "no_column is null")
             .caption("Department");
   }
 
-  public static final EntityType T_EMP = DOMAIN.entityType("scott.emp");
+  public static final EntityType<Entity> T_EMP = DOMAIN.entityType("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
@@ -124,7 +134,7 @@ public final class TestDomain extends Domain {
             primaryKeyProperty(EMP_ID, EMP_ID.getName()),
             columnProperty(EMP_NAME, EMP_NAME.getName())
                     .searchProperty(true).maximumLength(10).nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), T_DEPARTMENT,
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), Department.TYPE,
                     columnProperty(EMP_DEPARTMENT))
                     .nullable(false),
             valueListProperty(EMP_JOB, EMP_JOB.getName(),
@@ -141,8 +151,8 @@ public final class TestDomain extends Domain {
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
             columnProperty(EMP_HIRETIME, EMP_HIRETIME.getName()),
-            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION,
-                    DEPARTMENT_LOCATION.getName()).preferredColumnWidth(100),
+            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK, Department.LOC,
+                    Department.LOC.getName()).preferredColumnWidth(100),
             columnProperty(EMP_DATA_LAZY),
             blobProperty(EMP_DATA)
                     .eagerlyLoaded(true))
@@ -153,7 +163,7 @@ public final class TestDomain extends Domain {
             .caption("Employee");
   }
 
-  public static final EntityType T_UUID_TEST_DEFAULT = DOMAIN.entityType("scott.uuid_test_default");
+  public static final EntityType<Entity> T_UUID_TEST_DEFAULT = DOMAIN.entityType("scott.uuid_test_default");
   public static final Attribute<UUID> UUID_TEST_DEFAULT_ID = T_UUID_TEST_DEFAULT.attribute("id", UUID.class);
   public static final Attribute<String> UUID_TEST_DEFAULT_DATA = T_UUID_TEST_DEFAULT.stringAttribute("data");
 
@@ -178,7 +188,7 @@ public final class TestDomain extends Domain {
             .keyGenerator(uuidKeyGenerator);
   }
 
-  public static final EntityType T_UUID_TEST_NO_DEFAULT = DOMAIN.entityType("scott.uuid_test_no_default");
+  public static final EntityType<Entity> T_UUID_TEST_NO_DEFAULT = DOMAIN.entityType("scott.uuid_test_no_default");
   public static final Attribute<UUID> UUID_TEST_NO_DEFAULT_ID = T_UUID_TEST_NO_DEFAULT.attribute("id", UUID.class);
   public static final Attribute<String> UUID_TEST_NO_DEFAULT_DATA = T_UUID_TEST_NO_DEFAULT.stringAttribute("data");
 
@@ -201,7 +211,7 @@ public final class TestDomain extends Domain {
     defineFunction(FUNCTION_ID, (connection, arguments) -> null);
   }
 
-  public static final EntityType GROUP_BY_QUERY_ENTITY_TYPE = DOMAIN.entityType("groupByQueryEntityType");
+  public static final EntityType<Entity> GROUP_BY_QUERY_ENTITY_TYPE = DOMAIN.entityType("groupByQueryEntityType");
   public static final String JOINED_QUERY_CONDITION_ID = "conditionId";
 
   private void groupByQuery() {
@@ -212,7 +222,7 @@ public final class TestDomain extends Domain {
             .havingClause("job <> 'PRESIDENT'");
   }
 
-  public static final EntityType T_NO_PK = DOMAIN.entityType("scott.no_pk_table");
+  public static final EntityType<Entity> T_NO_PK = DOMAIN.entityType("scott.no_pk_table");
   public static final Attribute<Integer> NO_PK_COL1 = T_NO_PK.integerAttribute("col1");
   public static final Attribute<String> NO_PK_COL2 = T_NO_PK.stringAttribute("col2");
   public static final Attribute<String> NO_PK_COL3 = T_NO_PK.stringAttribute("col3");
@@ -226,7 +236,7 @@ public final class TestDomain extends Domain {
             columnProperty(NO_PK_COL4));
   }
 
-  public static final EntityType JOINED_QUERY_ENTITY_TYPE = DOMAIN.entityType("joinedQueryEntityType");
+  public static final EntityType<Entity> JOINED_QUERY_ENTITY_TYPE = DOMAIN.entityType("joinedQueryEntityType");
   public static final Attribute<Integer> JOINED_EMPNO = JOINED_QUERY_ENTITY_TYPE.integerAttribute("e.empno");
   public static final Attribute<Integer> JOINED_DEPTNO = JOINED_QUERY_ENTITY_TYPE.integerAttribute("d.deptno");
 

@@ -19,7 +19,7 @@ public class Store extends Domain {
   static final DomainType DOMAIN = domainType(Store.class);
 
   public interface Customer {
-    EntityType TYPE = DOMAIN.entityType("store.customer");
+    EntityType<Entity> TYPE = DOMAIN.entityType("store.customer");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
     Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
@@ -28,7 +28,7 @@ public class Store extends Domain {
   }
 
   public interface Address {
-    EntityType TYPE = DOMAIN.entityType("store.address");
+    EntityType<Entity> TYPE = DOMAIN.entityType("store.address");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<Integer> CUSTOMER_ID = TYPE.integerAttribute("customer_id");
     Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");

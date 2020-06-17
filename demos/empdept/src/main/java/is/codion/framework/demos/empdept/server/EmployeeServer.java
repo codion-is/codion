@@ -7,7 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.demos.empdept.domain.EmpDept;
-import is.codion.framework.demos.empdept.domain.EmployeeBean;
+import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.server.AbstractRemoteEntityConnection;
@@ -48,16 +48,16 @@ public final class EmployeeServer extends EntityServer {
     @Override
     public List<Entity> getEmployees() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
-        return connectionProxy.select(selectCondition(EmpDept.Employee.TYPE));
+        return connectionProxy.select(selectCondition(Employee.TYPE));
       }
     }
 
     @Override
-    public List<EmployeeBean> getEmployeeBeans() throws RemoteException, DatabaseException {
+    public List<Employee> getEmployeeBeans() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
-        final List<Entity> employees = connectionProxy.select(selectCondition(EmpDept.Employee.TYPE).setForeignKeyFetchDepth(-1));
+        final List<Entity> employees = connectionProxy.select(selectCondition(Employee.TYPE).setForeignKeyFetchDepth(-1));
 
-        return connectionProxy.getEntities().toBeans(employees);
+        return connectionProxy.getEntities().castTo(Employee.TYPE, employees);
       }
     }
   }

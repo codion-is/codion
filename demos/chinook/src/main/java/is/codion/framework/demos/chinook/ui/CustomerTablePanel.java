@@ -38,7 +38,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
 
-    EntityReports.viewJdbcReport(CustomerTablePanel.this, Customer.CUSTOMER_REPORT,
+    EntityReports.viewJdbcReport(CustomerTablePanel.this, Customer.REPORT,
             reportParameters, JRViewer::new, null, getTableModel().getConnectionProvider());
   }
 }

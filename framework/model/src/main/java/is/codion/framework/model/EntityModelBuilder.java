@@ -17,7 +17,7 @@ public interface EntityModelBuilder<M extends EntityModel<M, E, T>, E extends En
   /**
    * @return the entityType of the models provided by this model provider
    */
-  EntityType getEntityType();
+  EntityType<?> getEntityType();
 
   /**
    * Creates a {@link EntityModel} instance, based on the given connection provider

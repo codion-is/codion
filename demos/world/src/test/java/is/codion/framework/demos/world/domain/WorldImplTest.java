@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.framework.demos.world.domain;
 
 import is.codion.common.db.exception.DatabaseException;
@@ -34,7 +37,8 @@ public final class WorldImplTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeTestEntity(EntityType entityType, Map<EntityType, Entity> foreignKeyEntities) {
+  protected Entity initializeTestEntity(EntityType<?> entityType,
+                                        Map<EntityType<?>, Entity> foreignKeyEntities) {
     Entity entity = super.initializeTestEntity(entityType, foreignKeyEntities);
     if (entityType.equals(Country.TYPE)) {
       entity.put(Country.CODE, "XXX");
@@ -45,7 +49,7 @@ public final class WorldImplTest extends EntityTestUnit {
   }
 
   @Override
-  protected void modifyEntity(Entity testEntity, Map<EntityType, Entity> foreignKeyEntities) {
+  protected void modifyEntity(Entity testEntity, Map<EntityType<?>, Entity> foreignKeyEntities) {
     super.modifyEntity(testEntity, foreignKeyEntities);
     if (testEntity.is(Country.TYPE)) {
       testEntity.put(Country.CONTINENT, "Europe");
@@ -53,7 +57,8 @@ public final class WorldImplTest extends EntityTestUnit {
   }
 
   @Override
-  protected Entity initializeReferenceEntity(EntityType entityType, Map<EntityType, Entity> foreignKeyEntities) {
+  protected Entity initializeReferenceEntity(EntityType<?> entityType,
+                                             Map<EntityType<?>, Entity> foreignKeyEntities) {
     if (entityType.equals(Country.TYPE)) {
       Entity iceland = getEntities().entity(Country.TYPE);
       iceland.put(Country.CODE, "ISL");

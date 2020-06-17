@@ -25,7 +25,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * @return the type of the entity this combo box model is based on
    */
-  EntityType getEntityType();
+  EntityType<?> getEntityType();
 
   /**
    * @return the connection provider used by this combo box model

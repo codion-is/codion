@@ -4,6 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.DefaultEntityLookupModel;
@@ -15,7 +16,7 @@ import javax.swing.table.TableCellEditor;
 /**
  * A {@link TableCellEditor} implementation for {@link ForeignKeyProperty} columns in a {@link EntityTablePanel}.
  */
-final class ForeignKeyTableCellEditor extends EntityTableCellEditor {
+final class ForeignKeyTableCellEditor extends EntityTableCellEditor<Entity> {
 
   private final EntityConnectionProvider connectionProvider;
 
@@ -28,7 +29,7 @@ final class ForeignKeyTableCellEditor extends EntityTableCellEditor {
   @Override
   protected JComponent initializeEditorComponent() {
     final ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) getProperty();
-    final EntityType foreignEntityType = foreignKeyProperty.getReferencedEntityType();
+    final EntityType<Entity> foreignEntityType = foreignKeyProperty.getReferencedEntityType();
 
     if (connectionProvider.getEntities().getDefinition(foreignEntityType).isSmallDataset()) {
       return EntityInputComponents.createForeignKeyComboBox(foreignKeyProperty, getCellValue(),

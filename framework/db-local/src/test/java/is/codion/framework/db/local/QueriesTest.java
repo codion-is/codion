@@ -16,12 +16,12 @@ public final class QueriesTest {
   @Test
   public void getOrderByClause() {
     final TestDomain domain = new TestDomain();
-    final EntityDefinition definition = domain.getDefinition(TestDomain.T_DEPARTMENT);
-    OrderBy orderBy = OrderBy.orderBy().ascending(TestDomain.DEPARTMENT_LOCATION)
-            .descending(TestDomain.DEPARTMENT_NAME);
+    final EntityDefinition definition = domain.getDefinition(TestDomain.Department.TYPE);
+    OrderBy orderBy = OrderBy.orderBy().ascending(TestDomain.Department.LOC)
+            .descending(TestDomain.Department.DNAME);
     assertEquals("order by loc, dname desc", Queries.getOrderByClause(orderBy, definition));
-    orderBy = OrderBy.orderBy().ascending(TestDomain.DEPARTMENT_LOCATION)
-            .descending(TestDomain.DEPARTMENT_NAME).ascending(TestDomain.DEPARTMENT_ID);
+    orderBy = OrderBy.orderBy().ascending(TestDomain.Department.LOC)
+            .descending(TestDomain.Department.DNAME).ascending(TestDomain.Department.DEPTNO);
     assertEquals("order by loc, dname desc, deptno", Queries.getOrderByClause(orderBy, definition));
 
     final OrderBy emptyOrderBy = OrderBy.orderBy();

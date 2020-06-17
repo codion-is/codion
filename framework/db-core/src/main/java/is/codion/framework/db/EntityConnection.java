@@ -122,7 +122,7 @@ public interface EntityConnection {
    * @return the primary key values of the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  List<Key> insert(List<Entity> entities) throws DatabaseException;
+  List<Key> insert(List<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Updates the given entity according to its properties. Returns the updated entity.
@@ -146,7 +146,7 @@ public interface EntityConnection {
    * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    */
-  List<Entity> update(List<Entity> entities) throws DatabaseException;
+  List<Entity> update(List<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Performs an update according to the given condition, updating the attributes found
@@ -221,7 +221,7 @@ public interface EntityConnection {
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  <T> Entity selectSingle(EntityType entityType, Attribute<T> attribute, T value) throws DatabaseException;
+  <T> Entity selectSingle(EntityType<?> entityType, Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -269,7 +269,7 @@ public interface EntityConnection {
    * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  <T> List<Entity> select(EntityType entityType, Attribute<T> attribute, T value) throws DatabaseException;
+  <T> List<Entity> select(EntityType<?> entityType, Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
@@ -280,7 +280,7 @@ public interface EntityConnection {
    * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  <T> List<Entity> select(EntityType entityType, Attribute<T> attribute, Collection<T> values) throws DatabaseException;
+  <T> List<Entity> select(EntityType<?> entityType, Attribute<T> attribute, Collection<T> values) throws DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes
@@ -289,7 +289,7 @@ public interface EntityConnection {
    * @throws DatabaseException in case of a database exception
    * @see ForeignKeyProperty#isSoftReference()
    */
-  Map<EntityType, Collection<Entity>> selectDependencies(Collection<Entity> entities) throws DatabaseException;
+  Map<EntityType<Entity>, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Selects the number of rows returned according to the given condition

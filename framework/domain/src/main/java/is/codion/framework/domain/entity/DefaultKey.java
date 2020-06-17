@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A class representing a primary key for entities.
@@ -95,8 +96,8 @@ final class DefaultKey implements Key {
   }
 
   @Override
-  public EntityType getEntityType() {
-    return definition.getEntityType();
+  public EntityType<Entity> getEntityType() {
+    return (EntityType<Entity>) definition.getEntityType();
   }
 
   @Override
@@ -124,6 +125,11 @@ final class DefaultKey implements Key {
   }
 
   @Override
+  public <T> Optional<T> getOptional() {
+    return Optional.ofNullable(get());
+  }
+
+  @Override
   public <T> T put(final Attribute<T> attribute, final T value) {
     final ColumnProperty<T> property = definition.getPrimaryKeyProperty(attribute);
     final T newValue = property.prepareValue(property.getAttribute().validateType(value));
@@ -141,6 +147,11 @@ final class DefaultKey implements Key {
   @Override
   public <T> T get(final Attribute<T> attribute) {
     return (T) values.get(definition.getPrimaryKeyProperty(attribute).getAttribute());
+  }
+
+  @Override
+  public <T> Optional<T> getOptional(final Attribute<T> attribute) {
+    return Optional.ofNullable(get(attribute));
   }
 
   @Override
@@ -183,7 +194,7 @@ final class DefaultKey implements Key {
       return false;
     }
     if (object.getClass() ==  DefaultKey.class) {
-      final EntityType entityType = definition.getEntityType();
+      final EntityType<?> entityType = definition.getEntityType();
       final DefaultKey otherKey = (DefaultKey) object;
       if (compositeKey) {
         return otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) && this.values.equals(otherKey.values);
@@ -305,7 +316,7 @@ final class DefaultKey implements Key {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final Entities entities = DefaultEntities.getEntities((String) stream.readObject());
-    final EntityType entityType = entities.getDomainType().entityType((String) stream.readObject());
+    final EntityType<Entity> entityType = entities.getDomainType().entityType((String) stream.readObject());
     definition = entities.getDefinition(entityType);
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityType);

@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.function.Supplier;
 
+import static is.codion.common.Util.nullOrEmpty;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
 
@@ -128,6 +129,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     this.hidden = caption == null;
     this.format = initializeDefaultFormat();
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
+    this.beanProperty = underscoreToCamelCase(attribute.getName());
   }
 
   @Override
@@ -141,7 +143,7 @@ abstract class DefaultProperty<T> implements Property<T> {
   }
 
   @Override
-  public final EntityType getEntityType() {
+  public final EntityType<?> getEntityType() {
     return attribute.getEntityType();
   }
 
@@ -322,6 +324,29 @@ abstract class DefaultProperty<T> implements Property<T> {
     return null;
   }
 
+  private static String underscoreToCamelCase(final String string) {
+    final StringBuilder builder = new StringBuilder();
+    boolean firstDone = false;
+    final String[] strings = string.split("_");
+    if (strings.length == 1) {
+      return string;
+    }
+    for (final String split : strings) {
+      if (!firstDone) {
+        builder.append(Character.toLowerCase(split.charAt(0)));
+        firstDone = true;
+      }
+      else {
+        builder.append(Character.toUpperCase(split.charAt(0)));
+      }
+      if (split.length() > 1) {
+        builder.append(split.substring(1).toLowerCase());
+      }
+    }
+
+    return builder.toString();
+  }
+
   private static class DefaultValueSupplier<T> implements Supplier<T>, Serializable {
 
     private static final long serialVersionUID = 1;
@@ -362,7 +387,10 @@ abstract class DefaultProperty<T> implements Property<T> {
 
     @Override
     public final Property.Builder<T> beanProperty(final String beanProperty) {
-      property.beanProperty = requireNonNull(beanProperty, "beanProperty");
+      if (nullOrEmpty(beanProperty)) {
+        throw new IllegalArgumentException("beanProperty must be a non-empty string");
+      }
+      property.beanProperty = beanProperty;
       return this;
     }
 

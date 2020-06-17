@@ -6,20 +6,18 @@ package is.codion.framework.domain;
 import is.codion.common.DateFormats;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Department;
-import is.codion.framework.domain.entity.Employee;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.TransientProperty;
 
+import java.io.Serializable;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 
@@ -30,12 +28,16 @@ import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
-public final class TestDomain extends Domain {
+public class TestDomain extends Domain {
 
   public static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
   public TestDomain() {
-    super(DOMAIN);
+    this(DOMAIN);
+  }
+
+  public TestDomain(final DomainType domain) {
+    super(domain);
     compositeMaster();
     compositeDetail();
     master();
@@ -46,239 +48,285 @@ public final class TestDomain extends Domain {
     transientTest();
   }
 
-  public static final EntityType T_COMPOSITE_MASTER = DOMAIN.entityType("domain.composite_master");
+  public static final EntityType<Entity> T_COMPOSITE_MASTER = DOMAIN.entityType("domain.composite_master");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID = T_COMPOSITE_MASTER.integerAttribute("id");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID_2 = T_COMPOSITE_MASTER.integerAttribute("id2");
 
-  void compositeMaster() {
+  final void compositeMaster() {
     define(T_COMPOSITE_MASTER,
             columnProperty(COMPOSITE_MASTER_ID).primaryKeyIndex(0).nullable(true),
             columnProperty(COMPOSITE_MASTER_ID_2).primaryKeyIndex(1));
   }
 
-  public static final EntityType T_COMPOSITE_DETAIL = DOMAIN.entityType("domain.composite_detail");
+  public static final EntityType<Entity> T_COMPOSITE_DETAIL = DOMAIN.entityType("domain.composite_detail");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = T_COMPOSITE_DETAIL.integerAttribute("master_id");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = T_COMPOSITE_DETAIL.integerAttribute("master_id2");
   public static final Attribute<Entity> COMPOSITE_DETAIL_MASTER_FK = T_COMPOSITE_DETAIL.entityAttribute("master_fk");
 
-  void compositeDetail() {
+  final void compositeDetail() {
     define(T_COMPOSITE_DETAIL,
             foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
                     asList(columnProperty(COMPOSITE_DETAIL_MASTER_ID).primaryKeyIndex(0),
                             columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1))));
   }
 
-  public static final EntityType T_MASTER = DOMAIN.entityType("domain.master_entity");
-  public static final Attribute<Long> MASTER_ID = T_MASTER.longAttribute("id");
-  public static final Attribute<String> MASTER_NAME = T_MASTER.stringAttribute("name");
-  public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
+  public interface Master extends Entity {
+    EntityType<Master> TYPE = DOMAIN.entityType("domain.master_entity", Master.class);
+    Attribute<Long> ID = TYPE.longAttribute("id");
+    Attribute<String> NAME = TYPE.stringAttribute("name");
+    Attribute<Integer> CODE = TYPE.integerAttribute("code");
 
-  void master() {
-    define(T_MASTER,
-            primaryKeyProperty(MASTER_ID),
-            columnProperty(MASTER_NAME),
-            columnProperty(MASTER_CODE))
-            .comparator(Comparator.comparing(o -> o.get(MASTER_CODE)))
-            .stringProvider(new StringProvider(MASTER_NAME));
+    Long getId();
+    String getName();
   }
 
-  public static final EntityType T_DETAIL = DOMAIN.entityType("domain.detail_entity");
-  public static final Attribute<Long> DETAIL_ID = T_DETAIL.longAttribute("id");
-  public static final Attribute<Integer> DETAIL_INT = T_DETAIL.integerAttribute("int");
-  public static final Attribute<Double> DETAIL_DOUBLE = T_DETAIL.doubleAttribute("double");
-  public static final Attribute<String> DETAIL_STRING = T_DETAIL.stringAttribute("string");
-  public static final Attribute<LocalDate> DETAIL_DATE = T_DETAIL.localDateAttribute("date");
-  public static final Attribute<LocalDateTime> DETAIL_TIMESTAMP = T_DETAIL.localDateTimeAttribute("timestamp");
-  public static final Attribute<Boolean> DETAIL_BOOLEAN = T_DETAIL.booleanAttribute("boolean");
-  public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = T_DETAIL.booleanAttribute("boolean_nullable");
-  public static final Attribute<Long> DETAIL_MASTER_ID = T_DETAIL.longAttribute("master_id");
-  public static final Attribute<Entity> DETAIL_MASTER_FK = T_DETAIL.entityAttribute("master_fk");
-  public static final Attribute<String> DETAIL_MASTER_NAME = T_DETAIL.stringAttribute("master_name");
-  public static final Attribute<Integer> DETAIL_MASTER_CODE = T_DETAIL.integerAttribute("master_code");
-  public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = T_DETAIL.integerAttribute("int_value_list");
-  public static final Attribute<Integer> DETAIL_INT_DERIVED = T_DETAIL.integerAttribute("int_derived");
-  public static final Attribute<Integer> DETAIL_MASTER_CODE_DENORM = T_DETAIL.integerAttribute("master_code_denorm");
+  final void master() {
+    define(Master.TYPE,
+            primaryKeyProperty(Master.ID)
+                    .beanProperty("id"),
+            columnProperty(Master.NAME)
+                    .beanProperty("name"),
+            columnProperty(Master.CODE))
+            .comparator(new MasterComparator())
+            .stringProvider(new StringProvider(Master.NAME));
+  }
+
+  private static final class MasterComparator implements Comparator<Entity>, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public int compare(final Entity o1, final Entity o2) {
+      return o1.get(Master.CODE).compareTo(o2.get(Master.CODE));
+    }
+  }
+
+  public interface Detail extends Entity {
+    EntityType<Detail> TYPE = DOMAIN.entityType("domain.detail_entity", Detail.class);
+    Attribute<Long> ID = TYPE.longAttribute("id");
+    Attribute<Integer> INT = TYPE.integerAttribute("int");
+    Attribute<Double> DOUBLE = TYPE.doubleAttribute("double");
+    Attribute<String> STRING = TYPE.stringAttribute("string");
+    Attribute<LocalDate> DATE = TYPE.localDateAttribute("date");
+    Attribute<LocalDateTime> TIMESTAMP = TYPE.localDateTimeAttribute("timestamp");
+    Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
+    Attribute<Boolean> BOOLEAN_NULLABLE = TYPE.booleanAttribute("boolean_nullable");
+    Attribute<Long> MASTER_ID = TYPE.longAttribute("master_id");
+    Attribute<Entity> MASTER_FK = TYPE.entityAttribute("master_fk");
+    Attribute<String> MASTER_NAME = TYPE.stringAttribute("master_name");
+    Attribute<Integer> MASTER_CODE = TYPE.integerAttribute("master_code");
+    Attribute<Integer> INT_VALUE_LIST = TYPE.integerAttribute("int_value_list");
+    Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
+    Attribute<Integer> MASTER_CODE_DENORM = TYPE.integerAttribute("master_code_denorm");
+
+    Long getId();
+    void setId(Long value);
+    Double getDouble();
+    void setDouble(Double value);
+    Master getMaster();
+    void setMaster(Master master);
+
+    default void setAll(final Long id, final Double value, final Master master) {
+      setId(id);
+      setDouble(value);
+      setMaster(master);
+    }
+  }
 
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
   private static final List<Item<Integer>> ITEMS = asList(item(0, "0"), item(1, "1"),
           item(2, "2"), item(3, "3"));
 
-  void detail() {
-    define(T_DETAIL,
-            primaryKeyProperty(DETAIL_ID),
-            columnProperty(DETAIL_INT, DETAIL_INT.getName()),
-            columnProperty(DETAIL_DOUBLE, DETAIL_DOUBLE.getName())
-                    .columnHasDefaultValue(true),
-            columnProperty(DETAIL_STRING, "Detail string")
+  final void detail() {
+    define(Detail.TYPE,
+            primaryKeyProperty(Detail.ID)
+                    .beanProperty("id"),
+            columnProperty(Detail.INT, Detail.INT.getName()),
+            columnProperty(Detail.DOUBLE, Detail.DOUBLE.getName())
+                    .columnHasDefaultValue(true)
+                    .beanProperty("double"),
+            columnProperty(Detail.STRING, "Detail string")
                     .selectable(false),
-            columnProperty(DETAIL_DATE, DETAIL_DATE.getName())
+            columnProperty(Detail.DATE, Detail.DATE.getName())
                     .columnHasDefaultValue(true),
-            columnProperty(DETAIL_TIMESTAMP, DETAIL_TIMESTAMP.getName()),
-            columnProperty(DETAIL_BOOLEAN, DETAIL_BOOLEAN.getName())
+            columnProperty(Detail.TIMESTAMP, Detail.TIMESTAMP.getName()),
+            columnProperty(Detail.BOOLEAN, Detail.BOOLEAN.getName())
                     .nullable(false)
                     .defaultValue(true)
                     .description("A boolean property"),
-            columnProperty(DETAIL_BOOLEAN_NULLABLE, DETAIL_BOOLEAN_NULLABLE.getName())
+            columnProperty(Detail.BOOLEAN_NULLABLE, Detail.BOOLEAN_NULLABLE.getName())
                     .columnHasDefaultValue(true)
                     .defaultValue(true),
-            foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName(), T_MASTER,
-                    columnProperty(DETAIL_MASTER_ID)),
-            denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK, MASTER_NAME, DETAIL_MASTER_NAME.getName()),
-            denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK, MASTER_CODE, DETAIL_MASTER_CODE.getName()),
-            valueListProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
-            derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.getName(), linkedValues -> {
-              final Integer intValue = linkedValues.get(DETAIL_INT);
+            foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.getName(), Master.TYPE,
+                    columnProperty(Detail.MASTER_ID)),
+            denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_FK, Master.NAME, Detail.MASTER_NAME.getName()),
+            denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_FK, Master.CODE, Detail.MASTER_CODE.getName()),
+            valueListProperty(Detail.INT_VALUE_LIST, Detail.INT_VALUE_LIST.getName(), ITEMS),
+            derivedProperty(Detail.INT_DERIVED, Detail.INT_DERIVED.getName(), linkedValues -> {
+              final Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
 
                 return null;
               }
 
               return intValue * 10;
-            }, DETAIL_INT),
-            denormalizedProperty(DETAIL_MASTER_CODE_DENORM, DETAIL_MASTER_FK, MASTER_CODE))
+            }, Detail.INT),
+            denormalizedProperty(Detail.MASTER_CODE_DENORM, Detail.MASTER_FK, Master.CODE))
             .keyGenerator(queried("select id from dual"))
-            .orderBy(orderBy().ascending(DETAIL_STRING))
+            .orderBy(orderBy().ascending(Detail.STRING))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
             .smallDataset(true)
-            .stringProvider(new StringProvider(DETAIL_STRING));
+            .stringProvider(new StringProvider(Detail.STRING));
   }
 
-  public static final EntityType T_DEPARTMENT = DOMAIN.entityType("domain.scott.dept");
-  public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
-  public static final Attribute<Boolean> DEPARTMENT_ACTIVE = T_DEPARTMENT.booleanAttribute("active");
-  public static final Attribute<byte[]> DEPARTMENT_DATA = T_DEPARTMENT.blobAttribute("data");
+  public interface Department extends Entity {
+    EntityType<Department> TYPE = DOMAIN.entityType("domain.scott.dept", Department.class);
+    Attribute<Integer> NO = TYPE.integerAttribute("deptno");
+    Attribute<String> NAME = TYPE.stringAttribute("dname");
+    Attribute<String> LOCATION = TYPE.stringAttribute("loc");
+    Attribute<Boolean> ACTIVE = TYPE.booleanAttribute("active");
+    Attribute<byte[]> DATA = TYPE.blobAttribute("data");
 
-  void department() {
-    define(T_DEPARTMENT, "scott.dept",
-            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
+    Integer getDeptNo();
+    String getName();
+    String getLocation();
+    Boolean isActive();
+    void setActive(Boolean active);
+  }
+
+  final void department() {
+    define(Department.TYPE, "scott.dept",
+            primaryKeyProperty(Department.NO, Department.NO.getName())
                     .updatable(true).nullable(false)
                     .beanProperty("deptNo"),
-            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
+            columnProperty(Department.NAME, Department.NAME.getName())
                     .searchProperty(true)
                     .preferredColumnWidth(120).maximumLength(14).nullable(false)
                     .beanProperty("name"),
-            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
+            columnProperty(Department.LOCATION, Department.LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13)
                     .beanProperty("location"),
-            booleanProperty(DEPARTMENT_ACTIVE, Types.INTEGER, null, 1, 0)
+            booleanProperty(Department.ACTIVE, Types.INTEGER, null, 1, 0)
                     .readOnly(true)
                     .beanProperty("active"),
-            blobProperty(DEPARTMENT_DATA)
+            blobProperty(Department.DATA)
                     .eagerlyLoaded(false))
             .smallDataset(true)
-            .orderBy(orderBy().ascending(DEPARTMENT_NAME))
-            .stringProvider(new StringProvider(DEPARTMENT_NAME))
-            .beanClass(Department.class)
+            .orderBy(orderBy().ascending(Department.NAME))
+            .stringProvider(new StringProvider(Department.NAME))
             .caption("Department");
   }
 
-  public static final EntityType T_EMP = DOMAIN.entityType("domain.scott.emp");
-  public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("emp_id");
-  public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("emp_name");
-  public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");
-  public static final Attribute<Integer> EMP_MGR = T_EMP.integerAttribute("mgr");
-  public static final Attribute<LocalDateTime> EMP_HIREDATE = T_EMP.localDateTimeAttribute("hiredate");
-  public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
-  public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
-  public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
-  public static final Attribute<Entity> EMP_DEPARTMENT_FK = T_EMP.entityAttribute("dept_fk");
-  public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
-  public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
-  public static final Attribute<String> EMP_NAME_DEPARTMENT = T_EMP.stringAttribute("name_department");
-  public static final Attribute<byte[]> EMP_DATA = T_EMP.blobAttribute("data");
+  public interface Employee extends Entity {
+    EntityType<Employee> TYPE = DOMAIN.entityType("domain.scott.emp", Employee.class);
+    Attribute<Integer> ID = TYPE.integerAttribute("emp_id");
+    Attribute<String> NAME = TYPE.stringAttribute("emp_name");
+    Attribute<String> JOB = TYPE.stringAttribute("job");
+    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
+    Attribute<LocalDateTime> HIREDATE = TYPE.localDateTimeAttribute("hiredate");
+    Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
+    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
+    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
+    Attribute<Entity> DEPARTMENT_FK = TYPE.entityAttribute("dept_fk");
+    Attribute<Entity> MANAGER_FK = TYPE.entityAttribute("mgr_fk");
+    Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
+    Attribute<String> DEPARTMENT_NAME = TYPE.stringAttribute("department_name");
+    Attribute<byte[]> DATA = TYPE.blobAttribute("data");
 
-  void employee() {
-    define(T_EMP, "scott.emp",
-            primaryKeyProperty(EMP_ID, EMP_ID.getName())
+    Integer getId();
+    Double getCommission();
+    Integer getDeptno();
+    Department getDepartment();
+    LocalDateTime getHiredate();
+    String getJob();
+    Integer getMgr();
+    Employee getManager();
+    String getName();
+    Double getSalary();
+  }
+
+  final void employee() {
+    define(Employee.TYPE, "scott.emp",
+            primaryKeyProperty(Employee.ID, Employee.ID.getName())
                     .columnName("empno")
                     .beanProperty("id"),
-            columnProperty(EMP_NAME, EMP_NAME.getName())
+            columnProperty(Employee.NAME, Employee.NAME.getName())
                     .searchProperty(true)
                     .columnName("ename").maximumLength(10).nullable(false)
                     .beanProperty("name"),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), T_DEPARTMENT,
-                    (ColumnProperty.Builder<?>) columnProperty(EMP_DEPARTMENT)
+            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName(), Department.TYPE,
+                    (ColumnProperty.Builder<?>) columnProperty(Employee.DEPARTMENT)
                             .beanProperty("deptno"))
                     .beanProperty("department")
                     .nullable(false),
-            valueListProperty(EMP_JOB, EMP_JOB.getName(),
+            valueListProperty(Employee.JOB, Employee.JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true)
                     .beanProperty("job"),
-            columnProperty(EMP_SALARY, EMP_SALARY.getName())
+            columnProperty(Employee.SALARY, Employee.SALARY.getName())
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2)
                     .beanProperty("salary"),
-            columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
+            columnProperty(Employee.COMMISSION, Employee.COMMISSION.getName())
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2)
                     .beanProperty("commission"),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName(), T_EMP,
-                    (ColumnProperty.Builder<?>) columnProperty(EMP_MGR)
+            foreignKeyProperty(Employee.MANAGER_FK, Employee.MANAGER_FK.getName(), Employee.TYPE,
+                    (ColumnProperty.Builder<?>) columnProperty(Employee.MGR)
                             .beanProperty("mgr"))
                     .beanProperty("manager"),
-            columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
+            columnProperty(Employee.HIREDATE, Employee.HIREDATE.getName())
                     .updatable(false)
                     .dateTimeFormatPattern(DateFormats.SHORT_DOT)
                     .nullable(false)
                     .beanProperty("hiredate"),
-            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION,
-                    DEPARTMENT_LOCATION.getName()).preferredColumnWidth(100),
-            derivedProperty(EMP_NAME_DEPARTMENT, null, linkedValues -> {
-              final String name = linkedValues.get(EMP_NAME);
-              final Entity department = linkedValues.get(EMP_DEPARTMENT_FK);
-              if (name == null || department == null) {
-                return null;
-              }
-              return name + " - " + department.get(DEPARTMENT_NAME);
-            }, EMP_NAME, EMP_DEPARTMENT_FK),
-            blobProperty(EMP_DATA, "Data")
+            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Employee.DEPARTMENT_FK, Department.LOCATION,
+                    Department.LOCATION.getName()).preferredColumnWidth(100),
+            derivedProperty(Employee.DEPARTMENT_NAME, null, new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
+            blobProperty(Employee.DATA, "Data")
                     .eagerlyLoaded(true))
             .keyGenerator(increment("scott.emp", "empno"))
-            .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
-            .stringProvider(new StringProvider(EMP_NAME))
-            .beanClass(Employee.class)
-            .beanHelper(new EntityToEmployee())
+            .orderBy(orderBy().ascending(Employee.DEPARTMENT, Employee.NAME))
+            .stringProvider(new StringProvider(Employee.NAME))
             .caption("Employee");
   }
 
-  public static final EntityType T_NO_PK = DOMAIN.entityType("no_pk");
+  private static final class DepartmentNameProvider implements DerivedProperty.Provider<String>, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public String get(final DerivedProperty.SourceValues sourceValues) {
+      final String name = sourceValues.get(Employee.NAME);
+      final Entity department = sourceValues.get(Employee.DEPARTMENT_FK);
+      if (name == null || department == null) {
+        return null;
+      }
+      return name + " - " + department.get(Department.NAME);
+    }
+  }
+
+  public static final EntityType<Entity> T_NO_PK = DOMAIN.entityType("no_pk");
   public static final Attribute<Integer> NO_PK_COL1 = T_NO_PK.integerAttribute("col1");
   public static final Attribute<Integer> NO_PK_COL2 = T_NO_PK.integerAttribute("col2");
   public static final Attribute<Integer> NO_PK_COL3 = T_NO_PK.integerAttribute("col3");
 
-  void noPKEntity() {
+  final void noPKEntity() {
     define(T_NO_PK,
             columnProperty(NO_PK_COL1),
             columnProperty(NO_PK_COL2),
             columnProperty(NO_PK_COL3));
   }
 
-  public static final EntityType T_TRANS = DOMAIN.entityType("trans");
+  public static final EntityType<Entity> T_TRANS = DOMAIN.entityType("trans");
 
   public static final Attribute<Integer> TRANS_ID = T_TRANS.integerAttribute("id");
   public static final Attribute<Integer> TRANS_TRANS = T_TRANS.integerAttribute("trans");
   public static final TransientProperty.Builder<Integer> TRANS_BUILDER = Properties.transientProperty(TRANS_TRANS);
 
-  void transientTest() {
+  final void transientTest() {
     define(T_TRANS,
-                Properties.primaryKeyProperty(TRANS_ID),
-                TRANS_BUILDER);
-  }
-
-  private static final class EntityToEmployee implements EntityDefinition.BeanHelper<Employee> {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public Employee toBean(final Entity entity, final Employee bean) {
-      if (entity.isNotNull(EMP_HIREDATE)) {
-        bean.setHiredate(entity.get(EMP_HIREDATE).truncatedTo(ChronoUnit.DAYS));
-      }
-
-      return bean;
-    }
+            Properties.primaryKeyProperty(TRANS_ID),
+            TRANS_BUILDER);
   }
 }

@@ -537,7 +537,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the detail panel of the given type
    * @throws IllegalArgumentException in case the panel was not found
    */
-  public final EntityPanel getDetailPanel(final EntityType entityType) {
+  public final EntityPanel getDetailPanel(final EntityType<?> entityType) {
     for (final EntityPanel detailPanel : detailEntityPanels) {
       if (detailPanel.entityModel.getEntityType().equals(entityType)) {
         return detailPanel;
@@ -552,7 +552,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param entityType the entityType
    * @return true if a detail panel for the given entityType is found
    */
-  public final boolean containsDetailPanel(final EntityType entityType) {
+  public final boolean containsDetailPanel(final EntityType<?> entityType) {
     return detailEntityPanels.stream().anyMatch(detailPanel -> detailPanel.entityModel.getEntityType().equals(entityType));
   }
 

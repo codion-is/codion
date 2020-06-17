@@ -115,7 +115,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   }
 
   @Override
-  public final boolean containsEntityModel(final EntityType entityType) {
+  public final boolean containsEntityModel(final EntityType<?> entityType) {
     return entityModels.stream().anyMatch(entityModel -> entityModel.getEntityType().equals(entityType));
   }
 
@@ -155,7 +155,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
   }
 
   @Override
-  public final M getEntityModel(final EntityType entityType) {
+  public final M getEntityModel(final EntityType<?> entityType) {
     for (final M entityModel : entityModels) {
       if (entityModel.getEntityType().equals(entityType)) {
         return entityModel;

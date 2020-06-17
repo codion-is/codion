@@ -203,25 +203,31 @@ public final class WorldImpl extends Domain {
 
   void continent() {
     define(Continent.TYPE, "world.country",
-            columnProperty(Continent.CONTINENT, "Continent")
-                    .groupingColumn(true),
+            columnProperty(Continent.NAME, "Continent")
+                    .groupingColumn(true)
+                    .beanProperty("name"),
             columnProperty(Continent.SURFACE_AREA, "Surface area")
                     .aggregateColumn(true)
-                    .numberFormatGrouping(true),
+                    .numberFormatGrouping(true)
+                    .beanProperty("surfaceArea"),
             columnProperty(Continent.POPULATION, "Population")
                     .aggregateColumn(true)
-                    .numberFormatGrouping(true),
+                    .numberFormatGrouping(true)
+                    .beanProperty("population"),
             columnProperty(Continent.MIN_LIFE_EXPECTANCY, "Min. life expectancy")
-                    .aggregateColumn(true),
+                    .aggregateColumn(true)
+                    .beanProperty("minLifeExpectancy"),
             columnProperty(Continent.MAX_LIFE_EXPECTANCY, "Max. life expectancy")
-                    .aggregateColumn(true),
+                    .aggregateColumn(true)
+                    .beanProperty("maxLifeExpectancy"),
             columnProperty(Continent.MIN_INDEPENDENCE_YEAR, "Min. ind. year")
                     .aggregateColumn(true),
             columnProperty(Continent.MAX_INDEPENDENCE_YEAR, "Max. ind. year")
                     .aggregateColumn(true),
             columnProperty(Continent.GNP, "GNP")
                     .aggregateColumn(true)
-                    .numberFormatGrouping(true))
+                    .numberFormatGrouping(true)
+                    .beanProperty("gnp"))
             .readOnly(true)
             .caption("Continent");
   }

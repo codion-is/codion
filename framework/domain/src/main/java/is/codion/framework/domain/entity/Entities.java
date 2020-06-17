@@ -42,7 +42,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entityType the entityType
    * @return a new {@link Entity} instance
    */
-  Entity entity(EntityType entityType);
+  Entity entity(EntityType<?> entityType);
 
   /**
    * Creates a new {@link Entity} instance with the given primary key
@@ -56,7 +56,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entityType the entityType
    * @return a new {@link Key} instance
    */
-  Key key(EntityType entityType);
+  Key key(EntityType<?> entityType);
 
   /**
    * Creates a new {@link Key} instance with the given entityType, initialised with the given value
@@ -66,7 +66,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Key key(EntityType entityType, Integer value);
+  Key key(EntityType<?> entityType, Integer value);
 
   /**
    * Creates a new {@link Key} instance with the given entityType, initialised with the given value
@@ -76,7 +76,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Key key(EntityType entityType, Long value);
+  Key key(EntityType<?> entityType, Long value);
 
   /**
    * Creates new {@link Key} instances with the given entityType, initialised with the given values
@@ -86,7 +86,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or values is null
    */
-  List<Key> keys(EntityType entityType, Integer... values);
+  List<Key> keys(EntityType<?> entityType, Integer... values);
 
   /**
    * Creates new {@link Key} instances with the given entityType, initialised with the given values
@@ -96,14 +96,14 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or values is null
    */
-  List<Key> keys(EntityType entityType, Long... values);
+  List<Key> keys(EntityType<?> entityType, Long... values);
 
   /**
    * Copies the given entities, with new copied instances of all foreign key value entities.
    * @param entities the entities to copy
    * @return deep copies of the entities, in the same order as they are received
    */
-  List<Entity> deepCopyEntities(List<Entity> entities);
+  List<Entity> deepCopyEntities(List<? extends Entity> entities);
 
   /**
    * Copies the given entity.
@@ -120,43 +120,24 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   Entity deepCopyEntity(Entity entity);
 
   /**
-   * Transforms the given entities into beans according to the information found in this Entities instance
-   * @param <V> the bean type
-   * @param entities the entities to transform
-   * @return a List containing the beans derived from the given entities, an empty List if {@code entities} is null or empty
-   * @see EntityDefinition.Builder#beanClass(Class)
-   * @see Property.Builder#beanProperty(String)
+   * Casts the given entities to the given type.
+   * @param type the type
+   * @param entities the entities
+   * @param <T> the entity type
+   * @return typed entities
+   * @throws IllegalArgumentException in case any of the entities is not of the given type
    */
-  <V> List<V> toBeans(List<Entity> entities);
+  <T extends Entity> List<T> castTo(EntityType<T> type, List<Entity> entities);
 
   /**
-   * Transforms the given entity into a bean according to the information found in this Entities instance
-   * @param <V> the bean type
-   * @param entity the entity to transform
-   * @return a bean derived from the given entity
-   * @see EntityDefinition.Builder#beanClass(Class)
-   * @see Property.Builder#beanProperty(String)
+   * Casts the given entity to the given type.
+   * @param type the type
+   * @param entity the entity
+   * @param <T> the entity type
+   * @return a typed entity
+   * @throws IllegalArgumentException in case the entity is not of the given type
    */
-  <V> V toBean(Entity entity);
-
-  /**
-   * Transforms the given beans into a entities according to the information found in this Entities instance
-   * @param beans the beans to transform
-   * @return a List containing the entities derived from the given beans, an empty List if {@code beans} is null or empty
-   * @see EntityDefinition.Builder#beanClass(Class)
-   * @see Property.Builder#beanProperty(String)
-   */
-  List<Entity> fromBeans(List<Object> beans);
-
-  /**
-   * Creates an Entity from the given bean object.
-   * @param bean the bean to convert to an Entity
-   * @param <V> the bean type
-   * @return a Entity based on the given bean
-   * @see EntityDefinition.Builder#beanClass(Class)
-   * @see Property.Builder#beanProperty(String)
-   */
-  <V> Entity fromBean(V bean);
+  <T extends Entity> T castTo(EntityType<T> type, Entity entity);
 
   /**
    * Returns true if the entity has a null primary key or a null original primary key,
@@ -191,10 +172,11 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   /**
    * Returns all of the given entities which have been modified
    * @param entities the entities
+   * @param <T> the entity type
    * @return a List of entities that have been modified
    * @see Entity#isModified()
    */
-  static List<Entity> getModifiedEntities(final Collection<Entity> entities) {
+  static <T extends Entity> List<T> getModifiedEntities(final Collection<T> entities) {
     requireNonNull(entities, "entities");
 
     return entities.stream().filter(Entity::isModified).collect(toList());
@@ -227,7 +209,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
    */
-  static List<Key> getKeys(final List<Entity> entities) {
+  static List<Key> getKeys(final List<? extends Entity> entities) {
     requireNonNull(entities, "entities");
     final List<Key> keys = new ArrayList<>(entities.size());
     for (int i = 0; i < entities.size(); i++) {
@@ -243,7 +225,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param foreignKeyAttribute the foreign key attribute
    * @return the primary keys of the referenced entities
    */
-  static Set<Key> getReferencedKeys(final List<Entity> entities, final Attribute<Entity> foreignKeyAttribute) {
+  static Set<Key> getReferencedKeys(final List<? extends Entity> entities, final Attribute<Entity> foreignKeyAttribute) {
     final Set<Key> keySet = new HashSet<>();
     for (int i = 0; i < entities.size(); i++) {
       final Key key = entities.get(i).getReferencedKey(foreignKeyAttribute);
@@ -260,7 +242,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities with their original values
    */
-  static List<Key> getOriginalKeys(final List<Entity> entities) {
+  static List<Key> getOriginalKeys(final List<? extends Entity> entities) {
     requireNonNull(entities, "entities");
     final List<Key> keys = new ArrayList<>(entities.size());
     for (int i = 0; i < entities.size(); i++) {
@@ -362,12 +344,12 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
   /**
    * Returns a LinkedHashMap containing the given entities mapped to the value of {@code attribute},
    * respecting the iteration order of the given collection
-   * @param <K> the key type
+   * @param <T> the key type
    * @param attribute the attribute which value should be used for mapping
    * @param entities the entities to map by property value
    * @return a Map of entities mapped to property value
    */
-  static <K> LinkedHashMap<K, List<Entity>> mapToValue(final Attribute<K> attribute, final Collection<Entity> entities) {
+  static <T> LinkedHashMap<T, List<Entity>> mapToValue(final Attribute<T> attribute, final Collection<Entity> entities) {
     return map(entities, value -> value.get(attribute));
   }
 
@@ -377,7 +359,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param entities the entities to map by entityType
    * @return a Map of entities mapped to entityType
    */
-  static LinkedHashMap<EntityType, List<Entity>> mapToType(final Collection<Entity> entities) {
+  static LinkedHashMap<EntityType<Entity>, List<Entity>> mapToType(final Collection<Entity> entities) {
     return map(entities, Entity::getEntityType);
   }
 
@@ -387,7 +369,7 @@ public interface Entities extends EntityDefinition.Provider, Serializable {
    * @param keys the entity keys to map by entityType
    * @return a Map of entity keys mapped to entityType
    */
-  static LinkedHashMap<EntityType, List<Key>> mapKeysToType(final Collection<Key> keys) {
+  static LinkedHashMap<EntityType<Entity>, List<Key>> mapKeysToType(final Collection<Key> keys) {
     return map(keys, Key::getEntityType);
   }
 

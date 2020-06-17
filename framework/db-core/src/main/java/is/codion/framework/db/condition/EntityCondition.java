@@ -15,7 +15,7 @@ public interface EntityCondition extends Serializable {
   /**
    * @return the entity type
    */
-  EntityType getEntityType();
+  EntityType<?> getEntityType();
 
   /**
    * @return the underlying {@link Condition} object, may not be null

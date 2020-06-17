@@ -47,7 +47,7 @@ public final class ChinookImpl extends Domain implements Chinook {
     invoiceLine();
     playlist();
     playlistTrack();
-    defineReport(Customer.CUSTOMER_REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
+    defineReport(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
     defineProcedure(Procedures.UPDATE_TOTALS, new UpdateTotalsProcedure());
     defineFunction(Functions.RAISE_PRICE, new RaisePriceFunction());
   }
@@ -240,12 +240,13 @@ public final class ChinookImpl extends Domain implements Chinook {
                     .nullable(false)
                     .format(NumberFormat.getIntegerInstance()),
             derivedProperty(Track.MINUTES_SECONDS_DERIVED, "Duration (min/sec)",
-                    Track.MIN_SEC_PROVIDER, Track.MILLISECONDS),
+                    new TrackMinSecProvider(), Track.MILLISECONDS),
             columnProperty(Track.BYTES, "Bytes")
                     .format(NumberFormat.getIntegerInstance()),
             columnProperty(Track.UNITPRICE, "Price")
                     .nullable(false)
-                    .maximumFractionDigits(2))
+                    .maximumFractionDigits(2)
+                    .beanProperty("unitPrice"))
             .keyGenerator(automatic("chinook.track"))
             .orderBy(orderBy().ascending(Track.NAME))
             .stringProvider(new StringProvider(Track.NAME))
@@ -301,7 +302,7 @@ public final class ChinookImpl extends Domain implements Chinook {
             columnProperty(InvoiceLine.QUANTITY, "Quantity")
                     .nullable(false)
                     .defaultValue(1),
-            derivedProperty(InvoiceLine.TOTAL, "Total", InvoiceLine.TOTAL_PROVIDER,
+            derivedProperty(InvoiceLine.TOTAL, "Total", new InvoiceLineTotalProvider(),
                     InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE))
             .keyGenerator(automatic("chinook.invoiceline"))
             .caption("Invoice lines");
@@ -345,28 +346,19 @@ public final class ChinookImpl extends Domain implements Chinook {
 
   private static final class UpdateTotalsProcedure implements DatabaseProcedure<LocalEntityConnection, Void> {
 
+    private static final EntitySelectCondition ALL_INVOICES_CONDITION =
+            selectCondition(Invoice.TYPE)
+                    .setForUpdate(true).setForeignKeyFetchDepth(0);
+
     @Override
     public void execute(final LocalEntityConnection entityConnection,
                         final Void... arguments) throws DatabaseException {
-      try {
-        entityConnection.beginTransaction();
-        final EntitySelectCondition selectCondition = selectCondition(Invoice.TYPE);
-        selectCondition.setForUpdate(true);
-        selectCondition.setForeignKeyFetchDepth(0);
-        final List<Entity> invoices = entityConnection.select(selectCondition);
-        for (final Entity invoice : invoices) {
-          invoice.put(Invoice.TOTAL, invoice.get(Invoice.TOTAL_SUBQUERY));
-        }
-        final List<Entity> modifiedInvoices = getModifiedEntities(invoices);
-        if (!modifiedInvoices.isEmpty()) {
-          entityConnection.update(modifiedInvoices);
-        }
-        entityConnection.commitTransaction();
-      }
-      catch (final DatabaseException exception) {
-        entityConnection.rollbackTransaction();
-        throw exception;
-      }
+      List<Invoice> invoices = entityConnection.getEntities()
+              .castTo(Invoice.TYPE, entityConnection.select(ALL_INVOICES_CONDITION));
+
+      invoices.forEach(Invoice::updateTotal);
+
+      entityConnection.update(getModifiedEntities(invoices));
     }
   }
 
@@ -375,29 +367,53 @@ public final class ChinookImpl extends Domain implements Chinook {
     @Override
     public List<Entity> execute(final LocalEntityConnection entityConnection,
                                 final Object... arguments) throws DatabaseException {
-      final List<Long> trackIds = (List<Long>) arguments[0];
-      final BigDecimal priceIncrease = (BigDecimal) arguments[1];
-      try {
-        entityConnection.beginTransaction();
+      List<Long> trackIds = (List<Long>) arguments[0];
+      BigDecimal priceIncrease = (BigDecimal) arguments[1];
 
-        final EntitySelectCondition selectCondition = selectCondition(Track.TYPE,
-                Track.ID, Operator.LIKE, trackIds);
-        selectCondition.setForUpdate(true);
+      EntitySelectCondition selectCondition =
+              selectCondition(Track.TYPE, Track.ID, Operator.LIKE, trackIds)
+                      .setForUpdate(true);
 
-        final List<Entity> tracks = entityConnection.select(selectCondition);
-        tracks.forEach(track ->
-                track.put(Track.UNITPRICE,
-                        track.get(Track.UNITPRICE).add(priceIncrease)));
-        final List<Entity> updatedTracks = entityConnection.update(tracks);
+      List<Track> tracks = entityConnection.getEntities()
+              .castTo(Track.TYPE, entityConnection.select(selectCondition));
 
-        entityConnection.commitTransaction();
+      tracks.forEach(track -> track.increasePrice(priceIncrease));
 
-        return updatedTracks;
+      return entityConnection.update(tracks);
+    }
+  }
+
+  private static final class InvoiceLineTotalProvider
+          implements DerivedProperty.Provider<BigDecimal> {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public BigDecimal get(final DerivedProperty.SourceValues sourceValues) {
+      Integer quantity = sourceValues.get(InvoiceLine.QUANTITY);
+      BigDecimal unitPrice = sourceValues.get(InvoiceLine.UNITPRICE);
+      if (unitPrice == null || quantity == null) {
+        return null;
       }
-      catch (final DatabaseException exception) {
-        entityConnection.rollbackTransaction();
-        throw exception;
+
+      return unitPrice.multiply(BigDecimal.valueOf(quantity));
+    }
+  }
+
+  private static final class TrackMinSecProvider
+          implements DerivedProperty.Provider<String> {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public String get(final DerivedProperty.SourceValues sourceValues) {
+      Integer milliseconds = sourceValues.get(Track.MILLISECONDS);
+      if (milliseconds == null || milliseconds <= 0) {
+        return "";
       }
+
+      return Chinook.getMinutes(milliseconds) + " min " +
+              Chinook.getSeconds(milliseconds) + " sec";
     }
   }
 
@@ -408,7 +424,7 @@ public final class ChinookImpl extends Domain implements Chinook {
 
     @Override
     public Image get(final DerivedProperty.SourceValues sourceValues) {
-      final byte[] bytes = sourceValues.get(Album.COVER);
+      byte[] bytes = sourceValues.get(Album.COVER);
       if (bytes == null) {
         return null;
       }
@@ -429,7 +445,7 @@ public final class ChinookImpl extends Domain implements Chinook {
 
     @Override
     public String apply(final Entity customer) {
-      final StringBuilder builder = new StringBuilder();
+      StringBuilder builder = new StringBuilder();
       if (customer.isNotNull(Customer.LASTNAME)) {
         builder.append(customer.get(Customer.LASTNAME));
       }

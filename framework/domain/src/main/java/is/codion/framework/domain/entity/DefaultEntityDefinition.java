@@ -13,7 +13,13 @@ import is.codion.framework.domain.property.MirrorProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,7 +29,9 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import static is.codion.common.Util.rejectNullOrEmpty;
@@ -46,17 +54,27 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The entity type
    */
-  private final EntityType entityType;
+  private final EntityType<?> entityType;
+
+  /**
+   * Bean property getters
+   */
+  private final Map<String, Attribute<?>> getters = new HashMap<>();
+
+  /**
+   * Bean property setters
+   */
+  private final Map<String, Attribute<?>> setters = new HashMap<>();
+
+  /**
+   * Entity class default method handles
+   */
+  private transient Map<String, MethodHandle> defaultMethodHandles = new ConcurrentHashMap<>();
 
   /**
    * The caption to use for the entity type
    */
   private String caption;
-
-  /**
-   * The bean class, if any
-   */
-  private Class<?> beanClass;
 
   /**
    * Holds the order by clause
@@ -104,11 +122,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
    * The validator
    */
   private EntityValidator validator = new DefaultEntityValidator();
-
-  /**
-   * The bean helper
-   */
-  private BeanHelper<?> beanHelper = new DefaultBeanHelper();
 
   /**
    * The name of the underlying table
@@ -169,20 +182,37 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * Defines a new entity type with the entityType name serving as the initial entity caption.
    */
-  DefaultEntityDefinition(final String domainName, final EntityType entityType, final String tableName,
+  DefaultEntityDefinition(final String domainName, final EntityType<?> entityType, final String tableName,
                           final List<Property<?>> properties) {
     this.domainName = requireNonNull(domainName, "domainName");
-    this.entityType = requireNonNull(entityType, "entityType");
+    this.entityType = (EntityType<Entity>) requireNonNull(entityType, "entityType");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.entityProperties = new EntityProperties(entityType, properties);
     this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
     this.groupByClause = initializeGroupByClause();
     this.caption = entityType.getName();
+    resolveEntityClassMethods();
   }
 
   @Override
-  public EntityType getEntityType() {
+  public EntityType<?> getEntityType() {
     return entityType;
+  }
+
+  @Override
+  public Attribute<?> getGetterAttribute(final Method method) {
+    return getters.get(requireNonNull(method, "method").getName());
+  }
+
+  @Override
+  public Attribute<?> getSetterAttribute(final Method method) {
+    return setters.get(requireNonNull(method, "method").getName());
+  }
+
+  @Override
+  public MethodHandle getDefaultMethodHandle(final Method method) {
+    return defaultMethodHandles.computeIfAbsent(requireNonNull(method, "method").getName(),
+            methodName -> createDefaultMethodHandle(method));
   }
 
   @Override
@@ -211,11 +241,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
   @Override
   public String getCaption() {
     return caption;
-  }
-
-  @Override
-  public <V> Class<V> getBeanClass() {
-    return (Class<V>) beanClass;
   }
 
   @Override
@@ -388,7 +413,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public List<ForeignKeyProperty> getForeignKeyReferences(final EntityType foreignEntityType) {
+  public List<ForeignKeyProperty> getForeignKeyReferences(final EntityType<?> foreignEntityType) {
     return getForeignKeyProperties().stream().filter(foreignKeyProperty ->
             foreignKeyProperty.getReferencedEntityType().equals(foreignEntityType)).collect(toList());
   }
@@ -575,11 +600,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return new DefaultKey(this, value);
   }
 
-  @Override
-  public <V> BeanHelper<V> getBeanHelper() {
-    return (BeanHelper<V>) beanHelper;
-  }
-
   /**
    * Returns true if a entity definition has been associated with the given foreign key.
    * @param foreignKeyAttribute the foreign key attribute
@@ -617,6 +637,11 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return new DefaultBuilder(this);
   }
 
+  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    stream.defaultReadObject();
+    defaultMethodHandles = new ConcurrentHashMap<>();
+  }
+
   /**
    * @return a list of grouping columns separated with a comma, to serve as a group by clause,
    * null if no grouping properties are defined
@@ -631,11 +656,87 @@ final class DefaultEntityDefinition implements EntityDefinition {
     return String.join(", ", groupingColumnNames);
   }
 
+  private void resolveEntityClassMethods() {
+    if (!entityType.getEntityClass().equals(Entity.class)) {
+      for (final Method method : entityType.getEntityClass().getDeclaredMethods()) {
+        if (method.isDefault()) {
+          defaultMethodHandles.put(method.getName(), createDefaultMethodHandle(method));
+        }
+        else {
+          if (Entity.class.isAssignableFrom(method.getReturnType())) {
+            final Optional<ForeignKeyProperty> foreignKeyProperty =
+                    getForeignKeyProperties().stream().filter(fkProperty ->
+                            fkProperty.getReferencedEntityType().getEntityClass().equals(method.getReturnType())).findFirst();
+            foreignKeyProperty.ifPresent(keyProperty -> getters.put(method.getName(), keyProperty.getAttribute()));
+          }
+          else if (method.getParameterCount() == 1 && Entity.class.isAssignableFrom(method.getParameterTypes()[0])) {
+            final Optional<ForeignKeyProperty> foreignKeyProperty =
+                    getForeignKeyProperties().stream().filter(fkProperty ->
+                            fkProperty.getReferencedEntityType().getEntityClass().equals(method.getParameterTypes()[0])).findFirst();
+            foreignKeyProperty.ifPresent(keyProperty -> setters.put(method.getName(), keyProperty.getAttribute()));
+          }
+          else {
+            Optional<Property<?>> optionalProperty = getProperties().stream().filter(property -> isGetter(method, property)).findFirst();
+            optionalProperty.ifPresent(property -> getters.put(method.getName(), property.getAttribute()));
+
+            optionalProperty = getProperties().stream().filter(property -> isSetter(method, property)).findFirst();
+            optionalProperty.ifPresent(property -> setters.put(method.getName(), property.getAttribute()));
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Hacky way to use default methods in interfaces via dynamic proxy.
+   * @param method the default method
+   * @return a MethodHandle for the given method
+   */
+  private static MethodHandle createDefaultMethodHandle(final Method method) {
+    try {
+      final Class<?> declaringClass = method.getDeclaringClass();
+      final Constructor<MethodHandles.Lookup> constructor =
+              MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
+      constructor.setAccessible(true);
+
+      return constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE).unreflectSpecial(method, declaringClass);
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static boolean isGetter(final Method method, final Property<?> property) {
+    final String beanProperty = property.getBeanProperty();
+    if (beanProperty == null) {
+      return false;
+    }
+
+    final String beanPropertyCamelCase = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
+    final String methodName = method.getName();
+
+    return method.getReturnType().equals(property.getAttribute().getTypeClass())
+            && (methodName.equals(beanProperty) || methodName.equals("get" + beanPropertyCamelCase) ||
+            (methodName.equals("is" + beanPropertyCamelCase) && Boolean.class.equals(property.getAttribute().getTypeClass())));
+  }
+
+  private static boolean isSetter(final Method method, final Property<?> property) {
+    String beanProperty = property.getBeanProperty();
+    if (beanProperty == null) {
+      return false;
+    }
+
+    beanProperty = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
+
+    return beanProperty != null && method.getName().equals("set" + beanProperty) &&
+            method.getParameterCount() == 1 && method.getParameterTypes()[0].equals(property.getAttribute().getTypeClass());
+  }
+
   private static final class EntityProperties implements Serializable {
 
     private static final long serialVersionUID = 1;
 
-    private final EntityType entityType;
+    private final EntityType<?> entityType;
 
     private final Map<Attribute<?>, Property<?>> propertyMap;
     private final List<Property<?>> properties;
@@ -653,7 +754,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     private final List<TransientProperty<?>> transientProperties;
     private final Map<Attribute<?>, List<DenormalizedProperty<?>>> denormalizedProperties;
 
-    private EntityProperties(final EntityType entityType, final List<Property<?>> properties) {
+    private EntityProperties(final EntityType<?> entityType, final List<Property<?>> properties) {
       this.entityType = entityType;
       this.propertyMap = initializePropertyMap(properties);
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
@@ -856,12 +957,6 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public <V> Builder beanClass(final Class<V> beanClass) {
-      definition.beanClass = requireNonNull(beanClass, "beanClass");
-      return this;
-    }
-
-    @Override
     public Builder smallDataset(final boolean smallDataset) {
       definition.smallDataset = smallDataset;
       return this;
@@ -952,16 +1047,5 @@ final class DefaultEntityDefinition implements EntityDefinition {
       definition.validator = requireNonNull(validator, "validator");
       return this;
     }
-
-    @Override
-    public <V> Builder beanHelper(final BeanHelper<V> beanHelper) {
-      definition.beanHelper = requireNonNull(beanHelper, "beanHelper");
-      return this;
-    }
-  }
-
-  private static final class DefaultBeanHelper implements BeanHelper<Object> {
-
-    private static final long serialVersionUID = 1;
   }
 }

@@ -8,6 +8,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -54,19 +55,18 @@ public final class CountryTableModel extends SwingEntityTableModel {
     languagesDataset.clear();
     try {
       if (!selectedCountries.isEmpty()) {
-        final EntityConnection connection = getConnectionProvider().getConnection();
+        EntityConnection connection = getConnectionProvider().getConnection();
+        Entities entities = connection.getEntities();
 
-        List<Entity> cities = connection.select(City.TYPE,
-                City.COUNTRY_FK, selectedCountries);
-        cities.forEach(city -> citiesDataset.setValue(
-                city.get(City.NAME),
-                city.get(City.POPULATION)));
+        List<City> cities = entities.castTo(City.TYPE,
+                connection.select(City.TYPE, City.COUNTRY_FK, selectedCountries));
 
-        List<Entity> languages = connection.select(CountryLanguage.TYPE,
-                CountryLanguage.COUNTRY_FK, selectedCountries);
-        languages.forEach(language -> languagesDataset.setValue(
-                language.get(CountryLanguage.LANGUAGE),
-                language.get(CountryLanguage.NO_OF_SPEAKERS)));
+        cities.forEach(city -> citiesDataset.setValue(city.name(), city.population()));
+
+        List<CountryLanguage> languages = entities.castTo(CountryLanguage.TYPE,
+                connection.select(CountryLanguage.TYPE, CountryLanguage.COUNTRY_FK, selectedCountries));
+
+        languages.forEach(language -> languagesDataset.setValue(language.language(), language.noOfSpeakers()));
       }
     }
     catch (DatabaseException e) {

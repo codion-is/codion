@@ -18,16 +18,16 @@ final class DefaultEntityUpdateCondition extends DefaultEntityCondition implemen
 
   private final Map<Attribute<?>, Object> propertyValues = new LinkedHashMap<>();
 
-  DefaultEntityUpdateCondition(final EntityType entityType) {
+  DefaultEntityUpdateCondition(final EntityType<?> entityType) {
     super(entityType);
   }
 
-  DefaultEntityUpdateCondition(final EntityType entityType, final Condition condition) {
+  DefaultEntityUpdateCondition(final EntityType<?> entityType, final Condition condition) {
     super(entityType, condition);
   }
 
   @Override
-  public EntityUpdateCondition set(final Attribute<?> attribute, final Object value) {
+  public <T> EntityUpdateCondition set(final Attribute<T> attribute, final T value) {
     requireNonNull(attribute, "attribute");
     if (propertyValues.containsKey(attribute)) {
       throw new IllegalArgumentException("Update condition already contains a value for attribute: " + attribute);

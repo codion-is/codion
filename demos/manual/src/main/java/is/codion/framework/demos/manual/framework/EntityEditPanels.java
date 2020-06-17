@@ -37,7 +37,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 public final class EntityEditPanels {
 
   interface Demo {
-    EntityType TYPE = domainType("domainType").entityType("entityType");
+    EntityType<Entity> TYPE = domainType("domainType").entityType("entityType");
     Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
     Attribute<Entity> FOREIGN_KEY = TYPE.entityAttribute("foreign_key");
     Attribute<LocalDate> LOCAL_DATE = TYPE.localDateAttribute("local_date");

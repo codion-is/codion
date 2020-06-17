@@ -69,7 +69,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   /**
    * The entityType
    */
-  private final EntityType entityType;
+  private final EntityType<?> entityType;
 
   /**
    * The entity definition
@@ -143,7 +143,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param entityType the entityType
    * @param connectionProvider the db provider
    */
-  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, new SwingEntityTableSortModel(connectionProvider.getEntities(), entityType),
             new DefaultEntityTableConditionModel(entityType, connectionProvider,
                     new DefaultFilterModelFactory(), new SwingConditionModelFactory()));
@@ -158,7 +158,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @throws NullPointerException in case conditionModel is null
    * @throws IllegalArgumentException if {@code tableConditionModel} entityType does not match the one supplied as parameter
    */
-  public SwingEntityTableModel(final EntityType entityType, final EntityConnectionProvider connectionProvider,
+  public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                                final TableSortModel<Entity, Property<?>, TableColumn> sortModel,
                                final EntityTableConditionModel tableConditionModel) {
     super(sortModel, requireNonNull(tableConditionModel, "tableConditionModel").getFilterModels());
@@ -244,7 +244,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final EntityType getEntityType() {
+  public final EntityType<?> getEntityType() {
     return entityType;
   }
 
@@ -458,7 +458,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final void replaceForeignKeyValues(final EntityType foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
+  public final void replaceForeignKeyValues(final EntityType<?> foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyValues, "foreignKeyValues");
     final List<ForeignKeyProperty> foreignKeyProperties =
             getEntityDefinition().getForeignKeyReferences(requireNonNull(foreignKeyEntityType, "foreignKeyEntityType"));

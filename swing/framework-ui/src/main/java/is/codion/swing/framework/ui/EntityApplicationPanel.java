@@ -1538,7 +1538,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return username;
   }
 
-  private static boolean referencesOnlySelf(final Entities entities, final EntityType entityType) {
+  private static boolean referencesOnlySelf(final Entities entities, final EntityType<?> entityType) {
     return entities.getDefinition(entityType).getForeignKeyProperties().stream()
             .allMatch(fkProperty -> fkProperty.getReferencedEntityType().equals(entityType));
   }
@@ -1547,7 +1547,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     private final Entities entities;
 
-    private EntityDependencyTreeNode(final EntityType entityType, final Entities entities) {
+    private EntityDependencyTreeNode(final EntityType<?> entityType, final Entities entities) {
       super(requireNonNull(entityType, "entityType"));
       this.entities = entities;
     }
@@ -1555,8 +1555,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     /**
      * @return the type of the entity this node represents
      */
-    public EntityType getEntityType() {
-      return (EntityType) getUserObject();
+    public EntityType<?> getEntityType() {
+      return (EntityType<?>) getUserObject();
     }
 
     @Override
@@ -1582,7 +1582,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       return childrenList;
     }
 
-    private boolean foreignKeyCycle(final EntityType referencedEntityType) {
+    private boolean foreignKeyCycle(final EntityType<?> referencedEntityType) {
       TreeNode tmp = getParent();
       while (tmp instanceof EntityDependencyTreeNode) {
         if (((EntityDependencyTreeNode) tmp).getEntityType().equals(referencedEntityType)) {

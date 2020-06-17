@@ -49,7 +49,7 @@ public final class ConditionsTest {
   @Test
   public void updateConditionDuplicate() {
     assertThrows(IllegalArgumentException.class, () -> Conditions.updateCondition(TestDomain.T_EMP)
-            .set(TestDomain.EMP_COMMISSION, 123)
-            .set(TestDomain.EMP_COMMISSION, 123));
+            .set(TestDomain.EMP_COMMISSION, 123d)
+            .set(TestDomain.EMP_COMMISSION, 123d));
   }
 }

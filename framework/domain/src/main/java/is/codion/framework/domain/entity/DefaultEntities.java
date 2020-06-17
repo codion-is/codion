@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.Util;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -11,19 +10,17 @@ import is.codion.framework.domain.property.Property;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -38,10 +35,7 @@ public abstract class DefaultEntities implements Entities {
   private static final Map<DomainType, Entities> REGISTERED_ENTITIES = new ConcurrentHashMap<>();
 
   private final DomainType domainType;
-  private final Map<EntityType, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
-
-  private Map<Class<?>, EntityDefinition> beanEntities;
-  private Map<EntityType, Map<Attribute<?>, BeanProperty>> beanProperties;
+  private final Map<EntityType<?>, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
 
   private transient boolean strictForeignKeys = EntityDefinition.STRICT_FOREIGN_KEYS.get();
 
@@ -60,7 +54,7 @@ public abstract class DefaultEntities implements Entities {
   }
 
   @Override
-  public final EntityDefinition getDefinition(final EntityType entityType) {
+  public final EntityDefinition getDefinition(final EntityType<?> entityType) {
     final EntityDefinition definition = entityDefinitions.get(requireNonNull(entityType, "entityType"));
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityType);
@@ -75,7 +69,7 @@ public abstract class DefaultEntities implements Entities {
   }
 
   @Override
-  public final Entity entity(final EntityType entityType) {
+  public final Entity entity(final EntityType<?> entityType) {
     return getDefinition(entityType).entity();
   }
 
@@ -85,34 +79,34 @@ public abstract class DefaultEntities implements Entities {
   }
 
   @Override
-  public final Key key(final EntityType entityType) {
+  public final Key key(final EntityType<?> entityType) {
     return getDefinition(entityType).key();
   }
 
   @Override
-  public final Key key(final EntityType entityType, final Integer value) {
+  public final Key key(final EntityType<?> entityType, final Integer value) {
     return getDefinition(entityType).key(value);
   }
 
   @Override
-  public final Key key(final EntityType entityType, final Long value) {
+  public final Key key(final EntityType<?> entityType, final Long value) {
     return getDefinition(entityType).key(value);
   }
 
   @Override
-  public final List<Key> keys(final EntityType entityType, final Integer... values) {
+  public final List<Key> keys(final EntityType<?> entityType, final Integer... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> key(entityType, value)).collect(toList());
   }
 
   @Override
-  public final List<Key> keys(final EntityType entityType, final Long... values) {
+  public final List<Key> keys(final EntityType<?> entityType, final Long... values) {
     requireNonNull(values, "values");
     return Arrays.stream(values).map(value -> key(entityType, value)).collect(toList());
   }
 
   @Override
-  public final List<Entity> deepCopyEntities(final List<Entity> entities) {
+  public final List<Entity> deepCopyEntities(final List<? extends Entity> entities) {
     requireNonNull(entities, "entities");
 
     return entities.stream().map(this::deepCopyEntity).collect(toList());
@@ -143,82 +137,26 @@ public abstract class DefaultEntities implements Entities {
   }
 
   @Override
-  public final <V> List<V> toBeans(final List<Entity> entities) {
-    if (Util.nullOrEmpty(entities)) {
-      return emptyList();
-    }
-    final List<V> beans = new ArrayList<>(entities.size());
-    for (final Entity entity : entities) {
-      beans.add(toBean(entity));
-    }
-
-    return beans;
+  public <T extends Entity> List<T> castTo(final EntityType<T> type, final List<Entity> entities) {
+    return entities.stream().map(entity -> castTo(type, entity)).collect(toList());
   }
 
   @Override
-  public final <V> V toBean(final Entity entity) {
-    requireNonNull(entity, "entity");
-    final EntityDefinition definition = getDefinition(entity.getEntityType());
-    final Class<V> beanClass = definition.getBeanClass();
-    if (beanClass == null) {
-      throw new IllegalArgumentException("No bean class defined for entityType: " + definition.getEntityType());
+  public <T extends Entity> T castTo(final EntityType<T> type, final Entity entity) {
+    requireNonNull(type, "type");
+    if (entity == null) {
+      return null;
     }
-    final Map<Attribute<?>, BeanProperty> beanPropertyMap = getBeanProperties(definition.getEntityType());
-    try {
-      final V bean = beanClass.getConstructor().newInstance();
-      for (final Map.Entry<Attribute<?>, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
-        final Property<?> property = definition.getProperty(propertyEntry.getKey());
-        Object value = entity.get(property.getAttribute());
-        if (property instanceof ForeignKeyProperty && value != null) {
-          value = toBean((Entity) value);
-        }
-
-        propertyEntry.getValue().setter.invoke(bean, value);
-      }
-
-      return definition.<V>getBeanHelper().toBean(entity, bean);
+    if (type.getEntityClass().isAssignableFrom(entity.getClass())) {
+      // no double wrapping
+      return (T) entity;
     }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Override
-  public final List<Entity> fromBeans(final List<Object> beans) {
-    if (Util.nullOrEmpty(beans)) {
-      return emptyList();
-    }
-    final List<Entity> result = new ArrayList<>(beans.size());
-    for (final Object bean : beans) {
-      result.add(fromBean(bean));
+    if (!entity.getEntityType().equals(type)) {
+      throw new IllegalArgumentException("Entities of type " + type + " expected, got: " + entity.getEntityType());
     }
 
-    return result;
-  }
-
-  @Override
-  public final <V> Entity fromBean(final V bean) {
-    requireNonNull(bean, "bean");
-    final Class<V> beanClass = (Class<V>) bean.getClass();
-    final EntityDefinition definition = getBeanEntityDefinition(beanClass);
-    final Entity entity = entity(definition.getEntityType());
-    try {
-      final Map<Attribute<?>, BeanProperty> beanPropertyMap = getBeanProperties(definition.getEntityType());
-      for (final Map.Entry<Attribute<?>, BeanProperty> propertyEntry : beanPropertyMap.entrySet()) {
-        final Property<?> property = definition.getProperty(propertyEntry.getKey());
-        Object value = propertyEntry.getValue().getter.invoke(bean);
-        if (property instanceof ForeignKeyProperty && value != null) {
-          value = fromBean(value);
-        }
-
-        entity.put((Attribute<Object>) property.getAttribute(), value);
-      }
-
-      return definition.<V>getBeanHelper().fromBean(bean, entity);
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
+    return (T) Proxy.newProxyInstance(entity.getClass().getClassLoader(),
+            new Class[] {type.getEntityClass()}, new EntityInvoker(entity, this));
   }
 
   /**
@@ -240,7 +178,7 @@ public abstract class DefaultEntities implements Entities {
     this.strictForeignKeys = strictForeignKeys;
   }
 
-  protected final EntityDefinition.Builder define(final EntityType entityType, final String tableName,
+  protected final EntityDefinition.Builder define(final EntityType<?> entityType, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
     requireNonNull(propertyBuilders, "propertyBuilders");
     final ArrayList<Property<?>> properties = new ArrayList<>();
@@ -266,7 +204,7 @@ public abstract class DefaultEntities implements Entities {
 
   private void validateForeignKeyProperties(final EntityDefinition definition) {
     for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
-      final EntityType entityType = definition.getEntityType();
+      final EntityType<?> entityType = definition.getEntityType();
       if (!entityType.equals(foreignKeyProperty.getReferencedEntityType()) && strictForeignKeys) {
         final EntityDefinition foreignEntity = entityDefinitions.get(foreignKeyProperty.getReferencedEntityType());
         if (foreignEntity == null) {
@@ -300,73 +238,59 @@ public abstract class DefaultEntities implements Entities {
     }
   }
 
-  private EntityDefinition getBeanEntityDefinition(final Class<?> beanClass) {
-    if (beanEntities == null) {
-      beanEntities = new HashMap<>();
-    }
-    if (!beanEntities.containsKey(beanClass)) {
-      final Optional<DefaultEntityDefinition> optionalDefinition = entityDefinitions.values().stream()
-              .filter(entityDefinition -> Objects.equals(beanClass, entityDefinition.getBeanClass())).findFirst();
-      if (!optionalDefinition.isPresent()) {
-        throw new IllegalArgumentException("No entity associated with bean class: " + beanClass);
-      }
-      beanEntities.put(beanClass, optionalDefinition.get());
-    }
-
-    return beanEntities.get(beanClass);
-  }
-
-  private Map<Attribute<?>, BeanProperty> getBeanProperties(final EntityType entityType) {
-    if (beanProperties == null) {
-      beanProperties = new HashMap<>();
-    }
-
-    return beanProperties.computeIfAbsent(entityType, this::initializeBeanProperties);
-  }
-
-  private Map<Attribute<?>, BeanProperty> initializeBeanProperties(final EntityType entityType) {
-    final EntityDefinition entityDefinition = getDefinition(entityType);
-    final Class<?> beanClass = entityDefinition.getBeanClass();
-    if (beanClass == null) {
-      throw new IllegalArgumentException("No bean class specified for entity: " + entityType);
-    }
-    try {
-      final Map<Attribute<?>, BeanProperty> map = new HashMap<>();
-      for (final Property<?> property : entityDefinition.getProperties()) {
-        final String beanProperty = property.getBeanProperty();
-        Class<?> typeClass = property.getAttribute().getTypeClass();
-        if (property instanceof ForeignKeyProperty) {
-          typeClass = getDefinition(((ForeignKeyProperty) property).getReferencedEntityType()).getBeanClass();
-        }
-        if (beanProperty != null && typeClass != null) {
-          final Method getter = Util.getGetMethod(typeClass, beanProperty, beanClass);
-          final Method setter = Util.getSetMethod(typeClass, beanProperty, beanClass);
-          map.put(property.getAttribute(), new BeanProperty(getter, setter));
-        }
-      }
-
-      return map;
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     REGISTERED_ENTITIES.put(domainType, this);
   }
 
-  private static final class BeanProperty implements Serializable {
+  private static final class EntityInvoker implements InvocationHandler, Serializable {
 
     private static final long serialVersionUID = 1;
 
-    private final Method getter;
-    private final Method setter;
+    private final Entity entity;
+    private final Entities entities;
 
-    private BeanProperty(final Method getter, final Method setter) {
-      this.getter = requireNonNull(getter, "getter");
-      this.setter = requireNonNull(setter, "setter");
+    private EntityInvoker(final Entity entity, final Entities entities) {
+      this.entity = entity;
+      this.entities = entities;
     }
-  }
+
+    @Override
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      final EntityDefinition definition = entities.getDefinition(entity.getEntityType());
+
+      Attribute<?> attribute = definition.getGetterAttribute(method);
+      if (attribute != null) {
+        return getValue(attribute);
+      }
+
+      attribute = definition.getSetterAttribute(method);
+      if (attribute != null) {
+        return setValue(args[0], attribute);
+      }
+
+      if (method.isDefault()) {
+        return definition.getDefaultMethodHandle(method).bindTo(proxy).invokeWithArguments(args);
+      }
+
+      return method.invoke(entity, args);
+    }
+
+    private Object getValue(final Attribute<?> attribute) {
+      final Object value = entity.get(attribute);
+      if (value instanceof Entity) {
+        final Entity entityValue = (Entity) value;
+
+        return entities.castTo(entityValue.getEntityType(), entityValue);
+      }
+
+      return value;
+    }
+
+    private Object setValue(final Object value, final Attribute<?> attribute) {
+      entity.put((Attribute<Object>) attribute, value);
+
+      return null;
+    }
+  };
 }

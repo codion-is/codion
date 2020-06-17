@@ -6289,3 +6289,10 @@
   DomainType added
   DomainType now registered correctly
 0.16.5
+  EntityType now with generic type, Entities.castTo() added
+  EntityType continued
+  Removed a bunch of redundant <? extends Entity> clauses from EntityTypes
+  Cast entity instances now support default methods, hacky, some related improvements
+  DefaultProperty.underscoreToCamelCase() bug fixed, now returns if string contains no underscore
+  Entity.getOptional() and Key.getOptional() added
+  DomainType.extendDomain() added
