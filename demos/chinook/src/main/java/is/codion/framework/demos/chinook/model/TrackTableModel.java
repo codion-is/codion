@@ -5,7 +5,6 @@ package is.codion.framework.demos.chinook.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.demos.chinook.domain.Chinook.Functions;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -19,7 +18,7 @@ import static is.codion.framework.demos.chinook.domain.Chinook.Track;
 public class TrackTableModel extends SwingEntityTableModel {
 
   public TrackTableModel(final EntityConnectionProvider connectionProvider) {
-    super(Chinook.Track.TYPE, connectionProvider);
+    super(Track.TYPE, connectionProvider);
     setEditable(true);
   }
 
