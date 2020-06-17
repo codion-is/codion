@@ -10,6 +10,7 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.StringProvider;
@@ -17,7 +18,6 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.DerivedProperty;
 
 import java.awt.Color;
-import java.util.Objects;
 
 import static is.codion.common.Util.notNull;
 import static is.codion.framework.domain.entity.KeyGenerators.sequence;
@@ -65,7 +65,7 @@ public final class WorldImpl extends Domain {
             .validator(new CityValidator())
             .orderBy(orderBy().ascending(City.NAME))
             .stringProvider(new StringProvider(City.NAME))
-            .colorProvider(new CityColorProvider())
+            .colorProvider(new CityColorProvider(getEntities()))
             .caption("City");
   }
   // end::defineCity[]
@@ -237,17 +237,20 @@ public final class WorldImpl extends Domain {
 
     private static final long serialVersionUID = 1;
 
+    private final Entities entities;
+
+    public CityColorProvider(Entities entities) {
+      this.entities = entities;
+    }
+
     @Override
-    public Object getColor(Entity city, Attribute<?> attribute) {
+    public Object getColor(Entity cityEntity, Attribute<?> attribute) {
       if (attribute.equals(City.POPULATION) &&
-              city.get(City.POPULATION) > 1_000_000) {
-        //population YELLOW if > 1.000.000
+              cityEntity.get(City.POPULATION) > 1_000_000) {
         return Color.YELLOW;
       }
-      if (attribute.equals(City.NAME) &&
-              Objects.equals(city.get(City.ID),
-                      city.getForeignKey(City.COUNTRY_FK).get(Country.CAPITAL))) {
-        //name CYAN if capital city
+      City city = entities.castTo(City.TYPE, cityEntity);
+      if (attribute.equals(City.NAME) && city.isCapital()) {
         return Color.CYAN;
       }
 

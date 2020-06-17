@@ -38,8 +38,12 @@ public interface World {
     String name();
     Integer population();
 
-    default boolean isCountry(final Entity country) {
-      return Objects.equals(get(COUNTRY_FK), country);
+    default boolean isInCountry(final Entity country) {
+      return country != null && Objects.equals(get(COUNTRY_FK), country);
+    }
+
+    default boolean isCapital() {
+      return Objects.equals(get(City.ID), get(City.COUNTRY_FK).get(Country.CAPITAL));
     }
   }
 
@@ -92,11 +96,11 @@ public interface World {
     Attribute<Double> GNP = TYPE.doubleAttribute("sum(gnp)");
 
     String name();
-    Long population();
     Integer surfaceArea();
-    Double gnp();
+    Long population();
     Double minLifeExpectancy();
     Double maxLifeExpectancy();
+    Double gnp();
   }
 
   interface Lookup {
