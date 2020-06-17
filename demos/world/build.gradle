@@ -25,7 +25,10 @@ dependencies {
 ext {
     execMainClass = "$moduleName/is.codion.framework.demos.world.ui.WorldAppPanel"
     testAddModules = ['is.codion.framework.db.test', 'is.codion.swing.framework.ui.test']
-    testAddReads = ['is.codion.framework.demos.world': 'is.codion.framework.db.test,is.codion.swing.framework.ui.test']
+    testAddReads = [
+            'is.codion.framework.demos.world': 'is.codion.framework.db.test,is.codion.swing.framework.ui.test',
+            'is.codion.framework.domain': 'is.codion.framework.demos.world'
+    ]
     testAddExports = [
             'is.codion.framework.demos.world/is.codion.framework.demos.world.ui': 'is.codion.swing.framework.ui.test',
             'is.codion.framework.demos.world/is.codion.framework.demos.world.domain': 'is.codion.framework.db.local',
@@ -58,6 +61,7 @@ test {
 task runClientLocal(type: ModularJavaExec) {
     group 'run'
     mainClass = execMainClass
+    jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world']
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
@@ -69,6 +73,7 @@ task runClientLocal(type: ModularJavaExec) {
 task runClientRMI(type: ModularJavaExec) {
     group 'run'
     mainClass = execMainClass
+    jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world']
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : 'localhost',
@@ -81,6 +86,7 @@ task runClientRMI(type: ModularJavaExec) {
 task runClientHttp(type: ModularJavaExec) {
     group 'run'
     mainClass = execMainClass
+    jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world']
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
@@ -93,6 +99,7 @@ task clientLocalScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientLocal
     applicationName = project.name + '-local'
     defaultJvmOpts = [
+            '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world',
             '-Dcodion.client.connectionType=local',
             '-Dcodion.db.url=jdbc:h2:mem:h2db',
             '-Dcodion.db.initScript=../config/create_schema.sql',
@@ -104,6 +111,7 @@ task clientRMIScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientRMI
     applicationName = project.name + '-remote'
     defaultJvmOpts = [
+            '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world',
             '-Dcodion.client.connectionType=remote',
             '-Dcodion.server.hostname=localhost',
             '-Djavax.net.ssl.trustStore=../config/truststore.jks',
@@ -116,6 +124,7 @@ task clientHttpScript(type: ModularCreateStartScripts) {
     runTask = tasks.runClientHttp
     applicationName = project.name + '-http'
     defaultJvmOpts = [
+            '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world',
             '-Dcodion.client.connectionType=http',
             '-Dcodion.client.http.secure=false',
             '-Dcodion.client.http.hostname=localhost',

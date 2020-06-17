@@ -10,4 +10,7 @@ module is.codion.framework.demos.world {
           to is.codion.swing.framework.model;
   exports is.codion.framework.demos.world.ui
           to is.codion.swing.framework.ui;
+  //for accessing default methods in EntityType interfaces
+  opens is.codion.framework.demos.world.domain.api
+          to is.codion.framework.domain;
 }
