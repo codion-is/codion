@@ -20,7 +20,7 @@ public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEdi
    * @param entityType the type of the entity on which to base the model
    * @param connectionProvider the connection provider
    */
-  public FXEntityModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public FXEntityModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
     this(new FXEntityEditModel(entityType, connectionProvider), new FXEntityListModel(entityType, connectionProvider));
   }
 

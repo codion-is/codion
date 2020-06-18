@@ -510,7 +510,7 @@ public final class DefaultEntityEditModelTest {
 
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
-    public TestEntityEditModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+    public TestEntityEditModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
       super(entityType, connectionProvider);
     }
 
