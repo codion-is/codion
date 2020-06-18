@@ -46,6 +46,20 @@ public interface DomainType extends Serializable {
   boolean contains(EntityType<?> entityType);
 
   /**
+   * Returns a {@link DomainType} which extends this one, sharing entity definitions.
+   * @param domainClass the domain class
+   * @return an extended {@link DomainType}
+   */
+  DomainType extend(final Class<?> domainClass);
+
+  /**
+   * Returns a {@link DomainType} which extends this one, sharing entity definitions.
+   * @param domainName the domain name
+   * @return an extended {@link DomainType}
+   */
+  DomainType extend(final String domainName);
+
+  /**
    * Returns a new {@link DomainType} using the given classes simple name as domain name.
    * @param domainClass the domain class
    * @return a {@link DomainType}
@@ -61,26 +75,6 @@ public interface DomainType extends Serializable {
    */
   static DomainType domainType(final String domainName) {
     return DefaultDomainType.getOrCreateDomainType(domainName);
-  }
-
-  /**
-   * Returns a {@link DomainType} extending the one given, sharing entity definitions.
-   * @param domainToExtend the domain type to extend
-   * @param domainClass the domain class
-   * @return an extended {@link DomainType}
-   */
-  static DomainType extendDomain(final DomainType domainToExtend, final Class<?> domainClass) {
-    return extendDomain(domainToExtend, domainClass.getSimpleName());
-  }
-
-  /**
-   * Returns a {@link DomainType} extending the one given, sharing entity definitions.
-   * @param domainToExtend the domain type to extend
-   * @param domainName the domain name
-   * @return an extended {@link DomainType}
-   */
-  static DomainType extendDomain(final DomainType domainToExtend, final String domainName) {
-    return DefaultDomainType.getOrExtendDomainType(domainToExtend, domainName);
   }
 
   /**

@@ -57,6 +57,16 @@ final class DefaultDomainType implements DomainType {
   }
 
   @Override
+  public DomainType extend(final Class<?> domainClass) {
+    return extend(requireNonNull(domainClass, "domainClass").getSimpleName());
+  }
+
+  @Override
+  public DomainType extend(final String domainName) {
+    return getOrExtendDomainType(this, requireNonNull(domainName, "domainName"));
+  }
+
+  @Override
   public boolean equals(final Object object) {
     if (this == object) {
       return true;
@@ -88,12 +98,6 @@ final class DefaultDomainType implements DomainType {
     return DOMAIN_TYPES.computeIfAbsent(requireNonNull(domainName), DefaultDomainType::new);
   }
 
-  static DomainType getOrExtendDomainType(final DomainType domainToExtend, final String domainName) {
-    requireNonNull(domainToExtend);
-    return DOMAIN_TYPES.computeIfAbsent(domainName, name ->
-            new DefaultDomainType((DefaultDomainType) getDomainType(domainToExtend.getName()), domainName));
-  }
-
   static DomainType getDomainType(final String domainName) {
     final DomainType domainType = DOMAIN_TYPES.get(requireNonNull(domainName, "domainName"));
     if (domainType == null) {
@@ -101,5 +105,10 @@ final class DefaultDomainType implements DomainType {
     }
 
     return domainType;
+  }
+
+  private static DomainType getOrExtendDomainType(final DomainType domainToExtend, final String domainName) {
+    return DOMAIN_TYPES.computeIfAbsent(domainName, name ->
+            new DefaultDomainType((DefaultDomainType) getDomainType(domainToExtend.getName()), domainName));
   }
 }

@@ -6272,3 +6272,4 @@
   SwingEntityTableModel.isCellEditable() now handles ForeignKeyProperty as well
   DefaultEntityDefinition.resolveEntityClassMethods(), simplified foreign key property handling, setters witout 'set' prefix and getters returning Optional supported
   EntityServerAdmin.getEntityDefinitions() no longer returns the actual entity definitions, may require domain model classes on receiving side, now just strings
+  DomainType.extend() static methods replaced with instance methods
