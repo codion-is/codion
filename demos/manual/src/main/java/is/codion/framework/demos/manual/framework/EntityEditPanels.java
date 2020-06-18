@@ -60,7 +60,7 @@ public final class EntityEditPanels {
 
     private void booleanValue() {
       // tag::booleanValue[]
-      JCheckBox checkBox = createCheckBox(Demo.BOOLEAN, null, IncludeCaption.NO);
+      JCheckBox checkBox = createCheckBox(Demo.BOOLEAN, IncludeCaption.NO);
 
       NullableCheckBox nullableCheckBox = createNullableCheckBox(Demo.BOOLEAN);
 

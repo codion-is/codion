@@ -20,7 +20,7 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
 
     setPreferredWidth(createForeignKeyComboBox(CountryLanguage.COUNTRY_FK), 120);
     createTextField(CountryLanguage.LANGUAGE).setColumns(12);
-    createCheckBox(CountryLanguage.IS_OFFICIAL, null, IncludeCaption.NO);
+    createCheckBox(CountryLanguage.IS_OFFICIAL, IncludeCaption.NO);
     createTextField(CountryLanguage.PERCENTAGE);
 
     setLayout(gridLayout(2, 4));

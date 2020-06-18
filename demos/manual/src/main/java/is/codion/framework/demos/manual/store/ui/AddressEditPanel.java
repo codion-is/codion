@@ -23,7 +23,7 @@ public class AddressEditPanel extends EntityEditPanel {
 
     createTextField(Address.STREET).setColumns(25);
     createTextField(Address.CITY).setColumns(25);
-    createCheckBox(Address.VALID, null, IncludeCaption.NO);
+    createCheckBox(Address.VALID, IncludeCaption.NO);
 
     setLayout(new GridLayout(3, 1, 5, 5));
     addInputPanel(Address.STREET);

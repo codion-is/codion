@@ -620,7 +620,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a JCheckBox bound to the attribute
    */
   protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute) {
-    return createCheckBox(attribute, null);
+    return createCheckBox(attribute, (StateObserver) null);
   }
 
   /**
@@ -631,6 +631,16 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final StateObserver enabledState) {
     return createCheckBox(attribute, enabledState, IncludeCaption.YES);
+  }
+
+  /**
+   * Creates a JCheckBox bound to {@code attribute}
+   * @param attribute the attribute to bind
+   * @param includeCaption specifies whether or not the caption should be included
+   * @return a JCheckBox bound to the attribute
+   */
+  protected final JCheckBox createCheckBox(final Attribute<Boolean> attribute, final IncludeCaption includeCaption) {
+    return createCheckBox(attribute, null, includeCaption);
   }
 
   /**
