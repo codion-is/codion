@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.tools.generator;
 
+import is.codion.common.Text;
 import is.codion.common.Util;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.database.Databases;
@@ -45,13 +46,13 @@ public class EntityGeneratorModel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityGeneratorModel.class);
 
-  private static final String TYPES_INTEGER = "Types.INTEGER";
-  private static final String PUBLIC_STATIC_FINAL_STRING = "public static final String ";
-  private static final String EQUALS = " = \"";
+  private static final String TYPES_INTEGER = "Integer";
+  private static final String TYPES_DOUBLE = "Double";
+  private static final String EQUALS = " = ";
   private static final String TABLE_SCHEMA = "TABLE_SCHEM";
   private static final String FOREIGN_KEY_PROPERTY_SUFFIX = "_FK";
-  private static final String ENTITY_TYPE_PREFIX = "T_";
   private static final String PROPERTIES_COLUMN_PROPERTY = "        columnProperty(";
+  private static final String TWO_SPACES = "  ";
 
   static final Integer SCHEMA_COLUMN_ID = 0;
   static final Integer TABLE_COLUMN_ID = 1;
@@ -151,10 +152,6 @@ public class EntityGeneratorModel {
     Database.closeSilently(connection);
   }
 
-  public static final String getEntityType(final Table table) {
-    return table.getSchema() + "." + table.getTableName();
-  }
-
   private SchemaModel initializeSchemaModel() {
     final TableColumn schemaColumn = new TableColumn(SCHEMA_COLUMN_ID);
     schemaColumn.setIdentifier(SCHEMA_COLUMN_ID);
@@ -192,9 +189,10 @@ public class EntityGeneratorModel {
     final StringBuilder builder = new StringBuilder();
     int counter = 0;
     for (final Table table : tables) {
-      final String constantsString = getPropertyConstants(table);
-      builder.append(constantsString).append(Util.LINE_SEPARATOR);
-      final String entityString = getEntityDefinition(table);
+      final String interfaceName = getInterfaceName(table);
+      final String constantsString = getAttributeConstants(table, interfaceName);
+      builder.append(constantsString).append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+      final String entityString = getEntityDefinition(table, interfaceName);
       builder.append(entityString);
       if (counter++ < tables.size() - 1) {
         builder.append(Util.LINE_SEPARATOR + Util.LINE_SEPARATOR);
@@ -203,73 +201,66 @@ public class EntityGeneratorModel {
     definitionTextValue.set(builder.toString());
   }
 
-  private static String getPropertyConstants(final Table table) {
+  private static String getAttributeConstants(final Table table, final String interfaceName) {
     final StringBuilder builder = new StringBuilder();
-    appendPropertyConstants(builder, table);
+    appendAttributeConstants(builder, table, interfaceName);
 
     return builder.toString();
   }
 
-  private static void appendEntityDefinition(final StringBuilder builder, final Table table) {
-    builder.append("void " + getDefineMethodName(table) + "() {").append(Util.LINE_SEPARATOR);
-    builder.append("  define(").append(getEntityTypeConstant(table)).append(",").append(Util.LINE_SEPARATOR);
+  private static void appendEntityDefinition(final StringBuilder builder, final Table table, final String interfaceName) {
+    builder.append("void " + getDefineMethodName(interfaceName) + "() {").append(Util.LINE_SEPARATOR);
+    builder.append("  define(").append(interfaceName).append(".TYPE").append(",").append(Util.LINE_SEPARATOR);
     for (final Column column : table.columns) {
-      builder.append("  ").append(getPropertyDefinition(table, column))
+      builder.append("  ").append(getPropertyDefinition(interfaceName, column))
               .append(table.columns.indexOf(column) < table.columns.size() - 1 ? "," : "").append(Util.LINE_SEPARATOR);
     }
     builder.append("  );").append(Util.LINE_SEPARATOR);
     builder.append("}");
   }
 
-  private static String getDefineMethodName(final Table table) {
-    final StringBuilder builder = new StringBuilder(table.getTableName().toLowerCase());
-    int underscoreIndex = builder.indexOf("_");
-    while (underscoreIndex >= 0) {
-      builder.replace(underscoreIndex, underscoreIndex + 1, "");
-      builder.replace(underscoreIndex, underscoreIndex + 1, builder.substring(underscoreIndex, underscoreIndex + 1).toUpperCase());
-      underscoreIndex = builder.indexOf("_");
-    }
-
-    return builder.toString();
+  private static String getDefineMethodName(final String interfaceName) {
+    return interfaceName.substring(0, 1).toLowerCase() + interfaceName.substring(1);
   }
 
-  private static void appendPropertyConstants(final StringBuilder builder, final Table table) {
-    builder.append(getConstants(table));
+  private static void appendAttributeConstants(final StringBuilder builder, final Table table, final String interfaceName) {
+    builder.append(getConstants(table, interfaceName));
   }
 
-  private static String getConstants(final Table table) {
-    final String schemaName = table.getSchema().getName();
-    final StringBuilder builder = new StringBuilder(PUBLIC_STATIC_FINAL_STRING).append(getEntityTypeConstant(table))
-            .append(EQUALS).append(schemaName.toLowerCase()).append(".").append(table.getTableName().toLowerCase())
-            .append("\";").append(Util.LINE_SEPARATOR);
+  private static String getConstants(final Table table, final String interfaceName) {
+    final StringBuilder builder = new StringBuilder("public interface ").append(interfaceName).append(" {").append(Util.LINE_SEPARATOR);
+    builder.append(TWO_SPACES).append(getEntityTypeDefinition(table)).append(Util.LINE_SEPARATOR);
     for (final Column column : table.columns) {
-      builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyIdConstant(table, column, false))
-              .append(EQUALS).append(column.getColumnName().toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
+      builder.append(TWO_SPACES).append(getAttributeType(column, false));
+      builder.append(" ").append(getAttributeConstant(column, false))
+              .append(EQUALS).append(getAttribute(column, false)).append(";").append(Util.LINE_SEPARATOR);
       if (column.foreignKeyColumn != null) {
-        builder.append(PUBLIC_STATIC_FINAL_STRING).append(getPropertyIdConstant(table, column, true))
-                .append(EQUALS).append(column.getColumnName().toLowerCase())
-                .append(FOREIGN_KEY_PROPERTY_SUFFIX.toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
+        builder.append(TWO_SPACES).append(getAttributeType(column, true));
+        builder.append(" ").append(getAttributeConstant(column, true))
+                .append(EQUALS).append(getAttribute(column, true))
+                .append(";").append(Util.LINE_SEPARATOR);
       }
     }
+    builder.append("}");
 
     return builder.toString();
   }
 
-  private static String getPropertyDefinition(final Table table, final Column column) {
+  private static String getPropertyDefinition(final String interfaceName, final Column column) {
     if (column.getForeignKeyColumn() != null) {
-      return getForeignKeyPropertyDefinition(table, column);
+      return getForeignKeyPropertyDefinition(interfaceName, column);
     }
 
-    return getColumnPropertyDefinition(table, column, false);
+    return getColumnPropertyDefinition(interfaceName, column, false);
   }
 
-  private static String getForeignKeyPropertyDefinition(final Table table, final Column column) {
-    final String columnPropertyDefinition = getColumnPropertyDefinition(table, column, true);
+  private static String getForeignKeyPropertyDefinition(final String interfaceName, final Column column) {
+    final String columnPropertyDefinition = getColumnPropertyDefinition(interfaceName, column, true);
     final StringBuilder builder = new StringBuilder();
-    final String foreignKeyId = getPropertyIdConstant(table, column, true);
+    final String foreignKeyAttribute = getAttributeConstant(column, true);
     final String caption = getCaption(column);
-    builder.append("        foreignKeyProperty(").append(foreignKeyId).append(", \"").append(caption)
-            .append("\", ").append(getEntityTypeConstant(column.getForeignKeyColumn().getReferencedTable()))
+    builder.append("        foreignKeyProperty(").append(interfaceName).append(".").append(foreignKeyAttribute).append(", \"").append(caption)
+            .append("\", ").append(getInterfaceName(column.foreignKeyColumn.getReferencedTable())).append(".TYPE")
             .append(",").append(Util.LINE_SEPARATOR);
     builder.append("        ").append(columnPropertyDefinition).append(")");
 
@@ -280,19 +271,19 @@ public class EntityGeneratorModel {
     return builder.toString();
   }
 
-  private static String getColumnPropertyDefinition(final Table table, final Column column, final boolean foreignKeyColumn) {
+  private static String getColumnPropertyDefinition(final String interfaceName, final Column column, final boolean foreignKeyColumn) {
     final StringBuilder builder = new StringBuilder();
-    addPropertyDefinition(builder, table, column, foreignKeyColumn);
+    addPropertyDefinition(builder, interfaceName, column, foreignKeyColumn);
     if (column.getForeignKeyColumn() == null && column.hasDefaultValue()) {
       builder.append(Util.LINE_SEPARATOR).append("                .columnHasDefaultValue(true)");
     }
     if (column.getNullable() == DatabaseMetaData.columnNoNulls && column.getKeySeq() == -1 && column.getForeignKeyColumn() == null) {
       builder.append(Util.LINE_SEPARATOR).append("                .nullable(false)");
     }
-    if ("Types.VARCHAR".equals(column.getColumnTypeName())) {
+    if ("String".equals(column.getColumnTypeName())) {
       builder.append(Util.LINE_SEPARATOR).append("                .maximumLength(").append(column.getColumnSize()).append(")");
     }
-    if ("Types.DOUBLE".equals(column.getColumnTypeName()) && column.getDecimalDigits() >= 1) {
+    if (TYPES_DOUBLE.equals(column.getColumnTypeName()) && column.getDecimalDigits() >= 1) {
       builder.append(Util.LINE_SEPARATOR).append("                .maximumFractionDigits(").append(column.getDecimalDigits()).append(")");
     }
     if (!nullOrEmpty(column.getComment())) {
@@ -302,17 +293,16 @@ public class EntityGeneratorModel {
     return builder.toString();
   }
 
-  private static void addPropertyDefinition(final StringBuilder builder, final Table table, final Column column,
+  private static void addPropertyDefinition(final StringBuilder builder, final String interfaceName, final Column column,
                                             final boolean foreignKeyColumn) {
-    final String propertyId = getPropertyIdConstant(table, column, false);
+    final String attributeConstant = interfaceName + "." + getAttributeConstant(column, false);
     final String caption = getCaption(column);
     if (column.getKeySeq() != -1) {
       if (TYPES_INTEGER.equals(column.getColumnTypeName())) {
-        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyId).append(")");
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(attributeConstant).append(")");
       }
       else {
-        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyId).append(", ")
-                .append(column.getColumnTypeName()).append(")");
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(attributeConstant).append(")");
       }
       if (column.getKeySeq() > 0) {
         builder.append(Util.LINE_SEPARATOR);
@@ -324,22 +314,36 @@ public class EntityGeneratorModel {
     }
     else {
       if (column.getForeignKeyColumn() != null && column.getColumnType() == Types.INTEGER) {
-        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyId).append(")");
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(attributeConstant).append(")");
       }
       else {
-        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyId).append(", ")
-                .append(column.getColumnTypeName()).append(", \"").append(caption).append("\")");
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(attributeConstant).append(", ")
+                .append("\"").append(caption).append("\")");
       }
     }
   }
 
-  private static String getEntityTypeConstant(final Table table) {
-    return ENTITY_TYPE_PREFIX + table.getTableName().toUpperCase();
+  private static String getInterfaceName(final Table table) {
+    final String toCamelCase = Text.underscoreToCamelCase(table.getTableName().toLowerCase());
+
+    return toCamelCase.substring(0, 1).toUpperCase() + toCamelCase.substring(1);
   }
 
-  private static String getPropertyIdConstant(final Table table, final Column column, final boolean isForeignKey) {
-    return table.getTableName().toUpperCase() + "_" + column.getColumnName().toUpperCase()
-            + (isForeignKey ? FOREIGN_KEY_PROPERTY_SUFFIX : "");
+  private static String getEntityTypeDefinition(final Table table) {
+    return "EntityType<Entity> TYPE = DOMAIN.entityType(\"" + table.schema.getName().toLowerCase() + "." + table.getTableName().toLowerCase() + "\");";
+  }
+
+  private static String getAttributeType(final Column column, final boolean isForeignKey) {
+    return "Attribute<" + (isForeignKey ? "Entity" : column.getColumnTypeName()) + ">";
+  }
+
+  private static String getAttributeConstant(final Column column, final boolean isForeignKey) {
+    return column.getColumnName().toUpperCase() + (isForeignKey ? FOREIGN_KEY_PROPERTY_SUFFIX : "");
+  }
+
+  private static String getAttribute(final Column column, final boolean isForeignKey) {
+    return "TYPE." + (isForeignKey ? "entity" : column.getColumnTypeName().toLowerCase()) +
+            "Attribute(\"" + column.getColumnName().toLowerCase() + (isForeignKey ? "_fk" : "") + "\")";
   }
 
   protected static String getCaption(final Column column) {
@@ -348,9 +352,9 @@ public class EntityGeneratorModel {
     return columnName.substring(0, 1).toUpperCase() + columnName.substring(1);
   }
 
-  private static String getEntityDefinition(final Table table) {
+  private static String getEntityDefinition(final Table table, final String interfaceName) {
     final StringBuilder builder = new StringBuilder();
-    appendEntityDefinition(builder, table);
+    appendEntityDefinition(builder, table, interfaceName);
 
     return builder.toString();
   }
@@ -362,12 +366,12 @@ public class EntityGeneratorModel {
     private SchemaModel(final TableColumn column, final DatabaseMetaData metaData) {
       super(new AbstractTableSortModel<Schema, Integer>(singletonList(column)) {
         @Override
-        public Class getColumnClass(final Integer columnIdentifier) {
+        public Class<?> getColumnClass(final Integer columnIdentifier) {
           return Schema.class;
         }
 
         @Override
-        protected Comparable getComparable(final Schema row, final Integer columnIdentifier) {
+        protected Comparable<?> getComparable(final Schema row, final Integer columnIdentifier) {
           return row.getName();
         }
       }, singletonList(new DefaultColumnConditionModel<>(0, Schema.class, "%")));
@@ -405,7 +409,7 @@ public class EntityGeneratorModel {
     private TableModel(final List<TableColumn> columns, final Database database, final DatabaseMetaData metaData) {
       super(new AbstractTableSortModel<Table, Integer>(columns) {
         @Override
-        public Class getColumnClass(final Integer columnIdentifier) {
+        public Class<?> getColumnClass(final Integer columnIdentifier) {
           if (columnIdentifier.equals(SCHEMA_COLUMN_ID)) {
             return Schema.class;
           }
@@ -414,7 +418,7 @@ public class EntityGeneratorModel {
         }
 
         @Override
-        protected Comparable getComparable(final Table row, final Integer columnIdentifier) {
+        protected Comparable<?> getComparable(final Table row, final Integer columnIdentifier) {
           if (columnIdentifier.equals(SCHEMA_COLUMN_ID)) {
             return row.getSchema().getName();
           }
@@ -575,10 +579,6 @@ public class EntityGeneratorModel {
 
     public Schema getSchema() {
       return schema;
-    }
-
-    public List<Column> getColumns() {
-      return columns;
     }
   }
 
@@ -783,32 +783,32 @@ public class EntityGeneratorModel {
     private static String translateType(final int sqlType, final int decimalDigits) {
       switch (sqlType) {
         case Types.BIGINT:
-          return "Types.BIGINT";
+          return "Long";
         case Types.INTEGER:
         case Types.ROWID:
         case Types.SMALLINT:
           return TYPES_INTEGER;
         case Types.CHAR:
-          return "Types.CHAR";
+          return "Character";
         case Types.DATE:
-          return "Types.DATE";
+          return "LocalDate";
         case Types.DECIMAL:
         case Types.DOUBLE:
         case Types.FLOAT:
         case Types.REAL:
         case Types.NUMERIC:
-          return decimalDigits == 0 ? TYPES_INTEGER : "Types.DOUBLE";
+          return decimalDigits == 0 ? TYPES_INTEGER : TYPES_DOUBLE;
         case Types.TIME:
-          return "Types.TIME";
+          return "LocalTime";
         case Types.TIMESTAMP:
-          return "Types.TIMESTAMP";
+          return "LocalDateTime";
         case Types.LONGVARCHAR:
         case Types.VARCHAR:
-          return "Types.VARCHAR";
+          return "String";
         case Types.BLOB:
-          return "Types.BLOB";
+          return "byte[]";
         case Types.BOOLEAN:
-          return "Types.BOOLEAN";
+          return "Boolean";
         default:
           return null;
       }
