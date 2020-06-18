@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.jackson.json;
 
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -20,7 +20,7 @@ import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
-public final class TestDomain extends Domain {
+public final class TestDomain extends DefaultDomain {
 
   static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

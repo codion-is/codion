@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public final class PropertiesTest {
 
   private static final DomainType DOMAIN_TYPE = DomainType.domainType("domainType");
-  private static final EntityType ENTITY_TYPE = DOMAIN_TYPE.entityType("entityType");
-  private static final EntityType REFERENCED_ENTITY_TYPE = DOMAIN_TYPE.entityType("referencedEntityType");
+  private static final EntityType<Entity> ENTITY_TYPE = DOMAIN_TYPE.entityType("entityType");
+  private static final EntityType<Entity> REFERENCED_ENTITY_TYPE = DOMAIN_TYPE.entityType("referencedEntityType");
 
   @Test
   public void derivedPropertyWithoutLinkedProperties() {

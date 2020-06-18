@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.tools.loadtest;
 
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
@@ -12,7 +12,7 @@ import is.codion.framework.domain.entity.StringProvider;
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 
-public final class TestDomain extends Domain {
+public final class TestDomain extends DefaultDomain {
 
   static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.petstore.domain;
 
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -18,7 +18,7 @@ import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.sql.Types.INTEGER;
 
-public final class Petstore extends Domain {
+public final class Petstore extends DefaultDomain {
 
   static final DomainType DOMAIN = domainType(Petstore.class);
 

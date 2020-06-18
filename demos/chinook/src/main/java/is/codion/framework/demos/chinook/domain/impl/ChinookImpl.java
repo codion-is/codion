@@ -10,7 +10,7 @@ import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.demos.chinook.domain.Chinook;
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -32,7 +32,7 @@ import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
-public final class ChinookImpl extends Domain implements Chinook {
+public final class ChinookImpl extends DefaultDomain implements Chinook {
 
   public ChinookImpl() {
     super(DOMAIN);

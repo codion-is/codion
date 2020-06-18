@@ -12,7 +12,7 @@ import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 
 import org.junit.jupiter.api.Test;
@@ -58,7 +58,7 @@ public class NextReportsTest {
     }
   }
 
-  public static final class NextDomain extends Domain {
+  public static final class NextDomain extends DefaultDomain {
     public NextDomain() {
       super(DomainType.domainType(NextDomain.class));
     }

@@ -9,7 +9,7 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -73,7 +73,7 @@ public final class EmpDeptMinimalApp {
   /**
    * This class initializes the domain model based on the SCOTT schema
    */
-  private static final class EmpDept extends Domain {
+  private static final class EmpDept extends DefaultDomain {
 
     public EmpDept() {
       super(DOMAIN);

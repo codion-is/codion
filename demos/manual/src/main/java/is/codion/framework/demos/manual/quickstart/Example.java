@@ -11,7 +11,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnections;
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -40,7 +40,7 @@ import static java.util.UUID.randomUUID;
 
 public final class Example {
 
-  public static class Store extends Domain {
+  public static class Store extends DefaultDomain {
 
     static final DomainType DOMAIN = domainType(Store.class);
 

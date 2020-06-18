@@ -6,7 +6,7 @@ package is.codion.framework.servlet;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -22,7 +22,7 @@ import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
-public final class TestDomain extends Domain {
+public final class TestDomain extends DefaultDomain {
 
   static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 

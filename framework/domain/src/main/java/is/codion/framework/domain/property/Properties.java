@@ -79,7 +79,7 @@ public final class Properties {
    * @return a new {@link ForeignKeyProperty.Builder}
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute,
-                                                              final String caption, final EntityType foreignEntityType,
+                                                              final String caption, final EntityType<?> foreignEntityType,
                                                               final ColumnProperty.Builder<?> columnPropertyBuilder) {
     return foreignKeyProperty(attribute, caption, foreignEntityType, Collections.singletonList(columnPropertyBuilder));
   }
@@ -95,7 +95,7 @@ public final class Properties {
    * @return a new {@link ForeignKeyProperty.Builder}
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute,
-                                                              final String caption, final EntityType foreignEntityType,
+                                                              final String caption, final EntityType<?> foreignEntityType,
                                                               final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
     columnPropertyBuilders.forEach(builder -> builder.setForeignKeyColumn(true));
 

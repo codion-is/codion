@@ -6,7 +6,7 @@ import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.domain.api.World.CountryLanguage;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
@@ -24,7 +24,7 @@ import static is.codion.framework.domain.entity.KeyGenerators.sequence;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 
-public final class WorldImpl extends Domain {
+public final class WorldImpl extends DefaultDomain {
 
   public WorldImpl() {
     super(World.DOMAIN);

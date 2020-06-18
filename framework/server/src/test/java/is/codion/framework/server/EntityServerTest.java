@@ -23,7 +23,7 @@ import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 
 import org.junit.jupiter.api.AfterAll;
@@ -330,7 +330,7 @@ public class EntityServerTest {
     return configuration;
   }
 
-  public static class EmptyDomain extends Domain {
+  public static class EmptyDomain extends DefaultDomain {
     private EmptyDomain() {
       super(DomainType.domainType(EmptyDomain.class));
     }

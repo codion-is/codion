@@ -29,7 +29,7 @@ import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
-public class TestDomain extends Domain {
+public class TestDomain extends DefaultDomain {
 
   public static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
