@@ -5,7 +5,7 @@ package is.codion.framework.demos.manual.store.domain;
 
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.reports.ReportType;
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -29,7 +29,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 
-public final class Store extends Domain {
+public final class Store extends DefaultDomain {
   
   static final DomainType STORE = domainType(Store.class);
 

@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.manual.store.minimal.domain;
 
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -14,7 +14,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.property.Properties.*;
 
-public class Store extends Domain {
+public class Store extends DefaultDomain {
 
   static final DomainType DOMAIN = domainType(Store.class);
 

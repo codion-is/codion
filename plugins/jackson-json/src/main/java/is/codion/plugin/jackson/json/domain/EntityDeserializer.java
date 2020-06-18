@@ -43,7 +43,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityNode = parser.getCodec().readTree(parser);
 
-    final EntityType entityType = entities.getDomainType().entityType(entityNode.get("entityType").asText());
+    final EntityType<?> entityType = entities.getDomainType().entityType(entityNode.get("entityType").asText());
     final EntityDefinition definition = entities.getDefinition(entityType);
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));

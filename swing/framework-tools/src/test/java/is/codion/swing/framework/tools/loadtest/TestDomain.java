@@ -3,16 +3,17 @@
  */
 package is.codion.swing.framework.tools.loadtest;
 
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
 
 import static is.codion.framework.domain.property.Properties.columnProperty;
 import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
 
-public final class TestDomain extends Domain {
+public final class TestDomain extends DefaultDomain {
 
   static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
@@ -21,7 +22,7 @@ public final class TestDomain extends Domain {
     department();
   }
 
-  public static final EntityType T_DEPARTMENT = DOMAIN.entityType("scott.dept");
+  public static final EntityType<Entity> T_DEPARTMENT = DOMAIN.entityType("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");

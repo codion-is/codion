@@ -10,7 +10,7 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
 import is.codion.common.db.reports.Reports;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -28,7 +28,7 @@ import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
-public final class TestDomain extends Domain {
+public final class TestDomain extends DefaultDomain {
 
   static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
@@ -52,7 +52,7 @@ public final class TestDomain extends Domain {
     });
   }
 
-  public static final EntityType T_DEPARTMENT = DOMAIN.entityType("scott.dept");
+  public static final EntityType<Entity> T_DEPARTMENT = DOMAIN.entityType("scott.dept");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
@@ -71,7 +71,7 @@ public final class TestDomain extends Domain {
             .caption("Department");
   }
 
-  public static final EntityType T_EMP = DOMAIN.entityType("scott.emp");
+  public static final EntityType<Entity> T_EMP = DOMAIN.entityType("scott.emp");
   public static final Attribute<Integer> EMP_ID = T_EMP.integerAttribute("empno");
   public static final Attribute<String> EMP_NAME = T_EMP.stringAttribute("ename");
   public static final Attribute<String> EMP_JOB = T_EMP.stringAttribute("job");

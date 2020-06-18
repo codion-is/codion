@@ -19,7 +19,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * @param entityType the type of the entity this DefaultEntityModel represents
    * @param connectionProvider a EntityConnectionProvider
    */
-  public SwingEntityModel(final EntityType entityType, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
     this(new SwingEntityEditModel(requireNonNull(entityType, "entityType"),
             requireNonNull(connectionProvider, "connectionProvider")));
   }

@@ -4,7 +4,7 @@
 package is.codion.framework.demos.empdept.domain;
 
 import is.codion.common.item.Item;
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -30,7 +30,7 @@ import static java.util.Arrays.asList;
 /**
  * This class contains the specification for the EmpDept application domain model
  */
-public final class EmpDept extends Domain {
+public final class EmpDept extends DefaultDomain {
 
   /** The domain type identifying this domain model*/
   static final DomainType DOMAIN = domainType(EmpDept.class);
