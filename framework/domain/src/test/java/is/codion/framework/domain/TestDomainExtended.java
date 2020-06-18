@@ -11,7 +11,7 @@ import static is.codion.framework.domain.property.Properties.columnProperty;
 
 public class TestDomainExtended extends TestDomain {
 
-  public static final DomainType DOMAIN = DomainType.extendDomain(TestDomain.DOMAIN, TestDomainExtended.class);
+  public static final DomainType DOMAIN = TestDomain.DOMAIN.extend(TestDomainExtended.class);
 
   public static final EntityType<Entity> T_EXTENDED = DOMAIN.entityType("extended.entity");
   public static final Attribute<Integer> EXTENDED_ID = T_EXTENDED.integerAttribute("id");
@@ -34,7 +34,7 @@ public class TestDomainExtended extends TestDomain {
 
   public static final class TestDomainSecondExtenion extends TestDomainExtended {
 
-    public static final DomainType DOMAIN = DomainType.extendDomain(TestDomainExtended.DOMAIN, TestDomainSecondExtenion.class);
+    public static final DomainType DOMAIN = TestDomainExtended.DOMAIN.extend(TestDomainSecondExtenion.class);
 
     public static final EntityType<Entity> T_SECOND_EXTENDED = DOMAIN.entityType("extended.second_entity");
     public static final Attribute<Integer> EXTENDED_ID = T_SECOND_EXTENDED.integerAttribute("id");
