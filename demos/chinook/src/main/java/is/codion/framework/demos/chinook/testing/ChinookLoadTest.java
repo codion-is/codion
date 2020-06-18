@@ -49,7 +49,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
                 selectRandomRows(albumModel.getTableModel(), 0.5);
                 final TrackTableModel trackTableModel = (TrackTableModel) albumModel.getDetailModel(Track.TYPE).getTableModel();
                 selectRandomRows(trackTableModel, 4);
-                trackTableModel.raisePriceOfSelected(BigDecimal.valueOf(0.00001));
+                trackTableModel.raisePriceOfSelected(BigDecimal.valueOf(0.01));
               }
               catch (final Exception e) {
                 throw new ScenarioException(e);
