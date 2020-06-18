@@ -6302,3 +6302,4 @@
   EntityServerAdmin.getEntityDefinitions() no longer returns the actual entity definitions, may require domain model classes on receiving side, now just strings
   DomainType.extend() static methods replaced with instance methods
   EntityGeneratorModel updated according to latest changes
+  EntityEditComponentPanel.createCheckBox() overloaded with Attribute and IncludeCaption parameters

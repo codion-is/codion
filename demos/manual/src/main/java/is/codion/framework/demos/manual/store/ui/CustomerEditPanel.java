@@ -25,7 +25,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     createTextField(Customer.FIRST_NAME).setColumns(15);
     createTextField(Customer.LAST_NAME).setColumns(15);
     createTextField(Customer.EMAIL).setColumns(15);
-    createCheckBox(Customer.IS_ACTIVE, null, IncludeCaption.NO);
+    createCheckBox(Customer.IS_ACTIVE, IncludeCaption.NO);
 
     setLayout(new GridLayout(4,1));
     //the createControlPanel method creates a panel containing the
