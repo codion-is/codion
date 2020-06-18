@@ -236,7 +236,7 @@ public abstract class DefaultDomain implements Domain {
       requireNonNull(reportType, "report");
       requireNonNull(report, "report");
       if (reports.containsKey(reportType)) {
-        throw new IllegalArgumentException("Report has already been added: " + reportType);
+        throw new IllegalArgumentException("Report has already been defined: " + reportType);
       }
       try {
         report.loadReport();
