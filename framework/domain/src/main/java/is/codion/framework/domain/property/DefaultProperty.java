@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.Formats;
+import is.codion.common.Text;
 import is.codion.common.Util;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
@@ -129,7 +130,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     this.hidden = caption == null;
     this.format = initializeDefaultFormat();
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
-    this.beanProperty = underscoreToCamelCase(attribute.getName());
+    this.beanProperty = Text.underscoreToCamelCase(attribute.getName());
   }
 
   @Override
@@ -322,29 +323,6 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     return null;
-  }
-
-  private static String underscoreToCamelCase(final String string) {
-    final StringBuilder builder = new StringBuilder();
-    boolean firstDone = false;
-    final String[] strings = string.split("_");
-    if (strings.length == 1) {
-      return string;
-    }
-    for (final String split : strings) {
-      if (!firstDone) {
-        builder.append(Character.toLowerCase(split.charAt(0)));
-        firstDone = true;
-      }
-      else {
-        builder.append(Character.toUpperCase(split.charAt(0)));
-      }
-      if (split.length() > 1) {
-        builder.append(split.substring(1).toLowerCase());
-      }
-    }
-
-    return builder.toString();
   }
 
   private static class DefaultValueSupplier<T> implements Supplier<T>, Serializable {

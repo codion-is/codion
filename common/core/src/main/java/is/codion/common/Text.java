@@ -278,6 +278,35 @@ public final class Text {
     return values;
   }
 
+  /**
+   * Converts a string with underscores into a camelCaseString.
+   * Just don't use this, it's not bulletproof.
+   * @param string the string
+   * @return a camelCase version of the given string
+   */
+  public static String underscoreToCamelCase(final String string) {
+    final StringBuilder builder = new StringBuilder();
+    boolean firstDone = false;
+    final String[] strings = string.split("_");
+    if (strings.length == 1) {
+      return string;
+    }
+    for (final String split : strings) {
+      if (!firstDone) {
+        builder.append(Character.toLowerCase(split.charAt(0)));
+        firstDone = true;
+      }
+      else {
+        builder.append(Character.toUpperCase(split.charAt(0)));
+      }
+      if (split.length() > 1) {
+        builder.append(split.substring(1).toLowerCase());
+      }
+    }
+
+    return builder.toString();
+  }
+
   private static final class ComparatorSansSpace<T> implements Comparator<T>, Serializable {
 
     private static final long serialVersionUID = 1;
