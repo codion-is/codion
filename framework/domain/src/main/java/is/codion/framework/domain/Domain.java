@@ -10,12 +10,11 @@ import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportType;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.EntityDefinition;
 
 /**
  * Represents an application domain model, entities, reports and database operations.
  */
-public interface Domain extends EntityDefinition.Provider {
+public interface Domain {
 
   /**
    * @return the domain type

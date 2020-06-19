@@ -23,7 +23,7 @@ public class PropertySearchPanelTest {
 
   @Test
   public void createWithInitializedModel() {
-    final ColumnProperty<?> property = DOMAIN.getDefinition(TestDomain.T_DEPARTMENT)
+    final ColumnProperty<?> property = DOMAIN.getEntities().getDefinition(TestDomain.T_DEPARTMENT)
             .getColumnProperty(TestDomain.DEPARTMENT_NAME);
     final ColumnConditionModel<Entity, ColumnProperty<?>> conditionModel =
             new DefaultColumnConditionModel<>(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),

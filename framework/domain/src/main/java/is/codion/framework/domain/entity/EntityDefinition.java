@@ -440,26 +440,6 @@ public interface EntityDefinition extends Serializable {
   MethodHandle getDefaultMethodHandle(Method method);
 
   /**
-   * Provides {@link EntityDefinition}s for a domain model.
-   */
-  interface Provider {
-
-    /**
-     * Returns the {@link EntityDefinition} for the given entityType
-     * @param entityType the entityType
-     * @return the entity definition
-     * @throws IllegalArgumentException in case the definition is not found
-     */
-    EntityDefinition getDefinition(EntityType<?> entityType);
-
-    /**
-     * Returns all {@link EntityDefinition}s available in this provider
-     * @return all entity definitions
-     */
-    Collection<EntityDefinition> getDefinitions();
-  }
-
-  /**
    * Builds a EntityDefinition
    */
   interface Builder {

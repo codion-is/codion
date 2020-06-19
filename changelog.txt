@@ -6277,3 +6277,4 @@
   EntityEditComponentPanel.createCheckBox() overloaded with Attribute and IncludeCaption parameters
   Domain now interface, DefaultDomain added
   Some type safety improvements
+  EntityDefinition.Provider removed

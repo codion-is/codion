@@ -12,8 +12,8 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ColumnProperty;
 
@@ -113,7 +113,7 @@ final class EntityConnectionHandler implements InvocationHandler {
     this.remoteClient = remoteClient;
     this.connectionPool = database.getConnectionPool(remoteClient.getDatabaseUser().getUsername());
     this.database = database;
-    this.methodLogger = new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(), new EntityArgumentToString(domain));
+    this.methodLogger = new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(), new EntityArgumentToString(domain.getEntities()));
     this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() + "@" + remoteClient.getClientTypeId();
     try {
       if (connectionPool == null) {
@@ -358,10 +358,10 @@ final class EntityConnectionHandler implements InvocationHandler {
    */
   private static final class EntityArgumentToString extends MethodLogger.ArgumentToString {
 
-    private final EntityDefinition.Provider definitionProvider;
+    private final Entities entities;
 
-    private EntityArgumentToString(final EntityDefinition.Provider definitionProvider) {
-      this.definitionProvider = definitionProvider;
+    private EntityArgumentToString(final Entities entities) {
+      this.entities = entities;
     }
 
     @Override
@@ -384,7 +384,7 @@ final class EntityConnectionHandler implements InvocationHandler {
 
     private String entityToString(final Entity entity) {
       final StringBuilder builder = new StringBuilder(entity.getEntityType().getName()).append(" {");
-      final List<ColumnProperty<?>> columnProperties = definitionProvider.getDefinition(entity.getEntityType()).getColumnProperties();
+      final List<ColumnProperty<?>> columnProperties = entities.getDefinition(entity.getEntityType()).getColumnProperties();
       for (int i = 0; i < columnProperties.size(); i++) {
         final ColumnProperty<?> property = columnProperties.get(i);
         final boolean modified = entity.isModified(property.getAttribute());

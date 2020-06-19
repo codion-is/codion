@@ -30,12 +30,26 @@ import static java.util.stream.Collectors.toList;
  * Factory for {@link Entity} and {@link Key} instances.
  * Helper class for working with Entity instances and related classes
  */
-public interface Entities extends EntityDefinition.Provider, Serializable {
+public interface Entities extends Serializable {
 
   /**
    * @return the {@link DomainType} this {@link Entities} instance is associated with
    */
   DomainType getDomainType();
+
+  /**
+   * Returns the {@link EntityDefinition} for the given entityType
+   * @param entityType the entityType
+   * @return the entity definition
+   * @throws IllegalArgumentException in case the definition is not found
+   */
+  EntityDefinition getDefinition(EntityType<?> entityType);
+
+  /**
+   * Returns all {@link EntityDefinition}s available
+   * @return all entity definitions
+   */
+  Collection<EntityDefinition> getDefinitions();
 
   /**
    * Creates a new {@link Entity} instance with the given entityType

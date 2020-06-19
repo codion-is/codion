@@ -16,7 +16,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.Property;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,16 +53,6 @@ public abstract class DefaultDomain implements Domain {
   @Override
   public final Entities getEntities() {
     return entities;
-  }
-
-  @Override
-  public final EntityDefinition getDefinition(final EntityType<?> entityType) {
-    return entities.getDefinition(entityType);
-  }
-
-  @Override
-  public final Collection<EntityDefinition> getDefinitions() {
-    return entities.getDefinitions();
   }
 
   @Override
