@@ -24,6 +24,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link Domain} implementation. Extend to define a domain model.
+ * @see #define(EntityType, Property.Builder[])
+ * @see #defineReport(ReportType, Report)
+ * @see #defineProcedure(ProcedureType, DatabaseProcedure)
+ * @see #defineFunction(FunctionType, DatabaseFunction)
  */
 public abstract class DefaultDomain implements Domain {
 
@@ -63,10 +67,10 @@ public abstract class DefaultDomain implements Domain {
   }
 
   @Override
-  public final <T, R, P> Report<T, R, P> getReport(final ReportType<T, R, P> reportType) throws ReportException {
+  public final <T, R, P> Report<T, R, P> getReport(final ReportType<T, R, P> reportType) {
     final Report<T, R, P> report = reports.getReport(reportType);
     if (report == null) {
-      throw new ReportException("Undefined report: " + reportType);
+      throw new IllegalArgumentException("Undefined report: " + reportType);
     }
 
     return report;

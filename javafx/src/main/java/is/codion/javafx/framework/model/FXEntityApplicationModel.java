@@ -9,7 +9,8 @@ import is.codion.framework.model.DefaultEntityApplicationModel;
 /**
  * A JavaFX implementation of {@link DefaultEntityApplicationModel}
  */
-public class FXEntityApplicationModel extends DefaultEntityApplicationModel<FXEntityModel> {
+public class FXEntityApplicationModel
+        extends DefaultEntityApplicationModel<FXEntityModel, FXEntityEditModel, FXEntityListModel> {
 
   /**
    * Instantiates a new {@link FXEntityApplicationModel}

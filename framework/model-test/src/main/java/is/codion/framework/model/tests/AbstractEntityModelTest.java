@@ -120,7 +120,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void constructorNullEditModelNullTableModel() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntityModel(null, null));
+    assertThrows(NullPointerException.class, () -> new DefaultEntityModel<>(null, null));
   }
 
   @Test
@@ -130,7 +130,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     }
     final EditModel editModel = createDepartmentEditModel();
     final TableModel tableModel = createEmployeeTableModel();
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityModel(editModel, tableModel));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityModel<>(editModel, tableModel));
   }
 
   @Test
@@ -138,11 +138,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    final DefaultEntityEditModel editModel = createDepartmentEditModel();
-    final DefaultEntityEditModel editModel2 = createDepartmentEditModel();
-    final EntityTableModel tableModel = createDepartmentTableModel();
+    final EditModel editModel = createDepartmentEditModel();
+    final EditModel editModel2 = createDepartmentEditModel();
+    final TableModel tableModel = createDepartmentTableModel();
     tableModel.setEditModel(editModel);
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityModel(editModel2, tableModel));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityModel<>(editModel2, tableModel));
   }
 
   @Test
@@ -212,37 +212,37 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void addSameDetailModelTwice() {
-    final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
-    final DefaultEntityModel employeeModel = createEmployeeModel();
+    final Model model = createDepartmentModelWithoutDetailModel();
+    final Model employeeModel = createEmployeeModel();
     assertThrows(IllegalArgumentException.class, () -> model.addDetailModels(employeeModel, employeeModel));
   }
 
   @Test
   public void addLinkedDetailModelWithoutAddingFirst() {
-    final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
-    final DefaultEntityModel employeeModel = createEmployeeModel();
+    final Model model = createDepartmentModelWithoutDetailModel();
+    final Model employeeModel = createEmployeeModel();
     assertThrows(IllegalStateException.class, () -> model.addLinkedDetailModel(employeeModel));
   }
 
   @Test
   public void removeLinkedDetailModelWithoutAddingFirst() {
-    final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
-    final DefaultEntityModel employeeModel = createEmployeeModel();
+    final Model model = createDepartmentModelWithoutDetailModel();
+    final Model employeeModel = createEmployeeModel();
     assertThrows(IllegalStateException.class, () -> model.removeLinkedDetailModel(employeeModel));
   }
 
   @Test
   public void addDetailModelDetailModelAlreadyHasMasterModel() {
-    final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
-    final DefaultEntityModel employeeModel = createEmployeeModel();
+    final Model model = createDepartmentModelWithoutDetailModel();
+    final Model employeeModel = createEmployeeModel();
     employeeModel.setMasterModel(model);
     assertThrows(IllegalArgumentException.class, () -> model.addDetailModel(employeeModel));
   }
 
   @Test
   public void setMasterModel() {
-    final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
-    final DefaultEntityModel employeeModel = createEmployeeModel();
+    final Model model = createDepartmentModelWithoutDetailModel();
+    final Model employeeModel = createEmployeeModel();
     employeeModel.setMasterModel(model);
     assertThrows(IllegalStateException.class, () -> employeeModel.setMasterModel(departmentModel));
   }
@@ -261,7 +261,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     if (!departmentModel.containsTableModel()) {
       return;
     }
-    final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
+    final Model employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     employeeModel.setSearchOnMasterInsert(true);
     assertTrue(employeeModel.isSearchOnMasterInsert());
     final EntityEditModel editModel = departmentModel.getEditModel();
@@ -272,7 +272,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     final Entity upperBoundEntity;
     final Object upperBound = employeeModel.getTableModel().getTableConditionModel().getConditionModel(TestDomain.EMP_DEPARTMENT_FK).getUpperBound();
     if (upperBound instanceof Collection) {
-      upperBoundEntity = (Entity) ((Collection) upperBound).iterator().next();
+      upperBoundEntity = ((Collection<Entity>) upperBound).iterator().next();
     }
     else {
       upperBoundEntity = (Entity) upperBound;
@@ -295,7 +295,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     emp.clearKeyValues();
     emp.put(TestDomain.EMP_NAME, "NewName");
 
-    final EntityModel model = createDepartmentModelWithoutDetailModel();
+    final Model model = createDepartmentModelWithoutDetailModel();
     model.getEditModel().insert(asList(dept, emp));
     assertTrue(model.getTableModel().containsItem(dept));
     assertFalse(model.getTableModel().containsItem(emp));

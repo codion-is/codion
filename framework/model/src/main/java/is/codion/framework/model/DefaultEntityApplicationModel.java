@@ -25,9 +25,12 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A central application model class.
- * @param <M> the {@link DefaultEntityModel} type this application model is based on
+ * @param <M> the type of {@link DefaultEntityModel} this application model is based on
+ * @param <E> the type of {@link DefaultEntityEditModel} used by this {@link EntityModel}
+ * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
-public class DefaultEntityApplicationModel<M extends DefaultEntityModel> implements EntityApplicationModel<M> {
+public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>,
+        E extends DefaultEntityEditModel, T extends EntityTableModel<E>> implements EntityApplicationModel<M, E, T> {
 
   private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 30;
 
@@ -212,8 +215,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel> impleme
     }
   }
 
-  private static boolean containsUnsavedData(final Collection<? extends EntityModel> models) {
-    for (final EntityModel model : models) {
+  private static boolean containsUnsavedData(final Collection<? extends EntityModel<?, ?, ?>> models) {
+    for (final EntityModel<?, ?, ?> model : models) {
       final EntityEditModel editModel = model.getEditModel();
       if (editModel.containsUnsavedData() || containsUnsavedData(model.getDetailModels())) {
         return true;

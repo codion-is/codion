@@ -17,9 +17,11 @@ import java.util.List;
 
 /**
  * A central application model class.
- * @param <M> the type of {@link EntityModel} used by this application model
+ * @param <M> the type of {@link EntityModel} this application model is based on
+ * @param <E> the type of {@link EntityEditModel} used by this {@link EntityModel}
+ * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
-public interface EntityApplicationModel<M extends EntityModel> extends Refreshable {
+public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> extends Refreshable {
 
   /**
    * Specifies a string to prepend to the username field in the login dialog<br>

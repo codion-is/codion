@@ -85,7 +85,7 @@ public interface Property<T> extends Serializable {
   /**
    * @return the type of the entity this Property is associated with
    */
-  EntityType getEntityType();
+  EntityType<?> getEntityType();
 
   /**
    * @return the caption

@@ -198,7 +198,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final JScrollPane conditionScrollPane;
 
-  private final FilteredTableSummaryPanel summaryPanel;
+  private final FilteredTableSummaryPanel<Property<?>> summaryPanel;
 
   private final JScrollPane summaryScrollPane;
 
@@ -278,7 +278,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     this.componentValues = requireNonNull(componentValues, "componentValues");
     this.conditionPanel = conditionPanel;
     this.conditionScrollPane = conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
-    this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
+    this.summaryPanel = new FilteredTableSummaryPanel<>(tableModel);
     this.summaryScrollPane = createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
     this.tablePanel.add(tableScrollPane, BorderLayout.CENTER);
     this.tablePanel.add(summaryScrollPane, BorderLayout.SOUTH);

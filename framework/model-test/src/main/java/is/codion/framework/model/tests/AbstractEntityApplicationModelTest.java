@@ -42,8 +42,8 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void test() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
-    final DefaultEntityModel deptModel = createDepartmentModel();
+    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
+    final Model deptModel = createDepartmentModel();
     model.addEntityModels(deptModel);
     assertNotNull(model.getEntityModel(TestDomain.T_DEPARTMENT));
     assertEquals(1, model.getEntityModels().size());
@@ -64,51 +64,46 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
 
   @Test
   public void constructorNullConnectionProvider() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntityApplicationModel(null));
+    assertThrows(NullPointerException.class, () -> new DefaultEntityApplicationModel<>(null));
   }
 
   @Test
   public void loginNullUser() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
+    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     assertThrows(NullPointerException.class, () -> model.login(null));
   }
 
   @Test
   public void getEntityModelByEntityTypeNotFound() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
+    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test
   public void getEntityModelByEntityType() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
+    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     final Model departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);
     assertEquals(departmentModel, model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test
-  public void getEntityModelByClassNotFound() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
-    assertThrows(IllegalArgumentException.class, () -> model.getEntityModel(EntityModel.class));
-  }
-
-  @Test
   public void getEntityModelByClass() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
+    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     final Model departmentModel = createDepartmentModel();
+    assertThrows(IllegalArgumentException.class, () -> model.getEntityModel((Class<? extends Model>) departmentModel.getClass()));
     model.addEntityModels(departmentModel);
-    assertEquals(departmentModel, model.getEntityModel(departmentModel.getClass()));
+    assertEquals(departmentModel, model.getEntityModel((Class<? extends Model>) departmentModel.getClass()));
   }
 
   @Test
   public void containsEntityModel() {
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
+    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     final Model departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);
 
     assertTrue(model.containsEntityModel(TestDomain.T_DEPARTMENT));
-    assertTrue(model.containsEntityModel(departmentModel.getClass()));
+    assertTrue(model.containsEntityModel((Class<? extends Model>) departmentModel.getClass()));
     assertTrue(model.containsEntityModel(departmentModel));
 
     assertFalse(model.containsEntityModel(TestDomain.T_EMP));
@@ -125,7 +120,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     final Model empModel = deptModel.getDetailModel(TestDomain.T_EMP);
     deptModel.addLinkedDetailModel(empModel);
 
-    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider);
+    final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     model.addEntityModel(deptModel);
 
     assertFalse(model.containsUnsavedData());
