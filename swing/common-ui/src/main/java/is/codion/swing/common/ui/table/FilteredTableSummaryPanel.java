@@ -13,16 +13,17 @@ import javax.swing.table.TableColumn;
 
 /**
  * A UI component for showing column summary panels for numerical columns in a FilteredTableModel.
+ * @param <C> the column identifier
  */
-public final class FilteredTableSummaryPanel extends AbstractTableColumnSyncPanel {
+public final class FilteredTableSummaryPanel<C> extends AbstractTableColumnSyncPanel {
 
-  private final FilteredTableModel tableModel;
+  private final FilteredTableModel<?, C, ?> tableModel;
 
   /**
    * Instantiates a new FilteredTableSummaryPanel
    * @param tableModel the table model
    */
-  public FilteredTableSummaryPanel(final AbstractFilteredTableModel tableModel) {
+  public FilteredTableSummaryPanel(final AbstractFilteredTableModel<?, C> tableModel) {
     super(tableModel.getColumnModel());
     this.tableModel = tableModel;
     setVerticalFillerWidth(Components.getPreferredScrollBarWidth());
@@ -30,7 +31,7 @@ public final class FilteredTableSummaryPanel extends AbstractTableColumnSyncPane
 
   @Override
   protected JPanel initializeColumnPanel(final TableColumn column) {
-    return initializeColumnSummaryPanel(tableModel.getColumnSummaryModel(column.getIdentifier()));
+    return initializeColumnSummaryPanel(tableModel.getColumnSummaryModel((C) column.getIdentifier()));
   }
 
   /**

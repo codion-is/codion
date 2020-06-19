@@ -89,8 +89,8 @@ public class JasperReportsTest {
   public void fillJdbcReportInvalidReport() throws Exception {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
-    final ReportType nonExisting = Reports.reportType("test");
-    assertThrows(ReportException.class, () -> CONNECTION_PROVIDER.getConnection().fillReport(nonExisting, new HashMap<>()));
+    final ReportType<Object, Object, Object> nonExisting = Reports.reportType("test");
+    assertThrows(IllegalArgumentException.class, () -> CONNECTION_PROVIDER.getConnection().fillReport(nonExisting, new HashMap<>()));
   }
 
   @Test

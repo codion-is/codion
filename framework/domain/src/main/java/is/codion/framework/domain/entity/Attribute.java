@@ -34,7 +34,7 @@ public interface Attribute<T> extends Serializable {
   /**
    * @return the type of the entity this Attribute is associated with
    */
-  EntityType getEntityType();
+  EntityType<?> getEntityType();
 
   /**
    * @param value the value to validate

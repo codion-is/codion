@@ -8,19 +8,12 @@ import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.Report;
-import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.Property;
 
 /**
  * Represents an application domain model, entities, reports and database operations.
- * @see #define(EntityType, Property.Builder[])
- * @see #defineReport(ReportType, Report)
- * @see #defineProcedure(ProcedureType, DatabaseProcedure)
- * @see #defineFunction(FunctionType, DatabaseFunction)
  */
 public interface Domain extends EntityDefinition.Provider {
 
@@ -43,7 +36,7 @@ public interface Domain extends EntityDefinition.Provider {
    * @return the report
    * @throws IllegalArgumentException in case the report is not found
    */
-  <T, R, P> Report<T, R, P> getReport(ReportType<T, R, P> reportType) throws ReportException;
+  <T, R, P> Report<T, R, P> getReport(ReportType<T, R, P> reportType);
 
   /**
    * Retrieves the procedure of the given type.
