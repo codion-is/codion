@@ -148,14 +148,12 @@ public final class WhereConditionTest {
     master1Key.put(TestDomain.MASTER_ID_2, null);
 
     final EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
-    condition = whereCondition(selectCondition(
-            TestDomain.DETAIL_MASTER_FK, Operator.LIKE, master1Key), detailDefinition);
+    condition = whereCondition(selectCondition(TestDomain.DETAIL_MASTER_FK, Operator.LIKE, master1Key), detailDefinition);
     assertEquals("(master_id is null and master_id_2 is null)",
             condition.getWhereClause());
 
     master1Key.put(TestDomain.MASTER_ID_2, 1);
-    condition = whereCondition(selectCondition(
-            TestDomain.DETAIL_MASTER_FK, Operator.LIKE, master1Key), detailDefinition);
+    condition = whereCondition(selectCondition(TestDomain.DETAIL_MASTER_FK, Operator.LIKE, master1Key), detailDefinition);
     assertEquals("(master_id is null and master_id_2 = ?)",
             condition.getWhereClause());
 
