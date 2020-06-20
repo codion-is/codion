@@ -37,7 +37,6 @@ import static java.util.Objects.requireNonNull;
 public final class Conditions {
 
   private static final String NULL_CONDITION = "nullCondition";
-  private static final String VALUE = "value";
 
   private Conditions() {}
 
@@ -99,11 +98,11 @@ public final class Conditions {
    * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code key}.
    * @param attribute the attribute
    * @param operator the condition operator
-   * @param key the condition key
+   * @param keys the condition keys
    * @return a select condition based on the given key
    */
-  public static EntityCondition condition(final Attribute<Entity> attribute, final Operator operator, final Key key) {
-    return condition(attribute, operator, singletonList(key));
+  public static EntityCondition condition(final Attribute<Entity> attribute, final Operator operator, final Key... keys) {
+    return condition(attribute, operator, asList(requireNonNull(keys)));
   }
 
   /**
@@ -126,13 +125,13 @@ public final class Conditions {
    * @param entityType the entityType
    * @param attribute the attribute
    * @param operator the condition operator
-   * @param value the condition value
+   * @param values the condition values
    * @param <T> the attribute type
    * @return a condition based on the given value
    */
   public static <T> EntityCondition condition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                              final Operator operator, final T value) {
-    return condition(entityType, attribute, operator, singletonList(requireNonNull(value, VALUE)));
+                                              final Operator operator, final T... values) {
+    return condition(entityType, attribute, operator, asList(requireNonNull(values)));
   }
 
   /**
@@ -209,11 +208,11 @@ public final class Conditions {
    * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code key}.
    * @param attribute the attribute
    * @param operator the condition operator
-   * @param key the condition key
+   * @param keys the condition keys
    * @return a select condition based on the given key
    */
-  public static EntitySelectCondition selectCondition(final Attribute<Entity> attribute, final Operator operator, final Key key) {
-    return selectCondition(attribute, operator, singletonList(key));
+  public static EntitySelectCondition selectCondition(final Attribute<Entity> attribute, final Operator operator, final Key... keys) {
+    return selectCondition(attribute, operator, asList(requireNonNull(keys)));
   }
 
   /**
@@ -235,13 +234,13 @@ public final class Conditions {
    * @param entityType the entityType
    * @param attribute the attribute
    * @param operator the condition operator
-   * @param value the condition value, can be a Collection of values
+   * @param values the condition values
    * @param <T> the attribute type
    * @return a select condition based on the given value
    */
   public static <T> EntitySelectCondition selectCondition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                                          final Operator operator, final T value) {
-    return selectCondition(entityType, attribute, operator, singletonList(requireNonNull(value)));
+                                                          final Operator operator, final T... values) {
+    return selectCondition(entityType, attribute, operator, asList(requireNonNull(values)));
   }
 
   /**
@@ -290,13 +289,13 @@ public final class Conditions {
    * @param entityType the entityType
    * @param attribute the attribute
    * @param operator the condition operator
-   * @param value the condition value, can be a Collection of values
+   * @param values the condition values
    * @param <T> the value type
    * @return an update condition based on the given value
    */
   public static <T> EntityUpdateCondition updateCondition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                                          final Operator operator, final T value) {
-    return updateCondition(entityType, attribute, operator, singletonList(requireNonNull(value, VALUE)));
+                                                          final Operator operator, final T... values) {
+    return updateCondition(entityType, attribute, operator, asList(requireNonNull(values)));
   }
 
   /**
@@ -394,12 +393,12 @@ public final class Conditions {
    * Creates a {@link Condition} for the given attribute, with the operator specified by the {@code operator} and {@code key}.
    * @param attribute the attribute
    * @param operator the condition operator
-   * @param key the condition key
+   * @param keys the condition keys
    * @return a attribute condition based on the given key
    */
   public static AttributeCondition<Entity> attributeCondition(final Attribute<Entity> attribute, final Operator operator,
-                                                              final Key key) {
-    return attributeCondition(attribute, operator, singletonList(requireNonNull(key)));
+                                                              final Key... keys) {
+    return attributeCondition(attribute, operator, asList(requireNonNull(keys)));
   }
 
   /**
@@ -420,13 +419,13 @@ public final class Conditions {
    * and {@code value}. Note that {@code values} may be a single value or a Collection of values.
    * @param attribute the attribute
    * @param operator the condition operator
-   * @param value the condition value
+   * @param values the condition values
    * @param <T> the attribute type
    * @return a attribute condition based on the given value
    */
   public static <T> AttributeCondition<T> attributeCondition(final Attribute<T> attribute, final Operator operator,
-                                                             final T value) {
-    return attributeCondition(attribute, operator, singletonList(requireNonNull(value, VALUE)));
+                                                             final T... values) {
+    return attributeCondition(attribute, operator, asList(requireNonNull(values)));
   }
 
   /**
