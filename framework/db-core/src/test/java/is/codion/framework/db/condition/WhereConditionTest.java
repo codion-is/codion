@@ -55,9 +55,13 @@ public final class WhereConditionTest {
   @Test
   public void foreignKeyConditionNull() {
     final EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_EMP);
-    final WhereCondition condition = whereCondition(condition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, null), definition);
+    WhereCondition condition = whereCondition(conditionIsNull(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK), definition);
     assertEquals("deptno is null", condition.getWhereClause());
+
+    condition = whereCondition(conditionIsNotNull(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK), definition);
+    assertEquals("deptno is not null", condition.getWhereClause());
   }
 
   @Test
@@ -85,7 +89,7 @@ public final class WhereConditionTest {
     final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 10);
     final EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
-    final WhereCondition condition = whereCondition(condition(TestDomain.T_EMP,
+    final WhereCondition condition = whereCondition(condition(
             TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, department.getKey()), empDefinition);
     assertEquals("deptno = ?", condition.getWhereClause());
   }
@@ -135,33 +139,37 @@ public final class WhereConditionTest {
   @Test
   public void keyNullCondition() {
     final EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
-    WhereCondition condition = whereCondition(selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, singletonList(null)), empDefinition);
+    WhereCondition condition = whereCondition(selectConditionIsNull(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK), empDefinition);
     assertEquals("deptno is null", condition.getWhereClause());
 
-    condition = whereCondition(selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, null), empDefinition);
+    condition = whereCondition(selectConditionIsNull(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK), empDefinition);
     assertEquals("deptno is null", condition.getWhereClause());
 
-    final Key master1 = ENTITIES.key(TestDomain.T_MASTER);
-    master1.put(TestDomain.MASTER_ID_1, null);
-    master1.put(TestDomain.MASTER_ID_2, null);
+    condition = whereCondition(selectConditionIsNotNull(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK), empDefinition);
+    assertEquals("deptno is not null", condition.getWhereClause());
+
+    final Key master1Key = ENTITIES.key(TestDomain.T_MASTER);
+    master1Key.put(TestDomain.MASTER_ID_1, null);
+    master1Key.put(TestDomain.MASTER_ID_2, null);
 
     final EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
-    condition = whereCondition(selectCondition(TestDomain.T_DETAIL,
-            TestDomain.DETAIL_MASTER_FK, Operator.LIKE, master1), detailDefinition);
+    condition = whereCondition(selectCondition(
+            TestDomain.DETAIL_MASTER_FK, Operator.LIKE, master1Key), detailDefinition);
     assertEquals("(master_id is null and master_id_2 is null)",
             condition.getWhereClause());
 
-    master1.put(TestDomain.MASTER_ID_2, 1);
-    condition = whereCondition(selectCondition(TestDomain.T_DETAIL,
-            TestDomain.DETAIL_MASTER_FK, Operator.LIKE, master1), detailDefinition);
+    master1Key.put(TestDomain.MASTER_ID_2, 1);
+    condition = whereCondition(selectCondition(
+            TestDomain.DETAIL_MASTER_FK, Operator.LIKE, master1Key), detailDefinition);
     assertEquals("(master_id is null and master_id_2 = ?)",
             condition.getWhereClause());
 
     final Key deptKey = ENTITIES.key(TestDomain.T_DEPARTMENT, 42);
 
-    condition = whereCondition(selectCondition(TestDomain.T_EMP,
+    condition = whereCondition(selectCondition(
             TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, deptKey), empDefinition);
     assertEquals("deptno = ?", condition.getWhereClause());
   }
@@ -232,16 +240,8 @@ public final class WhereConditionTest {
   @Test
   public void attributeConditionWithNonColumnProperty() {
     final EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> whereCondition(condition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_LOCATION, Operator.LIKE, null), definition)
-            .getWhereClause());
-  }
-
-  @Test
-  public void selectConditionInvalidType() {
-    final EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_EMP);
-    assertThrows(IllegalArgumentException.class, () -> whereCondition(selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_COMMISSION, Operator.LIKE, "test"), definition)
+    assertThrows(IllegalArgumentException.class, () -> whereCondition(conditionIsNull(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_LOCATION), definition)
             .getWhereClause());
   }
 
@@ -269,7 +269,7 @@ public final class WhereConditionTest {
     assertEquals(property.getColumnName() + " <= ?", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            attributeCondition(TestDomain.DEPARTMENT_NAME, Operator.WITHIN_RANGE, "upper", "lower")), departmentDefinition);
+            attributeCondition(TestDomain.DEPARTMENT_NAME, Operator.WITHIN_RANGE, asList("upper", "lower"))), departmentDefinition);
     assertEquals("(" + property.getColumnName() + " >= ? and " + property.getColumnName() + " <= ?)", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,

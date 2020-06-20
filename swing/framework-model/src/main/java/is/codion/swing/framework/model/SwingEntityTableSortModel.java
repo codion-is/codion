@@ -3,8 +3,8 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -20,16 +20,16 @@ import java.util.List;
  */
 public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Property<?>> {
 
-  private final EntityDefinition.Provider definitionProvider;
+  private final Entities entities;
 
   /**
    * Instantiates a new DefaultEntityTableSortModel
-   * @param definitionProvider the domain entity definition provider
+   * @param entities the domain model entities
    * @param entityType the entityType
    */
-  public SwingEntityTableSortModel(final EntityDefinition.Provider definitionProvider, final EntityType<?> entityType) {
-    super(initializeColumns(definitionProvider.getDefinition(entityType).getVisibleProperties()));
-    this.definitionProvider = definitionProvider;
+  public SwingEntityTableSortModel(final Entities entities, final EntityType<?> entityType) {
+    super(initializeColumns(entities.getDefinition(entityType).getVisibleProperties()));
+    this.entities = entities;
   }
 
   @Override
@@ -40,7 +40,7 @@ public class SwingEntityTableSortModel extends AbstractTableSortModel<Entity, Pr
   @Override
   protected Comparator<?> initializeColumnComparator(final Property<?> property) {
     if (property instanceof ForeignKeyProperty) {
-      return definitionProvider.getDefinition(((ForeignKeyProperty) property).getReferencedEntityType()).getComparator();
+      return entities.getDefinition(((ForeignKeyProperty) property).getReferencedEntityType()).getComparator();
     }
 
     return super.initializeColumnComparator(property);

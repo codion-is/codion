@@ -9,13 +9,14 @@ import is.codion.framework.domain.property.ColumnProperty;
 
 /**
  * A Condition based on a single {@link Attribute}.
+ * @param <T> the attribute type
  */
-public interface AttributeCondition extends Condition {
+public interface AttributeCondition<T> extends Condition {
 
   /**
    * @return the attribute
    */
-  Attribute<?> getAttribute();
+  Attribute<T> getAttribute();
 
   /**
    * @return the condition operator
@@ -23,16 +24,25 @@ public interface AttributeCondition extends Condition {
   Operator getOperator();
 
   /**
+   * @return true if this is a null condition, that is, checks for null
+   */
+  boolean isNullCondition();
+
+  /**
    * Returns the condition string represented by this condition
    * @param property the underlying property
-   * @param <T> the attribute type
    * @return the condition string
    */
-  <T> String getConditionString(ColumnProperty<T> property);
+  String getConditionString(ColumnProperty<T> property);
 
   /**
    * @param caseSensitive false if this condition should not be case-sensitive
    * @return this condition
    */
-  AttributeCondition setCaseSensitive(boolean caseSensitive);
+  AttributeCondition<T> setCaseSensitive(boolean caseSensitive);
+
+  /**
+   * @return true if this condition is case sensitive, only applicable to conditions based on String attributes.
+   */
+  boolean isCaseSensitive();
 }

@@ -3,7 +3,6 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.db.Operator;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
@@ -133,13 +132,12 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void updateByCondition() throws DatabaseException {
-    final EntitySelectCondition selectCondition = selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_COMMISSION, Operator.LIKE, null);
+    final EntitySelectCondition selectCondition = selectConditionIsNull(TestDomain.T_EMP,
+            TestDomain.EMP_COMMISSION);
 
     final List<Entity> entities = connection.select(selectCondition);
 
-    final EntityUpdateCondition updateCondition = updateCondition(TestDomain.T_EMP,
-            TestDomain.EMP_COMMISSION, Operator.LIKE, null)
+    final EntityUpdateCondition updateCondition = updateConditionIsNull(TestDomain.T_EMP, TestDomain.EMP_COMMISSION)
             .set(TestDomain.EMP_COMMISSION, 500d)
             .set(TestDomain.EMP_SALARY, 4200d);
     try {

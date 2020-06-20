@@ -16,7 +16,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.Property;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,16 +53,6 @@ public abstract class DefaultDomain implements Domain {
   @Override
   public final Entities getEntities() {
     return entities;
-  }
-
-  @Override
-  public final EntityDefinition getDefinition(final EntityType<?> entityType) {
-    return entities.getDefinition(entityType);
-  }
-
-  @Override
-  public final Collection<EntityDefinition> getDefinitions() {
-    return entities.getDefinitions();
   }
 
   @Override
@@ -109,9 +98,11 @@ public abstract class DefaultDomain implements Domain {
    * for this entity, the property order must match the select column order.
    * @return a {@link EntityDefinition.Builder}
    * @throws IllegalArgumentException in case the entityType has already been used to define an entity type
+   * @throws IllegalArgumentException in case no properties are specified
    */
   protected final EntityDefinition.Builder define(final EntityType<?> entityType, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
+    requireNonNull(entityType, "entityType");
     if (!domainType.contains(entityType)) {
       throw new IllegalArgumentException("Entity type '" + entityType + "' is not part of domain: " + domainType);
     }

@@ -45,7 +45,7 @@ public final class ObservableEntityListTest {
     list.refresh();
     assertEquals(4, list.size());
     list.setSelectCondition(Conditions.attributeCondition(TestDomain.DEPARTMENT_NAME,
-            Operator.NOT_LIKE, "SALES", "OPERATIONS"));
+            Operator.NOT_LIKE, asList("SALES", "OPERATIONS")));
     list.refresh();
     assertEquals(2, list.size());
   }

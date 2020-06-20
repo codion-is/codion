@@ -288,7 +288,7 @@ List<Entity> doesAddresses =
         connection.select(Address.TYPE, Address.CUSTOMER_FK, customersNamedDoe);
 
 List<Entity> customersWithoutEmail =
-        connection.select(selectCondition(Customer.TYPE, Customer.EMAIL, Operator.LIKE, null));
+        connection.select(selectConditionIsNull(Customer.TYPE, Customer.EMAIL));
 
 List<String> activeCustomerEmailAddresses =
         connection.selectValues(Customer.EMAIL,

@@ -25,13 +25,14 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static is.codion.framework.db.condition.Conditions.attributeCondition;
-import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -357,12 +358,25 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private static Condition getCondition(final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel) {
-    final Object conditionValue = conditionModel.getOperator().getValues().equals(Operator.Values.TWO) ?
-            asList(conditionModel.getLowerBound(), conditionModel.getUpperBound()) : conditionModel.getUpperBound();
+  private static <T> Condition getCondition(final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel) {
+    final List<T> conditionValues = new ArrayList<>();
+    final Object lowerBound = conditionModel.getLowerBound();
+    final Object upperBound = conditionModel.getUpperBound();
+    if (lowerBound instanceof Collection) {
+      conditionValues.addAll((Collection<T>) lowerBound);
+    }
+    else if (lowerBound != null) {
+      conditionValues.add((T) lowerBound);
+    }
+    if (upperBound instanceof Collection) {
+      conditionValues.addAll((Collection<T>) upperBound);
+    }
+    else if (upperBound != null) {
+      conditionValues.add((T) upperBound);
+    }
 
-    return attributeCondition(conditionModel.getColumnIdentifier().getAttribute(), conditionModel.getOperator(), conditionValue)
-            .setCaseSensitive(conditionModel.isCaseSensitive());
+    return attributeCondition((Attribute<T>) conditionModel.getColumnIdentifier().getAttribute(),
+            conditionModel.getOperator(), conditionValues).setCaseSensitive(conditionModel.isCaseSensitive());
   }
 
   private static String toString(final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel) {

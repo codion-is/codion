@@ -18,6 +18,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -283,7 +284,8 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       final LookupSettings lookupSettings = propertyLookupSettings.get(lookupProperty);
       for (final String rawLookupText : lookupTexts) {
         final String lookupText = prepareLookupText(rawLookupText, lookupSettings);
-        final AttributeCondition condition = attributeCondition(lookupProperty.getAttribute(),
+        final AttributeCondition<String> condition = attributeCondition(
+                (Attribute<String>) lookupProperty.getAttribute(),
                 Operator.LIKE, lookupText).setCaseSensitive(lookupSettings.getCaseSensitiveValue().get());
         baseCondition.add(condition);
       }

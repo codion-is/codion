@@ -16,7 +16,7 @@ public final class QueriesTest {
   @Test
   public void getOrderByClause() {
     final TestDomain domain = new TestDomain();
-    final EntityDefinition definition = domain.getDefinition(TestDomain.Department.TYPE);
+    final EntityDefinition definition = domain.getEntities().getDefinition(TestDomain.Department.TYPE);
     OrderBy orderBy = OrderBy.orderBy().ascending(TestDomain.Department.LOC)
             .descending(TestDomain.Department.DNAME);
     assertEquals("order by loc, dname desc", Queries.getOrderByClause(orderBy, definition));

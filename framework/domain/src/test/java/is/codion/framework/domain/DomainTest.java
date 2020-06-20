@@ -58,7 +58,7 @@ public class DomainTest {
 
   @Test
   public void defineTypes() {
-    final EntityDefinition definition = domain.getDefinition(Detail.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Detail.TYPE);
 
     //assert types
     assertEquals(definition.getProperty(Detail.ID).getType(), Types.BIGINT);
@@ -112,13 +112,13 @@ public class DomainTest {
 
   @Test
   public void getPropertyWrongEntityType() {
-    final EntityDefinition definition = domain.getDefinition(Detail.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Detail.TYPE);
     assertThrows(IllegalArgumentException.class, () -> definition.getProperty(Master.CODE));
   }
 
   @Test
   public void getWritableColumnProperties() {
-    final EntityDefinition deptDef = domain.getDefinition(Department.TYPE);
+    final EntityDefinition deptDef = entities.getDefinition(Department.TYPE);
     List<ColumnProperty<?>> writable = deptDef
             .getWritableColumnProperties(true, true);
     assertTrue(writable.contains(deptDef.getProperty(Department.NO)));
@@ -138,7 +138,7 @@ public class DomainTest {
     assertTrue(writable.contains(deptDef.getProperty(Department.LOCATION)));
     assertFalse(writable.contains(deptDef.getProperty(Department.ACTIVE)));
 
-    final EntityDefinition empDef = domain.getDefinition(Employee.TYPE);
+    final EntityDefinition empDef = entities.getDefinition(Employee.TYPE);
     writable = empDef.getWritableColumnProperties(true, true);
     assertTrue(writable.contains(empDef.getProperty(Employee.ID)));
     assertTrue(writable.contains(empDef.getProperty(Employee.HIREDATE)));
@@ -166,7 +166,7 @@ public class DomainTest {
 
   @Test
   public void sortProperties() {
-    final List<Property<?>> properties = Properties.sort(domain.getDefinition(Employee.TYPE).getProperties(
+    final List<Property<?>> properties = Properties.sort(entities.getDefinition(Employee.TYPE).getProperties(
             asList(Employee.HIREDATE, Employee.COMMISSION,
                     Employee.SALARY, Employee.JOB)));
     assertEquals(Employee.COMMISSION, properties.get(0).getAttribute());
@@ -177,7 +177,7 @@ public class DomainTest {
 
   @Test
   public void getUpdatableProperties() {
-    final EntityDefinition definition = domain.getDefinition(Detail.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Detail.TYPE);
     final List<Property<?>> properties = definition.getUpdatableProperties();
     assertEquals(9, properties.size());
     assertFalse(properties.contains(definition.getProperty(Detail.MASTER_NAME)));
@@ -191,7 +191,7 @@ public class DomainTest {
     attributes.add(Department.NO);
     attributes.add(Department.NAME);
 
-    final EntityDefinition definition = domain.getDefinition(Department.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Department.TYPE);
     final List<Property<?>> properties = definition.getProperties(attributes);
     assertEquals(2, properties.size());
     assertTrue(properties.contains(definition.getProperty(Department.NO)));
@@ -301,7 +301,7 @@ public class DomainTest {
 
   @Test
   public void getProperties() {
-    final EntityDefinition definition = domain.getDefinition(Department.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Department.TYPE);
     final Property<Integer> id = definition.getProperty(Department.NO);
     final Property<String> location = definition.getProperty(Department.LOCATION);
     final Property<String> name = definition.getProperty(Department.NAME);
@@ -327,13 +327,13 @@ public class DomainTest {
 
   @Test
   public void getPropertyInvalid() {
-    assertThrows(IllegalArgumentException.class, () -> domain.getDefinition(Master.TYPE)
+    assertThrows(IllegalArgumentException.class, () -> entities.getDefinition(Master.TYPE)
             .getProperty(Master.TYPE.attribute("unknown property", Integer.class)));
   }
 
   @Test
   public void getForeignKeyReferences() {
-    final EntityDefinition definition = domain.getDefinition(Detail.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Detail.TYPE);
     List<ForeignKeyProperty> foreignKeyProperties = definition.getForeignKeyReferences(Employee.TYPE);
     assertEquals(0, foreignKeyProperties.size());
     foreignKeyProperties = definition.getForeignKeyReferences(Master.TYPE);
@@ -343,24 +343,24 @@ public class DomainTest {
 
   @Test
   public void getForeignKeyProperty() {
-    assertNotNull(domain.getDefinition(Detail.TYPE).getForeignKeyProperty(Detail.MASTER_FK));
+    assertNotNull(entities.getDefinition(Detail.TYPE).getForeignKeyProperty(Detail.MASTER_FK));
   }
 
   @Test
   public void getForeignKeyPropertyInvalid() {
-    assertThrows(IllegalArgumentException.class, () -> domain.getDefinition(Detail.TYPE).getForeignKeyProperty(Detail.TYPE.entityAttribute("bla bla")));
+    assertThrows(IllegalArgumentException.class, () -> entities.getDefinition(Detail.TYPE).getForeignKeyProperty(Detail.TYPE.entityAttribute("bla bla")));
   }
 
   @Test
   public void hasDerivedAttributes() {
-    final EntityDefinition definition = domain.getDefinition(Detail.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Detail.TYPE);
     assertFalse(definition.hasDerivedAttributes(Detail.BOOLEAN));
     assertTrue(definition.hasDerivedAttributes(Detail.INT));
   }
 
   @Test
   public void getDerivedAttributes() {
-    final EntityDefinition definition = domain.getDefinition(Detail.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Detail.TYPE);
     Collection<Attribute<?>> derivedAttributes = definition.getDerivedAttributes(Detail.BOOLEAN);
     assertTrue(derivedAttributes.isEmpty());
     derivedAttributes = definition.getDerivedAttributes(Detail.INT);
@@ -370,26 +370,26 @@ public class DomainTest {
 
   @Test
   public void hasDenormalizedProperties() {
-    assertTrue(domain.getDefinition(Detail.TYPE).hasDenormalizedProperties());
-    assertTrue(domain.getDefinition(Detail.TYPE).hasDenormalizedProperties(Detail.MASTER_FK));
+    assertTrue(entities.getDefinition(Detail.TYPE).hasDenormalizedProperties());
+    assertTrue(entities.getDefinition(Detail.TYPE).hasDenormalizedProperties(Detail.MASTER_FK));
   }
 
   @Test
   public void getDenormalizedProperties() {
     final List<DenormalizedProperty<?>> denormalized =
-            domain.getDefinition(Detail.TYPE).getDenormalizedProperties(Detail.MASTER_FK);
+            entities.getDefinition(Detail.TYPE).getDenormalizedProperties(Detail.MASTER_FK);
     assertFalse(denormalized.isEmpty());
     assertEquals(Detail.MASTER_CODE_DENORM, denormalized.get(0).getAttribute());
   }
 
   @Test
   public void isSmallDataset() {
-    assertTrue(domain.getDefinition(Detail.TYPE).isSmallDataset());
+    assertTrue(entities.getDefinition(Detail.TYPE).isSmallDataset());
   }
 
   @Test
   public void getStringProvider() {
-    assertNotNull(domain.getDefinition(Department.TYPE).getStringProvider());
+    assertNotNull(entities.getDefinition(Department.TYPE).getStringProvider());
   }
 
   @Test
@@ -402,7 +402,7 @@ public class DomainTest {
 
   @Test
   public void nullValidation() {
-    final EntityDefinition definition = domain.getDefinition(Employee.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Employee.TYPE);
     final Entity emp = entities.entity(Employee.TYPE);
     emp.put(Employee.NAME, "Name");
     emp.put(Employee.HIREDATE, LocalDateTime.now());
@@ -437,7 +437,7 @@ public class DomainTest {
 
   @Test
   public void maxLengthValidation() {
-    final EntityDefinition definition = domain.getDefinition(Employee.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Employee.TYPE);
     final Entity emp = entities.entity(Employee.TYPE);
     emp.put(Employee.DEPARTMENT, 1);
     emp.put(Employee.NAME, "Name");
@@ -451,7 +451,7 @@ public class DomainTest {
 
   @Test
   public void rangeValidation() {
-    final EntityDefinition definition = domain.getDefinition(Employee.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Employee.TYPE);
     final Entity emp = entities.entity(Employee.TYPE);
     emp.put(Employee.DEPARTMENT, 1);
     emp.put(Employee.NAME, "Name");
@@ -481,21 +481,21 @@ public class DomainTest {
 
   @Test
   public void getSearchProperties() {
-    final EntityDefinition definition = domain.getDefinition(Employee.TYPE);
+    final EntityDefinition definition = entities.getDefinition(Employee.TYPE);
     Collection<ColumnProperty<?>> searchProperties = definition.getSearchProperties();
     assertTrue(searchProperties.contains(definition.getColumnProperty(Employee.JOB)));
     assertTrue(searchProperties.contains(definition.getColumnProperty(Employee.NAME)));
 
-    searchProperties = domain.getDefinition(Department.TYPE).getSearchProperties();
+    searchProperties = entities.getDefinition(Department.TYPE).getSearchProperties();
     //should contain all string based properties
-    assertTrue(searchProperties.contains(domain.getDefinition(Department.TYPE)
+    assertTrue(searchProperties.contains(entities.getDefinition(Department.TYPE)
             .getColumnProperty(Department.NAME)));
   }
 
   @Test
   public void selectableProperty() {
     assertThrows(IllegalArgumentException.class, () ->
-            domain.getDefinition(Detail.TYPE).getSelectableColumnProperties(singletonList(Detail.STRING)));
+            entities.getDefinition(Detail.TYPE).getSelectableColumnProperties(singletonList(Detail.STRING)));
   }
 
   @Test
@@ -563,19 +563,19 @@ public class DomainTest {
     domain.define(entityType,
             Properties.columnProperty(entityType.attribute("test", Integer.class))
                     .primaryKeyIndex(0));
-    assertTrue(domain.getDefinition(entityType).hasSingleIntegerPrimaryKey());
+    assertTrue(entities.getDefinition(entityType).hasSingleIntegerPrimaryKey());
     entityType = DOMAIN.entityType("hasSingleIntegerPrimaryKey2");
     domain.define(entityType,
             Properties.columnProperty(entityType.attribute("test", Integer.class))
                     .primaryKeyIndex(0),
             Properties.columnProperty(entityType.attribute("test2", Integer.class))
                     .primaryKeyIndex(1));
-    assertFalse(domain.getDefinition(entityType).hasSingleIntegerPrimaryKey());
+    assertFalse(entities.getDefinition(entityType).hasSingleIntegerPrimaryKey());
     entityType = DOMAIN.entityType("hasSingleIntegerPrimaryKey3");
     domain.define(entityType,
             Properties.columnProperty(entityType.attribute("test", String.class))
                     .primaryKeyIndex(0));
-    assertFalse(domain.getDefinition(entityType).hasSingleIntegerPrimaryKey());
+    assertFalse(entities.getDefinition(entityType).hasSingleIntegerPrimaryKey());
   }
 
   @Test
@@ -584,7 +584,7 @@ public class DomainTest {
     final EntityType<Entity> entityType = DOMAIN.entityType("entityType3");
     domain.define(entityType,
             Properties.primaryKeyProperty(entityType.attribute("p0", Integer.class))).havingClause(havingClause);
-    assertEquals(havingClause, domain.getDefinition(entityType).getHavingClause());
+    assertEquals(havingClause, entities.getDefinition(entityType).getHavingClause());
   }
 
   @Test

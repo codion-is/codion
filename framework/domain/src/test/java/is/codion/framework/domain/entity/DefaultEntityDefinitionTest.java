@@ -43,7 +43,7 @@ public class DefaultEntityDefinitionTest {
       }
     }
     final Domain domain = new TestDomain();
-    final EntityDefinition definition = domain.getDefinition(entityType);
+    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertEquals(entityType.getName(), definition.toString());
     assertEquals(entityType, definition.getEntityType());
     assertEquals("tableName", definition.getTableName());
@@ -59,9 +59,21 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
+  public void entityWithoutProperties() {
+    final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("entityWithoutProperties");
+    class TestDomain extends DefaultDomain {
+      public TestDomain() {
+        super(DOMAIN_TYPE);
+        define(entityType, "tableName");
+      }
+    }
+    assertThrows(IllegalArgumentException.class, () -> new TestDomain());
+  }
+
+  @Test
   public void entityWithValueProvider() {
     final Domain domain = new TestDomain();
-    final EntityDefinition definition = domain.getDefinition(TestDomain.Detail.TYPE);
+    final EntityDefinition definition = domain.getEntities().getDefinition(TestDomain.Detail.TYPE);
     final Entity detail = definition.entity(property -> null);
     assertFalse(detail.containsKey(TestDomain.Detail.DOUBLE));//columnHasDefaultValue
     assertFalse(detail.containsKey(TestDomain.Detail.DATE));//columnHasDefaultValue
@@ -141,7 +153,7 @@ public class DefaultEntityDefinitionTest {
     }
     final Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getDefinition(entityType);
+    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     Collection<Attribute<?>> linked = definition.getDerivedAttributes(name);
     assertTrue(linked.contains(derived));
     assertEquals(1, linked.size());
@@ -164,7 +176,7 @@ public class DefaultEntityDefinitionTest {
     }
     final Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getDefinition(entityType);
+    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertEquals("p1, p2", definition.getGroupByClause());
   }
 
@@ -196,7 +208,7 @@ public class DefaultEntityDefinitionTest {
     }
     final Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getDefinition(entityType);
+    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertEquals(havingClause, definition.getHavingClause());
   }
 
@@ -296,7 +308,7 @@ public class DefaultEntityDefinitionTest {
     }
     final Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getDefinition(entityType);
+    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertTrue(definition.hasDerivedAttributes(attribute1));
     assertTrue(definition.hasDerivedAttributes(attribute2));
   }
@@ -379,7 +391,7 @@ public class DefaultEntityDefinitionTest {
     }
     final Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getDefinition(entityType);
+    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertNotNull(definition.getKeyGenerator());
     assertFalse(definition.isKeyGenerated());
     assertTrue(definition.getKeyGenerator().isInserted());
@@ -411,7 +423,7 @@ public class DefaultEntityDefinitionTest {
     }
     final Domain domain = new TestDomain();
 
-    final EntityDefinition definition = domain.getDefinition(entityType);
+    final EntityDefinition definition = domain.getEntities().getDefinition(entityType);
     assertNotNull(definition.getKeyGenerator());
     assertTrue(definition.isKeyGenerated());
     assertFalse(definition.getKeyGenerator().isInserted());

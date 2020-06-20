@@ -502,29 +502,27 @@ final class DefaultEntity implements Entity {
   private void setForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     removeCachedReferencedKey(foreignKeyProperty.getAttribute());
     final List<ColumnProperty<?>> properties = foreignKeyProperty.getColumnProperties();
-    final List<Attribute<?>> foreignAttributes =
+    final List<Attribute<?>> referencedAttributes =
             definition.getForeignDefinition(foreignKeyProperty.getAttribute()).getPrimaryKeyAttributes();
     if (properties.size() > 1) {
-      setCompositeForeignKeyValues(referencedEntity, properties, foreignAttributes);
+      setCompositeForeignKeyValues(referencedEntity, properties, referencedAttributes);
     }
     else {
-      setSingleForeignKeyValue(referencedEntity, properties.get(0), foreignAttributes.get(0));
+      setSingleForeignKeyValue(referencedEntity, properties.get(0), referencedAttributes.get(0));
     }
   }
 
-  private void setCompositeForeignKeyValues(final Entity referencedEntity,
-                                            final List<ColumnProperty<?>> referenceProperties,
-                                            final List<Attribute<?>> foreignColumnAttributes) {
+  private void setCompositeForeignKeyValues(final Entity referencedEntity, final List<ColumnProperty<?>> referenceProperties,
+                                            final List<Attribute<?>> referencedAttributes) {
     for (int i = 0; i < referenceProperties.size(); i++) {
-      setSingleForeignKeyValue(referencedEntity, referenceProperties.get(i), foreignColumnAttributes.get(i));
+      setSingleForeignKeyValue(referencedEntity, referenceProperties.get(i), referencedAttributes.get(i));
     }
   }
 
-  private void setSingleForeignKeyValue(final Entity referencedEntity,
-                                        final ColumnProperty<?> referenceProperty,
-                                        final Attribute<?> foreignColumnAttribute) {
+  private void setSingleForeignKeyValue(final Entity referencedEntity, final ColumnProperty<?> referenceProperty,
+                                        final Attribute<?> referencedAttribute) {
     if (!(referenceProperty instanceof MirrorProperty)) {
-      putInternal((Property<Object>) referenceProperty, referencedEntity == null ? null : referencedEntity.get(foreignColumnAttribute));
+      putInternal((Property<Object>) referenceProperty, referencedEntity == null ? null : referencedEntity.get(referencedAttribute));
     }
   }
 
