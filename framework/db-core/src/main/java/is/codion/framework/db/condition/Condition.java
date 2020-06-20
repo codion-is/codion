@@ -36,18 +36,18 @@ public interface Condition extends Serializable {
   interface Combination extends Condition {
 
     /**
-     * Adds a new Condition object to this set, adding null or a {@link EmptyCondition} instance has no effect
+     * Adds a new Condition object to this combination, adding null or a {@link EmptyCondition} instance has no effect
      * @param condition the Condition to add
      */
     void add(Condition condition);
 
     /**
-     * @return the Conditions contained in this Set
+     * @return the Conditions comprising this Combination
      */
     List<Condition> getConditions();
 
     /**
-     * @return the Set conjunction
+     * @return the conjunction
      */
     Conjunction getConjunction();
   }
