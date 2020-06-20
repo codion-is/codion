@@ -185,7 +185,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   DefaultEntityDefinition(final String domainName, final EntityType<?> entityType, final String tableName,
                           final List<Property<?>> properties) {
     this.domainName = requireNonNull(domainName, "domainName");
-    this.entityType = (EntityType<Entity>) requireNonNull(entityType, "entityType");
+    this.entityType = requireNonNull(entityType, "entityType");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
     this.entityProperties = new EntityProperties(entityType, properties);
     this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();

@@ -13,7 +13,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
@@ -182,12 +182,9 @@ public abstract class DefaultEntities implements Entities {
   protected final EntityDefinition.Builder define(final EntityType<?> entityType, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
     requireNonNull(propertyBuilders, "propertyBuilders");
-    final ArrayList<Property<?>> properties = new ArrayList<>();
-    for (final Property.Builder<?> builder : propertyBuilders) {
-      properties.add(builder.get());
-    }
     final EntityDefinition.Builder definitionBuilder =
-            new DefaultEntityDefinition(domainType.getName(), entityType, tableName, properties).builder();
+            new DefaultEntityDefinition(domainType.getName(), entityType, tableName,
+                    Stream.of(propertyBuilders).map(Property.Builder::get).collect(toList())).builder();
     addDefinition((DefaultEntityDefinition) definitionBuilder.get());
 
     return definitionBuilder;
