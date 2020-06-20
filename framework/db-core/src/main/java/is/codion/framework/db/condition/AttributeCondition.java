@@ -23,6 +23,11 @@ public interface AttributeCondition extends Condition {
   Operator getOperator();
 
   /**
+   * @return true if this is a null condition, that is, checks for null
+   */
+  boolean isNullCondition();
+
+  /**
    * Returns the condition string represented by this condition
    * @param property the underlying property
    * @param <T> the attribute type
@@ -35,4 +40,9 @@ public interface AttributeCondition extends Condition {
    * @return this condition
    */
   AttributeCondition setCaseSensitive(boolean caseSensitive);
+
+  /**
+   * @return true if this condition is case sensitive, only applicable to conditions based on String attributes.
+   */
+  boolean isCaseSensitive();
 }

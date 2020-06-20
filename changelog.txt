@@ -6278,3 +6278,6 @@
   Domain now interface, DefaultDomain added
   Some type safety improvements
   EntityDefinition.Provider removed
+  Operator.isNullCompatible() added
+  AttributeCondition.isNullCondition() and isCaseSensitive() added
+  DefaultAttributeCondition refactored, DefaultAttributeCondition.ConditionStringProvider added along with subclasses

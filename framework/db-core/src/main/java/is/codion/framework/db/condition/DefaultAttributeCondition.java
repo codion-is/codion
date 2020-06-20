@@ -12,9 +12,11 @@ import is.codion.framework.domain.property.SubqueryProperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static is.codion.common.db.Operator.LIKE;
+import static is.codion.common.db.Operator.*;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -25,9 +27,16 @@ final class DefaultAttributeCondition implements AttributeCondition {
 
   private static final long serialVersionUID = 1;
 
-  private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
-  private static final String IN_PREFIX = " in (";
-  private static final String NOT_IN_PREFIX = " not in (";
+  private static final Map<Operator, ConditionStringProvider> OPERATOR_PROVIDER_MAP = new HashMap<>();
+
+  static {
+    OPERATOR_PROVIDER_MAP.put(LIKE, new LikeConditionProvider(false));
+    OPERATOR_PROVIDER_MAP.put(NOT_LIKE, new LikeConditionProvider(true));
+    OPERATOR_PROVIDER_MAP.put(LESS_THAN, new LessThanConditionProvider());
+    OPERATOR_PROVIDER_MAP.put(GREATER_THAN, new GreaterThanConditionProvider());
+    OPERATOR_PROVIDER_MAP.put(WITHIN_RANGE, new WithinRangeConditionProvider());
+    OPERATOR_PROVIDER_MAP.put(OUTSIDE_RANGE, new OutsideRangeConditionProvider());
+  }
 
   /**
    * The attribute used in this condition
@@ -63,10 +72,11 @@ final class DefaultAttributeCondition implements AttributeCondition {
   DefaultAttributeCondition(final Attribute<?> attribute, final Operator operator, final Object... values) {
     requireNonNull(attribute, "attribute");
     requireNonNull(operator, "operator");
+    validateValues(operator, values);
     this.attribute = attribute;
     this.operator = operator;
     this.nullCondition = values == null || values.length == 1 && values[0] == null;
-    this.values = initializeValues(values == null ? new Object[] {null} : values);
+    this.values = nullCondition ? null : initializeValues(values);
     if (this.values.isEmpty()) {
       throw new IllegalArgumentException("No values specified for AttributeCondition: " + attribute);
     }
@@ -101,17 +111,47 @@ final class DefaultAttributeCondition implements AttributeCondition {
   }
 
   @Override
+  public boolean isNullCondition() {
+    return nullCondition;
+  }
+
+  @Override
   public <T> String getConditionString(final ColumnProperty<T> property) {
     if (!attribute.equals(property.getAttribute())) {
       throw new IllegalArgumentException("Property '" + property + "' is not based on attribute: " + attribute);
     }
-    return createColumnPropertyConditionString((ColumnProperty<Object>) property, operator, getValues(), nullCondition, caseSensitive);
+    final ColumnProperty<Object> objectColumnProperty = (ColumnProperty<Object>) property;
+    if (!nullCondition) {
+      for (int i = 0; i < values.size(); i++) {
+        objectColumnProperty.getAttribute().validateType(values.get(i));
+      }
+    }
+
+    return OPERATOR_PROVIDER_MAP.get(operator).getConditionString(this, objectColumnProperty);
   }
 
   @Override
   public AttributeCondition setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
     return this;
+  }
+
+  @Override
+  public boolean isCaseSensitive() {
+    return caseSensitive;
+  }
+
+  private static void validateValues(final Operator operator, final Object[] values) {
+    if (values == null && !operator.isNullCompatible()) {
+      throw new IllegalArgumentException("Operator " + operator + " is not null compatible");
+    }
+    if (values != null) {
+      for (final Object value : values) {
+        if (value == null && !operator.isNullCompatible()) {
+          throw new IllegalArgumentException("Operator " + operator + " is not null compatible");
+        }
+      }
+    }
   }
 
   private static List<Object> initializeValues(final Object... conditionValues) {
@@ -138,79 +178,115 @@ final class DefaultAttributeCondition implements AttributeCondition {
     return valueList;
   }
 
-  private static String createColumnPropertyConditionString(final ColumnProperty<Object> property,
-                                                            final Operator operator, final List<Object> values,
-                                                            final boolean isNullCondition, final boolean isCaseSensitive) {
-    for (int i = 0; i < values.size(); i++) {
-      property.getAttribute().validateType(values.get(i));
-    }
-    final String columnIdentifier = initializeColumnIdentifier(property, isNullCondition, isCaseSensitive);
-    if (isNullCondition) {
-      return columnIdentifier + (operator == LIKE ? " is null" : " is not null");
-    }
+  private interface ConditionStringProvider {
 
-    final int valueCount = values.size();
-
-    final String firstValuePlaceholder = getValuePlaceholder(property, isCaseSensitive);
-    final String secondValuePlaceholder = valueCount == 2 ? getValuePlaceholder(property, isCaseSensitive) : null;
-
-    switch (operator) {
-      case LIKE:
-        return getLikeCondition(property, columnIdentifier, firstValuePlaceholder, false, values, valueCount);
-      case NOT_LIKE:
-        return getLikeCondition(property, columnIdentifier, firstValuePlaceholder, true, values, valueCount);
-      case LESS_THAN:
-        return columnIdentifier + " <= " + firstValuePlaceholder;
-      case GREATER_THAN:
-        return columnIdentifier + " >= " + firstValuePlaceholder;
-      case WITHIN_RANGE:
-        return "(" + columnIdentifier + " >= " + firstValuePlaceholder + " and " + columnIdentifier + " <= " + secondValuePlaceholder + ")";
-      case OUTSIDE_RANGE:
-        return "(" + columnIdentifier + " <= " + firstValuePlaceholder + " or " + columnIdentifier + " >= " + secondValuePlaceholder + ")";
-      default:
-        throw new IllegalArgumentException("Unknown operator" + operator);
-    }
+    String getConditionString(AttributeCondition condition, ColumnProperty<Object> property);
   }
 
-  private static String getValuePlaceholder(final ColumnProperty<?> property, final boolean caseSensitive) {
-    return property.getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
-  }
+  private static final class LikeConditionProvider implements ConditionStringProvider {
 
-  private static String getLikeCondition(final ColumnProperty<?> property, final String columnIdentifier,
-                                         final String valuePlaceholder, final boolean notLike, final List<Object> values,
-                                         final int valueCount) {
-    if (valueCount > 1) {
-      return getInList(columnIdentifier, valuePlaceholder, valueCount, notLike);
-    }
-    if (property.getAttribute().isString() && containsWildcards((String) values.get(0))) {
-      return columnIdentifier + (notLike ? " not like " : " like ") + valuePlaceholder;
-    }
-    else {
-      return columnIdentifier + (notLike ? " <> " : " = ") + valuePlaceholder;
-    }
-  }
+    private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
+    private static final String IN_PREFIX = " in (";
+    private static final String NOT_IN_PREFIX = " not in (";
 
-  private static String getInList(final String columnIdentifier, final String valuePlaceholder, final int valueCount, final boolean not) {
-    final boolean exceedsLimit = valueCount > IN_CLAUSE_LIMIT;
-    final StringBuilder stringBuilder = new StringBuilder(exceedsLimit ? "(" : "").append(columnIdentifier).append(not ? NOT_IN_PREFIX : IN_PREFIX);
-    int cnt = 1;
-    for (int i = 0; i < valueCount; i++) {
-      stringBuilder.append(valuePlaceholder);
-      if (cnt++ == IN_CLAUSE_LIMIT && i < valueCount - 1) {
-        stringBuilder.append(not ? ") and " : ") or ").append(columnIdentifier).append(not ? NOT_IN_PREFIX : IN_PREFIX);
-        cnt = 1;
+    private final boolean negated;
+
+    private LikeConditionProvider(final boolean negated) {
+      this.negated = negated;
+    }
+
+    @Override
+    public String getConditionString(final AttributeCondition condition, final ColumnProperty<Object> property) {
+      final String columnIdentifier = getColumnIdentifier(property, condition.isNullCondition(), condition.isCaseSensitive());
+      if (condition.isNullCondition()) {
+        return columnIdentifier + (condition.getOperator() == LIKE ? " is null" : " is not null");
       }
-      else if (i < valueCount - 1) {
-        stringBuilder.append(", ");
+
+      return getLikeCondition(condition, property, columnIdentifier);
+    }
+
+    private String getLikeCondition(final AttributeCondition condition, final ColumnProperty<?> property,
+                                    final String columnIdentifier) {
+      final String valuePlaceholder = getValuePlaceholder(property, condition.isCaseSensitive());
+      if (condition.getValues().size() > 1) {
+        return getInList(columnIdentifier, valuePlaceholder, condition.getValues().size(), negated);
+      }
+      if (property.getAttribute().isString() && containsWildcards((String) condition.getValues().get(0))) {
+        return columnIdentifier + (negated ? " not like " : " like ") + valuePlaceholder;
+      }
+      else {
+        return columnIdentifier + (negated ? " <> " : " = ") + valuePlaceholder;
       }
     }
-    stringBuilder.append(")").append(exceedsLimit ? ")" : "");
 
-    return stringBuilder.toString();
+    private static String getInList(final String columnIdentifier, final String valuePlaceholder, final int valueCount, final boolean negated) {
+      final boolean exceedsLimit = valueCount > IN_CLAUSE_LIMIT;
+      final StringBuilder stringBuilder = new StringBuilder(exceedsLimit ? "(" : "").append(columnIdentifier).append(negated ? NOT_IN_PREFIX : IN_PREFIX);
+      int cnt = 1;
+      for (int i = 0; i < valueCount; i++) {
+        stringBuilder.append(valuePlaceholder);
+        if (cnt++ == IN_CLAUSE_LIMIT && i < valueCount - 1) {
+          stringBuilder.append(negated ? ") and " : ") or ").append(columnIdentifier).append(negated ? NOT_IN_PREFIX : IN_PREFIX);
+          cnt = 1;
+        }
+        else if (i < valueCount - 1) {
+          stringBuilder.append(", ");
+        }
+      }
+      stringBuilder.append(")").append(exceedsLimit ? ")" : "");
+
+      return stringBuilder.toString();
+    }
+
+    private static boolean containsWildcards(final String value) {
+      return value.contains("%") || value.contains("_");
+    }
   }
 
-  private static String initializeColumnIdentifier(final ColumnProperty<?> property, final boolean isNullCondition,
-                                                   final boolean caseSensitive) {
+  private static final class LessThanConditionProvider implements ConditionStringProvider {
+
+    @Override
+    public String getConditionString(final AttributeCondition condition, final ColumnProperty<Object> property) {
+      return getColumnIdentifier(property) + " <= " + getValuePlaceholder(property, condition.isCaseSensitive());
+    }
+  }
+
+  private static final class GreaterThanConditionProvider implements ConditionStringProvider {
+
+    @Override
+    public String getConditionString(final AttributeCondition condition, final ColumnProperty<Object> property) {
+      return getColumnIdentifier(property) + " >= " + getValuePlaceholder(property, condition.isCaseSensitive());
+    }
+  }
+
+  private static final class WithinRangeConditionProvider implements ConditionStringProvider {
+
+    @Override
+    public String getConditionString(final AttributeCondition condition, final ColumnProperty<Object> property) {
+      final String columnIdentifier = getColumnIdentifier(property);
+      final String valuePlaceholder = getValuePlaceholder(property, condition.isCaseSensitive());
+
+      return "(" + columnIdentifier + " >= " + valuePlaceholder + " and " + columnIdentifier + " <= " + valuePlaceholder + ")";
+    }
+  }
+
+  private static final class OutsideRangeConditionProvider implements ConditionStringProvider {
+
+    @Override
+    public String getConditionString(final AttributeCondition condition, final ColumnProperty<Object> property) {
+      final String columnIdentifier = getColumnIdentifier(property);
+      final String valuePlaceholder = getValuePlaceholder(property, condition.isCaseSensitive());
+
+      return "(" + columnIdentifier + " <= " + valuePlaceholder + " or " + columnIdentifier + " >= " + valuePlaceholder + ")";
+    }
+  }
+
+  static String getColumnIdentifier(final ColumnProperty<?> property) {
+    return getColumnIdentifier(property, false, true);
+  }
+
+  static String getColumnIdentifier(final ColumnProperty<?> property, final boolean isNullCondition,
+                                    final boolean caseSensitive) {
     String columnName;
     if (property instanceof SubqueryProperty) {
       columnName = "(" + ((SubqueryProperty<?>) property).getSubQuery() + ")";
@@ -226,7 +302,7 @@ final class DefaultAttributeCondition implements AttributeCondition {
     return columnName;
   }
 
-  private static boolean containsWildcards(final String value) {
-    return value.contains("%") || value.contains("_");
+  static String getValuePlaceholder(final ColumnProperty<?> property, final boolean caseSensitive) {
+    return property.getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
   }
 }
