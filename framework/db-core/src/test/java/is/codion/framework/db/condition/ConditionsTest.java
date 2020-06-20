@@ -21,7 +21,7 @@ public final class ConditionsTest {
 
   @Test
   public void test() {
-    final Condition critOne = Conditions.attributeCondition(TestDomain.DEPARTMENT_LOCATION, Operator.LIKE, "New York");
+    final Condition critOne = Conditions.attributeCondition(TestDomain.DEPARTMENT_LOCATION, Operator.EQUAL_TO, "New York");
 
     EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_DEPARTMENT, critOne).setOrderBy(
             orderBy().ascending(TestDomain.DEPARTMENT_NAME));

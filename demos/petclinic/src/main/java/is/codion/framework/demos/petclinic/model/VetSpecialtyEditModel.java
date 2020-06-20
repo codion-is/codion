@@ -11,7 +11,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
-import static is.codion.common.db.Operator.LIKE;
+import static is.codion.common.db.Operator.EQUAL_TO;
 import static is.codion.framework.db.condition.Conditions.*;
 
 public final class VetSpecialtyEditModel extends SwingEntityEditModel {
@@ -33,8 +33,8 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
     try {
       int rowCount = getConnectionProvider().getConnection().rowCount(
               condition(VetSpecialty.TYPE, combination(Conjunction.AND,
-                      attributeCondition(VetSpecialty.SPECIALTY, LIKE, entity.get(VetSpecialty.SPECIALTY)),
-                      attributeCondition(VetSpecialty.VET, LIKE, entity.get(VetSpecialty.VET)))));
+                      attributeCondition(VetSpecialty.SPECIALTY, EQUAL_TO, entity.get(VetSpecialty.SPECIALTY)),
+                      attributeCondition(VetSpecialty.VET, EQUAL_TO, entity.get(VetSpecialty.VET)))));
       if (rowCount > 0) {
         throw new ValidationException(VetSpecialty.SPECIALTY_FK,
                 entity.get(VetSpecialty.SPECIALTY_FK), "Vet/specialty combination already exists");

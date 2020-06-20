@@ -56,7 +56,7 @@ public class DefaultColumnConditionModelTest {
     assertEquals("%hello%", model.getLowerBound());
     model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.NONE);
 
-    model.setLikeValue("test");
+    model.setEqualValue("test");
     assertEquals(2, upperBoundCounter.get());
     assertEquals("test", model.getUpperBound());
 
@@ -73,7 +73,7 @@ public class DefaultColumnConditionModelTest {
   public void testMisc() {
     final ColumnConditionModel model = new DefaultColumnConditionModel("test", String.class, "%");
     assertEquals("test", model.getColumnIdentifier());
-    model.setOperator(Operator.LIKE);
+    model.setOperator(Operator.EQUAL_TO);
     assertFalse(model.isLowerBoundRequired());
     model.setOperator(Operator.GREATER_THAN);
     model.setOperator(Operator.LESS_THAN);
@@ -81,7 +81,7 @@ public class DefaultColumnConditionModelTest {
     model.setOperator(Operator.WITHIN_RANGE);
     assertTrue(model.isLowerBoundRequired());
 
-    model.setOperator(Operator.LIKE);
+    model.setOperator(Operator.EQUAL_TO);
     model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
     model.setUpperBound("upper");
     assertEquals("%upper%", model.getUpperBound());
@@ -91,7 +91,7 @@ public class DefaultColumnConditionModelTest {
   public void testOperator() {
     final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.addOperatorListener(operatorListener);
-    assertEquals(Operator.LIKE, model.getOperator());
+    assertEquals(Operator.EQUAL_TO, model.getOperator());
     model.setOperator(Operator.LESS_THAN);
     assertEquals(1, operatorCounter.get());
     assertEquals(Operator.LESS_THAN, model.getOperator());
@@ -166,19 +166,19 @@ public class DefaultColumnConditionModelTest {
   public void setOperatorLocked() {
     final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
-    assertThrows(IllegalStateException.class, () -> model.setOperator(Operator.NOT_LIKE));
+    assertThrows(IllegalStateException.class, () -> model.setOperator(Operator.NOT_EQUAL_TO));
   }
 
   @Test
   public void include() {
     final DefaultColumnConditionModel<String, String> conditionModel = new DefaultColumnConditionModel<>("test", Integer.class, "%");
     conditionModel.setUpperBound(10);
-    conditionModel.setOperator(Operator.LIKE);
+    conditionModel.setOperator(Operator.EQUAL_TO);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
 
-    conditionModel.setOperator(Operator.NOT_LIKE);
+    conditionModel.setOperator(Operator.NOT_EQUAL_TO);
     assertTrue(conditionModel.include(9));
     assertFalse(conditionModel.include(10));
     assertTrue(conditionModel.include(11));

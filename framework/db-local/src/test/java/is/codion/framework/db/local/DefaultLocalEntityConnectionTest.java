@@ -105,8 +105,8 @@ public class DefaultLocalEntityConnectionTest {
       connection.beginTransaction();
       //scott, james, adams
       assertEquals(3, connection.delete(condition(T_EMP, combination(Conjunction.AND,
-              attributeCondition(EMP_NAME, Operator.LIKE, "%S%"),
-              attributeCondition(EMP_JOB, Operator.LIKE, "CLERK")))));
+              attributeCondition(EMP_NAME, Operator.EQUAL_TO, "%S%"),
+              attributeCondition(EMP_JOB, Operator.EQUAL_TO, "CLERK")))));
     }
     finally {
       connection.rollbackTransaction();
@@ -172,7 +172,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void deleteByConditionWithForeignKeys() throws DatabaseException {
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(condition(Department.TYPE,
-            Conditions.attributeCondition(Department.DNAME, Operator.LIKE, "ACCOUNTING"))));
+            Conditions.attributeCondition(Department.DNAME, Operator.EQUAL_TO, "ACCOUNTING"))));
   }
 
   @Test
@@ -271,7 +271,7 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.getForeignKey(EMP_MGR_FK);
     assertTrue(emp.isLoaded(EMP_MGR_FK));
 
-    assertEquals(4, connection.rowCount(Conditions.condition(EMP_ID, Operator.LIKE, asList(1, 2, 3, 4))));
+    assertEquals(4, connection.rowCount(Conditions.condition(EMP_ID, Operator.EQUAL_TO, asList(1, 2, 3, 4))));
     assertEquals(0, connection.rowCount(Conditions.condition(EMP_DEPARTMENT, NullCondition.IS_NULL)));
     assertEquals(0, connection.rowCount(Conditions.condition(EMP_DEPARTMENT_FK, NullCondition.IS_NULL)));
     assertEquals(1, connection.rowCount(Conditions.condition(EMP_MGR, NullCondition.IS_NULL)));
@@ -568,7 +568,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals("RESEARCH", result.get(2));
     assertEquals("SALES", result.get(3));
 
-    result = connection.selectValues(Department.DNAME, Conditions.attributeCondition(Department.DEPTNO, Operator.LIKE, 10));
+    result = connection.selectValues(Department.DNAME, Conditions.attributeCondition(Department.DEPTNO, Operator.EQUAL_TO, 10));
     assertTrue(result.contains("ACCOUNTING"));
     assertFalse(result.contains("SALES"));
   }
@@ -576,7 +576,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void selectValuesIncorrectAttribute() throws Exception {
     assertThrows(IllegalArgumentException.class, () -> connection.selectValues(Department.DNAME,
-            attributeCondition(EMP_ID, Operator.LIKE, 1)));
+            attributeCondition(EMP_ID, Operator.EQUAL_TO, 1)));
   }
 
   @Test
@@ -585,7 +585,7 @@ public class DefaultLocalEntityConnectionTest {
     final DefaultLocalEntityConnection connection2 = initializeConnection();
     final String originalLocation;
     try {
-      final EntitySelectCondition condition = selectCondition(Department.DNAME, Operator.LIKE, "SALES");
+      final EntitySelectCondition condition = selectCondition(Department.DNAME, Operator.EQUAL_TO, "SALES");
       condition.setForUpdate(true);
 
       Entity sales = connection.selectSingle(condition);
@@ -624,7 +624,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.setOptimisticLockingEnabled(true);
     final Entity allen;
     try {
-      final EntitySelectCondition condition = selectCondition(EMP_NAME, Operator.LIKE, "ALLEN");
+      final EntitySelectCondition condition = selectCondition(EMP_NAME, Operator.EQUAL_TO, "ALLEN");
 
       allen = connection.selectSingle(condition);
 
@@ -727,7 +727,7 @@ public class DefaultLocalEntityConnectionTest {
     final DefaultLocalEntityConnection connection = initializeConnection();
     final ResultIterator<Entity> deptIterator = connection.iterator(selectCondition(Department.TYPE));
     while (deptIterator.hasNext()) {
-      final ResultIterator<Entity> empIterator = connection.iterator(selectCondition(EMP_DEPARTMENT_FK, Operator.LIKE, deptIterator.next()));
+      final ResultIterator<Entity> empIterator = connection.iterator(selectCondition(EMP_DEPARTMENT_FK, Operator.EQUAL_TO, deptIterator.next()));
       while (empIterator.hasNext()) {
         empIterator.next();
       }
@@ -864,8 +864,8 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(6, entities.size());
     entities = connection.select(selectCondition(T_NO_PK,
             combination(Conjunction.OR,
-                    attributeCondition(NO_PK_COL1, Operator.LIKE, 2),
-                    attributeCondition(NO_PK_COL3, Operator.LIKE, "5"))));
+                    attributeCondition(NO_PK_COL1, Operator.EQUAL_TO, 2),
+                    attributeCondition(NO_PK_COL3, Operator.EQUAL_TO, "5"))));
     assertEquals(4, entities.size());
   }
 

@@ -185,7 +185,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   public <T> void setFilterValue(final Attribute<T> attribute, final Comparable<T> value) {
     final ColumnConditionModel<Entity, Property<?>> filterModel = getFilterModel(attribute);
     if (filterModel != null) {
-      filterModel.setLikeValue(value);
+      filterModel.setEqualValue(value);
     }
   }
 
@@ -310,7 +310,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       conditionModel.setCaseSensitive(false);
       conditionModel.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
       conditionModel.setUpperBound(searchString);
-      conditionModel.setOperator(Operator.LIKE);
+      conditionModel.setOperator(Operator.EQUAL_TO);
       conditionModel.setEnabled(true);
     }
   }

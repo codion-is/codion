@@ -31,7 +31,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
 
   private final Value<Object> upperBoundValue = Values.value();
   private final Value<Object> lowerBoundValue = Values.value();
-  private final Value<Operator> operatorValue = Values.value(Operator.LIKE);
+  private final Value<Operator> operatorValue = Values.value(Operator.EQUAL_TO);
   private final Event<?> conditionChangedEvent = Events.event();
   private final Event<?> conditionModelClearedEvent = Events.event();
 
@@ -134,8 +134,8 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   @Override
-  public final <T> void setLikeValue(final T value) {
-    setOperator(Operator.LIKE);
+  public final <T> void setEqualValue(final T value) {
+    setOperator(Operator.EQUAL_TO);
     setUpperBound(value);
     final boolean enableSearch = value != null;
     if (enabledState.get() != enableSearch) {
@@ -235,7 +235,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     setEnabled(false);
     setUpperBound(null);
     setLowerBound(null);
-    setOperator(Operator.LIKE);
+    setOperator(Operator.EQUAL_TO);
     conditionModelClearedEvent.onEvent();
   }
 
@@ -346,10 +346,10 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     }
 
     switch (operatorValue.get()) {
-      case LIKE:
-        return includeLike(comparable);
-      case NOT_LIKE:
-        return includeNotLike(comparable);
+      case EQUAL_TO:
+        return includeEqual(comparable);
+      case NOT_EQUAL_TO:
+        return includeNotEqual(comparable);
       case LESS_THAN:
         return includeLessThan(comparable);
       case GREATER_THAN:
@@ -387,7 +387,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     return (T) upperBound;
   }
 
-  private boolean includeLike(final Comparable<?> comparable) {
+  private boolean includeEqual(final Comparable<?> comparable) {
     if (comparable == null) {
       return getUpperBound() == null;
     }
@@ -402,7 +402,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     return comparable.compareTo(getUpperBound()) == 0;
   }
 
-  private boolean includeNotLike(final Comparable<?> comparable) {
+  private boolean includeNotEqual(final Comparable<?> comparable) {
     if (comparable == null) {
       return getUpperBound() != null;
     }
@@ -502,8 +502,8 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   private String addWildcard(final String value) {
-    //only use wildcard for LIKE and NOT_LIKE
-    if (operatorValue.get().equals(Operator.LIKE) || operatorValue.get().equals(Operator.NOT_LIKE)) {
+    //only use wildcard for EQUAL_TO and NOT_EQUAL_TO
+    if (operatorValue.get().equals(Operator.EQUAL_TO) || operatorValue.get().equals(Operator.NOT_EQUAL_TO)) {
       switch (automaticWildcard) {
         case PREFIX_AND_POSTFIX:
           return wildcard + value + wildcard;

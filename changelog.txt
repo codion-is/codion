@@ -6316,3 +6316,4 @@
   Conditions, simplified null condition, NullCondition enum added
   Conditions, varargs re-introduced for convenience
   EntityConnection, Conditions, removed redundant EntityType parameter
+  Operator.LIKE and NOT_LIKE renamed EQUAL_TO and NOT_EQUAL_TO respectively

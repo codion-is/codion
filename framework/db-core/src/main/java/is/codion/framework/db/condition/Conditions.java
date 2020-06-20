@@ -22,8 +22,8 @@ import java.util.ListIterator;
 
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.Conjunction.OR;
-import static is.codion.common.db.Operator.LIKE;
-import static is.codion.common.db.Operator.NOT_LIKE;
+import static is.codion.common.db.Operator.EQUAL_TO;
+import static is.codion.common.db.Operator.NOT_EQUAL_TO;
 import static is.codion.framework.db.condition.NullCondition.IS_NULL;
 import static is.codion.framework.domain.entity.Entities.getValues;
 import static java.util.Arrays.asList;
@@ -88,7 +88,7 @@ public final class Conditions {
    * @return a condition based on the given value
    */
   public static <T> EntityCondition condition(final Attribute<T> attribute, final NullCondition nullCondition) {
-    return condition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
+    return condition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUAL_TO : NOT_EQUAL_TO, emptyList());
   }
 
   /**
@@ -190,7 +190,7 @@ public final class Conditions {
    * @return a select condition based on the given value
    */
   public static <T> EntitySelectCondition selectCondition(final Attribute<T> attribute, final NullCondition nullCondition) {
-    return selectCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
+    return selectCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUAL_TO : NOT_EQUAL_TO, emptyList());
   }
 
   /**
@@ -260,7 +260,7 @@ public final class Conditions {
    * @return an update condition based on the given value
    */
   public static <T> EntityUpdateCondition updateCondition(final Attribute<T> attribute, final NullCondition nullCondition) {
-    return updateCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
+    return updateCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUAL_TO : NOT_EQUAL_TO, emptyList());
   }
 
   /**
@@ -361,7 +361,7 @@ public final class Conditions {
    * @return a attribute condition based on the given value
    */
   public static <T> AttributeCondition<T> attributeCondition(final Attribute<T> attribute, final NullCondition nullCondition) {
-    return attributeCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
+    return attributeCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUAL_TO : NOT_EQUAL_TO, emptyList());
   }
 
   /**
@@ -472,10 +472,10 @@ public final class Conditions {
   private static <T> Condition createKeyCondition(final List<Key> keys) {
     final Key firstKey = keys.get(0);
     if (firstKey.isCompositeKey()) {
-      return compositeKeyCondition(keys, firstKey.getAttributes(), LIKE);
+      return compositeKeyCondition(keys, firstKey.getAttributes(), EQUAL_TO);
     }
 
-    return attributeCondition((Attribute<T>) firstKey.getAttribute(), LIKE, getValues(keys));
+    return attributeCondition((Attribute<T>) firstKey.getAttribute(), EQUAL_TO, getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */

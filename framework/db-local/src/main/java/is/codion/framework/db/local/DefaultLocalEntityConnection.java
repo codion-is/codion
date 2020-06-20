@@ -58,7 +58,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.common.db.Operator.LIKE;
+import static is.codion.common.db.Operator.EQUAL_TO;
 import static is.codion.common.db.connection.DatabaseConnections.createConnection;
 import static is.codion.common.db.database.Database.closeSilently;
 import static is.codion.framework.db.condition.Conditions.*;
@@ -460,7 +460,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return selectSingle(selectCondition(attribute, LIKE, value));
+    return selectSingle(selectCondition(attribute, EQUAL_TO, value));
   }
 
   @Override
@@ -507,12 +507,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return select(value == null ? selectCondition(attribute, IS_NULL) : selectCondition(attribute, LIKE, value));
+    return select(value == null ? selectCondition(attribute, IS_NULL) : selectCondition(attribute, EQUAL_TO, value));
   }
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
-    return select(selectCondition(attribute, LIKE, values));
+    return select(selectCondition(attribute, EQUAL_TO, values));
   }
 
   @Override
@@ -630,7 +630,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entities.iterator().next().getEntityType());
     for (final ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
-        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getAttribute(), LIKE, entities));
+        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getAttribute(), EQUAL_TO, entities));
         if (!dependencies.isEmpty()) {
           dependencyMap.put((EntityType<Entity>) foreignKeyReference.getEntityType(), dependencies);
         }
