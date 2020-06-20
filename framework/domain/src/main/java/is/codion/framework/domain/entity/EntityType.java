@@ -11,6 +11,7 @@ import java.time.LocalTime;
 
 /**
  * Defines a Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
+ * @param <T> the entity type
  */
 public interface EntityType<T extends Entity> extends Serializable {
 

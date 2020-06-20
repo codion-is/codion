@@ -12,7 +12,7 @@ import is.codion.framework.domain.property.SubqueryProperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +27,7 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
 
   private static final long serialVersionUID = 1;
 
-  private static final Map<Operator, ConditionStringProvider> OPERATOR_PROVIDER_MAP = new HashMap<>();
+  private static final Map<Operator, ConditionStringProvider> OPERATOR_PROVIDER_MAP = new EnumMap<>(Operator.class);
 
   static {
     OPERATOR_PROVIDER_MAP.put(LIKE, new LikeConditionProvider(false));

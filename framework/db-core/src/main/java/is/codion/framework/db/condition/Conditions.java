@@ -36,6 +36,10 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Conditions {
 
+  private static final String NULL_CONDITION = "nullCondition";
+  private static final String ONE_OR_MORE_KEYS = "One or more keys must be provided for condition";
+  private static final String VALUE = "value";
+
   private Conditions() {}
 
   /**
@@ -92,7 +96,7 @@ public final class Conditions {
    */
   public static <T> EntityCondition condition(final EntityType<?> entityType, final Attribute<T> attribute,
                                               final NullCondition nullCondition) {
-    return condition(entityType, attribute, requireNonNull(nullCondition, "nullCondition") == IS_NULL ? LIKE : NOT_LIKE, emptyList());
+    return condition(entityType, attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
   }
 
   /**
@@ -117,7 +121,7 @@ public final class Conditions {
    */
   public static EntityCondition condition(final Attribute<Entity> attribute, final Operator operator, final List<Key> keys) {
     if (keys.isEmpty()) {
-      throw new IllegalArgumentException("One or more keys must be provided for condition");
+      throw new IllegalArgumentException(ONE_OR_MORE_KEYS);
     }
 
     return condition(keys.get(0).getEntityType(), attributeCondition(attribute, operator, keys));
@@ -136,7 +140,7 @@ public final class Conditions {
    */
   public static <T> EntityCondition condition(final EntityType<?> entityType, final Attribute<T> attribute,
                                               final Operator operator, final T value) {
-    return condition(entityType, attribute, operator, singletonList(requireNonNull(value, "value")));
+    return condition(entityType, attribute, operator, singletonList(requireNonNull(value, VALUE)));
   }
 
   /**
@@ -209,7 +213,7 @@ public final class Conditions {
    */
   public static <T> EntitySelectCondition selectCondition(final EntityType<?> entityType, final Attribute<T> attribute,
                                                           final NullCondition nullCondition) {
-    return selectCondition(entityType, attribute, requireNonNull(nullCondition, "nullCondition") == IS_NULL ? LIKE : NOT_LIKE, emptyList());
+    return selectCondition(entityType, attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
   }
 
   /**
@@ -233,7 +237,7 @@ public final class Conditions {
    */
   public static EntitySelectCondition selectCondition(final Attribute<Entity> attribute, final Operator operator, final List<Key> keys) {
     if (keys.isEmpty()) {
-      throw new IllegalArgumentException("One or more keys must be provided for condition");
+      throw new IllegalArgumentException(ONE_OR_MORE_KEYS);
     }
 
     return selectCondition(keys.get(0).getEntityType(), attributeCondition(attribute, operator, keys));
@@ -291,7 +295,7 @@ public final class Conditions {
    */
   public static <T> EntityUpdateCondition updateCondition(final EntityType<?> entityType, final Attribute<T> attribute,
                                                           final NullCondition nullCondition) {
-    return updateCondition(entityType, attribute, requireNonNull(nullCondition, "nullCondition") == IS_NULL ? LIKE : NOT_LIKE, emptyList());
+    return updateCondition(entityType, attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
   }
 
   /**
@@ -307,7 +311,7 @@ public final class Conditions {
    */
   public static <T> EntityUpdateCondition updateCondition(final EntityType<?> entityType, final Attribute<T> attribute,
                                                           final Operator operator, final T value) {
-    return updateCondition(entityType, attribute, operator, singletonList(requireNonNull(value, "value")));
+    return updateCondition(entityType, attribute, operator, singletonList(requireNonNull(value, VALUE)));
   }
 
   /**
@@ -398,7 +402,7 @@ public final class Conditions {
    * @return a attribute condition based on the given value
    */
   public static <T> AttributeCondition<T> attributeCondition(final Attribute<T> attribute, final NullCondition nullCondition) {
-    return attributeCondition(attribute, requireNonNull(nullCondition, "nullCondition") == IS_NULL ? LIKE : NOT_LIKE, emptyList());
+    return attributeCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
   }
 
   /**
@@ -423,7 +427,7 @@ public final class Conditions {
   public static AttributeCondition<Entity> attributeCondition(final Attribute<Entity> attribute, final Operator operator,
                                                               final List<Key> keys) {
     if (keys.isEmpty()) {
-      throw new IllegalArgumentException("One or more keys must be provided for condition");
+      throw new IllegalArgumentException(ONE_OR_MORE_KEYS);
     }
 
     return new DefaultAttributeCondition<>(attribute, operator, keys);
@@ -440,7 +444,7 @@ public final class Conditions {
    */
   public static <T> AttributeCondition<T> attributeCondition(final Attribute<T> attribute, final Operator operator,
                                                              final T value) {
-    return attributeCondition(attribute, operator, singletonList(requireNonNull(value, "value")));
+    return attributeCondition(attribute, operator, singletonList(requireNonNull(value, VALUE)));
   }
 
   /**
