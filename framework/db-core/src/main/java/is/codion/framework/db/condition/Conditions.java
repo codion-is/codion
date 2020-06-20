@@ -37,7 +37,6 @@ import static java.util.Objects.requireNonNull;
 public final class Conditions {
 
   private static final String NULL_CONDITION = "nullCondition";
-  private static final String ONE_OR_MORE_KEYS = "One or more keys must be provided for condition";
   private static final String VALUE = "value";
 
   private Conditions() {}
@@ -68,11 +67,7 @@ public final class Conditions {
    * @return a condition specifying the entities having the given primary keys
    */
   public static EntityCondition condition(final List<Key> keys) {
-    requireNonNull(keys, "keys");
-    if (keys.isEmpty()) {
-      throw new IllegalArgumentException("Entity key condition requires at least one key");
-    }
-
+    checkKeysParameter(keys);
     return new DefaultEntityCondition(keys.get(0).getEntityType(), createKeyCondition(keys));
   }
 
@@ -120,10 +115,7 @@ public final class Conditions {
    * @return a select condition based on the given value
    */
   public static EntityCondition condition(final Attribute<Entity> attribute, final Operator operator, final List<Key> keys) {
-    if (keys.isEmpty()) {
-      throw new IllegalArgumentException(ONE_OR_MORE_KEYS);
-    }
-
+    checkKeysParameter(keys);
     return condition(keys.get(0).getEntityType(), attributeCondition(attribute, operator, keys));
   }
 
@@ -174,11 +166,7 @@ public final class Conditions {
    * @return a select condition based on the given keys
    */
   public static EntitySelectCondition selectCondition(final List<Key> keys) {
-    requireNonNull(keys, "keys");
-    if (keys.isEmpty()) {
-      throw new IllegalArgumentException("Entity key condition requires at least one key");
-    }
-
+    checkKeysParameter(keys);
     return new DefaultEntitySelectCondition(keys.get(0).getEntityType(), createKeyCondition(keys));
   }
 
@@ -236,10 +224,7 @@ public final class Conditions {
    * @return a select condition based on the given value
    */
   public static EntitySelectCondition selectCondition(final Attribute<Entity> attribute, final Operator operator, final List<Key> keys) {
-    if (keys.isEmpty()) {
-      throw new IllegalArgumentException(ONE_OR_MORE_KEYS);
-    }
-
+    checkKeysParameter(keys);
     return selectCondition(keys.get(0).getEntityType(), attributeCondition(attribute, operator, keys));
   }
 
@@ -426,10 +411,7 @@ public final class Conditions {
    */
   public static AttributeCondition<Entity> attributeCondition(final Attribute<Entity> attribute, final Operator operator,
                                                               final List<Key> keys) {
-    if (keys.isEmpty()) {
-      throw new IllegalArgumentException(ONE_OR_MORE_KEYS);
-    }
-
+    checkKeysParameter(keys);
     return new DefaultAttributeCondition<>(attribute, operator, keys);
   }
 
@@ -557,6 +539,13 @@ public final class Conditions {
     }
 
     return attributeCondition((Attribute<T>) foreignKeyColumnAttributes.get(0), operator, getValues(keys));
+  }
+
+  private static void checkKeysParameter(final List<Key> keys) {
+    requireNonNull(keys, "keys");
+    if (keys.isEmpty()) {
+      throw new IllegalArgumentException("One or more keys must be provided for condition");
+    }
   }
 
   private static List<Key> getKeys(final Object value) {
