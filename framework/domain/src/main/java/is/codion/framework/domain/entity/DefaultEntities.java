@@ -182,10 +182,10 @@ public abstract class DefaultEntities implements Entities {
   protected final EntityDefinition.Builder define(final EntityType<?> entityType, final String tableName,
                                                   final Property.Builder<?>... propertyBuilders) {
     requireNonNull(propertyBuilders, "propertyBuilders");
-    final EntityDefinition.Builder definitionBuilder =
+    final DefaultEntityDefinition.DefaultBuilder definitionBuilder =
             new DefaultEntityDefinition(domainType.getName(), entityType, tableName,
                     Stream.of(propertyBuilders).map(Property.Builder::get).collect(toList())).builder();
-    addDefinition((DefaultEntityDefinition) definitionBuilder.get());
+    addDefinition(definitionBuilder.get());
 
     return definitionBuilder;
   }

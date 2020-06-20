@@ -59,6 +59,18 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
+  public void entityWithoutProperties() {
+    final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("entityWithoutProperties");
+    class TestDomain extends DefaultDomain {
+      public TestDomain() {
+        super(DOMAIN_TYPE);
+        define(entityType, "tableName");
+      }
+    }
+    assertThrows(IllegalArgumentException.class, () -> new TestDomain());
+  }
+
+  @Test
   public void entityWithValueProvider() {
     final Domain domain = new TestDomain();
     final EntityDefinition definition = domain.getEntities().getDefinition(TestDomain.Detail.TYPE);

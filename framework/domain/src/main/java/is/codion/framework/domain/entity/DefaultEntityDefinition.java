@@ -184,6 +184,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
    */
   DefaultEntityDefinition(final String domainName, final EntityType<?> entityType, final String tableName,
                           final List<Property<?>> properties) {
+    if (properties.isEmpty()) {
+      throw new IllegalArgumentException("An entity must have one or more properties");
+    }
     this.domainName = requireNonNull(domainName, "domainName");
     this.entityType = requireNonNull(entityType, "entityType");
     this.tableName = rejectNullOrEmpty(tableName, "tableName");
@@ -633,7 +636,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * @return a {@link EntityDefinition.Builder} for this definition instance
    */
-  Builder builder() {
+  DefaultBuilder builder() {
     return new DefaultBuilder(this);
   }
 
@@ -918,7 +921,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
   }
 
-  private static final class DefaultBuilder implements Builder {
+  static final class DefaultBuilder implements Builder {
 
     private final DefaultEntityDefinition definition;
 
@@ -927,7 +930,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public EntityDefinition get() {
+    public DefaultEntityDefinition get() {
       return definition;
     }
 
