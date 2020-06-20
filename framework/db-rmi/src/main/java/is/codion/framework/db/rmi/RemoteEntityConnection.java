@@ -204,7 +204,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<T> selectValues(Attribute<T> attribute) throws RemoteException, DatabaseException;
+  <T> List<T> select(Attribute<T> attribute) throws RemoteException, DatabaseException;
 
   /**
    * Selects ordered and distinct non-null values of the given attribute, note that the attribute
@@ -218,7 +218,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<T> selectValues(Attribute<T> attribute, Condition condition) throws RemoteException, DatabaseException;
+  <T> List<T> select(Attribute<T> attribute, Condition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity

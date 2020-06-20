@@ -557,25 +557,25 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectValuesNonColumnProperty() throws Exception {
-    assertThrows(IllegalArgumentException.class, () -> connection.selectValues(EMP_DEPARTMENT_LOCATION));
+    assertThrows(IllegalArgumentException.class, () -> connection.select(EMP_DEPARTMENT_LOCATION));
   }
 
   @Test
   public void selectValues() throws Exception {
-    List<String> result = connection.selectValues(Department.DNAME);
+    List<String> result = connection.select(Department.DNAME);
     assertEquals("ACCOUNTING", result.get(0));
     assertEquals("OPERATIONS", result.get(1));
     assertEquals("RESEARCH", result.get(2));
     assertEquals("SALES", result.get(3));
 
-    result = connection.selectValues(Department.DNAME, Conditions.attributeCondition(Department.DEPTNO, Operator.EQUAL_TO, 10));
+    result = connection.select(Department.DNAME, Conditions.attributeCondition(Department.DEPTNO, Operator.EQUAL_TO, 10));
     assertTrue(result.contains("ACCOUNTING"));
     assertFalse(result.contains("SALES"));
   }
 
   @Test
   public void selectValuesIncorrectAttribute() throws Exception {
-    assertThrows(IllegalArgumentException.class, () -> connection.selectValues(Department.DNAME,
+    assertThrows(IllegalArgumentException.class, () -> connection.select(Department.DNAME,
             attributeCondition(EMP_ID, Operator.EQUAL_TO, 1)));
   }
 
