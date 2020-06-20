@@ -118,27 +118,26 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectByValue() throws IOException, DatabaseException {
-    final List<Entity> department = connection.select(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final List<Entity> department = connection.select(TestDomain.DEPARTMENT_NAME, "SALES");
     assertEquals(1, department.size());
   }
 
   @Test
   public void update() throws IOException, DatabaseException {
-    Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     department.put(TestDomain.DEPARTMENT_NAME, "TEstING");
     connection.update(department);
-    department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, department.get(TestDomain.DEPARTMENT_ID));
+    department = connection.selectSingle(TestDomain.DEPARTMENT_ID, department.get(TestDomain.DEPARTMENT_ID));
     assertEquals("TEstING", department.get(TestDomain.DEPARTMENT_NAME));
   }
 
   @Test
   public void updateByCondition() throws DatabaseException {
-    final EntitySelectCondition selectCondition = selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_COMMISSION, NullCondition.IS_NULL);
+    final EntitySelectCondition selectCondition = selectCondition(TestDomain.EMP_COMMISSION, NullCondition.IS_NULL);
 
     final List<Entity> entities = connection.select(selectCondition);
 
-    final EntityUpdateCondition updateCondition = updateCondition(TestDomain.T_EMP, TestDomain.EMP_COMMISSION, NullCondition.IS_NULL)
+    final EntityUpdateCondition updateCondition = updateCondition(TestDomain.EMP_COMMISSION, NullCondition.IS_NULL)
             .set(TestDomain.EMP_COMMISSION, 500d)
             .set(TestDomain.EMP_SALARY, 4200d);
     try {
@@ -158,7 +157,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void deleteByKey() throws IOException, DatabaseException {
-    final Entity employee = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "ADAMS");
+    final Entity employee = connection.selectSingle(TestDomain.EMP_NAME, "ADAMS");
     try {
       connection.beginTransaction();
       assertTrue(connection.delete(employee.getKey()));
@@ -188,7 +187,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectDependencies() throws IOException, DatabaseException {
-    final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     final Map<EntityType<Entity>, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
     assertNotNull(dependentEntities);
     assertTrue(dependentEntities.containsKey(TestDomain.T_EMP));
@@ -224,7 +223,7 @@ public final class HttpEntityConnectionTest {
     final byte[] bytes = new byte[1024];
     new Random().nextBytes(bytes);
 
-    final Entity scott = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 7);
+    final Entity scott = connection.selectSingle(TestDomain.EMP_ID, 7);
     connection.writeBlob(scott.getKey(), TestDomain.EMP_DATA, bytes);
     assertArrayEquals(bytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA));
   }
@@ -237,8 +236,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
-    final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(condition(department.getKey())));
   }
 

@@ -200,9 +200,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     assertTrue(departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().getRowCount() > 0);
 
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
-    final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final List<Entity> salesEmployees = connection.select(selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, department));
+    final Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
+    final List<Entity> salesEmployees = connection.select(selectCondition(TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, department));
     assertFalse(salesEmployees.isEmpty());
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =
@@ -291,7 +290,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     dept.put(TestDomain.DEPARTMENT_NAME, "Name");
     dept.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
 
-    final Entity emp = connectionProvider.getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_ID, 8);
+    final Entity emp = connectionProvider.getConnection().selectSingle(TestDomain.EMP_ID, 8);
     emp.clearKeyValues();
     emp.put(TestDomain.EMP_NAME, "NewName");
 

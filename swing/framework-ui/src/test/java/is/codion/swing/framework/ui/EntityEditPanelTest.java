@@ -45,8 +45,7 @@ public final class EntityEditPanelTest {
     editPanel.setActive(true);
     assertTrue(editPanel.isActive());
 
-    final Entity martin = editModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP,
-            TestDomain.EMP_NAME, "MARTIN");
+    final Entity martin = editModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "MARTIN");
     editModel.setEntity(martin);
     assertFalse(editModel.isEntityNew());
     editPanel.clearAndRequestFocus();

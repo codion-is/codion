@@ -110,7 +110,7 @@ public final class SwingEntityComboBoxModelTest {
   @Test
   public void setForeignKeyFilterEntities() throws Exception {
     comboBoxModel.refresh();
-    final Entity blake = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "BLAKE");
+    final Entity blake = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "BLAKE");
     comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_MGR_FK, singletonList(blake));
     assertEquals(5, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
@@ -118,7 +118,7 @@ public final class SwingEntityComboBoxModelTest {
       assertEquals(item.getForeignKey(TestDomain.EMP_MGR_FK), blake);
     }
 
-    final Entity sales = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity sales = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_DEPARTMENT_FK, singletonList(sales));
     assertEquals(2, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
@@ -127,7 +127,7 @@ public final class SwingEntityComboBoxModelTest {
       assertEquals(item.getForeignKey(TestDomain.EMP_MGR_FK), blake);
     }
 
-    final Entity accounting = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    final Entity accounting = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     final EntityComboBoxModel deptComboBoxModel = comboBoxModel.createForeignKeyFilterComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     deptComboBoxModel.setSelectedItem(accounting);
     assertEquals(3, comboBoxModel.getSize());
@@ -164,7 +164,7 @@ public final class SwingEntityComboBoxModelTest {
   @Test
   public void setSelectedEntityByKey() throws DatabaseException {
     comboBoxModel.refresh();
-    final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "CLARK");
+    final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "CLARK");
     comboBoxModel.setSelectedEntityByKey(clark.getKey());
     assertEquals(clark, comboBoxModel.getSelectedValue());
     comboBoxModel.setSelectedItem(null);
@@ -212,7 +212,7 @@ public final class SwingEntityComboBoxModelTest {
     assertTrue(comboBoxModel.getSize() > 0);
     assertFalse(comboBoxModel.isCleared());
 
-    final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "CLARK");
+    final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "CLARK");
     comboBoxModel.setSelectedItem(clark);
     assertEquals(clark, comboBoxModel.getSelectedValue());
 

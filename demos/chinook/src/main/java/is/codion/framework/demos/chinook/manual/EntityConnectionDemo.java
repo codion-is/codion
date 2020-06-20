@@ -42,7 +42,7 @@ public final class EntityConnectionDemo {
 
   static void selectConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::selectCondition[]
-    EntitySelectCondition condition = selectCondition(Artist.TYPE, Artist.NAME, LIKE, "The %");
+    EntitySelectCondition condition = selectCondition(Artist.NAME, LIKE, "The %");
 
     List<Entity> artists = connection.select(condition);
 
@@ -57,7 +57,7 @@ public final class EntityConnectionDemo {
 
   static void fetchDepthEntity(EntityConnection connection) throws DatabaseException {
     // tag::fetchDepthEntity[]
-    List<Entity> tracks = connection.select(Track.TYPE, Track.NAME, "Bad%");
+    List<Entity> tracks = connection.select(Track.NAME, "Bad%");
 
     Entity track = tracks.get(0);
 
@@ -74,7 +74,7 @@ public final class EntityConnectionDemo {
   static void fetchDepthCondition(EntityConnection connection) throws DatabaseException {
     // tag::fetchDepthCondition[]
     EntitySelectCondition selectCondition =
-            selectCondition(Track.TYPE, Track.NAME, LIKE, "Bad%")
+            selectCondition(Track.NAME, LIKE, "Bad%")
                     .setForeignKeyFetchDepth(0);
 
     List<Entity> tracks = connection.select(selectCondition);
@@ -90,7 +90,7 @@ public final class EntityConnectionDemo {
   static void fetchDepthForeignKeyCondition(EntityConnection connection) throws DatabaseException {
     // tag::fetchDepthConditionForeignKey[]
     EntitySelectCondition selectCondition =
-            selectCondition(Track.TYPE, Track.NAME, LIKE, "Bad%")
+            selectCondition(Track.NAME, LIKE, "Bad%")
                     .setForeignKeyFetchDepth(Track.ALBUM_FK, 0);
 
     List<Entity> tracks = connection.select(selectCondition);
@@ -118,15 +118,15 @@ public final class EntityConnectionDemo {
 
   static void selectValue(EntityConnection connection) throws DatabaseException {
     // tag::selectValue[]
-    Entity aliceInChains = connection.selectSingle(Artist.TYPE, Artist.NAME, "Alice In Chains");
+    Entity aliceInChains = connection.selectSingle(Artist.NAME, "Alice In Chains");
 
-    List<Entity> albums = connection.select(Album.TYPE, Album.ARTIST_FK, aliceInChains);
+    List<Entity> albums = connection.select(Album.ARTIST_FK, aliceInChains);
     // end::selectValue[]
   }
 
   static void selectSingleCondition(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleCondition[]
-    Entity ironMaiden = connection.selectSingle(selectCondition(Artist.TYPE, Artist.NAME, LIKE, "Iron Maiden"));
+    Entity ironMaiden = connection.selectSingle(selectCondition(Artist.NAME, LIKE, "Iron Maiden"));
 
     Entity liveAlbum = connection.selectSingle(selectCondition(Album.TYPE, combination(AND,
             attributeCondition(Album.ARTIST_FK, LIKE, ironMaiden),
@@ -145,11 +145,11 @@ public final class EntityConnectionDemo {
 
   static void selectSingleValue(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleValue[]
-    Entity aliceInChains = connection.selectSingle(Artist.TYPE, Artist.NAME, "Alice In Chains");
+    Entity aliceInChains = connection.selectSingle(Artist.NAME, "Alice In Chains");
 
     // we only have one album by Alice in Chains
     // otherwise this would throw an exception
-    Entity albumFacelift = connection.selectSingle(Album.TYPE, Album.ARTIST_FK, aliceInChains);
+    Entity albumFacelift = connection.selectSingle(Album.ARTIST_FK, aliceInChains);
     // end::selectSingleValue[]
   }
 
@@ -172,7 +172,7 @@ public final class EntityConnectionDemo {
 
   static void rowCount(EntityConnection connection) throws DatabaseException {
     // tag::rowCount[]
-    int numberOfItStaff = connection.rowCount(condition(Employee.TYPE, Employee.TITLE, LIKE, "IT Staff"));
+    int numberOfItStaff = connection.rowCount(condition(Employee.TITLE, LIKE, "IT Staff"));
     // end::rowCount[]
   }
 
@@ -195,7 +195,7 @@ public final class EntityConnectionDemo {
 
   static void update(EntityConnection connection) throws DatabaseException {
     // tag::update[]
-    Entity myBand = connection.selectSingle(Artist.TYPE, Artist.NAME, "My Band");
+    Entity myBand = connection.selectSingle(Artist.NAME, "My Band");
 
     myBand.put(Artist.NAME, "Proper Name");
 
@@ -205,7 +205,7 @@ public final class EntityConnectionDemo {
 
   static void updateConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::updateCondition[]
-    EntityUpdateCondition updateCondition = updateCondition(Artist.TYPE, Artist.NAME, LIKE, "Azymuth");
+    EntityUpdateCondition updateCondition = updateCondition(Artist.NAME, LIKE, "Azymuth");
 
     updateCondition.set(Artist.NAME, "Another Name");
 
@@ -215,15 +215,15 @@ public final class EntityConnectionDemo {
 
   static void deleteCondition(EntityConnection connection) throws DatabaseException {
     // tag::deleteCondition[]
-    Entity myBand = connection.selectSingle(Artist.TYPE, Artist.NAME, "Proper Name");
+    Entity myBand = connection.selectSingle(Artist.NAME, "Proper Name");
 
-    int deleteCount = connection.delete(condition(Album.TYPE, Album.ARTIST_FK, LIKE, myBand));
+    int deleteCount = connection.delete(condition(Album.ARTIST_FK, LIKE, myBand));
     // end::deleteCondition[]
   }
 
   static void deleteKey(EntityConnection connection) throws DatabaseException {
     // tag::deleteKey[]
-    Entity myBand = connection.selectSingle(Artist.TYPE, Artist.NAME, "Proper Name");
+    Entity myBand = connection.selectSingle(Artist.NAME, "Proper Name");
 
     boolean deleted = connection.delete(myBand.getKey());
     // end::deleteKey[]

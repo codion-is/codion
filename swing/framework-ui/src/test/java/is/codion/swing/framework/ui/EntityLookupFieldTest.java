@@ -36,7 +36,7 @@ public class EntityLookupFieldTest {
 
     assertNull(provider.get());
 
-    final Entity dept = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity dept = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedEntity(dept);
     assertEquals(dept, provider.get());

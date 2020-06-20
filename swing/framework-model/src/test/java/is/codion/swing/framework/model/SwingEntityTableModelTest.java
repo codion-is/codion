@@ -90,14 +90,12 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   public void refreshOnForeignKeyConditionValuesSet() throws DatabaseException {
     final SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
     assertEquals(0, employeeTableModel.getRowCount());
-    final Entity accounting = getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_ID, 10);
+    final Entity accounting = getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
     employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, singletonList(accounting));
     assertEquals(7, employeeTableModel.getRowCount());
     employeeTableModel.clear();
     employeeTableModel.setRefreshOnForeignKeyConditionValuesSet(false);
-    final Entity sales = getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT,
-            TestDomain.DEPARTMENT_ID, 30);
+    final Entity sales = getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 30);
     employeeTableModel.setForeignKeyConditionValues(TestDomain.EMP_DEPARTMENT_FK, Collections.singleton(sales));
     assertEquals(0, employeeTableModel.getRowCount());
     employeeTableModel.refresh();

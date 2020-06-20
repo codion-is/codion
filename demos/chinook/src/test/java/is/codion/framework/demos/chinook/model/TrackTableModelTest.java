@@ -9,7 +9,8 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.Chinook.Album;
+import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entity;
 
@@ -26,11 +27,11 @@ public final class TrackTableModelTest {
     final EntityConnectionProvider connectionProvider = createConnectionProvider();
 
     final Entity masterOfPuppets = connectionProvider.getConnection()
-            .selectSingle(Chinook.Album.TYPE, Chinook.Album.TITLE, "Master Of Puppets");
+            .selectSingle(Album.TITLE, "Master Of Puppets");
 
     final TrackTableModel trackTableModel = new TrackTableModel(connectionProvider);
     final ColumnConditionModel<Entity, ?> albumConditionModel =
-            trackTableModel.getTableConditionModel().getConditionModel(Chinook.Track.ALBUM_FK);
+            trackTableModel.getTableConditionModel().getConditionModel(Track.ALBUM_FK);
 
     albumConditionModel.setLikeValue(masterOfPuppets);
 
@@ -41,7 +42,7 @@ public final class TrackTableModelTest {
     trackTableModel.raisePriceOfSelected(BigDecimal.ONE);
 
     trackTableModel.getItems().forEach(track ->
-            assertEquals(BigDecimal.valueOf(1.99), track.get(Chinook.Track.UNITPRICE)));
+            assertEquals(BigDecimal.valueOf(1.99), track.get(Track.UNITPRICE)));
   }
 
   private EntityConnectionProvider createConnectionProvider() {

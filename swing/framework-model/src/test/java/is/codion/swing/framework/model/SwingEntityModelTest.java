@@ -135,8 +135,8 @@ public final class SwingEntityModelTest
     try {
       departmentModel.getConnectionProvider().getConnection().beginTransaction();
       departmentModel.refresh();
-      final Entity department = departmentModel.getConnectionProvider().getConnection().selectSingle(
-              TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "OPERATIONS");
+      final Entity department =
+              departmentModel.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
       final SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
       final EntityComboBoxModel deptComboBoxModel = employeeModel.getEditModel()
