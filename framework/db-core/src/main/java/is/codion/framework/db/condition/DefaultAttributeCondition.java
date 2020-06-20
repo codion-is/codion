@@ -18,6 +18,7 @@ import java.util.Map;
 
 import static is.codion.common.db.Operator.*;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -69,33 +70,28 @@ final class DefaultAttributeCondition implements AttributeCondition {
    * @param operator the condition operator
    * @param values the values, can be a Collection
    */
-  DefaultAttributeCondition(final Attribute<?> attribute, final Operator operator, final Object... values) {
+  DefaultAttributeCondition(final Attribute<?> attribute, final Operator operator, final Object value) {
     requireNonNull(attribute, "attribute");
     requireNonNull(operator, "operator");
-    validateValues(operator, values);
     this.attribute = attribute;
     this.operator = operator;
-    this.nullCondition = values == null || values.length == 1 && values[0] == null;
-    this.values = nullCondition ? null : initializeValues(values);
-    if (this.values.isEmpty()) {
-      throw new IllegalArgumentException("No values specified for AttributeCondition: " + attribute);
+    this.values = initializeValues(value);
+    this.nullCondition = this.values.isEmpty();
+    if (this.nullCondition && !operator.isNullCompatible()) {
+      throw new IllegalArgumentException("Operator " + operator + " is not null compatible");
     }
   }
 
   @Override
   public List<Object> getValues() {
-    if (nullCondition) {
-      return emptyList();
-    }//null condition, uses 'x is null', not 'x = ?'
-
     return values;
   }
 
   @Override
   public List<Attribute<?>> getAttributes() {
-    if (nullCondition) {
-      return emptyList();
-    }//null condition, uses 'x is null', not 'x = ?'
+    if (values.size() == 1) {
+      return singletonList(attribute);
+    }
 
     return Collections.nCopies(values.size(), attribute);
   }
@@ -121,10 +117,8 @@ final class DefaultAttributeCondition implements AttributeCondition {
       throw new IllegalArgumentException("Property '" + property + "' is not based on attribute: " + attribute);
     }
     final ColumnProperty<Object> objectColumnProperty = (ColumnProperty<Object>) property;
-    if (!nullCondition) {
-      for (int i = 0; i < values.size(); i++) {
-        objectColumnProperty.getAttribute().validateType(values.get(i));
-      }
+    for (int i = 0; i < values.size(); i++) {
+      objectColumnProperty.getAttribute().validateType(values.get(i));
     }
 
     return OPERATOR_PROVIDER_MAP.get(operator).getConditionString(this, objectColumnProperty);
@@ -141,32 +135,46 @@ final class DefaultAttributeCondition implements AttributeCondition {
     return caseSensitive;
   }
 
-  private static void validateValues(final Operator operator, final Object[] values) {
-    if (values == null && !operator.isNullCompatible()) {
-      throw new IllegalArgumentException("Operator " + operator + " is not null compatible");
-    }
-    if (values != null) {
-      for (final Object value : values) {
-        if (value == null && !operator.isNullCompatible()) {
-          throw new IllegalArgumentException("Operator " + operator + " is not null compatible");
-        }
-      }
-    }
+  static String getColumnIdentifier(final ColumnProperty<?> property) {
+    return getColumnIdentifier(property, false, true);
   }
 
-  private static List<Object> initializeValues(final Object... conditionValues) {
+  static String getColumnIdentifier(final ColumnProperty<?> property, final boolean isNullCondition,
+                                    final boolean caseSensitive) {
+    String columnName;
+    if (property instanceof SubqueryProperty) {
+      columnName = "(" + ((SubqueryProperty<?>) property).getSubQuery() + ")";
+    }
+    else {
+      columnName = property.getColumnName();
+    }
+
+    if (!isNullCondition && property.getAttribute().isString() && !caseSensitive) {
+      columnName = "upper(" + columnName + ")";
+    }
+
+    return columnName;
+  }
+
+  static String getValuePlaceholder(final ColumnProperty<?> property, final boolean caseSensitive) {
+    return property.getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
+  }
+
+  private static List<Object> initializeValues(final Object conditionValue) {
+    if (conditionValue == null) {
+      return emptyList();
+    }
     final List<Object> valueList = new ArrayList<>();
-    for (final Object value : conditionValues) {
-      if (value instanceof Collection) {
-        valueList.addAll((Collection<Object>) value);
-      }
-      else {
-        valueList.add(value);
-      }
+    if (conditionValue instanceof Collection) {
+      valueList.addAll((Collection<Object>) conditionValue);
+    }
+    else {
+      valueList.add(conditionValue);
     }
     //replace Entity with Entity.Key
     for (int i = 0; i < valueList.size(); i++) {
       final Object value = valueList.get(i);
+      requireNonNull(value, "value");
       if (value instanceof Entity) {
         valueList.set(i, ((Entity) value).getKey());
       }
@@ -279,30 +287,5 @@ final class DefaultAttributeCondition implements AttributeCondition {
 
       return "(" + columnIdentifier + " <= " + valuePlaceholder + " or " + columnIdentifier + " >= " + valuePlaceholder + ")";
     }
-  }
-
-  static String getColumnIdentifier(final ColumnProperty<?> property) {
-    return getColumnIdentifier(property, false, true);
-  }
-
-  static String getColumnIdentifier(final ColumnProperty<?> property, final boolean isNullCondition,
-                                    final boolean caseSensitive) {
-    String columnName;
-    if (property instanceof SubqueryProperty) {
-      columnName = "(" + ((SubqueryProperty<?>) property).getSubQuery() + ")";
-    }
-    else {
-      columnName = property.getColumnName();
-    }
-
-    if (!isNullCondition && property.getAttribute().isString() && !caseSensitive) {
-      columnName = "upper(" + columnName + ")";
-    }
-
-    return columnName;
-  }
-
-  static String getValuePlaceholder(final ColumnProperty<?> property, final boolean caseSensitive) {
-    return property.getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
   }
 }

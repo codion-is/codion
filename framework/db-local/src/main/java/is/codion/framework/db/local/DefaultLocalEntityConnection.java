@@ -550,7 +550,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       condition.getAttributes().forEach(conditionAttribute -> validateAttribute(attribute.getEntityType(), conditionAttribute));
       combination.add(expand(condition, entityDefinition));
     }
-    combination.add(attributeCondition(attribute, NOT_LIKE, (T) null));
+    combination.add(attributeCondition(attribute, NOT_LIKE, null));
     final WhereCondition combinedCondition = whereCondition(condition(attribute.getEntityType(), combination), entityDefinition);
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
     final String columnName = propertyToSelect.getColumnName();

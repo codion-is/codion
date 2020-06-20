@@ -7,7 +7,6 @@ import is.codion.common.Conjunction;
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
@@ -22,7 +21,6 @@ import java.util.ListIterator;
 
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.Conjunction.OR;
-import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.common.db.Operator.LIKE;
 import static is.codion.framework.domain.entity.Entities.getValues;
 import static java.util.Arrays.asList;
@@ -63,8 +61,12 @@ public final class Conditions {
    * @return a condition specifying the entities having the given primary keys
    */
   public static EntityCondition condition(final List<Key> keys) {
-    final List<Key> keyList = checkKeysParameter(keys);
-    return new DefaultEntityCondition(keyList.get(0).getEntityType(), createKeyCondition(keyList));
+    requireNonNull(keys, "keys");
+    if (keys.isEmpty()) {
+      throw new IllegalArgumentException("Entity key condition requires at least one key");
+    }
+
+    return new DefaultEntityCondition(keys.get(0).getEntityType(), createKeyCondition(keys));
   }
 
   /**
@@ -107,8 +109,12 @@ public final class Conditions {
    * @return a select condition based on the given keys
    */
   public static EntitySelectCondition selectCondition(final List<Key> keys) {
-    final List<Key> keyList = checkKeysParameter(keys);
-    return new DefaultEntitySelectCondition(keyList.get(0).getEntityType(), createKeyCondition(keyList));
+    requireNonNull(keys, "keys");
+    if (keys.isEmpty()) {
+      throw new IllegalArgumentException("Entity key condition requires at least one key");
+    }
+
+    return new DefaultEntitySelectCondition(keys.get(0).getEntityType(), createKeyCondition(keys));
   }
 
   /**
@@ -236,16 +242,16 @@ public final class Conditions {
   }
 
   /**
-   * Creates a {@link Condition} for the given property, with the operator specified by the {@code operator}
-   * and {@code value}. Note that {@code values} may be a single value, a Collection of values or null.
+   * Creates a {@link Condition} for the given attribute, with the operator specified by the {@code operator}
+   * and {@code value}. Note that {@code values} may be a single value or a Collection of values.
    * @param attribute the attribute
    * @param operator the condition operator
-   * @param values the condition values, Collections are accepted
+   * @param value the condition value, Collections are accepted
    * @return a attribute condition based on the given value
    */
   public static AttributeCondition attributeCondition(final Attribute<?> attribute, final Operator operator,
-                                                      final Object... values) {
-    return new DefaultAttributeCondition(attribute, operator, values);
+                                                      final Object value) {
+    return new DefaultAttributeCondition(attribute, operator, value);
   }
 
   /**
@@ -324,19 +330,10 @@ public final class Conditions {
                                                     final Key entityKey) {
     final Condition.Combination conditionCombination = combination(AND);
     for (int i = 0; i < attributes.size(); i++) {
-      conditionCombination.add(attributeCondition(attributes.get(i), operator,
-              entityKey == null ? null : entityKey.get(entityKey.getAttributes().get(i))));
+      conditionCombination.add(attributeCondition(attributes.get(i), operator, entityKey.get(entityKey.getAttributes().get(i))));
     }
 
     return conditionCombination;
-  }
-
-  private static List<Key> checkKeysParameter(final List<Key> keys) {
-    if (nullOrEmpty(keys)) {
-      throw new IllegalArgumentException("Entity key condition requires at least one key");
-    }
-
-    return keys;
   }
 
   private static Condition foreignKeyCondition(final List<Attribute<?>> foreignKeyColumnAttributes,
@@ -346,43 +343,20 @@ public final class Conditions {
       return compositeKeyCondition(keys, foreignKeyColumnAttributes, operator);
     }
 
-    if (keys.size() == 1) {
-      final Key entityKey = keys.get(0);
-
-      return attributeCondition(foreignKeyColumnAttributes.get(0), operator,
-              entityKey == null ? null : new Object[] {entityKey.get()});
-    }
-
     return attributeCondition(foreignKeyColumnAttributes.get(0), operator, getValues(keys));
   }
 
   private static List<Key> getKeys(final Object value) {
     final List<Key> keys = new ArrayList<>();
     if (value instanceof Collection) {
-      if (((Collection<Object>) value).isEmpty()) {
-        keys.add(null);
-      }
-      else {
-        for (final Object object : (Collection<Object>) value) {
-          keys.add(getKey(object));
-        }
+      for (final Object object : (Collection<Object>) value) {
+        keys.add((Key) object);
       }
     }
     else {
-      keys.add(getKey(value));
+      keys.add((Key) value);
     }
 
     return keys;
-  }
-
-  private static Key getKey(final Object value) {
-    if (value == null || value instanceof Key) {
-      return (Key) value;
-    }
-    else if (value instanceof Entity) {
-      return ((Entity) value).getKey();
-    }
-
-    throw new IllegalArgumentException("Foreign key condition uses only Entity or Entity.Key instances for values");
   }
 }

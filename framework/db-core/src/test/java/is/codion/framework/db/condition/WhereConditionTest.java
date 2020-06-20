@@ -136,7 +136,7 @@ public final class WhereConditionTest {
   public void keyNullCondition() {
     final EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
     WhereCondition condition = whereCondition(selectCondition(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, singletonList(null)), empDefinition);
+            TestDomain.EMP_DEPARTMENT_FK, Operator.LIKE, null), empDefinition);
     assertEquals("deptno is null", condition.getWhereClause());
 
     condition = whereCondition(selectCondition(TestDomain.T_EMP,
@@ -269,7 +269,7 @@ public final class WhereConditionTest {
     assertEquals(property.getColumnName() + " <= ?", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            attributeCondition(TestDomain.DEPARTMENT_NAME, Operator.WITHIN_RANGE, "upper", "lower")), departmentDefinition);
+            attributeCondition(TestDomain.DEPARTMENT_NAME, Operator.WITHIN_RANGE, asList("upper", "lower"))), departmentDefinition);
     assertEquals("(" + property.getColumnName() + " >= ? and " + property.getColumnName() + " <= ?)", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,

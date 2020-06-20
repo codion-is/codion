@@ -6281,3 +6281,4 @@
   Operator.isNullCompatible() added
   AttributeCondition.isNullCondition() and isCaseSensitive() added
   DefaultAttributeCondition refactored, DefaultAttributeCondition.ConditionStringProvider added along with subclasses
+  DefaultAttributeCondition, null condition handling improved

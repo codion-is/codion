@@ -6,6 +6,7 @@ package is.codion.plugin.jackson.json.db;
 import is.codion.common.db.Operator;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.Property;
@@ -35,19 +36,16 @@ final class AttributeConditionDeserializer implements Serializable {
     final JsonNode valuesNode = conditionNode.get("values");
     final List<Object> values = new ArrayList<>();
     for (final JsonNode valueNode : valuesNode) {
-      if (valueNode.isNull()) {
-        values.add(null);
-      }
-      else if (valueNode.has("entityType")) {
+      if (valueNode.has("entityType")) {
         values.add(entityObjectMapper.readValue(valueNode.toString(), Key.class));
       }
       else {
         values.add(EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), valueNode));
       }
     }
-    final boolean nullCondition = values.isEmpty();
+    final Attribute<Object> attribute = definition.getEntityType().objectAttribute(conditionNode.get("attribute").asText());
+    final Operator operator = Operator.valueOf(conditionNode.get("operator").asText());
 
-    return Conditions.attributeCondition(definition.getEntityType().objectAttribute(conditionNode.get("attribute").asText()),
-            Operator.valueOf(conditionNode.get("operator").asText()), nullCondition ? null : values);
+    return Conditions.attributeCondition(attribute, operator, values);
   }
 }

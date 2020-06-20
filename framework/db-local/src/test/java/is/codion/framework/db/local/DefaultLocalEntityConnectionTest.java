@@ -269,6 +269,8 @@ public class DefaultLocalEntityConnectionTest {
     assertTrue(emp.isLoaded(EMP_MGR_FK));
     emp = emp.getForeignKey(EMP_MGR_FK);
     assertTrue(emp.isLoaded(EMP_MGR_FK));
+
+    assertEquals(4, connection.rowCount(Conditions.condition(T_EMP, EMP_ID, Operator.LIKE, asList(1, 2, 3, 4))));
   }
 
   @Test
