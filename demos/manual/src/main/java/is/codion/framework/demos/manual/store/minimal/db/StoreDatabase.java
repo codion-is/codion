@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.manual.store.minimal.db;
 
-import is.codion.common.db.Operator;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.Users;
@@ -19,6 +18,7 @@ import is.codion.framework.domain.entity.Key;
 import java.sql.SQLException;
 import java.util.List;
 
+import static is.codion.common.db.Operator.EQUAL_TO;
 import static is.codion.framework.db.condition.Conditions.attributeCondition;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.db.condition.NullCondition.IS_NULL;
@@ -51,7 +51,7 @@ public class StoreDatabase {
 
     List<String> activeCustomerEmailAddresses =
             connection.selectValues(Customer.EMAIL,
-                    attributeCondition(Customer.IS_ACTIVE, Operator.EQUAL_TO, true));
+                    attributeCondition(Customer.IS_ACTIVE, EQUAL_TO, true));
 
     //The domain model entities, a factory for Entity instances.
     Entities entities = connection.getEntities();
