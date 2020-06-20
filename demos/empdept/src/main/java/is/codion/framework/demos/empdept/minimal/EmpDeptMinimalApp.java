@@ -32,7 +32,6 @@ import java.util.Locale;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.property.Properties.*;
-import static java.util.Arrays.asList;
 
 /**
  * EmpDept minimal application demo
@@ -145,7 +144,7 @@ public final class EmpDeptMinimalApp {
       final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyAttribute);
       if (foreignKeyAttribute.equals(Employee.MGR_FK)) {
         comboBoxModel.setSelectConditionProvider(() -> Conditions.attributeCondition(
-                Employee.JOB, Operator.LIKE, asList("MANAGER", "PRESIDENT")));
+                Employee.JOB, Operator.LIKE, "MANAGER", "PRESIDENT"));
         comboBoxModel.refresh();
       }
 

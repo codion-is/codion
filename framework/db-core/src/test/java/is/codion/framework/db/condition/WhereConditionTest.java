@@ -269,7 +269,7 @@ public final class WhereConditionTest {
     assertEquals(property.getColumnName() + " <= ?", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
-            attributeCondition(TestDomain.DEPARTMENT_NAME, Operator.WITHIN_RANGE, asList("upper", "lower"))), departmentDefinition);
+            attributeCondition(TestDomain.DEPARTMENT_NAME, Operator.WITHIN_RANGE, "upper", "lower")), departmentDefinition);
     assertEquals("(" + property.getColumnName() + " >= ? and " + property.getColumnName() + " <= ?)", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.T_DEPARTMENT,
