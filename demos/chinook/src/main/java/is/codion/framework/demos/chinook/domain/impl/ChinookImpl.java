@@ -370,7 +370,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       BigDecimal priceIncrease = (BigDecimal) arguments[1];
 
       EntitySelectCondition selectCondition =
-              selectCondition(Track.TYPE, Track.ID, Operator.LIKE, trackIds)
+              selectCondition(Track.ID, Operator.LIKE, trackIds)
                       .setForUpdate(true);
 
       List<Track> tracks = entityConnection.getEntities()

@@ -37,12 +37,12 @@ public class DefaultForeignKeyConditionModelTest {
             singletonList(CONNECTION_PROVIDER.getEntities().getDefinition(TestDomain.T_DEPARTMENT).getColumnProperty(TestDomain.DEPARTMENT_NAME)));
     final ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(
             entities.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK), lookupModel);
-    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     lookupModel.setSelectedEntity(sales);
     Collection<Entity> searchEntities = conditionModel.getConditionEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
-    final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     final List<Entity> salesAccounting = asList(sales, accounting);
     lookupModel.setSelectedEntities(salesAccounting);
     assertTrue(conditionModel.getConditionEntities().contains(sales));

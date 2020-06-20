@@ -211,7 +211,6 @@ public interface EntityConnection {
 
   /**
    * Selects a single entity
-   * @param entityType the entity type
    * @param attribute attribute to use as a condition
    * @param value the value to use in the condition
    * @param <T> the value type
@@ -221,7 +220,7 @@ public interface EntityConnection {
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  <T> Entity selectSingle(EntityType<?> entityType, Attribute<T> attribute, T value) throws DatabaseException;
+  <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects a single entity by key
@@ -262,25 +261,23 @@ public interface EntityConnection {
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
-   * @param entityType the entity type
    * @param attribute the condition attribute
    * @param value the value to use as condition
    * @param <T> the value type
    * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  <T> List<Entity> select(EntityType<?> entityType, Attribute<T> attribute, T value) throws DatabaseException;
+  <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
-   * @param entityType the entity type
    * @param attribute the condition attribute
    * @param values the values to use as condition
    * @param <T> the value type
    * @return entities of the type {@code entityType} according to {@code attribute} and {@code values}
    * @throws DatabaseException in case of a database exception
    */
-  <T> List<Entity> select(EntityType<?> entityType, Attribute<T> attribute, Collection<T> values) throws DatabaseException;
+  <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException;
 
   /**
    * Returns the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes

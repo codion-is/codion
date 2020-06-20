@@ -459,8 +459,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(final EntityType<?> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
-    return selectSingle(selectCondition(entityType, attribute, LIKE, value));
+  public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
+    return selectSingle(selectCondition(attribute, LIKE, value));
   }
 
   @Override
@@ -506,13 +506,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> List<Entity> select(final EntityType<?> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
-    return select(value == null ? selectCondition(entityType, attribute, IS_NULL) : selectCondition(entityType, attribute, LIKE, value));
+  public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
+    return select(value == null ? selectCondition(attribute, IS_NULL) : selectCondition(attribute, LIKE, value));
   }
 
   @Override
-  public <T> List<Entity> select(final EntityType<?> entityType, final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
-    return select(selectCondition(entityType, attribute, LIKE, values));
+  public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
+    return select(selectCondition(attribute, LIKE, values));
   }
 
   @Override
@@ -630,8 +630,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entities.iterator().next().getEntityType());
     for (final ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
-        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getEntityType(),
-                foreignKeyReference.getAttribute(), LIKE, entities));
+        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getAttribute(), LIKE, entities));
         if (!dependencies.isEmpty()) {
           dependencyMap.put((EntityType<Entity>) foreignKeyReference.getEntityType(), dependencies);
         }

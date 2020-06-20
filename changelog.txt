@@ -6287,3 +6287,4 @@
   DefaultAttributeCondition.ConditionStringProvider type safety improved
   Conditions, simplified null condition, NullCondition enum added
   Conditions, varargs re-introduced for convenience
+  EntityConnection, Conditions, removed redundant EntityType parameter

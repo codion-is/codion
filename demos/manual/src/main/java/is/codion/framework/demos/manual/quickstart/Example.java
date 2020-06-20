@@ -222,11 +222,11 @@ public final class Example {
                     domain, Databases.getInstance(), Users.parseUser("scott:tiger"));
 
     //select customer where last name = Doe
-    Entity johnDoe = connection.selectSingle(Customer.TYPE, Customer.LAST_NAME, "Doe");
+    Entity johnDoe = connection.selectSingle(Customer.LAST_NAME, "Doe");
 
     //select all customer addresses
     List<Entity> customerAddresses = //where customer = john doe
-            connection.select(CustomerAddress.TYPE, CustomerAddress.CUSTOMER_FK, johnDoe);
+            connection.select(CustomerAddress.CUSTOMER_FK, johnDoe);
 
     Entity customerAddress = customerAddresses.get(0);
 

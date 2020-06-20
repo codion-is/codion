@@ -282,13 +282,13 @@ EntityConnectionProvider connectionProvider =
 EntityConnection connection = connectionProvider.getConnection();
 
 List<Entity> customersNamedDoe =
-        connection.select(Customer.TYPE, Customer.LAST_NAME, "Doe");
+        connection.select(Customer.LAST_NAME, "Doe");
 
 List<Entity> doesAddresses =
-        connection.select(Address.TYPE, Address.CUSTOMER_FK, customersNamedDoe);
+        connection.select(Address.CUSTOMER_FK, customersNamedDoe);
 
 List<Entity> customersWithoutEmail =
-        connection.select(selectCondition(Customer.TYPE, Customer.EMAIL, IS_NULL));
+        connection.select(selectCondition(Customer.EMAIL, IS_NULL));
 
 List<String> activeCustomerEmailAddresses =
         connection.selectValues(Customer.EMAIL,

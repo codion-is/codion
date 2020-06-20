@@ -82,15 +82,13 @@ public final class Conditions {
   /**
    * Creates a {@link EntityCondition} instance for specifying entities of the type identified by {@code entityType}
    * with a where condition based on a null check for {@code attribute}.
-   * @param entityType the entityType
    * @param attribute the attribute
    * @param nullCondition the null check condition
    * @param <T> the attribute type
    * @return a condition based on the given value
    */
-  public static <T> EntityCondition condition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                              final NullCondition nullCondition) {
-    return condition(entityType, attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
+  public static <T> EntityCondition condition(final Attribute<T> attribute, final NullCondition nullCondition) {
+    return condition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
   }
 
   /**
@@ -119,34 +117,29 @@ public final class Conditions {
   }
 
   /**
-   * Creates a {@link EntityCondition} instance for specifying entities of the type identified by {@code entityType}
-   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
-   * Note that {@code value} may be a single value, a Collection of values or null.
-   * @param entityType the entityType
+   * Creates a {@link EntityCondition} instance for specifying entities  with a where condition based on {@code attribute},
+   * the operators based on {@code operator} and {@code values}.
    * @param attribute the attribute
    * @param operator the condition operator
    * @param values the condition values
    * @param <T> the attribute type
    * @return a condition based on the given value
    */
-  public static <T> EntityCondition condition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                              final Operator operator, final T... values) {
-    return condition(entityType, attribute, operator, asList(requireNonNull(values)));
+  public static <T> EntityCondition condition(final Attribute<T> attribute, final Operator operator, final T... values) {
+    return condition(attribute, operator, asList(requireNonNull(values)));
   }
 
   /**
-   * Creates a {@link EntityCondition} instance for specifying entities of the type identified by {@code entityType}
-   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code values}.
-   * @param entityType the entityType
+   * Creates a {@link EntityCondition} instance for specifying entities with a where condition based on {@code attribute},
+   * the operators based on {@code operator} and {@code values}.
    * @param attribute the attribute
    * @param operator the condition operator
    * @param values the condition values
    * @param <T> the attribute type
    * @return a condition based on the given value
    */
-  public static <T> EntityCondition condition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                              final Operator operator, final Collection<? extends T> values) {
-    return new DefaultEntityCondition(entityType, attributeCondition(attribute, operator, values));
+  public static <T> EntityCondition condition(final Attribute<T> attribute, final Operator operator, final Collection<? extends T> values) {
+    return new DefaultEntityCondition(requireNonNull(attribute).getEntityType(), attributeCondition(attribute, operator, values));
   }
 
   /**
@@ -190,17 +183,14 @@ public final class Conditions {
   }
 
   /**
-   * Creates a {@link EntitySelectCondition} instance for specifying entities of the type identified by {@code entityType}
-   * with a where condition based on a null check for {@code attribute}.
-   * @param entityType the entityType
+   * Creates a {@link EntitySelectCondition} instance for specifying entities with a where condition based on a null check for {@code attribute}.
    * @param attribute the attribute
    * @param nullCondition the null check condition
    * @param <T> the attribute type
    * @return a select condition based on the given value
    */
-  public static <T> EntitySelectCondition selectCondition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                                          final NullCondition nullCondition) {
-    return selectCondition(entityType, attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
+  public static <T> EntitySelectCondition selectCondition(final Attribute<T> attribute, final NullCondition nullCondition) {
+    return selectCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
   }
 
   /**
@@ -228,35 +218,29 @@ public final class Conditions {
   }
 
   /**
-   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityType}
-   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
-   * Note that {@code value} may be a single value, a Collection of values or null.
-   * @param entityType the entityType
+   * Creates a {@link EntitySelectCondition} instance for selecting entities with a where condition based on {@code attribute},
+   * the operators based on {@code operator} and {@code values}.
    * @param attribute the attribute
    * @param operator the condition operator
    * @param values the condition values
    * @param <T> the attribute type
    * @return a select condition based on the given value
    */
-  public static <T> EntitySelectCondition selectCondition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                                          final Operator operator, final T... values) {
-    return selectCondition(entityType, attribute, operator, asList(requireNonNull(values)));
+  public static <T> EntitySelectCondition selectCondition(final Attribute<T> attribute, final Operator operator, final T... values) {
+    return selectCondition(attribute, operator, asList(requireNonNull(values)));
   }
 
   /**
-   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityType}
-   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
-   * Note that {@code value} may be a single value, a Collection of values or null.
-   * @param entityType the entityType
+   * Creates a {@link EntitySelectCondition} instance for selecting entities with a where condition based on {@code attribute},
+   * the operators based on {@code operator} and {@code values}.
    * @param attribute the attribute
    * @param operator the condition operator
    * @param values the condition values
    * @param <T> the attribute type
    * @return a select condition based on the given value
    */
-  public static <T> EntitySelectCondition selectCondition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                                          final Operator operator, final Collection<? extends T> values) {
-    return selectCondition(entityType, attributeCondition(attribute, operator, values));
+  public static <T> EntitySelectCondition selectCondition(final Attribute<T> attribute, final Operator operator, final Collection<? extends T> values) {
+    return selectCondition(requireNonNull(attribute).getEntityType(), attributeCondition(attribute, operator, values));
   }
 
   /**
@@ -269,49 +253,40 @@ public final class Conditions {
   }
 
   /**
-   * Creates a {@link EntityUpdateCondition} instance for specifying entities of the type identified by {@code entityType}
-   * with a where condition based on a null check for {@code attribute}.
-   * @param entityType the entityType
+   * Creates a {@link EntityUpdateCondition} instance for specifying entities with a where condition based on a null check for {@code attribute}.
    * @param attribute the attribute
    * @param nullCondition the null check condition
    * @param <T> the value type
    * @return an update condition based on the given value
    */
-  public static <T> EntityUpdateCondition updateCondition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                                          final NullCondition nullCondition) {
-    return updateCondition(entityType, attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
+  public static <T> EntityUpdateCondition updateCondition(final Attribute<T> attribute, final NullCondition nullCondition) {
+    return updateCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? LIKE : NOT_LIKE, emptyList());
   }
 
   /**
-   * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityType}
-   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
-   * Note that {@code value} may be a single value, a Collection of values or null.
-   * @param entityType the entityType
+   * Creates a {@link EntityUpdateCondition} instance for updating entities with a where condition based on {@code attribute},
+   * the operators based on {@code operator} and {@code values}.
    * @param attribute the attribute
    * @param operator the condition operator
    * @param values the condition values
    * @param <T> the value type
    * @return an update condition based on the given value
    */
-  public static <T> EntityUpdateCondition updateCondition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                                          final Operator operator, final T... values) {
-    return updateCondition(entityType, attribute, operator, asList(requireNonNull(values)));
+  public static <T> EntityUpdateCondition updateCondition(final Attribute<T> attribute, final Operator operator, final T... values) {
+    return updateCondition(attribute, operator, asList(requireNonNull(values)));
   }
 
   /**
-   * Creates a {@link EntityUpdateCondition} instance for updating entities of the type identified by {@code entityType}
-   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
-   * Note that {@code value} may be a single value, a Collection of values or null.
-   * @param entityType the entityType
+   * Creates a {@link EntityUpdateCondition} instance for updating entities with a where condition based on {@code attribute},
+   * the operators based on {@code operator} and {@code values}.
    * @param attribute the attribute
    * @param operator the condition operator
    * @param values the condition values
    * @param <T> the value type
    * @return an update condition based on the given value
    */
-  public static <T> EntityUpdateCondition updateCondition(final EntityType<?> entityType, final Attribute<T> attribute,
-                                                          final Operator operator, final Collection<T> values) {
-    return updateCondition(entityType, attributeCondition(attribute, operator, values));
+  public static <T> EntityUpdateCondition updateCondition(final Attribute<T> attribute, final Operator operator, final Collection<T> values) {
+    return updateCondition(requireNonNull(attribute).getEntityType(), attributeCondition(attribute, operator, values));
   }
 
   /**

@@ -78,7 +78,7 @@ public final class DefaultEntityEditModelTest {
     final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
     try {
       connection.beginTransaction();
-      final Entity jones = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "JONES");
+      final Entity jones = connection.selectSingle(TestDomain.EMP_NAME, "JONES");
       employeeEditModel.setEntity(jones);
       employeeEditModel.put(TestDomain.EMP_NAME, "Noname");
       employeeEditModel.insert();
@@ -119,7 +119,7 @@ public final class DefaultEntityEditModelTest {
     final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
     try {
       connection.beginTransaction();
-      final Entity employee = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MARTIN");
+      final Entity employee = connection.selectSingle(TestDomain.EMP_NAME, "MARTIN");
       employeeEditModel.refreshEntity();
       employeeEditModel.setEntity(employee);
       employee.put(TestDomain.EMP_NAME, "NOONE");
@@ -134,7 +134,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void getEntityCopy() throws DatabaseException {
-    final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP,
+    final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(
             TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
     final Entity copyWithPrimaryKeyValue = employeeEditModel.getEntityCopy();
@@ -154,7 +154,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void getDefaultForeignKeyValue() throws DatabaseException {
-    final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP,
+    final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(
             TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
     //clear the department foreign key value
@@ -226,7 +226,7 @@ public final class DefaultEntityEditModelTest {
     assertTrue(employeeEditModel.isEntityNew());
     assertFalse(employeeEditModel.getModifiedObserver().get());
 
-    final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MARTIN");
+    final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
     assertFalse(primaryKeyNullState.get());
     assertFalse(entityNewState.get());
@@ -379,7 +379,7 @@ public final class DefaultEntityEditModelTest {
       assertThrows(UpdateException.class, () -> employeeEditModel.update());
       assertTrue(employeeEditModel.update(new ArrayList<>()).isEmpty());
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
-      employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
+      employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "MILLER"));
       employeeEditModel.put(TestDomain.EMP_NAME, "BJORN");
       final List<Entity> toUpdate = singletonList(employeeEditModel.getEntityCopy());
       final EventDataListener<Map<Key, Entity>> listener = updatedEntities ->
@@ -405,7 +405,7 @@ public final class DefaultEntityEditModelTest {
     try {
       assertTrue(employeeEditModel.delete(new ArrayList<>()).isEmpty());
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
-      employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER"));
+      employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "MILLER"));
       final List<Entity> toDelete = singletonList(employeeEditModel.getEntityCopy());
       employeeEditModel.addAfterDeleteListener(deletedEntities -> assertEquals(toDelete, deletedEntities));
       employeeEditModel.setDeleteEnabled(false);
@@ -423,8 +423,8 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void setEntity() throws Exception {
-    final Entity martin = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MARTIN");
-    final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
+    final Entity martin = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "MARTIN");
+    final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "KING");
     employeeEditModel.setEntity(king);
     employeeEditModel.put(TestDomain.EMP_MGR_FK, martin);
     employeeEditModel.setEntity(null);
@@ -439,7 +439,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void setPersistValue() throws Exception {
-    final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
+    final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "KING");
     employeeEditModel.setEntity(king);
     assertNotNull(employeeEditModel.get(TestDomain.EMP_JOB));
     employeeEditModel.setPersistValue(TestDomain.EMP_JOB, true);
@@ -460,8 +460,8 @@ public final class DefaultEntityEditModelTest {
     final EventDataListener<State> alwaysDenyListener = data -> data.set(false);
 
     employeeEditModel.addConfirmSetEntityObserver(alwaysConfirmListener);
-    final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
-    final Entity adams = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "ADAMS");
+    final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "KING");
+    final Entity adams = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "ADAMS");
     employeeEditModel.setEntity(king);
     employeeEditModel.put(TestDomain.EMP_NAME, "New name");
     employeeEditModel.setEntity(adams);
@@ -489,10 +489,10 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void replaceForeignKeyValues() throws DatabaseException {
     final Entity james = employeeEditModel.getConnectionProvider().getConnection()
-            .selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "JAMES");
+            .selectSingle(TestDomain.EMP_NAME, "JAMES");
     employeeEditModel.setEntity(james);
     final Entity blake = employeeEditModel.getConnectionProvider().getConnection()
-            .selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "BLAKE");
+            .selectSingle(TestDomain.EMP_NAME, "BLAKE");
     assertNotSame(employeeEditModel.getForeignKey(TestDomain.EMP_MGR_FK), blake);
     employeeEditModel.replaceForeignKeyValues(singletonList(blake));
     assertSame(employeeEditModel.getForeignKey(TestDomain.EMP_MGR_FK), blake);

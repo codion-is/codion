@@ -91,7 +91,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        client.getConnection().select(Department.TYPE, Department.NAME, "ACCOUNTING");
+        client.getConnection().select(Department.NAME, "ACCOUNTING");
       }
       catch (final Exception e) {
         throw new ScenarioException(e);
@@ -111,7 +111,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
       try {
         final List<Entity> departments = client.getConnection().select(selectCondition(Department.TYPE));
 
-        client.getConnection().select(Employee.TYPE, Employee.DEPARTMENT,
+        client.getConnection().select(Employee.DEPARTMENT,
                 departments.get(new Random().nextInt(departments.size())).get(Department.ID));
       }
       catch (final Exception e) {
