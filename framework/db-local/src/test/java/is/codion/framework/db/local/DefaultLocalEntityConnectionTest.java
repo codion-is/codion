@@ -23,6 +23,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.db.condition.NullCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -271,6 +272,10 @@ public class DefaultLocalEntityConnectionTest {
     assertTrue(emp.isLoaded(EMP_MGR_FK));
 
     assertEquals(4, connection.rowCount(Conditions.condition(T_EMP, EMP_ID, Operator.LIKE, asList(1, 2, 3, 4))));
+    assertEquals(0, connection.rowCount(Conditions.condition(T_EMP, EMP_DEPARTMENT, NullCondition.IS_NULL)));
+    assertEquals(0, connection.rowCount(Conditions.condition(T_EMP, EMP_DEPARTMENT_FK, NullCondition.IS_NULL)));
+    assertEquals(1, connection.rowCount(Conditions.condition(T_EMP, EMP_MGR, NullCondition.IS_NULL)));
+    assertEquals(1, connection.rowCount(Conditions.condition(T_EMP, EMP_MGR_FK, NullCondition.IS_NULL)));
   }
 
   @Test
@@ -515,11 +520,11 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void updateWithCondition() throws DatabaseException {
-    final EntitySelectCondition selectCondition = Conditions.selectConditionIsNull(T_EMP, EMP_COMMISSION);
+    final EntitySelectCondition selectCondition = Conditions.selectCondition(T_EMP, EMP_COMMISSION, NullCondition.IS_NULL);
 
     final List<Entity> entities = connection.select(selectCondition);
 
-    final EntityUpdateCondition updateCondition = Conditions.updateConditionIsNull(T_EMP, EMP_COMMISSION)
+    final EntityUpdateCondition updateCondition = Conditions.updateCondition(T_EMP, EMP_COMMISSION, NullCondition.IS_NULL)
             .set(EMP_COMMISSION, 500d)
             .set(EMP_SALARY, 4200d);
     try {
@@ -539,7 +544,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void updateWithConditionNoRows() throws DatabaseException {
-    final EntityUpdateCondition updateCondition = Conditions.updateConditionIsNull(T_EMP, EMP_ID)
+    final EntityUpdateCondition updateCondition = Conditions.updateCondition(T_EMP, EMP_ID, NullCondition.IS_NULL)
             .set(EMP_SALARY, 4200d);
     try {
       connection.beginTransaction();

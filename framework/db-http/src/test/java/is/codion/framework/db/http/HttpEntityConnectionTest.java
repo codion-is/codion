@@ -15,6 +15,7 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.condition.EntitySelectCondition;
 import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.db.condition.NullCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -132,12 +133,12 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void updateByCondition() throws DatabaseException {
-    final EntitySelectCondition selectCondition = selectConditionIsNull(TestDomain.T_EMP,
-            TestDomain.EMP_COMMISSION);
+    final EntitySelectCondition selectCondition = selectCondition(TestDomain.T_EMP,
+            TestDomain.EMP_COMMISSION, NullCondition.IS_NULL);
 
     final List<Entity> entities = connection.select(selectCondition);
 
-    final EntityUpdateCondition updateCondition = updateConditionIsNull(TestDomain.T_EMP, TestDomain.EMP_COMMISSION)
+    final EntityUpdateCondition updateCondition = updateCondition(TestDomain.T_EMP, TestDomain.EMP_COMMISSION, NullCondition.IS_NULL)
             .set(TestDomain.EMP_COMMISSION, 500d)
             .set(TestDomain.EMP_SALARY, 4200d);
     try {

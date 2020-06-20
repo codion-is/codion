@@ -9,6 +9,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.CustomCondition;
 import is.codion.framework.db.condition.EntityCondition;
+import is.codion.framework.db.condition.NullCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.plugin.jackson.json.TestDomain;
@@ -45,7 +46,7 @@ public final class ConditionObjectMapperTest {
                             Operator.LIKE, "Loc"),
                     Conditions.attributeCondition(TestDomain.EMP_ID,
                             Operator.WITHIN_RANGE, asList(10, 40)),
-                    Conditions.attributeConditionIsNotNull(TestDomain.EMP_COMMISSION)));
+                    Conditions.attributeCondition(TestDomain.EMP_COMMISSION, NullCondition.IS_NOT_NULL)));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
     final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);
@@ -64,7 +65,7 @@ public final class ConditionObjectMapperTest {
   public void nullCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
     final EntityCondition entityCondition = condition(TestDomain.T_EMP,
-            Conditions.attributeConditionIsNotNull(TestDomain.EMP_COMMISSION));
+            Conditions.attributeCondition(TestDomain.EMP_COMMISSION, NullCondition.IS_NOT_NULL));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
     final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);
