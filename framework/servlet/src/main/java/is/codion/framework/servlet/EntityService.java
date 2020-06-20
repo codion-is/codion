@@ -338,7 +338,7 @@ public final class EntityService extends Application {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Object> parameters = deserialize(request);
 
-      return Response.ok(Serializer.serialize(connection.selectValues((Attribute<?>) parameters.get(0), (Condition) parameters.get(1)))).build();
+      return Response.ok(Serializer.serialize(connection.select((Attribute<?>) parameters.get(0), (Condition) parameters.get(1)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

@@ -201,7 +201,7 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void selectValues() throws IOException, DatabaseException {
-    final List<String> values = connection.selectValues(TestDomain.DEPARTMENT_NAME);
+    final List<String> values = connection.select(TestDomain.DEPARTMENT_NAME);
     assertEquals(4, values.size());
   }
 

@@ -535,12 +535,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> List<T> selectValues(final Attribute<T> attribute) throws DatabaseException {
-    return selectValues(attribute, null);
+  public <T> List<T> select(final Attribute<T> attribute) throws DatabaseException {
+    return select(attribute, (Condition) null);
   }
 
   @Override
-  public <T> List<T> selectValues(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
+  public <T> List<T> select(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
     requireNonNull(attribute, "attribute");
     final EntityDefinition entityDefinition = domainEntities.getDefinition(attribute.getEntityType());
     if (entityDefinition.getSelectQuery() != null) {

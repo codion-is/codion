@@ -327,12 +327,12 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public <T> List<T> selectValues(final Attribute<T> attribute) throws DatabaseException {
-    return selectValues(attribute, null);
+  public <T> List<T> select(final Attribute<T> attribute) throws DatabaseException {
+    return select(attribute, (Condition) null);
   }
 
   @Override
-  public <T> List<T> selectValues(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
+  public <T> List<T> select(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
     Objects.requireNonNull(attribute);
     try {
       return onResponse(execute(createHttpPost(createURIBuilder("values"), asList(attribute, condition))));

@@ -194,7 +194,7 @@ public interface EntityConnection {
    * @throws IllegalArgumentException in case the given property is not a column based attribute
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  <T> List<T> selectValues(Attribute<T> attribute) throws DatabaseException;
+  <T> List<T> select(Attribute<T> attribute) throws DatabaseException;
 
   /**
    * Selects ordered and distinct non-null values of the given attribute, note that the attribute
@@ -207,7 +207,7 @@ public interface EntityConnection {
    * @throws IllegalArgumentException in case the given property is not a column based attribute
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  <T> List<T> selectValues(Attribute<T> attribute, Condition condition) throws DatabaseException;
+  <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException;
 
   /**
    * Selects a single entity

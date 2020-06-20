@@ -51,7 +51,7 @@ public class StoreDatabase {
             connection.select(selectCondition(Customer.EMAIL, IS_NULL));
 
     List<String> activeCustomerEmailAddresses =
-            connection.selectValues(Customer.EMAIL,
+            connection.select(Customer.EMAIL,
                     attributeCondition(Customer.IS_ACTIVE, EQUAL_TO, true));
 
     List<Entity> activeCustomersWithEmailAddresses =
