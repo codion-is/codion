@@ -62,6 +62,8 @@ import static is.codion.common.db.Operator.LIKE;
 import static is.codion.common.db.connection.DatabaseConnections.createConnection;
 import static is.codion.common.db.database.Database.closeSilently;
 import static is.codion.framework.db.condition.Conditions.*;
+import static is.codion.framework.db.condition.NullCondition.IS_NOT_NULL;
+import static is.codion.framework.db.condition.NullCondition.IS_NULL;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.Entities.*;
 import static java.util.Arrays.asList;
@@ -505,7 +507,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> List<Entity> select(final EntityType<?> entityType, final Attribute<T> attribute, final T value) throws DatabaseException {
-    return select(value == null ? selectConditionIsNull(entityType, attribute) : selectCondition(entityType, attribute, LIKE, value));
+    return select(value == null ? selectCondition(entityType, attribute, IS_NULL) : selectCondition(entityType, attribute, LIKE, value));
   }
 
   @Override
@@ -549,7 +551,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       condition.getAttributes().forEach(conditionAttribute -> validateAttribute(attribute.getEntityType(), conditionAttribute));
       combination.add(expand(condition, entityDefinition));
     }
-    combination.add(attributeConditionIsNotNull(attribute));
+    combination.add(attributeCondition(attribute, IS_NOT_NULL));
     final WhereCondition combinedCondition = whereCondition(condition(attribute.getEntityType(), combination), entityDefinition);
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
     final String columnName = propertyToSelect.getColumnName();

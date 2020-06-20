@@ -20,7 +20,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static is.codion.framework.db.condition.Conditions.attributeCondition;
-import static is.codion.framework.db.condition.Conditions.selectConditionIsNull;
+import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.NullCondition.IS_NULL;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
 import static java.util.Arrays.asList;
@@ -46,7 +47,7 @@ public class StoreDatabase {
             connection.select(Address.TYPE, Address.CUSTOMER_FK, customersNamedDoe);
 
     List<Entity> customersWithoutEmail =
-            connection.select(selectConditionIsNull(Customer.TYPE, Customer.EMAIL));
+            connection.select(selectCondition(Customer.TYPE, Customer.EMAIL, IS_NULL));
 
     List<String> activeCustomerEmailAddresses =
             connection.selectValues(Customer.EMAIL,

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import static is.codion.common.db.Operator.*;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
@@ -60,7 +59,7 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
   private final Operator operator;
 
   /**
-   * True if this condition should be case sensitive, only applies to condition based on string properties
+   * True if this condition should be case sensitive, only applies to conditions based on string attributes
    */
   private boolean caseSensitive = true;
 
@@ -73,6 +72,7 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
   DefaultAttributeCondition(final Attribute<T> attribute, final Operator operator, final Object value) {
     requireNonNull(attribute, "attribute");
     requireNonNull(operator, "operator");
+    requireNonNull(value, "value");
     this.attribute = attribute;
     this.operator = operator;
     this.values = initializeValues(value);
@@ -160,9 +160,6 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
   }
 
   private static List<Object> initializeValues(final Object conditionValue) {
-    if (conditionValue == null) {
-      return emptyList();
-    }
     final List<Object> valueList = new ArrayList<>();
     if (conditionValue instanceof Collection) {
       valueList.addAll((Collection<Object>) conditionValue);
