@@ -291,5 +291,5 @@ public abstract class DefaultEntities implements Entities {
 
       return null;
     }
-  };
+  }
 }

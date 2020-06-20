@@ -46,6 +46,8 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   private static final long serialVersionUID = 1;
 
+  private static final String METHOD = "method";
+
   /**
    * The domain name
    */
@@ -204,17 +206,17 @@ final class DefaultEntityDefinition implements EntityDefinition {
 
   @Override
   public Attribute<?> getGetterAttribute(final Method method) {
-    return getters.get(requireNonNull(method, "method").getName());
+    return getters.get(requireNonNull(method, METHOD).getName());
   }
 
   @Override
   public Attribute<?> getSetterAttribute(final Method method) {
-    return setters.get(requireNonNull(method, "method").getName());
+    return setters.get(requireNonNull(method, METHOD).getName());
   }
 
   @Override
   public MethodHandle getDefaultMethodHandle(final Method method) {
-    return defaultMethodHandles.computeIfAbsent(requireNonNull(method, "method").getName(),
+    return defaultMethodHandles.computeIfAbsent(requireNonNull(method, METHOD).getName(),
             methodName -> createDefaultMethodHandle(method));
   }
 
