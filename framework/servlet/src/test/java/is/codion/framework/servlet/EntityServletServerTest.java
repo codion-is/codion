@@ -210,7 +210,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/select"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(selectCondition(TestDomain.DEPARTMENT_NAME, Operator.LIKE, "New name")))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(selectCondition(TestDomain.DEPARTMENT_NAME, Operator.EQUAL_TO, "New name")))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
@@ -232,7 +232,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/delete"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(selectCondition(TestDomain.DEPARTMENT_ID, Operator.LIKE, -42)))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(selectCondition(TestDomain.DEPARTMENT_ID, Operator.EQUAL_TO, -42)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
