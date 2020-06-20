@@ -515,13 +515,11 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void updateWithCondition() throws DatabaseException {
-    final EntitySelectCondition selectCondition = Conditions.selectCondition(T_EMP,
-            EMP_COMMISSION, Operator.LIKE, null);
+    final EntitySelectCondition selectCondition = Conditions.selectConditionIsNull(T_EMP, EMP_COMMISSION);
 
     final List<Entity> entities = connection.select(selectCondition);
 
-    final EntityUpdateCondition updateCondition = Conditions.updateCondition(T_EMP,
-            EMP_COMMISSION, Operator.LIKE, null)
+    final EntityUpdateCondition updateCondition = Conditions.updateConditionIsNull(T_EMP, EMP_COMMISSION)
             .set(EMP_COMMISSION, 500d)
             .set(EMP_SALARY, 4200d);
     try {
@@ -541,8 +539,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void updateWithConditionNoRows() throws DatabaseException {
-    final EntityUpdateCondition updateCondition = Conditions.updateCondition(T_EMP,
-            EMP_ID, Operator.LIKE, null)
+    final EntityUpdateCondition updateCondition = Conditions.updateConditionIsNull(T_EMP, EMP_ID)
             .set(EMP_SALARY, 4200d);
     try {
       connection.beginTransaction();

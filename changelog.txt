@@ -6282,3 +6282,4 @@
   AttributeCondition.isNullCondition() and isCaseSensitive() added
   DefaultAttributeCondition refactored, DefaultAttributeCondition.ConditionStringProvider added along with subclasses
   DefaultAttributeCondition, null condition handling improved
+  Conditions, some refactoring related to null handling
