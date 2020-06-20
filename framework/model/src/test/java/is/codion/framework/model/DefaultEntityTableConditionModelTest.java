@@ -84,7 +84,7 @@ public class DefaultEntityTableConditionModelTest {
     final ColumnConditionModel<Entity, Property<?>> propertyConditionModel = conditionModel.getFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
-    assertEquals(Operator.LIKE, propertyConditionModel.getOperator());
+    assertEquals(Operator.EQUAL_TO, propertyConditionModel.getOperator());
     assertEquals(1400d, propertyConditionModel.getUpperBound());
   }
 
@@ -121,7 +121,7 @@ public class DefaultEntityTableConditionModelTest {
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
     conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     final ColumnConditionModel<?, ?> nameConditionModel = conditionModel.getConditionModel(TestDomain.EMP_NAME);
-    nameConditionModel.setLikeValue("SCOTT");
+    nameConditionModel.setEqualValue("SCOTT");
     conditionModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_2_ID));
     assertNotNull(conditionModel.getAdditionalConditionProvider());
   }
@@ -146,7 +146,7 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   public void testSearchState() {
     assertFalse(conditionModel.hasConditionChanged());
-    conditionModel.getConditionModel(TestDomain.EMP_JOB).setLikeValue("job");
+    conditionModel.getConditionModel(TestDomain.EMP_JOB).setEqualValue("job");
     assertTrue(conditionModel.hasConditionChanged());
     conditionModel.getConditionModel(TestDomain.EMP_JOB).setEnabled(false);
     assertFalse(conditionModel.hasConditionChanged());

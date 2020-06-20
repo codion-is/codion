@@ -41,9 +41,9 @@ public final class ConditionObjectMapperTest {
     final EntityCondition entityCondition = condition(TestDomain.T_EMP,
             Conditions.combination(Conjunction.AND,
                     Conditions.attributeCondition(TestDomain.EMP_DEPARTMENT_FK,
-                            Operator.NOT_LIKE, dept1, dept2),
+                            Operator.NOT_EQUAL_TO, dept1, dept2),
                     Conditions.attributeCondition(TestDomain.EMP_NAME,
-                            Operator.LIKE, "Loc"),
+                            Operator.EQUAL_TO, "Loc"),
                     Conditions.attributeCondition(TestDomain.EMP_ID,
                             Operator.WITHIN_RANGE, 10, 40),
                     Conditions.attributeCondition(TestDomain.EMP_COMMISSION, NullCondition.IS_NOT_NULL)));

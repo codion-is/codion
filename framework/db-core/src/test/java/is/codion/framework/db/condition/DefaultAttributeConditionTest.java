@@ -26,14 +26,14 @@ public final class DefaultAttributeConditionTest {
 
     final List<Integer> ids = new ArrayList<>();
     IntStream.range(0, 95).forEach(ids::add);
-    DefaultAttributeCondition condition = new DefaultAttributeCondition(TestDomain.EMP_ID, Operator.LIKE, ids);
+    DefaultAttributeCondition condition = new DefaultAttributeCondition(TestDomain.EMP_ID, Operator.EQUAL_TO, ids);
     String conditionString = condition.getConditionString(empIdProperty);
     assertTrue(conditionString.startsWith("empno in (?"));
     assertTrue(conditionString.endsWith("?, ?)"));
 
     ids.clear();
     IntStream.range(0, 105).forEach(ids::add);
-    condition = new DefaultAttributeCondition(TestDomain.EMP_ID, Operator.LIKE, ids);
+    condition = new DefaultAttributeCondition(TestDomain.EMP_ID, Operator.EQUAL_TO, ids);
     conditionString = condition.getConditionString(empIdProperty);
     assertTrue(conditionString.startsWith("(empno in (?"));
     assertTrue(conditionString.endsWith("?, ?))"));
@@ -42,7 +42,7 @@ public final class DefaultAttributeConditionTest {
   @Test
   void incorrectProperty() {
     final ColumnProperty<String> nameProperty = domain.getEntities().getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME);
-    final DefaultAttributeCondition condition = new DefaultAttributeCondition(TestDomain.EMP_ID, Operator.LIKE, 1);
+    final DefaultAttributeCondition condition = new DefaultAttributeCondition(TestDomain.EMP_ID, Operator.EQUAL_TO, 1);
     assertThrows(IllegalArgumentException.class, () -> condition.getConditionString(nameProperty));
   }
 }
