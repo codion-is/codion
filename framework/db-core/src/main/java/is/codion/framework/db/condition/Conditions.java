@@ -7,6 +7,7 @@ import is.codion.common.Conjunction;
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionProvider;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
@@ -85,22 +86,51 @@ public final class Conditions {
    * Note that {@code value} may be a single value, a Collection of values or null.
    * @param entityType the entityType
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @return a condition based on the given value
    */
-  public static EntityCondition conditionIsNull(final EntityType<?> entityType, final Attribute<?> attribute) {
+  public static <T> EntityCondition conditionIsNull(final EntityType<?> entityType, final Attribute<T> attribute) {
     return condition(entityType, attribute, LIKE, emptyList());
   }
 
   /**
-   * Creates a {@link EntityCondition} instance for specifying entities of the type identified by {@code entityType}
-   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
+   * Creates a {@link EntityCondition} instance selecting the entity with the given key.
    * Note that {@code value} may be a single value, a Collection of values or null.
    * @param entityType the entityType
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @return a condition based on the given value
    */
-  public static EntityCondition conditionIsNotNull(final EntityType<?> entityType, final Attribute<?> attribute) {
+  public static <T> EntityCondition conditionIsNotNull(final EntityType<?> entityType, final Attribute<T> attribute) {
     return condition(entityType, attribute, NOT_LIKE, emptyList());
+  }
+
+  /**
+   * Creates a {@link EntityCondition} instance for selecting entities of the type identified by {@code entityType}
+   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code key}.
+   * @param attribute the attribute
+   * @param operator the condition operator
+   * @param key the condition key
+   * @return a select condition based on the given key
+   */
+  public static EntityCondition condition(final Attribute<Entity> attribute, final Operator operator, final Key key) {
+    return condition(attribute, operator, singletonList(key));
+  }
+
+  /**
+   * Creates a {@link EntityCondition} instance for selecting the entities with the given keys,
+   * assuming they are all of the same type.
+   * @param attribute the attribute
+   * @param operator the condition operator
+   * @param keys the keys to base this condition on
+   * @return a select condition based on the given value
+   */
+  public static EntityCondition condition(final Attribute<Entity> attribute, final Operator operator, final List<Key> keys) {
+    if (keys.isEmpty()) {
+      throw new IllegalArgumentException("One or more keys must be provided for condition");
+    }
+
+    return condition(keys.get(0).getEntityType(), attributeCondition(attribute, operator, keys));
   }
 
   /**
@@ -110,26 +140,27 @@ public final class Conditions {
    * @param entityType the entityType
    * @param attribute the attribute
    * @param operator the condition operator
-   * @param value the condition value, can be a Collection of values
+   * @param value the condition value
+   * @param <T> the attribute type
    * @return a condition based on the given value
    */
-  public static EntityCondition condition(final EntityType<?> entityType, final Attribute<?> attribute,
-                                          final Operator operator, final Object value) {
+  public static <T> EntityCondition condition(final EntityType<?> entityType, final Attribute<T> attribute,
+                                              final Operator operator, final T value) {
     return condition(entityType, attribute, operator, singletonList(requireNonNull(value, "value")));
   }
 
   /**
    * Creates a {@link EntityCondition} instance for specifying entities of the type identified by {@code entityType}
-   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code value}.
-   * Note that {@code value} may be a single value, a Collection of values or null.
+   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code values}.
    * @param entityType the entityType
    * @param attribute the attribute
    * @param operator the condition operator
    * @param values the condition values
+   * @param <T> the attribute type
    * @return a condition based on the given value
    */
-  public static EntityCondition condition(final EntityType<?> entityType, final Attribute<?> attribute,
-                                          final Operator operator, final Collection<?> values) {
+  public static <T> EntityCondition condition(final EntityType<?> entityType, final Attribute<T> attribute,
+                                              final Operator operator, final Collection<? extends T> values) {
     return new DefaultEntityCondition(entityType, attributeCondition(attribute, operator, values));
   }
 
@@ -183,9 +214,10 @@ public final class Conditions {
    * Note that {@code value} may be a single value, a Collection of values or null.
    * @param entityType the entityType
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @return a select condition based on the given value
    */
-  public static EntitySelectCondition selectConditionIsNull(final EntityType<?> entityType, final Attribute<?> attribute) {
+  public static <T> EntitySelectCondition selectConditionIsNull(final EntityType<?> entityType, final Attribute<T> attribute) {
     return selectCondition(entityType, attribute, LIKE, emptyList());
   }
 
@@ -195,10 +227,38 @@ public final class Conditions {
    * Note that {@code value} may be a single value, a Collection of values or null.
    * @param entityType the entityType
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @return a select condition based on the given value
    */
-  public static EntitySelectCondition selectConditionIsNotNull(final EntityType<?> entityType, final Attribute<?> attribute) {
+  public static <T> EntitySelectCondition selectConditionIsNotNull(final EntityType<?> entityType, final Attribute<T> attribute) {
     return selectCondition(entityType, attribute, NOT_LIKE, emptyList());
+  }
+
+  /**
+   * Creates a {@link EntitySelectCondition} instance for selecting entities of the type identified by {@code entityType}
+   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code key}.
+   * @param attribute the attribute
+   * @param operator the condition operator
+   * @param key the condition key
+   * @return a select condition based on the given key
+   */
+  public static EntitySelectCondition selectCondition(final Attribute<Entity> attribute, final Operator operator, final Key key) {
+    return selectCondition(attribute, operator, singletonList(key));
+  }
+
+  /**
+   * Creates a condition based on the given primary keys, it is assumed they are all of the same type
+   * @param attribute the attribute
+   * @param operator the condition operator
+   * @param keys the keys to base this condition on
+   * @return a select condition based on the given value
+   */
+  public static EntitySelectCondition selectCondition(final Attribute<Entity> attribute, final Operator operator, final List<Key> keys) {
+    if (keys.isEmpty()) {
+      throw new IllegalArgumentException("One or more keys must be provided for condition");
+    }
+
+    return selectCondition(keys.get(0).getEntityType(), attributeCondition(attribute, operator, keys));
   }
 
   /**
@@ -209,10 +269,11 @@ public final class Conditions {
    * @param attribute the attribute
    * @param operator the condition operator
    * @param value the condition value, can be a Collection of values
+   * @param <T> the attribute type
    * @return a select condition based on the given value
    */
-  public static EntitySelectCondition selectCondition(final EntityType<?> entityType, final Attribute<?> attribute,
-                                                      final Operator operator, final Object value) {
+  public static <T> EntitySelectCondition selectCondition(final EntityType<?> entityType, final Attribute<T> attribute,
+                                                          final Operator operator, final T value) {
     return selectCondition(entityType, attribute, operator, singletonList(requireNonNull(value)));
   }
 
@@ -224,10 +285,11 @@ public final class Conditions {
    * @param attribute the attribute
    * @param operator the condition operator
    * @param values the condition values
+   * @param <T> the attribute type
    * @return a select condition based on the given value
    */
-  public static EntitySelectCondition selectCondition(final EntityType<?> entityType, final Attribute<?> attribute,
-                                                      final Operator operator, final Collection<?> values) {
+  public static <T> EntitySelectCondition selectCondition(final EntityType<?> entityType, final Attribute<T> attribute,
+                                                          final Operator operator, final Collection<? extends T> values) {
     return selectCondition(entityType, attributeCondition(attribute, operator, values));
   }
 
@@ -366,9 +428,10 @@ public final class Conditions {
    * Creates a {@link Condition} for the given attribute, with the operator specified by the {@code operator}
    * and {@code value}. Note that {@code values} may be a single value or a Collection of values.
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @return a attribute condition based on the given value
    */
-  public static AttributeCondition attributeConditionIsNull(final Attribute<?> attribute) {
+  public static <T> AttributeCondition<T> attributeConditionIsNull(final Attribute<T> attribute) {
     return attributeCondition(attribute, LIKE, emptyList());
   }
 
@@ -376,10 +439,39 @@ public final class Conditions {
    * Creates a {@link Condition} for the given attribute, with the operator specified by the {@code operator}
    * and {@code value}. Note that {@code values} may be a single value or a Collection of values.
    * @param attribute the attribute
+   * @param <T> the attribute type
    * @return a attribute condition based on the given value
    */
-  public static AttributeCondition attributeConditionIsNotNull(final Attribute<?> attribute) {
+  public static <T> AttributeCondition<T> attributeConditionIsNotNull(final Attribute<T> attribute) {
     return attributeCondition(attribute, NOT_LIKE, emptyList());
+  }
+
+  /**
+   * Creates a {@link Condition} for the given attribute, with the operator specified by the {@code operator} and {@code key}.
+   * @param attribute the attribute
+   * @param operator the condition operator
+   * @param key the condition key
+   * @return a attribute condition based on the given key
+   */
+  public static AttributeCondition<Entity> attributeCondition(final Attribute<Entity> attribute, final Operator operator,
+                                                              final Key key) {
+    return attributeCondition(attribute, operator, singletonList(requireNonNull(key)));
+  }
+
+  /**
+   * Creates a condition based on the given primary keys, it is assumed they are all of the same type
+   * @param attribute the attribute
+   * @param operator the condition operator
+   * @param keys the condition keys
+   * @return a attribute condition based on the given value
+   */
+  public static AttributeCondition<Entity> attributeCondition(final Attribute<Entity> attribute, final Operator operator,
+                                                              final List<Key> keys) {
+    if (keys.isEmpty()) {
+      throw new IllegalArgumentException("One or more keys must be provided for condition");
+    }
+
+    return new DefaultAttributeCondition<>(attribute, operator, keys);
   }
 
   /**
@@ -387,11 +479,12 @@ public final class Conditions {
    * and {@code value}. Note that {@code values} may be a single value or a Collection of values.
    * @param attribute the attribute
    * @param operator the condition operator
-   * @param value the condition value, Collections are accepted
+   * @param value the condition value
+   * @param <T> the attribute type
    * @return a attribute condition based on the given value
    */
-  public static AttributeCondition attributeCondition(final Attribute<?> attribute, final Operator operator,
-                                                      final Object value) {
+  public static <T> AttributeCondition<T> attributeCondition(final Attribute<T> attribute, final Operator operator,
+                                                             final T value) {
     return attributeCondition(attribute, operator, singletonList(requireNonNull(value, "value")));
   }
 
@@ -401,11 +494,12 @@ public final class Conditions {
    * @param attribute the attribute
    * @param operator the condition operator
    * @param values the condition values
+   * @param <T> the attribute type
    * @return a attribute condition based on the given value
    */
-  public static AttributeCondition attributeCondition(final Attribute<?> attribute, final Operator operator,
-                                                      final Collection<?> values) {
-    return new DefaultAttributeCondition(attribute, operator, requireNonNull(values));
+  public static <T> AttributeCondition<T> attributeCondition(final Attribute<T> attribute, final Operator operator,
+                                                             final Collection<? extends T> values) {
+    return new DefaultAttributeCondition<>(attribute, operator, requireNonNull(values));
   }
 
   /**
@@ -439,7 +533,7 @@ public final class Conditions {
       return condition;
     }
     if (condition instanceof AttributeCondition) {
-      final AttributeCondition attributeCondition = (AttributeCondition) condition;
+      final AttributeCondition<?> attributeCondition = (AttributeCondition<?>) condition;
       final Property<?> property = definition.getProperty(attributeCondition.getAttribute());
       if (property instanceof ForeignKeyProperty) {
         return foreignKeyCondition(((ForeignKeyProperty) property).getColumnAttributes(),
@@ -460,13 +554,13 @@ public final class Conditions {
   }
 
   /** Assumes {@code keys} is not empty. */
-  private static Condition createKeyCondition(final List<Key> keys) {
+  private static <T> Condition createKeyCondition(final List<Key> keys) {
     final Key firstKey = keys.get(0);
     if (firstKey.isCompositeKey()) {
       return compositeKeyCondition(keys, firstKey.getAttributes(), LIKE);
     }
 
-    return attributeCondition(firstKey.getAttribute(), LIKE, getValues(keys));
+    return attributeCondition((Attribute<T>) firstKey.getAttribute(), LIKE, getValues(keys));
   }
 
   /** Assumes {@code keys} is not empty. */
@@ -489,21 +583,21 @@ public final class Conditions {
         conditionCombination.add(attributeConditionIsNull(attributes.get(i)));
       }
       else {
-        conditionCombination.add(attributeCondition(attributes.get(i), operator, value));
+        conditionCombination.add(attributeCondition((Attribute<Object>) attributes.get(i), operator, value));
       }
     }
 
     return conditionCombination;
   }
 
-  private static Condition foreignKeyCondition(final List<Attribute<?>> foreignKeyColumnAttributes,
-                                               final Operator operator, final Collection<Object> values) {
+  private static <T> Condition foreignKeyCondition(final List<Attribute<?>> foreignKeyColumnAttributes,
+                                                   final Operator operator, final Collection<Object> values) {
     final List<Key> keys = getKeys(values);
     if (foreignKeyColumnAttributes.size() > 1) {
       return compositeKeyCondition(keys, foreignKeyColumnAttributes, operator);
     }
 
-    return attributeCondition(foreignKeyColumnAttributes.get(0), operator, getValues(keys));
+    return attributeCondition((Attribute<T>) foreignKeyColumnAttributes.get(0), operator, getValues(keys));
   }
 
   private static List<Key> getKeys(final Object value) {

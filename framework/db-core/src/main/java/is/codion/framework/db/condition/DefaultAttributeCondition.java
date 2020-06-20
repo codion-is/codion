@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Encapsulates a query condition based on a single attribute with one or more values.
  */
-final class DefaultAttributeCondition implements AttributeCondition {
+final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -42,7 +42,7 @@ final class DefaultAttributeCondition implements AttributeCondition {
   /**
    * The attribute used in this condition
    */
-  private final Attribute<?> attribute;
+  private final Attribute<T> attribute;
 
   /**
    * The values used in this condition
@@ -70,7 +70,7 @@ final class DefaultAttributeCondition implements AttributeCondition {
    * @param operator the condition operator
    * @param values the values, can be a Collection
    */
-  DefaultAttributeCondition(final Attribute<?> attribute, final Operator operator, final Object value) {
+  DefaultAttributeCondition(final Attribute<T> attribute, final Operator operator, final Object value) {
     requireNonNull(attribute, "attribute");
     requireNonNull(operator, "operator");
     this.attribute = attribute;
@@ -97,7 +97,7 @@ final class DefaultAttributeCondition implements AttributeCondition {
   }
 
   @Override
-  public Attribute<?> getAttribute() {
+  public Attribute<T> getAttribute() {
     return attribute;
   }
 
@@ -112,7 +112,7 @@ final class DefaultAttributeCondition implements AttributeCondition {
   }
 
   @Override
-  public <T> String getConditionString(final ColumnProperty<T> property) {
+  public String getConditionString(final ColumnProperty<T> property) {
     if (!attribute.equals(property.getAttribute())) {
       throw new IllegalArgumentException("Property '" + property + "' is not based on attribute: " + attribute);
     }
@@ -125,7 +125,7 @@ final class DefaultAttributeCondition implements AttributeCondition {
   }
 
   @Override
-  public AttributeCondition setCaseSensitive(final boolean caseSensitive) {
+  public AttributeCondition<T> setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
     return this;
   }

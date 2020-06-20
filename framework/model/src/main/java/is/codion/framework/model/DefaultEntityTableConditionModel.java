@@ -358,25 +358,25 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private static Condition getCondition(final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel) {
-    final List<Object> conditionValues = new ArrayList<>();
+  private static <T> Condition getCondition(final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel) {
+    final List<T> conditionValues = new ArrayList<>();
     final Object lowerBound = conditionModel.getLowerBound();
     final Object upperBound = conditionModel.getUpperBound();
     if (lowerBound instanceof Collection) {
-      conditionValues.addAll((Collection<?>) lowerBound);
+      conditionValues.addAll((Collection<T>) lowerBound);
     }
     else if (lowerBound != null) {
-      conditionValues.add(lowerBound);
+      conditionValues.add((T) lowerBound);
     }
     if (upperBound instanceof Collection) {
-      conditionValues.addAll((Collection<?>) upperBound);
+      conditionValues.addAll((Collection<T>) upperBound);
     }
     else if (upperBound != null) {
-      conditionValues.add(upperBound);
+      conditionValues.add((T) upperBound);
     }
 
-    return attributeCondition(conditionModel.getColumnIdentifier().getAttribute(), conditionModel.getOperator(), conditionValues)
-            .setCaseSensitive(conditionModel.isCaseSensitive());
+    return attributeCondition((Attribute<T>) conditionModel.getColumnIdentifier().getAttribute(),
+            conditionModel.getOperator(), conditionValues).setCaseSensitive(conditionModel.isCaseSensitive());
   }
 
   private static String toString(final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel) {
