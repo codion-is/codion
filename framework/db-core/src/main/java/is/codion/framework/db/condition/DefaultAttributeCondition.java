@@ -116,12 +116,11 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
     if (!attribute.equals(property.getAttribute())) {
       throw new IllegalArgumentException("Property '" + property + "' is not based on attribute: " + attribute);
     }
-    final ColumnProperty<Object> objectColumnProperty = (ColumnProperty<Object>) property;
     for (int i = 0; i < values.size(); i++) {
-      objectColumnProperty.getAttribute().validateType(values.get(i));
+      property.getAttribute().validateType((T) values.get(i));
     }
 
-    return OPERATOR_PROVIDER_MAP.get(operator).getConditionString(this, objectColumnProperty);
+    return OPERATOR_PROVIDER_MAP.get(operator).getConditionString(this, property);
   }
 
   @Override
@@ -188,7 +187,7 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
 
   private interface ConditionStringProvider {
 
-    String getConditionString(AttributeCondition condition, ColumnProperty<Object> property);
+    String getConditionString(AttributeCondition<?> condition, ColumnProperty<?> property);
   }
 
   private static final class LikeConditionProvider implements ConditionStringProvider {
@@ -204,7 +203,7 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
     }
 
     @Override
-    public String getConditionString(final AttributeCondition condition, final ColumnProperty<Object> property) {
+    public String getConditionString(final AttributeCondition<?> condition, final ColumnProperty<?> property) {
       final String columnIdentifier = getColumnIdentifier(property, condition.isNullCondition(), condition.isCaseSensitive());
       if (condition.isNullCondition()) {
         return columnIdentifier + (condition.getOperator() == LIKE ? " is null" : " is not null");
@@ -213,8 +212,8 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
       return getLikeCondition(condition, property, columnIdentifier);
     }
 
-    private String getLikeCondition(final AttributeCondition condition, final ColumnProperty<?> property,
-                                    final String columnIdentifier) {
+    private String getLikeCondition(final AttributeCondition<?> condition, final ColumnProperty<?> property,
+                                        final String columnIdentifier) {
       final String valuePlaceholder = getValuePlaceholder(property, condition.isCaseSensitive());
       if (condition.getValues().size() > 1) {
         return getInList(columnIdentifier, valuePlaceholder, condition.getValues().size(), negated);
@@ -254,7 +253,7 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
   private static final class LessThanConditionProvider implements ConditionStringProvider {
 
     @Override
-    public String getConditionString(final AttributeCondition condition, final ColumnProperty<Object> property) {
+    public String getConditionString(final AttributeCondition<?> condition, final ColumnProperty<?> property) {
       return getColumnIdentifier(property) + " <= " + getValuePlaceholder(property, condition.isCaseSensitive());
     }
   }
@@ -262,7 +261,7 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
   private static final class GreaterThanConditionProvider implements ConditionStringProvider {
 
     @Override
-    public String getConditionString(final AttributeCondition condition, final ColumnProperty<Object> property) {
+    public String getConditionString(final AttributeCondition<?> condition, final ColumnProperty<?> property) {
       return getColumnIdentifier(property) + " >= " + getValuePlaceholder(property, condition.isCaseSensitive());
     }
   }
@@ -270,7 +269,7 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
   private static final class WithinRangeConditionProvider implements ConditionStringProvider {
 
     @Override
-    public String getConditionString(final AttributeCondition condition, final ColumnProperty<Object> property) {
+    public String getConditionString(final AttributeCondition<?> condition, final ColumnProperty<?> property) {
       final String columnIdentifier = getColumnIdentifier(property);
       final String valuePlaceholder = getValuePlaceholder(property, condition.isCaseSensitive());
 
@@ -281,7 +280,7 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
   private static final class OutsideRangeConditionProvider implements ConditionStringProvider {
 
     @Override
-    public String getConditionString(final AttributeCondition condition, final ColumnProperty<Object> property) {
+    public String getConditionString(final AttributeCondition<?> condition, final ColumnProperty<?> property) {
       final String columnIdentifier = getColumnIdentifier(property);
       final String valuePlaceholder = getValuePlaceholder(property, condition.isCaseSensitive());
 

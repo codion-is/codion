@@ -6284,3 +6284,4 @@
   DefaultAttributeCondition, null condition handling improved
   Conditions, some refactoring related to null handling
   AttributeCondition finally type safe, Conditions, type safety introduced
+  DefaultAttributeCondition.ConditionStringProvider type safety improved
