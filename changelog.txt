@@ -6294,3 +6294,4 @@
   Condition.Combination.add() with varchar added
   Condition.and() and and() added
   EntityCondition removed, EntitySelectCondition and EntityUpdateCondition renamed SelectCondition and UpdateCondition respectively
+  Util.nullOrEmpty(string) added

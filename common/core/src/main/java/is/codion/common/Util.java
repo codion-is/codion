@@ -44,6 +44,14 @@ public final class Util {
   private Util() {}
 
   /**
+   * @param string the string to check
+   * @return true if the given string is null or empty, false otherwise
+   */
+  public static boolean nullOrEmpty(final String string) {
+    return string == null || string.length() == 0;
+  }
+
+  /**
    * @param strings the strings to check
    * @return true if one of the given strings is null or empty or if no arguments are provided, false otherwise
    */
@@ -52,8 +60,7 @@ public final class Util {
       return true;
     }
     for (int i = 0; i < strings.length; i++) {
-      final String string = strings[i];
-      if (string == null || string.length() == 0) {
+      if (nullOrEmpty(strings[i])) {
         return true;
       }
     }
