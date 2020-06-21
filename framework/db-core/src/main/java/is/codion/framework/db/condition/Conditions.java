@@ -348,7 +348,6 @@ public final class Conditions {
    * @return a WhereCondition
    */
   public static WhereCondition whereCondition(final Condition condition, final EntityDefinition entityDefinition) {
-    requireNonNull(condition, "condition");
     return new DefaultWhereCondition(expand(condition, entityDefinition), entityDefinition);
   }
 
