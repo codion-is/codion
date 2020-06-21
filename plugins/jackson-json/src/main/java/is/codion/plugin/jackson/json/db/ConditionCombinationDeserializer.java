@@ -11,8 +11,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 final class ConditionCombinationDeserializer {
 
@@ -25,11 +23,11 @@ final class ConditionCombinationDeserializer {
   Condition.Combination deserialize(final EntityDefinition definition, final JsonNode jsonNode) throws IOException {
     final Conjunction conjunction = Conjunction.valueOf(jsonNode.get("conjunction").asText());
     final JsonNode conditionsNode = jsonNode.get("conditions");
-    final List<Condition> conditions = new ArrayList<>(conditionsNode.size());
+    final Condition.Combination combination = Conditions.combination(conjunction);
     for (final JsonNode conditionNode : conditionsNode) {
-      conditions.add(conditionDeserializer.deserialize(definition, conditionNode));
+      combination.add(conditionDeserializer.deserialize(definition, conditionNode));
     }
 
-    return Conditions.combination(conjunction, conditions);
+    return combination;
   }
 }

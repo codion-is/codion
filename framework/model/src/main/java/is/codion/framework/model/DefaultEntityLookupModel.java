@@ -17,7 +17,7 @@ import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -273,7 +273,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
    * @throws IllegalStateException in case no lookup properties are specified
    * @see #setAdditionalConditionProvider(Condition.Provider)
    */
-  private EntitySelectCondition getEntitySelectCondition() {
+  private SelectCondition getEntitySelectCondition() {
     if (lookupProperties.isEmpty()) {
       throw new IllegalStateException("No search properties provided for lookup model: " + entityType);
     }
@@ -284,15 +284,15 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
       final LookupSettings lookupSettings = propertyLookupSettings.get(lookupProperty);
       for (final String rawLookupText : lookupTexts) {
         final String lookupText = prepareLookupText(rawLookupText, lookupSettings);
-        final AttributeCondition<String> condition = attributeCondition(
+        final AttributeCondition<String> condition = condition(
                 (Attribute<String>) lookupProperty.getAttribute(),
                 Operator.EQUAL_TO, lookupText).setCaseSensitive(lookupSettings.getCaseSensitiveValue().get());
         baseCondition.add(condition);
       }
     }
 
-    return selectCondition(entityType, additionalConditionProvider == null ? baseCondition :
-            combination(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
+    return selectCondition(additionalConditionProvider == null ? baseCondition :
+            additionalConditionProvider.getCondition().and(baseCondition))
             .setOrderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
   }
 

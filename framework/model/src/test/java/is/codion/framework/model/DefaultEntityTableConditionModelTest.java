@@ -122,7 +122,7 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     final ColumnConditionModel<?, ?> nameConditionModel = conditionModel.getConditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setEqualValue("SCOTT");
-    conditionModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_2_ID));
+    conditionModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.T_EMP, TestDomain.EMP_CONDITION_2_ID));
     assertNotNull(conditionModel.getAdditionalConditionProvider());
   }
 

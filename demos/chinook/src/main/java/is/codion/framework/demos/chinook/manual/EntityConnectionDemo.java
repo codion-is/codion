@@ -10,8 +10,8 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.EntitySelectCondition;
-import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entities;
@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.common.Conjunction.AND;
 import static is.codion.common.db.Operator.EQUAL_TO;
 import static is.codion.common.db.Operator.NOT_EQUAL_TO;
 import static is.codion.framework.db.condition.Conditions.*;
@@ -42,14 +41,14 @@ public final class EntityConnectionDemo {
 
   static void selectConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::selectCondition[]
-    EntitySelectCondition condition = selectCondition(Artist.NAME, EQUAL_TO, "The %");
+    SelectCondition condition = selectCondition(Artist.NAME, EQUAL_TO, "The %");
 
     List<Entity> artists = connection.select(condition);
 
-    condition = selectCondition(Album.TYPE, combination(AND,
-            attributeCondition(Album.ARTIST_FK, EQUAL_TO, artists),
-            attributeCondition(Album.TITLE, NOT_EQUAL_TO, "%live%")
-                    .setCaseSensitive(false)));
+    condition = selectCondition(
+            condition(Album.ARTIST_FK, EQUAL_TO, artists)
+                    .and(condition(Album.TITLE, NOT_EQUAL_TO, "%live%")
+                            .setCaseSensitive(false)));
 
     List<Entity> nonLiveAlbums = connection.select(condition);
     // end::selectCondition[]
@@ -73,7 +72,7 @@ public final class EntityConnectionDemo {
 
   static void fetchDepthCondition(EntityConnection connection) throws DatabaseException {
     // tag::fetchDepthCondition[]
-    EntitySelectCondition selectCondition =
+    SelectCondition selectCondition =
             selectCondition(Track.NAME, EQUAL_TO, "Bad%")
                     .setForeignKeyFetchDepth(0);
 
@@ -89,7 +88,7 @@ public final class EntityConnectionDemo {
 
   static void fetchDepthForeignKeyCondition(EntityConnection connection) throws DatabaseException {
     // tag::fetchDepthConditionForeignKey[]
-    EntitySelectCondition selectCondition =
+    SelectCondition selectCondition =
             selectCondition(Track.NAME, EQUAL_TO, "Bad%")
                     .setForeignKeyFetchDepth(Track.ALBUM_FK, 0);
 
@@ -128,10 +127,10 @@ public final class EntityConnectionDemo {
     // tag::selectSingleCondition[]
     Entity ironMaiden = connection.selectSingle(selectCondition(Artist.NAME, EQUAL_TO, "Iron Maiden"));
 
-    Entity liveAlbum = connection.selectSingle(selectCondition(Album.TYPE, combination(AND,
-            attributeCondition(Album.ARTIST_FK, EQUAL_TO, ironMaiden),
-            attributeCondition(Album.TITLE, EQUAL_TO, "%live after%")
-                    .setCaseSensitive(false))));
+    Entity liveAlbum = connection.selectSingle(selectCondition(
+            condition(Album.ARTIST_FK, EQUAL_TO, ironMaiden)
+                    .and(condition(Album.TITLE, EQUAL_TO, "%live after%")
+                            .setCaseSensitive(false))));
     // end::selectSingleCondition[]
   }
 
@@ -156,7 +155,7 @@ public final class EntityConnectionDemo {
   static void selectValues(EntityConnection connection) throws DatabaseException {
     // tag::selectValues[]
     List<String> customerUsStates = connection.select(Customer.STATE,
-            attributeCondition(Customer.COUNTRY, EQUAL_TO, "USA"));
+            condition(Customer.COUNTRY, EQUAL_TO, "USA"));
     // end::selectValues[]
   }
 
@@ -205,7 +204,7 @@ public final class EntityConnectionDemo {
 
   static void updateConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::updateCondition[]
-    EntityUpdateCondition updateCondition = updateCondition(Artist.NAME, EQUAL_TO, "Azymuth");
+    UpdateCondition updateCondition = updateCondition(Artist.NAME, EQUAL_TO, "Azymuth");
 
     updateCondition.set(Artist.NAME, "Another Name");
 

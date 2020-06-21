@@ -10,7 +10,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 
@@ -79,7 +79,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * @return an iterator for the given query condition
    * @throws DatabaseException in case of an exception
    */
-  ResultIterator<Entity> iterator(EntitySelectCondition condition) throws DatabaseException;
+  ResultIterator<Entity> iterator(SelectCondition condition) throws DatabaseException;
 
   /**
    * @return true if optimistic locking is enabled
@@ -100,7 +100,7 @@ public interface LocalEntityConnection extends EntityConnection {
   /**
    * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by condition
    * @return this LocalEntityConnection instance
-   * @see is.codion.framework.db.condition.EntitySelectCondition#setForeignKeyFetchDepth(int)
+   * @see SelectCondition#setForeignKeyFetchDepth(int)
    */
   LocalEntityConnection setLimitForeignKeyFetchDepth(boolean limitForeignKeyFetchDepth);
 

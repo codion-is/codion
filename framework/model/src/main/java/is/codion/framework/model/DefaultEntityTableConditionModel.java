@@ -32,7 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Conditions.attributeCondition;
+import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -201,7 +201,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       conditionCombination.add(additionalConditionProvider.getCondition());
     }
 
-    return conditionCombination.getConditions().isEmpty() ? null : conditionCombination;
+    return conditionCombination.getConditions().isEmpty() ? Conditions.condition(entityType) : conditionCombination;
   }
 
   @Override
@@ -375,7 +375,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       conditionValues.add((T) upperBound);
     }
 
-    return attributeCondition((Attribute<T>) conditionModel.getColumnIdentifier().getAttribute(),
+    return condition((Attribute<T>) conditionModel.getColumnIdentifier().getAttribute(),
             conditionModel.getOperator(), conditionValues).setCaseSensitive(conditionModel.isCaseSensitive());
   }
 

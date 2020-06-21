@@ -47,6 +47,6 @@ final class AttributeConditionDeserializer implements Serializable {
     final Attribute<T> attribute = (Attribute<T>) definition.getEntityType().objectAttribute(conditionNode.get("attribute").asText());
     final Operator operator = Operator.valueOf(conditionNode.get("operator").asText());
 
-    return Conditions.attributeCondition(attribute, operator, values);
+    return Conditions.condition(attribute, operator, values);
   }
 }

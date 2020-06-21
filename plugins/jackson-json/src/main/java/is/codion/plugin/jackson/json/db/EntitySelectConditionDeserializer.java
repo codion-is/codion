@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.jackson.json.db;
 
-import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -12,19 +12,19 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 
-final class EntitySelectConditionDeserializer extends StdDeserializer<EntitySelectCondition> {
+final class EntitySelectConditionDeserializer extends StdDeserializer<SelectCondition> {
 
   private static final long serialVersionUID = 1;
 
   private final ConditionSerializer conditionSerializer;
 
   EntitySelectConditionDeserializer(final EntityObjectMapper entityObjectMapper) {
-    super(EntitySelectCondition.class);
+    super(SelectCondition.class);
     this.conditionSerializer = new ConditionSerializer(new AttributeConditionSerializer(entityObjectMapper), entityObjectMapper);
   }
 
   @Override
-  public EntitySelectCondition deserialize(final JsonParser parser, final DeserializationContext ctxt)
+  public SelectCondition deserialize(final JsonParser parser, final DeserializationContext ctxt)
           throws IOException {
     return null;
   }

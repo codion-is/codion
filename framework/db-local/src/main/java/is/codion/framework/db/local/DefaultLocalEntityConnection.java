@@ -3,7 +3,6 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.Conjunction;
 import is.codion.common.MethodLogger;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
@@ -23,9 +22,8 @@ import is.codion.common.db.result.ResultPacker;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.EntityCondition;
-import is.codion.framework.db.condition.EntitySelectCondition;
-import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.condition.WhereCondition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
@@ -341,7 +339,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public int update(final EntityUpdateCondition updateCondition) throws DatabaseException {
+  public int update(final UpdateCondition updateCondition) throws DatabaseException {
     requireNonNull(updateCondition, "updateCondition");
     if (updateCondition.getAttributeValues().isEmpty()) {
       throw new IllegalArgumentException("No attribute values provided for update");
@@ -385,7 +383,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public int delete(final EntityCondition deleteCondition) throws DatabaseException {
+  public int delete(final Condition deleteCondition) throws DatabaseException {
     requireNonNull(deleteCondition, "deleteCondition");
     checkIfReadOnly(deleteCondition.getEntityType());
 
@@ -469,7 +467,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
+  public Entity selectSingle(final SelectCondition condition) throws DatabaseException {
     final List<Entity> entities = select(condition);
     if (entities.isEmpty()) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
@@ -516,7 +514,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public List<Entity> select(final EntitySelectCondition selectCondition) throws DatabaseException {
+  public List<Entity> select(final SelectCondition selectCondition) throws DatabaseException {
     requireNonNull(selectCondition, "selectCondition");
     synchronized (connection) {
       try {
@@ -546,13 +544,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entityDefinition.getSelectQuery() != null) {
       throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
-    final Condition.Combination combination = combination(Conjunction.AND);
+    Condition combination = condition(attribute, IS_NOT_NULL);
     if (condition != null) {
       condition.getAttributes().forEach(conditionAttribute -> validateAttribute(attribute.getEntityType(), conditionAttribute));
-      combination.add(expand(condition, entityDefinition));
+      combination = combination.and(expand(condition, entityDefinition));
     }
-    combination.add(attributeCondition(attribute, IS_NOT_NULL));
-    final WhereCondition combinedCondition = whereCondition(condition(attribute.getEntityType(), combination), entityDefinition);
+    final WhereCondition combinedCondition = whereCondition(combination, entityDefinition);
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
     final String columnName = propertyToSelect.getColumnName();
     final String selectQuery = selectQuery(entityDefinition.getSelectTableName(),
@@ -582,7 +579,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public int rowCount(final EntityCondition condition) throws DatabaseException {
+  public int rowCount(final Condition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION_PARAM_NAME);
     final EntityDefinition entityDefinition = domainEntities.getDefinition(condition.getEntityType());
     final WhereCondition whereCondition = whereCondition(condition, entityDefinition);
@@ -798,7 +795,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public ResultIterator<Entity> iterator(final EntitySelectCondition condition) throws DatabaseException {
+  public ResultIterator<Entity> iterator(final SelectCondition condition) throws DatabaseException {
     synchronized (connection) {
       try {
         return entityIterator(condition);
@@ -849,7 +846,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void performOptimisticLocking(final Map<EntityType<Entity>, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
     for (final Map.Entry<EntityType<Entity>, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
       final List<Key> originalKeys = getOriginalKeys(entitiesByEntityTypeEntry.getValue());
-      final EntitySelectCondition selectForUpdateCondition = selectCondition(originalKeys);
+      final SelectCondition selectForUpdateCondition = selectCondition(originalKeys);
       selectForUpdateCondition.setSelectAttributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()));
       selectForUpdateCondition.setForUpdate(true);
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
@@ -872,11 +869,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private List<Entity> doSelect(final EntitySelectCondition condition) throws SQLException {
+  private List<Entity> doSelect(final SelectCondition condition) throws SQLException {
     return doSelect(condition, 0);
   }
 
-  private List<Entity> doSelect(final EntitySelectCondition condition, final int currentForeignKeyFetchDepth) throws SQLException {
+  private List<Entity> doSelect(final SelectCondition condition, final int currentForeignKeyFetchDepth) throws SQLException {
     final List<Entity> result;
     try (final ResultIterator<Entity> iterator = entityIterator(condition)) {
       result = packResult(iterator);
@@ -897,9 +894,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param currentForeignKeyFetchDepth the current foreign key fetch depth
    * @throws SQLException in case of a database exception
    * @see #setLimitForeignKeyFetchDepth(boolean)
-   * @see EntitySelectCondition#setForeignKeyFetchDepth(int)
+   * @see SelectCondition#setForeignKeyFetchDepth(int)
    */
-  private void setForeignKeys(final List<Entity> entities, final EntitySelectCondition condition,
+  private void setForeignKeys(final List<Entity> entities, final SelectCondition condition,
                               final int currentForeignKeyFetchDepth) throws SQLException {
     final List<ForeignKeyProperty> foreignKeyProperties =
             domainEntities.getDefinition(entities.get(0).getEntityType()).getForeignKeyProperties();
@@ -920,7 +917,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             }
           }
           else {
-            final EntitySelectCondition referencedEntitiesCondition = selectCondition(referencedKeys);
+            final SelectCondition referencedEntitiesCondition = selectCondition(referencedKeys);
             referencedEntitiesCondition.setForeignKeyFetchDepth(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
@@ -953,7 +950,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return referencedEntity;
   }
 
-  private ResultIterator<Entity> entityIterator(final EntitySelectCondition selectCondition) throws SQLException {
+  private ResultIterator<Entity> entityIterator(final SelectCondition selectCondition) throws SQLException {
     requireNonNull(selectCondition, "selectCondition");
     PreparedStatement statement = null;
     ResultSet resultSet = null;

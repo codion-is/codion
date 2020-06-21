@@ -20,7 +20,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
@@ -80,10 +80,10 @@ public class EntityServerTest {
             "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
-    final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_ID,
+    final Condition condition = Conditions.customCondition(TestDomain.T_EMP, TestDomain.EMP_MGR_CONDITION_ID,
             singletonList(TestDomain.EMP_MGR), singletonList(4));
 
-    connection.select(Conditions.selectCondition(TestDomain.T_EMP, condition));
+    connection.select(Conditions.selectCondition(condition));
 
     connection.disconnect();
   }
@@ -169,7 +169,7 @@ public class EntityServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    final EntitySelectCondition selectCondition = Conditions.selectCondition(TestDomain.T_EMP)
+    final SelectCondition selectCondition = Conditions.selectCondition(TestDomain.T_EMP)
             .setOrderBy(orderBy().ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.select(selectCondition);
 

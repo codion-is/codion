@@ -11,16 +11,16 @@ import java.util.Map;
  * A condition specifying a where clause along with properties and
  * their associated values for update.
  */
-public interface EntityUpdateCondition extends EntityCondition {
+public interface UpdateCondition extends Condition {
 
   /**
    * Adds a attribute value to update
    * @param attribute the attribute
    * @param value the new value
    * @param <T> the value type
-   * @return this {@link EntityUpdateCondition} instance
+   * @return this {@link UpdateCondition} instance
    */
-  <T> EntityUpdateCondition set(Attribute<T> attribute, T value);
+  <T> UpdateCondition set(Attribute<T> attribute, T value);
 
   /**
    * @return the new values mapped to their respective attributes

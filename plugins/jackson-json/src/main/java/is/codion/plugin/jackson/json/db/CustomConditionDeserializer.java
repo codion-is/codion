@@ -52,6 +52,6 @@ final class CustomConditionDeserializer implements Serializable {
       }
     }
 
-    return Conditions.customCondition(conditionId, attributes, values);
+    return Conditions.customCondition(definition.getEntityType(), conditionId, attributes, values);
   }
 }

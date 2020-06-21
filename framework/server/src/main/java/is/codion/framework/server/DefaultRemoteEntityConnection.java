@@ -12,9 +12,8 @@ import is.codion.common.db.reports.ReportType;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.EntityCondition;
-import is.codion.framework.db.condition.EntitySelectCondition;
-import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
@@ -79,7 +78,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int rowCount(final EntityCondition condition) throws DatabaseException {
+  public int rowCount(final Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.rowCount(condition);
     }
@@ -163,7 +162,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int update(final EntityUpdateCondition condition) throws DatabaseException {
+  public int update(final UpdateCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.update(condition);
     }
@@ -184,7 +183,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int delete(final EntityCondition condition) throws DatabaseException {
+  public int delete(final Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.delete(condition);
     }
@@ -219,7 +218,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
+  public Entity selectSingle(final SelectCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectSingle(condition);
     }
@@ -233,7 +232,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public List<Entity> select(final EntitySelectCondition condition) throws DatabaseException {
+  public List<Entity> select(final SelectCondition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(condition);
     }

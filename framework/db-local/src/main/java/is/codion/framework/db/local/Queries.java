@@ -4,8 +4,8 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.framework.db.condition.EntityCondition;
-import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.WhereCondition;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
@@ -103,11 +103,11 @@ final class Queries {
     return queryBuilder.toString();
   }
 
-  static String selectQuery(final String columnsClause, final EntityCondition entityCondition,
+  static String selectQuery(final String columnsClause, final Condition entityCondition,
                             final WhereCondition whereCondition, final EntityDefinition entityDefinition,
                             final Database database) {
-    final boolean isForUpdate = entityCondition instanceof EntitySelectCondition &&
-            ((EntitySelectCondition) entityCondition).isForUpdate();
+    final boolean isForUpdate = entityCondition instanceof SelectCondition &&
+            ((SelectCondition) entityCondition).isForUpdate();
     boolean containsWhereClause = false;
     String selectQuery = entityDefinition.getSelectQuery();
     if (selectQuery == null) {
@@ -192,8 +192,7 @@ final class Queries {
     }
   }
 
-  private static void addGroupHavingOrderByAndLimitClauses(final StringBuilder queryBuilder,
-                                                           final EntityCondition condition,
+  private static void addGroupHavingOrderByAndLimitClauses(final StringBuilder queryBuilder, final Condition condition,
                                                            final EntityDefinition entityDefinition) {
     final String groupByClause = entityDefinition.getGroupByClause();
     if (groupByClause != null) {
@@ -203,8 +202,8 @@ final class Queries {
     if (havingClause != null) {
       queryBuilder.append(" having ").append(havingClause);
     }
-    if (condition instanceof EntitySelectCondition) {
-      final EntitySelectCondition selectCondition = (EntitySelectCondition) condition;
+    if (condition instanceof SelectCondition) {
+      final SelectCondition selectCondition = (SelectCondition) condition;
       final OrderBy orderBy = selectCondition.getOrderBy();
       if (orderBy != null) {
         queryBuilder.append(" ").append(getOrderByClause(orderBy, entityDefinition));

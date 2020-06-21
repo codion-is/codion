@@ -11,9 +11,8 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.EntityCondition;
-import is.codion.framework.db.condition.EntitySelectCondition;
-import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -150,12 +149,12 @@ public interface EntityConnection {
 
   /**
    * Performs an update according to the given condition, updating the attributes found
-   * in the {@link EntityUpdateCondition#getAttributeValues()} map, with the associated values.
+   * in the {@link UpdateCondition#getAttributeValues()} map, with the associated values.
    * @param condition the condition
    * @return the number of affected rows
    * @throws DatabaseException in case of a dabase exception
    */
-  int update(EntityUpdateCondition condition) throws DatabaseException;
+  int update(UpdateCondition condition) throws DatabaseException;
 
   /**
    * Deletes the entity with the given primary key.
@@ -182,7 +181,7 @@ public interface EntityConnection {
    * @return the number of deleted rows
    * @throws DatabaseException in case of a database exception
    */
-  int delete(EntityCondition condition) throws DatabaseException;
+  int delete(Condition condition) throws DatabaseException;
 
   /**
    * Selects ordered and distinct non-null values of the given attribute, note that the attribute
@@ -241,7 +240,7 @@ public interface EntityConnection {
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  Entity selectSingle(EntitySelectCondition condition) throws DatabaseException;
+  Entity selectSingle(SelectCondition condition) throws DatabaseException;
 
   /**
    * Returns entities according to {@code keys}
@@ -257,7 +256,7 @@ public interface EntityConnection {
    * @return entities according to the given condition
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> select(EntitySelectCondition condition) throws DatabaseException;
+  List<Entity> select(SelectCondition condition) throws DatabaseException;
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
@@ -294,7 +293,7 @@ public interface EntityConnection {
    * @return the number of rows fitting the given condition
    * @throws DatabaseException in case of a database exception
    */
-  int rowCount(EntityCondition condition) throws DatabaseException;
+  int rowCount(Condition condition) throws DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized report result object
