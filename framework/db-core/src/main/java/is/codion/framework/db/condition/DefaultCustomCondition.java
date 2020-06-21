@@ -39,7 +39,7 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
   }
 
   @Override
-  public List<Object> getValues() {
+  public List<?> getValues() {
     return values;
   }
 

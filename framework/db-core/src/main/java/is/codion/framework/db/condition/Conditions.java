@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
@@ -377,7 +376,7 @@ public final class Conditions {
       final Property<?> property = definition.getProperty(attributeCondition.getAttribute());
       if (property instanceof ForeignKeyProperty) {
         return foreignKeyCondition(((ForeignKeyProperty) property).getColumnAttributes(),
-                attributeCondition.getOperator(), attributeCondition.getValues());
+                attributeCondition.getOperator(), (List<Key>) attributeCondition.getValues());
       }
     }
 
@@ -421,8 +420,7 @@ public final class Conditions {
   }
 
   private static <T> Condition foreignKeyCondition(final List<Attribute<?>> foreignKeyColumnAttributes,
-                                                   final Operator operator, final Collection<Object> values) {
-    final List<Key> keys = getKeys(values);
+                                                   final Operator operator, final List<Key> keys) {
     if (foreignKeyColumnAttributes.size() > 1) {
       return compositeKeyCondition(keys, foreignKeyColumnAttributes, operator);
     }
@@ -437,20 +435,6 @@ public final class Conditions {
     }
   }
 
-  private static List<Key> getKeys(final Object value) {
-    final List<Key> keys = new ArrayList<>();
-    if (value instanceof Collection) {
-      for (final Object object : (Collection<Object>) value) {
-        keys.add((Key) object);
-      }
-    }
-    else {
-      keys.add((Key) value);
-    }
-
-    return keys;
-  }
-
   /**
    * An empty condition, with no values or attributes
    */
@@ -463,7 +447,7 @@ public final class Conditions {
     }
 
     @Override
-    public List<Object> getValues() {
+    public List<?> getValues() {
       return emptyList();
     }
 

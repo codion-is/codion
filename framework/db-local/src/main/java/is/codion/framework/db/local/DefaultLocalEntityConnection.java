@@ -980,7 +980,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private int executeStatement(final PreparedStatement statement, final String query,
                                final List<ColumnProperty<?>> statementProperties,
-                               final List<Object> statementValues) throws SQLException {
+                               final List<?> statementValues) throws SQLException {
     SQLException exception = null;
     try {
       logAccess("executeStatement", new Object[] {query, statementValues});
@@ -1004,7 +1004,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private ResultSet executeStatement(final PreparedStatement statement, final String query,
                                      final WhereCondition whereCondition) throws SQLException {
     SQLException exception = null;
-    final List<Object> statementValues = whereCondition.getValues();
+    final List<?> statementValues = whereCondition.getValues();
     try {
       logAccess("executeStatement", statementValues == null ?
               new Object[] {query} : new Object[] {query, statementValues});
@@ -1193,7 +1193,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private String createLogMessage(final String sqlStatement, final List<Object> values, final Exception exception) {
+  private String createLogMessage(final String sqlStatement, final List<?> values, final Exception exception) {
     final StringBuilder logMessage = new StringBuilder(getUser().toString()).append("\n");
     logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(values);
     if (exception != null) {
@@ -1226,7 +1226,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static void setParameterValues(final PreparedStatement statement, final List<ColumnProperty<?>> statementProperties,
-                                         final List<Object> statementValues) throws SQLException {
+                                         final List<?> statementValues) throws SQLException {
     if (nullOrEmpty(statementValues) || statement.getParameterMetaData().getParameterCount() == 0) {
       return;
     }

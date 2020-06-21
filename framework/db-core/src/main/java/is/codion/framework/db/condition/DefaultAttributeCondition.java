@@ -84,7 +84,7 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
   }
 
   @Override
-  public List<Object> getValues() {
+  public List<?> getValues() {
     return values;
   }
 

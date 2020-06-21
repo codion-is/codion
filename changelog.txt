@@ -6297,3 +6297,4 @@
   Util.nullOrEmpty(string) added
   Conditions, refactoring
   Condition.getWhereClause() added, AttributeCondition.getConditionString() removed
+  Conditions, more refactoring
