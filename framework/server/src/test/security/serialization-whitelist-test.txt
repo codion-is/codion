@@ -71,7 +71,7 @@ is.codion.common.rmi.server.exception.ServerException
 is.codion.common.user.DefaultUser
 is.codion.common.version.DefaultVersion
 is.codion.framework.db.condition.AbstractCondition
-is.codion.framework.db.condition.Condition$EmptyCondition
+is.codion.framework.db.condition.Conditions$EmptyCondition
 is.codion.framework.db.condition.DefaultConditionCombination
 is.codion.framework.db.condition.DefaultCustomCondition
 is.codion.framework.db.condition.DefaultSelectCondition
