@@ -12,7 +12,7 @@ final class DefaultWhereCondition implements WhereCondition {
 
   private final EntityDefinition entityDefinition;
   private final Condition condition;
-  private final List<Object> values;
+  private final List<?> values;
   private final List<ColumnProperty<?>> columnProperties;
 
   DefaultWhereCondition(final Condition expandedCondition, final EntityDefinition entityDefinition) {
@@ -23,7 +23,7 @@ final class DefaultWhereCondition implements WhereCondition {
   }
 
   @Override
-  public List<Object> getValues() {
+  public List<?> getValues() {
     return values;
   }
 

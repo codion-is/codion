@@ -15,7 +15,7 @@ public interface WhereCondition {
   /**
    * @return the values
    */
-  List<Object> getValues();
+  List<?> getValues();
 
   /**
    * @return the ColumnProperties in the same order as their respective values

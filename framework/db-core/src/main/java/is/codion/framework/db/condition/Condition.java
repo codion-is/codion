@@ -25,7 +25,7 @@ public interface Condition extends Serializable {
    * @return a list of the values this condition is based on, in the order they appear
    * in the condition clause. An empty list is returned in case no values are specified.
    */
-  List<Object> getValues();
+  List<?> getValues();
 
   /**
    * @return a list of the attributes this condition is based on, in the same
