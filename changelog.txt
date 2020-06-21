@@ -6296,3 +6296,4 @@
   EntityCondition removed, EntitySelectCondition and EntityUpdateCondition renamed SelectCondition and UpdateCondition respectively
   Util.nullOrEmpty(string) added
   Conditions, refactoring
+  Condition.getWhereClause() added, AttributeCondition.getConditionString() removed

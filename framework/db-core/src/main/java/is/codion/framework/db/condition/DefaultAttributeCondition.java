@@ -6,6 +6,7 @@ package is.codion.framework.db.condition;
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.SubqueryProperty;
 
@@ -97,6 +98,16 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
   }
 
   @Override
+  public String getWhereClause(final EntityDefinition definition) {
+    for (int i = 0; i < values.size(); i++) {
+      //better late than never
+      attribute.validateType((T) values.get(i));
+    }
+
+    return OPERATOR_PROVIDER_MAP.get(operator).getConditionString(this, definition.getColumnProperty(attribute));
+  }
+
+  @Override
   public Attribute<T> getAttribute() {
     return attribute;
   }
@@ -109,18 +120,6 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
   @Override
   public boolean isNullCondition() {
     return nullCondition;
-  }
-
-  @Override
-  public String getConditionString(final ColumnProperty<T> property) {
-    if (!attribute.equals(property.getAttribute())) {
-      throw new IllegalArgumentException("Property '" + property + "' is not based on attribute: " + attribute);
-    }
-    for (int i = 0; i < values.size(); i++) {
-      property.getAttribute().validateType((T) values.get(i));
-    }
-
-    return OPERATOR_PROVIDER_MAP.get(operator).getConditionString(this, property);
   }
 
   @Override

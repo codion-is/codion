@@ -3,7 +3,6 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.ColumnProperty;
 
@@ -35,48 +34,6 @@ final class DefaultWhereCondition implements WhereCondition {
 
   @Override
   public String getWhereClause() {
-    return getWhereClause(condition);
-  }
-
-  private String getWhereClause(final Condition condition) {
-    if (condition instanceof Condition.Combination) {
-      final Condition.Combination conditionCombination = (Condition.Combination) condition;
-      final List<Condition> conditions = conditionCombination.getConditions();
-      if (conditions.size() == 1) {
-        return getWhereClause(conditions.get(0));
-      }
-
-      final StringBuilder conditionString = new StringBuilder(conditions.size() > 1 ? "(" : "");
-      final String conjunction = toString(conditionCombination.getConjunction());
-      for (int i = 0; i < conditions.size(); i++) {
-        conditionString.append(getWhereClause(conditions.get(i)));
-        if (i < conditions.size() - 1) {
-          conditionString.append(conjunction);
-        }
-      }
-
-      return conditionString.append(conditions.size() > 1 ? ")" : "").toString();
-    }
-    if (condition instanceof AttributeCondition) {
-      final AttributeCondition<Object> attributeCondition = (AttributeCondition<Object>) condition;
-
-      return attributeCondition.getConditionString(entityDefinition.getColumnProperty(attributeCondition.getAttribute()));
-    }
-    if (condition instanceof CustomCondition) {
-      final CustomCondition customCondition = (CustomCondition) condition;
-
-      return entityDefinition.getConditionProvider(customCondition.getConditionId())
-              .getConditionString(customCondition.getAttributes(), customCondition.getValues());
-    }
-
-    return "";
-  }
-
-  private static String toString(final Conjunction conjunction) {
-    switch (conjunction) {
-      case AND: return " and ";
-      case OR: return " or ";
-      default: throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
-    }
+    return condition.getWhereClause(entityDefinition);
   }
 }

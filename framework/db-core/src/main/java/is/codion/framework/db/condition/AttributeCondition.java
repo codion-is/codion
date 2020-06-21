@@ -5,7 +5,6 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.property.ColumnProperty;
 
 /**
  * A Condition based on a single {@link Attribute}.
@@ -27,13 +26,6 @@ public interface AttributeCondition<T> extends Condition {
    * @return true if this is a null condition, that is, checks for null
    */
   boolean isNullCondition();
-
-  /**
-   * Returns the condition string represented by this condition
-   * @param property the underlying property
-   * @return the condition string
-   */
-  String getConditionString(ColumnProperty<T> property);
 
   /**
    * @param caseSensitive false if this condition should not be case-sensitive

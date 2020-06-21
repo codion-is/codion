@@ -4,6 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.ArrayList;
@@ -40,5 +41,10 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
   @Override
   public List<Object> getValues() {
     return values;
+  }
+
+  @Override
+  public String getWhereClause(final EntityDefinition definition) {
+    return definition.getConditionProvider(conditionId).getConditionString(attributes, values);
   }
 }
