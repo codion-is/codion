@@ -30,16 +30,38 @@ public interface Condition extends Serializable {
   List<Attribute<?>> getAttributes();
 
   /**
+   * Combines this condition with the given one, AND'ing together.
+   * @param conditions the conditions to combine with this one
+   * @return a condition combination
+   */
+  Combination and(Condition... conditions);
+
+  /**
+   * Combines this condition with the given one, OR'ing together.
+   * @param conditions the conditions to combine with this one
+   * @return a condition combination
+   */
+  Combination or(Condition... conditions);
+
+  /**
    * An interface encapsulating a combination of Condition objects,
    * that should be either AND'ed or OR'ed together in a query context
    */
   interface Combination extends Condition {
 
     /**
+     * Adds new Condition objects to this combination, adding a {@link EmptyCondition} instance has no effect
+     * @param conditions the Condition to add
+     * @return this combination instance
+     */
+    Combination add(Condition... conditions);
+
+    /**
      * Adds a new Condition object to this combination, adding null or a {@link EmptyCondition} instance has no effect
      * @param condition the Condition to add
+     * @return this combination instance
      */
-    void add(Condition condition);
+    Combination add(Condition condition);
 
     /**
      * @return the Conditions comprising this Combination
@@ -66,7 +88,7 @@ public interface Condition extends Serializable {
   /**
    * An empty condition, with no values or attributes
    */
-  final class EmptyCondition implements Condition {
+  final class EmptyCondition extends AbstractCondition implements Condition {
 
     private static final long serialVersionUID = 1;
 

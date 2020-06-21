@@ -6290,3 +6290,6 @@
   EntityConnection, Conditions, removed redundant EntityType parameter
   Operator.LIKE and NOT_LIKE renamed EQUAL_TO and NOT_EQUAL_TO respectively
   EntityConnection.selectValues() renamed select()
+  DefaultAttributeCondition now validates that the number of values fits the number of values required by the operator
+  Condition.Combination.add() with varchar added
+  Condition.and() and and() added

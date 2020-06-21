@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.petclinic.model;
 
-import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
@@ -12,7 +11,8 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import static is.codion.common.db.Operator.EQUAL_TO;
-import static is.codion.framework.db.condition.Conditions.*;
+import static is.codion.framework.db.condition.Conditions.attributeCondition;
+import static is.codion.framework.db.condition.Conditions.condition;
 
 public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 
@@ -32,9 +32,9 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
     super.validate(entity);
     try {
       int rowCount = getConnectionProvider().getConnection().rowCount(
-              condition(VetSpecialty.TYPE, combination(Conjunction.AND,
-                      attributeCondition(VetSpecialty.SPECIALTY, EQUAL_TO, entity.get(VetSpecialty.SPECIALTY)),
-                      attributeCondition(VetSpecialty.VET, EQUAL_TO, entity.get(VetSpecialty.VET)))));
+              condition(VetSpecialty.TYPE,
+                      attributeCondition(VetSpecialty.SPECIALTY, EQUAL_TO, entity.get(VetSpecialty.SPECIALTY))
+                              .and(attributeCondition(VetSpecialty.VET, EQUAL_TO, entity.get(VetSpecialty.VET)))));
       if (rowCount > 0) {
         throw new ValidationException(VetSpecialty.SPECIALTY_FK,
                 entity.get(VetSpecialty.SPECIALTY_FK), "Vet/specialty combination already exists");

@@ -3,7 +3,6 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.Conjunction;
 import is.codion.common.MethodLogger;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
@@ -546,12 +545,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entityDefinition.getSelectQuery() != null) {
       throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
-    final Condition.Combination combination = combination(Conjunction.AND);
+    Condition combination = attributeCondition(attribute, IS_NOT_NULL);
     if (condition != null) {
       condition.getAttributes().forEach(conditionAttribute -> validateAttribute(attribute.getEntityType(), conditionAttribute));
-      combination.add(expand(condition, entityDefinition));
+      combination = combination.and(expand(condition, entityDefinition));
     }
-    combination.add(attributeCondition(attribute, IS_NOT_NULL));
     final WhereCondition combinedCondition = whereCondition(condition(attribute.getEntityType(), combination), entityDefinition);
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
     final String columnName = propertyToSelect.getColumnName();

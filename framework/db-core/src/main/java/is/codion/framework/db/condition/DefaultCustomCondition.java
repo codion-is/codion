@@ -10,7 +10,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultCustomCondition implements CustomCondition {
+final class DefaultCustomCondition extends AbstractCondition implements CustomCondition {
 
   private static final long serialVersionUID = 1;
 

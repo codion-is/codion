@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.common.Conjunction.AND;
 import static is.codion.common.db.Operator.EQUAL_TO;
 import static is.codion.common.db.Operator.NOT_EQUAL_TO;
 import static is.codion.framework.db.condition.Conditions.*;
@@ -46,10 +45,10 @@ public final class EntityConnectionDemo {
 
     List<Entity> artists = connection.select(condition);
 
-    condition = selectCondition(Album.TYPE, combination(AND,
-            attributeCondition(Album.ARTIST_FK, EQUAL_TO, artists),
-            attributeCondition(Album.TITLE, NOT_EQUAL_TO, "%live%")
-                    .setCaseSensitive(false)));
+    condition = selectCondition(Album.TYPE,
+            attributeCondition(Album.ARTIST_FK, EQUAL_TO, artists)
+                    .and(attributeCondition(Album.TITLE, NOT_EQUAL_TO, "%live%")
+                            .setCaseSensitive(false)));
 
     List<Entity> nonLiveAlbums = connection.select(condition);
     // end::selectCondition[]
@@ -128,10 +127,10 @@ public final class EntityConnectionDemo {
     // tag::selectSingleCondition[]
     Entity ironMaiden = connection.selectSingle(selectCondition(Artist.NAME, EQUAL_TO, "Iron Maiden"));
 
-    Entity liveAlbum = connection.selectSingle(selectCondition(Album.TYPE, combination(AND,
-            attributeCondition(Album.ARTIST_FK, EQUAL_TO, ironMaiden),
-            attributeCondition(Album.TITLE, EQUAL_TO, "%live after%")
-                    .setCaseSensitive(false))));
+    Entity liveAlbum = connection.selectSingle(selectCondition(Album.TYPE,
+            attributeCondition(Album.ARTIST_FK, EQUAL_TO, ironMaiden)
+                    .and(attributeCondition(Album.TITLE, EQUAL_TO, "%live after%")
+                            .setCaseSensitive(false))));
     // end::selectSingleCondition[]
   }
 

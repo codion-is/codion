@@ -3,7 +3,6 @@
  */
 package is.codion.plugin.jackson.json.db;
 
-import is.codion.common.Conjunction;
 import is.codion.common.db.Operator;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
@@ -39,13 +38,9 @@ public final class ConditionObjectMapperTest {
     dept2.put(TestDomain.DEPARTMENT_ID, 2);
 
     final EntityCondition entityCondition = condition(TestDomain.T_EMP,
-            Conditions.combination(Conjunction.AND,
-                    Conditions.attributeCondition(TestDomain.EMP_DEPARTMENT_FK,
-                            Operator.NOT_EQUAL_TO, dept1, dept2),
-                    Conditions.attributeCondition(TestDomain.EMP_NAME,
-                            Operator.EQUAL_TO, "Loc"),
-                    Conditions.attributeCondition(TestDomain.EMP_ID,
-                            Operator.WITHIN_RANGE, 10, 40),
+            Conditions.attributeCondition(TestDomain.EMP_DEPARTMENT_FK,Operator.NOT_EQUAL_TO, dept1, dept2)
+                    .and(Conditions.attributeCondition(TestDomain.EMP_NAME,Operator.EQUAL_TO, "Loc"),
+                    Conditions.attributeCondition(TestDomain.EMP_ID,Operator.WITHIN_RANGE, 10, 40),
                     Conditions.attributeCondition(TestDomain.EMP_COMMISSION, NullCondition.IS_NOT_NULL)));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);

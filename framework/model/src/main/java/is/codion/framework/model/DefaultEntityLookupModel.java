@@ -292,7 +292,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     }
 
     return selectCondition(entityType, additionalConditionProvider == null ? baseCondition :
-            combination(Conjunction.AND, additionalConditionProvider.getCondition(), baseCondition))
+            additionalConditionProvider.getCondition().and(baseCondition))
             .setOrderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
   }
 

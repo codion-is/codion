@@ -3,7 +3,6 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.common.Conjunction;
 import is.codion.common.db.Operator;
 import is.codion.framework.db.TestDomain;
 import is.codion.framework.domain.entity.Entities;
@@ -26,20 +25,14 @@ public final class WhereConditionTest {
 
   @Test
   public void test() {
-    final Condition.Combination combination1 = Conditions.combination(
-            Conjunction.AND,
-            Conditions.attributeCondition(TestDomain.DETAIL_STRING, Operator.EQUAL_TO, "value"),
-            Conditions.attributeCondition(TestDomain.DETAIL_INT, Operator.EQUAL_TO, 666)
-    );
+    final Condition.Combination combination1 = Conditions.attributeCondition(TestDomain.DETAIL_STRING, Operator.EQUAL_TO, "value")
+            .and(Conditions.attributeCondition(TestDomain.DETAIL_INT, Operator.EQUAL_TO, 666));
     final EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
     final WhereCondition condition = whereCondition(condition(TestDomain.T_DETAIL, combination1), detailDefinition);
     assertEquals("(string = ? and int = ?)", condition.getWhereClause());
-    final Condition.Combination combination2 = Conditions.combination(
-            Conjunction.AND,
-            Conditions.attributeCondition(TestDomain.DETAIL_DOUBLE, Operator.EQUAL_TO, 666.666),
-            Conditions.attributeCondition(TestDomain.DETAIL_STRING, Operator.EQUAL_TO, "valu%e2").setCaseSensitive(false)
-    );
-    final Condition.Combination combination3 = Conditions.combination(Conjunction.OR, combination1, combination2);
+    final Condition.Combination combination2 = Conditions.attributeCondition(TestDomain.DETAIL_DOUBLE, Operator.EQUAL_TO, 666.666)
+            .and(Conditions.attributeCondition(TestDomain.DETAIL_STRING, Operator.EQUAL_TO, "valu%e2").setCaseSensitive(false));
+    final Condition.Combination combination3 = combination1.or(combination2);
     assertEquals("((string = ? and int = ?) or (double = ? and upper(string) like upper(?)))",
             whereCondition(condition(TestDomain.T_DETAIL, combination3), detailDefinition).getWhereClause());
   }

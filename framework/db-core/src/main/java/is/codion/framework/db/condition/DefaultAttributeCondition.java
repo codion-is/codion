@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Encapsulates a query condition based on a single attribute with one or more values.
  */
-final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
+final class DefaultAttributeCondition<T> extends AbstractCondition implements AttributeCondition<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -134,12 +134,41 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
     return caseSensitive;
   }
 
-  static String getColumnIdentifier(final ColumnProperty<?> property) {
+  private List<Object> initializeValues(final Object conditionValue) {
+    final List<Object> valueList = new ArrayList<>();
+    if (conditionValue instanceof Collection) {
+      valueList.addAll((Collection<Object>) conditionValue);
+    }
+    else {
+      valueList.add(conditionValue);
+    }
+    if (operator.getValues() == Values.ONE && valueList.size() != 1) {
+      throw new IllegalArgumentException("Single value expected for operator: " + operator);
+    }
+    if (operator.getValues() == Values.TWO && valueList.size() != 2) {
+      throw new IllegalArgumentException("Two values expected for operator: " + operator);
+    }
+    //replace Entity with Entity.Key
+    for (int i = 0; i < valueList.size(); i++) {
+      final Object value = valueList.get(i);
+      requireNonNull(value, "value");
+      if (value instanceof Entity) {
+        valueList.set(i, ((Entity) value).getKey());
+      }
+      else {//assume it's all or nothing
+        break;
+      }
+    }
+
+    return valueList;
+  }
+
+  private static String getColumnIdentifier(final ColumnProperty<?> property) {
     return getColumnIdentifier(property, false, true);
   }
 
-  static String getColumnIdentifier(final ColumnProperty<?> property, final boolean isNullCondition,
-                                    final boolean caseSensitive) {
+  private static String getColumnIdentifier(final ColumnProperty<?> property, final boolean isNullCondition,
+                                            final boolean caseSensitive) {
     String columnName;
     if (property instanceof SubqueryProperty) {
       columnName = "(" + ((SubqueryProperty<?>) property).getSubQuery() + ")";
@@ -155,31 +184,8 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
     return columnName;
   }
 
-  static String getValuePlaceholder(final ColumnProperty<?> property, final boolean caseSensitive) {
+  private static String getValuePlaceholder(final ColumnProperty<?> property, final boolean caseSensitive) {
     return property.getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
-  }
-
-  private static List<Object> initializeValues(final Object conditionValue) {
-    final List<Object> valueList = new ArrayList<>();
-    if (conditionValue instanceof Collection) {
-      valueList.addAll((Collection<Object>) conditionValue);
-    }
-    else {
-      valueList.add(conditionValue);
-    }
-    //replace Entity with Entity.Key
-    for (int i = 0; i < valueList.size(); i++) {
-      final Object value = valueList.get(i);
-      requireNonNull(value, "value");
-      if (value instanceof Entity) {
-        valueList.set(i, ((Entity) value).getKey());
-      }
-      else {//assume it's all or nothing
-        break;
-      }
-    }
-
-    return valueList;
   }
 
   private interface ConditionStringProvider {
@@ -210,7 +216,7 @@ final class DefaultAttributeCondition<T> implements AttributeCondition<T> {
     }
 
     private String getLikeCondition(final AttributeCondition<?> condition, final ColumnProperty<?> property,
-                                        final String columnIdentifier) {
+                                    final String columnIdentifier) {
       final String valuePlaceholder = getValuePlaceholder(property, condition.isCaseSensitive());
       if (condition.getValues().size() > 1) {
         return getInList(columnIdentifier, valuePlaceholder, condition.getValues().size(), negated);

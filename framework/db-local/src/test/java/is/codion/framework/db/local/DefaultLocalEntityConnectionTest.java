@@ -3,7 +3,6 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.Conjunction;
 import is.codion.common.DateFormats;
 import is.codion.common.db.Operator;
 import is.codion.common.db.database.Database;
@@ -104,9 +103,9 @@ public class DefaultLocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       //scott, james, adams
-      assertEquals(3, connection.delete(condition(T_EMP, combination(Conjunction.AND,
-              attributeCondition(EMP_NAME, Operator.EQUAL_TO, "%S%"),
-              attributeCondition(EMP_JOB, Operator.EQUAL_TO, "CLERK")))));
+      assertEquals(3, connection.delete(condition(T_EMP,
+              attributeCondition(EMP_NAME, Operator.EQUAL_TO, "%S%")
+                      .and(attributeCondition(EMP_JOB, Operator.EQUAL_TO, "CLERK")))));
     }
     finally {
       connection.rollbackTransaction();
@@ -863,9 +862,8 @@ public class DefaultLocalEntityConnectionTest {
     List<Entity> entities = connection.select(selectCondition(T_NO_PK));
     assertEquals(6, entities.size());
     entities = connection.select(selectCondition(T_NO_PK,
-            combination(Conjunction.OR,
-                    attributeCondition(NO_PK_COL1, Operator.EQUAL_TO, 2),
-                    attributeCondition(NO_PK_COL3, Operator.EQUAL_TO, "5"))));
+            attributeCondition(NO_PK_COL1, Operator.EQUAL_TO, 2)
+                    .or(attributeCondition(NO_PK_COL3, Operator.EQUAL_TO, "5"))));
     assertEquals(4, entities.size());
   }
 

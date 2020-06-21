@@ -12,7 +12,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultConditionCombination implements Condition.Combination {
+final class DefaultConditionCombination extends AbstractCondition implements Condition.Combination {
 
   private static final long serialVersionUID = 1;
 
@@ -27,10 +27,22 @@ final class DefaultConditionCombination implements Condition.Combination {
   }
 
   @Override
-  public void add(final Condition condition) {
+  public Combination add(final Condition... conditions) {
+    requireNonNull(conditions);
+    for (final Condition condition : conditions){
+      add(condition);
+    }
+
+    return this;
+  }
+
+  @Override
+  public Combination add(final Condition condition) {
     if (condition != null && !(condition instanceof EmptyCondition)) {
       conditions.add(condition);
     }
+
+    return this;
   }
 
   @Override
