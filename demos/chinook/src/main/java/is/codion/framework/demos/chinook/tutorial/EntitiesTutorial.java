@@ -9,7 +9,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
@@ -134,7 +134,7 @@ public final class EntitiesTutorial {
     // by the Conditions factory class.
     // we create a select condition, where we specify the type of the entity
     // we're selecting, the attributes we're searching by, the type of condition and the value.
-    EntitySelectCondition artistsCondition = selectCondition(Artist.NAME, EQUAL_TO, "An%");
+    SelectCondition artistsCondition = selectCondition(Artist.NAME, EQUAL_TO, "An%");
 
     // and we set the order by clause
     artistsCondition.setOrderBy(orderBy().ascending(Artist.NAME));
@@ -144,7 +144,7 @@ public final class EntitiesTutorial {
     artistsStartingWithAn.forEach(System.out::println);
 
     // create a select condition
-    EntitySelectCondition albumsCondition = selectCondition(Album.ARTIST_FK, EQUAL_TO, artistsStartingWithAn);
+    SelectCondition albumsCondition = selectCondition(Album.ARTIST_FK, EQUAL_TO, artistsStartingWithAn);
     albumsCondition.setOrderBy(orderBy().ascending(Album.ARTIST_ID).descending(Album.TITLE));
 
     List<Entity> albumsByArtistsStartingWithAn = connection.select(albumsCondition);

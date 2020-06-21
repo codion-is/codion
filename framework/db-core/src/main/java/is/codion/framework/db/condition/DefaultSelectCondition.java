@@ -3,9 +3,9 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
-final class DefaultEntitySelectCondition extends DefaultEntityCondition implements EntitySelectCondition {
+final class DefaultSelectCondition extends DefaultConditionCombination implements SelectCondition {
 
   private static final long serialVersionUID = 1;
 
@@ -30,22 +30,13 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   private int offset;
 
   /**
-   * Instantiates a new {@link DefaultEntitySelectCondition}, which includes all the underlying entities
-   * @param entityType the type of the entity to select
-   */
-  DefaultEntitySelectCondition(final EntityType<?> entityType) {
-    super(entityType);
-  }
-
-  /**
-   * Instantiates a new {@link DefaultEntitySelectCondition}
-   * @param entityType the type of the entity to select
+   * Instantiates a new {@link DefaultSelectCondition}
    * @param condition the Condition object
    * @see DefaultAttributeCondition
    * @see EntityKeyCondition
    */
-  DefaultEntitySelectCondition(final EntityType<?> entityType, final Condition condition) {
-    super(entityType, condition);
+  DefaultSelectCondition(final Condition condition) {
+    super(Conjunction.AND, condition);
   }
 
   @Override
@@ -54,7 +45,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setFetchCount(final int fetchCount) {
+  public SelectCondition setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
     return this;
   }
@@ -65,7 +56,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setOrderBy(final OrderBy orderBy) {
+  public SelectCondition setOrderBy(final OrderBy orderBy) {
     this.orderBy = orderBy;
     return this;
   }
@@ -76,7 +67,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setLimit(final int limit) {
+  public SelectCondition setLimit(final int limit) {
     this.limit = limit;
     return this;
   }
@@ -87,13 +78,13 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setOffset(final int offset) {
+  public SelectCondition setOffset(final int offset) {
     this.offset = offset;
     return this;
   }
 
   @Override
-  public EntitySelectCondition setForeignKeyFetchDepth(final Attribute<Entity> foreignKeyAttribute, final int fetchDepth) {
+  public SelectCondition setForeignKeyFetchDepth(final Attribute<Entity> foreignKeyAttribute, final int fetchDepth) {
     if (foreignKeyFetchDepths == null) {
       foreignKeyFetchDepths = new HashMap<>();
     }
@@ -111,13 +102,13 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setForeignKeyFetchDepth(final int fetchDepth) {
+  public SelectCondition setForeignKeyFetchDepth(final int fetchDepth) {
     this.foreignKeyFetchDepth = fetchDepth;
     return this;
   }
 
   @Override
-  public EntitySelectCondition setSelectAttributes(final Attribute<?>... attributes) {
+  public SelectCondition setSelectAttributes(final Attribute<?>... attributes) {
     this.selectAttributes = new ArrayList<>(asList(attributes));
     return this;
   }
@@ -133,7 +124,7 @@ final class DefaultEntitySelectCondition extends DefaultEntityCondition implemen
   }
 
   @Override
-  public EntitySelectCondition setForUpdate(final boolean forUpdate) {
+  public SelectCondition setForUpdate(final boolean forUpdate) {
     this.forUpdate = forUpdate;
     return this;
   }

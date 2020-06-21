@@ -42,6 +42,10 @@ final class DefaultWhereCondition implements WhereCondition {
     if (condition instanceof Condition.Combination) {
       final Condition.Combination conditionCombination = (Condition.Combination) condition;
       final List<Condition> conditions = conditionCombination.getConditions();
+      if (conditions.size() == 1) {
+        return getWhereClause(conditions.get(0));
+      }
+
       final StringBuilder conditionString = new StringBuilder(conditions.size() > 1 ? "(" : "");
       final String conjunction = toString(conditionCombination.getConjunction());
       for (int i = 0; i < conditions.size(); i++) {
@@ -54,7 +58,7 @@ final class DefaultWhereCondition implements WhereCondition {
       return conditionString.append(conditions.size() > 1 ? ")" : "").toString();
     }
     if (condition instanceof AttributeCondition) {
-      final AttributeCondition attributeCondition = (AttributeCondition) condition;
+      final AttributeCondition<Object> attributeCondition = (AttributeCondition<Object>) condition;
 
       return attributeCondition.getConditionString(entityDefinition.getColumnProperty(attributeCondition.getAttribute()));
     }

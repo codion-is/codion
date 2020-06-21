@@ -4,6 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +18,18 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
   private final String conditionId;
   private final List<Attribute<?>> attributes;
   private final List<Object> values;
+  private final EntityType<?> entityType;
 
-  DefaultCustomCondition(final String conditionId, final List<Attribute<?>> attributes, final List<Object> values) {
+  DefaultCustomCondition(final EntityType<?> entityType, final String conditionId, final List<Attribute<?>> attributes, final List<Object> values) {
+    this.entityType = requireNonNull(entityType, "entityType");
     this.conditionId = requireNonNull(conditionId, "conditionId");
     this.attributes = new ArrayList<>(requireNonNull(attributes, "attributes"));
     this.values = new ArrayList<>(requireNonNull(values, "values"));
+  }
+
+  @Override
+  public EntityType<?> getEntityType() {
+    return entityType;
   }
 
   @Override

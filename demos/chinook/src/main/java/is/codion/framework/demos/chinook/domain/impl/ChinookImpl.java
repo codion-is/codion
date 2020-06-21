@@ -7,7 +7,7 @@ import is.codion.common.db.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
-import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.domain.DefaultDomain;
@@ -346,7 +346,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
   private static final class UpdateTotalsProcedure implements DatabaseProcedure<LocalEntityConnection, Void> {
 
-    private static final EntitySelectCondition ALL_INVOICES_CONDITION =
+    private static final SelectCondition ALL_INVOICES_CONDITION =
             selectCondition(Invoice.TYPE)
                     .setForUpdate(true).setForeignKeyFetchDepth(0);
 
@@ -369,7 +369,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       List<Long> trackIds = (List<Long>) arguments[0];
       BigDecimal priceIncrease = (BigDecimal) arguments[1];
 
-      EntitySelectCondition selectCondition =
+      SelectCondition selectCondition =
               selectCondition(Track.ID, Operator.EQUAL_TO, trackIds)
                       .setForUpdate(true);
 

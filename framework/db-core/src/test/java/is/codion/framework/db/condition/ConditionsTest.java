@@ -21,9 +21,9 @@ public final class ConditionsTest {
 
   @Test
   public void test() {
-    final Condition critOne = Conditions.attributeCondition(TestDomain.DEPARTMENT_LOCATION, Operator.EQUAL_TO, "New York");
+    final Condition critOne = Conditions.condition(TestDomain.DEPARTMENT_LOCATION, Operator.EQUAL_TO, "New York");
 
-    EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_DEPARTMENT, critOne).setOrderBy(
+    SelectCondition condition = Conditions.selectCondition(critOne).setOrderBy(
             orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertEquals(-1, condition.getFetchCount());
 
@@ -33,11 +33,11 @@ public final class ConditionsTest {
 
   @Test
   public void customConditionTest() {
-    final EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_DEPARTMENT,
-            Conditions.customCondition(TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID))
+    final SelectCondition condition = Conditions.selectCondition(
+            Conditions.customCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID))
             .setOrderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
-    assertTrue(condition.getCondition().getValues().isEmpty());
-    assertTrue(condition.getCondition().getAttributes().isEmpty());
+    assertTrue(condition.getValues().isEmpty());
+    assertTrue(condition.getAttributes().isEmpty());
   }
 
   @Test

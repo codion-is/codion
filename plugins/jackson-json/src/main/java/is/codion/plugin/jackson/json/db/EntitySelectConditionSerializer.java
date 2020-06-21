@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.jackson.json.db;
 
-import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -12,24 +12,24 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 
-final class EntitySelectConditionSerializer extends StdSerializer<EntitySelectCondition> {
+final class EntitySelectConditionSerializer extends StdSerializer<SelectCondition> {
 
   private static final long serialVersionUID = 1;
 
   private final ConditionSerializer conditionSerializer;
 
   EntitySelectConditionSerializer(final EntityObjectMapper entityObjectMapper) {
-    super(EntitySelectCondition.class);
+    super(SelectCondition.class);
     this.conditionSerializer = new ConditionSerializer(new AttributeConditionSerializer(entityObjectMapper), entityObjectMapper);
   }
 
   @Override
-  public void serialize(final EntitySelectCondition condition, final JsonGenerator generator,
+  public void serialize(final SelectCondition condition, final JsonGenerator generator,
                         final SerializerProvider provider) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("entityType", condition.getEntityType().getName());
     generator.writeFieldName("condition");
-    conditionSerializer.serialize(condition.getCondition(), generator);
+    conditionSerializer.serialize(condition, generator);
     generator.writeFieldName("orderBy");
     generator.writeObject(condition.getOrderBy());
     generator.writeFieldName("limit");

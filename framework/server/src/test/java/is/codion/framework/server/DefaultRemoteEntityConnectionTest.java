@@ -12,7 +12,7 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
 
@@ -53,7 +53,7 @@ public class DefaultRemoteEntityConnectionTest {
   public void rollbackOnDisconnect() throws Exception {
     final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238);
-    final EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP);
+    final SelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP);
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.select(condition).isEmpty());
@@ -91,7 +91,7 @@ public class DefaultRemoteEntityConnectionTest {
                 }
               });
 
-      final EntitySelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP);
+      final SelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP);
       proxy.beginTransaction();
       proxy.select(condition);
       proxy.delete(condition);

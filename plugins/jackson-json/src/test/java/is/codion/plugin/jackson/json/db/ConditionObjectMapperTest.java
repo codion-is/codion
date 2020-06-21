@@ -7,7 +7,6 @@ import is.codion.common.db.Operator;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.CustomCondition;
-import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.NullCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -20,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -37,20 +35,17 @@ public final class ConditionObjectMapperTest {
     final Entity dept2 = entities.entity(TestDomain.T_DEPARTMENT);
     dept2.put(TestDomain.DEPARTMENT_ID, 2);
 
-    final EntityCondition entityCondition = condition(TestDomain.T_EMP,
-            Conditions.attributeCondition(TestDomain.EMP_DEPARTMENT_FK,Operator.NOT_EQUAL_TO, dept1, dept2)
-                    .and(Conditions.attributeCondition(TestDomain.EMP_NAME,Operator.EQUAL_TO, "Loc"),
-                    Conditions.attributeCondition(TestDomain.EMP_ID,Operator.WITHIN_RANGE, 10, 40),
-                    Conditions.attributeCondition(TestDomain.EMP_COMMISSION, NullCondition.IS_NOT_NULL)));
+    final Condition entityCondition = Conditions.condition(TestDomain.EMP_DEPARTMENT_FK,Operator.NOT_EQUAL_TO, dept1, dept2)
+                    .and(Conditions.condition(TestDomain.EMP_NAME,Operator.EQUAL_TO, "Loc"),
+                    Conditions.condition(TestDomain.EMP_ID,Operator.WITHIN_RANGE, 10, 40),
+                    Conditions.condition(TestDomain.EMP_COMMISSION, NullCondition.IS_NOT_NULL));
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
-    final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);
-    final Condition condition = entityCondition.getCondition();
-    final Condition readCondition = readEntityCondition.getCondition();
+    final Condition readCondition = mapper.readValue(jsonString, Condition.class);
 
-    assertEquals(entityCondition.getEntityType(), readEntityCondition.getEntityType());
-    assertEquals(condition.getAttributes(), readCondition.getAttributes());
-    assertEquals(condition.getValues(), readCondition.getValues());
+    assertEquals(entityCondition.getEntityType(), readCondition.getEntityType());
+    assertEquals(entityCondition.getAttributes(), readCondition.getAttributes());
+    assertEquals(entityCondition.getValues(), readCondition.getValues());
 
     assertEquals("(deptno not in (?, ?) and ename = ? and (empno >= ? and empno <= ?) and comm is not null)",
             Conditions.whereCondition(entityCondition, entities.getDefinition(TestDomain.T_EMP)).getWhereClause());
@@ -59,34 +54,26 @@ public final class ConditionObjectMapperTest {
   @Test
   public void nullCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
-    final EntityCondition entityCondition = condition(TestDomain.T_EMP,
-            Conditions.attributeCondition(TestDomain.EMP_COMMISSION, NullCondition.IS_NOT_NULL));
+    final Condition entityCondition = Conditions.condition(TestDomain.EMP_COMMISSION, NullCondition.IS_NOT_NULL);
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
-    final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);
+    final Condition readCondition = mapper.readValue(jsonString, Condition.class);
 
-    final Condition condition = entityCondition.getCondition();
-    final Condition readCondition = readEntityCondition.getCondition();
-
-    assertEquals(entityCondition.getEntityType(), readEntityCondition.getEntityType());
-    assertEquals(condition.getAttributes(), readCondition.getAttributes());
-    assertEquals(condition.getValues(), readCondition.getValues());
+    assertEquals(entityCondition.getEntityType(), readCondition.getEntityType());
+    assertEquals(entityCondition.getAttributes(), readCondition.getAttributes());
+    assertEquals(entityCondition.getValues(), readCondition.getValues());
   }
 
   @Test
   public void customCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
-    final CustomCondition condition = Conditions.customCondition(TestDomain.ENTITY_CONDITION_ID,
+    final CustomCondition condition = Conditions.customCondition(TestDomain.T_ENTITY, TestDomain.ENTITY_CONDITION_ID,
             asList(TestDomain.ENTITY_DECIMAL, TestDomain.ENTITY_DATE_TIME),
             asList(BigDecimal.valueOf(123.4), LocalDateTime.now()));
 
-    final EntityCondition entityCondition = condition(TestDomain.T_ENTITY, condition);
-
-    final String jsonString = mapper.writeValueAsString(entityCondition);
-    final EntityCondition readEntityCondition = mapper.readValue(jsonString, EntityCondition.class);
-
-    final CustomCondition readCondition = (CustomCondition) readEntityCondition.getCondition();
+    final String jsonString = mapper.writeValueAsString(condition);
+    final CustomCondition readCondition = (CustomCondition) mapper.readValue(jsonString, Condition.class);
 
     assertEquals(condition.getConditionId(), readCondition.getConditionId());
     assertEquals(condition.getAttributes(), readCondition.getAttributes());

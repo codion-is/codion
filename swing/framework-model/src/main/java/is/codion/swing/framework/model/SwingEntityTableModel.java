@@ -626,7 +626,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
 
     try {
-      return connectionProvider.getConnection().select(selectCondition(entityType,
+      return connectionProvider.getConnection().select(selectCondition(
               getTableConditionModel().getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {

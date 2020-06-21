@@ -6293,3 +6293,4 @@
   DefaultAttributeCondition now validates that the number of values fits the number of values required by the operator
   Condition.Combination.add() with varchar added
   Condition.and() and and() added
+  EntityCondition removed, EntitySelectCondition and EntityUpdateCondition renamed SelectCondition and UpdateCondition respectively

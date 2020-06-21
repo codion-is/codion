@@ -5,29 +5,49 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultConditionCombination extends AbstractCondition implements Condition.Combination {
+class DefaultConditionCombination extends AbstractCondition implements Condition.Combination {
 
   private static final long serialVersionUID = 1;
 
   private final ArrayList<Condition> conditions = new ArrayList<>();
   private final Conjunction conjunction;
 
-  DefaultConditionCombination(final Conjunction conjunction, final Collection<Condition> conditions) {
+  private EntityType<?> entityType;
+
+  DefaultConditionCombination(final Conjunction conjunction) {
     this.conjunction = requireNonNull(conjunction, "conjunction");
+  }
+
+  DefaultConditionCombination(final Conjunction conjunction, final Condition condition) {
+    this(conjunction);
+    add(condition);
+  }
+
+  DefaultConditionCombination(final Conjunction conjunction, final Condition... conditions) {
+    this(conjunction);
     for (final Condition condition : requireNonNull(conditions, "conditions")) {
       add(condition);
     }
   }
 
   @Override
-  public Combination add(final Condition... conditions) {
+  public final EntityType<?> getEntityType() {
+    if (entityType == null) {
+      throw new IllegalStateException("No condition added to combination");
+    }
+
+    return entityType;
+  }
+
+  @Override
+  public final Combination add(final Condition... conditions) {
     requireNonNull(conditions);
     for (final Condition condition : conditions){
       add(condition);
@@ -37,8 +57,15 @@ final class DefaultConditionCombination extends AbstractCondition implements Con
   }
 
   @Override
-  public Combination add(final Condition condition) {
-    if (condition != null && !(condition instanceof EmptyCondition)) {
+  public final Combination add(final Condition condition) {
+    requireNonNull(condition);
+    if (entityType == null) {
+      entityType = condition.getEntityType();
+    }
+    else if (!entityType.equals(condition.getEntityType())) {
+      throw new IllegalArgumentException("EntityType " + entityType + " expected, got: " + condition.getEntityType());
+    }
+    if (!(condition instanceof EmptyCondition)) {
       conditions.add(condition);
     }
 
@@ -46,17 +73,17 @@ final class DefaultConditionCombination extends AbstractCondition implements Con
   }
 
   @Override
-  public List<Condition> getConditions() {
+  public final List<Condition> getConditions() {
     return conditions;
   }
 
   @Override
-  public Conjunction getConjunction() {
+  public final Conjunction getConjunction() {
     return conjunction;
   }
 
   @Override
-  public List<Object> getValues() {
+  public final List<Object> getValues() {
     final List<Object> values = new ArrayList<>();
     for (int i = 0; i < conditions.size(); i++) {
       values.addAll(conditions.get(i).getValues());
@@ -66,7 +93,7 @@ final class DefaultConditionCombination extends AbstractCondition implements Con
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
+  public final List<Attribute<?>> getAttributes() {
     final List<Attribute<?>> attributes = new ArrayList<>();
     for (int i = 0; i < conditions.size(); i++) {
       attributes.addAll(conditions.get(i).getAttributes());

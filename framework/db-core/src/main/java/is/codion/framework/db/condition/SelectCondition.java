@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * A class encapsulating select query parameters.
  */
-public interface EntitySelectCondition extends EntityCondition {
+public interface SelectCondition extends Condition {
 
   /**
    * @return the OrderBy for this condition, null if none is specified
@@ -24,7 +24,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param orderBy the OrderBy to use when applying this condition
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setOrderBy(OrderBy orderBy);
+  SelectCondition setOrderBy(OrderBy orderBy);
 
   /**
    * @return the limit to use for the given condition
@@ -35,7 +35,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param limit the limit to use for this condition
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setLimit(int limit);
+  SelectCondition setLimit(int limit);
 
   /**
    * @return the offset to use for the given condition
@@ -46,7 +46,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param offset the offset to use for this condition
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setOffset(int offset);
+  SelectCondition setOffset(int offset);
 
   /**
    * @return true if this select should lock the result for update
@@ -60,7 +60,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param forUpdate if true then the results should be locked for update
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForUpdate(boolean forUpdate);
+  SelectCondition setForUpdate(boolean forUpdate);
 
   /**
    * @return the maximum number of records to fetch from the result
@@ -71,7 +71,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param fetchCount the maximum number of records to fetch from the result
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setFetchCount(int fetchCount);
+  SelectCondition setFetchCount(int fetchCount);
 
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
@@ -87,14 +87,14 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param fetchDepth the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForeignKeyFetchDepth(Attribute<Entity> foreignKeyAttribute, int fetchDepth);
+  SelectCondition setForeignKeyFetchDepth(Attribute<Entity> foreignKeyAttribute, int fetchDepth);
 
   /**
    * Limit the levels of foreign keys to fetch
    * @param fetchDepth the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setForeignKeyFetchDepth(int fetchDepth);
+  SelectCondition setForeignKeyFetchDepth(int fetchDepth);
 
   /**
    * Sets the attributes to include in the resulting Entities,
@@ -106,7 +106,7 @@ public interface EntitySelectCondition extends EntityCondition {
    * @param attributes the attributes to include
    * @return this EntitySelectCondition instance
    */
-  EntitySelectCondition setSelectAttributes(Attribute<?>... attributes);
+  SelectCondition setSelectAttributes(Attribute<?>... attributes);
 
   /**
    * @return the attributes to include in the query result,

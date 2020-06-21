@@ -6,6 +6,7 @@ package is.codion.framework.db.condition;
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.SubqueryProperty;
 
@@ -80,6 +81,11 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
     if (this.nullCondition && !operator.isNullCompatible()) {
       throw new IllegalArgumentException("Operator " + operator + " is not null compatible");
     }
+  }
+
+  @Override
+  public EntityType<?> getEntityType() {
+    return attribute.getEntityType();
   }
 
   @Override

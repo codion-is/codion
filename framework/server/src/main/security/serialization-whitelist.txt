@@ -85,8 +85,8 @@ is.codion.common.version.DefaultVersion
 is.codion.framework.db.condition.AbstractCondition
 is.codion.framework.db.condition.DefaultConditionCombination
 is.codion.framework.db.condition.DefaultCustomCondition
-is.codion.framework.db.condition.DefaultEntityCondition
-is.codion.framework.db.condition.DefaultEntitySelectCondition
+is.codion.framework.db.condition.DefaultSelectCondition
+is.codion.framework.db.condition.DefaultUpdateCondition
 is.codion.framework.db.condition.DefaultAttributeCondition
 is.codion.framework.db.condition.Condition$EmptyCondition
 is.codion.framework.domain.DefaultDomainType

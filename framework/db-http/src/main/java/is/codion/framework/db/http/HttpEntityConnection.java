@@ -16,9 +16,8 @@ import is.codion.common.db.reports.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.EntityCondition;
-import is.codion.framework.db.condition.EntitySelectCondition;
-import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -277,7 +276,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public int update(final EntityUpdateCondition condition) throws DatabaseException {
+  public int update(final UpdateCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       return onResponse(execute(createHttpPost("updateByCondition", condition)));
@@ -312,7 +311,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public int delete(final EntityCondition condition) throws DatabaseException {
+  public int delete(final Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       return onResponse(execute(createHttpPost("delete", condition)));
@@ -357,7 +356,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public Entity selectSingle(final EntitySelectCondition condition) throws DatabaseException {
+  public Entity selectSingle(final SelectCondition condition) throws DatabaseException {
     final List<Entity> selected = select(condition);
     if (Util.nullOrEmpty(selected)) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
@@ -385,7 +384,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public List<Entity> select(final EntitySelectCondition condition) throws DatabaseException {
+  public List<Entity> select(final SelectCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
       return onResponse(execute(createHttpPost("select", condition)));
@@ -425,7 +424,7 @@ final class HttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public int rowCount(final EntityCondition condition) throws DatabaseException {
+  public int rowCount(final Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       return onResponse(execute(createHttpPost("count", condition)));

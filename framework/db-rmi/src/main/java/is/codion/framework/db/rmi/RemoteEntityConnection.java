@@ -12,9 +12,8 @@ import is.codion.common.db.reports.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.EntityCondition;
-import is.codion.framework.db.condition.EntitySelectCondition;
-import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -155,13 +154,13 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Performs an update according to the given condition, updating the properties found
-   * in the {@link EntityUpdateCondition#getAttributeValues()} map, with the associated values.
+   * in the {@link UpdateCondition#getAttributeValues()} map, with the associated values.
    * @param condition the condition
    * @return the number of affected rows
    * @throws DatabaseException in case of a dabase exception
    * @throws RemoteException in case of a remote exception
    */
-  int update(EntityUpdateCondition condition) throws RemoteException, DatabaseException;
+  int update(UpdateCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Deletes an entity according to the given primary key.
@@ -191,7 +190,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  int delete(EntityCondition condition) throws RemoteException, DatabaseException;
+  int delete(Condition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects ordered and distinct non-null values of the given attribute, note that the attribute
@@ -255,7 +254,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  Entity selectSingle(EntitySelectCondition condition) throws RemoteException, DatabaseException;
+  Entity selectSingle(SelectCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Returns entities according to {@code keys}
@@ -273,7 +272,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> select(EntitySelectCondition condition) throws RemoteException, DatabaseException;
+  List<Entity> select(SelectCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
@@ -313,7 +312,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  int rowCount(EntityCondition condition) throws RemoteException, DatabaseException;
+  int rowCount(Condition condition) throws RemoteException, DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized ReportResult object

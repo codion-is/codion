@@ -5,16 +5,23 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies objects serving as where conditions in database queries
  */
 public interface Condition extends Serializable {
+
+  /**
+   * @return the entity type
+   */
+  EntityType<?> getEntityType();
 
   /**
    * @return a list of the values this condition is based on, in the order they appear
@@ -91,6 +98,17 @@ public interface Condition extends Serializable {
   final class EmptyCondition extends AbstractCondition implements Condition {
 
     private static final long serialVersionUID = 1;
+
+    private final EntityType<?> entityType;
+
+    EmptyCondition(final EntityType<?> entityType) {
+      this.entityType = requireNonNull(entityType);
+    }
+
+    @Override
+    public EntityType<?> getEntityType() {
+      return entityType;
+    }
 
     @Override
     public List<Object> getValues() {

@@ -3,8 +3,9 @@
  */
 package is.codion.plugin.jackson.json.db;
 
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.EntityCondition;
-import is.codion.framework.db.condition.EntitySelectCondition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,10 +24,10 @@ public final class ConditionObjectMapper extends ObjectMapper {
    */
   public ConditionObjectMapper(final EntityObjectMapper entityObjectMapper) {
     final SimpleModule module = new SimpleModule();
-    module.addSerializer(EntityCondition.class, new EntityConditionSerializer(entityObjectMapper));
-    module.addDeserializer(EntityCondition.class, new EntityConditionDeserializer(entityObjectMapper));
-    module.addSerializer(EntitySelectCondition.class, new EntitySelectConditionSerializer(entityObjectMapper));
-    module.addDeserializer(EntitySelectCondition.class, new EntitySelectConditionDeserializer(entityObjectMapper));
+    module.addSerializer(Condition.class, new EntityConditionSerializer(entityObjectMapper));
+    module.addDeserializer(Condition.class, new EntityConditionDeserializer(entityObjectMapper));
+    module.addSerializer(SelectCondition.class, new EntitySelectConditionSerializer(entityObjectMapper));
+    module.addDeserializer(SelectCondition.class, new EntitySelectConditionDeserializer(entityObjectMapper));
     registerModule(module);
   }
 }

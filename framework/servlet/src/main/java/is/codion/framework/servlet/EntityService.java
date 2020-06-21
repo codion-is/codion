@@ -16,9 +16,8 @@ import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.EntityCondition;
-import is.codion.framework.db.condition.EntitySelectCondition;
-import is.codion.framework.db.condition.EntityUpdateCondition;
+import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
@@ -382,7 +381,7 @@ public final class EntityService extends Application {
   public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
-      final EntitySelectCondition selectCondition = deserialize(request);
+      final SelectCondition selectCondition = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.select(selectCondition))).build();
     }
@@ -450,7 +449,7 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      return Response.ok(Serializer.serialize(connection.update((EntityUpdateCondition) deserialize(request)))).build();
+      return Response.ok(Serializer.serialize(connection.update((UpdateCondition) deserialize(request)))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);
@@ -470,9 +469,9 @@ public final class EntityService extends Application {
   public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
-      final EntityCondition entityCondition = deserialize(request);
+      final Condition condition = deserialize(request);
 
-      return Response.ok(Serializer.serialize(connection.delete(entityCondition))).build();
+      return Response.ok(Serializer.serialize(connection.delete(condition))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -287,7 +288,12 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().select(selectCondition(entityType, selectCondition)
+      Condition condition = selectCondition;
+      if (condition == null) {
+        condition = condition(entityType);
+      }
+
+      return connectionProvider.getConnection().select(selectCondition(condition)
               .setOrderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
     }
     catch (final DatabaseException e) {
