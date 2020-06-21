@@ -5,12 +5,14 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 
 class DefaultConditionCombination implements Condition.Combination {
 
@@ -108,5 +110,23 @@ class DefaultConditionCombination implements Condition.Combination {
   @Override
   public final Condition.Combination or(final Condition... conditions) {
     return new DefaultConditionCombination(Conjunction.OR, this).add(requireNonNull(conditions));
+  }
+
+  @Override
+  public final String getWhereClause(final EntityDefinition definition) {
+    if (conditions.size() == 1) {
+      return conditions.get(0).getWhereClause(definition);
+    }
+
+    return new StringBuilder("(").append(conditions.stream().map(condition -> condition.getWhereClause(definition))
+            .collect(joining(toString(conjunction)))).append(")").toString();
+  }
+
+  private static String toString(final Conjunction conjunction) {
+    switch (conjunction) {
+      case AND: return " and ";
+      case OR: return " or ";
+      default: throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
+    }
   }
 }

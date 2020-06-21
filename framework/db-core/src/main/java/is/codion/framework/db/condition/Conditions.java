@@ -471,5 +471,10 @@ public final class Conditions {
     public List<Attribute<?>> getAttributes() {
       return emptyList();
     }
+
+    @Override
+    public String getWhereClause(final EntityDefinition definition) {
+      return "";
+    }
   }
 }

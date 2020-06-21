@@ -5,6 +5,7 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
@@ -46,6 +47,13 @@ public interface Condition extends Serializable {
    * @return a condition combination
    */
   Combination or(Condition... conditions);
+
+  /**
+   * Returns a where clause element representing this condition, without the WHERE keyword.
+   * @param definition the entity definition
+   * @return a where clause element
+   */
+  String getWhereClause(EntityDefinition definition);
 
   /**
    * An interface encapsulating a combination of Condition objects,
