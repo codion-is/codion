@@ -45,7 +45,7 @@ public final class Conditions {
    * @return a condition specifying all entities of the given type
    */
   public static Condition condition(final EntityType<?> entityType) {
-    return new Condition.EmptyCondition(entityType);
+    return new EmptyCondition(entityType);
   }
 
   /**
@@ -168,7 +168,7 @@ public final class Conditions {
    * @return a select condition encompassing all entities of the given type
    */
   public static SelectCondition selectCondition(final EntityType<?> entityType) {
-    return new DefaultSelectCondition(new Condition.EmptyCondition(entityType));
+    return new DefaultSelectCondition(new EmptyCondition(entityType));
   }
 
   /**
@@ -247,7 +247,7 @@ public final class Conditions {
    * @return an update condition encompassing all entities of the given type
    */
   public static UpdateCondition updateCondition(final EntityType<?> entityType) {
-    return new DefaultUpdateCondition(new Condition.EmptyCondition(entityType));
+    return new DefaultUpdateCondition(new EmptyCondition(entityType));
   }
 
   /**
@@ -449,5 +449,27 @@ public final class Conditions {
     }
 
     return keys;
+  }
+
+  /**
+   * An empty condition, with no values or attributes
+   */
+  private static final class EmptyCondition extends AbstractCondition {
+
+    private static final long serialVersionUID = 1;
+
+    EmptyCondition(final EntityType<?> entityType) {
+      super(entityType);
+    }
+
+    @Override
+    public List<Object> getValues() {
+      return emptyList();
+    }
+
+    @Override
+    public List<Attribute<?>> getAttributes() {
+      return emptyList();
+    }
   }
 }

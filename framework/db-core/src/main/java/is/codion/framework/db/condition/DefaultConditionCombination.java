@@ -12,7 +12,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultConditionCombination extends AbstractCondition implements Condition.Combination {
+class DefaultConditionCombination implements Condition.Combination {
 
   private static final long serialVersionUID = 1;
 
@@ -65,9 +65,7 @@ class DefaultConditionCombination extends AbstractCondition implements Condition
     else if (!entityType.equals(condition.getEntityType())) {
       throw new IllegalArgumentException("EntityType " + entityType + " expected, got: " + condition.getEntityType());
     }
-    if (!(condition instanceof EmptyCondition)) {
-      conditions.add(condition);
-    }
+    conditions.add(condition);
 
     return this;
   }
@@ -100,5 +98,15 @@ class DefaultConditionCombination extends AbstractCondition implements Condition
     }
 
     return attributes;
+  }
+
+  @Override
+  public final Condition.Combination and(final Condition... conditions) {
+    return new DefaultConditionCombination(Conjunction.AND, this).add(requireNonNull(conditions));
+  }
+
+  @Override
+  public final Condition.Combination or(final Condition... conditions) {
+    return new DefaultConditionCombination(Conjunction.OR, this).add(requireNonNull(conditions));
   }
 }

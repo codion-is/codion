@@ -6323,3 +6323,4 @@
   Condition.and() and and() added
   EntityCondition removed, EntitySelectCondition and EntityUpdateCondition renamed SelectCondition and UpdateCondition respectively
   Util.nullOrEmpty(string) added
+  Conditions, refactoring
