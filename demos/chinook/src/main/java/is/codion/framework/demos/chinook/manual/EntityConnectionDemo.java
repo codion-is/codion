@@ -230,7 +230,7 @@ public final class EntityConnectionDemo {
 
   static void procedure(EntityConnection connection) throws DatabaseException {
     // tag::procedure[]
-    connection.executeProcedure(Procedures.UPDATE_TOTALS);
+    connection.executeProcedure(Invoice.UPDATE_TOTALS);
     // end::procedure[]
   }
 
@@ -239,7 +239,7 @@ public final class EntityConnectionDemo {
     List<Long> trackIds = asList(123L, 1234L);
     BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
 
-    List<Entity> modifiedTracks = connection.executeFunction(Functions.RAISE_PRICE, trackIds, priceIncrease);
+    List<Entity> modifiedTracks = connection.executeFunction(Track.RAISE_PRICE, trackIds, priceIncrease);
     // end::function[]
   }
 
