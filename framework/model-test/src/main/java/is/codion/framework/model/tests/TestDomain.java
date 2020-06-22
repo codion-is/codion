@@ -139,9 +139,9 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
 
-  public static final ConditionType EMP_CONDITION_1_TYPE = ConditionType.conditionType(T_EMP, "condition1Id");
-  public static final ConditionType EMP_CONDITION_2_TYPE = ConditionType.conditionType(T_EMP, "condition2Id");
-  public static final ConditionType EMP_CONDITION_3_TYPE = ConditionType.conditionType(T_EMP, "condition3Id");
+  public static final ConditionType EMP_CONDITION_1_TYPE = T_EMP.conditionType("condition1Id");
+  public static final ConditionType EMP_CONDITION_2_TYPE = T_EMP.conditionType("condition2Id");
+  public static final ConditionType EMP_CONDITION_3_TYPE = T_EMP.conditionType("condition3Id");
 
   /**
    * Otherwise we'd depend on java.awt.Color

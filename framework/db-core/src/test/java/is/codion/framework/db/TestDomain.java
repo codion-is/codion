@@ -18,7 +18,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
-import static is.codion.framework.domain.entity.ConditionType.conditionType;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -108,7 +107,7 @@ public final class TestDomain extends DefaultDomain {
             denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK, MASTER_CODE, DETAIL_MASTER_CODE.getName()),
             valueListProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.getName(), linkedValues -> {
-              final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
+              final Integer intValue = linkedValues.get(DETAIL_INT);
               if (intValue == null) {
                 return null;
               }
@@ -127,8 +126,8 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
 
-  public static final ConditionType DEPARTMENT_CONDITION_ID = conditionType(T_DEPARTMENT, "condition");
-  public static final ConditionType DEPARTMENT_NAME_NOT_NULL_CONDITION_ID = conditionType(T_DEPARTMENT, "departmentNameNotNull");
+  public static final ConditionType DEPARTMENT_CONDITION_ID = T_DEPARTMENT.conditionType("condition");
+  public static final ConditionType DEPARTMENT_NAME_NOT_NULL_CONDITION_ID = T_DEPARTMENT.conditionType("departmentNameNotNull");
 
   void department() {
     define(T_DEPARTMENT, "scott.dept",

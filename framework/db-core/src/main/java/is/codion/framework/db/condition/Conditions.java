@@ -317,18 +317,18 @@ public final class Conditions {
   }
 
   /**
-   * Creates a new {@link CustomCondition} based on the condition with the given id
-   * @param conditionId the id of the condition
+   * Creates a new {@link CustomCondition} based on the condition of the given type
+   * @param conditionType the condition type
    * @return a new Condition instance
-   * @throws NullPointerException in case the condition id
+   * @throws NullPointerException in case the condition type is null
    * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
    */
-  public static CustomCondition customCondition(final ConditionType conditionId) {
-    return customCondition(conditionId, emptyList(), emptyList());
+  public static CustomCondition customCondition(final ConditionType conditionType) {
+    return customCondition(conditionType, emptyList(), emptyList());
   }
 
   /**
-   * Creates a new {@link CustomCondition} based on the condition with the given id
+   * Creates a new {@link CustomCondition} based on the condition of the given type
    * @param conditionType the condition type
    * @param attributes the attributes representing the values used by this condition, in the same order as their respective values
    * @param values the values used by this condition string

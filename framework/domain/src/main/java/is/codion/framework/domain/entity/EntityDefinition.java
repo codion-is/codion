@@ -461,7 +461,7 @@ public interface EntityDefinition extends Serializable {
      * substitution character where values should be inserted.
      * @param conditionType the condition type
      * @param conditionProvider the condition provider
-     * @return this Entity.Definer instance
+     * @return this {@link Builder} instance
      */
     Builder conditionProvider(ConditionType conditionType, ConditionProvider conditionProvider);
 

@@ -76,9 +76,9 @@ public final class TestDomain extends DefaultDomain {
     Attribute<String> DNAME = TYPE.stringAttribute("dname");
     Attribute<String> LOC = TYPE.stringAttribute("loc");
 
-    ConditionType DEPARTMENT_CONDITION_TYPE = ConditionType.conditionType(TYPE, "condition");
-    ConditionType DEPARTMENT_CONDITION_SALES_TYPE = ConditionType.conditionType(TYPE, "conditionSalesId");
-    ConditionType DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE = ConditionType.conditionType(TYPE, "conditionInvalidColumnId");
+    ConditionType DEPARTMENT_CONDITION_TYPE = TYPE.conditionType("condition");
+    ConditionType DEPARTMENT_CONDITION_SALES_TYPE = TYPE.conditionType("conditionSalesId");
+    ConditionType DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE = TYPE.conditionType("conditionInvalidColumnId");
 
     void setName(String name);
     String getName();
@@ -127,8 +127,8 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<byte[]> EMP_DATA_LAZY = T_EMP.blobAttribute("data_lazy");
   public static final Attribute<byte[]> EMP_DATA = T_EMP.blobAttribute("data");
 
-  public static final ConditionType EMP_NAME_IS_BLAKE_CONDITION_ID = ConditionType.conditionType(T_EMP, "condition1Id");
-  public static final ConditionType EMP_MGR_GREATER_THAN_CONDITION_ID = ConditionType.conditionType(T_EMP, "condition2Id");
+  public static final ConditionType EMP_NAME_IS_BLAKE_CONDITION_ID = T_EMP.conditionType("condition1Id");
+  public static final ConditionType EMP_MGR_GREATER_THAN_CONDITION_ID = T_EMP.conditionType("condition2Id");
 
   void employee() {
     define(T_EMP,
@@ -240,7 +240,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Integer> JOINED_EMPNO = JOINED_QUERY_ENTITY_TYPE.integerAttribute("e.empno");
   public static final Attribute<Integer> JOINED_DEPTNO = JOINED_QUERY_ENTITY_TYPE.integerAttribute("d.deptno");
 
-  public static final ConditionType JOINED_QUERY_CONDITION_TYPE = ConditionType.conditionType(JOINED_QUERY_ENTITY_TYPE, "conditionId");
+  public static final ConditionType JOINED_QUERY_CONDITION_TYPE = JOINED_QUERY_ENTITY_TYPE.conditionType("conditionId");
 
   private void joinedQuery() {
     define(JOINED_QUERY_ENTITY_TYPE,

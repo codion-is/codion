@@ -6304,3 +6304,4 @@
   AttributeCondition.isNullCondition() no longer public
   NullCondition renamed NullCheck
   ConditionType added
+  ConditionType.conditionType() removed, EntityType.conditionType() added

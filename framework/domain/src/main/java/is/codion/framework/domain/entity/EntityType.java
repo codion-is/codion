@@ -126,6 +126,13 @@ public interface EntityType<T extends Entity> extends Serializable {
   Attribute<byte[]> blobAttribute(String name);
 
   /**
+   * Instantiates a new {@link ConditionType} for this entity type
+   * @param name the name
+   * @return a new condition type
+   */
+  ConditionType conditionType(String name);
+
+  /**
    * @param name the entity type name
    * @param domainName the name of the domain to associate this entity type with
    * @return a {@link EntityType} instance with the given name

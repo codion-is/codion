@@ -62,7 +62,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
 
-  public static final ConditionType EMP_MGR_CONDITION_ID = ConditionType.conditionType(T_EMP, "mgrConditionId");
+  public static final ConditionType EMP_MGR_CONDITION_ID = T_EMP.conditionType("mgrConditionId");
 
   void employee() {
     define(T_EMP,
