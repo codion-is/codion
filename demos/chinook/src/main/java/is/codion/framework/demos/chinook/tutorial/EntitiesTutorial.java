@@ -22,7 +22,7 @@ import is.codion.framework.domain.property.Property;
 
 import java.util.List;
 
-import static is.codion.common.db.Operator.EQUAL_TO;
+import static is.codion.common.db.Operator.EQUALS;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
@@ -134,7 +134,7 @@ public final class EntitiesTutorial {
     // by the Conditions factory class.
     // we create a select condition, where we specify the type of the entity
     // we're selecting, the attributes we're searching by, the type of condition and the value.
-    SelectCondition artistsCondition = selectCondition(Artist.NAME, EQUAL_TO, "An%");
+    SelectCondition artistsCondition = selectCondition(Artist.NAME, EQUALS, "An%");
 
     // and we set the order by clause
     artistsCondition.setOrderBy(orderBy().ascending(Artist.NAME));
@@ -144,7 +144,7 @@ public final class EntitiesTutorial {
     artistsStartingWithAn.forEach(System.out::println);
 
     // create a select condition
-    SelectCondition albumsCondition = selectCondition(Album.ARTIST_FK, EQUAL_TO, artistsStartingWithAn);
+    SelectCondition albumsCondition = selectCondition(Album.ARTIST_FK, EQUALS, artistsStartingWithAn);
     albumsCondition.setOrderBy(orderBy().ascending(Album.ARTIST_ID).descending(Album.TITLE));
 
     List<Entity> albumsByArtistsStartingWithAn = connection.select(albumsCondition);

@@ -28,7 +28,7 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, C
 
   private static Operator[] getOperators(final ColumnConditionModel<Entity, ColumnProperty<?>> model) {
     if (model.getColumnIdentifier().getAttribute().isBoolean()) {
-      return new Operator[] {Operator.EQUAL_TO};
+      return new Operator[] {Operator.EQUALS};
     }
 
     return Operator.values();

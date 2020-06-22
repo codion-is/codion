@@ -29,14 +29,14 @@ public final class DefaultAttributeConditionTest {
 
     final List<Integer> ids = new ArrayList<>();
     IntStream.range(0, 95).forEach(ids::add);
-    DefaultAttributeCondition<Integer> condition = new DefaultAttributeCondition<>(TestDomain.EMP_ID, Operator.EQUAL_TO, ids);
+    DefaultAttributeCondition<Integer> condition = new DefaultAttributeCondition<>(TestDomain.EMP_ID, Operator.EQUALS, ids);
     String conditionString = condition.getWhereClause(definition);
     assertTrue(conditionString.startsWith("empno in (?"));
     assertTrue(conditionString.endsWith("?, ?)"));
 
     ids.clear();
     IntStream.range(0, 105).forEach(ids::add);
-    condition = new DefaultAttributeCondition<>(TestDomain.EMP_ID, Operator.EQUAL_TO, ids);
+    condition = new DefaultAttributeCondition<>(TestDomain.EMP_ID, Operator.EQUALS, ids);
     conditionString = condition.getWhereClause(definition);
     assertTrue(conditionString.startsWith("(empno in (?"));
     assertTrue(conditionString.endsWith("?, ?))"));

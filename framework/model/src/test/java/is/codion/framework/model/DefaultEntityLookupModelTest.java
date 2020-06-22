@@ -193,7 +193,7 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(true);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(true);
     lookupModel.setAdditionalConditionProvider(() ->
-            Conditions.condition(TestDomain.EMP_JOB, Operator.NOT_EQUAL_TO, "MANAGER"));
+            Conditions.condition(TestDomain.EMP_JOB, Operator.NOT_EQUALS, "MANAGER"));
     result = lookupModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));

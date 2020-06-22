@@ -31,8 +31,8 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
   private static final Map<Operator, ConditionStringProvider> OPERATOR_PROVIDER_MAP = new EnumMap<>(Operator.class);
 
   static {
-    OPERATOR_PROVIDER_MAP.put(EQUAL_TO, new EqualConditionProvider(false));
-    OPERATOR_PROVIDER_MAP.put(NOT_EQUAL_TO, new EqualConditionProvider(true));
+    OPERATOR_PROVIDER_MAP.put(EQUALS, new EqualsConditionProvider(false));
+    OPERATOR_PROVIDER_MAP.put(NOT_EQUALS, new EqualsConditionProvider(true));
     OPERATOR_PROVIDER_MAP.put(LESS_THAN, new LessThanConditionProvider());
     OPERATOR_PROVIDER_MAP.put(GREATER_THAN, new GreaterThanConditionProvider());
     OPERATOR_PROVIDER_MAP.put(WITHIN_RANGE, new WithinRangeConditionProvider());
@@ -192,7 +192,7 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
     String getConditionString(AttributeCondition<?> condition, ColumnProperty<?> property);
   }
 
-  private static final class EqualConditionProvider implements ConditionStringProvider {
+  private static final class EqualsConditionProvider implements ConditionStringProvider {
 
     private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
     private static final String IN_PREFIX = " in (";
@@ -200,7 +200,7 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
 
     private final boolean negated;
 
-    private EqualConditionProvider(final boolean negated) {
+    private EqualsConditionProvider(final boolean negated) {
       this.negated = negated;
     }
 
@@ -208,7 +208,7 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
     public String getConditionString(final AttributeCondition<?> condition, final ColumnProperty<?> property) {
       final String columnIdentifier = getColumnIdentifier(property, condition.isNullCondition(), condition.isCaseSensitive());
       if (condition.isNullCondition()) {
-        return columnIdentifier + (condition.getOperator() == EQUAL_TO ? " is null" : " is not null");
+        return columnIdentifier + (condition.getOperator() == EQUALS ? " is null" : " is not null");
       }
 
       return getLikeCondition(condition, property, columnIdentifier);

@@ -95,7 +95,7 @@ public interface ColumnConditionModel<R, K> {
   /**
    * Sets the automatic wildcard type.
    * Note that this is only applicable to string based condition models and only used for
-   * operators {@link Operator#EQUAL_TO} and {@link Operator#NOT_EQUAL_TO}
+   * operators {@link Operator#EQUALS} and {@link Operator#NOT_EQUALS}
    * @param automaticWildcard the automatic wildcard type to use
    */
   void setAutomaticWildcard(AutomaticWildcard automaticWildcard);
@@ -133,12 +133,12 @@ public interface ColumnConditionModel<R, K> {
   <T> void setUpperBound(T upper);
 
   /**
-   * A shortcut method for setting the upper bound value, operator to LIKE
+   * A shortcut method for setting the upper bound value, operator to {@link Operator#EQUALS}
    * and enabling this model in case of a non-null value.
    * @param value the value to use as condition
    * @param <T> the value type
    */
-  <T> void setEqualValue(T value);
+  <T> void setEqualsValue(T value);
 
   /**
    * @return the upper bound
@@ -197,7 +197,7 @@ public interface ColumnConditionModel<R, K> {
 
   /**
    * Disables and clears this condition model, that is, sets the upper and lower bounds to null
-   * and the operator to the default value {@link Operator#EQUAL_TO}
+   * and the operator to the default value {@link Operator#EQUALS}
    */
   void clearCondition();
 

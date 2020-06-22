@@ -29,7 +29,7 @@ public class PropertySearchPanelTest {
             new DefaultColumnConditionModel<>(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
                     property.getFormat(), property.getDateTimeFormatPattern());
     conditionModel.setUpperBound("DALLAS");
-    conditionModel.setOperator(Operator.EQUAL_TO);
+    conditionModel.setOperator(Operator.EQUALS);
     conditionModel.setEnabled(true);
     final PropertyConditionPanel searchPanel = new PropertyConditionPanel(conditionModel);
     assertEquals("DALLAS", ((JTextField) searchPanel.getUpperBoundField()).getText());
