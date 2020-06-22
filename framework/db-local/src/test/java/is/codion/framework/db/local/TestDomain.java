@@ -15,6 +15,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
@@ -75,9 +76,9 @@ public final class TestDomain extends DefaultDomain {
     Attribute<String> DNAME = TYPE.stringAttribute("dname");
     Attribute<String> LOC = TYPE.stringAttribute("loc");
 
-    String DEPARTMENT_CONDITION_ID = "condition";
-    String DEPARTMENT_CONDITION_SALES_ID = "conditionSalesId";
-    String DEPARTMENT_CONDITION_INVALID_COLUMN_ID = "conditionInvalidColumnId";
+    ConditionType DEPARTMENT_CONDITION_TYPE = ConditionType.conditionType(TYPE, "condition");
+    ConditionType DEPARTMENT_CONDITION_SALES_TYPE = ConditionType.conditionType(TYPE, "conditionSalesId");
+    ConditionType DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE = ConditionType.conditionType(TYPE, "conditionInvalidColumnId");
 
     void setName(String name);
     String getName();
@@ -98,15 +99,15 @@ public final class TestDomain extends DefaultDomain {
                     .beanProperty("location"))
             .smallDataset(true)
             .stringProvider(new StringProvider(Department.DNAME))
-            .conditionProvider(Department.DEPARTMENT_CONDITION_ID, (attributes, values) -> {
+            .conditionProvider(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {
               final StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .conditionProvider(Department.DEPARTMENT_CONDITION_SALES_ID, (attributes, values) -> "dname = 'SALES'")
-            .conditionProvider(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_ID, (attributes, values) -> "no_column is null")
+            .conditionProvider(Department.DEPARTMENT_CONDITION_SALES_TYPE, (attributes, values) -> "dname = 'SALES'")
+            .conditionProvider(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE, (attributes, values) -> "no_column is null")
             .caption("Department");
   }
 
@@ -126,8 +127,8 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<byte[]> EMP_DATA_LAZY = T_EMP.blobAttribute("data_lazy");
   public static final Attribute<byte[]> EMP_DATA = T_EMP.blobAttribute("data");
 
-  public static final String EMP_NAME_IS_BLAKE_CONDITION_ID = "condition1Id";
-  public static final String EMP_MGR_GREATER_THAN_CONDITION_ID = "condition2Id";
+  public static final ConditionType EMP_NAME_IS_BLAKE_CONDITION_ID = ConditionType.conditionType(T_EMP, "condition1Id");
+  public static final ConditionType EMP_MGR_GREATER_THAN_CONDITION_ID = ConditionType.conditionType(T_EMP, "condition2Id");
 
   void employee() {
     define(T_EMP,
@@ -212,7 +213,6 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public static final EntityType<Entity> GROUP_BY_QUERY_ENTITY_TYPE = DOMAIN.entityType("groupByQueryEntityType");
-  public static final String JOINED_QUERY_CONDITION_ID = "conditionId";
 
   private void groupByQuery() {
     define(GROUP_BY_QUERY_ENTITY_TYPE, "scott.emp",
@@ -240,11 +240,13 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Integer> JOINED_EMPNO = JOINED_QUERY_ENTITY_TYPE.integerAttribute("e.empno");
   public static final Attribute<Integer> JOINED_DEPTNO = JOINED_QUERY_ENTITY_TYPE.integerAttribute("d.deptno");
 
+  public static final ConditionType JOINED_QUERY_CONDITION_TYPE = ConditionType.conditionType(JOINED_QUERY_ENTITY_TYPE, "conditionId");
+
   private void joinedQuery() {
     define(JOINED_QUERY_ENTITY_TYPE,
             primaryKeyProperty(JOINED_EMPNO),
             columnProperty(JOINED_DEPTNO))
             .selectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true)
-            .conditionProvider(JOINED_QUERY_CONDITION_ID, (attributes, values) -> "d.deptno = 10");
+            .conditionProvider(JOINED_QUERY_CONDITION_TYPE, (attributes, values) -> "d.deptno = 10");
   }
 }

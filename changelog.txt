@@ -6303,3 +6303,4 @@
   Operator.EQUAL_TO and NOT_EQUAL_TO renamed EQUALS and NOT_EQUALS respectively
   AttributeCondition.isNullCondition() no longer public
   NullCondition renamed NullCheck
+  ConditionType added

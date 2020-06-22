@@ -225,15 +225,15 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(getKeys(result));
     assertEquals(2, result.size());
     result = connection.select(selectCondition(
-            Conditions.customCondition(Department.TYPE, Department.DEPARTMENT_CONDITION_ID,
+            Conditions.customCondition(Department.DEPARTMENT_CONDITION_TYPE,
                     asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20))));
     assertEquals(2, result.size());
     result = connection.select(selectCondition(
-            Conditions.customCondition(JOINED_QUERY_ENTITY_TYPE, JOINED_QUERY_CONDITION_ID)));
+            Conditions.customCondition(JOINED_QUERY_CONDITION_TYPE)));
     assertEquals(7, result.size());
 
     final SelectCondition condition = selectCondition(
-            Conditions.customCondition(T_EMP, EMP_NAME_IS_BLAKE_CONDITION_ID));
+            Conditions.customCondition(EMP_NAME_IS_BLAKE_CONDITION_ID));
     result = connection.select(condition);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(EMP_DEPARTMENT_FK));
@@ -324,7 +324,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void selectInvalidColumn() throws Exception {
     assertThrows(DatabaseException.class, () -> connection.select(selectCondition(
-            Conditions.customCondition(Department.TYPE, Department.DEPARTMENT_CONDITION_INVALID_COLUMN_ID))));
+            Conditions.customCondition(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE))));
   }
 
   @Test
@@ -352,7 +352,7 @@ public class DefaultLocalEntityConnectionTest {
     sales = connection.selectSingle(sales.getKey());
     assertEquals(sales.get(Department.DNAME), "SALES");
     sales = connection.selectSingle(selectCondition(
-            Conditions.customCondition(Department.TYPE, Department.DEPARTMENT_CONDITION_SALES_ID)));
+            Conditions.customCondition(Department.DEPARTMENT_CONDITION_SALES_TYPE)));
     assertEquals(sales.get(Department.DNAME), "SALES");
 
     final Entity king = connection.selectSingle(EMP_NAME, "KING");
@@ -362,7 +362,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void customCondition() throws DatabaseException {
-    final Condition condition = Conditions.customCondition(T_EMP, EMP_MGR_GREATER_THAN_CONDITION_ID,
+    final Condition condition = Conditions.customCondition(EMP_MGR_GREATER_THAN_CONDITION_ID,
             singletonList(EMP_MGR), singletonList(5));
 
     assertEquals(4, connection.select(selectCondition(condition)).size());

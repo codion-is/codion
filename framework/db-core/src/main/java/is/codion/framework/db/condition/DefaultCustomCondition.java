@@ -4,8 +4,8 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,21 +16,21 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
 
   private static final long serialVersionUID = 1;
 
-  private final String conditionId;
+  private final ConditionType conditionType;
   private final List<Attribute<?>> attributes;
   private final List<Object> values;
 
-  DefaultCustomCondition(final EntityType<?> entityType, final String conditionId, final List<Attribute<?>> attributes,
+  DefaultCustomCondition(final ConditionType conditionType, final List<Attribute<?>> attributes,
                          final List<Object> values) {
-    super(entityType);
-    this.conditionId = requireNonNull(conditionId, "conditionId");
+    super(requireNonNull(conditionType, "conditionType").getEntityType());
+    this.conditionType = conditionType;
     this.attributes = new ArrayList<>(requireNonNull(attributes, "attributes"));
     this.values = new ArrayList<>(requireNonNull(values, "values"));
   }
 
   @Override
-  public String getConditionId() {
-    return conditionId;
+  public ConditionType getConditionType() {
+    return conditionType;
   }
 
   @Override
@@ -45,6 +45,6 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
 
   @Override
   public String getWhereClause(final EntityDefinition definition) {
-    return definition.getConditionProvider(conditionId).getConditionString(attributes, values);
+    return definition.getConditionProvider(conditionType).getConditionString(attributes, values);
   }
 }

@@ -6,6 +6,7 @@ package is.codion.plugin.json;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
@@ -61,7 +62,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
 
-  public static final String EMP_MGR_CONDITION_ID = "mgrConditionId";
+  public static final ConditionType EMP_MGR_CONDITION_ID = ConditionType.conditionType(T_EMP, "mgrConditionId");
 
   void employee() {
     define(T_EMP,

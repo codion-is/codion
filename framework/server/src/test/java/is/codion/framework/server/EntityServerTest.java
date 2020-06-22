@@ -80,7 +80,7 @@ public class EntityServerTest {
             "ClientTypeID", CONNECTION_PARAMS);
     final RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
-    final Condition condition = Conditions.customCondition(TestDomain.T_EMP, TestDomain.EMP_MGR_CONDITION_ID,
+    final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_TYPE,
             singletonList(TestDomain.EMP_MGR), singletonList(4));
 
     connection.select(Conditions.selectCondition(condition));

@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
@@ -17,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Items.item;
+import static is.codion.framework.domain.entity.ConditionType.conditionType;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
@@ -125,8 +127,8 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
 
-  public static final String DEPARTMENT_CONDITION_ID = "condition";
-  public static final String DEPARTMENT_NAME_NOT_NULL_CONDITION_ID = "departmentNameNotNull";
+  public static final ConditionType DEPARTMENT_CONDITION_ID = conditionType(T_DEPARTMENT, "condition");
+  public static final ConditionType DEPARTMENT_NAME_NOT_NULL_CONDITION_ID = conditionType(T_DEPARTMENT, "departmentNameNotNull");
 
   void department() {
     define(T_DEPARTMENT, "scott.dept",
