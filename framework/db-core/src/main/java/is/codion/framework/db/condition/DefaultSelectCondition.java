@@ -3,9 +3,9 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.ArrayList;
@@ -15,10 +15,11 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
-final class DefaultSelectCondition extends DefaultConditionCombination implements SelectCondition {
+final class DefaultSelectCondition extends AbstractCondition implements SelectCondition {
 
   private static final long serialVersionUID = 1;
 
+  private final Condition condition;
   private HashMap<Attribute<?>, Integer> foreignKeyFetchDepths;
   private List<Attribute<?>> selectAttributes = emptyList();
 
@@ -36,7 +37,28 @@ final class DefaultSelectCondition extends DefaultConditionCombination implement
    * @see EntityKeyCondition
    */
   DefaultSelectCondition(final Condition condition) {
-    super(Conjunction.AND, condition);
+    super(condition.getEntityType());
+    this.condition = condition;
+  }
+
+  @Override
+  public Condition getCondition() {
+    return condition;
+  }
+
+  @Override
+  public List<?> getValues() {
+    return condition.getValues();
+  }
+
+  @Override
+  public List<Attribute<?>> getAttributes() {
+    return condition.getAttributes();
+  }
+
+  @Override
+  public String getWhereClause(final EntityDefinition definition) {
+    return condition.getWhereClause(definition);
   }
 
   @Override

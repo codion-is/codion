@@ -14,7 +14,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-class DefaultConditionCombination implements Condition.Combination {
+final class DefaultConditionCombination implements Condition.Combination {
 
   private static final long serialVersionUID = 1;
 
@@ -40,7 +40,7 @@ class DefaultConditionCombination implements Condition.Combination {
   }
 
   @Override
-  public final EntityType<?> getEntityType() {
+  public EntityType<?> getEntityType() {
     if (entityType == null) {
       throw new IllegalStateException("No condition added to combination");
     }
@@ -49,7 +49,7 @@ class DefaultConditionCombination implements Condition.Combination {
   }
 
   @Override
-  public final Combination add(final Condition... conditions) {
+  public Combination add(final Condition... conditions) {
     requireNonNull(conditions);
     for (final Condition condition : conditions){
       add(condition);
@@ -59,7 +59,7 @@ class DefaultConditionCombination implements Condition.Combination {
   }
 
   @Override
-  public final Combination add(final Condition condition) {
+  public Combination add(final Condition condition) {
     requireNonNull(condition);
     if (entityType == null) {
       entityType = condition.getEntityType();
@@ -73,17 +73,17 @@ class DefaultConditionCombination implements Condition.Combination {
   }
 
   @Override
-  public final List<Condition> getConditions() {
+  public List<Condition> getConditions() {
     return conditions;
   }
 
   @Override
-  public final Conjunction getConjunction() {
+  public Conjunction getConjunction() {
     return conjunction;
   }
 
   @Override
-  public final List<?> getValues() {
+  public List<?> getValues() {
     final List<Object> values = new ArrayList<>();
     for (int i = 0; i < conditions.size(); i++) {
       values.addAll(conditions.get(i).getValues());
@@ -93,7 +93,7 @@ class DefaultConditionCombination implements Condition.Combination {
   }
 
   @Override
-  public final List<Attribute<?>> getAttributes() {
+  public List<Attribute<?>> getAttributes() {
     final List<Attribute<?>> attributes = new ArrayList<>();
     for (int i = 0; i < conditions.size(); i++) {
       attributes.addAll(conditions.get(i).getAttributes());
@@ -103,22 +103,23 @@ class DefaultConditionCombination implements Condition.Combination {
   }
 
   @Override
-  public final Condition.Combination and(final Condition... conditions) {
+  public Condition.Combination and(final Condition... conditions) {
     return new DefaultConditionCombination(Conjunction.AND, this).add(requireNonNull(conditions));
   }
 
   @Override
-  public final Condition.Combination or(final Condition... conditions) {
+  public Condition.Combination or(final Condition... conditions) {
     return new DefaultConditionCombination(Conjunction.OR, this).add(requireNonNull(conditions));
   }
 
   @Override
-  public final String getWhereClause(final EntityDefinition definition) {
+  public String getWhereClause(final EntityDefinition definition) {
     if (conditions.size() == 1) {
       return conditions.get(0).getWhereClause(definition);
     }
 
-    return new StringBuilder("(").append(conditions.stream().map(condition -> condition.getWhereClause(definition))
+    return new StringBuilder("(").append(conditions.stream()
+            .map(condition -> condition.getWhereClause(definition))
             .collect(joining(toString(conjunction)))).append(")").toString();
   }
 

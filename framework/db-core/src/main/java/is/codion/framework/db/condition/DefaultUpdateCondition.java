@@ -3,23 +3,46 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityDefinition;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultUpdateCondition extends DefaultConditionCombination implements UpdateCondition {
+final class DefaultUpdateCondition extends AbstractCondition implements UpdateCondition {
 
   private static final long serialVersionUID = 1;
 
+  private final Condition condition;
   private final Map<Attribute<?>, Object> propertyValues = new LinkedHashMap<>();
 
   DefaultUpdateCondition(final Condition condition) {
-    super(Conjunction.AND, condition);
+    super(condition.getEntityType());
+    this.condition = condition;
+  }
+
+  @Override
+  public Condition getCondition() {
+    return condition;
+  }
+
+  @Override
+  public List<?> getValues() {
+    return condition.getValues();
+  }
+
+  @Override
+  public List<Attribute<?>> getAttributes() {
+    return condition.getAttributes();
+  }
+
+  @Override
+  public String getWhereClause(final EntityDefinition definition) {
+    return condition.getWhereClause(definition);
   }
 
   @Override
