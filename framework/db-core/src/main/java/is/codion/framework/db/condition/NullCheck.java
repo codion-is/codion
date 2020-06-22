@@ -6,7 +6,7 @@ package is.codion.framework.db.condition;
 /**
  * Specifies whether a condition should check if the value is null or not null.
  */
-public enum NullCondition {
+public enum NullCheck {
   /**
    * The value should be null.
    */

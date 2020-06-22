@@ -20,7 +20,7 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.db.condition.NullCondition;
+import is.codion.framework.db.condition.NullCheck;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Entities;
@@ -270,10 +270,10 @@ public class DefaultLocalEntityConnectionTest {
     assertTrue(emp.isLoaded(EMP_MGR_FK));
 
     assertEquals(4, connection.rowCount(Conditions.condition(EMP_ID, Operator.EQUALS, asList(1, 2, 3, 4))));
-    assertEquals(0, connection.rowCount(Conditions.condition(EMP_DEPARTMENT, NullCondition.IS_NULL)));
-    assertEquals(0, connection.rowCount(Conditions.condition(EMP_DEPARTMENT_FK, NullCondition.IS_NULL)));
-    assertEquals(1, connection.rowCount(Conditions.condition(EMP_MGR, NullCondition.IS_NULL)));
-    assertEquals(1, connection.rowCount(Conditions.condition(EMP_MGR_FK, NullCondition.IS_NULL)));
+    assertEquals(0, connection.rowCount(Conditions.condition(EMP_DEPARTMENT, NullCheck.IS_NULL)));
+    assertEquals(0, connection.rowCount(Conditions.condition(EMP_DEPARTMENT_FK, NullCheck.IS_NULL)));
+    assertEquals(1, connection.rowCount(Conditions.condition(EMP_MGR, NullCheck.IS_NULL)));
+    assertEquals(1, connection.rowCount(Conditions.condition(EMP_MGR_FK, NullCheck.IS_NULL)));
   }
 
   @Test
@@ -518,11 +518,11 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void updateWithCondition() throws DatabaseException {
-    final SelectCondition selectCondition = Conditions.selectCondition(EMP_COMMISSION, NullCondition.IS_NULL);
+    final SelectCondition selectCondition = Conditions.selectCondition(EMP_COMMISSION, NullCheck.IS_NULL);
 
     final List<Entity> entities = connection.select(selectCondition);
 
-    final UpdateCondition updateCondition = Conditions.updateCondition(EMP_COMMISSION, NullCondition.IS_NULL)
+    final UpdateCondition updateCondition = Conditions.updateCondition(EMP_COMMISSION, NullCheck.IS_NULL)
             .set(EMP_COMMISSION, 500d)
             .set(EMP_SALARY, 4200d);
     try {
@@ -542,7 +542,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void updateWithConditionNoRows() throws DatabaseException {
-    final UpdateCondition updateCondition = Conditions.updateCondition(EMP_ID, NullCondition.IS_NULL)
+    final UpdateCondition updateCondition = Conditions.updateCondition(EMP_ID, NullCheck.IS_NULL)
             .set(EMP_SALARY, 4200d);
     try {
       connection.beginTransaction();
