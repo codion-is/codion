@@ -21,7 +21,7 @@ final class DefaultUpdateCondition extends AbstractCondition implements UpdateCo
   private final Map<Attribute<?>, Object> propertyValues = new LinkedHashMap<>();
 
   DefaultUpdateCondition(final Condition condition) {
-    super(condition.getEntityType());
+    super(requireNonNull(condition, "condition").getEntityType());
     this.condition = condition;
   }
 

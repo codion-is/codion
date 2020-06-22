@@ -6327,3 +6327,4 @@
   Condition.getWhereClause() added, AttributeCondition.getConditionString() removed
   Conditions, more refactoring
   DefaultSelectCondition and DefaultUpdateCondition now extend AbstractCondition instead of DefaultConditionCombination
+  DefaultSelectCondition and DefaultUpdateCondition, added null check in constructor
