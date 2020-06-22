@@ -14,6 +14,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
 
 final class DefaultSelectCondition extends AbstractCondition implements SelectCondition {
 
@@ -37,7 +38,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
    * @see EntityKeyCondition
    */
   DefaultSelectCondition(final Condition condition) {
-    super(condition.getEntityType());
+    super(requireNonNull(condition, "condition").getEntityType());
     this.condition = condition;
   }
 
