@@ -440,7 +440,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final void replaceEntities(final Collection<Entity> entities) {
+  public final void replaceEntities(final List<Entity> entities) {
     replaceEntitiesByKey(Entities.mapToKey(entities));
   }
 
@@ -560,15 +560,15 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final String getTableDataAsDelimitedString(final char delimiter) {
     final List<String> header = new ArrayList<>();
-    final List<Property<?>> properties = new ArrayList<>();
+    final List<Attribute<?>> attributes = new ArrayList<>();
     final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final Property<?> property = (Property<?>) columnEnumeration.nextElement().getIdentifier();
-      properties.add(property);
+      attributes.add(property.getAttribute());
       header.add(property.getCaption());
     }
 
-    return Text.getDelimitedString(header, Entities.getStringValueList(properties,
+    return Text.getDelimitedString(header, Entities.getStringValueList(attributes,
             getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }

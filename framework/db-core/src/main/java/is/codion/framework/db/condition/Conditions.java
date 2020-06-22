@@ -336,8 +336,8 @@ public final class Conditions {
    * @throws NullPointerException in case any of the parameters are null
    * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
    */
-  public static CustomCondition customCondition(final ConditionType conditionType,
-                                                final List<Attribute<?>> attributes, final List<Object> values) {
+  public static CustomCondition customCondition(final ConditionType conditionType, final List<Attribute<?>> attributes,
+                                                final List<Object> values) {
     return new DefaultCustomCondition(conditionType, attributes, values);
   }
 

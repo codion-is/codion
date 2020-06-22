@@ -162,7 +162,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Replaces the given entities in this table model
    * @param entities the entities to replace
    */
-  void replaceEntities(Collection<Entity> entities);
+  void replaceEntities(List<Entity> entities);
 
   /**
    * Refreshes the entities with the given keys by re-selecting them from the underlying database.

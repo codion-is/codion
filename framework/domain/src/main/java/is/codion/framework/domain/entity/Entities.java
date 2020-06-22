@@ -6,7 +6,6 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import static is.codion.common.Util.map;
-import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -169,18 +167,12 @@ public interface Entities extends Serializable {
 
   /**
    * Checks if the primary key of any of the given entities is modified
-   * @param definition the definition of the entity
    * @param entities the entities to check
    * @return true if any of the given entities has a modified primary key
    */
-  static boolean isKeyModified(final EntityDefinition definition, final Collection<Entity> entities) {
-    requireNonNull(definition);
-    if (nullOrEmpty(entities)) {
-      return false;
-    }
-
-    return entities.stream().anyMatch(entity ->
-            definition.getPrimaryKeyAttributes().stream().anyMatch(entity::isModified));
+  static boolean isKeyModified(final Collection<Entity> entities) {
+    return requireNonNull(entities).stream().anyMatch(entity ->
+            entity.getKey().getAttributes().stream().anyMatch(entity::isModified));
   }
 
   /**
@@ -191,9 +183,7 @@ public interface Entities extends Serializable {
    * @see Entity#isModified()
    */
   static <T extends Entity> List<T> getModifiedEntities(final Collection<T> entities) {
-    requireNonNull(entities, "entities");
-
-    return entities.stream().filter(Entity::isModified).collect(toList());
+    return requireNonNull(entities, "entities").stream().filter(Entity::isModified).collect(toList());
   }
 
   /**
@@ -345,10 +335,11 @@ public interface Entities extends Serializable {
    * @param entities the entities to map
    * @return the mapped entities
    */
-  static Map<Key, Entity> mapToKey(final Collection<Entity> entities) {
+  static Map<Key, Entity> mapToKey(final List<Entity> entities) {
     requireNonNull(entities, "entities");
     final Map<Key, Entity> entityMap = new HashMap<>();
-    for (final Entity entity : entities) {
+    for (int i = 0; i < entities.size(); i++) {
+      final Entity entity = entities.get(i);
       entityMap.put(entity.getKey(), entity);
     }
 
@@ -364,7 +355,7 @@ public interface Entities extends Serializable {
    * @return a Map of entities mapped to property value
    */
   static <T> LinkedHashMap<T, List<Entity>> mapToValue(final Attribute<T> attribute, final Collection<Entity> entities) {
-    return map(entities, value -> value.get(attribute));
+    return map(entities, entity -> entity.get(attribute));
   }
 
   /**
@@ -388,24 +379,15 @@ public interface Entities extends Serializable {
   }
 
   /**
-   * Creates a two dimensional list containing the values of the given properties for the given entities in string format.
-   * @param properties the properties
+   * Creates a two dimensional list containing the values of the given attributes for the given entities in string format.
+   * @param attributes the attributes
    * @param entities the entities
-   * @return the values of the given properties from the given entities in a two dimensional list
+   * @return the values of the given attributes from the given entities in a two dimensional list
    */
-  static List<List<String>> getStringValueList(final List<? extends Property<?>> properties, final List<Entity> entities) {
-    requireNonNull(properties);
-    requireNonNull(entities);
-    final List<List<String>> data = new ArrayList<>();
-    for (final Entity entity : entities) {
-      final List<String> line = new ArrayList<>(properties.size());
-      for (final Property<?> property : properties) {
-        line.add(entity.getAsString(property.getAttribute()));
-      }
-      data.add(line);
-    }
-
-    return data;
+  static List<List<String>> getStringValueList(final List<Attribute<?>> attributes, final List<Entity> entities) {
+    requireNonNull(attributes);
+    return requireNonNull(entities).stream().map(entity ->
+            attributes.stream().map(entity::getAsString).collect(toList())).collect(toList());
   }
 
   /**
@@ -415,47 +397,28 @@ public interface Entities extends Serializable {
    * @return the entities having the exact same property values as in the given value map
    */
   static List<Entity> getEntitiesByValue(final Collection<Entity> entities, final Map<Attribute<?>, Object> values) {
-    requireNonNull(entities);
     requireNonNull(values);
-    final List<Entity> result = new ArrayList<>();
-    for (final Entity entity : requireNonNull(entities, "entities")) {
-      boolean equal = true;
-      for (final Map.Entry<Attribute<?>, Object> entries : values.entrySet()) {
-        final Attribute<?> attribute = entries.getKey();
-        if (!entity.get(attribute).equals(entries.getValue())) {
-          equal = false;
-          break;
-        }
-      }
-      if (equal) {
-        result.add(entity);
-      }
-    }
-
-    return result;
+    return requireNonNull(entities).stream().filter(entity ->
+            values.entrySet().stream().allMatch(entry ->
+                    Objects.equals(entity.get(entry.getKey()), entry.getValue()))).collect(toList());
   }
 
   /**
-   * Returns true if the values of the given properties are equal in the given entities.
+   * Returns true if the values of the given attributes are equal in the given entities.
    * @param entityOne the first entity
    * @param entityTwo the second entity
-   * @param attributes the attributes to use
+   * @param attributes the attributes which values to compare
    * @return true if the values of the given attributes are equal in the given entities
    */
   static boolean valuesEqual(final Entity entityOne, final Entity entityTwo, final Attribute<?>... attributes) {
     requireNonNull(entityOne);
     requireNonNull(entityTwo);
-    requireNonNull(attributes);
-    if (attributes.length == 0) {
-      throw new IllegalArgumentException("No properties provided for equality check");
-    }
-    for (final Attribute<?> attribute : attributes) {
-      if (!Objects.equals(entityOne.get(attribute), entityTwo.get(attribute))) {
-        return false;
-      }
+    if (requireNonNull(attributes).length == 0) {
+      throw new IllegalArgumentException("No attributes provided for equality check");
     }
 
-    return true;
+    return Arrays.stream(attributes).allMatch(attribute ->
+            Objects.equals(entityOne.get(attribute), entityTwo.get(attribute)));
   }
 
   /**
