@@ -6,7 +6,6 @@ package is.codion.plugin.jackson.json.db;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.CustomCondition;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.Property;
@@ -53,6 +52,6 @@ final class CustomConditionDeserializer implements Serializable {
       }
     }
 
-    return Conditions.customCondition(ConditionType.conditionType(definition.getEntityType(), conditionTypeName), attributes, values);
+    return Conditions.customCondition(definition.getEntityType().conditionType(conditionTypeName), attributes, values);
   }
 }

@@ -643,9 +643,9 @@ public class DomainTest {
     final EntityType<Entity> nullConditionProvider2 = DOMAIN.entityType("nullConditionProvider2");
     assertThrows(NullPointerException.class, () -> domain.define(nullConditionProvider2,
             Properties.primaryKeyProperty(nullConditionProvider2.integerAttribute("id"))).conditionProvider(
-                    ConditionType.conditionType(nullConditionProvider2, "id"), null));
+                    nullConditionProvider2.conditionType("id"), null));
     final EntityType<Entity> nullConditionProvider3 = DOMAIN.entityType("nullConditionProvider3");
-    final ConditionType nullConditionType = ConditionType.conditionType(nullConditionProvider3, "id");
+    final ConditionType nullConditionType = nullConditionProvider3.conditionType("id");
     assertThrows(IllegalStateException.class, () -> domain.define(nullConditionProvider3,
             Properties.primaryKeyProperty(nullConditionProvider3.integerAttribute("id")))
             .conditionProvider(nullConditionType, (attributes, values) -> null)

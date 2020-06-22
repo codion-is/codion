@@ -325,13 +325,13 @@ abstract class DefaultProperty<T> implements Property<T> {
     return null;
   }
 
-  private static class DefaultValueSupplier<T> implements Supplier<T>, Serializable {
+  static class DefaultValueSupplier<T> implements Supplier<T>, Serializable {
 
     private static final long serialVersionUID = 1;
 
     private final T defaultValue;
 
-    private DefaultValueSupplier(final T defaultValue) {
+    DefaultValueSupplier(final T defaultValue) {
       this.defaultValue = defaultValue;
     }
 
@@ -364,7 +364,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     @Override
-    public final Property.Builder<T> beanProperty(final String beanProperty) {
+    public Property.Builder<T> beanProperty(final String beanProperty) {
       if (nullOrEmpty(beanProperty)) {
         throw new IllegalArgumentException("beanProperty must be a non-empty string");
       }
@@ -373,13 +373,13 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     @Override
-    public final Property.Builder<T> hidden(final boolean hidden) {
+    public Property.Builder<T> hidden(final boolean hidden) {
       property.hidden = hidden;
       return this;
     }
 
     @Override
-    public final Property.Builder<T> defaultValue(final T defaultValue) {
+    public Property.Builder<T> defaultValue(final T defaultValue) {
       return defaultValueSupplier(new DefaultValueSupplier<>(defaultValue));
     }
 
@@ -399,7 +399,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     @Override
-    public final Property.Builder<T> maximumLength(final int maxLength) {
+    public Property.Builder<T> maximumLength(final int maxLength) {
       if (!property.attribute.isString()) {
         throw new IllegalStateException("maximumLength is only applicable to string properties");
       }
@@ -411,7 +411,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     @Override
-    public final Property.Builder<T> maximumValue(final double maximumValue) {
+    public Property.Builder<T> maximumValue(final double maximumValue) {
       if (!property.attribute.isNumerical()) {
         throw new IllegalStateException("maximumValue is only applicable to numerical properties");
       }
@@ -423,7 +423,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     @Override
-    public final Property.Builder<T> minimumValue(final double minimumValue) {
+    public Property.Builder<T> minimumValue(final double minimumValue) {
       if (!property.attribute.isNumerical()) {
         throw new IllegalStateException("minimumValue is only applicable to numerical properties");
       }
@@ -435,7 +435,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     @Override
-    public final Property.Builder<T> numberFormatGrouping(final boolean numberFormatGrouping) {
+    public Property.Builder<T> numberFormatGrouping(final boolean numberFormatGrouping) {
       if (!property.attribute.isNumerical()) {
         throw new IllegalStateException("numberFormatGrouping is only applicable to numerical properties");
       }
@@ -444,25 +444,25 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     @Override
-    public final Property.Builder<T> preferredColumnWidth(final int preferredColumnWidth) {
+    public Property.Builder<T> preferredColumnWidth(final int preferredColumnWidth) {
       property.preferredColumnWidth = preferredColumnWidth;
       return this;
     }
 
     @Override
-    public final Property.Builder<T> description(final String description) {
+    public Property.Builder<T> description(final String description) {
       property.description = description;
       return this;
     }
 
     @Override
-    public final Property.Builder<T> mnemonic(final Character mnemonic) {
+    public Property.Builder<T> mnemonic(final Character mnemonic) {
       property.mnemonic = mnemonic;
       return this;
     }
 
     @Override
-    public final Property.Builder<T> format(final Format format) {
+    public Property.Builder<T> format(final Format format) {
       requireNonNull(format, "format");
       if (property.attribute.isNumerical() && !(format instanceof NumberFormat)) {
         throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.attribute);
@@ -475,7 +475,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     @Override
-    public final Property.Builder<T> dateTimeFormatPattern(final String dateTimeFormatPattern) {
+    public Property.Builder<T> dateTimeFormatPattern(final String dateTimeFormatPattern) {
       requireNonNull(dateTimeFormatPattern, "dateTimeFormatPattern");
       if (!property.attribute.isTemporal()) {
         throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to temporal properties: " + property.attribute);
@@ -486,7 +486,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     @Override
-    public final Property.Builder<T> maximumFractionDigits(final int maximumFractionDigits) {
+    public Property.Builder<T> maximumFractionDigits(final int maximumFractionDigits) {
      if (!property.attribute.isDecimal()) {
         throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties");
       }
@@ -495,7 +495,7 @@ abstract class DefaultProperty<T> implements Property<T> {
     }
 
     @Override
-    public final Property.Builder<T> bigDecimalRoundingMode(final RoundingMode roundingMode) {
+    public Property.Builder<T> bigDecimalRoundingMode(final RoundingMode roundingMode) {
       property.bigDecimalRoundingMode = requireNonNull(roundingMode, "roundingMode");
       return this;
     }

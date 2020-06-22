@@ -39,7 +39,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> ENTITY_READ_ONLY = T_ENTITY.stringAttribute("read_only");
   public static final Attribute<Boolean> ENTITY_BOOLEAN = T_ENTITY.booleanAttribute("boolean");
   public static final Attribute<LocalTime> ENTITY_TIME = T_ENTITY.localTimeAttribute("time");
-  public static final ConditionType ENTITY_CONDITION_TYPE = ConditionType.conditionType(T_ENTITY, "entityConditionId");
+  public static final ConditionType ENTITY_CONDITION_TYPE = T_ENTITY.conditionType("entityConditionId");
 
   void testEntity() {
     define(T_ENTITY,
