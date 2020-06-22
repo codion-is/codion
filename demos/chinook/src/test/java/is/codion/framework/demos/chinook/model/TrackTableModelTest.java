@@ -33,7 +33,7 @@ public final class TrackTableModelTest {
     final ColumnConditionModel<Entity, ?> albumConditionModel =
             trackTableModel.getTableConditionModel().getConditionModel(Track.ALBUM_FK);
 
-    albumConditionModel.setEqualValue(masterOfPuppets);
+    albumConditionModel.setEqualsValue(masterOfPuppets);
 
     trackTableModel.refresh();
     assertEquals(8, trackTableModel.getRowCount());

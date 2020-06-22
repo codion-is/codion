@@ -194,11 +194,11 @@ public final class PropertyConditionView extends BorderPane {
   private static Collection<Item<Operator>> getOperators(final Property<?> property) {
     final Collection<Item<Operator>> types = new ArrayList<>();
     if (property instanceof ForeignKeyProperty) {
-      types.add(item(Operator.EQUAL_TO, Operator.EQUAL_TO.getCaption()));
-      types.add(item(Operator.NOT_EQUAL_TO, Operator.NOT_EQUAL_TO.getCaption()));
+      types.add(item(Operator.EQUALS, Operator.EQUALS.getCaption()));
+      types.add(item(Operator.NOT_EQUALS, Operator.NOT_EQUALS.getCaption()));
     }
     else if (property.getAttribute().isBoolean()) {
-      types.add(item(Operator.EQUAL_TO, Operator.EQUAL_TO.getCaption()));
+      types.add(item(Operator.EQUALS, Operator.EQUALS.getCaption()));
     }
     else {
       for (final Operator operator : Operator.values()) {

@@ -35,8 +35,8 @@ public final class ConditionObjectMapperTest {
     final Entity dept2 = entities.entity(TestDomain.T_DEPARTMENT);
     dept2.put(TestDomain.DEPARTMENT_ID, 2);
 
-    final Condition entityCondition = Conditions.condition(TestDomain.EMP_DEPARTMENT_FK,Operator.NOT_EQUAL_TO, dept1, dept2)
-                    .and(Conditions.condition(TestDomain.EMP_NAME,Operator.EQUAL_TO, "Loc"),
+    final Condition entityCondition = Conditions.condition(TestDomain.EMP_DEPARTMENT_FK,Operator.NOT_EQUALS, dept1, dept2)
+                    .and(Conditions.condition(TestDomain.EMP_NAME,Operator.EQUALS, "Loc"),
                     Conditions.condition(TestDomain.EMP_ID,Operator.WITHIN_RANGE, 10, 40),
                     Conditions.condition(TestDomain.EMP_COMMISSION, NullCondition.IS_NOT_NULL));
 

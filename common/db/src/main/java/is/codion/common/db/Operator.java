@@ -10,8 +10,8 @@ import java.util.ResourceBundle;
  */
 public enum Operator {
 
-  EQUAL_TO("=", "equal_to", Values.MANY, NullCompatible.YES),
-  NOT_EQUAL_TO("\u2260", "not_equal_to", Values.MANY, NullCompatible.YES),
+  EQUALS("=", "equals", Values.MANY, NullCompatible.YES),
+  NOT_EQUALS("\u2260", "not_equals", Values.MANY, NullCompatible.YES),
   /** Less than or equals*/
   LESS_THAN("\u2264", "less_than", Values.ONE, NullCompatible.NO),
   /** Greater than or equals*/

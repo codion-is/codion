@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.common.db.Operator.EQUAL_TO;
-import static is.codion.common.db.Operator.NOT_EQUAL_TO;
+import static is.codion.common.db.Operator.EQUALS;
+import static is.codion.common.db.Operator.NOT_EQUALS;
 import static is.codion.framework.db.condition.Conditions.*;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static java.util.Arrays.asList;
@@ -41,13 +41,13 @@ public final class EntityConnectionDemo {
 
   static void selectConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::selectCondition[]
-    SelectCondition condition = selectCondition(Artist.NAME, EQUAL_TO, "The %");
+    SelectCondition condition = selectCondition(Artist.NAME, EQUALS, "The %");
 
     List<Entity> artists = connection.select(condition);
 
     condition = selectCondition(
-            condition(Album.ARTIST_FK, EQUAL_TO, artists)
-                    .and(condition(Album.TITLE, NOT_EQUAL_TO, "%live%")
+            condition(Album.ARTIST_FK, EQUALS, artists)
+                    .and(condition(Album.TITLE, NOT_EQUALS, "%live%")
                             .setCaseSensitive(false)));
 
     List<Entity> nonLiveAlbums = connection.select(condition);
@@ -73,7 +73,7 @@ public final class EntityConnectionDemo {
   static void fetchDepthCondition(EntityConnection connection) throws DatabaseException {
     // tag::fetchDepthCondition[]
     SelectCondition selectCondition =
-            selectCondition(Track.NAME, EQUAL_TO, "Bad%")
+            selectCondition(Track.NAME, EQUALS, "Bad%")
                     .setForeignKeyFetchDepth(0);
 
     List<Entity> tracks = connection.select(selectCondition);
@@ -89,7 +89,7 @@ public final class EntityConnectionDemo {
   static void fetchDepthForeignKeyCondition(EntityConnection connection) throws DatabaseException {
     // tag::fetchDepthConditionForeignKey[]
     SelectCondition selectCondition =
-            selectCondition(Track.NAME, EQUAL_TO, "Bad%")
+            selectCondition(Track.NAME, EQUALS, "Bad%")
                     .setForeignKeyFetchDepth(Track.ALBUM_FK, 0);
 
     List<Entity> tracks = connection.select(selectCondition);
@@ -125,11 +125,11 @@ public final class EntityConnectionDemo {
 
   static void selectSingleCondition(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleCondition[]
-    Entity ironMaiden = connection.selectSingle(selectCondition(Artist.NAME, EQUAL_TO, "Iron Maiden"));
+    Entity ironMaiden = connection.selectSingle(selectCondition(Artist.NAME, EQUALS, "Iron Maiden"));
 
     Entity liveAlbum = connection.selectSingle(selectCondition(
-            condition(Album.ARTIST_FK, EQUAL_TO, ironMaiden)
-                    .and(condition(Album.TITLE, EQUAL_TO, "%live after%")
+            condition(Album.ARTIST_FK, EQUALS, ironMaiden)
+                    .and(condition(Album.TITLE, EQUALS, "%live after%")
                             .setCaseSensitive(false))));
     // end::selectSingleCondition[]
   }
@@ -155,7 +155,7 @@ public final class EntityConnectionDemo {
   static void selectValues(EntityConnection connection) throws DatabaseException {
     // tag::selectValues[]
     List<String> customerUsStates = connection.select(Customer.STATE,
-            condition(Customer.COUNTRY, EQUAL_TO, "USA"));
+            condition(Customer.COUNTRY, EQUALS, "USA"));
     // end::selectValues[]
   }
 
@@ -171,7 +171,7 @@ public final class EntityConnectionDemo {
 
   static void rowCount(EntityConnection connection) throws DatabaseException {
     // tag::rowCount[]
-    int numberOfItStaff = connection.rowCount(condition(Employee.TITLE, EQUAL_TO, "IT Staff"));
+    int numberOfItStaff = connection.rowCount(condition(Employee.TITLE, EQUALS, "IT Staff"));
     // end::rowCount[]
   }
 
@@ -204,7 +204,7 @@ public final class EntityConnectionDemo {
 
   static void updateConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::updateCondition[]
-    UpdateCondition updateCondition = updateCondition(Artist.NAME, EQUAL_TO, "Azymuth");
+    UpdateCondition updateCondition = updateCondition(Artist.NAME, EQUALS, "Azymuth");
 
     updateCondition.set(Artist.NAME, "Another Name");
 
@@ -216,7 +216,7 @@ public final class EntityConnectionDemo {
     // tag::deleteCondition[]
     Entity myBand = connection.selectSingle(Artist.NAME, "Proper Name");
 
-    int deleteCount = connection.delete(condition(Album.ARTIST_FK, EQUAL_TO, myBand));
+    int deleteCount = connection.delete(condition(Album.ARTIST_FK, EQUALS, myBand));
     // end::deleteCondition[]
   }
 

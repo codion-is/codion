@@ -26,7 +26,7 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
    * @param model the model to base this panel on
    */
   public ForeignKeyConditionPanel(final ForeignKeyConditionModel model) {
-    super(model, ToggleAdvancedButton.NO, new ForeignKeyBoundFieldProvider(model), Operator.EQUAL_TO, Operator.NOT_EQUAL_TO);
+    super(model, ToggleAdvancedButton.NO, new ForeignKeyBoundFieldProvider(model), Operator.EQUALS, Operator.NOT_EQUALS);
   }
 
   private static final class ForeignKeyBoundFieldProvider implements BoundFieldProvider {

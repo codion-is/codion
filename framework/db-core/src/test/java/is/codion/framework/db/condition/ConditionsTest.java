@@ -21,7 +21,7 @@ public final class ConditionsTest {
 
   @Test
   public void test() {
-    final Condition critOne = Conditions.condition(TestDomain.DEPARTMENT_LOCATION, Operator.EQUAL_TO, "New York");
+    final Condition critOne = Conditions.condition(TestDomain.DEPARTMENT_LOCATION, Operator.EQUALS, "New York");
 
     SelectCondition condition = Conditions.selectCondition(critOne).setOrderBy(
             orderBy().ascending(TestDomain.DEPARTMENT_NAME));

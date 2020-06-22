@@ -140,7 +140,7 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * Clears the search state of all {@link ColumnConditionModel}, disables them and
-   * resets the operator to {@link Operator#EQUAL_TO}
+   * resets the operator to {@link Operator#EQUALS}
    */
   void clearConditionModels();
 

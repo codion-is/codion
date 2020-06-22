@@ -20,8 +20,8 @@ import java.util.ListIterator;
 
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.Conjunction.OR;
-import static is.codion.common.db.Operator.EQUAL_TO;
-import static is.codion.common.db.Operator.NOT_EQUAL_TO;
+import static is.codion.common.db.Operator.EQUALS;
+import static is.codion.common.db.Operator.NOT_EQUALS;
 import static is.codion.framework.db.condition.NullCondition.IS_NULL;
 import static is.codion.framework.domain.entity.Entities.getValues;
 import static java.util.Arrays.asList;
@@ -56,7 +56,7 @@ public final class Conditions {
    * @return a condition based on the given value
    */
   public static <T> AttributeCondition<T> condition(final Attribute<T> attribute, final NullCondition nullCondition) {
-    return condition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUAL_TO : NOT_EQUAL_TO, emptyList());
+    return condition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUALS : NOT_EQUALS, emptyList());
   }
 
   /**
@@ -117,10 +117,10 @@ public final class Conditions {
    */
   public static Condition condition(final Key key) {
     if (requireNonNull(key).isCompositeKey()) {
-      return singleCompositeCondition(key.getAttributes(), EQUAL_TO, key);
+      return singleCompositeCondition(key.getAttributes(), EQUALS, key);
     }
 
-    return condition(key.getAttribute(), EQUAL_TO, (Object) key.get());
+    return condition(key.getAttribute(), EQUALS, (Object) key.get());
   }
 
   /**
@@ -135,10 +135,10 @@ public final class Conditions {
     }
     final Key firstKey = keys.get(0);
     if (firstKey.isCompositeKey()) {
-      return compositeKeyCondition(keys, firstKey.getAttributes(), EQUAL_TO);
+      return compositeKeyCondition(keys, firstKey.getAttributes(), EQUALS);
     }
 
-    return condition((Attribute<?>) firstKey.getAttribute(), EQUAL_TO, getValues(keys));
+    return condition((Attribute<?>) firstKey.getAttribute(), EQUALS, getValues(keys));
   }
 
   /**
@@ -188,7 +188,7 @@ public final class Conditions {
    * @return a select condition based on the given value
    */
   public static <T> SelectCondition selectCondition(final Attribute<T> attribute, final NullCondition nullCondition) {
-    return selectCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUAL_TO : NOT_EQUAL_TO, emptyList());
+    return selectCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUALS : NOT_EQUALS, emptyList());
   }
 
   /**
@@ -257,7 +257,7 @@ public final class Conditions {
    * @return an update condition based on the given value
    */
   public static <T> UpdateCondition updateCondition(final Attribute<T> attribute, final NullCondition nullCondition) {
-    return updateCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUAL_TO : NOT_EQUAL_TO, emptyList());
+    return updateCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUALS : NOT_EQUALS, emptyList());
   }
 
   /**

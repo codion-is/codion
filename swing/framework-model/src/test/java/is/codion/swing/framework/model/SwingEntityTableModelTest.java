@@ -119,7 +119,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   public void testFiltering() {
     testModel.refresh();
     final ColumnConditionModel<Entity, Property<?>> filterModel = testModel.getTableConditionModel().getFilterModel(TestDomain.DETAIL_STRING);
-    filterModel.setEqualValue("a");
+    filterModel.setEqualsValue("a");
     testModel.filterContents();
     assertEquals(4, testModel.getFilteredItems().size());
   }
