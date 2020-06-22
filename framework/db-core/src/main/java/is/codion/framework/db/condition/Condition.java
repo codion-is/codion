@@ -96,5 +96,4 @@ public interface Condition extends Serializable {
      */
     Condition getCondition();
   }
-
 }

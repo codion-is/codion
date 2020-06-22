@@ -370,6 +370,12 @@ public final class Conditions {
 
       return condition;
     }
+    if (condition instanceof SelectCondition) {
+      return expand(((SelectCondition) condition).getCondition(), definition);
+    }
+    if (condition instanceof UpdateCondition) {
+      return expand(((UpdateCondition) condition).getCondition(), definition);
+    }
     if (condition instanceof AttributeCondition) {
       final AttributeCondition<?> attributeCondition = (AttributeCondition<?>) condition;
       final Property<?> property = definition.getProperty(attributeCondition.getAttribute());

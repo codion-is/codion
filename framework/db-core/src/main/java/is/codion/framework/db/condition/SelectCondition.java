@@ -15,6 +15,11 @@ import java.util.List;
 public interface SelectCondition extends Condition {
 
   /**
+   * @return the underlying condition
+   */
+  Condition getCondition();
+
+  /**
    * @return the OrderBy for this condition, null if none is specified
    */
   OrderBy getOrderBy();

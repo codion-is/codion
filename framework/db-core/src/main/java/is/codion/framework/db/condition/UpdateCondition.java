@@ -14,6 +14,11 @@ import java.util.Map;
 public interface UpdateCondition extends Condition {
 
   /**
+   * @return the underlying condition
+   */
+  Condition getCondition();
+
+  /**
    * Adds a attribute value to update
    * @param attribute the attribute
    * @param value the new value
