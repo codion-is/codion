@@ -6301,3 +6301,5 @@
   DefaultSelectCondition and DefaultUpdateCondition now extend AbstractCondition instead of DefaultConditionCombination
   DefaultSelectCondition and DefaultUpdateCondition, added null check in constructor
   Operator.EQUAL_TO and NOT_EQUAL_TO renamed EQUALS and NOT_EQUALS respectively
+  AttributeCondition.isNullCondition() no longer public
+  NullCondition renamed NullCheck

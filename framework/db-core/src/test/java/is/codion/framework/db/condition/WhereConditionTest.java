@@ -48,10 +48,10 @@ public final class WhereConditionTest {
   @Test
   public void foreignKeyConditionNull() {
     final EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_EMP);
-    WhereCondition condition = whereCondition(condition(TestDomain.EMP_DEPARTMENT_FK, NullCondition.IS_NULL), definition);
+    WhereCondition condition = whereCondition(condition(TestDomain.EMP_DEPARTMENT_FK, NullCheck.IS_NULL), definition);
     assertEquals("deptno is null", condition.getWhereClause());
 
-    condition = whereCondition(condition(TestDomain.EMP_DEPARTMENT_FK, NullCondition.IS_NOT_NULL), definition);
+    condition = whereCondition(condition(TestDomain.EMP_DEPARTMENT_FK, NullCheck.IS_NOT_NULL), definition);
     assertEquals("deptno is not null", condition.getWhereClause());
   }
 
@@ -127,13 +127,13 @@ public final class WhereConditionTest {
   @Test
   public void keyNullCondition() {
     final EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
-    WhereCondition condition = whereCondition(selectCondition(TestDomain.EMP_DEPARTMENT_FK, NullCondition.IS_NULL), empDefinition);
+    WhereCondition condition = whereCondition(selectCondition(TestDomain.EMP_DEPARTMENT_FK, NullCheck.IS_NULL), empDefinition);
     assertEquals("deptno is null", condition.getWhereClause());
 
-    condition = whereCondition(selectCondition(TestDomain.EMP_DEPARTMENT_FK, NullCondition.IS_NULL), empDefinition);
+    condition = whereCondition(selectCondition(TestDomain.EMP_DEPARTMENT_FK, NullCheck.IS_NULL), empDefinition);
     assertEquals("deptno is null", condition.getWhereClause());
 
-    condition = whereCondition(selectCondition(TestDomain.EMP_DEPARTMENT_FK, NullCondition.IS_NOT_NULL), empDefinition);
+    condition = whereCondition(selectCondition(TestDomain.EMP_DEPARTMENT_FK, NullCheck.IS_NOT_NULL), empDefinition);
     assertEquals("deptno is not null", condition.getWhereClause());
 
     final Key master1Key = ENTITIES.key(TestDomain.T_MASTER);
@@ -224,7 +224,7 @@ public final class WhereConditionTest {
   public void attributeConditionWithNonColumnProperty() {
     final EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_EMP);
     assertThrows(IllegalArgumentException.class, () ->
-            whereCondition(condition(TestDomain.EMP_DEPARTMENT_LOCATION, NullCondition.IS_NULL), definition).getWhereClause());
+            whereCondition(condition(TestDomain.EMP_DEPARTMENT_LOCATION, NullCheck.IS_NULL), definition).getWhereClause());
   }
 
   @Test

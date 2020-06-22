@@ -118,19 +118,22 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
   }
 
   @Override
-  public boolean isNullCondition() {
-    return nullCondition;
-  }
-
-  @Override
-  public AttributeCondition<T> setCaseSensitive(final boolean caseSensitive) {
+  public AttributeCondition<String> setCaseSensitive(final boolean caseSensitive) {
+    if (!attribute.isString()) {
+      throw new IllegalStateException("Attribute " + attribute + " is not a String attribute");
+    }
     this.caseSensitive = caseSensitive;
-    return this;
+
+    return (AttributeCondition<String>) this;
   }
 
   @Override
   public boolean isCaseSensitive() {
     return caseSensitive;
+  }
+
+  private boolean isNullCondition() {
+    return nullCondition;
   }
 
   private List<Object> initializeValues(final Object conditionValue) {
@@ -189,7 +192,7 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
 
   private interface ConditionStringProvider {
 
-    String getConditionString(AttributeCondition<?> condition, ColumnProperty<?> property);
+    String getConditionString(DefaultAttributeCondition<?> condition, ColumnProperty<?> property);
   }
 
   private static final class EqualsConditionProvider implements ConditionStringProvider {
@@ -205,7 +208,7 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
     }
 
     @Override
-    public String getConditionString(final AttributeCondition<?> condition, final ColumnProperty<?> property) {
+    public String getConditionString(final DefaultAttributeCondition<?> condition, final ColumnProperty<?> property) {
       final String columnIdentifier = getColumnIdentifier(property, condition.isNullCondition(), condition.isCaseSensitive());
       if (condition.isNullCondition()) {
         return columnIdentifier + (condition.getOperator() == EQUALS ? " is null" : " is not null");
@@ -214,7 +217,7 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
       return getLikeCondition(condition, property, columnIdentifier);
     }
 
-    private String getLikeCondition(final AttributeCondition<?> condition, final ColumnProperty<?> property,
+    private String getLikeCondition(final DefaultAttributeCondition<?> condition, final ColumnProperty<?> property,
                                     final String columnIdentifier) {
       final String valuePlaceholder = getValuePlaceholder(property, condition.isCaseSensitive());
       if (condition.getValues().size() > 1) {
@@ -255,7 +258,7 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
   private static final class LessThanConditionProvider implements ConditionStringProvider {
 
     @Override
-    public String getConditionString(final AttributeCondition<?> condition, final ColumnProperty<?> property) {
+    public String getConditionString(final DefaultAttributeCondition<?> condition, final ColumnProperty<?> property) {
       return getColumnIdentifier(property) + " <= " + getValuePlaceholder(property, condition.isCaseSensitive());
     }
   }
@@ -263,7 +266,7 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
   private static final class GreaterThanConditionProvider implements ConditionStringProvider {
 
     @Override
-    public String getConditionString(final AttributeCondition<?> condition, final ColumnProperty<?> property) {
+    public String getConditionString(final DefaultAttributeCondition<?> condition, final ColumnProperty<?> property) {
       return getColumnIdentifier(property) + " >= " + getValuePlaceholder(property, condition.isCaseSensitive());
     }
   }
@@ -271,7 +274,7 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
   private static final class WithinRangeConditionProvider implements ConditionStringProvider {
 
     @Override
-    public String getConditionString(final AttributeCondition<?> condition, final ColumnProperty<?> property) {
+    public String getConditionString(final DefaultAttributeCondition<?> condition, final ColumnProperty<?> property) {
       final String columnIdentifier = getColumnIdentifier(property);
       final String valuePlaceholder = getValuePlaceholder(property, condition.isCaseSensitive());
 
@@ -282,7 +285,7 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
   private static final class OutsideRangeConditionProvider implements ConditionStringProvider {
 
     @Override
-    public String getConditionString(final AttributeCondition<?> condition, final ColumnProperty<?> property) {
+    public String getConditionString(final DefaultAttributeCondition<?> condition, final ColumnProperty<?> property) {
       final String columnIdentifier = getColumnIdentifier(property);
       final String valuePlaceholder = getValuePlaceholder(property, condition.isCaseSensitive());
 
