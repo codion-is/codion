@@ -5,7 +5,7 @@ package is.codion.framework.demos.chinook.domain;
 
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.framework.db.local.LocalEntityConnection;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -171,11 +171,11 @@ public interface Chinook {
   }
 
   interface Procedures {
-    ProcedureType<LocalEntityConnection, Void> UPDATE_TOTALS = procedureType("chinook.update_totals_procedure");
+    ProcedureType<EntityConnection, Void> UPDATE_TOTALS = procedureType("chinook.update_totals_procedure");
   }
 
   interface Functions {
-    FunctionType<LocalEntityConnection, Object, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price_function");
+    FunctionType<EntityConnection, Object, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price_function");
   }
 
   static Integer getMinutes(final Integer milliseconds) {
