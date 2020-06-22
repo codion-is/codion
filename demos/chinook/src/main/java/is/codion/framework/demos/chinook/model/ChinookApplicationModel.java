@@ -42,6 +42,6 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
   }
 
   public void updateInvoiceTotals() throws DatabaseException {
-    getConnectionProvider().getConnection().executeProcedure(Procedures.UPDATE_TOTALS);
+    getConnectionProvider().getConnection().executeProcedure(Invoice.UPDATE_TOTALS);
   }
 }

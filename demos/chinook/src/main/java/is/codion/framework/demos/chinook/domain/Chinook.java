@@ -115,8 +115,11 @@ public interface Chinook {
     Attribute<Integer> BYTES = TYPE.integerAttribute("bytes");
     Attribute<BigDecimal> UNITPRICE = TYPE.bigDecimalAttribute("unitprice");
 
-    default void increasePrice(final BigDecimal priceIncrease) {
+    FunctionType<EntityConnection, Object, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price_function");
+
+    default Track raisePrice(final BigDecimal priceIncrease) {
       put(UNITPRICE, get(UNITPRICE).add(priceIncrease));
+      return this;
     }
   }
 
@@ -134,9 +137,10 @@ public interface Chinook {
     Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
     Attribute<BigDecimal> TOTAL_SUBQUERY = TYPE.bigDecimalAttribute("total_subquery");
 
+    ProcedureType<EntityConnection, Void> UPDATE_TOTALS = procedureType("chinook.update_totals_procedure");
+
     default Invoice updateTotal() {
       put(TOTAL, get(TOTAL_SUBQUERY));
-
       return this;
     }
   }
@@ -168,14 +172,6 @@ public interface Chinook {
     Attribute<Entity> TRACK_FK = TYPE.entityAttribute("track_fk");
     Attribute<Entity> ALBUM_DENORM = TYPE.entityAttribute("album_denorm");
     Attribute<Entity> ARTIST_DENORM = TYPE.entityAttribute("artist_denorm");
-  }
-
-  interface Procedures {
-    ProcedureType<EntityConnection, Void> UPDATE_TOTALS = procedureType("chinook.update_totals_procedure");
-  }
-
-  interface Functions {
-    FunctionType<EntityConnection, Object, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price_function");
   }
 
   static Integer getMinutes(final Integer milliseconds) {

@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.chinook.domain.impl;
 
-import is.codion.common.db.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
@@ -26,6 +25,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static is.codion.common.db.Operator.EQUALS;
 import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
@@ -47,9 +47,6 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     invoiceLine();
     playlist();
     playlistTrack();
-    defineReport(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
-    defineProcedure(Procedures.UPDATE_TOTALS, new UpdateTotalsProcedure());
-    defineFunction(Functions.RAISE_PRICE, new RaisePriceFunction());
   }
 
   void artist() {
@@ -182,6 +179,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .orderBy(orderBy().ascending(Customer.LASTNAME, Customer.FIRSTNAME))
             .stringProvider(new CustomerStringProvider())
             .caption("Customers");
+
+    defineReport(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
   }
 
   void genre() {
@@ -215,7 +214,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void track() {
     define(Track.TYPE, "chinook.track",
             primaryKeyProperty(Track.ID),
-            denormalizedViewProperty(Track.ARTIST_DENORM, Track.ALBUM_FK, Album.ARTIST_FK, "Artist")
+            denormalizedViewProperty(Track.ARTIST_DENORM, "Artist", Track.ALBUM_FK, Album.ARTIST_FK)
                     .preferredColumnWidth(160),
             // tag::fetchDepth2[]
             foreignKeyProperty(Track.ALBUM_FK, "Album", Album.TYPE,
@@ -251,6 +250,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .orderBy(orderBy().ascending(Track.NAME))
             .stringProvider(new StringProvider(Track.NAME))
             .caption("Tracks");
+
+    defineFunction(Track.RAISE_PRICE, new RaisePriceFunction());
   }
 
   void invoice() {
@@ -282,6 +283,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .orderBy(orderBy().ascending(Invoice.CUSTOMER_ID).descending(Invoice.INVOICEDATE))
             .stringProvider(new StringProvider(Invoice.ID))
             .caption("Invoices");
+
+    defineProcedure(Invoice.UPDATE_TOTALS, new UpdateTotalsProcedure());
   }
 
   void invoiceLine() {
@@ -329,14 +332,14 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     columnProperty(PlaylistTrack.PLAYLIST_ID))
                     .nullable(false)
                     .preferredColumnWidth(120),
-            denormalizedViewProperty(PlaylistTrack.ARTIST_DENORM, PlaylistTrack.ALBUM_DENORM, Album.ARTIST_FK, "Artist")
+            denormalizedViewProperty(PlaylistTrack.ARTIST_DENORM, "Artist", PlaylistTrack.ALBUM_DENORM, Album.ARTIST_FK)
                     .preferredColumnWidth(160),
             foreignKeyProperty(PlaylistTrack.TRACK_FK, "Track", Track.TYPE,
                     columnProperty(PlaylistTrack.TRACK_ID))
                     .fetchDepth(3)
                     .nullable(false)
                     .preferredColumnWidth(160),
-            denormalizedViewProperty(PlaylistTrack.ALBUM_DENORM, PlaylistTrack.TRACK_FK, Track.ALBUM_FK, "Album")
+            denormalizedViewProperty(PlaylistTrack.ALBUM_DENORM, "Album", PlaylistTrack.TRACK_FK, Track.ALBUM_FK)
                     .preferredColumnWidth(160))
             .keyGenerator(automatic("chinook.playlisttrack"))
             .stringProvider(new StringProvider(PlaylistTrack.PLAYLIST_FK)
@@ -346,7 +349,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
   private static final class UpdateTotalsProcedure implements DatabaseProcedure<EntityConnection, Void> {
 
-    private static final SelectCondition ALL_INVOICES_CONDITION =
+    private static final SelectCondition ALL_INVOICES =
             selectCondition(Invoice.TYPE)
                     .setForUpdate(true).setForeignKeyFetchDepth(0);
 
@@ -354,7 +357,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     public void execute(final EntityConnection entityConnection,
                         final Void... arguments) throws DatabaseException {
       entityConnection.update(entityConnection.getEntities()
-              .castTo(Invoice.TYPE, entityConnection.select(ALL_INVOICES_CONDITION)).stream()
+              .castTo(Invoice.TYPE, entityConnection.select(ALL_INVOICES)).stream()
               .map(Invoice::updateTotal)
               .filter(Invoice::isModified)
               .collect(Collectors.toList()));
@@ -370,15 +373,13 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       BigDecimal priceIncrease = (BigDecimal) arguments[1];
 
       SelectCondition selectCondition =
-              selectCondition(Track.ID, Operator.EQUALS, trackIds)
+              selectCondition(Track.ID, EQUALS, trackIds)
                       .setForUpdate(true);
 
-      List<Track> tracks = entityConnection.getEntities()
-              .castTo(Track.TYPE, entityConnection.select(selectCondition));
-
-      tracks.forEach(track -> track.increasePrice(priceIncrease));
-
-      return entityConnection.update(tracks);
+      return entityConnection.update(entityConnection.getEntities()
+              .castTo(Track.TYPE, entityConnection.select(selectCondition)).stream()
+              .map(track -> track.raisePrice(priceIncrease))
+              .collect(Collectors.toList()));
     }
   }
 
