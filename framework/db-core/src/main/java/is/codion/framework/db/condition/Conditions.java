@@ -321,7 +321,7 @@ public final class Conditions {
    * @param conditionType the condition type
    * @return a new Condition instance
    * @throws NullPointerException in case the condition type is null
-   * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
+   * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
    */
   public static CustomCondition customCondition(final ConditionType conditionType) {
     return customCondition(conditionType, emptyList(), emptyList());
@@ -334,7 +334,7 @@ public final class Conditions {
    * @param values the values used by this condition string
    * @return a new Condition instance
    * @throws NullPointerException in case any of the parameters are null
-   * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
+   * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
    */
   public static CustomCondition customCondition(final ConditionType conditionType, final List<Attribute<?>> attributes,
                                                 final List<Object> values) {
