@@ -195,7 +195,7 @@ public final class WhereConditionTest {
   public void customConditionTest() {
     final EntityDefinition departmentDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
     final WhereCondition condition = whereCondition(selectCondition(
-            Conditions.customCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_CONDITION_ID))
+            Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID))
             .setOrderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME)), departmentDefinition);
 
     assertTrue(condition.getValues().isEmpty());

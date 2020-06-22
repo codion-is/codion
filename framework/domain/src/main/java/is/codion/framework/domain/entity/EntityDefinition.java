@@ -45,12 +45,12 @@ public interface EntityDefinition extends Serializable {
   String getTableName();
 
   /**
-   * Returns the {@link ConditionProvider} associated with the given id
-   * @param conditionId the condition id
+   * Returns the {@link ConditionProvider} associated with the given type
+   * @param conditionType the condition type
    * @return the condition provider associated with the given id
-   * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionId
+   * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionType
    */
-  ConditionProvider getConditionProvider(String conditionId);
+  ConditionProvider getConditionProvider(ConditionType conditionType);
 
   /**
    * @return the name of the domain this entity type belongs to
@@ -459,11 +459,11 @@ public interface EntityDefinition extends Serializable {
      * Adds a {@link ConditionProvider} which provides a dynamic query condition string.
      * The condition string should not include the WHERE keyword and use the ?
      * substitution character where values should be inserted.
-     * @param conditionId the condition id
+     * @param conditionType the condition type
      * @param conditionProvider the condition provider
      * @return this Entity.Definer instance
      */
-    Builder conditionProvider(String conditionId, ConditionProvider conditionProvider);
+    Builder conditionProvider(ConditionType conditionType, ConditionProvider conditionProvider);
 
     /**
      * @param colorProvider the background color provider

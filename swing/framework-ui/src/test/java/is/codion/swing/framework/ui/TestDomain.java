@@ -134,10 +134,6 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
 
-  public static final String EMP_CONDITION_1_ID = "condition1Id";
-  public static final String EMP_CONDITION_2_ID = "condition2Id";
-  public static final String EMP_CONDITION_3_ID = "condition3Id";
-
   /**
    * Otherwise we'd depend on java.awt.Color
    */
@@ -167,9 +163,6 @@ public final class TestDomain extends DefaultDomain {
             .stringProvider(new StringProvider(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
             .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
-            .conditionProvider(EMP_CONDITION_1_ID, (attributes, values) -> "1 = 2")
-            .conditionProvider(EMP_CONDITION_2_ID, (attributes, values) -> "1 = 1")
-            .conditionProvider(EMP_CONDITION_3_ID, (attributes, values) -> " ename = 'CLARK'")
             .caption("Employee")
             .colorProvider((entity, attribute) -> {
               if (attribute.equals(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {

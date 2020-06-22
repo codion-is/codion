@@ -7,6 +7,7 @@ import is.codion.common.Conjunction;
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionProvider;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -317,28 +318,27 @@ public final class Conditions {
 
   /**
    * Creates a new {@link CustomCondition} based on the condition with the given id
-   * @param entityType the entity type
    * @param conditionId the id of the condition
    * @return a new Condition instance
    * @throws NullPointerException in case the condition id
    * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
    */
-  public static CustomCondition customCondition(final EntityType<?> entityType, final String conditionId) {
-    return customCondition(entityType, conditionId, emptyList(), emptyList());
+  public static CustomCondition customCondition(final ConditionType conditionId) {
+    return customCondition(conditionId, emptyList(), emptyList());
   }
 
   /**
    * Creates a new {@link CustomCondition} based on the condition with the given id
-   * @param entityType the entity type
-   * @param conditionId the id of the condition
+   * @param conditionType the condition type
    * @param attributes the attributes representing the values used by this condition, in the same order as their respective values
    * @param values the values used by this condition string
    * @return a new Condition instance
    * @throws NullPointerException in case any of the parameters are null
    * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
    */
-  public static CustomCondition customCondition(final EntityType<?> entityType, final String conditionId, final List<Attribute<?>> attributes, final List<Object> values) {
-    return new DefaultCustomCondition(entityType, conditionId, attributes, values);
+  public static CustomCondition customCondition(final ConditionType conditionType,
+                                                final List<Attribute<?>> attributes, final List<Object> values) {
+    return new DefaultCustomCondition(conditionType, attributes, values);
   }
 
   /**

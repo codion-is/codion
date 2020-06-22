@@ -3,14 +3,16 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.domain.entity.ConditionType;
+
 /**
  * A Condition based on a custom {@link is.codion.framework.domain.entity.ConditionProvider}
- * associated with {@link CustomCondition#getConditionId()}
+ * associated with {@link ConditionType}
  */
 public interface CustomCondition extends Condition {
 
   /**
-   * @return the condition id
+   * @return the condition type
    */
-  String getConditionId();
+  ConditionType getConditionType();
 }
