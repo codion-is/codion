@@ -6335,3 +6335,4 @@
   ConditionType.conditionType() removed, EntityType.conditionType() added
   ColumnProperty.Builder now overrides all methods from Property.Builder, for a more convenient return type
   Entities, some streamy refactoring
+0.16.6
