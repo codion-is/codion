@@ -79,6 +79,7 @@ is.codion.framework.db.rmi.RemoteEntityConnection
 is.codion.framework.domain.DefaultDomainType
 is.codion.framework.domain.DefaultDomain$DomainEntities
 is.codion.framework.domain.DefaultDomain$DefaultEntityDefinitionProvider
+is.codion.framework.domain.entity.DefaultConditionType
 is.codion.framework.domain.entity.DefaultEntities
 is.codion.framework.domain.entity.DefaultEntity
 is.codion.framework.domain.entity.DefaultEntityDefinition

@@ -90,6 +90,7 @@ is.codion.framework.db.condition.DefaultUpdateCondition
 is.codion.framework.db.condition.DefaultAttributeCondition
 is.codion.framework.db.condition.Conditions$EmptyCondition
 is.codion.framework.domain.DefaultDomainType
+is.codion.framework.domain.entity.DefaultConditionType
 is.codion.framework.domain.entity.DefaultEntity
 is.codion.framework.domain.entity.DefaultEntityType
 is.codion.framework.domain.entity.DefaultKey

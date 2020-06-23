@@ -27,7 +27,7 @@ final class CustomConditionSerializer implements Serializable {
   void serialize(final CustomCondition condition, final JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeObjectField("type", "custom");
-    generator.writeObjectField("conditionId", condition.getConditionId());
+    generator.writeObjectField("conditionTypeName", condition.getConditionType().getName());
     generator.writeFieldName("attributes");
     entityObjectMapper.writeValue(generator, condition.getAttributes().stream().map(Attribute::getName).collect(toList()));
     generator.writeFieldName("values");

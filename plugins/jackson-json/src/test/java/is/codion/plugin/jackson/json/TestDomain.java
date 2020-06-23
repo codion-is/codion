@@ -6,6 +6,7 @@ package is.codion.plugin.jackson.json;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
@@ -38,7 +39,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> ENTITY_READ_ONLY = T_ENTITY.stringAttribute("read_only");
   public static final Attribute<Boolean> ENTITY_BOOLEAN = T_ENTITY.booleanAttribute("boolean");
   public static final Attribute<LocalTime> ENTITY_TIME = T_ENTITY.localTimeAttribute("time");
-  public static final String ENTITY_CONDITION_ID = "entityConditionId";
+  public static final ConditionType ENTITY_CONDITION_TYPE = T_ENTITY.conditionType("entityConditionId");
 
   void testEntity() {
     define(T_ENTITY,
@@ -49,7 +50,7 @@ public final class TestDomain extends DefaultDomain {
                     .readOnly(true),
             columnProperty(ENTITY_BOOLEAN),
             columnProperty(ENTITY_TIME))
-            .conditionProvider(ENTITY_CONDITION_ID, (attributes, values) -> "1 = 2");
+            .conditionProvider(ENTITY_CONDITION_TYPE, (attributes, values) -> "1 = 2");
   }
 
   public static final EntityType<Entity> T_DEPARTMENT = DOMAIN.entityType("scott.dept");
@@ -104,8 +105,7 @@ public final class TestDomain extends DefaultDomain {
                     columnProperty(EMP_MGR)),
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
-            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION,
-                    DEPARTMENT_LOCATION.getName()).preferredColumnWidth(100))
+            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION).preferredColumnWidth(100))
             .stringProvider(new StringProvider(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
             .caption("Employee");

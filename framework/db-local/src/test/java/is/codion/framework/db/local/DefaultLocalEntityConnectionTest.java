@@ -20,7 +20,7 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.db.condition.NullCondition;
+import is.codion.framework.db.condition.NullCheck;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Entities;
@@ -225,15 +225,15 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(getKeys(result));
     assertEquals(2, result.size());
     result = connection.select(selectCondition(
-            Conditions.customCondition(Department.TYPE, Department.DEPARTMENT_CONDITION_ID,
+            Conditions.customCondition(Department.DEPARTMENT_CONDITION_TYPE,
                     asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20))));
     assertEquals(2, result.size());
     result = connection.select(selectCondition(
-            Conditions.customCondition(JOINED_QUERY_ENTITY_TYPE, JOINED_QUERY_CONDITION_ID)));
+            Conditions.customCondition(JOINED_QUERY_CONDITION_TYPE)));
     assertEquals(7, result.size());
 
     final SelectCondition condition = selectCondition(
-            Conditions.customCondition(T_EMP, EMP_NAME_IS_BLAKE_CONDITION_ID));
+            Conditions.customCondition(EMP_NAME_IS_BLAKE_CONDITION_ID));
     result = connection.select(condition);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(EMP_DEPARTMENT_FK));
@@ -270,10 +270,10 @@ public class DefaultLocalEntityConnectionTest {
     assertTrue(emp.isLoaded(EMP_MGR_FK));
 
     assertEquals(4, connection.rowCount(Conditions.condition(EMP_ID, Operator.EQUALS, asList(1, 2, 3, 4))));
-    assertEquals(0, connection.rowCount(Conditions.condition(EMP_DEPARTMENT, NullCondition.IS_NULL)));
-    assertEquals(0, connection.rowCount(Conditions.condition(EMP_DEPARTMENT_FK, NullCondition.IS_NULL)));
-    assertEquals(1, connection.rowCount(Conditions.condition(EMP_MGR, NullCondition.IS_NULL)));
-    assertEquals(1, connection.rowCount(Conditions.condition(EMP_MGR_FK, NullCondition.IS_NULL)));
+    assertEquals(0, connection.rowCount(Conditions.condition(EMP_DEPARTMENT, NullCheck.IS_NULL)));
+    assertEquals(0, connection.rowCount(Conditions.condition(EMP_DEPARTMENT_FK, NullCheck.IS_NULL)));
+    assertEquals(1, connection.rowCount(Conditions.condition(EMP_MGR, NullCheck.IS_NULL)));
+    assertEquals(1, connection.rowCount(Conditions.condition(EMP_MGR_FK, NullCheck.IS_NULL)));
   }
 
   @Test
@@ -324,7 +324,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void selectInvalidColumn() throws Exception {
     assertThrows(DatabaseException.class, () -> connection.select(selectCondition(
-            Conditions.customCondition(Department.TYPE, Department.DEPARTMENT_CONDITION_INVALID_COLUMN_ID))));
+            Conditions.customCondition(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE))));
   }
 
   @Test
@@ -352,7 +352,7 @@ public class DefaultLocalEntityConnectionTest {
     sales = connection.selectSingle(sales.getKey());
     assertEquals(sales.get(Department.DNAME), "SALES");
     sales = connection.selectSingle(selectCondition(
-            Conditions.customCondition(Department.TYPE, Department.DEPARTMENT_CONDITION_SALES_ID)));
+            Conditions.customCondition(Department.DEPARTMENT_CONDITION_SALES_TYPE)));
     assertEquals(sales.get(Department.DNAME), "SALES");
 
     final Entity king = connection.selectSingle(EMP_NAME, "KING");
@@ -362,7 +362,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void customCondition() throws DatabaseException {
-    final Condition condition = Conditions.customCondition(T_EMP, EMP_MGR_GREATER_THAN_CONDITION_ID,
+    final Condition condition = Conditions.customCondition(EMP_MGR_GREATER_THAN_CONDITION_ID,
             singletonList(EMP_MGR), singletonList(5));
 
     assertEquals(4, connection.select(selectCondition(condition)).size());
@@ -518,11 +518,11 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void updateWithCondition() throws DatabaseException {
-    final SelectCondition selectCondition = Conditions.selectCondition(EMP_COMMISSION, NullCondition.IS_NULL);
+    final SelectCondition selectCondition = Conditions.selectCondition(EMP_COMMISSION, NullCheck.IS_NULL);
 
     final List<Entity> entities = connection.select(selectCondition);
 
-    final UpdateCondition updateCondition = Conditions.updateCondition(EMP_COMMISSION, NullCondition.IS_NULL)
+    final UpdateCondition updateCondition = Conditions.updateCondition(EMP_COMMISSION, NullCheck.IS_NULL)
             .set(EMP_COMMISSION, 500d)
             .set(EMP_SALARY, 4200d);
     try {
@@ -542,7 +542,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void updateWithConditionNoRows() throws DatabaseException {
-    final UpdateCondition updateCondition = Conditions.updateCondition(EMP_ID, NullCondition.IS_NULL)
+    final UpdateCondition updateCondition = Conditions.updateCondition(EMP_ID, NullCheck.IS_NULL)
             .set(EMP_SALARY, 4200d);
     try {
       connection.beginTransaction();

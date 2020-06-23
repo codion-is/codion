@@ -16,6 +16,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.state.States;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.entity.Attribute;
@@ -375,8 +376,14 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       conditionValues.add((T) upperBound);
     }
 
-    return condition((Attribute<T>) conditionModel.getColumnIdentifier().getAttribute(),
-            conditionModel.getOperator(), conditionValues).setCaseSensitive(conditionModel.isCaseSensitive());
+    final AttributeCondition<T> condition =
+            condition((Attribute<T>) conditionModel.getColumnIdentifier().getAttribute(),
+                    conditionModel.getOperator(), conditionValues);
+    if (condition.getAttribute().isString()) {
+      condition.setCaseSensitive(conditionModel.isCaseSensitive());
+    }
+
+    return condition;
   }
 
   private static String toString(final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel) {

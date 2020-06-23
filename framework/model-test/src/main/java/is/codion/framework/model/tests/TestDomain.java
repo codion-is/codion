@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
@@ -89,8 +90,8 @@ public final class TestDomain extends DefaultDomain {
                     .defaultValue(true),
             foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName(), T_MASTER,
                     columnProperty(DETAIL_MASTER_ID)),
-            denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK, MASTER_NAME, DETAIL_MASTER_NAME.getName()),
-            denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK, MASTER_CODE, DETAIL_MASTER_CODE.getName()),
+            denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_NAME.getName(), DETAIL_MASTER_FK, MASTER_NAME),
+            denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName(), DETAIL_MASTER_FK, MASTER_CODE),
             valueListProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.getName(), linkedValues -> {
               final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
@@ -138,9 +139,9 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
 
-  public static final String EMP_CONDITION_1_ID = "condition1Id";
-  public static final String EMP_CONDITION_2_ID = "condition2Id";
-  public static final String EMP_CONDITION_3_ID = "condition3Id";
+  public static final ConditionType EMP_CONDITION_1_TYPE = T_EMP.conditionType("condition1Id");
+  public static final ConditionType EMP_CONDITION_2_TYPE = T_EMP.conditionType("condition2Id");
+  public static final ConditionType EMP_CONDITION_3_TYPE = T_EMP.conditionType("condition3Id");
 
   /**
    * Otherwise we'd depend on java.awt.Color
@@ -166,14 +167,14 @@ public final class TestDomain extends DefaultDomain {
                     columnProperty(EMP_MGR)),
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
-            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION,
-                    DEPARTMENT_LOCATION.getName()).preferredColumnWidth(100))
+            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION
+            ).preferredColumnWidth(100))
             .stringProvider(new StringProvider(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
             .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
-            .conditionProvider(EMP_CONDITION_1_ID, (attributes, values) -> "1 = 2")
-            .conditionProvider(EMP_CONDITION_2_ID, (attributes, values) -> "1 = 1")
-            .conditionProvider(EMP_CONDITION_3_ID, (attributes, values) -> " ename = 'CLARK'")
+            .conditionProvider(EMP_CONDITION_1_TYPE, (attributes, values) -> "1 = 2")
+            .conditionProvider(EMP_CONDITION_2_TYPE, (attributes, values) -> "1 = 1")
+            .conditionProvider(EMP_CONDITION_3_TYPE, (attributes, values) -> " ename = 'CLARK'")
             .caption("Employee")
             .colorProvider((entity, attribute) -> {
               if (attribute.equals(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {

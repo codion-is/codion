@@ -164,7 +164,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   /**
    * The {@link ConditionProvider}s mapped to their respective conditionIds
    */
-  private transient Map<String, ConditionProvider> conditionProviders;
+  private transient Map<ConditionType, ConditionProvider> conditionProviders;
 
   /**
    * Maps the definition of a referenced entity to its foreign key attribute.
@@ -226,16 +226,16 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public ConditionProvider getConditionProvider(final String conditionId) {
-    requireNonNull(conditionId);
+  public ConditionProvider getConditionProvider(final ConditionType conditionType) {
+    requireNonNull(conditionType);
     if (conditionProviders != null) {
-      final ConditionProvider conditionProvider = conditionProviders.get(conditionId);
+      final ConditionProvider conditionProvider = conditionProviders.get(conditionType);
       if (conditionProvider != null) {
         return conditionProvider;
       }
     }
 
-    throw new IllegalArgumentException("ConditionProvider with id " + conditionId + " not found");
+    throw new IllegalArgumentException("ConditionProvider for type " + conditionType + " not found");
   }
 
   @Override
@@ -938,16 +938,16 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder conditionProvider(final String conditionId, final ConditionProvider conditionProvider) {
-      rejectNullOrEmpty(conditionId, "conditionId");
+    public Builder conditionProvider(final ConditionType conditionType, final ConditionProvider conditionProvider) {
+      requireNonNull(conditionType, "conditionType");
       requireNonNull(conditionProvider, "conditionProvider");
       if (definition.conditionProviders == null) {
         definition.conditionProviders = new HashMap<>();
       }
-      if (definition.conditionProviders.containsKey(conditionId)) {
-        throw new IllegalStateException("ConditionProvider with id " + conditionId + " has already been added");
+      if (definition.conditionProviders.containsKey(conditionType)) {
+        throw new IllegalStateException("ConditionProvider for type  " + conditionType + " has already been added");
       }
-      definition.conditionProviders.put(conditionId, conditionProvider);
+      definition.conditionProviders.put(conditionType, conditionProvider);
       return this;
     }
 

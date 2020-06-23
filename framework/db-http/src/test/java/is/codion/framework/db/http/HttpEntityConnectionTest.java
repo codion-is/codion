@@ -14,7 +14,7 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.db.condition.NullCondition;
+import is.codion.framework.db.condition.NullCheck;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Entities;
@@ -134,11 +134,11 @@ public final class HttpEntityConnectionTest {
 
   @Test
   public void updateByCondition() throws DatabaseException {
-    final SelectCondition selectCondition = selectCondition(TestDomain.EMP_COMMISSION, NullCondition.IS_NULL);
+    final SelectCondition selectCondition = selectCondition(TestDomain.EMP_COMMISSION, NullCheck.IS_NULL);
 
     final List<Entity> entities = connection.select(selectCondition);
 
-    final UpdateCondition updateCondition = updateCondition(TestDomain.EMP_COMMISSION, NullCondition.IS_NULL)
+    final UpdateCondition updateCondition = updateCondition(TestDomain.EMP_COMMISSION, NullCheck.IS_NULL)
             .set(TestDomain.EMP_COMMISSION, 500d)
             .set(TestDomain.EMP_SALARY, 4200d);
     try {

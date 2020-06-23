@@ -94,8 +94,8 @@ public final class Properties {
    * they reference appear in the the referenced entities primary key
    * @return a new {@link ForeignKeyProperty.Builder}
    */
-  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute,
-                                                              final String caption, final EntityType<?> foreignEntityType,
+  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute, final String caption,
+                                                              final EntityType<?> foreignEntityType,
                                                               final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
     columnPropertyBuilders.forEach(builder -> builder.setForeignKeyColumn(true));
 
@@ -107,16 +107,16 @@ public final class Properties {
   /**
    * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from a
    * entity referenced via a foreign key.
-   * @param attribute the attribute
-   * @param entityAttribute the id of the foreign key attribute from which this property gets its value
-   * @param denormalizedAttribute the property from the referenced entity, from which this property gets its value
-   * @param caption the caption of this property
    * @param <T> the property type
+   * @param attribute the attribute
+   * @param caption the caption of this property
+   * @param entityAttribute the foreign key attribute from which this property gets its value
+   * @param denormalizedAttribute the property from the referenced entity, from which this property gets its value
    * @return a new {@link TransientProperty.Builder}
    */
-  public static <T> TransientProperty.Builder<T> denormalizedViewProperty(final Attribute<T> attribute,
+  public static <T> TransientProperty.Builder<T> denormalizedViewProperty(final Attribute<T> attribute, final String caption,
                                                                           final Attribute<Entity> entityAttribute,
-                                                                          final Attribute<T> denormalizedAttribute, final String caption) {
+                                                                          final Attribute<T> denormalizedAttribute) {
     final DerivedProperty.Provider<T> valueProvider = sourceValues -> {
       final Entity foreignKeyValue = sourceValues.get(entityAttribute);
 

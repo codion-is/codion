@@ -106,7 +106,6 @@ public final class EmpDept extends DefaultDomain {
     super(DOMAIN);
     department();
     employee();
-    defineReport(Employee.EMPLOYEE_REPORT, classPathReport(EmpDept.class, "empdept_employees.jasper"));
   }
   // end::constructor[]
 
@@ -146,7 +145,7 @@ public final class EmpDept extends DefaultDomain {
                     columnProperty(Employee.MGR)).beanProperty("manager"),
             columnProperty(Employee.HIREDATE, "Hiredate")
                     .nullable(false).beanProperty("hiredate"),
-            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Employee.DEPARTMENT_FK, Department.LOCATION, "Location")
+            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, "Location", Employee.DEPARTMENT_FK, Department.LOCATION)
                     .preferredColumnWidth(100))
             .keyGenerator(increment("scott.emp", Employee.ID.getName()))
             .orderBy(orderBy().ascending(Employee.DEPARTMENT, Employee.NAME))
@@ -159,6 +158,8 @@ public final class EmpDept extends DefaultDomain {
 
               return null;
             });
+
+    defineReport(Employee.EMPLOYEE_REPORT, classPathReport(EmpDept.class, "empdept_employees.jasper"));
   }
 }
 // end::defineEmployee[]

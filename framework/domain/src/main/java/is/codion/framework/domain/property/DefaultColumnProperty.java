@@ -7,16 +7,19 @@ import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.domain.entity.Attribute;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.Format;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -393,6 +396,101 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public ColumnProperty<T> get() {
       return columnProperty;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> beanProperty(final String beanProperty) {
+      super.beanProperty(beanProperty);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> hidden(final boolean hidden) {
+      super.hidden(hidden);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> defaultValue(final T defaultValue) {
+      return defaultValueSupplier(new DefaultValueSupplier<>(defaultValue));
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> defaultValueSupplier(final Supplier<T> supplier) {
+      super.defaultValueSupplier(supplier);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> nullable(final boolean nullable) {
+      super.nullable(nullable);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> maximumLength(final int maxLength) {
+      super.maximumLength(maxLength);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> maximumValue(final double maximumValue) {
+      super.maximumValue(maximumValue);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> minimumValue(final double minimumValue) {
+      super.minimumValue(minimumValue);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> numberFormatGrouping(final boolean numberFormatGrouping) {
+      super.numberFormatGrouping(numberFormatGrouping);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> preferredColumnWidth(final int preferredColumnWidth) {
+      super.preferredColumnWidth(preferredColumnWidth);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> description(final String description) {
+      super.description(description);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> mnemonic(final Character mnemonic) {
+      super.mnemonic(mnemonic);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> format(final Format format) {
+      super.format(format);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> dateTimeFormatPattern(final String dateTimeFormatPattern) {
+      super.dateTimeFormatPattern(dateTimeFormatPattern);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> maximumFractionDigits(final int maximumFractionDigits) {
+      super.maximumFractionDigits(maximumFractionDigits);
+      return this;
+    }
+
+    @Override
+    public final ColumnProperty.Builder<T> bigDecimalRoundingMode(final RoundingMode roundingMode) {
+      super.bigDecimalRoundingMode(roundingMode);
+      return this;
     }
 
     @Override

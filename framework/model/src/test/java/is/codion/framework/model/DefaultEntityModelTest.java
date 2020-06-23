@@ -183,7 +183,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void addEntitiesAtSorted(final int index, final List<Entity> entities) {}
     @Override
-    public void replaceEntities(final Collection<Entity> entities) {}
+    public void replaceEntities(final List<Entity> entities) {}
     @Override
     public void refreshEntities(final List<Key> keys) {}
     @Override
