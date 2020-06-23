@@ -119,7 +119,7 @@ public final class WorldImpl extends DefaultDomain {
                     columnProperty(Country.CAPITAL)),
             // end::foreignKeyPropertyCapital[]
             // tag::denormalizedViewProperty[]
-            denormalizedViewProperty(Country.CAPITAL_POPULATION, Country.CAPITAL_FK, City.POPULATION, "Capital pop.")
+            denormalizedViewProperty(Country.CAPITAL_POPULATION, "Capital pop.", Country.CAPITAL_FK, City.POPULATION)
                     .numberFormatGrouping(true),
             // end::denormalizedViewProperty[]
             // tag::subqueryProperty[]

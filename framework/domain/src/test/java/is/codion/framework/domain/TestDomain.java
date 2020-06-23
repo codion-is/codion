@@ -162,8 +162,8 @@ public class TestDomain extends DefaultDomain {
             foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.getName(), Master.TYPE,
                     columnProperty(Detail.MASTER_ID))
                     .beanProperty("master"),
-            denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_FK, Master.NAME, Detail.MASTER_NAME.getName()),
-            denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_FK, Master.CODE, Detail.MASTER_CODE.getName()),
+            denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.getName(), Detail.MASTER_FK, Master.NAME),
+            denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.getName(), Detail.MASTER_FK, Master.CODE),
             valueListProperty(Detail.INT_VALUE_LIST, Detail.INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(Detail.INT_DERIVED, Detail.INT_DERIVED.getName(), linkedValues -> {
               final Integer intValue = linkedValues.get(Detail.INT);
@@ -282,8 +282,8 @@ public class TestDomain extends DefaultDomain {
                     .dateTimeFormatPattern(DateFormats.SHORT_DOT)
                     .nullable(false)
                     .beanProperty("hiredate"),
-            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Employee.DEPARTMENT_FK, Department.LOCATION,
-                    Department.LOCATION.getName()).preferredColumnWidth(100),
+            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.getName(), Employee.DEPARTMENT_FK, Department.LOCATION
+            ).preferredColumnWidth(100),
             derivedProperty(Employee.DEPARTMENT_NAME, null, new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
             blobProperty(Employee.DATA, "Data")
                     .eagerlyLoaded(true))

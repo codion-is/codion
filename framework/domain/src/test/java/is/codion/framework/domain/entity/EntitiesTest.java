@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -60,25 +61,22 @@ public final class EntitiesTest {
 
   @Test
   public void isKeyModified() {
-    final EntityDefinition definition = entities.getDefinition(TestDomain.Department.TYPE);
-
-    assertFalse(Entities.isKeyModified(definition, null));
-    assertFalse(Entities.isKeyModified(definition, emptyList()));
+    assertFalse(Entities.isKeyModified(emptyList()));
 
     final Entity department = entities.entity(TestDomain.Department.TYPE);
     department.put(TestDomain.Department.NO, 1);
     department.put(TestDomain.Department.NAME, "name");
     department.put(TestDomain.Department.LOCATION, "loc");
-    assertFalse(Entities.isKeyModified(definition, singletonList(department)));
+    assertFalse(Entities.isKeyModified(singletonList(department)));
 
     department.put(TestDomain.Department.NAME, "new name");
-    assertFalse(Entities.isKeyModified(definition, singletonList(department)));
+    assertFalse(Entities.isKeyModified(singletonList(department)));
 
     department.put(TestDomain.Department.NO, 2);
-    assertTrue(Entities.isKeyModified(definition, singletonList(department)));
+    assertTrue(Entities.isKeyModified(singletonList(department)));
 
     department.revert(TestDomain.Department.NO);
-    assertFalse(Entities.isKeyModified(definition, singletonList(department)));
+    assertFalse(Entities.isKeyModified(singletonList(department)));
   }
 
   @Test
@@ -260,9 +258,11 @@ public final class EntitiesTest {
     dept2.put(TestDomain.Department.NAME, "name2");
     dept2.put(TestDomain.Department.LOCATION, "loc2");
 
+    final List<Attribute<?>> attributes = entities.getDefinition(TestDomain.Department.TYPE)
+            .getColumnProperties().stream().map(Property::getAttribute).collect(Collectors.toList());
+
     final List<List<String>> strings =
-            Entities.getStringValueList(entities.getDefinition(TestDomain.Department.TYPE)
-                    .getColumnProperties(), asList(dept1, dept2));
+            Entities.getStringValueList(attributes, asList(dept1, dept2));
     assertEquals("1", strings.get(0).get(0));
     assertEquals("name1", strings.get(0).get(1));
     assertEquals("loc1", strings.get(0).get(2));

@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.StringProvider;
@@ -102,11 +103,11 @@ public final class TestDomain extends DefaultDomain {
             foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName(), T_MASTER,
                     asList(columnProperty(DETAIL_MASTER_ID_1),
                             columnProperty(DETAIL_MASTER_ID_2))),
-            denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_FK, MASTER_NAME, DETAIL_MASTER_NAME.getName()),
-            denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_FK, MASTER_CODE, DETAIL_MASTER_CODE.getName()),
+            denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_NAME.getName(), DETAIL_MASTER_FK, MASTER_NAME),
+            denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName(), DETAIL_MASTER_FK, MASTER_CODE),
             valueListProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.getName(), linkedValues -> {
-              final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
+              final Integer intValue = linkedValues.get(DETAIL_INT);
               if (intValue == null) {
                 return null;
               }
@@ -125,8 +126,8 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
 
-  public static final String DEPARTMENT_CONDITION_ID = "condition";
-  public static final String DEPARTMENT_NAME_NOT_NULL_CONDITION_ID = "departmentNameNotNull";
+  public static final ConditionType DEPARTMENT_CONDITION_ID = T_DEPARTMENT.conditionType("condition");
+  public static final ConditionType DEPARTMENT_NAME_NOT_NULL_CONDITION_ID = T_DEPARTMENT.conditionType("departmentNameNotNull");
 
   void department() {
     define(T_DEPARTMENT, "scott.dept",
@@ -182,8 +183,8 @@ public final class TestDomain extends DefaultDomain {
                     columnProperty(EMP_MGR)),
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
-            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION,
-                    DEPARTMENT_LOCATION.getName()).preferredColumnWidth(100))
+            denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION
+            ).preferredColumnWidth(100))
             .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .stringProvider(new StringProvider(EMP_NAME))
             .caption("Employee");

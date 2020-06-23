@@ -7,6 +7,7 @@ import is.codion.common.Conjunction;
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionProvider;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -22,7 +23,7 @@ import static is.codion.common.Conjunction.AND;
 import static is.codion.common.Conjunction.OR;
 import static is.codion.common.db.Operator.EQUALS;
 import static is.codion.common.db.Operator.NOT_EQUALS;
-import static is.codion.framework.db.condition.NullCondition.IS_NULL;
+import static is.codion.framework.db.condition.NullCheck.IS_NULL;
 import static is.codion.framework.domain.entity.Entities.getValues;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -34,7 +35,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Conditions {
 
-  private static final String NULL_CONDITION = "nullCondition";
+  private static final String NULL_CHECK = "nullCheck";
 
   private Conditions() {}
 
@@ -51,12 +52,12 @@ public final class Conditions {
    * Creates a {@link AttributeCondition} instance for specifying entities of the type identified by {@code entityType}
    * with a where condition based on a null check for {@code attribute}.
    * @param attribute the attribute
-   * @param nullCondition the null check condition
+   * @param nullCheck the null check condition
    * @param <T> the attribute type
    * @return a condition based on the given value
    */
-  public static <T> AttributeCondition<T> condition(final Attribute<T> attribute, final NullCondition nullCondition) {
-    return condition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUALS : NOT_EQUALS, emptyList());
+  public static <T> AttributeCondition<T> condition(final Attribute<T> attribute, final NullCheck nullCheck) {
+    return condition(attribute, requireNonNull(nullCheck, NULL_CHECK) == IS_NULL ? EQUALS : NOT_EQUALS, emptyList());
   }
 
   /**
@@ -183,17 +184,17 @@ public final class Conditions {
   /**
    * Creates a {@link SelectCondition} instance for specifying entities with a where condition based on a null check for {@code attribute}.
    * @param attribute the attribute
-   * @param nullCondition the null check condition
+   * @param nullCheck the null check condition
    * @param <T> the attribute type
    * @return a select condition based on the given value
    */
-  public static <T> SelectCondition selectCondition(final Attribute<T> attribute, final NullCondition nullCondition) {
-    return selectCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUALS : NOT_EQUALS, emptyList());
+  public static <T> SelectCondition selectCondition(final Attribute<T> attribute, final NullCheck nullCheck) {
+    return selectCondition(attribute, requireNonNull(nullCheck, NULL_CHECK) == IS_NULL ? EQUALS : NOT_EQUALS, emptyList());
   }
 
   /**
    * Creates a {@link SelectCondition} instance for selecting entities of the type identified by {@code entityType}
-   * with a where condition based on {@code attribute}, the operators based on {@code operator} and {@code key}.
+   * with a where condition based on {@code attribute}, {@code operator} and {@code key}.
    * @param attribute the attribute
    * @param operator the condition operator
    * @param keys the condition keys
@@ -252,12 +253,12 @@ public final class Conditions {
   /**
    * Creates a {@link UpdateCondition} instance for specifying entities with a where condition based on a null check for {@code attribute}.
    * @param attribute the attribute
-   * @param nullCondition the null check condition
+   * @param nullCheck the null check condition
    * @param <T> the value type
    * @return an update condition based on the given value
    */
-  public static <T> UpdateCondition updateCondition(final Attribute<T> attribute, final NullCondition nullCondition) {
-    return updateCondition(attribute, requireNonNull(nullCondition, NULL_CONDITION) == IS_NULL ? EQUALS : NOT_EQUALS, emptyList());
+  public static <T> UpdateCondition updateCondition(final Attribute<T> attribute, final NullCheck nullCheck) {
+    return updateCondition(attribute, requireNonNull(nullCheck, NULL_CHECK) == IS_NULL ? EQUALS : NOT_EQUALS, emptyList());
   }
 
   /**
@@ -316,29 +317,28 @@ public final class Conditions {
   }
 
   /**
-   * Creates a new {@link CustomCondition} based on the condition with the given id
-   * @param entityType the entity type
-   * @param conditionId the id of the condition
+   * Creates a new {@link CustomCondition} based on the condition of the given type
+   * @param conditionType the condition type
    * @return a new Condition instance
-   * @throws NullPointerException in case the condition id
-   * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
+   * @throws NullPointerException in case the condition type is null
+   * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
    */
-  public static CustomCondition customCondition(final EntityType<?> entityType, final String conditionId) {
-    return customCondition(entityType, conditionId, emptyList(), emptyList());
+  public static CustomCondition customCondition(final ConditionType conditionType) {
+    return customCondition(conditionType, emptyList(), emptyList());
   }
 
   /**
-   * Creates a new {@link CustomCondition} based on the condition with the given id
-   * @param entityType the entity type
-   * @param conditionId the id of the condition
+   * Creates a new {@link CustomCondition} based on the condition of the given type
+   * @param conditionType the condition type
    * @param attributes the attributes representing the values used by this condition, in the same order as their respective values
    * @param values the values used by this condition string
    * @return a new Condition instance
    * @throws NullPointerException in case any of the parameters are null
-   * @see EntityDefinition.Builder#conditionProvider(String, ConditionProvider)
+   * @see EntityDefinition.Builder#conditionProvider(ConditionType, ConditionProvider)
    */
-  public static CustomCondition customCondition(final EntityType<?> entityType, final String conditionId, final List<Attribute<?>> attributes, final List<Object> values) {
-    return new DefaultCustomCondition(entityType, conditionId, attributes, values);
+  public static CustomCondition customCondition(final ConditionType conditionType, final List<Attribute<?>> attributes,
+                                                final List<Object> values) {
+    return new DefaultCustomCondition(conditionType, attributes, values);
   }
 
   /**

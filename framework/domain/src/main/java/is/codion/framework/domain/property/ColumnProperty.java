@@ -5,8 +5,11 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.db.result.ResultPacker;
 
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.Format;
+import java.util.function.Supplier;
 
 /**
  * Specifies a property based on a table column
@@ -165,6 +168,54 @@ public interface ColumnProperty<T> extends Property<T> {
      * @return the property
      */
     ColumnProperty<T> get();
+
+    @Override
+    ColumnProperty.Builder<T> beanProperty(String beanProperty);
+
+    @Override
+    ColumnProperty.Builder<T> defaultValue(T defaultValue);
+
+    @Override
+    ColumnProperty.Builder<T> defaultValueSupplier(Supplier<T> supplier);
+
+    @Override
+    ColumnProperty.Builder<T> hidden(boolean hidden);
+
+    @Override
+    ColumnProperty.Builder<T> maximumValue(double maximumValue);
+
+    @Override
+    ColumnProperty.Builder<T> minimumValue(double minimumValue);
+
+    @Override
+    ColumnProperty.Builder<T> maximumFractionDigits(int maximumFractionDigits);
+
+    @Override
+    ColumnProperty.Builder<T> bigDecimalRoundingMode(RoundingMode bigDecimalRoundingMode);
+
+    @Override
+    ColumnProperty.Builder<T> numberFormatGrouping(boolean numberFormatGrouping);
+
+    @Override
+    ColumnProperty.Builder<T> preferredColumnWidth(int preferredColumnWidth);
+
+    @Override
+    ColumnProperty.Builder<T> nullable(boolean nullable);
+
+    @Override
+    ColumnProperty.Builder<T> maximumLength(int maxLength);
+
+    @Override
+    ColumnProperty.Builder<T> mnemonic(Character mnemonic);
+
+    @Override
+    ColumnProperty.Builder<T> description(String description);
+
+    @Override
+    ColumnProperty.Builder<T> format(Format format);
+
+    @Override
+    ColumnProperty.Builder<T> dateTimeFormatPattern(String dateTimeFormatPattern);
 
     /**
      * Sets the actual column type, use in conjunction with a {@link ValueConverter} if necessary.

@@ -34,7 +34,7 @@ public final class ConditionsTest {
   @Test
   public void customConditionTest() {
     final SelectCondition condition = Conditions.selectCondition(
-            Conditions.customCondition(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID))
+            Conditions.customCondition(TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID))
             .setOrderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getAttributes().isEmpty());

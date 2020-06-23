@@ -119,6 +119,11 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T> {
   }
 
   @Override
+  public ConditionType conditionType(final String name) {
+    return new DefaultConditionType(this, name);
+  }
+
+  @Override
   public String toString() {
     return name;
   }

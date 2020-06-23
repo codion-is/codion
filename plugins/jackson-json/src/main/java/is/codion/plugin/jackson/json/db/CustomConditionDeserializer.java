@@ -32,7 +32,7 @@ final class CustomConditionDeserializer implements Serializable {
   }
 
   CustomCondition deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
-    final String conditionId = conditionNode.get("conditionId").asText();
+    final String conditionTypeName = conditionNode.get("conditionTypeName").asText();
     final JsonNode attributesNode = conditionNode.get("attributes");
     final List<String> attributeNames = Arrays.asList(entityObjectMapper.readValue(attributesNode.toString(), String[].class));
     final List<Attribute<?>> attributes = attributeNames.stream().map(name -> definition.getEntityType().objectAttribute(name)).collect(Collectors.toList());
@@ -52,6 +52,6 @@ final class CustomConditionDeserializer implements Serializable {
       }
     }
 
-    return Conditions.customCondition(definition.getEntityType(), conditionId, attributes, values);
+    return Conditions.customCondition(definition.getEntityType().conditionType(conditionTypeName), attributes, values);
   }
 }

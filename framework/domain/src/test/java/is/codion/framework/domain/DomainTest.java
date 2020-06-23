@@ -16,6 +16,7 @@ import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.TestDomain.Master;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -637,16 +638,18 @@ public class DomainTest {
   @Test
   public void conditionProvider() {
     final EntityType<Entity> nullConditionProvider1 = DOMAIN.entityType("nullConditionProvider1");
-    assertThrows(IllegalArgumentException.class, () -> domain.define(nullConditionProvider1,
+    assertThrows(NullPointerException.class, () -> domain.define(nullConditionProvider1,
             Properties.primaryKeyProperty(nullConditionProvider1.integerAttribute("id"))).conditionProvider(null, (attributes, values) -> null));
     final EntityType<Entity> nullConditionProvider2 = DOMAIN.entityType("nullConditionProvider2");
     assertThrows(NullPointerException.class, () -> domain.define(nullConditionProvider2,
-            Properties.primaryKeyProperty(nullConditionProvider2.integerAttribute("id"))).conditionProvider("id", null));
+            Properties.primaryKeyProperty(nullConditionProvider2.integerAttribute("id"))).conditionProvider(
+                    nullConditionProvider2.conditionType("id"), null));
     final EntityType<Entity> nullConditionProvider3 = DOMAIN.entityType("nullConditionProvider3");
+    final ConditionType nullConditionType = nullConditionProvider3.conditionType("id");
     assertThrows(IllegalStateException.class, () -> domain.define(nullConditionProvider3,
             Properties.primaryKeyProperty(nullConditionProvider3.integerAttribute("id")))
-            .conditionProvider("id", (attributes, values) -> null)
-            .conditionProvider("id", (attributes, values) -> null));
+            .conditionProvider(nullConditionType, (attributes, values) -> null)
+            .conditionProvider(nullConditionType, (attributes, values) -> null));
   }
 
   @Test

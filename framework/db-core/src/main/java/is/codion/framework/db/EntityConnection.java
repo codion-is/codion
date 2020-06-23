@@ -259,7 +259,7 @@ public interface EntityConnection {
   List<Entity> select(SelectCondition condition) throws DatabaseException;
 
   /**
-   * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
+   * Selects entities according to one attribute, using {@code value} as a condition
    * @param attribute the condition attribute
    * @param value the value to use as condition
    * @param <T> the value type
@@ -269,7 +269,7 @@ public interface EntityConnection {
   <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
-   * Selects entities according to one property ({@code attribute}), using {@code values} as a condition
+   * Selects entities according to one attribute, using {@code values} OR'ed together as a condition
    * @param attribute the condition attribute
    * @param values the values to use as condition
    * @param <T> the value type
