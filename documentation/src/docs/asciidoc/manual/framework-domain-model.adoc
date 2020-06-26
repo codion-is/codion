@@ -6,7 +6,7 @@
 :url-javadoc: link:../api
 
 The domain model is based around five classes; {url-javadoc}/is/codion/framework/domain/entity/Entity.html[Entity], which represents a row in a table, {url-javadoc}/is/codion/framework/domain/entity/EntityType.html[EntityType], which specifies an entity type, {url-javadoc}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition] which contains the meta-data for each entity type (properties, data types and such), {url-javadoc}/is/codion/framework/domain/attribute/Attribute.html[Attribute], which represents column types and {url-javadoc}/is/codion/framework/domain/property/Property.html[Property], which represents columns. Domain models must extend the
-{url-javadoc}/is/codion/framework/domain/Domain.html[Domain] class, which in turn provides a {url-javadoc}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}/is/codion/framework/domain/Domain.html#getEntities[getEntities()], which serves as a container for the domain entity definitions and as a factory for *Entity* and *Entity.Key* instances.
+{url-javadoc}/is/codion/framework/domain/Domain.html[Domain] class, which in turn provides a {url-javadoc}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}/is/codion/framework/domain/Domain.html#getEntities[getEntities()], which serves as a container for the domain entity definitions and as a factory for *Entity* and *Key* instances.
 
 == Entities
 

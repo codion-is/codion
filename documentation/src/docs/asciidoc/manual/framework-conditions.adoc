@@ -9,20 +9,16 @@ The <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>> is used in th
 
 == Condition
 
-{url-javadoc}/is/codion/framework/db/condition/Condition.html[Condition] represents a where clause element.
+{url-javadoc}/is/codion/framework/db/condition/Condition.html[Condition] represents a where clause for a entity type.
 
 == Condition.Combination
 
 {url-javadoc}/is/codion/framework/db/condition/Condition.Combination.html[Condition.Combination] represents a combination of Conditions, which are either AND'ed or OR'ed together. These can be nested and combined with other condition combinations.
 
-== EntityCondition
+== SelectCondition
 
-{url-javadoc}/is/codion/framework/db/condition/EntityCondition.html[EntityCondition] represents a where clause for a entity type.
+{url-javadoc}/is/codion/framework/db/condition/SelectCondition.html[SelectCondition] represents a where clause for a entity type specifically for selecting.
 
-== EntitySelectCondition
+== UpdateCondition
 
-{url-javadoc}/is/codion/framework/db/condition/EntitySelectCondition.html[EntitySelectCondition] represents a where clause for a entity type specifically for selecting.
-
-== EntityUpdateCondition
-
-{url-javadoc}/is/codion/framework/db/condition/EntityUpdateCondition.html[EntityUpdateCondition] represents a where clause and values for updating one or more entities.
+{url-javadoc}/is/codion/framework/db/condition/UpdateCondition.html[UpdateCondition] represents a where clause and values for updating one or more entities.
