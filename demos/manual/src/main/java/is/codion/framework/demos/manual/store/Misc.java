@@ -41,8 +41,10 @@ public final class Misc {
     Iterator<Entity> customerIterator =
             connection.select(selectCondition(Customer.TYPE)).iterator();
 
-    JasperReportsDataSource<Entity> dataSource = new JasperReportsDataSource<>(customerIterator,
-            (entity, reportField) -> entity.get(Customer.TYPE.objectAttribute(reportField.getName())));
+    JasperReportsDataSource<Entity> dataSource =
+            new JasperReportsDataSource<>(customerIterator,
+                    (entity, reportField) ->
+                            entity.get(Customer.TYPE.objectAttribute(reportField.getName())));
 
     JRReport customerReport = fileReport("reports/customer.jasper");
 

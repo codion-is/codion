@@ -85,13 +85,13 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanels.java[tags=valueList]
 ----
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createValueListComboBox-java.lang.String-[createValueListComboBox(attribute)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createValueListComboBox-is.codion.framework.domain.entity.Attribute-[createValueListComboBox(attribute)]
 
 == Panels & labels
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLabel-java.lang.String-[createLabel(attribute)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLabel-is.codion.framework.domain.entity.Attribute-[createLabel(attribute)]
 
-{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createPropertyPanel-java.lang.String-[createPropertyPanel(attribute)]
+{url-javadoc}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createInputPanel-is.codion.framework.domain.entity.Attribute-[createInputPanel(attribute)]
 
 [source,java,indent=0]
 ----

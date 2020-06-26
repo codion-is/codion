@@ -167,7 +167,7 @@ The framework performs optimistic locking during updates of entity instances usi
 
 For updating by where condition.
 
-** {url-entity-connection}#update-is.codion.framework.db.condition.EntityUpdateCondition-[update(EntityUpdateCondition condition)]
+** {url-entity-connection}#update-is.codion.framework.db.condition.UpdateCondition-[update(UpdateCondition condition)]
 
 [source,java,indent=0]
 ----
@@ -178,7 +178,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For deleting existing rows.
 
-** {url-entity-connection}#delete-is.codion.framework.db.condition.EntityCondition-[delete(EntityCondition condition)]
+** {url-entity-connection}#delete-is.codion.framework.db.condition.Condition-[delete(Condition condition)]
 
 [source,java,indent=0]
 ----
@@ -198,7 +198,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === executeProcedure
 
-** {url-entity-connection}#executeProcedure-is.codion.common.db.operation.ProcedureType-T...-[executeProcedure(ProcedureType procedureType, T... arguments)]
+** {url-entity-connection}#executeProcedure-is.codion.common.db.operation.ProcedureType-T\...-[executeProcedure(ProcedureType procedureType, T... arguments)]
 
 [source,java,indent=0]
 ----
@@ -207,8 +207,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === executeFunction
 
-
-** {url-entity-connection}#executeFunction-is.codion.common.db.operation.FunctionType-T...-[executeFunction(FunctionType functionType, T... arguments)]
+** {url-entity-connection}#executeFunction-is.codion.common.db.operation.FunctionType-T\...-[executeFunction(FunctionType functionType, T... arguments)]
 
 [source,java,indent=0]
 ----
@@ -219,7 +218,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === fillReport
 
-** {url-entity-connection}#fillReport-is.codion.common.db.reports.ReportType-T-[fillReport(ReportType reportType, P reportParameters)]
+** {url-entity-connection}#fillReport-is.codion.common.db.reports.ReportType-P-[fillReport(ReportType reportType, P reportParameters)]
 
 [source,java,indent=0]
 ----
