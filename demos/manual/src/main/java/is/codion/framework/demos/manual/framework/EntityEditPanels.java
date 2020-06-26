@@ -123,7 +123,7 @@ public final class EntityEditPanels {
       // tag::panelLabel[]
       JLabel label = createLabel(Demo.TEXT);
 
-      JPanel propertyPanel = createInputPanel(Demo.TEXT);
+      JPanel inputPanel = createInputPanel(Demo.TEXT);
       // end::panelLabel[]
     }
 

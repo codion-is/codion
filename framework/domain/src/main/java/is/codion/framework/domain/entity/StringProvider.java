@@ -17,20 +17,19 @@ import static java.util.stream.Collectors.joining;
  * Provides String representations of {@link Entity} instances.<br>
  * Given a {@link Entity} instance named entity containing the following mappings:
  * <pre>
- * "key1" -&#62; value1
- * "key2" -&#62; value2
- * "key3" -&#62; value3
- * "key4" -&#62; {Entity instance with a single mapping "refKey" -&#62; refValue}
+ * attribute1 -&#62; value1
+ * attribute2 -&#62; value2
+ * attribute3 -&#62; value3
+ * fkAttribute -&#62; {Entity instance with a single mapping refAttribute -&#62; refValue}
  * </pre>
- * {@code
- * StringProvider provider = new StringProvider();
- * provider.addText("key1=").addValue(KEY1).addText(", key3='").addValue(KEY3")
- *         .addText("' foreign key value=").addForeignKeyValue(FK, FK_REF");
- * System.out.println(provider.apply(entity));
- * }
+ * StringProvider provider = new StringProvider();<br>
  * <br>
+ * provider.addText("attribute1=").addValue(attribute1).addText(", attribute3='").addValue(attribute3)<br>
+ *         .addText("' foreign key value=").addForeignKeyValue(fkAttribute, refAttribute);<br>
+ * <br>
+ * System.out.println(provider.apply(entity));<br><br>
  * outputs the following String:<br><br>
- * {@code key1=value1, key3='value3' foreign key value=refValue}
+ * {@code attribute1=value1, attribute3='value3' foreign key value=refValue}
  */
 public final class StringProvider implements Function<Entity, String>, Serializable {
 
