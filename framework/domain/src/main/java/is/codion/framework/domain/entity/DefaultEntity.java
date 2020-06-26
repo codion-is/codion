@@ -113,11 +113,6 @@ final class DefaultEntity implements Entity {
   }
 
   @Override
-  public boolean is(final EntityType<?> entityType) {
-    return definition.getEntityType().equals(entityType);
-  }
-
-  @Override
   public boolean isModified() {
     return isModifiedInternal(false);
   }

@@ -51,7 +51,7 @@ public final class WorldImplTest extends EntityTestUnit {
   @Override
   protected void modifyEntity(Entity testEntity, Map<EntityType<?>, Entity> foreignKeyEntities) {
     super.modifyEntity(testEntity, foreignKeyEntities);
-    if (testEntity.is(Country.TYPE)) {
+    if (testEntity.getEntityType().equals(Country.TYPE)) {
       testEntity.put(Country.CONTINENT, "Europe");
     }
   }
