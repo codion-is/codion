@@ -21,10 +21,6 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T> {
   private final Class<T> entityClass;
   private final int hashCode;
 
-  DefaultEntityType(final String domainName, final String typeName) {
-    this(domainName, typeName, (Class<T>) Entity.class);
-  }
-
   DefaultEntityType(final String domainName, final String typeName, final Class<T> entityClass) {
     if (nullOrEmpty(typeName)) {
       throw new IllegalArgumentException("typeName must be a non-empty string");

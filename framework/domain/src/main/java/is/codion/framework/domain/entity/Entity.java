@@ -179,12 +179,6 @@ public interface Entity extends Comparable<Entity>, Serializable {
   void clearKeyValues();
 
   /**
-   * @param entityType the entity type
-   * @return true if this entity is of the given type
-   */
-  boolean is(EntityType<?> entityType);
-
-  /**
    * @param entity the entity to compare to
    * @return true if all {@link ColumnProperty} values are equal
    */

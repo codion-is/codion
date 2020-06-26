@@ -5,6 +5,7 @@ package is.codion.framework.domain;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.EntityTypes;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -48,7 +49,7 @@ final class DefaultDomainType implements DomainType {
   @Override
   public <T extends Entity> EntityType<T> entityType(final String name, final Class<T> entityClass) {
     return (EntityType<T>) entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
-            EntityType.entityType(entityTypeName, this.domainName, entityClass));
+            EntityTypes.entityType(entityTypeName, this.domainName, entityClass));
   }
 
   @Override
