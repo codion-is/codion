@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static is.codion.framework.db.condition.Conditions.selectCondition;
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -241,7 +240,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/function"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(asList(TestDomain.FUNCTION_ID, new Object[0])))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(singletonList(TestDomain.FUNCTION_ID)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
@@ -250,7 +249,7 @@ public class EntityServletServerTest {
     request = HttpRequest.newBuilder()
             .uri(URI.create(SERVER_BASEURL + "/procedure"))
             .headers(HEADERS)
-            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(asList(TestDomain.PROCEDURE_ID, new Object[0])))).build();
+            .POST(HttpRequest.BodyPublishers.ofByteArray(Serializer.serialize(singletonList(TestDomain.PROCEDURE_ID)))).build();
 
     response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
     assertEquals(200, response.statusCode());
