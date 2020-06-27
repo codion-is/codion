@@ -30,8 +30,6 @@ import static java.util.stream.Collectors.joining;
  */
 public final class MethodLogger {
 
-  private static final Object[] EMPTY_ARRAY = new Object[0];
-
   private final Deque<Entry> callStack = new LinkedList<>();
   private final LinkedList<Entry> entries = new LinkedList<>();
   private final Function<Object, String> argumentStringProvider;
@@ -61,16 +59,16 @@ public final class MethodLogger {
    * @param method the method being accessed
    */
   public void logAccess(final String method) {
-    logAccess(method, EMPTY_ARRAY);
+    logAccess(method, null);
   }
 
   /**
    * @param method the method being accessed
-   * @param arguments the method arguments
+   * @param argument the method argument, can be a Object, a collection or an array
    */
-  public synchronized void logAccess(final String method, final Object[] arguments) {
+  public synchronized void logAccess(final String method, final Object argument) {
     if (enabled) {
-      callStack.push(new Entry(method, argumentStringProvider.apply(arguments == null ? EMPTY_ARRAY : arguments)));
+      callStack.push(new Entry(method, argumentStringProvider.apply(argument)));
     }
   }
 
@@ -152,6 +150,9 @@ public final class MethodLogger {
    */
   public static class ArgumentToString implements Function<Object, String> {
 
+    private static final String BRACKET_OPEN = "[";
+    private static final String BRACKET_CLOSE = "]";
+
     @Override
     public final String apply(final Object object) {
       return toString(object);
@@ -166,22 +167,47 @@ public final class MethodLogger {
       if (object == null) {
         return "";
       }
+      if (object instanceof List) {
+        return toString((List<?>) object);
+      }
+      if (object instanceof Collection) {
+        return toString((Collection<?>) object);
+      }
       if (object.getClass().isArray()) {
         return toString((Object[]) object);
       }
-      if (object instanceof Collection) {
-        return "[" + toString(((Collection<Object>) object).toArray()) + "]";
-      }
 
       return object.toString();
+    }
+
+    private String toString(final List<?> arguments) {
+      if (arguments.isEmpty()) {
+        return "";
+      }
+      if (arguments.size() == 1) {
+        return toString(arguments.get(0));
+      }
+
+      return BRACKET_OPEN + arguments.stream().map(this::toString).collect(joining(", ")) + BRACKET_CLOSE;
+    }
+
+    private String toString(final Collection<?> arguments) {
+      if (arguments.isEmpty()) {
+        return "";
+      }
+
+      return BRACKET_OPEN + arguments.stream().map(this::toString).collect(joining(", ")) + BRACKET_CLOSE;
     }
 
     private String toString(final Object[] arguments) {
       if (arguments.length == 0) {
         return "";
       }
+      if (arguments.length == 1) {
+        return toString(arguments[0]);
+      }
 
-      return stream(arguments).map(this::toString).collect(joining(", "));
+      return BRACKET_OPEN + stream(arguments).map(this::toString).collect(joining(", ")) + BRACKET_CLOSE;
     }
   }
 

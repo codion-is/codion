@@ -239,7 +239,7 @@ public final class EntityConnectionDemo {
     List<Long> trackIds = asList(123L, 1234L);
     BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
 
-    List<Entity> modifiedTracks = connection.executeFunction(Track.RAISE_PRICE, trackIds, priceIncrease);
+    List<Entity> modifiedTracks = connection.executeFunction(Track.RAISE_PRICE, asList(trackIds, priceIncrease));
     // end::function[]
   }
 

@@ -6,6 +6,7 @@ package is.codion.common.db.operation;
 import is.codion.common.db.exception.DatabaseException;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @param <C> the connection type
@@ -27,7 +28,7 @@ public interface FunctionType<C, T, R> extends Serializable {
    * @return the function result
    * @throws DatabaseException in case of an exception
    */
-  R execute(C connection, DatabaseFunction<C, T, R> function, T... arguments) throws DatabaseException;
+  R execute(C connection, DatabaseFunction<C, T, R> function, List<T>  arguments) throws DatabaseException;
 
   static <C, T, R> FunctionType<C, T, R> functionType(final String name) {
     return new DefaultFunctionType<>(name);

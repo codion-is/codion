@@ -132,6 +132,11 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
     return caseSensitive;
   }
 
+  @Override
+  public String toString() {
+    return super.toString() + ": " + attribute;
+  }
+
   private boolean isNullCondition() {
     return nullCondition;
   }

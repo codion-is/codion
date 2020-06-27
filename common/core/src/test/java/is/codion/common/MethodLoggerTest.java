@@ -43,8 +43,7 @@ public class MethodLoggerTest {
 
     final ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
     new ObjectOutputStream(byteOut).writeObject(logger.getEntries());
-    final List<MethodLogger.Entry> readLogger = (List<MethodLogger.Entry>) new ObjectInputStream(
-            new ByteArrayInputStream(byteOut.toByteArray())).readObject();
+    new ObjectInputStream(new ByteArrayInputStream(byteOut.toByteArray())).readObject();
   }
 
   @Test

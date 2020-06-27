@@ -347,7 +347,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             .caption("Playlist tracks");
   }
 
-  private static final class UpdateTotalsProcedure implements DatabaseProcedure<EntityConnection, Void> {
+  private static final class UpdateTotalsProcedure implements DatabaseProcedure<EntityConnection, Object> {
 
     private static final SelectCondition ALL_INVOICES =
             selectCondition(Invoice.TYPE)
@@ -355,7 +355,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
     @Override
     public void execute(final EntityConnection entityConnection,
-                        final Void... arguments) throws DatabaseException {
+                        final List<Object> arguments) throws DatabaseException {
       entityConnection.update(entityConnection.getEntities()
               .castTo(Invoice.TYPE, entityConnection.select(ALL_INVOICES)).stream()
               .map(Invoice::updateTotal)
@@ -368,9 +368,9 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
     @Override
     public List<Entity> execute(final EntityConnection entityConnection,
-                                final Object... arguments) throws DatabaseException {
-      List<Long> trackIds = (List<Long>) arguments[0];
-      BigDecimal priceIncrease = (BigDecimal) arguments[1];
+                                final List<Object> arguments) throws DatabaseException {
+      List<Long> trackIds = (List<Long>) arguments.get(0);
+      BigDecimal priceIncrease = (BigDecimal) arguments.get(1);
 
       SelectCondition selectCondition =
               selectCondition(Track.ID, EQUALS, trackIds)

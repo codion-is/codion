@@ -5,6 +5,8 @@ package is.codion.common.db.operation;
 
 import is.codion.common.db.exception.DatabaseException;
 
+import java.util.List;
+
 /**
  * A database procedure
  * @param <C> the connection type required by this procedure
@@ -18,5 +20,5 @@ public interface DatabaseProcedure<C, T> {
    * @param arguments the procedure arguments, if any
    * @throws DatabaseException in case of an exception during the execution
    */
-  void execute(C connection, T... arguments) throws DatabaseException;
+  void execute(C connection, List<T> arguments) throws DatabaseException;
 }

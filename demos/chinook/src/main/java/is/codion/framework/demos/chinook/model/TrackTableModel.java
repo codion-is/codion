@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Track;
+import static java.util.Arrays.asList;
 
 public class TrackTableModel extends SwingEntityTableModel {
 
@@ -25,7 +26,7 @@ public class TrackTableModel extends SwingEntityTableModel {
     if (getSelectionModel().isSelectionNotEmpty()) {
       List<Long> trackIds = Entities.getValues(Track.ID, getSelectionModel().getSelectedItems());
       List<Entity> result = getConnectionProvider().getConnection()
-              .executeFunction(Track.RAISE_PRICE, trackIds, increase);
+              .executeFunction(Track.RAISE_PRICE, asList(trackIds, increase));
       replaceEntities(result);
     }
   }

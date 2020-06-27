@@ -7,7 +7,7 @@ import java.sql.Connection;
 
 import static java.util.Objects.requireNonNull;
 
-class DefaultReportType<T, R, P> implements ReportType<T, R, P> {
+final class DefaultReportType<T, R, P> implements ReportType<T, R, P> {
 
   private static final long serialVersionUID = 1;
 
@@ -44,5 +44,10 @@ class DefaultReportType<T, R, P> implements ReportType<T, R, P> {
   @Override
   public int hashCode() {
     return name.hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return name;
   }
 }

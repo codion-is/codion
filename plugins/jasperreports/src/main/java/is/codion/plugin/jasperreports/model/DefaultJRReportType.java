@@ -53,4 +53,9 @@ final class DefaultJRReportType implements JRReportType {
   public int hashCode() {
     return reportType.hashCode();
   }
+
+  @Override
+  public String toString() {
+    return reportType.toString();
+  }
 }
