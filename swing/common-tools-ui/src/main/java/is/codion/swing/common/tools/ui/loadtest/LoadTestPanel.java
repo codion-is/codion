@@ -10,7 +10,6 @@ import is.codion.common.value.Nullable;
 import is.codion.common.value.Values;
 import is.codion.swing.common.tools.loadtest.LoadTest;
 import is.codion.swing.common.tools.loadtest.LoadTestModel;
-import is.codion.swing.common.tools.loadtest.ScenarioException;
 import is.codion.swing.common.tools.loadtest.UsageScenario;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
@@ -457,8 +456,8 @@ public final class LoadTestPanel<T> extends JPanel {
     @Override
     public void actionPerformed(final ActionEvent e) {
       getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
-      final List<ScenarioException> exceptions = getScenario().getExceptions();
-      for (final ScenarioException exception : exceptions) {
+      final List<Exception> exceptions = getScenario().getExceptions();
+      for (final Exception exception : exceptions) {
         getExceptionsTextArea().append(exception.getMessage());
         getExceptionsTextArea().append(Util.LINE_SEPARATOR);
         getExceptionsTextArea().append(Util.LINE_SEPARATOR);

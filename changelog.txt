@@ -6314,3 +6314,4 @@
   EntityConnection.executeProcedure() and executeFunction() overloaded without arguments
   MethodLogger argument handling improved a bit, no longer requires array creation
   Added some toString() implementations to new classes
+  AbstractUsageScenario now catches all exceptions instead of just ScenarioException

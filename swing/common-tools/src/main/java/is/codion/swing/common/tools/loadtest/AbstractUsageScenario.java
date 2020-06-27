@@ -19,7 +19,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   private final int maximumTime;
   private final AtomicInteger successfulRunCount = new AtomicInteger();
   private final AtomicInteger unsuccessfulRunCount = new AtomicInteger();
-  private final List<ScenarioException> exceptions = new ArrayList<>();
+  private final List<Exception> exceptions = new ArrayList<>();
 
   /**
    * Instantiates a new UsageScenario using the simple class name as scenario name
@@ -76,7 +76,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   }
 
   @Override
-  public final List<ScenarioException> getExceptions() {
+  public final List<Exception> getExceptions() {
     synchronized (exceptions) {
       return new ArrayList<>(exceptions);
     }
@@ -111,6 +111,12 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
       successfulRunCount.incrementAndGet();
     }
     catch (final ScenarioException e) {
+      unsuccessfulRunCount.incrementAndGet();
+      synchronized (exceptions) {
+        exceptions.add(e);
+      }
+    }
+    catch (final Exception e) {
       unsuccessfulRunCount.incrementAndGet();
       synchronized (exceptions) {
         exceptions.add(e);
