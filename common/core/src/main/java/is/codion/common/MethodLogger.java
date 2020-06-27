@@ -170,7 +170,7 @@ public final class MethodLogger {
         return toString((Object[]) object);
       }
       if (object instanceof Collection) {
-        return "[" + toString(((Collection<Object>) object).toArray()) + "]";
+        return "[" + toString(((Collection<?>) object).toArray()) + "]";
       }
 
       return object.toString();

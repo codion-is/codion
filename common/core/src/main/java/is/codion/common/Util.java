@@ -253,7 +253,7 @@ public final class Util {
    * @return the method used to set the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
-  public static Method getSetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
+  public static Method getSetMethod(final Class<?> valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
     return getSetMethod(valueType, property, requireNonNull(valueOwner, "valueOwner").getClass());
   }
 
@@ -265,7 +265,7 @@ public final class Util {
    * @return the method used to set the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
-  public static Method getSetMethod(final Class valueType, final String property, final Class ownerClass) throws NoSuchMethodException {
+  public static Method getSetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
     if (requireNonNull(property, "property").length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }
@@ -282,7 +282,7 @@ public final class Util {
    * @return the method used to get the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
-  public static Method getGetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
+  public static Method getGetMethod(final Class<?> valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
     return getGetMethod(valueType, property, requireNonNull(valueOwner, "valueOwner").getClass());
   }
 
@@ -294,7 +294,7 @@ public final class Util {
    * @return the method used to get the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
-  public static Method getGetMethod(final Class valueType, final String property, final Class ownerClass) throws NoSuchMethodException {
+  public static Method getGetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
     requireNonNull(valueType, "valueType");
     requireNonNull(property, "property");
     requireNonNull(ownerClass, "ownerClass");

@@ -8,6 +8,8 @@ package is.codion.framework.domain.entity;
  */
 public final class EntityTypes {
 
+  private EntityTypes() {}
+
   /**
    * @param name the entity type name
    * @param domainName the name of the domain to associate this entity type with
