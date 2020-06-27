@@ -6345,3 +6345,6 @@
   AbstractUsageScenario now catches all exceptions instead of just ScenarioException
   DefaultLocalEntityConnection, DefaultDatabaseConnection, further improvements in MethodLogger usage
   MethodLogger optimized for argument arrays and lists of size 1
+  EntityConnection.selectDependencies() generic EntityType return value uses wildcard
+  Util.map() and Entities.mapToType() made a bit more flexible with wildcard generic type
+  Conditions, added a few @SafeVarargs annotations

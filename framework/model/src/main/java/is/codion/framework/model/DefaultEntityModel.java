@@ -160,6 +160,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
+  @SafeVarargs
   public final void addDetailModels(final M... detailModels) {
     requireNonNull(detailModels, "detailModels");
     for (final M detailModel : detailModels) {

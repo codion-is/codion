@@ -163,7 +163,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     assertNull(departmentModel.getMasterModel());
     assertNotNull(departmentModel.getEditModel());
 
-    final EventDataListener linkedListener = model -> {};
+    final EventDataListener<Model> linkedListener = model -> {};
     final EventListener listener = () -> eventCount++;
     departmentModel.addLinkedDetailModelAddedListener(linkedListener);
     departmentModel.addLinkedDetailModelRemovedListener(linkedListener);

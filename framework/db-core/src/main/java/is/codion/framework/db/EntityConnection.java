@@ -305,7 +305,7 @@ public interface EntityConnection {
    * @throws DatabaseException in case of a database exception
    * @see ForeignKeyProperty#isSoftReference()
    */
-  Map<EntityType<Entity>, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException;
+  Map<EntityType<?>, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Selects the number of rows returned according to the given condition

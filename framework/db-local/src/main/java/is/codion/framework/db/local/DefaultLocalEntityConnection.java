@@ -266,7 +266,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entities.isEmpty()) {
       return emptyList();
     }
-    final LinkedHashMap<EntityType<Entity>, List<Entity>> entitiesByEntityType = mapToType((Collection<Entity>) entities);
+    final LinkedHashMap<EntityType<Entity>, List<Entity>> entitiesByEntityType = mapToType(entities);
     checkIfReadOnly(entitiesByEntityType.keySet());
 
     final List<Object> statementValues = new ArrayList<>();
@@ -616,20 +616,20 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Map<EntityType<Entity>, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType<?>, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES_PARAM_NAME);
     if (entities.isEmpty()) {
       return emptyMap();
     }
 
-    final Map<EntityType<Entity>, Collection<Entity>> dependencyMap = new HashMap<>();
+    final Map<EntityType<?>, Collection<Entity>> dependencyMap = new HashMap<>();
     final Collection<ForeignKeyProperty> foreignKeyReferences = getForeignKeyReferences(
             entities.iterator().next().getEntityType());
     for (final ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
         final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getAttribute(), EQUALS, entities));
         if (!dependencies.isEmpty()) {
-          dependencyMap.put((EntityType<Entity>) foreignKeyReference.getEntityType(), dependencies);
+          dependencyMap.put(foreignKeyReference.getEntityType(), dependencies);
         }
       }
     }

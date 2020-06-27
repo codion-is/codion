@@ -44,7 +44,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
   public void test() {
     final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     final Model deptModel = createDepartmentModel();
-    model.addEntityModels(deptModel);
+    model.addEntityModel(deptModel);
     assertNotNull(model.getEntityModel(TestDomain.T_DEPARTMENT));
     assertEquals(1, model.getEntityModels().size());
     model.clear();
@@ -83,7 +83,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
   public void getEntityModelByEntityType() {
     final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     final Model departmentModel = createDepartmentModel();
-    model.addEntityModels(departmentModel);
+    model.addEntityModel(departmentModel);
     assertEquals(departmentModel, model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
 
@@ -100,7 +100,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
   public void containsEntityModel() {
     final EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     final Model departmentModel = createDepartmentModel();
-    model.addEntityModels(departmentModel);
+    model.addEntityModel(departmentModel);
 
     assertTrue(model.containsEntityModel(TestDomain.T_DEPARTMENT));
     assertTrue(model.containsEntityModel((Class<? extends Model>) departmentModel.getClass()));

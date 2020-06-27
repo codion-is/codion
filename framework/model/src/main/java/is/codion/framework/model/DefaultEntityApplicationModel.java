@@ -98,6 +98,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
+  @SafeVarargs
   public final void addEntityModels(final M... entityModels) {
     requireNonNull(entityModels, "entityModels");
     for (final M entityModel : entityModels) {
