@@ -6,6 +6,7 @@ package is.codion.common.db.operation;
 import is.codion.common.db.exception.DatabaseException;
 
 import java.io.Serializable;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,7 +21,7 @@ final class DefaultProcedureType<C, T> implements ProcedureType<C, T>, Serializa
   }
 
   @Override
-  public void execute(final C connection, final DatabaseProcedure<C, T> procedure, final T... arguments) throws DatabaseException {
+  public void execute(final C connection, final DatabaseProcedure<C, T> procedure, final List<T> arguments) throws DatabaseException {
     procedure.execute(connection, arguments);
   }
 

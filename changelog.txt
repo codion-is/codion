@@ -6310,3 +6310,7 @@
 0.16.6
   Entity.is() removed
   EntityTypes factory class added to reduce dependency cycle size
+  DatabaseFunction and DatabaseProcedure arguments now List<T> instead of the possibly heap polluting T...
+  EntityConnection.executeProcedure() and executeFunction() overloaded without arguments
+  MethodLogger argument handling improved a bit, no longer requires array creation
+  Added some toString() implementations to new classes

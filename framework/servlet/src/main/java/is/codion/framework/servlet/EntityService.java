@@ -50,6 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
+
 /**
  * A service for dealing with entities
  */
@@ -220,8 +222,9 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Object> parameters = deserialize(request);
+      final List<Object> arguments = parameters.size() > 1 ? (List<Object>) parameters.get(1) : emptyList();
 
-      connection.executeProcedure((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), (Object[]) parameters.get(1));
+      connection.executeProcedure((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), arguments);
 
       return Response.ok().build();
     }
@@ -245,9 +248,10 @@ public final class EntityService extends Application {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
       final List<Object> parameters = deserialize(request);
+      final List<Object> arguments = parameters.size() > 1 ? (List<Object>) parameters.get(1) : emptyList();
 
       return Response.ok(Serializer.serialize(connection.executeFunction(
-              (FunctionType<? extends EntityConnection, Object, Object>) parameters.get(0), (Object[]) parameters.get(1)))).build();
+              (FunctionType<? extends EntityConnection, Object, Object>) parameters.get(0), arguments))).build();
     }
     catch (final Exception e) {
       LOG.error(e.getMessage(), e);

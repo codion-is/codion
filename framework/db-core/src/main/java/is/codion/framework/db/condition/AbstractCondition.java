@@ -32,4 +32,9 @@ abstract class AbstractCondition implements Condition {
   public final Condition.Combination or(final Condition... conditions) {
     return new DefaultConditionCombination(Conjunction.OR, this).add(requireNonNull(conditions));
   }
+
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + ": " + getEntityType();
+  }
 }

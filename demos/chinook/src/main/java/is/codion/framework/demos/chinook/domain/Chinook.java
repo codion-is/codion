@@ -137,7 +137,7 @@ public interface Chinook {
     Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
     Attribute<BigDecimal> TOTAL_SUBQUERY = TYPE.bigDecimalAttribute("total_subquery");
 
-    ProcedureType<EntityConnection, Void> UPDATE_TOTALS = procedureType("chinook.update_totals_procedure");
+    ProcedureType<EntityConnection, Object> UPDATE_TOTALS = procedureType("chinook.update_totals_procedure");
 
     default Invoice updateTotal() {
       put(TOTAL, get(TOTAL_SUBQUERY));

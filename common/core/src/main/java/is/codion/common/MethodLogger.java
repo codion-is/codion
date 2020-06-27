@@ -30,8 +30,6 @@ import static java.util.stream.Collectors.joining;
  */
 public final class MethodLogger {
 
-  private static final Object[] EMPTY_ARRAY = new Object[0];
-
   private final Deque<Entry> callStack = new LinkedList<>();
   private final LinkedList<Entry> entries = new LinkedList<>();
   private final Function<Object, String> argumentStringProvider;
@@ -61,16 +59,16 @@ public final class MethodLogger {
    * @param method the method being accessed
    */
   public void logAccess(final String method) {
-    logAccess(method, EMPTY_ARRAY);
+    logAccess(method, null);
   }
 
   /**
    * @param method the method being accessed
-   * @param arguments the method arguments
+   * @param argument the method argument, can be a Object, a collection or an array
    */
-  public synchronized void logAccess(final String method, final Object[] arguments) {
+  public synchronized void logAccess(final String method, final Object argument) {
     if (enabled) {
-      callStack.push(new Entry(method, argumentStringProvider.apply(arguments == null ? EMPTY_ARRAY : arguments)));
+      callStack.push(new Entry(method, argumentStringProvider.apply(argument)));
     }
   }
 
@@ -170,10 +168,18 @@ public final class MethodLogger {
         return toString((Object[]) object);
       }
       if (object instanceof Collection) {
-        return "[" + toString(((Collection<?>) object).toArray()) + "]";
+        return toString((Collection<?>) object);
       }
 
       return object.toString();
+    }
+
+    private String toString(final Collection<?> arguments) {
+      if (arguments.isEmpty()) {
+        return "";
+      }
+
+      return arguments.stream().map(this::toString).collect(joining(", "));
     }
 
     private String toString(final Object[] arguments) {
