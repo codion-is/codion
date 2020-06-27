@@ -691,7 +691,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Exception exception = null;
     synchronized (connection) {
       try {
-        logAccess("fillReport", reportType);
+        logAccess("fillReport: " + reportType, reportParameters);
         final R result = reportType.fillReport(connection.getConnection(), domain.getReport(reportType), reportParameters);
         commitIfTransactionIsNotOpen();
 
@@ -710,7 +710,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         throw e;
       }
       finally {
-        logExit("fillReport", exception);
+        logExit("fillReport: " + reportType, exception);
       }
     }
   }
@@ -993,7 +993,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                final List<?> statementValues) throws SQLException {
     SQLException exception = null;
     try {
-      logAccess("executeStatement", new Object[] {query, statementValues});
+      logAccess("executeStatement", statementValues);
       setParameterValues(statement, statementProperties, statementValues);
 
       return statement.executeUpdate();
@@ -1016,8 +1016,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException exception = null;
     final List<?> statementValues = whereCondition.getValues();
     try {
-      logAccess("executeStatement", statementValues == null ?
-              new Object[] {query} : new Object[] {query, statementValues});
+      logAccess("executeStatement", statementValues);
       setParameterValues(statement, whereCondition.getColumnProperties(), statementValues);
 
       return statement.executeQuery();
@@ -1039,14 +1038,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return prepareStatement(query, null);
   }
 
-  private PreparedStatement prepareStatement(final String sqlStatement, final String[] returnColumns) throws SQLException {
+  private PreparedStatement prepareStatement(final String query, final String[] returnColumns) throws SQLException {
     try {
-      logAccess("prepareStatement", sqlStatement);
+      logAccess("prepareStatement", query);
       if (returnColumns == null) {
-        return connection.getConnection().prepareStatement(sqlStatement);
+        return connection.getConnection().prepareStatement(query);
       }
 
-      return connection.getConnection().prepareStatement(sqlStatement, returnColumns);
+      return connection.getConnection().prepareStatement(query, returnColumns);
     }
     finally {
       logExit("prepareStatement");

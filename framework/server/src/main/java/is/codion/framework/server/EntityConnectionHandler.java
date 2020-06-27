@@ -79,6 +79,11 @@ final class EntityConnectionHandler implements InvocationHandler {
   private final String logIdentifier;
 
   /**
+   * Describes the logged in user, for logging purposes
+   */
+  private final String userDescription;
+
+  /**
    * The date and time when this remote connection was established
    */
   private final long creationDate = System.currentTimeMillis();
@@ -115,6 +120,7 @@ final class EntityConnectionHandler implements InvocationHandler {
     this.database = database;
     this.methodLogger = new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(), new EntityArgumentToString(domain.getEntities()));
     this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() + "@" + remoteClient.getClientTypeId();
+    this.userDescription = "Remote user: " + remoteClient.getUser().getUsername() + ", database user: " + remoteClient.getDatabaseUser().getUsername();
     try {
       if (connectionPool == null) {
         localEntityConnection = createConnection(domain, database, remoteClient.getDatabaseUser());
@@ -215,7 +221,7 @@ final class EntityConnectionHandler implements InvocationHandler {
     DatabaseException exception = null;
     try {
       if (methodLogger.isEnabled()) {
-        methodLogger.logAccess(GET_CONNECTION, new Object[] {remoteClient.getDatabaseUser(), remoteClient.getUser()});
+        methodLogger.logAccess(GET_CONNECTION, userDescription);
       }
       if (connectionPool != null) {
         return getPooledEntityConnection();
@@ -263,7 +269,7 @@ final class EntityConnectionHandler implements InvocationHandler {
     }
     try {
       if (methodLogger.isEnabled()) {
-        methodLogger.logAccess(RETURN_CONNECTION, new Object[] {remoteClient.getDatabaseUser(), remoteClient.getUser()});
+        methodLogger.logAccess(RETURN_CONNECTION, userDescription);
       }
       poolEntityConnection.setMethodLogger(null);
       returnConnectionToPool();
@@ -367,7 +373,7 @@ final class EntityConnectionHandler implements InvocationHandler {
     @Override
     protected String toString(final Object object) {
       if (object == null) {
-        return "null";
+        return "";
       }
       if (object instanceof String) {
         return "'" + object + "'";

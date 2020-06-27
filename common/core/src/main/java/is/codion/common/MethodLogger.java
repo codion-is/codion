@@ -150,6 +150,9 @@ public final class MethodLogger {
    */
   public static class ArgumentToString implements Function<Object, String> {
 
+    private static final String BRACKET_OPEN = "[";
+    private static final String BRACKET_CLOSE = "]";
+
     @Override
     public final String apply(final Object object) {
       return toString(object);
@@ -164,14 +167,28 @@ public final class MethodLogger {
       if (object == null) {
         return "";
       }
-      if (object.getClass().isArray()) {
-        return toString((Object[]) object);
+      if (object instanceof List) {
+        return toString((List<?>) object);
       }
       if (object instanceof Collection) {
         return toString((Collection<?>) object);
       }
+      if (object.getClass().isArray()) {
+        return toString((Object[]) object);
+      }
 
       return object.toString();
+    }
+
+    private String toString(final List<?> arguments) {
+      if (arguments.isEmpty()) {
+        return "";
+      }
+      if (arguments.size() == 1) {
+        return toString(arguments.get(0));
+      }
+
+      return BRACKET_OPEN + arguments.stream().map(this::toString).collect(joining(", ")) + BRACKET_CLOSE;
     }
 
     private String toString(final Collection<?> arguments) {
@@ -179,15 +196,18 @@ public final class MethodLogger {
         return "";
       }
 
-      return arguments.stream().map(this::toString).collect(joining(", "));
+      return BRACKET_OPEN + arguments.stream().map(this::toString).collect(joining(", ")) + BRACKET_CLOSE;
     }
 
     private String toString(final Object[] arguments) {
       if (arguments.length == 0) {
         return "";
       }
+      if (arguments.length == 1) {
+        return toString(arguments[0]);
+      }
 
-      return stream(arguments).map(this::toString).collect(joining(", "));
+      return BRACKET_OPEN + stream(arguments).map(this::toString).collect(joining(", ")) + BRACKET_CLOSE;
     }
   }
 

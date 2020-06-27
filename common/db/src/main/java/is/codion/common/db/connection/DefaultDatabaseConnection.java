@@ -151,7 +151,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw new IllegalStateException("Transaction already open");
     }
 
-    logAccess("beginTransaction", new Object[0]);
+    logAccess("beginTransaction", null);
     transactionOpen = true;
     logExit("beginTransaction", null);
   }
@@ -258,7 +258,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     SQLException exception = null;
     ResultSet resultSet = null;
     try {
-      logAccess("query", new Object[] {sql});
+      logAccess("select", sql);
       statement = connection.createStatement();
       resultSet = statement.executeQuery(sql);
 
@@ -275,9 +275,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  private void logAccess(final String method, final Object[] arguments) {
+  private void logAccess(final String method, final Object argument) {
     if (methodLogger != null && methodLogger.isEnabled()) {
-      methodLogger.logAccess(method, arguments);
+      methodLogger.logAccess(method, argument);
     }
   }
 

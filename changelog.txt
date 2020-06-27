@@ -6315,3 +6315,5 @@
   MethodLogger argument handling improved a bit, no longer requires array creation
   Added some toString() implementations to new classes
   AbstractUsageScenario now catches all exceptions instead of just ScenarioException
+  DefaultLocalEntityConnection, DefaultDatabaseConnection, further improvements in MethodLogger usage
+  MethodLogger optimized for argument arrays and lists of size 1
