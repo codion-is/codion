@@ -105,7 +105,7 @@ public final class Util {
    * @param <V> the value type
    * @return a LinkedHashMap with the values mapped to their respective key values, respecting the iteration order of the given collection
    */
-  public static <K, V> LinkedHashMap<K, List<V>> map(final Collection<V> values, final Function<V, K> keyProvider) {
+  public static <K, V> LinkedHashMap<K, List<V>> map(final Collection<? extends V> values, final Function<V, K> keyProvider) {
     requireNonNull(values, "values");
     requireNonNull(keyProvider, "keyProvider");
     final LinkedHashMap<K, List<V>> map = new LinkedHashMap<>(values.size());

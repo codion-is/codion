@@ -182,16 +182,16 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectDependencies() throws Exception {
-    final Map<EntityType<Entity>, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
+    final Map<EntityType<?>, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
     assertTrue(empty.isEmpty());
     final List<Entity> accounting = connection.select(Department.DNAME, "ACCOUNTING");
-    final Map<EntityType<Entity>, Collection<Entity>> emps = connection.selectDependencies(accounting);
+    final Map<EntityType<?>, Collection<Entity>> emps = connection.selectDependencies(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(T_EMP));
     assertEquals(7, emps.get(T_EMP).size());
 
     final Entity emp = connection.selectSingle(EMP_NAME, "KING");
-    final Map<EntityType<Entity>, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
+    final Map<EntityType<?>, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
     assertTrue(deps.isEmpty());//soft foreign key reference
   }
 

@@ -364,7 +364,7 @@ public interface Entities extends Serializable {
    * @param entities the entities to map by entityType
    * @return a Map of entities mapped to entityType
    */
-  static LinkedHashMap<EntityType<Entity>, List<Entity>> mapToType(final Collection<Entity> entities) {
+  static LinkedHashMap<EntityType<Entity>, List<Entity>> mapToType(final Collection<? extends Entity> entities) {
     return map(entities, Entity::getEntityType);
   }
 

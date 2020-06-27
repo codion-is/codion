@@ -94,6 +94,7 @@ public final class Conditions {
    * @param <T> the attribute type
    * @return a condition based on the given value
    */
+  @SafeVarargs
   public static <T> AttributeCondition<T> condition(final Attribute<T> attribute, final Operator operator, final T... values) {
     return condition(attribute, operator, asList(requireNonNull(values)));
   }
@@ -224,6 +225,7 @@ public final class Conditions {
    * @param <T> the attribute type
    * @return a select condition based on the given value
    */
+  @SafeVarargs
   public static <T> SelectCondition selectCondition(final Attribute<T> attribute, final Operator operator, final T... values) {
     return selectCondition(attribute, operator, asList(requireNonNull(values)));
   }
@@ -270,6 +272,7 @@ public final class Conditions {
    * @param <T> the value type
    * @return an update condition based on the given value
    */
+  @SafeVarargs
   public static <T> UpdateCondition updateCondition(final Attribute<T> attribute, final Operator operator, final T... values) {
     return updateCondition(attribute, operator, asList(requireNonNull(values)));
   }
