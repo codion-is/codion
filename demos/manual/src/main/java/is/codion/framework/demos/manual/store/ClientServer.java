@@ -23,7 +23,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import static is.codion.common.user.Users.parseUser;
-import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Collections.singletonList;
 
 public final class ClientServer {
@@ -53,7 +53,7 @@ public final class ClientServer {
 
     EntityConnection connection = connectionProvider.getConnection();
 
-    List<Entity> customers = connection.select(selectCondition(Customer.TYPE));
+    List<Entity> customers = connection.select(condition(Customer.TYPE).selectCondition());
     customers.forEach(System.out::println);
 
     connection.disconnect();
@@ -87,7 +87,7 @@ public final class ClientServer {
 
     EntityConnection connection = connectionProvider.getConnection();
 
-    List<Entity> customers = connection.select(selectCondition(Customer.TYPE));
+    List<Entity> customers = connection.select(condition(Customer.TYPE).selectCondition());
     customers.forEach(System.out::println);
 
     connection.disconnect();

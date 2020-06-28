@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.db.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
@@ -36,7 +35,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.framework.db.condition.Conditions.*;
+import static is.codion.framework.db.condition.Conditions.combination;
+import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -277,22 +277,22 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     if (lookupProperties.isEmpty()) {
       throw new IllegalStateException("No search properties provided for lookup model: " + entityType);
     }
-    final Condition.Combination baseCondition = combination(Conjunction.OR);
+    final Condition.Combination conditionCombination = combination(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionEnabledValue.get() ?
             searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final ColumnProperty<?> lookupProperty : lookupProperties) {
       final LookupSettings lookupSettings = propertyLookupSettings.get(lookupProperty);
       for (final String rawLookupText : lookupTexts) {
         final String lookupText = prepareLookupText(rawLookupText, lookupSettings);
-        final AttributeCondition<String> condition = condition((Attribute<String>) lookupProperty.getAttribute(),
-                Operator.EQUALS, lookupText).setCaseSensitive(lookupSettings.getCaseSensitiveValue().get());
-        baseCondition.add(condition);
+        final AttributeCondition<String> condition = condition((Attribute<String>) lookupProperty.getAttribute())
+                .equalTo(lookupText).setCaseSensitive(lookupSettings.getCaseSensitiveValue().get());
+        conditionCombination.add(condition);
       }
     }
 
-    return selectCondition(additionalConditionProvider == null ? baseCondition :
-            additionalConditionProvider.getCondition().and(baseCondition))
-            .setOrderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
+    return (additionalConditionProvider == null ? conditionCombination :
+            additionalConditionProvider.getCondition().and(conditionCombination))
+            .selectCondition().setOrderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
   }
 
   private String prepareLookupText(final String rawLookupText, final LookupSettings lookupSettings) {

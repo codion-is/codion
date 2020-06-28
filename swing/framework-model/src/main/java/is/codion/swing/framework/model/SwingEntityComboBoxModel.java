@@ -35,7 +35,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -349,10 +349,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     try {
       final SelectCondition selectCondition;
       if (selectConditionProvider == null) {
-        selectCondition = selectCondition(entityType);
+        selectCondition = condition(entityType).selectCondition();
       }
       else {
-        selectCondition = selectCondition(selectConditionProvider.getCondition());
+        selectCondition = selectConditionProvider.getCondition().selectCondition();
       }
 
       return connectionProvider.getConnection().select(selectCondition

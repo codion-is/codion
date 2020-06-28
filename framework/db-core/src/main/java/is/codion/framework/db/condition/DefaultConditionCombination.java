@@ -123,6 +123,16 @@ final class DefaultConditionCombination implements Condition.Combination {
             .collect(joining(toString(conjunction)))).append(")").toString();
   }
 
+  @Override
+  public SelectCondition selectCondition() {
+    return new DefaultSelectCondition(this);
+  }
+
+  @Override
+  public UpdateCondition updateCondition() {
+    return new DefaultUpdateCondition(this);
+  }
+
   private static String toString(final Conjunction conjunction) {
     switch (conjunction) {
       case AND: return " and ";

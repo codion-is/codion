@@ -18,11 +18,7 @@ import is.codion.framework.domain.entity.Key;
 import java.sql.SQLException;
 import java.util.List;
 
-import static is.codion.common.db.Operator.EQUALS;
 import static is.codion.framework.db.condition.Conditions.condition;
-import static is.codion.framework.db.condition.Conditions.selectCondition;
-import static is.codion.framework.db.condition.NullCheck.IS_NOT_NULL;
-import static is.codion.framework.db.condition.NullCheck.IS_NULL;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
 import static java.util.Arrays.asList;
@@ -48,16 +44,15 @@ public class StoreDatabase {
             connection.select(Address.CUSTOMER_FK, customersNamedDoe);
 
     List<Entity> customersWithoutEmail =
-            connection.select(selectCondition(Customer.EMAIL, IS_NULL));
+            connection.select(condition(Customer.EMAIL).isNull().selectCondition());
 
     List<String> activeCustomerEmailAddresses =
             connection.select(Customer.EMAIL,
-                    condition(Customer.IS_ACTIVE, EQUALS, true));
+                    condition(Customer.IS_ACTIVE).equalTo(true));
 
     List<Entity> activeCustomersWithEmailAddresses =
-            connection.select(selectCondition(
-                    condition(Customer.IS_ACTIVE, EQUALS, true)
-                            .and(condition(Customer.EMAIL, IS_NOT_NULL))));
+            connection.select(condition(Customer.IS_ACTIVE).equalTo(true)
+                    .and(condition(Customer.EMAIL).isNotNull()).selectCondition());
 
     //The domain model entities, a factory for Entity instances.
     Entities entities = connection.getEntities();

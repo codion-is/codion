@@ -3,11 +3,9 @@
  */
 package is.codion.plugin.jackson.json.db;
 
-import is.codion.common.db.Operator;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.CustomCondition;
-import is.codion.framework.db.condition.NullCheck;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.plugin.jackson.json.TestDomain;
@@ -27,7 +25,7 @@ public final class ConditionObjectMapperTest {
   private final Entities entities = new TestDomain().getEntities();
 
   @Test
-  public void entityCondition() throws JsonProcessingException {
+  public void condition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
     final Entity dept1 = entities.entity(TestDomain.T_DEPARTMENT);
@@ -35,10 +33,10 @@ public final class ConditionObjectMapperTest {
     final Entity dept2 = entities.entity(TestDomain.T_DEPARTMENT);
     dept2.put(TestDomain.DEPARTMENT_ID, 2);
 
-    final Condition entityCondition = Conditions.condition(TestDomain.EMP_DEPARTMENT_FK,Operator.NOT_EQUALS, dept1, dept2)
-                    .and(Conditions.condition(TestDomain.EMP_NAME,Operator.EQUALS, "Loc"),
-                    Conditions.condition(TestDomain.EMP_ID,Operator.WITHIN_RANGE, 10, 40),
-                    Conditions.condition(TestDomain.EMP_COMMISSION, NullCheck.IS_NOT_NULL));
+    final Condition entityCondition = Conditions.condition(TestDomain.EMP_DEPARTMENT_FK).notEqualTo(dept1, dept2)
+                    .and(Conditions.condition(TestDomain.EMP_NAME).equalTo("Loc"),
+                    Conditions.condition(TestDomain.EMP_ID).withinRange(10, 40),
+                    Conditions.condition(TestDomain.EMP_COMMISSION).isNotNull());
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
     final Condition readCondition = mapper.readValue(jsonString, Condition.class);
@@ -54,7 +52,7 @@ public final class ConditionObjectMapperTest {
   @Test
   public void nullCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
-    final Condition entityCondition = Conditions.condition(TestDomain.EMP_COMMISSION, NullCheck.IS_NOT_NULL);
+    final Condition entityCondition = Conditions.condition(TestDomain.EMP_COMMISSION).isNotNull();
 
     final String jsonString = mapper.writeValueAsString(entityCondition);
     final Condition readCondition = mapper.readValue(jsonString, Condition.class);

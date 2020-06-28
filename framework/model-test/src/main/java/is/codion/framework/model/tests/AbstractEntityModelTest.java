@@ -3,7 +3,6 @@
  */
 package is.codion.framework.model.tests;
 
-import is.codion.common.db.Operator;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
@@ -28,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -201,7 +200,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     final Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    final List<Entity> salesEmployees = connection.select(selectCondition(TestDomain.EMP_DEPARTMENT_FK, Operator.EQUALS, department));
+    final List<Entity> salesEmployees = connection.select(condition(TestDomain.EMP_DEPARTMENT_FK).equalTo(department).selectCondition());
     assertFalse(salesEmployees.isEmpty());
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =

@@ -56,12 +56,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.common.db.Operator.EQUALS;
 import static is.codion.common.db.connection.DatabaseConnections.createConnection;
 import static is.codion.common.db.database.Database.closeSilently;
 import static is.codion.framework.db.condition.Conditions.*;
-import static is.codion.framework.db.condition.NullCheck.IS_NOT_NULL;
-import static is.codion.framework.db.condition.NullCheck.IS_NULL;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.Entities.*;
 import static java.util.Arrays.asList;
@@ -306,7 +303,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          final List<Entity> selected = doSelect(selectCondition(getKeys(entitiesToUpdate)));
+          final List<Entity> selected = doSelect(condition(getKeys(entitiesToUpdate)).selectCondition());
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -458,12 +455,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return selectSingle(selectCondition(attribute, EQUALS, value));
+    return selectSingle(condition(attribute).equalTo(value).selectCondition());
   }
 
   @Override
   public Entity selectSingle(final Key key) throws DatabaseException {
-    return selectSingle(selectCondition(key));
+    return selectSingle(condition(key).selectCondition());
   }
 
   @Override
@@ -490,7 +487,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         final List<Entity> result = new ArrayList<>();
         for (final List<Key> entityTypeKeys : mapKeysToType(keys).values()) {
-          result.addAll(doSelect(selectCondition(entityTypeKeys)));
+          result.addAll(doSelect(condition(entityTypeKeys).selectCondition()));
         }
         commitIfTransactionIsNotOpen();
 
@@ -505,12 +502,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return select(value == null ? selectCondition(attribute, IS_NULL) : selectCondition(attribute, EQUALS, value));
+    return select(value == null ?
+            condition(attribute).isNull().selectCondition() :
+            condition(attribute).equalTo(value).selectCondition());
   }
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
-    return select(selectCondition(attribute, EQUALS, values));
+    return select(condition(attribute).equalTo(values).selectCondition());
   }
 
   @Override
@@ -544,22 +543,22 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entityDefinition.getSelectQuery() != null) {
       throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
-    Condition combination = condition(attribute, IS_NOT_NULL);
+    Condition combinedCondition = condition(attribute).isNotNull();
     if (condition != null) {
       condition.getAttributes().forEach(conditionAttribute -> validateAttribute(attribute.getEntityType(), conditionAttribute));
-      combination = combination.and(expand(condition, entityDefinition));
+      combinedCondition = combinedCondition.and(expand(condition, entityDefinition));
     }
-    final WhereCondition combinedCondition = whereCondition(combination, entityDefinition);
+    final WhereCondition whereCondition = whereCondition(combinedCondition, entityDefinition);
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);
     final String columnName = propertyToSelect.getColumnName();
     final String selectQuery = selectQuery(entityDefinition.getSelectTableName(),
-            "distinct " + columnName, combinedCondition.getWhereClause(), columnName);
+            "distinct " + columnName, whereCondition.getWhereClause(), columnName);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     synchronized (connection) {
       try {
         statement = prepareStatement(selectQuery);
-        resultSet = executeStatement(statement, selectQuery, combinedCondition);
+        resultSet = executeStatement(statement, selectQuery, whereCondition);
         final List<T> result = propertyToSelect.<T>getResultPacker().pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
 
@@ -567,7 +566,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(selectQuery, asList(attribute, combinedCondition), e), e);
+        LOG.error(createLogMessage(selectQuery, asList(attribute, whereCondition), e), e);
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
       finally {
@@ -627,7 +626,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entities.iterator().next().getEntityType());
     for (final ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
       if (!foreignKeyReference.isSoftReference()) {
-        final List<Entity> dependencies = select(selectCondition(foreignKeyReference.getAttribute(), EQUALS, entities));
+        final List<Entity> dependencies =
+                select(condition(foreignKeyReference.getAttribute()).equalTo(entities).selectCondition());
         if (!dependencies.isEmpty()) {
           dependencyMap.put(foreignKeyReference.getEntityType(), dependencies);
         }
@@ -856,7 +856,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void performOptimisticLocking(final Map<EntityType<Entity>, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
     for (final Map.Entry<EntityType<Entity>, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
       final List<Key> originalKeys = getOriginalKeys(entitiesByEntityTypeEntry.getValue());
-      final SelectCondition selectForUpdateCondition = selectCondition(originalKeys);
+      final SelectCondition selectForUpdateCondition = condition(originalKeys).selectCondition();
       selectForUpdateCondition.setSelectAttributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()));
       selectForUpdateCondition.setForUpdate(true);
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
@@ -927,7 +927,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             }
           }
           else {
-            final SelectCondition referencedEntitiesCondition = selectCondition(referencedKeys);
+            final SelectCondition referencedEntitiesCondition = condition(referencedKeys).selectCondition();
             referencedEntitiesCondition.setForeignKeyFetchDepth(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);

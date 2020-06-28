@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static is.codion.framework.db.condition.Conditions.condition;
-import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -68,7 +67,7 @@ public class EntityConnectionsTest {
             DESTINATION_CONNECTION.rowCount(condition(TestDomain.Department.TYPE)));
 
     EntityConnections.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, IncludePrimaryKeys.YES, TestDomain.T_EMP);
-    DESTINATION_CONNECTION.select(selectCondition(TestDomain.T_EMP));
+    DESTINATION_CONNECTION.select(condition(TestDomain.T_EMP).selectCondition());
 
     DESTINATION_CONNECTION.delete(condition(TestDomain.T_EMP));
     DESTINATION_CONNECTION.delete(condition(TestDomain.Department.TYPE));
@@ -78,7 +77,7 @@ public class EntityConnectionsTest {
   public void batchInsert() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = CONNECTION_PROVIDER.getConnection();
 
-    final List<Entity> source = sourceConnection.select(selectCondition(TestDomain.Department.TYPE));
+    final List<Entity> source = sourceConnection.select(condition(TestDomain.Department.TYPE).selectCondition());
 
     final EventDataListener<Integer> progressReporter = currentProgress -> {};
     EntityConnections.batchInsert(DESTINATION_CONNECTION, source.iterator(), 2, progressReporter, null);

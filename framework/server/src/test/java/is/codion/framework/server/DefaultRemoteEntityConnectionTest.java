@@ -53,7 +53,7 @@ public class DefaultRemoteEntityConnectionTest {
   public void rollbackOnDisconnect() throws Exception {
     final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238);
-    final SelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP);
+    final SelectCondition condition = Conditions.condition(TestDomain.T_EMP).selectCondition();
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.select(condition).isEmpty());
@@ -91,7 +91,7 @@ public class DefaultRemoteEntityConnectionTest {
                 }
               });
 
-      final SelectCondition condition = Conditions.selectCondition(TestDomain.T_EMP);
+      final SelectCondition condition = Conditions.condition(TestDomain.T_EMP).selectCondition();
       proxy.beginTransaction();
       proxy.select(condition);
       proxy.delete(condition);

@@ -7,6 +7,7 @@ import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.SubqueryProperty;
 
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import static is.codion.common.db.Operator.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
@@ -295,6 +298,98 @@ final class DefaultAttributeCondition<T> extends AbstractCondition implements At
       final String valuePlaceholder = getValuePlaceholder(property, condition.isCaseSensitive());
 
       return "(" + columnIdentifier + " <= " + valuePlaceholder + " or " + columnIdentifier + " >= " + valuePlaceholder + ")";
+    }
+  }
+
+  static final class DefaultBuilder<T> implements AttributeCondition.Builder<T> {
+
+    private final Attribute<T> attribute;
+
+    DefaultBuilder(final Attribute<T> attribute) {
+      this.attribute = requireNonNull(attribute, "attribute");
+    }
+
+    @Override
+    public AttributeCondition<T> equalTo(final T value) {
+      return new DefaultAttributeCondition<>(attribute, EQUALS, requireNonNull(value));
+    }
+
+    @Override
+    public AttributeCondition<T> equalTo(final T... values) {
+      return equalTo(asList(requireNonNull(values)));
+    }
+
+    @Override
+    public AttributeCondition<T> equalTo(final Collection<? extends T> values) {
+      return new DefaultAttributeCondition<>(attribute, EQUALS, requireNonNull(values));
+    }
+
+    @Override
+    public AttributeCondition<T> notEqualTo(final T value) {
+      return new DefaultAttributeCondition<>(attribute, NOT_EQUALS, requireNonNull(value));
+    }
+
+    @Override
+    public AttributeCondition<T> notEqualTo(final T... values) {
+      return notEqualTo(asList(requireNonNull(values)));
+    }
+
+    @Override
+    public AttributeCondition<T> notEqualTo(final Collection<? extends T> values) {
+      return new DefaultAttributeCondition<>(attribute, NOT_EQUALS, requireNonNull(values));
+    }
+
+    @Override
+    public AttributeCondition<T> lessThan(final T value) {
+      return new DefaultAttributeCondition<>(attribute, LESS_THAN, value);
+    }
+
+    @Override
+    public AttributeCondition<T> greaterThan(final T value) {
+      return new DefaultAttributeCondition<>(attribute, GREATER_THAN, value);
+    }
+
+    @Override
+    public AttributeCondition<T> withinRange(final T lowerBound, final T upperBound) {
+      return new DefaultAttributeCondition<>(attribute, WITHIN_RANGE, asList(lowerBound, upperBound));
+    }
+
+    @Override
+    public AttributeCondition<T> outsideRange(final T lowerBound, final T upperBound) {
+      return new DefaultAttributeCondition<>(attribute, OUTSIDE_RANGE, asList(lowerBound, upperBound));
+    }
+
+    @Override
+    public AttributeCondition<T> isNull() {
+      return new DefaultAttributeCondition<>(attribute, EQUALS, emptyList());
+    }
+
+    @Override
+    public AttributeCondition<T> isNotNull() {
+      return new DefaultAttributeCondition<>(attribute, NOT_EQUALS, emptyList());
+    }
+
+    @Override
+    public AttributeCondition<Entity> equalTo(final Key key) {
+      return new DefaultAttributeCondition<>((Attribute<Entity>) attribute, EQUALS, key);
+    }
+
+    @Override
+    public AttributeCondition<Entity> equalTo(final Key... keys) {
+      return equalTo(asList(requireNonNull(keys)));
+    }
+
+    @Override
+    public AttributeCondition<Entity> equalTo(final List<Key> keys) {
+      checkKeysParameter(keys);
+      return new DefaultAttributeCondition<>((Attribute<Entity>) attribute, EQUALS, keys);
+    }
+
+    private static void checkKeysParameter(final List<Key> keys) {
+      requireNonNull(keys, "keys");
+      if (keys.isEmpty()) {
+        throw new IllegalArgumentException("One or more keys must be provided for condition");
+      }
     }
   }
 }

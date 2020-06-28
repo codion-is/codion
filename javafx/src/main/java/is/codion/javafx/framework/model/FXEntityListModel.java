@@ -47,7 +47,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -446,8 +445,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
 
     try {
-      return getConnectionProvider().getConnection().select(selectCondition(
-              tableConditionModel.getCondition()).setFetchCount(fetchCount).setOrderBy(getOrderBy()));
+      return getConnectionProvider().getConnection().select(tableConditionModel.getCondition()
+              .selectCondition().setFetchCount(fetchCount).setOrderBy(getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

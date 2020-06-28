@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
-import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Arrays.asList;
 
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
@@ -70,7 +70,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().select(selectCondition(Department.TYPE));
+        final List<Entity> departments = client.getConnection().select(condition(Department.TYPE).selectCondition());
         final Entity entity = departments.get(new Random().nextInt(departments.size()));
         entity.put(Department.LOCATION, Text.createRandomString(10, 13));
         client.getConnection().update(entity);
@@ -109,7 +109,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().select(selectCondition(Department.TYPE));
+        final List<Entity> departments = client.getConnection().select(condition(Department.TYPE).selectCondition());
 
         client.getConnection().select(Employee.DEPARTMENT,
                 departments.get(new Random().nextInt(departments.size())).get(Department.ID));
@@ -156,7 +156,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().select(selectCondition(Department.TYPE));
+        final List<Entity> departments = client.getConnection().select(condition(Department.TYPE).selectCondition());
         final Entity department = departments.get(random.nextInt(departments.size()));
         final Entity employee = client.getEntities().entity(Employee.TYPE);
         employee.put(Employee.DEPARTMENT_FK, department);

@@ -3,7 +3,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.db.Operator;
 import is.codion.common.db.database.Databases;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
@@ -193,7 +192,7 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(true);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(true);
     lookupModel.setAdditionalConditionProvider(() ->
-            Conditions.condition(TestDomain.EMP_JOB, Operator.NOT_EQUALS, "MANAGER"));
+            Conditions.condition(TestDomain.EMP_JOB).notEqualTo("MANAGER"));
     result = lookupModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));

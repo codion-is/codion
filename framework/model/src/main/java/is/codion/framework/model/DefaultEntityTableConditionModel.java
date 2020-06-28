@@ -26,14 +26,11 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -359,26 +356,49 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
-  private static <T> Condition getCondition(final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel) {
-    final List<T> conditionValues = new ArrayList<>();
+  private static <T> AttributeCondition<T> getCondition(final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel) {
     final Object lowerBound = conditionModel.getLowerBound();
     final Object upperBound = conditionModel.getUpperBound();
-    if (lowerBound instanceof Collection) {
-      conditionValues.addAll((Collection<T>) lowerBound);
+    final AttributeCondition.Builder<T> builder = Conditions.condition((Attribute<T>)  conditionModel.getColumnIdentifier().getAttribute());
+    final AttributeCondition<T> condition;
+    switch (conditionModel.getOperator()) {
+      case EQUALS:
+        if (upperBound == null) {
+          condition = builder.isNull();
+        }
+        else if (upperBound instanceof Collection) {
+          condition = builder.equalTo((Collection<? extends T>) upperBound);
+        }
+        else {
+          condition = builder.equalTo((T) upperBound);
+        }
+        break;
+      case NOT_EQUALS:
+        if (upperBound == null) {
+          condition = builder.isNotNull();
+        }
+        else if (upperBound instanceof Collection) {
+          condition = builder.notEqualTo((Collection<? extends T>) upperBound);
+        }
+        else {
+          condition = builder.notEqualTo((T) upperBound);
+        }
+        break;
+      case LESS_THAN:
+        condition = builder.lessThan((T) upperBound);
+        break;
+      case GREATER_THAN:
+        condition = builder.greaterThan((T) upperBound);
+        break;
+      case WITHIN_RANGE:
+        condition = builder.withinRange((T) lowerBound, (T) upperBound);
+        break;
+      case OUTSIDE_RANGE:
+        condition = builder.outsideRange((T) lowerBound, (T) upperBound);
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
     }
-    else if (lowerBound != null) {
-      conditionValues.add((T) lowerBound);
-    }
-    if (upperBound instanceof Collection) {
-      conditionValues.addAll((Collection<T>) upperBound);
-    }
-    else if (upperBound != null) {
-      conditionValues.add((T) upperBound);
-    }
-
-    final AttributeCondition<T> condition =
-            condition((Attribute<T>) conditionModel.getColumnIdentifier().getAttribute(),
-                    conditionModel.getOperator(), conditionValues);
     if (condition.getAttribute().isString()) {
       condition.setCaseSensitive(conditionModel.isCaseSensitive());
     }
