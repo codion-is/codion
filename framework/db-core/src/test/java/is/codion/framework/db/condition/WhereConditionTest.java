@@ -7,7 +7,6 @@ import is.codion.framework.db.TestDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import org.junit.jupiter.api.Test;
@@ -77,7 +76,7 @@ public final class WhereConditionTest {
     final Entity department = ENTITIES.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 10);
     final EntityDefinition empDefinition = ENTITIES.getDefinition(TestDomain.T_EMP);
-    final WhereCondition condition = whereCondition(condition(TestDomain.EMP_DEPARTMENT_FK).equalTo(department.getKey()), empDefinition);
+    final WhereCondition condition = whereCondition(condition(TestDomain.EMP_DEPARTMENT_FK).equalTo(department), empDefinition);
     assertEquals("deptno = ?", condition.getWhereClause());
   }
 
@@ -135,23 +134,23 @@ public final class WhereConditionTest {
     condition = whereCondition(condition(TestDomain.EMP_DEPARTMENT_FK).isNotNull(), empDefinition);
     assertEquals("deptno is not null", condition.getWhereClause());
 
-    final Key master1Key = ENTITIES.key(TestDomain.T_MASTER);
-    master1Key.put(TestDomain.MASTER_ID_1, null);
-    master1Key.put(TestDomain.MASTER_ID_2, null);
+    final Entity master1 = ENTITIES.entity(TestDomain.T_MASTER);
+    master1.put(TestDomain.MASTER_ID_1, null);
+    master1.put(TestDomain.MASTER_ID_2, null);
 
     final EntityDefinition detailDefinition = ENTITIES.getDefinition(TestDomain.T_DETAIL);
-    condition = whereCondition(condition(TestDomain.DETAIL_MASTER_FK).equalTo(master1Key), detailDefinition);
-    assertEquals("(master_id is null and master_id_2 is null)",
-            condition.getWhereClause());
+    condition = whereCondition(condition(TestDomain.DETAIL_MASTER_FK).equalTo(master1), detailDefinition);
+    assertEquals("(master_id is null and master_id_2 is null)", condition.getWhereClause());
 
-    master1Key.put(TestDomain.MASTER_ID_2, 1);
-    condition = whereCondition(condition(TestDomain.DETAIL_MASTER_FK).equalTo(master1Key), detailDefinition);
+    master1.put(TestDomain.MASTER_ID_2, 1);
+    condition = whereCondition(condition(TestDomain.DETAIL_MASTER_FK).equalTo(master1), detailDefinition);
     assertEquals("(master_id is null and master_id_2 = ?)",
             condition.getWhereClause());
 
-    final Key deptKey = ENTITIES.key(TestDomain.T_DEPARTMENT, 42);
+    final Entity dept = ENTITIES.entity(TestDomain.T_DEPARTMENT);
+    dept.put(TestDomain.DEPARTMENT_ID, 42);
 
-    condition = whereCondition(condition(TestDomain.EMP_DEPARTMENT_FK).equalTo(deptKey), empDefinition);
+    condition = whereCondition(condition(TestDomain.EMP_DEPARTMENT_FK).equalTo(dept), empDefinition);
     assertEquals("deptno = ?", condition.getWhereClause());
   }
 

@@ -35,11 +35,6 @@ public interface AttributeCondition<T> extends Condition {
   AttributeCondition<String> setCaseSensitive(boolean caseSensitive);
 
   /**
-   * @return true if this condition is case sensitive, only applicable to conditions based on String attributes.
-   */
-  boolean isCaseSensitive();
-
-  /**
    * A builder for {@link AttributeCondition}.
    * @param <T> the attribute value type
    */
@@ -135,13 +130,6 @@ public interface AttributeCondition<T> extends Condition {
      * @return a {@link AttributeCondition}
      */
     AttributeCondition<Entity> equalTo(Key key);
-
-    /**
-     * Returns a 'equalTo' {@link AttributeCondition}.
-     * @param keys the keys to use in the condition
-     * @return a {@link AttributeCondition}
-     */
-    AttributeCondition<Entity> equalTo(Key... keys);
 
     /**
      * Returns a 'equalTo' {@link AttributeCondition}.

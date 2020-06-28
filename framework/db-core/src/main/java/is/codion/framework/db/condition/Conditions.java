@@ -20,8 +20,10 @@ import java.util.ListIterator;
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.Conjunction.OR;
 import static is.codion.common.db.Operator.EQUALS;
+import static is.codion.common.db.Operator.NOT_EQUALS;
 import static is.codion.framework.domain.entity.Entities.getValues;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -50,7 +52,7 @@ public final class Conditions {
       return singleCompositeCondition(key.getAttributes(), EQUALS, key);
     }
 
-    return new DefaultAttributeCondition<>(key.getAttribute(), EQUALS, requireNonNull(key.get()));
+    return new DefaultAttributeEqualCondition<>(key.getAttribute(), singletonList(requireNonNull(key.get())));
   }
 
   /**
@@ -68,7 +70,7 @@ public final class Conditions {
       return compositeKeyCondition(keys, firstKey.getAttributes(), EQUALS);
     }
 
-    return new DefaultAttributeCondition<>((Attribute<?>) firstKey.getAttribute(), EQUALS, requireNonNull(getValues(keys)));
+    return new DefaultAttributeEqualCondition<>((Attribute<?>) firstKey.getAttribute(), requireNonNull(getValues(keys)));
   }
 
   /**
@@ -78,7 +80,7 @@ public final class Conditions {
    * @return a {@link AttributeCondition.Builder} instance
    */
   public static <T> AttributeCondition.Builder<T> condition(final Attribute<T> attribute) {
-    return new DefaultAttributeCondition.DefaultBuilder<>(attribute);
+    return new DefaultAttributeConditionBuilder<>(attribute);
   }
 
   /**
@@ -197,25 +199,48 @@ public final class Conditions {
     final Condition.Combination conditionCombination = new DefaultConditionCombination(AND);
     for (int i = 0; i < attributes.size(); i++) {
       final Object value = entityKey.get(entityKey.getAttributes().get(i));
-      if (value == null) {
-        conditionCombination.add(condition(attributes.get(i)).isNull());
+      final Attribute<Object> attribute = (Attribute<Object>) attributes.get(i);
+      if (operator == EQUALS) {
+        if (value == null) {
+          conditionCombination.add(new DefaultAttributeEqualCondition<>(attribute, emptyList()));
+        }
+        else {
+          conditionCombination.add(new DefaultAttributeEqualCondition<>(attribute, singletonList(requireNonNull(value))));
+        }
+      }
+      else if (operator == NOT_EQUALS) {
+        if (value == null) {
+          conditionCombination.add(new DefaultAttributeEqualCondition<>(attribute, emptyList(), true));
+        }
+        else {
+          conditionCombination.add(new DefaultAttributeEqualCondition<>(attribute, singletonList(requireNonNull(value)), true));
+        }
       }
       else {
-        conditionCombination.add(new DefaultAttributeCondition<>((Attribute<Object>) attributes.get(i),
-                operator, requireNonNull(value)));
+        throw new IllegalArgumentException("Unsupported operator: " + operator);
       }
     }
 
     return conditionCombination;
   }
 
-  private static <T> Condition foreignKeyCondition(final List<Attribute<?>> foreignKeyColumnAttributes,
-                                                   final Operator operator, final List<Key> keys) {
+  private static Condition foreignKeyCondition(final List<Attribute<?>> foreignKeyColumnAttributes,
+                                               final Operator operator, final List<Key> keys) {
     if (foreignKeyColumnAttributes.size() > 1) {
       return compositeKeyCondition(keys, foreignKeyColumnAttributes, operator);
     }
 
-    return new DefaultAttributeCondition<>((Attribute<T>) foreignKeyColumnAttributes.get(0), operator, requireNonNull(getValues(keys)));
+    final Attribute<?> attribute = foreignKeyColumnAttributes.get(0);
+    final List<Object> values = getValues(keys);
+    if (operator == EQUALS) {
+      return new DefaultAttributeEqualCondition<>((Attribute<Object>) attribute, values);
+    }
+    else if (operator == NOT_EQUALS) {
+      return new DefaultAttributeEqualCondition<>((Attribute<Object>) attribute, values, true);
+    }
+    else {
+      throw new IllegalArgumentException("Unsupported operator: " + operator);
+    }
   }
 
   /**
