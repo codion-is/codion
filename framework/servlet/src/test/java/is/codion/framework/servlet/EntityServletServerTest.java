@@ -4,7 +4,6 @@
 package is.codion.framework.servlet;
 
 import is.codion.common.Serializer;
-import is.codion.common.db.Operator;
 import is.codion.common.db.database.Databases;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
@@ -57,7 +56,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -201,7 +200,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     HttpPost httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(selectCondition(TestDomain.T_DEPARTMENT))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(TestDomain.T_DEPARTMENT).selectCondition())));
     context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -231,7 +230,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(selectCondition(department.getKey()))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getKey()))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
@@ -267,7 +266,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(selectCondition(TestDomain.DEPARTMENT_NAME, Operator.EQUALS, "New name"))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(TestDomain.DEPARTMENT_NAME).equalTo("New name").selectCondition())));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
@@ -278,7 +277,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(selectCondition(department.getKey()))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getKey()).selectCondition())));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
@@ -289,7 +288,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(selectCondition(TestDomain.DEPARTMENT_ID, Operator.EQUALS, -42))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(TestDomain.DEPARTMENT_ID).equalTo(-42))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();

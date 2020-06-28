@@ -56,6 +56,16 @@ public interface Condition extends Serializable {
   String getWhereClause(EntityDefinition definition);
 
   /**
+   * @return a {@link SelectCondition} based on this condition
+   */
+  SelectCondition selectCondition();
+
+  /**
+   * @return a {@link UpdateCondition} based on this condition
+   */
+  UpdateCondition updateCondition();
+
+  /**
    * An interface encapsulating a combination of Condition objects,
    * that should be either AND'ed or OR'ed together in a query context
    */

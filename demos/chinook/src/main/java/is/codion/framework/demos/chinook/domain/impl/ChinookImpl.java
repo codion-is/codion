@@ -25,8 +25,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static is.codion.common.db.Operator.EQUALS;
-import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
@@ -350,7 +349,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   private static final class UpdateTotalsProcedure implements DatabaseProcedure<EntityConnection, Object> {
 
     private static final SelectCondition ALL_INVOICES =
-            selectCondition(Invoice.TYPE)
+            condition(Invoice.TYPE).selectCondition()
                     .setForUpdate(true).setForeignKeyFetchDepth(0);
 
     @Override
@@ -373,7 +372,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       BigDecimal priceIncrease = (BigDecimal) arguments.get(1);
 
       SelectCondition selectCondition =
-              selectCondition(Track.ID, EQUALS, trackIds)
+              condition(Track.ID).equalTo(trackIds).selectCondition()
                       .setForUpdate(true);
 
       return entityConnection.update(entityConnection.getEntities()

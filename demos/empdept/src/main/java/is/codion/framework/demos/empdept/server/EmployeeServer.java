@@ -19,7 +19,7 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.List;
 
-import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.condition;
 
 public final class EmployeeServer extends EntityServer {
 
@@ -48,14 +48,14 @@ public final class EmployeeServer extends EntityServer {
     @Override
     public List<Entity> getEmployees() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
-        return connectionProxy.select(selectCondition(Employee.TYPE));
+        return connectionProxy.select(condition(Employee.TYPE).selectCondition());
       }
     }
 
     @Override
     public List<Employee> getEmployeeBeans() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
-        final List<Entity> employees = connectionProxy.select(selectCondition(Employee.TYPE).setForeignKeyFetchDepth(-1));
+        final List<Entity> employees = connectionProxy.select(condition(Employee.TYPE).selectCondition().setForeignKeyFetchDepth(-1));
 
         return connectionProxy.getEntities().castTo(Employee.TYPE, employees);
       }

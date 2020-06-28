@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import static is.codion.framework.db.condition.Conditions.condition;
-import static is.codion.framework.db.condition.Conditions.selectCondition;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -293,7 +292,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
         condition = condition(entityType);
       }
 
-      return connectionProvider.getConnection().select(selectCondition(condition)
+      return connectionProvider.getConnection().select(condition.selectCondition()
               .setOrderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
     }
     catch (final DatabaseException e) {

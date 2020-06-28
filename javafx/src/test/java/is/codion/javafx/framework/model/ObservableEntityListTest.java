@@ -3,7 +3,6 @@
  */
 package is.codion.javafx.framework.model;
 
-import is.codion.common.db.Operator;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventListener;
@@ -44,7 +43,7 @@ public final class ObservableEntityListTest {
     final ObservableEntityList list = new ObservableEntityList(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
-    list.setSelectCondition(Conditions.condition(TestDomain.DEPARTMENT_NAME, Operator.NOT_EQUALS, "SALES", "OPERATIONS"));
+    list.setSelectCondition(Conditions.condition(TestDomain.DEPARTMENT_NAME).notEqualTo("SALES", "OPERATIONS"));
     list.refresh();
     assertEquals(2, list.size());
   }

@@ -44,7 +44,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
 
-import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
@@ -347,7 +347,7 @@ public class EntityTestUnit {
               "Entity of type " + testEntity.getEntityType() + " failed equals comparison");
     }
     else {
-      connection.select(selectCondition(entityType).setFetchCount(SELECT_FETCH_COUNT));
+      connection.select(condition(entityType).selectCondition().setFetchCount(SELECT_FETCH_COUNT));
     }
   }
 

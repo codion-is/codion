@@ -34,6 +34,24 @@ abstract class AbstractCondition implements Condition {
   }
 
   @Override
+  public final SelectCondition selectCondition() {
+    if (this instanceof SelectCondition) {
+      return (SelectCondition) this;
+    }
+
+    return new DefaultSelectCondition(this);
+  }
+
+  @Override
+  public final UpdateCondition updateCondition() {
+    if (this instanceof UpdateCondition) {
+      return (UpdateCondition) this;
+    }
+
+    return new DefaultUpdateCondition(this);
+  }
+
+  @Override
   public String toString() {
     return getClass().getSimpleName() + ": " + getEntityType();
   }

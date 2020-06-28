@@ -83,7 +83,7 @@ public class EntityServerTest {
     final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_TYPE,
             singletonList(TestDomain.EMP_MGR), singletonList(4));
 
-    connection.select(Conditions.selectCondition(condition));
+    connection.select(condition.selectCondition());
 
     connection.disconnect();
   }
@@ -169,7 +169,7 @@ public class EntityServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    final SelectCondition selectCondition = Conditions.selectCondition(TestDomain.T_EMP)
+    final SelectCondition selectCondition = Conditions.condition(TestDomain.T_EMP).selectCondition()
             .setOrderBy(orderBy().ascending(TestDomain.EMP_NAME));
     remoteConnectionTwo.select(selectCondition);
 

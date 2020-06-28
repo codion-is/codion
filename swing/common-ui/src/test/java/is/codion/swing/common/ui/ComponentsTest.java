@@ -15,7 +15,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,14 +42,17 @@ public class ComponentsTest {
     state = States.state();
 
     final State theState = state;
-    SwingUtilities.invokeLater(() -> {
+    try {
       Components.linkToEnabledState(theState, comp);
       assertFalse(comp.isEnabled());
       theState.set(true);
+      Thread.sleep(50);//due to EDT
       assertTrue(comp.isEnabled());
       theState.set(false);
+      Thread.sleep(50);//due to EDT
       assertFalse(comp.isEnabled());
-    });
+    }
+    catch (final InterruptedException e) {/*ignored*/}
   }
 
   @Test

@@ -5,7 +5,6 @@ package is.codion.framework.db.http;
 
 import is.codion.common.Serializer;
 import is.codion.common.Util;
-import is.codion.common.db.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
 import is.codion.common.db.exception.RecordNotFoundException;
@@ -59,7 +58,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
-import static is.codion.framework.db.condition.Conditions.selectCondition;
+import static is.codion.framework.db.condition.Conditions.condition;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -358,12 +357,12 @@ final class HttpEntityConnection implements EntityConnection {
 
   @Override
   public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return selectSingle(selectCondition(attribute, Operator.EQUALS, value));
+    return selectSingle(condition(attribute).equalTo(value).selectCondition());
   }
 
   @Override
   public Entity selectSingle(final Key key) throws DatabaseException {
-    return selectSingle(selectCondition(key));
+    return selectSingle(condition(key).selectCondition());
   }
 
   @Override
@@ -411,12 +410,12 @@ final class HttpEntityConnection implements EntityConnection {
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return select(selectCondition(attribute, Operator.EQUALS, value));
+    return select(condition(attribute).equalTo(value).selectCondition());
   }
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
-    return select(selectCondition(attribute, Operator.EQUALS, values));
+    return select(condition(attribute).equalTo(values).selectCondition());
   }
 
   @Override
