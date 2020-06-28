@@ -34,8 +34,6 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   /**
    * Instantiates a new {@link DefaultSelectCondition}
    * @param condition the Condition object
-   * @see DefaultAttributeCondition
-   * @see EntityKeyCondition
    */
   DefaultSelectCondition(final Condition condition) {
     super(requireNonNull(condition, "condition").getEntityType());

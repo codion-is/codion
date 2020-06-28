@@ -6321,3 +6321,4 @@
   Util.map() and Entities.mapToType() made a bit more flexible with wildcard generic type
   Conditions, added a few @SafeVarargs annotations
   Conditions, major refactoring
+  Conditions, further refactoring
