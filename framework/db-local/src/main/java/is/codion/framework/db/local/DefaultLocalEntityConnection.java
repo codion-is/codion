@@ -58,7 +58,8 @@ import java.util.function.Predicate;
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.common.db.connection.DatabaseConnections.createConnection;
 import static is.codion.common.db.database.Database.closeSilently;
-import static is.codion.framework.db.condition.Conditions.*;
+import static is.codion.framework.db.condition.Conditions.condition;
+import static is.codion.framework.db.condition.Conditions.whereCondition;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.Entities.*;
 import static java.util.Arrays.asList;
@@ -546,7 +547,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Condition combinedCondition = condition(attribute).isNotNull();
     if (condition != null) {
       condition.getAttributes().forEach(conditionAttribute -> validateAttribute(attribute.getEntityType(), conditionAttribute));
-      combinedCondition = combinedCondition.and(expand(condition, entityDefinition));
+      combinedCondition = combinedCondition.and(condition);
     }
     final WhereCondition whereCondition = whereCondition(combinedCondition, entityDefinition);
     final ColumnProperty<T> propertyToSelect = entityDefinition.getColumnProperty(attribute);

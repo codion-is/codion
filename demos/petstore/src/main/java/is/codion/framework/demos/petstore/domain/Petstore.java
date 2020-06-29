@@ -16,7 +16,6 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.property.Properties.*;
-import static java.sql.Types.INTEGER;
 
 public final class Petstore extends DefaultDomain {
 
@@ -192,7 +191,7 @@ public final class Petstore extends DefaultDomain {
             foreignKeyProperty(Item.ADDRESS_FK, "Address", Address.TYPE,
                     columnProperty(Item.ADDRESS_ID).columnName("address_addressid"))
                     .nullable(false),
-            booleanProperty(Item.DISABLED, INTEGER, Item.DISABLED.getName(), 1, 0)
+            booleanProperty(Item.DISABLED, Item.DISABLED.getName(), Integer.class, 1, 0)
                     .columnName("disabled").defaultValue(false))
             .keyGenerator(increment("petstore.item", "itemid"))
             .orderBy(orderBy().ascending(Item.NAME))

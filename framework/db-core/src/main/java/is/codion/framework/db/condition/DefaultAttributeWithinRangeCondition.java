@@ -5,8 +5,6 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.ColumnProperty;
 
 import java.util.List;
 
@@ -21,14 +19,9 @@ final class DefaultAttributeWithinRangeCondition<T> extends AbstractAttributeCon
   private final T upperBound;
 
   DefaultAttributeWithinRangeCondition(final Attribute<T> attribute, final T lowerBound, final T upperBound) {
-    super(attribute);
+    super(attribute, Operator.WITHIN_RANGE);
     this.lowerBound = requireNonNull(lowerBound);
     this.upperBound = requireNonNull(upperBound);
-  }
-
-  @Override
-  public Operator getOperator() {
-    return Operator.WITHIN_RANGE;
   }
 
   @Override
@@ -42,10 +35,7 @@ final class DefaultAttributeWithinRangeCondition<T> extends AbstractAttributeCon
   }
 
   @Override
-  public String getWhereClause(final EntityDefinition definition) {
-    final ColumnProperty<T> property = definition.getColumnProperty(getAttribute());
-    final String columnIdentifier = getColumnIdentifier(property);
-
+  protected String getWhereClause(final String columnIdentifier) {
     return "(" + columnIdentifier + " >= ? and " + columnIdentifier + " <= ?)";
   }
 }

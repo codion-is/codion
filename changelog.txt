@@ -6350,3 +6350,5 @@
   Conditions, added a few @SafeVarargs annotations
   Conditions, major refactoring
   Conditions, further refactoring
+  Conditions, even more refactoring and some cleanup
+  ColumnProperty.Builder.columnType() and valueConverter() setters replaced with columnTypeClass(Class, ValueConverter)

@@ -3,7 +3,9 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.SubqueryProperty;
 
@@ -14,10 +16,12 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   private static final long serialVersionUID = 1;
 
   private final Attribute<T> attribute;
+  private final Operator operator;
 
-  protected AbstractAttributeCondition(final Attribute<T> attribute) {
+  protected AbstractAttributeCondition(final Attribute<T> attribute, final Operator operator) {
     super(requireNonNull(attribute, "attribute").getEntityType());
     this.attribute = attribute;
+    this.operator = operator;
   }
 
   @Override
@@ -26,16 +30,29 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   }
 
   @Override
+  public final Operator getOperator() {
+    return operator;
+  }
+
+  @Override
   public AttributeCondition<String> setCaseSensitive(final boolean caseSensitive) {
     throw new UnsupportedOperationException();
   }
+
+  @Override
+  public final String getWhereClause(final EntityDefinition definition) {
+    return getWhereClause(getColumnIdentifier(definition));
+  }
+
+  protected abstract String getWhereClause(String columnIdentifier);
 
   @Override
   public final String toString() {
     return super.toString() + ": " + attribute;
   }
 
-  protected final String getColumnIdentifier(final ColumnProperty<?> property) {
+  private String getColumnIdentifier(final EntityDefinition definition) {
+    final ColumnProperty<T> property = definition.getColumnProperty(attribute);
     if (property instanceof SubqueryProperty) {
       return "(" + ((SubqueryProperty<?>) property).getSubQuery() + ")";
     }

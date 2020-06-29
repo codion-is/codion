@@ -3,13 +3,9 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.common.Util;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 
 import java.util.Collection;
-import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -26,12 +22,12 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> equalTo(final T value) {
-    return new DefaultAttributeEqualCondition<>(attribute, singletonList(requireNonNull(value)));
+    return equalTo(singletonList(requireNonNull(value)));
   }
 
   @Override
   public AttributeCondition<T> equalTo(final T... values) {
-    return new DefaultAttributeEqualCondition<>(attribute, asList(requireNonNull(values)));
+    return equalTo(asList(requireNonNull(values)));
   }
 
   @Override
@@ -41,12 +37,12 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> notEqualTo(final T value) {
-    return new DefaultAttributeEqualCondition<>(attribute, singletonList(requireNonNull(value)), true);
+    return notEqualTo(singletonList(requireNonNull(value)));
   }
 
   @Override
   public AttributeCondition<T> notEqualTo(final T... values) {
-    return new DefaultAttributeEqualCondition<>(attribute, asList(requireNonNull(values)), true);
+    return notEqualTo(asList(requireNonNull(values)));
   }
 
   @Override
@@ -82,22 +78,5 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   @Override
   public AttributeCondition<T> isNotNull() {
     return new DefaultAttributeEqualCondition<>(attribute, emptyList(), true);
-  }
-
-  @Override
-  public AttributeCondition<Entity> equalTo(final Key key) {
-    return new DefaultAttributeEqualCondition<>((Attribute<Entity>) attribute, singletonList(key));
-  }
-
-  @Override
-  public AttributeCondition<Entity> equalTo(final List<Key> keys) {
-    checkKeysParameter(keys);
-    return new DefaultAttributeEqualCondition<>((Attribute<Entity>) attribute, keys);
-  }
-
-  private static void checkKeysParameter(final List<Key> keys) {
-    if (Util.nullOrEmpty(keys)) {
-      throw new IllegalArgumentException("One or more keys must be provided for condition");
-    }
   }
 }

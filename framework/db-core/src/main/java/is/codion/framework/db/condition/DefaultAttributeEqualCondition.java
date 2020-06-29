@@ -6,8 +6,6 @@ package is.codion.framework.db.condition;
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.ColumnProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,12 +28,12 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
 
   private boolean caseSensitive = true;
 
-  DefaultAttributeEqualCondition(final Attribute<T> attribute, final Collection<? extends Object> conditionValues) {
+  DefaultAttributeEqualCondition(final Attribute<T> attribute, final Collection<? extends T> conditionValues) {
     this(attribute, conditionValues, false);
   }
 
-  DefaultAttributeEqualCondition(final Attribute<T> attribute, final Collection<? extends Object> conditionValues, final boolean negated) {
-    super(attribute);
+  DefaultAttributeEqualCondition(final Attribute<T> attribute, final Collection<? extends T> conditionValues, final boolean negated) {
+    super(attribute, negated ? Operator.NOT_EQUALS : Operator.EQUALS);
     this.values = new ArrayList<>(requireNonNull(conditionValues));
     this.negated = negated;
     //replace Entity with Entity.Key
@@ -49,11 +47,6 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
         break;
       }
     }
-  }
-
-  @Override
-  public Operator getOperator() {
-    return negated ? Operator.NOT_EQUALS : Operator.EQUALS;
   }
 
   @Override
@@ -71,20 +64,6 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
   }
 
   @Override
-  public String getWhereClause(final EntityDefinition definition) {
-    final ColumnProperty<?> property = definition.getColumnProperty(getAttribute());
-    String columnIdentifier = getColumnIdentifier(property);
-    if (values.isEmpty()) {
-      return columnIdentifier + (negated ? " is not null" : " is null");
-    }
-    if (property.getAttribute().isString() && !caseSensitive) {
-      columnIdentifier = "upper(" + columnIdentifier + ")";
-    }
-
-    return getLikeCondition(property, columnIdentifier);
-  }
-
-  @Override
   public AttributeCondition<String> setCaseSensitive(final boolean caseSensitive) {
     if (!getAttribute().isString()) {
       throw new IllegalStateException("Attribute " + getAttribute() + " is not a String attribute");
@@ -94,16 +73,25 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
     return (AttributeCondition<String>) this;
   }
 
-  private String getLikeCondition(final ColumnProperty<?> property, final String columnIdentifier) {
-    final String valuePlaceholder = property.getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
-    if (values.size() > 1) {
-      return getInList(columnIdentifier, valuePlaceholder, values.size(), negated);
+  @Override
+  protected String getWhereClause(final String columnIdentifier) {
+    String identifier = columnIdentifier;
+    if (values.isEmpty()) {
+      return identifier + (negated ? " is not null" : " is null");
     }
-    if (property.getAttribute().isString() && containsWildcards((String) values.get(0))) {
-      return columnIdentifier + (negated ? " not like " : " like ") + valuePlaceholder;
+    if (getAttribute().isString() && !caseSensitive) {
+      identifier = "upper(" + identifier + ")";
     }
 
-    return columnIdentifier + (negated ? " <> " : " = ") + valuePlaceholder;
+    final String valuePlaceholder = getAttribute().isString() && !caseSensitive ? "upper(?)" : "?";
+    if (values.size() > 1) {
+      return getInList(identifier, valuePlaceholder, values.size(), negated);
+    }
+    if (getAttribute().isString() && containsWildcards((String) values.get(0))) {
+      return identifier + (negated ? " not like " : " like ") + valuePlaceholder;
+    }
+
+    return identifier + (negated ? " <> " : " = ") + valuePlaceholder;
   }
 
   private static String getInList(final String columnIdentifier, final String valuePlaceholder, final int valueCount, final boolean negated) {
