@@ -137,7 +137,7 @@ public interface ColumnProperty<T> extends Property<T> {
    * Converts to and from SQL values, such as integers being used to represent booleans in a database.
    * @param <T> the type of the value
    * @param <C> the type of the underlying column
-   * @see Builder#columnType(int)
+   * @see Builder#columnTypeClass(Class, ValueConverter)
    */
   interface ValueConverter<T, C> {
 
@@ -218,11 +218,12 @@ public interface ColumnProperty<T> extends Property<T> {
     ColumnProperty.Builder<T> dateTimeFormatPattern(String dateTimeFormatPattern);
 
     /**
-     * Sets the actual column type, use in conjunction with a {@link ValueConverter} if necessary.
-     * @param columnType the underlying column type
+     * Sets the actual column type, and the required {@link ValueConverter}.
+     * @param columnTypeClass the underlying column type class
+     * @param valueConverter the converter to use when converting to and from column values
      * @return this instance
      */
-    ColumnProperty.Builder<T> columnType(int columnType);
+    <C> ColumnProperty.Builder<T> columnTypeClass(Class<C> columnTypeClass, ValueConverter<T, C> valueConverter);
 
     /**
      * Sets the actual string used as column when querying
@@ -286,14 +287,6 @@ public interface ColumnProperty<T> extends Property<T> {
      * @return this instance
      */
     ColumnProperty.Builder<T> selectable(boolean selectable);
-
-    /**
-     * Set a value converter, for converting to and from a sql representation of the value
-     * @param valueConverter the converter
-     * @param <C> the column value type
-     * @return this instance
-     */
-    <C> ColumnProperty.Builder<T> valueConverter(ValueConverter<T, C> valueConverter);
 
     /**
      * If true then this property is included when searching for an entity by a string value.

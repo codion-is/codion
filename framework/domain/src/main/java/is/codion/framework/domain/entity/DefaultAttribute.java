@@ -3,11 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import java.math.BigDecimal;
 import java.sql.Types;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -29,7 +25,7 @@ class DefaultAttribute<T> implements Attribute<T> {
     }
     this.name = name;
     this.entityType = requireNonNull(entityType, "entityType");
-    this.type = getSqlType(requireNonNull(typeClass, "typeClass"));
+    this.type = Attribute.getSqlType(typeClass);
     this.typeClass = typeClass;
     this.hashCode = Objects.hash(name, entityType);
   }
@@ -165,46 +161,5 @@ class DefaultAttribute<T> implements Attribute<T> {
   @Override
   public final String toString() {
     return "entityType: " + entityType + ", name: " + name;
-  }
-
-  private static int getSqlType(final Class<?> clazz) {
-    if (clazz.equals(Long.class)) {
-      return Types.BIGINT;
-    }
-    if (clazz.equals(Integer.class)) {
-      return Types.INTEGER;
-    }
-    if (clazz.equals(Double.class)) {
-      return Types.DOUBLE;
-    }
-    if (clazz.equals(BigDecimal.class)) {
-      return Types.DECIMAL;
-    }
-    if (clazz.equals(LocalDate.class)) {
-      return Types.DATE;
-    }
-    if (clazz.equals(LocalTime.class)) {
-      return Types.TIME;
-    }
-    if (clazz.equals(LocalDateTime.class)) {
-      return Types.TIMESTAMP;
-    }
-    if (clazz.equals(String.class)) {
-      return Types.VARCHAR;
-    }
-    if (clazz.equals(Boolean.class)) {
-      return Types.BOOLEAN;
-    }
-    if (clazz.equals(byte[].class)) {
-      return Types.BLOB;
-    }
-    if (clazz.equals(Entity.class)) {
-      return Types.JAVA_OBJECT;
-    }
-    if (Object.class.isAssignableFrom(clazz)) {
-      return Types.JAVA_OBJECT;
-    }
-
-    return Types.OTHER;
   }
 }

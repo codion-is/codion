@@ -138,19 +138,19 @@ For databases lacking native boolean support we use the *Properties.booleanPrope
 
 [source,java]
 ----
-booleanProperty(Customer.IS_ACTIVE, Types.INTEGER, "Is active", 1, 0)
+booleanProperty(Customer.IS_ACTIVE, "Is active", Integer.class, 1, 0)
 ----
 
 For boolean columns using unconventional types you can specify the true and false values.
 
 [source,java]
 ----
-booleanProperty(Customer.IS_ACTIVE, Types.VARCHAR, "Is active", "true", "false")
+booleanProperty(Customer.IS_ACTIVE, "Is active", String.class, "true", "false")
 ----
 
 [source,java]
 ----
-booleanProperty(Customer.IS_ACTIVE, Types.CHAR, "Is active", 'T', 'F')
+booleanProperty(Customer.IS_ACTIVE, "Is active", Character.class, 'T', 'F')
 ----
 
 Note that boolean properties always use the boolean Java type, the framework handles translating to and from the actual column values.

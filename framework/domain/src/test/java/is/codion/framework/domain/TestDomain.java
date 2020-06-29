@@ -15,7 +15,6 @@ import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.TransientProperty;
 
 import java.io.Serializable;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -209,7 +208,7 @@ public class TestDomain extends DefaultDomain {
             columnProperty(Department.LOCATION, Department.LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13)
                     .beanProperty("location"),
-            booleanProperty(Department.ACTIVE, Types.INTEGER, null, 1, 0)
+            booleanProperty(Department.ACTIVE, null, Integer.class, 1, 0)
                     .readOnly(true)
                     .beanProperty("active"),
             blobProperty(Department.DATA)

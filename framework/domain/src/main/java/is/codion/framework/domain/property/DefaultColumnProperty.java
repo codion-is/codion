@@ -6,13 +6,10 @@ package is.codion.framework.domain.property;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.domain.entity.Attribute;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Format;
 import java.time.LocalDate;
@@ -44,7 +41,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   private final transient ResultPacker<T> resultPacker;
   private transient ValueFetcher<T> valueFetcher;
   private transient String columnName;
-  private transient ValueConverter<Object, Object> valueConverter;
+  private transient ValueConverter<T, ?> valueConverter;
   private transient boolean groupingColumn = false;
   private transient boolean aggregateColumn = false;
   private transient boolean selectable = true;
@@ -54,7 +51,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     this.columnType = attribute.getType();
     this.columnName = attribute.getName();
     this.valueConverter = initializeValueConverter();
-    this.valueFetcher = (ValueFetcher<T>) initializeValueFetcher();
+    this.valueFetcher = initializeValueFetcher();
     this.resultPacker = new PropertyResultPacker();
   }
 
@@ -158,21 +155,21 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     return new DefaultColumnPropertyBuilder<>(this);
   }
 
-  private ValueConverter initializeValueConverter() {
+  private ValueConverter<T, ?> initializeValueConverter() {
     if (getAttribute().isDate()) {
-      return DATE_VALUE_CONVERTER;
+      return (ValueConverter<T, ?>) DATE_VALUE_CONVERTER;
     }
     else if (getAttribute().isTimestamp()) {
-      return TIMESTAMP_VALUE_CONVERTER;
+      return (ValueConverter<T, ?>) TIMESTAMP_VALUE_CONVERTER;
     }
     else if (getAttribute().isTime()) {
-      return TIME_VALUE_CONVERTER;
+      return (ValueConverter<T, ?>) TIME_VALUE_CONVERTER;
     }
 
-    return DEFAULT_VALUE_CONVERTER;
+    return (ValueConverter<T, ?>) DEFAULT_VALUE_CONVERTER;
   }
 
-  private ValueFetcher<Object> initializeValueFetcher() {
+  private ValueFetcher<T> initializeValueFetcher() {
     if (this instanceof MirrorProperty) {
       return null;
     }
@@ -200,7 +197,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
       case Types.BLOB:
         return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getBlob(resultSet, columnIndex));
       case Types.JAVA_OBJECT:
-        return ResultSet::getObject;
+        return (resultSet, columnIndex) -> (T) resultSet.getObject(columnIndex);
       default:
         throw new IllegalArgumentException("Unsupported SQL value type: " + getColumnType());
     }
@@ -214,66 +211,66 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
   }
 
-  private static Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
+  private static <T> T getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final boolean value = resultSet.getBoolean(columnIndex);
 
-    return !value && resultSet.wasNull() ? null : value;
+    return (T) (!value && resultSet.wasNull() ? null : value);
   }
 
-  private static Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
+  private static <T> T getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final int value = resultSet.getInt(columnIndex);
 
-    return value == 0 && resultSet.wasNull() ? null : value;
+    return (T) (value == 0 && resultSet.wasNull() ? null : value);
   }
 
-  private static Long getLong(final ResultSet resultSet, final int columnIndex) throws SQLException {
+  private static <T> T getLong(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final long value = resultSet.getLong(columnIndex);
 
-    return value == 0 && resultSet.wasNull() ? null : value;
+    return (T) (value == 0 && resultSet.wasNull() ? null : value);
   }
 
-  private static Double getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
+  private static <T> T getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final double value = resultSet.getDouble(columnIndex);
 
-    return Double.compare(value, 0) == 0 && resultSet.wasNull() ? null : value;
+    return (T) (Double.compare(value, 0) == 0 && resultSet.wasNull() ? null : value);
   }
 
-  private static BigDecimal getBigDecimal(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return resultSet.getBigDecimal(columnIndex);
+  private static <T> T getBigDecimal(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    return (T) resultSet.getBigDecimal(columnIndex);
   }
 
-  private static String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return resultSet.getString(columnIndex);
+  private static <T> T getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    return (T) resultSet.getString(columnIndex);
   }
 
-  private static java.util.Date getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return resultSet.getDate(columnIndex);
+  private static <T> T getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    return (T) resultSet.getDate(columnIndex);
   }
 
-  private static Timestamp getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return resultSet.getTimestamp(columnIndex);
+  private static <T> T getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    return (T) resultSet.getTimestamp(columnIndex);
   }
 
-  private static Time getTime(final ResultSet resultSet, final int columnIndex) throws SQLException {
-    return resultSet.getTime(columnIndex);
+  private static <T> T getTime(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    return (T) resultSet.getTime(columnIndex);
   }
 
-  private static Character getCharacter(final ResultSet resultSet, final int columnIndex) throws SQLException {
+  private static <T> T getCharacter(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final String val = getString(resultSet, columnIndex);
     if (!nullOrEmpty(val)) {
-      return val.charAt(0);
+      return (T) Character.valueOf(val.charAt(0));
     }
 
     return null;
   }
 
-  private static byte[] getBlob(final ResultSet resultSet, final int columnIndex) throws SQLException {
+  private static <T> T getBlob(final ResultSet resultSet, final int columnIndex) throws SQLException {
     final Blob blob = resultSet.getBlob(columnIndex);
     if (blob == null) {
       return null;
     }
 
-    return blob.getBytes(1, (int) blob.length());
+    return (T) blob.getBytes(1, (int) blob.length());
   }
 
   static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {
@@ -494,9 +491,11 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> columnType(final int columnType) {
-      columnProperty.columnType = columnType;
-      columnProperty.valueFetcher = (ValueFetcher<T>) columnProperty.initializeValueFetcher();
+    public <C> ColumnProperty.Builder<T> columnTypeClass(final Class<C> columnTypeClass,
+                                                         final ValueConverter<T, C> valueConverter) {
+      columnProperty.columnType = Attribute.getSqlType(columnTypeClass);
+      columnProperty.valueConverter = requireNonNull(valueConverter, "valueConverter");
+      columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
       return this;
     }
 
@@ -563,13 +562,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final ColumnProperty.Builder<T> selectable(final boolean selectable) {
       columnProperty.selectable = selectable;
-      return this;
-    }
-
-    @Override
-    public final <C> ColumnProperty.Builder<T> valueConverter(final ValueConverter<T, C> valueConverter) {
-      requireNonNull(valueConverter, "valueConverter");
-      columnProperty.valueConverter = (ValueConverter<Object, Object>) valueConverter;
       return this;
     }
 
