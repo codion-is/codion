@@ -52,11 +52,11 @@ public final class Conditions {
       return singleCompositeCondition(key.getAttributes(), EQUALS, key);
     }
 
-    return new DefaultAttributeEqualCondition<>(key.getAttribute(), singletonList(requireNonNull(key.get())));
+    return new DefaultAttributeEqualCondition<>(key.getAttribute(), singletonList(key.get()));
   }
 
   /**
-   * Creates a {@link Condition} based on the given keys
+   * Creates a {@link Condition} based on the given keys, assuming they are all for the same entity type.
    * @param keys the keys
    * @return a condition based on the given keys
    * @throws IllegalArgumentException in case {@code keys} is empty
@@ -67,10 +67,10 @@ public final class Conditions {
     }
     final Key firstKey = keys.get(0);
     if (firstKey.isCompositeKey()) {
-      return compositeKeyCondition(keys, firstKey.getAttributes(), EQUALS);
+      return compositeKeyCondition(firstKey.getAttributes(), EQUALS, keys);
     }
 
-    return new DefaultAttributeEqualCondition<>((Attribute<?>) firstKey.getAttribute(), requireNonNull(getValues(keys)));
+    return new DefaultAttributeEqualCondition<>((Attribute<?>) firstKey.getAttribute(), getValues(keys));
   }
 
   /**
@@ -139,12 +139,12 @@ public final class Conditions {
 
   /**
    * Expands the given condition, that is, transforms attribute conditions based on foreign key
-   * attributes into column attribute conditions
+   * attributes into column based attribute conditions
    * @param condition the condition
    * @param definition the entity definition
    * @return an expanded Condition
    */
-  public static Condition expand(final Condition condition, final EntityDefinition definition) {
+  private static Condition expand(final Condition condition, final EntityDefinition definition) {
     requireNonNull(condition, "condition");
     requireNonNull(definition, "definition");
     if (condition instanceof Condition.Combination) {
@@ -174,8 +174,8 @@ public final class Conditions {
     return condition;
   }
 
-  private static Condition compositeKeyCondition(final List<Key> keys, final List<Attribute<?>> attributes,
-                                                 final Operator operator) {
+  private static Condition compositeKeyCondition(final List<Attribute<?>> attributes, final Operator operator,
+                                                 final List<Key> keys) {
     if (keys.size() == 1) {
       return singleCompositeCondition(attributes, operator, keys.get(0));
     }
@@ -184,37 +184,27 @@ public final class Conditions {
   }
 
   /* Assumes keys is not empty. */
-  private static Condition multipleCompositeCondition(final List<Attribute<?>> properties, final Operator operator,
+  private static Condition multipleCompositeCondition(final List<Attribute<?>> attributes, final Operator operator,
                                                       final List<Key> keys) {
-    final Condition.Combination conditionCombination = new DefaultConditionCombination(OR);
+    final Condition.Combination conditionCombination = combination(OR);
     for (int i = 0; i < keys.size(); i++) {
-      conditionCombination.add(singleCompositeCondition(properties, operator, keys.get(i)));
+      conditionCombination.add(singleCompositeCondition(attributes, operator, keys.get(i)));
     }
 
     return conditionCombination;
   }
 
   private static Condition singleCompositeCondition(final List<Attribute<?>> attributes, final Operator operator,
-                                                    final Key entityKey) {
-    final Condition.Combination conditionCombination = new DefaultConditionCombination(AND);
+                                                    final Key key) {
+    final Condition.Combination conditionCombination = combination(AND);
     for (int i = 0; i < attributes.size(); i++) {
-      final Object value = entityKey.get(entityKey.getAttributes().get(i));
-      final Attribute<Object> attribute = (Attribute<Object>) attributes.get(i);
+      final Object value = key.get(key.getAttributes().get(i));
+      final AttributeCondition.Builder<Object> condition = condition((Attribute<Object>) attributes.get(i));
       if (operator == EQUALS) {
-        if (value == null) {
-          conditionCombination.add(new DefaultAttributeEqualCondition<>(attribute, emptyList()));
-        }
-        else {
-          conditionCombination.add(new DefaultAttributeEqualCondition<>(attribute, singletonList(requireNonNull(value))));
-        }
+        conditionCombination.add(value == null ? condition.isNull() : condition.equalTo(value));
       }
       else if (operator == NOT_EQUALS) {
-        if (value == null) {
-          conditionCombination.add(new DefaultAttributeEqualCondition<>(attribute, emptyList(), true));
-        }
-        else {
-          conditionCombination.add(new DefaultAttributeEqualCondition<>(attribute, singletonList(requireNonNull(value)), true));
-        }
+        conditionCombination.add(value == null ? condition.isNotNull() : condition.notEqualTo(value));
       }
       else {
         throw new IllegalArgumentException("Unsupported operator: " + operator);
@@ -224,23 +214,21 @@ public final class Conditions {
     return conditionCombination;
   }
 
-  private static Condition foreignKeyCondition(final List<Attribute<?>> foreignKeyColumnAttributes,
+  private static Condition foreignKeyCondition(final List<Attribute<?>> foreignKeyAttributes,
                                                final Operator operator, final List<Key> keys) {
-    if (foreignKeyColumnAttributes.size() > 1) {
-      return compositeKeyCondition(keys, foreignKeyColumnAttributes, operator);
+    if (foreignKeyAttributes.size() > 1) {
+      return compositeKeyCondition(foreignKeyAttributes, operator, keys);
     }
 
-    final Attribute<?> attribute = foreignKeyColumnAttributes.get(0);
-    final List<Object> values = getValues(keys);
+    final Attribute<?> attribute = foreignKeyAttributes.get(0);
     if (operator == EQUALS) {
-      return new DefaultAttributeEqualCondition<>((Attribute<Object>) attribute, values);
+      return condition((Attribute<Object>) attribute).equalTo(getValues(keys));
     }
-    else if (operator == NOT_EQUALS) {
-      return new DefaultAttributeEqualCondition<>((Attribute<Object>) attribute, values, true);
+    if (operator == NOT_EQUALS) {
+      return condition((Attribute<Object>) attribute).notEqualTo(getValues(keys));
     }
-    else {
-      throw new IllegalArgumentException("Unsupported operator: " + operator);
-    }
+
+    throw new IllegalArgumentException("Unsupported operator: " + operator);
   }
 
   /**
@@ -250,7 +238,7 @@ public final class Conditions {
 
     private static final long serialVersionUID = 1;
 
-    EmptyCondition(final EntityType<?> entityType) {
+    private EmptyCondition(final EntityType<?> entityType) {
       super(entityType);
     }
 

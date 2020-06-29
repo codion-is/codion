@@ -5,11 +5,8 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * A Condition based on a single {@link Attribute}.
@@ -123,19 +120,5 @@ public interface AttributeCondition<T> extends Condition {
      * @return a {@link AttributeCondition}
      */
     AttributeCondition<T> isNotNull();
-
-    /**
-     * Returns a 'equalTo' {@link AttributeCondition}.
-     * @param key the key to use in the condition
-     * @return a {@link AttributeCondition}
-     */
-    AttributeCondition<Entity> equalTo(Key key);
-
-    /**
-     * Returns a 'equalTo' {@link AttributeCondition}.
-     * @param keys the keys to use in the condition
-     * @return a {@link AttributeCondition}
-     */
-    AttributeCondition<Entity> equalTo(List<Key> keys);
   }
 }
