@@ -223,20 +223,20 @@ public final class Properties {
    * Creates a new {@link ColumnProperty.Builder} instance representing a Boolean value.
    * @param <C> the column type
    * @param attribute the attribute
-   * @param columnType the sql data type of the underlying column
+   * @param columnClass the underlying column data type class
    * @param trueValue the value representing 'true' in the underlying column
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <C> ColumnProperty.Builder<Boolean> booleanProperty(final Attribute<Boolean> attribute, final Class<C> columnTypeClass,
+  public static <C> ColumnProperty.Builder<Boolean> booleanProperty(final Attribute<Boolean> attribute, final Class<C> columnClass,
                                                                     final C trueValue, final C falseValue) {
-    return booleanProperty(attribute, null, columnTypeClass, trueValue, falseValue);
+    return booleanProperty(attribute, null, columnClass, trueValue, falseValue);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance representing a Boolean value.
    * @param <C> the column type
-   * @param columnType the sql data type of the underlying column
+   * @param columnClass the underlying column data type class
    * @param attribute the attribute
    * @param caption the property caption
    * @param trueValue the value representing 'true' in the underlying column
@@ -244,9 +244,9 @@ public final class Properties {
    * @return a new {@link ColumnProperty.Builder}
    */
   public static <C> ColumnProperty.Builder<Boolean> booleanProperty(final Attribute<Boolean> attribute, final String caption,
-                                                                    final Class<C> columnTypeClass, final C trueValue, final C falseValue) {
+                                                                    final Class<C> columnClass, final C trueValue, final C falseValue) {
     return new DefaultColumnProperty<>(attribute, caption).builder()
-            .columnTypeClass(columnTypeClass, booleanValueConverter(trueValue, falseValue));
+            .columnClass(columnClass, booleanValueConverter(trueValue, falseValue));
   }
 
   /**

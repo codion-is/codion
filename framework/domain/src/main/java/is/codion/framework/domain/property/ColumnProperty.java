@@ -137,7 +137,7 @@ public interface ColumnProperty<T> extends Property<T> {
    * Converts to and from SQL values, such as integers being used to represent booleans in a database.
    * @param <T> the type of the value
    * @param <C> the type of the underlying column
-   * @see Builder#columnTypeClass(Class, ValueConverter)
+   * @see Builder#columnClass(Class, ValueConverter)
    */
   interface ValueConverter<T, C> {
 
@@ -219,11 +219,12 @@ public interface ColumnProperty<T> extends Property<T> {
 
     /**
      * Sets the actual column type, and the required {@link ValueConverter}.
-     * @param columnTypeClass the underlying column type class
+     * @param <C> the column type
+     * @param columnClass the underlying column type class
      * @param valueConverter the converter to use when converting to and from column values
      * @return this instance
      */
-    <C> ColumnProperty.Builder<T> columnTypeClass(Class<C> columnTypeClass, ValueConverter<T, C> valueConverter);
+    <C> ColumnProperty.Builder<T> columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter);
 
     /**
      * Sets the actual string used as column when querying
