@@ -3,7 +3,9 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.common.Conjunction;
 import is.codion.framework.db.TestDomain;
+import is.codion.framework.domain.entity.Entities;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +14,8 @@ import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ConditionsTest {
+
+  private static final Entities ENTITIES = new TestDomain().getEntities();
 
   @Test
   public void selectConditionKeyNoKeys() {
@@ -47,5 +51,13 @@ public final class ConditionsTest {
     assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).updateCondition()
             .set(TestDomain.EMP_COMMISSION, 123d)
             .set(TestDomain.EMP_COMMISSION, 123d));
+  }
+
+  @Test
+  public void combinationEmpty() {
+    final Condition.Combination combination = Conditions.combination(Conjunction.AND,
+            Conditions.condition(TestDomain.T_EMP),
+            Conditions.condition(TestDomain.EMP_ID).equalTo(1));
+    assertEquals("(empno = ?)", combination.getWhereClause(ENTITIES.getDefinition(TestDomain.T_EMP)));
   }
 }
