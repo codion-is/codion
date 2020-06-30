@@ -6353,3 +6353,4 @@
   Conditions, even more refactoring and some cleanup
   ColumnProperty.Builder.columnType() and valueConverter() setters replaced with columnTypeClass(Class, ValueConverter)
   ColumnProperty.Builder.columnTypeClass() renamed columnClass()
+  DefaultConditionCombination bug fixed, did not take empty conditions into account when joining

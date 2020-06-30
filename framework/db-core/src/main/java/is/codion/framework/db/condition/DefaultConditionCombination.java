@@ -120,6 +120,7 @@ final class DefaultConditionCombination implements Condition.Combination {
 
     return new StringBuilder("(").append(conditions.stream()
             .map(condition -> condition.getWhereClause(definition))
+            .filter(string -> !string.isEmpty())
             .collect(joining(toString(conjunction)))).append(")").toString();
   }
 
