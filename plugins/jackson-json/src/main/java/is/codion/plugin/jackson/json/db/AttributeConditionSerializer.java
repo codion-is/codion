@@ -21,9 +21,9 @@ final class AttributeConditionSerializer implements Serializable {
     this.entityObjectMapper = entityObjectMapper;
   }
 
-  void serialize(final AttributeCondition condition, final JsonGenerator generator) throws IOException {
+  void serialize(final AttributeCondition<?> condition, final JsonGenerator generator) throws IOException {
     generator.writeStartObject();
-    generator.writeObjectField("type", "property");
+    generator.writeObjectField("type", "attribute");
     generator.writeObjectField("attribute", condition.getAttribute().getName());
     generator.writeObjectField("operator", condition.getOperator().name());
     generator.writeFieldName("values");

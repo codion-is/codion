@@ -10,27 +10,25 @@ import java.util.ResourceBundle;
  */
 public enum Operator {
 
-  EQUALS("=", "equals", Values.MANY, NullCompatible.YES),
-  NOT_EQUALS("\u2260", "not_equals", Values.MANY, NullCompatible.YES),
+  EQUALS("=", "equals", Values.MANY),
+  NOT_EQUALS("\u2260", "not_equals", Values.MANY),
   /** Less than or equals*/
-  LESS_THAN("\u2264", "less_than", Values.ONE, NullCompatible.NO),
+  LESS_THAN("\u2264", "less_than", Values.ONE),
   /** Greater than or equals*/
-  GREATER_THAN("\u2265", "greater_than", Values.ONE, NullCompatible.NO),
-  WITHIN_RANGE("\u2265 \u2264", "within_range", Values.TWO, NullCompatible.NO),
-  OUTSIDE_RANGE("\u2264 \u2265", "outside_range", Values.TWO, NullCompatible.NO);
+  GREATER_THAN("\u2265", "greater_than", Values.ONE),
+  WITHIN_RANGE("\u2265 \u2264", "within_range", Values.TWO),
+  OUTSIDE_RANGE("\u2264 \u2265", "outside_range", Values.TWO);
 
   private final ResourceBundle messages = ResourceBundle.getBundle(Operator.class.getName());
 
   private final String caption;
   private final String description;
   private final Values values;
-  private final boolean nullCompatible;
 
-  Operator(final String caption, final String descriptionKey, final Values values, final NullCompatible nullCompatible) {
+  Operator(final String caption, final String descriptionKey, final Values values) {
     this.caption = caption;
     this.description = messages.getString(descriptionKey);
     this.values = values;
-    this.nullCompatible = nullCompatible == NullCompatible.YES;
   }
 
   @Override
@@ -50,21 +48,10 @@ public enum Operator {
     return values;
   }
 
-  public boolean isNullCompatible() {
-    return nullCompatible;
-  }
-
   /**
    * The number of values expected for a operator
    */
   public enum Values {
     ONE, TWO, MANY
-  }
-
-  /**
-   * Specifies whether an operator can handle null values.
-   */
-  public enum NullCompatible {
-    YES, NO
   }
 }

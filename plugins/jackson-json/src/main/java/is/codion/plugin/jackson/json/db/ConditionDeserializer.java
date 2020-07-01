@@ -32,7 +32,7 @@ final class ConditionDeserializer implements Serializable {
     if ("combination".equals(typeString)) {
       return conditionCombinationDeserializer.deserialize(definition, conditionNode);
     }
-    else if ("property".equals(typeString)) {
+    else if ("attribute".equals(typeString)) {
       return attributeConditionDeserializer.deserialize(definition, conditionNode);
     }
     else if ("custom".equals(typeString)) {
