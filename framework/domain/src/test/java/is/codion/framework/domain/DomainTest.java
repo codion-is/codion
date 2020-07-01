@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Types;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -62,17 +62,17 @@ public class DomainTest {
     final EntityDefinition definition = entities.getDefinition(Detail.TYPE);
 
     //assert types
-    assertEquals(definition.getProperty(Detail.ID).getType(), Types.BIGINT);
-    assertEquals(definition.getProperty(Detail.INT).getType(), Types.INTEGER);
-    assertEquals(definition.getProperty(Detail.DOUBLE).getType(), Types.DOUBLE);
-    assertEquals(definition.getProperty(Detail.STRING).getType(), Types.VARCHAR);
-    assertEquals(definition.getProperty(Detail.DATE).getType(), Types.DATE);
-    assertEquals(definition.getProperty(Detail.TIMESTAMP).getType(), Types.TIMESTAMP);
-    assertEquals(definition.getProperty(Detail.BOOLEAN).getType(), Types.BOOLEAN);
-    assertEquals(definition.getProperty(Detail.MASTER_FK).getType(), Types.JAVA_OBJECT);
-    assertEquals(definition.getProperty(Detail.MASTER_ID).getType(), Types.BIGINT);
-    assertEquals(definition.getProperty(Detail.MASTER_NAME).getType(), Types.VARCHAR);
-    assertEquals(definition.getProperty(Detail.MASTER_CODE).getType(), Types.INTEGER);
+    assertEquals(definition.getProperty(Detail.ID).getAttribute().getTypeClass(), Long.class);
+    assertEquals(definition.getProperty(Detail.INT).getAttribute().getTypeClass(), Integer.class);
+    assertEquals(definition.getProperty(Detail.DOUBLE).getAttribute().getTypeClass(), Double.class);
+    assertEquals(definition.getProperty(Detail.STRING).getAttribute().getTypeClass(), String.class);
+    assertEquals(definition.getProperty(Detail.DATE).getAttribute().getTypeClass(), LocalDate.class);
+    assertEquals(definition.getProperty(Detail.TIMESTAMP).getAttribute().getTypeClass(), LocalDateTime.class);
+    assertEquals(definition.getProperty(Detail.BOOLEAN).getAttribute().getTypeClass(), Boolean.class);
+    assertEquals(definition.getProperty(Detail.MASTER_FK).getAttribute().getTypeClass(), Entity.class);
+    assertEquals(definition.getProperty(Detail.MASTER_ID).getAttribute().getTypeClass(), Long.class);
+    assertEquals(definition.getProperty(Detail.MASTER_NAME).getAttribute().getTypeClass(), String.class);
+    assertEquals(definition.getProperty(Detail.MASTER_CODE).getAttribute().getTypeClass(), Integer.class);
 
     //assert column names
     assertEquals(definition.getProperty(Detail.ID).getAttribute(), Detail.ID);

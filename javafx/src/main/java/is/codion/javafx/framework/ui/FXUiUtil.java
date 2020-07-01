@@ -15,6 +15,7 @@ import is.codion.common.user.Users;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -64,7 +65,6 @@ import javafx.scene.layout.Priority;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
-import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -257,56 +257,63 @@ public final class FXUiUtil {
       return listValue;
     }
 
-    switch (property.getType()) {
-      case Types.BOOLEAN:
-        final Value<Boolean> booleanValue = PropertyValues.booleanPropertyValue(((CheckBox) control).selectedProperty());
-        booleanValue.set((Boolean) defaultValue);
+    final Attribute<?> attribute = property.getAttribute();
+    if (attribute.isBoolean()) {
+      final Value<Boolean> booleanValue = PropertyValues.booleanPropertyValue(((CheckBox) control).selectedProperty());
+      booleanValue.set((Boolean) defaultValue);
 
-        return (Value<T>) booleanValue;
-      case Types.DATE:
-        final Value<LocalDate> dateValue = Values.value((LocalDate) defaultValue);
-        dateValue.link(createDateValue((Property<LocalDate>) property, (DatePicker) control));
-
-        return (Value<T>) dateValue;
-      case Types.TIMESTAMP:
-        final Value<LocalDateTime> dateTimeValue = Values.value((LocalDateTime) defaultValue);
-        dateTimeValue.link(createTimestampValue((Property<LocalDateTime>) property, (TextField) control));
-
-        return (Value<T>) dateTimeValue;
-      case Types.TIME:
-        final Value<LocalTime> timeValue = Values.value((LocalTime) defaultValue);
-        timeValue.link(createTimeValue((Property<LocalTime>) property, (TextField) control));
-
-        return (Value<T>) timeValue;
-      case Types.DOUBLE:
-        final StringValue<Double> doubleValue = createDoubleValue((Property<Double>) property, (TextField) control);
-        doubleValue.set((Double) defaultValue);
-
-        return (Value<T>) doubleValue;
-      case Types.DECIMAL:
-        final StringValue<BigDecimal> bigDecimalValue = createBigDecimalValue((Property<BigDecimal>) property, (TextField) control);
-        bigDecimalValue.set((BigDecimal) defaultValue);
-
-        return (Value<T>) bigDecimalValue;
-      case Types.INTEGER:
-        final StringValue<Integer> integerValue = createIntegerValue((Property<Integer>) property, (TextField) control);
-        integerValue.set((Integer) defaultValue);
-
-        return (Value<T>) integerValue;
-      case Types.BIGINT:
-        final StringValue<Long> longValue = createLongValue((Property<Long>) property, (TextField) control);
-        longValue.set((Long) defaultValue);
-
-        return (Value<T>) longValue;
-      case Types.CHAR:
-      case Types.VARCHAR:
-        final StringValue<String> stringValue = createStringValue((TextField) control);
-        stringValue.set((String) defaultValue);
-
-        return (Value<T>) stringValue;
-      default:
-        throw new IllegalArgumentException("Unsupported property type: " + property.getType());
+      return (Value<T>) booleanValue;
     }
+    if (attribute.isLocalDate()) {
+      final Value<LocalDate> dateValue = Values.value((LocalDate) defaultValue);
+      dateValue.link(createDateValue((Property<LocalDate>) property, (DatePicker) control));
+
+      return (Value<T>) dateValue;
+    }
+    if (attribute.isLocalDateTime()) {
+      final Value<LocalDateTime> dateTimeValue = Values.value((LocalDateTime) defaultValue);
+      dateTimeValue.link(createTimestampValue((Property<LocalDateTime>) property, (TextField) control));
+
+      return (Value<T>) dateTimeValue;
+    }
+    if (attribute.isLocalTime()) {
+      final Value<LocalTime> timeValue = Values.value((LocalTime) defaultValue);
+      timeValue.link(createTimeValue((Property<LocalTime>) property, (TextField) control));
+
+      return (Value<T>) timeValue;
+    }
+    if (attribute.isDouble()) {
+      final StringValue<Double> doubleValue = createDoubleValue((Property<Double>) property, (TextField) control);
+      doubleValue.set((Double) defaultValue);
+
+      return (Value<T>) doubleValue;
+    }
+    if (attribute.isBigDecimal()) {
+      final StringValue<BigDecimal> bigDecimalValue = createBigDecimalValue((Property<BigDecimal>) property, (TextField) control);
+      bigDecimalValue.set((BigDecimal) defaultValue);
+
+      return (Value<T>) bigDecimalValue;
+    }
+    if (attribute.isInteger()) {
+      final StringValue<Integer> integerValue = createIntegerValue((Property<Integer>) property, (TextField) control);
+      integerValue.set((Integer) defaultValue);
+
+      return (Value<T>) integerValue;
+    }
+    if (attribute.isLong()) {
+      final StringValue<Long> longValue = createLongValue((Property<Long>) property, (TextField) control);
+      longValue.set((Long) defaultValue);
+
+      return (Value<T>) longValue;
+    }
+    if (attribute.isString() || attribute.isCharacter()) {
+      final StringValue<String> stringValue = createStringValue((TextField) control);
+      stringValue.set((String) defaultValue);
+
+      return (Value<T>) stringValue;
+    }
+
+    throw new IllegalArgumentException("Unsupported property type: " + attribute.getTypeClass());
   }
 
   /**
@@ -361,23 +368,18 @@ public final class FXUiUtil {
       return new ComboBox<>(createValueListComboBoxModel((ValueListProperty<T>) property));
     }
 
-    switch (property.getType()) {
-      case Types.BOOLEAN:
-        return createCheckBox();
-      case Types.DATE:
-        return createDatePicker();
-      case Types.TIMESTAMP:
-      case Types.TIME:
-      case Types.DOUBLE:
-      case Types.DECIMAL:
-      case Types.INTEGER:
-      case Types.BIGINT:
-      case Types.CHAR:
-      case Types.VARCHAR:
-        return createTextField(property);
-      default:
-        throw new IllegalArgumentException("Unsupported property type: " + property.getType());
+    final Attribute<?> attribute = property.getAttribute();
+    if (attribute.isBoolean()) {
+      return createCheckBox();
     }
+    if (attribute.isLocalDate()) {
+      return createDatePicker();
+    }
+    if (attribute.isTemporal() || attribute.isNumerical() || attribute.isString() || attribute.isCharacter()) {
+      return createTextField(property);
+    }
+
+    throw new IllegalArgumentException("Unsupported property type: " + attribute.getTypeClass());
   }
 
   /**

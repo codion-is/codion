@@ -23,9 +23,7 @@ public interface ColumnProperty<T> extends Property<T> {
   String getColumnName();
 
   /**
-   * @return the data type of the underlying column, usually the same as {@link #getType()}
-   * but can differ when the database system does not have native support for the given data type,
-   * such as boolean
+   * @return the sql data type of the underlying column ({@link java.sql.Types}.
    */
   int getColumnType();
 

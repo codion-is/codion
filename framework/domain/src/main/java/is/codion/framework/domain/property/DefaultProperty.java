@@ -149,11 +149,6 @@ abstract class DefaultProperty<T> implements Property<T> {
   }
 
   @Override
-  public final int getType() {
-    return attribute.getType();
-  }
-
-  @Override
   public final String getBeanProperty() {
     return beanProperty;
   }
@@ -312,13 +307,13 @@ abstract class DefaultProperty<T> implements Property<T> {
   }
 
   private String getDefaultDateTimeFormatPattern() {
-    if (attribute.isDate()) {
+    if (attribute.isLocalDate()) {
       return DATE_FORMAT.get();
     }
-    else if (attribute.isTime()) {
+    else if (attribute.isLocalTime()) {
       return TIME_FORMAT.get();
     }
-    else if (attribute.isTimestamp()) {
+    else if (attribute.isLocalDateTime()) {
       return TIMESTAMP_FORMAT.get();
     }
 

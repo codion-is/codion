@@ -63,7 +63,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
 import java.math.BigDecimal;
-import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -181,26 +180,17 @@ public final class EntityInputComponents {
     if (property instanceof ValueListProperty) {
       return createValueListComboBox((ValueListProperty<T>) property, value, enabledState);
     }
-    switch (property.getType()) {
-      case Types.BOOLEAN:
-        return property.isNullable() ?
-                createNullableCheckBox((Property<Boolean>) property, (Value<Boolean>) value, enabledState, IncludeCaption.NO) :
-                createCheckBox((Property<Boolean>) property, (Value<Boolean>) value, enabledState, IncludeCaption.NO);
-      case Types.DATE:
-      case Types.TIMESTAMP:
-      case Types.TIME:
-      case Types.DOUBLE:
-      case Types.DECIMAL:
-      case Types.INTEGER:
-      case Types.BIGINT:
-      case Types.CHAR:
-      case Types.VARCHAR:
-        return createTextField(property, value, UpdateOn.KEYSTROKE, enabledState);
-      case Types.BLOB:
-      default:
-        throw new IllegalArgumentException("No input component available for property: " +
-                property + " (type: " + property.getType() + ")");
+    final Attribute<?> attribute = property.getAttribute();
+    if (attribute.isBoolean()) {
+      return property.isNullable() ?
+              createNullableCheckBox((Property<Boolean>) property, (Value<Boolean>) value, enabledState, IncludeCaption.NO) :
+              createCheckBox((Property<Boolean>) property, (Value<Boolean>) value, enabledState, IncludeCaption.NO);
     }
+    if (attribute.isTemporal() || attribute.isNumerical() || attribute.isString() || attribute.isCharacter()) {
+      return createTextField(property, value, UpdateOn.KEYSTROKE, enabledState);
+    }
+
+    throw new IllegalArgumentException("No input component available for property: " + property + " (type: " + attribute.getTypeClass() + ")");
   }
 
   /**
@@ -531,15 +521,15 @@ public final class EntityInputComponents {
     final String formatString = property.getDateTimeFormatPattern();
     final JFormattedTextField textField = (JFormattedTextField) createTextField(property, enabledState,
             DateFormats.getDateMask(formatString), ValueContainsLiterals.YES);
-    if (property.getAttribute().isDate()) {
+    if (property.getAttribute().isLocalDate()) {
       ((Value<LocalDate>) value).link(TemporalValues.localDateValue(textField, property.getDateTimeFormatPattern(), updateOn));
       return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, formatString, calendarButton, enabledState);
     }
-    else if (property.getAttribute().isTimestamp()) {
+    else if (property.getAttribute().isLocalDateTime()) {
       ((Value<LocalDateTime>) value).link(TemporalValues.localDateTimeValue(textField, property.getDateTimeFormatPattern(), updateOn));
       return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(textField, formatString, calendarButton, enabledState);
     }
-    else if (property.getAttribute().isTime()) {
+    else if (property.getAttribute().isLocalTime()) {
       ((Value<LocalTime>) value).link(TemporalValues.localTimeValue(textField, property.getDateTimeFormatPattern(), updateOn));
       return (TemporalInputPanel<T>) new LocalTimeInputPanel(textField, formatString, enabledState);
     }
@@ -676,13 +666,13 @@ public final class EntityInputComponents {
     else if (property.getAttribute().isLong()) {
       ((Value<Long>) value).link(NumericalValues.longValue((LongField) textField, Nullable.YES, updateOn));
     }
-    else if (property.getAttribute().isDate()) {
+    else if (property.getAttribute().isLocalDate()) {
       ((Value<LocalDate>) value).link(TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
-    else if (property.getAttribute().isTime()) {
+    else if (property.getAttribute().isLocalTime()) {
       ((Value<LocalTime>) value).link(TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
-    else if (property.getAttribute().isTimestamp()) {
+    else if (property.getAttribute().isLocalDateTime()) {
       ((Value<LocalDateTime>) value).link(TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
     }
     else {
@@ -807,26 +797,27 @@ public final class EntityInputComponents {
 
   private static JTextField createTextField(final Property<?> property, final String formatMaskString,
                                             final ValueContainsLiterals valueContainsLiterals) {
-    if (property.getAttribute().isInteger()) {
+    final Attribute<?> attribute = property.getAttribute();
+    if (attribute.isInteger()) {
       return initializeIntegerField((Property<Integer>) property);
     }
-    else if (property.getAttribute().isDouble()) {
+    else if (attribute.isDouble()) {
       return initializeDoubleField((Property<Double>) property);
     }
-    else if (property.getAttribute().isBigDecimal()) {
+    else if (attribute.isBigDecimal()) {
       return initializeBigDecimalField((Property<BigDecimal>) property);
     }
-    else if (property.getAttribute().isLong()) {
+    else if (attribute.isLong()) {
       return initializeLongField((Property<Long>) property);
     }
-    else if (property.getAttribute().isTemporal()) {
+    else if (attribute.isTemporal()) {
       return TextFields.createFormattedField(DateFormats.getDateMask(property.getDateTimeFormatPattern()));
     }
-    else if (property.getAttribute().isString()) {
+    else if (attribute.isString()) {
       return initializeStringField(formatMaskString, valueContainsLiterals);
     }
 
-    throw new IllegalArgumentException("Creating text fields for property type: " + property.getType() + " is not implemented");
+    throw new IllegalArgumentException("Creating text fields for property type: " + attribute.getTypeClass() + " is not implemented");
   }
 
   private static JTextField initializeStringField(final String formatMaskString, final ValueContainsLiterals valueContainsLiterals) {

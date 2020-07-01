@@ -253,7 +253,7 @@ final class DefaultEntity implements Entity {
     requireNonNull(entity, "entity");
 
     return definition.getColumnProperties().stream().allMatch(property -> {
-      if (property.getAttribute().isBlob()) {
+      if (property.getAttribute().isByteArray()) {
         return Arrays.equals((byte[]) get(property), (byte[]) entity.get(property.getAttribute()));
       }
 

@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -21,7 +22,6 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import javax.swing.JComponent;
 import java.math.BigDecimal;
-import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -56,32 +56,42 @@ public class EntityComponentValues {
     if (property instanceof ValueListProperty) {
       return (ComponentValue<T, C>) SelectedValues.selectedItemValue(initialValue, ((ValueListProperty<T>) property).getValues());
     }
-    switch (property.getType()) {
-      case Types.BOOLEAN:
-        return (ComponentValue<T, C>) BooleanValues.booleanComboBoxValue((Boolean) initialValue);
-      case Types.DATE:
-        return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalDateInputPanel((LocalDate) initialValue, property.getDateTimeFormatPattern()));
-      case Types.TIMESTAMP:
-        return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalDateTimeInputPanel((LocalDateTime) initialValue, property.getDateTimeFormatPattern()));
-      case Types.TIME:
-        return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimeFormatPattern()));
-      case Types.DOUBLE:
-        return (ComponentValue<T, C>) NumericalValues.doubleValue((Double) initialValue, (DecimalFormat) property.getFormat());
-      case Types.DECIMAL:
-        return (ComponentValue<T, C>) NumericalValues.bigDecimalValue((BigDecimal) initialValue, (DecimalFormat) property.getFormat());
-      case Types.INTEGER:
-        return (ComponentValue<T, C>) NumericalValues.integerValue((Integer) initialValue, (NumberFormat) property.getFormat());
-      case Types.BIGINT:
-        return (ComponentValue<T, C>) NumericalValues.longValue((Long) initialValue, (NumberFormat) property.getFormat());
-      case Types.CHAR:
-        return (ComponentValue<T, C>) TextValues.textValue(property.getCaption(), (String) initialValue, 1);
-      case Types.VARCHAR:
-        return (ComponentValue<T, C>) TextValues.textValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
-      case Types.BLOB:
-        return (ComponentValue<T, C>) FileValues.fileInputValue();
-      default:
-        throw new IllegalArgumentException("No ComponentValue implementation available for property: " + property + " (type: " + property.getType() + ")");
+    final Attribute<?> attribute = property.getAttribute();
+    if (attribute.isBoolean()) {
+      return (ComponentValue<T, C>) BooleanValues.booleanComboBoxValue((Boolean) initialValue);
     }
+    if (attribute.isLocalDate()) {
+      return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalDateInputPanel((LocalDate) initialValue, property.getDateTimeFormatPattern()));
+    }
+    if (attribute.isLocalDateTime()) {
+      return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalDateTimeInputPanel((LocalDateTime) initialValue, property.getDateTimeFormatPattern()));
+    }
+    if (attribute.isLocalTime()) {
+      return (ComponentValue<T, C>) TemporalValues.temporalValue(new LocalTimeInputPanel((LocalTime) initialValue, property.getDateTimeFormatPattern()));
+    }
+    if (attribute.isDouble()) {
+      return (ComponentValue<T, C>) NumericalValues.doubleValue((Double) initialValue, (DecimalFormat) property.getFormat());
+    }
+    if (attribute.isBigDecimal()) {
+      return (ComponentValue<T, C>) NumericalValues.bigDecimalValue((BigDecimal) initialValue, (DecimalFormat) property.getFormat());
+    }
+    if (attribute.isInteger()) {
+      return (ComponentValue<T, C>) NumericalValues.integerValue((Integer) initialValue, (NumberFormat) property.getFormat());
+    }
+    if (attribute.isLong()) {
+      return (ComponentValue<T, C>) NumericalValues.longValue((Long) initialValue, (NumberFormat) property.getFormat());
+    }
+    if (attribute.isCharacter()) {
+      return (ComponentValue<T, C>) TextValues.textValue(property.getCaption(), (String) initialValue, 1);
+    }
+    if (attribute.isString()) {
+      return (ComponentValue<T, C>) TextValues.textValue(property.getCaption(), (String) initialValue, property.getMaximumLength());
+    }
+    if (attribute.isByteArray()) {
+      return (ComponentValue<T, C>) FileValues.fileInputValue();
+    }
+
+    throw new IllegalArgumentException("No ComponentValue implementation available for property: " + property + " (type: " + attribute.getTypeClass() + ")");
   }
 
   /**

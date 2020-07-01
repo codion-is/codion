@@ -60,13 +60,13 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     else if (attribute.isBoolean()) {
       return jsonNode.asBoolean();
     }
-    else if (attribute.isTime()) {
+    else if (attribute.isLocalTime()) {
       return LocalTime.parse(jsonNode.asText());
     }
-    else if (attribute.isDate()) {
+    else if (attribute.isLocalDate()) {
       return LocalDate.parse(jsonNode.asText());
     }
-    else if (attribute.isTimestamp()) {
+    else if (attribute.isLocalDateTime()) {
       return LocalDateTime.parse(jsonNode.asText());
     }
     else if (attribute.isDouble()) {
@@ -78,7 +78,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     else if (attribute.isBigDecimal()) {
       return new BigDecimal(jsonNode.asText());
     }
-    else if (attribute.isBlob()) {
+    else if (attribute.isByteArray()) {
       return Base64.getDecoder().decode(jsonNode.asText());
     }
     else if (attribute.isEntity()) {

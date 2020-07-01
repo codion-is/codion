@@ -3,18 +3,20 @@
  */
 package is.codion.framework.domain.entity;
 
-import java.sql.Types;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-class DefaultAttribute<T> implements Attribute<T> {
+final class DefaultAttribute<T> implements Attribute<T> {
 
   private static final long serialVersionUID = 1;
 
   private final String name;
-  private final int type;
   private final Class<T> typeClass;
   private final int hashCode;
   private final EntityType<?> entityType;
@@ -25,33 +27,27 @@ class DefaultAttribute<T> implements Attribute<T> {
     }
     this.name = name;
     this.entityType = requireNonNull(entityType, "entityType");
-    this.type = Attribute.getSqlType(typeClass);
     this.typeClass = typeClass;
     this.hashCode = Objects.hash(name, entityType);
   }
 
   @Override
-  public final String getName() {
+  public String getName() {
     return name;
   }
 
   @Override
-  public final int getType() {
-    return type;
-  }
-
-  @Override
-  public final Class<T> getTypeClass() {
+  public Class<T> getTypeClass() {
     return typeClass;
   }
 
   @Override
-  public final EntityType<?> getEntityType() {
+  public EntityType<?> getEntityType() {
     return entityType;
   }
 
   @Override
-  public final T validateType(final T value) {
+  public T validateType(final T value) {
     if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
       throw new IllegalArgumentException("Value of type " + typeClass +
               " expected for property " + this + " in entity " + entityType + ", got: " + value.getClass());
@@ -61,87 +57,87 @@ class DefaultAttribute<T> implements Attribute<T> {
   }
 
   @Override
-  public final boolean isType(final int type) {
-    return this.type == type;
+  public boolean isType(final Class<?> typeClass) {
+    return this.typeClass == typeClass;
   }
 
   @Override
-  public final boolean isNumerical() {
+  public boolean isNumerical() {
     return isInteger() || isDecimal() || isLong();
   }
 
   @Override
-  public final boolean isTemporal() {
-    return isDate() || isTimestamp() || isTime();
+  public boolean isTemporal() {
+    return isLocalDate() || isLocalDateTime() || isLocalTime();
   }
 
   @Override
-  public final boolean isDate() {
-    return isType(Types.DATE);
+  public boolean isLocalDate() {
+    return isType(LocalDate.class);
   }
 
   @Override
-  public final boolean isTimestamp() {
-    return isType(Types.TIMESTAMP);
+  public boolean isLocalDateTime() {
+    return isType(LocalDateTime.class);
   }
 
   @Override
-  public final boolean isTime() {
-    return isType(Types.TIME);
+  public boolean isLocalTime() {
+    return isType(LocalTime.class);
   }
 
   @Override
-  public final boolean isCharacter() {
-    return isType(Types.CHAR);
+  public boolean isCharacter() {
+    return isType(Character.class);
   }
 
   @Override
-  public final boolean isString() {
-    return isType(Types.VARCHAR);
+  public boolean isString() {
+    return isType(String.class);
   }
 
   @Override
-  public final boolean isLong() {
-    return isType(Types.BIGINT);
+  public boolean isLong() {
+    return isType(Long.class);
   }
 
   @Override
-  public final boolean isInteger() {
-    return isType(Types.INTEGER);
+  public boolean isInteger() {
+    return isType(Integer.class);
   }
 
   @Override
-  public final boolean isDouble() {
-    return isType(Types.DOUBLE);
+  public boolean isDouble() {
+    return isType(Double.class);
   }
 
   @Override
-  public final boolean isBigDecimal() {
-    return isType(Types.DECIMAL);
+  public boolean isBigDecimal() {
+    return isType(BigDecimal.class);
   }
 
   @Override
-  public final boolean isDecimal() {
+  public boolean isDecimal() {
     return isDouble() || isBigDecimal();
   }
 
   @Override
-  public final boolean isBoolean() {
-    return isType(Types.BOOLEAN);
+  public boolean isBoolean() {
+    return isType(Boolean.class);
   }
 
   @Override
-  public final boolean isBlob() {
-    return isType(Types.BLOB);
+  public boolean isByteArray() {
+    return isType(byte[].class);
   }
 
   @Override
-  public final boolean isEntity() {
-    return typeClass.equals(Entity.class);
+  public boolean isEntity() {
+    return isType(Entity.class);
   }
 
   @Override
-  public final boolean equals(final Object object) {
+  public boolean equals(final Object object) {
     if (this == object) {
       return true;
     }
@@ -154,12 +150,12 @@ class DefaultAttribute<T> implements Attribute<T> {
   }
 
   @Override
-  public final int hashCode() {
+  public int hashCode() {
     return hashCode;
   }
 
   @Override
-  public final String toString() {
+  public String toString() {
     return "entityType: " + entityType + ", name: " + name;
   }
 }

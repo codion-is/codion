@@ -438,7 +438,7 @@ public interface Entities extends Serializable {
 
     final T originalValue = entity.getOriginal(attribute);
     final T comparisonValue = comparison.get(attribute);
-    if (attribute.isBlob()) {
+    if (attribute.isByteArray()) {
       return !Arrays.equals((byte[]) originalValue, (byte[]) comparisonValue);
     }
 

@@ -188,15 +188,15 @@ public final class EntityJSONParser {
     if (attribute.isBigDecimal()) {
       return value.toString();
     }
-    if (attribute.isTime()) {
+    if (attribute.isLocalTime()) {
       final LocalTime time = (LocalTime) value;
       return jsonTimeFormat.format(time);
     }
-    if (attribute.isDate()) {
+    if (attribute.isLocalDate()) {
       final LocalDate date = (LocalDate) value;
       return jsonDateFormat.format(date);
     }
-    if (attribute.isTimestamp()) {
+    if (attribute.isLocalDateTime()) {
       final LocalDateTime dateTime = (LocalDateTime) value;
       return jsonTimestampFormat.format(dateTime);
     }
@@ -286,38 +286,40 @@ public final class EntityJSONParser {
    * @return the value for the given property
    */
   public Object parseValue(final Property<?> property, final JSONObject propertyValues) {
-    if (propertyValues.isNull(property.getAttribute().getName())) {
+    final Attribute<?> attribute = property.getAttribute();
+    final String attributeName = attribute.getName();
+    if (propertyValues.isNull(attributeName)) {
       return null;
     }
-    if (property.getAttribute().isString()) {
-      return propertyValues.getString(property.getAttribute().getName());
+    if (property instanceof ForeignKeyProperty) {
+      return parseEntity(propertyValues.getJSONObject(attributeName));
     }
-    else if (property.getAttribute().isBoolean()) {
-      return propertyValues.getBoolean(property.getAttribute().getName());
+    if (attribute.isString()) {
+      return propertyValues.getString(attributeName);
     }
-    else if (property.getAttribute().isTime()) {
-      return LocalTime.parse(propertyValues.getString(property.getAttribute().getName()), jsonTimeFormat);
+    else if (attribute.isBoolean()) {
+      return propertyValues.getBoolean(attributeName);
     }
-    else if (property.getAttribute().isDate()) {
-      return LocalDate.parse(propertyValues.getString(property.getAttribute().getName()), jsonDateFormat);
+    else if (attribute.isLocalTime()) {
+      return LocalTime.parse(propertyValues.getString(attributeName), jsonTimeFormat);
     }
-    else if (property.getAttribute().isTimestamp()) {
-      return LocalDateTime.parse(propertyValues.getString(property.getAttribute().getName()), jsonTimestampFormat);
+    else if (attribute.isLocalDate()) {
+      return LocalDate.parse(propertyValues.getString(attributeName), jsonDateFormat);
     }
-    else if (property.getAttribute().isDouble()) {
-      return propertyValues.getDouble(property.getAttribute().getName());
+    else if (attribute.isLocalDateTime()) {
+      return LocalDateTime.parse(propertyValues.getString(attributeName), jsonTimestampFormat);
     }
-    else if (property.getAttribute().isInteger()) {
-      return propertyValues.getInt(property.getAttribute().getName());
+    else if (attribute.isDouble()) {
+      return propertyValues.getDouble(attributeName);
     }
-    else if (property.getAttribute().isBigDecimal()) {
-      return propertyValues.getBigDecimal(property.getAttribute().getName());
+    else if (attribute.isInteger()) {
+      return propertyValues.getInt(attributeName);
     }
-    else if (property instanceof ForeignKeyProperty) {
-      return parseEntity(propertyValues.getJSONObject(property.getAttribute().getName()));
+    else if (attribute.isBigDecimal()) {
+      return propertyValues.getBigDecimal(attributeName);
     }
 
-    return propertyValues.getString(property.getAttribute().getName());
+    return propertyValues.getString(attributeName);
   }
 
   private JSONObject toJSONObject(final Entity entity) {

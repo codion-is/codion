@@ -6,6 +6,7 @@ package is.codion.framework.domain.property;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.domain.entity.Attribute;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Blob;
 import java.sql.ResultSet;
@@ -48,7 +49,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
   DefaultColumnProperty(final Attribute<T> attribute, final String caption) {
     super(attribute, caption);
-    this.columnType = attribute.getType();
+    this.columnType = getSqlType(attribute.getTypeClass());
     this.columnName = attribute.getName();
     this.valueConverter = initializeValueConverter();
     this.valueFetcher = initializeValueFetcher();
@@ -156,13 +157,13 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   private ValueConverter<T, ?> initializeValueConverter() {
-    if (getAttribute().isDate()) {
+    if (getAttribute().isLocalDate()) {
       return (ValueConverter<T, ?>) DATE_VALUE_CONVERTER;
     }
-    else if (getAttribute().isTimestamp()) {
+    else if (getAttribute().isLocalDateTime()) {
       return (ValueConverter<T, ?>) TIMESTAMP_VALUE_CONVERTER;
     }
-    else if (getAttribute().isTime()) {
+    else if (getAttribute().isLocalTime()) {
       return (ValueConverter<T, ?>) TIME_VALUE_CONVERTER;
     }
 
@@ -201,6 +202,50 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
       default:
         throw new IllegalArgumentException("Unsupported SQL value type: " + getColumnType());
     }
+  }
+
+  /**
+   * Returns the default sql type for the given class.
+   * @param clazz the class
+   * @return the corresponding sql type
+   */
+  private static int getSqlType(final Class<?> clazz) {
+    requireNonNull(clazz, "clazz");
+    if (clazz.equals(Long.class)) {
+      return Types.BIGINT;
+    }
+    if (clazz.equals(Integer.class)) {
+      return Types.INTEGER;
+    }
+    if (clazz.equals(Double.class)) {
+      return Types.DOUBLE;
+    }
+    if (clazz.equals(BigDecimal.class)) {
+      return Types.DECIMAL;
+    }
+    if (clazz.equals(LocalDate.class)) {
+      return Types.DATE;
+    }
+    if (clazz.equals(LocalTime.class)) {
+      return Types.TIME;
+    }
+    if (clazz.equals(LocalDateTime.class)) {
+      return Types.TIMESTAMP;
+    }
+    if (clazz.equals(String.class)) {
+      return Types.VARCHAR;
+    }
+    if (clazz.equals(Boolean.class)) {
+      return Types.BOOLEAN;
+    }
+    if (clazz.equals(byte[].class)) {
+      return Types.BLOB;
+    }
+    if (Object.class.isAssignableFrom(clazz)) {
+      return Types.JAVA_OBJECT;
+    }
+
+    return Types.OTHER;
   }
 
   private class PropertyResultPacker implements ResultPacker<T> {
@@ -492,7 +537,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
     @Override
     public <C> ColumnProperty.Builder<T> columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter) {
-      columnProperty.columnType = Attribute.getSqlType(columnClass);
+      columnProperty.columnType = getSqlType(columnClass);
       columnProperty.valueConverter = requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
       return this;
