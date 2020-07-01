@@ -14,6 +14,7 @@ import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionProviders;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -31,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -207,32 +207,42 @@ public class EntityTestUnit {
     if (property instanceof ValueListProperty) {
       return getRandomListValue((ValueListProperty<?>) property);
     }
-    switch (property.getType()) {
-      case Types.BOOLEAN:
-        return RANDOM.nextBoolean();
-      case Types.CHAR:
-        return (char) RANDOM.nextInt();
-      case Types.DATE:
-        return LocalDate.now();
-      case Types.TIMESTAMP:
-        return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-      case Types.TIME:
-        return LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
-      case Types.DOUBLE:
-        return getRandomDouble(property);
-      case Types.DECIMAL:
-        return BigDecimal.valueOf(getRandomDouble(property));
-      case Types.INTEGER:
-        return getRandomInteger(property);
-      case Types.BIGINT:
-        return (long) getRandomInteger(property);
-      case Types.VARCHAR:
-        return getRandomString(property);
-      case Types.BLOB:
-        return getRandomBlob(property);
-      default:
-        return null;
+    final Attribute<?> attribute = property.getAttribute();
+    if (attribute.isBoolean()) {
+      return RANDOM.nextBoolean();
     }
+    if (attribute.isCharacter()) {
+      return (char) RANDOM.nextInt();
+    }
+    if (attribute.isLocalDate()) {
+      return LocalDate.now();
+    }
+    if (attribute.isLocalDateTime()) {
+      return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    }
+    if (attribute.isLocalTime()) {
+      return LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
+    }
+    if (attribute.isDouble()) {
+      return getRandomDouble(property);
+    }
+    if (attribute.isBigDecimal()) {
+      return BigDecimal.valueOf(getRandomDouble(property));
+    }
+    if (attribute.isInteger()) {
+      return getRandomInteger(property);
+    }
+    if (attribute.isLong()) {
+      return (long) getRandomInteger(property);
+    }
+    if (attribute.isString()) {
+      return getRandomString(property);
+    }
+    if (attribute.isByteArray()) {
+      return getRandomBlob(property);
+    }
+
+    return null;
   }
 
   /**
@@ -376,7 +386,7 @@ public class EntityTestUnit {
           assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
                   && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
         }
-        else if (property.getAttribute().isBlob() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
+        else if (property.getAttribute().isByteArray() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
           assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
         }
         else {

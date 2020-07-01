@@ -6,13 +6,6 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.sql.Types;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Typed {@link Attribute} to base a {@link Property} on.
@@ -26,12 +19,6 @@ public interface Attribute<T> extends Serializable {
    * @return the name of this attribute.
    */
   String getName();
-
-  /**
-   * @return the sql type representing this attribute
-   * @see java.sql.Types
-   */
-  int getType();
 
   /**
    * @return the Class representing this attribute type
@@ -51,10 +38,10 @@ public interface Attribute<T> extends Serializable {
   T validateType(T value);
 
   /**
-   * @param type the type to check ({@link java.sql.Types})
-   * @return true if the type of this attribute is the one given
+   * @param typeClass the type class to check
+   * @return true if the this attributes type class is the same as the one given
    */
-  boolean isType(int type);
+  boolean isType(Class<?> typeClass);
 
   /**
    * @return true if this is a numerical attribute, that is, Integer or Double
@@ -69,17 +56,17 @@ public interface Attribute<T> extends Serializable {
   /**
    * @return true if this is a date attribute
    */
-  boolean isDate();
+  boolean isLocalDate();
 
   /**
    * @return true if this is a timestamp attribute
    */
-  boolean isTimestamp();
+  boolean isLocalDateTime();
 
   /**
    * @return true if this is a time attribute
    */
-  boolean isTime();
+  boolean isLocalTime();
 
   /**
    * @return true if this is a character attribute
@@ -122,59 +109,12 @@ public interface Attribute<T> extends Serializable {
   boolean isBoolean();
 
   /**
-   * @return true if this is a blob attribute
+   * @return true if this is a byte array attribute
    */
-  boolean isBlob();
+  boolean isByteArray();
 
   /**
    * @return true if this is a Entity attribute
    */
   boolean isEntity();
-
-  /**
-   * Returns the default sql type for the given class.
-   * @param clazz the class
-   * @return the corresponding sql type
-   */
-  static int getSqlType(final Class<?> clazz) {
-    requireNonNull(clazz, "clazz");
-    if (clazz.equals(Long.class)) {
-      return Types.BIGINT;
-    }
-    if (clazz.equals(Integer.class)) {
-      return Types.INTEGER;
-    }
-    if (clazz.equals(Double.class)) {
-      return Types.DOUBLE;
-    }
-    if (clazz.equals(BigDecimal.class)) {
-      return Types.DECIMAL;
-    }
-    if (clazz.equals(LocalDate.class)) {
-      return Types.DATE;
-    }
-    if (clazz.equals(LocalTime.class)) {
-      return Types.TIME;
-    }
-    if (clazz.equals(LocalDateTime.class)) {
-      return Types.TIMESTAMP;
-    }
-    if (clazz.equals(String.class)) {
-      return Types.VARCHAR;
-    }
-    if (clazz.equals(Boolean.class)) {
-      return Types.BOOLEAN;
-    }
-    if (clazz.equals(byte[].class)) {
-      return Types.BLOB;
-    }
-    if (clazz.equals(Entity.class)) {
-      return Types.JAVA_OBJECT;
-    }
-    if (Object.class.isAssignableFrom(clazz)) {
-      return Types.JAVA_OBJECT;
-    }
-
-    return Types.OTHER;
-  }
 }

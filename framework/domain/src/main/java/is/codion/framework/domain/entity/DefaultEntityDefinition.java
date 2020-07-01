@@ -870,7 +870,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     private List<ColumnProperty<?>> initializeLazyLoadedBlobProperties() {
-      return columnProperties.stream().filter(property -> property.getAttribute().isBlob()).filter(property ->
+      return columnProperties.stream().filter(property -> property.getAttribute().isByteArray()).filter(property ->
               !(property instanceof BlobProperty) || !((BlobProperty) property).isEagerlyLoaded()).collect(toList());
     }
 

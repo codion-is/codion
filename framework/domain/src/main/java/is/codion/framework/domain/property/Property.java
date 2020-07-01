@@ -121,11 +121,6 @@ public interface Property<T> extends Serializable {
   String formatValue(T value);
 
   /**
-   * @return the data type ({@link java.sql.Types}) of the value of this property
-   */
-  int getType();
-
-  /**
    * @return true if a default value has been set for this property
    */
   boolean hasDefaultValue();

@@ -34,7 +34,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 import java.math.BigDecimal;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -217,24 +216,23 @@ public abstract class EntityEditView extends BorderPane {
     checkControl(attribute);
     final Property<?> property = getEditModel().getEntityDefinition().getProperty(attribute);
     final TextField textField;
-    switch (property.getType()) {
-      case Types.INTEGER:
-        textField = FXUiUtil.createIntegerField((Property<Integer>) property, editModel);
-        break;
-      case Types.BIGINT:
-        textField = FXUiUtil.createLongField((Property<Long>) property, editModel);
-        break;
-      case Types.DOUBLE:
-        textField = FXUiUtil.createDoubleField((Property<Double>) property, editModel);
-        break;
-      case Types.DECIMAL:
-        textField = FXUiUtil.createBigDecimalField((Property<BigDecimal>) property, editModel);
-        break;
-      case Types.VARCHAR:
-        textField = FXUiUtil.createTextField((Property<String>) property, editModel);
-        break;
-      default:
-        throw new IllegalArgumentException("Text field type for attribute: " + attribute + " is not implemented");
+    if (attribute.isInteger()) {
+      textField = FXUiUtil.createIntegerField((Property<Integer>) property, editModel);
+    }
+    else if (attribute.isLong()) {
+      textField = FXUiUtil.createLongField((Property<Long>) property, editModel);
+    }
+    else if (attribute.isDouble()) {
+      textField = FXUiUtil.createDoubleField((Property<Double>) property, editModel);
+    }
+    else if (attribute.isBigDecimal()) {
+      textField = FXUiUtil.createBigDecimalField((Property<BigDecimal>) property, editModel);
+    }
+    else if (attribute.isString()) {
+      textField = FXUiUtil.createTextField((Property<String>) property, editModel);
+    }
+    else {
+      throw new IllegalArgumentException("Text field type for attribute: " + attribute + " is not implemented");
     }
 
     controls.put(attribute, textField);
