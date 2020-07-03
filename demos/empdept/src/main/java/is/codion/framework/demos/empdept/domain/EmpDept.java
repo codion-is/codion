@@ -9,7 +9,6 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringProvider;
 import is.codion.plugin.jasperreports.model.JRReportType;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
@@ -22,6 +21,7 @@ import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static java.util.Arrays.asList;
@@ -121,7 +121,7 @@ public final class EmpDept extends DefaultDomain {
                     .preferredColumnWidth(150).maximumLength(13).beanProperty("location"))
             .smallDataset(true)
             .orderBy(orderBy().ascending(Department.NAME))
-            .stringProvider(new StringProvider(Department.NAME))
+            .stringFactory(stringFactory(Department.NAME))
             .caption("Departments");
   }
   // end::defineDepartment[]
@@ -149,7 +149,7 @@ public final class EmpDept extends DefaultDomain {
                     .preferredColumnWidth(100))
             .keyGenerator(increment("scott.emp", Employee.ID.getName()))
             .orderBy(orderBy().ascending(Employee.DEPARTMENT, Employee.NAME))
-            .stringProvider(new StringProvider(Employee.NAME))
+            .stringFactory(stringFactory(Employee.NAME))
             .caption("Employee")
             .colorProvider((entity, attribute) -> {
               if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {

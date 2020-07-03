@@ -8,10 +8,10 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringProvider;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public class Store extends DefaultDomain {
@@ -50,8 +50,8 @@ public class Store extends DefaultDomain {
             columnProperty(Customer.IS_ACTIVE, "Is active")
                     .defaultValue(true))
             .keyGenerator(automatic("store.customer"))
-            .stringProvider(new StringProvider(Customer.LAST_NAME)
-                    .addText(", ").addValue(Customer.FIRST_NAME))
+            .stringFactory(stringFactory(Customer.LAST_NAME)
+                    .text(", ").value(Customer.FIRST_NAME))
             .caption("Customer");
 
     define(Address.TYPE,
@@ -64,8 +64,8 @@ public class Store extends DefaultDomain {
             columnProperty(Address.CITY, "City")
                     .nullable(false).maximumLength(50))
             .keyGenerator(automatic("store.address"))
-            .stringProvider(new StringProvider(Address.STREET)
-                    .addText(", ").addValue(Address.CITY))
+            .stringFactory(stringFactory(Address.STREET)
+                    .text(", ").value(Address.CITY))
             .caption("Address");
   }
 }

@@ -9,7 +9,6 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringProvider;
 
 import java.sql.SQLException;
 import java.util.Locale;
@@ -17,6 +16,7 @@ import java.util.ResourceBundle;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -56,7 +56,7 @@ public final class SchemaBrowser extends DefaultDomain {
             primaryKeyProperty(Schema.NAME, "Name"))
             .orderBy(orderBy().ascending(Schema.NAME))
             .readOnly(true)
-            .stringProvider(new StringProvider(Schema.NAME))
+            .stringFactory(stringFactory(Schema.NAME))
             .caption("Schemas");
   }
 
@@ -74,7 +74,7 @@ public final class SchemaBrowser extends DefaultDomain {
             primaryKeyProperty(Table.NAME, "Name").primaryKeyIndex(1))
             .orderBy(orderBy().ascending(Table.SCHEMA, Table.NAME))
             .readOnly(true)
-            .stringProvider(new StringProvider(Table.SCHEMA_FK).addText(".").addValue(Table.NAME))
+            .stringFactory(stringFactory(Table.SCHEMA_FK).text(".").value(Table.NAME))
             .caption("Tables");
   }
 
@@ -96,7 +96,7 @@ public final class SchemaBrowser extends DefaultDomain {
             columnProperty(Column.DATA_TYPE, "Data type"))
             .orderBy(orderBy().ascending(Column.SCHEMA, Column.TABLE_NAME, Column.NAME))
             .readOnly(true)
-            .stringProvider(new StringProvider(Column.TABLE_FK).addText(".").addValue(Column.NAME))
+            .stringFactory(stringFactory(Column.TABLE_FK).text(".").value(Column.NAME))
             .caption("Columns");
   }
 
@@ -118,7 +118,7 @@ public final class SchemaBrowser extends DefaultDomain {
             columnProperty(Constraint.CONSTRAINT_TYPE, "Type"))
             .orderBy(orderBy().ascending(Constraint.SCHEMA, Constraint.TABLE_NAME, Constraint.NAME))
             .readOnly(true)
-            .stringProvider(new StringProvider(Constraint.TABLE_FK).addText(".").addValue(Constraint.NAME))
+            .stringFactory(stringFactory(Constraint.TABLE_FK).text(".").value(Constraint.NAME))
             .caption("Constraints");
   }
 

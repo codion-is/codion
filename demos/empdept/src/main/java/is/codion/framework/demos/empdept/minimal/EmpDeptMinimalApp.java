@@ -13,7 +13,6 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -30,6 +29,7 @@ import java.util.Locale;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 /**
@@ -89,7 +89,7 @@ public final class EmpDeptMinimalApp {
                       .maximumLength(13))
               .keyGenerator(increment("scott.dept", "deptno"))
               .caption("Departments")
-              .stringProvider(new StringProvider(Department.DNAME));
+              .stringFactory(stringFactory(Department.DNAME));
       /*
        * We then define the entity based on the SCOTT.EMP table,
        * notice the foreign key wrapper properties, referencing the
@@ -119,7 +119,7 @@ public final class EmpDeptMinimalApp {
                       .nullable(false))
               .keyGenerator(increment("scott.emp", "empno"))
               .caption("Employees")
-              .stringProvider(new StringProvider(Employee.ENAME));
+              .stringFactory(stringFactory(Employee.ENAME));
     }
   }
 

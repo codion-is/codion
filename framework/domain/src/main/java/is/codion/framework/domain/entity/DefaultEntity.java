@@ -290,7 +290,7 @@ final class DefaultEntity implements Entity {
 
   /**
    * @return a string representation of this entity
-   * @see EntityDefinition.Builder#stringProvider(java.util.function.Function)
+   * @see EntityDefinition.Builder#stringFactory(java.util.function.Function)
    * @see EntityDefinition#getStringProvider()
    */
   @Override

@@ -10,7 +10,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringProvider;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,6 +18,7 @@ import java.util.List;
 import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -50,7 +50,7 @@ public final class TestDomain extends DefaultDomain {
 
               return code1.compareTo(code2);
             })
-            .stringProvider(new StringProvider(MASTER_NAME));
+            .stringFactory(stringFactory(MASTER_NAME));
   }
 
   public static final EntityType<Entity> T_DETAIL = DOMAIN.entityType("domain.detail_entity");
@@ -104,7 +104,7 @@ public final class TestDomain extends DefaultDomain {
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
             .orderBy(orderBy().ascending(DETAIL_STRING))
             .smallDataset(true)
-            .stringProvider(new StringProvider(DETAIL_STRING));
+            .stringFactory(stringFactory(DETAIL_STRING));
   }
 
   public static final EntityType<Entity> T_DEPARTMENT = DOMAIN.entityType("scott.dept");
@@ -122,7 +122,7 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
             .orderBy(orderBy().ascending(DEPARTMENT_NAME))
-            .stringProvider(new StringProvider(DEPARTMENT_NAME))
+            .stringFactory(stringFactory(DEPARTMENT_NAME))
             .caption("Department");
   }
 
@@ -169,7 +169,7 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION
             ).preferredColumnWidth(100))
-            .stringProvider(new StringProvider(EMP_NAME))
+            .stringFactory(stringFactory(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
             .orderBy(orderBy().ascending(EMP_DEPARTMENT, EMP_NAME))
             .conditionProvider(EMP_CONDITION_1_TYPE, (attributes, values) -> "1 = 2")

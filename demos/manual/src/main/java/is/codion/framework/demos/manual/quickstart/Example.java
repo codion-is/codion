@@ -18,7 +18,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
-import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -35,6 +34,7 @@ import java.util.List;
 import static is.codion.framework.demos.manual.quickstart.Example.Store.*;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.UUID.randomUUID;
 
@@ -73,8 +73,8 @@ public final class Example {
                   entity.put(Customer.ID, randomUUID().toString());
                 }
               })
-              .stringProvider(new StringProvider(Customer.LAST_NAME)
-                      .addText(", ").addValue(Customer.FIRST_NAME));
+              .stringFactory(stringFactory(Customer.LAST_NAME)
+                      .text(", ").value(Customer.FIRST_NAME));
     }
     // end::customer[]
     // tag::address[]
@@ -93,8 +93,8 @@ public final class Example {
               columnProperty(Address.CITY, "City")
                       .nullable(false).maximumLength(50))
               .keyGenerator(automatic("store.address"))
-              .stringProvider(new StringProvider(Address.STREET)
-                      .addText(", ").addValue(Address.CITY));
+              .stringFactory(stringFactory(Address.STREET)
+                      .text(", ").value(Address.CITY));
     }
     // end::address[]
     // tag::customerAddress[]

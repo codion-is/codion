@@ -17,7 +17,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.Property;
 
 import java.util.List;
@@ -29,6 +28,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.Entities.getKeys;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -75,7 +75,7 @@ public final class EntitiesTutorial {
       // with the above properties
       define(Artist.TYPE, artistId, artistName)
               .keyGenerator(automatic("chinook.artist"))
-              .stringProvider(new StringProvider(Artist.NAME))
+              .stringFactory(stringFactory(Artist.NAME))
               .smallDataset(true)
               .caption("Artist");
 
@@ -98,10 +98,10 @@ public final class EntitiesTutorial {
       // with the above properties
       define(Album.TYPE, albumId, albumTitle, albumArtist)
               .keyGenerator(automatic("chinook.album"))
-              .stringProvider(new StringProvider()
-                      .addValue(Album.ARTIST_FK)
-                      .addText(" - ")
-                      .addValue(Album.TITLE))
+              .stringFactory(stringFactory()
+                      .value(Album.ARTIST_FK)
+                      .text(" - ")
+                      .value(Album.TITLE))
               .caption("Album");
     }
   }

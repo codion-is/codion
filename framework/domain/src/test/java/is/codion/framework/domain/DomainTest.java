@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain;
 
-import is.codion.common.DateFormats;
 import is.codion.common.Serializer;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.operation.DatabaseFunction;
@@ -23,7 +22,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
-import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
@@ -40,7 +38,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -497,43 +494,6 @@ public class DomainTest {
   public void selectableProperty() {
     assertThrows(IllegalArgumentException.class, () ->
             entities.getDefinition(Detail.TYPE).getSelectableColumnProperties(singletonList(Detail.STRING)));
-  }
-
-  @Test
-  public void stringProvider() {
-    final Entity department = entities.entity(Department.TYPE);
-    department.put(Department.NO, -10);
-    department.put(Department.LOCATION, "Reykjavik");
-    department.put(Department.NAME, "Sales");
-
-    final Entity employee = entities.entity(Employee.TYPE);
-    final LocalDateTime hiredate = LocalDateTime.now();
-    employee.put(Employee.DEPARTMENT_FK, department);
-    employee.put(Employee.NAME, "Darri");
-    employee.put(Employee.HIREDATE, hiredate);
-
-    final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DateFormats.SHORT_TIMESTAMP);
-
-    StringProvider employeeToString = new StringProvider(Employee.NAME)
-            .addText(" (department: ").addValue(Employee.DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION).addText(", hiredate: ")
-            .addFormattedValue(Employee.HIREDATE, dateFormat.toFormat()).addText(")");
-
-    assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.apply(employee));
-
-    department.put(Department.LOCATION, null);
-    department.put(Department.NAME, null);
-
-    employee.put(Employee.DEPARTMENT_FK, null);
-    employee.put(Employee.NAME, null);
-    employee.put(Employee.HIREDATE, null);
-
-    employeeToString = new StringProvider(Employee.NAME)
-            .addText(" (department: ").addValue(Employee.DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION).addText(", hiredate: ")
-            .addFormattedValue(Employee.HIREDATE, dateFormat.toFormat()).addText(")");
-
-    assertEquals(" (department: , location: , hiredate: )", employeeToString.apply(employee));
   }
 
   @Test

@@ -8,12 +8,12 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringProvider;
 
 import java.time.LocalDate;
 
 import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
@@ -43,7 +43,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
             .smallDataset(true)
-            .stringProvider(new StringProvider(DEPARTMENT_NAME))
+            .stringFactory(stringFactory(DEPARTMENT_NAME))
             .caption("Department");
   }
 
@@ -86,7 +86,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION).preferredColumnWidth(100))
-            .stringProvider(new StringProvider(EMP_NAME))
+            .stringFactory(stringFactory(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
             .caption("Employee");
   }

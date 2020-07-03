@@ -11,7 +11,6 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -32,6 +31,7 @@ import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static is.codion.swing.common.ui.KeyEvents.removeTransferFocusOnEnter;
 import static is.codion.swing.common.ui.Windows.getScreenSizeRatio;
@@ -73,7 +73,7 @@ public final class ClientTutorial {
                       "select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid"))
               .keyGenerator(automatic("chinook.artist"))
-              .stringProvider(new StringProvider(Artist.NAME))
+              .stringFactory(stringFactory(Artist.NAME))
               .caption("Artists");
 
       define(Album.TYPE,
@@ -84,8 +84,8 @@ public final class ClientTutorial {
               columnProperty(Album.TITLE, "Title")
                       .nullable(false).maximumLength(160))
               .keyGenerator(automatic("chinook.artist"))
-              .stringProvider(new StringProvider(Album.ARTIST_FK)
-                      .addText(" - ").addValue(Album.TITLE))
+              .stringFactory(stringFactory(Album.ARTIST_FK)
+                      .text(" - ").value(Album.TITLE))
               .caption("Albums");
     }
   }

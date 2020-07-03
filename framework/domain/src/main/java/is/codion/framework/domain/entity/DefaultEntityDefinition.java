@@ -636,7 +636,7 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   /**
-   * @return a {@link EntityDefinition.Builder} for this definition instance
+   * @return a {@link Builder} for this definition instance
    */
   DefaultBuilder builder() {
     return new DefaultBuilder(this);
@@ -1032,8 +1032,13 @@ final class DefaultEntityDefinition implements EntityDefinition {
     }
 
     @Override
-    public Builder stringProvider(final Function<Entity, String> stringProvider) {
-      definition.stringProvider = requireNonNull(stringProvider, "stringProvider");
+    public Builder stringFactory(final StringFactory.Builder builder) {
+      return stringFactory(requireNonNull(builder, "builder").get());
+    }
+
+    @Override
+    public Builder stringFactory(final Function<Entity, String> stringFactory) {
+      definition.stringProvider = requireNonNull(stringFactory, "stringProvider");
       return this;
     }
 

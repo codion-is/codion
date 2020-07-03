@@ -19,7 +19,6 @@ import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
-import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.ColumnProperty;
 
 import java.sql.Connection;
@@ -34,6 +33,7 @@ import java.util.UUID;
 
 import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -98,7 +98,7 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(150).maximumLength(13)
                     .beanProperty("location"))
             .smallDataset(true)
-            .stringProvider(new StringProvider(Department.DNAME))
+            .stringFactory(stringFactory(Department.DNAME))
             .conditionProvider(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {
               final StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
@@ -156,7 +156,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EMP_DATA_LAZY),
             blobProperty(EMP_DATA)
                     .eagerlyLoaded(true))
-            .stringProvider(new StringProvider(EMP_NAME))
+            .stringFactory(stringFactory(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
             .conditionProvider(EMP_NAME_IS_BLAKE_CONDITION_ID, (attributes, values) -> "ename = 'BLAKE'")
             .conditionProvider(EMP_MGR_GREATER_THAN_CONDITION_ID, (attributes, values) -> "mgr > ?")

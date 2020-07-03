@@ -96,8 +96,8 @@ is.codion.framework.domain.entity.DefaultOrderBy
 is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByAttribute
 is.codion.framework.domain.entity.Entity
 is.codion.framework.domain.entity.NullColorProvider
-is.codion.framework.domain.entity.StringProvider
-is.codion.framework.domain.entity.StringProvider$StringValueProvider
+is.codion.framework.domain.entity.StringFactory
+is.codion.framework.domain.entity.StringFactory$StringValueProvider
 is.codion.framework.domain.entity.DefaultEntityType
 is.codion.framework.domain.identity.DefaultIdentity
 is.codion.framework.domain.entity.DefaultAttribute

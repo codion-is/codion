@@ -11,7 +11,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
-import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
@@ -27,6 +26,7 @@ import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class Store extends DefaultDomain {
@@ -81,7 +81,7 @@ public final class Store extends DefaultDomain {
             columnProperty(Customer.IS_ACTIVE, "Is active")
                     .columnHasDefaultValue(true).defaultValue(true))
             .keyGenerator(new UUIDKeyGenerator())
-            .stringProvider(new CustomerToString())
+            .stringFactory(new CustomerToString())
             .caption("Customer");
     // end::customer[]
   }
@@ -96,8 +96,8 @@ public final class Store extends DefaultDomain {
                     .nullable(false).maximumLength(50),
             columnProperty(Address.VALID, "Valid")
                     .columnHasDefaultValue(true).nullable(false))
-            .stringProvider(new StringProvider(Address.STREET)
-                    .addText(", ").addValue(Address.CITY))
+            .stringFactory(stringFactory(Address.STREET)
+                    .text(", ").value(Address.CITY))
             .keyGenerator(automatic("store.address"))
             .smallDataset(true)
             .caption("Address");
