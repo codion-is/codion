@@ -12,10 +12,10 @@ import is.codion.framework.demos.petclinic.domain.api.Vet;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.domain.DefaultDomain;
-import is.codion.framework.domain.entity.StringProvider;
 
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class PetClinic extends DefaultDomain {
@@ -44,8 +44,8 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false))
             .keyGenerator(automatic(Vet.TYPE.getName()))
             .caption("Vets")
-            .stringProvider(new StringProvider(Vet.LAST_NAME)
-                    .addText(", ").addValue(Vet.FIRST_NAME))
+            .stringFactory(stringFactory(Vet.LAST_NAME)
+                    .text(", ").value(Vet.FIRST_NAME))
             .orderBy(orderBy().ascending(Vet.LAST_NAME, Vet.FIRST_NAME))
             .smallDataset(true);
   }
@@ -59,7 +59,7 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false))
             .keyGenerator(automatic(Specialty.TYPE.getName()))
             .caption("Specialties")
-            .stringProvider(new StringProvider(Specialty.NAME))
+            .stringFactory(stringFactory(Specialty.NAME))
             .smallDataset(true);
   }
 
@@ -74,8 +74,8 @@ public final class PetClinic extends DefaultDomain {
                             .primaryKeyIndex(1))
                     .nullable(false))
             .caption("Vet specialties")
-            .stringProvider(new StringProvider(VetSpecialty.VET_FK).addText(" - ")
-                    .addValue(VetSpecialty.SPECIALTY_FK));
+            .stringFactory(stringFactory(VetSpecialty.VET_FK).text(" - ")
+                    .value(VetSpecialty.SPECIALTY_FK));
   }
 
   private void petType() {
@@ -87,7 +87,7 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false))
             .keyGenerator(automatic(PetType.TYPE.getName()))
             .caption("Pet types")
-            .stringProvider(new StringProvider(PetType.NAME))
+            .stringFactory(stringFactory(PetType.NAME))
             .orderBy(orderBy().ascending(PetType.NAME))
             .smallDataset(true);
   }
@@ -111,8 +111,8 @@ public final class PetClinic extends DefaultDomain {
                     .maximumLength(20))
             .keyGenerator(automatic(Owner.TYPE.getName()))
             .caption("Owners")
-            .stringProvider(new StringProvider(Owner.LAST_NAME).addText(", ")
-                    .addValue(Owner.FIRST_NAME))
+            .stringFactory(stringFactory(Owner.LAST_NAME).text(", ")
+                    .value(Owner.FIRST_NAME))
             .orderBy(orderBy().ascending(Owner.LAST_NAME, Owner.FIRST_NAME));
   }
 
@@ -133,7 +133,7 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false))
             .keyGenerator(automatic(Pet.TYPE.getName()))
             .caption("Pets")
-            .stringProvider(new StringProvider(Pet.NAME))
+            .stringFactory(stringFactory(Pet.NAME))
             .orderBy(orderBy().ascending(Pet.NAME));
   }
 

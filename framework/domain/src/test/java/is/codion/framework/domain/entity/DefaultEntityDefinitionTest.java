@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
@@ -28,7 +29,7 @@ public class DefaultEntityDefinitionTest {
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("test");
     final Attribute<Integer> id = entityType.integerAttribute("id");
     final Attribute<String> name = entityType.stringAttribute("name");
-    final StringProvider stringProvider = new StringProvider(name);
+    final StringFactory stringFactory = new StringFactory(name);
     final Comparator<Entity> comparator = (o1, o2) -> 0;
     class TestDomain extends DefaultDomain {
       public TestDomain() {
@@ -39,7 +40,7 @@ public class DefaultEntityDefinitionTest {
                 .selectQuery("select * from dual", false)
                 .orderBy(orderBy().descending(name))
                 .readOnly(true).selectTableName("selectTableName").groupByClause("name")
-                .stringProvider(stringProvider).comparator(comparator);
+                .stringFactory(stringFactory).comparator(comparator);
       }
     }
     final Domain domain = new TestDomain();
@@ -54,7 +55,7 @@ public class DefaultEntityDefinitionTest {
     assertTrue(definition.isReadOnly());
     assertEquals("selectTableName", definition.getSelectTableName());
     assertEquals("name", definition.getGroupByClause());
-    assertEquals(stringProvider, definition.getStringProvider());
+    assertEquals(stringFactory, definition.getStringProvider());
     assertEquals(comparator, definition.getComparator());
   }
 
@@ -357,7 +358,7 @@ public class DefaultEntityDefinitionTest {
       public TestDomain() {
         super(DOMAIN_TYPE);
         define(entityType,
-                Properties.primaryKeyProperty(entityType.integerAttribute("attribute"))).stringProvider(null);
+                Properties.primaryKeyProperty(entityType.integerAttribute("attribute"))).stringFactory((Function<Entity, String>) null);
       }
     }
     assertThrows(NullPointerException.class, () -> new TestDomain());
@@ -370,7 +371,7 @@ public class DefaultEntityDefinitionTest {
       public TestDomain() {
         super(DOMAIN_TYPE);
         define(entityType,
-                Properties.primaryKeyProperty(entityType.integerAttribute("attribute"))).stringProvider(entity -> "test");
+                Properties.primaryKeyProperty(entityType.integerAttribute("attribute"))).stringFactory(entity -> "test");
       }
     }
     final Entities entities = new TestDomain().getEntities();

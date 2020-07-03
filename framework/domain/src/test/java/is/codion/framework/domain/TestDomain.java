@@ -8,7 +8,6 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Properties;
@@ -25,6 +24,7 @@ import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.KeyGenerators.queried;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -88,7 +88,7 @@ public class TestDomain extends DefaultDomain {
                     .beanProperty("name"),
             columnProperty(Master.CODE))
             .comparator(new MasterComparator())
-            .stringProvider(new StringProvider(Master.NAME));
+            .stringFactory(stringFactory(Master.NAME));
   }
 
   private static final class MasterComparator implements Comparator<Entity>, Serializable {
@@ -178,7 +178,7 @@ public class TestDomain extends DefaultDomain {
             .orderBy(orderBy().ascending(Detail.STRING))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
             .smallDataset(true)
-            .stringProvider(new StringProvider(Detail.STRING));
+            .stringFactory(stringFactory(Detail.STRING));
   }
 
   public interface Department extends Entity {
@@ -215,7 +215,7 @@ public class TestDomain extends DefaultDomain {
                     .eagerlyLoaded(false))
             .smallDataset(true)
             .orderBy(orderBy().ascending(Department.NAME))
-            .stringProvider(new StringProvider(Department.NAME))
+            .stringFactory(stringFactory(Department.NAME))
             .caption("Department");
   }
 
@@ -288,7 +288,7 @@ public class TestDomain extends DefaultDomain {
                     .eagerlyLoaded(true))
             .keyGenerator(increment("scott.emp", "empno"))
             .orderBy(orderBy().ascending(Employee.DEPARTMENT, Employee.NAME))
-            .stringProvider(new StringProvider(Employee.NAME))
+            .stringFactory(stringFactory(Employee.NAME))
             .caption("Employee");
   }
 

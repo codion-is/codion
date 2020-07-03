@@ -8,13 +8,13 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringProvider;
 
 import java.math.BigDecimal;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class Petstore extends DefaultDomain {
@@ -64,9 +64,9 @@ public final class Petstore extends DefaultDomain {
                     .columnName("longitude").nullable(false).maximumFractionDigits(2))
             .keyGenerator(increment("petstore.address", "addressid"))
             .orderBy(orderBy().ascending(Address.CITY, Address.STREET_1, Address.STREET_2))
-            .stringProvider(new StringProvider(Address.STREET_1).addText(" ")
-                    .addValue(Address.STREET_2).addText(", ").addValue(Address.CITY).addText(" ")
-                    .addValue(Address.ZIP).addText(", ").addValue(Address.STATE))
+            .stringFactory(stringFactory(Address.STREET_1).text(" ")
+                    .value(Address.STREET_2).text(", ").value(Address.CITY).text(" ")
+                    .value(Address.ZIP).text(", ").value(Address.STATE))
             .caption("Addresses");
   }
 
@@ -90,7 +90,7 @@ public final class Petstore extends DefaultDomain {
                     .columnName("imageurl").hidden(true))
             .keyGenerator(increment("petstore.category", "categoryid"))
             .orderBy(orderBy().ascending(Category.NAME))
-            .stringProvider(new StringProvider(Category.NAME))
+            .stringFactory(stringFactory(Category.NAME))
             .caption("Categories");
   }
 
@@ -119,8 +119,8 @@ public final class Petstore extends DefaultDomain {
                     .columnName("imageurl").maximumLength(55).hidden(true))
             .keyGenerator(increment("petstore.product", "productid"))
             .orderBy(orderBy().ascending(Product.NAME))
-            .stringProvider(new StringProvider(Product.CATEGORY_FK)
-                    .addText(" - ").addValue(Product.NAME))
+            .stringFactory(stringFactory(Product.CATEGORY_FK)
+                    .text(" - ").value(Product.NAME))
             .caption("Products");
   }
 
@@ -145,8 +145,8 @@ public final class Petstore extends DefaultDomain {
             .keyGenerator(increment("petstore.sellercontactinfo", "contactinfoid"))
             .orderBy(orderBy()
                     .ascending(SellerContactInfo.LAST_NAME, SellerContactInfo.FIRST_NAME))
-            .stringProvider(new StringProvider(SellerContactInfo.LAST_NAME)
-                    .addText(", ").addValue(SellerContactInfo.FIRST_NAME))
+            .stringFactory(stringFactory(SellerContactInfo.LAST_NAME)
+                    .text(", ").value(SellerContactInfo.FIRST_NAME))
             .caption("Seller info");
   }
 
@@ -195,8 +195,8 @@ public final class Petstore extends DefaultDomain {
                     .columnName("disabled").defaultValue(false))
             .keyGenerator(increment("petstore.item", "itemid"))
             .orderBy(orderBy().ascending(Item.NAME))
-            .stringProvider(new StringProvider(Item.PRODUCT_FK)
-                    .addText(" - ").addValue(Item.NAME))
+            .stringFactory(stringFactory(Item.PRODUCT_FK)
+                    .text(" - ").value(Item.NAME))
             .caption("Items");
   }
 
@@ -219,7 +219,7 @@ public final class Petstore extends DefaultDomain {
             .keyGenerator(increment("petstore.tag", "tagid"))
             .orderBy(orderBy().ascending(Tag.TAG))
             .selectTableName("petstore.tag tag")
-            .stringProvider(new StringProvider(Tag.TAG))
+            .stringFactory(stringFactory(Tag.TAG))
             .caption("Tags");
   }
 
@@ -241,8 +241,8 @@ public final class Petstore extends DefaultDomain {
                     primaryKeyProperty(TagItem.TAG_ID)
                             .columnName("tagid").primaryKeyIndex(1))
                     .nullable(false))
-            .stringProvider(new StringProvider(TagItem.ITEM_FK)
-                    .addText(" - ").addValue(TagItem.TAG_FK))
+            .stringFactory(stringFactory(TagItem.ITEM_FK)
+                    .text(" - ").value(TagItem.TAG_FK))
             .caption("Item tags");
   }
 }

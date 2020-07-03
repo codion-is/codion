@@ -7,14 +7,13 @@ import java.io.Serializable;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
 /**
- * Provides String representations of {@link Entity} instances.<br>
+ * Creates String representations of {@link Entity} instances.<br>
  * Given a {@link Entity} instance named entity containing the following mappings:
  * <pre>
  * attribute1 -&#62; value1
@@ -22,16 +21,16 @@ import static java.util.stream.Collectors.joining;
  * attribute3 -&#62; value3
  * fkAttribute -&#62; {Entity instance with a single mapping refAttribute -&#62; refValue}
  * </pre>
- * StringProvider provider = new StringProvider();<br>
+ * StringFactory.Builder builder = StringFactory.stringFactory();<br>
  * <br>
- * provider.addText("attribute1=").addValue(attribute1).addText(", attribute3='").addValue(attribute3)<br>
- *         .addText("' foreign key value=").addForeignKeyValue(fkAttribute, refAttribute);<br>
+ * builder.text("attribute1=").value(attribute1).text(", attribute3='").value(attribute3)<br>
+ *         .text("' foreign key value=").foreignKeyValue(fkAttribute, refAttribute);<br>
  * <br>
- * System.out.println(provider.apply(entity));<br><br>
+ * System.out.println(builder.get().apply(entity));<br><br>
  * outputs the following String:<br><br>
  * {@code attribute1=value1, attribute3='value3' foreign key value=refValue}
  */
-public final class StringProvider implements Function<Entity, String>, Serializable {
+public final class StringFactory implements Function<Entity, String>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -43,15 +42,15 @@ public final class StringProvider implements Function<Entity, String>, Serializa
   private final List<Function<Entity, String>> valueProviders = new ArrayList<>();
 
   /**
-   * Instantiates a new {@link StringProvider} instance
+   * Instantiates a new {@link StringFactory} instance
    */
-  public StringProvider() {}
+  StringFactory() {}
 
   /**
-   * Instantiates a new {@link StringProvider} instance
+   * Instantiates a new {@link StringFactory} instance
    * @param attribute the attribute which value should be used for a string representation
    */
-  public StringProvider(final Attribute<?> attribute) {
+  StringFactory(final Attribute<?> attribute) {
     addValue(attribute);
   }
 
@@ -62,57 +61,52 @@ public final class StringProvider implements Function<Entity, String>, Serializa
    */
   @Override
   public String apply(final Entity entity) {
-    Objects.requireNonNull(entity, "entity");
+    requireNonNull(entity, "entity");
+    if (valueProviders.size() == 1) {
+      return valueProviders.get(0).apply(entity);
+    }
 
     return valueProviders.stream().map(valueProvider -> valueProvider.apply(entity)).collect(joining());
   }
 
-  /**
-   * Adds the value mapped to the given key to this {@link StringProvider}
-   * @param attribute the attribute which value should be added to the string representation
-   * @return this {@link StringProvider} instance
-   */
-  public StringProvider addValue(final Attribute<?> attribute) {
-    Objects.requireNonNull(attribute, ATTRIBUTE_PARAM);
+  StringFactory addValue(final Attribute<?> attribute) {
+    requireNonNull(attribute, ATTRIBUTE_PARAM);
     valueProviders.add(new StringValueProvider(attribute));
     return this;
   }
 
-  /**
-   * Adds the value mapped to the given key to this StringProvider
-   * @param attribute the attribute which value should be added to the string representation
-   * @param format the Format to use when appending the value
-   * @return this {@link StringProvider} instance
-   */
-  public StringProvider addFormattedValue(final Attribute<?> attribute, final Format format) {
-    Objects.requireNonNull(attribute, ATTRIBUTE_PARAM);
+  StringFactory addFormattedValue(final Attribute<?> attribute, final Format format) {
+    requireNonNull(attribute, ATTRIBUTE_PARAM);
     requireNonNull(format, "format");
     valueProviders.add(new FormattedValueProvider(attribute, format));
     return this;
   }
 
-  /**
-   * Adds the value mapped to the given property in the {@link Entity} instance mapped to the given foreignKeyProperty
-   * to this {@link StringProvider}
-   * @param foreignKeyAttribute the foreign key attribute
-   * @param attribute the attribute in the referenced entity to use
-   * @return this {@link StringProvider} instance
-   */
-  public StringProvider addForeignKeyValue(final Attribute<Entity> foreignKeyAttribute, final Attribute<?> attribute) {
+  StringFactory addForeignKeyValue(final Attribute<Entity> foreignKeyAttribute, final Attribute<?> attribute) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
-    Objects.requireNonNull(attribute, ATTRIBUTE_PARAM);
+    requireNonNull(attribute, ATTRIBUTE_PARAM);
     valueProviders.add(new ForeignKeyValueProvider(foreignKeyAttribute, attribute));
     return this;
   }
 
-  /**
-   * Adds the given static text to this {@link StringProvider}
-   * @param text the text to add
-   * @return this {@link StringProvider} instance
-   */
-  public StringProvider addText(final String text) {
+  StringFactory addText(final String text) {
     valueProviders.add(new StaticTextProvider(text));
     return this;
+  }
+
+  /**
+   * @return a {@link Builder} instance for configuring a string factory {@link Function} for entities.
+   */
+  public static Builder stringFactory() {
+    return new DefaultStringFactoryBuilder(new StringFactory());
+  }
+
+  /**
+   * @param attribute the attribute which value to use for the string generation
+   * @return a {@link Builder} instance for configuring a string factory {@link Function} for entities.
+   */
+  public static Builder stringFactory(final Attribute<?> attribute) {
+    return new DefaultStringFactoryBuilder(new StringFactory(attribute));
   }
 
   private static final class FormattedValueProvider implements Function<Entity, String>, Serializable {
@@ -189,5 +183,47 @@ public final class StringProvider implements Function<Entity, String>, Serializa
     public String apply(final Entity entity) {
       return text;
     }
+  }
+
+  /**
+   * A Builder for a string function, which provides toString() values for entities.
+   */
+  public interface Builder {
+
+    /**
+     * Adds the value mapped to the given key to this {@link Builder}
+     * @param attribute the attribute which value should be added to the string representation
+     * @return this {@link Builder} instance
+     */
+    Builder value(Attribute<?> attribute);
+
+    /**
+     * Adds the value mapped to the given key to this StringProvider
+     * @param attribute the attribute which value should be added to the string representation
+     * @param format the Format to use when appending the value
+     * @return this {@link Builder} instance
+     */
+    Builder formattedValue(Attribute<?> attribute, Format format);
+
+    /**
+     * Adds the value mapped to the given property in the {@link Entity} instance mapped to the given foreignKeyProperty
+     * to this {@link Builder}
+     * @param foreignKeyAttribute the foreign key attribute
+     * @param attribute the attribute in the referenced entity to use
+     * @return this {@link Builder} instance
+     */
+    Builder foreignKeyValue(Attribute<Entity> foreignKeyAttribute, Attribute<?> attribute);
+
+    /**
+     * Adds the given static text to this {@link Builder}
+     * @param text the text to add
+     * @return this {@link Builder} instance
+     */
+    Builder text(String text);
+
+    /**
+     * @return the string factory function
+     */
+    Function<Entity, String> get();
   }
 }

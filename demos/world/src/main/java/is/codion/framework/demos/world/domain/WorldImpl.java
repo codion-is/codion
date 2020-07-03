@@ -13,7 +13,6 @@ import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.StringProvider;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.DerivedProperty;
 
@@ -22,6 +21,7 @@ import java.awt.Color;
 import static is.codion.common.Util.notNull;
 import static is.codion.framework.domain.entity.KeyGenerators.sequence;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public final class WorldImpl extends DefaultDomain {
@@ -64,7 +64,7 @@ public final class WorldImpl extends DefaultDomain {
             // end::sequence[]
             .validator(new CityValidator())
             .orderBy(orderBy().ascending(City.NAME))
-            .stringProvider(new StringProvider(City.NAME))
+            .stringFactory(stringFactory(City.NAME))
             .colorProvider(new CityColorProvider(getEntities()))
             .caption("City");
   }
@@ -137,7 +137,7 @@ public final class WorldImpl extends DefaultDomain {
                     .nullable(false)
                     .maximumLength(2))
             .orderBy(orderBy().ascending(Country.NAME))
-            .stringProvider(new StringProvider(Country.NAME))
+            .stringFactory(stringFactory(Country.NAME))
             .caption("Country");
   }
 

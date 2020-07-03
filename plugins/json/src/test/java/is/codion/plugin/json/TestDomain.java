@@ -9,13 +9,13 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.StringProvider;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static is.codion.common.item.Items.item;
 import static is.codion.framework.domain.entity.KeyGenerators.increment;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 import static java.util.Arrays.asList;
 
@@ -45,7 +45,7 @@ public final class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(150).maximumLength(13),
             columnProperty(DEPARTMENT_LOGO))
             .smallDataset(true)
-            .stringProvider(new StringProvider(DEPARTMENT_NAME))
+            .stringFactory(stringFactory(DEPARTMENT_NAME))
             .caption("Department");
   }
 
@@ -84,7 +84,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION).preferredColumnWidth(100))
-            .stringProvider(new StringProvider(EMP_NAME))
+            .stringFactory(stringFactory(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
             .conditionProvider(EMP_MGR_CONDITION_ID, (attributes, values) -> "mgr > ?")
             .caption("Employee");
