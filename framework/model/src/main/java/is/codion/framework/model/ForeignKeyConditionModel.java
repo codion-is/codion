@@ -11,7 +11,7 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 /**
  * A condition model based on foreign key properties, using one or more {@link Entity} instances as condition values.
  */
-public interface ForeignKeyConditionModel extends ColumnConditionModel<Entity, ForeignKeyProperty>, Refreshable {
+public interface ForeignKeyConditionModel extends ColumnConditionModel<Entity, ForeignKeyProperty, Entity>, Refreshable {
 
   /**
    * @return the EntityLookupModel used by this ForeignKeyConditionModel, if any

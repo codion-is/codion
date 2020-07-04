@@ -38,7 +38,7 @@ public final class DefaultEntityLookupModelTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private EntityLookupModel lookupModel;
-  private Collection<ColumnProperty<?>> lookupProperties;
+  private Collection<ColumnProperty<String>> lookupProperties;
 
   @Test
   public void constructorNullEntityType() {
@@ -58,12 +58,6 @@ public final class DefaultEntityLookupModelTest {
   @Test
   public void lookupWithNoLookupProperties() {
     assertThrows(IllegalStateException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, emptyList()).performQuery());
-  }
-
-  @Test
-  public void constructorNonStringLookupProperty() {
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            singletonList(ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_COMMISSION))));
   }
 
   @Test

@@ -20,17 +20,17 @@ import java.util.Collections;
 /**
  * A column condition panel based on the Property class.
  */
-public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, ColumnProperty<?>> {
+public final class PropertyConditionPanel<T> extends ColumnConditionPanel<Entity, ColumnProperty<T>, T> {
 
   /**
    * Instantiates a new PropertyConditionPanel.
    * @param model the model to base this panel on
    */
-  public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty<?>> model) {
-    super(model, ToggleAdvancedButton.NO, new PropertyBoundFieldProvider(model), getOperators(model));
+  public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty<T>, T> model) {
+    super(model, ToggleAdvancedButton.NO, new PropertyBoundFieldProvider<>(model), getOperators(model));
   }
 
-  private static Operator[] getOperators(final ColumnConditionModel<Entity, ColumnProperty<?>> model) {
+  private static <T> Operator[] getOperators(final ColumnConditionModel<Entity, ColumnProperty<T>, T> model) {
     if (model.getColumnIdentifier().getAttribute().isBoolean()) {
       return new Operator[] {Operator.EQUALS};
     }
@@ -38,18 +38,18 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, C
     return Operator.values();
   }
 
-  private static final class PropertyBoundFieldProvider implements BoundFieldProvider {
+  private static final class PropertyBoundFieldProvider<T> implements BoundFieldProvider {
 
-    private final ColumnConditionModel<Entity, ColumnProperty<?>> model;
+    private final ColumnConditionModel<Entity, ColumnProperty<T>, T> model;
 
-    private PropertyBoundFieldProvider(final ColumnConditionModel<Entity, ColumnProperty<?>> model) {
+    private PropertyBoundFieldProvider(final ColumnConditionModel<Entity, ColumnProperty<T>, T> model) {
       this.model = model;
     }
 
     @Override
     public JComponent initializeEqualsValueField() {
-      final ValueSet<Object> valueSet = model.getEqualsValueSet();
-      final Value value = Values.value();
+      final ValueSet<T> valueSet = model.getEqualsValueSet();
+      final Value<T> value = Values.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
 
       final JComponent component = EntityInputComponents.createInputComponent(model.getColumnIdentifier(), value);

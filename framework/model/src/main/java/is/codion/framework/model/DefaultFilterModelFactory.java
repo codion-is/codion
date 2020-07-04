@@ -13,7 +13,7 @@ import is.codion.framework.domain.property.Property;
 public class DefaultFilterModelFactory implements FilterModelFactory {
 
   @Override
-  public ColumnConditionModel<Entity, Property<?>> createFilterModel(final Property<?> property) {
-    return new DefaultPropertyFilterModel(property);
+  public <T> ColumnConditionModel<Entity, Property<?>, T> createFilterModel(final Property<T> property) {
+    return new DefaultPropertyFilterModel<>(property);
   }
 }

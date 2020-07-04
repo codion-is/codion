@@ -18,7 +18,7 @@ import is.codion.framework.model.DefaultConditionModelFactory;
 public class SwingConditionModelFactory extends DefaultConditionModelFactory {
 
   @Override
-  public ColumnConditionModel<Entity, ForeignKeyProperty> createForeignKeyConditionModel(
+  public ColumnConditionModel<Entity, ForeignKeyProperty, Entity> createForeignKeyConditionModel(
           final ForeignKeyProperty foreignKeyProperty, final EntityConnectionProvider connectionProvider) {
     if (connectionProvider.getEntities().getDefinition(foreignKeyProperty.getReferencedEntityType()).isSmallDataset()) {
       final SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), connectionProvider);

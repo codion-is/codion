@@ -249,7 +249,7 @@ public interface EntityDefinition extends Serializable {
    * @return the properties to use when searching by string
    * @see ColumnProperty.Builder#searchProperty(boolean)
    */
-  Collection<ColumnProperty<?>> getSearchProperties();
+  Collection<ColumnProperty<String>> getSearchProperties();
 
   /**
    * @param attribute the attribute

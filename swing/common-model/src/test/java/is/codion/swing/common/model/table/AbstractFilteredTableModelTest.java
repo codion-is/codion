@@ -50,7 +50,7 @@ public final class AbstractFilteredTableModelTest {
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(final AbstractTableSortModel<List<String>, Integer> sortModel,
-                                           final List<ColumnConditionModel<List<String>, Integer>> columnFilterModels) {
+                                           final List<ColumnConditionModel<List<String>, Integer, String>> columnFilterModels) {
       super(sortModel, columnFilterModels);
     }
 
@@ -77,10 +77,10 @@ public final class AbstractFilteredTableModelTest {
   private static TestAbstractFilteredTableModel createTestModel(final Comparator<String> customComparator) {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnConditionModel<List<String>, Integer> filterModel =
-            new DefaultColumnConditionModel<List<String>, Integer>(0, String.class, "%") {
+    final ColumnConditionModel<List<String>, Integer, String> filterModel =
+            new DefaultColumnConditionModel<List<String>, Integer, String>(0, String.class, "%") {
               @Override
-              protected Comparable<?> getComparable(final List<String> row) {
+              protected Comparable<String> getComparable(final List<String> row) {
                 return row.get(0);
               }
             };
@@ -91,17 +91,17 @@ public final class AbstractFilteredTableModelTest {
       }
 
       @Override
-      protected Comparable<?> getComparable(final List<String> row, final Integer columnIdentifier) {
+      protected Comparable<String> getComparable(final List<String> row, final Integer columnIdentifier) {
         return row.get(columnIdentifier);
       }
 
       @Override
-      protected Comparator<?> initializeColumnComparator(final Integer columnIdentifier) {
+      protected Comparator<String> initializeColumnComparator(final Integer columnIdentifier) {
         if (customComparator != null) {
           return customComparator;
         }
 
-        return super.initializeColumnComparator(columnIdentifier);
+        return (Comparator<String>) super.initializeColumnComparator(columnIdentifier);
       }
     }, singletonList(filterModel));
   }
@@ -181,7 +181,9 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addTableDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
-    tableModel.getColumnModel().getColumnFilterModel(0).setEqualsValue("a");
+    final ColumnConditionModel<List<String>, Integer, String> columnFilterModel =
+            tableModel.getColumnModel().getColumnFilterModel(0);
+    columnFilterModel.setEqualsValue("a");
     tableModel.removeItem(B);
     assertEquals(3, events.get());
     assertFalse(tableModel.isVisible(B));

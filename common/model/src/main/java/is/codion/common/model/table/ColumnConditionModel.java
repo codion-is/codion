@@ -21,8 +21,9 @@ import java.util.Collection;
  * as well as relevant events and states.
  * @param <R> the type of rows
  * @param <K> the type of objects used to identify columns
+ * @param <T> the column value type
  */
-public interface ColumnConditionModel<R, K> {
+public interface ColumnConditionModel<R, K, T> {
 
   /**
    * Specifies whether wildcards are automatically added to string conditions<br>
@@ -111,7 +112,7 @@ public interface ColumnConditionModel<R, K> {
    * @param comparable the value to check
    * @return true if the given value should be included or if this model is not enabled
    */
-  boolean include(Comparable<?> comparable);
+  boolean include(Comparable<T> comparable);
 
   /**
    * @param locked true to lock this model, false to unlock
@@ -126,56 +127,48 @@ public interface ColumnConditionModel<R, K> {
   /**
    * @return the data type this condition model is based on
    */
-  Class<?> getTypeClass();
+  Class<T> getTypeClass();
 
   /**
    * Sets the values used when the {@link Operator#EQUALS} is enabled.
    * @param value the value to use as condition
-   * @param <T> the value type
    */
-  <T> void setEqualsValue(T value);
+  void setEqualsValue(T value);
 
   /**
-   * @param <T> the value type
    * @return the equals value, possibly null
    */
-  <T> T getEqualsValue();
+  T getEqualsValue();
 
   /**
    * @param values the values to set
-   * @param <T> the value type
    */
-  <T> void setEqualsValues(Collection<T> values);
+  void setEqualsValues(Collection<T> values);
 
   /**
-   * @param <T> the value type
    * @return the equals values, never null
    */
-  <T> Collection<T> getEqualsValues();
+  Collection<T> getEqualsValues();
 
   /**
    * @param upper the new upper bound
-   * @param <T> the value type
    */
-  <T> void setUpperBound(T upper);
+  void setUpperBound(T upper);
 
   /**
    * @return the upper bound
-   * @param <T> the value type
    */
-  <T> T getUpperBound();
+  T getUpperBound();
 
   /**
    * @param value the lower bound
-   * @param <T> the value type
    */
-  <T> void setLowerBound(T value);
+  void setLowerBound(T value);
 
   /**
    * @return the lower bound
-   * @param <T> the value type
    */
-  <T> T getLowerBound();
+  T getLowerBound();
 
   /**
    * @return the search operator
@@ -186,12 +179,6 @@ public interface ColumnConditionModel<R, K> {
    * @param operator the search operator
    */
   void setOperator(Operator operator);
-
-  /**
-   * @return true if the current operator requires a lower bound value to be specified,
-   * such as within and outside range.
-   */
-  boolean isLowerBoundRequired();
 
   /**
    * @return true if auto enable is enabled
@@ -224,19 +211,19 @@ public interface ColumnConditionModel<R, K> {
    * @param <T> the value type
    * @return a ValueSet based on the equals values of this condition model
    */
-  <T> ValueSet<T> getEqualsValueSet();
+  ValueSet<T> getEqualsValueSet();
 
   /**
    * @param <T> the value type
    * @return a Value based on the upper bound value of this condition model
    */
-  <T> Value<T> getUpperBoundValue();
+  Value<T> getUpperBoundValue();
 
   /**
    * @param <T> the value type
    * @return a Value based on the lower bound value of this condition model
    */
-  <T> Value<T> getLowerBoundValue();
+  Value<T> getLowerBoundValue();
 
   /**
    * @return an observer for this models locked state
@@ -292,16 +279,6 @@ public interface ColumnConditionModel<R, K> {
    * @param listener the listener to remove
    */
   void removeLowerBoundListener(EventListener listener);
-
-  /**
-   * @param listener a listener to be notified each time the lower bound required attribute changes
-   */
-  void addLowerBoundRequiredListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeLowerBoundRequiredListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the upper bound changes

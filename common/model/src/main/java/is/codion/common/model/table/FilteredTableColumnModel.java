@@ -75,12 +75,12 @@ public interface FilteredTableColumnModel<R, C, T> {
    * @param columnIdentifier the column identifier
    * @return the ColumnConditionModel for the column with the given identifier, null if none exists.
    */
-  ColumnConditionModel<R, C> getColumnFilterModel(C columnIdentifier);
+  <T> ColumnConditionModel<R, C, T> getColumnFilterModel(C columnIdentifier);
 
   /**
    * @return the ColumnFilterModel instances
    */
-  Collection<ColumnConditionModel<R, C>> getColumnFilterModels();
+  Collection<ColumnConditionModel<R, C, ?>> getColumnFilterModels();
 
   /**
    * @param listener a listener to be notified each time a column is hidden

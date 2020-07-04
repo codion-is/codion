@@ -593,7 +593,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public EntityLookupModel createForeignKeyLookupModel(final Attribute<Entity> foreignKeyAttribute) {
     final ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
-    final Collection<ColumnProperty<?>> searchProperties = getEntities()
+    final Collection<ColumnProperty<String>> searchProperties = getEntities()
             .getDefinition(property.getReferencedEntityType()).getSearchProperties();
     if (searchProperties.isEmpty()) {
       throw new IllegalStateException("No search properties defined for entity: " + property.getReferencedEntityType());

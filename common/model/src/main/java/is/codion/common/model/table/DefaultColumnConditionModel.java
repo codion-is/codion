@@ -29,22 +29,22 @@ import static java.util.Objects.requireNonNull;
  * A default ColumnConditionModel model implementation.
  * @param <R> the type of the rows
  * @param <K> the type of the column identifier
+ * @param <T> the column value type
  */
-public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R, K> {
+public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionModel<R, K, T> {
 
-  private final ValueSet<Object> equalsValues = Values.valueSet();
-  private final Value<Object> upperBoundValue = Values.value();
-  private final Value<Object> lowerBoundValue = Values.value();
+  private final ValueSet<T> equalsValues = Values.valueSet();
+  private final Value<T> upperBoundValue = Values.value();
+  private final Value<T> lowerBoundValue = Values.value();
   private final Value<Operator> operatorValue = Values.value(Operator.EQUALS);
   private final Event<?> conditionChangedEvent = Events.event();
   private final Event<?> conditionModelClearedEvent = Events.event();
 
   private final State enabledState = States.state();
   private final State lockedState = States.state();
-  private final State lowerBoundRequiredState = States.state();
 
   private final K columnIdentifier;
-  private final Class<?> typeClass;
+  private final Class<T> typeClass;
   private final Format format;
   private final String dateTimeFormatPattern;
 
@@ -59,7 +59,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
    * @param typeClass the data type
    * @param wildcard the string to use as wildcard
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final Class<?> typeClass, final String wildcard) {
+  public DefaultColumnConditionModel(final K columnIdentifier, final Class<T> typeClass, final String wildcard) {
     this(columnIdentifier, typeClass, wildcard, null, null);
   }
 
@@ -71,7 +71,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
    * @param format the format to use when presenting the values, numbers for example
    * @param dateTimeFormatPattern the date/time format pattern to use in case of a date/time column
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final Class<?> typeClass, final String wildcard,
+  public DefaultColumnConditionModel(final K columnIdentifier, final Class<T> typeClass, final String wildcard,
                                      final Format format, final String dateTimeFormatPattern) {
     this(columnIdentifier, typeClass, wildcard, format, dateTimeFormatPattern, AUTOMATIC_WILDCARD.get());
   }
@@ -85,7 +85,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
    * @param dateTimeFormatPattern the date/time format pattern to use in case of a date/time column
    * @param automaticWildcard the automatic wildcard type to use
    */
-  public DefaultColumnConditionModel(final K columnIdentifier, final Class<?> typeClass, final String wildcard,
+  public DefaultColumnConditionModel(final K columnIdentifier, final Class<T> typeClass, final String wildcard,
                                      final Format format, final String dateTimeFormatPattern,
                                      final AutomaticWildcard automaticWildcard) {
     this.columnIdentifier = requireNonNull(columnIdentifier, "columnIdentifier");
@@ -133,51 +133,51 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   @Override
-  public final Class<?> getTypeClass() {
+  public final Class<T> getTypeClass() {
     return typeClass;
   }
 
   @Override
-  public final <T> void setEqualsValue(final T value) {
+  public final void setEqualsValue(final T value) {
     equalsValues.set(value == null ? Collections.emptySet() : Collections.singleton(value));
   }
 
   @Override
-  public <T> T getEqualsValue() {
-    return equalsValues.get().isEmpty() ? null : (T) equalsValues.get().iterator().next();
+  public T getEqualsValue() {
+    return getBoundValue(equalsValues.get().isEmpty() ? null : equalsValues.get().iterator().next());
   }
 
   @Override
-  public <T> void setEqualsValues(final Collection<T> values) {
+  public void setEqualsValues(final Collection<T> values) {
     equalsValues.set(values == null ? Collections.emptySet() : new HashSet<>(values));
   }
 
   @Override
-  public <T> Collection<T> getEqualsValues() {
-    return (Collection<T>) equalsValues.get();
+  public Collection<T> getEqualsValues() {
+    return equalsValues.get();
   }
 
   @Override
-  public final <T> void setUpperBound(final T value) {
+  public final void setUpperBound(final T value) {
     validateType(value);
     checkLock();
     upperBoundValue.set(value);
   }
 
   @Override
-  public final <T> T getUpperBound() {
+  public final T getUpperBound() {
     return getBoundValue(upperBoundValue.get());
   }
 
   @Override
-  public final <T> void setLowerBound(final T value) {
+  public final void setLowerBound(final T value) {
     validateType(value);
     checkLock();
     lowerBoundValue.set(value);
   }
 
   @Override
-  public final <T> T getLowerBound() {
+  public final T getLowerBound() {
     return getBoundValue(lowerBoundValue.get());
   }
 
@@ -190,11 +190,6 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   public final void setOperator(final Operator operator) {
     checkLock();
     operatorValue.set(requireNonNull(operator, "operator"));
-  }
-
-  @Override
-  public final boolean isLowerBoundRequired() {
-    return lowerBoundRequiredState.get();
   }
 
   /**
@@ -260,18 +255,18 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   @Override
-  public <T> ValueSet<T> getEqualsValueSet() {
-    return (ValueSet<T>) equalsValues;
+  public ValueSet<T> getEqualsValueSet() {
+    return equalsValues;
   }
 
   @Override
-  public <T> Value<T> getLowerBoundValue() {
-    return (Value<T>) lowerBoundValue;
+  public Value<T> getLowerBoundValue() {
+    return lowerBoundValue;
   }
 
   @Override
-  public <T> Value<T> getUpperBoundValue() {
-    return (Value<T>) upperBoundValue;
+  public Value<T> getUpperBoundValue() {
+    return upperBoundValue;
   }
 
   @Override
@@ -320,16 +315,6 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   @Override
-  public final void addLowerBoundRequiredListener(final EventListener listener) {
-    lowerBoundRequiredState.addListener(listener);
-  }
-
-  @Override
-  public final void removeLowerBoundRequiredListener(final EventListener listener) {
-    lowerBoundRequiredState.removeListener(listener);
-  }
-
-  @Override
   public final void addClearedListener(final EventListener listener) {
     conditionModelClearedEvent.addListener(listener);
   }
@@ -370,7 +355,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   @Override
-  public final boolean include(final Comparable<?> comparable) {
+  public final boolean include(final Comparable<T> comparable) {
     if (!enabledState.get()) {
       return true;
     }
@@ -398,11 +383,11 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
    * @param row the row
    * @return a Comparable from the given row to compare with this condition model's value.
    */
-  protected Comparable<?> getComparable(final R row) {
-    return (Comparable<?>) row;
+  protected Comparable<T> getComparable(final R row) {
+    return (Comparable<T>) row;
   }
 
-  private <T> T getBoundValue(final Object upperBound) {
+  private T getBoundValue(final Object upperBound) {
     if (typeClass.equals(String.class)) {
       if (upperBound == null || (upperBound instanceof String && ((String) upperBound).length() == 0)) {
         return null;
@@ -417,7 +402,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     return (T) upperBound;
   }
 
-  private boolean includeEquals(final Comparable<?> comparable) {
+  private boolean includeEquals(final Comparable<T> comparable) {
     if (comparable == null) {
       return this.getEqualsValue() == null;
     }
@@ -432,7 +417,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     return comparable.compareTo(this.getEqualsValue()) == 0;
   }
 
-  private boolean includeNotEquals(final Comparable<?> comparable) {
+  private boolean includeNotEquals(final Comparable<T> comparable) {
     if (comparable == null) {
       return this.getEqualsValue() != null;
     }
@@ -448,7 +433,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
   }
 
   private boolean includeExactWildcard(final String value) {
-    String equalsValue = getEqualsValue();
+    String equalsValue = (String) getEqualsValue();
     if (equalsValue == null) {
       equalsValue = "";
     }
@@ -477,15 +462,15 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     return string.replaceAll(wildcard, ".*").replaceAll("\\$", ".").replaceAll("]", "\\\\]").replaceAll("\\[", "\\\\[");
   }
 
-  private boolean includeLessThan(final Comparable<?> comparable) {
+  private boolean includeLessThan(final Comparable<T> comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) <= 0;
   }
 
-  private boolean includeGreaterThan(final Comparable<?> comparable) {
+  private boolean includeGreaterThan(final Comparable<T> comparable) {
     return getLowerBound() == null || comparable != null && comparable.compareTo(getLowerBound()) >= 0;
   }
 
-  private boolean includeWithinRange(final Comparable<?> comparable) {
+  private boolean includeWithinRange(final Comparable<T> comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }
@@ -508,7 +493,7 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     return lowerCompareResult >= 0 && upperCompareResult <= 0;
   }
 
-  private boolean includeOutsideRange(final Comparable<?> comparable) {
+  private boolean includeOutsideRange(final Comparable<T> comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }
@@ -559,11 +544,6 @@ public class DefaultColumnConditionModel<R, K> implements ColumnConditionModel<R
     lowerBoundValue.addListener(conditionChangedEvent);
     operatorValue.addListener(conditionChangedEvent);
     enabledState.addListener(conditionChangedEvent);
-    operatorValue.addDataListener(this::onOperatorChanged);
-  }
-
-  private void onOperatorChanged(final Operator operator) {
-    lowerBoundRequiredState.set(operator.getValues().equals(Operator.Values.TWO));
   }
 
   private void checkLock() {

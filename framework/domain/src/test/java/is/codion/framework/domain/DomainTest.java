@@ -480,7 +480,7 @@ public class DomainTest {
   @Test
   public void getSearchProperties() {
     final EntityDefinition definition = entities.getDefinition(Employee.TYPE);
-    Collection<ColumnProperty<?>> searchProperties = definition.getSearchProperties();
+    Collection<ColumnProperty<String>> searchProperties = definition.getSearchProperties();
     assertTrue(searchProperties.contains(definition.getColumnProperty(Employee.JOB)));
     assertTrue(searchProperties.contains(definition.getColumnProperty(Employee.NAME)));
 

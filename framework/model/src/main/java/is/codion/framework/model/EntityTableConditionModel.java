@@ -127,7 +127,7 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return a Collection containing the {@link ColumnConditionModel}s available in this table condition model
    */
-  Collection<ColumnConditionModel<Entity, ? extends Property<?>>> getConditionModels();
+  Collection<ColumnConditionModel<Entity, ? extends Property<?>, ?>> getConditionModels();
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given attribute.
@@ -136,7 +136,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @throws IllegalArgumentException in case no condition model is found
    * @see #containsConditionModel(Attribute)
    */
-  ColumnConditionModel<Entity, ? extends Property<?>> getConditionModel(Attribute<?> attribute);
+  <T> ColumnConditionModel<Entity, ? extends Property<T>, T> getConditionModel(Attribute<T> attribute);
 
   /**
    * Clears the search state of all {@link ColumnConditionModel}, disables them and
@@ -147,20 +147,20 @@ public interface EntityTableConditionModel extends Refreshable {
   /**
    * @return a Collection containing the filter models available in this table condition model
    */
-  Collection<ColumnConditionModel<Entity, Property<?>>> getFilterModels();
+  Collection<ColumnConditionModel<Entity, Property<?>, ?>> getFilterModels();
 
   /**
    * The filter model associated with {@code attribute}
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} for the {@code attribute}, null if none is found
    */
-  ColumnConditionModel<Entity, Property<?>> getFilterModel(Attribute<?> attribute);
+  <T> ColumnConditionModel<Entity, Property<T>, T> getFilterModel(Attribute<T> attribute);
 
   /**
    * @param attribute column attribute
    * @return true if the filter model behind column with index {@code columnIndex} is enabled
    */
-  boolean isFilterEnabled(Attribute<?> attribute);
+  <T> boolean isFilterEnabled(Attribute<T> attribute);
 
   /**
    * @return the text used when performing a simple search

@@ -28,7 +28,7 @@ public final class LookupTableModel extends SwingEntityTableModel {
             model.getColumnIdentifier().getAttribute().isString()).forEach(this::configureConditionModel);
   }
 
-  private void configureConditionModel(ColumnConditionModel<?, ?> model) {
+  private void configureConditionModel(ColumnConditionModel<?, ?, ?> model) {
     model.setCaseSensitive(false);
     model.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
   }

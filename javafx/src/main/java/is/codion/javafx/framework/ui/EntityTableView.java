@@ -72,7 +72,7 @@ public class EntityTableView extends TableView<Entity> {
    * @param visible the toggle values
    */
   public final void setConditionPaneVisible(final boolean visible) {
-    getColumns().forEach(column -> ((EntityTableColumn) column).setConditionViewVisible(visible));
+    getColumns().forEach(column -> ((EntityTableColumn<?>) column).setConditionViewVisible(visible));
   }
 
   /**
@@ -80,7 +80,7 @@ public class EntityTableView extends TableView<Entity> {
    * @param advanced the toggle values
    */
   public final void setConditionPaneAdvanced(final boolean advanced) {
-    getColumns().forEach(column -> ((EntityTableColumn) column).setConditionViewAdvanced(advanced));
+    getColumns().forEach(column -> ((EntityTableColumn<?>) column).setConditionViewAdvanced(advanced));
   }
 
   /**
@@ -130,12 +130,16 @@ public class EntityTableView extends TableView<Entity> {
 
   private void initializeColumns() {
     for (final Property<?> property : getListModel().getEntityDefinition().getVisibleProperties()) {
-      getColumns().add(new EntityTableColumn(listModel, property, getCellValueFactory(property)));
+      getColumns().add(entityTableColumn(property));
     }
     listModel.setColumns(getColumns());
   }
 
-  private Callback<TableColumn.CellDataFeatures<Entity, Object>, ObservableValue<Object>> getCellValueFactory(final Property<?> property) {
+  private <T extends Comparable<T>> EntityTableColumn<T> entityTableColumn(final Property<?> property) {
+    return new EntityTableColumn<>(listModel, (Property<T>) property, getCellValueFactory((Property<T>) property));
+  }
+
+  private <T extends Comparable<T>> Callback<TableColumn.CellDataFeatures<Entity, T>, ObservableValue<T>> getCellValueFactory(final Property<T> property) {
     return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.getAttribute()));
   }
 

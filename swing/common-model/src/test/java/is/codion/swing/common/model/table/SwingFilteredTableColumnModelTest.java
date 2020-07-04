@@ -116,7 +116,7 @@ public class SwingFilteredTableColumnModelTest {
   private SwingFilteredTableColumnModel createTestModel() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnConditionModel<String, Integer> filterModel = new DefaultColumnConditionModel<>(0, String.class, "%");
+    final ColumnConditionModel<String, Integer, String> filterModel = new DefaultColumnConditionModel<>(0, String.class, "%");
 
     return new SwingFilteredTableColumnModel<>(singletonList(column), singletonList(filterModel));
   }

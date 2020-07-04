@@ -36,9 +36,9 @@ import static is.codion.common.item.Items.item;
 /**
  * A View for configuring a query condition for a single property
  */
-public final class PropertyConditionView extends BorderPane {
+public final class PropertyConditionView<T> extends BorderPane {
 
-  private final ColumnConditionModel<Entity, ? extends Property<?>> model;
+  private final ColumnConditionModel<Entity, ? extends Property<?>, T> model;
   private final Pane operatorPane;
   private final Pane topPane;
   private final Label header;
@@ -53,7 +53,7 @@ public final class PropertyConditionView extends BorderPane {
    * Instantiates a new {@link PropertyConditionView}
    * @param model the {@link ColumnConditionModel} to base this view on
    */
-  public PropertyConditionView(final ColumnConditionModel<Entity, ? extends Property<?>> model) {
+  public PropertyConditionView(final ColumnConditionModel<Entity, ? extends Property<?>, T> model) {
     this.model = model;
     this.header = new Label(model.getColumnIdentifier().getCaption());
     this.enabledBox = createEnabledBox();
@@ -122,11 +122,11 @@ public final class PropertyConditionView extends BorderPane {
   private Control createEqualsValueControl() {
     final Control control = createControl();
     if (!(control instanceof EntityLookupField)) {
-      final ValueSet<Object> valueSet = model.getEqualsValueSet();
-      final Value<Object> value = Values.value();
+      final ValueSet<T> valueSet = model.getEqualsValueSet();
+      final Value<T> value = Values.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
 
-      value.link(FXUiUtil.createValue((Property<Object>) model.getColumnIdentifier(), control, null));
+      value.link(FXUiUtil.createValue((Property<T>) model.getColumnIdentifier(), control, null));
     }
 
     return control;
@@ -138,7 +138,7 @@ public final class PropertyConditionView extends BorderPane {
       return null;
     }
     final Control control = createControl();
-    model.getUpperBoundValue().link(FXUiUtil.createValue((Property<Object>) model.getColumnIdentifier(), control, null));
+    model.getUpperBoundValue().link(FXUiUtil.createValue((Property<T>) model.getColumnIdentifier(), control, null));
 
     return control;
   }
@@ -149,7 +149,7 @@ public final class PropertyConditionView extends BorderPane {
       return null;
     }
     final Control control = createControl();
-    model.getLowerBoundValue().link(FXUiUtil.createValue((Property<Object>) model.getColumnIdentifier(), control, null));
+    model.getLowerBoundValue().link(FXUiUtil.createValue((Property<T>) model.getColumnIdentifier(), control, null));
 
     return control;
   }
@@ -183,7 +183,7 @@ public final class PropertyConditionView extends BorderPane {
   }
 
   private void bindEvents() {
-    model.addLowerBoundRequiredListener(this::initializeUI);
+    model.addOperatorListener(operator -> initializeUI());
   }
 
   private void initializeUI() {

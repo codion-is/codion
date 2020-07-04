@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /**
  * A default ForeignKeyConditionModel implementation.
  */
-public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel<Entity, ForeignKeyProperty>
+public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel<Entity, ForeignKeyProperty, Entity>
         implements ForeignKeyConditionModel {
 
   private final EntityLookupModel entityLookupModel;

@@ -13,6 +13,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
+import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.StateObserver;
 import is.codion.common.state.States;
 import is.codion.common.value.PropertyValue;
@@ -1445,7 +1446,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
   }
 
-  private static final class DefaultConditionPanelFactory implements ConditionPanelFactory<Entity, Property<?>> {
+  private static final class DefaultConditionPanelFactory<T> implements ConditionPanelFactory<Entity, Property<T>, T> {
 
     private final SwingEntityTableModel tableModel;
 
@@ -1454,9 +1455,12 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     }
 
     @Override
-    public ColumnConditionPanel<Entity, Property<?>> createConditionPanel(final TableColumn column) {
-      return new PropertyFilterPanel(tableModel.getTableConditionModel().getFilterModel(
-              ((Property<?>) column.getIdentifier()).getAttribute()));
+    public ColumnConditionPanel<Entity, Property<T>, T> createConditionPanel(final TableColumn column) {
+      final Property<T> identifier = (Property<T>) column.getIdentifier();
+      final ColumnConditionModel<Entity, Property<T>, T> filterModel =
+              tableModel.getTableConditionModel().getFilterModel(identifier.getAttribute());
+
+      return new PropertyFilterPanel<>(filterModel);
     }
   }
 }

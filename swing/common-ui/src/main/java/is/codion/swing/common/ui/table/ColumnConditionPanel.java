@@ -73,8 +73,9 @@ import static javax.swing.SwingConstants.CENTER;
  * A UI implementation for ColumnConditionModel
  * @param <R> the type of rows
  * @param <C> the type of objects used to identify columns
+ * @param <T> the column value type
  */
-public class ColumnConditionPanel<R, C> extends JPanel {
+public class ColumnConditionPanel<R, C, T> extends JPanel {
 
   public static final int DEFAULT_FIELD_COLUMNS = 4;
 
@@ -95,7 +96,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
 
   private static final int ENABLED_BUTTON_SIZE = 20;
 
-  private final ColumnConditionModel<R, C> conditionModel;
+  private final ColumnConditionModel<R, C, T> conditionModel;
   private final Collection<Operator> operators;
   private final JToggleButton toggleEnabledButton;
   private final JToggleButton toggleAdvancedButton;
@@ -118,9 +119,9 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    * @param operators the operators available to this condition panel
    */
-  public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
+  public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
                               final Operator... operators) {
-    this(conditionModel, toggleAdvancedButton, new DefaultBoundFieldProvider(conditionModel), operators);
+    this(conditionModel, toggleAdvancedButton, new DefaultBoundFieldProvider<>(conditionModel), operators);
   }
 
   /**
@@ -130,7 +131,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    * @param boundFieldProvider the input field provider
    * @param operators the search operators available to this condition panel
    */
-  public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
+  public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
                               final BoundFieldProvider boundFieldProvider, final Operator... operators) {
     this(conditionModel, toggleAdvancedButton, boundFieldProvider.initializeEqualsValueField(),
             boundFieldProvider.initializeUpperBoundField(), boundFieldProvider.initializeLowerBoundField(), operators);
@@ -144,7 +145,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    * @param lowerBoundField the lower bound input field
    * @param operators the search operators available to this condition panel
    */
-  public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel,
+  public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel,
                               final ToggleAdvancedButton toggleAdvancedButton, final JComponent equalToField,
                               final JComponent upperBoundField, final JComponent lowerBoundField, final Operator... operators) {
     requireNonNull(conditionModel, "conditionModel");
@@ -173,7 +174,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   /**
    * @return the condition model this panel uses
    */
-  public final ColumnConditionModel<R, C> getModel() {
+  public final ColumnConditionModel<R, C, T> getModel() {
     return this.conditionModel;
   }
 
@@ -358,18 +359,18 @@ public class ColumnConditionPanel<R, C> extends JPanel {
     JComponent initializeLowerBoundField();
   }
 
-  private static final class DefaultBoundFieldProvider implements BoundFieldProvider {
+  private static final class DefaultBoundFieldProvider<T> implements BoundFieldProvider {
 
-    private final ColumnConditionModel<?, ?> columnConditionModel;
+    private final ColumnConditionModel<?, ?, T> columnConditionModel;
 
-    private DefaultBoundFieldProvider(final ColumnConditionModel<?, ?> columnConditionModel) {
+    private DefaultBoundFieldProvider(final ColumnConditionModel<?, ?, T> columnConditionModel) {
       requireNonNull(columnConditionModel, "columnConditionModel");
       this.columnConditionModel = columnConditionModel;
     }
 
     public JComponent initializeEqualsValueField() {
-      final ValueSet<Object> valueSet = columnConditionModel.getEqualsValueSet();
-      final Value<Object> value = Values.value();
+      final ValueSet<T> valueSet = columnConditionModel.getEqualsValueSet();
+      final Value<T> value = Values.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
 
       return initializeField(value);

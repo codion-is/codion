@@ -19,7 +19,7 @@ import javax.swing.JComponent;
 /**
  * A column condition panel based on foreign key properties.
  */
-public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity, ForeignKeyProperty> {
+public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity, ForeignKeyProperty, Entity> {
 
   /**
    * Instantiates a new ForeignKeyConditionPanel.
@@ -31,9 +31,9 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
 
   private static final class ForeignKeyBoundFieldProvider implements BoundFieldProvider {
 
-    private final ColumnConditionModel<Entity, ForeignKeyProperty> model;
+    private final ColumnConditionModel<Entity, ForeignKeyProperty, Entity> model;
 
-    private ForeignKeyBoundFieldProvider(final ColumnConditionModel<Entity, ForeignKeyProperty> model) {
+    private ForeignKeyBoundFieldProvider(final ColumnConditionModel<Entity, ForeignKeyProperty, Entity> model) {
       this.model = model;
     }
 

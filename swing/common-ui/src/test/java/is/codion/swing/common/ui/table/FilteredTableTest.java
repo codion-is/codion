@@ -34,7 +34,7 @@ public class FilteredTableTest {
   public void searchField() throws AWTException {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnConditionModel<List<String>, Integer> filterModel =
+    final ColumnConditionModel<List<String>, Integer, String> filterModel =
             new DefaultColumnConditionModel<>(0, String.class, "%");
 
     final TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(
@@ -96,7 +96,7 @@ public class FilteredTableTest {
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(final AbstractTableSortModel<List<String>, Integer> sortModel,
-                                           final List<ColumnConditionModel<List<String>, Integer>> columnFilterModels) {
+                                           final List<ColumnConditionModel<List<String>, Integer, String>> columnFilterModels) {
       super(sortModel, columnFilterModels);
     }
 
