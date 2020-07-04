@@ -56,7 +56,9 @@ import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.time.temporal.TemporalAccessor;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -361,54 +363,68 @@ public class ColumnConditionPanel<R, C> extends JPanel {
     }
 
     private JComponent initializeField(final boolean upperBound) {
-      final Value value = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
+      final Value<?> value = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
       final Class<?> typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Boolean.class)) {
         final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
         checkBox.setHorizontalAlignment(CENTER);
-        value.link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
+        ((Value<Boolean>) value).link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
 
         return checkBox;
       }
       if (typeClass.equals(Integer.class)) {
-        final IntegerField integerField = new IntegerField(DEFAULT_FIELD_COLUMNS);
-        value.link(NumericalValues.integerValue(integerField));
+        final IntegerField integerField = new IntegerField((NumberFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
+        ((Value<Integer>) value).link(NumericalValues.integerValue(integerField));
 
         return integerField;
       }
       else if (typeClass.equals(Double.class)) {
-        final DoubleField doubleField = new DoubleField(DEFAULT_FIELD_COLUMNS);
-        value.link(NumericalValues.doubleValue(doubleField));
+        final DoubleField doubleField = new DoubleField((DecimalFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
+        ((Value<Double>) value).link(NumericalValues.doubleValue(doubleField));
 
         return doubleField;
       }
       else if (typeClass.equals(BigDecimal.class)) {
-        final DecimalFormat format = (DecimalFormat) NumberFormat.getNumberInstance();
-        format.setParseBigDecimal(true);
-
-        final BigDecimalField bigDecimalField = new BigDecimalField(format, DEFAULT_FIELD_COLUMNS);
-        value.link(NumericalValues.bigDecimalValue(bigDecimalField));
+        final BigDecimalField bigDecimalField = new BigDecimalField((DecimalFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
+        ((Value<BigDecimal>) value).link(NumericalValues.bigDecimalValue(bigDecimalField));
 
         return bigDecimalField;
       }
       else if (typeClass.equals(Long.class)) {
-        final LongField longField = new LongField(DEFAULT_FIELD_COLUMNS);
-        value.link(NumericalValues.longValue(longField));
+        final LongField longField = new LongField((NumberFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
+        ((Value<Long>) value).link(NumericalValues.longValue(longField));
 
         return longField;
       }
-      else if (TemporalAccessor.class.isAssignableFrom(typeClass)) {
+      else if (typeClass.equals(LocalTime.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
-        value.link(TemporalValues.localTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()));
+        ((Value<LocalTime>) value).link(TemporalValues.localTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()));
 
         return formattedField;
       }
+      else if (typeClass.equals(LocalDate.class)) {
+        final JFormattedTextField formattedField =
+                TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
+        ((Value<LocalDate>) value).link(TemporalValues.localDateValue(formattedField, columnConditionModel.getDateTimeFormatPattern()));
 
-      final JTextField textField = new JTextField(DEFAULT_FIELD_COLUMNS);
-      value.link(TextValues.textValue(textField));
+        return formattedField;
+      }
+      else if (typeClass.equals(LocalDateTime.class)) {
+        final JFormattedTextField formattedField =
+                TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
+        ((Value<LocalDateTime>) value).link(TemporalValues.localDateTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()));
 
-      return textField;
+        return formattedField;
+      }
+      else if (typeClass.equals(String.class)) {
+        final JTextField textField = new JTextField(DEFAULT_FIELD_COLUMNS);
+        ((Value<String>) value).link(TextValues.textValue(textField));
+
+        return textField;
+      }
+
+      throw new IllegalArgumentException("Unsupported type: " + typeClass);
     }
   }
 

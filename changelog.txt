@@ -6331,3 +6331,4 @@
   Property.getType() and Attribute.getType() removed
   StringProvider renamed StringFactory, stringFactory() added, returning a Builder
   StringFactory no longer uses stream when only one value provider is specified
+  ColumnConditionPanel.DefaultBoundFieldProvider bug fixed, did not handle temporal types correctly
