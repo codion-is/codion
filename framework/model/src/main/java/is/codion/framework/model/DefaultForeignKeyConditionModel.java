@@ -9,10 +9,6 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.util.ArrayList;
-import java.util.Collection;
-
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 
 /**
  * A default ForeignKeyConditionModel implementation.
@@ -37,8 +33,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
    * @param property the property
    * @param entityLookupModel a EntityLookupModel
    */
-  public DefaultForeignKeyConditionModel(final ForeignKeyProperty property,
-                                         final EntityLookupModel entityLookupModel) {
+  public DefaultForeignKeyConditionModel(final ForeignKeyProperty property, final EntityLookupModel entityLookupModel) {
     super(property, Entity.class, Property.WILDCARD_CHARACTER.get());
     this.entityLookupModel = entityLookupModel;
     if (entityLookupModel != null) {
@@ -49,16 +44,6 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
   @Override
   public final EntityLookupModel getEntityLookupModel() {
     return entityLookupModel;
-  }
-
-  @Override
-  public final Collection<Entity> getConditionEntities() {
-    final Object upperBound = getUpperBound();
-    if (upperBound instanceof Entity) {
-      return singletonList((Entity) upperBound);
-    }
-    //noinspection unchecked
-    return upperBound == null ? emptyList() : (Collection<Entity>) upperBound;
   }
 
   @Override
@@ -79,22 +64,16 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
     entityLookupModel.addSelectedEntitiesListener(selectedEntities -> {
       try {
         setUpdatingModel(true);
-        setUpperBound(null);//todo this is a hack, otherwise super.conditionChangedEvent doesn't get triggered
-        setUpperBound(selectedEntities.isEmpty() ? null : selectedEntities);
+        setEqualsValues(null);//todo this is a hack, otherwise super.conditionChangedEvent doesn't get triggered
+        setEqualsValues(selectedEntities);
       }
       finally {
         setUpdatingModel(false);
       }
     });
-    addUpperBoundListener(() -> {
+    addEqualsValueListener(() -> {
       if (!isUpdatingModel()) {
-        final Object upperBound = getUpperBound();
-        if (upperBound == null || upperBound instanceof Entity) {
-          entityLookupModel.setSelectedEntity((Entity) upperBound);
-        }
-        else {
-          entityLookupModel.setSelectedEntities(new ArrayList<>((Collection<Entity>) upperBound));
-        }
+        entityLookupModel.setSelectedEntities(new ArrayList<>(getEqualsValues()));
       }
     });
   }

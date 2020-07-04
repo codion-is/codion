@@ -5,6 +5,9 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.db.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
+import is.codion.common.value.Values;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
@@ -12,6 +15,7 @@ import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
+import java.util.Collections;
 
 /**
  * A column condition panel based on the Property class.
@@ -40,6 +44,20 @@ public final class PropertyConditionPanel extends ColumnConditionPanel<Entity, C
 
     private PropertyBoundFieldProvider(final ColumnConditionModel<Entity, ColumnProperty<?>> model) {
       this.model = model;
+    }
+
+    @Override
+    public JComponent initializeEqualsValueField() {
+      final ValueSet<Object> valueSet = model.getEqualsValueSet();
+      final Value value = Values.value();
+      value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
+
+      final JComponent component = EntityInputComponents.createInputComponent(model.getColumnIdentifier(), value);
+      if (component instanceof JCheckBox) {
+        ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
+      }
+
+      return component;
     }
 
     @Override

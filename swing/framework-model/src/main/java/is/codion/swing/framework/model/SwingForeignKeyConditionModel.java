@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.DefaultForeignKeyConditionModel;
 
@@ -47,30 +48,24 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
   private void bindComboBoxEvents() {
     entityComboBoxModel.addSelectionListener(selected -> {
       if (!isUpdatingModel()) {
-        setUpperBound(selected);
+        setEqualsValue(selected);
       }
     });
-    addUpperBoundListener(() -> {
+    addEqualsValueListener(() -> {
       try {
         setUpdatingModel(true);
-        setUpperAsSelected();
+        setEqualsValueAsSelected();
       }
       finally {
         setUpdatingModel(false);
       }
     });
 
-    entityComboBoxModel.addRefreshListener(this::setUpperAsSelected);
+    entityComboBoxModel.addRefreshListener(this::setEqualsValueAsSelected);
   }
 
-  private void setUpperAsSelected() {
-    final Object upper = getUpperBound();
-    if (upper instanceof Collection) {
-      final Collection<Object> upperCollection = (Collection<Object>) upper;
-      entityComboBoxModel.setSelectedItem(upperCollection.isEmpty() ? null : upperCollection.iterator().next());
-    }
-    else {
-      entityComboBoxModel.setSelectedItem(upper);
-    }
+  private void setEqualsValueAsSelected() {
+    final Collection<Entity> equalsValues = getEqualsValues();
+    entityComboBoxModel.setSelectedItem(equalsValues.isEmpty() ? null : equalsValues.iterator().next());
   }
 }

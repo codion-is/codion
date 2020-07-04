@@ -11,8 +11,10 @@ import is.codion.common.event.EventObserver;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 
 import java.text.Format;
+import java.util.Collection;
 
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
@@ -127,18 +129,35 @@ public interface ColumnConditionModel<R, K> {
   Class<?> getTypeClass();
 
   /**
-   * @param upper the new upper bound
-   * @param <T> the value type
-   */
-  <T> void setUpperBound(T upper);
-
-  /**
-   * A shortcut method for setting the upper bound value, operator to {@link Operator#EQUALS}
-   * and enabling this model in case of a non-null value.
+   * Sets the values used when the {@link Operator#EQUALS} is enabled.
    * @param value the value to use as condition
    * @param <T> the value type
    */
   <T> void setEqualsValue(T value);
+
+  /**
+   * @param <T> the value type
+   * @return the equals value, possibly null
+   */
+  <T> T getEqualsValue();
+
+  /**
+   * @param values the values to set
+   * @param <T> the value type
+   */
+  <T> void setEqualsValues(Collection<T> values);
+
+  /**
+   * @param <T> the value type
+   * @return the equals values, never null
+   */
+  <T> Collection<T> getEqualsValues();
+
+  /**
+   * @param upper the new upper bound
+   * @param <T> the value type
+   */
+  <T> void setUpperBound(T upper);
 
   /**
    * @return the upper bound
@@ -203,6 +222,12 @@ public interface ColumnConditionModel<R, K> {
 
   /**
    * @param <T> the value type
+   * @return a ValueSet based on the equals values of this condition model
+   */
+  <T> ValueSet<T> getEqualsValueSet();
+
+  /**
+   * @param <T> the value type
    * @return a Value based on the upper bound value of this condition model
    */
   <T> Value<T> getUpperBoundValue();
@@ -247,6 +272,16 @@ public interface ColumnConditionModel<R, K> {
    * @param listener the listener to remove
    */
   void removeOperatorListener(EventDataListener<Operator> listener);
+
+  /**
+   * @param listener a listener to be notified each time the lower bound changes
+   */
+  void addEqualsValueListener(EventListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeEqualsValueListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound changes

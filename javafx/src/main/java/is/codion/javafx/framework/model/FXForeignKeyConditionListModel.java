@@ -21,16 +21,12 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
    * @param property the property
    * @param listModel the list model to use
    */
-  public FXForeignKeyConditionListModel(final ForeignKeyProperty property,
-                                        final ObservableEntityList listModel) {
+  public FXForeignKeyConditionListModel(final ForeignKeyProperty property, final ObservableEntityList listModel) {
     super(property);
     this.listModel = listModel;
     if (listModel != null) {
       listModel.refresh();
     }
-//        if (listModel.isCleared()) {
-//          listModel.setSelectedItem((Entity) getUpperBound());
-//        }
     if (listModel != null) {
       bindListModelEvents();
     }
@@ -56,18 +52,18 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
   private void bindListModelEvents() {
     listModel.addSelectionChangedListener(() -> {
       if (!isUpdatingModel()) {
-        setUpperBound(listModel.getSelectionModel().getSelectedItem());
+        setEqualsValue(listModel.getSelectionModel().getSelectedItem());
       }
     });
-    addUpperBoundListener(() -> {
+    addEqualsValueListener(() -> {
       try {
         setUpdatingModel(true);
-        final Object upper = getUpperBound();
-        if (upper instanceof Collection && !((Collection<Entity>) upper).isEmpty()) {
-          listModel.getSelectionModel().setSelectedItem(((Collection<Entity>) upper).iterator().next());
+        final Collection<Entity> equalsValues = getEqualsValues();
+        if (!equalsValues.isEmpty()) {
+          listModel.getSelectionModel().setSelectedItem(equalsValues.iterator().next());
         }
         else {
-          listModel.getSelectionModel().setSelectedItem((Entity) upper);
+          listModel.getSelectionModel().clearSelection();
         }
       }
       finally {
@@ -75,12 +71,12 @@ public final class FXForeignKeyConditionListModel extends DefaultForeignKeyCondi
       }
     });
     listModel.addRefreshListener(() -> {
-      final Object upper = getUpperBound();
-      if (upper instanceof Collection && !((Collection<Entity>) upper).isEmpty()) {
-        listModel.getSelectionModel().setSelectedItem(((Collection<Entity>) upper).iterator().next());
+      final Collection<Entity> equalsValues = getEqualsValues();
+      if (!equalsValues.isEmpty()) {
+        listModel.getSelectionModel().setSelectedItem(equalsValues.iterator().next());
       }
       else {
-        listModel.getSelectionModel().setSelectedItem((Entity) upper);
+        listModel.getSelectionModel().clearSelection();
       }
     });
   }

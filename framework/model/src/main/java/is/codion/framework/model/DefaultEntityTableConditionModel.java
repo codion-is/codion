@@ -168,19 +168,20 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <T> boolean setConditionValues(final Attribute<T> attribute, final Collection<T> values) {
+  public <T> boolean setEqualsConditionValues(final Attribute<T> attribute, final Collection<T> values) {
     final String conditionsString = getConditionsString();
     if (containsConditionModel(attribute)) {
       final ColumnConditionModel<?, ?> conditionModel = getConditionModel(attribute);
+      conditionModel.setOperator(Operator.EQUALS);
       conditionModel.setEnabled(!Util.nullOrEmpty(values));
-      conditionModel.setUpperBound(null);//because the upperBound could be a reference to the active entity which changes accordingly
-      conditionModel.setUpperBound(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
+      conditionModel.setEqualsValues(null);//because the upperBound could be a reference to the active entity which changes accordingly
+      conditionModel.setEqualsValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
     }
     return !conditionsString.equals(getConditionsString());
   }
 
   @Override
-  public <T> void setFilterValue(final Attribute<T> attribute, final Comparable<T> value) {
+  public <T> void setEqualsFilterValue(final Attribute<T> attribute, final Comparable<T> value) {
     final ColumnConditionModel<Entity, Property<?>> filterModel = getFilterModel(attribute);
     if (filterModel != null) {
       filterModel.setEqualsValue(value);
@@ -357,50 +358,46 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   private static <T> AttributeCondition<T> getCondition(final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel) {
-    final Object lowerBound = conditionModel.getLowerBound();
-    final Object upperBound = conditionModel.getUpperBound();
+    final Collection<T> equalToValues = conditionModel.getEqualsValues();
     final AttributeCondition.Builder<T> builder = Conditions.condition((Attribute<T>)  conditionModel.getColumnIdentifier().getAttribute());
     final AttributeCondition<T> condition;
     switch (conditionModel.getOperator()) {
       case EQUALS:
-        if (upperBound == null) {
+        if (equalToValues.isEmpty()) {
           condition = builder.isNull();
         }
-        else if (upperBound instanceof Collection) {
-          condition = builder.equalTo((Collection<? extends T>) upperBound);
-        }
         else {
-          condition = builder.equalTo((T) upperBound);
+          condition = builder.equalTo(equalToValues);
+        }
+        if (condition.getAttribute().isString()) {
+          condition.setCaseSensitive(conditionModel.isCaseSensitive());
         }
         break;
       case NOT_EQUALS:
-        if (upperBound == null) {
+        if (equalToValues.isEmpty()) {
           condition = builder.isNotNull();
         }
-        else if (upperBound instanceof Collection) {
-          condition = builder.notEqualTo((Collection<? extends T>) upperBound);
-        }
         else {
-          condition = builder.notEqualTo((T) upperBound);
+          condition = builder.notEqualTo(equalToValues);
+        }
+        if (condition.getAttribute().isString()) {
+          condition.setCaseSensitive(conditionModel.isCaseSensitive());
         }
         break;
       case LESS_THAN:
-        condition = builder.lessThan((T) upperBound);
+        condition = builder.lessThan(conditionModel.getUpperBound());
         break;
       case GREATER_THAN:
-        condition = builder.greaterThan((T) upperBound);
+        condition = builder.greaterThan(conditionModel.getUpperBound());
         break;
       case WITHIN_RANGE:
-        condition = builder.withinRange((T) lowerBound, (T) upperBound);
+        condition = builder.withinRange(conditionModel.getLowerBound(), conditionModel.getUpperBound());
         break;
       case OUTSIDE_RANGE:
-        condition = builder.outsideRange((T) lowerBound, (T) upperBound);
+        condition = builder.outsideRange(conditionModel.getLowerBound(), conditionModel.getUpperBound());
         break;
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
-    }
-    if (condition.getAttribute().isString()) {
-      condition.setCaseSensitive(conditionModel.isCaseSensitive());
     }
 
     return condition;
@@ -410,10 +407,10 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final StringBuilder stringBuilder = new StringBuilder(conditionModel.getColumnIdentifier().getAttribute().getName());
     if (conditionModel.isEnabled()) {
       stringBuilder.append(conditionModel.getOperator());
+      stringBuilder.append(boundToString(conditionModel.getEqualsValues()));
       stringBuilder.append(boundToString(conditionModel.getUpperBound()));
       stringBuilder.append(boundToString(conditionModel.getLowerBound()));
     }
-
     return stringBuilder.toString();
   }
 

@@ -8,6 +8,8 @@ import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.States;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.common.value.Values;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -27,6 +29,7 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import static is.codion.common.item.Items.item;
 
@@ -41,6 +44,7 @@ public final class PropertyConditionView extends BorderPane {
   private final Label header;
   private final CheckBox enabledBox;
   private final Pane checkBoxPane;
+  private final Control equalsValueControl;
   private final Control upperBoundControl;
   private final Control lowerBoundControl;
   private final State advancedCondition = States.state();
@@ -54,6 +58,7 @@ public final class PropertyConditionView extends BorderPane {
     this.header = new Label(model.getColumnIdentifier().getCaption());
     this.enabledBox = createEnabledBox();
     this.checkBoxPane = createCheckBoxPane();
+    this.equalsValueControl = createEqualsValueControl();
     this.upperBoundControl = createUpperBoundControl();
     this.lowerBoundControl = createLowerBoundControl();
     this.topPane = createTopPane();
@@ -114,17 +119,32 @@ public final class PropertyConditionView extends BorderPane {
     return box;
   }
 
-  private Control createUpperBoundControl() {
+  private Control createEqualsValueControl() {
     final Control control = createControl();
     if (!(control instanceof EntityLookupField)) {
-      model.getUpperBoundValue().link(FXUiUtil.createValue((Property<Object>) model.getColumnIdentifier(), control, null));
+      final ValueSet<Object> valueSet = model.getEqualsValueSet();
+      final Value<Object> value = Values.value();
+      value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
+
+      value.link(FXUiUtil.createValue((Property<Object>) model.getColumnIdentifier(), control, null));
     }
 
     return control;
   }
 
+  private Control createUpperBoundControl() {
+    if (model.getTypeClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKeyProperty) {
+      //never required
+      return null;
+    }
+    final Control control = createControl();
+    model.getUpperBoundValue().link(FXUiUtil.createValue((Property<Object>) model.getColumnIdentifier(), control, null));
+
+    return control;
+  }
+
   private Control createLowerBoundControl() {
-    if (model.getColumnIdentifier() instanceof ForeignKeyProperty) {
+    if (model.getTypeClass().equals(Boolean.class) || model.getColumnIdentifier() instanceof ForeignKeyProperty) {
       //never required
       return null;
     }
@@ -171,24 +191,44 @@ public final class PropertyConditionView extends BorderPane {
       setCenter(createAdvancedView());
     }
     else {
-      setCenter(upperBoundControl);
+      setCenter(equalsValueControl);
     }
   }
 
   private Pane createAdvancedView() {
     final BorderPane borderPane = new BorderPane();
     borderPane.setTop(operatorPane);
-    if (model.isLowerBoundRequired()) {
-      final GridPane gridPane = new GridPane();
-      gridPane.addColumn(0, lowerBoundControl);
-      gridPane.addColumn(1, upperBoundControl);
-      borderPane.setCenter(gridPane);
-    }
-    else {
-      borderPane.setCenter(upperBoundControl);
-    }
+    borderPane.setCenter(createInputPane());
 
     return borderPane;
+  }
+
+  private Pane createInputPane() {
+    switch (model.getOperator()) {
+      case EQUALS:
+      case NOT_EQUALS: return singleValuePane(equalsValueControl);
+      case GREATER_THAN: return singleValuePane(lowerBoundControl);
+      case LESS_THAN: return singleValuePane(upperBoundControl);
+      case WITHIN_RANGE:
+      case OUTSIDE_RANGE: return rangePane();
+      default:
+        throw new IllegalArgumentException("Unknown operator: " + model.getOperator());
+    }
+  }
+
+  private Pane singleValuePane(final Control control) {
+    final GridPane gridPane = new GridPane();
+    gridPane.addColumn(0, control);
+
+    return gridPane;
+  }
+
+  private Pane rangePane() {
+    final GridPane gridPane = new GridPane();
+    gridPane.addColumn(0, lowerBoundControl);
+    gridPane.addColumn(1, upperBoundControl);
+
+    return gridPane;
   }
 
   private static Collection<Item<Operator>> getOperators(final Property<?> property) {

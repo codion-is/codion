@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultColumnConditionModelTest {
 
+  final AtomicInteger equalToCounter = new AtomicInteger();
   final AtomicInteger upperBoundCounter = new AtomicInteger();
   final AtomicInteger lowerBoundCounter = new AtomicInteger();
   final AtomicInteger conditionChangedCounter = new AtomicInteger();
@@ -24,6 +25,7 @@ public class DefaultColumnConditionModelTest {
   final AtomicInteger enabledCounter = new AtomicInteger();
   final AtomicInteger clearCounter = new AtomicInteger();
 
+  final EventListener equalToListener = equalToCounter::incrementAndGet;
   final EventListener upperBoundListener = upperBoundCounter::incrementAndGet;
   final EventListener lowerBoundListener = lowerBoundCounter::incrementAndGet;
   final EventListener conditionChangedListener = conditionChangedCounter::incrementAndGet;
@@ -36,6 +38,7 @@ public class DefaultColumnConditionModelTest {
     final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setAutoEnable(false);
     assertFalse(model.isAutoEnable());
+    model.addEqualsValueListener(equalToListener);
     model.addUpperBoundListener(upperBoundListener);
     model.addLowerBoundListener(lowerBoundListener);
     model.addConditionChangedListener(conditionChangedListener);
@@ -57,12 +60,13 @@ public class DefaultColumnConditionModelTest {
     model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.NONE);
 
     model.setEqualsValue("test");
-    assertEquals(2, upperBoundCounter.get());
-    assertEquals("test", model.getUpperBound());
+    assertEquals(1, equalToCounter.get());
+    assertEquals("test", model.getEqualsValue());
 
     model.clearCondition();
     assertEquals(1, clearCounter.get());
 
+    model.removeEqualsValueListener(equalToListener);
     model.removeUpperBoundListener(upperBoundListener);
     model.removeLowerBoundListener(lowerBoundListener);
     model.removeConditionChangedListener(conditionChangedListener);
@@ -109,7 +113,7 @@ public class DefaultColumnConditionModelTest {
   public void test() throws Exception {
     final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     assertTrue(model.isAutoEnable());
-    model.setUpperBound("test");
+    model.setEqualsValue("test");
     assertTrue(model.isEnabled());
     model.setCaseSensitive(false);
     assertFalse(model.isCaseSensitive());
@@ -172,7 +176,7 @@ public class DefaultColumnConditionModelTest {
   @Test
   public void include() {
     final DefaultColumnConditionModel<String, String> conditionModel = new DefaultColumnConditionModel<>("test", Integer.class, "%");
-    conditionModel.setUpperBound(10);
+    conditionModel.setEqualsValue(10);
     conditionModel.setOperator(Operator.EQUALS);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
@@ -183,11 +187,13 @@ public class DefaultColumnConditionModelTest {
     assertFalse(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
 
+    conditionModel.setLowerBound(10);
     conditionModel.setOperator(Operator.GREATER_THAN);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
 
+    conditionModel.setUpperBound(10);
     conditionModel.setOperator(Operator.LESS_THAN);
     assertTrue(conditionModel.include(9));
     assertTrue(conditionModel.include(10));

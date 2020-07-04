@@ -12,6 +12,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.States;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.common.value.Values;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.Components;
@@ -61,6 +62,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Arrays.asList;
@@ -98,6 +100,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   private final JToggleButton toggleEnabledButton;
   private final JToggleButton toggleAdvancedButton;
   private final SteppedComboBox<Operator> operatorCombo;
+  private final JComponent equalToField;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
 
@@ -129,7 +132,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
                               final BoundFieldProvider boundFieldProvider, final Operator... operators) {
-    this(conditionModel, toggleAdvancedButton,
+    this(conditionModel, toggleAdvancedButton, boundFieldProvider.initializeEqualsValueField(),
             boundFieldProvider.initializeUpperBoundField(), boundFieldProvider.initializeLowerBoundField(), operators);
   }
 
@@ -142,12 +145,13 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    * @param operators the search operators available to this condition panel
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C> conditionModel,
-                              final ToggleAdvancedButton toggleAdvancedButton, final JComponent upperBoundField,
-                              final JComponent lowerBoundField, final Operator... operators) {
+                              final ToggleAdvancedButton toggleAdvancedButton, final JComponent equalToField,
+                              final JComponent upperBoundField, final JComponent lowerBoundField, final Operator... operators) {
     requireNonNull(conditionModel, "conditionModel");
     this.conditionModel = conditionModel;
     this.operators = operators == null ? asList(Operator.values()) : asList(operators);
     this.operatorCombo = initializeOperatorComboBox();
+    this.equalToField = equalToField;
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
     this.toggleEnabledButton = ControlProvider.createToggleButton(
@@ -266,11 +270,21 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    * Requests keyboard focus for this panels input field
    */
   public final void requestInputFocus() {
-    if (conditionModel.isLowerBoundRequired()) {
-      lowerBoundField.requestFocusInWindow();
-    }
-    else {
-      upperBoundField.requestFocusInWindow();
+    switch (conditionModel.getOperator()) {
+      case EQUALS:
+      case NOT_EQUALS:
+        equalToField.requestFocusInWindow();
+        break;
+      case GREATER_THAN:
+      case WITHIN_RANGE:
+      case OUTSIDE_RANGE:
+        lowerBoundField.requestFocusInWindow();
+        break;
+      case LESS_THAN:
+        upperBoundField.requestFocusInWindow();
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
     }
   }
 
@@ -329,6 +343,11 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   public interface BoundFieldProvider {
 
     /**
+     * @return the equals value field
+     */
+    JComponent initializeEqualsValueField();
+
+    /**
      * @return a upper bound input field
      */
     JComponent initializeUpperBoundField();
@@ -348,9 +367,21 @@ public class ColumnConditionPanel<R, C> extends JPanel {
       this.columnConditionModel = columnConditionModel;
     }
 
+    public JComponent initializeEqualsValueField() {
+      final ValueSet<Object> valueSet = columnConditionModel.getEqualsValueSet();
+      final Value<Object> value = Values.value();
+      value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
+
+      return initializeField(value);
+    }
+
     @Override
     public JComponent initializeUpperBoundField() {
-      return initializeField(true);
+      if (columnConditionModel.getTypeClass().equals(Boolean.class)) {
+        return null;//no lower bound field required for boolean values
+      }
+
+      return initializeField(columnConditionModel.getUpperBoundValue());
     }
 
     @Override
@@ -359,11 +390,10 @@ public class ColumnConditionPanel<R, C> extends JPanel {
         return null;//no lower bound field required for boolean values
       }
 
-      return initializeField(false);
+      return initializeField(columnConditionModel.getLowerBoundValue());
     }
 
-    private JComponent initializeField(final boolean upperBound) {
-      final Value<?> value = upperBound ? columnConditionModel.getUpperBoundValue() : columnConditionModel.getLowerBoundValue();
+    private JComponent initializeField(final Value<?> value) {
       final Class<?> typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Boolean.class)) {
         final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
@@ -433,7 +463,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
    */
   private void bindEvents() {
     advancedConditionState.addListener(this::initializePanel);
-    conditionModel.addLowerBoundRequiredListener(() -> {
+    conditionModel.getOperatorObserver().addListener(() -> {
       initializePanel();
       operatorCombo.requestFocusInWindow();
     });
@@ -446,7 +476,12 @@ public class ColumnConditionPanel<R, C> extends JPanel {
       }
     };
     operatorCombo.addFocusListener(focusGainedListener);
-    upperBoundField.addFocusListener(focusGainedListener);
+    if (equalToField != null) {
+      equalToField.addFocusListener(focusGainedListener);
+    }
+    if (upperBoundField != null) {
+      upperBoundField.addFocusListener(focusGainedListener);
+    }
     if (lowerBoundField != null) {
       lowerBoundField.addFocusListener(focusGainedListener);
     }
@@ -514,16 +549,33 @@ public class ColumnConditionPanel<R, C> extends JPanel {
   }
 
   private JPanel initializeInputPanel() {
+    switch (conditionModel.getOperator()) {
+      case EQUALS:
+      case NOT_EQUALS: return singleValuePanel(equalToField);
+      case GREATER_THAN: return singleValuePanel(lowerBoundField);
+      case LESS_THAN: return singleValuePanel(upperBoundField);
+      case WITHIN_RANGE:
+      case OUTSIDE_RANGE: return rangePanel();
+      default:
+        throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
+    }
+  }
+
+  private JPanel singleValuePanel(final JComponent component) {
     final JPanel inputPanel = new JPanel(new BorderLayout());
-    if (conditionModel.isLowerBoundRequired()) {
-      final JPanel fieldBase = new JPanel(new GridLayout(1, 2));
-      fieldBase.add(lowerBoundField);
-      fieldBase.add(upperBoundField);
-      inputPanel.add(fieldBase, BorderLayout.CENTER);
-    }
-    else {
-      inputPanel.add(upperBoundField, BorderLayout.CENTER);
-    }
+    final JPanel panel = new JPanel(new GridLayout(1, 1));
+    panel.add(component);
+    inputPanel.add(panel, BorderLayout.CENTER);
+
+    return inputPanel;
+  }
+
+  private JPanel rangePanel() {
+    final JPanel inputPanel = new JPanel(new BorderLayout());
+    final JPanel panel = new JPanel(new GridLayout(1, 2));
+    panel.add(lowerBoundField);
+    panel.add(upperBoundField);
+    inputPanel.add(panel, BorderLayout.CENTER);
 
     return inputPanel;
   }
@@ -543,7 +595,7 @@ public class ColumnConditionPanel<R, C> extends JPanel {
 
   private void linkComponentsToLockedState() {
     Components.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
-            operatorCombo, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
+            operatorCombo, equalToField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
   }
 
   private void initializeConditionDialog(final Container parent) {

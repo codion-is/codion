@@ -38,15 +38,15 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param <T> the value type
    * @return true if the search state changed as a result of this method call, false otherwise
    */
-  <T> boolean setConditionValues(Attribute<T> attribute, Collection<T> values);
+  <T> boolean setEqualsConditionValues(Attribute<T> attribute, Collection<T> values);
 
   /**
-   * Sets the condition value of the PropertyFilterModel associated with {@code attribute}.
+   * Sets the condition value of the filter model associated with {@code attribute}.
    * @param attribute the attribute
    * @param value the condition value
    * @param <T> the value type
    */
-  <T> void setFilterValue(Attribute<T> attribute, Comparable<T> value);
+  <T> void setEqualsFilterValue(Attribute<T> attribute, Comparable<T> value);
 
   /**
    * @return the current condition based on the state of the underlying condition models
