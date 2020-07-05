@@ -119,7 +119,7 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
     maxHeapSize = '256m'
     systemProperties = [
             'codion.db.url'                             : 'jdbc:h2:mem:h2db',
-            'codion.db.initScript'                      : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
+            'codion.db.initScripts'                     : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
             'codion.server.pooling.startupPoolUsers'    : 'scott:tiger',
             'codion.server.port'                        : '2222',
             'codion.server.admin.port'                  : '2223',

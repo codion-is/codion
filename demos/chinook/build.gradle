@@ -41,7 +41,7 @@ ext.execMainClass = 'is.codion.framework.demos.chinook.ui.ChinookAppPanel'
 ext.execLoadTestMainClass = 'is.codion.framework.demos.chinook.testing.ChinookLoadTest'
 
 test {
-    systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
+    systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.chinook.domain.impl.ChinookImpl"
 }
 

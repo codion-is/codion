@@ -32,7 +32,7 @@ public final class MultiPanelDemo {
 
   public static void main(final String[] args) {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-    Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
+    Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
     LocalEntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(Databases.getInstance());
     connectionProvider.setDomainClassName(ChinookImpl.class.getName());

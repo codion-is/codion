@@ -155,7 +155,7 @@ public final class ClientTutorial {
 
   public static void main(final String[] args) {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-    Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
+    Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Chinook.class.getName());
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
     EntityPanel.TOOLBAR_BUTTONS.set(true);

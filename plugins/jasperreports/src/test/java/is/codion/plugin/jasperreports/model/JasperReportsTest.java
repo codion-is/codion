@@ -3,6 +3,7 @@
  */
 package is.codion.plugin.jasperreports.model;
 
+import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
@@ -42,7 +43,8 @@ public class JasperReportsTest {
   private static final String REPORT_PATH = "build/resources/test";
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = new LocalEntityConnectionProvider(
-          new H2DatabaseFactory().createDatabase("jdbc:h2:mem:JasperReportsWrapperTest", System.getProperty("codion.db.initScript")))
+          new H2DatabaseFactory().createDatabase("jdbc:h2:mem:JasperReportsWrapperTest",
+                  Database.DATABASE_INIT_SCRIPTS.get()))
           .setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   @AfterAll
