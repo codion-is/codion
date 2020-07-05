@@ -38,26 +38,26 @@ public final class PropertyStoreTest {
     final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");
     assertTrue(store.containsProperty("string.property"));
     assertEquals("value", stringValue.get());
-    assertEquals("value", System.getProperty(stringValue.getProperty()));
-    assertSame(stringValue, store.getPropertyValue(stringValue.getProperty()));
+    assertEquals("value", System.getProperty(stringValue.getPropertyName()));
+    assertSame(stringValue, store.getPropertyValue(stringValue.getPropertyName()));
     stringValue.set(null);
-    assertFalse(store.containsProperty(stringValue.getProperty()));
-    assertNull(System.getProperty(stringValue.getProperty()));
+    assertFalse(store.containsProperty(stringValue.getPropertyName()));
+    assertNull(System.getProperty(stringValue.getPropertyName()));
 
     final PropertyValue<List<String>> stringListValue = store.propertyListValue("stringlist.property", emptyList(), Objects::toString, Objects::toString);
-    assertTrue(store.containsProperty(stringListValue.getProperty()));
+    assertTrue(store.containsProperty(stringListValue.getPropertyName()));
 
     assertTrue(stringListValue.get().contains("value1"));
     assertTrue(stringListValue.get().contains("value2"));
     assertTrue(stringListValue.get().contains("value3"));
 
     stringListValue.set(emptyList());
-    assertEquals("", store.getProperty(stringListValue.getProperty()));
+    assertEquals("", store.getProperty(stringListValue.getPropertyName()));
     stringListValue.set(null);
-    assertFalse(store.containsProperty(stringListValue.getProperty()));
+    assertFalse(store.containsProperty(stringListValue.getPropertyName()));
 
     final PropertyValue<List<Integer>> integerListValue = store.propertyListValue("intlist.property", emptyList(), Integer::parseInt, Objects::toString);
-    assertTrue(store.containsProperty(integerListValue.getProperty()));
+    assertTrue(store.containsProperty(integerListValue.getPropertyName()));
 
     assertTrue(integerListValue.get().contains(1));
     assertTrue(integerListValue.get().contains(2));
@@ -72,9 +72,9 @@ public final class PropertyStoreTest {
 
     final PropertyValue<Double> doubleValue = store.propertyValue("double.property", 0d);
     assertEquals(3.14, doubleValue.get());
-    assertEquals("3.14", System.getProperty(doubleValue.getProperty()));
+    assertEquals("3.14", System.getProperty(doubleValue.getPropertyName()));
     doubleValue.set(null);
-    assertFalse(store.containsProperty(doubleValue.getProperty()));
+    assertFalse(store.containsProperty(doubleValue.getPropertyName()));
 
     final PropertyValue<Boolean> booleanValue = store.propertyValue("boolean.property", false);
     assertTrue(booleanValue.get());

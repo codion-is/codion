@@ -12,5 +12,5 @@ public interface PropertyValue<T> extends Value<T> {
   /**
    * @return the name of the property this value is associated with
    */
-  String getProperty();
+  String getPropertyName();
 }
