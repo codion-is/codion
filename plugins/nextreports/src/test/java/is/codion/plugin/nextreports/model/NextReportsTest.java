@@ -3,6 +3,7 @@
  */
 package is.codion.plugin.nextreports.model;
 
+import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
@@ -33,7 +34,7 @@ public class NextReportsTest {
   @Test
   public void fillReport() throws ReportException, IOException, DatabaseException {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(
-            new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", System.getProperty("codion.db.initScript")))
+            new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", Database.DATABASE_INIT_SCRIPTS.get()))
             .setDomainClassName(NextDomain.class.getName()).setUser(UNIT_TEST_USER);
     Report.REPORT_PATH.set("src/test/reports/");
     final LocalEntityConnection connection = (LocalEntityConnection) connectionProvider.getConnection();

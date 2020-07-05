@@ -88,71 +88,71 @@ public final class PropertyStore {
 
   /**
    * Instantiates a Value representing the given property.
-   * @param property the configuration property identifying this value
+   * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} is null
+   * @throws NullPointerException if {@code propertyName} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public PropertyValue<Boolean> propertyValue(final String property, final Boolean defaultValue) {
-    return propertyValue(property, defaultValue, false, Boolean::parseBoolean, Objects::toString);
+  public PropertyValue<Boolean> propertyValue(final String propertyName, final Boolean defaultValue) {
+    return propertyValue(propertyName, defaultValue, false, Boolean::parseBoolean, Objects::toString);
   }
 
   /**
    * Instantiates a Value representing the given property.
-   * @param property the configuration property identifying this value
+   * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} is null
+   * @throws NullPointerException if {@code propertyName} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public PropertyValue<String> propertyValue(final String property, final String defaultValue) {
-    return propertyValue(property, defaultValue, null, Objects::toString, Objects::toString);
+  public PropertyValue<String> propertyValue(final String propertyName, final String defaultValue) {
+    return propertyValue(propertyName, defaultValue, null, Objects::toString, Objects::toString);
   }
 
   /**
    * Instantiates a Value representing the given property.
-   * @param property the configuration property identifying this value
+   * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} is null
+   * @throws NullPointerException if {@code propertyName} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public PropertyValue<Integer> propertyValue(final String property, final Integer defaultValue) {
-    return propertyValue(property, defaultValue, null, Integer::parseInt, Objects::toString);
+  public PropertyValue<Integer> propertyValue(final String propertyName, final Integer defaultValue) {
+    return propertyValue(propertyName, defaultValue, null, Integer::parseInt, Objects::toString);
   }
 
   /**
    * Instantiates a Value representing the given property.
-   * @param property the configuration property identifying this value
+   * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} is null
+   * @throws NullPointerException if {@code propertyName} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public PropertyValue<Double> propertyValue(final String property, final Double defaultValue) {
-    return propertyValue(property, defaultValue, null, Double::parseDouble, Objects::toString);
+  public PropertyValue<Double> propertyValue(final String propertyName, final Double defaultValue) {
+    return propertyValue(propertyName, defaultValue, null, Double::parseDouble, Objects::toString);
   }
 
   /**
    * Instantiates a Value representing the given property.
    * @param <V> the value type
-   * @param property the configuration property identifying this value
+   * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no initial value is present
    * @param nullValue the value to use instead of null, if any
    * @param decoder a decoder for decoding the value from a string
    * @param encoder an encoder for encoding the value to a string
    * @return the configuration value
-   * @throws NullPointerException if {@code property}, {@code decoder} or {@code encoder} is null
+   * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public <V> PropertyValue<V> propertyValue(final String property, final V defaultValue, final V nullValue,
+  public <V> PropertyValue<V> propertyValue(final String propertyName, final V defaultValue, final V nullValue,
                                             final Function<String, V> decoder, final Function<V, String> encoder) {
-    if (propertyValues.containsKey(requireNonNull(property, "property"))) {
-      throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
+    if (propertyValues.containsKey(requireNonNull(propertyName, "propertyName"))) {
+      throw new IllegalArgumentException("Configuration value for property '" + propertyName + "' has already been created");
     }
-    final DefaultPropertyValue<V> value = new DefaultPropertyValue<>(property, defaultValue, nullValue, decoder, encoder);
-    propertyValues.put(property, value);
+    final DefaultPropertyValue<V> value = new DefaultPropertyValue<>(propertyName, defaultValue, nullValue, decoder, encoder);
+    propertyValues.put(propertyName, value);
 
     return value;
   }
@@ -160,59 +160,59 @@ public final class PropertyStore {
   /**
    * Instantiates a Value representing the given property.
    * @param <V> the value type
-   * @param property the configuration property identifying this value
+   * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no initial value is present
    * @param decoder a decoder for decoding the value from a string
    * @param encoder an encoder for encoding the value to a string
    * @return the configuration value
-   * @throws NullPointerException if {@code property}, {@code decoder} or {@code encoder} is null
+   * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
-  public <V> PropertyValue<List<V>> propertyListValue(final String property, final List<V> defaultValue,
+  public <V> PropertyValue<List<V>> propertyListValue(final String propertyName, final List<V> defaultValue,
                                                       final Function<String, V> decoder, final Function<V, String> encoder) {
-    if (propertyValues.containsKey(requireNonNull(property, "property"))) {
-      throw new IllegalArgumentException("Configuration value for property '" + property + "' has already been created");
+    if (propertyValues.containsKey(requireNonNull(propertyName, "propertyName"))) {
+      throw new IllegalArgumentException("Configuration value for property '" + propertyName + "' has already been created");
     }
 
-    final DefaultPropertyValue<List<V>> value = new DefaultPropertyValue<>(property, defaultValue, null,
+    final DefaultPropertyValue<List<V>> value = new DefaultPropertyValue<>(propertyName, defaultValue, null,
             stringValue -> stringValue == null ? emptyList() :
                     Arrays.stream(stringValue.split(VALUE_SEPARATOR)).map(decoder).collect(Collectors.toList()),
             valueList -> valueList.stream().map(encoder).collect(Collectors.joining(VALUE_SEPARATOR)));
-    propertyValues.put(property, value);
+    propertyValues.put(propertyName, value);
 
     return value;
   }
 
   /**
    * Returns the Value associated with the given property, null if none has been created.
-   * @param property the property
+   * @param propertyName the property name
    * @param <V> the value type
    * @return the configuration value or null if none is found
    */
-  public <V> PropertyValue<V> getPropertyValue(final String property) {
-    return (PropertyValue<V>) propertyValues.get(property);
+  public <V> PropertyValue<V> getPropertyValue(final String propertyName) {
+    return (PropertyValue<V>) propertyValues.get(propertyName);
   }
 
   /**
    * Sets the value of the given property
-   * @param property the property
+   * @param propertyName the property name
    * @param value the value
-   * @throws IllegalArgumentException in the property is value bound
+   * @throws IllegalArgumentException if the property is value bound
    */
-  public void setProperty(final String property, final String value) {
-    if (propertyValues.containsKey(property)) {
+  public void setProperty(final String propertyName, final String value) {
+    if (propertyValues.containsKey(propertyName)) {
       throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
     }
-    properties.setProperty(property, value);
+    properties.setProperty(propertyName, value);
   }
 
   /**
    * Retrieves the value for the given property, null if no value is present
-   * @param property the property
+   * @param propertyName the property name
    * @return the value or null if no value is present
    */
-  public String getProperty(final String property) {
-    return properties.getProperty(property);
+  public String getProperty(final String propertyName) {
+    return properties.getProperty(propertyName);
   }
 
   /**
@@ -237,11 +237,11 @@ public final class PropertyStore {
 
   /**
    * Returns true if this PropertyStore contains a value for the given property
-   * @param property the property
+   * @param propertyName the property
    * @return true if a value for the given property exists
    */
-  public boolean containsProperty(final String property) {
-    return properties.containsKey(property);
+  public boolean containsProperty(final String propertyName) {
+    return properties.containsKey(propertyName);
   }
 
   /**
@@ -291,25 +291,25 @@ public final class PropertyStore {
 
   private final class DefaultPropertyValue<T> extends AbstractValue<T> implements PropertyValue<T> {
 
-    private final String property;
+    private final String propertyName;
     private final Function<T, String> encoder;
     private final T nullValue;
 
     private T value;
 
-    private DefaultPropertyValue(final String property, final T defaultValue, final T nullValue,
+    private DefaultPropertyValue(final String propertyName, final T defaultValue, final T nullValue,
                                  final Function<String, T> decoder, final Function<T, String> encoder) {
-      this.property = property;
+      this.propertyName = propertyName;
       this.nullValue = nullValue;
       requireNonNull(decoder, "decoder");
       this.encoder = requireNonNull(encoder, "encoder");
-      final String initialValue = getInitialValue(property);
+      final String initialValue = getInitialValue(propertyName);
       set(initialValue == null ? defaultValue : decoder.apply(initialValue));
     }
 
     @Override
-    public String getProperty() {
-      return property;
+    public String getPropertyName() {
+      return propertyName;
     }
 
     @Override
@@ -318,12 +318,12 @@ public final class PropertyStore {
       if (!Objects.equals(this.value, newValue)) {
         this.value = newValue;
         if (newValue == null) {
-          properties.remove(property);
-          System.clearProperty(property);
+          properties.remove(propertyName);
+          System.clearProperty(propertyName);
         }
         else {
-          properties.setProperty(property, encoder.apply(newValue));
-          System.setProperty(property, properties.getProperty(property));
+          properties.setProperty(propertyName, encoder.apply(newValue));
+          System.setProperty(propertyName, properties.getProperty(propertyName));
         }
         notifyValueChange();
       }
@@ -341,7 +341,7 @@ public final class PropertyStore {
 
     @Override
     public String toString() {
-      return property;
+      return propertyName;
     }
 
     private String getInitialValue(final String property) {

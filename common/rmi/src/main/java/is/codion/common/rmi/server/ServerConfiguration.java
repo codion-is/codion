@@ -285,7 +285,7 @@ public interface ServerConfiguration {
    */
   static ServerConfiguration fromSystemProperties() {
     final DefaultServerConfiguration configuration =
-            new DefaultServerConfiguration(requireNonNull(SERVER_PORT.get(), SERVER_PORT.getProperty()));
+            new DefaultServerConfiguration(requireNonNull(SERVER_PORT.get(), SERVER_PORT.getPropertyName()));
     configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
     configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));

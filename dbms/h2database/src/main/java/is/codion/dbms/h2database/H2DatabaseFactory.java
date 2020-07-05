@@ -37,7 +37,7 @@ public final class H2DatabaseFactory implements DatabaseFactory {
 
   @Override
   public Database createDatabase(final String jdbcUrl) {
-    return new H2Database(jdbcUrl, Text.parseCommaSeparatedValues(H2Database.DATABASE_INIT_SCRIPT.get()));
+    return new H2Database(jdbcUrl, Text.parseCommaSeparatedValues(H2Database.DATABASE_INIT_SCRIPTS.get()));
   }
 
   public static Database createDatabase(final String jdbcUrl, final String initScript) {

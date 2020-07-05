@@ -22,7 +22,7 @@ dependencies {
 
 test {
     systemProperty "codion.db.url", "jdbc:h2:mem:h2db"
-    systemProperty "codion.db.initScript", "src/main/config/create_schema.sql"
+    systemProperty "codion.db.initScripts", "src/main/config/create_schema.sql"
     systemProperty "codion.test.user", "scott:tiger"
 }
 
@@ -72,7 +72,7 @@ task runEntityGenerator(type: ModularJavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     systemProperties = [
             'codion.db.url'             : 'jdbc:h2:mem:h2db',
-            'codion.db.initScript'      :
+            'codion.db.initScripts'     :
                     '../../demos/chinook/src/main/sql/create_schema.sql,' +
                     '../../demos/empdept/src/main/sql/create_schema.sql,' +
                     '../../demos/petclinic/src/main/sql/create_schema.sql,' +

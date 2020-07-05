@@ -3,6 +3,7 @@
  */
 package is.codion.plugin.hikari.pool;
 
+import is.codion.common.db.database.Database;
 import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
@@ -22,7 +23,7 @@ public class HikariConnectionPoolFactoryTest {
     final long startTime = System.currentTimeMillis();
     final HikariConnectionPoolFactory provider = new HikariConnectionPoolFactory();
     final ConnectionPool pool = provider.createConnectionPool(new H2DatabaseFactory().createDatabase("jdbc:h2:mem:HikariConnectionPoolProviderTest",
-            System.getProperty("codion.db.initScript")), UNIT_TEST_USER);
+            Database.DATABASE_INIT_SCRIPTS.get()), UNIT_TEST_USER);
     pool.setCollectSnapshotStatistics(true);
     assertTrue(pool.isCollectSnapshotStatistics());
     pool.getConnection(UNIT_TEST_USER).close();

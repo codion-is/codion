@@ -270,7 +270,7 @@ public final class EntityConnectionDemo {
 
   static void main(String[] args) throws DatabaseException, ReportException {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
-    Database.DATABASE_INIT_SCRIPT.set("src/main/sql/create_schema.sql");
+    Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
     EntityConnectionProvider connectionProvider =
             new LocalEntityConnectionProvider(Databases.getInstance())

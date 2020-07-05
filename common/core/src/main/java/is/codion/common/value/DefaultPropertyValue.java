@@ -76,7 +76,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public String getProperty() {
+  public String getPropertyName() {
     return propertyName;
   }
 

@@ -46,7 +46,7 @@ test {
         addReads = testAddReads
         addExports = testAddExports;
     }
-    systemProperty "codion.db.initScript", "src/main/sql/create_schema.sql"
+    systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.petclinic.domain.PetClinic"
 }
 

@@ -197,7 +197,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    */
   static EntityServerConfiguration fromSystemProperties() {
     final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(
-            requireNonNull(SERVER_PORT.get(), SERVER_PORT.getProperty()),
+            requireNonNull(SERVER_PORT.get(), SERVER_PORT.getPropertyName()),
             requireNonNull(REGISTRY_PORT.get(), REGISTRY_PORT.toString()));
     configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
     configuration.setSslEnabled(SERVER_CONNECTION_SSL_ENABLED.get());

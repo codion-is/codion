@@ -48,7 +48,7 @@ public interface Database extends ConnectionFactory {
   /**
    * A comma separated list of paths to scripts to run when initializing the database, implementation specific
    */
-  PropertyValue<String> DATABASE_INIT_SCRIPT = Configuration.stringValue("codion.db.initScript", null);
+  PropertyValue<String> DATABASE_INIT_SCRIPTS = Configuration.stringValue("codion.db.initScripts", null);
 
   /**
    * Specifies the timeout (in seconds) to use when checking if database connections are valid.

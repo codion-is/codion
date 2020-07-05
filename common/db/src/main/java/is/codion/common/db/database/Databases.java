@@ -25,7 +25,7 @@ public final class Databases {
       final DatabaseFactory factory = DatabaseFactory.getInstance();
       if (instance == null || !factory.isDatabaseCompatible(instance)) {
         //refresh the instance
-        instance = factory.createDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getProperty()));
+        instance = factory.createDatabase(requireNonNull(Database.DATABASE_URL.get(), Database.DATABASE_URL.getPropertyName()));
       }
 
       return instance;
