@@ -127,8 +127,7 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public final void setConnectionProvider(final ConnectionProvider connectionProvider) {
-    requireNonNull(connectionProvider, "connectionProvider");
-    this.connectionProvider = connectionProvider;
+    this.connectionProvider = connectionProvider == null ? new ConnectionProvider() {} : connectionProvider;
   }
 
   @Override

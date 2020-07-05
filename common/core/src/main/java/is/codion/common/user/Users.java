@@ -39,8 +39,8 @@ public final class Users {
    */
   public static User parseUser(final String userPassword) {
     final String[] split = requireNonNull(userPassword).split(":");
-    if (split.length < 2) {
-      throw new IllegalArgumentException("Expecting a string with a single ':' as delimiter");
+    if (split.length != 2) {
+      throw new IllegalArgumentException("Expecting a non-empty username and password with a single ':' as delimiter");
     }
     if (split[0].isEmpty() || split[1].isEmpty()) {
       throw new IllegalArgumentException("Both username and password are required");

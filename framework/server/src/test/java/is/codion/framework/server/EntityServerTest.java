@@ -292,7 +292,7 @@ public class EntityServerTest {
     catch (final IllegalArgumentException ignored) {/*ignored*/}
     assertEquals(30, admin.getConnectionTimeout());
     admin.getDatabaseStatistics();
-    admin.getDatabaseURL();
+    admin.getDatabaseUrl();
     admin.getConnectionPoolUsernames();
     admin.setMaintenanceInterval(500);
     admin.getEntityDefinitions();

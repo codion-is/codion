@@ -6334,3 +6334,4 @@
   ColumnConditionPanel.DefaultBoundFieldProvider bug fixed, did not handle temporal types correctly
   ColumnConditionModel and related classes, major surgery, no longer uses upper bound when testing for equality
   ColumnConditionModel now type safe
+  EntityServerAdmin.getDatabaseURL() renamed getDatabaseUrl() for consistency

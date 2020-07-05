@@ -32,7 +32,7 @@ public interface EntityServerAdmin extends Remote {
    * @return the database URL
    * @throws RemoteException in case of a communication error
    */
-  String getDatabaseURL() throws RemoteException;
+  String getDatabaseUrl() throws RemoteException;
 
   /**
    * @return static information about the server
