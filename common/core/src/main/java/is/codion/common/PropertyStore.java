@@ -91,7 +91,7 @@ public final class PropertyStore {
    * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} is null
+   * @throws NullPointerException if {@code propertyName} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public PropertyValue<Boolean> propertyValue(final String propertyName, final Boolean defaultValue) {
@@ -103,7 +103,7 @@ public final class PropertyStore {
    * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} is null
+   * @throws NullPointerException if {@code propertyName} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public PropertyValue<String> propertyValue(final String propertyName, final String defaultValue) {
@@ -115,7 +115,7 @@ public final class PropertyStore {
    * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} is null
+   * @throws NullPointerException if {@code propertyName} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public PropertyValue<Integer> propertyValue(final String propertyName, final Integer defaultValue) {
@@ -127,7 +127,7 @@ public final class PropertyStore {
    * @param propertyName the configuration property name identifying this value
    * @param defaultValue the default value to use if no value is present and when the value is set to null
    * @return the configuration value
-   * @throws NullPointerException if {@code property} is null
+   * @throws NullPointerException if {@code propertyName} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public PropertyValue<Double> propertyValue(final String propertyName, final Double defaultValue) {
@@ -143,7 +143,7 @@ public final class PropertyStore {
    * @param decoder a decoder for decoding the value from a string
    * @param encoder an encoder for encoding the value to a string
    * @return the configuration value
-   * @throws NullPointerException if {@code property}, {@code decoder} or {@code encoder} is null
+   * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public <V> PropertyValue<V> propertyValue(final String propertyName, final V defaultValue, final V nullValue,
@@ -165,7 +165,7 @@ public final class PropertyStore {
    * @param decoder a decoder for decoding the value from a string
    * @param encoder an encoder for encoding the value to a string
    * @return the configuration value
-   * @throws NullPointerException if {@code property}, {@code decoder} or {@code encoder} is null
+   * @throws NullPointerException if {@code propertyName}, {@code decoder} or {@code encoder} is null
    * @throws IllegalArgumentException in case a Value for the given property has already been created
    */
   public <V> PropertyValue<List<V>> propertyListValue(final String propertyName, final List<V> defaultValue,
