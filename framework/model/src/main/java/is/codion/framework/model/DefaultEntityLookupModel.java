@@ -59,7 +59,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * The properties to use when doing the lookup
    */
-  private final Collection<ColumnProperty<?>> lookupProperties;
+  private final Collection<ColumnProperty<String>> lookupProperties;
 
   /**
    * The selected entities
@@ -103,7 +103,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
    * @param lookupProperties the properties to search by, these must be string based
    */
   public DefaultEntityLookupModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
-                                  final Collection<ColumnProperty<?>> lookupProperties) {
+                                  final Collection<ColumnProperty<String>> lookupProperties) {
     requireNonNull(entityType, "entityType");
     requireNonNull(connectionProvider, "connectionProvider");
     requireNonNull(lookupProperties, "lookupProperties");
@@ -127,7 +127,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   @Override
-  public Collection<ColumnProperty<?>> getLookupProperties() {
+  public Collection<ColumnProperty<String>> getLookupProperties() {
     return unmodifiableCollection(lookupProperties);
   }
 
@@ -319,13 +319,10 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     return entities.stream().map(toStringProvider).collect(joining(multipleItemSeparatorValue.get()));
   }
 
-  private static void validateLookupProperties(final EntityType<?> entityType, final Collection<ColumnProperty<?>> lookupProperties) {
-    for (final ColumnProperty<?> property : lookupProperties) {
+  private static void validateLookupProperties(final EntityType<?> entityType, final Collection<ColumnProperty<String>> lookupProperties) {
+    for (final ColumnProperty<String> property : lookupProperties) {
       if (!entityType.equals(property.getEntityType())) {
         throw new IllegalArgumentException("Property '" + property + "' is not part of entity " + entityType);
-      }
-      if (!property.getAttribute().isString()) {
-        throw new IllegalArgumentException("Property '" + property + "' is not a String based property");
       }
     }
   }

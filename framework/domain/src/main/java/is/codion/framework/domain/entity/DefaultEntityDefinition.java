@@ -314,8 +314,9 @@ final class DefaultEntityDefinition implements EntityDefinition {
   }
 
   @Override
-  public Collection<ColumnProperty<?>> getSearchProperties() {
-    return entityProperties.columnProperties.stream().filter(ColumnProperty::isSearchProperty).collect(toList());
+  public Collection<ColumnProperty<String>> getSearchProperties() {
+    return entityProperties.columnProperties.stream().filter(ColumnProperty::isSearchProperty)
+            .map(property -> (ColumnProperty<String>) property).collect(toList());
   }
 
   @Override

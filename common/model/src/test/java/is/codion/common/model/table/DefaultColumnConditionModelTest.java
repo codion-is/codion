@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultColumnConditionModelTest {
 
+  final AtomicInteger equalToCounter = new AtomicInteger();
   final AtomicInteger upperBoundCounter = new AtomicInteger();
   final AtomicInteger lowerBoundCounter = new AtomicInteger();
   final AtomicInteger conditionChangedCounter = new AtomicInteger();
@@ -24,6 +25,7 @@ public class DefaultColumnConditionModelTest {
   final AtomicInteger enabledCounter = new AtomicInteger();
   final AtomicInteger clearCounter = new AtomicInteger();
 
+  final EventListener equalToListener = equalToCounter::incrementAndGet;
   final EventListener upperBoundListener = upperBoundCounter::incrementAndGet;
   final EventListener lowerBoundListener = lowerBoundCounter::incrementAndGet;
   final EventListener conditionChangedListener = conditionChangedCounter::incrementAndGet;
@@ -33,9 +35,10 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void testSetBounds() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setAutoEnable(false);
     assertFalse(model.isAutoEnable());
+    model.addEqualsValueListener(equalToListener);
     model.addUpperBoundListener(upperBoundListener);
     model.addLowerBoundListener(lowerBoundListener);
     model.addConditionChangedListener(conditionChangedListener);
@@ -57,12 +60,13 @@ public class DefaultColumnConditionModelTest {
     model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.NONE);
 
     model.setEqualsValue("test");
-    assertEquals(2, upperBoundCounter.get());
-    assertEquals("test", model.getUpperBound());
+    assertEquals(1, equalToCounter.get());
+    assertEquals("test", model.getEqualsValue());
 
     model.clearCondition();
     assertEquals(1, clearCounter.get());
 
+    model.removeEqualsValueListener(equalToListener);
     model.removeUpperBoundListener(upperBoundListener);
     model.removeLowerBoundListener(lowerBoundListener);
     model.removeConditionChangedListener(conditionChangedListener);
@@ -71,25 +75,18 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void testMisc() {
-    final ColumnConditionModel model = new DefaultColumnConditionModel("test", String.class, "%");
+    final ColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     assertEquals("test", model.getColumnIdentifier());
-    model.setOperator(Operator.EQUALS);
-    assertFalse(model.isLowerBoundRequired());
-    model.setOperator(Operator.GREATER_THAN);
-    model.setOperator(Operator.LESS_THAN);
-
-    model.setOperator(Operator.WITHIN_RANGE);
-    assertTrue(model.isLowerBoundRequired());
 
     model.setOperator(Operator.EQUALS);
     model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
-    model.setUpperBound("upper");
-    assertEquals("%upper%", model.getUpperBound());
+    model.setEqualsValue("upper");
+    assertEquals("%upper%", model.getEqualsValue());
   }
 
   @Test
   public void testOperator() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.addOperatorListener(operatorListener);
     assertEquals(Operator.EQUALS, model.getOperator());
     model.setOperator(Operator.LESS_THAN);
@@ -107,9 +104,9 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void test() throws Exception {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     assertTrue(model.isAutoEnable());
-    model.setUpperBound("test");
+    model.setEqualsValue("test");
     assertTrue(model.isEnabled());
     model.setCaseSensitive(false);
     assertFalse(model.isCaseSensitive());
@@ -134,45 +131,40 @@ public class DefaultColumnConditionModelTest {
     model.setLocked(true);
     assertTrue(model.isLocked());
     assertTrue(model.getLockedObserver().get());
-
-    assertThrows(IllegalArgumentException.class, () -> model.setLowerBound(1));
-    assertThrows(IllegalArgumentException.class, () -> model.setUpperBound(1d));
-    assertThrows(IllegalArgumentException.class, () -> model.setLowerBound(asList("2", 1)));
-    assertThrows(IllegalArgumentException.class, () -> model.setUpperBound(asList("1", true)));
   }
 
   @Test
   public void setUpperBoundLocked() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setUpperBound("test"));
   }
 
   @Test
   public void setLowerBoundLocked() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setLowerBound("test"));
   }
 
   @Test
   public void setEnabledLocked() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setEnabled(true));
   }
 
   @Test
   public void setOperatorLocked() {
-    final DefaultColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
     assertThrows(IllegalStateException.class, () -> model.setOperator(Operator.NOT_EQUALS));
   }
 
   @Test
   public void include() {
-    final DefaultColumnConditionModel<String, String> conditionModel = new DefaultColumnConditionModel<>("test", Integer.class, "%");
-    conditionModel.setUpperBound(10);
+    final DefaultColumnConditionModel<String, String, Integer> conditionModel = new DefaultColumnConditionModel<>("test", Integer.class, "%");
+    conditionModel.setEqualsValue(10);
     conditionModel.setOperator(Operator.EQUALS);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
@@ -183,11 +175,13 @@ public class DefaultColumnConditionModelTest {
     assertFalse(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
 
+    conditionModel.setLowerBound(10);
     conditionModel.setOperator(Operator.GREATER_THAN);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
 
+    conditionModel.setUpperBound(10);
     conditionModel.setOperator(Operator.LESS_THAN);
     assertTrue(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
@@ -218,11 +212,11 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   public void multiConditionString() {
-    final DefaultColumnConditionModel<String, String> conditionModel = new DefaultColumnConditionModel<>("test", String.class, "%");
+    final DefaultColumnConditionModel<String, String, String> conditionModel = new DefaultColumnConditionModel<>("test", String.class, "%");
 
     final Collection<String> strings = asList("abc", "def");
-    conditionModel.setUpperBound(strings);
+    conditionModel.setEqualsValues(strings);
 
-    assertEquals(strings, conditionModel.getUpperBound());
+    assertTrue(conditionModel.getEqualsValues().containsAll(strings));
   }
 }

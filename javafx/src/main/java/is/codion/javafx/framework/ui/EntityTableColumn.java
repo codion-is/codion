@@ -16,9 +16,9 @@ import javafx.util.Callback;
 /**
  * A table column based on properties via {@link FXEntityListModel.PropertyTableColumn}
  */
-public final class EntityTableColumn extends FXEntityListModel.PropertyTableColumn {
+public final class EntityTableColumn<T> extends FXEntityListModel.PropertyTableColumn<T> {
 
-  private final PropertyConditionView conditionView;
+  private final PropertyConditionView<T> conditionView;
 
   /**
    * Instantiates a new table column for the given list model based on the given property
@@ -26,8 +26,8 @@ public final class EntityTableColumn extends FXEntityListModel.PropertyTableColu
    * @param property the property
    * @param cellValueFactory the cell value factory for this column
    */
-  public EntityTableColumn(final FXEntityListModel listModel, final Property<?> property,
-                           final Callback<CellDataFeatures<Entity, Object>, ObservableValue<Object>> cellValueFactory) {
+  public EntityTableColumn(final FXEntityListModel listModel, final Property<T> property,
+                           final Callback<CellDataFeatures<Entity, T>, ObservableValue<T>> cellValueFactory) {
     super(property);
     this.conditionView = initializeConditionView(listModel);
     setCellValueFactory(cellValueFactory);
@@ -57,13 +57,13 @@ public final class EntityTableColumn extends FXEntityListModel.PropertyTableColu
     }
   }
 
-  private PropertyConditionView initializeConditionView(final FXEntityListModel listModel) {
-    final Property<?> property = getProperty();
+  private PropertyConditionView<T> initializeConditionView(final FXEntityListModel listModel) {
+    final Property<T> property = getProperty();
     if (property instanceof ColumnProperty || property instanceof ForeignKeyProperty) {
-      final ColumnConditionModel<Entity, ? extends Property<?>> conditionModel =
+      final ColumnConditionModel<Entity, ? extends Property<?>, T> conditionModel =
               listModel.getTableConditionModel().getConditionModel(getProperty().getAttribute());
       if (conditionModel != null) {
-        final PropertyConditionView view = new PropertyConditionView(conditionModel);
+        final PropertyConditionView<T> view = new PropertyConditionView<>(conditionModel);
         view.prefWidthProperty().setValue(getWidth());
         widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));
         widthProperty().addListener((observable, oldValue, newValue) -> view.prefWidthProperty().set(newValue.doubleValue()));

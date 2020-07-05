@@ -64,7 +64,7 @@ public interface EntityLookupModel {
   /**
    * @return a list containing the properties used when performing a lookup
    */
-  Collection<ColumnProperty<?>> getLookupProperties();
+  Collection<ColumnProperty<String>> getLookupProperties();
 
   /**
    * @param resultSorter the comparator used to sort the lookup result, null if the result should not be sorted

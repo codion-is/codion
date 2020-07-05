@@ -17,13 +17,13 @@ import is.codion.framework.domain.property.Property;
 public class DefaultConditionModelFactory implements ConditionModelFactory {
 
   @Override
-  public ColumnConditionModel<Entity, ColumnProperty<?>> createColumnConditionModel(final ColumnProperty<?> property) {
+  public <T> ColumnConditionModel<Entity, ColumnProperty<?>, T> createColumnConditionModel(final ColumnProperty<T> property) {
     return new DefaultColumnConditionModel<>(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
             property.getFormat(), property.getDateTimeFormatPattern());
   }
 
   @Override
-  public ColumnConditionModel<Entity, ForeignKeyProperty> createForeignKeyConditionModel(
+  public ColumnConditionModel<Entity, ForeignKeyProperty, Entity> createForeignKeyConditionModel(
           final ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityType(), connectionProvider);
     lookupModel.getMultipleSelectionEnabledValue().set(true);

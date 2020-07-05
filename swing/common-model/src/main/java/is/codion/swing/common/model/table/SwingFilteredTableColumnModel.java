@@ -51,7 +51,7 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   /**
    * The ColumnConditionModels used for filtering
    */
-  private final Map<C, ColumnConditionModel<R, C>> columnFilterModels = new HashMap<>();
+  private final Map<C, ColumnConditionModel<R, C, ?>> columnFilterModels = new HashMap<>();
 
   /**
    * Caches the column indexes in the model
@@ -64,7 +64,7 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
    * @param columnFilterModels the filter models if any
    */
   public SwingFilteredTableColumnModel(final List<TableColumn> columns,
-                                       final Collection<? extends ColumnConditionModel<R, C>> columnFilterModels) {
+                                       final Collection<? extends ColumnConditionModel<R, C, ?>> columnFilterModels) {
     if (columns == null || columns.isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
@@ -75,7 +75,7 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
       addColumn(column);
     }
     if (columnFilterModels != null) {
-      for (final ColumnConditionModel<R, C> columnFilterModel : columnFilterModels) {
+      for (final ColumnConditionModel<R, C, ?> columnFilterModel : columnFilterModels) {
         this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
       }
     }
@@ -155,14 +155,14 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   }
 
   @Override
-  public final ColumnConditionModel<R, C> getColumnFilterModel(final C columnIdentifier) {
+  public final <T> ColumnConditionModel<R, C, T> getColumnFilterModel(final C columnIdentifier) {
     requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
 
-    return columnFilterModels.get(columnIdentifier);
+    return (ColumnConditionModel<R, C, T>) columnFilterModels.get(columnIdentifier);
   }
 
   @Override
-  public final Collection<ColumnConditionModel<R, C>> getColumnFilterModels() {
+  public final Collection<ColumnConditionModel<R, C, ?>> getColumnFilterModels() {
     return columnFilterModels.values();
   }
 

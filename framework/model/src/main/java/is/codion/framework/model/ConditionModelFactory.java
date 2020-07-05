@@ -20,7 +20,7 @@ public interface ConditionModelFactory {
    * @return a {@link ColumnConditionModel} for the given property, null if searching
    * should not be allowed for this property
    */
-  ColumnConditionModel<Entity, ColumnProperty<?>> createColumnConditionModel(ColumnProperty<?> property);
+  <T> ColumnConditionModel<Entity, ColumnProperty<?>, T> createColumnConditionModel(ColumnProperty<T> property);
 
   /**
    * Initializes a {@link ColumnConditionModel} for the given property
@@ -29,6 +29,6 @@ public interface ConditionModelFactory {
    * @return a {@link ColumnConditionModel} for the given property, null if searching
    * should not be allowed for this property
    */
-  ColumnConditionModel<Entity, ForeignKeyProperty> createForeignKeyConditionModel(
+  ColumnConditionModel<Entity, ForeignKeyProperty, Entity> createForeignKeyConditionModel(
           ForeignKeyProperty property, EntityConnectionProvider connectionProvider);
 }

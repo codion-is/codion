@@ -39,28 +39,28 @@ public class DefaultForeignKeyConditionModelTest {
             entities.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK), lookupModel);
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     lookupModel.setSelectedEntity(sales);
-    Collection<Entity> searchEntities = conditionModel.getConditionEntities();
+    Collection<Entity> searchEntities = conditionModel.getEqualsValues();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     final List<Entity> salesAccounting = asList(sales, accounting);
     lookupModel.setSelectedEntities(salesAccounting);
-    assertTrue(conditionModel.getConditionEntities().contains(sales));
-    assertTrue(conditionModel.getConditionEntities().contains(accounting));
-    searchEntities = conditionModel.getConditionEntities();
+    assertTrue(conditionModel.getEqualsValues().contains(sales));
+    assertTrue(conditionModel.getEqualsValues().contains(accounting));
+    searchEntities = conditionModel.getEqualsValues();
     assertEquals(2, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     assertTrue(searchEntities.contains(accounting));
 
-    conditionModel.setUpperBound(null);
+    conditionModel.setEqualsValue(null);
     assertTrue(lookupModel.getSelectedEntities().isEmpty());
-    conditionModel.setUpperBound(sales);
+    conditionModel.setEqualsValue(sales);
     assertEquals(lookupModel.getSelectedEntities().iterator().next(), sales);
-    assertTrue(conditionModel.getConditionEntities().contains(sales));
+    assertTrue(conditionModel.getEqualsValues().contains(sales));
 
     lookupModel.setSelectedEntity(null);
 
-    searchEntities = conditionModel.getConditionEntities();
+    searchEntities = conditionModel.getEqualsValues();
     assertTrue(searchEntities.isEmpty());
 
     conditionModel.refresh();
