@@ -60,7 +60,7 @@ task runClientLocal(type: ModularJavaExec) {
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
-            'codion.db.initScript'        : 'src/main/sql/create_schema.sql',
+            'codion.db.initScripts'       : 'src/main/sql/create_schema.sql',
             'logback.configurationFile'   : 'src/main/resources/logback.xml'
     ]
 }
@@ -94,7 +94,7 @@ task clientLocalScript(type: ModularCreateStartScripts) {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=local',
             '-Dcodion.db.url=jdbc:h2:mem:h2db',
-            '-Dcodion.db.initScript=../config/create_schema.sql',
+            '-Dcodion.db.initScripts=../config/create_schema.sql',
             '-Dlogback.configurationFile=../config/logback.xml'
     ]
 }
