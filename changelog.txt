@@ -6337,3 +6337,5 @@
   EntityServerAdmin.getDatabaseURL() renamed getDatabaseUrl() for consistency
   codion.db.initScript renamed to the more appropriate codion.db.initScripts, since it can contain one or more init scripts
   PropertyValue.geProperty() renamed getPropertyName()
+  EntityType.characterAttribute() added
+  Properties.denormalizedProperty() caption parameter moved to second place, for consistency

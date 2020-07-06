@@ -105,6 +105,13 @@ public interface EntityType<T extends Entity> extends Serializable {
   Attribute<String> stringAttribute(String name);
 
   /**
+   * Creates a new Character based attribute, associated with this EntityType.
+   * @param name the attribute name.
+   * @return a new Character based attribute.
+   */
+  Attribute<Character> characterAttribute(String name);
+
+  /**
    * Creates a new Boolean based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new Boolean based attribute.
