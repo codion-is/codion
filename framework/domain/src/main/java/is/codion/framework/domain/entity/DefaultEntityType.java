@@ -100,6 +100,11 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T> {
   }
 
   @Override
+  public Attribute<Character> characterAttribute(final String name) {
+    return attribute(name, Character.class);
+  }
+
+  @Override
   public Attribute<Boolean> booleanAttribute(final String name) {
     return attribute(name, Boolean.class);
   }

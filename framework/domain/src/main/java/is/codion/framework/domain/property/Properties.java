@@ -153,22 +153,22 @@ public final class Properties {
   public static <T> ColumnProperty.Builder<T> denormalizedProperty(final Attribute<T> attribute,
                                                                    final Attribute<Entity> entityAttribute,
                                                                    final Attribute<T> denormalizedAttribute) {
-    return denormalizedProperty(attribute, entityAttribute, denormalizedAttribute, null);
+    return denormalizedProperty(attribute, null, entityAttribute, denormalizedAttribute);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from
    * a entity referenced by a foreign key.
    * @param attribute the attribute, in case of database properties this should be the underlying column name
+   * @param caption the property caption
    * @param entityAttribute the id of the foreign key reference which owns the attribute which value to mirror
    * @param denormalizedAttribute the property from which this attribute should get its value
-   * @param caption the property caption
    * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder}
    */
-  public static <T> ColumnProperty.Builder<T> denormalizedProperty(final Attribute<T> attribute,
+  public static <T> ColumnProperty.Builder<T> denormalizedProperty(final Attribute<T> attribute, final String caption,
                                                                    final Attribute<Entity> entityAttribute,
-                                                                   final Attribute<T> denormalizedAttribute, final String caption) {
+                                                                   final Attribute<T> denormalizedAttribute) {
     return new DefaultDenormalizedProperty<>(attribute, entityAttribute, denormalizedAttribute, caption).builder();
   }
 

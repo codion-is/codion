@@ -299,7 +299,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     columnProperty(InvoiceLine.TRACK_ID))
                     .nullable(false)
                     .preferredColumnWidth(100),
-            denormalizedProperty(InvoiceLine.UNITPRICE, InvoiceLine.TRACK_FK, Track.UNITPRICE, "Unit price")
+            denormalizedProperty(InvoiceLine.UNITPRICE, "Unit price", InvoiceLine.TRACK_FK, Track.UNITPRICE)
                     .nullable(false),
             columnProperty(InvoiceLine.QUANTITY, "Quantity")
                     .nullable(false)
