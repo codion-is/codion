@@ -148,11 +148,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /**
    * Returns the table column for the given attribute
+   * @param <T> the column value type
    * @param attribute the attribute
    * @return the column
    * @throws IllegalArgumentException in case the column was not found
    */
-  public final <T extends Comparable<T>> EntityTableColumn<T> getTableColumn(final Attribute<T> attribute) {
+  public final <T> EntityTableColumn<T> getTableColumn(final Attribute<T> attribute) {
     final Optional<? extends TableColumn<Entity, ?>> tableColumn = columns.stream()
             .filter((Predicate<TableColumn<Entity, ?>>) entityTableColumn ->
                     ((EntityTableColumn<?>) entityTableColumn).getProperty().getAttribute().equals(attribute)).findFirst();
