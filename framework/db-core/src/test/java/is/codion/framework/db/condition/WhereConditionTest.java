@@ -236,12 +236,23 @@ public final class WhereConditionTest {
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).notEqualTo("upper"), departmentDefinition);
     assertEquals(property.getColumnName() + " <> ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).greaterThan("upper"), departmentDefinition);
+    assertEquals(property.getColumnName() + " > ?", condition.getWhereClause());
+    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).greaterThanOrEqualTo("upper"), departmentDefinition);
     assertEquals(property.getColumnName() + " >= ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).lessThan("upper"), departmentDefinition);
+    assertEquals(property.getColumnName() + " < ?", condition.getWhereClause());
+    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).lessThanOrEqualTo("upper"), departmentDefinition);
     assertEquals(property.getColumnName() + " <= ?", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).withinRange("upper", "lower"), departmentDefinition);
+    assertEquals("(" + property.getColumnName() + " > ? and " + property.getColumnName() + " < ?)", condition.getWhereClause());
+    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).withinRangeInclusive("upper", "lower"), departmentDefinition);
     assertEquals("(" + property.getColumnName() + " >= ? and " + property.getColumnName() + " <= ?)", condition.getWhereClause());
+
+    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).outsideRange("upper", "lower"), departmentDefinition);
+    assertEquals("(" + property.getColumnName() + " < ? or " + property.getColumnName() + " > ?)", condition.getWhereClause());
+    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).outsideRangeInclusive("upper", "lower"), departmentDefinition);
+    assertEquals("(" + property.getColumnName() + " <= ? or " + property.getColumnName() + " >= ?)", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).equalTo("%upper%"), departmentDefinition);
     assertEquals(property.getColumnName() + " like ?", condition.getWhereClause());

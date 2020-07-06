@@ -205,12 +205,16 @@ public final class PropertyConditionView<T> extends BorderPane {
 
   private Pane createInputPane() {
     switch (model.getOperator()) {
-      case EQUALS:
-      case NOT_EQUALS: return singleValuePane(equalsValueControl);
-      case GREATER_THAN: return singleValuePane(lowerBoundControl);
-      case LESS_THAN: return singleValuePane(upperBoundControl);
+      case EQUAL:
+      case NOT_EQUAL: return singleValuePane(equalsValueControl);
+      case GREATER_THAN:
+      case GREATER_THAN_OR_EQUAL: return singleValuePane(lowerBoundControl);
+      case LESS_THAN:
+      case LESS_THAN_OR_EQUAL: return singleValuePane(upperBoundControl);
       case WITHIN_RANGE:
-      case OUTSIDE_RANGE: return rangePane();
+      case WITHIN_RANGE_INCLUSIVE:
+      case OUTSIDE_RANGE:;
+      case OUTSIDE_RANGE_INCLUSIVE: return rangePane();
       default:
         throw new IllegalArgumentException("Unknown operator: " + model.getOperator());
     }
@@ -234,11 +238,11 @@ public final class PropertyConditionView<T> extends BorderPane {
   private static Collection<Item<Operator>> getOperators(final Property<?> property) {
     final Collection<Item<Operator>> types = new ArrayList<>();
     if (property instanceof ForeignKeyProperty) {
-      types.add(item(Operator.EQUALS, Operator.EQUALS.getCaption()));
-      types.add(item(Operator.NOT_EQUALS, Operator.NOT_EQUALS.getCaption()));
+      types.add(item(Operator.EQUAL, Operator.EQUAL.getCaption()));
+      types.add(item(Operator.NOT_EQUAL, Operator.NOT_EQUAL.getCaption()));
     }
     else if (property.getAttribute().isBoolean()) {
-      types.add(item(Operator.EQUALS, Operator.EQUALS.getCaption()));
+      types.add(item(Operator.EQUAL, Operator.EQUAL.getCaption()));
     }
     else {
       for (final Operator operator : Operator.values()) {

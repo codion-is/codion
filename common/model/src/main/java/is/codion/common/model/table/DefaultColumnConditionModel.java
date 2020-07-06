@@ -36,7 +36,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   private final ValueSet<T> equalsValues = Values.valueSet();
   private final Value<T> upperBoundValue = Values.value();
   private final Value<T> lowerBoundValue = Values.value();
-  private final Value<Operator> operatorValue = Values.value(Operator.EQUALS);
+  private final Value<Operator> operatorValue = Values.value(Operator.EQUAL);
   private final Event<?> conditionChangedEvent = Events.event();
   private final Event<?> conditionModelClearedEvent = Events.event();
 
@@ -245,7 +245,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     setEqualsValues(null);
     setUpperBound(null);
     setLowerBound(null);
-    setOperator(Operator.EQUALS);
+    setOperator(Operator.EQUAL);
     conditionModelClearedEvent.onEvent();
   }
 
@@ -361,18 +361,26 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     }
 
     switch (operatorValue.get()) {
-      case EQUALS:
-        return includeEquals(comparable);
-      case NOT_EQUALS:
-        return includeNotEquals(comparable);
+      case EQUAL:
+        return includeEqual(comparable);
+      case NOT_EQUAL:
+        return includeNotEqual(comparable);
       case LESS_THAN:
         return includeLessThan(comparable);
+      case LESS_THAN_OR_EQUAL:
+        return includeLessThanOrEqual(comparable);
       case GREATER_THAN:
         return includeGreaterThan(comparable);
+      case GREATER_THAN_OR_EQUAL:
+        return includeGreaterThanOrEqual(comparable);
       case WITHIN_RANGE:
         return includeWithinRange(comparable);
+      case WITHIN_RANGE_INCLUSIVE:
+        return includeWithinRangeInclusive(comparable);
       case OUTSIDE_RANGE:
         return includeOutsideRange(comparable);
+      case OUTSIDE_RANGE_INCLUSIVE:
+        return includeOutsideRangeInclusive(comparable);
       default:
         throw new IllegalArgumentException("Undefined operator: " + operatorValue.get());
     }
@@ -402,7 +410,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     return (T) upperBound;
   }
 
-  private boolean includeEquals(final Comparable<T> comparable) {
+  private boolean includeEqual(final Comparable<T> comparable) {
     if (comparable == null) {
       return this.getEqualsValue() == null;
     }
@@ -417,7 +425,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     return comparable.compareTo(this.getEqualsValue()) == 0;
   }
 
-  private boolean includeNotEquals(final Comparable<T> comparable) {
+  private boolean includeNotEqual(final Comparable<T> comparable) {
     if (comparable == null) {
       return this.getEqualsValue() != null;
     }
@@ -463,14 +471,45 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   private boolean includeLessThan(final Comparable<T> comparable) {
+    return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) < 0;
+  }
+
+  private boolean includeLessThanOrEqual(final Comparable<T> comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) <= 0;
   }
 
   private boolean includeGreaterThan(final Comparable<T> comparable) {
+    return getLowerBound() == null || comparable != null && comparable.compareTo(getLowerBound()) > 0;
+  }
+
+  private boolean includeGreaterThanOrEqual(final Comparable<T> comparable) {
     return getLowerBound() == null || comparable != null && comparable.compareTo(getLowerBound()) >= 0;
   }
 
   private boolean includeWithinRange(final Comparable<T> comparable) {
+    if (getLowerBound() == null && getUpperBound() == null) {
+      return true;
+    }
+
+    if (comparable == null) {
+      return false;
+    }
+
+    if (getLowerBound() == null) {
+      return comparable.compareTo(getUpperBound()) < 0;
+    }
+
+    if (getUpperBound() == null) {
+      return comparable.compareTo(getLowerBound()) > 0;
+    }
+
+    final int lowerCompareResult = comparable.compareTo(getLowerBound());
+    final int upperCompareResult = comparable.compareTo(getUpperBound());
+
+    return lowerCompareResult > 0 && upperCompareResult < 0;
+  }
+
+  private boolean includeWithinRangeInclusive(final Comparable<T> comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }
@@ -503,6 +542,29 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     }
 
     if (getLowerBound() == null) {
+      return comparable.compareTo(getUpperBound()) > 0;
+    }
+
+    if (getUpperBound() == null) {
+      return comparable.compareTo(getLowerBound()) < 0;
+    }
+
+    final int lowerCompareResult = comparable.compareTo(getLowerBound());
+    final int upperCompareResult = comparable.compareTo(getUpperBound());
+
+    return lowerCompareResult < 0 || upperCompareResult > 0;
+  }
+
+  private boolean includeOutsideRangeInclusive(final Comparable<T> comparable) {
+    if (getLowerBound() == null && getUpperBound() == null) {
+      return true;
+    }
+
+    if (comparable == null) {
+      return false;
+    }
+
+    if (getLowerBound() == null) {
       return comparable.compareTo(getUpperBound()) >= 0;
     }
 
@@ -518,7 +580,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   private String addWildcard(final String value) {
     //only use wildcard for EQUAL_TO and NOT_EQUAL_TO
-    if (operatorValue.get().equals(Operator.EQUALS) || operatorValue.get().equals(Operator.NOT_EQUALS)) {
+    if (operatorValue.get().equals(Operator.EQUAL) || operatorValue.get().equals(Operator.NOT_EQUAL)) {
       switch (automaticWildcard) {
         case PREFIX_AND_POSTFIX:
           return wildcard + value + wildcard;
@@ -570,7 +632,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     @Override
     public void onEvent() {
       if (autoEnable) {
-        if (operatorValue.get().equals(Operator.EQUALS) || operatorValue.get().equals(Operator.NOT_EQUALS)) {
+        if (operatorValue.get().equals(Operator.EQUAL) || operatorValue.get().equals(Operator.NOT_EQUAL)) {
           setEnabled(!equalsValues.get().isEmpty());
         }
         else {

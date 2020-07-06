@@ -52,22 +52,42 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> lessThan(final T value) {
-    return new DefaultAttributeLessThanCondition<>(attribute, value);
+    return new DefaultAttributeLessThanCondition<>(attribute, value, false);
+  }
+
+  @Override
+  public AttributeCondition<T> lessThanOrEqualTo(final T value) {
+    return new DefaultAttributeLessThanCondition<>(attribute, value, true);
   }
 
   @Override
   public AttributeCondition<T> greaterThan(final T value) {
-    return new DefaultAttributeGreaterThanCondition<>(attribute, value);
+    return new DefaultAttributeGreaterThanCondition<>(attribute, value, false);
+  }
+
+  @Override
+  public AttributeCondition<T> greaterThanOrEqualTo(final T value) {
+    return new DefaultAttributeGreaterThanCondition<>(attribute, value, true);
   }
 
   @Override
   public AttributeCondition<T> withinRange(final T lowerBound, final T upperBound) {
-    return new DefaultAttributeWithinRangeCondition<>(attribute, lowerBound, upperBound);
+    return new DefaultAttributeWithinRangeCondition<>(attribute, lowerBound, upperBound, false);
+  }
+
+  @Override
+  public AttributeCondition<T> withinRangeInclusive(final T lowerBound, final T upperBound) {
+    return new DefaultAttributeWithinRangeCondition<>(attribute, lowerBound, upperBound, true);
   }
 
   @Override
   public AttributeCondition<T> outsideRange(final T lowerBound, final T upperBound) {
-    return new DefaultAttributeOutsideRangeCondition<>(attribute, lowerBound, upperBound);
+    return new DefaultAttributeOutsideRangeCondition<>(attribute, lowerBound, upperBound, false);
+  }
+
+  @Override
+  public AttributeCondition<T> outsideRangeInclusive(final T lowerBound, final T upperBound) {
+    return new DefaultAttributeOutsideRangeCondition<>(attribute, lowerBound, upperBound, true);
   }
 
   @Override

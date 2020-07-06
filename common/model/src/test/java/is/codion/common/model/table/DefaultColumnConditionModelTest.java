@@ -78,7 +78,7 @@ public class DefaultColumnConditionModelTest {
     final ColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     assertEquals("test", model.getColumnIdentifier());
 
-    model.setOperator(Operator.EQUALS);
+    model.setOperator(Operator.EQUAL);
     model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
     model.setEqualsValue("upper");
     assertEquals("%upper%", model.getEqualsValue());
@@ -88,16 +88,16 @@ public class DefaultColumnConditionModelTest {
   public void testOperator() {
     final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.addOperatorListener(operatorListener);
-    assertEquals(Operator.EQUALS, model.getOperator());
-    model.setOperator(Operator.LESS_THAN);
+    assertEquals(Operator.EQUAL, model.getOperator());
+    model.setOperator(Operator.LESS_THAN_OR_EQUAL);
     assertEquals(1, operatorCounter.get());
-    assertEquals(Operator.LESS_THAN, model.getOperator());
+    assertEquals(Operator.LESS_THAN_OR_EQUAL, model.getOperator());
     try {
       model.setOperator(null);
       fail();
     }
     catch (final NullPointerException ignored) {/*ignored*/}
-    model.setOperator(Operator.OUTSIDE_RANGE);
+    model.setOperator(Operator.OUTSIDE_RANGE_INCLUSIVE);
     assertEquals(2, operatorCounter.get());
     model.removeOperatorListener(operatorListener);
   }
@@ -158,49 +158,71 @@ public class DefaultColumnConditionModelTest {
   public void setOperatorLocked() {
     final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     model.setLocked(true);
-    assertThrows(IllegalStateException.class, () -> model.setOperator(Operator.NOT_EQUALS));
+    assertThrows(IllegalStateException.class, () -> model.setOperator(Operator.NOT_EQUAL));
   }
 
   @Test
   public void include() {
     final DefaultColumnConditionModel<String, String, Integer> conditionModel = new DefaultColumnConditionModel<>("test", Integer.class, "%");
     conditionModel.setEqualsValue(10);
-    conditionModel.setOperator(Operator.EQUALS);
+    conditionModel.setOperator(Operator.EQUAL);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
 
-    conditionModel.setOperator(Operator.NOT_EQUALS);
+    conditionModel.setOperator(Operator.NOT_EQUAL);
     assertTrue(conditionModel.include(9));
     assertFalse(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
 
     conditionModel.setLowerBound(10);
-    conditionModel.setOperator(Operator.GREATER_THAN);
+    conditionModel.setOperator(Operator.GREATER_THAN_OR_EQUAL);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
+    conditionModel.setOperator(Operator.GREATER_THAN);
+    assertFalse(conditionModel.include(9));
+    assertFalse(conditionModel.include(10));
+    assertTrue(conditionModel.include(11));
 
     conditionModel.setUpperBound(10);
-    conditionModel.setOperator(Operator.LESS_THAN);
+    conditionModel.setOperator(Operator.LESS_THAN_OR_EQUAL);
     assertTrue(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
+    conditionModel.setOperator(Operator.LESS_THAN);
+    assertTrue(conditionModel.include(9));
+    assertFalse(conditionModel.include(10));
+    assertFalse(conditionModel.include(11));
 
-    conditionModel.setOperator(Operator.WITHIN_RANGE);
     conditionModel.setLowerBound(6);
+    conditionModel.setOperator(Operator.WITHIN_RANGE_INCLUSIVE);
     assertTrue(conditionModel.include(6));
     assertTrue(conditionModel.include(7));
     assertTrue(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
     assertFalse(conditionModel.include(5));
+    conditionModel.setOperator(Operator.WITHIN_RANGE);
+    assertFalse(conditionModel.include(6));
+    assertTrue(conditionModel.include(7));
+    assertTrue(conditionModel.include(9));
+    assertFalse(conditionModel.include(10));
+    assertFalse(conditionModel.include(11));
+    assertFalse(conditionModel.include(5));
 
-    conditionModel.setOperator(Operator.OUTSIDE_RANGE);
+    conditionModel.setOperator(Operator.OUTSIDE_RANGE_INCLUSIVE);
     assertTrue(conditionModel.include(6));
     assertFalse(conditionModel.include(7));
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
+    assertTrue(conditionModel.include(11));
+    assertTrue(conditionModel.include(5));
+    conditionModel.setOperator(Operator.OUTSIDE_RANGE);
+    assertFalse(conditionModel.include(6));
+    assertFalse(conditionModel.include(7));
+    assertFalse(conditionModel.include(9));
+    assertFalse(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
     assertTrue(conditionModel.include(5));
 

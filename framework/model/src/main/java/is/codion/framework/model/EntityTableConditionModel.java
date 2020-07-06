@@ -131,6 +131,7 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given attribute.
+   * @param <T> the column value type
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} associated with {@code attribute}
    * @throws IllegalArgumentException in case no condition model is found
@@ -140,7 +141,7 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * Clears the search state of all {@link ColumnConditionModel}, disables them and
-   * resets the operator to {@link Operator#EQUALS}
+   * resets the operator to {@link Operator#EQUAL}
    */
   void clearConditionModels();
 
@@ -151,6 +152,7 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * The filter model associated with {@code attribute}
+   * @param <T> the column value type
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} for the {@code attribute}, null if none is found
    */
@@ -160,7 +162,7 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param attribute column attribute
    * @return true if the filter model behind column with index {@code columnIndex} is enabled
    */
-  <T> boolean isFilterEnabled(Attribute<T> attribute);
+  boolean isFilterEnabled(Attribute<?> attribute);
 
   /**
    * @return the text used when performing a simple search

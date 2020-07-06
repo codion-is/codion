@@ -135,7 +135,6 @@ public interface ColumnProperty<T> extends Property<T> {
    * Converts to and from SQL values, such as integers being used to represent booleans in a database.
    * @param <T> the type of the value
    * @param <C> the type of the underlying column
-   * @see Builder#columnClass(Class, ValueConverter)
    */
   interface ValueConverter<T, C> {
 

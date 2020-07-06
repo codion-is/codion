@@ -16,6 +16,7 @@ public interface ConditionModelFactory {
 
   /**
    * Initializes a {@link ColumnConditionModel} for the given property
+   * @param <T> the column value type
    * @param property the Property for which to create a {@link ColumnConditionModel}
    * @return a {@link ColumnConditionModel} for the given property, null if searching
    * should not be allowed for this property

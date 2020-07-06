@@ -84,7 +84,7 @@ public class DefaultEntityTableConditionModelTest {
     final ColumnConditionModel<?, ?, Double> propertyConditionModel = conditionModel.getFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
-    assertEquals(Operator.EQUALS, propertyConditionModel.getOperator());
+    assertEquals(Operator.EQUAL, propertyConditionModel.getOperator());
     assertEquals(1400d, propertyConditionModel.getEqualsValue());
   }
 
@@ -135,7 +135,7 @@ public class DefaultEntityTableConditionModelTest {
     assertEquals(1, counter.get());
     conditionModel.getConditionModel(TestDomain.EMP_COMMISSION).setEnabled(false);
     assertEquals(2, counter.get());
-    conditionModel.getConditionModel(TestDomain.EMP_COMMISSION).setOperator(Operator.GREATER_THAN);
+    conditionModel.getConditionModel(TestDomain.EMP_COMMISSION).setOperator(Operator.GREATER_THAN_OR_EQUAL);
     conditionModel.getConditionModel(TestDomain.EMP_COMMISSION).setUpperBound(1200d);
     //automatically set enabled when upper bound is set
     assertEquals(3, counter.get());

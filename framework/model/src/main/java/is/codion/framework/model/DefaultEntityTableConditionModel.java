@@ -161,8 +161,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <T> boolean isFilterEnabled(final Attribute<T> attribute) {
-    final ColumnConditionModel<Entity, Property<T>, T> propertyFilterModel = getFilterModel(attribute);
+  public boolean isFilterEnabled(final Attribute<?> attribute) {
+    final ColumnConditionModel<Entity, ?, ?> propertyFilterModel = getFilterModel(attribute);
 
     return propertyFilterModel != null && propertyFilterModel.isEnabled();
   }
@@ -172,7 +172,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final String conditionsString = getConditionsString();
     if (containsConditionModel(attribute)) {
       final ColumnConditionModel<?, ?, T> conditionModel = getConditionModel(attribute);
-      conditionModel.setOperator(Operator.EQUALS);
+      conditionModel.setOperator(Operator.EQUAL);
       conditionModel.setEnabled(!Util.nullOrEmpty(values));
       conditionModel.setEqualsValues(null);//because the upperBound could be a reference to the active entity which changes accordingly
       conditionModel.setEqualsValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
@@ -309,7 +309,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       conditionModel.setCaseSensitive(false);
       conditionModel.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
       conditionModel.setUpperBound(searchString);
-      conditionModel.setOperator(Operator.EQUALS);
+      conditionModel.setOperator(Operator.EQUAL);
       conditionModel.setEnabled(true);
     }
   }
@@ -362,7 +362,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final AttributeCondition.Builder<T> builder = Conditions.condition(((Property<T>) conditionModel.getColumnIdentifier()).getAttribute());
     final AttributeCondition<T> condition;
     switch (conditionModel.getOperator()) {
-      case EQUALS:
+      case EQUAL:
         if (equalToValues.isEmpty()) {
           condition = builder.isNull();
         }
@@ -373,7 +373,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
           condition.setCaseSensitive(conditionModel.isCaseSensitive());
         }
         break;
-      case NOT_EQUALS:
+      case NOT_EQUAL:
         if (equalToValues.isEmpty()) {
           condition = builder.isNotNull();
         }
@@ -387,14 +387,26 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       case LESS_THAN:
         condition = builder.lessThan(conditionModel.getUpperBound());
         break;
+      case LESS_THAN_OR_EQUAL:
+        condition = builder.lessThanOrEqualTo(conditionModel.getUpperBound());
+        break;
       case GREATER_THAN:
         condition = builder.greaterThan(conditionModel.getUpperBound());
+        break;
+      case GREATER_THAN_OR_EQUAL:
+        condition = builder.greaterThanOrEqualTo(conditionModel.getUpperBound());
         break;
       case WITHIN_RANGE:
         condition = builder.withinRange(conditionModel.getLowerBound(), conditionModel.getUpperBound());
         break;
+      case WITHIN_RANGE_INCLUSIVE:
+        condition = builder.withinRangeInclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+        break;
       case OUTSIDE_RANGE:
         condition = builder.outsideRange(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+        break;
+      case OUTSIDE_RANGE_INCLUSIVE:
+        condition = builder.outsideRangeInclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
         break;
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
