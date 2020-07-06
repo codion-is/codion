@@ -133,22 +133,22 @@ public interface ColumnConditionModel<R, K, T> {
    * Sets the values used when the {@link Operator#EQUAL} is enabled.
    * @param value the value to use as condition
    */
-  void setEqualsValue(T value);
+  void setEqualValue(T value);
 
   /**
-   * @return the equals value, possibly null
+   * @return the equal value, possibly null
    */
-  T getEqualsValue();
+  T getEqualValue();
 
   /**
    * @param values the values to set
    */
-  void setEqualsValues(Collection<T> values);
+  void setEqualValues(Collection<T> values);
 
   /**
-   * @return the equals values, never null
+   * @return the equal values, never null
    */
-  Collection<T> getEqualsValues();
+  Collection<T> getEqualValues();
 
   /**
    * @param upper the new upper bound
@@ -210,7 +210,7 @@ public interface ColumnConditionModel<R, K, T> {
   /**
    * @return a ValueSet based on the equals values of this condition model
    */
-  ValueSet<T> getEqualsValueSet();
+  ValueSet<T> getEqualValueSet();
 
   /**
    * @return a Value based on the upper bound value of this condition model

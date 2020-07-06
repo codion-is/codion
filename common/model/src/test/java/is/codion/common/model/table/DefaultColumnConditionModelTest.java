@@ -59,9 +59,9 @@ public class DefaultColumnConditionModelTest {
     assertEquals("%hello%", model.getLowerBound());
     model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.NONE);
 
-    model.setEqualsValue("test");
+    model.setEqualValue("test");
     assertEquals(1, equalToCounter.get());
-    assertEquals("test", model.getEqualsValue());
+    assertEquals("test", model.getEqualValue());
 
     model.clearCondition();
     assertEquals(1, clearCounter.get());
@@ -80,8 +80,8 @@ public class DefaultColumnConditionModelTest {
 
     model.setOperator(Operator.EQUAL);
     model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
-    model.setEqualsValue("upper");
-    assertEquals("%upper%", model.getEqualsValue());
+    model.setEqualValue("upper");
+    assertEquals("%upper%", model.getEqualValue());
   }
 
   @Test
@@ -106,7 +106,7 @@ public class DefaultColumnConditionModelTest {
   public void test() throws Exception {
     final DefaultColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>("test", String.class, "%");
     assertTrue(model.isAutoEnable());
-    model.setEqualsValue("test");
+    model.setEqualValue("test");
     assertTrue(model.isEnabled());
     model.setCaseSensitive(false);
     assertFalse(model.isCaseSensitive());
@@ -164,7 +164,7 @@ public class DefaultColumnConditionModelTest {
   @Test
   public void include() {
     final DefaultColumnConditionModel<String, String, Integer> conditionModel = new DefaultColumnConditionModel<>("test", Integer.class, "%");
-    conditionModel.setEqualsValue(10);
+    conditionModel.setEqualValue(10);
     conditionModel.setOperator(Operator.EQUAL);
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
@@ -237,8 +237,8 @@ public class DefaultColumnConditionModelTest {
     final DefaultColumnConditionModel<String, String, String> conditionModel = new DefaultColumnConditionModel<>("test", String.class, "%");
 
     final Collection<String> strings = asList("abc", "def");
-    conditionModel.setEqualsValues(strings);
+    conditionModel.setEqualValues(strings);
 
-    assertTrue(conditionModel.getEqualsValues().containsAll(strings));
+    assertTrue(conditionModel.getEqualValues().containsAll(strings));
   }
 }

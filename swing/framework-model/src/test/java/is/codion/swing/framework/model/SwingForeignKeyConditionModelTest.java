@@ -52,23 +52,23 @@ public class SwingForeignKeyConditionModelTest {
             DOMAIN.getEntities().getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK), comboBoxModel);
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     comboBoxModel.setSelectedItem(sales);
-    Collection<Entity> searchEntities = conditionModel.getEqualsValues();
+    Collection<Entity> searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     comboBoxModel.refresh();
     assertEquals(sales, comboBoxModel.getSelectedValue());
-    searchEntities = conditionModel.getEqualsValues();
+    searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
 
-    conditionModel.setEqualsValue(null);
+    conditionModel.setEqualValue(null);
     assertNull(comboBoxModel.getSelectedItem());
-    conditionModel.setEqualsValue(sales);
+    conditionModel.setEqualValue(sales);
     assertEquals(comboBoxModel.getSelectedItem(), sales);
 
     comboBoxModel.setSelectedItem(null);
 
-    searchEntities = conditionModel.getEqualsValues();
+    searchEntities = conditionModel.getEqualValues();
     assertTrue(searchEntities.isEmpty());
   }
 }

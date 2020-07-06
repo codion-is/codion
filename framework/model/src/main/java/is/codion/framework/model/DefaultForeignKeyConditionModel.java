@@ -64,8 +64,8 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
     entityLookupModel.addSelectedEntitiesListener(selectedEntities -> {
       try {
         setUpdatingModel(true);
-        setEqualsValues(null);//todo this is a hack, otherwise super.conditionChangedEvent doesn't get triggered
-        setEqualsValues(selectedEntities);
+        setEqualValues(null);//todo this is a hack, otherwise super.conditionChangedEvent doesn't get triggered
+        setEqualValues(selectedEntities);
       }
       finally {
         setUpdatingModel(false);
@@ -73,7 +73,7 @@ public class DefaultForeignKeyConditionModel extends DefaultColumnConditionModel
     });
     addEqualsValueListener(() -> {
       if (!isUpdatingModel()) {
-        entityLookupModel.setSelectedEntities(new ArrayList<>(getEqualsValues()));
+        entityLookupModel.setSelectedEntities(new ArrayList<>(getEqualValues()));
       }
     });
   }

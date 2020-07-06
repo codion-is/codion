@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionModel<R, K, T> {
 
-  private final ValueSet<T> equalsValues = Values.valueSet();
+  private final ValueSet<T> equalValues = Values.valueSet();
   private final Value<T> upperBoundValue = Values.value();
   private final Value<T> lowerBoundValue = Values.value();
   private final Value<Operator> operatorValue = Values.value(Operator.EQUAL);
@@ -138,23 +138,23 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   @Override
-  public final void setEqualsValue(final T value) {
-    equalsValues.set(value == null ? Collections.emptySet() : Collections.singleton(value));
+  public final void setEqualValue(final T value) {
+    equalValues.set(value == null ? Collections.emptySet() : Collections.singleton(value));
   }
 
   @Override
-  public T getEqualsValue() {
-    return getBoundValue(equalsValues.get().isEmpty() ? null : equalsValues.get().iterator().next());
+  public T getEqualValue() {
+    return getBoundValue(equalValues.get().isEmpty() ? null : equalValues.get().iterator().next());
   }
 
   @Override
-  public void setEqualsValues(final Collection<T> values) {
-    equalsValues.set(values == null ? Collections.emptySet() : new HashSet<>(values));
+  public void setEqualValues(final Collection<T> values) {
+    equalValues.set(values == null ? Collections.emptySet() : new HashSet<>(values));
   }
 
   @Override
-  public Collection<T> getEqualsValues() {
-    return equalsValues.get();
+  public Collection<T> getEqualValues() {
+    return equalValues.get();
   }
 
   @Override
@@ -242,7 +242,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   @Override
   public final void clearCondition() {
     setEnabled(false);
-    setEqualsValues(null);
+    setEqualValues(null);
     setUpperBound(null);
     setLowerBound(null);
     setOperator(Operator.EQUAL);
@@ -255,8 +255,8 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   @Override
-  public ValueSet<T> getEqualsValueSet() {
-    return equalsValues;
+  public ValueSet<T> getEqualValueSet() {
+    return equalValues;
   }
 
   @Override
@@ -286,12 +286,12 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   @Override
   public void addEqualsValueListener(final EventListener listener) {
-    equalsValues.addListener(listener);
+    equalValues.addListener(listener);
   }
 
   @Override
   public void removeEqualsValueListener(final EventListener listener) {
-    equalsValues.removeListener(listener);
+    equalValues.removeListener(listener);
   }
 
   @Override
@@ -412,9 +412,9 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   private boolean includeEqual(final Comparable<T> comparable) {
     if (comparable == null) {
-      return this.getEqualsValue() == null;
+      return this.getEqualValue() == null;
     }
-    if (this.getEqualsValue() == null) {
+    if (this.getEqualValue() == null) {
       return comparable == null;
     }
 
@@ -422,14 +422,14 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
       return includeExactWildcard((String) comparable);
     }
 
-    return comparable.compareTo(this.getEqualsValue()) == 0;
+    return comparable.compareTo(this.getEqualValue()) == 0;
   }
 
   private boolean includeNotEqual(final Comparable<T> comparable) {
     if (comparable == null) {
-      return this.getEqualsValue() != null;
+      return this.getEqualValue() != null;
     }
-    if (this.getEqualsValue() == null) {
+    if (this.getEqualValue() == null) {
       return comparable != null;
     }
 
@@ -437,11 +437,11 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
       return !includeExactWildcard((String) comparable);
     }
 
-    return comparable.compareTo(this.getEqualsValue()) != 0;
+    return comparable.compareTo(this.getEqualValue()) != 0;
   }
 
   private boolean includeExactWildcard(final String value) {
-    String equalsValue = (String) getEqualsValue();
+    String equalsValue = (String) getEqualValue();
     if (equalsValue == null) {
       equalsValue = "";
     }
@@ -598,10 +598,10 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   private void bindEvents() {
     final EventListener autoEnableListener = new AutoEnableListener();
-    equalsValues.addListener(autoEnableListener);
+    equalValues.addListener(autoEnableListener);
     upperBoundValue.addListener(autoEnableListener);
     lowerBoundValue.addListener(autoEnableListener);
-    equalsValues.addListener(conditionChangedEvent);
+    equalValues.addListener(conditionChangedEvent);
     upperBoundValue.addListener(conditionChangedEvent);
     lowerBoundValue.addListener(conditionChangedEvent);
     operatorValue.addListener(conditionChangedEvent);
@@ -633,7 +633,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     public void onEvent() {
       if (autoEnable) {
         if (operatorValue.get().equals(Operator.EQUAL) || operatorValue.get().equals(Operator.NOT_EQUAL)) {
-          setEnabled(!equalsValues.get().isEmpty());
+          setEnabled(!equalValues.get().isEmpty());
         }
         else {
           final boolean upperBoundNull = upperBoundValue.get() == null;

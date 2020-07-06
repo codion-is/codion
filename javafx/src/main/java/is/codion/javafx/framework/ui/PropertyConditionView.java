@@ -122,7 +122,7 @@ public final class PropertyConditionView<T> extends BorderPane {
   private Control createEqualsValueControl() {
     final Control control = createControl();
     if (!(control instanceof EntityLookupField)) {
-      final ValueSet<T> valueSet = model.getEqualsValueSet();
+      final ValueSet<T> valueSet = model.getEqualValueSet();
       final Value<T> value = Values.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
 

@@ -174,8 +174,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       final ColumnConditionModel<?, ?, T> conditionModel = getConditionModel(attribute);
       conditionModel.setOperator(Operator.EQUAL);
       conditionModel.setEnabled(!Util.nullOrEmpty(values));
-      conditionModel.setEqualsValues(null);//because the upperBound could be a reference to the active entity which changes accordingly
-      conditionModel.setEqualsValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
+      conditionModel.setEqualValues(null);//because the upperBound could be a reference to the active entity which changes accordingly
+      conditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
     }
     return !conditionsString.equals(getConditionsString());
   }
@@ -184,7 +184,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   public <T> void setEqualsFilterValue(final Attribute<T> attribute, final Comparable<T> value) {
     final ColumnConditionModel<Entity, Property<T>, T> filterModel = getFilterModel(attribute);
     if (filterModel != null) {
-      filterModel.setEqualsValue((T) value);
+      filterModel.setEqualValue((T) value);
     }
   }
 
@@ -358,7 +358,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   private static <T> AttributeCondition<T> getCondition(final ColumnConditionModel<Entity, ?, T> conditionModel) {
-    final Collection<T> equalToValues = conditionModel.getEqualsValues();
+    final Collection<T> equalToValues = conditionModel.getEqualValues();
     final AttributeCondition.Builder<T> builder = Conditions.condition(((Property<T>) conditionModel.getColumnIdentifier()).getAttribute());
     final AttributeCondition<T> condition;
     switch (conditionModel.getOperator()) {
@@ -419,7 +419,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final StringBuilder stringBuilder = new StringBuilder(((Property<?>) conditionModel.getColumnIdentifier()).getAttribute().getName());
     if (conditionModel.isEnabled()) {
       stringBuilder.append(conditionModel.getOperator());
-      stringBuilder.append(boundToString(conditionModel.getEqualsValues()));
+      stringBuilder.append(boundToString(conditionModel.getEqualValues()));
       stringBuilder.append(boundToString(conditionModel.getUpperBound()));
       stringBuilder.append(boundToString(conditionModel.getLowerBound()));
     }

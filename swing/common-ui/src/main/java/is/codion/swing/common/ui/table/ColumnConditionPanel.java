@@ -101,7 +101,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   private final JToggleButton toggleEnabledButton;
   private final JToggleButton toggleAdvancedButton;
   private final SteppedComboBox<Operator> operatorCombo;
-  private final JComponent equalToField;
+  private final JComponent equalField;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
 
@@ -141,19 +141,19 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
    * Instantiates a new ColumnConditionPanel, with a default input field provider.
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
-   * @param equalToField the equal to value field
+   * @param equalField the equal value field
    * @param upperBoundField the upper bound input field
    * @param lowerBoundField the lower bound input field
    * @param operators the search operators available to this condition panel
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel,
-                              final ToggleAdvancedButton toggleAdvancedButton, final JComponent equalToField,
+                              final ToggleAdvancedButton toggleAdvancedButton, final JComponent equalField,
                               final JComponent upperBoundField, final JComponent lowerBoundField, final Operator... operators) {
     requireNonNull(conditionModel, "conditionModel");
     this.conditionModel = conditionModel;
     this.operators = operators == null ? asList(Operator.values()) : asList(operators);
     this.operatorCombo = initializeOperatorComboBox();
-    this.equalToField = equalToField;
+    this.equalField = equalField;
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
     this.toggleEnabledButton = ControlProvider.createToggleButton(
@@ -275,7 +275,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     switch (conditionModel.getOperator()) {
       case EQUAL:
       case NOT_EQUAL:
-        equalToField.requestFocusInWindow();
+        equalField.requestFocusInWindow();
         break;
       case GREATER_THAN:
       case GREATER_THAN_OR_EQUAL:
@@ -374,7 +374,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     }
 
     public JComponent initializeEqualsValueField() {
-      final ValueSet<T> valueSet = columnConditionModel.getEqualsValueSet();
+      final ValueSet<T> valueSet = columnConditionModel.getEqualValueSet();
       final Value<T> value = Values.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
 
@@ -482,8 +482,8 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
       }
     };
     operatorCombo.addFocusListener(focusGainedListener);
-    if (equalToField != null) {
-      equalToField.addFocusListener(focusGainedListener);
+    if (equalField != null) {
+      equalField.addFocusListener(focusGainedListener);
     }
     if (upperBoundField != null) {
       upperBoundField.addFocusListener(focusGainedListener);
@@ -557,14 +557,14 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   private JPanel initializeInputPanel() {
     switch (conditionModel.getOperator()) {
       case EQUAL:
-      case NOT_EQUAL: return singleValuePanel(equalToField);
-      case GREATER_THAN:;
+      case NOT_EQUAL: return singleValuePanel(equalField);
+      case GREATER_THAN:
       case GREATER_THAN_OR_EQUAL: return singleValuePanel(lowerBoundField);
       case LESS_THAN:
       case LESS_THAN_OR_EQUAL: return singleValuePanel(upperBoundField);
       case WITHIN_RANGE:
       case WITHIN_RANGE_INCLUSIVE:
-      case OUTSIDE_RANGE:;
+      case OUTSIDE_RANGE:
       case OUTSIDE_RANGE_INCLUSIVE: return rangePanel();
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
@@ -605,7 +605,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
 
   private void linkComponentsToLockedState() {
     Components.linkToEnabledState(conditionModel.getLockedObserver().getReversedObserver(),
-            operatorCombo, equalToField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
+            operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
   }
 
   private void initializeConditionDialog(final Container parent) {
