@@ -48,7 +48,7 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
   private void bindComboBoxEvents() {
     entityComboBoxModel.addSelectionListener(selected -> {
       if (!isUpdatingModel()) {
-        setEqualsValue(selected);
+        setEqualValue(selected);
       }
     });
     addEqualsValueListener(() -> {
@@ -65,7 +65,7 @@ public final class SwingForeignKeyConditionModel extends DefaultForeignKeyCondit
   }
 
   private void setEqualsValueAsSelected() {
-    final Collection<Entity> equalsValues = getEqualsValues();
+    final Collection<Entity> equalsValues = getEqualValues();
     entityComboBoxModel.setSelectedItem(equalsValues.isEmpty() ? null : equalsValues.iterator().next());
   }
 }

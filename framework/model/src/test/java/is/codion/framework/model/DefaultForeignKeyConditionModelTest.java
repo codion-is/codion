@@ -39,28 +39,28 @@ public class DefaultForeignKeyConditionModelTest {
             entities.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK), lookupModel);
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     lookupModel.setSelectedEntity(sales);
-    Collection<Entity> searchEntities = conditionModel.getEqualsValues();
+    Collection<Entity> searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     final List<Entity> salesAccounting = asList(sales, accounting);
     lookupModel.setSelectedEntities(salesAccounting);
-    assertTrue(conditionModel.getEqualsValues().contains(sales));
-    assertTrue(conditionModel.getEqualsValues().contains(accounting));
-    searchEntities = conditionModel.getEqualsValues();
+    assertTrue(conditionModel.getEqualValues().contains(sales));
+    assertTrue(conditionModel.getEqualValues().contains(accounting));
+    searchEntities = conditionModel.getEqualValues();
     assertEquals(2, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     assertTrue(searchEntities.contains(accounting));
 
-    conditionModel.setEqualsValue(null);
+    conditionModel.setEqualValue(null);
     assertTrue(lookupModel.getSelectedEntities().isEmpty());
-    conditionModel.setEqualsValue(sales);
+    conditionModel.setEqualValue(sales);
     assertEquals(lookupModel.getSelectedEntities().iterator().next(), sales);
-    assertTrue(conditionModel.getEqualsValues().contains(sales));
+    assertTrue(conditionModel.getEqualValues().contains(sales));
 
     lookupModel.setSelectedEntity(null);
 
-    searchEntities = conditionModel.getEqualsValues();
+    searchEntities = conditionModel.getEqualValues();
     assertTrue(searchEntities.isEmpty());
 
     conditionModel.refresh();

@@ -85,7 +85,7 @@ public class DefaultEntityTableConditionModelTest {
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
     assertEquals(Operator.EQUAL, propertyConditionModel.getOperator());
-    assertEquals(1400d, propertyConditionModel.getEqualsValue());
+    assertEquals(1400d, propertyConditionModel.getEqualValue());
   }
 
   @Test
@@ -96,8 +96,8 @@ public class DefaultEntityTableConditionModelTest {
     boolean searchStateChanged = conditionModel.setEqualsConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     assertTrue(searchStateChanged);
     assertTrue(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
-    assertTrue(conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK).getEqualsValues().contains(sales));
-    assertTrue(conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK).getEqualsValues().contains(accounting));
+    assertTrue(conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK).getEqualValues().contains(sales));
+    assertTrue(conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK).getEqualValues().contains(accounting));
     searchStateChanged = conditionModel.setEqualsConditionValues(TestDomain.EMP_DEPARTMENT_FK, null);
     assertTrue(searchStateChanged);
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
@@ -121,7 +121,7 @@ public class DefaultEntityTableConditionModelTest {
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
     conditionModel.setEqualsConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     final ColumnConditionModel<?, ?, String> nameConditionModel = conditionModel.getConditionModel(TestDomain.EMP_NAME);
-    nameConditionModel.setEqualsValue("SCOTT");
+    nameConditionModel.setEqualValue("SCOTT");
     conditionModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_2_TYPE));
     assertNotNull(conditionModel.getAdditionalConditionProvider());
   }
@@ -146,7 +146,7 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   public void testSearchState() {
     assertFalse(conditionModel.hasConditionChanged());
-    conditionModel.getConditionModel(TestDomain.EMP_JOB).setEqualsValue("job");
+    conditionModel.getConditionModel(TestDomain.EMP_JOB).setEqualValue("job");
     assertTrue(conditionModel.hasConditionChanged());
     conditionModel.getConditionModel(TestDomain.EMP_JOB).setEnabled(false);
     assertFalse(conditionModel.hasConditionChanged());
