@@ -33,7 +33,7 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
   }
 
   DefaultAttributeEqualCondition(final Attribute<T> attribute, final Collection<? extends T> conditionValues, final boolean negated) {
-    super(attribute, negated ? Operator.NOT_EQUALS : Operator.EQUALS);
+    super(attribute, negated ? Operator.NOT_EQUAL : Operator.EQUAL);
     this.values = new ArrayList<>(requireNonNull(conditionValues));
     this.negated = negated;
     //replace Entity with Entity.Key

@@ -18,8 +18,9 @@ final class DefaultAttributeOutsideRangeCondition<T> extends AbstractAttributeCo
   private final T lowerBound;
   private final T upperBound;
 
-  DefaultAttributeOutsideRangeCondition(final Attribute<T> attribute, final T lowerBound, final T upperBound) {
-    super(attribute, Operator.WITHIN_RANGE);
+  DefaultAttributeOutsideRangeCondition(final Attribute<T> attribute, final T lowerBound, final T upperBound,
+                                        final boolean inclusive) {
+    super(attribute, inclusive ? Operator.OUTSIDE_RANGE_INCLUSIVE : Operator.OUTSIDE_RANGE);
     this.lowerBound = requireNonNull(lowerBound);
     this.upperBound = requireNonNull(upperBound);
   }
@@ -36,6 +37,8 @@ final class DefaultAttributeOutsideRangeCondition<T> extends AbstractAttributeCo
 
   @Override
   protected String getWhereClause(final String columnIdentifier) {
-    return "(" + columnIdentifier + " <= ? or " + columnIdentifier + " >= ?)";
+    return getOperator() == Operator.OUTSIDE_RANGE_INCLUSIVE ?
+            "(" + columnIdentifier + " <= ? or " + columnIdentifier + " >= ?)" :
+            "(" + columnIdentifier + " < ? or " + columnIdentifier + " > ?)";
   }
 }

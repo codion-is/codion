@@ -47,18 +47,26 @@ final class AttributeConditionDeserializer implements Serializable {
     final Attribute<T> attribute = (Attribute<T>) definition.getEntityType().objectAttribute(conditionNode.get("attribute").asText());
     final AttributeCondition.Builder<T> builder = Conditions.condition(attribute);
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
-      case EQUALS:
+      case EQUAL:
         return builder.equalTo(values);
-      case NOT_EQUALS:
+      case NOT_EQUAL:
         return builder.notEqualTo(values);
       case LESS_THAN:
         return builder.lessThan(values.get(0));
+      case LESS_THAN_OR_EQUAL:
+        return builder.lessThanOrEqualTo(values.get(0));
       case GREATER_THAN:
         return builder.greaterThan(values.get(0));
+      case GREATER_THAN_OR_EQUAL:
+        return builder.greaterThanOrEqualTo(values.get(0));
       case WITHIN_RANGE:
         return builder.withinRange(values.get(0), values.get(1));
+      case WITHIN_RANGE_INCLUSIVE:
+        return builder.withinRangeInclusive(values.get(0), values.get(1));
       case OUTSIDE_RANGE:
         return builder.outsideRange(values.get(0), values.get(1));
+      case OUTSIDE_RANGE_INCLUSIVE:
+        return builder.outsideRangeInclusive(values.get(0), values.get(1));
       default:
         throw new IllegalArgumentException("Unknown operator: " + Operator.valueOf(conditionNode.get("operator").asText()));
     }

@@ -87,11 +87,25 @@ public interface AttributeCondition<T> extends Condition {
     AttributeCondition<T> lessThan(T value);
 
     /**
+     * Returns a 'lessThanOrEquals' {@link AttributeCondition}.
+     * @param value the value to use in the condition
+     * @return a {@link AttributeCondition}
+     */
+    AttributeCondition<T> lessThanOrEqualTo(T value);
+
+    /**
      * Returns a 'greaterThan' {@link AttributeCondition}.
      * @param value the value to use in the condition
      * @return a {@link AttributeCondition}
      */
     AttributeCondition<T> greaterThan(T value);
+
+    /**
+     * Returns a 'greaterThanOrEquals' {@link AttributeCondition}.
+     * @param value the value to use in the condition
+     * @return a {@link AttributeCondition}
+     */
+    AttributeCondition<T> greaterThanOrEqualTo(T value);
 
     /**
      * Returns a 'withinRange' {@link AttributeCondition}.
@@ -102,12 +116,28 @@ public interface AttributeCondition<T> extends Condition {
     AttributeCondition<T> withinRange(T lowerBound, T upperBound);
 
     /**
+     * Returns a 'withinRangeInclusive' {@link AttributeCondition}.
+     * @param lowerBound the lower bound
+     * @param upperBound the upper bound
+     * @return a {@link AttributeCondition}
+     */
+    AttributeCondition<T> withinRangeInclusive(T lowerBound, T upperBound);
+
+    /**
      * Returns a 'outsideRange' {@link AttributeCondition}.
      * @param lowerBound the lower bound
      * @param upperBound the upper bound
      * @return a {@link AttributeCondition}
      */
     AttributeCondition<T> outsideRange(T lowerBound, T upperBound);
+
+    /**
+     * Returns a 'outsideRangeInclusive' {@link AttributeCondition}.
+     * @param lowerBound the lower bound
+     * @param upperBound the upper bound
+     * @return a {@link AttributeCondition}
+     */
+    AttributeCondition<T> outsideRangeInclusive(T lowerBound, T upperBound);
 
     /**
      * Returns a 'isNull' {@link AttributeCondition}.

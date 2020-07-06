@@ -10,14 +10,16 @@ import java.util.ResourceBundle;
  */
 public enum Operator {
 
-  EQUALS("=", "equals", Values.MANY),
-  NOT_EQUALS("\u2260", "not_equals", Values.MANY),
-  /** Less than or equals*/
-  LESS_THAN("\u2264", "less_than", Values.ONE),
-  /** Greater than or equals*/
-  GREATER_THAN("\u2265", "greater_than", Values.ONE),
-  WITHIN_RANGE("\u2265 \u2264", "within_range", Values.TWO),
-  OUTSIDE_RANGE("\u2264 \u2265", "outside_range", Values.TWO);
+  EQUAL("=", Values.MANY),
+  NOT_EQUAL("\u2260", Values.MANY),
+  LESS_THAN("<", Values.ONE),
+  LESS_THAN_OR_EQUAL("\u2264", Values.ONE),
+  GREATER_THAN(">", Values.ONE),
+  GREATER_THAN_OR_EQUAL("\u2265", Values.ONE),
+  WITHIN_RANGE("> <", Values.TWO),
+  WITHIN_RANGE_INCLUSIVE("\u2265 \u2264", Values.TWO),
+  OUTSIDE_RANGE("< >", Values.TWO),
+  OUTSIDE_RANGE_INCLUSIVE("\u2264 \u2265", Values.TWO);
 
   private final ResourceBundle messages = ResourceBundle.getBundle(Operator.class.getName());
 
@@ -25,9 +27,9 @@ public enum Operator {
   private final String description;
   private final Values values;
 
-  Operator(final String caption, final String descriptionKey, final Values values) {
+  Operator(final String caption, final Values values) {
     this.caption = caption;
-    this.description = messages.getString(descriptionKey);
+    this.description = messages.getString(name().toLowerCase());
     this.values = values;
   }
 

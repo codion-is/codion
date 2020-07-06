@@ -18,8 +18,9 @@ final class DefaultAttributeWithinRangeCondition<T> extends AbstractAttributeCon
   private final T lowerBound;
   private final T upperBound;
 
-  DefaultAttributeWithinRangeCondition(final Attribute<T> attribute, final T lowerBound, final T upperBound) {
-    super(attribute, Operator.WITHIN_RANGE);
+  DefaultAttributeWithinRangeCondition(final Attribute<T> attribute, final T lowerBound, final T upperBound,
+                                       final boolean inclusive) {
+    super(attribute, inclusive ? Operator.WITHIN_RANGE_INCLUSIVE : Operator.WITHIN_RANGE);
     this.lowerBound = requireNonNull(lowerBound);
     this.upperBound = requireNonNull(upperBound);
   }
@@ -36,6 +37,8 @@ final class DefaultAttributeWithinRangeCondition<T> extends AbstractAttributeCon
 
   @Override
   protected String getWhereClause(final String columnIdentifier) {
-    return "(" + columnIdentifier + " >= ? and " + columnIdentifier + " <= ?)";
+    return getOperator() == Operator.WITHIN_RANGE_INCLUSIVE ?
+            "(" + columnIdentifier + " >= ? and " + columnIdentifier + " <= ?)" :
+            "(" + columnIdentifier + " > ? and " + columnIdentifier + " < ?)";
   }
 }

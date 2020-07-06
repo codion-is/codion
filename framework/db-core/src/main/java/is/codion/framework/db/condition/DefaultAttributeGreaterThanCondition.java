@@ -17,8 +17,8 @@ final class DefaultAttributeGreaterThanCondition<T> extends AbstractAttributeCon
 
   private final T value;
 
-  DefaultAttributeGreaterThanCondition(final Attribute<T> attribute, final T value) {
-    super(attribute, Operator.LESS_THAN);
+  DefaultAttributeGreaterThanCondition(final Attribute<T> attribute, final T value, final boolean orEquals) {
+    super(attribute, orEquals ? Operator.GREATER_THAN_OR_EQUAL : Operator.GREATER_THAN);
     this.value = requireNonNull(value);
   }
 
@@ -34,6 +34,6 @@ final class DefaultAttributeGreaterThanCondition<T> extends AbstractAttributeCon
 
   @Override
   protected String getWhereClause(final String columnIdentifier) {
-    return columnIdentifier + " >= ?";
+    return columnIdentifier + (getOperator() == Operator.GREATER_THAN_OR_EQUAL ? " >= ?" : " > ?");
   }
 }

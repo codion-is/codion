@@ -141,6 +141,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
    * Instantiates a new ColumnConditionPanel, with a default input field provider.
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
+   * @param equalToField the equal to value field
    * @param upperBoundField the upper bound input field
    * @param lowerBoundField the lower bound input field
    * @param operators the search operators available to this condition panel
@@ -272,16 +273,20 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
    */
   public final void requestInputFocus() {
     switch (conditionModel.getOperator()) {
-      case EQUALS:
-      case NOT_EQUALS:
+      case EQUAL:
+      case NOT_EQUAL:
         equalToField.requestFocusInWindow();
         break;
       case GREATER_THAN:
+      case GREATER_THAN_OR_EQUAL:
       case WITHIN_RANGE:
+      case WITHIN_RANGE_INCLUSIVE:
       case OUTSIDE_RANGE:
+      case OUTSIDE_RANGE_INCLUSIVE:
         lowerBoundField.requestFocusInWindow();
         break;
       case LESS_THAN:
+      case LESS_THAN_OR_EQUAL:
         upperBoundField.requestFocusInWindow();
         break;
       default:
@@ -551,12 +556,16 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
 
   private JPanel initializeInputPanel() {
     switch (conditionModel.getOperator()) {
-      case EQUALS:
-      case NOT_EQUALS: return singleValuePanel(equalToField);
-      case GREATER_THAN: return singleValuePanel(lowerBoundField);
-      case LESS_THAN: return singleValuePanel(upperBoundField);
+      case EQUAL:
+      case NOT_EQUAL: return singleValuePanel(equalToField);
+      case GREATER_THAN:;
+      case GREATER_THAN_OR_EQUAL: return singleValuePanel(lowerBoundField);
+      case LESS_THAN:
+      case LESS_THAN_OR_EQUAL: return singleValuePanel(upperBoundField);
       case WITHIN_RANGE:
-      case OUTSIDE_RANGE: return rangePanel();
+      case WITHIN_RANGE_INCLUSIVE:
+      case OUTSIDE_RANGE:;
+      case OUTSIDE_RANGE_INCLUSIVE: return rangePanel();
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
     }

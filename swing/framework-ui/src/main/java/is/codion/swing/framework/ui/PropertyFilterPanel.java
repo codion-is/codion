@@ -24,7 +24,7 @@ public final class PropertyFilterPanel<T> extends ColumnConditionPanel<Entity, P
 
   private static <T> Operator[] getOperators(final ColumnConditionModel<Entity, Property<T>, T> model) {
     if (model.getColumnIdentifier().getAttribute().isBoolean()) {
-      return new Operator[] {Operator.EQUALS};
+      return new Operator[] {Operator.EQUAL};
     }
 
     return Operator.values();

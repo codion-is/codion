@@ -17,8 +17,8 @@ final class DefaultAttributeLessThanCondition<T> extends AbstractAttributeCondit
 
   private final T value;
 
-  DefaultAttributeLessThanCondition(final Attribute<T> attribute, final T value) {
-    super(attribute, Operator.LESS_THAN);
+  DefaultAttributeLessThanCondition(final Attribute<T> attribute, final T value, final boolean orEquals) {
+    super(attribute, orEquals ? Operator.LESS_THAN_OR_EQUAL : Operator.LESS_THAN);
     this.value = requireNonNull(value);
   }
 
@@ -34,6 +34,6 @@ final class DefaultAttributeLessThanCondition<T> extends AbstractAttributeCondit
 
   @Override
   protected String getWhereClause(final String columnIdentifier) {
-    return columnIdentifier + " <= ?";
+    return columnIdentifier + (getOperator() == Operator.LESS_THAN_OR_EQUAL ? " <= ?" : " < ?");
   }
 }

@@ -19,8 +19,8 @@ import java.util.ListIterator;
 
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.Conjunction.OR;
-import static is.codion.common.db.Operator.EQUALS;
-import static is.codion.common.db.Operator.NOT_EQUALS;
+import static is.codion.common.db.Operator.EQUAL;
+import static is.codion.common.db.Operator.NOT_EQUAL;
 import static is.codion.framework.domain.entity.Entities.getValues;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -49,7 +49,7 @@ public final class Conditions {
    */
   public static Condition condition(final Key key) {
     if (requireNonNull(key).isCompositeKey()) {
-      return singleCompositeCondition(key.getAttributes(), EQUALS, key);
+      return singleCompositeCondition(key.getAttributes(), EQUAL, key);
     }
 
     return new DefaultAttributeEqualCondition<>(key.getAttribute(), singletonList(key.get()));
@@ -67,7 +67,7 @@ public final class Conditions {
     }
     final Key firstKey = keys.get(0);
     if (firstKey.isCompositeKey()) {
-      return compositeKeyCondition(firstKey.getAttributes(), EQUALS, keys);
+      return compositeKeyCondition(firstKey.getAttributes(), EQUAL, keys);
     }
 
     return new DefaultAttributeEqualCondition<>((Attribute<?>) firstKey.getAttribute(), getValues(keys));
@@ -200,10 +200,10 @@ public final class Conditions {
     for (int i = 0; i < attributes.size(); i++) {
       final Object value = key.get(key.getAttributes().get(i));
       final AttributeCondition.Builder<Object> condition = condition((Attribute<Object>) attributes.get(i));
-      if (operator == EQUALS) {
+      if (operator == EQUAL) {
         conditionCombination.add(value == null ? condition.isNull() : condition.equalTo(value));
       }
-      else if (operator == NOT_EQUALS) {
+      else if (operator == NOT_EQUAL) {
         conditionCombination.add(value == null ? condition.isNotNull() : condition.notEqualTo(value));
       }
       else {
@@ -221,10 +221,10 @@ public final class Conditions {
     }
 
     final Attribute<?> attribute = foreignKeyAttributes.get(0);
-    if (operator == EQUALS) {
+    if (operator == EQUAL) {
       return condition((Attribute<Object>) attribute).equalTo(getValues(keys));
     }
-    if (operator == NOT_EQUALS) {
+    if (operator == NOT_EQUAL) {
       return condition((Attribute<Object>) attribute).notEqualTo(getValues(keys));
     }
 

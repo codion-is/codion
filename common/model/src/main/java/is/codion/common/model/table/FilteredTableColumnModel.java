@@ -72,6 +72,7 @@ public interface FilteredTableColumnModel<R, C, T> {
 
   /**
    * Returns the {@link ColumnConditionModel} for the column with the given identifier.
+   * @param <T> the column value type
    * @param columnIdentifier the column identifier
    * @return the ColumnConditionModel for the column with the given identifier, null if none exists.
    */

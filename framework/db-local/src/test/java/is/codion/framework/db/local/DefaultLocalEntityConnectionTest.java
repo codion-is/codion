@@ -325,13 +325,13 @@ public class DefaultLocalEntityConnectionTest {
   public void rowCount() throws Exception {
     int rowCount = connection.rowCount(condition(Department.TYPE));
     assertEquals(4, rowCount);
-    Condition deptNoCondition = Conditions.condition(Department.DEPTNO).greaterThan(30);
+    Condition deptNoCondition = Conditions.condition(Department.DEPTNO).greaterThanOrEqualTo(30);
     rowCount = connection.rowCount(deptNoCondition);
     assertEquals(2, rowCount);
 
     rowCount = connection.rowCount(condition(JOINED_QUERY_ENTITY_TYPE));
     assertEquals(16, rowCount);
-    deptNoCondition = Conditions.condition(JOINED_DEPTNO).greaterThan(30);
+    deptNoCondition = Conditions.condition(JOINED_DEPTNO).greaterThanOrEqualTo(30);
     rowCount = connection.rowCount(deptNoCondition);
     assertEquals(4, rowCount);
 

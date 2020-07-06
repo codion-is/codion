@@ -14,6 +14,7 @@ public interface FilterModelFactory {
 
   /**
    * Initializes a ColumnConditionModel for the given property
+   * @param <T> the column value type
    * @param property the Property for which to initialize a ColumnConditionModel
    * @return a ColumnConditionModel for the given property
    */
