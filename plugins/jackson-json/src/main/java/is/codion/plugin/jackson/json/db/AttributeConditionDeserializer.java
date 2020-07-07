@@ -59,14 +59,14 @@ final class AttributeConditionDeserializer implements Serializable {
         return builder.greaterThan(values.get(0));
       case GREATER_THAN_OR_EQUAL:
         return builder.greaterThanOrEqualTo(values.get(0));
-      case WITHIN_RANGE:
-        return builder.withinRange(values.get(0), values.get(1));
-      case WITHIN_RANGE_INCLUSIVE:
-        return builder.withinRangeInclusive(values.get(0), values.get(1));
-      case OUTSIDE_RANGE:
-        return builder.outsideRange(values.get(0), values.get(1));
-      case OUTSIDE_RANGE_INCLUSIVE:
-        return builder.outsideRangeInclusive(values.get(0), values.get(1));
+      case BETWEEN_EXCLUSIVE:
+        return builder.betweenExclusive(values.get(0), values.get(1));
+      case BETWEEN:
+        return builder.between(values.get(0), values.get(1));
+      case NOT_BETWEEN_EXCLUSIVE:
+        return builder.notBetweenExclusive(values.get(0), values.get(1));
+      case NOT_BETWEEN:
+        return builder.notBetween(values.get(0), values.get(1));
       default:
         throw new IllegalArgumentException("Unknown operator: " + Operator.valueOf(conditionNode.get("operator").asText()));
     }

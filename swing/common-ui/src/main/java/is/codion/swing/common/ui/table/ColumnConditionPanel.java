@@ -279,10 +279,10 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
         break;
       case GREATER_THAN:
       case GREATER_THAN_OR_EQUAL:
-      case WITHIN_RANGE:
-      case WITHIN_RANGE_INCLUSIVE:
-      case OUTSIDE_RANGE:
-      case OUTSIDE_RANGE_INCLUSIVE:
+      case BETWEEN_EXCLUSIVE:
+      case BETWEEN:
+      case NOT_BETWEEN_EXCLUSIVE:
+      case NOT_BETWEEN:
         lowerBoundField.requestFocusInWindow();
         break;
       case LESS_THAN:
@@ -562,10 +562,10 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
       case GREATER_THAN_OR_EQUAL: return singleValuePanel(lowerBoundField);
       case LESS_THAN:
       case LESS_THAN_OR_EQUAL: return singleValuePanel(upperBoundField);
-      case WITHIN_RANGE:
-      case WITHIN_RANGE_INCLUSIVE:
-      case OUTSIDE_RANGE:
-      case OUTSIDE_RANGE_INCLUSIVE: return rangePanel();
+      case BETWEEN_EXCLUSIVE:
+      case BETWEEN:
+      case NOT_BETWEEN_EXCLUSIVE:
+      case NOT_BETWEEN: return rangePanel();
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
     }

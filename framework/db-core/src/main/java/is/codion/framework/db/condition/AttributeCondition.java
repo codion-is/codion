@@ -108,36 +108,36 @@ public interface AttributeCondition<T> extends Condition {
     AttributeCondition<T> greaterThanOrEqualTo(T value);
 
     /**
-     * Returns a 'withinRange' {@link AttributeCondition}.
+     * Returns a 'betweenExclusive' {@link AttributeCondition}.
      * @param lowerBound the lower bound
      * @param upperBound the upper bound
      * @return a {@link AttributeCondition}
      */
-    AttributeCondition<T> withinRange(T lowerBound, T upperBound);
+    AttributeCondition<T> betweenExclusive(T lowerBound, T upperBound);
 
     /**
-     * Returns a 'withinRangeInclusive' {@link AttributeCondition}.
+     * Returns a 'between' {@link AttributeCondition}.
      * @param lowerBound the lower bound
      * @param upperBound the upper bound
      * @return a {@link AttributeCondition}
      */
-    AttributeCondition<T> withinRangeInclusive(T lowerBound, T upperBound);
+    AttributeCondition<T> between(T lowerBound, T upperBound);
 
     /**
-     * Returns a 'outsideRange' {@link AttributeCondition}.
+     * Returns a 'notBetweenExclusive' {@link AttributeCondition}.
      * @param lowerBound the lower bound
      * @param upperBound the upper bound
      * @return a {@link AttributeCondition}
      */
-    AttributeCondition<T> outsideRange(T lowerBound, T upperBound);
+    AttributeCondition<T> notBetweenExclusive(T lowerBound, T upperBound);
 
     /**
-     * Returns a 'outsideRangeInclusive' {@link AttributeCondition}.
+     * Returns a 'notBetween' {@link AttributeCondition}.
      * @param lowerBound the lower bound
      * @param upperBound the upper bound
      * @return a {@link AttributeCondition}
      */
-    AttributeCondition<T> outsideRangeInclusive(T lowerBound, T upperBound);
+    AttributeCondition<T> notBetween(T lowerBound, T upperBound);
 
     /**
      * Returns a 'isNull' {@link AttributeCondition}.

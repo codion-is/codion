@@ -97,7 +97,7 @@ public class DefaultColumnConditionModelTest {
       fail();
     }
     catch (final NullPointerException ignored) {/*ignored*/}
-    model.setOperator(Operator.OUTSIDE_RANGE_INCLUSIVE);
+    model.setOperator(Operator.NOT_BETWEEN);
     assertEquals(2, operatorCounter.get());
     model.removeOperatorListener(operatorListener);
   }
@@ -196,14 +196,14 @@ public class DefaultColumnConditionModelTest {
     assertFalse(conditionModel.include(11));
 
     conditionModel.setLowerBound(6);
-    conditionModel.setOperator(Operator.WITHIN_RANGE_INCLUSIVE);
+    conditionModel.setOperator(Operator.BETWEEN);
     assertTrue(conditionModel.include(6));
     assertTrue(conditionModel.include(7));
     assertTrue(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
     assertFalse(conditionModel.include(5));
-    conditionModel.setOperator(Operator.WITHIN_RANGE);
+    conditionModel.setOperator(Operator.BETWEEN_EXCLUSIVE);
     assertFalse(conditionModel.include(6));
     assertTrue(conditionModel.include(7));
     assertTrue(conditionModel.include(9));
@@ -211,14 +211,14 @@ public class DefaultColumnConditionModelTest {
     assertFalse(conditionModel.include(11));
     assertFalse(conditionModel.include(5));
 
-    conditionModel.setOperator(Operator.OUTSIDE_RANGE_INCLUSIVE);
+    conditionModel.setOperator(Operator.NOT_BETWEEN);
     assertTrue(conditionModel.include(6));
     assertFalse(conditionModel.include(7));
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
     assertTrue(conditionModel.include(5));
-    conditionModel.setOperator(Operator.OUTSIDE_RANGE);
+    conditionModel.setOperator(Operator.NOT_BETWEEN_EXCLUSIVE);
     assertFalse(conditionModel.include(6));
     assertFalse(conditionModel.include(7));
     assertFalse(conditionModel.include(9));

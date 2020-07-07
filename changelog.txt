@@ -6377,3 +6377,4 @@
   EntityLookupField.TableSelectionProvider bug fixed, forgot to map attribute to property when setting table model columns
   Interfaces no longer extend Serializable, implementation classes implement instead, except ColorProvider and DerivedProperty.Provider, for serializable lambdas
   Report no longer extends Serializable
+  Operator.WITHIN_RANGE, WITHIN_RANGE_INCLUSIVE, OUTSIDE_RANGE and OUTSIDE_RANGE_INCLUSIVE renamed BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE and NOT_BETWEEN respectively

@@ -396,17 +396,17 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       case GREATER_THAN_OR_EQUAL:
         condition = builder.greaterThanOrEqualTo(conditionModel.getUpperBound());
         break;
-      case WITHIN_RANGE:
-        condition = builder.withinRange(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+      case BETWEEN_EXCLUSIVE:
+        condition = builder.betweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
         break;
-      case WITHIN_RANGE_INCLUSIVE:
-        condition = builder.withinRangeInclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+      case BETWEEN:
+        condition = builder.between(conditionModel.getLowerBound(), conditionModel.getUpperBound());
         break;
-      case OUTSIDE_RANGE:
-        condition = builder.outsideRange(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+      case NOT_BETWEEN_EXCLUSIVE:
+        condition = builder.notBetweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
         break;
-      case OUTSIDE_RANGE_INCLUSIVE:
-        condition = builder.outsideRangeInclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
+      case NOT_BETWEEN:
+        condition = builder.notBetween(conditionModel.getLowerBound(), conditionModel.getUpperBound());
         break;
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());

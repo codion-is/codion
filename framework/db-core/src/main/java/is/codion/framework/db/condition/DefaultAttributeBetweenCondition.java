@@ -11,16 +11,16 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultAttributeOutsideRangeCondition<T> extends AbstractAttributeCondition<T> {
+final class DefaultAttributeBetweenCondition<T> extends AbstractAttributeCondition<T> {
 
   private static final long serialVersionUID = 1;
 
   private final T lowerBound;
   private final T upperBound;
 
-  DefaultAttributeOutsideRangeCondition(final Attribute<T> attribute, final T lowerBound, final T upperBound,
-                                        final boolean inclusive) {
-    super(attribute, inclusive ? Operator.OUTSIDE_RANGE_INCLUSIVE : Operator.OUTSIDE_RANGE);
+  DefaultAttributeBetweenCondition(final Attribute<T> attribute, final T lowerBound, final T upperBound,
+                                   final boolean exclusive) {
+    super(attribute, exclusive ? Operator.BETWEEN_EXCLUSIVE : Operator.BETWEEN);
     this.lowerBound = requireNonNull(lowerBound);
     this.upperBound = requireNonNull(upperBound);
   }
@@ -37,8 +37,8 @@ final class DefaultAttributeOutsideRangeCondition<T> extends AbstractAttributeCo
 
   @Override
   protected String getWhereClause(final String columnIdentifier) {
-    return getOperator() == Operator.OUTSIDE_RANGE_INCLUSIVE ?
-            "(" + columnIdentifier + " <= ? or " + columnIdentifier + " >= ?)" :
-            "(" + columnIdentifier + " < ? or " + columnIdentifier + " > ?)";
+    return getOperator() == Operator.BETWEEN ?
+            "(" + columnIdentifier + " >= ? and " + columnIdentifier + " <= ?)" :
+            "(" + columnIdentifier + " > ? and " + columnIdentifier + " < ?)";
   }
 }
