@@ -457,7 +457,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   public void setForeignKeyConditionValues(final Attribute<Entity> foreignKeyAttribute, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
-    if (tableConditionModel.setEqualsConditionValues(foreignKeyAttribute, foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
+    if (tableConditionModel.setEqualConditionValues(foreignKeyAttribute, foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
       refresh();
     }
   }

@@ -6344,3 +6344,4 @@
   ColumnConditionModel, minor renaming to reflect new operator names
   EntityLookupModel.getLookupProperties() replaced with getLookupAttributes()
   EntityDefinition.getSearchProperties() replaced with getSearchAttributes()
+  EntityTableConditionModel, minor renaming, for consistency

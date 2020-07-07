@@ -168,7 +168,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <T> boolean setEqualsConditionValues(final Attribute<T> attribute, final Collection<T> values) {
+  public <T> boolean setEqualConditionValues(final Attribute<T> attribute, final Collection<T> values) {
     final String conditionsString = getConditionsString();
     if (containsConditionModel(attribute)) {
       final ColumnConditionModel<?, ?, T> conditionModel = getConditionModel(attribute);
@@ -181,7 +181,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <T> void setEqualsFilterValue(final Attribute<T> attribute, final Comparable<T> value) {
+  public <T> void setEqualFilterValue(final Attribute<T> attribute, final Comparable<T> value) {
     final ColumnConditionModel<Entity, Property<T>, T> filterModel = getFilterModel(attribute);
     if (filterModel != null) {
       filterModel.setEqualValue((T) value);

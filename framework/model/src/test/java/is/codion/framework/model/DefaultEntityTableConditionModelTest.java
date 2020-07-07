@@ -79,8 +79,8 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  public void setFilterValue() {
-    conditionModel.setEqualsFilterValue(TestDomain.EMP_COMMISSION, 1400d);
+  public void setEqualFilterValue() {
+    conditionModel.setEqualFilterValue(TestDomain.EMP_COMMISSION, 1400d);
     final ColumnConditionModel<?, ?, Double> propertyConditionModel = conditionModel.getFilterModel(TestDomain.EMP_COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(TestDomain.EMP_COMMISSION));
@@ -89,16 +89,16 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  public void setConditionValues() throws DatabaseException {
+  public void setEqualConditionValues() throws DatabaseException {
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
-    boolean searchStateChanged = conditionModel.setEqualsConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
+    boolean searchStateChanged = conditionModel.setEqualConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     assertTrue(searchStateChanged);
     assertTrue(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
     assertTrue(conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK).getEqualValues().contains(sales));
     assertTrue(conditionModel.getConditionModel(TestDomain.EMP_DEPARTMENT_FK).getEqualValues().contains(accounting));
-    searchStateChanged = conditionModel.setEqualsConditionValues(TestDomain.EMP_DEPARTMENT_FK, null);
+    searchStateChanged = conditionModel.setEqualConditionValues(TestDomain.EMP_DEPARTMENT_FK, null);
     assertTrue(searchStateChanged);
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
   }
@@ -108,7 +108,7 @@ public class DefaultEntityTableConditionModelTest {
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
-    conditionModel.setEqualsConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
+    conditionModel.setEqualConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     assertTrue(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
     conditionModel.clearConditionModels();
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
@@ -119,7 +119,7 @@ public class DefaultEntityTableConditionModelTest {
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
     final Entity accounting = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));
-    conditionModel.setEqualsConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
+    conditionModel.setEqualConditionValues(TestDomain.EMP_DEPARTMENT_FK, asList(sales, accounting));
     final ColumnConditionModel<?, ?, String> nameConditionModel = conditionModel.getConditionModel(TestDomain.EMP_NAME);
     nameConditionModel.setEqualValue("SCOTT");
     conditionModel.setAdditionalConditionProvider(() -> Conditions.customCondition(TestDomain.EMP_CONDITION_2_TYPE));
