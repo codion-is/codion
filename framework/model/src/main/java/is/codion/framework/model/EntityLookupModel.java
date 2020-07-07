@@ -62,7 +62,7 @@ public interface EntityLookupModel {
   void setDescription(String description);
 
   /**
-   * @return a list containing the attributes used when performing a lookup
+   * @return the attributes used when performing a lookup
    */
   Collection<Attribute<String>> getLookupAttributes();
 
