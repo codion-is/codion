@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
 /**
- * ObjectMapper implementation for {@link EntityCondition} and it's subclasses
+ * ObjectMapper implementation for {@link Condition} and it's subclasses
  */
 public final class ConditionObjectMapper extends ObjectMapper {
 
