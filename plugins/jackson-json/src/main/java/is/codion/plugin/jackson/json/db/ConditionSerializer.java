@@ -9,11 +9,12 @@ import is.codion.framework.db.condition.CustomCondition;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
-import java.io.Serializable;
 
-final class ConditionSerializer implements Serializable {
+final class ConditionSerializer extends StdSerializer<Condition> {
 
   private static final long serialVersionUID = 1;
 
@@ -21,11 +22,21 @@ final class ConditionSerializer implements Serializable {
   private final ConditionCombinationSerializer conditionCombinationSerializer;
   private final CustomConditionSerializer customConditionSerializer;
 
-  ConditionSerializer(final AttributeConditionSerializer attributeConditionSerializer,
-                      final EntityObjectMapper entityObjectMapper) {
-    this.attributeConditionSerializer = attributeConditionSerializer;
+  public ConditionSerializer(final EntityObjectMapper entityObjectMapper) {
+    super(Condition.class);
+    this.attributeConditionSerializer = new AttributeConditionSerializer(entityObjectMapper);
     this.conditionCombinationSerializer = new ConditionCombinationSerializer(attributeConditionSerializer);
     this.customConditionSerializer = new CustomConditionSerializer(entityObjectMapper);
+  }
+
+  @Override
+  public void serialize(final Condition condition, final JsonGenerator generator,
+                        final SerializerProvider provider) throws IOException {
+    generator.writeStartObject();
+    generator.writeStringField("entityType", condition.getEntityType().getName());
+    generator.writeFieldName("condition");
+    serialize(condition, generator);
+    generator.writeEndObject();
   }
 
   void serialize(final Condition condition, final JsonGenerator generator) throws IOException {
@@ -34,7 +45,7 @@ final class ConditionSerializer implements Serializable {
       conditionCombinationSerializer.serialize(combination, generator);
     }
     else if (condition instanceof AttributeCondition) {
-      final AttributeCondition attributeCondition = (AttributeCondition) condition;
+      final AttributeCondition<?> attributeCondition = (AttributeCondition<?>) condition;
       attributeConditionSerializer.serialize(attributeCondition, generator);
     }
     else if (condition instanceof CustomCondition) {
