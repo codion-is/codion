@@ -35,7 +35,7 @@ public final class ConditionObjectMapperTest {
 
     final Condition entityCondition = Conditions.condition(TestDomain.EMP_DEPARTMENT_FK).notEqualTo(dept1, dept2)
                     .and(Conditions.condition(TestDomain.EMP_NAME).equalTo("Loc"),
-                    Conditions.condition(TestDomain.EMP_ID).withinRangeInclusive(10, 40),
+                    Conditions.condition(TestDomain.EMP_ID).between(10, 40),
                     Conditions.condition(TestDomain.EMP_COMMISSION).isNotNull());
 
     final String jsonString = mapper.writeValueAsString(entityCondition);

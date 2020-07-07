@@ -17,8 +17,8 @@ final class DefaultAttributeLessThanCondition<T> extends AbstractAttributeCondit
 
   private final T value;
 
-  DefaultAttributeLessThanCondition(final Attribute<T> attribute, final T value, final boolean orEquals) {
-    super(attribute, orEquals ? Operator.LESS_THAN_OR_EQUAL : Operator.LESS_THAN);
+  DefaultAttributeLessThanCondition(final Attribute<T> attribute, final T value, final boolean orEqual) {
+    super(attribute, orEqual ? Operator.LESS_THAN_OR_EQUAL : Operator.LESS_THAN);
     this.value = requireNonNull(value);
   }
 

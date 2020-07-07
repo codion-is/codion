@@ -71,23 +71,23 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   }
 
   @Override
-  public AttributeCondition<T> withinRange(final T lowerBound, final T upperBound) {
-    return new DefaultAttributeWithinRangeCondition<>(attribute, lowerBound, upperBound, false);
+  public AttributeCondition<T> betweenExclusive(final T lowerBound, final T upperBound) {
+    return new DefaultAttributeBetweenCondition<>(attribute, lowerBound, upperBound, true);
   }
 
   @Override
-  public AttributeCondition<T> withinRangeInclusive(final T lowerBound, final T upperBound) {
-    return new DefaultAttributeWithinRangeCondition<>(attribute, lowerBound, upperBound, true);
+  public AttributeCondition<T> between(final T lowerBound, final T upperBound) {
+    return new DefaultAttributeBetweenCondition<>(attribute, lowerBound, upperBound, false);
   }
 
   @Override
-  public AttributeCondition<T> outsideRange(final T lowerBound, final T upperBound) {
-    return new DefaultAttributeOutsideRangeCondition<>(attribute, lowerBound, upperBound, false);
+  public AttributeCondition<T> notBetweenExclusive(final T lowerBound, final T upperBound) {
+    return new DefaultAttributeNotBetweenCondition<>(attribute, lowerBound, upperBound, true);
   }
 
   @Override
-  public AttributeCondition<T> outsideRangeInclusive(final T lowerBound, final T upperBound) {
-    return new DefaultAttributeOutsideRangeCondition<>(attribute, lowerBound, upperBound, true);
+  public AttributeCondition<T> notBetween(final T lowerBound, final T upperBound) {
+    return new DefaultAttributeNotBetweenCondition<>(attribute, lowerBound, upperBound, false);
   }
 
   @Override

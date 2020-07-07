@@ -373,14 +373,14 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
         return includeGreaterThan(comparable);
       case GREATER_THAN_OR_EQUAL:
         return includeGreaterThanOrEqual(comparable);
-      case WITHIN_RANGE:
-        return includeWithinRange(comparable);
-      case WITHIN_RANGE_INCLUSIVE:
-        return includeWithinRangeInclusive(comparable);
-      case OUTSIDE_RANGE:
-        return includeOutsideRange(comparable);
-      case OUTSIDE_RANGE_INCLUSIVE:
-        return includeOutsideRangeInclusive(comparable);
+      case BETWEEN_EXCLUSIVE:
+        return includeBetweenExclusive(comparable);
+      case BETWEEN:
+        return includeBetweenInclusive(comparable);
+      case NOT_BETWEEN_EXCLUSIVE:
+        return includeNotBetweenExclusive(comparable);
+      case NOT_BETWEEN:
+        return includeNotBetween(comparable);
       default:
         throw new IllegalArgumentException("Undefined operator: " + operatorValue.get());
     }
@@ -486,7 +486,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     return getLowerBound() == null || comparable != null && comparable.compareTo(getLowerBound()) >= 0;
   }
 
-  private boolean includeWithinRange(final Comparable<T> comparable) {
+  private boolean includeBetweenExclusive(final Comparable<T> comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }
@@ -509,7 +509,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     return lowerCompareResult > 0 && upperCompareResult < 0;
   }
 
-  private boolean includeWithinRangeInclusive(final Comparable<T> comparable) {
+  private boolean includeBetweenInclusive(final Comparable<T> comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }
@@ -532,7 +532,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     return lowerCompareResult >= 0 && upperCompareResult <= 0;
   }
 
-  private boolean includeOutsideRange(final Comparable<T> comparable) {
+  private boolean includeNotBetweenExclusive(final Comparable<T> comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }
@@ -555,7 +555,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     return lowerCompareResult < 0 || upperCompareResult > 0;
   }
 
-  private boolean includeOutsideRangeInclusive(final Comparable<T> comparable) {
+  private boolean includeNotBetween(final Comparable<T> comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }

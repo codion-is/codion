@@ -244,14 +244,14 @@ public final class WhereConditionTest {
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).lessThanOrEqualTo("upper"), departmentDefinition);
     assertEquals(property.getColumnName() + " <= ?", condition.getWhereClause());
 
-    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).withinRange("upper", "lower"), departmentDefinition);
+    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).betweenExclusive("upper", "lower"), departmentDefinition);
     assertEquals("(" + property.getColumnName() + " > ? and " + property.getColumnName() + " < ?)", condition.getWhereClause());
-    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).withinRangeInclusive("upper", "lower"), departmentDefinition);
+    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).between("upper", "lower"), departmentDefinition);
     assertEquals("(" + property.getColumnName() + " >= ? and " + property.getColumnName() + " <= ?)", condition.getWhereClause());
 
-    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).outsideRange("upper", "lower"), departmentDefinition);
+    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).notBetweenExclusive("upper", "lower"), departmentDefinition);
     assertEquals("(" + property.getColumnName() + " < ? or " + property.getColumnName() + " > ?)", condition.getWhereClause());
-    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).outsideRangeInclusive("upper", "lower"), departmentDefinition);
+    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).notBetween("upper", "lower"), departmentDefinition);
     assertEquals("(" + property.getColumnName() + " <= ? or " + property.getColumnName() + " >= ?)", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).equalTo("%upper%"), departmentDefinition);

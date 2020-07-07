@@ -17,8 +17,8 @@ final class DefaultAttributeGreaterThanCondition<T> extends AbstractAttributeCon
 
   private final T value;
 
-  DefaultAttributeGreaterThanCondition(final Attribute<T> attribute, final T value, final boolean orEquals) {
-    super(attribute, orEquals ? Operator.GREATER_THAN_OR_EQUAL : Operator.GREATER_THAN);
+  DefaultAttributeGreaterThanCondition(final Attribute<T> attribute, final T value, final boolean orEqual) {
+    super(attribute, orEqual ? Operator.GREATER_THAN_OR_EQUAL : Operator.GREATER_THAN);
     this.value = requireNonNull(value);
   }
 

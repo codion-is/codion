@@ -76,8 +76,8 @@ is.codion.framework.db.condition.Conditions$EmptyCondition
 is.codion.framework.db.condition.DefaultAttributeEqualCondition
 is.codion.framework.db.condition.DefaultAttributeGreaterThanCondition
 is.codion.framework.db.condition.DefaultAttributeLessThanCondition
-is.codion.framework.db.condition.DefaultAttributeOutsideRangeCondition
-is.codion.framework.db.condition.DefaultAttributeWithinRangeCondition
+is.codion.framework.db.condition.DefaultAttributeNotBetweenCondition
+is.codion.framework.db.condition.DefaultAttributeBetweenCondition
 is.codion.framework.db.condition.DefaultConditionCombination
 is.codion.framework.db.condition.DefaultCustomCondition
 is.codion.framework.db.condition.DefaultSelectCondition
