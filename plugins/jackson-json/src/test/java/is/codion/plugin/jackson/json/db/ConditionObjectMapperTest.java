@@ -6,8 +6,10 @@ package is.codion.plugin.jackson.json.db;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.CustomCondition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.plugin.jackson.json.TestDomain;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class ConditionObjectMapperTest {
 
@@ -76,5 +79,30 @@ public final class ConditionObjectMapperTest {
     assertEquals(condition.getConditionType(), readCondition.getConditionType());
     assertEquals(condition.getAttributes(), readCondition.getAttributes());
     assertEquals(condition.getValues(), readCondition.getValues());
+  }
+
+  @Test
+  public void selectCondition() throws JsonProcessingException {
+    final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
+
+    final SelectCondition condition = Conditions.condition(TestDomain.DEPARTMENT_ID).equalTo(1)
+            .selectCondition()
+            .setOrderBy(OrderBy.orderBy().ascending(TestDomain.DEPARTMENT_ID).descending(TestDomain.DEPARTMENT_NAME))
+            .setLimit(2)
+            .setOffset(1)
+            .setFetchCount(3)
+            .setForUpdate(true)
+            .setSelectAttributes(TestDomain.DEPARTMENT_LOCATION, TestDomain.DEPARTMENT_LOGO);
+
+    final String jsonString = mapper.writeValueAsString(condition);
+    final SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
+
+    assertEquals(condition.getCondition().getAttributes(), readCondition.getCondition().getAttributes());
+    assertEquals(condition.getOrderBy().getOrderByAttributes(), readCondition.getOrderBy().getOrderByAttributes());
+    assertEquals(condition.getLimit(), readCondition.getLimit());
+    assertEquals(condition.getOffset(), readCondition.getOffset());
+    assertEquals(condition.getFetchCount(), readCondition.getFetchCount());
+    assertEquals(condition.getSelectAttributes(), readCondition.getSelectAttributes());
+    assertTrue(readCondition.isForUpdate());
   }
 }

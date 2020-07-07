@@ -4,6 +4,8 @@
 package is.codion.plugin.jackson.json.db;
 
 import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -12,15 +14,15 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 
-final class EntitySelectConditionSerializer extends StdSerializer<SelectCondition> {
+final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
 
   private static final long serialVersionUID = 1;
 
   private final ConditionSerializer conditionSerializer;
 
-  EntitySelectConditionSerializer(final EntityObjectMapper entityObjectMapper) {
+  SelectConditionSerializer(final EntityObjectMapper entityObjectMapper) {
     super(SelectCondition.class);
-    this.conditionSerializer = new ConditionSerializer(new AttributeConditionSerializer(entityObjectMapper), entityObjectMapper);
+    this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
   }
 
   @Override
@@ -29,9 +31,13 @@ final class EntitySelectConditionSerializer extends StdSerializer<SelectConditio
     generator.writeStartObject();
     generator.writeStringField("entityType", condition.getEntityType().getName());
     generator.writeFieldName("condition");
-    conditionSerializer.serialize(condition, generator);
+    conditionSerializer.serialize(condition.getCondition(), generator);
     generator.writeFieldName("orderBy");
-    generator.writeObject(condition.getOrderBy());
+    generator.writeStartArray();
+    for (final OrderBy.OrderByAttribute attribute : condition.getOrderBy().getOrderByAttributes()) {
+      generator.writeString(attribute.getAttribute().getName() + ":" + (attribute.isAscending() ? "asc" : "desc"));
+    }
+    generator.writeEndArray();
     generator.writeFieldName("limit");
     generator.writeObject(condition.getLimit());
     generator.writeFieldName("offset");
@@ -40,6 +46,12 @@ final class EntitySelectConditionSerializer extends StdSerializer<SelectConditio
     generator.writeObject(condition.isForUpdate());
     generator.writeFieldName("fetchCount");
     generator.writeObject(condition.getFetchCount());
+    generator.writeFieldName("selectAttributes");
+    generator.writeStartArray();
+    for (final Attribute<?> attribute : condition.getSelectAttributes()) {
+      generator.writeString(attribute.getName());
+    }
+    generator.writeEndArray();
     generator.writeEndObject();
   }
 }
