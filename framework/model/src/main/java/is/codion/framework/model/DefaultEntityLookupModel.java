@@ -21,7 +21,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
@@ -57,9 +56,9 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   private final EntityType<?> entityType;
 
   /**
-   * The properties to use when doing the lookup
+   * The attributes to use when doing the lookup
    */
-  private final Collection<ColumnProperty<String>> lookupProperties;
+  private final Collection<Attribute<String>> lookupAttributes;
 
   /**
    * The selected entities
@@ -74,7 +73,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * Contains the search settings for lookup properties
    */
-  private final Map<ColumnProperty<?>, LookupSettings> propertyLookupSettings = new HashMap<>();
+  private final Map<Attribute<String>, LookupSettings> attributeLookupSettings = new HashMap<>();
 
   private final Value<String> searchStringValue = Values.value("");
   private final Value<String> multipleItemSeparatorValue = Values.value(",");
@@ -90,28 +89,28 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
    * Instantiates a new EntityLookupModel, using the search properties for the given entity type
    * @param entityType the type of the entity to lookup
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
-   * @see EntityDefinition#getSearchProperties()
+   * @see EntityDefinition#getSearchAttributes()
    */
   public DefaultEntityLookupModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getSearchProperties());
+    this(entityType, connectionProvider, connectionProvider.getEntities().getDefinition(entityType).getSearchAttributes());
   }
 
   /**
    * Instantiates a new EntityLookupModel
    * @param entityType the type of the entity to lookup
    * @param connectionProvider the EntityConnectionProvider to use when performing the lookup
-   * @param lookupProperties the properties to search by, these must be string based
+   * @param lookupAttributes the attributes to search by
    */
   public DefaultEntityLookupModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
-                                  final Collection<ColumnProperty<String>> lookupProperties) {
+                                  final Collection<Attribute<String>> lookupAttributes) {
     requireNonNull(entityType, "entityType");
     requireNonNull(connectionProvider, "connectionProvider");
-    requireNonNull(lookupProperties, "lookupProperties");
-    validateLookupProperties(entityType, lookupProperties);
+    requireNonNull(lookupAttributes, "lookupAttributes");
+    validateLookupProperties(entityType, lookupAttributes);
     this.connectionProvider = connectionProvider;
     this.entityType = entityType;
-    this.lookupProperties = lookupProperties;
-    this.description = lookupProperties.stream().map(Objects::toString).collect(joining(", "));
+    this.lookupAttributes = lookupAttributes;
+    this.description = lookupAttributes.stream().map(Objects::toString).collect(joining(", "));
     initializeDefaultSettings();
     bindEventsInternal();
   }
@@ -127,8 +126,8 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   @Override
-  public Collection<ColumnProperty<String>> getLookupProperties() {
-    return unmodifiableCollection(lookupProperties);
+  public Collection<Attribute<String>> getLookupAttributes() {
+    return unmodifiableCollection(lookupAttributes);
   }
 
   @Override
@@ -175,8 +174,8 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   @Override
-  public Map<ColumnProperty<?>, LookupSettings> getPropertyLookupSettings() {
-    return propertyLookupSettings;
+  public Map<Attribute<String>, LookupSettings> getAttributeLookupSettings() {
+    return attributeLookupSettings;
   }
 
   @Override
@@ -274,17 +273,17 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
    * @see #setAdditionalConditionProvider(Condition.Provider)
    */
   private SelectCondition getEntitySelectCondition() {
-    if (lookupProperties.isEmpty()) {
-      throw new IllegalStateException("No search properties provided for lookup model: " + entityType);
+    if (lookupAttributes.isEmpty()) {
+      throw new IllegalStateException("No search attributes provided for lookup model: " + entityType);
     }
     final Condition.Combination conditionCombination = combination(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionEnabledValue.get() ?
             searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
-    for (final ColumnProperty<?> lookupProperty : lookupProperties) {
-      final LookupSettings lookupSettings = propertyLookupSettings.get(lookupProperty);
+    for (final Attribute<String> lookupAttribute : lookupAttributes) {
+      final LookupSettings lookupSettings = attributeLookupSettings.get(lookupAttribute);
       for (final String rawLookupText : lookupTexts) {
         final String lookupText = prepareLookupText(rawLookupText, lookupSettings);
-        final AttributeCondition<String> condition = condition((Attribute<String>) lookupProperty.getAttribute())
+        final AttributeCondition<String> condition = condition(lookupAttribute)
                 .equalTo(lookupText).setCaseSensitive(lookupSettings.getCaseSensitiveValue().get());
         conditionCombination.add(condition);
       }
@@ -304,8 +303,8 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   private void initializeDefaultSettings() {
-    for (final ColumnProperty<?> property : lookupProperties) {
-      propertyLookupSettings.put(property, new DefaultLookupSettings());
+    for (final Attribute<String> attribute : lookupAttributes) {
+      attributeLookupSettings.put(attribute, new DefaultLookupSettings());
     }
   }
 
@@ -319,10 +318,10 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
     return entities.stream().map(toStringProvider).collect(joining(multipleItemSeparatorValue.get()));
   }
 
-  private static void validateLookupProperties(final EntityType<?> entityType, final Collection<ColumnProperty<String>> lookupProperties) {
-    for (final ColumnProperty<String> property : lookupProperties) {
-      if (!entityType.equals(property.getEntityType())) {
-        throw new IllegalArgumentException("Property '" + property + "' is not part of entity " + entityType);
+  private static void validateLookupProperties(final EntityType<?> entityType, final Collection<Attribute<String>> lookupAttributes) {
+    for (final Attribute<String> attribute : lookupAttributes) {
+      if (!entityType.equals(attribute.getEntityType())) {
+        throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityType);
       }
     }
   }

@@ -478,16 +478,15 @@ public class DomainTest {
   }
 
   @Test
-  public void getSearchProperties() {
+  public void getSearchAttributes() {
     final EntityDefinition definition = entities.getDefinition(Employee.TYPE);
-    Collection<ColumnProperty<String>> searchProperties = definition.getSearchProperties();
-    assertTrue(searchProperties.contains(definition.getColumnProperty(Employee.JOB)));
-    assertTrue(searchProperties.contains(definition.getColumnProperty(Employee.NAME)));
+    Collection<Attribute<String>> searchAttributes = definition.getSearchAttributes();
+    assertTrue(searchAttributes.contains(Employee.JOB));
+    assertTrue(searchAttributes.contains(Employee.NAME));
 
-    searchProperties = entities.getDefinition(Department.TYPE).getSearchProperties();
+    searchAttributes = entities.getDefinition(Department.TYPE).getSearchAttributes();
     //should contain all string based properties
-    assertTrue(searchProperties.contains(entities.getDefinition(Department.TYPE)
-            .getColumnProperty(Department.NAME)));
+    assertTrue(searchAttributes.contains(Department.NAME));
   }
 
   @Test

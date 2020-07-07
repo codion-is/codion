@@ -9,9 +9,9 @@ import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.tests.TestDomain;
 
@@ -38,7 +38,7 @@ public final class DefaultEntityLookupModelTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private EntityLookupModel lookupModel;
-  private Collection<ColumnProperty<String>> lookupProperties;
+  private Collection<Attribute<String>> lookupAttributes;
 
   @Test
   public void constructorNullEntityType() {
@@ -63,7 +63,7 @@ public final class DefaultEntityLookupModelTest {
   @Test
   public void constructorIncorrectEntityLookupProperty() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER,
-            singletonList(ENTITIES.getDefinition(TestDomain.T_DEPARTMENT).getColumnProperty(TestDomain.DEPARTMENT_NAME))));
+            singletonList(TestDomain.DEPARTMENT_NAME)));
   }
 
   @Test
@@ -71,7 +71,7 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.setDescription("description");
     assertEquals("description", lookupModel.getDescription());
     assertNotNull(lookupModel.getConnectionProvider());
-    assertTrue(lookupModel.getLookupProperties().containsAll(lookupProperties));
+    assertTrue(lookupModel.getLookupAttributes().containsAll(lookupAttributes));
     assertNotNull(lookupModel.getWildcard());
   }
 
@@ -126,11 +126,8 @@ public final class DefaultEntityLookupModelTest {
     assertTrue(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    final ColumnProperty<String> employeeNameProperty = ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME);
-    final ColumnProperty<String> employeeJobProperty = ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
-
-    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(false);
-    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(false);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(false);
     lookupModel.setSearchString("jo,cl");
     result = lookupModel.performQuery();
     assertTrue(contains(result, "John"));
@@ -139,16 +136,16 @@ public final class DefaultEntityLookupModelTest {
     assertFalse(contains(result, "Andrew"));
 
     lookupModel.setSearchString("Joh");
-    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getCaseSensitiveValue().set(true);
-    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getCaseSensitiveValue().set(true);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(true);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(true);
     result = lookupModel.performQuery();
     assertEquals(1, result.size());
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
-    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(false);
-    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);
-    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getCaseSensitiveValue().set(false);
-    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getCaseSensitiveValue().set(false);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(false);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(false);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(false);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(false);
     result = lookupModel.performQuery();
     assertTrue(contains(result, "John"));
     assertTrue(contains(result, "johnson"));
@@ -171,20 +168,20 @@ public final class DefaultEntityLookupModelTest {
     assertTrue(lookupModel.searchStringRepresentsSelected());
 
     lookupModel.setSearchString("and; rew");
-    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(true);
-    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(true);
-    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(false);
-    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(false);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getWildcardPrefixValue().set(true);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getWildcardPrefixValue().set(true);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getWildcardPostfixValue().set(false);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getWildcardPostfixValue().set(false);
     result = lookupModel.performQuery();
     assertEquals(1, result.size());
     assertFalse(contains(result, "Andy"));
     assertTrue(contains(result, "Andrew"));
 
     lookupModel.setSearchString("Joh");
-    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getCaseSensitiveValue().set(true);
-    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getCaseSensitiveValue().set(true);
-    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(true);
-    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(true);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getCaseSensitiveValue().set(true);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getCaseSensitiveValue().set(true);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_NAME).getWildcardPostfixValue().set(true);
+    lookupModel.getAttributeLookupSettings().get(TestDomain.EMP_JOB).getWildcardPostfixValue().set(true);
     lookupModel.setAdditionalConditionProvider(() ->
             Conditions.condition(TestDomain.EMP_JOB).notEqualTo("MANAGER"));
     result = lookupModel.performQuery();
@@ -208,9 +205,8 @@ public final class DefaultEntityLookupModelTest {
 
   @BeforeEach
   public void setUp() throws Exception {
-    lookupProperties = asList(ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_NAME),
-            ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB));
-    lookupModel = new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, lookupProperties);
+    lookupAttributes = asList(TestDomain.EMP_NAME, TestDomain.EMP_JOB);
+    lookupModel = new DefaultEntityLookupModel(TestDomain.T_EMP, CONNECTION_PROVIDER, lookupAttributes);
 
     CONNECTION_PROVIDER.getConnection().beginTransaction();
     setupData();

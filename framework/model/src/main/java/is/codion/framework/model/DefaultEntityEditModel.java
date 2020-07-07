@@ -593,13 +593,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public EntityLookupModel createForeignKeyLookupModel(final Attribute<Entity> foreignKeyAttribute) {
     final ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
-    final Collection<ColumnProperty<String>> searchProperties = getEntities()
-            .getDefinition(property.getReferencedEntityType()).getSearchProperties();
-    if (searchProperties.isEmpty()) {
-      throw new IllegalStateException("No search properties defined for entity: " + property.getReferencedEntityType());
+    final Collection<Attribute<String>> searchAttributes = getEntities()
+            .getDefinition(property.getReferencedEntityType()).getSearchAttributes();
+    if (searchAttributes.isEmpty()) {
+      throw new IllegalStateException("No search attributes defined for entity: " + property.getReferencedEntityType());
     }
 
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityType(), connectionProvider, searchProperties);
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityType(), connectionProvider, searchAttributes);
     lookupModel.getMultipleSelectionEnabledValue().set(false);
 
     return lookupModel;

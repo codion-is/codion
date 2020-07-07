@@ -34,7 +34,7 @@ public class DefaultForeignKeyConditionModelTest {
   public void getSearchEntitiesLookupModel() throws DatabaseException {
     final Entities entities = CONNECTION_PROVIDER.getEntities();
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, CONNECTION_PROVIDER,
-            singletonList(CONNECTION_PROVIDER.getEntities().getDefinition(TestDomain.T_DEPARTMENT).getColumnProperty(TestDomain.DEPARTMENT_NAME)));
+            singletonList(TestDomain.DEPARTMENT_NAME));
     final ForeignKeyConditionModel conditionModel = new DefaultForeignKeyConditionModel(
             entities.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK), lookupModel);
     final Entity sales = CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
