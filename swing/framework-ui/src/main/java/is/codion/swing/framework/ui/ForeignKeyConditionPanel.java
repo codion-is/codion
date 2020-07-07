@@ -38,7 +38,7 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
     }
 
     @Override
-    public JComponent initializeEqualsValueField() {
+    public JComponent initializeEqualValueField() {
       return initializeForeignKeyField();
     }
 

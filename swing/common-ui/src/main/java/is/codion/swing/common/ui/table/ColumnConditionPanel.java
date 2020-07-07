@@ -133,7 +133,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
                               final BoundFieldProvider boundFieldProvider, final Operator... operators) {
-    this(conditionModel, toggleAdvancedButton, boundFieldProvider.initializeEqualsValueField(),
+    this(conditionModel, toggleAdvancedButton, boundFieldProvider.initializeEqualValueField(),
             boundFieldProvider.initializeUpperBoundField(), boundFieldProvider.initializeLowerBoundField(), operators);
   }
 
@@ -344,14 +344,14 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   }
 
   /**
-   * Provides a upper/lower bound input fields for a ColumnConditionPanel
+   * Provides a equal, upper and lower bound input fields for a ColumnConditionPanel
    */
   public interface BoundFieldProvider {
 
     /**
-     * @return the equals value field
+     * @return the equal value field
      */
-    JComponent initializeEqualsValueField();
+    JComponent initializeEqualValueField();
 
     /**
      * @return a upper bound input field
@@ -373,7 +373,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
       this.columnConditionModel = columnConditionModel;
     }
 
-    public JComponent initializeEqualsValueField() {
+    public JComponent initializeEqualValueField() {
       final ValueSet<T> valueSet = columnConditionModel.getEqualValueSet();
       final Value<T> value = Values.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));

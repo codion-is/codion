@@ -47,7 +47,7 @@ public final class PropertyConditionPanel<T> extends ColumnConditionPanel<Entity
     }
 
     @Override
-    public JComponent initializeEqualsValueField() {
+    public JComponent initializeEqualValueField() {
       final ValueSet<T> valueSet = model.getEqualValueSet();
       final Value<T> value = Values.value();
       value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
