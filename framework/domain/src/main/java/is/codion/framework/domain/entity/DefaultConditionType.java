@@ -3,11 +3,12 @@
  */
 package is.codion.framework.domain.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultConditionType implements ConditionType {
+final class DefaultConditionType implements ConditionType, Serializable {
 
   private static final long serialVersionUID = 1;
 

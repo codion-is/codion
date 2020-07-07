@@ -42,7 +42,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
  */
-final class DefaultEntityDefinition implements EntityDefinition {
+final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   private static final long serialVersionUID = 1;
 

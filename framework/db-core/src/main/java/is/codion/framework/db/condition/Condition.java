@@ -8,13 +8,12 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Specifies objects serving as where conditions in database queries
  */
-public interface Condition extends Serializable {
+public interface Condition {
 
   /**
    * @return the entity type

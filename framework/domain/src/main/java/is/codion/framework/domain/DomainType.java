@@ -6,15 +6,13 @@ package is.codion.framework.domain;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
-import java.io.Serializable;
-
 import static java.util.Objects.requireNonNull;
 
 /**
  * Identifies a domain model and serves as a factory for {@link EntityType}
  * instances associated with this domain model type.
  */
-public interface DomainType extends Serializable {
+public interface DomainType {
 
   /**
    * @return the domain name

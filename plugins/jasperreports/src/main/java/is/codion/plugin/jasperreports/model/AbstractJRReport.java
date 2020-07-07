@@ -18,8 +18,6 @@ import static java.util.Objects.requireNonNull;
 
 abstract class AbstractJRReport extends AbstractReport<JasperReport, JasperPrint, Map<String, Object>> implements JRReport {
 
-  private static final long serialVersionUID = 1;
-
   protected AbstractJRReport(final String reportPath) {
     super(reportPath);
   }

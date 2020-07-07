@@ -3,12 +3,10 @@
  */
 package is.codion.common.user;
 
-import java.io.Serializable;
-
 /**
  * Encapsulates a username and password.
  */
-public interface User extends Serializable {
+public interface User {
 
   /**
    * @return the username

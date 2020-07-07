@@ -3,12 +3,10 @@
  */
 package is.codion.framework.domain.entity;
 
-import java.io.Serializable;
-
 /**
  * Defines a custom condition type.
  */
-public interface ConditionType extends Serializable {
+public interface ConditionType {
 
   /**
    * @return the entity type

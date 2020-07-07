@@ -29,7 +29,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * A default {@link Entities} implementation.
  */
-public abstract class DefaultEntities implements Entities {
+public abstract class DefaultEntities implements Entities, Serializable {
 
   private static final long serialVersionUID = 1;
 

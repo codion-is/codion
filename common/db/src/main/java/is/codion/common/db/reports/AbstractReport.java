@@ -16,8 +16,6 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
 
-  private static final long serialVersionUID = 1;
-
   private static final Map<String, Object> REPORT_CACHE = new ConcurrentHashMap<>();
 
   protected final String reportPath;

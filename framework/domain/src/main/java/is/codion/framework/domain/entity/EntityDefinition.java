@@ -12,7 +12,6 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
 
-import java.io.Serializable;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -24,7 +23,7 @@ import java.util.function.Function;
 /**
  * Specifies a entity definition.
  */
-public interface EntityDefinition extends Serializable {
+public interface EntityDefinition {
 
   /**
    * Specifies whether it should be possible to define foreign keys referencing entities that have

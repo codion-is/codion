@@ -3,12 +3,10 @@
  */
 package is.codion.common.version;
 
-import java.io.Serializable;
-
 /**
  * A version.
  */
-public interface Version extends Comparable<Version>, Serializable {
+public interface Version extends Comparable<Version> {
 
   /**
    * @return the major part of this version

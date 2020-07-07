@@ -6,7 +6,6 @@ package is.codion.common.db.reports;
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
 
-import java.io.Serializable;
 import java.sql.Connection;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -17,7 +16,7 @@ import static is.codion.common.Util.nullOrEmpty;
  * @param <R> the report result type
  * @param <P> the report parameters type
  */
-public interface Report<T, R, P> extends Serializable {
+public interface Report<T, R, P> {
 
   /**
    * The report path used for file based report generation.

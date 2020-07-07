@@ -84,7 +84,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 === BlobProperty
 
-{url-javadoc}/is/codion/framework/domain/property/BlobProperty.html[BlobProperty] is a specific ColumnProperty for the Types.BLOB type which provides lazy loading for BLOB values. Using a standard ColumnProperty with a Types.BLOB works fine, but for lazy loading you have to use BlobProperty.
+{url-javadoc}/is/codion/framework/domain/property/BlobProperty.html[BlobProperty] is a specific ColumnProperty for the Types.BLOB type which provides lazy loading for BLOB values. Using a standard ColumnProperty with a byte array type works fine, but for lazy loading you have to use BlobProperty.
 
 [source,java,indent=0]
 ----

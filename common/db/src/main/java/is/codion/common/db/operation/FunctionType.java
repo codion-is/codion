@@ -5,7 +5,6 @@ package is.codion.common.db.operation;
 
 import is.codion.common.db.exception.DatabaseException;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +12,7 @@ import java.util.List;
  * @param <T> the function argument type
  * @param <R> the function result type
  */
-public interface FunctionType<C, T, R> extends Serializable {
+public interface FunctionType<C, T, R> {
 
   /**
    * @return the function name

@@ -5,7 +5,6 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.MethodLogger;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +12,7 @@ import java.util.UUID;
 /**
  * Encapsulates a simple collection of server access log entries and basic connection access info.
  */
-public interface ClientLog extends Serializable {
+public interface ClientLog {
 
   /**
    * @return the log entry list

@@ -5,15 +5,13 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.property.Property;
 
-import java.io.Serializable;
-
 /**
  * Typed {@link Attribute} to base a {@link Property} on.
  * Note that attribute names are case-sensitive and Attributes are equal if their
  * names and entityTypes are equal, the typeClass does not factor into equality.
  * @param <T> the attribute type
  */
-public interface Attribute<T> extends Serializable {
+public interface Attribute<T> {
 
   /**
    * @return the name of this attribute.

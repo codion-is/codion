@@ -6,13 +6,14 @@ package is.codion.common.rmi.client;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultConnectionRequest implements ConnectionRequest {
+final class DefaultConnectionRequest implements ConnectionRequest, Serializable {
 
   private static final long serialVersionUID = 1;
 

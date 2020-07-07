@@ -26,7 +26,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default Property implementation
  */
-abstract class DefaultProperty<T> implements Property<T> {
+abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 

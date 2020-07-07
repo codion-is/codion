@@ -3,14 +3,13 @@
  */
 package is.codion.framework.domain.entity;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Represents a primary key.
  */
-public interface Key extends Serializable {
+public interface Key {
 
   /**
    * @return the entity type

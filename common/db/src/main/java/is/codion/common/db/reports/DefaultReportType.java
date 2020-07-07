@@ -3,11 +3,12 @@
  */
 package is.codion.common.db.reports;
 
+import java.io.Serializable;
 import java.sql.Connection;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultReportType<T, R, P> implements ReportType<T, R, P> {
+final class DefaultReportType<T, R, P> implements ReportType<T, R, P>, Serializable {
 
   private static final long serialVersionUID = 1;
 

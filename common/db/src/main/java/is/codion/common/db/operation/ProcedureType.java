@@ -5,14 +5,13 @@ package is.codion.common.db.operation;
 
 import is.codion.common.db.exception.DatabaseException;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * @param <C> the connection type
  * @param <T> the procedure argument type
  */
-public interface ProcedureType<C, T> extends Serializable {
+public interface ProcedureType<C, T> {
 
   /**
    * @return the procedure name

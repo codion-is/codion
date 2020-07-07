@@ -8,6 +8,7 @@ import is.codion.framework.domain.property.ColumnProperty;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.Optional;
 /**
  * A class representing a primary key for entities.
  */
-final class DefaultKey implements Key {
+final class DefaultKey implements Key, Serializable {
 
   private static final long serialVersionUID = 1;
 

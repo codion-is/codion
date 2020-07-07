@@ -7,14 +7,13 @@ import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.common.version.Versions;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
 
 /**
  * Encapsulates information about a client required by a server for establishing a connection
  */
-public interface ConnectionRequest extends Serializable {
+public interface ConnectionRequest {
 
   /**
    * @return the user
@@ -62,7 +61,7 @@ public interface ConnectionRequest extends Serializable {
    * @param user the user
    * @param clientId the client id
    * @param clientTypeId the client type id
-   * @param parameters misc. parameters, values must implement {@link Serializable}
+   * @param parameters misc. parameters, values must implement {@link java.io.Serializable}
    * @return a ConnectionRequest
    */
   static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId,
@@ -76,7 +75,7 @@ public interface ConnectionRequest extends Serializable {
    * @param clientId the client id
    * @param clientTypeId the client type id
    * @param clientVersion the client application version
-   * @param parameters misc. parameters, values must implement {@link Serializable}
+   * @param parameters misc. parameters, values must implement {@link java.io.Serializable}
    * @return a ConnectionRequest
    */
   static ConnectionRequest connectionRequest(final User user, final UUID clientId, final String clientTypeId,
