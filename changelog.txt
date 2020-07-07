@@ -6373,3 +6373,4 @@
   EntityLookupModel.getLookupProperties() replaced with getLookupAttributes()
   EntityDefinition.getSearchProperties() replaced with getSearchAttributes()
   EntityTableConditionModel, minor renaming, for consistency
+  ColumnConditionPanel, minor renaming, for consistency
