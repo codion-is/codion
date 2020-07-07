@@ -8,7 +8,6 @@ import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
-import java.io.Serializable;
 import java.math.RoundingMode;
 import java.text.Format;
 import java.time.format.DateTimeFormatter;
@@ -18,7 +17,7 @@ import java.util.function.Supplier;
  * Specifies a Property.
  * @param <T> the underlying type
  */
-public interface Property<T> extends Serializable {
+public interface Property<T> {
 
   int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
   int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;

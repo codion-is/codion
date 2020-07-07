@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.property.ColumnProperty;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -14,7 +13,7 @@ import java.util.Set;
 /**
  * Represents a row in a database table.
  */
-public interface Entity extends Comparable<Entity>, Serializable {
+public interface Entity extends Comparable<Entity> {
 
   /**
    * @return the entity type

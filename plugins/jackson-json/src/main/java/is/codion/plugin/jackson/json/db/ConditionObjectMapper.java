@@ -4,7 +4,6 @@
 package is.codion.plugin.jackson.json.db;
 
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.EntityCondition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 

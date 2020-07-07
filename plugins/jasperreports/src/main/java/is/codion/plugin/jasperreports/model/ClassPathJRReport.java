@@ -7,8 +7,6 @@ import net.sf.jasperreports.engine.util.JRLoader;
 
 final class ClassPathJRReport extends AbstractJRReport {
 
-  private static final long serialVersionUID = 1;
-
   private final Class<?> resourceClass;
 
   ClassPathJRReport(final Class<?> resourceClass, final String reportPath) {

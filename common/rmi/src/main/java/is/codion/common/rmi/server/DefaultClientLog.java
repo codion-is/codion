@@ -5,11 +5,12 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.MethodLogger;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-final class DefaultClientLog implements ClientLog {
+final class DefaultClientLog implements ClientLog, Serializable {
 
   private static final long serialVersionUID = 1;
 

@@ -6,11 +6,12 @@ package is.codion.common.user;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultUser implements User {
+final class DefaultUser implements User, Serializable {
 
   private static final long serialVersionUID = 1;
 

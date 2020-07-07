@@ -106,6 +106,3 @@ is.codion.framework.domain.entity.DefaultAttribute
 is.codion.framework.demos.chinook.domain.Chinook
 is.codion.framework.demos.empdept.domain.EmpDept
 is.codion.plugin.jasperreports.model.DefaultJRReportType
-is.codion.plugin.jasperreports.model.AbstractJRReport
-is.codion.plugin.jasperreports.model.ClassPathJRReport
-is.codion.plugin.jasperreports.model.FileJasperJRReport

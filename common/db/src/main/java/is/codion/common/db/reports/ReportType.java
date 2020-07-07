@@ -3,7 +3,6 @@
  */
 package is.codion.common.db.reports;
 
-import java.io.Serializable;
 import java.sql.Connection;
 
 /**
@@ -12,7 +11,7 @@ import java.sql.Connection;
  * @param <R> the report result type
  * @param <P> the report parameters type
  */
-public interface ReportType<T, R, P> extends Serializable {
+public interface ReportType<T, R, P> {
 
   /**
    * @return the report name

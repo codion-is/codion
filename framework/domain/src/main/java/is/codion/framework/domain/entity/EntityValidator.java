@@ -10,13 +10,12 @@ import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.Property;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 /**
  * Responsible for providing validation for entities.
  */
-public interface EntityValidator extends Serializable {
+public interface EntityValidator {
 
   /**
    * Returns true if the given property accepts a null value for the given entity,

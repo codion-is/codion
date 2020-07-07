@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ import java.util.Objects;
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultEntityType<T extends Entity> implements EntityType<T> {
+final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 

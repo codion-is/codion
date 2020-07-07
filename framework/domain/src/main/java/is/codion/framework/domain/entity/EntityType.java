@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,7 +12,7 @@ import java.time.LocalTime;
  * Defines a Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
  * @param <T> the entity type
  */
-public interface EntityType<T extends Entity> extends Serializable {
+public interface EntityType<T extends Entity> {
 
   /**
    * @return the name of the domain this entity type is associated with

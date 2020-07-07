@@ -11,10 +11,11 @@ import is.codion.common.db.reports.Reports;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.util.Map;
 
-final class DefaultJRReportType implements JRReportType {
+final class DefaultJRReportType implements JRReportType, Serializable {
 
   private static final long serialVersionUID = 1;
 

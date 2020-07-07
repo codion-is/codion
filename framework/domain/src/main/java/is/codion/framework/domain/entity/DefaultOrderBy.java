@@ -3,12 +3,13 @@
  */
 package is.codion.framework.domain.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultOrderBy implements OrderBy {
+final class DefaultOrderBy implements OrderBy, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -42,7 +43,7 @@ final class DefaultOrderBy implements OrderBy {
     }
   }
 
-  private static final class DefaultOrderByAttribute implements OrderByAttribute {
+  private static final class DefaultOrderByAttribute implements OrderByAttribute, Serializable {
 
     private static final long serialVersionUID = 1;
 

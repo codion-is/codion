@@ -13,8 +13,6 @@ import java.net.URL;
 
 final class FileJRReport extends AbstractJRReport {
 
-  private static final long serialVersionUID = 1;
-
   FileJRReport(final String reportPath) {
     super(reportPath);
   }

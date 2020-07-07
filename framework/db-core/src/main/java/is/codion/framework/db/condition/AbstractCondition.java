@@ -6,9 +6,11 @@ package is.codion.framework.db.condition;
 import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.EntityType;
 
+import java.io.Serializable;
+
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractCondition implements Condition {
+abstract class AbstractCondition implements Condition, Serializable {
 
   private static final long serialVersionUID = 1;
 

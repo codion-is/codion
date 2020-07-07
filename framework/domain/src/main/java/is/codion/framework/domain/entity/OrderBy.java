@@ -3,13 +3,12 @@
  */
 package is.codion.framework.domain.entity;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Specifies a order by clause
  */
-public interface OrderBy extends Serializable {
+public interface OrderBy {
 
   /**
    * Adds an 'ascending' order by for the given attributes
@@ -33,7 +32,7 @@ public interface OrderBy extends Serializable {
   /**
    * Specifies a order by property and whether it's ascending or descending
    */
-  interface OrderByAttribute extends Serializable {
+  interface OrderByAttribute {
 
     /**
      * @return the attribute to order by

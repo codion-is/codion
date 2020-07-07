@@ -9,13 +9,14 @@ import is.codion.framework.domain.entity.EntityTypes;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultDomainType implements DomainType {
+final class DefaultDomainType implements DomainType, Serializable {
 
   private static final long serialVersionUID = 1;
 

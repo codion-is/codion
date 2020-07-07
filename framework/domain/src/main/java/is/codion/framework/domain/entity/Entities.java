@@ -7,7 +7,6 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,7 +27,7 @@ import static java.util.stream.Collectors.toList;
  * Factory for {@link Entity} and {@link Key} instances.
  * Helper class for working with Entity instances and related classes
  */
-public interface Entities extends Serializable {
+public interface Entities {
 
   /**
    * @return the {@link DomainType} this {@link Entities} instance is associated with

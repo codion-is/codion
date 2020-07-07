@@ -6347,3 +6347,5 @@
   EntityTableConditionModel, minor renaming, for consistency
   ColumnConditionPanel, minor renaming, for consistency
   EntityLookupField.TableSelectionProvider bug fixed, forgot to map attribute to property when setting table model columns
+  Interfaces no longer extend Serializable, implementation classes implement instead, except ColorProvider and DerivedProperty.Provider, for serializable lambdas
+  Report no longer extends Serializable

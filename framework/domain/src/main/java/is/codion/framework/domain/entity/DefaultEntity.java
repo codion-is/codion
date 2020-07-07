@@ -16,6 +16,7 @@ import is.codion.framework.domain.property.ValueListProperty;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents a row in a database table.
  */
-final class DefaultEntity implements Entity {
+final class DefaultEntity implements Entity, Serializable {
 
   private static final long serialVersionUID = 1;
 

@@ -8,13 +8,14 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-final class DefaultConditionCombination implements Condition.Combination {
+final class DefaultConditionCombination implements Condition.Combination, Serializable {
 
   private static final long serialVersionUID = 1;
 

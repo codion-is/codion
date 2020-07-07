@@ -14,6 +14,7 @@ import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -28,7 +29,7 @@ import java.util.ResourceBundle;
  * @see Property.Builder#maximumValue(double)
  * @see Property.Builder#maximumLength(int)
  */
-public class DefaultEntityValidator implements EntityValidator {
+public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   private static final long serialVersionUID = 1;
 

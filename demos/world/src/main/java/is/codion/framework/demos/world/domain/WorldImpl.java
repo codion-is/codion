@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.DerivedProperty;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 import static is.codion.common.Util.notNull;
 import static is.codion.framework.domain.entity.KeyGenerators.sequence;
@@ -261,7 +262,8 @@ public final class WorldImpl extends DefaultDomain {
   // end::colorProvider[]
 
   // tag::derivedPropertyProvider[]
-  private static final class NoOfSpeakersProvider implements DerivedProperty.Provider<Integer> {
+  private static final class NoOfSpeakersProvider
+          implements DerivedProperty.Provider<Integer> {
 
     private static final long serialVersionUID = 1;
 
@@ -279,7 +281,8 @@ public final class WorldImpl extends DefaultDomain {
   // end::derivedPropertyProvider[]
 
   // tag::validator[]
-  private static final class CityValidator extends DefaultEntityValidator {
+  private static final class CityValidator
+          extends DefaultEntityValidator implements Serializable {
 
     private static final long serialVersionUID = 1;
 

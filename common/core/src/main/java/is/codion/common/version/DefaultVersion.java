@@ -3,9 +3,10 @@
  */
 package is.codion.common.version;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-final class DefaultVersion implements Version {
+final class DefaultVersion implements Version, Serializable {
 
   private static final long serialVersionUID = 1;
 
