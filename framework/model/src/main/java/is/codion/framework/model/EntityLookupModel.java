@@ -8,9 +8,9 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.ColumnProperty;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * A interface responsible for doing entity lookups based on a set of condition properties.
+ * A interface responsible for doing entity lookups based on a set of condition attributes.
  */
 public interface EntityLookupModel {
 
@@ -52,7 +52,7 @@ public interface EntityLookupModel {
   void setSelectedEntities(List<Entity> entities);
 
   /**
-   * @return a string describing this lookup model, by default a comma separated list of search property names
+   * @return a string describing this lookup model, by default a comma separated list of search attribute names
    */
   String getDescription();
 
@@ -62,9 +62,9 @@ public interface EntityLookupModel {
   void setDescription(String description);
 
   /**
-   * @return a list containing the properties used when performing a lookup
+   * @return a list containing the attributes used when performing a lookup
    */
-  Collection<ColumnProperty<String>> getLookupProperties();
+  Collection<Attribute<String>> getLookupAttributes();
 
   /**
    * @param resultSorter the comparator used to sort the lookup result, null if the result should not be sorted
@@ -106,7 +106,7 @@ public interface EntityLookupModel {
   /**
    * Performs a query based on the select condition
    * @return a list containing the entities fulfilling the current condition
-   * @throws IllegalStateException in case no lookup properties are specified
+   * @throws IllegalStateException in case no lookup attributes are specified
    */
   List<Entity> performQuery();
 
@@ -141,9 +141,9 @@ public interface EntityLookupModel {
   StateObserver getSearchStringRepresentsSelectedObserver();
 
   /**
-   * @return the settings associated with the lookup properties
+   * @return the settings associated with the lookup attributes
    */
-  Map<ColumnProperty<?>, LookupSettings> getPropertyLookupSettings();
+  Map<Attribute<String>, LookupSettings> getAttributeLookupSettings();
 
   /**
    * @return the Value representing the search string
@@ -161,7 +161,7 @@ public interface EntityLookupModel {
   Value<Boolean> getMultipleSelectionEnabledValue();
 
   /**
-   * Property lookup settings
+   * Attribute lookup settings
    */
   interface LookupSettings {
 

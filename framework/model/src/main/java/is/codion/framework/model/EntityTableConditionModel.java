@@ -182,8 +182,8 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * Uses the simpleSearchText as a basis for a wildcard search on all String based condition models,
-   * or the condition models representing the search properties for the underlying entity
-   * @see EntityDefinition#getSearchProperties()
+   * or the condition models representing the search attributes for the underlying entity
+   * @see EntityDefinition#getSearchAttributes()
    */
   void performSimpleSearch();
 

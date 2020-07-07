@@ -245,11 +245,11 @@ public interface EntityDefinition extends Serializable {
   <T> List<DenormalizedProperty<?>> getDenormalizedProperties(Attribute<T> foreignKeyAttribute);
 
   /**
-   * Returns the properties to search by when searching for entities of this type by a string value
-   * @return the properties to use when searching by string
+   * Returns the attributes to search by when searching for entities of this type by a string value
+   * @return the attributes to use when searching by string
    * @see ColumnProperty.Builder#searchProperty(boolean)
    */
-  Collection<ColumnProperty<String>> getSearchProperties();
+  Collection<Attribute<String>> getSearchAttributes();
 
   /**
    * @param attribute the attribute

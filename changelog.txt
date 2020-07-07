@@ -6342,3 +6342,5 @@
   Operator, GREATER_THAN, LESS_THAN, WITHIN_RANGE and OUTSIDE_RANGE renamed to the correct GREATER_THAN_OR_EQUALS, LESS_THAN_OR_EQUALS, WITHIN_RANGE_INCLUSIVE and OUTSIDE_RANGE_INCLUSIVE, EQUALS and NOT_EQUALS renamed EQUAL and NOT_EQUAL
   Conditions, added methods for the above
   ColumnConditionModel, minor renaming to reflect new operator names
+  EntityLookupModel.getLookupProperties() replaced with getLookupAttributes()
+  EntityDefinition.getSearchProperties() replaced with getSearchAttributes()

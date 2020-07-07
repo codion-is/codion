@@ -302,10 +302,10 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   private void setConditionString(final String searchString) {
-    final Collection<ColumnProperty<String>> searchProperties =
-            connectionProvider.getEntities().getDefinition(entityType).getSearchProperties();
-    for (final ColumnProperty<String> searchProperty : searchProperties) {
-      final ColumnConditionModel<?, ?, String> conditionModel = getConditionModel(searchProperty.getAttribute());
+    final Collection<Attribute<String>> searchAttributes =
+            connectionProvider.getEntities().getDefinition(entityType).getSearchAttributes();
+    for (final Attribute<String> searchAttribute : searchAttributes) {
+      final ColumnConditionModel<?, ?, String> conditionModel = getConditionModel(searchAttribute);
       conditionModel.setCaseSensitive(false);
       conditionModel.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
       conditionModel.setUpperBound(searchString);
