@@ -6374,3 +6374,4 @@
   EntityDefinition.getSearchProperties() replaced with getSearchAttributes()
   EntityTableConditionModel, minor renaming, for consistency
   ColumnConditionPanel, minor renaming, for consistency
+  EntityLookupField.TableSelectionProvider bug fixed, forgot to map attribute to property when setting table model columns

@@ -514,7 +514,8 @@ public final class EntityLookupField extends JTextField {
       table.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), enterActionKey);
       table.getActionMap().put(enterActionKey, selectControl);
       final Collection<Attribute<String>> lookupAttributes = lookupModel.getLookupAttributes();
-      tableModel.getColumnModel().setColumns(lookupAttributes.toArray(new Property[0]));
+      final EntityDefinition definition = lookupModel.getConnectionProvider().getEntities().getDefinition(lookupModel.getEntityType());
+      tableModel.getColumnModel().setColumns(lookupAttributes.stream().map(definition::getProperty).toArray(Property[]::new));
       tableModel.setSortingDirective(lookupAttributes.iterator().next(), SortingDirective.ASCENDING);
       table.setSelectionMode(lookupModel.getMultipleSelectionEnabledValue().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
