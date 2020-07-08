@@ -6,7 +6,10 @@ package is.codion.swing.framework.server.monitor.ui;
 import is.codion.common.DateFormats;
 import is.codion.common.MethodLogger;
 import is.codion.common.rmi.server.ClientLog;
+import is.codion.common.user.User;
+import is.codion.swing.common.ui.control.ControlProvider;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 
@@ -23,6 +26,8 @@ import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +36,9 @@ import java.time.format.DateTimeFormatter;
  * A ClientInstanceMonitorPanel
  */
 public final class ClientInstanceMonitorPanel extends JPanel {
+
+  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP);
+  private static final DateTimeFormatter DATE_TIME_FILENAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 
   private final JTextField creationDateField = new JTextField();
   private final JTextArea logArea = new JTextArea();
@@ -50,13 +58,8 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
   public void setModel(final ClientInstanceMonitor model) throws RemoteException {
     this.model = model;
-    if (model != null) {
-      loggingEnabledCheckBox.setModel(model.getLoggingEnabledButtonModel());
-      treeLog.setModel(model.getLogTreeModel());
-    }
-    else {
-      treeLog.setModel(null);
-    }
+    loggingEnabledCheckBox.setModel(model.getLoggingEnabledButtonModel());
+    treeLog.setModel(model.getLogTreeModel());
     updateView();
   }
 
@@ -78,7 +81,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
       }
       loggingEnabledCheckBox.setSelected(model.isLoggingEnabled());
       final LocalDateTime creationDate = model.getCreationDate();
-      creationDateField.setText(creationDate == null ? "unknown" : DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP).format(creationDate));
+      creationDateField.setText(creationDate == null ? "unknown" : DATE_TIME_FORMATTER.format(creationDate));
       model.refreshLogTreeModel();
     }
     else {
@@ -115,6 +118,8 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
     logArea.setLineWrap(false);
     logArea.setEditable(false);
+    logArea.setComponentPopupMenu(ControlProvider.createPopupMenu(
+            Controls.controlList(Controls.control(this::saveLogToFile, "Save to file..."))));
     final JScrollPane scrollPane = new JScrollPane(logArea);
 
     treeLog.setRootVisible(false);
@@ -125,5 +130,17 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     logPane.add(treeScrollPane, "Tree");
 
     add(logPane, BorderLayout.CENTER);
+  }
+
+  private void saveLogToFile() throws IOException {
+    if (creationDateField.getText().isEmpty()) {
+      throw new IllegalStateException("No client selected");
+    }
+
+    final User user = model.getRemoteClient().getUser();
+    final LocalDateTime creationDate = LocalDateTime.parse(creationDateField.getText(), DATE_TIME_FORMATTER);
+    final String filename = user.getUsername() + "@" + DATE_TIME_FILENAME_FORMATTER.format(creationDate) + ".log";
+
+    Files.write(Dialogs.selectFileToSave(this, null, filename).toPath(), logArea.getText().getBytes());
   }
 }

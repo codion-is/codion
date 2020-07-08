@@ -6379,3 +6379,4 @@
   Report no longer extends Serializable
   Operator.WITHIN_RANGE, WITHIN_RANGE_INCLUSIVE, OUTSIDE_RANGE and OUTSIDE_RANGE_INCLUSIVE renamed BETWEEN_EXCLUSIVE, BETWEEN, NOT_BETWEEN_EXCLUSIVE and NOT_BETWEEN respectively
   Jackson serialization refactoring and minor improvements
+  ClientInstanceMonitorPanel, added popup menu action to save log to file
