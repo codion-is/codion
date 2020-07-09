@@ -6381,3 +6381,4 @@
   Jackson serialization refactoring and minor improvements
   ClientInstanceMonitorPanel, added popup menu action to save log to file
   DefaultAttributeConditionBuilder.equalTo() and notEqualTo() now handle nulls, empty arrays and empty lists by creating a isNull() or isNotNull() conditions respectively
+  EntityTableModel.setQueryRowCountLimit() added

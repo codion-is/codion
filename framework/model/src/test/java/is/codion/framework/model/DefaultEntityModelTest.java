@@ -209,6 +209,10 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public int getColumnIndex(final Attribute<?> attribute) {return 0;}
     @Override
+    public int getQueryRowCountLimit() {return 0;}
+    @Override
+    public void setQueryRowCountLimit(final int queryRowCountLimit) {}
+    @Override
     public int getFetchCount() {return 0;}
     @Override
     public void setFetchCount(final int fetchCount) {}

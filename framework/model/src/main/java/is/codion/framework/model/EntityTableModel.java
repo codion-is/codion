@@ -252,6 +252,18 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setFetchCount(int fetchCount);
 
   /**
+   * Returns the query row count limit, a value of -1 means no limit.
+   * @return the query row count limit
+   */
+  int getQueryRowCountLimit();
+
+  /**
+   * Sets the query row count limit, a value of -1 means no limit.
+   * @param queryRowCountLimit the query row count limit
+   */
+  void setQueryRowCountLimit(int queryRowCountLimit);
+
+  /**
    * Updates the given entities. If the entities are unmodified or the list is empty
    * this method returns silently.
    * @param entities the entities to update
