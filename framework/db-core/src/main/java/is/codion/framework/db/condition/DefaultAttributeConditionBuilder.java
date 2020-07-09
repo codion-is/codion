@@ -22,32 +22,32 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> equalTo(final T value) {
-    return equalTo(singletonList(requireNonNull(value)));
+    return value == null ? isNull() : equalTo(singletonList(value));
   }
 
   @Override
   public AttributeCondition<T> equalTo(final T... values) {
-    return equalTo(asList(requireNonNull(values)));
+    return values == null ? isNull() : equalTo(asList(values));
   }
 
   @Override
   public AttributeCondition<T> equalTo(final Collection<? extends T> values) {
-    return new DefaultAttributeEqualCondition<>(attribute, values);
+    return requireNonNull(values).isEmpty() ? isNull() : new DefaultAttributeEqualCondition<>(attribute, values);
   }
 
   @Override
   public AttributeCondition<T> notEqualTo(final T value) {
-    return notEqualTo(singletonList(requireNonNull(value)));
+    return value == null ? isNotNull() : notEqualTo(singletonList(value));
   }
 
   @Override
   public AttributeCondition<T> notEqualTo(final T... values) {
-    return notEqualTo(asList(requireNonNull(values)));
+    return values == null ? isNotNull() : notEqualTo(asList(values));
   }
 
   @Override
   public AttributeCondition<T> notEqualTo(final Collection<? extends T> values) {
-    return new DefaultAttributeEqualCondition<>(attribute, values, true);
+    return requireNonNull(values).isEmpty() ? isNotNull() : new DefaultAttributeEqualCondition<>(attribute, values, true);
   }
 
   @Override

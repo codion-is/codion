@@ -503,9 +503,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return select(value == null ?
-            condition(attribute).isNull().selectCondition() :
-            condition(attribute).equalTo(value).selectCondition());
+    return select(condition(attribute).equalTo(value).selectCondition());
   }
 
   @Override

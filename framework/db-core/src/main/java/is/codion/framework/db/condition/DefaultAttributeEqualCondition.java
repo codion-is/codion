@@ -34,12 +34,12 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
 
   DefaultAttributeEqualCondition(final Attribute<T> attribute, final Collection<? extends T> conditionValues, final boolean negated) {
     super(attribute, negated ? Operator.NOT_EQUAL : Operator.EQUAL);
-    this.values = new ArrayList<>(requireNonNull(conditionValues));
+    this.values = new ArrayList<>(conditionValues);
     this.negated = negated;
     //replace Entity with Entity.Key
     for (int i = 0; i < values.size(); i++) {
       final Object value = values.get(i);
-      requireNonNull(value, "value");
+      requireNonNull(value, "Equal condition values may not be null");
       if (value instanceof Entity) {
         values.set(i, ((Entity) value).getKey());
       }

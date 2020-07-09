@@ -38,7 +38,7 @@ public interface AttributeCondition<T> extends Condition {
   interface Builder<T> {
 
     /**
-     * Returns a 'equalTo' {@link AttributeCondition}.
+     * Returns a 'equalTo' condition if {@code value} is non-null, a 'isNull' condition in case of null.
      * @param value the value to use in the condition
      * @return a {@link AttributeCondition}
      */
@@ -52,14 +52,14 @@ public interface AttributeCondition<T> extends Condition {
     AttributeCondition<T> equalTo(T... values);
 
     /**
-     * Returns a 'equalTo' {@link AttributeCondition}.
+     * Returns a 'equalTo' condition if {@code values} is non-empty, a 'isNull' condition in case of an empty collection.
      * @param values the values to use in the condition
      * @return a {@link AttributeCondition}
      */
     AttributeCondition<T> equalTo(Collection<? extends T> values);
 
     /**
-     * Returns a 'notEqualTo' {@link AttributeCondition}.
+     * Returns a 'notEqualTo' condition if {@code value} is non-null, a 'isNotNull' condition in case of null.
      * @param value the value to use in the condition
      * @return a {@link AttributeCondition}
      */
@@ -73,7 +73,7 @@ public interface AttributeCondition<T> extends Condition {
     AttributeCondition<T> notEqualTo(T... values);
 
     /**
-     * Returns a 'notEqualTo' {@link AttributeCondition}.
+     * Returns a 'notEqualTo' condition if {@code values} is non-empty, a 'isNotNull' condition in case of an empty collection.
      * @param values the values to use in the condition
      * @return a {@link AttributeCondition}
      */
