@@ -6354,3 +6354,4 @@
   ClientInstanceMonitorPanel, added popup menu action to save log to file
   DefaultAttributeConditionBuilder.equalTo() and notEqualTo() now handle nulls, empty arrays and empty lists by creating a isNull() or isNotNull() conditions respectively
   EntityTableModel.setQueryRowCountLimit() added
+  EntitySelectionDialog bug fixed, called tableModel.getEditModel() without checking if it had one
