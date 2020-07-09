@@ -4,8 +4,10 @@
 package is.codion.framework.model.tests;
 
 import is.codion.common.Util;
+import is.codion.common.db.Operator;
 import is.codion.common.db.database.Databases;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -310,6 +312,22 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
     final Collection<Entity> entitiesByKey = testModel.getEntitiesByKey(keys);
     assertEquals(3, entitiesByKey.size());
+  }
+
+  @Test
+  public void queryRowCountLimit() {
+    final TableModel tableModel = createEmployeeTableModel();
+    tableModel.setQueryRowCountLimit(6);
+    assertThrows(IllegalStateException.class, tableModel::refresh);
+    final ColumnConditionModel<?, ?, Double> commissionConditionModel =
+            tableModel.getTableConditionModel().getConditionModel(TestDomain.EMP_COMMISSION);
+    commissionConditionModel.setOperator(Operator.EQUAL);
+    commissionConditionModel.setEnabled(true);
+    tableModel.refresh();
+    commissionConditionModel.setEnabled(false);
+    assertThrows(IllegalStateException.class, tableModel::refresh);
+    tableModel.setQueryRowCountLimit(-1);
+    tableModel.refresh();
   }
 
   @Test

@@ -106,6 +106,11 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   private final State queryConditionRequiredState = States.state();
 
   /**
+   * The maximum number of rows this table model accepts from a query.
+   */
+  private int queryRowCountLimit = -1;
+
+  /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
    */
   private int fetchCount = -1;
@@ -215,6 +220,16 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final void setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
+  }
+
+  @Override
+  public final int getQueryRowCountLimit() {
+    return queryRowCountLimit;
+  }
+
+  @Override
+  public final void setQueryRowCountLimit(final int queryRowCountLimit) {
+    this.queryRowCountLimit = queryRowCountLimit;
   }
 
   @Override
@@ -601,6 +616,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   protected final void doRefresh() {
     try {
       LOG.debug("{} refreshing", this);
+      checkQueryRowCount();
       final List<Entity> queryResult = performQuery();
       clear();
       addEntitiesSorted(queryResult);
@@ -620,13 +636,29 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @see EntityTableConditionModel#getCondition()
    */
   protected List<Entity> performQuery() {
-    if (!getTableConditionModel().isEnabled() && queryConditionRequiredState.get()) {
+    if (queryConditionRequiredState.get() && !getTableConditionModel().isEnabled()) {
       return emptyList();
     }
 
     try {
       return connectionProvider.getConnection().select(getTableConditionModel().getCondition()
               .selectCondition().setFetchCount(fetchCount).setOrderBy(getOrderBy()));
+    }
+    catch (final DatabaseException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * @return the number of rows {@link #performQuery()} would return on next invocation
+   */
+  protected int getQueryRowCount() {
+    if (queryConditionRequiredState.get() && !getTableConditionModel().isEnabled()) {
+      return 0;
+    }
+
+    try {
+      return connectionProvider.getConnection().rowCount(getTableConditionModel().getCondition());
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -700,6 +732,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     editModel.addEntitySetListener(this::onEntitySet);
     getSelectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(this::onTableModelEvent);
+  }
+
+  private void checkQueryRowCount() {
+    if (queryRowCountLimit >= 0 && getQueryRowCount() > queryRowCountLimit) {
+      throw new IllegalStateException("Too many rows returned, add query condition");
+    }
   }
 
   private void onInsert(final List<Entity> insertedEntities) {

@@ -455,6 +455,22 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   /**
+   * @return the number of rows {@link #performQuery()} would return on next invocation
+   */
+  protected int getQueryRowCount() {
+    if (!tableConditionModel.isEnabled() && queryConditionRequiredState.get()) {
+      return 0;
+    }
+
+    try {
+      return getConnectionProvider().getConnection().rowCount(tableConditionModel.getCondition());
+    }
+    catch (final DatabaseException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
    * The order by clause to use when selecting the data for this model,
    * by default the order by clause defined for the underlying entity
    * @return the order by clause
