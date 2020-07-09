@@ -65,7 +65,7 @@ public final class EntitySelectionDialog extends JDialog {
     super(dialogOwner instanceof Window ? (Window) dialogOwner : getParentWindow(dialogOwner), dialogTitle);
     setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     this.tableModel = requireNonNull(tableModel, "tableModel");
-    if (tableModel.getEditModel() != null) {
+    if (tableModel.hasEditModel()) {
       tableModel.getEditModel().setReadOnly(true);
     }
     this.entityTablePanel = initializeTablePanel(tableModel, preferredSize);

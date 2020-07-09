@@ -84,6 +84,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Returns the {@link EntityEditModel} associated with this table model
    * @return the edit model associated with this table model
    * @see #setEditModel(EntityEditModel)
+   * @see #hasEditModel()
    * @throws IllegalStateException in case no edit model has been associated with this table model
    */
   E getEditModel();
