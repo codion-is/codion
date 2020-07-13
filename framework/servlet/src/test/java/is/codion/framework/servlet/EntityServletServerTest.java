@@ -71,7 +71,7 @@ public class EntityServletServerTest {
   @BeforeAll
   public static void setUp() throws Exception {
     final EntityServerConfiguration configuration = configure();
-    SERVER_BASEURL = "https://" + ServerConfiguration.SERVER_HOST_NAME.get() + ":" + WEB_SERVER_PORT_NUMBER + "/entities";
+    SERVER_BASEURL = "https://" + ServerConfiguration.SERVER_HOST_NAME.get() + ":" + WEB_SERVER_PORT_NUMBER + "/entities/ser";
     server = EntityServer.startServer(configuration);
     admin = server.getServerAdmin(ADMIN_USER);
   }
