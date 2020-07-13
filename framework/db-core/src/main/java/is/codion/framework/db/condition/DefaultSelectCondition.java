@@ -25,7 +25,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   private List<Attribute<?>> selectAttributes = emptyList();
 
   private OrderBy orderBy;
-  private Integer foreignKeyFetchDepth;
+  private Integer fetchDepth;
   private int fetchCount = -1;
   private boolean forUpdate;
   private int limit;
@@ -105,7 +105,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   }
 
   @Override
-  public SelectCondition setForeignKeyFetchDepth(final Attribute<Entity> foreignKeyAttribute, final int fetchDepth) {
+  public SelectCondition setFetchDepth(final Attribute<Entity> foreignKeyAttribute, final int fetchDepth) {
     if (foreignKeyFetchDepths == null) {
       foreignKeyFetchDepths = new HashMap<>();
     }
@@ -114,18 +114,23 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   }
 
   @Override
-  public Integer getForeignKeyFetchDepth(final Attribute<Entity> foreignKeyAttribute) {
+  public Integer getFetchDepth(final Attribute<Entity> foreignKeyAttribute) {
     if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKeyAttribute)) {
       return foreignKeyFetchDepths.get(foreignKeyAttribute);
     }
 
-    return foreignKeyFetchDepth;
+    return fetchDepth;
   }
 
   @Override
-  public SelectCondition setForeignKeyFetchDepth(final int fetchDepth) {
-    this.foreignKeyFetchDepth = fetchDepth;
+  public SelectCondition setFetchDepth(final int fetchDepth) {
+    this.fetchDepth = fetchDepth;
     return this;
+  }
+
+  @Override
+  public Integer getFetchDepth() {
+    return fetchDepth;
   }
 
   @Override

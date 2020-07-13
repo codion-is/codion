@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -48,6 +49,17 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     selectCondition.setLimit(jsonNode.get("limit").asInt());
     selectCondition.setOffset(jsonNode.get("offset").asInt());
     selectCondition.setFetchCount(jsonNode.get("fetchCount").asInt());
+    final JsonNode fetchDepth = jsonNode.get("fetchDepth");
+    if (fetchDepth != null) {
+      selectCondition.setFetchDepth(fetchDepth.asInt());
+    }
+    final JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
+    for (final ForeignKeyProperty property : entities.getDefinition(entityType).getForeignKeyProperties()) {
+      final JsonNode fetchDepthNode = fkFetchDepth.get(property.getAttribute().getName());
+      if (fetchDepthNode != null) {
+        selectCondition.setFetchDepth(property.getAttribute(), fetchDepthNode.asInt());
+      }
+    }
     selectCondition.setForUpdate(jsonNode.get("forUpdate").asBoolean());
     selectCondition.setSelectAttributes(deserializeSelectAttributes(definition, jsonNode.get("selectAttributes")));
 

@@ -5,7 +5,10 @@ package is.codion.plugin.jackson.json.db;
 
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -19,10 +22,12 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
   private static final long serialVersionUID = 1;
 
   private final ConditionSerializer conditionSerializer;
+  private final Entities entities;
 
   SelectConditionSerializer(final EntityObjectMapper entityObjectMapper) {
     super(SelectCondition.class);
     this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
+    this.entities = entityObjectMapper.getEntities();
   }
 
   @Override
@@ -43,14 +48,21 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
       }
       generator.writeEndArray();
     }
-    generator.writeFieldName("limit");
-    generator.writeObject(condition.getLimit());
-    generator.writeFieldName("offset");
-    generator.writeObject(condition.getOffset());
-    generator.writeFieldName("forUpdate");
-    generator.writeObject(condition.isForUpdate());
-    generator.writeFieldName("fetchCount");
-    generator.writeObject(condition.getFetchCount());
+    generator.writeObjectField("limit", condition.getLimit());
+    generator.writeObjectField("offset", condition.getOffset());
+    generator.writeObjectField("forUpdate", condition.isForUpdate());
+    generator.writeObjectField("fetchCount", condition.getFetchCount());
+    generator.writeObjectField("fetchDepth", condition.getFetchDepth());
+    generator.writeFieldName("fkFetchDepth");
+    generator.writeStartObject();
+    for (final ForeignKeyProperty property : entities.getDefinition(condition.getEntityType()).getForeignKeyProperties()) {
+      final Attribute<Entity> attribute = property.getAttribute();
+      final Integer fkFetchDepth = condition.getFetchDepth(attribute);
+      if (fkFetchDepth != condition.getFetchDepth()) {
+        generator.writeObjectField(attribute.getName(), fkFetchDepth);
+      }
+    }
+    generator.writeEndObject();
     generator.writeFieldName("selectAttributes");
     generator.writeStartArray();
     for (final Attribute<?> attribute : condition.getSelectAttributes()) {
