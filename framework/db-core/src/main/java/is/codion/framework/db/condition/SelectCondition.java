@@ -84,7 +84,7 @@ public interface SelectCondition extends Condition {
    * @param foreignKeyAttribute the foreign key attribute
    * @return the number of levels of foreign key values to fetch
    */
-  Integer getForeignKeyFetchDepth(Attribute<Entity> foreignKeyAttribute);
+  Integer getFetchDepth(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * Limit the levels of foreign keys to fetch via the given foreign key property
@@ -92,14 +92,19 @@ public interface SelectCondition extends Condition {
    * @param fetchDepth the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  SelectCondition setForeignKeyFetchDepth(Attribute<Entity> foreignKeyAttribute, int fetchDepth);
+  SelectCondition setFetchDepth(Attribute<Entity> foreignKeyAttribute, int fetchDepth);
+
+  /**
+   * @return the global fetch depth limit for this condition, null if none has been specified
+   */
+  Integer getFetchDepth();
 
   /**
    * Limit the levels of foreign keys to fetch
    * @param fetchDepth the foreign key fetch depth limit
    * @return this EntitySelectCondition instance
    */
-  SelectCondition setForeignKeyFetchDepth(int fetchDepth);
+  SelectCondition setFetchDepth(int fetchDepth);
 
   /**
    * Sets the attributes to include in the resulting Entities,

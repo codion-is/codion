@@ -98,11 +98,11 @@ public interface LocalEntityConnection extends EntityConnection {
   boolean isLimitForeignKeyFetchDepth();
 
   /**
-   * @param limitForeignKeyFetchDepth false to override the fetch depth limit provided by condition
+   * @param limitFetchDepth false to override the fetch depth limit provided by condition
    * @return this LocalEntityConnection instance
-   * @see SelectCondition#setForeignKeyFetchDepth(int)
+   * @see SelectCondition#setFetchDepth(int)
    */
-  LocalEntityConnection setLimitForeignKeyFetchDepth(boolean limitForeignKeyFetchDepth);
+  LocalEntityConnection setLimitFetchDepth(boolean limitFetchDepth);
 
   /**
    * @return the underlying domain model

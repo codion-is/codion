@@ -6360,3 +6360,4 @@
   AbstractEntityService split from EntityService, EntityJsonService added
   AbstractHttpEntityConnection split from HttpEntityConnection, HttpJsonEntityConnection added, EntityService now handles json
   servlet and db-http modules now depend on jackson-json plugin implementation
+  SelectCondition, minor renaming and refactoring, serializing finished

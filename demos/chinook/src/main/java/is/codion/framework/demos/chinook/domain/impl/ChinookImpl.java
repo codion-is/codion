@@ -350,7 +350,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
     private static final SelectCondition ALL_INVOICES =
             condition(Invoice.TYPE).selectCondition()
-                    .setForUpdate(true).setForeignKeyFetchDepth(0);
+                    .setForUpdate(true).setFetchDepth(0);
 
     @Override
     public void execute(final EntityConnection entityConnection,

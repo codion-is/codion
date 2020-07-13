@@ -832,8 +832,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public LocalEntityConnection setLimitForeignKeyFetchDepth(final boolean limitForeignKeyFetchDepth) {
-    this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
+  public LocalEntityConnection setLimitFetchDepth(final boolean limitFetchDepth) {
+    this.limitForeignKeyFetchDepth = limitFetchDepth;
     return this;
   }
 
@@ -902,8 +902,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param condition the condition
    * @param currentForeignKeyFetchDepth the current foreign key fetch depth
    * @throws SQLException in case of a database exception
-   * @see #setLimitForeignKeyFetchDepth(boolean)
-   * @see SelectCondition#setForeignKeyFetchDepth(int)
+   * @see #setLimitFetchDepth(boolean)
+   * @see SelectCondition#setFetchDepth(int)
    */
   private void setForeignKeys(final List<Entity> entities, final SelectCondition condition,
                               final int currentForeignKeyFetchDepth) throws SQLException {
@@ -912,7 +912,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       final ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
       final Attribute<Entity> foreignKeyAttribute = foreignKeyProperty.getAttribute();
-      Integer conditionFetchDepthLimit = condition.getForeignKeyFetchDepth(foreignKeyAttribute);
+      Integer conditionFetchDepthLimit = condition.getFetchDepth(foreignKeyAttribute);
       if (conditionFetchDepthLimit == null) {//use the default one
         conditionFetchDepthLimit = foreignKeyProperty.getFetchDepth();
       }
@@ -927,7 +927,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           }
           else {
             final SelectCondition referencedEntitiesCondition = condition(referencedKeys).selectCondition();
-            referencedEntitiesCondition.setForeignKeyFetchDepth(conditionFetchDepthLimit);
+            referencedEntitiesCondition.setFetchDepth(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
             final Map<Key, Entity> referencedEntitiesMappedByKey = mapToKey(referencedEntities);
