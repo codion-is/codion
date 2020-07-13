@@ -5,8 +5,10 @@ package is.codion.plugin.jackson.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
@@ -14,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 /**
  * Entity object mapper for mapping {@link Entity} and {@link Key} to and from JSON.
@@ -21,6 +24,9 @@ import java.time.LocalTime;
 public final class EntityObjectMapper extends ObjectMapper {
 
   private static final long serialVersionUID = 1;
+
+  public static final TypeReference<List<Key>> KEY_LIST_REFERENCE = new TypeReference<List<Key>>() {};
+  public static final TypeReference<List<Entity>> ENTITY_LIST_REFERENCE = new TypeReference<List<Entity>>() {};
 
   private final EntitySerializer entitySerializer;
   private final EntityDeserializer entityDeserializer;
@@ -35,6 +41,9 @@ public final class EntityObjectMapper extends ObjectMapper {
     final SimpleModule module = new SimpleModule();
     entitySerializer = new EntitySerializer(this);
     entityDeserializer = new EntityDeserializer(entities, this);
+    module.addSerializer(EntityType.class, new EntityTypeSerializer());
+    module.addDeserializer(EntityType.class, new EntityTypeDeserializer(entities));
+    module.addKeyDeserializer(EntityType.class, new EntityTypeKeyDeserializer(entities));
     module.addSerializer(Entity.class, entitySerializer);
     module.addDeserializer(Entity.class, entityDeserializer);
     module.addSerializer(Key.class, new EntityKeySerializer(this));

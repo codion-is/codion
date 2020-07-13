@@ -33,11 +33,16 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeFieldName("condition");
     conditionSerializer.serialize(condition.getCondition(), generator);
     generator.writeFieldName("orderBy");
-    generator.writeStartArray();
-    for (final OrderBy.OrderByAttribute attribute : condition.getOrderBy().getOrderByAttributes()) {
-      generator.writeString(attribute.getAttribute().getName() + ":" + (attribute.isAscending() ? "asc" : "desc"));
+    if (condition.getOrderBy() == null) {
+      generator.writeNull();
     }
-    generator.writeEndArray();
+    else {
+      generator.writeStartArray();
+      for (final OrderBy.OrderByAttribute attribute : condition.getOrderBy().getOrderByAttributes()) {
+        generator.writeString(attribute.getAttribute().getName() + ":" + (attribute.isAscending() ? "asc" : "desc"));
+      }
+      generator.writeEndArray();
+    }
     generator.writeFieldName("limit");
     generator.writeObject(condition.getLimit());
     generator.writeFieldName("offset");

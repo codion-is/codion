@@ -75,6 +75,9 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     else if (attribute.isInteger()) {
       return jsonNode.asInt();
     }
+    else if (attribute.isLong()) {
+      return jsonNode.asLong();
+    }
     else if (attribute.isBigDecimal()) {
       return new BigDecimal(jsonNode.asText());
     }

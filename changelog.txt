@@ -6355,3 +6355,5 @@
   DefaultAttributeConditionBuilder.equalTo() and notEqualTo() now handle nulls, empty arrays and empty lists by creating a isNull() or isNotNull() conditions respectively
   EntityTableModel.setQueryRowCountLimit() added
   EntitySelectionDialog bug fixed, called tableModel.getEditModel() without checking if it had one
+  EntityTypeSerializer, EntityTypeDeserializer and EntityTypeKeyDeserializer added
+  UpdateConditionSerializer and UpdateConditionDeserializer added
