@@ -315,6 +315,9 @@ public final class EntityJSONParser {
     else if (attribute.isInteger()) {
       return propertyValues.getInt(attributeName);
     }
+    else if (attribute.isLong()) {
+      return propertyValues.getLong(attributeName);
+    }
     else if (attribute.isBigDecimal()) {
       return propertyValues.getBigDecimal(attributeName);
     }
