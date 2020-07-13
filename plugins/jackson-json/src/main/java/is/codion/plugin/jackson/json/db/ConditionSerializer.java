@@ -6,6 +6,7 @@ package is.codion.plugin.jackson.json.db;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.CustomCondition;
+import is.codion.framework.domain.entity.Entities;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -21,12 +22,14 @@ final class ConditionSerializer extends StdSerializer<Condition> {
   private final AttributeConditionSerializer attributeConditionSerializer;
   private final ConditionCombinationSerializer conditionCombinationSerializer;
   private final CustomConditionSerializer customConditionSerializer;
+  private final Entities entities;
 
   public ConditionSerializer(final EntityObjectMapper entityObjectMapper) {
     super(Condition.class);
     this.attributeConditionSerializer = new AttributeConditionSerializer(entityObjectMapper);
     this.conditionCombinationSerializer = new ConditionCombinationSerializer(attributeConditionSerializer);
     this.customConditionSerializer = new CustomConditionSerializer(entityObjectMapper);
+    this.entities = entityObjectMapper.getEntities();
   }
 
   @Override
@@ -51,6 +54,11 @@ final class ConditionSerializer extends StdSerializer<Condition> {
     else if (condition instanceof CustomCondition) {
       final CustomCondition customCondition = (CustomCondition) condition;
       customConditionSerializer.serialize(customCondition, generator);
+    }
+    else if (condition.getWhereClause(entities.getDefinition(condition.getEntityType())).isEmpty()) {
+      generator.writeStartObject();
+      generator.writeObjectField("type", "empty");
+      generator.writeEndObject();
     }
     else {
       throw new IllegalArgumentException("Unknown Condition type: " + condition.getClass());

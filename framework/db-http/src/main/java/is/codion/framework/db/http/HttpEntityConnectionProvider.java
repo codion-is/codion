@@ -19,6 +19,7 @@ import static java.util.Objects.requireNonNull;
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_HOST_NAME
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_PORT
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_SECURE
+ * @see HttpEntityConnectionProvider#HTTP_CLIENT_JSON
  */
 public final class HttpEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
@@ -45,9 +46,17 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
    */
   public static final PropertyValue<ClientHttps> HTTP_CLIENT_SECURE = Configuration.enumValue("codion.client.http.secure", ClientHttps.class, ClientHttps.TRUE);
 
+  /**
+   * Specifies whether json serialization should be used.<br>
+   * Value types: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> HTTP_CLIENT_JSON = Configuration.booleanValue("codion.client.http.json", true);
+
   private String serverHostName;
   private Integer serverPort;
   private Boolean https;
+  private Boolean json;
 
   /**
    * Instantiates a new HttpEntityConnectionProvider.
@@ -95,16 +104,16 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
   }
 
   @Override
-  protected HttpEntityConnection connect() {
+  protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
       if (getHttps()) {
         HttpEntityConnections.createSecureConnection(getDomainTypeName(getDomainClassName()), getServerHostName(),
-              getServerPort(), getUser(), getClientTypeId(), getClientId());
+              getServerPort(), getUser(), getClientTypeId(), getClientId(), getJson());
       }
 
       return HttpEntityConnections.createConnection(getDomainTypeName(getDomainClassName()), getServerHostName(),
-              getServerPort(), getUser(), getClientTypeId(), getClientId());
+              getServerPort(), getUser(), getClientTypeId(), getClientId(), getJson());
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -130,5 +139,13 @@ public final class HttpEntityConnectionProvider extends AbstractEntityConnection
     }
 
     return https;
+  }
+
+  private Boolean getJson() {
+    if (json == null) {
+      json = HTTP_CLIENT_JSON.get();
+    }
+
+    return json;
   }
 }

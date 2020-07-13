@@ -25,13 +25,15 @@ public final class HttpEntityConnections {
    * @param user the user
    * @param clientTypeId the client type id
    * @param clientId the client id
+   * @param json true if json serialization should be used
    * @return a http based EntityConnection
    */
-  public static HttpEntityConnection createConnection(final String domainTypeName, final String serverHostName,
-                                                      final int serverPort, final User user,
-                                                      final String clientTypeId, final UUID clientId) {
-    return new HttpEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.FALSE, user, clientTypeId, clientId,
-            new BasicHttpClientConnectionManager());
+  public static EntityConnection createConnection(final String domainTypeName, final String serverHostName,
+                                                  final int serverPort, final User user, final String clientTypeId,
+                                                  final UUID clientId, final boolean json) {
+    return json ?
+            new HttpJsonEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.FALSE, user, clientTypeId, clientId, new BasicHttpClientConnectionManager()) :
+            new HttpEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.FALSE, user, clientTypeId, clientId, new BasicHttpClientConnectionManager());
   }
 
   /**
@@ -42,12 +44,14 @@ public final class HttpEntityConnections {
    * @param user the user
    * @param clientTypeId the client type id
    * @param clientId the client id
+   * @param json true if json serialization should be used
    * @return a http based EntityConnection
    */
-  public static HttpEntityConnection createSecureConnection(final String domainTypeName, final String serverHostName,
-                                                            final int serverPort, final User user,
-                                                            final String clientTypeId, final UUID clientId) {
-    return new HttpEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.TRUE, user, clientTypeId, clientId,
-            new BasicHttpClientConnectionManager());
+  public static EntityConnection createSecureConnection(final String domainTypeName, final String serverHostName,
+                                                        final int serverPort, final User user, final String clientTypeId,
+                                                        final UUID clientId, final boolean json) {
+    return json ?
+            new HttpJsonEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.TRUE, user, clientTypeId, clientId, new BasicHttpClientConnectionManager()) :
+            new HttpEntityConnection(domainTypeName, serverHostName, serverPort, ClientHttps.TRUE, user, clientTypeId, clientId, new BasicHttpClientConnectionManager());
   }
 }

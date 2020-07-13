@@ -7,6 +7,7 @@ dependencies {
     implementation project(':codion-framework-domain')
     implementation project(':codion-framework-db-core')
     implementation project(':codion-framework-db-rmi')
+    implementation project(':codion-plugin-jackson-json')
 
     api 'javax.xml.bind:jaxb-api:2.3.0'
     api 'javax.activation:javax.activation-api:1.2.0'

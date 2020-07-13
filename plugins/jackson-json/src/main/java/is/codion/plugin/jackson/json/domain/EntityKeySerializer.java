@@ -11,8 +11,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
@@ -33,16 +31,16 @@ final class EntityKeySerializer extends StdSerializer<Key> {
     generator.writeStartObject();
     generator.writeStringField("entityType", key.getEntityType().getName());
     generator.writeFieldName("values");
-    entityObjectMapper.writeValue(generator, getValueMap(key));
+    writeValues(key, generator);
     generator.writeEndObject();
   }
 
-  private static Map<String, Object> getValueMap(final Key key) {
-    final Map<String, Object> valueMap = new HashMap<>();
+  private void writeValues(final Key key, final JsonGenerator generator) throws IOException {
+    generator.writeStartObject();
     for (final Attribute<?> attribute : key.getAttributes()) {
-      valueMap.put(attribute.getName(), key.get(attribute));
+      generator.writeFieldName(attribute.getName());
+      entityObjectMapper.writeValue(generator, key.get(attribute));
     }
-
-    return valueMap;
+    generator.writeEndObject();
   }
 }

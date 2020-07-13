@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -23,7 +22,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
 
   private static final long serialVersionUID = 1;
 
-  private boolean includeForeignKeyValues = false;
+  private boolean includeForeignKeyValues = true;
   private boolean includeNullValues = true;
 
   private final EntityObjectMapper mapper;
@@ -41,10 +40,10 @@ final class EntitySerializer extends StdSerializer<Entity> {
     generator.writeFieldName("entityType");
     mapper.writeValue(generator, entity.getEntityType().getName());
     generator.writeFieldName("values");
-    mapper.writeValue(generator, getValueMap(entity));
+    writeValues(entity, generator);
     if (entity.isModified()) {
       generator.writeFieldName("originalValues");
-      mapper.writeValue(generator, getOriginalValueMap(entity));
+      writeOriginalValues(entity, generator);
     }
     generator.writeEndObject();
   }
@@ -57,30 +56,30 @@ final class EntitySerializer extends StdSerializer<Entity> {
     this.includeNullValues = includeNullValues;
   }
 
-  private Map<String, Object> getValueMap(final Entity entity) {
-    final Map<String, Object> valueMap = new HashMap<>();
+  private void writeValues(final Entity entity, final JsonGenerator generator) throws IOException {
+    generator.writeStartObject();
     final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityType());
     for (final Map.Entry<Attribute<?>, Object> entry : entity.entrySet()) {
       final Property<?> property = definition.getProperty(entry.getKey());
       if (include(property, entity)) {
-        valueMap.put(property.getAttribute().getName(), entry.getValue());
+        generator.writeFieldName(property.getAttribute().getName());
+        mapper.writeValue(generator, entry.getValue());
       }
     }
-
-    return valueMap;
+    generator.writeEndObject();
   }
 
-  private Map<String, Object> getOriginalValueMap(final Entity entity) {
-    final Map<String, Object> valueMap = new HashMap<>();
+  private void writeOriginalValues(final Entity entity, final JsonGenerator generator) throws IOException {
+    generator.writeStartObject();
     final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityType());
     for (final Map.Entry<Attribute<?>, Object> entry : entity.originalEntrySet()) {
       final Property<?> property = definition.getProperty(entry.getKey());
       if (include(property, entity)) {
-        valueMap.put(property.getAttribute().getName(), entry.getValue());
+        generator.writeFieldName(property.getAttribute().getName());
+        mapper.writeValue(generator, entry.getValue());
       }
     }
-
-    return valueMap;
+    generator.writeEndObject();
   }
 
   private boolean include(final Property<?> property, final Entity entity) {

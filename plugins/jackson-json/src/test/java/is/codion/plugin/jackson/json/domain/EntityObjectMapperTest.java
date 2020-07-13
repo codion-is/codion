@@ -5,6 +5,7 @@ package is.codion.plugin.jackson.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 import is.codion.plugin.jackson.json.TestDomain;
 
@@ -17,7 +18,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import static java.util.Arrays.asList;
@@ -267,5 +271,26 @@ public final class EntityObjectMapperTest {
     final Entity emp3Parsed = mapper.readValue(mapper.writeValueAsString(singletonList(emp3)), ENTITY_LIST_TYPE_REF).get(0);
     assertFalse(emp3Parsed.containsKey(TestDomain.EMP_HIREDATE));
     assertFalse(emp3Parsed.containsKey(TestDomain.EMP_SALARY));
+  }
+
+  @Test
+  public void dependencyMap() throws JsonProcessingException {
+    final EntityObjectMapper mapper = new EntityObjectMapper(entities);
+
+    final Entity dept = entities.entity(TestDomain.T_DEPARTMENT);
+    dept.put(TestDomain.DEPARTMENT_ID, 1);
+    dept.put(TestDomain.DEPARTMENT_NAME, "Name");
+    dept.put(TestDomain.DEPARTMENT_LOCATION, "Location");
+    dept.put(TestDomain.DEPARTMENT_LOCATION, "New Location");
+
+    final Map<EntityType<?>, List<Entity>> map = new HashMap<>();
+
+    map.put(TestDomain.T_DEPARTMENT, singletonList(dept));
+
+    final String string = mapper.writeValueAsString(map);
+
+    final Map<EntityType<?>, Collection<Entity>> readMap = mapper.readValue(string, new TypeReference<Map<EntityType<?>, Collection<Entity>>>() {});
+
+    System.out.println(readMap);
   }
 }
