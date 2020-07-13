@@ -5,6 +5,8 @@ dependencies {
     api project(':codion-framework-domain')
     api project(':codion-framework-db-core')
 
+    implementation project(':codion-plugin-jackson-json')
+
     implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
 
     implementation "org.apache.httpcomponents:httpclient:${httpClientVersion}"

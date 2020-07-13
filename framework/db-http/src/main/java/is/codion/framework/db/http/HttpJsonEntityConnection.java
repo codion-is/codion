@@ -21,12 +21,23 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
+import is.codion.plugin.jackson.json.db.ConditionObjectMapper;
+import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -41,15 +52,18 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
 /**
- * A Http based {@link EntityConnection} implementation based on EntityService
+ * A Http based {@link EntityConnection} implementation based on EntityJsonService
  */
-final class HttpEntityConnection extends AbstractHttpEntityConnection {
+final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(HttpEntityConnection.class.getName(),
           Locale.getDefault());
 
+  private final EntityObjectMapper entityObjectMapper;
+  private final ConditionObjectMapper conditionObjectMapper;
+
   /**
-   * Instantiates a new {@link HttpEntityConnection} instance
+   * Instantiates a new {@link HttpJsonEntityConnection} instance
    * @param domainTypeName the name of the domain model type
    * @param serverHostName the http server host name
    * @param serverPort the http server port
@@ -58,17 +72,19 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  HttpEntityConnection(final String domainTypeName, final String serverHostName, final int serverPort,
-                       final ClientHttps httpsEnabled, final User user, final String clientTypeId, final UUID clientId,
-                       final HttpClientConnectionManager connectionManager) {
+  HttpJsonEntityConnection(final String domainTypeName, final String serverHostName, final int serverPort,
+                           final ClientHttps httpsEnabled, final User user, final String clientTypeId, final UUID clientId,
+                           final HttpClientConnectionManager connectionManager) {
     super(domainTypeName, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
-            "application/octet-stream", "/entities/ser", connectionManager);
+            "application/json", "/entities/json", connectionManager);
+    this.entityObjectMapper = new EntityObjectMapper(getEntities());
+    this.conditionObjectMapper = new ConditionObjectMapper(entityObjectMapper);
   }
 
   @Override
   public boolean isTransactionOpen() {
     try {
-      return onResponse(execute(createHttpPost("isTransactionOpen")));
+      return onJsonResponse(execute(createHttpPost("isTransactionOpen")), entityObjectMapper, Boolean.class);
     }
     catch (final Exception e) {
       throw logAndWrap(e);
@@ -78,7 +94,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public void beginTransaction() {
     try {
-      onResponse(execute(createHttpPost("beginTransaction")));
+      onJsonResponse(execute(createHttpPost("beginTransaction")));
     }
     catch (final RuntimeException e) {
       throw e;
@@ -91,7 +107,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public void rollbackTransaction() {
     try {
-      onResponse(execute(createHttpPost("rollbackTransaction")));
+      onJsonResponse(execute(createHttpPost("rollbackTransaction")));
     }
     catch (final RuntimeException e) {
       throw e;
@@ -104,7 +120,7 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public void commitTransaction() {
     try {
-      onResponse(execute(createHttpPost("commitTransaction")));
+      onJsonResponse(execute(createHttpPost("commitTransaction")));
     }
     catch (final RuntimeException e) {
       throw e;
@@ -161,7 +177,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public List<Key> insert(final List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      return onResponse(execute(createHttpPost("insert", byteArrayEntity(entities))));
+      return onJsonResponse(execute(createHttpPost("insert",
+              stringEntity(entityObjectMapper.writeValueAsString(entities)))),
+              entityObjectMapper, EntityObjectMapper.KEY_LIST_REFERENCE);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -180,7 +198,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public List<Entity> update(final List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
-      return onResponse(execute(createHttpPost("update", byteArrayEntity(entities))));
+      return onJsonResponse(execute(createHttpPost("update",
+              stringEntity(entityObjectMapper.writeValueAsString(entities)))),
+              entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -194,7 +214,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public int update(final UpdateCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      return onResponse(execute(createHttpPost("updateByCondition", byteArrayEntity(condition))));
+      return onJsonResponse(execute(createHttpPost("updateByCondition",
+              stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
+              entityObjectMapper, Integer.class);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -213,7 +235,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public int delete(final List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
-      return onResponse(execute(createHttpPost("deleteByKey", byteArrayEntity(keys))));
+      return onJsonResponse(execute(createHttpPost("deleteByKey",
+              stringEntity(entityObjectMapper.writeValueAsString(keys)))),
+              entityObjectMapper, Integer.class);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -227,7 +251,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public int delete(final Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      return onResponse(execute(createHttpPost("delete", byteArrayEntity(condition))));
+      return onJsonResponse(execute(createHttpPost("delete",
+              stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
+              entityObjectMapper, Integer.class);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -246,7 +272,14 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public <T> List<T> select(final Attribute<T> attribute, final Condition condition) throws DatabaseException {
     Objects.requireNonNull(attribute);
     try {
-      return onResponse(execute(createHttpPost("values", byteArrayEntity(asList(attribute, condition)))));
+      final ObjectNode node = entityObjectMapper.createObjectNode();
+      node.set("attribute", conditionObjectMapper.valueToTree(attribute.getName()));
+      node.set("entityType", conditionObjectMapper.valueToTree(attribute.getEntityType().getName()));
+      if (condition != null) {
+        node.set("condition", conditionObjectMapper.valueToTree(condition));
+      }
+
+      return onJsonResponse(execute(createHttpPost("values", stringEntity(node.toString()))), entityObjectMapper, List.class);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -283,7 +316,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public List<Entity> select(final List<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
-      return onResponse(execute(createHttpPost("selectByKey", byteArrayEntity(keys))));
+      return onJsonResponse(execute(createHttpPost("selectByKey",
+              stringEntity(entityObjectMapper.writeValueAsString(keys)))),
+              entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -297,7 +332,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public List<Entity> select(final SelectCondition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
-      return onResponse(execute(createHttpPost("select", byteArrayEntity(condition))));
+      return onJsonResponse(execute(createHttpPost("select",
+              stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
+              entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -321,7 +358,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public Map<EntityType<?>, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
-      return onResponse(execute(createHttpPost("dependencies", byteArrayEntity(entities))));
+      return onJsonResponse(execute(createHttpPost("dependencies",
+              stringEntity(entityObjectMapper.writeValueAsString(new ArrayList<>(entities))))),
+              entityObjectMapper, new TypeReference<Map<EntityType<?>, Collection<Entity>>>() {});
     }
     catch (final DatabaseException e) {
       throw e;
@@ -335,7 +374,9 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
   public int rowCount(final Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
-      return onResponse(execute(createHttpPost("count", byteArrayEntity(condition))));
+      return onJsonResponse(execute(createHttpPost("count",
+              stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
+              entityObjectMapper, Integer.class);
     }
     catch (final DatabaseException e) {
       throw e;
@@ -391,7 +432,47 @@ final class HttpEntityConnection extends AbstractHttpEntityConnection {
     }
   }
 
+  private static <T> T onJsonResponse(final CloseableHttpResponse closeableHttpResponse, final ObjectMapper mapper,
+                                      final TypeReference<T> typeReference) throws Exception {
+    try (final CloseableHttpResponse response = closeableHttpResponse) {
+      if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        response.getEntity().writeTo(outputStream);
+
+        throw Serializer.<Exception>deserialize(outputStream.toByteArray());
+      }
+
+      return mapper.readValue(response.getEntity().getContent(), typeReference);
+    }
+  }
+
+  private static void onJsonResponse(final CloseableHttpResponse closeableHttpResponse) throws Exception {
+    onJsonResponse(closeableHttpResponse, null, (Class<?>) null);
+  }
+
+  private static <T> T onJsonResponse(final CloseableHttpResponse closeableHttpResponse, final ObjectMapper mapper,
+                                      final Class<T> valueClass) throws Exception {
+    try (final CloseableHttpResponse response = closeableHttpResponse) {
+      if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        response.getEntity().writeTo(outputStream);
+
+        throw Serializer.<Exception>deserialize(outputStream.toByteArray());
+      }
+
+      if (mapper != null && valueClass != null) {
+        return mapper.readValue(response.getEntity().getContent(), valueClass);
+      }
+
+      return null;
+    }
+  }
+
   private static HttpEntity byteArrayEntity(final Object data) throws IOException {
     return new ByteArrayEntity(Serializer.serialize(data));
+  }
+
+  private static StringEntity stringEntity(final String data) {
+    return new StringEntity(data, StandardCharsets.UTF_8);
   }
 }
