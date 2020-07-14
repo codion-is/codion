@@ -316,7 +316,7 @@ public final class EntityJsonService extends AbstractEntityService {
         condition = mapper.readValue(conditionNode.toString(), Condition.class);
       }
 
-      return Response.ok(mapper.getEntityObjectMapper().writeValueAsString(connection.select(attribute, (Condition) condition)))
+      return Response.ok(mapper.getEntityObjectMapper().writeValueAsString(connection.select(attribute, condition)))
               .type(MediaType.APPLICATION_JSON_TYPE).build();
     }
     catch (final Exception e) {

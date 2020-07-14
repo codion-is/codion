@@ -140,7 +140,7 @@ abstract class AbstractHttpEntityConnection  implements EntityConnection {
     return createHttpPost(path, null);
   }
 
-  protected final HttpPost createHttpPost(final String path, final HttpEntity data) throws URISyntaxException, IOException {
+  protected final HttpPost createHttpPost(final String path, final HttpEntity data) throws URISyntaxException {
     final HttpPost post = new HttpPost(createURIBuilder(path).build());
     if (data != null) {
       post.setEntity(data);

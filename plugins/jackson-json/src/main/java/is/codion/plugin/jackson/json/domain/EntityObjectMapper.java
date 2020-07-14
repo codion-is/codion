@@ -83,6 +83,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * Serializes the given Entity instances into a JSON string array
    * @param entities the entities
    * @return a JSON string representation of the given entities
+   * @throws JsonProcessingException in case of an exception
    */
   public String serializeEntities(final List<Entity> entities) throws JsonProcessingException {
     return writeValueAsString(entities);
@@ -92,6 +93,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * Deserializes the given JSON string into a list of Entity instances
    * @param jsonString the JSON string to parse
    * @return a List containing the Entity instances represented by the given JSON string
+   * @throws JsonProcessingException in case of an exception
    */
   public List<Entity> deserializeEntities(final String jsonString) throws JsonProcessingException {
     return readValue(jsonString, ENTITY_LIST_REFERENCE);
@@ -101,6 +103,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * Deserializes the given JSON input stream into a list of Entity instances
    * @param inputStream the JSON input stream to parse
    * @return a List containing the Entity instances represented by the given JSON input stream
+   * @throws IOException in case of an exception
    */
   public List<Entity> deserializeEntities(final InputStream inputStream) throws IOException {
     return readValue(inputStream, ENTITY_LIST_REFERENCE);
@@ -110,6 +113,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * Serializes the given Key instances into a JSON string array
    * @param keys the keys
    * @return a JSON string representation of the given entity keys
+   * @throws JsonProcessingException in case of an exception
    */
   public String serializeKeys(final List<Key> keys) throws JsonProcessingException {
     return writeValueAsString(keys);
@@ -119,6 +123,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * Deserializes the given JSON string into a list of Key instances
    * @param jsonString the JSON string to parse
    * @return a List containing the Key instances represented by the given JSON string
+   * @throws JsonProcessingException in case of an exception
    */
   public List<Key> deserializeKeys(final String jsonString) throws JsonProcessingException {
     return readValue(jsonString, KEY_LIST_REFERENCE);
@@ -128,6 +133,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * Deserializes the given JSON input stream into a list of Key instances
    * @param inputStream the JSON input stream to parse
    * @return a List containing the Key instances represented by the given JSON input stream
+   * @throws IOException in case of an exception
    */
   public List<Key> deserializeKeys(final InputStream inputStream) throws IOException {
     return readValue(inputStream, KEY_LIST_REFERENCE);

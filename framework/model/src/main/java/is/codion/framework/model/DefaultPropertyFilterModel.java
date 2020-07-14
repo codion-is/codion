@@ -9,6 +9,7 @@ import is.codion.framework.domain.property.Property;
 
 /**
  * A class for filtering a set of entities based on a property.
+ * @param <T> the underlying column value type
  */
 public final class DefaultPropertyFilterModel<T> extends DefaultColumnConditionModel<Entity, Property<?>, T> {
 

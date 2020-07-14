@@ -457,6 +457,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /**
    * @return the number of rows {@link #performQuery()} would return on next invocation
    */
+  @Override
   protected int getQueryRowCount() {
     if (!tableConditionModel.isEnabled() && queryConditionRequiredState.get()) {
       return 0;
@@ -621,6 +622,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /**
    * A {@link TableColumn} based on a {@link Property} instance
+   * @param <T> the column data type
    */
   public static class PropertyTableColumn<T> extends TableColumn<Entity, T> {
 

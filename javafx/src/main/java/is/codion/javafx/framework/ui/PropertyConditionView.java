@@ -35,6 +35,7 @@ import static is.codion.common.item.Items.item;
 
 /**
  * A View for configuring a query condition for a single property
+ * @param <T> the column value type
  */
 public final class PropertyConditionView<T> extends BorderPane {
 
@@ -220,17 +221,17 @@ public final class PropertyConditionView<T> extends BorderPane {
     }
   }
 
-  private Pane singleValuePane(final Control control) {
-    final GridPane gridPane = new GridPane();
-    gridPane.addColumn(0, control);
-
-    return gridPane;
-  }
-
   private Pane rangePane() {
     final GridPane gridPane = new GridPane();
     gridPane.addColumn(0, lowerBoundControl);
     gridPane.addColumn(1, upperBoundControl);
+
+    return gridPane;
+  }
+
+  private static Pane singleValuePane(final Control control) {
+    final GridPane gridPane = new GridPane();
+    gridPane.addColumn(0, control);
 
     return gridPane;
   }
