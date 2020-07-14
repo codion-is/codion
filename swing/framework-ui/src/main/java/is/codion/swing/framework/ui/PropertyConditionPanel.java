@@ -19,6 +19,7 @@ import java.util.Collections;
 
 /**
  * A column condition panel based on the Property class.
+ * @param <T> the column value type
  */
 public final class PropertyConditionPanel<T> extends ColumnConditionPanel<Entity, ColumnProperty<T>, T> {
 

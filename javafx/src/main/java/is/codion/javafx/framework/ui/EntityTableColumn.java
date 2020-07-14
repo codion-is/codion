@@ -15,6 +15,7 @@ import javafx.util.Callback;
 
 /**
  * A table column based on properties via {@link FXEntityListModel.PropertyTableColumn}
+ * @param <T> the column value type
  */
 public final class EntityTableColumn<T> extends FXEntityListModel.PropertyTableColumn<T> {
 

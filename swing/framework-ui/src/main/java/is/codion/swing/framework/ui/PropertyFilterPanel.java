@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.table.ColumnConditionPanel;
 
 /**
  * A column filter panel based on properties.
+ * @param <T> the column value type
  */
 public final class PropertyFilterPanel<T> extends ColumnConditionPanel<Entity, Property<T>, T> {
 

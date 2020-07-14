@@ -571,15 +571,6 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     }
   }
 
-  private JPanel singleValuePanel(final JComponent component) {
-    final JPanel inputPanel = new JPanel(new BorderLayout());
-    final JPanel panel = new JPanel(new GridLayout(1, 1));
-    panel.add(component);
-    inputPanel.add(panel, BorderLayout.CENTER);
-
-    return inputPanel;
-  }
-
   private JPanel rangePanel() {
     final JPanel inputPanel = new JPanel(new BorderLayout());
     final JPanel panel = new JPanel(new GridLayout(1, 2));
@@ -634,6 +625,15 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
         disableDialog();
       }
     });
+  }
+
+  private static JPanel singleValuePanel(final JComponent component) {
+    final JPanel inputPanel = new JPanel(new BorderLayout());
+    final JPanel panel = new JPanel(new GridLayout(1, 1));
+    panel.add(component);
+    inputPanel.add(panel, BorderLayout.CENTER);
+
+    return inputPanel;
   }
 
   private static final class OperatorComboBoxRenderer extends BasicComboBoxRenderer {
