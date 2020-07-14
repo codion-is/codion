@@ -5,7 +5,6 @@ package is.codion.plugin.jackson.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 import is.codion.plugin.jackson.json.TestDomain;
 
@@ -283,14 +282,12 @@ public final class EntityObjectMapperTest {
     dept.put(TestDomain.DEPARTMENT_LOCATION, "Location");
     dept.put(TestDomain.DEPARTMENT_LOCATION, "New Location");
 
-    final Map<EntityType<?>, List<Entity>> map = new HashMap<>();
+    final Map<String, Collection<Entity>> map = new HashMap<>();
 
-    map.put(TestDomain.T_DEPARTMENT, singletonList(dept));
+    map.put(TestDomain.T_DEPARTMENT.getName(), singletonList(dept));
 
     final String string = mapper.writeValueAsString(map);
 
-    final Map<EntityType<?>, Collection<Entity>> readMap = mapper.readValue(string, new TypeReference<Map<EntityType<?>, Collection<Entity>>>() {});
-
-    System.out.println(readMap);
+    mapper.readValue(string, new TypeReference<Map<String, Collection<Entity>>>() {});
   }
 }

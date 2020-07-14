@@ -34,6 +34,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -261,7 +263,10 @@ public final class EntityJsonService extends AbstractEntityService {
       final EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.getEntities());
       final List<Entity> entities = entityObjectMapper.readValue(request.getInputStream(), EntityObjectMapper.ENTITY_LIST_REFERENCE);
 
-      return Response.ok(entityObjectMapper.writeValueAsString(connection.selectDependencies(entities))).type(MediaType.APPLICATION_JSON_TYPE).build();
+      final Map<String, Collection<Entity>> dependencies = new HashMap<>();
+      connection.selectDependencies(entities).forEach((entityType, deps) -> dependencies.put(entityType.getName(), deps));
+
+      return Response.ok(entityObjectMapper.writeValueAsString(dependencies)).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
     catch (final Exception e) {
       return logAndGetExceptionResponse(e);

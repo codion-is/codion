@@ -17,6 +17,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -358,9 +360,15 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   public Map<EntityType<?>, Collection<Entity>> selectDependencies(final Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
-      return onJsonResponse(execute(createHttpPost("dependencies",
+      final Map<EntityType<?>, Collection<Entity>> dependencies = new HashMap<>();
+      final DomainType domainType = getEntities().getDomainType();
+
+      onJsonResponse(execute(createHttpPost("dependencies",
               stringEntity(entityObjectMapper.writeValueAsString(new ArrayList<>(entities))))),
-              entityObjectMapper, new TypeReference<Map<EntityType<?>, Collection<Entity>>>() {});
+              entityObjectMapper, new TypeReference<Map<String, Collection<Entity>>>() {}).forEach((entityTypeName, deps) ->
+              dependencies.put(domainType.entityType(entityTypeName), deps));
+
+      return dependencies;
     }
     catch (final DatabaseException e) {
       throw e;

@@ -6,7 +6,6 @@ package is.codion.plugin.jackson.json.db;
 import is.codion.common.db.Operator;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.Property;
@@ -32,6 +31,7 @@ final class AttributeConditionDeserializer implements Serializable {
 
   <T> AttributeCondition<T> deserialize(final EntityDefinition definition, final JsonNode conditionNode) throws IOException {
     final String attributeName = conditionNode.get("attribute").asText();
+    final Property<T> property = (Property<T>) definition.getProperty(definition.getEntityType().objectAttribute(attributeName));
     final JsonNode valuesNode = conditionNode.get("values");
     final List<T> values = new ArrayList<>();
     for (final JsonNode valueNode : valuesNode) {
@@ -39,13 +39,10 @@ final class AttributeConditionDeserializer implements Serializable {
         values.add((T) entityObjectMapper.readValue(valueNode.toString(), Key.class));
       }
       else {
-        //get the property for the correct type
-        final Property<T> property = (Property<T>) definition.getProperty(definition.getEntityType().objectAttribute(attributeName));
         values.add((T) EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), valueNode));
       }
     }
-    final Attribute<T> attribute = (Attribute<T>) definition.getEntityType().objectAttribute(conditionNode.get("attribute").asText());
-    final AttributeCondition.Builder<T> builder = Conditions.condition(attribute);
+    final AttributeCondition.Builder<T> builder = Conditions.condition(property.getAttribute());
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
       case EQUAL:
         return builder.equalTo(values);

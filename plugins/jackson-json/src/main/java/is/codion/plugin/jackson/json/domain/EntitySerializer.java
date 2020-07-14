@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -37,13 +38,12 @@ final class EntitySerializer extends StdSerializer<Entity> {
           throws IOException {
     requireNonNull(entity, "entity");
     generator.writeStartObject();
-    generator.writeFieldName("entityType");
-    mapper.writeValue(generator, entity.getEntityType().getName());
+    generator.writeStringField("entityType", entity.getEntityType().getName());
     generator.writeFieldName("values");
-    writeValues(entity, generator);
+    writeValues(entity, generator, entity.entrySet());
     if (entity.isModified()) {
       generator.writeFieldName("originalValues");
-      writeOriginalValues(entity, generator);
+      writeValues(entity, generator, entity.originalEntrySet());
     }
     generator.writeEndObject();
   }
@@ -56,23 +56,10 @@ final class EntitySerializer extends StdSerializer<Entity> {
     this.includeNullValues = includeNullValues;
   }
 
-  private void writeValues(final Entity entity, final JsonGenerator generator) throws IOException {
+  private void writeValues(final Entity entity, final JsonGenerator generator, final Set<Map.Entry<Attribute<?>, Object>> entrySet) throws IOException {
     generator.writeStartObject();
     final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityType());
-    for (final Map.Entry<Attribute<?>, Object> entry : entity.entrySet()) {
-      final Property<?> property = definition.getProperty(entry.getKey());
-      if (include(property, entity)) {
-        generator.writeFieldName(property.getAttribute().getName());
-        mapper.writeValue(generator, entry.getValue());
-      }
-    }
-    generator.writeEndObject();
-  }
-
-  private void writeOriginalValues(final Entity entity, final JsonGenerator generator) throws IOException {
-    generator.writeStartObject();
-    final EntityDefinition definition = mapper.getEntities().getDefinition(entity.getEntityType());
-    for (final Map.Entry<Attribute<?>, Object> entry : entity.originalEntrySet()) {
+    for (final Map.Entry<Attribute<?>, Object> entry : entrySet) {
       final Property<?> property = definition.getProperty(entry.getKey());
       if (include(property, entity)) {
         generator.writeFieldName(property.getAttribute().getName());
