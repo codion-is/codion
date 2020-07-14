@@ -10,7 +10,7 @@ module is.codion.framework.demos.empdept {
   requires is.codion.javafx.framework;
   requires is.codion.framework.server;
   requires is.codion.plugin.jasperreports;
-  requires is.codion.plugin.json;
+  requires is.codion.plugin.jackson.json;
 
   exports is.codion.framework.demos.empdept.domain
           to is.codion.framework.domain, is.codion.framework.db.local;
