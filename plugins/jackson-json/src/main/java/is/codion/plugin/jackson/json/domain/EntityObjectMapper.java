@@ -7,10 +7,13 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -74,5 +77,59 @@ public final class EntityObjectMapper extends ObjectMapper {
   public EntityObjectMapper setIncludeNullValues(final boolean includeNullValues) {
     entitySerializer.setIncludeNullValues(includeNullValues);
     return this;
+  }
+
+  /**
+   * Serializes the given Entity instances into a JSON string array
+   * @param entities the entities
+   * @return a JSON string representation of the given entities
+   */
+  public String serializeEntities(final List<Entity> entities) throws JsonProcessingException {
+    return writeValueAsString(entities);
+  }
+
+  /**
+   * Deserializes the given JSON string into a list of Entity instances
+   * @param jsonString the JSON string to parse
+   * @return a List containing the Entity instances represented by the given JSON string
+   */
+  public List<Entity> deserializeEntities(final String jsonString) throws JsonProcessingException {
+    return readValue(jsonString, ENTITY_LIST_REFERENCE);
+  }
+
+  /**
+   * Deserializes the given JSON input stream into a list of Entity instances
+   * @param inputStream the JSON input stream to parse
+   * @return a List containing the Entity instances represented by the given JSON input stream
+   */
+  public List<Entity> deserializeEntities(final InputStream inputStream) throws IOException {
+    return readValue(inputStream, ENTITY_LIST_REFERENCE);
+  }
+
+  /**
+   * Serializes the given Key instances into a JSON string array
+   * @param keys the keys
+   * @return a JSON string representation of the given entity keys
+   */
+  public String serializeKeys(final List<Key> keys) throws JsonProcessingException {
+    return writeValueAsString(keys);
+  }
+
+  /**
+   * Deserializes the given JSON string into a list of Key instances
+   * @param jsonString the JSON string to parse
+   * @return a List containing the Key instances represented by the given JSON string
+   */
+  public List<Key> deserializeKeys(final String jsonString) throws JsonProcessingException {
+    return readValue(jsonString, KEY_LIST_REFERENCE);
+  }
+
+  /**
+   * Deserializes the given JSON input stream into a list of Key instances
+   * @param inputStream the JSON input stream to parse
+   * @return a List containing the Key instances represented by the given JSON input stream
+   */
+  public List<Key> deserializeKeys(final InputStream inputStream) throws IOException {
+    return readValue(inputStream, KEY_LIST_REFERENCE);
   }
 }

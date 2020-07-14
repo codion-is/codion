@@ -12,7 +12,7 @@ import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.demos.empdept.model.EmployeeEditModel;
 import is.codion.framework.model.EntityEditModel;
-import is.codion.plugin.json.EntityJSONParser;
+import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
@@ -62,7 +62,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   public void importJSON() throws Exception {
     final File file = Dialogs.selectFile(this, null);
     Dialogs.displayInDialog(this, EntityTablePanel.createReadOnlyEntityTablePanel(
-            new EntityJSONParser(getModel().getEntities()).deserializeEntities(
+            new EntityObjectMapper(getModel().getEntities()).deserializeEntities(
                     Text.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()), "Import");
   }
   // end::importJSON[]

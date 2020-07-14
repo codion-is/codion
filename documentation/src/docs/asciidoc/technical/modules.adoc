@@ -414,19 +414,13 @@ image::modules/plugins/nextreports/build/reports/dependency-graph/dependency-gra
 
 === JSON
 
+[discrete]
+==== codion-plugin-jackson-json
+
 .Dependency graph
 [%collapsible]
 ====
 image::modules/plugins/jackson-json/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
-[discrete]
-==== codion-plugin-json
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/plugins/json/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 === Other

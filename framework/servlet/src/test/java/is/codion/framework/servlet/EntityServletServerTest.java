@@ -196,11 +196,11 @@ public class EntityServletServerTest {
 
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    assertEquals(2, entityObjectMapper.readValue(response.getEntity().getContent(), EntityObjectMapper.ENTITY_LIST_REFERENCE).size());
+    assertEquals(2, entityObjectMapper.deserializeEntities(response.getEntity().getContent()).size());
     response.close();
 
     //select by condition
-    SelectCondition selectCondition = Conditions.condition(keys).selectCondition();
+    final SelectCondition selectCondition = Conditions.condition(keys).selectCondition();
 
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
@@ -208,7 +208,7 @@ public class EntityServletServerTest {
 
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    assertEquals(2, entityObjectMapper.readValue(response.getEntity().getContent(), EntityObjectMapper.ENTITY_LIST_REFERENCE).size());
+    assertEquals(2, entityObjectMapper.deserializeEntities(response.getEntity().getContent()).size());
     response.close();
 
     //insert
@@ -231,7 +231,7 @@ public class EntityServletServerTest {
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
 
-    keys = entityObjectMapper.readValue(response.getEntity().getContent(), EntityObjectMapper.KEY_LIST_REFERENCE);
+    keys = entityObjectMapper.deserializeKeys(response.getEntity().getContent());
     assertEquals(2, keys.size());
     assertTrue(entities.stream().map(Entity::getKey).collect(Collectors.toList()).containsAll(keys));
     response.close();
@@ -247,7 +247,7 @@ public class EntityServletServerTest {
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
 
-    final List<Entity> updated = entityObjectMapper.readValue(response.getEntity().getContent(), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+    final List<Entity> updated = entityObjectMapper.deserializeEntities(response.getEntity().getContent());
     assertEquals(2, updated.size());
     assertTrue(updated.containsAll(entities));
 

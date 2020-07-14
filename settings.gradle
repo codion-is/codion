@@ -129,9 +129,6 @@ project(':codion-plugin-jasperreports').projectDir = file('plugins/jasperreports
 include 'codion-plugin-jul-proxy'
 project(':codion-plugin-jul-proxy').projectDir = file('plugins/jul-proxy')
 
-include 'codion-plugin-json'
-project(':codion-plugin-json').projectDir = file('plugins/json')
-
 include 'codion-plugin-log4j-proxy'
 project(':codion-plugin-log4j-proxy').projectDir = file('plugins/log4j-proxy')
 
