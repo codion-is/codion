@@ -261,7 +261,7 @@ public final class EntityJsonService extends AbstractEntityService {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
       final EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.getEntities());
-      final List<Entity> entities = entityObjectMapper.readValue(request.getInputStream(), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+      final List<Entity> entities = entityObjectMapper.deserializeEntities(request.getInputStream());
 
       final Map<String, Collection<Entity>> dependencies = new HashMap<>();
       connection.selectDependencies(entities).forEach((entityType, deps) -> dependencies.put(entityType.getName(), deps));
@@ -337,7 +337,7 @@ public final class EntityJsonService extends AbstractEntityService {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
       final EntityObjectMapper entityObjectMapper = getEntityObjectMapper(connection.getEntities());
-      final List<Key> keysFromJson = entityObjectMapper.readValue(request.getInputStream(), EntityObjectMapper.KEY_LIST_REFERENCE);
+      final List<Key> keysFromJson = entityObjectMapper.deserializeKeys(request.getInputStream());
       final List<Entity> entities = connection.select(keysFromJson);
 
       return Response.ok(entityObjectMapper.writeValueAsString(entities)).type(MediaType.APPLICATION_JSON_TYPE).build();
@@ -384,7 +384,7 @@ public final class EntityJsonService extends AbstractEntityService {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
       final EntityObjectMapper mapper = getEntityObjectMapper(connection.getEntities());
-      final List<Entity> entities = mapper.readValue(request.getInputStream(), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+      final List<Entity> entities = mapper.deserializeEntities(request.getInputStream());
 
       return Response.ok(mapper.writeValueAsString(connection.insert(entities))).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
@@ -406,7 +406,7 @@ public final class EntityJsonService extends AbstractEntityService {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
       final EntityObjectMapper mapper = getEntityObjectMapper(connection.getEntities());
-      final List<Entity> entities = mapper.readValue(request.getInputStream(), EntityObjectMapper.ENTITY_LIST_REFERENCE);
+      final List<Entity> entities = mapper.deserializeEntities(request.getInputStream());
 
       return Response.ok(mapper.writeValueAsString(connection.update(entities))).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
@@ -474,7 +474,7 @@ public final class EntityJsonService extends AbstractEntityService {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
       final EntityObjectMapper mapper = getEntityObjectMapper(connection.getEntities());
-      final List<Key> deleteKeys = mapper.readValue(request.getInputStream(), EntityObjectMapper.KEY_LIST_REFERENCE);
+      final List<Key> deleteKeys = mapper.deserializeKeys(request.getInputStream());
 
       return Response.ok(mapper.writeValueAsString(connection.delete(deleteKeys))).type(MediaType.APPLICATION_JSON_TYPE).build();
     }

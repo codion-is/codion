@@ -1,5 +1,0 @@
-dependencies {
-    api project(':codion-framework-domain')
-
-    api "org.json:json:${jsonVersion}"
-}
