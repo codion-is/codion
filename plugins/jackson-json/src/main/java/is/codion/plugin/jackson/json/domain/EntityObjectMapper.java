@@ -5,7 +5,6 @@ package is.codion.plugin.jackson.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -38,12 +37,9 @@ public final class EntityObjectMapper extends ObjectMapper {
    */
   public EntityObjectMapper(final Entities entities) {
     this.entities = entities;
+    this.entitySerializer = new EntitySerializer(this);
+    this.entityDeserializer = new EntityDeserializer(entities, this);
     final SimpleModule module = new SimpleModule();
-    entitySerializer = new EntitySerializer(this);
-    entityDeserializer = new EntityDeserializer(entities, this);
-    module.addSerializer(EntityType.class, new EntityTypeSerializer());
-    module.addDeserializer(EntityType.class, new EntityTypeDeserializer(entities));
-    module.addKeyDeserializer(EntityType.class, new EntityTypeKeyDeserializer(entities));
     module.addSerializer(Entity.class, entitySerializer);
     module.addDeserializer(Entity.class, entityDeserializer);
     module.addSerializer(Key.class, new EntityKeySerializer(this));

@@ -457,7 +457,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T>boolean hasDerivedAttributes(final Attribute<T> attribute) {
+  public <T> boolean hasDerivedAttributes(final Attribute<T> attribute) {
     return entityProperties.derivedAttributes.containsKey(attribute);
   }
 

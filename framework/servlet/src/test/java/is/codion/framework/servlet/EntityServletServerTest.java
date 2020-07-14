@@ -20,7 +20,6 @@ import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
@@ -323,9 +322,10 @@ public class EntityServletServerTest {
 
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
-    final Map<EntityType<?>, Collection<Entity>> dependencies = entityObjectMapper.readValue(response.getEntity().getContent(), new TypeReference<Map<EntityType<?>, Collection<Entity>>>() {});
+    final Map<String, Collection<Entity>> dependencies = entityObjectMapper.readValue(response.getEntity().getContent(),
+            new TypeReference<Map<String, Collection<Entity>>>() {});
     assertEquals(1, dependencies.size());
-    assertEquals(12, dependencies.get(TestDomain.T_EMP).size());
+    assertEquals(12, dependencies.get(TestDomain.T_EMP.getName()).size());
     response.close();
 
     //transactions
