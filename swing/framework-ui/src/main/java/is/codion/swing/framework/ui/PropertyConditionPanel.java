@@ -5,7 +5,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.db.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
@@ -46,8 +45,7 @@ public final class PropertyConditionPanel<T> extends ColumnConditionPanel<Entity
 
     @Override
     public JComponent initializeEqualValueField() {
-      final ValueSet<T> valueSet = model.getEqualValueSet();
-      final JComponent component = EntityInputComponents.createInputComponent(model.getColumnIdentifier(), valueSet.value());
+      final JComponent component = EntityInputComponents.createInputComponent(model.getColumnIdentifier(), model.getEqualValueSet().value());
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }

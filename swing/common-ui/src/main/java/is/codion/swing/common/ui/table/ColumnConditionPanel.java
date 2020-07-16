@@ -12,7 +12,6 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.States;
 import is.codion.common.value.Value;
-import is.codion.common.value.ValueSet;
 import is.codion.common.value.Values;
 import is.codion.swing.common.model.checkbox.NullableToggleButtonModel;
 import is.codion.swing.common.ui.Components;
@@ -62,7 +61,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Arrays.asList;
@@ -374,11 +372,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     }
 
     public JComponent initializeEqualValueField() {
-      final ValueSet<T> valueSet = columnConditionModel.getEqualValueSet();
-      final Value<T> value = Values.value();
-      value.addDataListener(object -> valueSet.set(object == null ? Collections.emptySet() : Collections.singleton(object)));
-
-      return initializeField(value);
+      return initializeField(columnConditionModel.getEqualValueSet().value());
     }
 
     @Override
