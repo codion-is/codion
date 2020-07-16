@@ -73,12 +73,12 @@ final class DefaultValueSet<V> extends AbstractValue<Set<V>> implements ValueSet
 
     private SingleValueSet(final ValueSet<V> valueSet) {
       this.valueSet = valueSet;
+      valueSet.addListener(this::notifyValueChange);
     }
 
     @Override
     public void set(final V value) {
       valueSet.set(value == null ? emptySet() : singleton(value));
-      notifyValueChange();
     }
 
     @Override

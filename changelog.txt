@@ -6369,3 +6369,4 @@
   ValueSet.value() added
   PropertyConditionPanel.PropertyBoundFieldProvider.initializeEqualValueField() uses the above (not working)
   AttributeCondition implementation error messages improved
+  DefaultValueSet.SingleValueSet bug fixed, did not notify value change when underlying value set value changed
