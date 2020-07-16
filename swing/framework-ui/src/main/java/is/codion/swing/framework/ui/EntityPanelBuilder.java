@@ -412,7 +412,7 @@ public class EntityPanelBuilder {
       throw new IllegalArgumentException("No edit panel class has been specified for entity panel provider: " + getEntityType());
     }
     if (!editModel.getEntityType().equals(getEntityType())) {
-      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityType() + ", required: " + getEntityType());
+      throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.getEntityType() + ", required: " + getEntityType());
     }
     try {
       final EntityEditPanel editPanel = findEditModelConstructor(editPanelClass).newInstance(editModel);
@@ -431,7 +431,7 @@ public class EntityPanelBuilder {
   private EntityTablePanel initializeTablePanel(final SwingEntityTableModel tableModel) {
     try {
       if (!tableModel.getEntityType().equals(getEntityType())) {
-        throw new IllegalArgumentException("Entity ID mismatch, tableModel: " + tableModel.getEntityType() + ", required: " + getEntityType());
+        throw new IllegalArgumentException("Entity type mismatch, tableModel: " + tableModel.getEntityType() + ", required: " + getEntityType());
       }
       final EntityTablePanel tablePanel = findTableModelConstructor(getTablePanelClass()).newInstance(tableModel);
       configureTablePanel(tablePanel);

@@ -200,7 +200,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       throw new IllegalStateException("Edit model has already been set for table model: " + this);
     }
     if (!editModel.getEntityType().equals(entityType)) {
-      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityType() + ", tableModel: " + entityType);
+      throw new IllegalArgumentException("Entity type mismatch, editModel: " + editModel.getEntityType() + ", tableModel: " + entityType);
     }
     this.editModel = editModel;
     bindEditModelEvents();
