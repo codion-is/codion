@@ -34,7 +34,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-import static is.codion.common.Util.rejectNullOrEmpty;
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -191,7 +191,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
     this.domainName = requireNonNull(domainName, "domainName");
     this.entityType = requireNonNull(entityType, "entityType");
-    this.tableName = rejectNullOrEmpty(tableName, "tableName");
+    if (nullOrEmpty(tableName)) {
+      throw new IllegalArgumentException("Table name must be non-empty");
+    }
+    this.tableName = tableName;
     this.entityProperties = new EntityProperties(entityType, properties);
     this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
     this.groupByClause = initializeGroupByClause();

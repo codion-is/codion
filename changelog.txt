@@ -6365,3 +6365,7 @@
   EntityJsonService.dependencies() now returns a map with String key instead of EntityType, simplifies serialization
   json module retired, responsibilities taken over by jackson-json
   Dialogs.prepareOkCancelDialog(), removed redundant dialogOwner parameter
+  Util.rejectNullOrEmpty() removed
+  ValueSet.value() added
+  PropertyConditionPanel.PropertyBoundFieldProvider.initializeEqualValueField() uses the above (not working)
+  AttributeCondition implementation error messages improved

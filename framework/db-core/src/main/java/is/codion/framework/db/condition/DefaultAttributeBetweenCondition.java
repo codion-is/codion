@@ -21,8 +21,8 @@ final class DefaultAttributeBetweenCondition<T> extends AbstractAttributeConditi
   DefaultAttributeBetweenCondition(final Attribute<T> attribute, final T lowerBound, final T upperBound,
                                    final boolean exclusive) {
     super(attribute, exclusive ? Operator.BETWEEN_EXCLUSIVE : Operator.BETWEEN);
-    this.lowerBound = requireNonNull(lowerBound);
-    this.upperBound = requireNonNull(upperBound);
+    this.lowerBound = requireNonNull(lowerBound, "A condition value is missing");
+    this.upperBound = requireNonNull(upperBound, "A condition value is missing");
   }
 
   @Override
