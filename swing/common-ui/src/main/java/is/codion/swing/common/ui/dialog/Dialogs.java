@@ -512,15 +512,14 @@ public final class Dialogs {
   }
 
   /**
-   * Prepares a dialog for displaying {@code component}, with OK and Cancel buttons.
-   * Note that the default Enter key action is disabled on the {@code component} component.
+   * Prepares a modal dialog for displaying the given {@code component},
+   * with OK and Cancel buttons based on the given actions.
    * @param dialog the dialog
-   * @param dialogOwner the dialog owner
    * @param component added to the center position
    * @param okAction the action for the OK button
    * @param cancelAction the action for the cancel button
    */
-  public static void prepareOkCancelDialog(final JDialog dialog, final JComponent dialogOwner, final JComponent component,
+  public static void prepareOkCancelDialog(final JDialog dialog, final JComponent component,
                                            final Action okAction, final Action cancelAction) {
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     KeyEvents.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0,
@@ -533,8 +532,8 @@ public final class Dialogs {
     buttonBasePanel.add(Components.createOkCancelButtonPanel(okAction, cancelAction));
     dialog.add(buttonBasePanel, BorderLayout.SOUTH);
     dialog.pack();
-    if (dialogOwner != null) {
-      dialog.setLocationRelativeTo(Windows.getParentWindow(dialogOwner));
+    if (dialog.getOwner() != null) {
+      dialog.setLocationRelativeTo(dialog.getOwner());
     }
     dialog.setModal(true);
     dialog.setResizable(true);
@@ -780,7 +779,7 @@ public final class Dialogs {
     }
     list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    prepareOkCancelDialog(dialog, dialogOwner, new JScrollPane(list), okAction, cancelAction);
+    prepareOkCancelDialog(dialog, new JScrollPane(list), okAction, cancelAction);
     list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {

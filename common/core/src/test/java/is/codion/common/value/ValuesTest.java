@@ -11,6 +11,7 @@ import is.codion.common.state.States;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -269,5 +270,20 @@ public class ValuesTest {
     valueSet.set(null);
     assertTrue(valueSet.add(1));
     assertTrue(valueSet.add(2));
+
+    valueSet.clear();
+
+    final Value<Integer> value = valueSet.value();
+
+    value.set(1);
+    assertTrue(valueSet.get().contains(1));
+    value.set(null);
+    assertTrue(valueSet.get().isEmpty());
+
+    valueSet.set(Collections.singleton(2));
+    assertEquals(2, value.get());
+
+    valueSet.clear();
+    assertNull(value.get());
   }
 }

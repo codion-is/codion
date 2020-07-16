@@ -19,7 +19,7 @@ final class DefaultAttributeLessThanCondition<T> extends AbstractAttributeCondit
 
   DefaultAttributeLessThanCondition(final Attribute<T> attribute, final T value, final boolean orEqual) {
     super(attribute, orEqual ? Operator.LESS_THAN_OR_EQUAL : Operator.LESS_THAN);
-    this.value = requireNonNull(value);
+    this.value = requireNonNull(value, "A condition value is missing");
   }
 
   @Override

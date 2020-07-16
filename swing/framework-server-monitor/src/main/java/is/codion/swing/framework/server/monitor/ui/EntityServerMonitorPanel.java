@@ -218,7 +218,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     panel.add(field);
     final JDialog dialog = new JDialog(Windows.getParentWindow(this), "Update interval (s)");
-    Dialogs.prepareOkCancelDialog(dialog, this, panel, Controls.control(() -> {
+    Dialogs.prepareOkCancelDialog(dialog, panel, Controls.control(() -> {
       getModel().setUpdateInterval(componentValue.get());
       dialog.dispose();
     }), Controls.control(dialog::dispose));

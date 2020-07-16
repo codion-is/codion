@@ -29,4 +29,13 @@ public interface ValueSet<V> extends Value<Set<V>> {
    * Clears all values from this ValueSet.
    */
   void clear();
+
+  /**
+   * Creates a new {@link Value} instance based on this {@link ValueSet}.
+   * Setting the value to null clears the value set.
+   * This value returns a random value from the underlying {@link ValueSet} in
+   * case it contains multiple items.
+   * @return a single item value based on this value set
+   */
+  Value<V> value();
 }

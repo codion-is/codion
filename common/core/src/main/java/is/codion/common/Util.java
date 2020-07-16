@@ -171,20 +171,6 @@ public final class Util {
   }
 
   /**
-   * Throws an IllegalArgumentException if the given string value is null or empty
-   * @param value the string value
-   * @param valueName the name of the value to include in the error message
-   * @return the string value
-   */
-  public static String rejectNullOrEmpty(final String value, final String valueName) {
-    if (value == null || value.isEmpty()) {
-      throw new IllegalArgumentException(valueName + " is null or empty");
-    }
-
-    return value;
-  }
-
-  /**
    * Rounds the given double to {@code places} decimal places
    * @param d the double to round
    * @param places the number of decimal places
