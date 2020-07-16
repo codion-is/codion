@@ -210,7 +210,7 @@ public final class EntityLookupField extends JTextField {
 
   private void selectEntities(final List<Entity> entities) {
     final JDialog dialog = new JDialog(Windows.getParentWindow(this), MESSAGES.getString("select_entity"));
-    Dialogs.prepareOkCancelDialog(dialog, this, selectionProvider.getSelectionComponent(entities),
+    Dialogs.prepareOkCancelDialog(dialog, selectionProvider.getSelectionComponent(entities),
             selectionProvider.getSelectControl(), Controls.control(dialog::dispose));
     dialog.setVisible(true);
   }

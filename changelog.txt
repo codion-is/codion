@@ -6364,3 +6364,4 @@
   EntityJSONParser now handles long values
   EntityJsonService.dependencies() now returns a map with String key instead of EntityType, simplifies serialization
   json module retired, responsibilities taken over by jackson-json
+  Dialogs.prepareOkCancelDialog(), removed redundant dialogOwner parameter
