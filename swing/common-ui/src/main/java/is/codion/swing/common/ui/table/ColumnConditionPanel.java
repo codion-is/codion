@@ -35,6 +35,7 @@ import is.codion.swing.common.ui.value.TemporalValues;
 import is.codion.swing.common.ui.value.TextValues;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -244,7 +245,7 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   public final void showDialog() {
     if (isDialogEnabled() && !isDialogVisible()) {
       dialog.setVisible(true);
-      upperBoundField.requestFocusInWindow();
+      requestInputFocus();
       dialogVisible = true;
     }
   }
@@ -304,6 +305,20 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
    */
   public final boolean isAdvanced() {
     return advancedConditionState.get();
+  }
+
+  /**
+   * @return the condition operator combo box
+   */
+  public final JComboBox<Operator> getOperatorComboBox() {
+    return operatorCombo;
+  }
+
+  /**
+   * @return the JComponent used to specify the equal value
+   */
+  public final JComponent getEqualField() {
+    return equalField;
   }
 
   /**

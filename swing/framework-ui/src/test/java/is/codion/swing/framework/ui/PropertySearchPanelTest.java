@@ -28,10 +28,17 @@ public class PropertySearchPanelTest {
     final ColumnConditionModel<Entity, ColumnProperty<String>, String> conditionModel =
             new DefaultColumnConditionModel<>(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
                     property.getFormat(), property.getDateTimeFormatPattern());
-    conditionModel.setUpperBound("DALLAS");
+    conditionModel.setEqualValue("DALLAS");
     conditionModel.setOperator(Operator.EQUAL);
-    conditionModel.setEnabled(true);
-    final PropertyConditionPanel<String> searchPanel = new PropertyConditionPanel<>(conditionModel);
-    assertEquals("DALLAS", ((JTextField) searchPanel.getUpperBoundField()).getText());
+    PropertyConditionPanel<String> searchPanel = new PropertyConditionPanel<>(conditionModel);
+    assertEquals("DALLAS", ((JTextField) searchPanel.getEqualField()).getText());
+
+    conditionModel.setLowerBound("A");
+    conditionModel.setUpperBound("D");
+    conditionModel.setOperator(Operator.BETWEEN);
+    searchPanel = new PropertyConditionPanel<>(conditionModel);
+    assertEquals("A", ((JTextField) searchPanel.getLowerBoundField()).getText());
+    assertEquals("D", ((JTextField) searchPanel.getUpperBoundField()).getText());
+    assertEquals(Operator.BETWEEN, searchPanel.getOperatorComboBox().getSelectedItem());
   }
 }
