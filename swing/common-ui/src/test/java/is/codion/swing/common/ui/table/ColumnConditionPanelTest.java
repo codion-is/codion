@@ -20,6 +20,7 @@ public class ColumnConditionPanelTest {
     final ColumnConditionModel<String, String, String> model = new DefaultColumnConditionModel<>(key, String.class, "%");
     final ColumnConditionPanel<String, String, String> panel = new ColumnConditionPanel<>(model, ToggleAdvancedButton.YES);
     assertEquals(model, panel.getModel());
+    assertNotNull(panel.getEqualField());
     assertNotNull(panel.getUpperBoundField());
     assertNotNull(panel.getLowerBoundField());
     assertNull(panel.getLastDialogPosition());
