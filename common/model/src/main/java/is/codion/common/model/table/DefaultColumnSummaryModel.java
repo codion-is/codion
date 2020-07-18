@@ -16,13 +16,14 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default ColumnSummaryModel implementation.
+ * @param <T> the column type
  */
-public class DefaultColumnSummaryModel implements ColumnSummaryModel {
+public class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel<T> {
 
   private final Event<Summary> summaryChangedEvent = Events.event();
   private final Event<?> summaryValueChangedEvent = Events.event();
 
-  private final ColumnValueProvider valueProvider;
+  private final ColumnValueProvider<T> valueProvider;
 
   private Summary summary = ColumnSummary.NONE;
   private boolean locked = false;
@@ -31,7 +32,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
    * Instantiates a new DefaultColumnSummaryModel
    * @param valueProvider the property value provider
    */
-  public DefaultColumnSummaryModel(final ColumnValueProvider valueProvider) {
+  public DefaultColumnSummaryModel(final ColumnValueProvider<T> valueProvider) {
     this.valueProvider = valueProvider;
     this.valueProvider.addValuesChangedListener(summaryValueChangedEvent);
     this.summaryChangedEvent.addListener(summaryValueChangedEvent);

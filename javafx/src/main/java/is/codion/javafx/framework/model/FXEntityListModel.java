@@ -296,7 +296,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final ColumnSummaryModel getColumnSummaryModel(final Attribute<?> attribute) {
+  public final <T extends Number> ColumnSummaryModel<T> getColumnSummaryModel(final Attribute<T> attribute) {
     throw new UnsupportedOperationException();
   }
 

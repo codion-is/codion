@@ -86,7 +86,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * Maps PropertySummaryModels to their respective properties
    */
-  private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
+  private final Map<C, ColumnSummaryModel<?>> columnSummaryModels = new HashMap<>();
 
   /**
    * the include condition used by this model
@@ -248,12 +248,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final ColumnSummaryModel getColumnSummaryModel(final C columnIdentifier) {
-    if (!columnSummaryModels.containsKey(columnIdentifier)) {
-      columnSummaryModels.put(columnIdentifier, new DefaultColumnSummaryModel(createColumnValueProvider(columnIdentifier)));
-    }
-
-    return columnSummaryModels.get(columnIdentifier);
+  public final <T extends Number> ColumnSummaryModel<T> getColumnSummaryModel(final C columnIdentifier) {
+    return (ColumnSummaryModel<T>) columnSummaryModels.computeIfAbsent(columnIdentifier, identifier ->
+            new DefaultColumnSummaryModel<>(createColumnValueProvider(columnIdentifier)));
   }
 
   @Override

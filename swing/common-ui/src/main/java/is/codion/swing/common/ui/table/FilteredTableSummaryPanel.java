@@ -37,9 +37,10 @@ public final class FilteredTableSummaryPanel<C> extends AbstractTableColumnSyncP
   /**
    * Initializes a ColumnSummaryPanel for the given model
    * @param columnSummaryModel the ColumnSummaryModel for which to create a summary panel
+   * @param <T> the column type
    * @return a ColumnSummaryPanel based on the given model
    */
-  private static ColumnSummaryPanel initializeColumnSummaryPanel(final ColumnSummaryModel columnSummaryModel) {
+  private static <T extends Number> ColumnSummaryPanel initializeColumnSummaryPanel(final ColumnSummaryModel<T> columnSummaryModel) {
     return new ColumnSummaryPanel(columnSummaryModel);
   }
 }

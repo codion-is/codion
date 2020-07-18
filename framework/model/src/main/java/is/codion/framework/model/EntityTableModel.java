@@ -220,9 +220,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * Returns the {@link ColumnSummaryModel} associated with {@code attribute}
    * @param attribute the attribute
+   * @param <T> the column type
    * @return the {@link ColumnSummaryModel} for the given property id
    */
-  ColumnSummaryModel getColumnSummaryModel(Attribute<?> attribute);
+  <T extends Number> ColumnSummaryModel<T> getColumnSummaryModel(Attribute<T> attribute);
 
   /**
    * @param row the row for which to retrieve the background color

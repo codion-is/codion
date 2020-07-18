@@ -545,7 +545,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final ColumnSummaryModel getColumnSummaryModel(final Attribute<?> attribute) {
+  public final <T extends Number> ColumnSummaryModel<T> getColumnSummaryModel(final Attribute<T> attribute) {
     return getColumnSummaryModel(getEntityDefinition().getProperty(attribute));
   }
 

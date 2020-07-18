@@ -6373,3 +6373,4 @@
   ColumnConditionPanel.DefaultBoundFieldProvider now uses ValueSet.value() when binding the equal value field
   ColumnConditionPanel.showDialog() bug fixed, now uses requestInputFocus()
   EntityComboBoxModel, createForeignKeyConditionComboBoxModel() added
+  ColumnSummaryModel now type safe
