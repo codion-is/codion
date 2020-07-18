@@ -56,11 +56,6 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   }
 
   @Override
-  public Attribute<Object> objectAttribute(final String name) {
-    return attribute(name, Object.class);
-  }
-
-  @Override
   public Attribute<Long> longAttribute(final String name) {
     return attribute(name, Long.class);
   }

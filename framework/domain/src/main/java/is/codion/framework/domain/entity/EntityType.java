@@ -39,15 +39,6 @@ public interface EntityType<T extends Entity> {
   <T> Attribute<T> attribute(String name, Class<T> typeClass);
 
   /**
-   * Creates a new {@link Attribute} associated with this EntityType.
-   * Use this when you don't have access to an actual Attribute instance, only its name
-   * and EntityType, but need to access the value associated with it.
-   * @param name the attribute name
-   * @return a new {@link Attribute}
-   */
-  Attribute<Object> objectAttribute(String name);
-
-  /**
    * Creates a new Long based attribute, associated with this EntityType.
    * @param name the attribute name.
    * @return a new Long based attribute.

@@ -5,6 +5,7 @@ package is.codion.plugin.jasperreports.model;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
@@ -26,10 +27,11 @@ public class JasperReportsDataSourceTest {
     department.put(TestDomain.DEPARTMENT_ID, 10);
     department.put(TestDomain.DEPARTMENT_NAME, "name");
     department.put(TestDomain.DEPARTMENT_LOCATION, "none");
+    final EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
     final List<Entity> entities = singletonList(department);
     final JasperReportsDataSource<Entity> source =
             new JasperReportsDataSource<>(entities.iterator(), (entity, field) ->
-                    entity.get(entity.getEntityType().objectAttribute(field.getName())));
+                    entity.get(definition.getAttribute(field.getName())));
     while (source.next()) {
       final JRField field = new TestField(TestDomain.DEPARTMENT_NAME.getName());
       source.getFieldValue(field);

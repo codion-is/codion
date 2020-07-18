@@ -244,6 +244,14 @@ public interface EntityDefinition {
   <T> List<DenormalizedProperty<?>> getDenormalizedProperties(Attribute<T> foreignKeyAttribute);
 
   /**
+   * Returns the attribute with the given name, null if none is found.
+   * @param attributeName the name of the attribute to fetch
+   * @param <T> the attribute type
+   * @return the attribute with the given name, null if none is found
+   */
+  <T> Attribute<T> getAttribute(String attributeName);
+
+  /**
    * Returns the attributes to search by when searching for entities of this type by a string value
    * @return the attributes to use when searching by string
    * @see ColumnProperty.Builder#searchProperty(boolean)

@@ -16,6 +16,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 import is.codion.plugin.jackson.json.db.ConditionObjectMapper;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
@@ -307,9 +308,11 @@ public final class EntityJsonService extends AbstractEntityService {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
 
-      final ConditionObjectMapper mapper = getConditionObjectMapper(connection.getEntities());
+      final Entities entities = connection.getEntities();
+      final ConditionObjectMapper mapper = getConditionObjectMapper(entities);
       final JsonNode jsonNode = mapper.readTree(request.getInputStream());
-      final Attribute<?> attribute = connection.getEntities().getDomainType().entityType(jsonNode.get("entityType").asText()).objectAttribute(jsonNode.get("attribute").textValue());
+      final EntityType<Entity> entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
+      final Attribute<?> attribute = entities.getDefinition(entityType).getAttribute(jsonNode.get("attribute").textValue());
       Condition condition = null;
       final JsonNode conditionNode = jsonNode.get("condition");
       if (conditionNode != null) {

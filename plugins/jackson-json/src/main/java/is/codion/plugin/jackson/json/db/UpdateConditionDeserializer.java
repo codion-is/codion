@@ -50,7 +50,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
-      final Attribute<Object> attribute = definition.getProperty(definition.getEntityType().objectAttribute(field.getKey())).getAttribute();
+      final Attribute<Object> attribute = definition.getProperty(definition.getAttribute(field.getKey())).getAttribute();
       updateCondition.set(attribute, EntityDeserializer.parseValue(entityObjectMapper, attribute, field.getValue()));
     }
 
