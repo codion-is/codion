@@ -6400,3 +6400,6 @@
   DefaultValueSet.SingleValueSet bug fixed, did not notify value change when underlying value set value changed
   ColumnConditionPanel.DefaultBoundFieldProvider now uses ValueSet.value() when binding the equal value field
   ColumnConditionPanel.showDialog() bug fixed, now uses requestInputFocus()
+  EntityComboBoxModel, createForeignKeyConditionComboBoxModel() added
+  ColumnSummaryModel now type safe
+  ColumnSummaryModels and panels no longer created for non-numerical columns

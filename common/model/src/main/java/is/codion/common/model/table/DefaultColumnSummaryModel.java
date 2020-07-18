@@ -11,18 +11,19 @@ import is.codion.common.event.Events;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A default ColumnSummaryModel implementation.
+ * @param <T> the column type
  */
-public class DefaultColumnSummaryModel implements ColumnSummaryModel {
+public class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel<T> {
 
   private final Event<Summary> summaryChangedEvent = Events.event();
   private final Event<?> summaryValueChangedEvent = Events.event();
 
-  private final ColumnValueProvider valueProvider;
+  private final ColumnValueProvider<T> valueProvider;
+  private final List<Summary> summaries = asList(ColumnSummary.values());
 
   private Summary summary = ColumnSummary.NONE;
   private boolean locked = false;
@@ -31,7 +32,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
    * Instantiates a new DefaultColumnSummaryModel
    * @param valueProvider the property value provider
    */
-  public DefaultColumnSummaryModel(final ColumnValueProvider valueProvider) {
+  public DefaultColumnSummaryModel(final ColumnValueProvider<T> valueProvider) {
     this.valueProvider = valueProvider;
     this.valueProvider.addValuesChangedListener(summaryValueChangedEvent);
     this.summaryChangedEvent.addListener(summaryValueChangedEvent);
@@ -66,12 +67,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
 
   @Override
   public final List<Summary> getAvailableSummaries() {
-    if (valueProvider.isNumerical()) {
-      return asList(ColumnSummary.NONE, ColumnSummary.SUM, ColumnSummary.AVERAGE, ColumnSummary.MINIMUM,
-              ColumnSummary.MAXIMUM, ColumnSummary.MINIMUM_MAXIMUM);
-    }
-
-    return emptyList();
+    return summaries;
   }
 
   @Override

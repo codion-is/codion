@@ -84,12 +84,21 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   boolean isStrictForeignKeyFiltering();
 
   /**
-   * Returns a combo box model for selecting a foreign key value for filtering this model
+   * Returns a combo box model for selecting a foreign key value for filtering this model.
    * @param foreignKeyAttribute the attribute with which values to create the combo box model
    * @return a combo box model for selecting a filtering value for this combo box model
-   * @see #linkForeignKeyComboBoxModel(Attribute, EntityComboBoxModel)
+   * @see #linkForeignKeyFilterComboBoxModel(Attribute, EntityComboBoxModel)
    */
   EntityComboBoxModel createForeignKeyFilterComboBoxModel(Attribute<Entity> foreignKeyAttribute);
+
+  /**
+   * Returns a combo box model for selecting a foreign key value for using as a condition this model.
+   * Note that each time the selection changes in the created model this model is refreshed.
+   * @param foreignKeyAttribute the attribute with which values to create the combo box model
+   * @return a combo box model for selecting a filtering value for this combo box model
+   * @see #linkForeignKeyConditionComboBoxModel(Attribute, EntityComboBoxModel)
+   */
+  EntityComboBoxModel createForeignKeyConditionComboBoxModel(Attribute<Entity> foreignKeyAttribute);
 
   /**
    * Links the given combo box model representing master entities to this combo box model
@@ -97,7 +106,15 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKeyAttribute the foreign key attribute
    * @param foreignKeyModel the combo box model to link
    */
-  void linkForeignKeyComboBoxModel(Attribute<Entity> foreignKeyAttribute, EntityComboBoxModel foreignKeyModel);
+  void linkForeignKeyFilterComboBoxModel(Attribute<Entity> foreignKeyAttribute, EntityComboBoxModel foreignKeyModel);
+
+  /**
+   * Links the given combo box model representing master entities to this combo box model
+   * so that selection in the master model refreshes this model with the selected master entity as condition
+   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKeyModel the combo box model to link
+   */
+  void linkForeignKeyConditionComboBoxModel(Attribute<Entity> foreignKeyAttribute, EntityComboBoxModel foreignKeyModel);
 
   /**
    * Selects the entity with the given primary key, if the entity is not available

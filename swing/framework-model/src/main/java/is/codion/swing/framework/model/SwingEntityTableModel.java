@@ -545,7 +545,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public final ColumnSummaryModel getColumnSummaryModel(final Attribute<?> attribute) {
+  public final <T extends Number> ColumnSummaryModel<T> getColumnSummaryModel(final Attribute<T> attribute) {
     return getColumnSummaryModel(getEntityDefinition().getProperty(attribute));
   }
 
@@ -608,8 +608,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  protected final <T> ColumnSummaryModel.ColumnValueProvider<T> createColumnValueProvider(final Property<?> property) {
-    return new DefaultColumnValueProvider<>(property, this, property.getFormat());
+  protected final <T extends Number> ColumnSummaryModel.ColumnValueProvider<T> createColumnValueProvider(final Property<?> property) {
+    if (property.getAttribute().isNumerical()) {
+      return new DefaultColumnValueProvider<>(property, this, property.getFormat());
+    }
+
+    return null;
   }
 
   @Override
