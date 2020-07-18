@@ -11,7 +11,6 @@ import is.codion.common.event.Events;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -24,6 +23,7 @@ public class DefaultColumnSummaryModel<T extends Number> implements ColumnSummar
   private final Event<?> summaryValueChangedEvent = Events.event();
 
   private final ColumnValueProvider<T> valueProvider;
+  private final List<Summary> summaries = asList(ColumnSummary.values());
 
   private Summary summary = ColumnSummary.NONE;
   private boolean locked = false;
@@ -67,12 +67,7 @@ public class DefaultColumnSummaryModel<T extends Number> implements ColumnSummar
 
   @Override
   public final List<Summary> getAvailableSummaries() {
-    if (valueProvider.isNumerical()) {
-      return asList(ColumnSummary.NONE, ColumnSummary.SUM, ColumnSummary.AVERAGE, ColumnSummary.MINIMUM,
-              ColumnSummary.MAXIMUM, ColumnSummary.MINIMUM_MAXIMUM);
-    }
-
-    return emptyList();
+    return summaries;
   }
 
   @Override

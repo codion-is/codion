@@ -83,18 +83,13 @@ public interface ColumnSummaryModel<T extends Number> {
    * Provides the values used when creating the summary value.
    * @param <T> the value type
    */
-  interface ColumnValueProvider<T> {
+  interface ColumnValueProvider<T extends Number> {
 
     /**
      * @param value the value
      * @return the formatted value
      */
     String format(Object value);
-
-    /**
-     * @return true if the column is numerical
-     */
-    boolean isNumerical();
 
     /**
      * @return the values to base the summary on

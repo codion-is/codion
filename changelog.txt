@@ -6374,3 +6374,4 @@
   ColumnConditionPanel.showDialog() bug fixed, now uses requestInputFocus()
   EntityComboBoxModel, createForeignKeyConditionComboBoxModel() added
   ColumnSummaryModel now type safe
+  ColumnSummaryModels and panels no longer created for non-numerical columns

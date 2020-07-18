@@ -23,10 +23,6 @@ public class DefaultColumnSummaryModelTest {
     @Override
     public String format(final Object value) {return numberFormat.format(value);}
     @Override
-    public boolean isNumerical() {
-      return true;
-    }
-    @Override
     public Collection<Integer> getValues() {
       return asList(1, 2, 3, null, 4, 5);
     }
@@ -41,10 +37,6 @@ public class DefaultColumnSummaryModelTest {
   final ColumnSummaryModel<Double> testDoubleModel = new DefaultColumnSummaryModel<>(new ColumnSummaryModel.ColumnValueProvider<Double>() {
     @Override
     public String format(final Object value) {return numberFormat.format(value);}
-    @Override
-    public boolean isNumerical() {
-      return true;
-    }
     @Override
     public Collection<Double> getValues() {
       return asList(1.1, 2.2, 3.3, null, 4.4, 5.5);

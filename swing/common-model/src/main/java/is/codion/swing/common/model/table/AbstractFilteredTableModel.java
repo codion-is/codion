@@ -86,7 +86,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * Maps PropertySummaryModels to their respective properties
    */
-  private final Map<C, ColumnSummaryModel<?>> columnSummaryModels = new HashMap<>();
+  private final Map<C, ColumnSummaryModel<? extends Number>> columnSummaryModels = new HashMap<>();
 
   /**
    * the include condition used by this model
@@ -249,8 +249,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   @Override
   public final <T extends Number> ColumnSummaryModel<T> getColumnSummaryModel(final C columnIdentifier) {
-    return (ColumnSummaryModel<T>) columnSummaryModels.computeIfAbsent(columnIdentifier, identifier ->
-            new DefaultColumnSummaryModel<>(createColumnValueProvider(columnIdentifier)));
+    return (ColumnSummaryModel<T>) columnSummaryModels.computeIfAbsent(columnIdentifier, identifier -> {
+      final ColumnSummaryModel.ColumnValueProvider<Number> provider = createColumnValueProvider(columnIdentifier);
+
+      return provider == null ? null : new DefaultColumnSummaryModel<>(provider);
+    });
   }
 
   @Override
@@ -453,12 +456,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected abstract void doRefresh();
 
   /**
-   * Creates a ColumnValueProvider for the given column
+   * Creates a ColumnValueProvider for the given column, null if the column type is not numerical
    * @param columnIdentifier the column identifier
    * @param <T> the value type
-   * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}
+   * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}, null if not applicable
    */
-  protected <T> ColumnSummaryModel.ColumnValueProvider<T> createColumnValueProvider(final C columnIdentifier) {
+  protected <T extends Number> ColumnSummaryModel.ColumnValueProvider<T> createColumnValueProvider(final C columnIdentifier) {
     return new DefaultColumnValueProvider<>(columnIdentifier, this, null);
   }
 
@@ -612,12 +615,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * A default ColumnValueProvider implementation
    */
-  protected static final class DefaultColumnValueProvider<T, C> implements ColumnSummaryModel.ColumnValueProvider<T> {
+  protected static final class DefaultColumnValueProvider<T extends Number, C> implements ColumnSummaryModel.ColumnValueProvider<T> {
 
     private final C columnIdentifier;
     private final FilteredTableModel<?, C, ?> tableModel;
     private final Format format;
-    private final boolean numerical;
 
     /**
      * @param columnIdentifier the identifier of the column which values are provided
@@ -629,8 +631,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       this.columnIdentifier = columnIdentifier;
       this.tableModel = tableModel;
       this.format = format;
-      final Class<?> columnClass = tableModel.getSortModel().getColumnClass(columnIdentifier);
-      this.numerical = Number.class.isAssignableFrom(columnClass);
     }
 
     @Override
@@ -642,11 +642,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     public void addValuesChangedListener(final EventListener listener) {
       tableModel.addTableDataChangedListener(listener);
       tableModel.getSelectionModel().addSelectionChangedListener(listener);
-    }
-
-    @Override
-    public boolean isNumerical() {
-      return numerical;
     }
 
     @Override

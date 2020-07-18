@@ -31,7 +31,12 @@ public final class FilteredTableSummaryPanel<C> extends AbstractTableColumnSyncP
 
   @Override
   protected JPanel initializeColumnPanel(final TableColumn column) {
-    return initializeColumnSummaryPanel(tableModel.getColumnSummaryModel((C) column.getIdentifier()));
+    final ColumnSummaryModel<Number> columnSummaryModel = tableModel.getColumnSummaryModel((C) column.getIdentifier());
+    if (columnSummaryModel == null) {
+      return new JPanel();
+    }
+
+    return initializeColumnSummaryPanel(columnSummaryModel);
   }
 
   /**
