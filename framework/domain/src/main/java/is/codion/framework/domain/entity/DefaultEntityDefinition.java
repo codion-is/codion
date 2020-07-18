@@ -317,6 +317,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
+  public <T> Attribute<T> getAttribute(final String attributeName) {
+    return (Attribute<T>) entityProperties.attributeMap.get(attributeName);
+  }
+
+  @Override
   public Collection<Attribute<String>> getSearchAttributes() {
     return entityProperties.columnProperties.stream().filter(ColumnProperty::isSearchProperty)
             .map(property -> ((ColumnProperty<String>) property).getAttribute()).collect(toList());
@@ -483,7 +488,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public List<Property<?>> getVisibleProperties() {
-    return entityProperties.visibleProperties;
+    return entityProperties.properties.stream().filter(property -> !property.isHidden()).collect(toList());
   }
 
   @Override
@@ -743,9 +748,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private final EntityType<?> entityType;
 
+    private final Map<String, Attribute<?>> attributeMap;
     private final Map<Attribute<?>, Property<?>> propertyMap;
     private final List<Property<?>> properties;
-    private final List<Property<?>> visibleProperties;
     private final List<ColumnProperty<?>> columnProperties;
     private final List<ColumnProperty<?>> lazyLoadedBlobProperties;
     private final List<ColumnProperty<?>> selectableColumnProperties;
@@ -762,8 +767,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private EntityProperties(final EntityType<?> entityType, final List<Property<?>> properties) {
       this.entityType = entityType;
       this.propertyMap = initializePropertyMap(properties);
+      this.attributeMap = initializeAttributeMap();
       this.properties = unmodifiableList(new ArrayList<>(propertyMap.values()));
-      this.visibleProperties = unmodifiableList(getVisibleProperties());
       this.columnProperties = unmodifiableList(getColumnProperties());
       this.lazyLoadedBlobProperties = initializeLazyLoadedBlobProperties();
       this.selectableColumnProperties = unmodifiableList(getSelectableProperties());
@@ -789,6 +794,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       validatePrimaryKeyProperties(map);
 
       return unmodifiableMap(map);
+    }
+
+    private Map<String, Attribute<?>> initializeAttributeMap() {
+      final Map<String, Attribute<?>> map = new HashMap<>();
+      propertyMap.values().forEach(property -> map.put(property.getAttribute().getName(), property.getAttribute()));
+
+      return map;
     }
 
     private void initializeForeignKeyProperty(final Map<Attribute<?>, Property<?>> propertyMap,
@@ -853,10 +865,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.primaryKeyProperties.forEach(property -> map.put(property.getAttribute(), property));
 
       return unmodifiableMap(map);
-    }
-
-    private List<Property<?>> getVisibleProperties() {
-      return properties.stream().filter(property -> !property.isHidden()).collect(toList());
     }
 
     private List<ForeignKeyProperty> getForeignKeyProperties() {

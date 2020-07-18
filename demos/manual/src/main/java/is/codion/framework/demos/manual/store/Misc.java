@@ -13,6 +13,7 @@ import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.model.CustomerEditModel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.plugin.jasperreports.model.JRReport;
 import is.codion.plugin.jasperreports.model.JasperReports;
@@ -38,13 +39,16 @@ public final class Misc {
    // tag::jasperReportDataSource[]
     EntityConnection connection = connectionProvider.getConnection();
 
+    EntityDefinition customerDefinition =
+            connection.getEntities().getDefinition(Customer.TYPE);
+
     Iterator<Entity> customerIterator =
             connection.select(condition(Customer.TYPE).selectCondition()).iterator();
 
     JasperReportsDataSource<Entity> dataSource =
             new JasperReportsDataSource<>(customerIterator,
                     (entity, reportField) ->
-                            entity.get(Customer.TYPE.objectAttribute(reportField.getName())));
+                            entity.get(customerDefinition.getAttribute(reportField.getName())));
 
     JRReport customerReport = fileReport("reports/customer.jasper");
 

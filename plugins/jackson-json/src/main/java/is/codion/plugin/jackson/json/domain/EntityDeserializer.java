@@ -111,7 +111,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
-      final Property<?> property = definition.getProperty(definition.getEntityType().objectAttribute(field.getKey()));
+      final Property<?> property = definition.getProperty(definition.getAttribute(field.getKey()));
       valueMap.put(property.getAttribute(), parseValue(property.getAttribute(), field.getValue()));
     }
 
