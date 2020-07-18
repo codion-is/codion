@@ -58,12 +58,12 @@ public class EntityInputComponentsTest {
     final JCheckBox box = EntityInputComponents.createCheckBox(DOMAIN.getEntities().getDefinition(TestDomain.T_DETAIL).getProperty(
             TestDomain.DETAIL_BOOLEAN), editModel.value(TestDomain.DETAIL_BOOLEAN));
     assertTrue(box.isSelected());//default value is true
-    assertTrue((Boolean) editModel.get(TestDomain.DETAIL_BOOLEAN));
+    assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN));
 
     box.doClick();
 
     assertFalse(box.isSelected());
-    assertFalse((Boolean) editModel.get(TestDomain.DETAIL_BOOLEAN));
+    assertFalse(editModel.get(TestDomain.DETAIL_BOOLEAN));
 
     editModel.put(TestDomain.DETAIL_BOOLEAN, true);
     assertTrue(box.isSelected());
@@ -76,7 +76,7 @@ public class EntityInputComponentsTest {
     final NullableCheckBox box = EntityInputComponents.createNullableCheckBox(DOMAIN.getEntities().getDefinition(TestDomain.T_DETAIL).getProperty(
             TestDomain.DETAIL_BOOLEAN_NULLABLE), editModel.value(TestDomain.DETAIL_BOOLEAN_NULLABLE), null, IncludeCaption.NO);
     assertTrue(box.isSelected());//default value is true
-    assertTrue((Boolean) editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
+    assertTrue(editModel.get(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
     box.getMouseListeners()[0].mouseClicked(null);
 

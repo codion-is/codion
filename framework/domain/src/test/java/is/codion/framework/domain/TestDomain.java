@@ -8,7 +8,6 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.TransientProperty;
@@ -257,7 +256,7 @@ public class TestDomain extends DefaultDomain {
                     .columnName("ename").maximumLength(10).nullable(false)
                     .beanProperty("name"),
             foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName(), Department.TYPE,
-                    (ColumnProperty.Builder<?>) columnProperty(Employee.DEPARTMENT)
+                    columnProperty(Employee.DEPARTMENT)
                             .beanProperty("deptno"))
                     .beanProperty("department")
                     .nullable(false),
@@ -273,7 +272,7 @@ public class TestDomain extends DefaultDomain {
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2)
                     .beanProperty("commission"),
             foreignKeyProperty(Employee.MANAGER_FK, Employee.MANAGER_FK.getName(), Employee.TYPE,
-                    (ColumnProperty.Builder<?>) columnProperty(Employee.MGR)
+                    columnProperty(Employee.MGR)
                             .beanProperty("mgr"))
                     .beanProperty("manager"),
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.getName())
@@ -281,8 +280,8 @@ public class TestDomain extends DefaultDomain {
                     .dateTimeFormatPattern(DateFormats.SHORT_DOT)
                     .nullable(false)
                     .beanProperty("hiredate"),
-            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.getName(), Employee.DEPARTMENT_FK, Department.LOCATION
-            ).preferredColumnWidth(100),
+            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.getName(), Employee.DEPARTMENT_FK, Department.LOCATION)
+                    .preferredColumnWidth(100),
             derivedProperty(Employee.DEPARTMENT_NAME, null, new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
             blobProperty(Employee.DATA, "Data")
                     .eagerlyLoaded(true))

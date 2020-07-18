@@ -11,7 +11,6 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.value.Values;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -305,7 +304,7 @@ public final class EntityTableConditionPanel extends JPanel {
         return new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel);
       }
 
-      return new PropertyConditionPanel((ColumnConditionModel<Entity, ColumnProperty<?>, ?>) propertyConditionModel);
+      return new PropertyConditionPanel(propertyConditionModel);
     }
   }
 }
