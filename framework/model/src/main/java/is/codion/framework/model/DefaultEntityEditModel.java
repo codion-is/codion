@@ -949,13 +949,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     final Collection<Attribute<?>> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity() : entity);
     for (final Attribute<?> affectedAttribute : affectedAttributes) {
       onValueChange(new DefaultValueChange(affectedAttribute, this.entity.get(affectedAttribute), null));
-      if (getEntityDefinition().hasDerivedAttributes()) {
-        final Collection<Attribute<?>> derivedAttributes = getEntityDefinition().getDerivedAttributes(affectedAttribute);
-        for (final Attribute<?> derivedAttribute : derivedAttributes) {
-          final Object derivedValue = this.entity.get(derivedAttribute);
-          onValueChange(new DefaultValueChange(derivedAttribute, derivedValue, derivedValue));
-        }
-      }
     }
 
     entitySetEvent.onEvent(entity);
@@ -985,11 +978,17 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     afterUpdateEvent.addListener(entitiesChangedEvent);
   }
 
+  @SuppressWarnings("rawtypes")
   private <T> void notifyValueEdit(final Attribute<T> attribute, final ValueChange<T> valueChange) {
     onValueChange(valueChange);
     getValueEditEvent(attribute).onEvent(valueChange);
+    for (final Attribute<?> derivedAttribute : getEntityDefinition().getDerivedAttributes(attribute)) {
+      final Object derivedValue = entity.get(derivedAttribute);
+      getValueEditEvent(derivedAttribute).onEvent(new DefaultValueChange(derivedAttribute, derivedValue, derivedValue));
+    }
   }
 
+  @SuppressWarnings("rawtypes")
   private <T> void onValueChange(final ValueChange<T> valueChange) {
     entityModifiedState.set(entity.isModified());
     validState.set(validator.isValid(entity, getEntityDefinition()));
@@ -998,6 +997,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     final Event<ValueChange<T>> valueChangeEvent = (Event<ValueChange<T>>) valueChangeEventMap.get(valueChange.getAttribute());
     if (valueChangeEvent != null) {
       valueChangeEvent.onEvent(valueChange);
+    }
+    for (final Attribute<?> derivedAttribute : getEntityDefinition().getDerivedAttributes(valueChange.getAttribute())) {
+      final Object derivedValue = entity.get(derivedAttribute);
+      onValueChange(new DefaultValueChange(derivedAttribute, derivedValue, derivedValue));
     }
   }
 

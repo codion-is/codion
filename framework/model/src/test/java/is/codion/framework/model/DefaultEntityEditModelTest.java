@@ -508,6 +508,38 @@ public final class DefaultEntityEditModelTest {
     assertEquals(2, value.get());
   }
 
+  @Test
+  public void derivedProperties() {
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, employeeEditModel.getConnectionProvider()) {
+      @Override
+      public void addForeignKeyValues(final List<Entity> entities) {}
+      @Override
+      public void removeForeignKeyValues(final List<Entity> entities) {}
+      @Override
+      public void clear() {}
+    };
+
+    final AtomicInteger derivedCounter = new AtomicInteger();
+    final AtomicInteger derivedEditCounter = new AtomicInteger();
+
+    editModel.addValueListener(TestDomain.DETAIL_INT_DERIVED, valueChange -> derivedCounter.incrementAndGet());
+    editModel.addValueEditListener(TestDomain.DETAIL_INT_DERIVED, valueChange -> derivedEditCounter.incrementAndGet());
+
+    editModel.put(TestDomain.DETAIL_INT, 1);
+    assertEquals(1, derivedCounter.get());
+    assertEquals(1, derivedEditCounter.get());
+
+    editModel.put(TestDomain.DETAIL_INT, 2);
+    assertEquals(2, derivedCounter.get());
+    assertEquals(2, derivedEditCounter.get());
+
+    final Entity detail = ENTITIES.entity(TestDomain.T_DETAIL);
+    detail.put(TestDomain.DETAIL_INT, 3);
+    editModel.setEntity(detail);
+    assertEquals(3, derivedCounter.get());
+    assertEquals(2, derivedEditCounter.get());
+  }
+
   private static final class TestEntityEditModel extends DefaultEntityEditModel {
 
     public TestEntityEditModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
