@@ -108,6 +108,27 @@ public final class SwingEntityComboBoxModelTest {
   }
 
   @Test
+  public void foreignKeyConditionComboBoxModel() throws Exception {
+    final EntityConnectionProvider connectionProvider = comboBoxModel.getConnectionProvider();
+    final SwingEntityComboBoxModel empBox = new SwingEntityComboBoxModel(TestDomain.T_EMP, connectionProvider);
+    empBox.setNullString("-");
+    empBox.refresh();
+    assertEquals(17, empBox.getSize());
+    final SwingEntityComboBoxModel deptBox = empBox.createForeignKeyConditionComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
+    assertEquals(1, empBox.getSize());
+    final Key accountingKey = connectionProvider.getEntities().key(TestDomain.T_DEPARTMENT, 10);
+    deptBox.setSelectedEntityByKey(accountingKey);
+    assertEquals(8, empBox.getSize());
+    deptBox.setSelectedItem(null);
+    assertEquals(1, empBox.getSize());
+    final Key salesKey = connectionProvider.getEntities().key(TestDomain.T_DEPARTMENT, 30);
+    deptBox.setSelectedEntityByKey(salesKey);
+    assertEquals(5, empBox.getSize());
+    empBox.setSelectedItem(empBox.getVisibleItems().get(1));
+    empBox.setSelectedItem(null);
+  }
+
+  @Test
   public void setForeignKeyFilterEntities() throws Exception {
     comboBoxModel.refresh();
     final Entity blake = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.EMP_NAME, "BLAKE");
