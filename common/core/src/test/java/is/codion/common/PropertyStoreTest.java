@@ -181,4 +181,14 @@ public final class PropertyStoreTest {
     value = store.propertyValue("property", "def");
     assertEquals("def", value.get());
   }
+
+  @Test
+  public void getOrThrow() {
+    final Properties properties = new Properties();
+    properties.put("property", "");
+    final PropertyStore store = new PropertyStore(properties);
+    final PropertyValue<String> propertyValue = store.propertyValue("property", "");
+    propertyValue.set(null);
+    assertThrows(IllegalStateException.class, propertyValue::getOrThrow);
+  }
 }

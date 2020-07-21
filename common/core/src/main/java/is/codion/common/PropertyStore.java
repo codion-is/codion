@@ -313,6 +313,16 @@ public final class PropertyStore {
     }
 
     @Override
+    public T getOrThrow() throws IllegalStateException {
+      final T value = get();
+      if (value == null) {
+        throw new IllegalStateException("Required property is missing: " + propertyName);
+      }
+
+      return value;
+    }
+
+    @Override
     public void set(final T value) {
       final T newValue = value == null ? nullValue : value;
       if (!Objects.equals(this.value, newValue)) {
