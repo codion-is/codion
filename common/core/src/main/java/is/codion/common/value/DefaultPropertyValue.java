@@ -81,6 +81,16 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
+  public V getOrThrow() throws IllegalStateException {
+    final V value = get();
+    if (value == null) {
+      throw new IllegalStateException("Required property is missing: " + propertyName);
+    }
+
+    return value;
+  }
+
+  @Override
   public boolean isNullable() {
     return !valueClass.isPrimitive();
   }

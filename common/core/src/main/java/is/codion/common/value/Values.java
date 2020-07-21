@@ -69,7 +69,7 @@ public final class Values {
   }
 
   /**
-   * Instantiates a new Value based on a class property
+   * Instantiates a new PropertyValue based on a class property
    * @param owner the property owner
    * @param propertyName the name of the property
    * @param valueClass the value class
@@ -77,8 +77,8 @@ public final class Values {
    * @param <V> type to wrap
    * @return a Value for the given property
    */
-  public static <V> Value<V> propertyValue(final Object owner, final String propertyName, final Class<V> valueClass,
-                                           final EventObserver<V> valueChangeObserver) {
+  public static <V> PropertyValue<V> propertyValue(final Object owner, final String propertyName, final Class<V> valueClass,
+                                                   final EventObserver<V> valueChangeObserver) {
     return new DefaultPropertyValue<>(owner, propertyName, valueClass, valueChangeObserver);
   }
 

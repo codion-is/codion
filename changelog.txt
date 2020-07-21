@@ -6378,3 +6378,4 @@
   EntityDefinition.getAttribute(attributeName) added, EntityType.objectAttribute() removed
   EntityDefinition.EntityProperties.visibleProperties removed, EntityDefinition.getVisibleProperties() dynamic
   DefaultEntityEditModel bug fixed, did not notify derived property value changes on source property value change
+  PropertyValue.getOrThrow() added

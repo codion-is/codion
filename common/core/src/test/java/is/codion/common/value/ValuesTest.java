@@ -200,6 +200,13 @@ public class ValuesTest {
   }
 
   @Test
+  public void getOrThrow() {
+    final PropertyValue<Integer> integerValue = Values.propertyValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
+    integerValue.set(null);
+    assertThrows(IllegalStateException.class, integerValue::getOrThrow);
+  }
+
+  @Test
   public void propertyValueNoGetter() {
     assertThrows(IllegalArgumentException.class, () -> Values.propertyValue(this, "nonexistent", Integer.class, integerValueChange.getObserver()));
   }
