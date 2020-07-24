@@ -2,7 +2,7 @@ dependencies {
     api project(':codion-common-core')
     api project(':codion-common-db')
 
-    implementation 'com.zaxxer:HikariCP:3.4.2'
+    implementation 'com.zaxxer:HikariCP:3.4.5'
 
     testImplementation project(':codion-dbms-h2database')
     testRuntimeOnly "com.h2database:h2:${h2Version}"

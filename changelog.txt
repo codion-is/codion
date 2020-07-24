@@ -6380,3 +6380,4 @@
   DefaultEntityEditModel bug fixed, did not notify derived property value changes on source property value change
   PropertyValue.getOrThrow() added
   EntityTablePanel.setAutomaticallyHideRefreshToolbar() added along with AUTOMATICALLY_HIDE_REFRESH_TOOLBAR configuration value (default true)
+  Upgraded a few third party dependencies
