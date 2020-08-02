@@ -69,8 +69,9 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void defineTable() {
     define(Table.TYPE, bundle.getString("t_table"),
-            foreignKeyProperty(Table.SCHEMA_FK, "Schema", Schema.TYPE,
-                    primaryKeyProperty(Table.SCHEMA).primaryKeyIndex(0)),
+            columnProperty(Table.SCHEMA).primaryKeyIndex(0),
+            foreignKeyProperty(Table.SCHEMA_FK, "Schema",
+                    Schema.TYPE, Table.SCHEMA),
             primaryKeyProperty(Table.NAME, "Name").primaryKeyIndex(1))
             .orderBy(orderBy().ascending(Table.SCHEMA, Table.NAME))
             .readOnly(true)
@@ -89,9 +90,10 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void defineColumn() {
     define(Column.TYPE, bundle.getString("t_column"),
+            columnProperty(Column.SCHEMA).primaryKeyIndex(0),
+            columnProperty(Column.TABLE_NAME).primaryKeyIndex(1),
             foreignKeyProperty(Column.TABLE_FK, "Table", Table.TYPE,
-                    asList(columnProperty(Column.SCHEMA).primaryKeyIndex(0),
-                            columnProperty(Column.TABLE_NAME).primaryKeyIndex(1))),
+                    asList(Column.SCHEMA, Column.TABLE_NAME)),
             primaryKeyProperty(Column.NAME, "Column name").primaryKeyIndex(2),
             columnProperty(Column.DATA_TYPE, "Data type"))
             .orderBy(orderBy().ascending(Column.SCHEMA, Column.TABLE_NAME, Column.NAME))
@@ -111,9 +113,10 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void defineConstraint() {
     define(Constraint.TYPE, bundle.getString("t_constraint"),
+            columnProperty(Constraint.SCHEMA).primaryKeyIndex(0),
+            columnProperty(Constraint.TABLE_NAME).primaryKeyIndex(1),
             foreignKeyProperty(Constraint.TABLE_FK, "Table", Table.TYPE,
-                    asList(columnProperty(Constraint.SCHEMA).primaryKeyIndex(0),
-                            columnProperty(Constraint.TABLE_NAME).primaryKeyIndex(1))),
+                    asList(Constraint.SCHEMA, Constraint.TABLE_NAME)),
             primaryKeyProperty(Constraint.NAME, "Constraint name").primaryKeyIndex(2),
             columnProperty(Constraint.CONSTRAINT_TYPE, "Type"))
             .orderBy(orderBy().ascending(Constraint.SCHEMA, Constraint.TABLE_NAME, Constraint.NAME))
@@ -134,10 +137,11 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void defineColumnConstraint() {
     define(ColumnConstraint.TYPE, bundle.getString("t_column_constraint"),
+            columnProperty(ColumnConstraint.SCHEMA).primaryKeyIndex(0),
+            columnProperty(ColumnConstraint.TABLE_NAME).primaryKeyIndex(1),
+            columnProperty(ColumnConstraint.CONSTRAINT_NAME).primaryKeyIndex(2),
             foreignKeyProperty(ColumnConstraint.CONSTRAINT_FK, "Constraint", Constraint.TYPE,
-                    asList(columnProperty(ColumnConstraint.SCHEMA).primaryKeyIndex(0),
-                            columnProperty(ColumnConstraint.TABLE_NAME).primaryKeyIndex(1),
-                            columnProperty(ColumnConstraint.CONSTRAINT_NAME).primaryKeyIndex(2))),
+                    asList(ColumnConstraint.SCHEMA, ColumnConstraint.TABLE_NAME, ColumnConstraint.CONSTRAINT_NAME)),
             columnProperty(ColumnConstraint.COLUMN_NAME, "Column name"),
             columnProperty(ColumnConstraint.POSITION, "Position"))
             .orderBy(orderBy().ascending(ColumnConstraint.SCHEMA, ColumnConstraint.TABLE_NAME, ColumnConstraint.CONSTRAINT_NAME))

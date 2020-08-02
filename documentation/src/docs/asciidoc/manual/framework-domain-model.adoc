@@ -66,7 +66,7 @@ If no primary key properties are specified the entity is somewhat restricted, it
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=primaryKey]
 ----
 
-In case of composite primary keys you create a ColumnProperty and specify the primary key index. Note that in the example below the column with primary key index 0 is a foreign key column and wrapped in a foreignKeyProperty(), which are discussed a bit later.
+In case of composite primary keys you create a ColumnProperty and specify the primary key index.
 
 [source,java,indent=0]
 ----
@@ -94,7 +94,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 [#_foreignkeyproperty]
 === ForeignKeyProperty
 
-{url-javadoc}/is/codion/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a wrapper property used to represent a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.
+{url-javadoc}/is/codion/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a property used to represent a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.
 
 [source,java,indent=0]
 ----
@@ -108,10 +108,7 @@ NOTE: The order of the properties must be the same as the order of the respectiv
 [source,java]
 ----
 foreignKeyProperty(Detail.MASTER_FK, "Master", Master.TYPE,
-        asList(
-                columnProperty(Detail.MASTER_ID_1),
-                columnProperty(Detail.MASTER_ID_2)
-        ));
+        asList(Detail.MASTER_ID_1, Detail.MASTER_ID_2));
 ----
 
 The above assumes the below master definition.

@@ -6409,3 +6409,6 @@
   PropertyValue.getOrThrow() added
   EntityTablePanel.setAutomaticallyHideRefreshToolbar() added along with AUTOMATICALLY_HIDE_REFRESH_TOOLBAR configuration value (default true)
   Upgraded a few third party dependencies
+  ForeignKeyProperty no longer wraps the column properties involved, MirrorProperty removed
+  DefaultEntityTableConditionModel now also creates condition models for properties which are part of a foreign key
+  DefaultEntityEditModel, change and edit events now fired for all dependent values

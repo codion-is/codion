@@ -22,11 +22,6 @@ public interface ForeignKeyProperty extends Property<Entity> {
   Attribute<Entity> getAttribute();
 
   /**
-   * @return true if all reference properties comprising this foreign key property are updatable
-   */
-  boolean isUpdatable();
-
-  /**
    * @return the entity type
    */
   EntityType<?> getEntityType();
@@ -41,12 +36,6 @@ public interface ForeignKeyProperty extends Property<Entity> {
    * @return the reference attributes
    */
   List<Attribute<?>> getColumnAttributes();
-
-  /**
-   * Returns an unmodifiable list containing the properties that comprise this foreign key
-   * @return the reference properties
-   */
-  List<ColumnProperty<?>> getColumnProperties();
 
   /**
    * @return the default query fetch depth for this foreign key
@@ -81,23 +70,5 @@ public interface ForeignKeyProperty extends Property<Entity> {
      * @return this instance
      */
     ForeignKeyProperty.Builder softReference(boolean softReference);
-
-    /**
-     * @param insertable specifies whether this property should be included during insert operations
-     * @return this instance
-     */
-    ForeignKeyProperty.Builder insertable(boolean insertable);
-
-    /**
-     * @param updatable specifies whether this property should be included during update operations
-     * @return this instance
-     */
-    ForeignKeyProperty.Builder updatable(boolean updatable);
-
-    /**
-     * @param readOnly specifies whether this property should be included during insert and update operations
-     * @return this instance
-     */
-    ForeignKeyProperty.Builder readOnly(boolean readOnly);
   }
 }

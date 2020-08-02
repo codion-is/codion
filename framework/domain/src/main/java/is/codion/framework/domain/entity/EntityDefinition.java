@@ -329,6 +329,18 @@ public interface EntityDefinition {
   List<Property<?>> getUpdatableProperties();
 
   /**
+   * @param foreignKeyProperty the foreign key property
+   * @return true if all the underlying properties are updatable
+   */
+  boolean isUpdatable(ForeignKeyProperty foreignKeyProperty);
+
+  /**
+   * @param attribute the attribute
+   * @return true if the given attribute is part of a foreign key
+   */
+  boolean isForeignKeyAttribute(Attribute<?> attribute);
+
+  /**
    * Returns the selectable {@link ColumnProperty}s identified
    * by the attributes in {@code attributes}
    * @param attributes the ids of the properties to retrieve
@@ -346,7 +358,7 @@ public interface EntityDefinition {
 
   /**
    * @param attribute the attribute
-   * @return the Property.ForeignKeyProperty with the given attribute
+   * @return the ForeignKeyProperty based on the given attribute
    * @throws IllegalArgumentException in case no such property exists
    */
   ForeignKeyProperty getForeignKeyProperty(Attribute<Entity> attribute);
@@ -357,6 +369,12 @@ public interface EntityDefinition {
    * @return the ForeignKeyProperties based on the given column property
    */
   <T> List<ForeignKeyProperty> getForeignKeyProperties(Attribute<T> columnAttribute);
+
+  /**
+   * @param foreignKeyProperty the foreign key property
+   * @return the column properties the given foreign key is based on
+   */
+  List<ColumnProperty<?>> getColumnProperties(ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Returns the color provider, never null

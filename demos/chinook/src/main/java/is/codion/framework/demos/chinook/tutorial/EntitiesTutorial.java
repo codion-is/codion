@@ -86,17 +86,19 @@ public final class EntitiesTutorial {
 
       albumTitle.nullable(false).maximumLength(160);
 
-      // we wrap the actual 'artistid' column property in a foreign key
-      // referencing the entity identified by T_ARTIST
-      Property.Builder<Entity> albumArtist =
-              foreignKeyProperty(Album.ARTIST_FK, "Artist", Artist.TYPE,
-                      columnProperty(Album.ARTIST_ID));
+      Property.Builder<Integer> albumArtistId = columnProperty(Album.ARTIST_ID);
 
-      albumArtist.nullable(false);
+      albumId.nullable(false);
+
+      // create a foreign key property referencing the entity identified
+      // by Artist.TYPE, via the Album.ARTIST_ID attribute
+      Property.Builder<Entity> albumArtist =
+              foreignKeyProperty(Album.ARTIST_FK, "Artist", Artist.TYPE, Album.ARTIST_ID);
+
 
       // define an entity based on the table 'chinook.album',
       // with the above properties
-      define(Album.TYPE, albumId, albumTitle, albumArtist)
+      define(Album.TYPE, albumId, albumTitle, albumArtistId, albumArtist)
               .keyGenerator(automatic("chinook.album"))
               .stringFactory(stringFactory()
                       .value(Album.ARTIST_FK)

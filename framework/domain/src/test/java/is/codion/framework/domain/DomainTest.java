@@ -499,10 +499,12 @@ public class DomainTest {
   public void foreignKeyReferencingUndefinedEntity() {
     assertThrows(IllegalArgumentException.class, () -> {
       final EntityType<Entity> entityType = DOMAIN.entityType("test.entity");
+      final Attribute<Integer> fkId = entityType.attribute("fk_id", Integer.class);
       domain.define(entityType,
               Properties.primaryKeyProperty(entityType.attribute("id", Integer.class)),
-              Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption", DOMAIN.entityType("test.referenced_entity"),
-                      Properties.columnProperty(entityType.attribute("fk_id", Integer.class))));
+              Properties.columnProperty(fkId),
+              Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption",
+                      DOMAIN.entityType("test.referenced_entity"), fkId));
     });
   }
 
@@ -510,10 +512,12 @@ public class DomainTest {
   public void foreignKeyReferencingUndefinedEntityNonStrict() {
     domain.setStrictForeignKeys(false);
     final EntityType<Entity> entityType = DOMAIN.entityType("test.entity");
+    final Attribute<Integer> fkId = entityType.attribute("fk_id", Integer.class);
     domain.define(entityType,
             Properties.primaryKeyProperty(entityType.attribute("id", Integer.class)),
-            Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption", DOMAIN.entityType("test.referenced_entity"),
-                    Properties.columnProperty(entityType.attribute("fk_id", Integer.class))));
+            Properties.columnProperty(fkId),
+            Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption",
+                    DOMAIN.entityType("test.referenced_entity"), fkId));
     domain.setStrictForeignKeys(true);
   }
 

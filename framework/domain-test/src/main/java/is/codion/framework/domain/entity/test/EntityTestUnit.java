@@ -449,8 +449,9 @@ public class EntityTestUnit {
   private static void populateEntity(final Entities entities, final Entity entity, final Collection<ColumnProperty<?>> properties,
                                      final Function<Property<?>, Object> valueProvider) {
     requireNonNull(valueProvider, "valueProvider");
+    final EntityDefinition definition = entities.getDefinition(entity.getEntityType());
     for (@SuppressWarnings("rawtypes") final ColumnProperty property : properties) {
-      if (!property.isForeignKeyColumn() && !property.isDenormalized()) {
+      if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isDenormalized()) {
         entity.put(property.getAttribute(), valueProvider.apply(property));
       }
     }

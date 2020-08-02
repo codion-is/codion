@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Collections;
 
 import static is.codion.framework.domain.property.Properties.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public final class PropertiesTest {
 
@@ -33,17 +33,17 @@ public final class PropertiesTest {
   @Test
   public void foreignKeyPropertyNonUniqueReferenceAttribute() {
     final Attribute<Entity> attribute = ENTITY_TYPE.entityAttribute("attribute");
-    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(attribute, "caption", REFERENCED_ENTITY_TYPE, columnProperty(attribute)));
+    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(attribute, "caption", REFERENCED_ENTITY_TYPE, attribute));
   }
 
   @Test
   public void foreignKeyPropertyWithoutReferenceProperty() {
-    assertThrows(NullPointerException.class, () -> foreignKeyProperty(ENTITY_TYPE.entityAttribute("attribute"), "caption", REFERENCED_ENTITY_TYPE, (ColumnProperty.Builder<?>) null));
+    assertThrows(NullPointerException.class, () -> foreignKeyProperty(ENTITY_TYPE.entityAttribute("attribute"), "caption", REFERENCED_ENTITY_TYPE, (Attribute<?>) null));
   }
 
   @Test
   public void foreignKeyPropertyWithoutReferenceEntityType() {
-    assertThrows(NullPointerException.class, () -> foreignKeyProperty(ENTITY_TYPE.entityAttribute("attribute"), "caption", null, columnProperty(ENTITY_TYPE.integerAttribute("col"))));
+    assertThrows(NullPointerException.class, () -> foreignKeyProperty(ENTITY_TYPE.entityAttribute("attribute"), "caption", null, ENTITY_TYPE.integerAttribute("col")));
   }
 
   @Test
@@ -130,43 +130,8 @@ public final class PropertiesTest {
   }
 
   @Test
-  public void foreignKeyPropertyNullable() {
-    final ColumnProperty.Builder<Integer> columnProperty = columnProperty(ENTITY_TYPE.integerAttribute("attribute"));
-    final ColumnProperty.Builder<Integer> columnProperty2 = columnProperty(ENTITY_TYPE.integerAttribute("attribute2"));
-    final ForeignKeyProperty.Builder foreignKeyProperty =
-            foreignKeyProperty(ENTITY_TYPE.entityAttribute("fkAttribute"), "fk", REFERENCED_ENTITY_TYPE,
-                    Arrays.asList(columnProperty, columnProperty2));
-    foreignKeyProperty.nullable(false);
-    assertFalse(columnProperty.get().isNullable());
-    assertFalse(columnProperty2.get().isNullable());
-    assertFalse(foreignKeyProperty.get().isNullable());
-  }
-
-  @Test
-  public void foreignKeyPropertyUpdatable() {
-    final ColumnProperty.Builder<Integer> updatableReferenceProperty = columnProperty(ENTITY_TYPE.integerAttribute("attribute"));
-    final ColumnProperty.Builder<Integer> nonUpdatableReferenceProperty = columnProperty(ENTITY_TYPE.integerAttribute("attribute")).updatable(false);
-
-    final ForeignKeyProperty.Builder updatableForeignKeyProperty = foreignKeyProperty(ENTITY_TYPE.entityAttribute(
-            "fkProperty"), "test",
-            REFERENCED_ENTITY_TYPE, updatableReferenceProperty);
-    assertTrue(updatableForeignKeyProperty.get().isUpdatable());
-
-    final ForeignKeyProperty nonUpdatableForeignKeyProperty = foreignKeyProperty(ENTITY_TYPE.entityAttribute(
-            "fkProperty"), "test",
-            REFERENCED_ENTITY_TYPE, nonUpdatableReferenceProperty).get();
-
-    assertFalse(nonUpdatableForeignKeyProperty.isUpdatable());
-
-    final ForeignKeyProperty nonUpdatableCompositeForeignKeyProperty =
-            foreignKeyProperty(ENTITY_TYPE.entityAttribute("fkProperty"), "test", REFERENCED_ENTITY_TYPE,
-                    Arrays.asList(updatableReferenceProperty, nonUpdatableReferenceProperty)).get();
-    assertFalse(nonUpdatableCompositeForeignKeyProperty.isUpdatable());
-  }
-
-  @Test
   public void foreignKeyPropertyNullProperty() {
-    assertThrows(NullPointerException.class, () -> foreignKeyProperty(ENTITY_TYPE.entityAttribute("id"), "caption", ENTITY_TYPE, (ColumnProperty.Builder<?>) null));
+    assertThrows(NullPointerException.class, () -> foreignKeyProperty(ENTITY_TYPE.entityAttribute("id"), "caption", ENTITY_TYPE, (Attribute<?>) null));
   }
 
   @Test

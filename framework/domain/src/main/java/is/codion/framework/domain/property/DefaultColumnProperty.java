@@ -36,7 +36,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   private boolean columnHasDefaultValue = false;
   private boolean insertable = true;
   private boolean updatable = true;
-  private boolean foreignKeyColumn = false;
   private boolean searchProperty = false;
 
   private final transient ResultPacker<T> resultPacker;
@@ -117,11 +116,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   @Override
-  public final boolean isForeignKeyColumn() {
-    return foreignKeyColumn;
-  }
-
-  @Override
   public final boolean isPrimaryKeyColumn() {
     return primaryKeyIndex >= 0;
   }
@@ -171,9 +165,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   private ValueFetcher<T> initializeValueFetcher() {
-    if (this instanceof MirrorProperty) {
-      return null;
-    }
     switch (columnType) {
       case Types.INTEGER:
         return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getInteger(resultSet, columnIndex));
@@ -616,11 +607,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
       }
       columnProperty.searchProperty = searchProperty;
       return this;
-    }
-
-    @Override
-    public final void setForeignKeyColumn(final boolean foreignKeyColumn) {
-      columnProperty.foreignKeyColumn = foreignKeyColumn;
     }
   }
 }

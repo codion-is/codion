@@ -77,9 +77,9 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void album() {
     define(Album.TYPE, "chinook.album",
             primaryKeyProperty(Album.ID),
-            foreignKeyProperty(Album.ARTIST_FK, "Artist", Artist.TYPE,
-                    columnProperty(Album.ARTIST_ID))
-                    .nullable(false)
+            columnProperty(Album.ARTIST_ID)
+                    .nullable(false),
+            foreignKeyProperty(Album.ARTIST_FK, "Artist", Artist.TYPE, Album.ARTIST_ID)
                     .preferredColumnWidth(160),
             columnProperty(Album.TITLE, "Title")
                     .searchProperty(true)
@@ -113,8 +113,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .maximumLength(20),
             columnProperty(Employee.TITLE, "Title")
                     .maximumLength(30),
-            foreignKeyProperty(Employee.REPORTSTO_FK, "Reports to", Employee.TYPE,
-                    columnProperty(Employee.REPORTSTO)),
+            columnProperty(Employee.REPORTSTO),
+            foreignKeyProperty(Employee.REPORTSTO_FK, "Reports to", Employee.TYPE, Employee.REPORTSTO),
             columnProperty(Employee.BIRTHDATE, "Birthdate"),
             columnProperty(Employee.HIREDATE, "Hiredate"),
             columnProperty(Employee.ADDRESS, "Address")
@@ -172,8 +172,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .searchProperty(true)
                     .nullable(false)
                     .maximumLength(60),
-            foreignKeyProperty(Customer.SUPPORTREP_FK, "Support rep", Employee.TYPE,
-                    columnProperty(Customer.SUPPORTREP_ID)))
+            columnProperty(Customer.SUPPORTREP_ID),
+            foreignKeyProperty(Customer.SUPPORTREP_FK, "Support rep", Employee.TYPE, Customer.SUPPORTREP_ID))
             .keyGenerator(automatic("chinook.customer"))
             .orderBy(orderBy().ascending(Customer.LASTNAME, Customer.FIRSTNAME))
             .stringFactory(new CustomerStringProvider())
@@ -215,9 +215,9 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             primaryKeyProperty(Track.ID),
             denormalizedViewProperty(Track.ARTIST_DENORM, "Artist", Track.ALBUM_FK, Album.ARTIST_FK)
                     .preferredColumnWidth(160),
+            columnProperty(Track.ALBUM_ID),
             // tag::fetchDepth2[]
-            foreignKeyProperty(Track.ALBUM_FK, "Album", Album.TYPE,
-                    columnProperty(Track.ALBUM_ID))
+            foreignKeyProperty(Track.ALBUM_FK, "Album", Album.TYPE, Track.ALBUM_ID)
                     .fetchDepth(2)
                     .preferredColumnWidth(160),
             // end::fetchDepth2[]
@@ -226,14 +226,14 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .nullable(false)
                     .maximumLength(200)
                     .preferredColumnWidth(160),
-            foreignKeyProperty(Track.GENRE_FK, "Genre", Genre.TYPE,
-                    columnProperty(Track.GENRE_ID)),
+            columnProperty(Track.GENRE_ID),
+            foreignKeyProperty(Track.GENRE_FK, "Genre", Genre.TYPE, Track.GENRE_ID),
             columnProperty(Track.COMPOSER, "Composer")
                     .maximumLength(220)
                     .preferredColumnWidth(160),
-            foreignKeyProperty(Track.MEDIATYPE_FK, "Media type", MediaType.TYPE,
-                    columnProperty(Track.MEDIATYPE_ID))
+            columnProperty(Track.MEDIATYPE_ID)
                     .nullable(false),
+            foreignKeyProperty(Track.MEDIATYPE_FK, "Media type", MediaType.TYPE, Track.MEDIATYPE_ID),
             columnProperty(Track.MILLISECONDS, "Duration (ms)")
                     .nullable(false)
                     .format(NumberFormat.getIntegerInstance()),
@@ -256,9 +256,9 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void invoice() {
     define(Invoice.TYPE, "chinook.invoice",
             primaryKeyProperty(Invoice.ID, "Invoice no."),
-            foreignKeyProperty(Invoice.CUSTOMER_FK, "Customer", Customer.TYPE,
-                    columnProperty(Invoice.CUSTOMER_ID))
+            columnProperty(Invoice.CUSTOMER_ID)
                     .nullable(false),
+            foreignKeyProperty(Invoice.CUSTOMER_FK, "Customer", Customer.TYPE, Invoice.CUSTOMER_ID),
             columnProperty(Invoice.INVOICEDATE, "Date/time")
                     .nullable(false),
             columnProperty(Invoice.BILLINGADDRESS, "Billing address")
@@ -289,14 +289,14 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void invoiceLine() {
     define(InvoiceLine.TYPE, "chinook.invoiceline",
             primaryKeyProperty(InvoiceLine.ID),
+            columnProperty(InvoiceLine.INVOICE_ID),
             // tag::fetchDepth0[]
-            foreignKeyProperty(InvoiceLine.INVOICE_FK, "Invoice", Invoice.TYPE,
-                    columnProperty(InvoiceLine.INVOICE_ID))
+            foreignKeyProperty(InvoiceLine.INVOICE_FK, "Invoice", Invoice.TYPE, InvoiceLine.INVOICE_ID)
                     .fetchDepth(0)
                     .nullable(false),
+            columnProperty(InvoiceLine.TRACK_ID),
             // end::fetchDepth0[]
-            foreignKeyProperty(InvoiceLine.TRACK_FK, "Track", Track.TYPE,
-                    columnProperty(InvoiceLine.TRACK_ID))
+            foreignKeyProperty(InvoiceLine.TRACK_FK, "Track", Track.TYPE, InvoiceLine.TRACK_ID)
                     .nullable(false)
                     .preferredColumnWidth(100),
             denormalizedProperty(InvoiceLine.UNITPRICE, "Unit price", InvoiceLine.TRACK_FK, Track.UNITPRICE)
@@ -327,16 +327,16 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void playlistTrack() {
     define(PlaylistTrack.TYPE, "chinook.playlisttrack",
             primaryKeyProperty(PlaylistTrack.ID),
-            foreignKeyProperty(PlaylistTrack.PLAYLIST_FK, "Playlist", Playlist.TYPE,
-                    columnProperty(PlaylistTrack.PLAYLIST_ID))
-                    .nullable(false)
+            columnProperty(PlaylistTrack.PLAYLIST_ID)
+                    .nullable(false),
+            foreignKeyProperty(PlaylistTrack.PLAYLIST_FK, "Playlist", Playlist.TYPE, PlaylistTrack.PLAYLIST_ID)
                     .preferredColumnWidth(120),
             denormalizedViewProperty(PlaylistTrack.ARTIST_DENORM, "Artist", PlaylistTrack.ALBUM_DENORM, Album.ARTIST_FK)
                     .preferredColumnWidth(160),
-            foreignKeyProperty(PlaylistTrack.TRACK_FK, "Track", Track.TYPE,
-                    columnProperty(PlaylistTrack.TRACK_ID))
+            columnProperty(PlaylistTrack.TRACK_ID)
+                    .nullable(false),
+            foreignKeyProperty(PlaylistTrack.TRACK_FK, "Track", Track.TYPE, PlaylistTrack.TRACK_ID)
                     .fetchDepth(3)
-                    .nullable(false)
                     .preferredColumnWidth(160),
             denormalizedViewProperty(PlaylistTrack.ALBUM_DENORM, "Album", PlaylistTrack.TRACK_FK, Track.ALBUM_FK)
                     .preferredColumnWidth(160))

@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
@@ -184,7 +183,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
     requireNonNull(propertyBuilders, "propertyBuilders");
     final DefaultEntityDefinition.DefaultBuilder definitionBuilder =
             new DefaultEntityDefinition(domainType.getName(), entityType, tableName,
-                    Stream.of(propertyBuilders).map(Property.Builder::get).collect(toList())).builder();
+                    Arrays.asList(propertyBuilders)).builder();
     addDefinition(definitionBuilder.get());
 
     return definitionBuilder;

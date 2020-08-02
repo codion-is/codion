@@ -133,16 +133,18 @@ public final class EmpDept extends DefaultDomain {
             primaryKeyProperty(Employee.ID, "Employee no.").beanProperty("id"),
             columnProperty(Employee.NAME, "Name")
                     .searchProperty(true).maximumLength(10).nullable(false).beanProperty("name"),
-            foreignKeyProperty(Employee.DEPARTMENT_FK, "Department", Department.TYPE,
-                    columnProperty(Employee.DEPARTMENT))
-                    .nullable(false).beanProperty("department"),
+            columnProperty(Employee.DEPARTMENT)
+                    .nullable(false),
+            foreignKeyProperty(Employee.DEPARTMENT_FK, "Department", Department.TYPE, Employee.DEPARTMENT)
+                    .beanProperty("department"),
             valueListProperty(Employee.JOB, "Job", Employee.JOB_VALUES).beanProperty("job"),
             columnProperty(Employee.SALARY, "Salary")
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2).beanProperty("salary"),
             columnProperty(Employee.COMMISSION, "Commission")
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2).beanProperty("commission"),
-            foreignKeyProperty(Employee.MGR_FK, "Manager", Employee.TYPE,
-                    columnProperty(Employee.MGR)).beanProperty("manager"),
+            columnProperty(Employee.MGR),
+            foreignKeyProperty(Employee.MGR_FK, "Manager", Employee.TYPE, Employee.MGR)
+                    .beanProperty("manager"),
             columnProperty(Employee.HIREDATE, "Hiredate")
                     .nullable(false).beanProperty("hiredate"),
             denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, "Location", Employee.DEPARTMENT_FK, Department.LOCATION)

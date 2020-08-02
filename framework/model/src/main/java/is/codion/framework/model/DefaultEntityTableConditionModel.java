@@ -21,6 +21,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -333,9 +334,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   private void initializePropertyConditionModels(final EntityType<?> entityType, final ConditionModelFactory conditionModelFactory) {
-    for (final ColumnProperty<?> columnProperty :
-            connectionProvider.getEntities().getDefinition(entityType).getColumnProperties()) {
-      if (!columnProperty.isForeignKeyColumn() && !columnProperty.isAggregateColumn()) {
+    final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entityType);
+    for (final ColumnProperty<?> columnProperty : definition.getColumnProperties()) {
+      if (!columnProperty.isAggregateColumn()) {
         final ColumnConditionModel<Entity, ColumnProperty<?>, ?> conditionModel =
                 conditionModelFactory.createColumnConditionModel(columnProperty);
         if (conditionModel != null) {

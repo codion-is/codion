@@ -92,7 +92,7 @@ public final class EmpDeptMinimalApp {
               .stringFactory(stringFactory(Department.DNAME));
       /*
        * We then define the entity based on the SCOTT.EMP table,
-       * notice the foreign key wrapper properties, referencing the
+       * note the foreign key properties, referencing the
        * department as well as the manager
        */
       define(Employee.T_EMP,
@@ -101,9 +101,9 @@ public final class EmpDeptMinimalApp {
                       .searchProperty(true)
                       .nullable(false)
                       .maximumLength(10),
-              foreignKeyProperty(Employee.DEPT_FK, "Department", Department.TYPE,
-                      columnProperty(Employee.DEPTNO))
+              columnProperty(Employee.DEPTNO)
                       .nullable(false),
+              foreignKeyProperty(Employee.DEPT_FK, "Department", Department.TYPE, Employee.DEPTNO),
               columnProperty(Employee.JOB, "Job")
                       .nullable(false)
                       .maximumLength(9),
@@ -113,8 +113,8 @@ public final class EmpDeptMinimalApp {
                       .minimumValue(1000).maximumValue(10000),
               columnProperty(Employee.COMM, "Commission")
                       .maximumFractionDigits(2),
-              foreignKeyProperty(Employee.MGR_FK, "Manager", Employee.T_EMP,
-                      columnProperty(Employee.MGR)),
+              columnProperty(Employee.MGR),
+              foreignKeyProperty(Employee.MGR_FK, "Manager", Employee.T_EMP, Employee.MGR),
               columnProperty(Employee.HIREDATE, "Hiredate")
                       .nullable(false))
               .keyGenerator(increment("scott.emp", "empno"))
