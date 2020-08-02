@@ -56,9 +56,10 @@ public class Store extends DefaultDomain {
 
     define(Address.TYPE,
             primaryKeyProperty(Address.ID),
-            foreignKeyProperty(Address.CUSTOMER_FK, "Customer", Customer.TYPE,
-                    columnProperty(Address.CUSTOMER_ID))
+            columnProperty(Address.CUSTOMER_ID)
                     .nullable(false),
+            foreignKeyProperty(Address.CUSTOMER_FK, "Customer",
+                    Customer.TYPE, Address.CUSTOMER_ID),
             columnProperty(Address.STREET, "Street")
                     .nullable(false).maximumLength(100),
             columnProperty(Address.CITY, "City")

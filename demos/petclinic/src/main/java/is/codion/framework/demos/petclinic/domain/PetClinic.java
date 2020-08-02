@@ -65,14 +65,12 @@ public final class PetClinic extends DefaultDomain {
 
   private void vetSpecialty() {
     define(VetSpecialty.TYPE,
-            foreignKeyProperty(VetSpecialty.VET_FK, "Vet", Vet.TYPE,
-                    columnProperty(VetSpecialty.VET)
-                            .primaryKeyIndex(0))
-                    .nullable(false),
-            foreignKeyProperty(VetSpecialty.SPECIALTY_FK, "Specialty", Specialty.TYPE,
-                    columnProperty(VetSpecialty.SPECIALTY)
-                            .primaryKeyIndex(1))
-                    .nullable(false))
+            columnProperty(VetSpecialty.VET)
+                    .primaryKeyIndex(0),
+            columnProperty(VetSpecialty.SPECIALTY)
+                    .primaryKeyIndex(1),
+            foreignKeyProperty(VetSpecialty.VET_FK, "Vet", Vet.TYPE, VetSpecialty.VET),
+            foreignKeyProperty(VetSpecialty.SPECIALTY_FK, "Specialty", Specialty.TYPE, VetSpecialty.SPECIALTY))
             .caption("Vet specialties")
             .stringFactory(stringFactory(VetSpecialty.VET_FK).text(" - ")
                     .value(VetSpecialty.SPECIALTY_FK));
@@ -125,12 +123,12 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false),
             columnProperty(Pet.BIRTH_DATE, "Birth date")
                     .nullable(false),
-            foreignKeyProperty(Pet.PET_TYPE_FK, "Pet type", PetType.TYPE,
-                    columnProperty(Pet.PET_TYPE_ID))
+            columnProperty(Pet.PET_TYPE_ID)
                     .nullable(false),
-            foreignKeyProperty(Pet.OWNER_FK, "Owner", Owner.TYPE,
-                    columnProperty(Pet.OWNER_ID))
-                    .nullable(false))
+            foreignKeyProperty(Pet.PET_TYPE_FK, "Pet type", PetType.TYPE, Pet.PET_TYPE_ID),
+            columnProperty(Pet.OWNER_ID)
+                    .nullable(false),
+            foreignKeyProperty(Pet.OWNER_FK, "Owner", Owner.TYPE, Pet.OWNER_ID))
             .keyGenerator(automatic(Pet.TYPE.getName()))
             .caption("Pets")
             .stringFactory(stringFactory(Pet.NAME))
@@ -140,9 +138,9 @@ public final class PetClinic extends DefaultDomain {
   private void visit() {
     define(Visit.TYPE,
             primaryKeyProperty(Visit.ID),
-            foreignKeyProperty(Visit.PET_FK, "Pet", Pet.TYPE,
-                    columnProperty(Visit.PET_ID))
+            columnProperty(Visit.PET_ID)
                     .nullable(false),
+            foreignKeyProperty(Visit.PET_FK, "Pet", Pet.TYPE, Visit.PET_ID),
             columnProperty(Visit.DATE, "Date")
                     .nullable(false),
             columnProperty(Visit.DESCRIPTION, "Description")

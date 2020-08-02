@@ -64,12 +64,13 @@ And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic
 
 Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[ORM] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities* and *properties*. This simplifies a lot of things and completely eliminates the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
 
-In the following example we start by extending the *Domain* class, with three convenient static imports (omitting the rest of the imports for brevity). We then define a *DomainType* constant, for identifying this domain model, *EntityType* constants for the entities, using those to create *Attribute* constants for their respective properties. These constants are used whenever we need to refer to the entity type and its values. Finally we use these *entityTypes* and *attributes* to define and configure two entities, with a master-detail relationship.
+In the following example we start by extending the *DefaultDomain* class. We define a *DomainType* constant identifying this domain model, use it to create *EntityType* constants for each entity and use those to create typed *Attribute* constants used to identify each *property*. These constants are wrapped in an interface for a convenient namespace and are used whenever we need to refer to the entity type and its values. We then use the *entityTypes* and their respective *attributes* to define two entities, with a master/detail relationship.
 
 [source,java]
 ----
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
+import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
 
 public class Store extends DefaultDomain {
@@ -108,22 +109,23 @@ public class Store extends DefaultDomain {
             columnProperty(Customer.IS_ACTIVE, "Is active")
                     .defaultValue(true))
             .keyGenerator(automatic("store.customer"))
-            .stringProvider(new StringProvider(Customer.LAST_NAME)
-                    .addText(", ").addValue(Customer.FIRST_NAME))
+            .stringFactory(stringFactory(Customer.LAST_NAME)
+                    .text(", ").value(Customer.FIRST_NAME))
             .caption("Customer");
 
     define(Address.TYPE,
             primaryKeyProperty(Address.ID),
-            foreignKeyProperty(Address.CUSTOMER_FK, "Customer", Customer.TYPE,
-                    columnProperty(Address.CUSTOMER_ID))
+            columnProperty(Address.CUSTOMER_ID)
                     .nullable(false),
+            foreignKeyProperty(Address.CUSTOMER_FK, "Customer",
+                    Customer.TYPE, Address.CUSTOMER_ID),
             columnProperty(Address.STREET, "Street")
                     .nullable(false).maximumLength(100),
             columnProperty(Address.CITY, "City")
                     .nullable(false).maximumLength(50))
             .keyGenerator(automatic("store.address"))
-            .stringProvider(new StringProvider(Address.STREET)
-                    .addText(", ").addValue(Address.CITY))
+            .stringFactory(stringFactory(Address.STREET)
+                    .text(", ").value(Address.CITY))
             .caption("Address");
   }
 }
@@ -288,15 +290,15 @@ List<Entity> doesAddresses =
         connection.select(Address.CUSTOMER_FK, customersNamedDoe);
 
 List<Entity> customersWithoutEmail =
-            connection.select(condition(Customer.EMAIL).isNull().selectCondition());
+        connection.select(condition(Customer.EMAIL).isNull().selectCondition());
 
-    List<String> activeCustomerEmailAddresses =
-            connection.select(Customer.EMAIL,
-                    condition(Customer.IS_ACTIVE).equalTo(true));
+List<String> activeCustomerEmailAddresses =
+        connection.select(Customer.EMAIL,
+                condition(Customer.IS_ACTIVE).equalTo(true));
 
-    List<Entity> activeCustomersWithEmailAddresses =
-            connection.select(condition(Customer.IS_ACTIVE).equalTo(true)
-                    .and(condition(Customer.EMAIL).isNotNull()).selectCondition());
+List<Entity> activeCustomersWithEmailAddresses =
+        connection.select(condition(Customer.IS_ACTIVE).equalTo(true)
+                .and(condition(Customer.EMAIL).isNotNull()).selectCondition());
 
 //The domain model entities, a factory for Entity instances.
 Entities entities = connection.getEntities();

@@ -110,12 +110,14 @@ public final class Example {
     void customerAddress() {
       define(CustomerAddress.TYPE,
               primaryKeyProperty(CustomerAddress.ID),
-              foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer", Customer.TYPE,
-                      columnProperty(CustomerAddress.CUSTOMER_ID))
+              columnProperty(CustomerAddress.CUSTOMER_ID)
                       .nullable(false),
-              foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address", Address.TYPE,
-                      columnProperty(CustomerAddress.ADDRESS_ID))
-                      .nullable(false))
+              foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer",
+                      Customer.TYPE, CustomerAddress.CUSTOMER_ID),
+              columnProperty(CustomerAddress.ADDRESS_ID)
+                      .nullable(false),
+              foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address",
+                      Address.TYPE, CustomerAddress.ADDRESS_ID))
               .keyGenerator(automatic("store.customer_address"))
               .caption("Customer address");
     }

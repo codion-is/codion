@@ -85,11 +85,6 @@ public interface ColumnProperty<T> extends Property<T> {
   boolean isDenormalized();
 
   /**
-   * @return true if this property is part of a ForeignKeyProperty
-   */
-  boolean isForeignKeyColumn();
-
-  /**
    * @return true if the underlying column has a default value
    */
   boolean columnHasDefaultValue();
@@ -294,10 +289,5 @@ public interface ColumnProperty<T> extends Property<T> {
      * @return this instance
      */
     ColumnProperty.Builder<T> searchProperty(boolean searchProperty);
-
-    /**
-     * @param foreignKeyColumn true if this property represents a column which is part of a foreign key
-     */
-    void setForeignKeyColumn(boolean foreignKeyColumn);
   }
 }

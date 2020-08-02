@@ -41,7 +41,7 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setConjunction(Conjunction.OR);
     assertEquals(Conjunction.OR, conditionModel.getConjunction());
     assertEquals(9, conditionModel.getFilterModels().size());
-    assertEquals(8, conditionModel.getConditionModels().size());
+    assertEquals(10, conditionModel.getConditionModels().size());
 
     assertFalse(conditionModel.isFilterEnabled(TestDomain.EMP_DEPARTMENT_FK));
     assertFalse(conditionModel.isConditionEnabled(TestDomain.EMP_DEPARTMENT_FK));

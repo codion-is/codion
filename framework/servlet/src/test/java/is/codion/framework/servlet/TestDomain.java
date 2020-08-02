@@ -72,9 +72,9 @@ public final class TestDomain extends DefaultDomain {
             primaryKeyProperty(EMP_ID, EMP_ID.getName()),
             columnProperty(EMP_NAME, EMP_NAME.getName())
                     .searchProperty(true).maximumLength(10).nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), T_DEPARTMENT,
-                    columnProperty(EMP_DEPARTMENT))
+            columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), T_DEPARTMENT, EMP_DEPARTMENT),
             valueListProperty(EMP_JOB, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
@@ -82,8 +82,8 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName(), T_EMP,
-                    columnProperty(EMP_MGR)),
+            columnProperty(EMP_MGR),
+            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName(), T_EMP, EMP_MGR),
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION).preferredColumnWidth(100))

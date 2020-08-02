@@ -12,7 +12,6 @@ import java.util.List;
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements ForeignKeyProperty {
 
@@ -20,7 +19,6 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   private final EntityType<Entity> referencedEntityType;
   private final List<Attribute<?>> attributes;
-  private final List<ColumnProperty<?>> columnProperties;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
 
@@ -28,21 +26,15 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    * @param attribute the attribute, note that this is not a column
    * @param caption the property caption
    * @param referencedEntityType the type of the entity referenced by this foreign key
-   * @param columnProperties the underlying column properties comprising this foreign key
+   * @param columnAttributes the underlying column attributes comprising this foreign key
    */
   DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption,
-                            final EntityType<?> referencedEntityType, final List<ColumnProperty<?>> columnProperties) {
+                            final EntityType<?> referencedEntityType, final List<Attribute<?>> columnAttributes) {
     super(attribute, caption);
     requireNonNull(referencedEntityType, "foreignEntityType");
-    validateParameters(attribute, referencedEntityType, columnProperties);
+    validateParameters(attribute, referencedEntityType, columnAttributes);
     this.referencedEntityType = (EntityType<Entity>) referencedEntityType;
-    this.columnProperties = unmodifiableList(columnProperties);
-    this.attributes = unmodifiableList(columnProperties.stream().map(Property::getAttribute).collect(toList()));
-  }
-
-  @Override
-  public boolean isUpdatable() {
-    return columnProperties.stream().allMatch(ColumnProperty::isUpdatable);
+    this.attributes = unmodifiableList(columnAttributes);
   }
 
   @Override
@@ -53,11 +45,6 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   @Override
   public List<Attribute<?>> getColumnAttributes() {
     return attributes;
-  }
-
-  @Override
-  public List<ColumnProperty<?>> getColumnProperties() {
-    return columnProperties;
   }
 
   @Override
@@ -73,21 +60,18 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   /**
    * @return a builder for this property instance
    */
-  ForeignKeyProperty.Builder builder(final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
-    requireNonNull(columnPropertyBuilders, "columnPropertyBuilders");
-    columnPropertyBuilders.forEach(propertyBuilder -> propertyBuilder.setForeignKeyColumn(true));
-
-    return new DefaultForeignKeyPropertyBuilder(this, columnPropertyBuilders);
+  ForeignKeyProperty.Builder builder() {
+    return new DefaultForeignKeyPropertyBuilder(this);
   }
 
   private static void validateParameters(final Attribute<Entity> attribute, final EntityType<?> foreignEntityType,
-                                         final List<ColumnProperty<?>> columnProperties) {
-    if (nullOrEmpty(columnProperties)) {
-      throw new IllegalArgumentException("No column properties specified");
+                                         final List<Attribute<?>> columnAttributes) {
+    if (nullOrEmpty(columnAttributes)) {
+      throw new IllegalArgumentException("No column attributes specified");
     }
-    for (final ColumnProperty<?> columnProperty : columnProperties) {
-      requireNonNull(columnProperty, "columnProperty");
-      if (columnProperty.getAttribute().equals(attribute)) {
+    for (final Attribute<?> columnAttribute : columnAttributes) {
+      requireNonNull(columnAttribute, "columnAttribute");
+      if (columnAttribute.equals(attribute)) {
         throw new IllegalArgumentException(foreignEntityType + ", column attribute is the same as foreign key attribute: " + attribute);
       }
     }
@@ -97,44 +81,15 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
           extends DefaultPropertyBuilder<Entity> implements ForeignKeyProperty.Builder {
 
     private final DefaultForeignKeyProperty foreignKeyProperty;
-    private final List<ColumnProperty.Builder<?>> columnPropertyBuilders;
 
-    private DefaultForeignKeyPropertyBuilder(final DefaultForeignKeyProperty foreignKeyProperty,
-                                             final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
+    private DefaultForeignKeyPropertyBuilder(final DefaultForeignKeyProperty foreignKeyProperty) {
       super(foreignKeyProperty);
       this.foreignKeyProperty = foreignKeyProperty;
-      this.columnPropertyBuilders = columnPropertyBuilders;
     }
 
     @Override
     public ForeignKeyProperty get() {
       return foreignKeyProperty;
-    }
-
-    @Override
-    public ForeignKeyProperty.Builder insertable(final boolean insertable) {
-      columnPropertyBuilders.forEach(builder -> builder.insertable(insertable));
-      return this;
-    }
-
-    @Override
-    public ForeignKeyProperty.Builder updatable(final boolean updatable) {
-      columnPropertyBuilders.forEach(builder -> builder.updatable(updatable));
-      return this;
-    }
-
-    @Override
-    public ForeignKeyProperty.Builder readOnly(final boolean readOnly) {
-      insertable(!readOnly);
-      updatable(!readOnly);
-      return this;
-    }
-
-    @Override
-    public ForeignKeyProperty.Builder nullable(final boolean nullable) {
-      super.nullable(nullable);
-      columnPropertyBuilders.forEach(builder -> builder.nullable(nullable));
-      return this;
     }
 
     @Override

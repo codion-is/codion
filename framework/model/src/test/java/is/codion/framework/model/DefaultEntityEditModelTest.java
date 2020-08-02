@@ -23,8 +23,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.tests.TestDomain;
 
@@ -49,13 +47,9 @@ public final class DefaultEntityEditModelTest {
           Databases.getInstance()).setDomainClassName(TestDomain.class.getName()).setUser(UNIT_TEST_USER);
 
   private EntityEditModel employeeEditModel;
-  private ColumnProperty jobProperty;
-  private ForeignKeyProperty deptProperty;
 
   @BeforeEach
   public void setUp() {
-    jobProperty = ENTITIES.getDefinition(TestDomain.T_EMP).getColumnProperty(TestDomain.EMP_JOB);
-    deptProperty = ENTITIES.getDefinition(TestDomain.T_EMP).getForeignKeyProperty(TestDomain.EMP_DEPARTMENT_FK);
     employeeEditModel = new TestEntityEditModel(TestDomain.T_EMP, CONNECTION_PROVIDER);
   }
 
@@ -538,6 +532,44 @@ public final class DefaultEntityEditModelTest {
     editModel.setEntity(detail);
     assertEquals(3, derivedCounter.get());
     assertEquals(2, derivedEditCounter.get());
+  }
+
+  @Test
+  public void foreignKeyProperties() throws DatabaseException {
+    final AtomicInteger deptNoChange = new AtomicInteger();
+    employeeEditModel.addValueListener(TestDomain.EMP_DEPARTMENT, valueChange -> deptNoChange.incrementAndGet());
+    final AtomicInteger deptChange = new AtomicInteger();
+    employeeEditModel.addValueListener(TestDomain.EMP_DEPARTMENT_FK, valueChange -> deptChange.incrementAndGet());
+    final AtomicInteger deptEdit = new AtomicInteger();
+    employeeEditModel.addValueEditListener(TestDomain.EMP_DEPARTMENT_FK, valueChange -> deptEdit.incrementAndGet());
+
+    Entity dept = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 10);
+    employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, dept);
+
+    employeeEditModel.put(TestDomain.EMP_DEPARTMENT, 20);
+    assertEquals(2, deptNoChange.get());
+    assertEquals(2, deptChange.get());
+    assertEquals(2, deptEdit.get());
+
+    dept = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 20);
+    employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, dept);
+
+    assertEquals(2, deptNoChange.get());
+    assertEquals(3, deptChange.get());
+    assertEquals(3, deptEdit.get());
+
+    employeeEditModel.put(TestDomain.EMP_DEPARTMENT, 30);
+
+    assertEquals(3, deptNoChange.get());
+    assertEquals(4, deptChange.get());
+    assertEquals(4, deptEdit.get());
+
+    dept = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.DEPARTMENT_ID, 30);
+    employeeEditModel.put(TestDomain.EMP_DEPARTMENT_FK, dept);
+
+    assertEquals(3, deptNoChange.get());
+    assertEquals(5, deptChange.get());
+    assertEquals(5, deptEdit.get());
   }
 
   private static final class TestEntityEditModel extends DefaultEntityEditModel {

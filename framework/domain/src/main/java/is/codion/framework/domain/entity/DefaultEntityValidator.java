@@ -94,7 +94,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   public <T> void validate(final Entity entity, final EntityDefinition definition, final Property<T> property) throws ValidationException {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
-    if (performNullValidation && !isForeignKeyProperty(property)) {
+    if (performNullValidation && !definition.isForeignKeyAttribute(property.getAttribute())) {
       performNullValidation(entity, definition, property);
     }
     if (property.getAttribute().isNumerical()) {
@@ -186,14 +186,6 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   private static boolean isNonGeneratedPrimaryKeyProperty(final EntityDefinition definition, final Property<?> property) {
     return (property instanceof ColumnProperty
             && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) && !definition.isKeyGenerated();
-  }
-
-  /**
-   * @param property the property
-   * @return true if the property is a part of a foreign key
-   */
-  private static boolean isForeignKeyProperty(final Property<?> property) {
-    return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isForeignKeyColumn();
   }
 
   private static boolean isNonKeyColumnPropertyWithoutDefaultValue(final Property<?> property) {

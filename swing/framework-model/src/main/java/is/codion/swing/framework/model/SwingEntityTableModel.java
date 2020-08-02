@@ -344,7 +344,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     }
     final Property<?> property = getColumnModel().getColumnIdentifier(modelColumnIndex);
     if (property instanceof ForeignKeyProperty) {
-      return ((ForeignKeyProperty) property).isUpdatable();
+      return entityDefinition.isUpdatable((ForeignKeyProperty) property);
     }
 
     return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();

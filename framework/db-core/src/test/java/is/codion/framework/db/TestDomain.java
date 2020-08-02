@@ -55,8 +55,8 @@ public final class TestDomain extends DefaultDomain {
     define(T_MASTER,
             columnProperty(MASTER_ID_1).primaryKeyIndex(0),
             columnProperty(MASTER_ID_2).primaryKeyIndex(1),
-            foreignKeyProperty(MASTER_SUPER_FK, "Super", T_SUPER,
-                    columnProperty(MASTER_SUPER_ID)),
+            columnProperty(MASTER_SUPER_ID),
+            foreignKeyProperty(MASTER_SUPER_FK, "Super", T_SUPER, MASTER_SUPER_ID),
             columnProperty(MASTER_NAME),
             columnProperty(MASTER_CODE))
             .comparator(Comparator.comparing(o -> o.get(MASTER_CODE)))
@@ -100,9 +100,10 @@ public final class TestDomain extends DefaultDomain {
                     .description("A boolean property"),
             columnProperty(DETAIL_BOOLEAN_NULLABLE, DETAIL_BOOLEAN_NULLABLE.getName())
                     .defaultValue(true),
+            columnProperty(DETAIL_MASTER_ID_1),
+            columnProperty(DETAIL_MASTER_ID_2),
             foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName(), T_MASTER,
-                    asList(columnProperty(DETAIL_MASTER_ID_1),
-                            columnProperty(DETAIL_MASTER_ID_2))),
+                    asList(DETAIL_MASTER_ID_1, DETAIL_MASTER_ID_2)),
             denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_NAME.getName(), DETAIL_MASTER_FK, MASTER_NAME),
             denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName(), DETAIL_MASTER_FK, MASTER_CODE),
             valueListProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
@@ -169,9 +170,9 @@ public final class TestDomain extends DefaultDomain {
             primaryKeyProperty(EMP_ID, EMP_ID.getName()).columnName("empno"),
             columnProperty(EMP_NAME, EMP_NAME.getName())
                     .searchProperty(true).columnName("ename").maximumLength(10).nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), T_DEPARTMENT,
-                    columnProperty(EMP_DEPARTMENT))
+            columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), T_DEPARTMENT, EMP_DEPARTMENT),
             valueListProperty(EMP_JOB, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
@@ -179,8 +180,8 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName(), T_EMP,
-                    columnProperty(EMP_MGR)),
+            columnProperty(EMP_MGR),
+            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName(), T_EMP, EMP_MGR),
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION)

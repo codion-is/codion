@@ -12,7 +12,6 @@ import java.text.Collator;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static is.codion.framework.domain.property.AuditProperty.AuditAction.INSERT;
 import static is.codion.framework.domain.property.AuditProperty.AuditAction.UPDATE;
@@ -74,14 +73,13 @@ public final class Properties {
    * @param attribute the attribute
    * @param caption the caption
    * @param foreignEntityType the type of the entity referenced by this foreign key
-   * @param columnPropertyBuilder the {@link ColumnProperty.Builder} for the underlying
-   * column property comprising this foreign key relation
+   * @param columnAttribute the underlying column attribute this foreign key is based on
    * @return a new {@link ForeignKeyProperty.Builder}
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute,
                                                               final String caption, final EntityType<?> foreignEntityType,
-                                                              final ColumnProperty.Builder<?> columnPropertyBuilder) {
-    return foreignKeyProperty(attribute, caption, foreignEntityType, Collections.singletonList(columnPropertyBuilder));
+                                                              final Attribute<?> columnAttribute) {
+    return foreignKeyProperty(attribute, caption, foreignEntityType, Collections.singletonList(requireNonNull(columnAttribute)));
   }
 
   /**
@@ -89,17 +87,14 @@ public final class Properties {
    * @param attribute the attribute
    * @param caption the caption
    * @param foreignEntityType the type of the entity referenced by this foreign key
-   * @param columnPropertyBuilders a List containing the {@link ColumnProperty.Builder}s for the underlying
-   * column properties comprising this foreign key relation, in the same order as the column properties
-   * they reference appear in the the referenced entities primary key
+   * @param columnAttributes a List containing the underlying column {@link Attribute}s this foreign key is based on,
+   * in the same order as the primary key attributes they reference appear in the the referenced entities primary key
    * @return a new {@link ForeignKeyProperty.Builder}
    */
   public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute, final String caption,
                                                               final EntityType<?> foreignEntityType,
-                                                              final List<ColumnProperty.Builder<?>> columnPropertyBuilders) {
-    return new DefaultForeignKeyProperty(attribute, caption, foreignEntityType,
-            columnPropertyBuilders.stream().map(ColumnProperty.Builder::get).collect(Collectors.toList()))
-            .builder(columnPropertyBuilders);
+                                                              final List<Attribute<?>> columnAttributes) {
+    return new DefaultForeignKeyProperty(attribute, caption, foreignEntityType, columnAttributes).builder();
   }
 
   /**
@@ -342,17 +337,6 @@ public final class Properties {
    */
   public static ColumnProperty.Builder<String> auditUpdateUserProperty(final Attribute<String> attribute, final String caption) {
     return new DefaultAuditUserProperty(attribute, UPDATE, caption).builder();
-  }
-
-  /**
-   * Creates a new {@link ColumnProperty.Builder} instance, for use in a foreign key,
-   * mirroring a property which already exists as part of a different foreign key.
-   * @param attribute the attribute of the mirrored property
-   * @param <T> the attribute type
-   * @return a new {@link ColumnProperty.Builder}
-   */
-  public static <T> ColumnProperty.Builder<T> mirrorProperty(final Attribute<T> attribute) {
-    return new DefaultMirrorProperty<>(attribute).builder();
   }
 
   /**

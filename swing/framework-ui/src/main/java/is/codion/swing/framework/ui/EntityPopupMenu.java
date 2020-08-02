@@ -152,7 +152,7 @@ final class EntityPopupMenu extends JPopupMenu {
       final boolean valid = isValid(validator, entity, definition, property);
       final boolean modified = entity.isModified(property.getAttribute());
       final boolean isForeignKeyProperty = property instanceof ColumnProperty
-              && ((ColumnProperty<?>) property).isForeignKeyColumn();
+              && definition.isForeignKeyAttribute(property.getAttribute());
       if (!isForeignKeyProperty && !(property instanceof ForeignKeyProperty)) {
         final String prefix = "[" + property.getAttribute().getTypeClass().getSimpleName().substring(0, 1)
                 + (property instanceof DerivedProperty ? "*" : "")

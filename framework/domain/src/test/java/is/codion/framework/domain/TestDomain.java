@@ -64,9 +64,10 @@ public class TestDomain extends DefaultDomain {
 
   final void compositeDetail() {
     define(T_COMPOSITE_DETAIL,
+            columnProperty(COMPOSITE_DETAIL_MASTER_ID).primaryKeyIndex(0),
+            columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1),
             foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
-                    asList(columnProperty(COMPOSITE_DETAIL_MASTER_ID).primaryKeyIndex(0),
-                            columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1))));
+                    asList(COMPOSITE_DETAIL_MASTER_ID, COMPOSITE_DETAIL_MASTER_ID_2)));
   }
 
   public interface Master extends Entity {
@@ -157,8 +158,8 @@ public class TestDomain extends DefaultDomain {
             columnProperty(Detail.BOOLEAN_NULLABLE, Detail.BOOLEAN_NULLABLE.getName())
                     .columnHasDefaultValue(true)
                     .defaultValue(true),
-            foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.getName(), Master.TYPE,
-                    columnProperty(Detail.MASTER_ID))
+            columnProperty(Detail.MASTER_ID),
+            foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.getName(), Master.TYPE, Detail.MASTER_ID)
                     .beanProperty("master"),
             denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.getName(), Detail.MASTER_FK, Master.NAME),
             denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.getName(), Detail.MASTER_FK, Master.CODE),
@@ -255,11 +256,11 @@ public class TestDomain extends DefaultDomain {
                     .searchProperty(true)
                     .columnName("ename").maximumLength(10).nullable(false)
                     .beanProperty("name"),
-            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName(), Department.TYPE,
-                    columnProperty(Employee.DEPARTMENT)
-                            .beanProperty("deptno"))
-                    .beanProperty("department")
-                    .nullable(false),
+            columnProperty(Employee.DEPARTMENT)
+                    .nullable(false)
+                    .beanProperty("deptno"),
+            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName(), Department.TYPE, Employee.DEPARTMENT)
+                    .beanProperty("department"),
             valueListProperty(Employee.JOB, Employee.JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
@@ -271,9 +272,9 @@ public class TestDomain extends DefaultDomain {
             columnProperty(Employee.COMMISSION, Employee.COMMISSION.getName())
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2)
                     .beanProperty("commission"),
-            foreignKeyProperty(Employee.MANAGER_FK, Employee.MANAGER_FK.getName(), Employee.TYPE,
-                    columnProperty(Employee.MGR)
-                            .beanProperty("mgr"))
+            columnProperty(Employee.MGR)
+                    .beanProperty("mgr"),
+            foreignKeyProperty(Employee.MANAGER_FK, Employee.MANAGER_FK.getName(), Employee.TYPE, Employee.MGR)
                     .beanProperty("manager"),
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.getName())
                     .updatable(false)

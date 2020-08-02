@@ -364,9 +364,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final <T> void put(final Attribute<T> attribute, final T value) {
     requireNonNull(attribute, "attribute");
+    final Map<Attribute<?>, Object> dependingValues = getDependingValues(attribute);
     final T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
-      notifyValueEdit(attribute, new DefaultValueChange<>(attribute, value, previousValue));
+      notifyValueEdit(attribute, new DefaultValueChange<>(attribute, value, previousValue), dependingValues);
     }
   }
 
@@ -375,8 +376,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     requireNonNull(attribute, PROPERTY);
     T value = null;
     if (entity.containsKey(attribute)) {
+      final Map<Attribute<?>, Object> dependingValues = getDependingValues(attribute);
       value = entity.remove(attribute);
-      notifyValueEdit(attribute, new DefaultValueChange<>(attribute, null, value));
+      notifyValueEdit(attribute, new DefaultValueChange<>(attribute, null, value), dependingValues);
     }
 
     return value;
@@ -628,7 +630,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     if (isEntityNew()) {
       final EntityDefinition entityDefinition = getEntityDefinition();
       for (final ColumnProperty<?> property : entityDefinition.getColumnProperties()) {
-        if (!property.isForeignKeyColumn() && valueModified(property.getAttribute())) {
+        if (!entityDefinition.isForeignKeyAttribute(property.getAttribute()) && valueModified(property.getAttribute())) {
           return true;
         }
       }
@@ -944,11 +946,12 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     return true;
   }
 
-  @SuppressWarnings("rawtypes")
   private void doSetEntity(final Entity entity) {
+    final Entity previousValues = getEntityCopy();
     final Collection<Attribute<?>> affectedAttributes = this.entity.setAs(entity == null ? getDefaultEntity() : entity);
     for (final Attribute<?> affectedAttribute : affectedAttributes) {
-      onValueChange(new DefaultValueChange(affectedAttribute, this.entity.get(affectedAttribute), null));
+      final Attribute<Object> objectAttribute = (Attribute<Object>) affectedAttribute;
+      onValueChange(new DefaultValueChange<>(objectAttribute, this.entity.get(objectAttribute), previousValues.get(objectAttribute)));
     }
 
     entitySetEvent.onEvent(entity);
@@ -978,17 +981,34 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     afterUpdateEvent.addListener(entitiesChangedEvent);
   }
 
-  @SuppressWarnings("rawtypes")
-  private <T> void notifyValueEdit(final Attribute<T> attribute, final ValueChange<T> valueChange) {
-    onValueChange(valueChange);
-    getValueEditEvent(attribute).onEvent(valueChange);
-    for (final Attribute<?> derivedAttribute : getEntityDefinition().getDerivedAttributes(attribute)) {
-      final Object derivedValue = entity.get(derivedAttribute);
-      getValueEditEvent(derivedAttribute).onEvent(new DefaultValueChange(derivedAttribute, derivedValue, derivedValue));
+  private Map<Attribute<?>, Object> getDependingValues(final Attribute<?> attribute) {
+    final Map<Attribute<?>, Object> dependingValues = new HashMap<>();
+    final EntityDefinition entityDefinition = getEntityDefinition();
+    entityDefinition.getDerivedAttributes(attribute).forEach(derivedAttribute ->
+            dependingValues.put(derivedAttribute, get(derivedAttribute)));
+    entityDefinition.getForeignKeyProperties(attribute).forEach(foreignKeyProperty ->
+            dependingValues.put(foreignKeyProperty.getAttribute(), get(foreignKeyProperty.getAttribute())));
+    if (entityDefinition.getProperty(attribute) instanceof ForeignKeyProperty) {
+      entityDefinition.getForeignKeyProperty((Attribute<Entity>) attribute).getColumnAttributes().forEach(columnAttribute ->
+              dependingValues.put(columnAttribute, get(columnAttribute)));
     }
+
+    return dependingValues;
   }
 
-  @SuppressWarnings("rawtypes")
+  private <T> void notifyValueEdit(final Attribute<T> attribute, final ValueChange<T> valueChange,
+                                   final Map<Attribute<?>, Object> dependendingValues) {
+    onValueChange(valueChange);
+    getValueEditEvent(attribute).onEvent(valueChange);
+    dependendingValues.forEach((dependingAttribute, previousValue) -> {
+      final Object currentValue = get(dependingAttribute);
+      if (!Objects.equals(previousValue, currentValue)) {
+        final Attribute<Object> objectAttribute = (Attribute<Object>) dependingAttribute;
+        notifyValueEdit(objectAttribute, new DefaultValueChange<>(objectAttribute, previousValue, currentValue), emptyMap());
+      }
+    });
+  }
+
   private <T> void onValueChange(final ValueChange<T> valueChange) {
     entityModifiedState.set(entity.isModified());
     validState.set(validator.isValid(entity, getEntityDefinition()));
@@ -997,10 +1017,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     final Event<ValueChange<T>> valueChangeEvent = (Event<ValueChange<T>>) valueChangeEventMap.get(valueChange.getAttribute());
     if (valueChangeEvent != null) {
       valueChangeEvent.onEvent(valueChange);
-    }
-    for (final Attribute<?> derivedAttribute : getEntityDefinition().getDerivedAttributes(valueChange.getAttribute())) {
-      final Object derivedValue = entity.get(derivedAttribute);
-      onValueChange(new DefaultValueChange(derivedAttribute, derivedValue, derivedValue));
     }
   }
 

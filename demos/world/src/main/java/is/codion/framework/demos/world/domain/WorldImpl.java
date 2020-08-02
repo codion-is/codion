@@ -51,9 +51,10 @@ public final class WorldImpl extends DefaultDomain {
                     .searchProperty(true)
                     .nullable(false)
                     .maximumLength(35),
-            foreignKeyProperty(City.COUNTRY_FK, "Country", Country.TYPE,
-                    columnProperty(City.COUNTRY_CODE))
+            columnProperty(City.COUNTRY_CODE)
                     .nullable(false),
+            foreignKeyProperty(City.COUNTRY_FK, "Country",
+                    Country.TYPE, City.COUNTRY_CODE),
             columnProperty(City.DISTRICT, "District")
                     .nullable(false)
                     .maximumLength(20),
@@ -115,9 +116,10 @@ public final class WorldImpl extends DefaultDomain {
                     .nullable(false),
             columnProperty(Country.HEADOFSTATE, "Head of state")
                     .maximumLength(60),
+            columnProperty(Country.CAPITAL),
             // tag::foreignKeyPropertyCapital[]
-            foreignKeyProperty(Country.CAPITAL_FK, "Capital", City.TYPE,
-                    columnProperty(Country.CAPITAL)),
+            foreignKeyProperty(Country.CAPITAL_FK, "Capital",
+                    City.TYPE, Country.CAPITAL),
             // end::foreignKeyPropertyCapital[]
             // tag::denormalizedViewProperty[]
             denormalizedViewProperty(Country.CAPITAL_POPULATION, "Capital pop.",
@@ -145,15 +147,15 @@ public final class WorldImpl extends DefaultDomain {
   void countryLanguage() {
     define(CountryLanguage.TYPE,
             // tag::compositePrimaryKey[]
-            foreignKeyProperty(CountryLanguage.COUNTRY_FK, "Country", Country.TYPE,
-                    columnProperty(CountryLanguage.COUNTRY_CODE)
-                            .primaryKeyIndex(0)
-                            .updatable(true))
-                    .nullable(false),
+            columnProperty(CountryLanguage.COUNTRY_CODE)
+                    .primaryKeyIndex(0)
+                    .updatable(true),
             columnProperty(CountryLanguage.LANGUAGE, "Language")
                     .primaryKeyIndex(1)
                     .updatable(true),
             // end::compositePrimaryKey[]
+            foreignKeyProperty(CountryLanguage.COUNTRY_FK, "Country",
+                    Country.TYPE, CountryLanguage.COUNTRY_CODE),
             // tag::booleanProperty[]
             columnProperty(CountryLanguage.IS_OFFICIAL, "Is official")
                     .columnHasDefaultValue(true)
