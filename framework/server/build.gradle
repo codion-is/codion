@@ -99,16 +99,19 @@ distributions {
     }
 }
 applicationDefaultJvmArgs = [
-        '-Xmx256m', '--add-modules', 'is.codion.plugin.jasperreports',
-        '-Dcodion.configurationFile=../config/h2_embedded.config',
         '-Xmx256m',
+        '--add-modules', 'is.codion.plugin.jasperreports,codion.demos.chinook.domain,codion.demos.world.domain',
+        '--add-reads', 'is.codion.framework.domain=codion.demos.chinook.domain,codion.demos.world.domain',
+        '-Dcodion.configurationFile=../config/h2_embedded.config',
         '-Dcodion.configurationFile=../config/h2_embedded.config',
         '-Dlogback.configurationFile=../config/logback.xml',
         '-Djava.security.policy=../config/codion_server.policy'
 ]
 
 def applicationGenerateSecurityPolicyJvmArgs = [
-        '-Xmx256m', '--add-modules', 'is.codion.plugin.jasperreports',
+        '-Xmx256m',
+        '--add-modules', 'is.codion.plugin.jasperreports,codion.demos.chinook.domain,codion.demos.world.domain',
+        '--add-reads', 'is.codion.framework.domain=codion.demos.chinook.domain,codion.demos.world.domain',
         '-Dcodion.configurationFile=../config/h2_embedded.config',
         '-Dlogback.configurationFile=../config/logback.xml',
         '-Djava.security.manager=net.sourceforge.prograde.sm.PolicyFileGeneratorJSM',
