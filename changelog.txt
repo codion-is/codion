@@ -6385,3 +6385,4 @@
   DefaultEntityTableConditionModel now also creates condition models for properties which are part of a foreign key
   DefaultEntityEditModel, change and edit events now fired for all dependent values
   ExceptionDialog.DISPLAY_SYSTEM_PROPERTIES configuration value added
+  SelectConditionDeserializer bug fixed, did not handle fetchDepth correctly, resulting in a value of 0

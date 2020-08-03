@@ -118,6 +118,7 @@ public final class ConditionObjectMapperTest {
     readCondition = mapper.readValue(jsonString, SelectCondition.class);
 
     assertNull(readCondition.getOrderBy());
+    assertNull(readCondition.getFetchDepth());
   }
 
   @Test
