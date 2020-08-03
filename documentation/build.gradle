@@ -27,10 +27,10 @@ asciidoctor {
             revnumber: documentationVersion, toc: 'left', sectnums: 4, sectanchors: true, prewrap: false,
             experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1'
     asciidoctorj {
-        version = '2.2.0'
+        version = '2.4.0'
         modules {
             diagram.use()
-            diagram.version '1.5.16'
+            diagram.version '2.0.2'
         }
         attributes 'source-highlighter': 'prettify'
     }
