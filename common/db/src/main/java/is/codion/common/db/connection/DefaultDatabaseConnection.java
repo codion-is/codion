@@ -271,7 +271,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     finally {
       Database.closeSilently(statement);
       Database.closeSilently(resultSet);
-      logExit("query", exception);
+      logExit("select", exception);
     }
   }
 

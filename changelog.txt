@@ -6386,3 +6386,4 @@
   DefaultEntityEditModel, change and edit events now fired for all dependent values
   ExceptionDialog.DISPLAY_SYSTEM_PROPERTIES configuration value added
   SelectConditionDeserializer bug fixed, did not handle fetchDepth correctly, resulting in a value of 0
+  DefaultDatabaseConnection bug fixed, incorrect method name used when logging method exit
