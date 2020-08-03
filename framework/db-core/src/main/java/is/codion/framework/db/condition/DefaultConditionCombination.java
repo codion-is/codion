@@ -52,7 +52,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   @Override
   public Combination add(final Condition... conditions) {
     requireNonNull(conditions);
-    for (final Condition condition : conditions){
+    for (final Condition condition : conditions) {
       add(condition);
     }
 
