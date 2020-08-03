@@ -238,6 +238,13 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
+  public void foreignKeyValues() throws DatabaseException {
+    final Entity employee = connection.selectSingle(TestDomain.EMP_ID, 5);
+    assertNotNull(employee.get(TestDomain.EMP_DEPARTMENT_FK));
+    assertNotNull(employee.get(TestDomain.EMP_MGR_FK));
+  }
+
+  @Test
   public void rollbackWithNoOpenTransaction() {
     assertThrows(IllegalStateException.class, connection::rollbackTransaction);
   }
