@@ -3,11 +3,13 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.Configuration;
 import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
 import is.codion.common.state.States;
+import is.codion.common.value.PropertyValue;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
@@ -51,6 +53,13 @@ import static is.codion.swing.common.ui.layout.Layouts.*;
 final class ExceptionDialog extends JDialog {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ExceptionDialog.class.getName());
+
+  /**
+   * Specifies whether an ExceptionDialog should display system properties in the detail panel<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES = Configuration.booleanValue("codion.swing.common.ui.ExceptionDialog.displaySystemProperties", true);
 
   private static final int DESCRIPTION_LABEL_WIDTH = 250;
   private static final int MESSAGE_LABEL_WIDTH = 50;
@@ -249,11 +258,12 @@ final class ExceptionDialog extends JDialog {
 
     detailsArea.setText(null);
     detailsArea.append(stringWriter.toString());
-    detailsArea.append("\n");
-    detailsArea.append("--------------------------------------------Properties--------------------------------------------\n\n");
 
-    final String propsString = Util.getSystemProperties();
-    detailsArea.append(propsString);
+    if (DISPLAY_SYSTEM_PROPERTIES.get()) {
+      detailsArea.append("\n");
+      detailsArea.append("--------------------------------------------Properties--------------------------------------------\n\n");
+      detailsArea.append(Util.getSystemProperties());
+    }
 
     detailsArea.setCaretPosition(0);
     initializeDetailView(false);
