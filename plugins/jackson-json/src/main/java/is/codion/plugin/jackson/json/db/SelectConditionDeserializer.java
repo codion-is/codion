@@ -42,7 +42,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     final EntityType<?> entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
     final EntityDefinition definition = entities.getDefinition(entityType);
     final JsonNode conditionNode = jsonNode.get("condition");
-    final Condition condition = conditionDeserializer.deserialize(entities.getDefinition(entityType), conditionNode);
+    final Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
     final SelectCondition selectCondition = condition.selectCondition();
     selectCondition.setOrderBy(deserializeOrderBy(definition, jsonNode.get("orderBy")));
@@ -54,7 +54,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
       selectCondition.setFetchDepth(fetchDepth.asInt());
     }
     final JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
-    for (final ForeignKeyProperty property : entities.getDefinition(entityType).getForeignKeyProperties()) {
+    for (final ForeignKeyProperty property : definition.getForeignKeyProperties()) {
       final JsonNode fetchDepthNode = fkFetchDepth.get(property.getAttribute().getName());
       if (fetchDepthNode != null) {
         selectCondition.setFetchDepth(property.getAttribute(), fetchDepthNode.asInt());
