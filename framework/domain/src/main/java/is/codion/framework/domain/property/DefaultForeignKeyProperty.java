@@ -7,7 +7,10 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Collections.unmodifiableList;
@@ -19,6 +22,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   private final EntityType<Entity> referencedEntityType;
   private final List<Attribute<?>> attributes;
+  private final Set<Attribute<?>> readOnlyAttributes = new HashSet<>(0);
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
 
@@ -55,6 +59,11 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   @Override
   public boolean isSoftReference() {
     return softReference;
+  }
+
+  @Override
+  public boolean isReadOnly(final Attribute<?> attribute) {
+    return !readOnlyAttributes.isEmpty() && readOnlyAttributes.contains(attribute);
   }
 
   /**
@@ -101,6 +110,17 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     @Override
     public ForeignKeyProperty.Builder softReference(final boolean softReference) {
       foreignKeyProperty.softReference = softReference;
+      return this;
+    }
+
+    @Override
+    public ForeignKeyProperty.Builder readOnly(final Attribute<?>... attributes) {
+      requireNonNull(attributes);
+      final List<Attribute<?>> attributeList = Arrays.asList(attributes);
+      if (!foreignKeyProperty.attributes.containsAll(attributeList)) {
+        throw new IllegalArgumentException("Only pre-existing attributes can be made read only");
+      }
+      foreignKeyProperty.readOnlyAttributes.addAll(attributeList);
       return this;
     }
   }
