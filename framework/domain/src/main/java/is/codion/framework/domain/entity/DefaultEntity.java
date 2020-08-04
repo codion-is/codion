@@ -501,7 +501,10 @@ final class DefaultEntity implements Entity, Serializable {
     final List<ColumnProperty<?>> columnProperties = definition.getColumnProperties(foreignKeyProperty);
     final List<Attribute<?>> referencedAttributes = definition.getForeignDefinition(foreignKeyProperty.getAttribute()).getPrimaryKeyAttributes();
     for (int i = 0; i < columnProperties.size(); i++) {
-      putInternal((Property<Object>) columnProperties.get(i), referencedEntity == null ? null : referencedEntity.get(referencedAttributes.get(i)));
+      final Property<Object> columnProperty = (Property<Object>) columnProperties.get(i);
+      if (!foreignKeyProperty.isReadOnly(columnProperty.getAttribute())) {
+        putInternal(columnProperty, referencedEntity == null ? null : referencedEntity.get(referencedAttributes.get(i)));
+      }
     }
   }
 

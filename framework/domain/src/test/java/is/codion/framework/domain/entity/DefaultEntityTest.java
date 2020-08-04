@@ -79,7 +79,7 @@ public class DefaultEntityTest {
     final List<Object> fromFile = Serializer.deserialize(Serializer.serialize(singletonList(entity)));
     assertEquals(1, fromFile.size());
     final Entity entityFromFile = (Entity) fromFile.get(0);
-    assertTrue(entity.getEntityType().equals(TestDomain.Detail.TYPE));
+    assertEquals(TestDomain.Detail.TYPE, entity.getEntityType());
     assertTrue(entity.valuesEqual(entityFromFile));
     assertTrue(entityFromFile.isModified());
     assertTrue(entityFromFile.isModified(TestDomain.Detail.STRING));
@@ -171,10 +171,14 @@ public class DefaultEntityTest {
     final Entity master = ENTITIES.entity(TestDomain.T_COMPOSITE_MASTER);
     master.put(TestDomain.COMPOSITE_MASTER_ID, null);
     master.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
+    master.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
 
-    final Entity detail = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
+    Entity detail = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master);
 
+    assertNotEquals(master.getKey(), detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
+
+    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 3);
     assertEquals(master.getKey(), detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
 
     //otherwise the values are equal and put() returns before propagating foreign key values
@@ -183,6 +187,16 @@ public class DefaultEntityTest {
     masterCopy.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
     detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
 
+    assertNull(detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
+
+    master.put(TestDomain.COMPOSITE_MASTER_ID, 1);
+    master.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
+    master.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
+
+    detail = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
+    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master);
+
+    assertNull(detail.get(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3));
     assertNull(detail.getReferencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
   }
 
@@ -193,6 +207,7 @@ public class DefaultEntityTest {
     assertFalse(master.getKey().isNotNull());
 
     master.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
+    master.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
     assertFalse(master.getKey().isNull());
     assertTrue(master.getKey().isNotNull());
 
@@ -336,6 +351,7 @@ public class DefaultEntityTest {
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, null);
     assertTrue(composite.isForeignKeyNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
     composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 1);
+    composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 2);
     assertFalse(composite.isForeignKeyNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
   }
 

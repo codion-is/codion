@@ -6387,3 +6387,4 @@
   ExceptionDialog.DISPLAY_SYSTEM_PROPERTIES configuration value added
   SelectConditionDeserializer bug fixed, did not handle fetchDepth correctly, resulting in a value of 0
   DefaultDatabaseConnection bug fixed, incorrect method name used when logging method exit
+  ForeignKeyProperty.isReadOnly(attribute) added to replace MirrorProperty functionality

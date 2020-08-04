@@ -50,24 +50,29 @@ public class TestDomain extends DefaultDomain {
   public static final EntityType<Entity> T_COMPOSITE_MASTER = DOMAIN.entityType("domain.composite_master");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID = T_COMPOSITE_MASTER.integerAttribute("id");
   public static final Attribute<Integer> COMPOSITE_MASTER_ID_2 = T_COMPOSITE_MASTER.integerAttribute("id2");
+  public static final Attribute<Integer> COMPOSITE_MASTER_ID_3 = T_COMPOSITE_MASTER.integerAttribute("id3");
 
   final void compositeMaster() {
     define(T_COMPOSITE_MASTER,
             columnProperty(COMPOSITE_MASTER_ID).primaryKeyIndex(0).nullable(true),
-            columnProperty(COMPOSITE_MASTER_ID_2).primaryKeyIndex(1));
+            columnProperty(COMPOSITE_MASTER_ID_2).primaryKeyIndex(1),
+            columnProperty(COMPOSITE_MASTER_ID_3).primaryKeyIndex(2));
   }
 
   public static final EntityType<Entity> T_COMPOSITE_DETAIL = DOMAIN.entityType("domain.composite_detail");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = T_COMPOSITE_DETAIL.integerAttribute("master_id");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = T_COMPOSITE_DETAIL.integerAttribute("master_id2");
+  public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_3 = T_COMPOSITE_DETAIL.integerAttribute("master_id3");
   public static final Attribute<Entity> COMPOSITE_DETAIL_MASTER_FK = T_COMPOSITE_DETAIL.entityAttribute("master_fk");
 
   final void compositeDetail() {
     define(T_COMPOSITE_DETAIL,
             columnProperty(COMPOSITE_DETAIL_MASTER_ID).primaryKeyIndex(0),
             columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1),
+            columnProperty(COMPOSITE_DETAIL_MASTER_ID_3).primaryKeyIndex(2),
             foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
-                    asList(COMPOSITE_DETAIL_MASTER_ID, COMPOSITE_DETAIL_MASTER_ID_2)));
+                    asList(COMPOSITE_DETAIL_MASTER_ID, COMPOSITE_DETAIL_MASTER_ID_2, COMPOSITE_DETAIL_MASTER_ID_3))
+                    .readOnly(COMPOSITE_DETAIL_MASTER_ID_3));
   }
 
   public interface Master extends Entity {

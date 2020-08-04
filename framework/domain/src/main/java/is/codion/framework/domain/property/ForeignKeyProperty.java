@@ -38,6 +38,12 @@ public interface ForeignKeyProperty extends Property<Entity> {
   List<Attribute<?>> getColumnAttributes();
 
   /**
+   * @param attribute the attribute
+   * @return true if this attribute should not be set when setting the foreign key entity
+   */
+  boolean isReadOnly(Attribute<?> attribute);
+
+  /**
    * @return the default query fetch depth for this foreign key
    */
   int getFetchDepth();
@@ -70,5 +76,12 @@ public interface ForeignKeyProperty extends Property<Entity> {
      * @return this instance
      */
     ForeignKeyProperty.Builder softReference(boolean softReference);
+
+    /**
+     * @param attributes the attributes that should not be set in the underlying entity
+     * when the value of this foreign key property is set
+     * @return this instance
+     */
+    ForeignKeyProperty.Builder readOnly(Attribute<?>... attributes);
   }
 }
