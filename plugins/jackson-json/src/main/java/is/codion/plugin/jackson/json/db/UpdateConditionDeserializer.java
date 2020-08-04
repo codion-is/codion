@@ -43,7 +43,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     final EntityType<?> entityType = entities.getDomainType().entityType(jsonNode.get("entityType").asText());
     final EntityDefinition definition = entities.getDefinition(entityType);
     final JsonNode conditionNode = jsonNode.get("condition");
-    final Condition condition = conditionDeserializer.deserialize(entities.getDefinition(entityType), conditionNode);
+    final Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
     final UpdateCondition updateCondition = condition.updateCondition();
     final JsonNode values = jsonNode.get("values");

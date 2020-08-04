@@ -731,13 +731,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return false;
     }
 
-    Class<?> typeClass = property.getAttribute().getTypeClass();
-    if (property instanceof ForeignKeyProperty) {
-      typeClass = ((ForeignKeyProperty) property).getReferencedEntityType().getEntityClass();
-    }
-
     final String beanPropertyCamelCase = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
     final String methodName = method.getName();
+    final Class<?> typeClass = getAttributeTypeClass(property);
 
     return (method.getReturnType().equals(typeClass) || method.getReturnType().equals(Optional.class))
             && (methodName.equals(beanProperty) || methodName.equals("get" + beanPropertyCamelCase) ||
@@ -750,15 +746,20 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return false;
     }
 
+    final String beanPropertyCamelCase = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
+    final String methodName = method.getName();
+    final Class<?> typeClass = getAttributeTypeClass(property);
+
+    return method.getParameterTypes()[0].equals(typeClass) && (methodName.equals(beanProperty) || methodName.equals("set" + beanPropertyCamelCase));
+  }
+
+  private static Class<?> getAttributeTypeClass(final Property<?> property) {
     Class<?> typeClass = property.getAttribute().getTypeClass();
     if (property instanceof ForeignKeyProperty) {
       typeClass = ((ForeignKeyProperty) property).getReferencedEntityType().getEntityClass();
     }
 
-    final String beanPropertyCamelCase = beanProperty.substring(0, 1).toUpperCase() + beanProperty.substring(1);
-    final String methodName = method.getName();
-
-    return method.getParameterTypes()[0].equals(typeClass) && (methodName.equals(beanProperty) || methodName.equals("set" + beanPropertyCamelCase));
+    return typeClass;
   }
 
   private static final class EntityProperties implements Serializable {
