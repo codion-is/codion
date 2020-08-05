@@ -230,7 +230,7 @@ public abstract class DefaultDomain implements Domain {
     private final Map<ReportType<?, ?, ?>, Report<?, ?, ?>> reports = new HashMap<>();
 
     private <T, R, P> void addReport(final ReportType<T, R, P> reportType, final Report<T, R, P> report) {
-      requireNonNull(reportType, REPORT);
+      requireNonNull(reportType, "reportType");
       requireNonNull(report, REPORT);
       if (reports.containsKey(reportType)) {
         throw new IllegalArgumentException("Report has already been defined: " + reportType);
