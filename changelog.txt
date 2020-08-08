@@ -6418,3 +6418,4 @@
   ForeignKeyProperty.isReadOnly(attribute) added to replace MirrorProperty functionality
   ReportException, added overloaded constructor with message and cause
   ClassPathJRReport.loadReport() exception improved
+0.16.8
