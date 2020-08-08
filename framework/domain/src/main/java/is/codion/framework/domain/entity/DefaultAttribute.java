@@ -28,7 +28,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
     }
     this.name = name;
     this.entityType = requireNonNull(entityType, "entityType");
-    this.typeClass = typeClass;
+    this.typeClass = requireNonNull(typeClass, "typeClass");
     this.hashCode = Objects.hash(name, entityType);
   }
 
@@ -147,7 +147,7 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
     }
     final DefaultAttribute<?> that = (DefaultAttribute<?>) object;
 
-    return name.equals(that.name) && entityType.equals(that.entityType);
+    return hashCode == that.hashCode && name.equals(that.name) && entityType.equals(that.entityType);
   }
 
   @Override

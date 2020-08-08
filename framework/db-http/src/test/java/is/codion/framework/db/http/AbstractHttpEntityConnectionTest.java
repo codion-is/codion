@@ -97,15 +97,15 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   public void selectByKey() throws IOException, DatabaseException {
-    final Key key = connection.getEntities().key(TestDomain.T_DEPARTMENT, 10);
+    final Key key = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 10);
     final List<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
   @Test
   public void selectByKeyDifferentEntityTypes() throws IOException, DatabaseException {
-    final Key deptKey = connection.getEntities().key(TestDomain.T_DEPARTMENT, 10);
-    final Key empKey = connection.getEntities().key(TestDomain.T_EMP, 8);
+    final Key deptKey = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 10);
+    final Key empKey = connection.getEntities().primaryKey(TestDomain.T_EMP, 8);
 
     final List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -141,7 +141,7 @@ abstract class AbstractHttpEntityConnectionTest {
       connection.beginTransaction();
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(selectCondition));
-      final List<Entity> afterUpdate = connection.select(Entities.getKeys(entities));
+      final List<Entity> afterUpdate = connection.select(Entities.getPrimaryKeys(entities));
       for (final Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(TestDomain.EMP_COMMISSION));
         assertEquals(4200d, entity.get(TestDomain.EMP_SALARY));
@@ -157,8 +157,8 @@ abstract class AbstractHttpEntityConnectionTest {
     final Entity employee = connection.selectSingle(TestDomain.EMP_NAME, "ADAMS");
     try {
       connection.beginTransaction();
-      assertTrue(connection.delete(employee.getKey()));
-      final List<Entity> selected = connection.select(singletonList(employee.getKey()));
+      assertTrue(connection.delete(employee.getPrimaryKey()));
+      final List<Entity> selected = connection.select(singletonList(employee.getPrimaryKey()));
       assertTrue(selected.isEmpty());
     }
     finally {
@@ -168,8 +168,8 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   public void deleteByKeyDifferentEntityTypes() throws IOException, DatabaseException {
-    final Key deptKey = connection.getEntities().key(TestDomain.T_DEPARTMENT, 40);
-    final Key empKey = connection.getEntities().key(TestDomain.T_EMP, 1);
+    final Key deptKey = connection.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 40);
+    final Key empKey = connection.getEntities().primaryKey(TestDomain.T_EMP, 1);
     try {
       connection.beginTransaction();
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());
@@ -221,8 +221,8 @@ abstract class AbstractHttpEntityConnectionTest {
     new Random().nextBytes(bytes);
 
     final Entity scott = connection.selectSingle(TestDomain.EMP_ID, 7);
-    connection.writeBlob(scott.getKey(), TestDomain.EMP_DATA, bytes);
-    assertArrayEquals(bytes, connection.readBlob(scott.getKey(), TestDomain.EMP_DATA));
+    connection.writeBlob(scott.getPrimaryKey(), TestDomain.EMP_DATA, bytes);
+    assertArrayEquals(bytes, connection.readBlob(scott.getPrimaryKey(), TestDomain.EMP_DATA));
   }
 
   @Test
@@ -234,7 +234,7 @@ abstract class AbstractHttpEntityConnectionTest {
   @Test
   public void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
     final Entity department = connection.selectSingle(TestDomain.DEPARTMENT_NAME, "SALES");
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Conditions.condition(department.getKey())));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Conditions.condition(department.getPrimaryKey())));
   }
 
   @Test

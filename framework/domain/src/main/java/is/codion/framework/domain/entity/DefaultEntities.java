@@ -79,30 +79,30 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Key key(final EntityType<?> entityType) {
-    return getDefinition(entityType).key();
+  public final Key primaryKey(final EntityType<?> entityType) {
+    return getDefinition(entityType).primaryKey();
   }
 
   @Override
-  public final Key key(final EntityType<?> entityType, final Integer value) {
-    return getDefinition(entityType).key(value);
+  public final Key primaryKey(final EntityType<?> entityType, final Integer value) {
+    return getDefinition(entityType).primaryKey(value);
   }
 
   @Override
-  public final Key key(final EntityType<?> entityType, final Long value) {
-    return getDefinition(entityType).key(value);
+  public final Key primaryKey(final EntityType<?> entityType, final Long value) {
+    return getDefinition(entityType).primaryKey(value);
   }
 
   @Override
-  public final List<Key> keys(final EntityType<?> entityType, final Integer... values) {
+  public final List<Key> primaryKeys(final EntityType<?> entityType, final Integer... values) {
     requireNonNull(values, "values");
-    return Arrays.stream(values).map(value -> key(entityType, value)).collect(toList());
+    return Arrays.stream(values).map(value -> primaryKey(entityType, value)).collect(toList());
   }
 
   @Override
-  public final List<Key> keys(final EntityType<?> entityType, final Long... values) {
+  public final List<Key> primaryKeys(final EntityType<?> entityType, final Long... values) {
     requireNonNull(values, "values");
-    return Arrays.stream(values).map(value -> key(entityType, value)).collect(toList());
+    return Arrays.stream(values).map(value -> primaryKey(entityType, value)).collect(toList());
   }
 
   @Override
@@ -208,16 +208,6 @@ public abstract class DefaultEntities implements Entities, Serializable {
           throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getReferencedEntityType()
                   + "' referenced by entity '" + entityType + "' via foreign key property '"
                   + foreignKeyProperty.getAttribute() + "' has not been defined");
-        }
-        if (foreignEntity.getPrimaryKeyAttributes().isEmpty()) {
-          throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getReferencedEntityType()
-                  + "' can not be referenced via foreign key, since it has no primary key");
-        }
-        if (foreignKeyProperty.getColumnAttributes().size() != foreignEntity.getPrimaryKeyAttributes().size()) {
-          throw new IllegalArgumentException("Number of column properties in '" +
-                  entityType + "." + foreignKeyProperty.getAttribute() +
-                  "' does not match the number of foreign properties in the referenced entity '" +
-                  foreignKeyProperty.getReferencedEntityType() + "'");
         }
       }
     }

@@ -232,7 +232,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           executeStatement(statement, insertQuery, statementProperties, statementValues);
           keyGenerator.afterInsert(entity, primaryKeyProperties, connection, statement);
 
-          insertedKeys.add(entity.getKey());
+          insertedKeys.add(entity.getPrimaryKey());
 
           statement.close();
           statementProperties.clear();
@@ -290,7 +290,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               throw new SQLException("Unable to update entity " + entity.getEntityType() + ", no modified values found");
             }
 
-            final WhereCondition updateCondition = whereCondition(condition(entity.getOriginalKey()), entityDefinition);
+            final WhereCondition updateCondition = whereCondition(condition(entity.getOriginalPrimaryKey()), entityDefinition);
             updateQuery = updateQuery(entityDefinition.getTableName(), statementProperties, updateCondition.getWhereClause());
             statement = prepareStatement(updateQuery);
             statementProperties.addAll(updateCondition.getColumnProperties());
@@ -304,7 +304,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          final List<Entity> selected = doSelect(condition(getKeys(entitiesToUpdate)).selectCondition());
+          final List<Entity> selected = doSelect(condition(getPrimaryKeys(entitiesToUpdate)).selectCondition());
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -854,15 +854,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   private void performOptimisticLocking(final Map<EntityType<Entity>, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
     for (final Map.Entry<EntityType<Entity>, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
-      final List<Key> originalKeys = getOriginalKeys(entitiesByEntityTypeEntry.getValue());
+      final List<Key> originalKeys = getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
       final SelectCondition selectForUpdateCondition = condition(originalKeys).selectCondition();
       selectForUpdateCondition.setSelectAttributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()));
       selectForUpdateCondition.setForUpdate(true);
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
       final EntityDefinition definition = domainEntities.getDefinition(entitiesByEntityTypeEntry.getKey());
-      final Map<Key, Entity> currentEntitiesByKey = mapToKey(currentEntities);
+      final Map<Key, Entity> currentEntitiesByKey = mapToPrimaryKey(currentEntities);
       for (final Entity entity : entitiesByEntityTypeEntry.getValue()) {
-        final Entity current = currentEntitiesByKey.get(entity.getOriginalKey());
+        final Entity current = currentEntitiesByKey.get(entity.getOriginalPrimaryKey());
         if (current == null) {
           final Entity original = domainEntities.copyEntity(entity);
           original.revertAll();
@@ -930,7 +930,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             referencedEntitiesCondition.setFetchDepth(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
-            final Map<Key, Entity> referencedEntitiesMappedByKey = mapToKey(referencedEntities);
+            final Map<Key, Entity> referencedEntitiesMappedByKey = mapToPrimaryKey(referencedEntities);
             for (int j = 0; j < entities.size(); j++) {
               final Entity entity = entities.get(j);
               final Key referencedKey = entity.getReferencedKey(foreignKeyAttribute);
@@ -945,15 +945,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private Entity getReferencedEntity(final Key referencedPrimaryKey, final Map<Key, Entity> entitiesMappedByKey) {
-    if (referencedPrimaryKey == null) {
+  private Entity getReferencedEntity(final Key referencedKey, final Map<Key, Entity> entitiesMappedByKey) {
+    if (referencedKey == null) {
       return null;
     }
-    Entity referencedEntity = entitiesMappedByKey.get(referencedPrimaryKey);
-    if (referencedEntity == null) {
+    Entity referencedEntity = entitiesMappedByKey.get(referencedKey);
+    if (referencedEntity == null && referencedKey.isPrimaryKey()) {
       //if the referenced entity is not found (it's been deleted or has been filtered out of an underlying view for example),
       //we create an empty entity wrapping the primary key since that's the best we can do under the circumstances
-      referencedEntity = domainEntities.entity(referencedPrimaryKey);
+      referencedEntity = domainEntities.entity(referencedKey);
     }
 
     return referencedEntity;

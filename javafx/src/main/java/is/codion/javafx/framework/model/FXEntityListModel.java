@@ -247,7 +247,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final void replaceEntities(final List<Entity> entities) {
-    replaceEntitiesByKey(Entities.mapToKey(entities));
+    replaceEntitiesByKey(Entities.mapToPrimaryKey(entities));
   }
 
   @Override
@@ -355,23 +355,23 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Key> keys) {
     return getItems().stream().filter(entity -> keys.stream()
-            .anyMatch(key -> entity.getKey().equals(key))).collect(Collectors.toList());
+            .anyMatch(key -> entity.getPrimaryKey().equals(key))).collect(Collectors.toList());
   }
 
   @Override
   public final void setSelectedByKey(final Collection<Key> keys) {
     final List<Key> keyList = new ArrayList<>(keys);
     final List<Entity> toSelect = new ArrayList<>(keys.size());
-    stream().filter(entity -> keyList.contains(entity.getKey())).forEach(entity -> {
+    stream().filter(entity -> keyList.contains(entity.getPrimaryKey())).forEach(entity -> {
       toSelect.add(entity);
-      keyList.remove(entity.getKey());
+      keyList.remove(entity.getPrimaryKey());
     });
     getSelectionModel().setSelectedItems(toSelect);
   }
 
   @Override
   public final Entity getEntityByKey(final Key primaryKey) {
-    return getFilteredList().stream().filter(entity -> entity.getKey().equals(primaryKey)).findFirst().orElse(null);
+    return getFilteredList().stream().filter(entity -> entity.getPrimaryKey().equals(primaryKey)).findFirst().orElse(null);
   }
 
   @Override
@@ -542,7 +542,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private void replaceEntitiesByKey(final Map<Key, Entity> entityMap) {
     final List<Integer> selected = getSelectionModel().getSelectedIndexes();
     replaceAll(entity -> {
-      final Entity toReplaceWith = entityMap.get(entity.getKey());
+      final Entity toReplaceWith = entityMap.get(entity.getPrimaryKey());
       return toReplaceWith == null ? entity : toReplaceWith;
     });
     getSelectionModel().setSelectedIndexes(selected);

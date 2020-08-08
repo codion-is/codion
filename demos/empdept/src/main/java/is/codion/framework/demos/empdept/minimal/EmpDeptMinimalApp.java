@@ -103,7 +103,8 @@ public final class EmpDeptMinimalApp {
                       .maximumLength(10),
               columnProperty(Employee.DEPTNO)
                       .nullable(false),
-              foreignKeyProperty(Employee.DEPT_FK, "Department", Department.TYPE, Employee.DEPTNO),
+              foreignKeyProperty(Employee.DEPT_FK, "Department")
+                      .reference(Employee.DEPTNO, Department.DEPTNO),
               columnProperty(Employee.JOB, "Job")
                       .nullable(false)
                       .maximumLength(9),
@@ -114,7 +115,8 @@ public final class EmpDeptMinimalApp {
               columnProperty(Employee.COMM, "Commission")
                       .maximumFractionDigits(2),
               columnProperty(Employee.MGR),
-              foreignKeyProperty(Employee.MGR_FK, "Manager", Employee.T_EMP, Employee.MGR),
+              foreignKeyProperty(Employee.MGR_FK, "Manager")
+                      .reference(Employee.MGR, Employee.EMPNO),
               columnProperty(Employee.HIREDATE, "Hiredate")
                       .nullable(false))
               .keyGenerator(increment("scott.emp", "empno"))

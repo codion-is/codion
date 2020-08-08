@@ -183,10 +183,10 @@ public class EntityServletServerTest {
 
     //select by key
     List<Key> keys = new ArrayList<>();
-    Key key = ENTITIES.key(TestDomain.T_DEPARTMENT);
+    Key key = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT);
     key.put(10);
     keys.add(key);
-    key = ENTITIES.key(TestDomain.T_DEPARTMENT);
+    key = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT);
     key.put(20);
     keys.add(key);
 
@@ -233,7 +233,7 @@ public class EntityServletServerTest {
 
     keys = entityObjectMapper.deserializeKeys(response.getEntity().getContent());
     assertEquals(2, keys.size());
-    assertTrue(entities.stream().map(Entity::getKey).collect(Collectors.toList()).containsAll(keys));
+    assertTrue(entities.stream().map(Entity::getPrimaryKey).collect(Collectors.toList()).containsAll(keys));
     response.close();
 
     //update entities
@@ -309,9 +309,9 @@ public class EntityServletServerTest {
     response.close();
 
     //dependencies
-    final Key key1 = ENTITIES.key(TestDomain.T_DEPARTMENT);
+    final Key key1 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT);
     key1.put(TestDomain.DEPARTMENT_ID, 10);
-    final Key key2 = ENTITIES.key(TestDomain.T_DEPARTMENT);
+    final Key key2 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT);
     key2.put(TestDomain.DEPARTMENT_ID, 20);
 
     final List<Entity> entitiesDep = Arrays.asList(ENTITIES.entity(key1), ENTITIES.entity(key2));
@@ -485,14 +485,14 @@ public class EntityServletServerTest {
     assertEquals(200, response.getStatusLine().getStatusCode());
     final List<Key> queryKeys = deserializeResponse(response);
     assertEquals(1, queryKeys.size());
-    assertEquals(department.getKey(), queryKeys.get(0));
+    assertEquals(department.getPrimaryKey(), queryKeys.get(0));
     response.close();
 
     //delete
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("delete");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getKey()))));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getPrimaryKey()))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     response.close();
@@ -506,7 +506,7 @@ public class EntityServletServerTest {
     assertEquals(200, response.getStatusLine().getStatusCode());
     final List<Key> keys = deserializeResponse(response);
     assertEquals(1, keys.size());
-    assertEquals(department.getKey(), keys.get(0));
+    assertEquals(department.getPrimaryKey(), keys.get(0));
     response.close();
 
     //update
@@ -539,7 +539,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getKey()).selectCondition())));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getPrimaryKey()).selectCondition())));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);

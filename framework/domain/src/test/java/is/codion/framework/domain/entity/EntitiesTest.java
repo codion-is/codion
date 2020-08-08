@@ -424,7 +424,7 @@ public final class EntitiesTest {
     noPk.put(TestDomain.NO_PK_COL1, 1);
     noPk.put(TestDomain.NO_PK_COL2, 2);
     noPk.put(TestDomain.NO_PK_COL3, 3);
-    final List<Key> keys = Entities.getKeys(singletonList(noPk));
+    final List<Key> keys = Entities.getPrimaryKeys(singletonList(noPk));
     assertTrue(keys.get(0).isNull());
   }
 }

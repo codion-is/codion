@@ -175,7 +175,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   @Override
   public final Entity getEntity(final Key primaryKey) {
-    return getItems().stream().filter(entity -> entity != null && entity.getKey().equals(primaryKey)).findFirst().orElse(null);
+    return getItems().stream().filter(entity -> entity != null && entity.getPrimaryKey().equals(primaryKey)).findFirst().orElse(null);
   }
 
   @Override
@@ -288,7 +288,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
 
     if (item instanceof Entity) {
-      final int indexOfKey = getIndexOfKey(((Entity) item).getKey());
+      final int indexOfKey = getIndexOfKey(((Entity) item).getPrimaryKey());
       if (indexOfKey >= 0) {
         return getElementAt(indexOfKey);
       }
@@ -345,7 +345,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     final int startIndex = getNullString() != null ? 1 : 0;
     for (int index = startIndex; index < size; index++) {
       final Entity item = getElementAt(index);
-      if (item != null && item.getKey().equals(primaryKey)) {
+      if (item != null && item.getPrimaryKey().equals(primaryKey)) {
         return index;
       }
     }
@@ -356,7 +356,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     final List<Entity> filteredItems = getFilteredItems();
     for (int index = 0; index < filteredItems.size(); index++) {
       final Entity item = filteredItems.get(index);
-      if (item.getKey().equals(primaryKey)) {
+      if (item.getPrimaryKey().equals(primaryKey)) {
         return index;
       }
     }

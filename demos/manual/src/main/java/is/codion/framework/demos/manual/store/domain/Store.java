@@ -110,12 +110,12 @@ public final class Store extends DefaultDomain {
             primaryKeyProperty(CustomerAddress.ID),
             columnProperty(CustomerAddress.CUSTOMER_ID)
                     .nullable(false),
-            foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer",
-                    Customer.TYPE, CustomerAddress.CUSTOMER_ID),
+            foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer")
+                    .reference(CustomerAddress.CUSTOMER_ID, Customer.ID),
             columnProperty(CustomerAddress.ADDRESS_ID)
                     .nullable(false),
-            foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address",
-                    Address.TYPE, CustomerAddress.ADDRESS_ID))
+            foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address")
+                    .reference(CustomerAddress.ADDRESS_ID, Address.ID))
             .keyGenerator(automatic("store.customer_address"))
             .caption("Customer address");
     // end::customerAddress[]

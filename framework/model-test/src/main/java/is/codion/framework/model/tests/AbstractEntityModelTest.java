@@ -64,7 +64,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.refresh();
     final EntityEditModel deptEditModel = departmentModel.getEditModel();
     final TableModel deptTableModel = departmentModel.getTableModel();
-    final Key operationsKey = deptEditModel.getEntities().key(TestDomain.T_DEPARTMENT, 40);//operations
+    final Key operationsKey = deptEditModel.getEntities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations
     deptTableModel.setSelectedByKey(singletonList(operationsKey));
 
     assertTrue(deptTableModel.getSelectionModel().isSelectionNotEmpty());
@@ -283,7 +283,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     dept.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
 
     final Entity emp = connectionProvider.getConnection().selectSingle(TestDomain.EMP_ID, 8);
-    emp.clearKeyValues();
+    emp.clearPrimaryKeyValues();
     emp.put(TestDomain.EMP_NAME, "NewName");
 
     final Model model = createDepartmentModelWithoutDetailModel();

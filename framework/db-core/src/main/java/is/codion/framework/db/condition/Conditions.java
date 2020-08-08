@@ -8,14 +8,18 @@ import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionProvider;
 import is.codion.framework.domain.entity.ConditionType;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.Conjunction.OR;
@@ -25,6 +29,7 @@ import static is.codion.framework.domain.entity.Entities.getValues;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A factory class for {@link Condition} and it's descendants.
@@ -49,25 +54,26 @@ public final class Conditions {
    */
   public static Condition condition(final Key key) {
     if (requireNonNull(key).isCompositeKey()) {
-      return singleCompositeCondition(key.getAttributes(), EQUAL, key);
+      return singleCompositeCondition(attributeMap(key.getAttributes()), EQUAL, valueMap(key));
     }
 
     return new DefaultAttributeEqualCondition<>(key.getAttribute(), singletonList(key.get()));
   }
 
   /**
-   * Creates a {@link Condition} based on the given keys, assuming they are all for the same entity type.
+   * Creates a {@link Condition} based on the given keys, assuming they are all based on the same attributes.
    * @param keys the keys
    * @return a condition based on the given keys
    * @throws IllegalArgumentException in case {@code keys} is empty
    */
   public static Condition condition(final List<Key> keys) {
-    if (keys.isEmpty()) {
+    if (requireNonNull(keys).isEmpty()) {
       throw new IllegalArgumentException("No keys specified for key condition");
     }
     final Key firstKey = keys.get(0);
     if (firstKey.isCompositeKey()) {
-      return compositeKeyCondition(firstKey.getAttributes(), EQUAL, keys);
+      return compositeKeyCondition(attributeMap(firstKey.getAttributes()), EQUAL,
+              keys.stream().map(Conditions::valueMap).collect(toList()));
     }
 
     return new DefaultAttributeEqualCondition<>((Attribute<?>) firstKey.getAttribute(), getValues(keys));
@@ -166,40 +172,38 @@ public final class Conditions {
       final AttributeCondition<?> attributeCondition = (AttributeCondition<?>) condition;
       final Property<?> property = definition.getProperty(attributeCondition.getAttribute());
       if (property instanceof ForeignKeyProperty) {
-        return foreignKeyCondition(((ForeignKeyProperty) property).getColumnAttributes(),
-                attributeCondition.getOperator(), (List<Key>) attributeCondition.getValues());
+        return foreignKeyCondition((ForeignKeyProperty) property, attributeCondition.getOperator(),
+                attributeCondition.getValues().stream().map(value -> valueMap((Entity) value)).collect(toList()));
       }
     }
 
     return condition;
   }
 
-  private static Condition compositeKeyCondition(final List<Attribute<?>> attributes, final Operator operator,
-                                                 final List<Key> keys) {
-    if (keys.size() == 1) {
-      return singleCompositeCondition(attributes, operator, keys.get(0));
+  private static Condition compositeKeyCondition(final Map<Attribute<?>, Attribute<?>> attributes, final Operator operator,
+                                                 final List<Map<Attribute<?>, Object>> valueMaps) {
+    if (valueMaps.size() == 1) {
+      return singleCompositeCondition(attributes, operator, valueMaps.get(0));
     }
 
-    return multipleCompositeCondition(attributes, operator, keys);
+    return multipleCompositeCondition(attributes, operator, valueMaps);
   }
 
   /* Assumes keys is not empty. */
-  private static Condition multipleCompositeCondition(final List<Attribute<?>> attributes, final Operator operator,
-                                                      final List<Key> keys) {
+  private static Condition multipleCompositeCondition(final Map<Attribute<?>, Attribute<?>> attributes, final Operator operator,
+                                                      final List<Map<Attribute<?>, Object>> valueMaps) {
     final Condition.Combination conditionCombination = combination(OR);
-    for (int i = 0; i < keys.size(); i++) {
-      conditionCombination.add(singleCompositeCondition(attributes, operator, keys.get(i)));
-    }
+    valueMaps.forEach(valueMap -> conditionCombination.add(singleCompositeCondition(attributes, operator, valueMap)));
 
     return conditionCombination;
   }
 
-  private static Condition singleCompositeCondition(final List<Attribute<?>> attributes, final Operator operator,
-                                                    final Key key) {
+  private static Condition singleCompositeCondition(final Map<Attribute<?>, Attribute<?>> attributes,
+                                                    final Operator operator, final Map<Attribute<?>, Object> valueMap) {
     final Condition.Combination conditionCombination = combination(AND);
-    for (int i = 0; i < attributes.size(); i++) {
-      final Object value = key.get(key.getAttributes().get(i));
-      final AttributeCondition.Builder<Object> condition = condition((Attribute<Object>) attributes.get(i));
+    attributes.forEach((conditionAttribute, valueAttribute) -> {
+      final Object value = valueMap.get(valueAttribute);
+      final AttributeCondition.Builder<Object> condition = condition((Attribute<Object>) conditionAttribute);
       if (operator == EQUAL) {
         conditionCombination.add(value == null ? condition.isNull() : condition.equalTo(value));
       }
@@ -209,26 +213,56 @@ public final class Conditions {
       else {
         throw new IllegalArgumentException("Unsupported operator: " + operator);
       }
-    }
+    });
 
     return conditionCombination;
   }
 
-  private static Condition foreignKeyCondition(final List<Attribute<?>> foreignKeyAttributes,
-                                               final Operator operator, final List<Key> keys) {
-    if (foreignKeyAttributes.size() > 1) {
-      return compositeKeyCondition(foreignKeyAttributes, operator, keys);
+  private static Condition foreignKeyCondition(final ForeignKeyProperty foreignKeyProperty,
+                                               final Operator operator, final List<Map<Attribute<?>, Object>> valueMaps) {
+    if (foreignKeyProperty.getReferences().size() > 1) {
+      return compositeKeyCondition(attributeMap(foreignKeyProperty), operator, valueMaps);
     }
 
-    final Attribute<?> attribute = foreignKeyAttributes.get(0);
+    final ForeignKeyProperty.Reference<?> reference = foreignKeyProperty.getReferences().get(0);
+    final List<Object> values = valueMaps.stream()
+            .map(map -> map.get(reference.getReferencedAttribute())).collect(toList());
     if (operator == EQUAL) {
-      return condition((Attribute<Object>) attribute).equalTo(getValues(keys));
+      return condition((Attribute<Object>) reference.getAttribute()).equalTo(values);
     }
     if (operator == NOT_EQUAL) {
-      return condition((Attribute<Object>) attribute).notEqualTo(getValues(keys));
+      return condition((Attribute<Object>) reference.getAttribute()).notEqualTo(values);
     }
 
     throw new IllegalArgumentException("Unsupported operator: " + operator);
+  }
+
+  private static Map<Attribute<?>, Attribute<?>> attributeMap(final Collection<Attribute<?>> attributes) {
+    final Map<Attribute<?>, Attribute<?>> map = new HashMap<>(attributes.size());
+    attributes.forEach(attribute -> map.put(attribute, attribute));
+
+    return map;
+  }
+
+  private static Map<Attribute<?>, Attribute<?>> attributeMap(final ForeignKeyProperty foreignKeyProperty) {
+    final Map<Attribute<?>, Attribute<?>> map = new HashMap<>(foreignKeyProperty.getReferences().size());
+    foreignKeyProperty.getReferences().forEach(reference -> map.put(reference.getAttribute(), reference.getReferencedAttribute()));
+
+    return map;
+  }
+
+  private static Map<Attribute<?>, Object> valueMap(final Entity entity) {
+    final Map<Attribute<?>, Object> values = new HashMap<>();
+    entity.entrySet().forEach((entry) -> values.put(entry.getKey(), entry.getValue()));
+
+    return values;
+  }
+
+  private static Map<Attribute<?>, Object> valueMap(final Key key) {
+    final Map<Attribute<?>, Object> values = new HashMap<>();
+    key.getAttributes().forEach(attribute -> values.put(attribute, key.get(attribute)));
+
+    return values;
   }
 
   /**

@@ -61,7 +61,7 @@ public class EntityConnectionProviderDemo {
 
     Entities entities = entityConnection.getEntities();
 
-    Entity track = entityConnection.selectSingle(entities.key(Track.TYPE, 42L));
+    Entity track = entityConnection.selectSingle(entities.primaryKey(Track.TYPE, 42L));
 
     connectionProvider.disconnect();
     // end::remote[]
@@ -80,7 +80,7 @@ public class EntityConnectionProviderDemo {
 
     Entities entities = entityConnection.getEntities();
 
-    entityConnection.selectSingle(entities.key(Track.TYPE, 42L));
+    entityConnection.selectSingle(entities.primaryKey(Track.TYPE, 42L));
 
     connectionProvider.disconnect();
     // end::http[]

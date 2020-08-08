@@ -107,8 +107,8 @@ public final class EntityConnectionDemo {
   static void selectKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectKeys[]
     Entities entities = connection.getEntities();
-    Key key42 = entities.key(Artist.TYPE, 42L);
-    Key key43 = entities.key(Artist.TYPE, 43L);
+    Key key42 = entities.primaryKey(Artist.TYPE, 42L);
+    Key key43 = entities.primaryKey(Artist.TYPE, 43L);
 
     List<Entity> artists = connection.select(asList(key42, key43));
     // end::selectKeys[]
@@ -136,7 +136,7 @@ public final class EntityConnectionDemo {
 
   static void selectSingleKeys(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleKeys[]
-    Key key42 = connection.getEntities().key(Artist.TYPE, 42L);
+    Key key42 = connection.getEntities().primaryKey(Artist.TYPE, 42L);
 
     Entity artists = connection.selectSingle(key42);
     // end::selectSingleKeys[]
@@ -224,7 +224,7 @@ public final class EntityConnectionDemo {
     // tag::deleteKey[]
     Entity myBand = connection.selectSingle(Artist.NAME, "Proper Name");
 
-    boolean deleted = connection.delete(myBand.getKey());
+    boolean deleted = connection.delete(myBand.getPrimaryKey());
     // end::deleteKey[]
   }
 

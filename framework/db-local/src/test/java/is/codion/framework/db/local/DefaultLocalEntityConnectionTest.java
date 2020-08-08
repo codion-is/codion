@@ -43,7 +43,7 @@ import java.util.Random;
 
 import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.db.local.TestDomain.*;
-import static is.codion.framework.domain.entity.Entities.getKeys;
+import static is.codion.framework.domain.entity.Entities.getPrimaryKeys;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -73,7 +73,7 @@ public class DefaultLocalEntityConnectionTest {
   public void delete() throws Exception {
     try {
       connection.beginTransaction();
-      final Key key = ENTITIES.key(Department.TYPE, 40);
+      final Key key = ENTITIES.primaryKey(Department.TYPE, 40);
       assertEquals(0, connection.delete(new ArrayList<>()));
       assertTrue(connection.delete(key));
       try {
@@ -87,7 +87,7 @@ public class DefaultLocalEntityConnectionTest {
     }
     try {
       connection.beginTransaction();
-      final Key key = ENTITIES.key(Department.TYPE, 40);
+      final Key key = ENTITIES.primaryKey(Department.TYPE, 40);
       assertEquals(1, connection.delete(Conditions.condition(key)));
       try {
         connection.selectSingle(key);
@@ -111,7 +111,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void deleteReferentialIntegrity() {
-    final Key key = ENTITIES.key(Department.TYPE, 10);
+    final Key key = ENTITIES.primaryKey(Department.TYPE, 10);
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(key));
   }
 
@@ -162,7 +162,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   public void deleteByKeyWithForeignKeys() throws DatabaseException {
     final Entity accounting = connection.selectSingle(Department.DNAME, "ACCOUNTING");
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(accounting.getKey()));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(accounting.getPrimaryKey()));
   }
 
   @Test
@@ -220,7 +220,7 @@ public class DefaultLocalEntityConnectionTest {
     assertTrue(result.isEmpty());
     result = connection.select(Department.DEPTNO, asList(10, 20));
     assertEquals(2, result.size());
-    result = connection.select(getKeys(result));
+    result = connection.select(getPrimaryKeys(result));
     assertEquals(2, result.size());
     result = connection.select(Conditions.customCondition(Department.DEPARTMENT_CONDITION_TYPE,
                     asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)).selectCondition());
@@ -287,8 +287,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectByKey() throws DatabaseException {
-    final Key deptKey = ENTITIES.key(Department.TYPE, 10);
-    final Key empKey = ENTITIES.key(T_EMP, 8);
+    final Key deptKey = ENTITIES.primaryKey(Department.TYPE, 10);
+    final Key empKey = ENTITIES.primaryKey(T_EMP, 8);
 
     final List<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -343,7 +343,7 @@ public class DefaultLocalEntityConnectionTest {
   public void selectSingle() throws Exception {
     Entity sales = connection.selectSingle(Department.DNAME, "SALES");
     assertEquals(sales.get(Department.DNAME), "SALES");
-    sales = connection.selectSingle(sales.getKey());
+    sales = connection.selectSingle(sales.getPrimaryKey());
     assertEquals(sales.get(Department.DNAME), "SALES");
     sales = connection.selectSingle(Conditions.customCondition(Department.DEPARTMENT_CONDITION_SALES_TYPE).selectCondition());
     assertEquals(sales.get(Department.DNAME), "SALES");
@@ -442,7 +442,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(name, emp.get(EMP_NAME));
     assertEquals(salary, emp.get(EMP_SALARY));
     assertEquals(defaultCommission, emp.get(EMP_COMMISSION));
-    connection.delete(emp.getKey());
+    connection.delete(emp.getPrimaryKey());
 
     emp.put(EMP_COMMISSION, null);//default value should not kick in
     emp = connection.selectSingle(connection.insert(emp));
@@ -450,7 +450,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(name, emp.get(EMP_NAME));
     assertEquals(salary, emp.get(EMP_SALARY));
     assertNull(emp.get(EMP_COMMISSION));
-    connection.delete(emp.getKey());
+    connection.delete(emp.getPrimaryKey());
 
     emp.remove(EMP_COMMISSION);//default value should kick in
     emp = connection.selectSingle(connection.insert(emp));
@@ -458,7 +458,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(name, emp.get(EMP_NAME));
     assertEquals(salary, emp.get(EMP_SALARY));
     assertEquals(defaultCommission, emp.get(EMP_COMMISSION));
-    connection.delete(emp.getKey());
+    connection.delete(emp.getPrimaryKey());
   }
 
   @Test
@@ -522,7 +522,7 @@ public class DefaultLocalEntityConnectionTest {
       connection.beginTransaction();
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(selectCondition));
-      final List<Entity> afterUpdate = connection.select(Entities.getKeys(entities));
+      final List<Entity> afterUpdate = connection.select(Entities.getPrimaryKeys(entities));
       for (final Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(EMP_COMMISSION));
         assertEquals(4200d, entity.get(EMP_SALARY));
@@ -619,7 +619,7 @@ public class DefaultLocalEntityConnectionTest {
 
       allen = connection.selectSingle(condition);
 
-      connection2.delete(allen.getKey());
+      connection2.delete(allen.getPrimaryKey());
 
       allen.put(EMP_JOB, "CLERK");
       try {
@@ -776,18 +776,18 @@ public class DefaultLocalEntityConnectionTest {
     random.nextBytes(bytes);
 
     final Entity scott = connection.selectSingle(EMP_ID, 7);
-    connection.writeBlob(scott.getKey(), EMP_DATA_LAZY, lazyBytes);
-    connection.writeBlob(scott.getKey(), EMP_DATA, bytes);
-    assertArrayEquals(lazyBytes, connection.readBlob(scott.getKey(), EMP_DATA_LAZY));
-    assertArrayEquals(bytes, connection.readBlob(scott.getKey(), EMP_DATA));
+    connection.writeBlob(scott.getPrimaryKey(), EMP_DATA_LAZY, lazyBytes);
+    connection.writeBlob(scott.getPrimaryKey(), EMP_DATA, bytes);
+    assertArrayEquals(lazyBytes, connection.readBlob(scott.getPrimaryKey(), EMP_DATA_LAZY));
+    assertArrayEquals(bytes, connection.readBlob(scott.getPrimaryKey(), EMP_DATA));
 
-    Entity scottFromDb = connection.selectSingle(scott.getKey());
+    Entity scottFromDb = connection.selectSingle(scott.getPrimaryKey());
     //lazy loaded
     assertNull(scottFromDb.get(EMP_DATA_LAZY));
     assertNotNull(scottFromDb.get(EMP_DATA));
 
     //overrides lazy loading
-    scottFromDb = connection.selectSingle(condition(scott.getKey()).selectCondition().setSelectAttributes(EMP_DATA_LAZY));
+    scottFromDb = connection.selectSingle(condition(scott.getPrimaryKey()).selectCondition().setSelectAttributes(EMP_DATA_LAZY));
     assertNotNull(scottFromDb.get(EMP_DATA_LAZY));
   }
 
@@ -805,12 +805,12 @@ public class DefaultLocalEntityConnectionTest {
     connection.update(scott);
     scott.saveAll();
 
-    byte[] lazyFromDb = connection.readBlob(scott.getKey(), EMP_DATA_LAZY);
-    final byte[] fromDb = connection.readBlob(scott.getKey(), EMP_DATA);
+    byte[] lazyFromDb = connection.readBlob(scott.getPrimaryKey(), EMP_DATA_LAZY);
+    final byte[] fromDb = connection.readBlob(scott.getPrimaryKey(), EMP_DATA);
     assertArrayEquals(lazyBytes, lazyFromDb);
     assertArrayEquals(bytes, fromDb);
 
-    Entity scottFromDb = connection.selectSingle(scott.getKey());
+    Entity scottFromDb = connection.selectSingle(scott.getPrimaryKey());
     //lazy loaded
     assertNull(scottFromDb.get(EMP_DATA_LAZY));
     assertNotNull(scottFromDb.get(EMP_DATA));
@@ -826,10 +826,10 @@ public class DefaultLocalEntityConnectionTest {
 
     connection.update(scott);
 
-    lazyFromDb = connection.readBlob(scott.getKey(), EMP_DATA_LAZY);
+    lazyFromDb = connection.readBlob(scott.getPrimaryKey(), EMP_DATA_LAZY);
     assertArrayEquals(newLazyBytes, lazyFromDb);
 
-    scottFromDb = connection.selectSingle(scott.getKey());
+    scottFromDb = connection.selectSingle(scott.getPrimaryKey());
     assertArrayEquals(newBytes, scottFromDb.get(EMP_DATA));
   }
 

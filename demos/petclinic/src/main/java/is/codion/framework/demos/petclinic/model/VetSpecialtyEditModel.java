@@ -22,7 +22,7 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 
   @Override
   public boolean isEntityNew() {
-    return getEntity().getOriginalKey().isNull();
+    return getEntity().getOriginalPrimaryKey().isNull();
   }
 
   @Override

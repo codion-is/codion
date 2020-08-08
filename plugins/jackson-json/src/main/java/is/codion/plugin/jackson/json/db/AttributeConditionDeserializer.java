@@ -6,8 +6,8 @@ package is.codion.plugin.jackson.json.db;
 import is.codion.common.db.Operator;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.Property;
 import is.codion.plugin.jackson.json.domain.EntityDeserializer;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
@@ -36,7 +36,7 @@ final class AttributeConditionDeserializer implements Serializable {
     final List<T> values = new ArrayList<>();
     for (final JsonNode valueNode : valuesNode) {
       if (valueNode.has("entityType")) {
-        values.add((T) entityObjectMapper.readValue(valueNode.toString(), Key.class));
+        values.add((T) entityObjectMapper.readValue(valueNode.toString(), Entity.class));
       }
       else {
         values.add((T) EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), valueNode));

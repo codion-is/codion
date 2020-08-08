@@ -70,9 +70,10 @@ public class TestDomain extends DefaultDomain {
             columnProperty(COMPOSITE_DETAIL_MASTER_ID).primaryKeyIndex(0),
             columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1),
             columnProperty(COMPOSITE_DETAIL_MASTER_ID_3).primaryKeyIndex(2),
-            foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master", T_COMPOSITE_MASTER,
-                    asList(COMPOSITE_DETAIL_MASTER_ID, COMPOSITE_DETAIL_MASTER_ID_2, COMPOSITE_DETAIL_MASTER_ID_3))
-                    .readOnly(COMPOSITE_DETAIL_MASTER_ID_3));
+            foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master")
+                    .reference(COMPOSITE_DETAIL_MASTER_ID, COMPOSITE_MASTER_ID)
+                    .reference(COMPOSITE_DETAIL_MASTER_ID_2, COMPOSITE_MASTER_ID_2)
+                    .referenceReadOnly(COMPOSITE_DETAIL_MASTER_ID_3, COMPOSITE_MASTER_ID_3));
   }
 
   public interface Master extends Entity {
@@ -120,6 +121,8 @@ public class TestDomain extends DefaultDomain {
     Attribute<Entity> MASTER_FK = TYPE.entityAttribute("master_fk");
     Attribute<String> MASTER_NAME = TYPE.stringAttribute("master_name");
     Attribute<Integer> MASTER_CODE = TYPE.integerAttribute("master_code");
+    Attribute<Integer> MASTER_CODE_NON_DENORM = TYPE.integerAttribute("master_code_non_denorm");
+    Attribute<Entity> MASTER_VIA_CODE_FK = TYPE.entityAttribute("master_via_code_fk");
     Attribute<Integer> INT_VALUE_LIST = TYPE.integerAttribute("int_value_list");
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
     Attribute<Integer> MASTER_CODE_DENORM = TYPE.integerAttribute("master_code_denorm");
@@ -164,7 +167,12 @@ public class TestDomain extends DefaultDomain {
                     .columnHasDefaultValue(true)
                     .defaultValue(true),
             columnProperty(Detail.MASTER_ID),
-            foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.getName(), Master.TYPE, Detail.MASTER_ID)
+            foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.getName())
+                    .reference(Detail.MASTER_ID, Master.ID)
+                    .beanProperty("master"),
+            columnProperty(Detail.MASTER_CODE_NON_DENORM),
+            foreignKeyProperty(Detail.MASTER_VIA_CODE_FK, Detail.MASTER_FK.getName())
+                    .reference(Detail.MASTER_CODE_NON_DENORM, Master.CODE)
                     .beanProperty("master"),
             denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.getName(), Detail.MASTER_FK, Master.NAME),
             denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.getName(), Detail.MASTER_FK, Master.CODE),
@@ -264,7 +272,8 @@ public class TestDomain extends DefaultDomain {
             columnProperty(Employee.DEPARTMENT)
                     .nullable(false)
                     .beanProperty("deptno"),
-            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName(), Department.TYPE, Employee.DEPARTMENT)
+            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName())
+                    .reference(Employee.DEPARTMENT, Department.NO)
                     .beanProperty("department"),
             valueListProperty(Employee.JOB, Employee.JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"),
@@ -279,7 +288,8 @@ public class TestDomain extends DefaultDomain {
                     .beanProperty("commission"),
             columnProperty(Employee.MGR)
                     .beanProperty("mgr"),
-            foreignKeyProperty(Employee.MANAGER_FK, Employee.MANAGER_FK.getName(), Employee.TYPE, Employee.MGR)
+            foreignKeyProperty(Employee.MANAGER_FK, Employee.MANAGER_FK.getName())
+                    .reference(Employee.MGR, Employee.ID)
                     .beanProperty("manager"),
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.getName())
                     .updatable(false)

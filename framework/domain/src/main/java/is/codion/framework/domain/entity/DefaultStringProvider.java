@@ -15,6 +15,6 @@ final class DefaultStringProvider implements Function<Entity, String>, Serializa
 
   @Override
   public String apply(final Entity entity) {
-    return entity.getEntityType() + ": " + entity.getKey();
+    return entity.getEntityType() + ": " + entity.getPrimaryKey();
   }
 }

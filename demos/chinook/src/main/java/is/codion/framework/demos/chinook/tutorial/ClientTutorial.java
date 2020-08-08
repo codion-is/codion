@@ -80,7 +80,8 @@ public final class ClientTutorial {
               primaryKeyProperty(Album.ID),
               columnProperty(Album.ARTIST_ID)
                       .nullable(false),
-              foreignKeyProperty(Album.ARTIST_FK, "Artist", Artist.TYPE, Album.ARTIST_ID),
+              foreignKeyProperty(Album.ARTIST_FK, "Artist")
+                      .reference(Album.ARTIST_ID, Artist.ID),
               columnProperty(Album.TITLE, "Title")
                       .nullable(false).maximumLength(160))
               .keyGenerator(automatic("chinook.artist"))

@@ -114,11 +114,18 @@ public final class EmpDept extends DefaultDomain {
     /*Defining the entity Department.TYPE*/
     define(Department.TYPE,
             primaryKeyProperty(Department.ID, "Department no.")
-                    .updatable(true).nullable(false).beanProperty("id"),
+                    .updatable(true)
+                    .nullable(false)
+                    .beanProperty("id"),
             columnProperty(Department.NAME, "Department name")
-                    .preferredColumnWidth(120).maximumLength(14).nullable(false).beanProperty("name"),
+                    .preferredColumnWidth(120)
+                    .maximumLength(14)
+                    .nullable(false)
+                    .beanProperty("name"),
             columnProperty(Department.LOCATION, "Location")
-                    .preferredColumnWidth(150).maximumLength(13).beanProperty("location"))
+                    .preferredColumnWidth(150)
+                    .maximumLength(13)
+                    .beanProperty("location"))
             .smallDataset(true)
             .orderBy(orderBy().ascending(Department.NAME))
             .stringFactory(stringFactory(Department.NAME))
@@ -130,24 +137,40 @@ public final class EmpDept extends DefaultDomain {
   void employee() {
     /*Defining the entity Employee.TYPE*/
     define(Employee.TYPE,
-            primaryKeyProperty(Employee.ID, "Employee no.").beanProperty("id"),
+            primaryKeyProperty(Employee.ID, "Employee no.")
+                    .beanProperty("id"),
             columnProperty(Employee.NAME, "Name")
-                    .searchProperty(true).maximumLength(10).nullable(false).beanProperty("name"),
+                    .searchProperty(true)
+                    .maximumLength(10)
+                    .nullable(false)
+                    .beanProperty("name"),
             columnProperty(Employee.DEPARTMENT)
                     .nullable(false),
-            foreignKeyProperty(Employee.DEPARTMENT_FK, "Department", Department.TYPE, Employee.DEPARTMENT)
+            foreignKeyProperty(Employee.DEPARTMENT_FK, "Department")
+                    .reference(Employee.DEPARTMENT, Department.ID)
                     .beanProperty("department"),
-            valueListProperty(Employee.JOB, "Job", Employee.JOB_VALUES).beanProperty("job"),
+            valueListProperty(Employee.JOB, "Job", Employee.JOB_VALUES)
+                    .beanProperty("job"),
             columnProperty(Employee.SALARY, "Salary")
-                    .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2).beanProperty("salary"),
+                    .nullable(false)
+                    .minimumValue(1000)
+                    .maximumValue(10000)
+                    .maximumFractionDigits(2)
+                    .beanProperty("salary"),
             columnProperty(Employee.COMMISSION, "Commission")
-                    .minimumValue(100).maximumValue(2000).maximumFractionDigits(2).beanProperty("commission"),
+                    .minimumValue(100)
+                    .maximumValue(2000)
+                    .maximumFractionDigits(2)
+                    .beanProperty("commission"),
             columnProperty(Employee.MGR),
-            foreignKeyProperty(Employee.MGR_FK, "Manager", Employee.TYPE, Employee.MGR)
+            foreignKeyProperty(Employee.MGR_FK, "Manager")
+                    .reference(Employee.MGR, Employee.ID)
                     .beanProperty("manager"),
             columnProperty(Employee.HIREDATE, "Hiredate")
-                    .nullable(false).beanProperty("hiredate"),
-            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, "Location", Employee.DEPARTMENT_FK, Department.LOCATION)
+                    .nullable(false)
+                    .beanProperty("hiredate"),
+            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, "Location",
+                    Employee.DEPARTMENT_FK, Department.LOCATION)
                     .preferredColumnWidth(100))
             .keyGenerator(increment("scott.emp", Employee.ID.getName()))
             .orderBy(orderBy().ascending(Employee.DEPARTMENT, Employee.NAME))

@@ -25,7 +25,7 @@ import static is.codion.framework.db.condition.Conditions.condition;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.Entities.getKeys;
+import static is.codion.framework.domain.entity.Entities.getPrimaryKeys;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
@@ -93,8 +93,8 @@ public final class EntitiesTutorial {
       // create a foreign key property referencing the entity identified
       // by Artist.TYPE, via the Album.ARTIST_ID attribute
       Property.Builder<Entity> albumArtist =
-              foreignKeyProperty(Album.ARTIST_FK, "Artist", Artist.TYPE, Album.ARTIST_ID);
-
+              foreignKeyProperty(Album.ARTIST_FK, "Artist")
+                      .reference(Album.ARTIST_ID, Artist.ID);
 
       // define an entity based on the table 'chinook.album',
       // with the above properties
@@ -210,7 +210,7 @@ public final class EntitiesTutorial {
     // note that the order of the entities matters, since we can't delete
     // the artist before the album, this method deletes records in the
     // same order as the are received
-    connection.delete(getKeys(asList(album, myBand)));
+    connection.delete(getPrimaryKeys(asList(album, myBand)));
   }
 
   public static void main(final String[] args) throws DatabaseException {

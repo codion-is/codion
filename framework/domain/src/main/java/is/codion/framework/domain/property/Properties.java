@@ -6,11 +6,9 @@ package is.codion.framework.domain.property;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityType;
 
 import java.text.Collator;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import static is.codion.framework.domain.property.AuditProperty.AuditAction.INSERT;
@@ -72,29 +70,10 @@ public final class Properties {
    * Instantiates a {@link ForeignKeyProperty.Builder} instance.
    * @param attribute the attribute
    * @param caption the caption
-   * @param foreignEntityType the type of the entity referenced by this foreign key
-   * @param columnAttribute the underlying column attribute this foreign key is based on
    * @return a new {@link ForeignKeyProperty.Builder}
    */
-  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute,
-                                                              final String caption, final EntityType<?> foreignEntityType,
-                                                              final Attribute<?> columnAttribute) {
-    return foreignKeyProperty(attribute, caption, foreignEntityType, Collections.singletonList(requireNonNull(columnAttribute)));
-  }
-
-  /**
-   * Instantiates a {@link ForeignKeyProperty.Builder} instance.
-   * @param attribute the attribute
-   * @param caption the caption
-   * @param foreignEntityType the type of the entity referenced by this foreign key
-   * @param columnAttributes a List containing the underlying column {@link Attribute}s this foreign key is based on,
-   * in the same order as the primary key attributes they reference appear in the the referenced entities primary key
-   * @return a new {@link ForeignKeyProperty.Builder}
-   */
-  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute, final String caption,
-                                                              final EntityType<?> foreignEntityType,
-                                                              final List<Attribute<?>> columnAttributes) {
-    return new DefaultForeignKeyProperty(attribute, caption, foreignEntityType, columnAttributes).builder();
+  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute, final String caption) {
+    return new DefaultForeignKeyProperty(attribute, caption).builder();
   }
 
   /**
@@ -103,20 +82,20 @@ public final class Properties {
    * @param <T> the property type
    * @param attribute the attribute
    * @param caption the caption of this property
-   * @param entityAttribute the foreign key attribute from which this property gets its value
+   * @param foreignKeyAttribute the foreign key attribute from which this property gets its value
    * @param denormalizedAttribute the property from the referenced entity, from which this property gets its value
    * @return a new {@link TransientProperty.Builder}
    */
   public static <T> TransientProperty.Builder<T> denormalizedViewProperty(final Attribute<T> attribute, final String caption,
-                                                                          final Attribute<Entity> entityAttribute,
+                                                                          final Attribute<Entity> foreignKeyAttribute,
                                                                           final Attribute<T> denormalizedAttribute) {
     final DerivedProperty.Provider<T> valueProvider = sourceValues -> {
-      final Entity foreignKeyValue = sourceValues.get(entityAttribute);
+      final Entity foreignKeyValue = sourceValues.get(foreignKeyAttribute);
 
       return foreignKeyValue == null ? null : foreignKeyValue.get(denormalizedAttribute);
     };
 
-    return new DefaultDerivedProperty<>(attribute, caption, valueProvider, entityAttribute).builder();
+    return new DefaultDerivedProperty<>(attribute, caption, valueProvider, foreignKeyAttribute).builder();
   }
 
   /**

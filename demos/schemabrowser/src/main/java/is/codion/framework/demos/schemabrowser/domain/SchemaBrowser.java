@@ -18,7 +18,6 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
 import static is.codion.framework.domain.entity.StringFactory.stringFactory;
 import static is.codion.framework.domain.property.Properties.*;
-import static java.util.Arrays.asList;
 
 public final class SchemaBrowser extends DefaultDomain {
 
@@ -70,8 +69,8 @@ public final class SchemaBrowser extends DefaultDomain {
   void defineTable() {
     define(Table.TYPE, bundle.getString("t_table"),
             columnProperty(Table.SCHEMA).primaryKeyIndex(0),
-            foreignKeyProperty(Table.SCHEMA_FK, "Schema",
-                    Schema.TYPE, Table.SCHEMA),
+            foreignKeyProperty(Table.SCHEMA_FK, "Schema")
+                    .reference(Table.SCHEMA, Schema.NAME),
             primaryKeyProperty(Table.NAME, "Name").primaryKeyIndex(1))
             .orderBy(orderBy().ascending(Table.SCHEMA, Table.NAME))
             .readOnly(true)
@@ -92,8 +91,9 @@ public final class SchemaBrowser extends DefaultDomain {
     define(Column.TYPE, bundle.getString("t_column"),
             columnProperty(Column.SCHEMA).primaryKeyIndex(0),
             columnProperty(Column.TABLE_NAME).primaryKeyIndex(1),
-            foreignKeyProperty(Column.TABLE_FK, "Table", Table.TYPE,
-                    asList(Column.SCHEMA, Column.TABLE_NAME)),
+            foreignKeyProperty(Column.TABLE_FK, "Table")
+                    .reference(Column.SCHEMA, Table.SCHEMA)
+                    .reference(Column.TABLE_NAME, Table.NAME),
             primaryKeyProperty(Column.NAME, "Column name").primaryKeyIndex(2),
             columnProperty(Column.DATA_TYPE, "Data type"))
             .orderBy(orderBy().ascending(Column.SCHEMA, Column.TABLE_NAME, Column.NAME))
@@ -115,8 +115,9 @@ public final class SchemaBrowser extends DefaultDomain {
     define(Constraint.TYPE, bundle.getString("t_constraint"),
             columnProperty(Constraint.SCHEMA).primaryKeyIndex(0),
             columnProperty(Constraint.TABLE_NAME).primaryKeyIndex(1),
-            foreignKeyProperty(Constraint.TABLE_FK, "Table", Table.TYPE,
-                    asList(Constraint.SCHEMA, Constraint.TABLE_NAME)),
+            foreignKeyProperty(Constraint.TABLE_FK, "Table")
+                    .reference(Constraint.SCHEMA, Table.SCHEMA)
+                    .reference(Constraint.TABLE_NAME, Table.NAME),
             primaryKeyProperty(Constraint.NAME, "Constraint name").primaryKeyIndex(2),
             columnProperty(Constraint.CONSTRAINT_TYPE, "Type"))
             .orderBy(orderBy().ascending(Constraint.SCHEMA, Constraint.TABLE_NAME, Constraint.NAME))
@@ -140,8 +141,10 @@ public final class SchemaBrowser extends DefaultDomain {
             columnProperty(ColumnConstraint.SCHEMA).primaryKeyIndex(0),
             columnProperty(ColumnConstraint.TABLE_NAME).primaryKeyIndex(1),
             columnProperty(ColumnConstraint.CONSTRAINT_NAME).primaryKeyIndex(2),
-            foreignKeyProperty(ColumnConstraint.CONSTRAINT_FK, "Constraint", Constraint.TYPE,
-                    asList(ColumnConstraint.SCHEMA, ColumnConstraint.TABLE_NAME, ColumnConstraint.CONSTRAINT_NAME)),
+            foreignKeyProperty(ColumnConstraint.CONSTRAINT_FK, "Constraint")
+                    .reference(ColumnConstraint.SCHEMA, Constraint.SCHEMA)
+                    .reference(ColumnConstraint.TABLE_NAME, Constraint.TABLE_NAME)
+                    .reference(ColumnConstraint.CONSTRAINT_NAME, Constraint.NAME),
             columnProperty(ColumnConstraint.COLUMN_NAME, "Column name"),
             columnProperty(ColumnConstraint.POSITION, "Position"))
             .orderBy(orderBy().ascending(ColumnConstraint.SCHEMA, ColumnConstraint.TABLE_NAME, ColumnConstraint.CONSTRAINT_NAME))

@@ -177,7 +177,7 @@ public class DomainTest {
   public void getUpdatableProperties() {
     final EntityDefinition definition = entities.getDefinition(Detail.TYPE);
     final List<Property<?>> properties = definition.getUpdatableProperties();
-    assertEquals(9, properties.size());
+    assertEquals(10, properties.size());
     assertFalse(properties.contains(definition.getProperty(Detail.MASTER_NAME)));
     assertFalse(properties.contains(definition.getProperty(Detail.MASTER_CODE)));
     assertFalse(properties.contains(definition.getProperty(Detail.INT_DERIVED)));
@@ -210,7 +210,7 @@ public class DomainTest {
             Properties.primaryKeyProperty(attribute2).primaryKeyIndex(1),
             Properties.primaryKeyProperty(attribute3).primaryKeyIndex(2).nullable(true));
 
-    final Key key = entities.key(entityType);
+    final Key key = entities.primaryKey(entityType);
     assertEquals(0, key.hashCode());
     assertTrue(key.isCompositeKey());
     assertTrue(key.isNull());
@@ -246,19 +246,19 @@ public class DomainTest {
     assertTrue(key.isNotNull());
     assertEquals(43, key.hashCode());
 
-    assertThrows(NullPointerException.class, () -> entities.key(null));
+    assertThrows(NullPointerException.class, () -> entities.primaryKey(null));
 
-    final Key noPk = entities.key(TestDomain.T_NO_PK);
+    final Key noPk = entities.primaryKey(TestDomain.T_NO_PK);
     assertThrows(IllegalArgumentException.class, () -> noPk.put(TestDomain.NO_PK_COL1, 1));
     assertThrows(IllegalArgumentException.class, () -> noPk.get(TestDomain.NO_PK_COL1));
   }
 
    @Test
    public void keys() {
-    final List<Key> intKeys = entities.keys(Employee.TYPE, 1, 2, 3, 4);
+    final List<Key> intKeys = entities.primaryKeys(Employee.TYPE, 1, 2, 3, 4);
     assertEquals(4, intKeys.size());
     assertEquals(Integer.valueOf(3), intKeys.get(2).get());
-    final List<Key> longKeys = entities.keys(Detail.TYPE, 1L, 2L, 3L, 4L);
+    final List<Key> longKeys = entities.primaryKeys(Detail.TYPE, 1L, 2L, 3L, 4L);
     assertEquals(4, longKeys.size());
     assertEquals(Long.valueOf(3), longKeys.get(2).get());
    }
@@ -287,7 +287,7 @@ public class DomainTest {
 
   @Test
   public void entity() {
-    final Key key = entities.key(Master.TYPE, 10L);
+    final Key key = entities.primaryKey(Master.TYPE, 10L);
 
     final Entity master = entities.entity(key);
     assertEquals(Master.TYPE, master.getEntityType());
@@ -335,7 +335,7 @@ public class DomainTest {
     List<ForeignKeyProperty> foreignKeyProperties = definition.getForeignKeyReferences(Employee.TYPE);
     assertEquals(0, foreignKeyProperties.size());
     foreignKeyProperties = definition.getForeignKeyReferences(Master.TYPE);
-    assertEquals(1, foreignKeyProperties.size());
+    assertEquals(2, foreignKeyProperties.size());
     assertTrue(foreignKeyProperties.contains(definition.getProperty(Detail.MASTER_FK)));
   }
 
@@ -500,11 +500,13 @@ public class DomainTest {
     assertThrows(IllegalArgumentException.class, () -> {
       final EntityType<Entity> entityType = DOMAIN.entityType("test.entity");
       final Attribute<Integer> fkId = entityType.attribute("fk_id", Integer.class);
+      final EntityType<Entity> referencedEntityType = DOMAIN.entityType("test.referenced_entity");
+      final Attribute<Integer> refId = referencedEntityType.attribute("id", Integer.class);
       domain.define(entityType,
               Properties.primaryKeyProperty(entityType.attribute("id", Integer.class)),
               Properties.columnProperty(fkId),
-              Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption",
-                      DOMAIN.entityType("test.referenced_entity"), fkId));
+              Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption")
+                      .reference(fkId, refId));
     });
   }
 
@@ -513,11 +515,13 @@ public class DomainTest {
     domain.setStrictForeignKeys(false);
     final EntityType<Entity> entityType = DOMAIN.entityType("test.entity");
     final Attribute<Integer> fkId = entityType.attribute("fk_id", Integer.class);
+    final EntityType<Entity> referencedEntityType = DOMAIN.entityType("test.referenced_entity");
+    final Attribute<Integer> refId = referencedEntityType.attribute("id", Integer.class);
     domain.define(entityType,
             Properties.primaryKeyProperty(entityType.attribute("id", Integer.class)),
             Properties.columnProperty(fkId),
-            Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption",
-                    DOMAIN.entityType("test.referenced_entity"), fkId));
+            Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption")
+                    .reference(fkId, refId));
     domain.setStrictForeignKeys(true);
   }
 

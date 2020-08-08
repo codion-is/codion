@@ -140,6 +140,6 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
     }
     final DefaultEntityType<?> that = (DefaultEntityType<?>) object;
 
-    return name.equals(that.name) && domainName.equals(that.domainName);
+    return hashCode == that.hashCode && name.equals(that.name) && domainName.equals(that.domainName);
   }
 }

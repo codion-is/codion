@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -99,17 +100,17 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Key getKey() {
+  public Key getPrimaryKey() {
     if (key == null) {
-      key = initializeKey(false);
+      key = initializePrimaryKey(false);
     }
 
     return key;
   }
 
   @Override
-  public Key getOriginalKey() {
-    return initializeKey(true);
+  public Key getOriginalPrimaryKey() {
+    return initializePrimaryKey(true);
   }
 
   @Override
@@ -172,11 +173,8 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public void clearKeyValues() {
-    final List<Attribute<?>> primaryKeyAttributes = definition.getPrimaryKeyAttributes();
-    for (int i = 0; i < primaryKeyAttributes.size(); i++) {
-      remove(primaryKeyAttributes.get(i));
-    }
+  public void clearPrimaryKeyValues() {
+    definition.getPrimaryKeyAttributes().forEach(this::remove);
     this.key = null;
   }
 
@@ -272,7 +270,7 @@ final class DefaultEntity implements Entity, Serializable {
    */
   @Override
   public boolean equals(final Object obj) {
-    return this == obj || obj instanceof Entity && getKey().equals(((Entity) obj).getKey());
+    return this == obj || obj instanceof Entity && getPrimaryKey().equals(((Entity) obj).getPrimaryKey());
   }
 
   /**
@@ -290,7 +288,7 @@ final class DefaultEntity implements Entity, Serializable {
    */
   @Override
   public int hashCode() {
-    return getKey().hashCode();
+    return getPrimaryKey().hashCode();
   }
 
   /**
@@ -342,14 +340,15 @@ final class DefaultEntity implements Entity, Serializable {
   public boolean isForeignKeyNull(final Attribute<Entity> foreignKeyAttribute) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     final ForeignKeyProperty foreignKeyProperty = definition.getForeignKeyProperty(foreignKeyAttribute);
-    final List<Attribute<?>> attributes = foreignKeyProperty.getColumnAttributes();
-    if (attributes.size() == 1) {
-      return isNull(attributes.get(0));
+    final List<ForeignKeyProperty.Reference<?>> references = foreignKeyProperty.getReferences();
+    if (references.size() == 1) {
+      return isNull(references.get(0).getAttribute());
     }
-    final List<ColumnProperty<?>> foreignProperties =
-            definition.getForeignDefinition(foreignKeyProperty.getAttribute()).getPrimaryKeyProperties();
-    for (int i = 0; i < attributes.size(); i++) {
-      if (!foreignProperties.get(i).isNullable() && isNull(attributes.get(i))) {
+    final EntityDefinition foreignDefinition = definition.getForeignDefinition(foreignKeyProperty.getAttribute());
+    for (int i = 0; i < references.size(); i++) {
+      final ForeignKeyProperty.Reference<?> reference = references.get(i);
+      final ColumnProperty<?> referencedProperty = foreignDefinition.getColumnProperty(reference.getReferencedAttribute());
+      if (!referencedProperty.isNullable() && isNull(reference.getAttribute())) {
         return true;
       }
     }
@@ -368,7 +367,6 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> T get(final Property<T> property) {
-    requireNonNull(property, "property");
     if (property instanceof DerivedProperty) {
       return getDerivedValue((DerivedProperty<T>) property);
     }
@@ -475,12 +473,10 @@ final class DefaultEntity implements Entity, Serializable {
     for (final ForeignKeyProperty foreignKeyProperty : propertyForeignKeyProperties) {
       final Entity foreignKeyEntity = get(foreignKeyProperty);
       if (foreignKeyEntity != null) {
-        final Key referencedKey = foreignKeyEntity.getKey();
-        final Attribute<T> keyAttribute = (Attribute<T>) referencedKey.getAttributes()
-                .get(foreignKeyProperty.getColumnAttributes().indexOf(attribute));
+        final ForeignKeyProperty.Reference<T> reference = foreignKeyProperty.getReference(attribute);
         //if the value isn't equal to the value in the foreign key,
         //that foreign key reference is invalid and is removed
-        if (!Objects.equals(value, referencedKey.get(keyAttribute))) {
+        if (!Objects.equals(value, foreignKeyEntity.get(reference.getReferencedAttribute()))) {
           remove(foreignKeyProperty.getAttribute());
           removeCachedReferencedKey(foreignKeyProperty.getAttribute());
         }
@@ -498,12 +494,12 @@ final class DefaultEntity implements Entity, Serializable {
    */
   private void setForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     removeCachedReferencedKey(foreignKeyProperty.getAttribute());
-    final List<ColumnProperty<?>> columnProperties = definition.getColumnProperties(foreignKeyProperty);
-    final List<Attribute<?>> referencedAttributes = definition.getForeignDefinition(foreignKeyProperty.getAttribute()).getPrimaryKeyAttributes();
-    for (int i = 0; i < columnProperties.size(); i++) {
-      final Property<Object> columnProperty = (Property<Object>) columnProperties.get(i);
-      if (!foreignKeyProperty.isReadOnly(columnProperty.getAttribute())) {
-        putInternal(columnProperty, referencedEntity == null ? null : referencedEntity.get(referencedAttributes.get(i)));
+    final List<ForeignKeyProperty.Reference<?>> references = foreignKeyProperty.getReferences();
+    for (int i = 0; i < references.size(); i++) {
+      final ForeignKeyProperty.Reference<?> reference = references.get(i);
+      if (!reference.isReadOnly()) {
+        final Property<Object> columnProperty = definition.getColumnProperty((Attribute<Object>) reference.getAttribute());
+        putInternal(columnProperty, referencedEntity == null ? null : referencedEntity.get(reference.getReferencedAttribute()));
       }
     }
   }
@@ -531,43 +527,50 @@ final class DefaultEntity implements Entity, Serializable {
    * @return the referenced primary key or null if a valid key can not be created (null values for non-nullable properties)
    */
   private Key initializeAndCacheReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
-    if (foreignKeyProperty.getColumnAttributes().size() > 1) {
-      return initializeAndCacheCompositeReferenceKey(foreignKeyProperty);
+    final EntityDefinition foreignEntityDefinition = definition.getForeignDefinition(foreignKeyProperty.getAttribute());
+    final List<ForeignKeyProperty.Reference<?>> references = foreignKeyProperty.getReferences();
+    if (references.size() > 1) {
+      return initializeAndCacheCompositeReferenceKey(foreignKeyProperty, references, foreignEntityDefinition);
     }
 
-    return initializeAndCacheSingleReferenceKey(foreignKeyProperty);
+    return initializeAndCacheSingleReferenceKey(foreignKeyProperty, references.get(0), foreignEntityDefinition);
   }
 
-  private Key initializeAndCacheCompositeReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
-    final EntityDefinition foreignEntityDefinition = definition.getForeignDefinition(foreignKeyProperty.getAttribute());
-    if (!foreignEntityDefinition.hasPrimaryKey()) {
-      throw new IllegalArgumentException("Entity '" + foreignEntityDefinition.getEntityType() + "' has no primary key defined");
-    }
-    final List<ColumnProperty<?>> columnProperties = definition.getColumnProperties(foreignKeyProperty);
-    final List<ColumnProperty<?>> referencedProperties = foreignEntityDefinition.getPrimaryKeyProperties();
-    final Map<Attribute<?>, Object> keyValues = new HashMap<>(columnProperties.size());
-    for (int i = 0; i < columnProperties.size(); i++) {
-      final ColumnProperty<?> columnProperty = columnProperties.get(i);
-      final ColumnProperty<?> referencedProperty = referencedProperties.get(i);
-      final Object value = values.get(columnProperty.getAttribute());
+  private Key initializeAndCacheCompositeReferenceKey(final ForeignKeyProperty foreignKeyProperty,
+                                                      final List<ForeignKeyProperty.Reference<?>> references,
+                                                      final EntityDefinition foreignEntityDefinition) {
+    final List<Attribute<?>> referencedAttributes = new ArrayList<>(references.size());
+    final Map<Attribute<?>, Object> keyValues = new HashMap<>(references.size());
+    for (int i = 0; i < references.size(); i++) {
+      final ForeignKeyProperty.Reference<?> reference = references.get(i);
+      final ColumnProperty<?> referencedProperty = foreignEntityDefinition.getColumnProperty(reference.getReferencedAttribute());
+      final Object value = values.get(reference.getAttribute());
       if (value == null && !referencedProperty.isNullable()) {
         return null;
       }
-      keyValues.put(referencedProperty.getAttribute(), value);
+      referencedAttributes.add(reference.getReferencedAttribute());
+      keyValues.put(reference.getReferencedAttribute(), value);
     }
+    final Set<Attribute<?>> attributes = keyValues.keySet();
+    final List<Attribute<?>> primaryKeyAttributes = foreignEntityDefinition.getPrimaryKeyAttributes();
+    final boolean primaryKey = attributes.size() == primaryKeyAttributes.size() && attributes.containsAll(primaryKeyAttributes);
 
-    return cacheReferencedKey(foreignKeyProperty.getAttribute(), new DefaultKey(foreignEntityDefinition, keyValues));
+    return cacheReferencedKey(foreignKeyProperty.getAttribute(), new DefaultKey(foreignEntityDefinition, keyValues, primaryKey));
   }
 
-  private Key initializeAndCacheSingleReferenceKey(final ForeignKeyProperty foreignKeyProperty) {
-    final List<Attribute<?>> columnAttributes = foreignKeyProperty.getColumnAttributes();
-    final Object value = values.get(columnAttributes.get(0));
+  private Key initializeAndCacheSingleReferenceKey(final ForeignKeyProperty foreignKeyProperty,
+                                                   final ForeignKeyProperty.Reference<?> reference,
+                                                   final EntityDefinition foreignEntityDefinition) {
+    final Object value = values.get(reference.getAttribute());
     if (value == null) {
       return null;
     }
 
+    final boolean primaryKey = reference.getAttribute().equals(foreignEntityDefinition.getPrimaryKeyAttributes().get(0));
+
     return cacheReferencedKey(foreignKeyProperty.getAttribute(),
-            new DefaultKey(definition.getForeignDefinition(foreignKeyProperty.getAttribute()), value));
+            new DefaultKey(definition.getForeignDefinition(foreignKeyProperty.getAttribute()),
+                    reference.getReferencedAttribute(), value, primaryKey));
   }
 
   private Key cacheReferencedKey(final Attribute<Entity> foreignKeyAttribute, final Key referencedPrimaryKey) {
@@ -601,9 +604,9 @@ final class DefaultEntity implements Entity, Serializable {
    * @param originalValues if true then the original values of the properties involved are used
    * @return a Key based on the values in this Entity instance
    */
-  private Key initializeKey(final boolean originalValues) {
+  private Key initializePrimaryKey(final boolean originalValues) {
     if (!definition.hasPrimaryKey()) {
-      return new DefaultKey(definition);
+      return new DefaultKey(definition, emptyList(), true);
     }
     final List<Attribute<?>> primaryKeyAttributes = definition.getPrimaryKeyAttributes();
     if (primaryKeyAttributes.size() > 1) {
@@ -613,10 +616,12 @@ final class DefaultEntity implements Entity, Serializable {
         keyValues.put(attribute, originalValues ? getOriginal(attribute) : values.get(attribute));
       }
 
-      return new DefaultKey(definition, keyValues);
+      return new DefaultKey(definition, keyValues, true);
     }
 
-    return new DefaultKey(definition, originalValues ? getOriginal(primaryKeyAttributes.get(0)) : values.get(primaryKeyAttributes.get(0)));
+    final Attribute<?> attribute = primaryKeyAttributes.get(0);
+
+    return new DefaultKey(definition, attribute, originalValues ? getOriginal(attribute) : values.get(attribute), true);
   }
 
   private <T> T getDerivedValue(final DerivedProperty<T> derivedProperty) {
@@ -756,10 +761,9 @@ final class DefaultEntity implements Entity, Serializable {
 
   private static Map<Attribute<?>, Object> createValueMap(final Key key) {
     requireNonNull(key, "key");
-    final List<Attribute<?>> attributes = key.getAttributes();
+    final Collection<Attribute<?>> attributes = key.getAttributes();
     final Map<Attribute<?>, Object> values = new HashMap<>(attributes.size());
-    for (int i = 0; i < attributes.size(); i++) {
-      final Attribute<?> attribute = attributes.get(i);
+    for (final Attribute<?> attribute : attributes) {
       values.put(attribute, key.get(attribute));
     }
 

@@ -110,8 +110,8 @@ public final class Petstore extends DefaultDomain {
                     .columnName("productid"),
             columnProperty(Product.CATEGORY_ID)
                     .columnName("categoryid").nullable(false),
-            foreignKeyProperty(Product.CATEGORY_FK, Product.CATEGORY_FK.getName(),
-                    Category.TYPE, Product.CATEGORY_ID),
+            foreignKeyProperty(Product.CATEGORY_FK, Product.CATEGORY_FK.getName())
+                    .reference(Product.CATEGORY_ID, Category.ID),
             columnProperty(Product.NAME, Product.NAME.getName())
                     .columnName("name").maximumLength(25).nullable(false),
             columnProperty(Product.DESCRIPTION, Product.DESCRIPTION.getName())
@@ -161,8 +161,8 @@ public final class Petstore extends DefaultDomain {
     Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
     Attribute<String> IMAGE_THUMB_URL = TYPE.stringAttribute("Image thumbnail URL");
     Attribute<BigDecimal> PRICE = TYPE.bigDecimalAttribute("Price");
-    Attribute<Integer> C0NTACT_INFO_ID = TYPE.integerAttribute("Contactinfo id");
-    Attribute<Entity> C0NTACT_INFO_FK = TYPE.entityAttribute("Contact info");
+    Attribute<Integer> CONTACT_INFO_ID = TYPE.integerAttribute("Contactinfo id");
+    Attribute<Entity> CONTACT_INFO_FK = TYPE.entityAttribute("Contact info");
     Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("Address id");
     Attribute<Entity> ADDRESS_FK = TYPE.entityAttribute("Address");
     Attribute<Boolean> DISABLED = TYPE.booleanAttribute("Disabled");
@@ -174,8 +174,8 @@ public final class Petstore extends DefaultDomain {
                     .columnName("itemid"),
             columnProperty(Item.PRODUCT_ID)
                     .columnName("productid").nullable(false),
-            foreignKeyProperty(Item.PRODUCT_FK, Item.PRODUCT_FK.getName(),
-                    Product.TYPE, Item.PRODUCT_ID)
+            foreignKeyProperty(Item.PRODUCT_FK, Item.PRODUCT_FK.getName())
+                    .reference(Item.PRODUCT_ID, Product.ID)
                     .fetchDepth(2),
             columnProperty(Item.NAME, Item.NAME.getName())
                     .columnName("name").maximumLength(30).nullable(false),
@@ -187,14 +187,14 @@ public final class Petstore extends DefaultDomain {
                     .columnName("imagethumburl").maximumLength(55).hidden(true),
             columnProperty(Item.PRICE, Item.PRICE.getName())
                     .columnName("price").nullable(false).maximumFractionDigits(2),
-            columnProperty(Item.C0NTACT_INFO_ID).columnName("contactinfo_contactinfoid")
+            columnProperty(Item.CONTACT_INFO_ID).columnName("contactinfo_contactinfoid")
                     .nullable(false),
-            foreignKeyProperty(Item.C0NTACT_INFO_FK, Item.C0NTACT_INFO_FK.getName(),
-                    SellerContactInfo.TYPE, Item.C0NTACT_INFO_ID),
+            foreignKeyProperty(Item.CONTACT_INFO_FK, Item.CONTACT_INFO_FK.getName())
+                    .reference(Item.CONTACT_INFO_ID, SellerContactInfo.ID),
             columnProperty(Item.ADDRESS_ID).columnName("address_addressid")
                     .nullable(false),
-            foreignKeyProperty(Item.ADDRESS_FK, "Address",
-                    Address.TYPE, Item.ADDRESS_ID),
+            foreignKeyProperty(Item.ADDRESS_FK, "Address")
+                    .reference(Item.ADDRESS_ID, Address.ID),
             booleanProperty(Item.DISABLED, Item.DISABLED.getName(), Integer.class, 1, 0)
                     .columnName("disabled").defaultValue(false))
             .keyGenerator(increment("petstore.item", "itemid"))
@@ -239,13 +239,12 @@ public final class Petstore extends DefaultDomain {
     define(TagItem.TYPE, "petstore.tag_item",
             columnProperty(TagItem.ITEM_ID)
                     .columnName("itemid").primaryKeyIndex(0),
-            foreignKeyProperty(TagItem.ITEM_FK, TagItem.ITEM_FK.getName(),
-                    Item.TYPE, TagItem.ITEM_ID),
+            foreignKeyProperty(TagItem.ITEM_FK, TagItem.ITEM_FK.getName())
+                    .reference(TagItem.ITEM_ID, Item.ID),
             columnProperty(TagItem.TAG_ID)
                     .columnName("tagid").primaryKeyIndex(1),
-            foreignKeyProperty(TagItem.TAG_FK, TagItem.TAG_FK.getName(),
-                    Tag.TYPE, TagItem.TAG_ID)
-                    .nullable(false))
+            foreignKeyProperty(TagItem.TAG_FK, TagItem.TAG_FK.getName())
+                    .reference(TagItem.TAG_ID, Tag.ID))
             .stringFactory(stringFactory(TagItem.ITEM_FK)
                     .text(" - ").value(TagItem.TAG_FK))
             .caption("Item tags");
