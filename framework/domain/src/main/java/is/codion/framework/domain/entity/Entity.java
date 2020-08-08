@@ -175,7 +175,7 @@ public interface Entity extends Comparable<Entity> {
    * Clears the primary key values from this entity,
    * current as well as original values if any
    */
-  void clearKeyValues();
+  void clearPrimaryKeyValues();
 
   /**
    * @param entity the entity to compare to
@@ -200,17 +200,17 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Returns the primary key of this entity.
-   * If the entity has no primary key attribute defined, this key contains not values.
+   * If the entity has no primary key attribute defined, this key contains no values.
    * @return the primary key of this entity
    */
-  Key getKey();
+  Key getPrimaryKey();
 
   /**
    * Returns the primary key of this entity, in its original state.
-   * If the entity has no primary key attributes defined, this key contains not values.
+   * If the entity has no primary key attributes defined, this key contains no values.
    * @return the primary key of this entity in its original state
    */
-  Key getOriginalKey();
+  Key getOriginalPrimaryKey();
 
   /**
    * @return an unmodifiable view of the entries in this Entity

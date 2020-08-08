@@ -371,12 +371,6 @@ public interface EntityDefinition {
   <T> List<ForeignKeyProperty> getForeignKeyProperties(Attribute<T> columnAttribute);
 
   /**
-   * @param foreignKeyProperty the foreign key property
-   * @return the column properties the given foreign key is based on
-   */
-  List<ColumnProperty<?>> getColumnProperties(ForeignKeyProperty foreignKeyProperty);
-
-  /**
    * Returns the color provider, never null
    * @return the color provider
    */
@@ -421,7 +415,7 @@ public interface EntityDefinition {
    * Creates a new {@link Key} instance based on this definition
    * @return a new {@link Key} instance
    */
-  Key key();
+  Key primaryKey();
 
   /**
    * Creates a new {@link Key} instance based on this definition, initialised with the given value
@@ -430,7 +424,7 @@ public interface EntityDefinition {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Key key(Integer value);
+  Key primaryKey(Integer value);
 
   /**
    * Creates a new {@link Key} instance based on this definition, initialised with the given value
@@ -439,7 +433,7 @@ public interface EntityDefinition {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Key key(Long value);
+  Key primaryKey(Long value);
 
   /**
    * Returns the Attribute for the getter this method represents in the {@link EntityType#getEntityClass()},

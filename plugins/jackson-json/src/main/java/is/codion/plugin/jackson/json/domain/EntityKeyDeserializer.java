@@ -3,6 +3,7 @@
  */
 package is.codion.plugin.jackson.json.domain;
 
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -39,13 +41,16 @@ final class EntityKeyDeserializer extends StdDeserializer<Key> {
     final EntityType<?> entityType = entities.getDomainType().entityType(node.get("entityType").asText());
     final EntityDefinition definition = entities.getDefinition(entityType);
     final JsonNode values = node.get("values");
-    final Key key = entities.key(entityType);
+    final Map<Attribute<?>, Object> valueMap = new HashMap<>();
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
       final ColumnProperty<Object> property = definition.getColumnProperty(definition.getAttribute(field.getKey()));
-      key.put(property.getAttribute(), EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), field.getValue()));
+      valueMap.put(property.getAttribute(), EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), field.getValue()));
     }
+
+    final Key key = entities.primaryKey(entityType);
+    valueMap.forEach((attribute, value) -> key.put((Attribute<Object>) attribute, value));
 
     return key;
   }

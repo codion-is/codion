@@ -104,6 +104,7 @@ is.codion.framework.domain.entity.DefaultAttribute
 is.codion.framework.domain.property.DefaultColumnProperty
 is.codion.framework.domain.property.DefaultDerivedProperty
 is.codion.framework.domain.property.DefaultForeignKeyProperty
+is.codion.framework.domain.property.DefaultForeignKeyProperty$DefaultReference
 is.codion.framework.domain.property.DefaultProperty
 is.codion.framework.domain.property.DefaultProperty$DefaultValueSupplier
 is.codion.framework.domain.property.DefaultProperty$NullDefaultValueSupplier

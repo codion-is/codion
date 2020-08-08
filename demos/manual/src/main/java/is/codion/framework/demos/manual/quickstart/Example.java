@@ -101,7 +101,7 @@ public final class Example {
     public interface CustomerAddress {
       EntityType<Entity> TYPE = DOMAIN.entityType("store.customer_address");
       Attribute<Integer> ID = TYPE.integerAttribute("id");
-      Attribute<Integer> CUSTOMER_ID = TYPE.integerAttribute("customer_id");
+      Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
       Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
       Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("address_id");
       Attribute<Entity> ADDRESS_FK = TYPE.entityAttribute("address_fk");
@@ -112,12 +112,12 @@ public final class Example {
               primaryKeyProperty(CustomerAddress.ID),
               columnProperty(CustomerAddress.CUSTOMER_ID)
                       .nullable(false),
-              foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer",
-                      Customer.TYPE, CustomerAddress.CUSTOMER_ID),
+              foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer")
+                      .reference(CustomerAddress.CUSTOMER_ID, Customer.ID),
               columnProperty(CustomerAddress.ADDRESS_ID)
                       .nullable(false),
-              foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address",
-                      Address.TYPE, CustomerAddress.ADDRESS_ID))
+              foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address")
+                      .reference(CustomerAddress.ADDRESS_ID, Address.ID))
               .keyGenerator(automatic("store.customer_address"))
               .caption("Customer address");
     }
@@ -272,7 +272,7 @@ public final class Example {
 
     connection.update(customer);
 
-    connection.delete(customerAddress.getKey());
+    connection.delete(customerAddress.getPrimaryKey());
     // end::persist[]
   }
 }

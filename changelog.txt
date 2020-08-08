@@ -6391,3 +6391,6 @@
   ReportException, added overloaded constructor with message and cause
   ClassPathJRReport.loadReport() exception improved
 0.16.8
+  ForeignKeyProperty.Reference added, ForeignKeyProperty no longer depends on primary key of referenced entity, ForeignKeyProperty and related classes refactored
+  Entity.getKey() renamed getPrimaryKey(), Entities.key() and mapToKey() renamed primaryKey() and mapToPrimaryKey() respectively
+  Key.isPrimaryKey() added

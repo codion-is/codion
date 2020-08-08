@@ -67,7 +67,7 @@ public interface Entities {
    * @param entityType the entityType
    * @return a new {@link Key} instance
    */
-  Key key(EntityType<?> entityType);
+  Key primaryKey(EntityType<?> entityType);
 
   /**
    * Creates a new {@link Key} instance with the given entityType, initialised with the given value
@@ -77,7 +77,7 @@ public interface Entities {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Key key(EntityType<?> entityType, Integer value);
+  Key primaryKey(EntityType<?> entityType, Integer value);
 
   /**
    * Creates a new {@link Key} instance with the given entityType, initialised with the given value
@@ -87,7 +87,7 @@ public interface Entities {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or value is null
    */
-  Key key(EntityType<?> entityType, Long value);
+  Key primaryKey(EntityType<?> entityType, Long value);
 
   /**
    * Creates new {@link Key} instances with the given entityType, initialised with the given values
@@ -97,7 +97,7 @@ public interface Entities {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or values is null
    */
-  List<Key> keys(EntityType<?> entityType, Integer... values);
+  List<Key> primaryKeys(EntityType<?> entityType, Integer... values);
 
   /**
    * Creates new {@link Key} instances with the given entityType, initialised with the given values
@@ -107,7 +107,7 @@ public interface Entities {
    * @throws IllegalArgumentException in case the given primary key is a composite key
    * @throws NullPointerException in case entityType or values is null
    */
-  List<Key> keys(EntityType<?> entityType, Long... values);
+  List<Key> primaryKeys(EntityType<?> entityType, Long... values);
 
   /**
    * Copies the given entities, with new copied instances of all foreign key value entities.
@@ -158,8 +158,8 @@ public interface Entities {
    */
   static boolean isEntityNew(final Entity entity) {
     requireNonNull(entity);
-    final Key key = entity.getKey();
-    final Key originalKey = entity.getOriginalKey();
+    final Key key = entity.getPrimaryKey();
+    final Key originalKey = entity.getOriginalPrimaryKey();
 
     return key.isNull() || originalKey.isNull();
   }
@@ -171,7 +171,7 @@ public interface Entities {
    */
   static boolean isKeyModified(final Collection<Entity> entities) {
     return requireNonNull(entities).stream().anyMatch(entity ->
-            entity.getKey().getAttributes().stream().anyMatch(entity::isModified));
+            entity.getPrimaryKey().getAttributes().stream().anyMatch(entity::isModified));
   }
 
   /**
@@ -212,21 +212,21 @@ public interface Entities {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
    */
-  static List<Key> getKeys(final List<? extends Entity> entities) {
+  static List<Key> getPrimaryKeys(final List<? extends Entity> entities) {
     requireNonNull(entities, "entities");
     final List<Key> keys = new ArrayList<>(entities.size());
     for (int i = 0; i < entities.size(); i++) {
-      keys.add(entities.get(i).getKey());
+      keys.add(entities.get(i).getPrimaryKey());
     }
 
     return keys;
   }
 
   /**
-   * Returns the primary keys of the entities referenced by the given entities via the given foreign key
+   * Returns the keys referenced by the given foreign key
    * @param entities the entities
    * @param foreignKeyAttribute the foreign key attribute
-   * @return the primary keys of the referenced entities
+   * @return the keys referenced by the given foreign key
    */
   static Set<Key> getReferencedKeys(final List<? extends Entity> entities, final Attribute<Entity> foreignKeyAttribute) {
     final Set<Key> keySet = new HashSet<>();
@@ -245,11 +245,11 @@ public interface Entities {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities with their original values
    */
-  static List<Key> getOriginalKeys(final List<? extends Entity> entities) {
+  static List<Key> getOriginalPrimaryKeys(final List<? extends Entity> entities) {
     requireNonNull(entities, "entities");
     final List<Key> keys = new ArrayList<>(entities.size());
     for (int i = 0; i < entities.size(); i++) {
-      keys.add(entities.get(i).getOriginalKey());
+      keys.add(entities.get(i).getOriginalPrimaryKey());
     }
 
     return keys;
@@ -323,7 +323,7 @@ public interface Entities {
     requireNonNull(entities, "entities");
     final Map<Key, T> previousValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
-      previousValues.put(entity.getKey(), entity.put(attribute, value));
+      previousValues.put(entity.getPrimaryKey(), entity.put(attribute, value));
     }
 
     return previousValues;
@@ -334,12 +334,12 @@ public interface Entities {
    * @param entities the entities to map
    * @return the mapped entities
    */
-  static Map<Key, Entity> mapToKey(final List<Entity> entities) {
+  static Map<Key, Entity> mapToPrimaryKey(final List<Entity> entities) {
     requireNonNull(entities, "entities");
     final Map<Key, Entity> entityMap = new HashMap<>();
     for (int i = 0; i < entities.size(); i++) {
       final Entity entity = entities.get(i);
-      entityMap.put(entity.getKey(), entity);
+      entityMap.put(entity.getPrimaryKey(), entity);
     }
 
     return entityMap;

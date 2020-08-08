@@ -425,7 +425,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       }
     }
     else if (object instanceof Entity) {
-      stringBuilder.append(((Entity) object).getKey());
+      stringBuilder.append(((Entity) object).getPrimaryKey());
     }
     else {
       stringBuilder.append(object);

@@ -425,7 +425,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   @Override
   public final Entity getEntityByKey(final Key primaryKey) {
-    return getVisibleItems().stream().filter(entity -> entity.getKey().equals(primaryKey)).findFirst().orElse(null);
+    return getVisibleItems().stream().filter(entity -> entity.getPrimaryKey().equals(primaryKey)).findFirst().orElse(null);
   }
 
   @Override
@@ -455,7 +455,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
 
   @Override
   public final void replaceEntities(final List<Entity> entities) {
-    replaceEntitiesByKey(Entities.mapToKey(entities));
+    replaceEntitiesByKey(Entities.mapToPrimaryKey(entities));
   }
 
   @Override
@@ -505,7 +505,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
     final List<Key> keyList = new ArrayList<>(keys);
     final List<Integer> indexes = new ArrayList<>();
     for (final Entity visibleEntity : getVisibleItems()) {
-      final int index = keyList.indexOf(visibleEntity.getKey());
+      final int index = keyList.indexOf(visibleEntity.getPrimaryKey());
       if (index >= 0) {
         indexes.add(indexOf(visibleEntity));
         keyList.remove(index);
@@ -521,7 +521,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final Collection<Entity> getEntitiesByKey(final Collection<Key> keys) {
     requireNonNull(keys, "keys");
-    return getItems().stream().filter(entity -> keys.contains(entity.getKey())).collect(Collectors.toList());
+    return getItems().stream().filter(entity -> keys.contains(entity.getPrimaryKey())).collect(Collectors.toList());
   }
 
   @Override
@@ -796,7 +796,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
       final Iterator<Map.Entry<Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
       while (mapIterator.hasNext()) {
         final Map.Entry<Key, Entity> entry = mapIterator.next();
-        if (entity.getKey().equals(entry.getKey())) {
+        if (entity.getPrimaryKey().equals(entry.getKey())) {
           mapIterator.remove();
           entity.setAs(entry.getValue());
           final int index = indexOf(entity);

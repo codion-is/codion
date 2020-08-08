@@ -31,7 +31,7 @@ public class ItemEditPanel extends EntityEditPanel {
     descriptionPanel.getTextField().setColumns(14);
     descriptionPanel.getButton().setFocusable(false);
     createTextField(Item.PRICE);
-    final EntityComboBox contactInfoBox = createForeignKeyComboBox(Item.C0NTACT_INFO_FK);
+    final EntityComboBox contactInfoBox = createForeignKeyComboBox(Item.CONTACT_INFO_FK);
     Components.setPreferredWidth(contactInfoBox, 140);
     contactInfoBox.setPopupWidth(200);
     final EntityComboBox addressBox = createForeignKeyComboBox(Item.ADDRESS_FK);
@@ -47,7 +47,7 @@ public class ItemEditPanel extends EntityEditPanel {
     addInputPanel(Item.NAME);
     add(createInputPanel(Item.DESCRIPTION));
     addInputPanel(Item.PRICE);
-    add(createInputPanel(Item.C0NTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
+    add(createInputPanel(Item.CONTACT_INFO_FK, Components.createEastButtonPanel(contactInfoBox,
             new EntityPanelBuilder(SellerContactInfo.TYPE).setEditPanelClass(ContactInfoEditPanel.class)
                     .createEditPanelAction(contactInfoBox))));
     add(createInputPanel(Item.ADDRESS_FK, Components.createEastButtonPanel(addressBox,

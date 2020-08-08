@@ -116,10 +116,10 @@ public final class WhereConditionTest {
     master2.put(TestDomain.MASTER_ID_2, 4);
 
     final EntityDefinition masterDefinition = ENTITIES.getDefinition(TestDomain.T_MASTER);
-    WhereCondition condition = whereCondition(condition(master1.getKey()), masterDefinition);
+    WhereCondition condition = whereCondition(condition(master1.getPrimaryKey()), masterDefinition);
     assertEquals("(id = ? and id2 = ?)", condition.getWhereClause());
 
-    condition = whereCondition(condition(asList(master1.getKey(), master2.getKey())), masterDefinition);
+    condition = whereCondition(condition(asList(master1.getPrimaryKey(), master2.getPrimaryKey())), masterDefinition);
     assertEquals("((id = ? and id2 = ?) or (id = ? and id2 = ?))", condition.getWhereClause());
   }
 
@@ -162,10 +162,10 @@ public final class WhereConditionTest {
 
     final EntityDefinition deptDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
 
-    WhereCondition condition = whereCondition(Conditions.condition(entity.getKey()), deptDefinition);
+    WhereCondition condition = whereCondition(Conditions.condition(entity.getPrimaryKey()), deptDefinition);
     assertKeyCondition(condition);
 
-    condition = whereCondition(Conditions.condition(entity.getKey()), deptDefinition);
+    condition = whereCondition(Conditions.condition(entity.getPrimaryKey()), deptDefinition);
     assertKeyCondition(condition);
 
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).notEqualTo("DEPT"), deptDefinition);
@@ -179,10 +179,10 @@ public final class WhereConditionTest {
 
     final EntityDefinition deptDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
 
-    WhereCondition condition = whereCondition(Conditions.condition(entity.getKey()), deptDefinition);
+    WhereCondition condition = whereCondition(Conditions.condition(entity.getPrimaryKey()), deptDefinition);
     assertKeyCondition(condition);
 
-    condition = whereCondition(Conditions.condition(singletonList(entity.getKey())), deptDefinition);
+    condition = whereCondition(Conditions.condition(singletonList(entity.getPrimaryKey())), deptDefinition);
     assertKeyCondition(condition);
 
     condition = whereCondition(Conditions.condition(TestDomain.DEPARTMENT_NAME).notEqualTo("DEPT"), deptDefinition);

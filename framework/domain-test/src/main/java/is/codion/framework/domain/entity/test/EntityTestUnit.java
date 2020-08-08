@@ -138,7 +138,7 @@ public class EntityTestUnit {
       final EntityDefinition entityDefinition = getEntities().getDefinition(entityType);
       if (!entityDefinition.isReadOnly()) {
         testEntity = testInsert(requireNonNull(initializeTestEntity(entityType, foreignKeyEntities), "test entity"));
-        assertTrue(testEntity.getKey().isNotNull());
+        assertTrue(testEntity.getPrimaryKey().isNotNull());
         testUpdate(testEntity, initializeReferencedEntities(entityType, foreignKeyEntities));
       }
       testSelect(entityType, testEntity);
@@ -353,7 +353,7 @@ public class EntityTestUnit {
    */
   private void testSelect(final EntityType<?> entityType, final Entity testEntity) throws DatabaseException {
     if (testEntity != null) {
-      assertEquals(testEntity, connection.selectSingle(testEntity.getKey()),
+      assertEquals(testEntity, connection.selectSingle(testEntity.getPrimaryKey()),
               "Entity of type " + testEntity.getEntityType() + " failed equals comparison");
     }
     else {
@@ -374,7 +374,7 @@ public class EntityTestUnit {
     }
 
     final Entity updated = connection.update(testEntity);
-    assertEquals(testEntity.getKey(), updated.getKey());
+    assertEquals(testEntity.getPrimaryKey(), updated.getPrimaryKey());
     for (final ColumnProperty<?> property : getEntities().getDefinition(testEntity.getEntityType()).getColumnProperties()) {
       if (property.isUpdatable()) {
         final Object beforeUpdate = testEntity.get(property.getAttribute());
@@ -402,11 +402,11 @@ public class EntityTestUnit {
    * @throws is.codion.common.db.exception.DatabaseException in case of an exception
    */
   private void testDelete(final Entity testEntity) throws DatabaseException {
-    assertEquals(1, connection.delete(Entities.getKeys(singletonList(testEntity))));
+    assertEquals(1, connection.delete(Entities.getPrimaryKeys(singletonList(testEntity))));
 
     boolean caught = false;
     try {
-      connection.selectSingle(testEntity.getKey());
+      connection.selectSingle(testEntity.getPrimaryKey());
     }
     catch (final RecordNotFoundException e) {
       caught = true;
@@ -422,8 +422,8 @@ public class EntityTestUnit {
    */
   private Entity insertOrSelect(final Entity entity) throws DatabaseException {
     try {
-      if (entity.getKey().isNotNull()) {
-        final List<Entity> selected = connection.select(singletonList(entity.getKey()));
+      if (entity.getPrimaryKey().isNotNull()) {
+        final List<Entity> selected = connection.select(singletonList(entity.getPrimaryKey()));
         if (!selected.isEmpty()) {
           return selected.get(0);
         }

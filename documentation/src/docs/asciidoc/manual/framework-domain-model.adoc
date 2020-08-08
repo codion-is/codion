@@ -94,21 +94,20 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 [#_foreignkeyproperty]
 === ForeignKeyProperty
 
-{url-javadoc}/is/codion/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a property used to represent a foreign key relation. These foreign keys refer to the primary key of the referenced entity and must be constructed accordingly in case of composite primary keys.
+{url-javadoc}/is/codion/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a property used to represent a foreign key relation. These foreign keys refer to a unique key combination of attributes in the referenced entity, usually the primary key attribute(s).
 
 [source,java,indent=0]
 ----
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=foreignKeyPropertyCapital]
 ----
 
-Referring to an entity with composite primary key.
-
-NOTE: The order of the properties must be the same as the order of the respective primary key properties in the referenced entity.
+Referring to an entity via a composite key.
 
 [source,java]
 ----
-foreignKeyProperty(Detail.MASTER_FK, "Master", Master.TYPE,
-        asList(Detail.MASTER_ID_1, Detail.MASTER_ID_2));
+foreignKeyProperty(Detail.MASTER_FK, "Master")
+        .reference(Detail.MASTER_ID_1, Master.ID_1)
+        .reference(Detail.MASTER_ID_2, Master.ID_2);
 ----
 
 The above assumes the below master definition.
@@ -116,8 +115,9 @@ The above assumes the below master definition.
 [source,java]
 ----
 define(Master.TYPE,
-    columnProperty(Master.ID_1).primaryKeyIndex(0),
-    columnProperty(Master.ID_2).primaryKeyIndex(1)
+    ...
+    columnProperty(Master.ID_1),
+    columnProperty(Master.ID_2)
     ...
 );
 ----

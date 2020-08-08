@@ -9,18 +9,33 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.Collections.singletonMap;
+import static java.util.Collections.unmodifiableList;
+
 /**
- * A class representing a primary key for entities.
+ * A class representing a unique key for entities.
  */
-final class DefaultKey implements Key, Serializable {
+class DefaultKey implements Key, Serializable {
 
   private static final long serialVersionUID = 1;
+
+  /**
+   * The attributes comprising this key
+   */
+  private List<Attribute<?>> attributes;
+
+  /**
+   * True if this key represents a primary key
+   */
+  private boolean primaryKey;
 
   /**
    * Holds the values contained in this key.
@@ -33,7 +48,7 @@ final class DefaultKey implements Key, Serializable {
   private boolean singleIntegerKey;
 
   /**
-   * true if this key consists of multiple properties
+   * true if this key consists of multiple attributes
    */
   private boolean compositeKey = false;
 
@@ -43,7 +58,7 @@ final class DefaultKey implements Key, Serializable {
   private Integer cachedHashCode = null;
 
   /**
-   * True if the value of a key property has changed, thereby invalidating the cached hash code value
+   * True if the value of a key attribute has changed, thereby invalidating the cached hash code value
    */
   private boolean hashCodeDirty = true;
 
@@ -53,17 +68,13 @@ final class DefaultKey implements Key, Serializable {
   private EntityDefinition definition;
 
   /**
-   * Instantiates a new empty primary key, for entities without primary keys
+   * Instantiates a new DefaultKey based on the given attributes, with the associated values initialized to null
    * @param definition the entity definition
-   * @throws IllegalArgumentException in case the entity has a primary key defined
+   * @param attributes the attributes comprising this key
+   * @param primaryKey true if this key represents a primary key
    */
-  DefaultKey(final EntityDefinition definition) {
-    if (definition.hasPrimaryKey()) {
-      throw new IllegalArgumentException("Can not create an empty key for entity '" + definition.getEntityType() + "'");
-    }
-    this.values = new HashMap<>();
-    this.definition = definition;
-    this.cachedHashCode = null;
+  DefaultKey(final EntityDefinition definition, final List<Attribute<?>> attributes, final boolean primaryKey) {
+    this(definition, createNullValueMap(attributes), primaryKey);
     this.hashCodeDirty = false;
   }
 
@@ -71,29 +82,28 @@ final class DefaultKey implements Key, Serializable {
    * Instantiates a new DefaultKey for the given entity type, assuming it is a single value key
    * @param definition the entity definition
    * @param value the value
-   * @throws IllegalArgumentException in case this key is a composite key or if the entity has no primary key
+   * @param primaryKey true if this key represents a primary key
    */
-  DefaultKey(final EntityDefinition definition, final Object value) {
-    this.values = createSingleValueMap(definition, value);
-    this.definition = definition;
-    this.singleIntegerKey = definition.getPrimaryKeyAttributes().get(0).isInteger();
+  DefaultKey(final EntityDefinition definition, final Attribute<?> attribute, final Object value, final boolean primaryKey) {
+    this(definition, singletonMap(attribute, value), primaryKey);
   }
 
   /**
-   * Instantiates a new Key for the given entity type
+   * Instantiates a new DefaultKey for the given values
    * @param definition the entity definition
    * @param values the values associated with their respective attributes
-   * @throws IllegalArgumentException in case the entity has no primary key
+   * @param primaryKey true if this key represents a primary key
    */
-  DefaultKey(final EntityDefinition definition, final Map<Attribute<?>, Object> values) {
-    this.values = values == null ? new HashMap<>() : new HashMap<>(values);
-    final List<Attribute<?>> attributes = definition.getPrimaryKeyAttributes();
-    if (attributes.isEmpty()) {
-      throw new IllegalArgumentException("Entity '" + definition.getEntityType() + "' has no primary key defined");
-    }
+  DefaultKey(final EntityDefinition definition, final Map<Attribute<?>, Object> values, final boolean primaryKey) {
+    values.forEach((attribute, value) -> ((Attribute<Object>) attribute).validateType(value));
+    this.values = new HashMap<>(values);
+    this.attributes = unmodifiableList(new ArrayList<>(values.keySet()));
     this.definition = definition;
-    this.compositeKey = attributes.size() > 1;
-    this.singleIntegerKey = !compositeKey && attributes.get(0).isInteger();
+    this.primaryKey = primaryKey;
+    if (!this.attributes.isEmpty()) {
+      this.compositeKey = attributes.size() > 1;
+      this.singleIntegerKey = !compositeKey && attributes.get(0).isInteger();
+    }
   }
 
   @Override
@@ -102,27 +112,40 @@ final class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public List<Attribute<?>> getAttributes() {
-    return definition.getPrimaryKeyAttributes();
+  public Collection<Attribute<?>> getAttributes() {
+    return attributes;
+  }
+
+  @Override
+  public boolean isPrimaryKey() {
+    return primaryKey;
   }
 
   @Override
   public <T> Attribute<T> getAttribute() {
     if (compositeKey) {
-      throw new IllegalStateException("Key for entity type " + definition.getEntityType() + " is a composite key");
+      throw new IllegalStateException("Key is a composite key");
     }
 
-    return (Attribute<T>) definition.getPrimaryKeyAttributes().get(0);
+    return (Attribute<T>) attributes.get(0);
   }
 
   @Override
   public <T> T put(final T value) {
-    return put(getAttribute(), value);
+    if (compositeKey) {
+      throw new IllegalStateException("Key is a composite key");
+    }
+
+    return put((Attribute<T>) attributes.get(0), value);
   }
 
   @Override
   public <T> T get() {
-    return (T) values.get(getAttribute());
+    if (compositeKey) {
+      throw new IllegalStateException("Key is a composite key");
+    }
+
+    return (T) values.get(attributes.get(0));
   }
 
   @Override
@@ -132,9 +155,11 @@ final class DefaultKey implements Key, Serializable {
 
   @Override
   public <T> T put(final Attribute<T> attribute, final T value) {
-    final ColumnProperty<T> property = definition.getPrimaryKeyProperty(attribute);
-    final T newValue = property.prepareValue(property.getAttribute().validateType(value));
-    values.put(property.getAttribute(), newValue);
+    if (!values.containsKey(attribute)) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of this key");
+    }
+    final T newValue = definition.getColumnProperty(attribute).prepareValue(attribute.validateType(value));
+    values.put(attribute, newValue);
     if (singleIntegerKey) {
       setHashCode((Integer) value);
     }
@@ -147,7 +172,11 @@ final class DefaultKey implements Key, Serializable {
 
   @Override
   public <T> T get(final Attribute<T> attribute) {
-    return (T) values.get(definition.getPrimaryKeyProperty(attribute).getAttribute());
+    if (!values.containsKey(attribute)) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of this key");
+    }
+
+    return (T) values.get(definition.getColumnProperty(attribute).getAttribute());
   }
 
   @Override
@@ -158,9 +187,8 @@ final class DefaultKey implements Key, Serializable {
   @Override
   public String toString() {
     final StringBuilder stringBuilder = new StringBuilder();
-    final List<Attribute<?>> primaryKeyAttributes = definition.getPrimaryKeyAttributes();
-    for (int i = 0; i < primaryKeyAttributes.size(); i++) {
-      final Attribute<Object> attribute = (Attribute<Object>) primaryKeyAttributes.get(i);
+    for (int i = 0; i < attributes.size(); i++) {
+      final Attribute<Object> attribute = (Attribute<Object>) attributes.get(i);
       stringBuilder.append(attribute.getName()).append(":").append(values.get(attribute));
       if (i < getAttributeCount() - 1) {
         stringBuilder.append(",");
@@ -181,7 +209,7 @@ final class DefaultKey implements Key, Serializable {
   }
 
   /**
-   * Key objects are equal if the entity types match as well as all property values.
+   * Key objects are equal if the entity types match as well as all attribute values.
    * Empty keys are only equal to themselves.
    * @param object the object to compare with
    * @return true if object is equal to this key
@@ -191,7 +219,7 @@ final class DefaultKey implements Key, Serializable {
     if (this == object) {
       return true;
     }
-    if (object == null || !definition.hasPrimaryKey()) {
+    if (object == null || values.isEmpty()) {
       return false;
     }
     if (object.getClass() ==  DefaultKey.class) {
@@ -205,7 +233,8 @@ final class DefaultKey implements Key, Serializable {
                 && hashCode() == otherKey.hashCode() && entityType.equals(otherKey.getEntityType());
       }
       //single non-integer key
-      return !otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) && Objects.equals(get(), otherKey.get());
+      return !otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) &&
+              Objects.equals(get(), otherKey.get()) && Objects.equals(getAttribute(), otherKey.getAttribute());
     }
 
     return false;
@@ -271,9 +300,8 @@ final class DefaultKey implements Key, Serializable {
 
   private Integer computeMultipleValueHashCode() {
     int hash = 0;
-    final List<ColumnProperty<?>> primaryKeyProperties = definition.getPrimaryKeyProperties();
-    for (int i = 0; i < primaryKeyProperties.size(); i++) {
-      final ColumnProperty<?> property = primaryKeyProperties.get(i);
+    for (int i = 0; i < attributes.size(); i++) {
+      final ColumnProperty<?> property = definition.getColumnProperty(attributes.get(i));
       final Object value = values.get(property.getAttribute());
       if (!property.isNullable() && value == null) {
         return null;
@@ -309,9 +337,12 @@ final class DefaultKey implements Key, Serializable {
   private void writeObject(final ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.getDomainName());
     stream.writeObject(definition.getEntityType().getName());
-    final List<Attribute<?>> primaryKeyAttributes = definition.getPrimaryKeyAttributes();
-    for (int i = 0; i < primaryKeyAttributes.size(); i++) {
-      stream.writeObject(values.get(primaryKeyAttributes.get(i)));
+    stream.writeBoolean(primaryKey);
+    stream.writeInt(attributes.size());
+    for (int i = 0; i < attributes.size(); i++) {
+      final Attribute<?> attribute = attributes.get(i);
+      stream.writeObject(attribute.getName());
+      stream.writeObject(values.get(attribute));
     }
   }
 
@@ -322,29 +353,25 @@ final class DefaultKey implements Key, Serializable {
     if (definition == null) {
       throw new IllegalArgumentException("Undefined entity: " + entityType);
     }
+    primaryKey = stream.readBoolean();
+    final int attributeCount = stream.readInt();
     values = new HashMap<>();
-    final List<ColumnProperty<?>> properties = definition.getPrimaryKeyProperties();
-    compositeKey = properties.size() > 1;
-    singleIntegerKey = !compositeKey && properties.get(0).getAttribute().isInteger();
-    hashCodeDirty = true;
-    for (int i = 0; i < properties.size(); i++) {
-      final Attribute<Object> attribute = ((ColumnProperty<Object>) properties.get(i)).getAttribute();
+    for (int i = 0; i < attributeCount; i++) {
+      final Attribute<Object> attribute = definition.getAttribute((String) stream.readObject());
       values.put(attribute, attribute.validateType(stream.readObject()));
     }
+    attributes = new ArrayList<>(values.keySet());
+    compositeKey = attributeCount > 1;
+    singleIntegerKey = !compositeKey && attributes.get(0).isInteger();
+    hashCodeDirty = true;
   }
 
-  private static Map<Attribute<?>, Object> createSingleValueMap(final EntityDefinition definition, final Object value) {
-    final List<Attribute<?>> primaryKeyAttributes = definition.getPrimaryKeyAttributes();
-    if (primaryKeyAttributes.isEmpty()) {
-      throw new IllegalArgumentException("Entity '" + definition.getEntityType() + "' has no primary key defined");
+  private static Map<Attribute<?>, Object> createNullValueMap(final List<Attribute<?>> attributes) {
+    final Map<Attribute<?>, Object> values = new HashMap<>();
+    for (final Attribute<?> attribute : attributes) {
+      values.put(attribute, null);
     }
-    if (primaryKeyAttributes.size() > 1) {
-      throw new IllegalArgumentException(definition.getEntityType() + " has a composite primary key");
-    }
-    final Attribute<Object> attribute = (Attribute<Object>) primaryKeyAttributes.get(0);
-    final Map<Attribute<?>, Object> valueMap = new HashMap<>(1);
-    valueMap.put(attribute, attribute.validateType(value));
 
-    return valueMap;
+    return values;
   }
 }

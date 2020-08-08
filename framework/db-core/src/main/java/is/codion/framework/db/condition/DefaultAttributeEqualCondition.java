@@ -5,7 +5,6 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +22,7 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
   private static final String IN_PREFIX = " in (";
   private static final String NOT_IN_PREFIX = " not in (";
 
-  private final List<Object> values;
+  private final List<T> values;
   private final boolean negated;
 
   private boolean caseSensitive = true;
@@ -36,16 +35,8 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
     super(attribute, negated ? Operator.NOT_EQUAL : Operator.EQUAL);
     this.values = new ArrayList<>(conditionValues);
     this.negated = negated;
-    //replace Entity with Entity.Key
     for (int i = 0; i < values.size(); i++) {
-      final Object value = values.get(i);
-      requireNonNull(value, "Equal condition values may not be null");
-      if (value instanceof Entity) {
-        values.set(i, ((Entity) value).getKey());
-      }
-      else {//assume it's all or nothing
-        break;
-      }
+      requireNonNull(values.get(i), "Equal condition values may not be null");
     }
   }
 

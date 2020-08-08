@@ -130,7 +130,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     Objects.requireNonNull(entity, ENTITY_PARAM);
     Objects.requireNonNull(property, PROPERTY_PARAM);
     if (!isNullable(entity, property) && entity.isNull(property.getAttribute())) {
-      if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
+      if ((entity.getPrimaryKey().isNull() || entity.getOriginalPrimaryKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
         final boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
         final boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(definition, property);

@@ -3,11 +3,11 @@
  */
 package is.codion.framework.domain.entity;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Represents a primary key.
+ * Represents a unique attribute value combination.
  */
 public interface Key {
 
@@ -17,9 +17,15 @@ public interface Key {
   EntityType<Entity> getEntityType();
 
   /**
-   * @return a List containing the attributes comprising this key
+   * @return the attributes comprising this key
    */
-  List<Attribute<?>> getAttributes();
+  Collection<Attribute<?>> getAttributes();
+
+  /**
+   * @return true if this key represents a primary key for a entity, note that this is true
+   * for empty keys representing entities without a defined primary key
+   */
+  boolean isPrimaryKey();
 
   /**
    * @return true if this key contains no values or if it contains a null value for a non-nullable key attribute

@@ -133,7 +133,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(employee);
     final Entity copyWithPrimaryKeyValue = employeeEditModel.getEntityCopy();
     assertEquals(employee, copyWithPrimaryKeyValue);
-    assertTrue(copyWithPrimaryKeyValue.getKey().isNotNull());
+    assertTrue(copyWithPrimaryKeyValue.getPrimaryKey().isNotNull());
   }
 
   @Test
@@ -231,10 +231,10 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(null);
     assertTrue(employeeEditModel.isEntityNew(), "Active entity is new after entity is set to null");
     assertFalse(employeeEditModel.getModifiedObserver().get());
-    assertTrue(employeeEditModel.getEntityCopy().getKey().isNull(), "Active entity primary key is not null after entity is set to null");
+    assertTrue(employeeEditModel.getEntityCopy().getPrimaryKey().isNull(), "Active entity primary key is not null after entity is set to null");
 
     employeeEditModel.setEntity(employee);
-    assertTrue(employeeEditModel.getEntityCopy().getKey().isNotNull(), "Active entity primary key is null after entity is set");
+    assertTrue(employeeEditModel.getEntityCopy().getPrimaryKey().isNotNull(), "Active entity primary key is null after entity is set");
 
     final Integer originalEmployeeId = employeeEditModel.get(TestDomain.EMP_ID);
     employeeEditModel.put(TestDomain.EMP_ID, null);
@@ -288,7 +288,7 @@ public final class DefaultEntityEditModelTest {
     }
 
     employeeEditModel.setEntity(null);
-    assertTrue(employeeEditModel.getEntityCopy().getKey().isNull(), "Active entity is not null after model is cleared");
+    assertTrue(employeeEditModel.getEntityCopy().getPrimaryKey().isNull(), "Active entity is not null after model is cleared");
 
     employeeEditModel.removeAfterDeleteListener(eventDataListener);
     employeeEditModel.removeAfterInsertListener(eventDataListener);
@@ -351,8 +351,8 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.insert();
       assertFalse(employeeEditModel.isEntityNew());
       final Entity entityCopy = employeeEditModel.getEntityCopy();
-      assertTrue(entityCopy.getKey().isNotNull());
-      assertEquals(entityCopy.getKey(), entityCopy.getOriginalKey());
+      assertTrue(entityCopy.getPrimaryKey().isNotNull());
+      assertEquals(entityCopy.getPrimaryKey(), entityCopy.getOriginalPrimaryKey());
 
       employeeEditModel.put(TestDomain.EMP_NAME, "Bobby");
       try {

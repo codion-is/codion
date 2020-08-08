@@ -137,7 +137,8 @@ public final class TestDomain extends DefaultDomain {
                     .searchProperty(true).maximumLength(10).nullable(false),
             columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), Department.TYPE, EMP_DEPARTMENT),
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName())
+                    .reference(EMP_DEPARTMENT, Department.DEPTNO),
             valueListProperty(EMP_JOB, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
@@ -146,7 +147,8 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
             columnProperty(EMP_MGR),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName(), T_EMP, EMP_MGR)
+            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName())
+                    .reference(EMP_MGR, EMP_ID)
                     //not really soft, just for testing purposes
                     .softReference(true),
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())

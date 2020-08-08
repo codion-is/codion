@@ -56,7 +56,7 @@ public final class EntityConnections {
     for (final EntityType<?> entityType : entityTypes) {
       final List<Entity> entities = source.select(condition(entityType).selectCondition().setFetchDepth(0));
       if (includePrimaryKeys == IncludePrimaryKeys.NO) {
-        entities.forEach(Entity::clearKeyValues);
+        entities.forEach(Entity::clearPrimaryKeyValues);
       }
       batchInsert(destination, entities.iterator(), batchSize, null, null);
     }

@@ -56,7 +56,8 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(MASTER_ID_1).primaryKeyIndex(0),
             columnProperty(MASTER_ID_2).primaryKeyIndex(1),
             columnProperty(MASTER_SUPER_ID),
-            foreignKeyProperty(MASTER_SUPER_FK, "Super", T_SUPER, MASTER_SUPER_ID),
+            foreignKeyProperty(MASTER_SUPER_FK, "Super")
+                    .reference(MASTER_SUPER_ID, SUPER_ID),
             columnProperty(MASTER_NAME),
             columnProperty(MASTER_CODE))
             .comparator(Comparator.comparing(o -> o.get(MASTER_CODE)))
@@ -77,6 +78,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Integer> DETAIL_MASTER_ID_2 = T_DETAIL.integerAttribute("master_id_2");
   public static final Attribute<Entity> DETAIL_MASTER_FK = T_DETAIL.entityAttribute("master_fk");
   public static final Attribute<String> DETAIL_MASTER_NAME = T_DETAIL.stringAttribute("master_name");
+  public static final Attribute<Entity> DETAIL_MASTER_VIA_CODE_FK = T_DETAIL.entityAttribute("master_via_code_fk");
   public static final Attribute<Integer> DETAIL_MASTER_CODE = T_DETAIL.integerAttribute("master_code");
   public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = T_DETAIL.integerAttribute("int_value_list");
   public static final Attribute<Integer> DETAIL_INT_DERIVED = T_DETAIL.integerAttribute("int_derived");
@@ -102,10 +104,13 @@ public final class TestDomain extends DefaultDomain {
                     .defaultValue(true),
             columnProperty(DETAIL_MASTER_ID_1),
             columnProperty(DETAIL_MASTER_ID_2),
-            foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName(), T_MASTER,
-                    asList(DETAIL_MASTER_ID_1, DETAIL_MASTER_ID_2)),
+            foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName())
+                    .reference(DETAIL_MASTER_ID_1, MASTER_ID_1)
+                    .reference(DETAIL_MASTER_ID_2, MASTER_ID_2),
+            foreignKeyProperty(DETAIL_MASTER_VIA_CODE_FK, DETAIL_MASTER_FK.getName())
+                    .reference(DETAIL_MASTER_CODE, MASTER_CODE),
             denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_NAME.getName(), DETAIL_MASTER_FK, MASTER_NAME),
-            denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName(), DETAIL_MASTER_FK, MASTER_CODE),
+            columnProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName()),
             valueListProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
             derivedProperty(DETAIL_INT_DERIVED, DETAIL_INT_DERIVED.getName(), linkedValues -> {
               final Integer intValue = linkedValues.get(DETAIL_INT);
@@ -172,7 +177,8 @@ public final class TestDomain extends DefaultDomain {
                     .searchProperty(true).columnName("ename").maximumLength(10).nullable(false),
             columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName(), T_DEPARTMENT, EMP_DEPARTMENT),
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName())
+                    .reference(EMP_DEPARTMENT, DEPARTMENT_ID),
             valueListProperty(EMP_JOB, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
@@ -181,7 +187,8 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
             columnProperty(EMP_MGR),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName(), T_EMP, EMP_MGR),
+            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName())
+                    .reference(EMP_MGR, EMP_ID),
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION)

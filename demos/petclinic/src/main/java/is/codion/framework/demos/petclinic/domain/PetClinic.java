@@ -69,8 +69,10 @@ public final class PetClinic extends DefaultDomain {
                     .primaryKeyIndex(0),
             columnProperty(VetSpecialty.SPECIALTY)
                     .primaryKeyIndex(1),
-            foreignKeyProperty(VetSpecialty.VET_FK, "Vet", Vet.TYPE, VetSpecialty.VET),
-            foreignKeyProperty(VetSpecialty.SPECIALTY_FK, "Specialty", Specialty.TYPE, VetSpecialty.SPECIALTY))
+            foreignKeyProperty(VetSpecialty.VET_FK, "Vet")
+                    .reference(VetSpecialty.VET, Vet.ID),
+            foreignKeyProperty(VetSpecialty.SPECIALTY_FK, "Specialty")
+                    .reference(VetSpecialty.SPECIALTY, Specialty.ID))
             .caption("Vet specialties")
             .stringFactory(stringFactory(VetSpecialty.VET_FK).text(" - ")
                     .value(VetSpecialty.SPECIALTY_FK));
@@ -125,10 +127,12 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false),
             columnProperty(Pet.PET_TYPE_ID)
                     .nullable(false),
-            foreignKeyProperty(Pet.PET_TYPE_FK, "Pet type", PetType.TYPE, Pet.PET_TYPE_ID),
+            foreignKeyProperty(Pet.PET_TYPE_FK, "Pet type")
+                    .reference(Pet.PET_TYPE_ID, PetType.ID),
             columnProperty(Pet.OWNER_ID)
                     .nullable(false),
-            foreignKeyProperty(Pet.OWNER_FK, "Owner", Owner.TYPE, Pet.OWNER_ID))
+            foreignKeyProperty(Pet.OWNER_FK, "Owner")
+                    .reference(Pet.OWNER_ID, Owner.ID))
             .keyGenerator(automatic(Pet.TYPE.getName()))
             .caption("Pets")
             .stringFactory(stringFactory(Pet.NAME))
@@ -140,7 +144,8 @@ public final class PetClinic extends DefaultDomain {
             primaryKeyProperty(Visit.ID),
             columnProperty(Visit.PET_ID)
                     .nullable(false),
-            foreignKeyProperty(Visit.PET_FK, "Pet", Pet.TYPE, Visit.PET_ID),
+            foreignKeyProperty(Visit.PET_FK, "Pet")
+                    .reference(Visit.PET_ID, Pet.ID),
             columnProperty(Visit.DATE, "Date")
                     .nullable(false),
             columnProperty(Visit.DESCRIPTION, "Description")

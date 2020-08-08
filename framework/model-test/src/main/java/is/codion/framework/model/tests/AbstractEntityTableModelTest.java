@@ -58,24 +58,24 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
-    final List<Key> keys = tableModel.getEntities().keys(TestDomain.T_EMP, 1, 2);
+    final List<Key> keys = tableModel.getEntities().primaryKeys(TestDomain.T_EMP, 1, 2);
     final Key pk1 = keys.get(0);
     final Key pk2 = keys.get(1);
 
     tableModel.setSelectedByKey(singletonList(pk1));
     final Entity selectedPK1 = tableModel.getSelectionModel().getSelectedItem();
-    assertEquals(pk1, selectedPK1.getKey());
+    assertEquals(pk1, selectedPK1.getPrimaryKey());
     assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
 
     tableModel.setSelectedByKey(singletonList(pk2));
     final Entity selectedPK2 = tableModel.getSelectionModel().getSelectedItem();
-    assertEquals(pk2, selectedPK2.getKey());
+    assertEquals(pk2, selectedPK2.getPrimaryKey());
     assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
 
     tableModel.setSelectedByKey(keys);
     final List<Entity> selectedItems = tableModel.getSelectionModel().getSelectedItems();
     for (final Entity selected : selectedItems) {
-      assertTrue(keys.contains(selected.getKey()));
+      assertTrue(keys.contains(selected.getPrimaryKey()));
     }
     assertEquals(2, tableModel.getSelectionModel().getSelectionCount());
   }
@@ -151,8 +151,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
 
     final Entities entities = tableModel.getEntities();
-    final Key pk1 = entities.key(TestDomain.T_EMP, 1);
-    final Key pk2 = entities.key(TestDomain.T_EMP, 2);
+    final Key pk1 = entities.primaryKey(TestDomain.T_EMP, 1);
+    final Key pk2 = entities.primaryKey(TestDomain.T_EMP, 2);
     try {
       tableModel.getConnectionProvider().getConnection().beginTransaction();
       tableModel.setSelectedByKey(singletonList(pk1));
@@ -181,10 +181,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
 
     final Entities entities = tableModel.getEntities();
-    final Key pk1 = entities.key(TestDomain.T_EMP, 1);
+    final Key pk1 = entities.primaryKey(TestDomain.T_EMP, 1);
     assertNotNull(tableModel.getEntityByKey(pk1));
 
-    final Key pk2 = entities.key(TestDomain.T_EMP, -66);
+    final Key pk2 = entities.primaryKey(TestDomain.T_EMP, -66);
     assertNull(tableModel.getEntityByKey(pk2));
   }
 
@@ -300,15 +300,15 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     final Entities entities = testModel.getEntities();
     Entity tmpEnt = entities.entity(TestDomain.T_DETAIL);
     tmpEnt.put(TestDomain.DETAIL_ID, 3L);
-    assertEquals("c", testModel.getEntityByKey(tmpEnt.getKey()).get(TestDomain.DETAIL_STRING));
+    assertEquals("c", testModel.getEntityByKey(tmpEnt.getPrimaryKey()).get(TestDomain.DETAIL_STRING));
     final List<Key> keys = new ArrayList<>();
-    keys.add(tmpEnt.getKey());
+    keys.add(tmpEnt.getPrimaryKey());
     tmpEnt = entities.entity(TestDomain.T_DETAIL);
     tmpEnt.put(TestDomain.DETAIL_ID, 2L);
-    keys.add(tmpEnt.getKey());
+    keys.add(tmpEnt.getPrimaryKey());
     tmpEnt = entities.entity(TestDomain.T_DETAIL);
     tmpEnt.put(TestDomain.DETAIL_ID, 1L);
-    keys.add(tmpEnt.getKey());
+    keys.add(tmpEnt.getPrimaryKey());
 
     final Collection<Entity> entitiesByKey = testModel.getEntitiesByKey(keys);
     assertEquals(3, entitiesByKey.size());
