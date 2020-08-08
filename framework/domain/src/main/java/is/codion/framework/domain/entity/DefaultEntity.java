@@ -452,13 +452,17 @@ final class DefaultEntity implements Entity, Serializable {
     return property.prepareValue(property.getAttribute().validateType(value));
   }
 
-  private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity value) {
-    final Entity entity = value;
+  private void validateForeignKeyValue(final ForeignKeyProperty property, final Entity entity) {
     final EntityType<?> referencedEntityType = property.getReferencedEntityType();
     if (!Objects.equals(referencedEntityType, entity.getEntityType())) {
       throw new IllegalArgumentException("Entity of type " + referencedEntityType +
               " expected for property " + this + ", got: " + entity.getEntityType());
     }
+    property.getReferences().forEach(reference -> {
+      if (reference.isReadOnly() && !Objects.equals(get(reference.getAttribute()), entity.get(reference.getReferencedAttribute()))) {
+        throw new IllegalArgumentException("Foreign key " + property + " is not allowed to modify attribute: " + reference.getAttribute());
+      }
+    });
   }
 
   private void propagateForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity newValue) {

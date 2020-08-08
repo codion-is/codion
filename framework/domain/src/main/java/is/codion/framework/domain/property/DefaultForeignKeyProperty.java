@@ -18,8 +18,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   private static final long serialVersionUID = 1;
 
-  private final List<Reference<?>> references = new ArrayList<>(1);
-
+  private List<Reference<?>> references;
   private EntityType<Entity> referencedEntityType;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
@@ -49,7 +48,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   @Override
   public List<Reference<?>> getReferences() {
-    return unmodifiableList(references);
+    return references;
   }
 
   @Override
@@ -70,10 +69,12 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   private <T> Reference<T> findReference(final Attribute<T> attribute) {
-    for (int i = 0; i < references.size(); i++) {
-      final Reference<?> reference = references.get(i);
-      if (reference.getAttribute().equals(attribute)) {
-        return (Reference<T>) reference;
+    if (references != null) {
+      for (int i = 0; i < references.size(); i++) {
+        final Reference<?> reference = references.get(i);
+        if (reference.getAttribute().equals(attribute)) {
+          return (Reference<T>) reference;
+        }
       }
     }
 
@@ -168,7 +169,19 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
       if (foreignKeyProperty.findReference(attribute) != null) {
         throw new IllegalArgumentException("Foreign key already contains a reference for column attribute: " + attribute);
       }
-      foreignKeyProperty.references.add(new DefaultReference<>(attribute, referencedAttribute, readOnly));
+
+      foreignKeyProperty.references = addReference(attribute, referencedAttribute, readOnly);
+    }
+
+    private <T> List<Reference<?>> addReference(final Attribute<T> attribute, final Attribute<T> referencedAttribute,
+                                                final boolean readOnly) {
+      final List<Reference<?>> references = new ArrayList<>();
+      if (foreignKeyProperty.references != null) {
+        references.addAll(foreignKeyProperty.references);
+      }
+      references.add(new DefaultReference<>(attribute, referencedAttribute, readOnly));
+
+      return unmodifiableList(references);
     }
   }
 }
