@@ -150,16 +150,14 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     }
 
     private <T> void reference(final Attribute<T> attribute, final Attribute<T> referencedAttribute, final boolean readOnly) {
-      requireNonNull(attribute, "attribute");
-      requireNonNull(referencedAttribute, "referencedAttribute");
-      if (attribute.equals(referencedAttribute)) {
+      if (requireNonNull(attribute, "attribute").equals(requireNonNull(referencedAttribute, "referencedAttribute"))) {
         throw new IllegalArgumentException("Foreign key attribute can not reference itself");
       }
       if (!foreignKeyProperty.getAttribute().getEntityType().equals(attribute.getEntityType())) {
         throw new IllegalArgumentException("Entity type " + foreignKeyProperty.getAttribute() +
                 " expected, got " + attribute.getEntityType());
       }
-      if (foreignKeyProperty.referencedEntityType == null) {
+      if (foreignKeyProperty.referencedEntityType == null) {//the first reference controls the referenced entity type
         foreignKeyProperty.referencedEntityType = (EntityType<Entity>) referencedAttribute.getEntityType();
       }
       else if (!foreignKeyProperty.referencedEntityType.equals(referencedAttribute.getEntityType())) {

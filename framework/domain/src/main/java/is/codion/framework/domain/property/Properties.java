@@ -69,6 +69,15 @@ public final class Properties {
   /**
    * Instantiates a {@link ForeignKeyProperty.Builder} instance.
    * @param attribute the attribute
+   * @return a new {@link ForeignKeyProperty.Builder}
+   */
+  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute) {
+    return foreignKeyProperty(attribute, null);
+  }
+
+  /**
+   * Instantiates a {@link ForeignKeyProperty.Builder} instance.
+   * @param attribute the attribute
    * @param caption the caption
    * @return a new {@link ForeignKeyProperty.Builder}
    */

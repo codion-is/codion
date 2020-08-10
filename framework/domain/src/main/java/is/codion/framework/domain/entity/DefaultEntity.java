@@ -234,17 +234,15 @@ final class DefaultEntity implements Entity, Serializable {
     final Set<Attribute<?>> affectedAttributes = new HashSet<>(values.keySet());
     clear();
     if (entity != null) {
-      for (final Map.Entry<Attribute<?>, Object> attributeValue : entity.entrySet()) {
+      entity.entrySet().forEach(attributeValue -> {
         final Attribute<?> attribute = attributeValue.getKey();
         values.put(attribute, attributeValue.getValue());
         affectedAttributes.add(attribute);
         affectedAttributes.addAll(definition.getDerivedAttributes(attribute));
-      }
+      });
       if (entity.isModified()) {
         originalValues = new HashMap<>();
-        for (final Map.Entry<Attribute<?>, Object> entry : entity.originalEntrySet()) {
-          originalValues.put(entry.getKey(), entry.getValue());
-        }
+        entity.originalEntrySet().forEach(entry -> originalValues.put(entry.getKey(), entry.getValue()));
       }
     }
 
@@ -473,8 +471,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> void removeInvalidForeignKeyValues(final Attribute<T> attribute, final T value) {
-    final List<ForeignKeyProperty> propertyForeignKeyProperties = definition.getForeignKeyProperties(attribute);
-    for (final ForeignKeyProperty foreignKeyProperty : propertyForeignKeyProperties) {
+    for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties(attribute)) {
       final Entity foreignKeyEntity = get(foreignKeyProperty);
       if (foreignKeyEntity != null) {
         final ForeignKeyProperty.Reference<T> reference = foreignKeyProperty.getReference(attribute);

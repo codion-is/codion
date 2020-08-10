@@ -7,6 +7,10 @@ import is.codion.common.Serializer;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Master;
+import is.codion.framework.domain.entity.ForeignKeyDomain.Maturity;
+import is.codion.framework.domain.entity.ForeignKeyDomain.Otolith;
+import is.codion.framework.domain.entity.ForeignKeyDomain.OtolithCategory;
+import is.codion.framework.domain.entity.ForeignKeyDomain.Species;
 
 import org.junit.jupiter.api.Test;
 
@@ -636,6 +640,108 @@ public class DefaultEntityTest {
             copy.getForeignKey(TestDomain.Employee.MANAGER_FK).getForeignKey(TestDomain.Employee.DEPARTMENT_FK));
     assertTrue(emp.getForeignKey(TestDomain.Employee.MANAGER_FK).getForeignKey(TestDomain.Employee.DEPARTMENT_FK)
             .valuesEqual(copy.getForeignKey(TestDomain.Employee.MANAGER_FK).getForeignKey(TestDomain.Employee.DEPARTMENT_FK)));
+  }
+
+  @Test
+  public void readOnlyForeignKeyReferences() {
+    final ForeignKeyDomain domain = new ForeignKeyDomain();
+    final Entities entities = domain.getEntities();
+
+    final Entity cod = entities.entity(Species.TYPE);
+    cod.put(Species.NO, 1);
+    cod.put(Species.NAME, "Cod");
+
+    final Entity codMaturity10 = entities.entity(Maturity.TYPE);
+    codMaturity10.put(Maturity.SPECIES_FK, cod);
+    codMaturity10.put(Maturity.NO, 10);
+    final Entity codMaturity20 = entities.entity(Maturity.TYPE);
+    codMaturity20.put(Maturity.SPECIES_FK, cod);
+    codMaturity20.put(Maturity.NO, 20);
+
+    final Entity haddock = entities.entity(Species.TYPE);
+    haddock.put(Species.NO, 2);
+    haddock.put(Species.NAME, "Haddock");
+
+    final Entity haddockMaturity10 = entities.entity(Maturity.TYPE);
+    haddockMaturity10.put(Maturity.SPECIES_FK, haddock);
+    haddockMaturity10.put(Maturity.NO, 10);
+    final Entity haddockMaturity20 = entities.entity(Maturity.TYPE);
+    haddockMaturity20.put(Maturity.SPECIES_FK, haddock);
+    haddockMaturity20.put(Maturity.NO, 20);
+
+    final Entity otolithCategoryCod100 = entities.entity(OtolithCategory.TYPE);
+    otolithCategoryCod100.put(OtolithCategory.SPECIES_FK, cod);
+    otolithCategoryCod100.put(OtolithCategory.NO, 100);
+    final Entity otolithCategoryCod200 = entities.entity(OtolithCategory.TYPE);
+    otolithCategoryCod200.put(OtolithCategory.SPECIES_FK, cod);
+    otolithCategoryCod200.put(OtolithCategory.NO, 200);
+
+    final Entity otolithCategoryHaddock100 = entities.entity(OtolithCategory.TYPE);
+    otolithCategoryHaddock100.put(OtolithCategory.SPECIES_FK, haddock);
+    otolithCategoryHaddock100.put(OtolithCategory.NO, 100);
+    final Entity otolithCategoryHaddock200 = entities.entity(OtolithCategory.TYPE);
+    otolithCategoryHaddock200.put(OtolithCategory.SPECIES_FK, haddock);
+    otolithCategoryHaddock200.put(OtolithCategory.NO, 200);
+
+    final Entity otolith = entities.entity(Otolith.TYPE);
+    otolith.put(Otolith.SPECIES_FK, cod);
+    //try to set a haddock maturity
+    assertThrows(IllegalArgumentException.class, () -> otolith.put(Otolith.MATURITY_FK, haddockMaturity10));
+    assertThrows(IllegalArgumentException.class, () -> otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock100));
+    otolith.put(Otolith.MATURITY_FK, codMaturity10);
+    otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryCod100);
+    //remove species, maturity and category should be removed
+    otolith.put(Otolith.SPECIES_FK, null);
+    //removes the invalid foreign key entity
+    assertTrue(otolith.isNull(Otolith.MATURITY_FK));
+    assertTrue(otolith.isNull(Otolith.OTOLITH_CATEGORY_FK));
+    //should not remove the actual column value
+    assertFalse(otolith.isNull(Otolith.MATURITY_NO));
+    assertFalse(otolith.isNull(Otolith.OTOLITH_CATEGORY_NO));
+    assertTrue(otolith.isNull(Otolith.SPECIES_NO));
+    //try to set haddock maturity and category
+    assertThrows(IllegalArgumentException.class, () -> otolith.put(Otolith.MATURITY_FK, haddockMaturity10));
+    assertThrows(IllegalArgumentException.class, () -> otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock100));
+    //set the species to haddock
+    otolith.put(Otolith.SPECIES_FK, haddock);
+    otolith.put(Otolith.MATURITY_FK, haddockMaturity10);
+    otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock200);
+    assertFalse(otolith.isNull(Otolith.MATURITY_FK));
+    assertFalse(otolith.isNull(Otolith.OTOLITH_CATEGORY_FK));
+    //set the species back to cod, haddock maturity should be removed
+    otolith.put(Otolith.SPECIES_FK, cod);
+    assertNull(otolith.get(Otolith.MATURITY_FK));
+    assertNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
+    //set the cod maturity
+    otolith.put(Otolith.MATURITY_FK, codMaturity20);
+    //set the underlying cod maturity column value
+    otolith.put(Otolith.MATURITY_NO, 10);
+    //maturity foreign key value should be removed
+    assertNull(otolith.get(Otolith.MATURITY_FK));
+    //set the species column value
+    otolith.put(Otolith.SPECIES_NO, 2);
+    //species foreign key value should be removed
+    assertNull(otolith.get(Otolith.SPECIES_FK));
+    //set the maturity
+    otolith.put(Otolith.MATURITY_FK, haddockMaturity10);
+    otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryHaddock200);
+    //set the species column value to null, should remove both species and maturity fk values
+    otolith.put(Otolith.SPECIES_NO, null);
+    assertNull(otolith.get(Otolith.SPECIES_FK));
+    assertNull(otolith.get(Otolith.MATURITY_FK));
+    assertNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
+    //set the species column value to cod
+    otolith.put(Otolith.SPECIES_NO, 1);
+    //should be able to set the cod maturity and category
+    otolith.put(Otolith.MATURITY_FK, codMaturity20);
+    otolith.put(Otolith.OTOLITH_CATEGORY_FK, otolithCategoryCod200);
+    assertNull(otolith.get(Otolith.SPECIES_FK));
+    assertNotNull(otolith.get(Otolith.MATURITY_FK));
+    assertNotNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
+    otolith.put(Otolith.SPECIES_FK, cod);
+    assertNotNull(otolith.get(Otolith.SPECIES_FK));
+    assertNotNull(otolith.get(Otolith.MATURITY_FK));
+    assertNotNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
   }
 
   private Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,
