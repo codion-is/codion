@@ -100,9 +100,17 @@ public final class LoginPanel extends JPanel {
    */
   public User showLoginPanel(final JComponent parent, final String title, final ImageIcon icon) {
     final JOptionPane pane = new JOptionPane(this, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
-    final Window parentWindow = Windows.getParentWindow(parent);
-    final JFrame dummyFrame = parentWindow == null ? createDummyFrame(title, icon) : null;
-    final JDialog dialog = pane.createDialog(dummyFrame == null ? parent : dummyFrame, title == null ? Messages.get(Messages.LOGIN) : title);
+    Window parentWindow = Windows.getParentWindow(parent);
+    JFrame dummyFrame = null;
+    if (parentWindow == null && isWindows()) {
+      dummyFrame = createDummyFrame(title, icon);
+      parentWindow = dummyFrame;
+    }
+    final JDialog dialog = pane.createDialog(parentWindow == null ? parentWindow : (Window) null,
+            title == null ? Messages.get(Messages.LOGIN) : title);
+    if (icon != null) {
+      dialog.setIconImage(icon.getImage());
+    }
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.pack();
     Windows.centerWindow(dialog);
@@ -115,9 +123,8 @@ public final class LoginPanel extends JPanel {
     if (pane.getValue() != null && pane.getValue().equals(0)) {
       return getUser();
     }
-    else {
-      throw new CancelException();
-    }
+
+    throw new CancelException();
   }
 
   private void initializeUI(final User defaultUser) {
@@ -158,5 +165,9 @@ public final class LoginPanel extends JPanel {
     }
 
     return frame;
+  }
+
+  private static boolean isWindows() {
+    return System.getProperty("os.name").toLowerCase().contains("win");
   }
 }
