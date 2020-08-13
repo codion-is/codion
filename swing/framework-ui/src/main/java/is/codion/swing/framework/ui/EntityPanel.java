@@ -1106,15 +1106,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * and CTR-F selects the table search field
    */
   protected final void initializeKeyboardActions() {
-    final Control selectEditPanelControl =
-            Controls.control(this::selectEditPanel, "EntityPanel.selectEditPanel");
-    final Control selectInputComponentControl =
-            Controls.control(this::selectInputComponent, "EntityPanel.selectInputComponent");
-    final Control selectTablePanelControl =
-            Controls.control(getTablePanel().getTable()::requestFocus, "EntityPanel.selectTablePanel");
-    final Control selectSearchFieldControl =
-            Controls.control(getTablePanel().getTable().getSearchField()::requestFocus, "EntityPanel.selectSearchField");
     if (containsTablePanel()) {
+      final Control selectTablePanelControl =
+              Controls.control(getTablePanel().getTable()::requestFocus, "EntityPanel.selectTablePanel");
+      final Control selectSearchFieldControl =
+              Controls.control(getTablePanel().getTable().getSearchField()::requestFocus, "EntityPanel.selectSearchField");
       final Control selectConditionPanelAction =
               Controls.control(getTablePanel()::selectConditionPanel, "EntityPanel.selectConditionPanel");
       addKeyEvent(this, KeyEvent.VK_T, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
@@ -1137,6 +1133,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       }
     }
     if (containsEditPanel()) {
+      final Control selectEditPanelControl =
+              Controls.control(this::selectEditPanel, "EntityPanel.selectEditPanel");
+      final Control selectInputComponentControl =
+              Controls.control(this::selectInputComponent, "EntityPanel.selectInputComponent");
       addKeyEvent(this, KeyEvent.VK_E, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               selectEditPanelControl);
       addKeyEvent(this, KeyEvent.VK_I, CTRL_DOWN_MASK, WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
