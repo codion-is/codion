@@ -889,7 +889,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
                 return columnProperty;
               }).collect(toList())));
-      foreignKeyColumnPropertyMap.values().forEach(properties -> properties.forEach(columnProperty ->
+      foreignKeyColumnPropertyMap.values().forEach(fkColumnProperties -> fkColumnProperties.forEach(columnProperty ->
               foreignKeyColumnAttributes.add(columnProperty.getAttribute())));
       builders.forEach(builder -> builder.nullable(foreignKeyColumnPropertyMap.get(builder.get().getAttribute())
               .stream().anyMatch(Property::isNullable)));
@@ -935,9 +935,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       for (final Property<?> property : properties) {
         if (property instanceof DenormalizedProperty) {
           final DenormalizedProperty<?> denormalizedProperty = (DenormalizedProperty<?>) property;
-          final Collection<DenormalizedProperty<?>> denormalizedProperties =
-                  map.computeIfAbsent(denormalizedProperty.getEntityAttribute(), attribute -> new ArrayList<>());
-          denormalizedProperties.add(denormalizedProperty);
+          map.computeIfAbsent(denormalizedProperty.getEntityAttribute(), attribute -> new ArrayList<>()).add(denormalizedProperty);
         }
       }
 
@@ -969,8 +967,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     private List<Attribute<?>> getPrimaryKeyAttributes() {
-      return this.primaryKeyProperties.stream().map((Function<ColumnProperty<?>,
-              Attribute<?>>) Property::getAttribute).collect(toList());
+      return this.primaryKeyProperties.stream().map(Property::getAttribute).collect(toList());
     }
 
     private List<ColumnProperty<?>> getSelectableProperties() {

@@ -45,6 +45,8 @@ public final class TextFields {
    */
   public static final Dimension DIMENSION_TEXT_FIELD_SQUARE = new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
 
+  private static final String TEXT_COMPONENT = "textComponent";
+
   /**
    * Specifies whether a formatted text field value should contain the literal characters.
    */
@@ -117,7 +119,7 @@ public final class TextFields {
    * @return the text component
    */
   public static <T extends JTextComponent> T upperCase(final T textComponent) {
-    requireNonNull(textComponent, "textComponent");
+    requireNonNull(textComponent, TEXT_COMPONENT);
     if (textComponent.getDocument() instanceof SizedDocument) {
       ((SizedDocument) textComponent.getDocument()).setDocumentCase(SizedDocument.DocumentCase.UPPERCASE);
     }
@@ -135,7 +137,7 @@ public final class TextFields {
    * @return the text component
    */
   public static <T extends JTextComponent> T lowerCase(final T textComponent) {
-    requireNonNull(textComponent, "textComponent");
+    requireNonNull(textComponent, TEXT_COMPONENT);
     if (textComponent.getDocument() instanceof SizedDocument) {
       ((SizedDocument) textComponent.getDocument()).setDocumentCase(SizedDocument.DocumentCase.LOWERCASE);
     }
@@ -154,7 +156,7 @@ public final class TextFields {
    * @return the component
    */
   public static <T extends JTextComponent> T selectAllOnFocusGained(final T textComponent) {
-    requireNonNull(textComponent, "textComponent");
+    requireNonNull(textComponent, TEXT_COMPONENT);
     textComponent.addFocusListener(new SelectAllListener(textComponent));
 
     return textComponent;
@@ -168,7 +170,7 @@ public final class TextFields {
    * @see #selectAllOnFocusGained(JTextComponent)
    */
   public static <T extends JTextComponent> T selectNoneOnFocusGained(final T textComponent) {
-    requireNonNull(textComponent, "textComponent");
+    requireNonNull(textComponent, TEXT_COMPONENT);
     for (final FocusListener listener : textComponent.getFocusListeners()) {
       if (listener instanceof SelectAllListener) {
         textComponent.removeFocusListener(listener);
@@ -185,7 +187,7 @@ public final class TextFields {
    * @return the component
    */
   public static <T extends JTextComponent> T moveCaretToStartOnFocusGained(final T textComponent) {
-    requireNonNull(textComponent, "textComponent");
+    requireNonNull(textComponent, TEXT_COMPONENT);
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
@@ -203,7 +205,7 @@ public final class TextFields {
    * @return the component
    */
   public static <T extends JTextComponent> T moveCaretToEndOnFocusGained(final T textComponent) {
-    requireNonNull(textComponent, "textComponent");
+    requireNonNull(textComponent, TEXT_COMPONENT);
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {

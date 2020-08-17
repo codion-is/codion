@@ -86,7 +86,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * Maps PropertySummaryModels to their respective properties
    */
-  private final Map<C, ColumnSummaryModel<? extends Number>> columnSummaryModels = new HashMap<>();
+  private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
 
   /**
    * the include condition used by this model
@@ -248,8 +248,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   @Override
-  public final <T extends Number> ColumnSummaryModel<T> getColumnSummaryModel(final C columnIdentifier) {
-    return (ColumnSummaryModel<T>) columnSummaryModels.computeIfAbsent(columnIdentifier, identifier -> {
+  public final ColumnSummaryModel getColumnSummaryModel(final C columnIdentifier) {
+    return columnSummaryModels.computeIfAbsent(columnIdentifier, identifier -> {
       final ColumnSummaryModel.ColumnValueProvider<Number> provider = createColumnValueProvider(columnIdentifier);
 
       return provider == null ? null : new DefaultColumnSummaryModel<>(provider);

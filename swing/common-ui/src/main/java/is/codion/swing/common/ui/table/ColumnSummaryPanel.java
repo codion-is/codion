@@ -20,13 +20,13 @@ import java.awt.event.MouseEvent;
  */
 public final class ColumnSummaryPanel extends JPanel {
 
-  private final ColumnSummaryModel<?> model;
+  private final ColumnSummaryModel model;
   private final JTextField summaryField = new JTextField();
 
   /**
    * @param model the PropertySummaryModel instance
    */
-  public ColumnSummaryPanel(final ColumnSummaryModel<?> model) {
+  public ColumnSummaryPanel(final ColumnSummaryModel model) {
     this.model = model;
     model.addSummaryValueListener(() -> {
       final String summaryText = model.getSummaryText();
@@ -39,7 +39,7 @@ public final class ColumnSummaryPanel extends JPanel {
   /**
    * @return the summary type
    */
-  public ColumnSummaryModel<?> getModel() {
+  public ColumnSummaryModel getModel() {
     return model;
   }
 

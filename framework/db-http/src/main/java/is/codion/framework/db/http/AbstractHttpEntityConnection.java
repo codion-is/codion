@@ -136,7 +136,7 @@ abstract class AbstractHttpEntityConnection  implements EntityConnection {
     }
   }
 
-  protected final HttpPost createHttpPost(final String path) throws URISyntaxException, IOException {
+  protected final HttpPost createHttpPost(final String path) throws URISyntaxException {
     return createHttpPost(path, null);
   }
 

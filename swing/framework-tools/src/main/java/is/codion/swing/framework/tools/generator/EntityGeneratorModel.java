@@ -447,7 +447,7 @@ public class EntityGeneratorModel {
         }
         final Set<Table> items = new HashSet<>();
         for (final Schema schema : schemas) {
-          final String catalog = database.getClass().getName().equals("is.codion.dbms.mysql.MySQLDatabase") ? schema.getName() : null;
+          final String catalog = "is.codion.dbms.mysql.MySQLDatabase".equals(database.getClass().getName()) ? schema.getName() : null;
           final ResultSet resultSet = metaData.getTables(catalog, schema.getName(), null, null);
           final List<Table> tables = new TablePacker(schema.getName()).pack(resultSet, -1);
           resultSet.close();
@@ -712,7 +712,7 @@ public class EntityGeneratorModel {
 
     @Override
     public Schema fetch(final ResultSet resultSet) throws SQLException {
-      return new Schema(resultSet.getString("TABLE_SCHEM"));
+      return new Schema(resultSet.getString(TABLE_SCHEMA));
     }
   }
 

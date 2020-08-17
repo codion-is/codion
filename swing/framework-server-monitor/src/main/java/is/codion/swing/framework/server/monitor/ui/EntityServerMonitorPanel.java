@@ -120,10 +120,6 @@ public final class EntityServerMonitorPanel extends JPanel {
     setJDKDir(this);
   }
 
-  public void exit() {
-    System.exit(0);
-  }
-
   public void refresh() throws RemoteException {
     model.refresh();
   }
@@ -206,7 +202,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private Control initializeExitControl() {
-    return Controls.control(this::exit, "Exit", null, null, 'X');
+    return Controls.control(() -> System.exit(0), "Exit", null, null, 'X');
   }
 
   private void setUpdateInterval() {

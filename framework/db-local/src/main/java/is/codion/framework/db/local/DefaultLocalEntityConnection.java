@@ -77,6 +77,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
   private static final String CONDITION_PARAM_NAME = "condition";
   private static final String ENTITIES_PARAM_NAME = "entities";
+  private static final String EXECUTE_STATEMENT = "executeStatement";
 
   /**
    * A result packer for fetching blobs from a result set containing a single blob column
@@ -992,7 +993,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                final List<?> statementValues) throws SQLException {
     SQLException exception = null;
     try {
-      logAccess("executeStatement", statementValues);
+      logAccess(EXECUTE_STATEMENT, statementValues);
       setParameterValues(statement, statementProperties, statementValues);
 
       return statement.executeUpdate();
@@ -1002,7 +1003,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("executeStatement", exception);
+      logExit(EXECUTE_STATEMENT, exception);
       countQuery(query);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(query, statementValues, exception));
@@ -1015,7 +1016,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException exception = null;
     final List<?> statementValues = whereCondition.getValues();
     try {
-      logAccess("executeStatement", statementValues);
+      logAccess(EXECUTE_STATEMENT, statementValues);
       setParameterValues(statement, whereCondition.getColumnProperties(), statementValues);
 
       return statement.executeQuery();
@@ -1025,7 +1026,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw e;
     }
     finally {
-      logExit("executeStatement", exception);
+      logExit(EXECUTE_STATEMENT, exception);
       countQuery(query);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(query, whereCondition.getValues(), exception));

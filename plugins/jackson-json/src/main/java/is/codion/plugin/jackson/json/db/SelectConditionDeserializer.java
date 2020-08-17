@@ -75,7 +75,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     for (final JsonNode node : jsonNode) {
       final String[] split = node.asText().split(":");
       final String attributeName = split[0];
-      if (split[1].equals("asc")) {
+      if ("asc".equals(split[1])) {
         orderBy = orderBy.ascending(definition.getAttribute(attributeName));
       }
       else {
@@ -86,7 +86,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     return orderBy;
   }
 
-  private Attribute<?>[] deserializeSelectAttributes(final EntityDefinition definition, final JsonNode jsonNode) {
+  private static Attribute<?>[] deserializeSelectAttributes(final EntityDefinition definition, final JsonNode jsonNode) {
     final List<Attribute<?>> attributes = new ArrayList<>(jsonNode.size());
     for (final JsonNode node : jsonNode) {
       attributes.add(definition.getAttribute(node.asText()));

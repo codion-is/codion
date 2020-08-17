@@ -106,7 +106,7 @@ public final class LoginPanel extends JPanel {
       dummyFrame = createDummyFrame(title, icon);
       parentWindow = dummyFrame;
     }
-    final JDialog dialog = pane.createDialog(parentWindow == null ? parentWindow : (Window) null,
+    final JDialog dialog = pane.createDialog(parentWindow == null ? parentWindow : null,
             title == null ? Messages.get(Messages.LOGIN) : title);
     if (icon != null) {
       dialog.setIconImage(icon.getImage());

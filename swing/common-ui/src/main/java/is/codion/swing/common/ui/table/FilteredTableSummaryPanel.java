@@ -31,7 +31,7 @@ public final class FilteredTableSummaryPanel<C> extends AbstractTableColumnSyncP
 
   @Override
   protected JPanel initializeColumnPanel(final TableColumn column) {
-    final ColumnSummaryModel<Number> columnSummaryModel = tableModel.getColumnSummaryModel((C) column.getIdentifier());
+    final ColumnSummaryModel columnSummaryModel = tableModel.getColumnSummaryModel((C) column.getIdentifier());
     if (columnSummaryModel == null) {
       return new JPanel();
     }
@@ -42,10 +42,9 @@ public final class FilteredTableSummaryPanel<C> extends AbstractTableColumnSyncP
   /**
    * Initializes a ColumnSummaryPanel for the given model
    * @param columnSummaryModel the ColumnSummaryModel for which to create a summary panel
-   * @param <T> the column type
    * @return a ColumnSummaryPanel based on the given model
    */
-  private static <T extends Number> ColumnSummaryPanel initializeColumnSummaryPanel(final ColumnSummaryModel<T> columnSummaryModel) {
+  private static ColumnSummaryPanel initializeColumnSummaryPanel(final ColumnSummaryModel columnSummaryModel) {
     return new ColumnSummaryPanel(columnSummaryModel);
   }
 }
