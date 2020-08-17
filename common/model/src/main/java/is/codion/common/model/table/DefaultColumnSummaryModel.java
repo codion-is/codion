@@ -17,7 +17,7 @@ import static java.util.Objects.requireNonNull;
  * A default ColumnSummaryModel implementation.
  * @param <T> the column type
  */
-public class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel<T> {
+public class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel {
 
   private final Event<Summary> summaryChangedEvent = Events.event();
   private final Event<?> summaryValueChangedEvent = Events.event();

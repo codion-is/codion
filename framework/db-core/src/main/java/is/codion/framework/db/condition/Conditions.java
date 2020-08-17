@@ -253,7 +253,7 @@ public final class Conditions {
 
   private static Map<Attribute<?>, Object> valueMap(final Entity entity) {
     final Map<Attribute<?>, Object> values = new HashMap<>();
-    entity.entrySet().forEach((entry) -> values.put(entry.getKey(), entry.getValue()));
+    entity.entrySet().forEach(entry -> values.put(entry.getKey(), entry.getValue()));
 
     return values;
   }

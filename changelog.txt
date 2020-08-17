@@ -6427,3 +6427,4 @@
   Properties.foreignKeyProperty() overloaded without caption parameter, read only foreign key reference tests improved
   LoginPanel.showLoginPanel(), replaced dummy frame with a null parent to pane.createDialog() for dialog to appear in taskbar and ALT-TAB, Windows only
   EntityPanel.initializeKeyboardActions() NPE bug fixed, tried to create table panel related actions when no table panel was present
+  ColumnSummaryModel, remove unused type parameter, some code cleanup

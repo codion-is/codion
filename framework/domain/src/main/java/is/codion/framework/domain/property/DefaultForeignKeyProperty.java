@@ -83,6 +83,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   private static final class DefaultReference<T> implements Reference<T>, Serializable {
 
+    private static final long serialVersionUID = 1;
+
     private final Attribute<T> attribute;
     private final Attribute<T> referencedAttribute;
     private final boolean readOnly;

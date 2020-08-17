@@ -27,6 +27,8 @@ class DefaultKey implements Key, Serializable {
 
   private static final long serialVersionUID = 1;
 
+  private static final String COMPOSITE_KEY_MESSAGE = "Key is a composite key";
+
   /**
    * The attributes comprising this key
    */
@@ -124,7 +126,7 @@ class DefaultKey implements Key, Serializable {
   @Override
   public <T> Attribute<T> getAttribute() {
     if (compositeKey) {
-      throw new IllegalStateException("Key is a composite key");
+      throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
     }
 
     return (Attribute<T>) attributes.get(0);
@@ -133,7 +135,7 @@ class DefaultKey implements Key, Serializable {
   @Override
   public <T> T put(final T value) {
     if (compositeKey) {
-      throw new IllegalStateException("Key is a composite key");
+      throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
     }
 
     return put((Attribute<T>) attributes.get(0), value);
@@ -142,7 +144,7 @@ class DefaultKey implements Key, Serializable {
   @Override
   public <T> T get() {
     if (compositeKey) {
-      throw new IllegalStateException("Key is a composite key");
+      throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
     }
 
     return (T) values.get(attributes.get(0));

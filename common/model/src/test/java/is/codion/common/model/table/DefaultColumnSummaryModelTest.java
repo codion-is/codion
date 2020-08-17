@@ -19,7 +19,7 @@ public class DefaultColumnSummaryModelTest {
 
   private final Format numberFormat = NumberFormat.getInstance();
 
-  final ColumnSummaryModel<Integer> testIntModel = new DefaultColumnSummaryModel<>(new ColumnSummaryModel.ColumnValueProvider<Integer>() {
+  final ColumnSummaryModel testIntModel = new DefaultColumnSummaryModel<>(new ColumnSummaryModel.ColumnValueProvider<Integer>() {
     @Override
     public String format(final Object value) {return numberFormat.format(value);}
     @Override
@@ -34,7 +34,7 @@ public class DefaultColumnSummaryModelTest {
     public void addValuesChangedListener(final EventListener event) {}
   });
 
-  final ColumnSummaryModel<Double> testDoubleModel = new DefaultColumnSummaryModel<>(new ColumnSummaryModel.ColumnValueProvider<Double>() {
+  final ColumnSummaryModel testDoubleModel = new DefaultColumnSummaryModel<>(new ColumnSummaryModel.ColumnValueProvider<Double>() {
     @Override
     public String format(final Object value) {return numberFormat.format(value);}
     @Override

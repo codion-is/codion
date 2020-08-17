@@ -28,8 +28,6 @@ import static java.util.Objects.requireNonNull;
  */
 final class DefaultNextReport extends AbstractReport<ro.nextreports.engine.Report, NextReportsResult, Map<String, Object>> implements NextReport {
 
-  private static final long serialVersionUID = 1;
-
   static {
     DialectFactory.addDialect("H2", OracleDialect.class.getName());
   }

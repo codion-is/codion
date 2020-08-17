@@ -63,10 +63,6 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     updateView();
   }
 
-  public void disconnectSelected() {
-    throw new UnsupportedOperationException("ClientInstanceMonitorPanel.disconnectSelected() has not been implemented");
-  }
-
   public void updateView() throws RemoteException {
     final StringBuilder log = new StringBuilder();
     if (model != null) {
