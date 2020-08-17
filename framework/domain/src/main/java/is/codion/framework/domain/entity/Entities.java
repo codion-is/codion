@@ -416,8 +416,13 @@ public interface Entities {
       throw new IllegalArgumentException("No attributes provided for equality check");
     }
 
-    return Arrays.stream(attributes).allMatch(attribute ->
-            Objects.equals(entityOne.get(attribute), entityTwo.get(attribute)));
+    return Arrays.stream(attributes).allMatch(attribute -> {
+      if (attribute.isByteArray()) {
+        return Arrays.equals((byte[]) entityOne.get(attribute), (byte[]) entityTwo.get(attribute));
+      }
+
+      return Objects.equals(entityOne.get(attribute), entityTwo.get(attribute));
+    });
   }
 
   /**

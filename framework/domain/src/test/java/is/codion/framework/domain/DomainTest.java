@@ -632,9 +632,9 @@ public class DomainTest {
 
     final List<Entity> copies = entities.deepCopyEntities(asList(dept1, dept2));
     assertNotSame(copies.get(0), dept1);
-    assertTrue(copies.get(0).valuesEqual(dept1));
+    assertTrue(copies.get(0).columnValuesEqual(dept1));
     assertNotSame(copies.get(1), dept2);
-    assertTrue(copies.get(1).valuesEqual(dept2));
+    assertTrue(copies.get(1).columnValuesEqual(dept2));
 
     final Entity emp1 = entities.entity(Employee.TYPE);
     emp1.put(Employee.DEPARTMENT_FK, dept1);
@@ -642,11 +642,11 @@ public class DomainTest {
     emp1.put(Employee.COMMISSION, 130.5);
 
     Entity copy = entities.copyEntity(emp1);
-    assertTrue(emp1.valuesEqual(copy));
+    assertTrue(emp1.columnValuesEqual(copy));
     assertSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));
 
     copy = entities.deepCopyEntity(emp1);
-    assertTrue(emp1.valuesEqual(copy));
+    assertTrue(emp1.columnValuesEqual(copy));
     assertNotSame(emp1.get(Employee.DEPARTMENT_FK), copy.get(Employee.DEPARTMENT_FK));
   }
 

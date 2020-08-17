@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,7 +87,7 @@ public class DefaultEntityTest {
     assertEquals(1, fromFile.size());
     final Entity entityFromFile = (Entity) fromFile.get(0);
     assertEquals(Detail.TYPE, entity.getEntityType());
-    assertTrue(entity.valuesEqual(entityFromFile));
+    assertTrue(entity.columnValuesEqual(entityFromFile));
     assertTrue(entityFromFile.isModified());
     assertTrue(entityFromFile.isModified(Detail.STRING));
     assertEquals(originalStringValue, entityFromFile.getOriginal(Detail.STRING));
@@ -119,7 +120,7 @@ public class DefaultEntityTest {
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     test.setAs(testEntity);
     assertEquals(test, testEntity, "Entities should be equal after .setAs()");
-    assertTrue(test.valuesEqual(testEntity), "Entity property values should be equal after .setAs()");
+    assertTrue(test.columnValuesEqual(testEntity), "Entity property values should be equal after .setAs()");
 
     //assure that no cached foreign key values linger
     test.put(Detail.MASTER_FK, null);
@@ -303,7 +304,7 @@ public class DefaultEntityTest {
     final Entity test2 = ENTITIES.deepCopyEntity(testEntity);
     assertNotSame(test2, testEntity, "Entity copy should not be == the original");
     assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
-    assertTrue(test2.valuesEqual(testEntity), "Entity property values should be equal after .getCopy()");
+    assertTrue(test2.columnValuesEqual(testEntity), "Entity property values should be equal after .getCopy()");
     assertNotSame(testEntity.getForeignKey(Detail.MASTER_FK), test2.getForeignKey(Detail.MASTER_FK), "This should be a deep copy");
 
     test2.put(Detail.DOUBLE, 2.1);
@@ -436,17 +437,37 @@ public class DefaultEntityTest {
   }
 
   @Test
-  public void propertyValuesEqual() {
+  public void columnValuesEqual() {
     final Entity testEntityOne = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
     final Entity testEntityTwo = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
 
-    assertTrue(testEntityOne.valuesEqual(testEntityTwo));
+    assertTrue(testEntityOne.columnValuesEqual(testEntityTwo));
 
     testEntityTwo.put(Detail.INT, 42);
+    assertFalse(testEntityOne.columnValuesEqual(testEntityTwo));
 
-    assertFalse(testEntityOne.valuesEqual(testEntityTwo));
+    testEntityOne.put(Detail.INT, 42);
+    assertTrue(testEntityOne.columnValuesEqual(testEntityTwo));
+
+    testEntityTwo.remove(Detail.INT);
+    assertFalse(testEntityOne.columnValuesEqual(testEntityTwo));
+
+    testEntityOne.remove(Detail.INT);
+    assertTrue(testEntityOne.columnValuesEqual(testEntityTwo));
+
+    final Random random = new Random();
+    final byte[] bytes = new byte[1024];
+    random.nextBytes(bytes);
+
+    testEntityOne.put(Detail.BYTES, bytes);
+    assertFalse(testEntityOne.columnValuesEqual(testEntityTwo));
+
+    testEntityTwo.put(Detail.BYTES, bytes);
+    assertTrue(testEntityOne.columnValuesEqual(testEntityTwo));
+
+    assertThrows(IllegalArgumentException.class, () -> testEntityOne.columnValuesEqual(ENTITIES.entity(Master.TYPE)));
   }
 
   @Test
@@ -633,13 +654,13 @@ public class DefaultEntityTest {
 
     final Entity copy = ENTITIES.deepCopyEntity(emp);
     assertNotSame(emp, copy);
-    assertTrue(emp.valuesEqual(copy));
+    assertTrue(emp.columnValuesEqual(copy));
     assertNotSame(emp.get(TestDomain.Employee.MANAGER_FK), copy.get(TestDomain.Employee.MANAGER_FK));
-    assertTrue(emp.getForeignKey(TestDomain.Employee.MANAGER_FK).valuesEqual(copy.getForeignKey(TestDomain.Employee.MANAGER_FK)));
+    assertTrue(emp.getForeignKey(TestDomain.Employee.MANAGER_FK).columnValuesEqual(copy.getForeignKey(TestDomain.Employee.MANAGER_FK)));
     assertNotSame(emp.getForeignKey(TestDomain.Employee.MANAGER_FK).getForeignKey(TestDomain.Employee.DEPARTMENT_FK),
             copy.getForeignKey(TestDomain.Employee.MANAGER_FK).getForeignKey(TestDomain.Employee.DEPARTMENT_FK));
     assertTrue(emp.getForeignKey(TestDomain.Employee.MANAGER_FK).getForeignKey(TestDomain.Employee.DEPARTMENT_FK)
-            .valuesEqual(copy.getForeignKey(TestDomain.Employee.MANAGER_FK).getForeignKey(TestDomain.Employee.DEPARTMENT_FK)));
+            .columnValuesEqual(copy.getForeignKey(TestDomain.Employee.MANAGER_FK).getForeignKey(TestDomain.Employee.DEPARTMENT_FK)));
   }
 
   @Test

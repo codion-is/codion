@@ -46,7 +46,7 @@ public final class EntityObjectMapperTest {
 
     String jsonString = mapper.writeValueAsString(dept);
     final Entity readDept = mapper.readValue(jsonString, Entity.class);
-    assertTrue(dept.valuesEqual(readDept));
+    assertTrue(dept.columnValuesEqual(readDept));
 
     final Entity entity = entities.entity(TestDomain.T_ENTITY);
     entity.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
@@ -58,7 +58,7 @@ public final class EntityObjectMapperTest {
 
     jsonString = mapper.writeValueAsString(entity);
 
-    assertTrue(entity.valuesEqual(mapper.readValue(jsonString, Entity.class)));
+    assertTrue(entity.columnValuesEqual(mapper.readValue(jsonString, Entity.class)));
 
     entity.put(TestDomain.ENTITY_BOOLEAN, false);
     jsonString = mapper.writeValueAsString(entity);
@@ -86,10 +86,10 @@ public final class EntityObjectMapperTest {
 
     final String jsonString = mapper.writeValueAsString(emp);
     final Entity readEmp = mapper.readValue(jsonString, Entity.class);
-    assertTrue(emp.valuesEqual(readEmp));
+    assertTrue(emp.columnValuesEqual(readEmp));
 
     final Entity readDept = readEmp.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
-    assertTrue(dept.valuesEqual(readDept));
+    assertTrue(dept.columnValuesEqual(readDept));
   }
 
   @Test
@@ -146,7 +146,7 @@ public final class EntityObjectMapperTest {
     dept10.put(TestDomain.DEPARTMENT_LOCATION, "LOCATION");
 
     String jsonString = mapper.writeValueAsString(singletonList(dept10));
-    assertTrue(dept10.valuesEqual(mapper.deserializeEntities(jsonString).get(0)));
+    assertTrue(dept10.columnValuesEqual(mapper.deserializeEntities(jsonString).get(0)));
 
     final Entity dept20 = entities.entity(TestDomain.T_DEPARTMENT);
     dept20.put(TestDomain.DEPARTMENT_ID, -20);
@@ -154,7 +154,7 @@ public final class EntityObjectMapperTest {
     dept20.put(TestDomain.DEPARTMENT_LOCATION, "ALOC");
 
     jsonString = mapper.writeValueAsString(singletonList(dept20));
-    assertTrue(dept20.valuesEqual(mapper.deserializeEntities(jsonString).get(0)));
+    assertTrue(dept20.columnValuesEqual(mapper.deserializeEntities(jsonString).get(0)));
 
     final String twoDepts = mapper.serializeEntities(asList(dept10, dept20));
     mapper.deserializeEntities(twoDepts);
@@ -188,15 +188,15 @@ public final class EntityObjectMapperTest {
     emp1.put(TestDomain.EMP_SALARY, BigDecimal.valueOf(2500.55));
 
     jsonString = mapper.writeValueAsString(singletonList(emp1));
-    assertTrue(emp1.valuesEqual(mapper.deserializeEntities(jsonString).get(0)));
+    assertTrue(emp1.columnValuesEqual(mapper.deserializeEntities(jsonString).get(0)));
 
     mapper.setIncludeForeignKeyValues(true);
 
     jsonString = mapper.writeValueAsString(singletonList(emp1));
     Entity emp1Deserialized = mapper.deserializeEntities(jsonString).get(0);
-    assertTrue(emp1.valuesEqual(emp1Deserialized));
-    assertTrue(emp1.getForeignKey(TestDomain.EMP_DEPARTMENT_FK).valuesEqual(emp1Deserialized.getForeignKey(TestDomain.EMP_DEPARTMENT_FK)));
-    assertTrue(emp1.getForeignKey(TestDomain.EMP_MGR_FK).valuesEqual(emp1Deserialized.getForeignKey(TestDomain.EMP_MGR_FK)));
+    assertTrue(emp1.columnValuesEqual(emp1Deserialized));
+    assertTrue(emp1.getForeignKey(TestDomain.EMP_DEPARTMENT_FK).columnValuesEqual(emp1Deserialized.getForeignKey(TestDomain.EMP_DEPARTMENT_FK)));
+    assertTrue(emp1.getForeignKey(TestDomain.EMP_MGR_FK).columnValuesEqual(emp1Deserialized.getForeignKey(TestDomain.EMP_MGR_FK)));
 
     final LocalDate newHiredate = LocalDate.parse("2002-11-21", format);
     emp1.put(TestDomain.EMP_COMMISSION, 550.55);
@@ -209,7 +209,7 @@ public final class EntityObjectMapperTest {
 
     jsonString = mapper.writeValueAsString(singletonList(emp1));
     emp1Deserialized = mapper.deserializeEntities(jsonString).get(0);
-    assertTrue(emp1.valuesEqual(emp1Deserialized));
+    assertTrue(emp1.columnValuesEqual(emp1Deserialized));
 
     assertEquals(500.5, emp1Deserialized.getOriginal(TestDomain.EMP_COMMISSION));
     assertEquals(dept10, emp1Deserialized.getOriginal(TestDomain.EMP_DEPARTMENT_FK));
@@ -219,8 +219,8 @@ public final class EntityObjectMapperTest {
     assertEquals("A NAME", emp1Deserialized.getOriginal(TestDomain.EMP_NAME));
     assertEquals(BigDecimal.valueOf(2500.55), emp1Deserialized.getOriginal(TestDomain.EMP_SALARY));
 
-    assertTrue(emp1Deserialized.getOriginal(TestDomain.EMP_DEPARTMENT_FK).valuesEqual(dept10));
-    assertTrue(emp1Deserialized.getOriginal(TestDomain.EMP_MGR_FK).valuesEqual(mgr30));
+    assertTrue(emp1Deserialized.getOriginal(TestDomain.EMP_DEPARTMENT_FK).columnValuesEqual(dept10));
+    assertTrue(emp1Deserialized.getOriginal(TestDomain.EMP_MGR_FK).columnValuesEqual(mgr30));
 
     final Entity emp2 = entities.entity(TestDomain.T_EMP);
     emp2.put(TestDomain.EMP_COMMISSION, 300.5);
@@ -239,13 +239,13 @@ public final class EntityObjectMapperTest {
     final List<Entity> parsedEntities = mapper.deserializeEntities(jsonString);
     for (final Entity entity : entityList) {
       final Entity parsed = parsedEntities.get(parsedEntities.indexOf(entity));
-      assertTrue(parsed.valuesEqual(entity));
+      assertTrue(parsed.columnValuesEqual(entity));
     }
 
     final List<Entity> readEntities = mapper.deserializeEntities(mapper.serializeEntities(singletonList(emp1)));
     assertEquals(1, readEntities.size());
     final Entity parsedEntity = readEntities.iterator().next();
-    assertTrue(emp1.valuesEqual(parsedEntity));
+    assertTrue(emp1.columnValuesEqual(parsedEntity));
     assertTrue(parsedEntity.isModified());
     assertTrue(parsedEntity.isModified(TestDomain.EMP_COMMISSION));
     assertTrue(parsedEntity.isModified(TestDomain.EMP_DEPARTMENT));

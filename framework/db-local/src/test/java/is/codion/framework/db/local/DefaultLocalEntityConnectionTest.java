@@ -661,8 +661,8 @@ public class DefaultLocalEntityConnectionTest {
         fail("RecordModifiedException should have been thrown");
       }
       catch (final RecordModifiedException e) {
-        assertTrue(((Entity) e.getModifiedRow()).valuesEqual(updatedDepartment));
-        assertTrue(((Entity) e.getRow()).valuesEqual(department));
+        assertTrue(((Entity) e.getModifiedRow()).columnValuesEqual(updatedDepartment));
+        assertTrue(((Entity) e.getRow()).columnValuesEqual(department));
       }
     }
     finally {
@@ -703,8 +703,8 @@ public class DefaultLocalEntityConnectionTest {
         fail("RecordModifiedException should have been thrown");
       }
       catch (final RecordModifiedException e) {
-        assertTrue(((Entity) e.getModifiedRow()).valuesEqual(updatedEmployee));
-        assertTrue(((Entity) e.getRow()).valuesEqual(employee));
+        assertTrue(((Entity) e.getModifiedRow()).columnValuesEqual(updatedEmployee));
+        assertTrue(((Entity) e.getRow()).columnValuesEqual(employee));
       }
     }
     finally {

@@ -126,6 +126,7 @@ public class TestDomain extends DefaultDomain {
     Attribute<Integer> INT_VALUE_LIST = TYPE.integerAttribute("int_value_list");
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
     Attribute<Integer> MASTER_CODE_DENORM = TYPE.integerAttribute("master_code_denorm");
+    Attribute<byte[]> BYTES = TYPE.blobAttribute("bytes");
 
     Optional<Long> getId();
     void setId(Long value);
@@ -186,7 +187,9 @@ public class TestDomain extends DefaultDomain {
 
               return intValue * 10;
             }, Detail.INT),
-            denormalizedProperty(Detail.MASTER_CODE_DENORM, Detail.MASTER_FK, Master.CODE))
+            denormalizedProperty(Detail.MASTER_CODE_DENORM, Detail.MASTER_FK, Master.CODE),
+            columnProperty(Detail.BYTES)
+                    .updatable(false))
             .keyGenerator(queried("select id from dual"))
             .orderBy(orderBy().ascending(Detail.STRING))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
