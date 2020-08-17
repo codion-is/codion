@@ -3,8 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.ColumnProperty;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -178,10 +176,13 @@ public interface Entity extends Comparable<Entity> {
   void clearPrimaryKeyValues();
 
   /**
+   * Compares all column based values in the given entity to the values in this entity instance.
+   * Returns true if these two entities contain the same column values and the values are equal.
    * @param entity the entity to compare to
-   * @return true if all {@link ColumnProperty} values are equal
+   * @return true if all the values in this entity instance are present and equal to the values in the given entity
+   * @throws IllegalArgumentException in case the entity is not of the same type
    */
-  boolean valuesEqual(Entity entity);
+  boolean columnValuesEqual(Entity entity);
 
   /**
    * After a call to this method this Entity contains the same values and original values as the source entity.

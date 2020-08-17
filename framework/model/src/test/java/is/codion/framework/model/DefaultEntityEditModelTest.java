@@ -225,7 +225,7 @@ public final class DefaultEntityEditModelTest {
     assertFalse(primaryKeyNullState.get());
     assertFalse(entityNewState.get());
 
-    assertTrue(employeeEditModel.getEntityCopy().valuesEqual(employee), "Active entity is not equal to the entity just set");
+    assertTrue(employeeEditModel.getEntityCopy().columnValuesEqual(employee), "Active entity is not equal to the entity just set");
     assertFalse(employeeEditModel.isEntityNew(), "Active entity is new after an entity is set");
     assertFalse(employeeEditModel.getModifiedObserver().get());
     employeeEditModel.setEntity(null);

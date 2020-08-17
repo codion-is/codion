@@ -250,15 +250,23 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public boolean valuesEqual(final Entity entity) {
+  public boolean columnValuesEqual(final Entity entity) {
     requireNonNull(entity, "entity");
+    if (!definition.getEntityType().equals(entity.getEntityType())) {
+      throw new IllegalArgumentException("Entity of type " + definition.getEntityType() +
+              " expected, got: " + entity.getEntityType());
+    }
 
     return definition.getColumnProperties().stream().allMatch(property -> {
-      if (property.getAttribute().isByteArray()) {
-        return Arrays.equals((byte[]) get(property), (byte[]) entity.get(property.getAttribute()));
+      final Attribute<?> attribute = property.getAttribute();
+      if (containsKey(attribute) != entity.containsKey(attribute)) {
+        return false;
+      }
+      if (attribute.isByteArray()) {
+        return Arrays.equals((byte[]) get(property), (byte[]) entity.get(attribute));
       }
 
-      return Objects.equals(get(property), entity.get(property.getAttribute()));
+      return Objects.equals(get(property), entity.get(attribute));
     });
   }
 
