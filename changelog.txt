@@ -6403,3 +6403,4 @@
   Entity.valuesEqual() renamed to columnValuesEqual(), entities must now contain the exact same attribute values, now throws exception if the entity type doesn't match
   ResultPacker.pack() overloaded without fetchCount parameter
   Entities.contains() added
+  DatabaseExplorerModel and DatabaseExplorerPanel added along with related classes
