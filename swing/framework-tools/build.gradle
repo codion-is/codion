@@ -14,7 +14,6 @@ dependencies {
 
     testImplementation project(':codion-common-rmi')
     testImplementation project(':codion-framework-server')
-    testRuntimeOnly project(':codion-framework-db-local')
     testRuntimeOnly project(':codion-framework-db-rmi')
 
     implementation "org.jfree:jfreechart:${jfreeChartVersion}"
