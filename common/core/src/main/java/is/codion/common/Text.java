@@ -284,7 +284,8 @@ public final class Text {
    * @param string the string
    * @return a camelCase version of the given string
    */
-  public static String underscoreToCamelCase(final String string) {
+  public static String underscoreToCamelCase(final String text) {
+    final String string = requireNonNull(text).toLowerCase();
     final StringBuilder builder = new StringBuilder();
     boolean firstDone = false;
     final String[] strings = string.split("_");

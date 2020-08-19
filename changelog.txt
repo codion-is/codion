@@ -6432,3 +6432,4 @@
   ResultPacker.pack() overloaded without fetchCount parameter
   Entities.contains() added
   DatabaseExplorerModel and DatabaseExplorerPanel added along with related classes
+  DatabaseExplorer now works, supersedes EntityGenerator

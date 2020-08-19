@@ -57,23 +57,13 @@ public final class DatabaseExplorerPanel extends JPanel {
     final JTextArea textArea = new JTextArea(40, 60);
     textArea.setEditable(false);
 
+    splitPane.setRightComponent(new JScrollPane(textArea));
+
     splitPane.setResizeWeight(RESIZE_WEIGHT);
 
     setLayout(Layouts.borderLayout());
     add(splitPane, BorderLayout.CENTER);
-    this.model.getDefinitionModel().getSelectionModel().addSelectedItemListener(this::showTable);
-  }
-
-  private void showTable(final EntityDefinition definition) {
-//    if (definition != null) {
-//      final EntityTablePanel tablePanel = new EntityTablePanel(model.createTableModelForSelected());
-//      tablePanel.initializePanel();
-//      tablePanel.getTableModel().refresh();
-//      splitPane.setRightComponent(tablePanel);
-//    }
-//    else {
-//      splitPane.setRightComponent(null);
-//    }
+    this.model.getDomainCodeObserver().addDataListener(textArea::setText);
   }
 
   /**
