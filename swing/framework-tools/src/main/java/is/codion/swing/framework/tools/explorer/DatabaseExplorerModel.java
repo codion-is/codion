@@ -3,10 +3,15 @@
  */
 package is.codion.swing.framework.tools.explorer;
 
+import is.codion.common.Text;
+import is.codion.common.Util;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.common.user.User;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
+import is.codion.common.value.Values;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
@@ -26,40 +31,36 @@ import is.codion.swing.framework.tools.metadata.MetaDataModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 import is.codion.swing.framework.tools.metadata.Table;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.swing.table.TableColumn;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 public final class DatabaseExplorerModel {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DatabaseExplorerModel.class);
+  private static final String PROPERTIES_COLUMN_PROPERTY = "        columnProperty(";
 
   private final MetaDataModel metadataModel;
   private final SchemaModel schemaModel;
-  private final DefinitionModel definitionModel;
+  private final DomainModel domainModel;
   private final Map<Table, EntityType<Entity>> tableEntityTypes = new HashMap<>();
 
-  private final Database database;
   private final Map<Schema, MetaDataDomain> domains = new HashMap<>();
   private final Connection connection;
 
+  private final Value<String> domainCodeValue = Values.value();
+
   public DatabaseExplorerModel(final Database database, final User user) throws DatabaseException {
-    this.database = database;
     this.connection = database.createConnection(user);
     this.schemaModel = new SchemaModel();
-    this.definitionModel = new DefinitionModel();
+    this.domainModel = new DomainModel();
     this.metadataModel = new MetaDataModel(connection);
     bindEvents();
     refreshDomains();
@@ -70,19 +71,26 @@ public final class DatabaseExplorerModel {
   }
 
   public AbstractFilteredTableModel<EntityDefinition, Integer> getDefinitionModel() {
-    return definitionModel;
+    return domainModel;
+  }
+
+  public ValueObserver<String> getDomainCodeObserver() {
+    return Values.valueObserver(domainCodeValue);
+  }
+
+  public void close() {
+    Database.closeSilently(connection);
   }
 
   private MetaDataDomain createDomain(final Schema schema) {
-    final MetaDataDomain domain = new MetaDataDomain(DomainType.domainType(schema.getName()));
     EntityDefinition.STRICT_FOREIGN_KEYS.set(false);
-    final Set<Table> definedTables = new HashSet<>();
-    schema.getTables().values().forEach(table -> defineEntity(domain, table, definedTables));
+    final MetaDataDomain domain = new MetaDataDomain(DomainType.domainType(schema.getName()));
+    schema.getTables().values().forEach(table -> defineEntity(domain, table));
 
     return domain;
   }
 
-  private void defineEntity(final MetaDataDomain domain, final Table table, final Set<Table> definedTables) {
+  private void defineEntity(final MetaDataDomain domain, final Table table) {
     if (!tableEntityTypes.containsKey(table)) {
       final EntityType<Entity> entityType = domain.getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
       tableEntityTypes.put(table, entityType);
@@ -91,17 +99,13 @@ public final class DatabaseExplorerModel {
               builders.add(getColumnPropertyBuilder(column, entityType)));
       table.getForeignKeys().forEach((referencedTable, foreignKey) -> {
         if (!foreignKey.getReferencedTable().equals(table)) {
-          defineEntity(domain, foreignKey.getReferencedTable(), definedTables);
+          defineEntity(domain, foreignKey.getReferencedTable());
         }
       });
       table.getForeignKeys().forEach((referencedTable, foreignKey) ->
               builders.add(getForeignKeyPropertyBuilder(foreignKey, entityType)));
       domain.define(entityType, builders);
     }
-  }
-
-  private Property.Builder<?> getPropertyBuilder(final Column column, final EntityType<?> entityType) {
-    return getColumnPropertyBuilder(column, entityType);
   }
 
   private Property.Builder<?> getForeignKeyPropertyBuilder(final ForeignKey foreignKey, final EntityType<?> entityType) {
@@ -124,7 +128,21 @@ public final class DatabaseExplorerModel {
     if (column.getKeySeq() != -1) {
       builder.primaryKeyIndex(column.getKeySeq() - 1);
     }
-    builder.nullable(column.getNullable() == DatabaseMetaData.columnNoNulls);
+    if (column.getKeySeq() == -1 && column.getNullable() == DatabaseMetaData.columnNoNulls) {
+      builder.nullable(false);
+    }
+    if (attribute.isString() && column.getColumnSize() != -1) {
+      builder.maximumLength(column.getColumnSize());
+    }
+    if (attribute.isDecimal() && column.getDecimalDigits() >= 1) {
+      builder.maximumFractionDigits(column.getDecimalDigits());
+    }
+    if (column.hasDefaultValue()) {
+      builder.columnHasDefaultValue(true);
+    }
+    if (!nullOrEmpty(column.getComment())) {
+      builder.description(column.getComment());
+    }
 
     return builder;
   }
@@ -137,7 +155,117 @@ public final class DatabaseExplorerModel {
   }
 
   private void bindEvents() {
-    schemaModel.getSelectionModel().addSelectionChangedListener(definitionModel::refresh);
+    schemaModel.getSelectionModel().addSelectionChangedListener(domainModel::refresh);
+    domainModel.getSelectionModel().addSelectionChangedListener(this::updateCodeValue);
+  }
+
+  private void updateCodeValue() {
+    domainCodeValue.set(createDomainCode(domainModel.getSelectionModel().getSelectedItems()));
+  }
+
+  private String createDomainCode(final List<EntityDefinition> definitions) {
+    final StringBuilder builder = new StringBuilder();
+    definitions.forEach(definition -> {
+      final String interfaceName = getInterfaceName(definition.getTableName(), true);
+      builder.append("public interface ").append(interfaceName).append(" {").append(Util.LINE_SEPARATOR);
+      builder.append("  ").append("EntityType<Entity> TYPE = ").append("DOMAIN.entityType(\"")
+              .append(definition.getTableName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
+      final List<ColumnProperty<?>> columnProperties = definition.getColumnProperties();
+      columnProperties.forEach(property -> {
+        final String typeClassName = property.getAttribute().getTypeClass().getSimpleName();
+        builder.append("  ").append("Attribute<").append(typeClassName).append("> ")
+                .append(property.getColumnName().toUpperCase()).append(" = TYPE.").append(getAttributeTypePrefix(typeClassName))
+                .append("Attribute(\"").append(property.getColumnName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
+      });
+      final List<ForeignKeyProperty> foreignKeyProperties = definition.getForeignKeyProperties();
+      foreignKeyProperties.forEach(property -> builder.append("  ").append("Attribute<Entity> ")
+              .append(property.getAttribute().getName().toUpperCase()).append(" = TYPE.entityAttribute(\"")
+              .append(property.getAttribute().getName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR));
+
+      builder.append("}").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+
+      builder.append("void ").append(getInterfaceName(definition.getTableName(), false)).append("() {").append(Util.LINE_SEPARATOR);
+      builder.append("  define(").append(interfaceName).append(".TYPE").append(",").append(Util.LINE_SEPARATOR);
+      columnProperties.forEach(property -> builder.append("  ").append(getColumnPropertyDefinition(interfaceName, property, definition))
+              .append(",").append(Util.LINE_SEPARATOR));
+      foreignKeyProperties.forEach(property -> builder.append("  ").append(getForeignKeyPropertyDefinition(interfaceName, property))
+              .append(",").append(Util.LINE_SEPARATOR));
+      builder.replace(builder.length() - 2, builder.length(), "");
+      builder.append(Util.LINE_SEPARATOR).append("  );").append(Util.LINE_SEPARATOR);
+
+      builder.append("}").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+    });
+
+    return builder.toString();
+  }
+
+  private static String getForeignKeyPropertyDefinition(final String interfaceName, final ForeignKeyProperty property) {
+    final StringBuilder builder = new StringBuilder();
+    final String foreignKeyAttribute = property.getAttribute().getName().toUpperCase();
+    final String caption = property.getCaption();
+    builder.append("        foreignKeyProperty(").append(interfaceName).append(".").append(foreignKeyAttribute).append(", \"").append(caption)
+            .append("\")").append(Util.LINE_SEPARATOR);
+    property.getReferences().forEach(reference ->
+            builder.append("                .reference(").append(interfaceName).append(".")
+                    .append(reference.getAttribute().getName().toUpperCase()).append(", ")
+                    .append(getInterfaceName(reference.getReferencedAttribute().getEntityType().getName(), true)).append(".")
+                    .append(reference.getReferencedAttribute().getName().toUpperCase()).append(")"));
+
+    return builder.toString();
+  }
+
+  private static String getColumnPropertyDefinition(final String interfaceName, final ColumnProperty<?> property,
+                                                    final EntityDefinition definition) {
+    final StringBuilder builder = new StringBuilder();
+    builder.append(PROPERTIES_COLUMN_PROPERTY).append(interfaceName + "." + property.getColumnName().toUpperCase());
+    if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isPrimaryKeyColumn()) {
+      builder.append(", ").append("\"").append(property.getCaption()).append("\")");
+    }
+    else {
+      builder.append(")");
+    }
+
+    if (property.isPrimaryKeyColumn()) {
+      builder.append(Util.LINE_SEPARATOR).append("                .primaryKeyIndex(").append(property.getPrimaryKeyIndex()).append(")");
+    }
+    if (property.columnHasDefaultValue()) {
+      builder.append(Util.LINE_SEPARATOR).append("                .columnHasDefaultValue(true)");
+    }
+    if (!property.isNullable() && !property.isPrimaryKeyColumn()) {
+      builder.append(Util.LINE_SEPARATOR).append("                .nullable(false)");
+    }
+    if (String.class.equals(property.getAttribute().getTypeClass())) {
+      builder.append(Util.LINE_SEPARATOR).append("                .maximumLength(").append(property.getMaximumLength()).append(")");
+    }
+    if (Double.class.equals(property.getAttribute().getTypeClass()) && property.getMaximumFractionDigits() >= 1) {
+      builder.append(Util.LINE_SEPARATOR).append("                .maximumFractionDigits(").append(property.getMaximumFractionDigits()).append(")");
+    }
+    if (!nullOrEmpty(property.getDescription())) {
+      builder.append(Util.LINE_SEPARATOR).append("                .description(").append(property.getDescription()).append(")");
+    }
+
+    return builder.toString();
+  }
+
+  private String getAttributeTypePrefix(final String typeClassName) {
+    if (typeClassName.equals("byte[]")) {
+      return "blob";
+    }
+
+    return typeClassName.substring(0, 1).toLowerCase() + typeClassName.substring(1);
+  }
+
+  private static String getInterfaceName(final String tableName, final boolean uppercase) {
+    String name = tableName;
+    if (name.contains(".")) {
+      name = name.substring(name.lastIndexOf('.') + 1);
+    }
+    name = Text.underscoreToCamelCase(name);
+    if (uppercase) {
+      name = name.substring(0, 1).toUpperCase() + name.substring(1);
+    }
+
+    return name;
   }
 
   private static <T> Attribute<T> getAttribute(final EntityType<?> entityType, final Column column) {
@@ -183,9 +311,9 @@ public final class DatabaseExplorerModel {
     }
   }
 
-  private final class DefinitionModel extends AbstractFilteredTableModel<EntityDefinition, Integer> {
+  private final class DomainModel extends AbstractFilteredTableModel<EntityDefinition, Integer> {
 
-    private DefinitionModel() {
+    private DomainModel() {
       super(new AbstractTableSortModel<EntityDefinition, Integer>(createDefinitionColumns()) {
         @Override
         public Class<?> getColumnClass(final Integer columnIdentifier) {
