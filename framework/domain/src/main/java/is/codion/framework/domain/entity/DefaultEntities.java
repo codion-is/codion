@@ -64,6 +64,11 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
+  public final boolean contains(final EntityType<?> entityType) {
+    return entityDefinitions.containsKey(requireNonNull(entityType));
+  }
+
+  @Override
   public final Collection<EntityDefinition> getDefinitions() {
     return unmodifiableCollection(entityDefinitions.values());
   }

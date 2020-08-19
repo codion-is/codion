@@ -559,7 +559,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         statement = prepareStatement(selectQuery);
         resultSet = executeStatement(statement, selectQuery, whereCondition);
-        final List<T> result = propertyToSelect.<T>getResultPacker().pack(resultSet, -1);
+        final List<T> result = propertyToSelect.<T>getResultPacker().pack(resultSet);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -593,7 +593,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         statement = prepareStatement(selectQuery);
         resultSet = executeStatement(statement, selectQuery, whereCondition);
-        final List<Integer> result = INTEGER_RESULT_PACKER.pack(resultSet, -1);
+        final List<Integer> result = INTEGER_RESULT_PACKER.pack(resultSet);
         commitIfTransactionIsNotOpen();
         if (result.isEmpty()) {
           throw new SQLException("Row count query returned no value");

@@ -6429,3 +6429,5 @@
   EntityPanel.initializeKeyboardActions() NPE bug fixed, tried to create table panel related actions when no table panel was present
   ColumnSummaryModel, remove unused type parameter, some code cleanup
   Entity.valuesEqual() renamed to columnValuesEqual(), entities must now contain the exact same attribute values, now throws exception if the entity type doesn't match
+  ResultPacker.pack() overloaded without fetchCount parameter
+  Entities.contains() added

@@ -43,6 +43,12 @@ public interface Entities {
   EntityDefinition getDefinition(EntityType<?> entityType);
 
   /**
+   * @param entityType the entityType
+   * @return true if this domain contains a definition for the given type
+   */
+  boolean contains(EntityType<?> entityType);
+
+  /**
    * Returns all {@link EntityDefinition}s available
    * @return all entity definitions
    */

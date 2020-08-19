@@ -383,7 +383,7 @@ public class EntityGeneratorModel {
       try {
         clear();
         final ResultSet resultSet = metaData.getSchemas();
-        final List<Schema> schemas = new SchemaPacker().pack(resultSet, -1);
+        final List<Schema> schemas = new SchemaPacker().pack(resultSet);
         resultSet.close();
         final Set<Schema> items = new HashSet<>(schemas);
         addItemsAt(0, new ArrayList<>(items));
@@ -449,7 +449,7 @@ public class EntityGeneratorModel {
         for (final Schema schema : schemas) {
           final String catalog = "is.codion.dbms.mysql.MySQLDatabase".equals(database.getClass().getName()) ? schema.getName() : null;
           final ResultSet resultSet = metaData.getTables(catalog, schema.getName(), null, null);
-          final List<Table> tables = new TablePacker(schema.getName()).pack(resultSet, -1);
+          final List<Table> tables = new TablePacker(schema.getName()).pack(resultSet);
           resultSet.close();
           for (final Table table : tables) {
             populateTable(catalog, table);
@@ -472,13 +472,13 @@ public class EntityGeneratorModel {
 
     private void populateTable(final String catalog, final Table table) throws SQLException {
       ResultSet resultSet = metaData.getImportedKeys(catalog, table.getSchema().getName(), table.getTableName());
-      table.foreignKeys = new ForeignKeyColumnPacker().pack(resultSet, -1);
+      table.foreignKeys = new ForeignKeyColumnPacker().pack(resultSet);
       resultSet.close();
       resultSet = metaData.getPrimaryKeys(catalog, table.getSchema().getName(), table.getTableName());
-      table.primaryKeyColumns = new PrimaryKeyColumnPacker().pack(resultSet, -1);
+      table.primaryKeyColumns = new PrimaryKeyColumnPacker().pack(resultSet);
       resultSet.close();
       resultSet = metaData.getColumns(catalog, table.getSchema().getName(), table.getTableName(), null);
-      table.columns = new ColumnPacker(table).pack(resultSet, -1);
+      table.columns = new ColumnPacker(table).pack(resultSet);
       resultSet.close();
     }
 
