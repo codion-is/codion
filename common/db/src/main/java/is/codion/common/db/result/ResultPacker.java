@@ -21,6 +21,19 @@ public interface ResultPacker<T> {
    * Items are skipped if {@link #fetch(ResultSet)} returns null.
    * This method does not close or modify the ResultSet in any way.
    * @param resultSet the ResultSet instance containing the query result to process
+   * @return a List containing the data from the query result
+   * @throws SQLException thrown if anything goes wrong during the packing
+   * @throws NullPointerException in case resultSet is null
+   */
+  default List<T> pack(final ResultSet resultSet) throws SQLException {
+    return pack(resultSet, -1);
+  }
+
+  /**
+   * Iterates through the given ResultSet, packing its contents into a List using {@link #fetch(ResultSet)} in the order they appear.
+   * Items are skipped if {@link #fetch(ResultSet)} returns null.
+   * This method does not close or modify the ResultSet in any way.
+   * @param resultSet the ResultSet instance containing the query result to process
    * @param fetchCount the maximum number of records to fetch from the result set,
    * a negative value means all should be fetched.
    * @return a List containing the data from the query result
