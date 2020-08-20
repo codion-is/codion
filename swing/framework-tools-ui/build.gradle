@@ -23,7 +23,7 @@ distributions {
     }
 }
 
-applicationName = 'entity_generator'
+applicationName = 'database_explorer'
 
 mainClassName = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
 
