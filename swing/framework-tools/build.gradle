@@ -26,6 +26,8 @@ dependencies {
 ext {
     testAddModules = ['java.rmi,is.codion.common.rmi,is.codion.framework.server']
     testAddReads = ['is.codion.swing.framework.tools': 'java.rmi,is.codion.common.rmi,is.codion.framework.server']
+    //so Text utility class can read test resource files
+    testAddOpens = ['is.codion.swing.framework.tools/is.codion.swing.framework.tools.explorer': 'is.codion.common.core']
 }
 
 compileTestJava {
@@ -39,5 +41,6 @@ test {
     moduleOptions {
         addModules = testAddModules
         addReads = testAddReads
+        addOpens = testAddOpens
     }
 }
