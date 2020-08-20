@@ -19,21 +19,21 @@ dependencies {
 
 distributions {
     main {
-        distributionBaseName = "codion.entity.generator"
+        distributionBaseName = "codion.database.explorer"
     }
 }
 
 applicationName = 'entity_generator'
 
-mainClassName = 'is.codion.swing.framework.tools.ui.generator.EntityGeneratorPanel'
+mainClassName = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
 
 applicationDefaultJvmArgs = [
-        '-Dcodion.configurationFile=../config/entity_generator.config',
+        '-Dcodion.configurationFile=../config/database_explorer.config',
         '-Dlogback.configurationFile=../config/logback.xml'
 ]
 
 applicationDistribution.into('config') {
-    from(files('src/main/config/entity_generator.config'))
+    from(files('src/main/config/database_explorer.config'))
     from(files('src/main/config/create_schema.sql'))
     from(files('src/main/config/logback.xml'))
 }
@@ -41,21 +41,6 @@ applicationDistribution.into('config') {
 task runDatabaseExplorer(type: JavaExec) {
     group 'run'
     main = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
-    classpath = sourceSets.test.runtimeClasspath
-    systemProperties = [
-            'codion.db.url'        : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts':
-                    '../../demos/chinook/src/main/sql/create_schema.sql,' +
-                    '../../demos/empdept/src/main/sql/create_schema.sql,' +
-                    '../../demos/petclinic/src/main/sql/create_schema.sql,' +
-                    '../../demos/petstore/src/main/sql/create_schema.sql,' +
-                    '../../demos/world/src/main/sql/create_schema.sql'
-    ]
-}
-
-task runEntityGenerator(type: JavaExec) {
-    group 'run'
-    main = mainClassName
     classpath = sourceSets.test.runtimeClasspath
     systemProperties = [
             'codion.db.url'        : 'jdbc:h2:mem:h2db',

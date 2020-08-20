@@ -6,9 +6,9 @@ package is.codion.swing.framework.tools.ui.explorer;
 import is.codion.common.db.database.Databases;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.common.user.Users;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
+import is.codion.swing.common.ui.LoginPanel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
@@ -72,7 +72,7 @@ public final class DatabaseExplorerPanel extends JPanel {
    */
   public static void main(final String[] arguments) {
     try {
-      final User user = Users.parseUser("scott:tiger");
+      final User user = new LoginPanel().showLoginPanel(null);
       final DatabaseExplorerPanel generatorPanel = new DatabaseExplorerPanel(new DatabaseExplorerModel(Databases.getInstance(), user));
       final JFrame frame = new JFrame("Codion Database Explorer");
       frame.setIconImage(icons().logoTransparent().getImage());

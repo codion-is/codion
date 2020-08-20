@@ -6407,3 +6407,4 @@
   DatabaseExplorer now works, supersedes EntityGenerator
   EntityType.blobAttribute() renamed byteArrayAttribute()
   DatabaseExplorerModel and DatabaseExplorerModelTest refactored
+  EntityGeneratorModel and Panel removed
