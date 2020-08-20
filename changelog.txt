@@ -6405,3 +6405,5 @@
   Entities.contains() added
   DatabaseExplorerModel and DatabaseExplorerPanel added along with related classes
   DatabaseExplorer now works, supersedes EntityGenerator
+  EntityType.blobAttribute() renamed byteArrayAttribute()
+  DatabaseExplorerModel and DatabaseExplorerModelTest refactored

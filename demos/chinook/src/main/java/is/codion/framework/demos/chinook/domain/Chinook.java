@@ -41,7 +41,7 @@ public interface Chinook {
     Attribute<String> TITLE = TYPE.stringAttribute("title");
     Attribute<Long> ARTIST_ID = TYPE.longAttribute("artistid");
     Attribute<Entity> ARTIST_FK = TYPE.entityAttribute("artist_fk");
-    Attribute<byte[]> COVER = TYPE.blobAttribute("cover");
+    Attribute<byte[]> COVER = TYPE.byteArrayAttribute("cover");
     Attribute<Image> COVERIMAGE = TYPE.attribute("coverimage", Image.class);
     Attribute<Integer> NUMBER_OF_TRACKS = TYPE.integerAttribute("number_of_tracks");
   }

@@ -29,7 +29,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public static final EntityType<Entity> T_DEPARTMENT = DOMAIN.entityType("scott.dept");
-  public static final Attribute<byte[]> DEPARTMENT_LOGO = T_DEPARTMENT.blobAttribute("logo");
+  public static final Attribute<byte[]> DEPARTMENT_LOGO = T_DEPARTMENT.byteArrayAttribute("logo");
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");

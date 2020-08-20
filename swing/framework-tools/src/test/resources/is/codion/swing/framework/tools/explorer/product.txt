@@ -1,0 +1,28 @@
+public interface Product {
+  EntityType<Entity> TYPE = DOMAIN.entityType("petstore.product");
+  Attribute<Integer> PRODUCTID = TYPE.integerAttribute("productid");
+  Attribute<Integer> CATEGORYID = TYPE.integerAttribute("categoryid");
+  Attribute<String> NAME = TYPE.stringAttribute("name");
+  Attribute<String> DESCRIPTION = TYPE.stringAttribute("description");
+  Attribute<String> IMAGEURL = TYPE.stringAttribute("imageurl");
+  Attribute<Entity> CATEGORYID_FK = TYPE.entityAttribute("categoryid_fk");
+}
+
+void product() {
+  define(Product.TYPE,
+          columnProperty(Product.PRODUCTID)
+                .primaryKeyIndex(0),
+          columnProperty(Product.CATEGORYID)
+                .nullable(false),
+          columnProperty(Product.NAME, "Name")
+                .nullable(false)
+                .maximumLength(25),
+          columnProperty(Product.DESCRIPTION, "Description")
+                .nullable(false)
+                .maximumLength(255),
+          columnProperty(Product.IMAGEURL, "Imageurl")
+                .maximumLength(55),
+          foreignKeyProperty(Product.CATEGORYID_FK, "Categoryid")
+                .reference(Product.CATEGORYID, Category.CATEGORYID)
+  );
+}

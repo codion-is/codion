@@ -35,7 +35,7 @@ public final class TestDomain extends DefaultDomain {
   public static final EntityType<Entity> T_ENTITY = DOMAIN.entityType("test.entity");
   public static final Attribute<BigDecimal> ENTITY_DECIMAL = T_ENTITY.bigDecimalAttribute("id");
   public static final Attribute<LocalDateTime> ENTITY_DATE_TIME = T_ENTITY.localDateTimeAttribute("date_time");
-  public static final Attribute<byte[]> ENTITY_BLOB = T_ENTITY.blobAttribute("blob");
+  public static final Attribute<byte[]> ENTITY_BLOB = T_ENTITY.byteArrayAttribute("blob");
   public static final Attribute<String> ENTITY_READ_ONLY = T_ENTITY.stringAttribute("read_only");
   public static final Attribute<Boolean> ENTITY_BOOLEAN = T_ENTITY.booleanAttribute("boolean");
   public static final Attribute<LocalTime> ENTITY_TIME = T_ENTITY.localTimeAttribute("time");
@@ -57,7 +57,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
   public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
   public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
-  public static final Attribute<byte[]> DEPARTMENT_LOGO = T_DEPARTMENT.blobAttribute("logo");
+  public static final Attribute<byte[]> DEPARTMENT_LOGO = T_DEPARTMENT.byteArrayAttribute("logo");
 
   void department() {
     define(T_DEPARTMENT,

@@ -126,7 +126,7 @@ public class TestDomain extends DefaultDomain {
     Attribute<Integer> INT_VALUE_LIST = TYPE.integerAttribute("int_value_list");
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
     Attribute<Integer> MASTER_CODE_DENORM = TYPE.integerAttribute("master_code_denorm");
-    Attribute<byte[]> BYTES = TYPE.blobAttribute("bytes");
+    Attribute<byte[]> BYTES = TYPE.byteArrayAttribute("bytes");
 
     Optional<Long> getId();
     void setId(Long value);
@@ -203,7 +203,7 @@ public class TestDomain extends DefaultDomain {
     Attribute<String> NAME = TYPE.stringAttribute("dname");
     Attribute<String> LOCATION = TYPE.stringAttribute("loc");
     Attribute<Boolean> ACTIVE = TYPE.booleanAttribute("active");
-    Attribute<byte[]> DATA = TYPE.blobAttribute("data");
+    Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
 
     Integer deptNo();
     String name();
@@ -249,7 +249,7 @@ public class TestDomain extends DefaultDomain {
     Attribute<Entity> MANAGER_FK = TYPE.entityAttribute("mgr_fk");
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
     Attribute<String> DEPARTMENT_NAME = TYPE.stringAttribute("department_name");
-    Attribute<byte[]> DATA = TYPE.blobAttribute("data");
+    Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
 
     Integer getId();
     Double getCommission();

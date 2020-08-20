@@ -67,7 +67,7 @@ public interface World {
     Attribute<Integer> CAPITAL_POPULATION = TYPE.integerAttribute("capital_population");
     Attribute<Integer> NO_OF_CITIES = TYPE.integerAttribute("no_of_cities");
     Attribute<Integer> NO_OF_LANGUAGES = TYPE.integerAttribute("no_of_languages");
-    Attribute<byte[]> FLAG = TYPE.blobAttribute("flag");
+    Attribute<byte[]> FLAG = TYPE.byteArrayAttribute("flag");
   }
 
   interface CountryLanguage extends Entity {
@@ -118,7 +118,7 @@ public interface World {
     Attribute<String> COUNTRY_GOVERNMENTFORM = TYPE.stringAttribute("governmentform");
     Attribute<String> COUNTRY_HEADOFSTATE = TYPE.stringAttribute("headofstate");
     Attribute<String> COUNTRY_CODE2 = TYPE.stringAttribute("code2");
-    Attribute<byte[]> COUNTRY_FLAG = TYPE.blobAttribute("flag");
+    Attribute<byte[]> COUNTRY_FLAG = TYPE.byteArrayAttribute("flag");
     Attribute<Integer> CITY_ID = TYPE.integerAttribute("cityid");
     Attribute<String> CITY_NAME = TYPE.stringAttribute("cityname");
     Attribute<String> CITY_DISTRICT = TYPE.stringAttribute("district");

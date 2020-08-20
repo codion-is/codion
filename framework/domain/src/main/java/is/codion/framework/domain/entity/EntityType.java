@@ -120,7 +120,7 @@ public interface EntityType<T extends Entity> {
    * @param name the attribute name
    * @return a new {@link Attribute}
    */
-  Attribute<byte[]> blobAttribute(String name);
+  Attribute<byte[]> byteArrayAttribute(String name);
 
   /**
    * Instantiates a new {@link ConditionType} for this entity type
