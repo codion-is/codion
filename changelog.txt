@@ -6409,3 +6409,4 @@
   DatabaseExplorerModel and DatabaseExplorerModelTest refactored
   EntityGeneratorModel and Panel removed
   DatabaseExplorerModel, no longer sets columnHasDefaultValue() for primary key identity columns
+0.16.9
