@@ -45,8 +45,6 @@ import static java.util.Collections.singletonList;
 
 public final class DatabaseExplorerModel {
 
-  private static final String PROPERTIES_COLUMN_PROPERTY = "        columnProperty(";
-
   private final MetaDataModel metadataModel;
   private final SchemaModel schemaModel;
   private final DomainModel domainModel;
@@ -160,41 +158,41 @@ public final class DatabaseExplorerModel {
   }
 
   private void updateCodeValue() {
-    domainCodeValue.set(createDomainCode(domainModel.getSelectionModel().getSelectedItems()));
+    final StringBuilder builder = new StringBuilder();
+    domainModel.getSelectionModel().getSelectedItems().forEach(definition -> builder.append(definitionToString(definition)));
+    domainCodeValue.set(builder.toString());
   }
 
-  private String createDomainCode(final List<EntityDefinition> definitions) {
+  private String definitionToString(final EntityDefinition definition) {
     final StringBuilder builder = new StringBuilder();
-    definitions.forEach(definition -> {
-      final String interfaceName = getInterfaceName(definition.getTableName(), true);
-      builder.append("public interface ").append(interfaceName).append(" {").append(Util.LINE_SEPARATOR);
-      builder.append("  ").append("EntityType<Entity> TYPE = ").append("DOMAIN.entityType(\"")
-              .append(definition.getTableName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
-      final List<ColumnProperty<?>> columnProperties = definition.getColumnProperties();
-      columnProperties.forEach(property -> {
-        final String typeClassName = property.getAttribute().getTypeClass().getSimpleName();
-        builder.append("  ").append("Attribute<").append(typeClassName).append("> ")
-                .append(property.getColumnName().toUpperCase()).append(" = TYPE.").append(getAttributeTypePrefix(typeClassName))
-                .append("Attribute(\"").append(property.getColumnName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
-      });
-      final List<ForeignKeyProperty> foreignKeyProperties = definition.getForeignKeyProperties();
-      foreignKeyProperties.forEach(property -> builder.append("  ").append("Attribute<Entity> ")
-              .append(property.getAttribute().getName().toUpperCase()).append(" = TYPE.entityAttribute(\"")
-              .append(property.getAttribute().getName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR));
-
-      builder.append("}").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
-
-      builder.append("void ").append(getInterfaceName(definition.getTableName(), false)).append("() {").append(Util.LINE_SEPARATOR);
-      builder.append("  define(").append(interfaceName).append(".TYPE").append(",").append(Util.LINE_SEPARATOR);
-      columnProperties.forEach(property -> builder.append("  ").append(getColumnPropertyDefinition(interfaceName, property, definition))
-              .append(",").append(Util.LINE_SEPARATOR));
-      foreignKeyProperties.forEach(property -> builder.append("  ").append(getForeignKeyPropertyDefinition(interfaceName, property))
-              .append(",").append(Util.LINE_SEPARATOR));
-      builder.replace(builder.length() - 2, builder.length(), "");
-      builder.append(Util.LINE_SEPARATOR).append("  );").append(Util.LINE_SEPARATOR);
-
-      builder.append("}").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+    final String interfaceName = getInterfaceName(definition.getTableName(), true);
+    builder.append("public interface ").append(interfaceName).append(" {").append(Util.LINE_SEPARATOR);
+    builder.append("  ").append("EntityType<Entity> TYPE = ").append("DOMAIN.entityType(\"")
+            .append(definition.getTableName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
+    final List<ColumnProperty<?>> columnProperties = definition.getColumnProperties();
+    columnProperties.forEach(property -> {
+      final String typeClassName = property.getAttribute().getTypeClass().getSimpleName();
+      builder.append("  ").append("Attribute<").append(typeClassName).append("> ")
+              .append(property.getColumnName().toUpperCase()).append(" = TYPE.").append(getAttributeTypePrefix(typeClassName))
+              .append("Attribute(\"").append(property.getColumnName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
     });
+    final List<ForeignKeyProperty> foreignKeyProperties = definition.getForeignKeyProperties();
+    foreignKeyProperties.forEach(property -> builder.append("  ").append("Attribute<Entity> ")
+            .append(property.getAttribute().getName().toUpperCase()).append(" = TYPE.entityAttribute(\"")
+            .append(property.getAttribute().getName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR));
+
+    builder.append("}").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+
+    builder.append("void ").append(getInterfaceName(definition.getTableName(), false)).append("() {").append(Util.LINE_SEPARATOR);
+    builder.append("  define(").append(interfaceName).append(".TYPE").append(",").append(Util.LINE_SEPARATOR);
+    columnProperties.forEach(property -> builder.append("  ").append(getColumnPropertyDefinition(interfaceName, property, definition))
+            .append(",").append(Util.LINE_SEPARATOR));
+    foreignKeyProperties.forEach(property -> builder.append("  ").append(getForeignKeyPropertyDefinition(interfaceName, property))
+            .append(",").append(Util.LINE_SEPARATOR));
+    builder.replace(builder.length() - 2, builder.length(), "");
+    builder.append(Util.LINE_SEPARATOR).append("  );").append(Util.LINE_SEPARATOR);
+
+    builder.append("}").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
 
     return builder.toString();
   }
@@ -203,8 +201,8 @@ public final class DatabaseExplorerModel {
     final StringBuilder builder = new StringBuilder();
     final String foreignKeyAttribute = property.getAttribute().getName().toUpperCase();
     final String caption = property.getCaption();
-    builder.append("        foreignKeyProperty(").append(interfaceName).append(".").append(foreignKeyAttribute).append(", \"").append(caption)
-            .append("\")").append(Util.LINE_SEPARATOR);
+    builder.append("        foreignKeyProperty(").append(interfaceName).append(".").append(foreignKeyAttribute)
+            .append(", \"").append(caption).append("\")").append(Util.LINE_SEPARATOR);
     property.getReferences().forEach(reference ->
             builder.append("                .reference(").append(interfaceName).append(".")
                     .append(reference.getAttribute().getName().toUpperCase()).append(", ")
@@ -217,7 +215,7 @@ public final class DatabaseExplorerModel {
   private static String getColumnPropertyDefinition(final String interfaceName, final ColumnProperty<?> property,
                                                     final EntityDefinition definition) {
     final StringBuilder builder = new StringBuilder();
-    builder.append(PROPERTIES_COLUMN_PROPERTY).append(interfaceName + "." + property.getColumnName().toUpperCase());
+    builder.append("        columnProperty(").append(interfaceName + "." + property.getColumnName().toUpperCase());
     if (!definition.isForeignKeyAttribute(property.getAttribute()) && !property.isPrimaryKeyColumn()) {
       builder.append(", ").append("\"").append(property.getCaption()).append("\")");
     }
@@ -226,7 +224,8 @@ public final class DatabaseExplorerModel {
     }
 
     if (property.isPrimaryKeyColumn()) {
-      builder.append(Util.LINE_SEPARATOR).append("                .primaryKeyIndex(").append(property.getPrimaryKeyIndex()).append(")");
+      builder.append(Util.LINE_SEPARATOR).append("                .primaryKeyIndex(")
+              .append(property.getPrimaryKeyIndex()).append(")");
     }
     if (property.columnHasDefaultValue()) {
       builder.append(Util.LINE_SEPARATOR).append("                .columnHasDefaultValue(true)");
@@ -235,21 +234,24 @@ public final class DatabaseExplorerModel {
       builder.append(Util.LINE_SEPARATOR).append("                .nullable(false)");
     }
     if (String.class.equals(property.getAttribute().getTypeClass())) {
-      builder.append(Util.LINE_SEPARATOR).append("                .maximumLength(").append(property.getMaximumLength()).append(")");
+      builder.append(Util.LINE_SEPARATOR).append("                .maximumLength(")
+              .append(property.getMaximumLength()).append(")");
     }
     if (Double.class.equals(property.getAttribute().getTypeClass()) && property.getMaximumFractionDigits() >= 1) {
-      builder.append(Util.LINE_SEPARATOR).append("                .maximumFractionDigits(").append(property.getMaximumFractionDigits()).append(")");
+      builder.append(Util.LINE_SEPARATOR).append("                .maximumFractionDigits(")
+              .append(property.getMaximumFractionDigits()).append(")");
     }
     if (!nullOrEmpty(property.getDescription())) {
-      builder.append(Util.LINE_SEPARATOR).append("                .description(").append(property.getDescription()).append(")");
+      builder.append(Util.LINE_SEPARATOR).append("                .description(")
+              .append(property.getDescription()).append(")");
     }
 
     return builder.toString();
   }
 
-  private String getAttributeTypePrefix(final String typeClassName) {
+  private static String getAttributeTypePrefix(final String typeClassName) {
     if (typeClassName.equals("byte[]")) {
-      return "blob";
+      return "byteArray";
     }
 
     return typeClassName.substring(0, 1).toLowerCase() + typeClassName.substring(1);

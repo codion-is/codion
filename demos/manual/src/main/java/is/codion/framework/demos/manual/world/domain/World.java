@@ -44,7 +44,7 @@ public interface World {
     Attribute<Integer> CAPITAL_POPULATION = TYPE.integerAttribute("capital_population");
     Attribute<Integer> NO_OF_CITIES = TYPE.integerAttribute("no_of_cities");
     Attribute<Integer> NO_OF_LANGUAGES = TYPE.integerAttribute("no_of_languages");
-    Attribute<byte[]> FLAG = TYPE.blobAttribute("flag");
+    Attribute<byte[]> FLAG = TYPE.byteArrayAttribute("flag");
   }
 
   interface CountryLanguage extends Entity {

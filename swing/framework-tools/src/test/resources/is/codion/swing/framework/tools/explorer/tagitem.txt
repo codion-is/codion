@@ -1,0 +1,20 @@
+public interface TagItem {
+  EntityType<Entity> TYPE = DOMAIN.entityType("petstore.tag_item");
+  Attribute<Integer> TAGID = TYPE.integerAttribute("tagid");
+  Attribute<Integer> ITEMID = TYPE.integerAttribute("itemid");
+  Attribute<Entity> TAGID_FK = TYPE.entityAttribute("tagid_fk");
+  Attribute<Entity> ITEMID_FK = TYPE.entityAttribute("itemid_fk");
+}
+
+void tagItem() {
+  define(TagItem.TYPE,
+          columnProperty(TagItem.TAGID)
+                .primaryKeyIndex(0),
+          columnProperty(TagItem.ITEMID)
+                .primaryKeyIndex(1),
+          foreignKeyProperty(TagItem.TAGID_FK, "Tagid")
+                .reference(TagItem.TAGID, Tag.TAGID),
+          foreignKeyProperty(TagItem.ITEMID_FK, "Itemid")
+                .reference(TagItem.ITEMID, Item.ITEMID)
+  );
+}

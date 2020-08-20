@@ -111,7 +111,7 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   }
 
   @Override
-  public Attribute<byte[]> blobAttribute(final String name) {
+  public Attribute<byte[]> byteArrayAttribute(final String name) {
     return attribute(name, byte[].class);
   }
 
