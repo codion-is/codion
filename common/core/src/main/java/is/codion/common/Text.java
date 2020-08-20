@@ -281,8 +281,8 @@ public final class Text {
   /**
    * Converts a string with underscores into a camelCaseString.
    * Just don't use this, it's not bulletproof.
-   * @param string the string
-   * @return a camelCase version of the given string
+   * @param text the text
+   * @return a camelCase version of the given text
    */
   public static String underscoreToCamelCase(final String text) {
     final String string = requireNonNull(text).toLowerCase();
