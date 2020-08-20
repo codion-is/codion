@@ -135,7 +135,7 @@ public final class DatabaseExplorerModel {
     if (attribute.isDecimal() && column.getDecimalDigits() >= 1) {
       builder.maximumFractionDigits(column.getDecimalDigits());
     }
-    if (column.hasDefaultValue()) {
+    if (column.getKeySeq() == -1 && column.hasDefaultValue()) {
       builder.columnHasDefaultValue(true);
     }
     if (!nullOrEmpty(column.getComment())) {
