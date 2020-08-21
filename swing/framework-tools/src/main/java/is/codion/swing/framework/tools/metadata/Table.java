@@ -3,12 +3,17 @@
  */
 package is.codion.swing.framework.tools.metadata;
 
+import is.codion.common.Util;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.unmodifiableMap;
 
 /**
  * Represents a database table
@@ -37,23 +42,34 @@ public final class Table {
   }
 
   public Map<String, Column> getColumns() {
-    return columns;
+    return unmodifiableMap(columns);
+  }
+
+  public Collection<String> getReferencedSchemas() {
+    return foreignKeyColumns.stream()
+            .filter(foreignKeyColumn -> !foreignKeyColumn.getPkSchemaName().equals(schema.getName()))
+            .map(ForeignKeyColumn::getPkSchemaName).collect(Collectors.toSet());
   }
 
   public Map<Table, ForeignKey> getForeignKeys() {
-    return foreignKeys;
+    return unmodifiableMap(foreignKeys);
   }
 
   @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
+  public String toString() {
+    return schema.getName() + "." + tableName;
+  }
+
+  @Override
+  public boolean equals(final Object object) {
+    if (this == object) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (object == null || getClass() != object.getClass()) {
       return false;
     }
 
-    final Table table = (Table) o;
+    final Table table = (Table) object;
 
     return Objects.equals(schema, table.getSchema()) && Objects.equals(tableName, table.getTableName());
   }
@@ -67,10 +83,21 @@ public final class Table {
   }
 
   void resolveForeignKeys(final Map<String, Schema> schemas) {
-    foreignKeyColumns.forEach(foreignKeyColumn -> {
-      final Table referencedTable = schemas.get(foreignKeyColumn.getPkSchemaName()).getTables().get(foreignKeyColumn.getPkTableName());
-      foreignKeys.computeIfAbsent(referencedTable, table -> new ForeignKey(referencedTable))
-              .addReference(columns.get(foreignKeyColumn.getFkColumnName()), referencedTable.columns.get(foreignKeyColumn.getPkColumnName()));
+    Util.map(foreignKeyColumns, foreignKeyColumn ->
+            getReferencedTable(foreignKeyColumn, schemas)).forEach((referencedTable, foreignKeyColumns) -> {
+      final ForeignKey foreignKey = foreignKeys.computeIfAbsent(referencedTable, ForeignKey::new);
+      foreignKeyColumns.forEach(foreignKeyColumn ->
+              foreignKey.addReference(columns.get(foreignKeyColumn.getFkColumnName()),
+                      referencedTable.columns.get(foreignKeyColumn.getPkColumnName())));
     });
+  }
+
+  private static Table getReferencedTable(final ForeignKeyColumn foreignKeyColumn, final Map<String, Schema> schemas) {
+    final Table referencedTable = schemas.get(foreignKeyColumn.getPkSchemaName()).getTables().get(foreignKeyColumn.getPkTableName());
+    if (referencedTable == null) {
+      throw new IllegalStateException("Referenced table not found: " + foreignKeyColumn.getPkSchemaName() + "." + foreignKeyColumn.getPkTableName());
+    }
+
+    return referencedTable;
   }
 }

@@ -4,6 +4,7 @@
 package is.codion.swing.framework.tools.metadata;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.EventDataListener;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -18,10 +19,12 @@ import java.util.Map;
 public final class MetaDataModel {
 
   private final Map<String, Schema> schemas;
+  private final Connection connection;
 
   public MetaDataModel(final Connection connection) throws DatabaseException {
+    this.connection = connection;
     try {
-      this.schemas = analyzeSchemas(connection.getMetaData());
+      this.schemas = discoverSchemas(connection.getMetaData());
     }
     catch (final SQLException e) {
       throw new DatabaseException(e, e.getMessage());
@@ -32,12 +35,18 @@ public final class MetaDataModel {
     return Collections.unmodifiableMap(schemas);
   }
 
-  private static Map<String, Schema> analyzeSchemas(final DatabaseMetaData metaData) throws SQLException {
-    final Map<String, Schema> schemaMap = new HashMap<>();
-    ResultSet resultSet = metaData.getSchemas();
-    final List<Schema> schemas = new SchemaPacker().pack(resultSet);
-    resultSet.close();
-    for (final Schema schema : schemas) {
+  public void populateSchema(final String schemaName, final EventDataListener<String> schemaNotifier) {
+    final Schema schema = schemas.get(schemaName);
+    if (schema == null) {
+      throw new IllegalArgumentException("Schema not found: " + schemaName);
+    }
+    if (schema.isPopulated()) {
+      return;
+    }
+    schemaNotifier.onEvent(schemaName);
+    ResultSet resultSet = null;
+    try {
+      final DatabaseMetaData metaData = connection.getMetaData();
       final List<Table> tables = new ArrayList<>();
       resultSet = metaData.getTables(null, schema.getName(), null, null);
       final String catalog = null;
@@ -50,15 +59,32 @@ public final class MetaDataModel {
         final List<PrimaryKeyColumn> primaryKeyColumns = new PrimaryKeyColumnPacker().pack(pkResultSet);
         pkResultSet.close();
         final ResultSet colResultSet = metaData.getColumns(catalog, schema.getName(), tableName, null);
-        final List<Column> columns = new ColumnPacker(tableName, primaryKeyColumns, foreignKeyColumns).pack(colResultSet);
+        final List<Column> columns = new ColumnPacker(primaryKeyColumns).pack(colResultSet);
         colResultSet.close();
         tables.add(new Table(schema, tableName, columns, foreignKeyColumns));
       }
       resultSet.close();
+
       schema.setTables(tables);
-      schemaMap.put(schema.getName(), schema);
+      schema.getTables().values().stream()
+              .flatMap(table -> table.getReferencedSchemas().stream())
+              .forEach(referencedSchema -> populateSchema(referencedSchema, schemaNotifier));
     }
-    schemas.forEach(schema -> schema.getTables().values().forEach(table -> table.resolveForeignKeys(schemaMap)));
+    catch (final SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void resolveForeignKeys() {
+    schemas.values().forEach(schema -> schema.getTables().values().forEach(table -> table.resolveForeignKeys(schemas)));
+  }
+
+  private static Map<String, Schema> discoverSchemas(final DatabaseMetaData metaData) throws SQLException {
+    final Map<String, Schema> schemaMap = new HashMap<>();
+    final ResultSet resultSet = metaData.getSchemas();
+    final List<Schema> schemas = new SchemaPacker().pack(resultSet);
+    resultSet.close();
+    schemas.forEach(schema -> schemaMap.put(schema.getName(), schema));
 
     return schemaMap;
   }

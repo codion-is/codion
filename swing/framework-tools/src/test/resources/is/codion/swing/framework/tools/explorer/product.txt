@@ -5,7 +5,7 @@ public interface Product {
   Attribute<String> NAME = TYPE.stringAttribute("name");
   Attribute<String> DESCRIPTION = TYPE.stringAttribute("description");
   Attribute<String> IMAGEURL = TYPE.stringAttribute("imageurl");
-  Attribute<Entity> CATEGORYID_FK = TYPE.entityAttribute("categoryid_fk");
+  Attribute<Entity> CATEGORY_FK = TYPE.entityAttribute("category_fk");
 }
 
 void product() {
@@ -22,7 +22,7 @@ void product() {
                 .maximumLength(255),
           columnProperty(Product.IMAGEURL, "Imageurl")
                 .maximumLength(55),
-          foreignKeyProperty(Product.CATEGORYID_FK, "Categoryid")
+          foreignKeyProperty(Product.CATEGORY_FK, "Category")
                 .reference(Product.CATEGORYID, Category.CATEGORYID)
   );
 }
