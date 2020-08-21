@@ -853,7 +853,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       }
       if (propertyMap.containsKey(property.getAttribute())) {
         throw new IllegalArgumentException("Property " + property.getAttribute()
-                + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
+                + (property.getCaption() != null ? " (" + property.getCaption() + ")" : "")
                 + " has already been defined as: " + propertyMap.get(property.getAttribute()) + " in entity: " + entityType);
       }
     }

@@ -27,6 +27,7 @@ create table petstore.address (
  zip integer not null,
  latitude decimal(14,2) not null,
  longitude decimal(14,2) not null,
+ image blob,
  primary key (addressid)
 );
 

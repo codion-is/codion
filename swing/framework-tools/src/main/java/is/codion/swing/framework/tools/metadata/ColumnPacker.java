@@ -15,15 +15,10 @@ import java.util.Collection;
 
 final class ColumnPacker implements ResultPacker<Column> {
 
-  private final String tableName;
   private final Collection<PrimaryKeyColumn> primaryKeyColumns;
-  private final Collection<ForeignKeyColumn> foreignKeyColumns;
 
-  ColumnPacker(final String tableName, final Collection<PrimaryKeyColumn> primaryKeyColumns,
-               final Collection<ForeignKeyColumn> foreignKeyColumns) {
-    this.tableName = tableName;
+  ColumnPacker(final Collection<PrimaryKeyColumn> primaryKeyColumns) {
     this.primaryKeyColumns = primaryKeyColumns;
-    this.foreignKeyColumns = foreignKeyColumns;
   }
 
   @Override
@@ -35,7 +30,6 @@ final class ColumnPacker implements ResultPacker<Column> {
     }
     final Class<?> typeClass = translateTypeName(dataType, decimalDigits);
     if (typeClass != null) {
-      final String tableName = resultSet.getString("TABLE_NAME");
       final String columnName = resultSet.getString("COLUMN_NAME");
 
       return new Column(columnName, typeClass,
@@ -50,12 +44,6 @@ final class ColumnPacker implements ResultPacker<Column> {
   private int getPrimaryKeyColumnIndex(final String columnName) {
     return primaryKeyColumns.stream().filter(primaryKeyColumn ->
             columnName.equals(primaryKeyColumn.getColumnName())).findFirst().map(PrimaryKeyColumn::getKeySeq).orElse(-1);
-  }
-
-  private ForeignKeyColumn getForeignKeyColumn(final String tableName, final String columnName) {
-    return foreignKeyColumns.stream().filter(foreignKeyColumn ->
-            foreignKeyColumn.getFkTableName().equals(tableName)
-                    && foreignKeyColumn.getFkColumnName().equals(columnName)).findFirst().orElse(null);
   }
 
   private static Class<?> translateTypeName(final int sqlType, final int decimalDigits) {

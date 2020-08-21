@@ -157,6 +157,6 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   @Override
   public String toString() {
-    return "entityType: " + entityType + ", name: " + name;
+    return entityType.getName() + "." + name;
   }
 }

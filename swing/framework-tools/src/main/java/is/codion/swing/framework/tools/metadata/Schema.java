@@ -12,6 +12,7 @@ public final class Schema {
 
   private final String name;
   private final Map<String, Table> tables = new HashMap<>();
+  private boolean populated = false;
 
   Schema(final String name) {
     this.name = name;
@@ -23,6 +24,10 @@ public final class Schema {
 
   public Map<String, Table> getTables() {
     return tables;
+  }
+
+  public boolean isPopulated() {
+    return populated;
   }
 
   @Override
@@ -50,5 +55,6 @@ public final class Schema {
 
   void setTables(final List<Table> tables) {
     tables.forEach(table -> this.tables.put(table.getTableName(), table));
+    populated = true;
   }
 }

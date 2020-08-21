@@ -8,6 +8,7 @@ public interface Address {
   Attribute<Integer> ZIP = TYPE.integerAttribute("zip");
   Attribute<Double> LATITUDE = TYPE.doubleAttribute("latitude");
   Attribute<Double> LONGITUDE = TYPE.doubleAttribute("longitude");
+  Attribute<byte[]> IMAGE = TYPE.byteArrayAttribute("image");
 }
 
 void address() {
@@ -32,6 +33,8 @@ void address() {
                 .maximumFractionDigits(2),
           columnProperty(Address.LONGITUDE, "Longitude")
                 .nullable(false)
-                .maximumFractionDigits(2)
+                .maximumFractionDigits(2),
+          blobProperty(Address.IMAGE, "Image")
+                .eagerlyLoaded(false)
   );
 }

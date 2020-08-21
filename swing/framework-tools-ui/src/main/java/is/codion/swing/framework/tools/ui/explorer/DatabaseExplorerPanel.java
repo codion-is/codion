@@ -4,24 +4,33 @@
 package is.codion.swing.framework.tools.ui.explorer;
 
 import is.codion.common.db.database.Databases;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.ui.LoginPanel;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.common.ui.table.FilteredTable;
+import is.codion.swing.common.ui.worker.ProgressWorker;
 import is.codion.swing.framework.tools.explorer.DatabaseExplorerModel;
+import is.codion.swing.framework.tools.explorer.DefinitionRow;
 import is.codion.swing.framework.tools.metadata.Schema;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import static is.codion.swing.common.ui.icons.Icons.icons;
 import static java.util.Objects.requireNonNull;
@@ -37,55 +46,85 @@ public final class DatabaseExplorerPanel extends JPanel {
    * Instantiates a new DatabaseExplorerPanel.
    * @param model the database explorer model to base this panel on
    */
-  public DatabaseExplorerPanel(final DatabaseExplorerModel model) {
+  DatabaseExplorerPanel(final DatabaseExplorerModel model) {
     this.model = requireNonNull(model);
-    final FilteredTable<Schema, Integer, AbstractFilteredTableModel<Schema, Integer>> schema =
+    final FilteredTable<Schema, Integer, AbstractFilteredTableModel<Schema, Integer>> schemaTable =
             new FilteredTable<>(model.getSchemaModel());
-    final JScrollPane schemaScroller = new JScrollPane(schema);
+    final JScrollPane schemaScroller = new JScrollPane(schemaTable);
 
-    final FilteredTable<EntityDefinition, Integer, AbstractFilteredTableModel<EntityDefinition, Integer>> table =
+    final FilteredTable<DefinitionRow, Integer,
+            AbstractFilteredTableModel<DefinitionRow, Integer>> domainTable =
             new FilteredTable<>(model.getDefinitionModel());
-    final JScrollPane tableScroller = new JScrollPane(table);
+    final JScrollPane tableScroller = new JScrollPane(domainTable);
 
     final JSplitPane schemaTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     schemaTableSplitPane.setResizeWeight(RESIZE_WEIGHT);
     schemaTableSplitPane.setTopComponent(schemaScroller);
     schemaTableSplitPane.setBottomComponent(tableScroller);
 
-    splitPane.setLeftComponent(schemaTableSplitPane);
-
     final JTextArea textArea = new JTextArea(40, 60);
     textArea.setEditable(false);
 
+    splitPane.setLeftComponent(schemaTableSplitPane);
     splitPane.setRightComponent(new JScrollPane(textArea));
-
     splitPane.setResizeWeight(RESIZE_WEIGHT);
 
     setLayout(Layouts.borderLayout());
     add(splitPane, BorderLayout.CENTER);
-    this.model.getDomainCodeObserver().addDataListener(textArea::setText);
+
+    model.getDomainSourceObserver().addDataListener(textArea::setText);
+    schemaTable.addDoubleClickListener(this::populateSchema);
+  }
+
+  public void showFrame() {
+    final JFrame frame = new JFrame("Codion Database Explorer");
+    frame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(final WindowEvent e) {
+        model.close();
+      }
+    });
+    frame.setIconImage(icons().logoTransparent().getImage());
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    frame.add(this);
+    frame.pack();
+    Windows.centerWindow(frame);
+    frame.setVisible(true);
+  }
+
+  private void populateSchema(final MouseEvent event) {
+    final JPanel northPanel = new JPanel(Layouts.borderLayout());
+    final JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
+    northPanel.add(schemaLabel, BorderLayout.CENTER);
+    final EventDataListener<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
+    final ProgressWorker<Void> worker = new ProgressWorker<Void>(Windows.getParentWindow(this), "Populating",
+            ProgressWorker.Indeterminate.YES, northPanel, null) {
+      @Override
+      protected Void doInBackground() throws Exception {
+        model.populateSelected(schemaNotifier);
+        return null;
+      }
+    };
+    worker.addOnSuccessListener(Void -> model.getSchemaModel().refresh());
+    worker.execute();
   }
 
   /**
-   * Runs a EntityGeneratorPanel instance in a frame
+   * Runs a DatabaseExplorerPanel instance in a frame
    * @param arguments no arguments required
    */
   public static void main(final String[] arguments) {
     try {
       final User user = new LoginPanel().showLoginPanel(null);
-      final DatabaseExplorerPanel generatorPanel = new DatabaseExplorerPanel(new DatabaseExplorerModel(Databases.getInstance(), user));
-      final JFrame frame = new JFrame("Codion Database Explorer");
-      frame.setIconImage(icons().logoTransparent().getImage());
-      frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-      frame.add(generatorPanel);
-
-      frame.pack();
-      Windows.centerWindow(frame);
-      frame.setVisible(true);
+      final DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(Databases.getInstance(), user);
+      new DatabaseExplorerPanel(explorerModel).showFrame();
     }
-    catch (final CancelException ignored) {/*ignored*/}
+    catch (final CancelException ignored) {
+      System.exit(0);
+    }
     catch (final Exception e) {
-      throw new RuntimeException(e);
+      DefaultDialogExceptionHandler.getInstance().displayException(e, null);
+      System.exit(0);
     }
   }
 }

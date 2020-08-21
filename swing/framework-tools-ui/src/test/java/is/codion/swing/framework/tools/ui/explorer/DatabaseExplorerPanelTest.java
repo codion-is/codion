@@ -20,8 +20,10 @@ public class DatabaseExplorerPanelTest {
   public void test() throws ClassNotFoundException, DatabaseException {
     final DatabaseExplorerModel model = new DatabaseExplorerModel(Databases.getInstance(), UNIT_TEST_USER);
     new DatabaseExplorerPanel(model);
+    model.getSchemaModel().refresh();
     model.getSchemaModel().sort();
-    model.getSchemaModel().getSelectionModel().selectAll();
+    model.getSchemaModel().getSelectionModel().setSelectedIndex(0);
+    model.populateSelected(schema -> {});
     model.getDefinitionModel().getSelectionModel().setSelectedIndex(0);
   }
 }
