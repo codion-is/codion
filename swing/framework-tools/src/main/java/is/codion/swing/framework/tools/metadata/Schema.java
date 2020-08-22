@@ -3,19 +3,26 @@
  */
 package is.codion.swing.framework.tools.metadata;
 
+import is.codion.common.event.EventDataListener;
+
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.requireNonNull;
 
 public final class Schema {
 
   private final String name;
   private final Map<String, Table> tables = new HashMap<>();
+
   private boolean populated = false;
 
   Schema(final String name) {
-    this.name = name;
+    this.name = requireNonNull(name);
   }
 
   public String getName() {
@@ -23,7 +30,25 @@ public final class Schema {
   }
 
   public Map<String, Table> getTables() {
-    return tables;
+    return unmodifiableMap(tables);
+  }
+
+  public void populate(final DatabaseMetaData metaData, final Map<String, Schema> schemas,
+                       final EventDataListener<String> schemaNotifier) {
+    if (!populated) {
+      schemaNotifier.onEvent(name);
+      try (final ResultSet resultSet = metaData.getTables(null, name, null, null)) {
+        new TablePacker(this, metaData, null).pack(resultSet)
+                .forEach(table -> tables.put(table.getTableName(), table));
+        tables.values().stream()
+                .flatMap(table -> table.getReferencedSchemaNames().stream()).map(schemas::get)
+                .forEach(schema -> schema.populate(metaData, schemas, schemaNotifier));
+        populated = true;
+      }
+      catch (final SQLException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 
   public boolean isPopulated() {
@@ -50,11 +75,6 @@ public final class Schema {
 
   @Override
   public int hashCode() {
-    return Objects.hash(name);
-  }
-
-  void setTables(final List<Table> tables) {
-    tables.forEach(table -> this.tables.put(table.getTableName(), table));
-    populated = true;
+    return name.hashCode();
   }
 }

@@ -12,13 +12,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.List;
 
 final class ColumnPacker implements ResultPacker<Column> {
 
   private final Collection<PrimaryKeyColumn> primaryKeyColumns;
+  private final List<ForeignKeyColumn> foreignKeyColumns;
 
-  ColumnPacker(final Collection<PrimaryKeyColumn> primaryKeyColumns) {
+  ColumnPacker(final Collection<PrimaryKeyColumn> primaryKeyColumns, final List<ForeignKeyColumn> foreignKeyColumns) {
     this.primaryKeyColumns = primaryKeyColumns;
+    this.foreignKeyColumns = foreignKeyColumns;
   }
 
   @Override
@@ -33,9 +36,9 @@ final class ColumnPacker implements ResultPacker<Column> {
       final String columnName = resultSet.getString("COLUMN_NAME");
 
       return new Column(columnName, typeClass,
-              resultSet.getInt("COLUMN_SIZE"), decimalDigits, resultSet.getInt("NULLABLE"),
-              resultSet.getObject("COLUMN_DEF") != null, resultSet.getString("REMARKS"),
-              getPrimaryKeyColumnIndex(columnName));
+              resultSet.getInt("ORDINAL_POSITION"), resultSet.getInt("COLUMN_SIZE"), decimalDigits,
+              resultSet.getInt("NULLABLE"), resultSet.getObject("COLUMN_DEF") != null,
+              resultSet.getString("REMARKS"), getPrimaryKeyColumnIndex(columnName), isForeignKeyColumn(columnName));
     }
 
     return null;
@@ -43,7 +46,12 @@ final class ColumnPacker implements ResultPacker<Column> {
 
   private int getPrimaryKeyColumnIndex(final String columnName) {
     return primaryKeyColumns.stream().filter(primaryKeyColumn ->
-            columnName.equals(primaryKeyColumn.getColumnName())).findFirst().map(PrimaryKeyColumn::getKeySeq).orElse(-1);
+            columnName.equals(primaryKeyColumn.getColumnName())).findFirst().map(PrimaryKeyColumn::getIndex).orElse(-1);
+  }
+
+  private boolean isForeignKeyColumn(final String columnName) {
+    return foreignKeyColumns.stream().anyMatch(foreignKeyColumn ->
+            foreignKeyColumn.getFkColumnName().equals(columnName));
   }
 
   private static Class<?> translateTypeName(final int sqlType, final int decimalDigits) {

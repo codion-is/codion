@@ -3,13 +3,13 @@
  */
 package is.codion.swing.framework.tools.metadata;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class ForeignKey {
 
   private final Table referencedTable;
-  private final Map<Column, Column> references = new HashMap<>();
+  private final Map<Column, Column> references = new LinkedHashMap<>();
 
   ForeignKey(final Table referencedTable) {
     this.referencedTable = referencedTable;

@@ -44,18 +44,29 @@ final class DatabaseDomain extends DefaultDomain {
     if (!tableEntityTypes.containsKey(table)) {
       final EntityType<Entity> entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
       tableEntityTypes.put(table, entityType);
-      final List<Property.Builder<?>> builders = new ArrayList<>();
-      table.getColumns().values().forEach(column ->
-              builders.add(getColumnPropertyBuilder(column, entityType)));
-      table.getForeignKeys().forEach((referencedTable, foreignKey) -> {
-        if (!foreignKey.getReferencedTable().equals(table)) {
-          defineEntity(foreignKey.getReferencedTable());
-        }
-      });
-      table.getForeignKeys().forEach((referencedTable, foreignKey) ->
-              builders.add(getForeignKeyPropertyBuilder(foreignKey, entityType)));
-      define(entityType, builders);
+      define(entityType, getPropertyBuilders(table, entityType, new ArrayList<>(table.getForeignKeys())));
     }
+  }
+
+  private List<Property.Builder<?>> getPropertyBuilders(final Table table, final EntityType<Entity> entityType,
+                                                        final List<ForeignKey> foreignKeys) {
+    final List<Property.Builder<?>> builders = new ArrayList<>();
+    table.getColumns().forEach(column -> {
+      builders.add(getColumnPropertyBuilder(column, entityType));
+      if (column.isForeignKeyColumn()) {
+        final ForeignKey foreignKey = foreignKeys.stream().filter(key ->
+                key.getReferences().keySet().iterator().next().equals(column)).findFirst().orElse(null);
+        if (foreignKey != null) {
+          foreignKeys.remove(foreignKey);
+          if (!foreignKey.getReferencedTable().equals(table)) {
+            defineEntity(foreignKey.getReferencedTable());
+          }
+          builders.add(getForeignKeyPropertyBuilder(foreignKey, entityType));
+        }
+      }
+    });
+
+    return builders;
   }
 
   private Property.Builder<?> getForeignKeyPropertyBuilder(final ForeignKey foreignKey, final EntityType<?> entityType) {
@@ -72,7 +83,7 @@ final class DatabaseDomain extends DefaultDomain {
     return builder;
   }
 
-  private ColumnProperty.Builder<?> getColumnPropertyBuilder(final Column column, final EntityType<?> entityType) {
+  private static ColumnProperty.Builder<?> getColumnPropertyBuilder(final Column column, final EntityType<?> entityType) {
     final String caption = getCaption(column.getColumnName());
     final Attribute<?> attribute = getAttribute(entityType, column);
     final ColumnProperty.Builder<?> builder;
@@ -82,10 +93,10 @@ final class DatabaseDomain extends DefaultDomain {
     else {
       builder = Properties.columnProperty(attribute, caption);
     }
-    if (column.getKeySeq() != -1) {
-      builder.primaryKeyIndex(column.getKeySeq() - 1);
+    if (column.isPrimaryKeyColumn()) {
+      builder.primaryKeyIndex(column.getPrimaryKeyIndex() - 1);
     }
-    if (column.getKeySeq() == -1 && column.getNullable() == DatabaseMetaData.columnNoNulls) {
+    if (!column.isPrimaryKeyColumn() && column.getNullable() == DatabaseMetaData.columnNoNulls) {
       builder.nullable(false);
     }
     if (attribute.isString() && column.getColumnSize() > 0) {
@@ -94,7 +105,7 @@ final class DatabaseDomain extends DefaultDomain {
     if (attribute.isDecimal() && column.getDecimalDigits() >= 1) {
       builder.maximumFractionDigits(column.getDecimalDigits());
     }
-    if (column.getKeySeq() == -1 && column.hasDefaultValue()) {
+    if (!column.isPrimaryKeyColumn() && column.hasDefaultValue()) {
       builder.columnHasDefaultValue(true);
     }
     if (!nullOrEmpty(column.getComment())) {

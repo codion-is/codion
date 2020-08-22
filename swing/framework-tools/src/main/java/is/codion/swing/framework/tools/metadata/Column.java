@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.tools.metadata;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A database metadata column.
@@ -12,31 +12,48 @@ public final class Column {
 
   private final String columnName;
   private final Class<?> columnTypeClass;
+  private final int position;
   private final int columnSize;
   private final int decimalDigits;
   private final int nullable;
   private final boolean hasDefaultValue;
   private final String comment;
-  private final int keySeq;
+  private final int primaryKeyIndex;
+  private final boolean foreignKeyColumn;
 
-  Column(final String columnName, final Class<?> columnTypeClass, final int columnSize, final int decimalDigits,
-         final int nullable, final boolean hasDefaultValue, final String comment, final int keySeq) {
-    this.columnName = columnName;
-    this.columnTypeClass = columnTypeClass;
+  Column(final String columnName, final Class<?> columnTypeClass, final int position, final int columnSize,
+         final int decimalDigits, final int nullable, final boolean hasDefaultValue, final String comment,
+         final int primaryKeyIndex, final boolean foreignKeyColumn) {
+    this.columnName = requireNonNull(columnName);
+    this.columnTypeClass = requireNonNull(columnTypeClass);
+    this.position = position;
     this.columnSize = columnSize;
     this.decimalDigits = decimalDigits;
     this.nullable = nullable;
     this.hasDefaultValue = hasDefaultValue;
     this.comment = comment;
-    this.keySeq = keySeq;
+    this.primaryKeyIndex = primaryKeyIndex;
+    this.foreignKeyColumn = foreignKeyColumn;
   }
 
   public String getColumnName() {
     return columnName;
   }
 
-  public int getKeySeq() {
-    return keySeq;
+  public int getPosition() {
+    return position;
+  }
+
+  public boolean isPrimaryKeyColumn() {
+    return primaryKeyIndex != -1;
+  }
+
+  public int getPrimaryKeyIndex() {
+    return primaryKeyIndex;
+  }
+
+  public boolean isForeignKeyColumn() {
+    return foreignKeyColumn;
   }
 
   public Class<?> getColumnTypeClass() {
@@ -83,6 +100,6 @@ public final class Column {
 
   @Override
   public int hashCode() {
-    return Objects.hash(columnName);
+    return columnName.hashCode();
   }
 }
