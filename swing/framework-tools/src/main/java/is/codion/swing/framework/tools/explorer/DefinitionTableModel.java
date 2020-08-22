@@ -39,13 +39,14 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
   @Override
   protected void doRefresh() {
     clear();
-    schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema -> addItems(createDomainDefinitions(schema)));
+    schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema ->
+            addItemsSorted(createDomainDefinitions(schema)));
   }
 
   private List<DefinitionRow> createDomainDefinitions(final Schema schema) {
-    final DatabaseDomain domain = new DatabaseDomain(DomainType.domainType(schema.getName()),
-            schema.getTables().values());
+    final DatabaseDomain domain = new DatabaseDomain(DomainType.domainType(schema.getName()), schema.getTables().values());
 
-    return domain.getEntities().getDefinitions().stream().map(definition -> new DefinitionRow(domain, definition)).collect(Collectors.toList());
+    return domain.getEntities().getDefinitions().stream().map(definition ->
+            new DefinitionRow(domain, definition)).collect(Collectors.toList());
   }
 }

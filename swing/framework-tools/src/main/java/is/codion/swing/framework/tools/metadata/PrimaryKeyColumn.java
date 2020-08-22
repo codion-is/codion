@@ -6,18 +6,18 @@ package is.codion.swing.framework.tools.metadata;
 public final class PrimaryKeyColumn {
 
   private final String columnName;
-  private final int keySeq;
+  private final int index;
 
-  PrimaryKeyColumn(final String columnName, final int keySeq) {
+  PrimaryKeyColumn(final String columnName, final int index) {
     this.columnName = columnName;
-    this.keySeq = keySeq;
+    this.index = index;
   }
 
   public String getColumnName() {
     return columnName;
   }
 
-  public int getKeySeq() {
-    return keySeq;
+  public int getIndex() {
+    return index;
   }
 }

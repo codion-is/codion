@@ -5,15 +5,16 @@ package is.codion.swing.framework.tools.metadata;
 
 import is.codion.common.Util;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a database table
@@ -22,15 +23,16 @@ public final class Table {
 
   private final Schema schema;
   private final String tableName;
-  private final Collection<ForeignKeyColumn> foreignKeyColumns;
+  private final List<ForeignKeyColumn> foreignKeyColumns;
   private final Map<String, Column> columns = new LinkedHashMap<>();
-  private final Map<Table, ForeignKey> foreignKeys = new HashMap<>();
+  private final Map<Table, ForeignKey> foreignKeys = new LinkedHashMap<>();
 
-  Table(final Schema schema, final String tableName, final List<Column> columns, final Collection<ForeignKeyColumn> foreignKeyColumns) {
-    this.schema = schema;
-    this.tableName = tableName;
-    columns.forEach(column -> this.columns.put(column.getColumnName(), column));
-    this.foreignKeyColumns = foreignKeyColumns;
+  Table(final Schema schema, final String tableName, final List<Column> columns,
+        final List<ForeignKeyColumn> foreignKeyColumns) {
+    this.schema = requireNonNull(schema);
+    this.tableName = requireNonNull(tableName);
+    this.foreignKeyColumns = requireNonNull(foreignKeyColumns);
+    requireNonNull(columns).forEach(column -> this.columns.put(column.getColumnName(), column));
   }
 
   public String getTableName() {
@@ -41,18 +43,18 @@ public final class Table {
     return schema;
   }
 
-  public Map<String, Column> getColumns() {
-    return unmodifiableMap(columns);
+  public List<Column> getColumns() {
+    return unmodifiableList(new ArrayList<>(columns.values()));
   }
 
-  public Collection<String> getReferencedSchemas() {
+  public Collection<String> getReferencedSchemaNames() {
     return foreignKeyColumns.stream()
             .filter(foreignKeyColumn -> !foreignKeyColumn.getPkSchemaName().equals(schema.getName()))
             .map(ForeignKeyColumn::getPkSchemaName).collect(Collectors.toSet());
   }
 
-  public Map<Table, ForeignKey> getForeignKeys() {
-    return unmodifiableMap(foreignKeys);
+  public List<ForeignKey> getForeignKeys() {
+    return unmodifiableList(new ArrayList<>(foreignKeys.values()));
   }
 
   @Override
@@ -76,10 +78,7 @@ public final class Table {
 
   @Override
   public int hashCode() {
-    int result = schema != null ? schema.getName().hashCode() : 0;
-    result = result + (tableName != null ? tableName.hashCode() : 0);
-
-    return result;
+    return Objects.hash(schema, tableName);
   }
 
   void resolveForeignKeys(final Map<String, Schema> schemas) {

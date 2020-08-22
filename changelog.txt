@@ -6439,3 +6439,4 @@
   DatabaseExplorerModel, no longer sets columnHasDefaultValue() for primary key identity columns
 0.16.9
   DatabaseExplorerModel, bug fixes and improvements
+  DatabaseExplorerModel, MetaDataModel, further refactoring

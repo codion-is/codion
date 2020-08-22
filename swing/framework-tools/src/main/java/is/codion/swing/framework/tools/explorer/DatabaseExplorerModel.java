@@ -16,6 +16,7 @@ import is.codion.swing.framework.tools.metadata.MetaDataModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -33,11 +34,16 @@ public final class DatabaseExplorerModel {
 
   public DatabaseExplorerModel(final Database database, final User user) throws DatabaseException {
     this.connection = requireNonNull(database, "database").createConnection(user);
-    this.metaDataModel = new MetaDataModel(connection);
-    this.schemaTableModel = new SchemaTableModel(metaDataModel);
-    this.definitionTableModel = new DefinitionTableModel(schemaTableModel);
-    this.schemaTableModel.refresh();
-    bindEvents();
+    try {
+      this.metaDataModel = new MetaDataModel(connection.getMetaData());
+      this.schemaTableModel = new SchemaTableModel(metaDataModel.getSchemas());
+      this.definitionTableModel = new DefinitionTableModel(schemaTableModel);
+      this.schemaTableModel.refresh();
+      bindEvents();
+    }
+    catch (final SQLException e) {
+      throw new DatabaseException(e, e.getMessage());
+    }
   }
 
   public AbstractFilteredTableModel<Schema, Integer> getSchemaModel() {
@@ -62,7 +68,8 @@ public final class DatabaseExplorerModel {
   }
 
   public void populateSelected(final EventDataListener<String> schemaNotifier) {
-    schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema -> metaDataModel.populateSchema(schema.getName(), schemaNotifier));
+    schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema ->
+            metaDataModel.populateSchema(schema.getName(), schemaNotifier));
     metaDataModel.resolveForeignKeys();
     definitionTableModel.refresh();
   }
