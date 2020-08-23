@@ -3,8 +3,11 @@
  */
 package is.codion.swing.framework.tools.metadata;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static java.util.Objects.requireNonNull;
 
 public final class ForeignKey {
 
@@ -12,7 +15,7 @@ public final class ForeignKey {
   private final Map<Column, Column> references = new LinkedHashMap<>();
 
   ForeignKey(final Table referencedTable) {
-    this.referencedTable = referencedTable;
+    this.referencedTable = requireNonNull(referencedTable);
   }
 
   public Table getReferencedTable() {
@@ -20,10 +23,10 @@ public final class ForeignKey {
   }
 
   public Map<Column, Column> getReferences() {
-    return references;
+    return Collections.unmodifiableMap(references);
   }
 
-  public void addReference(final Column fkColumn, final Column pkColumn) {
+  void addReference(final Column fkColumn, final Column pkColumn) {
     references.put(fkColumn, pkColumn);
   }
 }
