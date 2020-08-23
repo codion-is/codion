@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
@@ -49,12 +50,12 @@ public final class Table {
 
   public Collection<String> getReferencedSchemaNames() {
     return foreignKeyColumns.stream()
-            .filter(foreignKeyColumn -> !foreignKeyColumn.getPkSchemaName().equals(schema.getName()))
+            .filter(this::referencesExternalSchema)
             .map(ForeignKeyColumn::getPkSchemaName).collect(Collectors.toSet());
   }
 
-  public List<ForeignKey> getForeignKeys() {
-    return unmodifiableList(new ArrayList<>(foreignKeys.values()));
+  public Collection<ForeignKey> getForeignKeys() {
+    return unmodifiableCollection(foreignKeys.values());
   }
 
   @Override
@@ -89,6 +90,10 @@ public final class Table {
               foreignKey.addReference(columns.get(foreignKeyColumn.getFkColumnName()),
                       referencedTable.columns.get(foreignKeyColumn.getPkColumnName())));
     });
+  }
+
+  private boolean referencesExternalSchema(final ForeignKeyColumn foreignKeyColumn) {
+    return !foreignKeyColumn.getPkSchemaName().equals(schema.getName());
   }
 
   private static Table getReferencedTable(final ForeignKeyColumn foreignKeyColumn, final Map<String, Schema> schemas) {

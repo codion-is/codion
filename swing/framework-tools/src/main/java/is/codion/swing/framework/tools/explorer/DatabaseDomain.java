@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 
 import static is.codion.common.Util.nullOrEmpty;
 
@@ -38,6 +39,9 @@ final class DatabaseDomain extends DefaultDomain {
     if (!tableEntityTypes.containsKey(table)) {
       final EntityType<Entity> entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
       tableEntityTypes.put(table, entityType);
+      table.getForeignKeys().stream().map(ForeignKey::getReferencedTable)
+              .filter(referencedTable -> !referencedTable.equals(table))
+              .forEach(this::defineEntity);
       define(entityType, getPropertyBuilders(table, entityType, new ArrayList<>(table.getForeignKeys())));
     }
   }
@@ -54,15 +58,10 @@ final class DatabaseDomain extends DefaultDomain {
     table.getColumns().forEach(column -> {
       builders.add(getColumnPropertyBuilder(column, entityType));
       if (column.isForeignKeyColumn()) {
-        final ForeignKey foreignKey = foreignKeys.stream().filter(key ->
-                key.getReferences().keySet().iterator().next().equals(column)).findFirst().orElse(null);
-        if (foreignKey != null && isLastColumn(column, foreignKey)) {
+        foreignKeys.stream().filter(key -> isLastKeyColumn(key, column)).findFirst().ifPresent(foreignKey -> {
           foreignKeys.remove(foreignKey);
-          if (!foreignKey.getReferencedTable().equals(table)) {
-            defineEntity(foreignKey.getReferencedTable());
-          }
           builders.add(getForeignKeyPropertyBuilder(foreignKey, entityType));
-        }
+        });
       }
     });
 
@@ -125,8 +124,10 @@ final class DatabaseDomain extends DefaultDomain {
     return caption.substring(0, 1).toUpperCase() + caption.substring(1);
   }
 
-  private static boolean isLastColumn(final Column column, final ForeignKey foreignKey) {
-    return column.getPosition() == foreignKey.getReferences().keySet().stream()
-            .mapToInt(Column::getPosition).max().getAsInt();
+  private static boolean isLastKeyColumn(final ForeignKey foreignKey, final Column column) {
+    final OptionalInt lastColumnPosition = foreignKey.getReferences().keySet().stream()
+            .mapToInt(Column::getPosition).max();
+
+    return lastColumnPosition.isPresent() && column.getPosition() == lastColumnPosition.getAsInt();
   }
 }
