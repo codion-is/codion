@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -38,11 +39,12 @@ public final class Schema {
     if (!populated) {
       schemaNotifier.onEvent(name);
       try (final ResultSet resultSet = metaData.getTables(null, name, null, null)) {
-        new TablePacker(this, metaData, null).pack(resultSet)
-                .forEach(table -> tables.put(table.getTableName(), table));
+        tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
+                .collect(Collectors.toMap(Table::getTableName, table -> table)));
         tables.values().stream()
                 .flatMap(table -> table.getReferencedSchemaNames().stream()).map(schemas::get)
                 .forEach(schema -> schema.populate(metaData, schemas, schemaNotifier));
+        tables.values().forEach(table -> table.resolveForeignKeys(schemas));
         populated = true;
       }
       catch (final SQLException e) {

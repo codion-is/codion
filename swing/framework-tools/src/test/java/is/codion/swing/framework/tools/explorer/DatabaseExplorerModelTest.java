@@ -28,9 +28,9 @@ public final class DatabaseExplorerModelTest {
 
   static {
     try {
-      ADDRESS_DEF = Text.getTextFileContents(DatabaseExplorerModelTest.class, "address.txt");
-      TAG_ITEM_DEF = Text.getTextFileContents(DatabaseExplorerModelTest.class, "tagitem.txt");
-      PRODUCT_DEF = Text.getTextFileContents(DatabaseExplorerModelTest.class, "product.txt");
+      ADDRESS_DEF = Text.getTextFileContents(DatabaseExplorerModelTest.class, "address.txt").trim();
+      TAG_ITEM_DEF = Text.getTextFileContents(DatabaseExplorerModelTest.class, "tagitem.txt").trim();
+      PRODUCT_DEF = Text.getTextFileContents(DatabaseExplorerModelTest.class, "product.txt").trim();
     }
     catch (final IOException e) {
       throw new RuntimeException(e);
