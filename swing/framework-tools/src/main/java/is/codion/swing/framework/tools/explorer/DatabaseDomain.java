@@ -34,17 +34,17 @@ final class DatabaseDomain extends DefaultDomain {
     tables.forEach(this::defineEntity);
   }
 
-  private void define(final EntityType<?> entityType, final List<Property.Builder<?>> propertyBuilders) {
-    if (!propertyBuilders.isEmpty()) {
-      define(entityType, entityType.getName(), propertyBuilders.toArray(new Property.Builder[0]));
-    }
-  }
-
   private void defineEntity(final Table table) {
     if (!tableEntityTypes.containsKey(table)) {
       final EntityType<Entity> entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
       tableEntityTypes.put(table, entityType);
       define(entityType, getPropertyBuilders(table, entityType, new ArrayList<>(table.getForeignKeys())));
+    }
+  }
+
+  private void define(final EntityType<?> entityType, final List<Property.Builder<?>> propertyBuilders) {
+    if (!propertyBuilders.isEmpty()) {
+      define(entityType, entityType.getName(), propertyBuilders.toArray(new Property.Builder[0]));
     }
   }
 
