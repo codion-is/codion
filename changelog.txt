@@ -6440,3 +6440,4 @@
 0.16.9
   DatabaseExplorerModel, bug fixes and improvements
   DatabaseExplorerModel, MetaDataModel, further refactoring
+  DatabaseExplorerModel, MetaDataModel, more refactoring, failing tests on windows fixed

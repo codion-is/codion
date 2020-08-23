@@ -56,7 +56,7 @@ final class DatabaseDomain extends DefaultDomain {
       if (column.isForeignKeyColumn()) {
         final ForeignKey foreignKey = foreignKeys.stream().filter(key ->
                 key.getReferences().keySet().iterator().next().equals(column)).findFirst().orElse(null);
-        if (foreignKey != null) {
+        if (foreignKey != null && isLastColumn(column, foreignKey)) {
           foreignKeys.remove(foreignKey);
           if (!foreignKey.getReferencedTable().equals(table)) {
             defineEntity(foreignKey.getReferencedTable());
@@ -123,5 +123,10 @@ final class DatabaseDomain extends DefaultDomain {
     final String caption = name.toLowerCase().replaceAll("_", " ");
 
     return caption.substring(0, 1).toUpperCase() + caption.substring(1);
+  }
+
+  private static boolean isLastColumn(final Column column, final ForeignKey foreignKey) {
+    return column.getPosition() == foreignKey.getReferences().keySet().stream()
+            .mapToInt(Column::getPosition).max().getAsInt();
   }
 }

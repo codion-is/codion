@@ -70,7 +70,6 @@ public final class DatabaseExplorerModel {
   public void populateSelected(final EventDataListener<String> schemaNotifier) {
     schemaTableModel.getSelectionModel().getSelectedItems().forEach(schema ->
             metaDataModel.populateSchema(schema.getName(), schemaNotifier));
-    metaDataModel.resolveForeignKeys();
     definitionTableModel.refresh();
   }
 

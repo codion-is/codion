@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.Objects.requireNonNull;
 
 public final class MetaDataModel {
 
@@ -21,7 +22,7 @@ public final class MetaDataModel {
   private final DatabaseMetaData metaData;
 
   public MetaDataModel(final DatabaseMetaData metaData) throws DatabaseException {
-    this.metaData = metaData;
+    this.metaData = requireNonNull(metaData);
     try {
       this.schemas = discoverSchemas(metaData);
     }
@@ -35,15 +36,11 @@ public final class MetaDataModel {
   }
 
   public void populateSchema(final String schemaName, final EventDataListener<String> schemaNotifier) {
-    final Schema schema = schemas.get(schemaName);
+    final Schema schema = schemas.get(requireNonNull(schemaName));
     if (schema == null) {
       throw new IllegalArgumentException("Schema not found: " + schemaName);
     }
     schema.populate(metaData, schemas, schemaNotifier);
-  }
-
-  public void resolveForeignKeys() {
-    schemas.values().forEach(schema -> schema.getTables().values().forEach(table -> table.resolveForeignKeys(schemas)));
   }
 
   private static Map<String, Schema> discoverSchemas(final DatabaseMetaData metaData) throws SQLException {
