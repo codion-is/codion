@@ -4,13 +4,13 @@
 package is.codion.swing.framework.tools.explorer;
 
 import is.codion.common.model.table.DefaultColumnConditionModel;
-import is.codion.framework.domain.DomainType;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static is.codion.framework.domain.DomainType.domainType;
 import static java.util.Arrays.asList;
 
 final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRow, Integer> {
@@ -44,7 +44,7 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
   }
 
   private static List<DefinitionRow> createDomainDefinitions(final Schema schema) {
-    final DatabaseDomain domain = new DatabaseDomain(DomainType.domainType(schema.getName()), schema.getTables().values());
+    final DatabaseDomain domain = new DatabaseDomain(domainType(schema.getName()), schema.getTables().values());
 
     return domain.getEntities().getDefinitions().stream().map(definition ->
             new DefinitionRow(domain, definition)).collect(Collectors.toList());
