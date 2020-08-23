@@ -83,9 +83,9 @@ public final class Table {
 
   void resolveForeignKeys(final Map<String, Schema> schemas) {
     Util.map(foreignKeyColumns, foreignKeyColumn ->
-            getReferencedTable(foreignKeyColumn, schemas)).forEach((referencedTable, foreignKeyColumns) -> {
+            getReferencedTable(foreignKeyColumn, schemas)).forEach((referencedTable, fKColumns) -> {
       final ForeignKey foreignKey = foreignKeys.computeIfAbsent(referencedTable, ForeignKey::new);
-      foreignKeyColumns.forEach(foreignKeyColumn ->
+      fKColumns.forEach(foreignKeyColumn ->
               foreignKey.addReference(columns.get(foreignKeyColumn.getFkColumnName()),
                       referencedTable.columns.get(foreignKeyColumn.getPkColumnName())));
     });
