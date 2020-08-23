@@ -19,6 +19,8 @@ import static is.codion.common.Util.nullOrEmpty;
 
 final class DomainToString {
 
+  private DomainToString() {}
+
   static String toString(final EntityDefinition definition) {
     final StringBuilder builder = new StringBuilder();
     final String interfaceName = getInterfaceName(definition.getTableName(), true);
@@ -127,7 +129,7 @@ final class DomainToString {
   }
 
   private static String getAttributeTypePrefix(final String typeClassName) {
-    if (typeClassName.equals("byte[]")) {
+    if ("byte[]".equals(typeClassName)) {
       return "byteArray";
     }
 

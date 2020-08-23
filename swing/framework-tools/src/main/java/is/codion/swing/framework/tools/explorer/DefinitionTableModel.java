@@ -43,7 +43,7 @@ final class DefinitionTableModel extends AbstractFilteredTableModel<DefinitionRo
             addItemsSorted(createDomainDefinitions(schema)));
   }
 
-  private List<DefinitionRow> createDomainDefinitions(final Schema schema) {
+  private static List<DefinitionRow> createDomainDefinitions(final Schema schema) {
     final DatabaseDomain domain = new DatabaseDomain(DomainType.domainType(schema.getName()), schema.getTables().values());
 
     return domain.getEntities().getDefinitions().stream().map(definition ->
