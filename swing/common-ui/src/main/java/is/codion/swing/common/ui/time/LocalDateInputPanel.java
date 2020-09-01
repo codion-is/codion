@@ -50,7 +50,8 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
    * @param dateFormat the date format
    */
   public LocalDateInputPanel(final LocalDate initialValue, final String dateFormat) {
-    this(TextFields.createFormattedTemporalField(dateFormat, initialValue), dateFormat, CalendarButton.YES, null);
+    this(TextFields.createFormattedField(dateFormat), dateFormat, CalendarButton.YES, null);
+    setTemporal(initialValue);
   }
 
   /**
