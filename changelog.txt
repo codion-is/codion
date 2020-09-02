@@ -6414,3 +6414,5 @@
   DatabaseExplorerModel, MetaDataModel, further refactoring
   DatabaseExplorerModel, MetaDataModel, more refactoring, failing tests on windows fixed
   TextFields.createFormattedTemporalField() removed, did nothing except set the initial value
+  LocalTimeInputPanel, LocalDateInputPanel and LocalDateInputPanel bug fixed, did not use date mask when creating formatted text field
+  TextFields.createFormattedField() overloaded with MaskFormatter parameter, TextFields.FieldFormatter is now public

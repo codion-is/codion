@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.time;
 
+import is.codion.common.DateFormats;
 import is.codion.common.event.Event;
 import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
@@ -50,7 +51,7 @@ public final class LocalDateInputPanel extends TemporalInputPanel<LocalDate> {
    * @param dateFormat the date format
    */
   public LocalDateInputPanel(final LocalDate initialValue, final String dateFormat) {
-    this(TextFields.createFormattedField(dateFormat), dateFormat, CalendarButton.YES, null);
+    this(TextFields.createFormattedField(DateFormats.getDateMask(dateFormat)), dateFormat, CalendarButton.YES, null);
     setTemporal(initialValue);
   }
 

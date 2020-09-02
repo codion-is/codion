@@ -84,14 +84,23 @@ public final class TextFields {
    */
   public static JFormattedTextField createFormattedField(final String mask, final ValueContainsLiterals valueContainsLiterals) {
     try {
-      final JFormattedTextField formattedTextField = new JFormattedTextField(new FieldFormatter(mask, valueContainsLiterals));
-      formattedTextField.setFocusLostBehavior(JFormattedTextField.COMMIT);
-
-      return formattedTextField;
+      return createFormattedField(new FieldFormatter(mask, valueContainsLiterals));
     }
     catch (final ParseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Creates a JFormattedTextField with the given mask formatter, with JFormattedTextField.COMMIT as focus lost behaviour.
+   * @param maskFormatter the mask formatter
+   * @return a JFormattedTextField
+   */
+  public static JFormattedTextField createFormattedField(final MaskFormatter maskFormatter) {
+    final JFormattedTextField formattedTextField = new JFormattedTextField(requireNonNull(maskFormatter, "maskFormatter"));
+    formattedTextField.setFocusLostBehavior(JFormattedTextField.COMMIT);
+
+    return formattedTextField;
   }
 
   /**
@@ -272,9 +281,9 @@ public final class TextFields {
    * the field gains focus, in case the content length has not changed
    * http://stackoverflow.com/a/2202073/317760
    */
-  private static final class FieldFormatter extends MaskFormatter {
+  public static class FieldFormatter extends MaskFormatter {
 
-    private FieldFormatter(final String mask, final ValueContainsLiterals valueContainsLiterals) throws ParseException {
+    public FieldFormatter(final String mask, final ValueContainsLiterals valueContainsLiterals) throws ParseException {
       super(mask);
       setPlaceholderCharacter('_');
       setAllowsInvalid(false);
@@ -282,7 +291,7 @@ public final class TextFields {
     }
 
     @Override
-    public void install(final JFormattedTextField field) {
+    public final void install(final JFormattedTextField field) {
       final int previousLength = field.getDocument().getLength();
       final int currentCaretPosition = field.getCaretPosition();
       final int currentSelectionStart = field.getSelectionStart();
