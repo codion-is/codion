@@ -6441,3 +6441,4 @@
   DatabaseExplorerModel, bug fixes and improvements
   DatabaseExplorerModel, MetaDataModel, further refactoring
   DatabaseExplorerModel, MetaDataModel, more refactoring, failing tests on windows fixed
+  TextFields.createFormattedTemporalField() removed, did nothing except set the initial value

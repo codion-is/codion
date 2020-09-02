@@ -1,6 +1,5 @@
 package is.codion.swing.common.ui.textfield;
 
-import is.codion.common.DateFormats;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -25,8 +24,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.text.ParseException;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.function.Supplier;
@@ -67,21 +64,6 @@ public final class TextFields {
   private static JTextField textField;
 
   private TextFields() {}
-
-  /**
-   * Creates a formatted text field using the given format
-   * @param dateFormat the format
-   * @param initialValue the initial value
-   * @return the text field
-   */
-  public static JFormattedTextField createFormattedTemporalField(final String dateFormat, final Temporal initialValue) {
-    final JFormattedTextField textField = createFormattedField(DateFormats.getDateMask(dateFormat));
-    if (initialValue != null) {
-      textField.setText(DateTimeFormatter.ofPattern(dateFormat).format(initialValue));
-    }
-
-    return textField;
-  }
 
   /**
    * Creates a JFormattedTextField with the given mask, using '_' as a placeholder character, disallowing invalid values,

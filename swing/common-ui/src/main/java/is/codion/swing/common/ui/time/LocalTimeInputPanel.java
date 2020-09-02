@@ -20,7 +20,8 @@ public final class LocalTimeInputPanel extends TemporalInputPanel<LocalTime> {
    * @param dateFormat the date format
    */
   public LocalTimeInputPanel(final LocalTime initialValue, final String dateFormat) {
-    this(TextFields.createFormattedTemporalField(dateFormat, initialValue), dateFormat, null);
+    this(TextFields.createFormattedField(dateFormat), dateFormat, null);
+    setTemporal(initialValue);
   }
 
   /**
