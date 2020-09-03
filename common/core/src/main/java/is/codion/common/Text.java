@@ -50,8 +50,8 @@ public final class Text {
   }
 
   private static final Random RANDOM = new Random();
-  private static final String SPACE = " ";
-  private static final String UNDERSCORE = "_";
+  private static final char SPACE = ' ';
+  private static final char UNDERSCORE = '_';
   private static final String ALPHA_NUMERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   private Text() {}
@@ -127,7 +127,7 @@ public final class Text {
     requireNonNull(stringOne, "stringOne");
     requireNonNull(stringTwo, "stringTwo");
 
-    return collator.compare(stringOne.replaceAll(SPACE, UNDERSCORE), stringTwo.replaceAll(SPACE, UNDERSCORE));
+    return collator.compare(stringOne.replace(SPACE, UNDERSCORE), stringTwo.replace(SPACE, UNDERSCORE));
   }
 
   /**

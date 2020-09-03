@@ -119,7 +119,7 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private static String getCaption(final String name) {
-    final String caption = name.toLowerCase().replaceAll("_", " ");
+    final String caption = name.toLowerCase().replace("_", " ");
 
     return caption.substring(0, 1).toUpperCase() + caption.substring(1);
   }

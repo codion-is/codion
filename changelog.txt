@@ -6416,3 +6416,4 @@
   TextFields.createFormattedTemporalField() removed, did nothing except set the initial value
   LocalTimeInputPanel, LocalDateInputPanel and LocalDateInputPanel bug fixed, did not use date mask when creating formatted text field
   TextFields.createFormattedField() overloaded with MaskFormatter parameter, TextFields.FieldFormatter is now public
+  Text.collateSansSpaces() and DatabaseDomain.getCaption() now use String.replace() instead of String.replaceAll()
