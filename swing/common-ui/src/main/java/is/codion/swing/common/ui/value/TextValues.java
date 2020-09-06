@@ -69,6 +69,15 @@ public final class TextValues {
   }
 
   /**
+   * @param textField the component
+   * @param updateOn specifies when the underlying value should be updated
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<Character, JTextField> characterValue(final JTextField textField, final UpdateOn updateOn) {
+    return new CharacterFieldValue(textField, updateOn);
+  }
+
+  /**
    * Instantiates a new String based ComponentValue.
    * @param inputDialogTitle the title to use for the lookup input dialog
    * @param initialValue the initial value

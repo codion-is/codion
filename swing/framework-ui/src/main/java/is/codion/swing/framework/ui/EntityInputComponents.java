@@ -534,7 +534,7 @@ public final class EntityInputComponents {
       return (TemporalInputPanel<T>) new LocalTimeInputPanel(textField, formatString, enabledState);
     }
 
-    throw new IllegalArgumentException("Can not create a date input panel for a non-date property");
+    throw new IllegalArgumentException("Can not create a date input panel for a non-date property: " + property);
   }
 
   /**
@@ -653,6 +653,9 @@ public final class EntityInputComponents {
     final JTextField textField = createTextField(property, enabledState, null, null);
     if (property.getAttribute().isString()) {
       ((Value<String>) value).link(TextValues.textValue(textField, property.getFormat(), updateOn));
+    }
+    else if (property.getAttribute().isCharacter()) {
+      ((Value<Character>) value).link(TextValues.characterValue(textField, updateOn));
     }
     else if (property.getAttribute().isInteger()) {
       ((Value<Integer>) value).link(NumericalValues.integerValue((IntegerField) textField, Nullable.YES, updateOn));
@@ -788,6 +791,9 @@ public final class EntityInputComponents {
     final JTextField field = createTextField(property, formatMaskString, valueContainsLiterals);
     linkToEnabledState(enabledState, field);
     field.setToolTipText(property.getDescription());
+    if (property.getAttribute().isCharacter()) {
+      ((SizedDocument) field.getDocument()).setMaxLength(1);
+    }
     if (property.getMaximumLength() > 0 && field.getDocument() instanceof SizedDocument) {
       ((SizedDocument) field.getDocument()).setMaxLength(property.getMaximumLength());
     }
@@ -816,8 +822,11 @@ public final class EntityInputComponents {
     else if (attribute.isString()) {
       return initializeStringField(formatMaskString, valueContainsLiterals);
     }
+    else if (attribute.isCharacter()) {
+      return new JTextField(new SizedDocument(), "", 0);
+    }
 
-    throw new IllegalArgumentException("Creating text fields for property type: " + attribute.getTypeClass() + " is not implemented");
+    throw new IllegalArgumentException("Creating text fields for type: " + attribute.getTypeClass() + " is not implemented (" + property + ")");
   }
 
   private static JTextField initializeStringField(final String formatMaskString, final ValueContainsLiterals valueContainsLiterals) {
