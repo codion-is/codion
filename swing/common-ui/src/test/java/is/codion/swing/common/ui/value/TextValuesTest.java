@@ -102,4 +102,14 @@ public class TextValuesTest {
     value.set("hi");
     assertEquals("hi", textField.getText());
   }
+
+  @Test
+  public void characterValue() {
+    final ComponentValue<Character, JTextField> value = TextValues.characterValue(new JTextField(), UpdateOn.KEYSTROKE);
+    assertNull(value.get());
+    value.getComponent().setText("2");
+    assertEquals('2', value.get());
+    value.set(null);
+    assertTrue(value.getComponent().getText().isEmpty());
+  }
 }
