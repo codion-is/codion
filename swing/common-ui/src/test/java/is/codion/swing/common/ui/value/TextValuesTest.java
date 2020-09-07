@@ -105,7 +105,7 @@ public class TextValuesTest {
 
   @Test
   public void characterValue() {
-    final ComponentValue<Character, JTextField> value = TextValues.characterValue(new JTextField(), UpdateOn.KEYSTROKE);
+    final ComponentValue<Character, JTextField> value = TextValues.characterValue(new JTextField());
     assertNull(value.get());
     value.getComponent().setText("2");
     assertEquals('2', value.get());
