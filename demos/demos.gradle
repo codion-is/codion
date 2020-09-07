@@ -45,6 +45,8 @@ task domainJar(type: Jar, dependsOn: classes) {
     includeEmptyDirs false
 }
 
+jar.finalizedBy domainJar
+
 artifacts {
     domain domainJar
 }
