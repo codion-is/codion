@@ -70,6 +70,14 @@ public final class TextValues {
 
   /**
    * @param textField the component
+   * @return a Value bound to the given component
+   */
+  public static ComponentValue<Character, JTextField> characterValue(final JTextField textField) {
+    return characterValue(textField, UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * @param textField the component
    * @param updateOn specifies when the underlying value should be updated
    * @return a Value bound to the given component
    */
