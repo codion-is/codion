@@ -7,6 +7,7 @@ import is.codion.common.Serializer;
 import is.codion.common.db.database.Databases;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
+import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
@@ -95,7 +96,7 @@ public class EntityServletServerTest {
   @BeforeAll
   public static void setUp() throws Exception {
     final EntityServerConfiguration configuration = configure();
-    HOSTNAME = ServerConfiguration.SERVER_HOST_NAME.get();
+    HOSTNAME = Clients.SERVER_HOST_NAME.get();
     TARGET_HOST = new HttpHost(HOSTNAME, WEB_SERVER_PORT_NUMBER, HTTPS);
     SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/ser";
     SERVER_JSON_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/json";
@@ -651,10 +652,10 @@ public class EntityServletServerTest {
   }
 
   private static EntityServerConfiguration configure() {
-    ServerConfiguration.SERVER_HOST_NAME.set("localhost");
+    Clients.SERVER_HOST_NAME.set("localhost");
+    Clients.TRUSTSTORE.set("../../framework/server/src/main/security/truststore.jks");
+    Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
-    ServerConfiguration.TRUSTSTORE.set("../../framework/server/src/main/security/truststore.jks");
-    ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/keystore.jks");
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
@@ -672,10 +673,10 @@ public class EntityServletServerTest {
   }
 
   private static void deconfigure() {
-    ServerConfiguration.SERVER_HOST_NAME.set(null);
+    Clients.SERVER_HOST_NAME.set(null);
+    Clients.TRUSTSTORE.set(null);
+    Clients.TRUSTSTORE_PASSWORD.set(null);
     ServerConfiguration.RMI_SERVER_HOSTNAME.set(null);
-    ServerConfiguration.TRUSTSTORE.set(null);
-    ServerConfiguration.TRUSTSTORE_PASSWORD.set(null);
     ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.set(null);
     HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);

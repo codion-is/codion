@@ -4,6 +4,7 @@
 package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.db.database.Databases;
+import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
@@ -38,7 +39,7 @@ public class EntityServerMonitorTest {
   @BeforeAll
   public static synchronized void setUp() throws Exception {
     EntityServer.startServer(CONFIGURATION);
-    server = (Server) LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(),
+    server = (Server) LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(),
             CONFIGURATION.getRegistryPort()).lookup(CONFIGURATION.getServerName());
     admin = server.getServerAdmin(ADMIN_USER);
   }
@@ -88,7 +89,7 @@ public class EntityServerMonitorTest {
   }
 
   private static EntityServerConfiguration configure() {
-    ServerConfiguration.SERVER_HOST_NAME.set("localhost");
+    Clients.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(2223, 2221);
     configuration.setAdminPort(2223);

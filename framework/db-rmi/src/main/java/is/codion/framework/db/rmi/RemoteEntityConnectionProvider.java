@@ -89,7 +89,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   public String getServerHostName() {
     if (serverHostName == null) {
-      serverHostName = ServerConfiguration.SERVER_HOST_NAME.get();
+      serverHostName = Clients.SERVER_HOST_NAME.get();
     }
 
     return serverHostName;

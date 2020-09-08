@@ -10,7 +10,7 @@ import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportException;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
-import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.db.condition.SelectCondition;
@@ -263,9 +263,9 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   private static EntityServerConfiguration configure() {
-    ServerConfiguration.SERVER_HOST_NAME.set("localhost");
-    ServerConfiguration.TRUSTSTORE.set("../../framework/server/src/main/security/truststore.jks");
-    ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
+    Clients.SERVER_HOST_NAME.set("localhost");
+    Clients.TRUSTSTORE.set("../../framework/server/src/main/security/truststore.jks");
+    Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     Report.REPORT_PATH.set("report/path");
     HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/security/keystore.jks");
@@ -285,9 +285,9 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   private static void deconfigure() {
-    ServerConfiguration.SERVER_HOST_NAME.set(null);
-    ServerConfiguration.TRUSTSTORE.set(null);
-    ServerConfiguration.TRUSTSTORE_PASSWORD.set(null);
+    Clients.SERVER_HOST_NAME.set(null);
+    Clients.TRUSTSTORE.set(null);
+    Clients.TRUSTSTORE_PASSWORD.set(null);
     Report.REPORT_PATH.set(null);
     HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);

@@ -6,6 +6,7 @@ package is.codion.framework.server;
 import is.codion.common.MethodLogger;
 import is.codion.common.db.database.Databases;
 import is.codion.common.i18n.Messages;
+import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
@@ -60,7 +61,7 @@ public class EntityServerTest {
     final String serverName = CONFIGURATION.getServerName();
     EntityServer.startServer(CONFIGURATION);
     server = (Server<RemoteEntityConnection, EntityServerAdmin>)
-            LocateRegistry.getRegistry(ServerConfiguration.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
+            LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
     admin = server.getServerAdmin(ADMIN_USER);
   }
 
@@ -252,7 +253,7 @@ public class EntityServerTest {
     provider.disconnect();
 
     //not available until a connection has been requested
-    assertEquals(ServerConfiguration.SERVER_HOST_NAME.get(), provider.getServerHostName());
+    assertEquals(Clients.SERVER_HOST_NAME.get(), provider.getServerHostName());
 
     final EntityConnection db2 = provider.getConnection();
     assertNotNull(db2);
@@ -309,10 +310,10 @@ public class EntityServerTest {
   }
 
   private static DefaultEntityServerConfiguration configure() {
-    ServerConfiguration.SERVER_HOST_NAME.set("localhost");
+    Clients.SERVER_HOST_NAME.set("localhost");
+    Clients.TRUSTSTORE.set("src/main/security/truststore.jks");
+    Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
-    ServerConfiguration.TRUSTSTORE.set("src/main/security/truststore.jks");
-    ServerConfiguration.TRUSTSTORE_PASSWORD.set("crappypass");
     ServerConfiguration.KEYSTORE.set("src/main/security/keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
     final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(2223, 2221);

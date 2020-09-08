@@ -4,7 +4,7 @@
 package is.codion.framework.demos.empdept.minimal;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.rmi.server.ServerConfiguration;
+import is.codion.common.rmi.client.Clients;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
@@ -264,9 +264,9 @@ public final class EmpDeptMinimalApp {
     //the remote connection settings
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(EmpDept.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
-    ServerConfiguration.SERVER_HOST_NAME.set("codion.no-ip.org");
+    Clients.SERVER_HOST_NAME.set("codion.no-ip.org");
     //we're using Secure Sockets Layer so we need to specify a truststore
-    ServerConfiguration.TRUSTSTORE.set("resources/security/truststore.jks");
+    Clients.TRUSTSTORE.set("resources/security/truststore.jks");
     System.setProperty("java.security.policy", "resources/security/codion_demos.policy");
 
     //we create an instance of our application panel and start it

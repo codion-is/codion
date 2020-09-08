@@ -33,26 +33,9 @@ public interface ServerConfiguration {
   String JAVAX_NET_KEYSTORE_PASSWORD = "javax.net.ssl.keyStorePassword";
 
   /**
-   * The system property key for specifying a ssl truststore
-   */
-  String JAVAX_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
-
-  /**
-   * The system property key for specifying a ssl truststore password
-   */
-  String JAVAX_NET_TRUSTSTORE_PASSWORD = "javax.net.ssl.trustStorePassword";
-
-  /**
    * Localhost
    */
   String LOCALHOST = "localhost";
-
-  /**
-   * The host on which to locate the server<br>
-   * Value type: String<br>
-   * Default value: localhost
-   */
-  PropertyValue<String> SERVER_HOST_NAME = Configuration.stringValue("codion.server.hostname", LOCALHOST);
 
   /**
    * Specifies the rmi server hostname<br>
@@ -98,20 +81,6 @@ public interface ServerConfiguration {
    * Default value: null
    */
   PropertyValue<String> KEYSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_KEYSTORE_PASSWORD, null);
-
-  /**
-   * The rmi ssl truststore to use<br>
-   * Value type: String
-   * Default value: null
-   */
-  PropertyValue<String> TRUSTSTORE = Configuration.stringValue(JAVAX_NET_TRUSTSTORE, null);
-
-  /**
-   * The rmi ssl truststore password to use<br>
-   * Value type: String
-   * Default value: null
-   */
-  PropertyValue<String> TRUSTSTORE_PASSWORD = Configuration.stringValue(JAVAX_NET_TRUSTSTORE_PASSWORD, null);
 
   /**
    * The port on which the server should export the remote admin interface<br>
