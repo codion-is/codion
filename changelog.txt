@@ -6447,3 +6447,4 @@
   Text.collateSansSpaces() and DatabaseDomain.getCaption() now use String.replace() instead of String.replaceAll()
   TextValues.characterValue() added and used in EntityInputComponents
   Client side configuration values TRUSTSTORE, TRUSTSTORE_PASSWORD and SERVER_HOST_NAME moved from ServerConfiguration to Clients
+  EntityConnectionHandler.EntityArgumentToString now translates null values to 'null' in method logger output
