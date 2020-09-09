@@ -373,7 +373,7 @@ final class EntityConnectionHandler implements InvocationHandler {
     @Override
     protected String toString(final Object object) {
       if (object == null) {
-        return "";
+        return "null";
       }
       if (object instanceof String) {
         return "'" + object + "'";
