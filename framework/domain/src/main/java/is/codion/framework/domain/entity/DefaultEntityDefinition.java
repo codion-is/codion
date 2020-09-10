@@ -849,7 +849,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private void validate(final Property<?> property, final Map<Attribute<?>, Property<?>> propertyMap) {
       if (!entityType.equals(property.getEntityType())) {
         throw new IllegalArgumentException("Attribute entityType (" +
-                property.getEntityType() + ") does not match the definition entityType: " + entityType);
+                property.getEntityType() + ") in property " + property.getAttribute() +
+                " does not match the definition entityType: " + entityType);
       }
       if (propertyMap.containsKey(property.getAttribute())) {
         throw new IllegalArgumentException("Property " + property.getAttribute()
