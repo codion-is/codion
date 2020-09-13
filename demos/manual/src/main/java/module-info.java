@@ -14,7 +14,7 @@ module is.codion.framework.demos.manual {
   requires is.codion.swing.framework.tools;
   requires is.codion.swing.framework.ui;
   requires is.codion.plugin.jasperreports;
-  requires is.codion.framework.db.test;
+  requires is.codion.framework.domain.test;
   requires org.junit.jupiter.api;
 
   exports is.codion.framework.demos.manual.store.domain;

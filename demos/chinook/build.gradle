@@ -47,9 +47,9 @@ dependencies {
 ext {
     execMainClass = "$moduleName/is.codion.framework.demos.chinook.ui.ChinookAppPanel"
     execLoadTestMainClass = "$moduleName/is.codion.framework.demos.chinook.testing.ChinookLoadTest"
-    testAddModules = ['is.codion.framework.db.test']
+    testAddModules = ['is.codion.framework.domain.test']
     testAddReads = [
-            'is.codion.framework.demos.chinook': 'is.codion.framework.db.test',
+            'is.codion.framework.demos.chinook': 'is.codion.framework.domain.test',
             'is.codion.framework.domain': 'is.codion.framework.demos.chinook'
     ]
 }

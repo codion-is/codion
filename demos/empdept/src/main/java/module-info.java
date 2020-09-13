@@ -3,7 +3,7 @@ module is.codion.framework.demos.empdept {
   requires is.codion.framework.db.http;
   requires is.codion.framework.db.local;
   requires is.codion.framework.db.rmi;
-  requires is.codion.framework.db.test;
+  requires is.codion.framework.domain.test;
   requires is.codion.swing.common.tools.ui;
   requires is.codion.swing.framework.tools;
   requires is.codion.swing.framework.ui;

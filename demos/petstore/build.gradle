@@ -25,8 +25,8 @@ dependencies {
 ext {
     execMainClass = "$moduleName/is.codion.framework.demos.petstore.ui.PetstoreAppPanel"
     execLoadTestMainClass = "$moduleName/is.codion.framework.demos.petstore.testing.PetstoreLoadTest"
-    testAddModules = ['is.codion.framework.db.test']
-    testAddReads = ['is.codion.framework.demos.petstore': 'is.codion.framework.db.test']
+    testAddModules = ['is.codion.framework.domain.test']
+    testAddReads = ['is.codion.framework.demos.petstore': 'is.codion.framework.domain.test']
     testAddExports = [
             'is.codion.framework.demos.petstore/is.codion.framework.demos.petstore.domain': 'is.codion.framework.db.local',
             'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',

@@ -24,9 +24,9 @@ dependencies {
 
 ext {
     execMainClass = "$moduleName/is.codion.framework.demos.world.ui.WorldAppPanel"
-    testAddModules = ['is.codion.framework.db.test', 'is.codion.swing.framework.ui.test']
+    testAddModules = ['is.codion.framework.domain.test', 'is.codion.swing.framework.ui.test']
     testAddReads = [
-            'is.codion.framework.demos.world': 'is.codion.framework.db.test,is.codion.swing.framework.ui.test',
+            'is.codion.framework.demos.world': 'is.codion.framework.domain.test,is.codion.swing.framework.ui.test',
             'is.codion.framework.domain': 'is.codion.framework.demos.world'
     ]
     testAddExports = [

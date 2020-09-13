@@ -27,8 +27,8 @@ dependencies {
 ext {
     execMainClass = "$moduleName/is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel"
     execLoadTestMainClass = "$moduleName/is.codion.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest"
-    testAddModules = ['is.codion.framework.db.test']
-    testAddReads = ['is.codion.framework.demos.schemabrowser': 'is.codion.framework.db.test']
+    testAddModules = ['is.codion.framework.domain.test']
+    testAddReads = ['is.codion.framework.demos.schemabrowser': 'is.codion.framework.domain.test']
     testAddExports = [
             'is.codion.framework.demos.schemabrowser/is.codion.framework.demos.schemabrowser.domain': 'is.codion.framework.db.local',
             'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',

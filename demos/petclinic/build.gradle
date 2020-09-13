@@ -23,8 +23,8 @@ dependencies {
 
 ext {
     execMainClass = "$moduleName/is.codion.framework.demos.petclinic.ui.PetclinicAppPanel"
-    testAddModules = ['is.codion.framework.db.test', 'is.codion.swing.framework.ui.test']
-    testAddReads = ['is.codion.framework.demos.petclinic': 'is.codion.framework.db.test,is.codion.swing.framework.ui.test']
+    testAddModules = ['is.codion.framework.domain.test', 'is.codion.swing.framework.ui.test']
+    testAddReads = ['is.codion.framework.demos.petclinic': 'is.codion.framework.domain.test,is.codion.swing.framework.ui.test']
     testAddExports = [
             'is.codion.framework.demos.petclinic/is.codion.framework.demos.petclinic.ui': 'is.codion.swing.framework.ui.test',
             'is.codion.framework.demos.petclinic/is.codion.framework.demos.petclinic.domain': 'is.codion.framework.db.local',
