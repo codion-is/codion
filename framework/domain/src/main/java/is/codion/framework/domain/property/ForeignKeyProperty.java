@@ -15,17 +15,6 @@ import java.util.List;
 public interface ForeignKeyProperty extends Property<Entity> {
 
   /**
-   * @return the underying attribute
-   */
-  @Override
-  Attribute<Entity> getAttribute();
-
-  /**
-   * @return the entity type
-   */
-  EntityType<?> getEntityType();
-
-  /**
    * @return the type of the entity referenced by this foreign key
    */
   EntityType<Entity> getReferencedEntityType();
