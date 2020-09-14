@@ -1370,8 +1370,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void bindEventsInternal() {
-    applicationModel.getConnectionValidObserver().addDataListener(active ->
-            setParentWindowTitle(active ? frameTitle : frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED)));
+    applicationModel.getConnectionValidObserver().addDataListener(active -> SwingUtilities.invokeLater(() ->
+            setParentWindowTitle(active ? frameTitle : frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED))));
   }
 
   private JFrame startApplicationInternal(final String frameCaption, final String iconName, final MaximizeFrame maximizeFrame,
