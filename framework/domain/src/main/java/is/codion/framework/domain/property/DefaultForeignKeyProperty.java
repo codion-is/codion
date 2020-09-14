@@ -11,14 +11,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements ForeignKeyProperty {
 
   private static final long serialVersionUID = 1;
 
-  private List<Reference<?>> references;
+  private final List<Reference<?>> references = new ArrayList<>(1);
   private EntityType<Entity> referencedEntityType;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
@@ -48,6 +47,10 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
 
   @Override
   public List<Reference<?>> getReferences() {
+    if (references.isEmpty()) {
+      throw new IllegalStateException("No references defined for foreign key property: " + getAttribute());
+    }
+
     return references;
   }
 
@@ -69,12 +72,10 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   private <T> Reference<T> findReference(final Attribute<T> attribute) {
-    if (references != null) {
-      for (int i = 0; i < references.size(); i++) {
-        final Reference<?> reference = references.get(i);
-        if (reference.getAttribute().equals(attribute)) {
-          return (Reference<T>) reference;
-        }
+    for (int i = 0; i < references.size(); i++) {
+      final Reference<?> reference = references.get(i);
+      if (reference.getAttribute().equals(attribute)) {
+        return (Reference<T>) reference;
       }
     }
 
@@ -167,21 +168,10 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
                 " expected, got " + referencedAttribute.getEntityType());
       }
       if (foreignKeyProperty.findReference(attribute) != null) {
-        throw new IllegalArgumentException("Foreign key already contains a reference for column attribute: " + attribute);
+        throw new IllegalArgumentException("Foreign key already contains a reference for attribute: " + attribute);
       }
 
-      foreignKeyProperty.references = addReference(attribute, referencedAttribute, readOnly);
-    }
-
-    private <T> List<Reference<?>> addReference(final Attribute<T> attribute, final Attribute<T> referencedAttribute,
-                                                final boolean readOnly) {
-      final List<Reference<?>> references = new ArrayList<>();
-      if (foreignKeyProperty.references != null) {
-        references.addAll(foreignKeyProperty.references);
-      }
-      references.add(new DefaultReference<>(attribute, referencedAttribute, readOnly));
-
-      return unmodifiableList(references);
+      foreignKeyProperty.references.add(new DefaultReference<>(attribute, referencedAttribute, readOnly));
     }
   }
 }
