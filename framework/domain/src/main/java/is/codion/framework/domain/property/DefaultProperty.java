@@ -139,7 +139,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public Attribute<T> getAttribute() {
+  public final Attribute<T> getAttribute() {
     return attribute;
   }
 
@@ -272,7 +272,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public String formatValue(final T value) {
+  public final String formatValue(final T value) {
     if (value == null) {
       return "";
     }
