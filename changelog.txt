@@ -6422,3 +6422,4 @@
   EntityConnectionHandler.EntityArgumentToString now translates null values to 'null' in method logger output
   DefaultEntityDefinition.EntityProperties.validate() error message improved
   DefaultForeignKeyProperty, references now final
+  EntityApplicationPanel bug fixed, now sets parent window title on EDT
