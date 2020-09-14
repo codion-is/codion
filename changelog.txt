@@ -6450,3 +6450,4 @@
   EntityConnectionHandler.EntityArgumentToString now translates null values to 'null' in method logger output
   DefaultEntityDefinition.EntityProperties.validate() error message improved
   Incorrectly named module is.codion.framework.db.test renamed to is.codion.framework.domain.test
+  DefaultForeignKeyProperty, references now final
