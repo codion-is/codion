@@ -6430,3 +6430,4 @@
   PostgreSQLDatabase, flipped exception type checking, since getSQLState() can return null when using postgis
   LocalEntityConnectionProvider.getDatabase() now public, so clients can set the connection provider
   DefaultColumnProperty no longer uses Types.JAVA_OBJECT since postgres doesn't grok it, Types.OTHER used instead
+  Domain.configureConnection() added, for adding domain specific database connection extensions

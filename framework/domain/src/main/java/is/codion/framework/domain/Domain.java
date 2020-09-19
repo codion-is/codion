@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain;
 
+import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
@@ -57,4 +58,10 @@ public interface Domain {
    * @throws IllegalArgumentException in case the function is not found
    */
   <C, T, R> DatabaseFunction<C, T, R> getFunction(FunctionType<C, T, R> functionType);
+
+  /**
+   * Configures a database connection for this domain model, f.ex. adding extensions or properties.
+   * @param connection the connection to configure
+   */
+  default void configureConnection(final DatabaseConnection connection) {};
 }

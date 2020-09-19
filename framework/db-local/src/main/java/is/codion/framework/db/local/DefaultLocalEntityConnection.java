@@ -109,6 +109,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     this.domain = requireNonNull(domain, "domain");
     this.domainEntities = domain.getEntities();
     this.connection = createConnection(database, user);
+    this.domain.configureConnection(this.connection);
   }
 
   /**
@@ -124,6 +125,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     this.domain = requireNonNull(domain, "domain");
     this.domainEntities = domain.getEntities();
     this.connection = createConnection(database, connection);
+    this.domain.configureConnection(this.connection);
   }
 
   @Override
