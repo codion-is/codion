@@ -188,7 +188,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
         return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getCharacter(resultSet, columnIndex));
       case Types.BLOB:
         return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getBlob(resultSet, columnIndex));
-      case Types.JAVA_OBJECT:
+      case Types.OTHER:
         return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getObject(resultSet, columnIndex));
       default:
         throw new IllegalArgumentException("Unsupported SQL value type: " + getColumnType() +
@@ -232,9 +232,6 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
     if (clazz.equals(byte[].class)) {
       return Types.BLOB;
-    }
-    if (Object.class.isAssignableFrom(clazz)) {
-      return Types.JAVA_OBJECT;
     }
 
     return Types.OTHER;
