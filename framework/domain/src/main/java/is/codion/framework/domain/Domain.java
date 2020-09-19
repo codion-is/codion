@@ -63,7 +63,7 @@ public interface Domain {
   /**
    * Configures a database connection for this domain model, f.ex. adding extensions or properties.
    * @param connection the connection to configure
-   * @throws is.codion.common.db.database.Database in case of an exception
+   * @throws DatabaseException in case of an exception
    */
   default void configureConnection(final DatabaseConnection connection) throws DatabaseException {};
 }
