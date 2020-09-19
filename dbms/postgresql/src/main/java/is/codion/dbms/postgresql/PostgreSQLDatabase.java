@@ -48,17 +48,17 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
-    return exception.getSQLState().equals(INVALID_AUTHORIZATION_SPECIFICATION);
+    return INVALID_AUTHORIZATION_SPECIFICATION.equals(exception.getSQLState());
   }
 
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
-    return exception.getSQLState().equals(INTEGRITY_CONSTRAINT_VIOLATION);
+    return INTEGRITY_CONSTRAINT_VIOLATION.equals(exception.getSQLState());
   }
 
   @Override
   public boolean isUniqueConstraintException(final SQLException exception) {
-    return exception.getSQLState().equals(UNIQUE_CONSTRAINT_ERROR);
+    return UNIQUE_CONSTRAINT_ERROR.equals(exception.getSQLState());
   }
 
   /**
