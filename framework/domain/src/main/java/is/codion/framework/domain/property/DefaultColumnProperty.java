@@ -66,7 +66,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   @Override
-  public final Object toColumnValue(final T value) {
+  public final Object toColumnValue(final T value) throws SQLException {
     return valueConverter.toColumnValue(value);
   }
 
@@ -189,9 +189,10 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
       case Types.BLOB:
         return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getBlob(resultSet, columnIndex));
       case Types.JAVA_OBJECT:
-        return (resultSet, columnIndex) -> (T) resultSet.getObject(columnIndex);
+        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getObject(resultSet, columnIndex));
       default:
-        throw new IllegalArgumentException("Unsupported SQL value type: " + getColumnType());
+        throw new IllegalArgumentException("Unsupported SQL value type: " + getColumnType() +
+                ", attribute type class: " + getAttribute().getTypeClass().getName());
     }
   }
 
@@ -307,6 +308,15 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     return (T) blob.getBytes(1, (int) blob.length());
+  }
+
+  private static <T> T getObject(final ResultSet resultSet, final int columnIndex) throws SQLException {
+    final Object object = resultSet.getObject(columnIndex);
+    if (object == null) {
+      return null;
+    }
+
+    return (T) object;
   }
 
   static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {

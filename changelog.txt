@@ -6454,3 +6454,5 @@
   EntityApplicationPanel bug fixed, now sets parent window title on EDT
   DefaultProperty.getAttribute() and formatValue() now final
   ForeignKeyProperty, removed unnecessary overrides of getAttribute() and getEntityType()
+  ColumnProperty.ValueConverter methods now throw SQLException, required when working with postgis f.ex.
+  ColumnProperty, valueFetcher now uses fromColumnValue() for Types.JAVA_OBJECT, error message improved
