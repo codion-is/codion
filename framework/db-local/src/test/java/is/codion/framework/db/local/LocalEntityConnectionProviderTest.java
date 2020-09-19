@@ -26,6 +26,8 @@ public class LocalEntityConnectionProviderTest {
     final LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(database);
     provider.setUser(UNIT_TEST_USER).setDomainClassName(TestDomain.class.getName());
 
+    assertNotNull(new LocalEntityConnectionProvider().getDatabase());
+
     final EntityConnection firstConnection = provider.getConnection();
     assertNotNull(firstConnection);
     assertTrue(firstConnection.isConnected());

@@ -85,6 +85,17 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     }
   }
 
+  /**
+   * @return the underlying {@link Database} instance
+   */
+  public Database getDatabase() {
+    if (database == null) {
+      database = Databases.getInstance();
+    }
+
+    return database;
+  }
+
   @Override
   protected LocalEntityConnection connect() {
     try {
@@ -102,13 +113,5 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     if (database != null && shutdownDatabaseOnDisconnect) {
       database.shutdownEmbedded();
     }
-  }
-
-  private Database getDatabase() {
-    if (database == null) {
-      database = Databases.getInstance();
-    }
-
-    return database;
   }
 }
