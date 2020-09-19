@@ -33,8 +33,9 @@ public interface ColumnProperty<T> extends Property<T> {
    * represented by a non-boolean data type in the underlying database
    * @param value the value to translate
    * @return the sql value used to represent the given value
+   * @throws java.sql.SQLException in case of an exception
    */
-  Object toColumnValue(T value);
+  Object toColumnValue(T value) throws SQLException;
 
   /**
    * @return this propertys zero based index in the primary key, -1 if this property is not part of a primary key
@@ -139,15 +140,17 @@ public interface ColumnProperty<T> extends Property<T> {
      * the values are represented by a non-boolean data type in the underlying database
      * @param value the value to translate
      * @return the sql value used to represent the given value
+     * @throws java.sql.SQLException in case of an exception
      */
-    C toColumnValue(T value);
+    C toColumnValue(T value) throws SQLException;
 
     /**
      * Translates the given sql column value into a property value.
      * @param columnValue the sql value to translate from
      * @return the value of sql {@code columnValue}
+     * @throws java.sql.SQLException in case of an exception
      */
-    T fromColumnValue(C columnValue);
+    T fromColumnValue(C columnValue) throws SQLException;
   }
 
   /**
