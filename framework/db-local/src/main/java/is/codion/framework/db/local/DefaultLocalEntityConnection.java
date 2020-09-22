@@ -1253,7 +1253,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static void setParameterValue(final PreparedStatement statement, final int parameterIndex,
                                         final Object value, final ColumnProperty<Object> property) throws SQLException {
-    final Object columnValue = property.toColumnValue(value);
+    final Object columnValue = property.toColumnValue(value, statement);
     try {
       if (columnValue == null) {
         statement.setNull(parameterIndex, property.getColumnType());

@@ -8,6 +8,7 @@ import is.codion.common.db.result.ResultPacker;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.Format;
 import java.util.function.Supplier;
 
@@ -32,10 +33,12 @@ public interface ColumnProperty<T> extends Property<T> {
    * but for certain types this may be necessary, such as boolean values
    * represented by a non-boolean data type in the underlying database
    * @param value the value to translate
+   * @param statement the statement using the column value
+   * @param <C> the column value type
    * @return the sql value used to represent the given value
    * @throws java.sql.SQLException in case of an exception
    */
-  Object toColumnValue(T value) throws SQLException;
+  <C> C toColumnValue(T value, Statement statement) throws SQLException;
 
   /**
    * @return this propertys zero based index in the primary key, -1 if this property is not part of a primary key
@@ -99,11 +102,10 @@ public interface ColumnProperty<T> extends Property<T> {
    * Fetches a value for this property from a ResultSet
    * @param resultSet the ResultSet
    * @param index the index of the column to fetch
-   * @param <T> the value type
    * @return a single value fetched from the given ResultSet
    * @throws java.sql.SQLException in case of an exception
    */
-  <T> T fetchValue(ResultSet resultSet, int index) throws SQLException;
+  T fetchValue(ResultSet resultSet, int index) throws SQLException;
 
   /**
    * @param <T> the result type
@@ -113,9 +115,9 @@ public interface ColumnProperty<T> extends Property<T> {
 
   /**
    * Fetches a single value from a result set.
-   * @param <T> the type of the value being fetched
+   * @param <C> the type of the value being fetched
    */
-  interface ValueFetcher<T> {
+  interface ValueFetcher<C> {
 
     /**
      * Fetches a single value from a ResultSet
@@ -124,7 +126,7 @@ public interface ColumnProperty<T> extends Property<T> {
      * @return a single value fetched from the given ResultSet
      * @throws java.sql.SQLException in case of an exception
      */
-    T fetchValue(ResultSet resultSet, int index) throws SQLException;
+    C fetchValue(ResultSet resultSet, int index) throws SQLException;
   }
 
   /**
@@ -139,10 +141,11 @@ public interface ColumnProperty<T> extends Property<T> {
      * but for certain types this may be necessary, such as boolean values where
      * the values are represented by a non-boolean data type in the underlying database
      * @param value the value to translate
+     * @param statement the statement using the value
      * @return the sql value used to represent the given value
      * @throws java.sql.SQLException in case of an exception
      */
-    C toColumnValue(T value) throws SQLException;
+    C toColumnValue(T value, Statement statement) throws SQLException;
 
     /**
      * Translates the given sql column value into a property value.
