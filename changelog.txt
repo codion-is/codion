@@ -6432,3 +6432,6 @@
   DefaultColumnProperty no longer uses Types.JAVA_OBJECT since postgres doesn't grok it, Types.OTHER used instead
   Domain.configureConnection() added, for adding domain specific database connection extensions
   Domain.configureConnection() now throws DatabaseException
+  DefaultColumnProperty.fetchValue() now performs the value conversion, instead of the valueFetcher
+  ColumnProperty.ValueConverter.toColumnValue(), statement parameter added, for Oracle spatial
+  EntityTableConditionPanel.ConditionColumnSyncPanel.initializeColumnPanel() now catches IllegalArgumentException, when a default input component is not available

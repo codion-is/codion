@@ -46,7 +46,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
 
   private void addResultSetValues(final ResultSet resultSet, final Map<Attribute<?>, Object> values) throws SQLException {
     for (int i = 0; i < columnProperties.size(); i++) {
-      final ColumnProperty<?> property = columnProperties.get(i);
+      final ColumnProperty<Object> property = (ColumnProperty<Object>) columnProperties.get(i);
       try {
         values.put(property.getAttribute(), property.prepareValue(property.fetchValue(resultSet, i + 1)));
       }

@@ -286,8 +286,13 @@ public final class EntityTableConditionPanel extends JPanel {
     @Override
     protected JPanel initializeColumnPanel(final TableColumn column) {
       final Property<?> property = (Property<?>) column.getIdentifier();
-      if (conditionModel.containsConditionModel(property.getAttribute())) {
-        return initializeConditionPanel(conditionModel.getConditionModel(property.getAttribute()));
+      try {
+        if (conditionModel.containsConditionModel(property.getAttribute())) {
+          return initializeConditionPanel(conditionModel.getConditionModel(property.getAttribute()));
+        }
+      }
+      catch (final IllegalArgumentException e) {
+        //Input component not available for property type
       }
 
       return new JPanel();

@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.text.Format;
 import java.time.LocalDate;
@@ -41,7 +42,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   private final transient ResultPacker<T> resultPacker;
   private transient ValueFetcher<T> valueFetcher;
   private transient String columnName;
-  private transient ValueConverter<T, ?> valueConverter;
+  private transient ValueConverter<T, Object> valueConverter;
   private transient boolean groupingColumn = false;
   private transient boolean aggregateColumn = false;
   private transient boolean selectable = true;
@@ -66,8 +67,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   @Override
-  public final Object toColumnValue(final T value) throws SQLException {
-    return valueConverter.toColumnValue(value);
+  public final <C> C toColumnValue(final T value, final Statement statement) throws SQLException {
+    return (C) valueConverter.toColumnValue(value, statement);
   }
 
   @Override
@@ -126,8 +127,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   @Override
-  public final <T> T fetchValue(final ResultSet resultSet, final int index) throws SQLException {
-    return (T) valueFetcher.fetchValue(resultSet, index);
+  public final T fetchValue(final ResultSet resultSet, final int index) throws SQLException {
+    return valueConverter.fromColumnValue(valueFetcher.fetchValue(resultSet, index));
   }
 
   @Override
@@ -150,46 +151,46 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     return new DefaultColumnPropertyBuilder<>(this);
   }
 
-  private ValueConverter<T, ?> initializeValueConverter() {
+  private <C> ValueConverter<T, C> initializeValueConverter() {
     if (getAttribute().isLocalDate()) {
-      return (ValueConverter<T, ?>) DATE_VALUE_CONVERTER;
+      return (ValueConverter<T, C>) DATE_VALUE_CONVERTER;
     }
     else if (getAttribute().isLocalDateTime()) {
-      return (ValueConverter<T, ?>) TIMESTAMP_VALUE_CONVERTER;
+      return (ValueConverter<T, C>) TIMESTAMP_VALUE_CONVERTER;
     }
     else if (getAttribute().isLocalTime()) {
-      return (ValueConverter<T, ?>) TIME_VALUE_CONVERTER;
+      return (ValueConverter<T, C>) TIME_VALUE_CONVERTER;
     }
 
-    return (ValueConverter<T, ?>) DEFAULT_VALUE_CONVERTER;
+    return (ValueConverter<T, C>) DEFAULT_VALUE_CONVERTER;
   }
 
   private ValueFetcher<T> initializeValueFetcher() {
     switch (columnType) {
       case Types.INTEGER:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getInteger(resultSet, columnIndex));
+        return DefaultColumnProperty::getInteger;
       case Types.BIGINT:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getLong(resultSet, columnIndex));
+        return DefaultColumnProperty::getLong;
       case Types.DOUBLE:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getDouble(resultSet, columnIndex));
+        return DefaultColumnProperty::getDouble;
       case Types.DECIMAL:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getBigDecimal(resultSet, columnIndex));
+        return DefaultColumnProperty::getBigDecimal;
       case Types.DATE:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getDate(resultSet, columnIndex));
+        return DefaultColumnProperty::getDate;
       case Types.TIMESTAMP:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getTimestamp(resultSet, columnIndex));
+        return DefaultColumnProperty::getTimestamp;
       case Types.TIME:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getTime(resultSet, columnIndex));
+        return DefaultColumnProperty::getTime;
       case Types.VARCHAR:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getString(resultSet, columnIndex));
+        return DefaultColumnProperty::getString;
       case Types.BOOLEAN:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getBoolean(resultSet, columnIndex));
+        return DefaultColumnProperty::getBoolean;
       case Types.CHAR:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getCharacter(resultSet, columnIndex));
+        return DefaultColumnProperty::getCharacter;
       case Types.BLOB:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getBlob(resultSet, columnIndex));
+        return DefaultColumnProperty::getBlob;
       case Types.OTHER:
-        return (resultSet, columnIndex) -> valueConverter.fromColumnValue(getObject(resultSet, columnIndex));
+        return DefaultColumnProperty::getObject;
       default:
         throw new IllegalArgumentException("Unsupported SQL value type: " + getColumnType() +
                 ", attribute type class: " + getAttribute().getTypeClass().getName());
@@ -339,7 +340,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public T toColumnValue(final Boolean value) {
+    public T toColumnValue(final Boolean value, final Statement statement) {
       if (value == null) {
         return null;
       }
@@ -354,7 +355,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
   private static final class DefaultValueConverter implements ValueConverter<Object, Object> {
     @Override
-    public Object toColumnValue(final Object value) {
+    public Object toColumnValue(final Object value, final Statement statement) {
       return value;
     }
 
@@ -366,7 +367,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
   private static final class DateValueConverter implements ValueConverter<LocalDate, java.sql.Date> {
     @Override
-    public java.sql.Date toColumnValue(final LocalDate value) {
+    public java.sql.Date toColumnValue(final LocalDate value, final Statement statement) {
       if (value == null) {
         return null;
       }
@@ -386,7 +387,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
   private static final class TimestampValueConverter implements ValueConverter<LocalDateTime, java.sql.Timestamp> {
     @Override
-    public java.sql.Timestamp toColumnValue(final LocalDateTime value) {
+    public java.sql.Timestamp toColumnValue(final LocalDateTime value, final Statement statement) {
       if (value == null) {
         return null;
       }
@@ -406,7 +407,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
   private static final class TimeValueConverter implements ValueConverter<LocalTime, java.sql.Time> {
     @Override
-    public java.sql.Time toColumnValue(final LocalTime value) {
+    public java.sql.Time toColumnValue(final LocalTime value, final Statement statement) {
       if (value == null) {
         return null;
       }
@@ -536,7 +537,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public <C> ColumnProperty.Builder<T> columnClass(final Class<C> columnClass, final ValueConverter<T, C> valueConverter) {
       columnProperty.columnType = getSqlType(columnClass);
-      columnProperty.valueConverter = requireNonNull(valueConverter, "valueConverter");
+      columnProperty.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
       columnProperty.valueFetcher = columnProperty.initializeValueFetcher();
       return this;
     }
