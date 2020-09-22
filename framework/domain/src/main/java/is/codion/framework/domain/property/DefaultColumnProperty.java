@@ -192,7 +192,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
       case Types.OTHER:
         return DefaultColumnProperty::getObject;
       default:
-        throw new IllegalArgumentException("Unsupported SQL value type: " + getColumnType() +
+        throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
                 ", attribute type class: " + getAttribute().getTypeClass().getName());
     }
   }
@@ -242,7 +242,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
     @Override
     public T fetch(final ResultSet resultSet) throws SQLException {
-      return valueFetcher.fetchValue(resultSet, 1);
+      return valueConverter.fromColumnValue(valueFetcher.fetchValue(resultSet, 1));
     }
   }
 

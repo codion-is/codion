@@ -6435,3 +6435,4 @@
   DefaultColumnProperty.fetchValue() now performs the value conversion, instead of the valueFetcher
   ColumnProperty.ValueConverter.toColumnValue(), statement parameter added, for Oracle spatial
   EntityTableConditionPanel.ConditionColumnSyncPanel.initializeColumnPanel() now catches IllegalArgumentException, when a default input component is not available
+  DefaultColumnProperty.PropertyResultPacker.fetch() now uses valueConverter
