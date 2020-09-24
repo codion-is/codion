@@ -54,7 +54,7 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * This method returns a String representation of the value associated with the given attribute,
-   * if the property has a format it is used.
+   * if the associated property has a format it is used.
    * @param attribute the attribute for which to retrieve the value
    * @param <T> the value type
    * @return a String representation of the value of {@code attribute}
@@ -91,11 +91,11 @@ public interface Entity extends Comparable<Entity> {
   void saveAll();
 
   /**
-   * Removes the given property and value from this Entity along with the original value if any.
-   * If no value is mapped to the given property, this method has no effect.
+   * Removes the given value from this Entity along with the original value if any.
+   * If no value is mapped to the given attribute, this method has no effect.
    * @param attribute the attribute to remove
    * @param <T> the value type
-   * @return the previous value mapped to the given key
+   * @return the previous value mapped to the given attribute
    */
   <T> T remove(Attribute<T> attribute);
 
@@ -127,10 +127,10 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Returns the Entity instance referenced by the given foreign key attribute.
-   * If the underlying reference property contains a value, that is,
+   * If the underlying reference attribute contains a value, that is,
    * a foreign key value exists but the actual referenced entity has not
    * been loaded, an "empty" entity is returned, containing only the primary
-   * key value. Null is returned only if the actual reference property is null.
+   * key value. Null is returned only if the actual reference attribute is null.
    * @param foreignKeyAttribute the attribute for which to retrieve the value
    * @return the value of {@code foreignKeyAttribute},
    * assuming it is an Entity
@@ -149,7 +149,7 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Returns true if the value of the given foreign key is null, in case of composite
-   * foreign keys a single null value of a non-null property is enough.
+   * foreign keys a single null value of a non-null attribute is enough.
    * @param foreignKeyAttribute the foreign key attribute
    * @return true if the foreign key value is null
    */
