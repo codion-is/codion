@@ -22,32 +22,56 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> equalTo(final T value) {
-    return value == null ? isNull() : equalTo(singletonList(value));
+    if (value == null) {
+      throw new IllegalArgumentException("equalTo condition value can not be null");
+    }
+
+    return equalTo(singletonList(value));
   }
 
   @Override
   public AttributeCondition<T> equalTo(final T... values) {
-    return values == null ? isNull() : equalTo(asList(values));
+    if (values == null) {
+      throw new IllegalArgumentException("equalTo condition values can not be null");
+    }
+
+    return equalTo(asList(values));
   }
 
   @Override
   public AttributeCondition<T> equalTo(final Collection<? extends T> values) {
-    return requireNonNull(values).isEmpty() ? isNull() : new DefaultAttributeEqualCondition<>(attribute, values);
+    if (values == null || values.isEmpty()) {
+      throw new IllegalArgumentException("equalTo condition must contain at least one value");
+    }
+
+    return new DefaultAttributeEqualCondition<>(attribute, values);
   }
 
   @Override
   public AttributeCondition<T> notEqualTo(final T value) {
-    return value == null ? isNotNull() : notEqualTo(singletonList(value));
+    if (value == null) {
+      throw new IllegalArgumentException("notEqualTo condition value can not be null");
+    }
+
+    return notEqualTo(singletonList(value));
   }
 
   @Override
   public AttributeCondition<T> notEqualTo(final T... values) {
-    return values == null ? isNotNull() : notEqualTo(asList(values));
+    if (values == null) {
+      throw new IllegalArgumentException("notEqualTo condition values can not be null");
+    }
+
+    return notEqualTo(asList(values));
   }
 
   @Override
   public AttributeCondition<T> notEqualTo(final Collection<? extends T> values) {
-    return requireNonNull(values).isEmpty() ? isNotNull() : new DefaultAttributeEqualCondition<>(attribute, values, true);
+    if (values == null || values.isEmpty()) {
+      throw new IllegalArgumentException("notEqualTo condition must contain at least one value");
+    }
+
+    return new DefaultAttributeEqualCondition<>(attribute, values, true);
   }
 
   @Override

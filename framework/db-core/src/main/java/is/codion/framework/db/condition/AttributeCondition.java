@@ -38,9 +38,10 @@ public interface AttributeCondition<T> extends Condition {
   interface Builder<T> {
 
     /**
-     * Returns a 'equalTo' condition if {@code value} is non-null, a 'isNull' condition in case of null.
+     * Returns a 'equalTo' {@link AttributeCondition}.
      * @param value the value to use in the condition
      * @return a {@link AttributeCondition}
+     * @throws IllegalArgumentException in case {@code value} is null
      */
     AttributeCondition<T> equalTo(T value);
 
@@ -48,20 +49,23 @@ public interface AttributeCondition<T> extends Condition {
      * Returns a 'equalTo' {@link AttributeCondition}.
      * @param values the values to use in the condition
      * @return a {@link AttributeCondition}
+     * @throws IllegalArgumentException in case {@code values} is null
      */
     AttributeCondition<T> equalTo(T... values);
 
     /**
-     * Returns a 'equalTo' condition if {@code values} is non-empty, a 'isNull' condition in case of an empty collection.
+     * Returns a 'equalTo' {@link AttributeCondition}.
      * @param values the values to use in the condition
      * @return a {@link AttributeCondition}
+     * @throws IllegalArgumentException in case {@code values} is null or empty
      */
     AttributeCondition<T> equalTo(Collection<? extends T> values);
 
     /**
-     * Returns a 'notEqualTo' condition if {@code value} is non-null, a 'isNotNull' condition in case of null.
+     * Returns a 'notEqualTo' {@link AttributeCondition}.
      * @param value the value to use in the condition
      * @return a {@link AttributeCondition}
+     * @throws IllegalArgumentException in case {@code value} is null
      */
     AttributeCondition<T> notEqualTo(T value);
 
@@ -69,13 +73,15 @@ public interface AttributeCondition<T> extends Condition {
      * Returns a 'notEqualTo' {@link AttributeCondition}.
      * @param values the values to use in the condition
      * @return a {@link AttributeCondition}
+     * @throws IllegalArgumentException in case {@code values} is null
      */
     AttributeCondition<T> notEqualTo(T... values);
 
     /**
-     * Returns a 'notEqualTo' condition if {@code values} is non-empty, a 'isNotNull' condition in case of an empty collection.
+     * Returns a 'notEqualTo' condition.
      * @param values the values to use in the condition
      * @return a {@link AttributeCondition}
+     * @throws IllegalArgumentException in case {@code values} is null or empty
      */
     AttributeCondition<T> notEqualTo(Collection<? extends T> values);
 

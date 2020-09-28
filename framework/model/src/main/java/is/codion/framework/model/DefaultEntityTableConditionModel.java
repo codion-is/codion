@@ -364,13 +364,13 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final AttributeCondition<T> condition;
     switch (conditionModel.getOperator()) {
       case EQUAL:
-        condition = builder.equalTo(equalToValues);
+        condition = equalToValues.isEmpty() ? builder.isNull() : builder.equalTo(equalToValues);
         if (condition.getAttribute().isString()) {
           condition.setCaseSensitive(conditionModel.isCaseSensitive());
         }
         break;
       case NOT_EQUAL:
-        condition = builder.notEqualTo(equalToValues);
+        condition = equalToValues.isEmpty() ? builder.isNotNull() : builder.notEqualTo(equalToValues);
         if (condition.getAttribute().isString()) {
           condition.setCaseSensitive(conditionModel.isCaseSensitive());
         }

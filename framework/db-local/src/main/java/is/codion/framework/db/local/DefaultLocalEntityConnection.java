@@ -21,6 +21,7 @@ import is.codion.common.db.result.ResultIterator;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
@@ -459,7 +460,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return selectSingle(condition(attribute).equalTo(value).selectCondition());
+    final AttributeCondition.Builder<T> condition = condition(attribute);
+
+    return selectSingle(value == null ? condition.isNull().selectCondition() : condition.equalTo(value).selectCondition());
   }
 
   @Override
@@ -506,12 +509,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return select(condition(attribute).equalTo(value).selectCondition());
+    final AttributeCondition.Builder<T> condition = condition(attribute);
+
+    return select(value == null ? condition.isNull().selectCondition() : condition.equalTo(value).selectCondition());
   }
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
-    return select(condition(attribute).equalTo(values).selectCondition());
+    final AttributeCondition.Builder<T> condition = condition(attribute);
+
+    return select(values == null || values.isEmpty() ? condition.isNull().selectCondition() : condition.equalTo(values).selectCondition());
   }
 
   @Override

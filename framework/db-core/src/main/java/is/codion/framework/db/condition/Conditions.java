@@ -228,9 +228,17 @@ public final class Conditions {
     final List<Object> values = valueMaps.stream()
             .map(map -> map.get(reference.getReferencedAttribute())).collect(toList());
     if (operator == EQUAL) {
+      if (values.isEmpty()) {
+        return condition((Attribute<Object>) reference.getAttribute()).isNull();
+      }
+
       return condition((Attribute<Object>) reference.getAttribute()).equalTo(values);
     }
     if (operator == NOT_EQUAL) {
+      if (values.isEmpty()) {
+        return condition((Attribute<Object>) reference.getAttribute()).isNotNull();
+      }
+
       return condition((Attribute<Object>) reference.getAttribute()).notEqualTo(values);
     }
 
