@@ -225,6 +225,17 @@ public final class WhereConditionTest {
   }
 
   @Test
+  public void conditionNullOrEmptyValues() {
+    assertThrows(IllegalArgumentException.class, () -> condition(TestDomain.DEPARTMENT_NAME).equalTo((String) null));
+    assertThrows(IllegalArgumentException.class, () -> condition(TestDomain.DEPARTMENT_NAME).equalTo((String[]) null));
+    assertThrows(IllegalArgumentException.class, () -> condition(TestDomain.DEPARTMENT_NAME).equalTo(emptyList()));
+
+    assertThrows(IllegalArgumentException.class, () -> condition(TestDomain.DEPARTMENT_NAME).notEqualTo((String) null));
+    assertThrows(IllegalArgumentException.class, () -> condition(TestDomain.DEPARTMENT_NAME).notEqualTo((String[]) null));
+    assertThrows(IllegalArgumentException.class, () -> condition(TestDomain.DEPARTMENT_NAME).notEqualTo(emptyList()));
+  }
+
+  @Test
   public void whereClause() throws Exception {
     final EntityDefinition departmentDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
     final ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.getProperty(TestDomain.DEPARTMENT_NAME);
@@ -232,22 +243,14 @@ public final class WhereConditionTest {
     assertEquals(property.getColumnName() + " like ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).equalTo("upper"), departmentDefinition);
     assertEquals(property.getColumnName() + " = ?", condition.getWhereClause());
-    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).equalTo((String) null), departmentDefinition);
-    assertEquals(property.getColumnName() + " is null", condition.getWhereClause());
-    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).equalTo((String[]) null), departmentDefinition);
-    assertEquals(property.getColumnName() + " is null", condition.getWhereClause());
-    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).equalTo(emptyList()), departmentDefinition);
+    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).isNull(), departmentDefinition);
     assertEquals(property.getColumnName() + " is null", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).notEqualTo("upper%"), departmentDefinition);
     assertEquals(property.getColumnName() + " not like ?", condition.getWhereClause());
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).notEqualTo("upper"), departmentDefinition);
     assertEquals(property.getColumnName() + " <> ?", condition.getWhereClause());
-    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).notEqualTo((String) null), departmentDefinition);
-    assertEquals(property.getColumnName() + " is not null", condition.getWhereClause());
-    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).notEqualTo((String[]) null), departmentDefinition);
-    assertEquals(property.getColumnName() + " is not null", condition.getWhereClause());
-    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).notEqualTo(emptyList()), departmentDefinition);
+    condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).isNotNull(), departmentDefinition);
     assertEquals(property.getColumnName() + " is not null", condition.getWhereClause());
 
     condition = whereCondition(condition(TestDomain.DEPARTMENT_NAME).greaterThan("upper"), departmentDefinition);

@@ -348,8 +348,11 @@ public class DefaultLocalEntityConnectionTest {
     sales = connection.selectSingle(Conditions.customCondition(Department.DEPARTMENT_CONDITION_SALES_TYPE).selectCondition());
     assertEquals(sales.get(Department.DNAME), "SALES");
 
-    final Entity king = connection.selectSingle(EMP_NAME, "KING");
+    Entity king = connection.selectSingle(EMP_NAME, "KING");
     assertTrue(king.containsKey(EMP_MGR_FK));
+    assertNull(king.get(EMP_MGR_FK));
+
+    king = connection.selectSingle(EMP_MGR_FK, null);
     assertNull(king.get(EMP_MGR_FK));
   }
 
@@ -423,6 +426,8 @@ public class DefaultLocalEntityConnectionTest {
 
     assertEquals(hiredate, emp.get(EMP_HIREDATE));
     assertEquals(hiretime, emp.get(EMP_HIRETIME));
+
+    connection.delete(emp.getPrimaryKey());
   }
 
   @Test
