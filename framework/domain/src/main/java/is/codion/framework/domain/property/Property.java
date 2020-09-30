@@ -253,6 +253,7 @@ public interface Property<T> {
      * Note that values associated with this property are automatically rounded to {@code maximumFractionDigits} digits.
      * @param maximumFractionDigits the maximum fraction digits
      * @return this instance
+     * @throws IllegalStateException in case the underlying attribute is not a decimal type
      */
     Property.Builder<T> maximumFractionDigits(int maximumFractionDigits);
 
@@ -260,6 +261,7 @@ public interface Property<T> {
      * Sets the rounding mode to use when working with BigDecimal
      * @param bigDecimalRoundingMode the rounding mode
      * @return this instance
+     * @throws IllegalStateException in case the underlying attribute is not of type BigDecimal
      */
     Property.Builder<T> bigDecimalRoundingMode(RoundingMode bigDecimalRoundingMode);
 
@@ -313,8 +315,10 @@ public interface Property<T> {
      * @param format the format to use
      * @return this instance
      * @throws NullPointerException in case format is null
-     * @throws IllegalArgumentException in case the format does not fit the property type,
-     * NumberFormat for example is expected for numerical properties
+     * @throws IllegalArgumentException in case the underlying attribute is numerical
+     * and the given format is not a NumberFormat.
+     * @throws IllegalStateException if the underlying attribute is temporal, in which case
+     * {@link #dateTimeFormatPattern(String)} should be used.
      */
     Property.Builder<T> format(Format format);
 
@@ -322,7 +326,8 @@ public interface Property<T> {
      * Sets the date/time format pattern used when presenting values
      * @param dateTimeFormatPattern the format pattern
      * @return this instance
-     * @throws IllegalArgumentException in case the pattern is invalid or if this property is not a date/time based one
+     * @throws IllegalArgumentException in case the pattern is invalid
+     * @throws IllegalStateException in case the underlying attribute is not a date/time based one
      */
     Property.Builder<T> dateTimeFormatPattern(String dateTimeFormatPattern);
   }
