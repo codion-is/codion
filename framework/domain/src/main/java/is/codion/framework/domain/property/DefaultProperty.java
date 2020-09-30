@@ -463,7 +463,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
         throw new IllegalArgumentException("NumberFormat required for numerical property: " + property.attribute);
       }
       if (property.attribute.isTemporal()) {
-        throw new IllegalArgumentException("Use dateTimeFormatPattern() for temporal properties: " + property.attribute);
+        throw new IllegalStateException("Use dateTimeFormatPattern() for temporal properties: " + property.attribute);
       }
       property.format = format;
       return this;
@@ -473,7 +473,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     public Property.Builder<T> dateTimeFormatPattern(final String dateTimeFormatPattern) {
       requireNonNull(dateTimeFormatPattern, "dateTimeFormatPattern");
       if (!property.attribute.isTemporal()) {
-        throw new IllegalArgumentException("dateTimeFormatPattern is only applicable to temporal properties: " + property.attribute);
+        throw new IllegalStateException("dateTimeFormatPattern is only applicable to temporal properties: " + property.attribute);
       }
       property.dateTimeFormatter = ofPattern(dateTimeFormatPattern);
       property.dateTimeFormatPattern = dateTimeFormatPattern;
@@ -491,6 +491,9 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
     @Override
     public Property.Builder<T> bigDecimalRoundingMode(final RoundingMode roundingMode) {
+      if (!property.attribute.isBigDecimal()) {
+        throw new IllegalStateException("bigDecimalRoundingMode is only applicable to BigDecimal properties");
+      }
       property.bigDecimalRoundingMode = requireNonNull(roundingMode, "roundingMode");
       return this;
     }

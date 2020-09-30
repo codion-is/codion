@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.EntityType;
 
 import org.junit.jupiter.api.Test;
 
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
@@ -97,13 +98,23 @@ public final class PropertiesTest {
   }
 
   @Test
+  public void nonTemporalPropertyWithFormatPatter() {
+    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("attribute")).dateTimeFormatPattern("dd-MM-yy"));
+  }
+
+  @Test
+  public void nonBigDecimalWithRoundingMode() {
+    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.doubleAttribute("attribute")).bigDecimalRoundingMode(RoundingMode.CEILING));
+  }
+
+  @Test
   public void datePropertyWithNumberFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).format(NumberFormat.getIntegerInstance()));
+    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.localDateAttribute("attribute")).format(NumberFormat.getIntegerInstance()));
   }
 
   @Test
   public void timestampPropertyWithNumberFormat() {
-    assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.localDateTimeAttribute("attribute")).format(NumberFormat.getIntegerInstance()));
+    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.localDateTimeAttribute("attribute")).format(NumberFormat.getIntegerInstance()));
   }
 
   @Test
