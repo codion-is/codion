@@ -583,6 +583,16 @@ public class DefaultEntityTest {
     assertNotEquals(compMasterKey, compMasterKey2);
 
     compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
+    //keys are still null, since COMPOSITE_MASTER_ID_3 is null
+    assertNotEquals(compMasterKey, compMasterKey2);
+
+    compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
+    compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
+    assertEquals(compMasterKey, compMasterKey2);
+
+    compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID, null);
+    compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID, null);
+    //not null since COMPOSITE_MASTER_ID is nullable
     assertEquals(compMasterKey, compMasterKey2);
 
     final Key detailKey = ENTITIES.primaryKey(Detail.TYPE, 1L);
@@ -591,6 +601,28 @@ public class DefaultEntityTest {
 
     detailKey2.put(1L);
     assertEquals(detailKey2, detailKey);
+
+    final Entity department1 = ENTITIES.entity(TestDomain.Department.TYPE);
+    department1.put(TestDomain.Department.NO, 1);
+    final Entity department2 = ENTITIES.entity(TestDomain.Department.TYPE);
+    department2.put(TestDomain.Department.NO, 1);
+
+    assertEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+
+    department2.put(TestDomain.Department.NO, 2);
+    assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+
+    department1.put(TestDomain.Department.NO, null);
+    assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+
+    department2.put(TestDomain.Department.NO, null);
+    assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+
+    department1.remove(TestDomain.Department.NO);
+    assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+
+    department2.remove(TestDomain.Department.NO);
+    assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
   }
 
   @Test

@@ -224,19 +224,21 @@ class DefaultKey implements Key, Serializable {
     if (object == null || values.isEmpty()) {
       return false;
     }
-    if (object.getClass() ==  DefaultKey.class) {
-      final EntityType<?> entityType = definition.getEntityType();
+    if (object.getClass() == DefaultKey.class) {
       final DefaultKey otherKey = (DefaultKey) object;
+      if (isNull() || otherKey.isNull()) {
+        return false;
+      }
+      final EntityType<?> entityType = definition.getEntityType();
       if (compositeKey) {
-        return otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) && this.values.equals(otherKey.values);
+        return otherKey.isCompositeKey() && this.values.equals(otherKey.values) && entityType.equals(otherKey.getEntityType());
       }
       if (singleIntegerKey) {
-        return otherKey.isSingleIntegerKey() && isNull() == otherKey.isNull()
-                && hashCode() == otherKey.hashCode() && entityType.equals(otherKey.getEntityType());
+        return otherKey.isSingleIntegerKey() && hashCode() == otherKey.hashCode() && entityType.equals(otherKey.getEntityType());
       }
       //single non-integer key
-      return !otherKey.isCompositeKey() && entityType.equals(otherKey.getEntityType()) &&
-              Objects.equals(get(), otherKey.get()) && Objects.equals(getAttribute(), otherKey.getAttribute());
+      return !otherKey.isCompositeKey() && Objects.equals(get(), otherKey.get())
+              && Objects.equals(getAttribute(), otherKey.getAttribute()) && entityType.equals(otherKey.getEntityType());
     }
 
     return false;
