@@ -6438,3 +6438,4 @@
   DefaultColumnProperty.PropertyResultPacker.fetch() now uses valueConverter
   DefaultAttributeConditionBuilder, equalTo() and notEqualTo() with null or empty collection as parameter no longer translate to isNull() and isNotNull() conditions, throw IllegalArgumentException instead
   DefaultPropertyBuilder.bigDecimalRoundingMode() now throws exception if the underlying attribute is not of type BigDecimal, replaced a couple of related IllegalArgumentExceptions with IllegalStateExceptions, some javadoc improvements
+  DefaultKey.equals(), null keys are no longer equal, minor refactoring moving entityType equals check last
