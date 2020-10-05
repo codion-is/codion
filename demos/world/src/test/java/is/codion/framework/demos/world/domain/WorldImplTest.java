@@ -58,7 +58,8 @@ public final class WorldImplTest extends EntityTestUnit {
 
   @Override
   protected Entity initializeReferenceEntity(EntityType<?> entityType,
-                                             Map<EntityType<?>, Entity> foreignKeyEntities) {
+                                             Map<EntityType<?>, Entity> foreignKeyEntities)
+          throws DatabaseException{
     if (entityType.equals(Country.TYPE)) {
       Entity iceland = getEntities().entity(Country.TYPE);
       iceland.put(Country.CODE, "ISL");

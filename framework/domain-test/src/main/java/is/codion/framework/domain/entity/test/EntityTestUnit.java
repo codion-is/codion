@@ -285,8 +285,10 @@ public class EntityTestUnit {
    * @param entityType the entityType
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return a entity of the given type
+   * @throws DatabaseException in case of an exception
    */
-  protected Entity initializeReferenceEntity(final EntityType<?> entityType, final Map<EntityType<?>, Entity> foreignKeyEntities) {
+  protected Entity initializeReferenceEntity(final EntityType<?> entityType, final Map<EntityType<?>, Entity> foreignKeyEntities)
+          throws DatabaseException {
     return createRandomEntity(getEntities(), entityType, foreignKeyEntities);
   }
 

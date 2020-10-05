@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.manual.store.domain;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
@@ -39,7 +40,8 @@ public class StoreTest extends EntityTestUnit {
 
   @Override
   protected Entity initializeReferenceEntity(EntityType<?> entityType,
-                                             Map<EntityType<?>, Entity> foreignKeyEntities) {
+                                             Map<EntityType<?>, Entity> foreignKeyEntities)
+          throws DatabaseException {
     //see if the currently running test requires an ADDRESS entity
     if (entityType.equals(Address.TYPE)) {
       Entity address = getEntities().entity(Address.TYPE);
