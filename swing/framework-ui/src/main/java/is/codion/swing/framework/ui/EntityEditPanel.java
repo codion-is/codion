@@ -397,7 +397,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
    */
   public final JToolBar createControlToolBar(final int orientation) {
     final ControlList controlPanelControls = initializeControlPanelControls();
-    if (controlPanelControls.size() == 0) {
+    if (controlPanelControls.isEmpty()) {
       return null;
     }
     return ControlProvider.createToolBar(controlPanelControls, orientation);
@@ -749,7 +749,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
 
   private JPanel createControlPanel(final boolean horizontal) {
     final ControlList controlPanelControls = initializeControlPanelControls();
-    if (controlPanelControls.size() == 0) {
+    if (controlPanelControls.isEmpty()) {
       return null;
     }
     if (horizontal) {

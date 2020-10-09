@@ -685,11 +685,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected ControlList getMainMenuControls() {
     final ControlList menuControls = Controls.controlList();
-    menuControls.add(getFileControls());
-    menuControls.add(getViewControls());
-    menuControls.add(getToolsControls());
+    final ControlList fileControls = getFileControls();
+    if (fileControls != null && !fileControls.isEmpty()) {
+      menuControls.add(fileControls);
+    }
+    final ControlList viewControls = getViewControls();
+    if (viewControls != null && !viewControls.isEmpty()) {
+      menuControls.add(viewControls);
+    }
+    final ControlList toolsControls = getToolsControls();
+    if (toolsControls != null && !toolsControls.isEmpty()) {
+      menuControls.add(toolsControls);
+    }
     final ControlList supportTableControlList = getSupportTableControls();
-    if (supportTableControlList != null) {
+    if (supportTableControlList != null && !supportTableControlList.isEmpty()) {
       menuControls.add(supportTableControlList);
     }
     final List<ControlList> additionalMenus = getAdditionalMenuControls();
@@ -698,7 +707,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         menuControls.add(set);
       }
     }
-    menuControls.add(getHelpControls());
+    final ControlList helpControls = getHelpControls();
+    if (helpControls != null && !helpControls.isEmpty()) {
+      menuControls.add(helpControls);
+    }
 
     return menuControls;
   }

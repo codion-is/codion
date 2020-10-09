@@ -53,6 +53,11 @@ public interface ControlList extends Control {
   int size();
 
   /**
+   * @return true if this control list contains no controls
+   */
+  boolean isEmpty();
+
+  /**
    * @param index the index
    * @return the action at the given index
    */

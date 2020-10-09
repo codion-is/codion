@@ -885,7 +885,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     if (tablePanel.includeDeleteSelectedControl()) {
       popupControls.add(tablePanel.getDeleteSelectedControl());
     }
-    if (popupControls.size() > 0) {
+    if (!popupControls.isEmpty()) {
       popupControls.addSeparator();
     }
     popupControls.add(tablePanel.getViewDependenciesControl());
@@ -1331,7 +1331,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private void addTablePopupMenu() {
     final ControlList popupControls = getPopupControls(additionalPopupControls);
-    if (popupControls == null || popupControls.size() == 0) {
+    if (popupControls == null || popupControls.isEmpty()) {
       return;
     }
 
@@ -1364,7 +1364,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       if (searchPanelControls != null) {
         controls.addAll(searchPanelControls);
       }
-      if (controls.size() > 0) {
+      if (!controls.isEmpty()) {
         popupControls.add(controls);
       }
     }

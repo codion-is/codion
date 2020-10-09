@@ -6442,3 +6442,4 @@
   DefaultKeyTest added, relevant methods moved from DefaultEntityTest
   EntityEditComponentPanel, removed a bunch of unnecessary type parameters
   EntityTestUnit.initializeReferenceEntity() now throws DatabaseException
+  ControlList.isEmpty() added, used where applicable
