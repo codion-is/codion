@@ -48,5 +48,6 @@ public class DefaultControlListTest {
 
     list2.removeAll();
     assertFalse(list2.getActions().contains(one));
+    assertTrue(list2.isEmpty());
   }
 }

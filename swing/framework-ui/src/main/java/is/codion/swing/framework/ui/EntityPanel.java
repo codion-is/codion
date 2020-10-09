@@ -1212,7 +1212,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {
       toolbarControls.add(getToggleDetailPanelControl());
     }
-    if (toolbarControls.size() > 0) {
+    if (!toolbarControls.isEmpty()) {
       tablePanel.addToolBarControls(toolbarControls);
     }
     if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {

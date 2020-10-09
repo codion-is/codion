@@ -65,6 +65,11 @@ final class DefaultControlList extends AbstractControl implements ControlList {
   }
 
   @Override
+  public boolean isEmpty() {
+    return actions.isEmpty();
+  }
+
+  @Override
   public Action get(final int index) {
     return actions.get(index);
   }
