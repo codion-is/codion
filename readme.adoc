@@ -117,8 +117,8 @@ public class Store extends DefaultDomain {
             primaryKeyProperty(Address.ID),
             columnProperty(Address.CUSTOMER_ID)
                     .nullable(false),
-            foreignKeyProperty(Address.CUSTOMER_FK, "Customer",
-                    Customer.TYPE, Address.CUSTOMER_ID),
+            foreignKeyProperty(Address.CUSTOMER_FK, "Customer")
+                    .reference(Address.CUSTOMER_ID, Customer.ID),
             columnProperty(Address.STREET, "Street")
                     .nullable(false).maximumLength(100),
             columnProperty(Address.CITY, "City")
