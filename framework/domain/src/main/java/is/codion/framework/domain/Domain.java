@@ -65,5 +65,5 @@ public interface Domain {
    * @param connection the connection to configure
    * @throws DatabaseException in case of an exception
    */
-  default void configureConnection(final DatabaseConnection connection) throws DatabaseException {};
+  default void configureConnection(final DatabaseConnection connection) throws DatabaseException {}
 }
