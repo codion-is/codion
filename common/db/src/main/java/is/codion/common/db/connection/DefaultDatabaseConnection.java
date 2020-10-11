@@ -151,7 +151,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw new IllegalStateException("Transaction already open");
     }
 
-    logAccess("beginTransaction", null);
+    logAccess("beginTransaction");
     transactionOpen = true;
     logExit("beginTransaction", null);
   }
@@ -164,7 +164,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
         throw new IllegalStateException("Transaction is not open");
       }
 
-      logAccess("rollbackTransaction", null);
+      logAccess("rollbackTransaction");
       connection.rollback();
     }
     catch (final SQLException e) {
@@ -184,7 +184,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
         throw new IllegalStateException("Transaction is not open");
       }
 
-      logAccess("commitTransaction", null);
+      logAccess("commitTransaction");
       connection.commit();
     }
     catch (final SQLException e) {
@@ -209,7 +209,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
     SQLException exception = null;
     try {
-      logAccess("commit", null);
+      logAccess("commit");
       connection.commit();
     }
     catch (final SQLException e) {
@@ -228,7 +228,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw new IllegalStateException("Can not perform a rollback during an open transaction, use 'rollbackTransaction()'");
     }
 
-    logAccess("rollback", null);
+    logAccess("rollback");
     SQLException exception = null;
     try {
       connection.rollback();
@@ -272,6 +272,12 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       Database.closeSilently(statement);
       Database.closeSilently(resultSet);
       logExit("select", exception);
+    }
+  }
+
+  private void logAccess(final String method) {
+    if (methodLogger != null && methodLogger.isEnabled()) {
+      methodLogger.logAccess(method);
     }
   }
 

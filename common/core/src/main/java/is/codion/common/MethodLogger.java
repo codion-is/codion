@@ -58,8 +58,10 @@ public final class MethodLogger {
   /**
    * @param method the method being accessed
    */
-  public void logAccess(final String method) {
-    logAccess(method, null);
+  public synchronized void logAccess(final String method) {
+    if (enabled) {
+      callStack.push(new Entry(method, null));
+    }
   }
 
   /**

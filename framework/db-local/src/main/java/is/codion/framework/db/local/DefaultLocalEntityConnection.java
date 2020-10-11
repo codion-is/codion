@@ -1094,7 +1094,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException packingException = null;
     final List<Entity> result = new ArrayList<>();
     try {
-      logAccess("packResult", null);
+      logAccess("packResult");
       while (iterator.hasNext()) {
         result.add(iterator.next());
       }
@@ -1201,6 +1201,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     final MethodLogger methodLogger = connection.getMethodLogger();
     if (methodLogger != null && methodLogger.isEnabled()) {
       methodLogger.logExit(method, exception, exitMessage);
+    }
+  }
+
+  private void logAccess(final String method) {
+    final MethodLogger methodLogger = connection.getMethodLogger();
+    if (methodLogger != null && methodLogger.isEnabled()) {
+      methodLogger.logAccess(method);
     }
   }
 
