@@ -6472,3 +6472,5 @@
   EntityEditComponentPanel, removed a bunch of unnecessary type parameters
   EntityTestUnit.initializeReferenceEntity() now throws DatabaseException
   ControlList.isEmpty() added, used where applicable
+  ServerMonitor, minor UI layout changes
+  MethodLogger, DefaultLocalEntityConnection, DefaultDatabaseConnection, minor refactoring to reduce nulls in logging output

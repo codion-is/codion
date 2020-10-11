@@ -153,7 +153,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel initializePerformancePanel() {
-    final JPanel controlPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
+    final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
 
     final JSpinner updateIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getUpdateIntervalValue()));
