@@ -21,7 +21,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 
 import static is.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
 
@@ -60,7 +59,7 @@ public final class DatabaseMonitorPanel extends JPanel {
   }
 
   private JPanel getChartPanel() {
-    final JPanel chartConfig = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
+    final JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 3));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     final JSpinner updateIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getUpdateIntervalValue()));
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);

@@ -38,7 +38,8 @@ import java.time.format.DateTimeFormatter;
 
 import static is.codion.swing.common.ui.Components.createWestCenterPanel;
 import static is.codion.swing.common.ui.value.NumericalValues.integerValueSpinnerModel;
-import static javax.swing.SwingConstants.*;
+import static javax.swing.SwingConstants.CENTER;
+import static javax.swing.SwingConstants.RIGHT;
 
 /**
  * A ConnectionPoolMonitorPanel
@@ -193,7 +194,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getSouthPanel() {
-    final JPanel chartConfig = new JPanel(Layouts.flowLayout(LEFT));
+    final JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 4));
     chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
     final JSpinner updateIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getUpdateIntervalValue()));
     ((SpinnerNumberModel) updateIntervalSpinner.getModel()).setMinimum(1);
