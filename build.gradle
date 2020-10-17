@@ -125,7 +125,7 @@ configure(project.frameworkModules) {
         System.setProperty("sonar.login", "${sonarLogin}")
         System.setProperty("sonar.password", "${sonarPassword}")
         System.setProperty("sonar.projectVersion", project.version.replace('-SNAPSHOT', ''))
-        System.setProperty("sonar.java.source", "11")
+        System.setProperty("sonar.java.source", "8")
         System.setProperty("sonar.sourceEncoding", "UTF-8")
         System.setProperty("sonar.exclusions", "**/*TestDomain.java")
     }
