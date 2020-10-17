@@ -6453,3 +6453,4 @@
   DefaultEntity.initializeAndCacheSingleReferenceKey() bug fixed, did not use referencedAttribute when deducing if the resulting key is a primary key
   Key.getEntityType() return value now with generic wildcard, related changes
   Entity.getEntityType() return value now with generic wildcard, related changes
+  ForeignKeyProperty.getReferencedAttribute() return value now with generic wildcard, related changes

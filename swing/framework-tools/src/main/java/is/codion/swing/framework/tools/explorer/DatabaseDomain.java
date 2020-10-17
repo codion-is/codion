@@ -28,7 +28,7 @@ import static is.codion.common.Util.nullOrEmpty;
 
 final class DatabaseDomain extends DefaultDomain {
 
-  private final Map<Table, EntityType<Entity>> tableEntityTypes = new HashMap<>();
+  private final Map<Table, EntityType<?>> tableEntityTypes = new HashMap<>();
 
   DatabaseDomain(final DomainType domainType, final Collection<Table> tables) {
     super(domainType);
@@ -37,7 +37,7 @@ final class DatabaseDomain extends DefaultDomain {
 
   private void defineEntity(final Table table) {
     if (!tableEntityTypes.containsKey(table)) {
-      final EntityType<Entity> entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
+      final EntityType<?> entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
       tableEntityTypes.put(table, entityType);
       table.getForeignKeys().stream().map(ForeignKey::getReferencedTable)
               .filter(referencedTable -> !referencedTable.equals(table))
@@ -52,7 +52,7 @@ final class DatabaseDomain extends DefaultDomain {
     }
   }
 
-  private List<Property.Builder<?>> getPropertyBuilders(final Table table, final EntityType<Entity> entityType,
+  private List<Property.Builder<?>> getPropertyBuilders(final Table table, final EntityType<?> entityType,
                                                         final List<ForeignKey> foreignKeys) {
     final List<Property.Builder<?>> builders = new ArrayList<>();
     table.getColumns().forEach(column -> {
