@@ -124,14 +124,10 @@ configure(project.frameworkModules) {
         System.setProperty("sonar.host.url", "${sonarHostUrl}")
         System.setProperty("sonar.login", "${sonarLogin}")
         System.setProperty("sonar.password", "${sonarPassword}")
-        properties {
-            property "sonar.projectName", "is." + project.name.replace('-', '.')
-            property "sonar.projectKey", "is.codion:codion"
-            property "sonar.projectVersion", project.version.replace('-SNAPSHOT', '')
-            property "sonar.java.source", "11"
-            property "sonar.sourceEncoding", "UTF-8"
-            property "sonar.exclusions", "**/*TestDomain.java"
-        }
+        System.setProperty("sonar.projectVersion", project.version.replace('-SNAPSHOT', ''))
+        System.setProperty("sonar.java.source", "11")
+        System.setProperty("sonar.sourceEncoding", "UTF-8")
+        System.setProperty("sonar.exclusions", "**/*TestDomain.java")
     }
 
     /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
