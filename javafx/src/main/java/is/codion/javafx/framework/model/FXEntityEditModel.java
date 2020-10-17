@@ -94,8 +94,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void addForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType<Entity>, List<Entity>> mapped = Entities.mapToType(entities);
-    for (final Map.Entry<EntityType<Entity>, List<Entity>> entry : mapped.entrySet()) {
+    final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
+    for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {
@@ -111,8 +111,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
    */
   @Override
   public void removeForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType<Entity>, List<Entity>> mapped = Entities.mapToType(entities);
-    for (final Map.Entry<EntityType<Entity>, List<Entity>> entry : mapped.entrySet()) {
+    final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
+    for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {

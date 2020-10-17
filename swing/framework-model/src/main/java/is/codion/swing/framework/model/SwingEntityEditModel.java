@@ -164,8 +164,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   @Override
   public final void addForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType<Entity>, List<Entity>> mapped = Entities.mapToType(entities);
-    for (final Map.Entry<EntityType<Entity>, List<Entity>> entry : mapped.entrySet()) {
+    final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
+    for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getAttribute())) {
           final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty.getAttribute());
@@ -179,8 +179,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   @Override
   public final void removeForeignKeyValues(final List<Entity> entities) {
-    final Map<EntityType<Entity>, List<Entity>> mapped = Entities.mapToType(entities);
-    for (final Map.Entry<EntityType<Entity>, List<Entity>> entry : mapped.entrySet()) {
+    final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
+    for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
       for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
         if (containsComboBoxModel(foreignKeyProperty.getAttribute())) {
           final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty.getAttribute());

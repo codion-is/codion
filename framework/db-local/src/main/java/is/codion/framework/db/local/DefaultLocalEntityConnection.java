@@ -268,7 +268,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entities.isEmpty()) {
       return emptyList();
     }
-    final LinkedHashMap<EntityType<Entity>, List<Entity>> entitiesByEntityType = mapToType(entities);
+    final LinkedHashMap<EntityType<?>, List<Entity>> entitiesByEntityType = mapToType(entities);
     checkIfReadOnly(entitiesByEntityType.keySet());
 
     final List<Object> statementValues = new ArrayList<>();
@@ -282,7 +282,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
         final List<ColumnProperty<?>> statementProperties = new ArrayList<>();
         final List<Entity> updatedEntities = new ArrayList<>(entities.size());
-        for (final Map.Entry<EntityType<Entity>, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
+        for (final Map.Entry<EntityType<?>, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
           final EntityDefinition entityDefinition = domainEntities.getDefinition(entityTypeEntities.getKey());
           final List<ColumnProperty<?>> updatableProperties = getUpdatableProperties(entityDefinition);
 
@@ -425,7 +425,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (keys.isEmpty()) {
       return 0;
     }
-    final LinkedHashMap<EntityType<Entity>, List<Key>> keysByEntityType = mapKeysToType(keys);
+    final LinkedHashMap<EntityType<?>, List<Key>> keysByEntityType = mapKeysToType(keys);
     checkIfReadOnly(keysByEntityType.keySet());
 
     PreparedStatement statement = null;
@@ -434,7 +434,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         int deleteCount = 0;
-        for (final Map.Entry<EntityType<Entity>, List<Key>> entityTypeKeys : keysByEntityType.entrySet()) {
+        for (final Map.Entry<EntityType<?>, List<Key>> entityTypeKeys : keysByEntityType.entrySet()) {
           final EntityDefinition entityDefinition = domainEntities.getDefinition(entityTypeKeys.getKey());
           whereCondition = whereCondition(condition(entityTypeKeys.getValue()), entityDefinition);
           deleteQuery = deleteQuery(entityDefinition.getTableName(), whereCondition.getWhereClause());
@@ -862,8 +862,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @throws RecordModifiedException in case an entity has been modified, if an entity has been deleted,
    * the {@code modifiedRow} provided by the exception is null
    */
-  private void performOptimisticLocking(final Map<EntityType<Entity>, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
-    for (final Map.Entry<EntityType<Entity>, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
+  private void performOptimisticLocking(final Map<EntityType<?>, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
+    for (final Map.Entry<EntityType<?>, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
       final List<Key> originalKeys = getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
       final SelectCondition selectForUpdateCondition = condition(originalKeys).selectCondition();
       selectForUpdateCondition.setSelectAttributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()));
@@ -1238,7 +1238,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private void checkIfReadOnly(final Set<EntityType<Entity>> entityTypes) throws DatabaseException {
+  private void checkIfReadOnly(final Set<EntityType<?>> entityTypes) throws DatabaseException {
     for (final EntityType<?> entityType : entityTypes) {
       checkIfReadOnly(entityType);
     }
