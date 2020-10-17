@@ -6448,3 +6448,6 @@
 0.17.0
   DefaultKey.equals() simplified, now only optimizes for single value keys
   Key.put() replaced with withValue(), which returns a new instance with the given value, DefaultKey now functionally immutable, Key.isSingleIntegerKey() removed
+  DefaultEntity.getForeignKey() bug fixed, no longer instantiates a entity with a non-primary key reference
+  DefaultEntity constructor with key parameter now throws exception if the given key is not a primary key
+  DefaultEntity.initializeAndCacheSingleReferenceKey() bug fixed, did not use referencedAttribute when deducing if the resulting key is a primary key
