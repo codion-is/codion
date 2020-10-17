@@ -142,12 +142,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public <T extends Entity> List<T> castTo(final EntityType<T> type, final List<Entity> entities) {
-    return requireNonNull(entities).stream().map(entity -> castTo(type, entity)).collect(toList());
+  public final <T extends Entity> List<T> castTo(final EntityType<T> type, final List<Entity> entities) {
+    return requireNonNull(entities, "entities").stream().map(entity -> castTo(type, entity)).collect(toList());
   }
 
   @Override
-  public <T extends Entity> T castTo(final EntityType<T> type, final Entity entity) {
+  public final <T extends Entity> T castTo(final EntityType<T> type, final Entity entity) {
     requireNonNull(type, "type");
     if (entity == null) {
       return null;
@@ -157,7 +157,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
       return (T) entity;
     }
     if (!entity.getEntityType().equals(type)) {
-      throw new IllegalArgumentException("Entities of type " + type + " expected, got: " + entity.getEntityType());
+      throw new IllegalArgumentException("Entity of type " + type + " expected, got: " + entity.getEntityType());
     }
 
     return (T) Proxy.newProxyInstance(entity.getClass().getClassLoader(),
