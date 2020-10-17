@@ -54,11 +54,6 @@ public interface Key {
   <T> boolean isNotNull(Attribute<T> attribute);
 
   /**
-   * @return true if this primary key is based on a single integer column
-   */
-  boolean isSingleIntegerKey();
-
-  /**
    * @return true if this key is comprised of multiple attributes.
    */
   boolean isCompositeKey();
@@ -72,13 +67,14 @@ public interface Key {
   <T> Attribute<T> getAttribute();
 
   /**
-   * Sets the value of this key. Note that this method throws an exception if this key is a composite key.
+   * Returns a new key instance based on this key, but with the given value.
+   * Note that this method throws an exception if this key is a composite key.
    * @param value the value to associate with the attribute
    * @param <T> the value type
-   * @return the previous value
+   * @return a Key based on this instance, but with the given value
    * @throws IllegalStateException in case this is a composite key
    */
-  <T> T put(T value);
+  <T> Key withValue(T value);
 
   /**
    * Returns the value of this key. Note that this method throws an exception if this key is a composite key.
@@ -100,9 +96,9 @@ public interface Key {
    * @param attribute the attribute
    * @param value the value to associate with the attribute
    * @param <T> the value type
-   * @return the previous value
+   * @return a Key based on this instance, but with the given value
    */
-  <T> T put(Attribute<T> attribute, T value);
+  <T> Key withValue(Attribute<T> attribute, T value);
 
   /**
    * @param attribute the attribute

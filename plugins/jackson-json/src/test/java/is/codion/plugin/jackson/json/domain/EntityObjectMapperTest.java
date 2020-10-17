@@ -96,10 +96,8 @@ public final class EntityObjectMapperTest {
   public void key() throws JsonProcessingException {
     final EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
-    final Key deptKey1 = entities.primaryKey(TestDomain.T_DEPARTMENT);
-    deptKey1.put(1);
-    final Key deptKey2 = entities.primaryKey(TestDomain.T_DEPARTMENT);
-    deptKey2.put(2);
+    final Key deptKey1 = entities.primaryKey(TestDomain.T_DEPARTMENT, 1);
+    final Key deptKey2 = entities.primaryKey(TestDomain.T_DEPARTMENT, 2);
 
     String jsonString = mapper.serializeKeys(asList(deptKey1, deptKey2));
 
@@ -108,9 +106,9 @@ public final class EntityObjectMapperTest {
     assertEquals(Integer.valueOf(1), keys.get(0).get());
     assertEquals(Integer.valueOf(2), keys.get(1).get());
 
-    final Key entityKey = entities.primaryKey(TestDomain.T_ENTITY);
-    entityKey.put(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L));
-    entityKey.put(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
+    final Key entityKey = entities.primaryKey(TestDomain.T_ENTITY)
+            .withValue(TestDomain.ENTITY_DECIMAL, BigDecimal.valueOf(1234L))
+            .withValue(TestDomain.ENTITY_DATE_TIME, LocalDateTime.now());
 
     jsonString = mapper.writeValueAsString(entityKey);
 

@@ -45,11 +45,11 @@ public final class DefaultKeyTest {
 
   @Test
   public void singleKeyNull() {
-    final Key key = ENTITIES.primaryKey(Detail.TYPE);
+    Key key = ENTITIES.primaryKey(Detail.TYPE);
     assertTrue(key.isNull());
-    key.put(null);
+    key = key.withValue(null);
     assertTrue(key.isNull());
-    key.put(1L);
+    key = key.withValue(1L);
     assertTrue(key.isNotNull());
   }
 
@@ -57,44 +57,44 @@ public final class DefaultKeyTest {
   public void keyEquality() {
     final List<Key> keys = ENTITIES.primaryKeys(Employee.TYPE, 1, 2);
     final Key empKey1 = keys.get(0);
-    final Key empKey2 = keys.get(1);
+    Key empKey2 = keys.get(1);
     assertNotEquals(empKey1, empKey2);
 
-    empKey2.put(1);
+    empKey2 = empKey2.withValue(1);
     assertEquals(empKey1, empKey2);
 
     final Key deptKey = ENTITIES.primaryKey(Department.TYPE, 1);
     assertNotEquals(empKey1, deptKey);
 
-    final Key compMasterKey = ENTITIES.primaryKey(TestDomain.T_COMPOSITE_MASTER);
-    compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID, 1);
-    compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
+    Key compMasterKey = ENTITIES.primaryKey(TestDomain.T_COMPOSITE_MASTER)
+            .withValue(TestDomain.COMPOSITE_MASTER_ID, 1)
+            .withValue(TestDomain.COMPOSITE_MASTER_ID_2, 2);
     assertEquals(compMasterKey, compMasterKey);
     assertNotEquals(empKey1, compMasterKey);
     assertNotEquals(compMasterKey, new Object());
 
-    final Key compMasterKey2 = ENTITIES.primaryKey(TestDomain.T_COMPOSITE_MASTER);
-    compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID, 1);
+    Key compMasterKey2 = ENTITIES.primaryKey(TestDomain.T_COMPOSITE_MASTER)
+            .withValue(TestDomain.COMPOSITE_MASTER_ID, 1);
     assertNotEquals(compMasterKey, compMasterKey2);
 
-    compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
+    compMasterKey2 = compMasterKey2.withValue(TestDomain.COMPOSITE_MASTER_ID_2, 2);
     //keys are still null, since COMPOSITE_MASTER_ID_3 is null
     assertNotEquals(compMasterKey, compMasterKey2);
 
-    compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
-    compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
+    compMasterKey = compMasterKey.withValue(TestDomain.COMPOSITE_MASTER_ID_3, 3);
+    compMasterKey2 = compMasterKey2.withValue(TestDomain.COMPOSITE_MASTER_ID_3, 3);
     assertEquals(compMasterKey, compMasterKey2);
 
-    compMasterKey.put(TestDomain.COMPOSITE_MASTER_ID, null);
-    compMasterKey2.put(TestDomain.COMPOSITE_MASTER_ID, null);
+    compMasterKey = compMasterKey.withValue(TestDomain.COMPOSITE_MASTER_ID, null);
+    compMasterKey2 = compMasterKey2.withValue(TestDomain.COMPOSITE_MASTER_ID, null);
     //not null since COMPOSITE_MASTER_ID is nullable
     assertEquals(compMasterKey, compMasterKey2);
 
     final Key detailKey = ENTITIES.primaryKey(Detail.TYPE, 1L);
-    final Key detailKey2 = ENTITIES.primaryKey(Detail.TYPE, 2L);
+    Key detailKey2 = ENTITIES.primaryKey(Detail.TYPE, 2L);
     assertNotEquals(detailKey, detailKey2);
 
-    detailKey2.put(1L);
+    detailKey2 = detailKey2.withValue(1L);
     assertEquals(detailKey2, detailKey);
 
     final Entity department1 = ENTITIES.entity(Department.TYPE);
@@ -119,10 +119,8 @@ public final class DefaultKeyTest {
     department2.remove(Department.NO);
     assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
 
-    final Key departmentKey = ENTITIES.primaryKey(Department.TYPE);
-    departmentKey.put(42);
-    final Key employeeKey = ENTITIES.primaryKey(Employee.TYPE);
-    employeeKey.put(42);
+    final Key departmentKey = ENTITIES.primaryKey(Department.TYPE, 42);
+    final Key employeeKey = ENTITIES.primaryKey(Employee.TYPE, 42);
     assertNotEquals(departmentKey, employeeKey);
   }
 

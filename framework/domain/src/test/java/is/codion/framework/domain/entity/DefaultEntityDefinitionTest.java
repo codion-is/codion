@@ -376,7 +376,7 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void compositeKeySingleValueConstructor() {
-    assertThrows(IllegalArgumentException.class, () -> new TestDomain().getEntities()
+    assertThrows(IllegalStateException.class, () -> new TestDomain().getEntities()
             .getDefinition(TestDomain.T_COMPOSITE_MASTER).primaryKey(1L));
   }
 

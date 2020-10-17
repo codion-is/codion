@@ -69,16 +69,16 @@ final class DefaultEntity implements Entity, Serializable {
   /**
    * The primary key of this entity
    */
-  private Key key;
+  private Key primaryKey;
 
   /**
    * Instantiates a new DefaultEntity
    * @param definition the entity definition
-   * @param key the primary key
+   * @param primaryKey the primary key
    */
-  DefaultEntity(final EntityDefinition definition, final Key key) {
-    this(definition, createValueMap(key), null);
-    this.key = key;
+  DefaultEntity(final EntityDefinition definition, final Key primaryKey) {
+    this(definition, createValueMap(primaryKey), null);
+    this.primaryKey = primaryKey;
   }
 
   /**
@@ -101,11 +101,11 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public Key getPrimaryKey() {
-    if (key == null) {
-      key = initializePrimaryKey(false);
+    if (primaryKey == null) {
+      primaryKey = initializePrimaryKey(false);
     }
 
-    return key;
+    return primaryKey;
   }
 
   @Override
@@ -175,7 +175,7 @@ final class DefaultEntity implements Entity, Serializable {
   @Override
   public void clearPrimaryKeyValues() {
     definition.getPrimaryKeyAttributes().forEach(this::remove);
-    this.key = null;
+    primaryKey = null;
   }
 
   @Override
@@ -367,7 +367,7 @@ final class DefaultEntity implements Entity, Serializable {
     if (originalValues != null) {
       originalValues = null;
     }
-    key = null;
+    primaryKey = null;
     referencedKeyCache = null;
     toString = null;
   }
@@ -416,7 +416,7 @@ final class DefaultEntity implements Entity, Serializable {
     }
     if (property instanceof ColumnProperty) {
       if (((ColumnProperty<?>) property).isPrimaryKeyColumn()) {
-        key = null;
+        primaryKey = null;
       }
       if (definition.isForeignKeyAttribute(attribute)) {
         removeInvalidForeignKeyValues(attribute, newValue);

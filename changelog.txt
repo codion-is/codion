@@ -6447,3 +6447,4 @@
   MethodLogger, DefaultLocalEntityConnection, DefaultDatabaseConnection, minor refactoring to reduce nulls in logging output
 0.17.0
   DefaultKey.equals() simplified, now only optimizes for single value keys
+  Key.put() replaced with withValue(), which returns a new instance with the given value, DefaultKey now functionally immutable, Key.isSingleIntegerKey() removed

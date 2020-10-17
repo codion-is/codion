@@ -672,7 +672,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       throw new IllegalArgumentException("Entity '" + entityType + "' has no primary key defined");
     }
     if (getPrimaryKeyAttributes().size() > 1) {
-      throw new IllegalArgumentException(entityType + " has a composite primary key");
+      throw new IllegalStateException(entityType + " has a composite primary key");
     }
     final Attribute<Object> attribute = (Attribute<Object>) getPrimaryKeyAttributes().get(0);
     attribute.validateType(value);

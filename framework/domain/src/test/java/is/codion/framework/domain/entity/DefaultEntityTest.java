@@ -515,14 +515,12 @@ public class DefaultEntityTest {
 
   @Test
   public void keyInvalidPropertyGet() {
-    final Key empKey1 = ENTITIES.primaryKey(Employee.TYPE);
-    assertThrows(IllegalArgumentException.class, () -> empKey1.get(Employee.NAME));
+    assertThrows(IllegalArgumentException.class, () -> ENTITIES.primaryKey(Employee.TYPE).get(Employee.NAME));
   }
 
   @Test
   public void keyInvalidPropertyPut() {
-    final Key empKey1 = ENTITIES.primaryKey(Employee.TYPE);
-    assertThrows(IllegalArgumentException.class, () -> empKey1.put("test"));
+    assertThrows(IllegalArgumentException.class, () -> ENTITIES.primaryKey(Employee.TYPE).withValue("test"));
   }
 
   @Test
