@@ -118,6 +118,12 @@ public final class DefaultKeyTest {
 
     department2.remove(Department.NO);
     assertNotEquals(department1.getPrimaryKey(), department2.getPrimaryKey());
+
+    final Key departmentKey = ENTITIES.primaryKey(Department.TYPE);
+    departmentKey.put(42);
+    final Key employeeKey = ENTITIES.primaryKey(Employee.TYPE);
+    employeeKey.put(42);
+    assertNotEquals(departmentKey, employeeKey);
   }
 
   @Test

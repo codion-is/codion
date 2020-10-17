@@ -211,9 +211,9 @@ class DefaultKey implements Key, Serializable {
   }
 
   /**
-   * Key objects are equal if the entity types match as well as all attribute values.
-   * Empty keys are only equal to themselves.
-   * @param object the object to compare with
+   * Keys are equal if all attributes and their associated values are equal.
+   * Empty and null keys are only equal to themselves.
+   * @param object the object to check for equality
    * @return true if object is equal to this key
    */
   @Override
@@ -229,16 +229,15 @@ class DefaultKey implements Key, Serializable {
       if (isNull() || otherKey.isNull()) {
         return false;
       }
-      final EntityType<?> entityType = definition.getEntityType();
-      if (compositeKey) {
-        return otherKey.isCompositeKey() && this.values.equals(otherKey.values) && entityType.equals(otherKey.getEntityType());
+
+      if (!compositeKey && !otherKey.compositeKey) {
+        final Attribute<?> attribute = attributes.get(0);
+        final Attribute<?> otherAttribute = otherKey.attributes.get(0);
+
+        return Objects.equals(values.get(attribute), otherKey.values.get(otherAttribute)) && attribute.equals(otherAttribute);
       }
-      if (singleIntegerKey) {
-        return otherKey.isSingleIntegerKey() && hashCode() == otherKey.hashCode() && entityType.equals(otherKey.getEntityType());
-      }
-      //single non-integer key
-      return !otherKey.isCompositeKey() && Objects.equals(get(), otherKey.get())
-              && Objects.equals(getAttribute(), otherKey.getAttribute()) && entityType.equals(otherKey.getEntityType());
+
+      return values.equals(otherKey.values);
     }
 
     return false;
