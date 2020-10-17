@@ -384,10 +384,10 @@ public interface EntityDefinition {
 
   /**
    * Creates a new {@link Entity} instance based on this definition
-   * @param key the primary key
+   * @param primaryKey the primary key
    * @return a new {@link Entity} instance
    */
-  Entity entity(Key key);
+  Entity entity(Key primaryKey);
 
   /**
    * Instantiates a new {@link Entity} using the values provided by {@code valueProvider}.

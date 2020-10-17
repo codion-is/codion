@@ -60,7 +60,7 @@ class DefaultKey implements Key, Serializable {
   private Integer cachedHashCode = null;
 
   /**
-   * True if the value of a key attribute has changed, thereby invalidating the cached hash code value
+   * True until cachedHashCode has been computed
    */
   private boolean hashCodeDirty = true;
 
@@ -108,6 +108,17 @@ class DefaultKey implements Key, Serializable {
     }
   }
 
+  private DefaultKey(final EntityDefinition definition, final List<Attribute<?>> attributes,
+                     final Map<Attribute<?>, Object> values, final boolean primaryKey,
+                     final boolean compositeKey, final boolean singleIntegerKey) {
+    this.definition = definition;
+    this.attributes = attributes;
+    this.values = values;
+    this.primaryKey = primaryKey;
+    this.compositeKey = compositeKey;
+    this.singleIntegerKey = singleIntegerKey;
+  }
+
   @Override
   public EntityType<Entity> getEntityType() {
     return (EntityType<Entity>) definition.getEntityType();
@@ -133,12 +144,8 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> T put(final T value) {
-    if (compositeKey) {
-      throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
-    }
-
-    return put((Attribute<T>) attributes.get(0), value);
+  public <T> Key withValue(final T value) {
+    return new DefaultKey(definition, attributes, values, primaryKey, compositeKey, singleIntegerKey).putInternal(value);
   }
 
   @Override
@@ -156,20 +163,8 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> T put(final Attribute<T> attribute, final T value) {
-    if (!values.containsKey(attribute)) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of this key");
-    }
-    final T newValue = definition.getColumnProperty(attribute).prepareValue(attribute.validateType(value));
-    values.put(attribute, newValue);
-    if (singleIntegerKey) {
-      setHashCode((Integer) value);
-    }
-    else {
-      hashCodeDirty = true;
-    }
-
-    return newValue;
+  public <T> Key withValue(final Attribute<T> attribute, final T value) {
+    return new DefaultKey(definition, attributes, values, primaryKey, compositeKey, singleIntegerKey).putInternal(attribute, value);
   }
 
   @Override
@@ -192,7 +187,7 @@ class DefaultKey implements Key, Serializable {
     for (int i = 0; i < attributes.size(); i++) {
       final Attribute<Object> attribute = (Attribute<Object>) attributes.get(i);
       stringBuilder.append(attribute.getName()).append(":").append(values.get(attribute));
-      if (i < getAttributeCount() - 1) {
+      if (i < attributes.size() - 1) {
         stringBuilder.append(",");
       }
     }
@@ -201,19 +196,14 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public boolean isSingleIntegerKey() {
-    return singleIntegerKey;
-  }
-
-  @Override
   public boolean isCompositeKey() {
     return compositeKey;
   }
 
   /**
-   * Key objects are equal if the entity types match as well as all attribute values.
-   * Empty keys are only equal to themselves.
-   * @param object the object to compare with
+   * Keys are equal if all attributes and their associated values are equal.
+   * Empty and null keys are only equal to themselves.
+   * @param object the object to check for equality
    * @return true if object is equal to this key
    */
   @Override
@@ -229,16 +219,15 @@ class DefaultKey implements Key, Serializable {
       if (isNull() || otherKey.isNull()) {
         return false;
       }
-      final EntityType<?> entityType = definition.getEntityType();
-      if (compositeKey) {
-        return otherKey.isCompositeKey() && this.values.equals(otherKey.values) && entityType.equals(otherKey.getEntityType());
+
+      if (!compositeKey && !otherKey.compositeKey) {
+        final Attribute<?> attribute = attributes.get(0);
+        final Attribute<?> otherAttribute = otherKey.attributes.get(0);
+
+        return Objects.equals(values.get(attribute), otherKey.values.get(otherAttribute)) && attribute.equals(otherAttribute);
       }
-      if (singleIntegerKey) {
-        return otherKey.isSingleIntegerKey() && hashCode() == otherKey.hashCode() && entityType.equals(otherKey.getEntityType());
-      }
-      //single non-integer key
-      return !otherKey.isCompositeKey() && Objects.equals(get(), otherKey.get())
-              && Objects.equals(getAttribute(), otherKey.getAttribute()) && entityType.equals(otherKey.getEntityType());
+
+      return values.equals(otherKey.values);
     }
 
     return false;
@@ -276,9 +265,28 @@ class DefaultKey implements Key, Serializable {
     return !isNull(attribute);
   }
 
-  private void setHashCode(final Integer value) {
-    cachedHashCode = value;
-    hashCodeDirty = false;
+  private <T> Key putInternal(final T value) {
+    if (compositeKey) {
+      throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
+    }
+
+    return putInternal((Attribute<T>) attributes.get(0), value);
+  }
+
+  private <T> Key putInternal(final Attribute<T> attribute, final T value) {
+    if (!values.containsKey(attribute)) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of this key");
+    }
+    values.put(attribute, definition.getColumnProperty(attribute).prepareValue(attribute.validateType(value)));
+    if (singleIntegerKey) {
+      cachedHashCode = (Integer) value;
+      hashCodeDirty = false;
+    }
+    else {
+      hashCodeDirty = true;
+    }
+
+    return this;
   }
 
   /**
@@ -295,7 +303,7 @@ class DefaultKey implements Key, Serializable {
     if (values.size() == 0) {
       return null;
     }
-    if (isCompositeKey()) {
+    if (compositeKey) {
       return computeMultipleValueHashCode();
     }
 
@@ -328,14 +336,6 @@ class DefaultKey implements Key, Serializable {
     }
 
     return value.hashCode();
-  }
-
-  private int getAttributeCount() {
-    if (compositeKey) {
-      return getAttributes().size();
-    }
-
-    return 1;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {

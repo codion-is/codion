@@ -184,11 +184,9 @@ public class EntityServletServerTest {
 
     //select by key
     List<Key> keys = new ArrayList<>();
-    Key key = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT);
-    key.put(10);
+    Key key = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 10);
     keys.add(key);
-    key = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT);
-    key.put(20);
+    key = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 20);
     keys.add(key);
 
     uriBuilder.setPath("selectByKey");
@@ -310,10 +308,8 @@ public class EntityServletServerTest {
     response.close();
 
     //dependencies
-    final Key key1 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT);
-    key1.put(TestDomain.DEPARTMENT_ID, 10);
-    final Key key2 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT);
-    key2.put(TestDomain.DEPARTMENT_ID, 20);
+    final Key key1 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 10);
+    final Key key2 = ENTITIES.primaryKey(TestDomain.T_DEPARTMENT, 20);
 
     final List<Entity> entitiesDep = Arrays.asList(ENTITIES.entity(key1), ENTITIES.entity(key2));
 

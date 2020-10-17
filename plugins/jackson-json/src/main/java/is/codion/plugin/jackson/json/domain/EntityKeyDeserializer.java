@@ -49,8 +49,10 @@ final class EntityKeyDeserializer extends StdDeserializer<Key> {
       valueMap.put(property.getAttribute(), EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), field.getValue()));
     }
 
-    final Key key = entities.primaryKey(entityType);
-    valueMap.forEach((attribute, value) -> key.put((Attribute<Object>) attribute, value));
+    Key key = entities.primaryKey(entityType);
+    for (final Map.Entry<Attribute<?>, Object> entry : valueMap.entrySet()) {
+      key = key.withValue((Attribute<Object>) entry.getKey(), entry.getValue());
+    }
 
     return key;
   }

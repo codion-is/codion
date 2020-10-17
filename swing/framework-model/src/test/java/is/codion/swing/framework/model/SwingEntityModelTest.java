@@ -16,8 +16,7 @@ import is.codion.swing.common.ui.value.SelectedValues;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JComboBox;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -92,9 +91,7 @@ public final class SwingEntityModelTest
     final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
     departmentsComboBoxModel.refresh();
     final Key primaryKey = getConnectionProvider().getEntities().primaryKey(TestDomain.T_DEPARTMENT, 40);//operations, no employees
-    final List<Key> keys = new ArrayList<>();
-    keys.add(primaryKey);
-    departmentModel.getTableModel().setSelectedByKey(keys);
+    departmentModel.getTableModel().setSelectedByKey(Collections.singletonList(primaryKey));
     final Entity operations = departmentModel.getTableModel().getSelectionModel().getSelectedItem();
     try {
       departmentModel.getConnectionProvider().getConnection().beginTransaction();
@@ -109,8 +106,7 @@ public final class SwingEntityModelTest
       departmentModel.getEditModel().update();
       assertEquals("nameitagain", departmentsComboBoxModel.getEntity(inserted.getPrimaryKey()).get(TestDomain.DEPARTMENT_NAME));
 
-      primaryKey.put(20);//research
-      departmentModel.getTableModel().setSelectedByKey(keys);
+      departmentModel.getTableModel().setSelectedByKey(Collections.singletonList(primaryKey.withValue(20)));
       departmentModel.getEditModel().put(TestDomain.DEPARTMENT_NAME, "NewName");
       departmentModel.getEditModel().update();
 

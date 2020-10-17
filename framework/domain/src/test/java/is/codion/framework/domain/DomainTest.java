@@ -210,46 +210,44 @@ public class DomainTest {
             Properties.primaryKeyProperty(attribute2).primaryKeyIndex(1),
             Properties.primaryKeyProperty(attribute3).primaryKeyIndex(2).nullable(true));
 
-    final Key key = entities.primaryKey(entityType);
+    Key key = entities.primaryKey(entityType);
     assertEquals(0, key.hashCode());
     assertTrue(key.isCompositeKey());
     assertTrue(key.isNull());
 
-    assertThrows(IllegalStateException.class, () -> key.put(1));
+    assertThrows(IllegalStateException.class, () -> entities.primaryKey(entityType).withValue(1));
     assertThrows(IllegalStateException.class, key::get);
     assertThrows(IllegalStateException.class, key::getOptional);
     assertThrows(IllegalStateException.class, key::getAttribute);
 
-    key.put(attribute1, 1);
-    key.put(attribute2, 2);
-    key.put(attribute3, 3);
+    key = key.withValue(attribute1, 1).withValue(attribute2, 2).withValue(attribute3, 3);
     assertTrue(key.isNotNull());
     assertEquals(6, key.hashCode());
     assertTrue(key.getOptional(attribute1).isPresent());
 
-    key.put(attribute2, 3);
+    key = key.withValue(attribute2, 3);
     assertEquals(7, key.hashCode());
 
-    key.put(attribute3, null);
+    key = key.withValue(attribute3, null);
     assertTrue(key.isNotNull());
     assertEquals(4, key.hashCode());
-    key.put(attribute2, null);
+    key = key.withValue(attribute2, null);
     assertTrue(key.isNull());
     assertFalse(key.getOptional(attribute2).isPresent());
     assertEquals(0, key.hashCode());
-    key.put(attribute2, 4);
+    key = key.withValue(attribute2, 4);
     assertTrue(key.getOptional(attribute2).isPresent());
     assertTrue(key.isNotNull());
     assertEquals(5, key.hashCode());
 
-    key.put(attribute2, 42);
+    key = key.withValue(attribute2, 42);
     assertTrue(key.isNotNull());
     assertEquals(43, key.hashCode());
 
     assertThrows(NullPointerException.class, () -> entities.primaryKey(null));
 
     final Key noPk = entities.primaryKey(TestDomain.T_NO_PK);
-    assertThrows(IllegalArgumentException.class, () -> noPk.put(TestDomain.NO_PK_COL1, 1));
+    assertThrows(IllegalArgumentException.class, () -> noPk.withValue(TestDomain.NO_PK_COL1, 1));
     assertThrows(IllegalArgumentException.class, () -> noPk.get(TestDomain.NO_PK_COL1));
   }
 
