@@ -369,7 +369,7 @@ public interface Entities {
    * @param entities the entities to map by entityType
    * @return a Map of entities mapped to entityType
    */
-  static LinkedHashMap<EntityType<Entity>, List<Entity>> mapToType(final Collection<? extends Entity> entities) {
+  static LinkedHashMap<EntityType<?>, List<Entity>> mapToType(final Collection<? extends Entity> entities) {
     return map(entities, Entity::getEntityType);
   }
 
@@ -379,7 +379,7 @@ public interface Entities {
    * @param keys the entity keys to map by entityType
    * @return a Map of entity keys mapped to entityType
    */
-  static LinkedHashMap<EntityType<Entity>, List<Key>> mapKeysToType(final Collection<Key> keys) {
+  static LinkedHashMap<EntityType<?>, List<Key>> mapKeysToType(final Collection<Key> keys) {
     return map(keys, Key::getEntityType);
   }
 

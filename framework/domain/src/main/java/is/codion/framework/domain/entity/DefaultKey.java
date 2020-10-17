@@ -120,8 +120,8 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public EntityType<Entity> getEntityType() {
-    return (EntityType<Entity>) definition.getEntityType();
+  public EntityType<?> getEntityType() {
+    return definition.getEntityType();
   }
 
   @Override

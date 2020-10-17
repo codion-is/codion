@@ -335,7 +335,7 @@ public final class EntitiesTest {
     final Entity four = entities.entity(TestDomain.Employee.TYPE);
 
     final Collection<Entity> entities = asList(one, two, three, four);
-    final Map<EntityType<Entity>, List<Entity>> map = Entities.mapToType(entities);
+    final Map<EntityType<?>, List<Entity>> map = Entities.mapToType(entities);
 
     Collection<Entity> mapped = map.get(TestDomain.Employee.TYPE);
     assertTrue(mapped.contains(one));
