@@ -559,9 +559,9 @@ final class DefaultEntity implements Entity, Serializable {
     }
     final Set<Attribute<?>> referencedAttributes = keyValues.keySet();
     final List<Attribute<?>> primaryKeyAttributes = foreignEntityDefinition.getPrimaryKeyAttributes();
-    final boolean primaryKey = referencedAttributes.size() == primaryKeyAttributes.size() && referencedAttributes.containsAll(primaryKeyAttributes);
+    final boolean isPrimaryKey = referencedAttributes.size() == primaryKeyAttributes.size() && referencedAttributes.containsAll(primaryKeyAttributes);
 
-    return cacheReferencedKey(foreignKeyProperty.getAttribute(), new DefaultKey(foreignEntityDefinition, keyValues, primaryKey));
+    return cacheReferencedKey(foreignKeyProperty.getAttribute(), new DefaultKey(foreignEntityDefinition, keyValues, isPrimaryKey));
   }
 
   private Key initializeAndCacheSingleReferenceKey(final ForeignKeyProperty foreignKeyProperty,
@@ -572,11 +572,11 @@ final class DefaultEntity implements Entity, Serializable {
       return null;
     }
 
-    final boolean primaryKey = reference.getReferencedAttribute().equals(foreignEntityDefinition.getPrimaryKeyAttributes().get(0));
+    final boolean isPrimaryKey = reference.getReferencedAttribute().equals(foreignEntityDefinition.getPrimaryKeyAttributes().get(0));
 
     return cacheReferencedKey(foreignKeyProperty.getAttribute(),
             new DefaultKey(definition.getForeignDefinition(foreignKeyProperty.getAttribute()),
-                    reference.getReferencedAttribute(), value, primaryKey));
+                    reference.getReferencedAttribute(), value, isPrimaryKey));
   }
 
   private Key cacheReferencedKey(final Attribute<Entity> foreignKeyAttribute, final Key referencedPrimaryKey) {
