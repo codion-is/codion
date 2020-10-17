@@ -16,7 +16,7 @@ public interface Entity extends Comparable<Entity> {
   /**
    * @return the entity type
    */
-  EntityType<Entity> getEntityType();
+  EntityType<?> getEntityType();
 
   /**
    * Sets the value of the given attribute, returning the old value if any

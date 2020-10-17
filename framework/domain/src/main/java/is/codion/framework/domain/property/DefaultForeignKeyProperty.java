@@ -18,7 +18,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   private static final long serialVersionUID = 1;
 
   private final List<Reference<?>> references = new ArrayList<>(1);
-  private EntityType<Entity> referencedEntityType;
+  private EntityType<?> referencedEntityType;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
 
@@ -31,7 +31,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   @Override
-  public EntityType<Entity> getReferencedEntityType() {
+  public EntityType<?> getReferencedEntityType() {
     return referencedEntityType;
   }
 
@@ -161,7 +161,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
                 " expected, got " + attribute.getEntityType());
       }
       if (foreignKeyProperty.referencedEntityType == null) {//the first reference controls the referenced entity type
-        foreignKeyProperty.referencedEntityType = (EntityType<Entity>) referencedAttribute.getEntityType();
+        foreignKeyProperty.referencedEntityType = referencedAttribute.getEntityType();
       }
       else if (!foreignKeyProperty.referencedEntityType.equals(referencedAttribute.getEntityType())) {
         throw new IllegalArgumentException("Entity type " + foreignKeyProperty.referencedEntityType +

@@ -143,7 +143,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   @Override
   public <T extends Entity> List<T> castTo(final EntityType<T> type, final List<Entity> entities) {
-    return entities.stream().map(entity -> castTo(type, entity)).collect(toList());
+    return requireNonNull(entities).stream().map(entity -> castTo(type, entity)).collect(toList());
   }
 
   @Override
