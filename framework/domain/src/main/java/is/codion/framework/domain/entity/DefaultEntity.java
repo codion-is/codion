@@ -94,8 +94,8 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public EntityType<Entity> getEntityType() {
-    return (EntityType<Entity>) definition.getEntityType();
+  public EntityType<?> getEntityType() {
+    return definition.getEntityType();
   }
 
   @Override

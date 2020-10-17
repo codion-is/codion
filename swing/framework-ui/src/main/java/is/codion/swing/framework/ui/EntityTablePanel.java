@@ -851,7 +851,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    final EntityType<Entity> entityType = entities.iterator().next().getEntityType();
+    final EntityType<?> entityType = entities.iterator().next().getEntityType();
     final SwingEntityEditModel editModel = new SwingEntityEditModel(entityType, connectionProvider);
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityType, connectionProvider) {
       @Override
