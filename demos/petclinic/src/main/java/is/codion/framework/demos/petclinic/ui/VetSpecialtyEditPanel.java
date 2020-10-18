@@ -29,7 +29,7 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
     EntityComboBox specialtyComboBox = createForeignKeyComboBox(VetSpecialty.SPECIALTY_FK);
 
     Action newSpecialtyAction = new EntityPanelBuilder(VetSpecialty.TYPE)
-            .setEditPanelClass(VetSpecialtyEditPanel.class)
+            .editPanelClass(VetSpecialtyEditPanel.class)
             .createEditPanelAction(specialtyComboBox);
     JPanel specialtyPanel = createEastButtonPanel(specialtyComboBox, newSpecialtyAction);
 

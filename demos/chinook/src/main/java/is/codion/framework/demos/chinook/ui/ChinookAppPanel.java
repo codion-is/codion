@@ -48,24 +48,27 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
    */
   @Override
   protected void setupEntityPanelBuilders() {
-    final EntityPanelBuilder trackBuilder = new EntityPanelBuilder(Track.TYPE);
-    trackBuilder.setEditPanelClass(TrackEditPanel.class).setTablePanelClass(TrackTablePanel.class);
+    final EntityPanelBuilder trackBuilder = new EntityPanelBuilder(Track.TYPE)
+            .editPanelClass(TrackEditPanel.class)
+            .tablePanelClass(TrackTablePanel.class);
 
-    final EntityPanelBuilder customerBuilder = new EntityPanelBuilder(Customer.TYPE);
-    customerBuilder.setEditPanelClass(CustomerEditPanel.class);
-    customerBuilder.setTablePanelClass(CustomerTablePanel.class);
+    final EntityPanelBuilder customerBuilder = new EntityPanelBuilder(Customer.TYPE)
+            .editPanelClass(CustomerEditPanel.class)
+            .tablePanelClass(CustomerTablePanel.class);
 
-    final EntityPanelBuilder genreBuilder = new EntityPanelBuilder(Genre.TYPE);
-    genreBuilder.setEditPanelClass(GenreEditPanel.class);
-    genreBuilder.addDetailPanelBuilder(trackBuilder).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanelBuilder genreBuilder = new EntityPanelBuilder(Genre.TYPE)
+            .editPanelClass(GenreEditPanel.class)
+            .detailPanelBuilder(trackBuilder)
+            .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanelBuilder mediaTypeBuilder = new EntityPanelBuilder(MediaType.TYPE);
-    mediaTypeBuilder.setEditPanelClass(MediaTypeEditPanel.class);
-    mediaTypeBuilder.addDetailPanelBuilder(trackBuilder).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanelBuilder mediaTypeBuilder = new EntityPanelBuilder(MediaType.TYPE)
+            .editPanelClass(MediaTypeEditPanel.class)
+            .detailPanelBuilder(trackBuilder)
+            .detailPanelState(EntityPanel.PanelState.HIDDEN);
 
-    final EntityPanelBuilder employeeBuilder = new EntityPanelBuilder(Employee.TYPE);
-    employeeBuilder.setEditPanelClass(EmployeeEditPanel.class);
-    employeeBuilder.addDetailPanelBuilder(customerBuilder).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
+    final EntityPanelBuilder employeeBuilder = new EntityPanelBuilder(Employee.TYPE)
+            .editPanelClass(EmployeeEditPanel.class)
+            .detailPanelBuilder(customerBuilder).detailPanelState(EntityPanel.PanelState.HIDDEN);
 
     addSupportPanelBuilders(genreBuilder, mediaTypeBuilder, employeeBuilder);
   }

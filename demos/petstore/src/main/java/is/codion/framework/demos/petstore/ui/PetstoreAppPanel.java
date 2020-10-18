@@ -26,29 +26,31 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
      *       ITEMTAG
      */
     final EntityPanelBuilder tagItemProvider = new EntityPanelBuilder(TagItem.TYPE)
-            .setEditPanelClass(TagItemEditPanel.class);
-    final EntityPanelBuilder itemProvider = new EntityPanelBuilder(Item.TYPE)
-            .setEditPanelClass(ItemEditPanel.class);
-    itemProvider.addDetailPanelBuilder(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
-    final EntityPanelBuilder productProvider = new EntityPanelBuilder(Product.TYPE)
-            .setEditPanelClass(ProductEditPanel.class);
-    productProvider.addDetailPanelBuilder(itemProvider).setDetailSplitPanelResizeWeight(0.3);
-    final EntityPanelBuilder categoryProvider = new EntityPanelBuilder(Category.TYPE)
-            .setEditPanelClass(CategoryEditPanel.class);
-    categoryProvider.addDetailPanelBuilder(productProvider).setDetailSplitPanelResizeWeight(0.3);
+            .editPanelClass(TagItemEditPanel.class);
 
-    addEntityPanelBuilder(categoryProvider);
+    addEntityPanelBuilder(new EntityPanelBuilder(Category.TYPE)
+            .editPanelClass(CategoryEditPanel.class)
+            .detailPanelBuilder(new EntityPanelBuilder(Product.TYPE)
+                    .editPanelClass(ProductEditPanel.class)
+                    .detailPanelBuilder(new EntityPanelBuilder(Item.TYPE)
+                            .editPanelClass(ItemEditPanel.class)
+                            .detailPanelBuilder(tagItemProvider)
+                            .detailPanelState(EntityPanel.PanelState.HIDDEN))
+                    .detailSplitPanelResizeWeight(0.3)).detailSplitPanelResizeWeight(0.3));
 
-    final EntityPanelBuilder addressProvider = new EntityPanelBuilder(Address.TYPE)
-            .setEditPanelClass(AddressEditPanel.class);
-    final EntityPanelBuilder contactInfoProvider = new EntityPanelBuilder(SellerContactInfo.TYPE)
-            .setEditPanelClass(ContactInfoEditPanel.class);
-    contactInfoProvider.addDetailPanelBuilder(itemProvider);
-    final EntityPanelBuilder tagProvider = new EntityPanelBuilder(Tag.TYPE)
-            .setEditPanelClass(TagEditPanel.class);
-    tagProvider.addDetailPanelBuilder(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
-
-    addSupportPanelBuilders(addressProvider, contactInfoProvider, tagProvider);
+    addSupportPanelBuilders(
+            new EntityPanelBuilder(Address.TYPE)
+                    .editPanelClass(AddressEditPanel.class),
+            new EntityPanelBuilder(SellerContactInfo.TYPE)
+                    .editPanelClass(ContactInfoEditPanel.class)
+                    .detailPanelBuilder(new EntityPanelBuilder(Item.TYPE)
+                            .editPanelClass(ItemEditPanel.class)
+                            .detailPanelBuilder(tagItemProvider)
+                            .detailPanelState(EntityPanel.PanelState.HIDDEN)),
+            new EntityPanelBuilder(Tag.TYPE)
+                    .editPanelClass(TagEditPanel.class)
+                    .detailPanelBuilder(tagItemProvider)
+                    .detailPanelState(EntityPanel.PanelState.HIDDEN));
   }
 
   @Override

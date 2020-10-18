@@ -31,36 +31,36 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   @Override
   protected void setupEntityPanelBuilders() {
     final SwingEntityModelBuilder countryModelBuilder = new SwingEntityModelBuilder(Country.TYPE);
-    countryModelBuilder.setModelClass(CountryModel.class);
+    countryModelBuilder.modelClass(CountryModel.class);
     EntityPanelBuilder countryPanelBuilder = new EntityPanelBuilder(countryModelBuilder) {
       @Override
       protected void configurePanel(final EntityPanel entityPanel) {
         entityPanel.setDetailSplitPanelResizeWeight(0.7);
       }
     };
-    countryPanelBuilder.setEditPanelClass(CountryEditPanel.class);
-    countryPanelBuilder.setTablePanelClass(CountryTablePanel.class);
+    countryPanelBuilder.editPanelClass(CountryEditPanel.class);
+    countryPanelBuilder.tablePanelClass(CountryTablePanel.class);
 
     final SwingEntityModelBuilder countryCustomModelBuilder = new SwingEntityModelBuilder(Country.TYPE);
-    countryCustomModelBuilder.setModelClass(CountryCustomModel.class);
+    countryCustomModelBuilder.modelClass(CountryCustomModel.class);
     EntityPanelBuilder countryCustomPanelBuilder = new EntityPanelBuilder(countryCustomModelBuilder)
-            .setPanelClass(CountryCustomPanel.class)
-            .setCaption("Custom Country");
+            .panelClass(CountryCustomPanel.class)
+            .caption("Custom Country");
 
     EntityPanelBuilder cityPanelBuilder = new EntityPanelBuilder(City.TYPE);
-    cityPanelBuilder.setEditPanelClass(CityEditPanel.class);
+    cityPanelBuilder.editPanelClass(CityEditPanel.class);
 
     EntityPanelBuilder countryLanguagePanelBuilder = new EntityPanelBuilder(CountryLanguage.TYPE);
-    countryLanguagePanelBuilder.setEditPanelClass(CountryLanguageEditPanel.class);
+    countryLanguagePanelBuilder.editPanelClass(CountryLanguageEditPanel.class);
 
-    countryPanelBuilder.addDetailPanelBuilder(cityPanelBuilder);
-    countryPanelBuilder.addDetailPanelBuilder(countryLanguagePanelBuilder);
+    countryPanelBuilder.detailPanelBuilder(cityPanelBuilder);
+    countryPanelBuilder.detailPanelBuilder(countryLanguagePanelBuilder);
 
     EntityPanelBuilder continentPanelBuilder = new EntityPanelBuilder(Continent.TYPE)
-            .setPanelClass(ContinentPanel.class);
+            .panelClass(ContinentPanel.class);
     EntityPanelBuilder lookupPanelBuilder = new EntityPanelBuilder(Lookup.TYPE)
-            .setTablePanelClass(LookupTablePanel.class)
-            .setRefreshOnInit(false);
+            .tablePanelClass(LookupTablePanel.class)
+            .refreshOnInit(false);
 
     addEntityPanelBuilders(countryPanelBuilder, countryCustomPanelBuilder, continentPanelBuilder, lookupPanelBuilder);
   }

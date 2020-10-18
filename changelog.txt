@@ -6488,3 +6488,4 @@
   Condition implementations, use unmodifiableList() where applicable
   DefaultColumnConditionModel, replaced String.replaceAll with String.replace
   EntityServerConfiguration bug fixed, did not configure serialization whitelist correctly
+  EntityModelBuilder, EntityPanelBuilder, set setter prefix removed, related changes

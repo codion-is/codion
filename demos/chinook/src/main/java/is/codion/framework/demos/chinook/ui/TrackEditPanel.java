@@ -35,13 +35,15 @@ public class TrackEditPanel extends EntityEditPanel {
     createTextField(Track.NAME).setColumns(18);
     final EntityComboBox mediaTypeBox = createForeignKeyComboBox(Track.MEDIATYPE_FK);
     setPreferredHeight(mediaTypeBox, getPreferredTextFieldHeight());
-    final Action newMediaTypeAction = new EntityPanelBuilder(MediaType.TYPE).setEditPanelClass(MediaTypeEditPanel.class)
+    final Action newMediaTypeAction = new EntityPanelBuilder(MediaType.TYPE)
+            .editPanelClass(MediaTypeEditPanel.class)
             .createEditPanelAction(mediaTypeBox);
     final JPanel mediaTypePanel = Components.createEastButtonPanel(mediaTypeBox, newMediaTypeAction);
     final EntityComboBox genreBox = createForeignKeyComboBox(Track.GENRE_FK);
     setPreferredHeight(genreBox, getPreferredTextFieldHeight());
     final Action newGenreAction = new EntityPanelBuilder(Genre.TYPE)
-            .setEditPanelClass(GenreEditPanel.class).createEditPanelAction(genreBox);
+            .editPanelClass(GenreEditPanel.class)
+            .createEditPanelAction(genreBox);
     final JPanel genrePanel = Components.createEastButtonPanel(genreBox, newGenreAction);
     createTextInputPanel(Track.COMPOSER).getTextField().setColumns(18);
     final IntegerField millisecondsField = (IntegerField) createTextField(Track.MILLISECONDS);

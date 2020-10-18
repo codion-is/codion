@@ -29,7 +29,8 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
     EntityComboBox addressComboBox =
             createForeignKeyComboBox(CustomerAddress.ADDRESS_FK);
     Components.setPreferredWidth(addressComboBox, 200);
-    Action newAddressAction = new EntityPanelBuilder(Address.TYPE).setEditPanelClass(AddressEditPanel.class)
+    Action newAddressAction = new EntityPanelBuilder(Address.TYPE)
+            .editPanelClass(AddressEditPanel.class)
             .createEditPanelAction(addressComboBox);
     JPanel addressPanel = Components.createEastButtonPanel(addressComboBox, newAddressAction);
 

@@ -236,13 +236,13 @@ public final class EmpDeptMinimalApp {
     @Override
     protected void setupEntityPanelBuilders() {
       //now, let's assemble our application
-      final EntityPanelBuilder departmentProvider = new EntityPanelBuilder(Department.TYPE)
-              .setEditPanelClass(DepartmentEditPanel.class);
       final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(Employee.T_EMP)
-              .setEditModelClass(EmployeeEditModel.class);
+              .editModelClass(EmployeeEditModel.class);
       final EntityPanelBuilder employeeProvider = new EntityPanelBuilder(employeeModelBuilder)
-              .setEditPanelClass(EmployeeEditPanel.class);
-      departmentProvider.addDetailPanelBuilder(employeeProvider);
+              .editPanelClass(EmployeeEditPanel.class);
+      final EntityPanelBuilder departmentProvider = new EntityPanelBuilder(Department.TYPE)
+              .editPanelClass(DepartmentEditPanel.class)
+              .detailPanelBuilder(employeeProvider);
 
       //the department panel is the main (or root) application panel
       addEntityPanelBuilder(departmentProvider);

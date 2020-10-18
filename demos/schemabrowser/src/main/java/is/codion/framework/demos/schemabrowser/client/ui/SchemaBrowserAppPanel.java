@@ -23,16 +23,12 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
 
   @Override
   protected void setupEntityPanelBuilders() {
-    final EntityPanelBuilder columnConstraintProvider = new EntityPanelBuilder(ColumnConstraint.TYPE);
-    final EntityPanelBuilder constraintProvider = new EntityPanelBuilder(Constraint.TYPE);
-    constraintProvider.addDetailPanelBuilder(columnConstraintProvider);
-    final EntityPanelBuilder columnProvider = new EntityPanelBuilder(Column.TYPE);
-    final EntityPanelBuilder dbObjectProvider = new EntityPanelBuilder(Table.TYPE);
-    dbObjectProvider.addDetailPanelBuilder(columnProvider);
-    dbObjectProvider.addDetailPanelBuilder(constraintProvider);
-    final EntityPanelBuilder schemaProvider = new EntityPanelBuilder(Schema.TYPE);
-    schemaProvider.addDetailPanelBuilder(dbObjectProvider).setDetailSplitPanelResizeWeight(0.3);
-    addEntityPanelBuilder(schemaProvider);
+    addEntityPanelBuilder(new EntityPanelBuilder(Schema.TYPE)
+            .detailPanelBuilder(new EntityPanelBuilder(Table.TYPE)
+                    .detailPanelBuilder(new EntityPanelBuilder(Column.TYPE))
+                    .detailPanelBuilder(new EntityPanelBuilder(Constraint.TYPE)
+                            .detailPanelBuilder(new EntityPanelBuilder(ColumnConstraint.TYPE))))
+            .detailSplitPanelResizeWeight(0.3));
   }
 
   @Override

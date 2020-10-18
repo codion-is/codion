@@ -82,7 +82,7 @@ public final class CountryEditPanel extends EntityEditPanel {
 
     public CityPanelBuilder() {
       super(City.TYPE);
-      setEditPanelClass(CityEditPanel.class);
+      editPanelClass(CityEditPanel.class);
     }
 
     @Override

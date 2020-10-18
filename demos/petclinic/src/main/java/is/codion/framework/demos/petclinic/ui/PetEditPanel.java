@@ -31,7 +31,7 @@ public final class PetEditPanel extends EntityEditPanel {
     EntityComboBox petTypeBox = createForeignKeyComboBox(Pet.PET_TYPE_FK);
 
     Action newPetTypeAction = new EntityPanelBuilder(PetType.TYPE)
-            .setEditPanelClass(PetTypeEditPanel.class)
+            .editPanelClass(PetTypeEditPanel.class)
             .createEditPanelAction(petTypeBox);
     JPanel petTypePanel = Components.createEastButtonPanel(petTypeBox, newPetTypeAction);
 
