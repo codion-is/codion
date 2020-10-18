@@ -36,9 +36,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   DefaultConditionCombination(final Conjunction conjunction, final Condition... conditions) {
     this(conjunction);
-    for (final Condition condition : requireNonNull(conditions, "conditions")) {
-      add(condition);
-    }
+    add(conditions);
   }
 
   @Override
@@ -106,12 +104,12 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   @Override
   public Condition.Combination and(final Condition... conditions) {
-    return new DefaultConditionCombination(Conjunction.AND, this).add(requireNonNull(conditions));
+    return new DefaultConditionCombination(Conjunction.AND, this).add(conditions);
   }
 
   @Override
   public Condition.Combination or(final Condition... conditions) {
-    return new DefaultConditionCombination(Conjunction.OR, this).add(requireNonNull(conditions));
+    return new DefaultConditionCombination(Conjunction.OR, this).add(conditions);
   }
 
   @Override
