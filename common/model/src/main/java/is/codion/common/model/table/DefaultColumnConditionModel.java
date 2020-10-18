@@ -467,7 +467,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   private String prepareForRegex(final String string) {
     //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replaceAll(wildcard, ".*").replaceAll("\\$", ".").replaceAll("]", "\\\\]").replaceAll("\\[", "\\\\[");
+    return string.replace(wildcard, ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
   }
 
   private boolean includeLessThan(final Comparable<T> comparable) {

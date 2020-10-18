@@ -6485,3 +6485,5 @@
   ForeignKeyProperty.getReferencedAttribute() return value now with generic wildcard, related changes
   DefaultOrderBy, minor fix
   DefaultEntities.castTo() now final
+  Condition implementations, use unmodifiableList() where applicable
+  DefaultColumnConditionModel, replaced String.replaceAll with String.replace

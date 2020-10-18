@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition<T> {
@@ -33,7 +34,7 @@ final class DefaultAttributeEqualCondition<T> extends AbstractAttributeCondition
 
   DefaultAttributeEqualCondition(final Attribute<T> attribute, final Collection<? extends T> conditionValues, final boolean negated) {
     super(attribute, negated ? Operator.NOT_EQUAL : Operator.EQUAL);
-    this.values = new ArrayList<>(conditionValues);
+    this.values = unmodifiableList(new ArrayList<>(conditionValues));
     this.negated = negated;
     for (int i = 0; i < values.size(); i++) {
       requireNonNull(values.get(i), "Equal condition values may not be null");

@@ -6,9 +6,9 @@ package is.codion.framework.db.condition;
 import is.codion.common.db.Operator;
 import is.codion.framework.domain.entity.Attribute;
 
-import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultAttributeLessThanCondition<T> extends AbstractAttributeCondition<T> {
@@ -24,12 +24,12 @@ final class DefaultAttributeLessThanCondition<T> extends AbstractAttributeCondit
 
   @Override
   public List<?> getValues() {
-    return Collections.singletonList(value);
+    return singletonList(value);
   }
 
   @Override
   public List<Attribute<?>> getAttributes() {
-    return Collections.singletonList(getAttribute());
+    return singletonList(getAttribute());
   }
 
   @Override
