@@ -34,6 +34,9 @@ java.util.HashMap
 java.util.HashSet
 java.util.LinkedHashMap
 java.util.UUID
+net.sf.jasperreports.compilers.ConstantExpressionEvaluation
+net.sf.jasperreports.compilers.FieldEvaluation
+net.sf.jasperreports.compilers.ReportExpressionEvaluationData
 net.sf.jasperreports.engine.JRPropertiesMap
 net.sf.jasperreports.engine.JasperReport
 net.sf.jasperreports.engine.base.JRBaseBand
@@ -104,5 +107,6 @@ is.codion.framework.domain.entity.DefaultOrderBy
 is.codion.framework.domain.entity.DefaultOrderBy$DefaultOrderByAttribute
 is.codion.framework.domain.entity.DefaultAttribute
 is.codion.framework.demos.chinook.domain.Chinook
+is.codion.framework.demos.chinook.domain.Chinook$Invoice
 is.codion.framework.demos.empdept.domain.EmpDept
 is.codion.plugin.jasperreports.model.DefaultJRReportType
