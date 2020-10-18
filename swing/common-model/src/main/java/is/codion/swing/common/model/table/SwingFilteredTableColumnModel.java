@@ -31,7 +31,7 @@ import static java.util.Objects.requireNonNull;
  * @param <R> the table model row type
  * @param <C> the type of column identifier
  */
-public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel implements FilteredTableColumnModel<R, C, TableColumn> {
+public final class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel implements FilteredTableColumnModel<R, C, TableColumn> {
 
   private static final String COLUMN_IDENTIFIER = "columnIdentifier";
 
@@ -83,12 +83,12 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   }
 
   @Override
-  public final List<TableColumn> getAllColumns() {
+  public List<TableColumn> getAllColumns() {
     return columns;
   }
 
   @Override
-  public final void showColumn(final C columnIdentifier) {
+  public void showColumn(final C columnIdentifier) {
     final TableColumn column = hiddenColumns.get(columnIdentifier);
     if (column != null) {
       hiddenColumns.remove(columnIdentifier);
@@ -99,7 +99,7 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   }
 
   @Override
-  public final void hideColumn(final C columnIdentifier) {
+  public void hideColumn(final C columnIdentifier) {
     if (!hiddenColumns.containsKey(columnIdentifier)) {
       final TableColumn column = getTableColumn(columnIdentifier);
       removeColumn(column);
@@ -109,12 +109,12 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   }
 
   @Override
-  public final boolean isColumnVisible(final C columnIdentifier) {
+  public boolean isColumnVisible(final C columnIdentifier) {
     return !hiddenColumns.containsKey(columnIdentifier);
   }
 
   @Override
-  public final void setColumns(final C... columnIdentifiers) {
+  public void setColumns(final C... columnIdentifiers) {
     if (columnIdentifiers != null) {
       final List<C> identifiers = asList(columnIdentifiers);
       int columnIndex = 0;
@@ -131,12 +131,12 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   }
 
   @Override
-  public final List<TableColumn> getHiddenColumns() {
+  public List<TableColumn> getHiddenColumns() {
     return new ArrayList<>(hiddenColumns.values());
   }
 
   @Override
-  public final TableColumn getTableColumn(final C columnIdentifier) {
+  public TableColumn getTableColumn(final C columnIdentifier) {
     requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
     for (final TableColumn column : columns) {
       if (columnIdentifier.equals(column.getIdentifier())) {
@@ -148,46 +148,46 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
   }
 
   @Override
-  public final boolean containsColumn(final C columnIdentifier) {
+  public boolean containsColumn(final C columnIdentifier) {
     requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
 
     return columns.stream().anyMatch(column -> columnIdentifier.equals(column.getIdentifier()));
   }
 
   @Override
-  public final <T> ColumnConditionModel<R, C, T> getColumnFilterModel(final C columnIdentifier) {
+  public <T> ColumnConditionModel<R, C, T> getColumnFilterModel(final C columnIdentifier) {
     requireNonNull(columnIdentifier, COLUMN_IDENTIFIER);
 
     return (ColumnConditionModel<R, C, T>) columnFilterModels.get(columnIdentifier);
   }
 
   @Override
-  public final Collection<ColumnConditionModel<R, C, ?>> getColumnFilterModels() {
+  public Collection<ColumnConditionModel<R, C, ?>> getColumnFilterModels() {
     return columnFilterModels.values();
   }
 
   @Override
-  public final C getColumnIdentifier(final int columnModelIndex) {
+  public C getColumnIdentifier(final int columnModelIndex) {
     return (C) getColumn(convertColumnIndexToView(columnModelIndex)).getIdentifier();
   }
 
   @Override
-  public final void addColumnHiddenListener(final EventDataListener<C> listener) {
+  public void addColumnHiddenListener(final EventDataListener<C> listener) {
     columnHiddenEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeColumnHiddenListener(final EventDataListener<C> listener) {
+  public void removeColumnHiddenListener(final EventDataListener<C> listener) {
     columnHiddenEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addColumnShownListener(final EventDataListener<C> listener) {
+  public void addColumnShownListener(final EventDataListener<C> listener) {
     columnShownEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeColumnShownListener(final EventDataListener<C> listener) {
+  public void removeColumnShownListener(final EventDataListener<C> listener) {
     columnShownEvent.removeDataListener(listener);
   }
 
@@ -201,7 +201,7 @@ public class SwingFilteredTableColumnModel<R, C> extends DefaultTableColumnModel
    * @param modelColumnIndex the index of the column in the model
    * @return the index of the corresponding column in the view
    */
-  protected final int convertColumnIndexToView(final int modelColumnIndex) {
+  private int convertColumnIndexToView(final int modelColumnIndex) {
     if (modelColumnIndex < 0) {
       return modelColumnIndex;
     }
