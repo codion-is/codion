@@ -84,13 +84,9 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(final Attribute<Entity> foreignKeyAttribute) {
     getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
-    SwingEntityComboBoxModel comboBoxModel = (SwingEntityComboBoxModel) comboBoxModels.get(foreignKeyAttribute);
-    if (comboBoxModel == null) {
-      comboBoxModel = createForeignKeyComboBoxModel(foreignKeyAttribute);
-      comboBoxModels.put(foreignKeyAttribute, comboBoxModel);
-    }
 
-    return comboBoxModel;
+    return (SwingEntityComboBoxModel) comboBoxModels.computeIfAbsent(foreignKeyAttribute,
+            attribute -> createForeignKeyComboBoxModel(foreignKeyAttribute));
   }
 
   /**
@@ -101,14 +97,9 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public final <T> FilteredComboBoxModel<T> getComboBoxModel(final Attribute<T> attribute) {
     requireNonNull(attribute, "attribute");
-    FilteredComboBoxModel<T> comboBoxModel = (FilteredComboBoxModel<T>) comboBoxModels.get(attribute);
-    if (comboBoxModel == null) {
-      comboBoxModel = createComboBoxModel(attribute);
-      comboBoxModels.put(attribute, comboBoxModel);
-      comboBoxModel.refresh();
-    }
 
-    return comboBoxModel;
+    return (FilteredComboBoxModel<T>) comboBoxModels.computeIfAbsent(attribute,
+            theAttribute -> createComboBoxModel(attribute));
   }
 
   /**
@@ -134,8 +125,8 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    */
   public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final Attribute<Entity> foreignKeyAttribute) {
     final ForeignKeyProperty foreignKeyProperty = getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
-    final SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(),
-            getConnectionProvider());
+    final SwingEntityComboBoxModel model =
+            new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), getConnectionProvider());
     if (getValidator().isNullable(getEntity(), foreignKeyProperty)) {
       model.setNullString(FilteredComboBoxModel.COMBO_BOX_NULL_VALUE_ITEM.get());
     }
