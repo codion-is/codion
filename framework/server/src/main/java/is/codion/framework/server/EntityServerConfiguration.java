@@ -203,10 +203,10 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     configuration.setSslEnabled(SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
-      configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
-    }
-    if (SERIALIZATION_FILTER_DRYRUN.get() != null) {
-      configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
+      configuration.setSerializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get());
+      if (SERIALIZATION_FILTER_DRYRUN.get() != null) {
+        configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
+      }
     }
     configuration.setAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
     configuration.setConnectionLimit(SERVER_CONNECTION_LIMIT.get());
