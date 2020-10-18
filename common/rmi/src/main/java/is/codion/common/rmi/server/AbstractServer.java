@@ -54,7 +54,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
 
   private final Map<UUID, RemoteClientConnection<T>> connections = new ConcurrentHashMap<>();
   private final Map<String, LoginProxy> loginProxies = new HashMap<>();
-  private final List<LoginProxy> sharedLoginProxies = new ArrayList<>();
+  private final Collection<LoginProxy> sharedLoginProxies = new ArrayList<>();
   private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
 
   private final ServerInformation serverInformation;
@@ -68,7 +68,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
    * @throws RemoteException in case of an exception
    */
   public AbstractServer(final ServerConfiguration configuration) throws RemoteException {
-    super(configuration.getServerPort(), configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
+    super(requireNonNull(configuration, "configuration").getServerPort(),
+            configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
     Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
             configuration.getServerPort(), ZonedDateTime.now());

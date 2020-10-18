@@ -81,7 +81,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private int connectionTimeout;
 
   /**
-   * Constructs a new DefaultEntityServer and binds it to a registry on the given port
+   * Constructs a new EntityServer and binds it to a registry on the port found in the configuration.
    * @param configuration the server configuration
    * @throws RemoteException in case of a remote exception
    * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
