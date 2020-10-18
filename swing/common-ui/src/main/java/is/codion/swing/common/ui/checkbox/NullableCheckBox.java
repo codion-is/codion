@@ -104,5 +104,5 @@ public class NullableCheckBox extends JCheckBox {
    * @param listener the listener
    */
   @Override
-  public final void addMouseListener(final MouseListener listener) {/*Disabled*/}
+  public final synchronized void addMouseListener(final MouseListener listener) {/*Disabled*/}
 }
