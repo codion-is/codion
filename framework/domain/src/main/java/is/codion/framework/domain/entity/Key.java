@@ -93,6 +93,7 @@ public interface Key {
   <T> Optional<T> getOptional();
 
   /**
+   * Returns a new key instance based on this key, but with the given value.
    * @param attribute the attribute
    * @param value the value to associate with the attribute
    * @param <T> the value type
