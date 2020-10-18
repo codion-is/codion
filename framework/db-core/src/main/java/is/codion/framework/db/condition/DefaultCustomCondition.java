@@ -7,9 +7,9 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityDefinition;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultCustomCondition extends AbstractCondition implements CustomCondition {
@@ -24,8 +24,8 @@ final class DefaultCustomCondition extends AbstractCondition implements CustomCo
                          final List<Object> values) {
     super(requireNonNull(conditionType, "conditionType").getEntityType());
     this.conditionType = conditionType;
-    this.attributes = new ArrayList<>(requireNonNull(attributes, "attributes"));
-    this.values = new ArrayList<>(requireNonNull(values, "values"));
+    this.attributes = unmodifiableList(requireNonNull(attributes, "attributes"));
+    this.values = unmodifiableList(requireNonNull(values, "values"));
   }
 
   @Override

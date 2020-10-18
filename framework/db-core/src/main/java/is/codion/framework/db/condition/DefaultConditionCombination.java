@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -90,7 +91,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
       values.addAll(conditions.get(i).getValues());
     }
 
-    return values;
+    return unmodifiableList(values);
   }
 
   @Override
@@ -100,7 +101,7 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
       attributes.addAll(conditions.get(i).getAttributes());
     }
 
-    return attributes;
+    return unmodifiableList(attributes);
   }
 
   @Override
