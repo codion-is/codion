@@ -35,9 +35,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   @Override
   protected void setupEntityPanelBuilders() {
     final EmployeeModelBuilder employeeModelBuilder = new EmployeeModelBuilder();
-    final EmployeePanelBuilder employeePanelBuilder =
-            new EmployeePanelBuilder(employeeModelBuilder);
-    employeePanelBuilder.setEditPanelClass(EmployeeEditPanel.class);
+    final EmployeePanelBuilder employeePanelBuilder = new EmployeePanelBuilder(employeeModelBuilder);
 
     final SwingEntityModelBuilder departmentModelBuilder = new SwingEntityModelBuilder(Department.TYPE) {
       @Override
@@ -46,13 +44,12 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
       }
     };
     //This relies on the foreign key association between employee and department
-    departmentModelBuilder.addDetailModelBuilder(employeeModelBuilder);
+    departmentModelBuilder.detailModelBuilder(employeeModelBuilder);
 
-    final EntityPanelBuilder departmentPanelBuilder =
-            new EntityPanelBuilder(departmentModelBuilder);
-    departmentPanelBuilder.setEditPanelClass(DepartmentEditPanel.class);
-    departmentPanelBuilder.setTablePanelClass(DepartmentTablePanel.class);
-    departmentPanelBuilder.addDetailPanelBuilder(employeePanelBuilder);
+    final EntityPanelBuilder departmentPanelBuilder = new EntityPanelBuilder(departmentModelBuilder)
+            .editPanelClass(DepartmentEditPanel.class)
+            .tablePanelClass(DepartmentTablePanel.class)
+            .detailPanelBuilder(employeePanelBuilder);
 
     addEntityPanelBuilder(departmentPanelBuilder);
   }
@@ -108,7 +105,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   private static final class EmployeeModelBuilder extends SwingEntityModelBuilder {
     private EmployeeModelBuilder() {
       super(Employee.TYPE);
-      setEditModelClass(EmployeeEditModel.class);
+      editModelClass(EmployeeEditModel.class);
     }
 
     @Override
@@ -122,6 +119,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   private static final class EmployeePanelBuilder extends EntityPanelBuilder {
     private EmployeePanelBuilder(final EmployeeModelBuilder modelProvider) {
       super(modelProvider);
+      editPanelClass(EmployeeEditPanel.class);
     }
 
     @Override

@@ -240,7 +240,8 @@ public final class Petstore extends DefaultDomain {
             columnProperty(TagItem.ITEM_ID)
                     .columnName("itemid").primaryKeyIndex(0),
             foreignKeyProperty(TagItem.ITEM_FK, TagItem.ITEM_FK.getName())
-                    .reference(TagItem.ITEM_ID, Item.ID),
+                    .reference(TagItem.ITEM_ID, Item.ID)
+                    .fetchDepth(3),
             columnProperty(TagItem.TAG_ID)
                     .columnName("tagid").primaryKeyIndex(1),
             foreignKeyProperty(TagItem.TAG_FK, TagItem.TAG_FK.getName())

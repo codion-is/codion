@@ -24,29 +24,29 @@ public final class SwingEntityModelBuilderTest {
   @Test
   public void setModelClass() {
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
-            .setEditModelClass(DepartmentEditModel.class).setModelClass(SwingEntityModel.class));
+            .editModelClass(DepartmentEditModel.class).modelClass(SwingEntityModel.class));
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
-            .setTableModelClass(DepartmentTableModel.class).setModelClass(SwingEntityModel.class));
+            .tableModelClass(DepartmentTableModel.class).modelClass(SwingEntityModel.class));
 
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
-            .setModelClass(SwingEntityModel.class).setEditModelClass(DepartmentEditModel.class));
+            .modelClass(SwingEntityModel.class).editModelClass(DepartmentEditModel.class));
     assertThrows(IllegalStateException.class, () -> new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
-            .setModelClass(SwingEntityModel.class).setTableModelClass(DepartmentTableModel.class));
+            .modelClass(SwingEntityModel.class).tableModelClass(DepartmentTableModel.class));
   }
 
   @Test
   public void testDetailModelBuilder() {
     final SwingEntityModelBuilder departmentModelBuilder = new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT)
-            .setEditModelClass(DepartmentEditModel.class)
-            .setTableModelClass(DepartmentTableModel.class);
+            .editModelClass(DepartmentEditModel.class)
+            .tableModelClass(DepartmentTableModel.class);
     final SwingEntityModelBuilder employeeModelBuilder = new SwingEntityModelBuilder(TestDomain.T_EMP);
 
-    departmentModelBuilder.addDetailModelBuilder(employeeModelBuilder);
+    departmentModelBuilder.detailModelBuilder(employeeModelBuilder);
 
     assertEquals(DepartmentEditModel.class, departmentModelBuilder.getEditModelClass());
     assertEquals(DepartmentTableModel.class, departmentModelBuilder.getTableModelClass());
 
-    final SwingEntityModel departmentModel = departmentModelBuilder.createModel(CONNECTION_PROVIDER);
+    final SwingEntityModel departmentModel = departmentModelBuilder.buildModel(CONNECTION_PROVIDER);
     assertTrue(departmentModel.getEditModel() instanceof DepartmentEditModel);
     assertTrue(departmentModel.getTableModel() instanceof DepartmentTableModel);
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));

@@ -966,37 +966,38 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Shows a dialog containing the entity panel provided by the given panel provider
-   * @param panelProvider the entity panel provider
+   * Shows a dialog containing the entity panel provided by the given panel builder
+   * @param panelBuilder the entity panel builder
    */
-  protected final void displayEntityPanelDialog(final EntityPanelBuilder panelProvider) {
-    displayEntityPanelDialog(panelProvider, false);
+  protected final void displayEntityPanelDialog(final EntityPanelBuilder panelBuilder) {
+    displayEntityPanelDialog(panelBuilder, false);
   }
 
   /**
-   * Shows a dialog containing the entity panel provided by the given panel provider
-   * @param panelProvider the entity panel provider
+   * Shows a dialog containing the entity panel provided by the given panel builder
+   * @param panelBuilder the entity panel builder
    * @param modalDialog if true the dialog is made modal
    */
-  protected final void displayEntityPanelDialog(final EntityPanelBuilder panelProvider, final boolean modalDialog) {
+  protected final void displayEntityPanelDialog(final EntityPanelBuilder panelBuilder, final boolean modalDialog) {
+    requireNonNull(panelBuilder, "panelBuilder");
     try {
       Components.showWaitCursor(this);
       final EntityPanel entityPanel;
-      if (PERSIST_ENTITY_PANELS.get() && persistentEntityPanels.containsKey(panelProvider)) {
-        entityPanel = persistentEntityPanels.get(panelProvider);
+      if (PERSIST_ENTITY_PANELS.get() && persistentEntityPanels.containsKey(panelBuilder)) {
+        entityPanel = persistentEntityPanels.get(panelBuilder);
         if (entityPanel.isShowing()) {
           return;
         }
       }
       else {
-        entityPanel = panelProvider.createPanel(applicationModel.getConnectionProvider());
+        entityPanel = panelBuilder.buildPanel(applicationModel.getConnectionProvider());
         entityPanel.initializePanel();
         if (PERSIST_ENTITY_PANELS.get()) {
-          persistentEntityPanels.put(panelProvider, entityPanel);
+          persistentEntityPanels.put(panelBuilder, entityPanel);
         }
       }
-      final JDialog dialog = new JDialog(getParentWindow(), panelProvider.getCaption() == null ?
-              applicationModel.getEntities().getDefinition(panelProvider.getEntityType()).getCaption() : panelProvider.getCaption());
+      final JDialog dialog = new JDialog(getParentWindow(), panelBuilder.getCaption() == null ?
+              applicationModel.getEntities().getDefinition(panelBuilder.getEntityType()).getCaption() : panelBuilder.getCaption());
       dialog.addWindowListener(new WindowAdapter() {
         @Override
         public void windowClosed(final WindowEvent e) {
@@ -1024,7 +1025,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Called during initialization, after the application model has been initialized,
-   * override to keep all entity panel provider definitions in one place.
+   * override to keep all entity panel builder definitions in one place.
    * @see #addEntityPanelBuilder(EntityPanelBuilder)
    * @see #addEntityPanelBuilders(EntityPanelBuilder...)
    * @see #addSupportPanelBuilder(EntityPanelBuilder)
@@ -1063,10 +1064,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       final SwingEntityModel entityModel = initializeEntityModel(applicationModel, panelBuilder.getModelBuilder());
       final EntityPanel entityPanel;
       if (applicationModel.containsEntityModel(panelBuilder.getEntityType())) {
-        entityPanel = panelBuilder.createPanel(entityModel);
+        entityPanel = panelBuilder.buildPanel(entityModel);
       }
       else {
-        entityPanel = panelBuilder.createPanel(applicationModel.getConnectionProvider());
+        entityPanel = panelBuilder.buildPanel(applicationModel.getConnectionProvider());
         applicationModel.addEntityModel(entityPanel.getModel());
       }
       panels.add(entityPanel);
@@ -1090,7 +1091,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         entityModel = applicationModel.getEntityModel(modelClass);
       }
       else {
-        entityModel = modelBuilder.createModel(applicationModel.getConnectionProvider());
+        entityModel = modelBuilder.buildModel(applicationModel.getConnectionProvider());
         applicationModel.addEntityModel(entityModel);
       }
     }
@@ -1099,7 +1100,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         entityModel = applicationModel.getEntityModel(modelBuilder.getEntityType());
       }
       else {
-        entityModel = modelBuilder.createModel(applicationModel.getConnectionProvider());
+        entityModel = modelBuilder.buildModel(applicationModel.getConnectionProvider());
         applicationModel.addEntityModel(entityModel);
       }
     }

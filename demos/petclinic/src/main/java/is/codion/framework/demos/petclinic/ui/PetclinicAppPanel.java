@@ -76,12 +76,12 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
   protected void setupEntityPanelBuilders() {
     EntityPanelBuilder petTypePanelBuilder =
             new EntityPanelBuilder(PetType.TYPE)
-                    .setEditPanelClass(PetTypeEditPanel.class)
-                    .setCaption("Pet types");
+                    .editPanelClass(PetTypeEditPanel.class)
+                    .caption("Pet types");
     EntityPanelBuilder specialtiesPanelBuilder =
             new EntityPanelBuilder(Specialty.TYPE)
-                    .setEditPanelClass(SpecialtyEditPanel.class)
-                    .setCaption("Specialties");
+                    .editPanelClass(SpecialtyEditPanel.class)
+                    .caption("Specialties");
 
     addSupportPanelBuilders(petTypePanelBuilder, specialtiesPanelBuilder);
   }

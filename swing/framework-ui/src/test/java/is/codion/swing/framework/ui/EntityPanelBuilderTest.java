@@ -25,14 +25,14 @@ public class EntityPanelBuilderTest {
   @Test
   public void setPanelClass() {
     assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
-            .setEditPanelClass(EntityEditPanel.class).setPanelClass(EntityPanel.class));
+            .editPanelClass(EntityEditPanel.class).panelClass(EntityPanel.class));
     assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
-            .setTablePanelClass(EntityTablePanel.class).setPanelClass(EntityPanel.class));
+            .tablePanelClass(EntityTablePanel.class).panelClass(EntityPanel.class));
 
     assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
-            .setPanelClass(EntityPanel.class).setEditPanelClass(EntityEditPanel.class));
+            .panelClass(EntityPanel.class).editPanelClass(EntityEditPanel.class));
     assertThrows(IllegalStateException.class, () -> new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
-            .setPanelClass(EntityPanel.class).setTablePanelClass(EntityTablePanel.class));
+            .panelClass(EntityPanel.class).tablePanelClass(EntityTablePanel.class));
   }
 
   @Test
@@ -40,19 +40,19 @@ public class EntityPanelBuilderTest {
     final SwingEntityModelBuilder customerModelBuilder = new SwingEntityModelBuilder(TestDomain.T_DEPARTMENT);
     final SwingEntityModelBuilder invoiceModelBuilder = new SwingEntityModelBuilder(TestDomain.T_EMP);
 
-    customerModelBuilder.addDetailModelBuilder(invoiceModelBuilder);
+    customerModelBuilder.detailModelBuilder(invoiceModelBuilder);
 
-    final SwingEntityModel customerModel = customerModelBuilder.createModel(CONNECTION_PROVIDER);
+    final SwingEntityModel customerModel = customerModelBuilder.buildModel(CONNECTION_PROVIDER);
 
     final String customerCaption = "A department caption";
     final EntityPanelBuilder customerPanelBuilder = new EntityPanelBuilder(TestDomain.T_DEPARTMENT)
-            .setCaption(customerCaption);
+            .caption(customerCaption);
     final EntityPanelBuilder invoicePanelBuilder = new EntityPanelBuilder(TestDomain.T_EMP)
-            .setCaption("empCaption");
+            .caption("empCaption");
 
-    customerPanelBuilder.addDetailPanelBuilder(invoicePanelBuilder);
+    customerPanelBuilder.detailPanelBuilder(invoicePanelBuilder);
 
-    final EntityPanel customerPanel = customerPanelBuilder.createPanel(customerModel);
+    final EntityPanel customerPanel = customerPanelBuilder.buildPanel(customerModel);
     assertEquals(customerCaption, customerPanel.getCaption());
     assertTrue(customerPanel.containsDetailPanel(TestDomain.T_EMP));
     final EntityPanel invoicePanel = customerPanel.getDetailPanel(TestDomain.T_EMP);
