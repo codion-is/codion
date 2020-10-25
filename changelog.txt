@@ -6464,3 +6464,4 @@
   EntityServer, admin moved up to AbstractServer
   AbstractServer.doConnect() no longer throws ConnectionNotAvailableException
   AbstractServer.createConnection() refactored from connect()
+  EntityServer.hasConnectionTimedOut(), removed redundant clientTypeId parameter

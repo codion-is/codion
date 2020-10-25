@@ -325,7 +325,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       final AbstractRemoteEntityConnection connection = getConnection(client.getClientId());
       if (!connection.isActive()) {
         final boolean connected = connection.isConnected();
-        final boolean timedOut = hasConnectionTimedOut(client.getClientTypeId(), connection);
+        final boolean timedOut = hasConnectionTimedOut(connection);
         if (!connected || timedOut) {
           LOG.debug("Removing connection {}, connected: {}, timeout: {}", new Object[] {client, connected, timedOut});
           disconnect(client.getClientId());
@@ -345,7 +345,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       final AbstractRemoteEntityConnection connection = getConnection(client.getClientId());
       if (timedOutOnly) {
         final boolean active = connection.isActive();
-        if (!active && hasConnectionTimedOut(client.getClientTypeId(), connection)) {
+        if (!active && hasConnectionTimedOut(connection)) {
           disconnect(client.getClientId());
         }
       }
@@ -390,8 +390,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     System.out.println(connectInfo);
   }
 
-  private boolean hasConnectionTimedOut(final String clientTypeId, final AbstractRemoteEntityConnection connection) {
-    Integer timeout = clientTypeConnectionTimeouts.get(clientTypeId);
+  private boolean hasConnectionTimedOut(final AbstractRemoteEntityConnection connection) {
+    Integer timeout = clientTypeConnectionTimeouts.get(connection.getRemoteClient().getClientTypeId());
     if (timeout == null) {
       timeout = connectionTimeout;
     }
