@@ -76,8 +76,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private final boolean clientLoggingEnabled;
   private final Map<String, Integer> clientTypeConnectionTimeouts = new HashMap<>();
 
-  private final EntityServerAdmin serverAdmin;
-
   private int connectionTimeout;
 
   /**
@@ -96,11 +94,11 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       this.registry = LocateRegistry.createRegistry(configuration.getRegistryPort());
       this.clientLoggingEnabled = configuration.getClientLoggingEnabled();
       this.domainModels = loadDomainModels(configuration.getDomainModelClassNames());
+      setAdmin(initializeServerAdmin(configuration));
       setConnectionTimeout(configuration.getConnectionTimeout());
       setClientTypeConnectionTimeouts(configuration.getClientSpecificConnectionTimeouts());
       initializeConnectionPools(configuration.getDatabase(), configuration.getConnectionPoolProvider(), configuration.getStartupPoolUsers());
       setConnectionLimit(configuration.getConnectionLimit());
-      serverAdmin = initializeServerAdmin(configuration);
       bindToRegistry(configuration.getRegistryPort());
     }
     catch (final Throwable t) {
@@ -117,11 +115,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   @Override
   public final EntityServerAdmin getServerAdmin(final User user) throws ServerAuthenticationException {
     validateUserCredentials(user, configuration.getAdminUser());
-    if (serverAdmin == null) {
-      throw new IllegalStateException("No admin instance available");
-    }
 
-    return serverAdmin;
+    return getAdmin();
   }
 
   @Override
@@ -537,7 +532,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   /**
-   * If no arguments are supplied a new DefaultEntityServer is started.
+   * If no arguments are supplied a new EntityServer is started.
    * @param arguments 'start' (or no argument) starts the server, 'stop' or 'shutdown' causes a running server to be shut down and 'restart' restarts the server
    * @throws RemoteException in case of a remote exception during service export
    * @throws ServerAuthenticationException in case of missing or incorrect admin user information
@@ -567,12 +562,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     public void onEvent() {
       try {
         unexportObject(registry, true);
-      }
-      catch (final NoSuchObjectException ignored) {/*ignored*/}
-      try {
-        if (serverAdmin != null) {
-          unexportObject(serverAdmin, true);
-        }
       }
       catch (final NoSuchObjectException ignored) {/*ignored*/}
       connectionMaintenanceScheduler.stop();

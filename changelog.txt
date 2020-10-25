@@ -6461,3 +6461,4 @@
   EntityServerConfiguration bug fixed, did not configure serialization whitelist correctly
   EntityModelBuilder, EntityPanelBuilder, set setter prefix removed, related changes
   SwingFilteredTableColumnModel now final
+  EntityServer, admin moved up to AbstractServer

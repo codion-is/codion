@@ -64,6 +64,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
   private volatile int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
 
+  private A admin;
+
   /**
    * Instantiates a new AbstractServer
    * @param configuration the configuration
@@ -219,6 +221,14 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
     catch (final NoSuchObjectException e) {
       LOG.error("Exception while unexporting server on shutdown", e);
     }
+    try {
+      if (admin != null) {
+        unexportObject(admin, true);
+      }
+    }
+    catch (final NoSuchObjectException e) {
+      LOG.error("Exception while unexporting server admin on shutdown", e);
+    }
     for (final UUID clientId : new ArrayList<>(connections.keySet())) {
       try {
         disconnect(clientId);
@@ -234,6 +244,21 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
       writeDryRunWhitelist();
     }
     shutdownEvent.onEvent();
+  }
+
+  protected void setAdmin(final A admin) {
+    if (this.admin != null) {
+      throw new IllegalStateException("Admin has already been set for this server");
+    }
+    this.admin = admin;
+  }
+
+  protected final A getAdmin() {
+    if (admin == null) {
+      throw new IllegalStateException("No admin instance available");
+    }
+
+    return admin;
   }
 
   /**
