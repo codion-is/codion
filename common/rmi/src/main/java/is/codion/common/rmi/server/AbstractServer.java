@@ -157,32 +157,21 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
     requireNonNull(connectionRequest.getClientId(), "clientId");
     requireNonNull(connectionRequest.getClientTypeId(), "clientTypeId");
     synchronized (connections) {
-      RemoteClientConnection<T> remoteClientConnection = connections.get(connectionRequest.getClientId());
+      final RemoteClientConnection<T> remoteClientConnection = connections.get(connectionRequest.getClientId());
       if (remoteClientConnection != null) {
         validateUserCredentials(connectionRequest.getUser(), remoteClientConnection.getClient().getUser());
         LOG.debug("Active connection exists {}", connectionRequest);
+
         return remoteClientConnection.getConnection();
       }
 
       if (maximumNumberOfConnectionsReached()) {
+        LOG.debug("Maximum number of connections reached {}", connectionLimit);
         throw new ConnectionNotAvailableException();
       }
-
       LOG.debug("No active connection found for client {}, establishing a new connection", connectionRequest);
-      RemoteClient remoteClient = remoteClient(connectionRequest);
-      setClientHost(remoteClient, (String) connectionRequest.getParameters().get(CLIENT_HOST_KEY));
-      for (final LoginProxy loginProxy : sharedLoginProxies) {
-        remoteClient = loginProxy.doLogin(remoteClient);
-      }
-      final LoginProxy clientLoginProxy = loginProxies.get(connectionRequest.getClientTypeId());
-      LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, clientLoginProxy);
-      if (clientLoginProxy != null) {
-        remoteClient = clientLoginProxy.doLogin(remoteClient);
-      }
-      remoteClientConnection = new RemoteClientConnection<>(remoteClient, doConnect(remoteClient));
-      connections.put(remoteClient.getClientId(), remoteClientConnection);
 
-      return remoteClientConnection.getConnection();
+      return createConnection(connectionRequest).getConnection();
     }
   }
 
@@ -246,7 +235,7 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
     shutdownEvent.onEvent();
   }
 
-  protected void setAdmin(final A admin) {
+  protected final void setAdmin(final A admin) {
     if (this.admin != null) {
       throw new IllegalStateException("Admin has already been set for this server");
     }
@@ -274,10 +263,8 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
    * @return a connection servicing the given client
    * @throws RemoteException in case of an exception
    * @throws LoginException in case of an error during the login
-   * @throws ConnectionNotAvailableException in case the server is not accepting new connections
    */
-  protected abstract T doConnect(RemoteClient remoteClient)
-          throws RemoteException, LoginException, ConnectionNotAvailableException;
+  protected abstract T doConnect(RemoteClient remoteClient) throws RemoteException, LoginException;
 
   /**
    * Disconnects the given connection.
@@ -302,6 +289,23 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
 
   private boolean maximumNumberOfConnectionsReached() {
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
+  }
+
+  private RemoteClientConnection<T> createConnection(final ConnectionRequest connectionRequest) throws LoginException, RemoteException {
+    RemoteClient remoteClient = remoteClient(connectionRequest);
+    setClientHost(remoteClient, (String) connectionRequest.getParameters().get(CLIENT_HOST_KEY));
+    for (final LoginProxy loginProxy : sharedLoginProxies) {
+      remoteClient = loginProxy.doLogin(remoteClient);
+    }
+    final LoginProxy clientLoginProxy = loginProxies.get(connectionRequest.getClientTypeId());
+    LOG.debug("Connecting client {}, loginProxy {}", connectionRequest, clientLoginProxy);
+    if (clientLoginProxy != null) {
+      remoteClient = clientLoginProxy.doLogin(remoteClient);
+    }
+    final RemoteClientConnection<T> remoteClientConnection = new RemoteClientConnection<>(remoteClient, doConnect(remoteClient));
+    connections.put(remoteClient.getClientId(), remoteClientConnection);
+
+    return remoteClientConnection;
   }
 
   private void startAuxiliaryServers(final Collection<String> auxiliaryServerProviderClassNames) {

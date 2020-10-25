@@ -17,7 +17,6 @@ import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.Servers;
-import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
@@ -125,8 +124,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   @Override
-  protected final AbstractRemoteEntityConnection doConnect(final RemoteClient remoteClient)
-          throws RemoteException, LoginException, ConnectionNotAvailableException {
+  protected final AbstractRemoteEntityConnection doConnect(final RemoteClient remoteClient) throws RemoteException, LoginException {
     requireNonNull(remoteClient, "remoteClient");
     try {
       final AbstractRemoteEntityConnection connection = createRemoteConnection(getDatabase(), remoteClient,

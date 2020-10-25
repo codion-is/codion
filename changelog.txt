@@ -6462,3 +6462,5 @@
   EntityModelBuilder, EntityPanelBuilder, set setter prefix removed, related changes
   SwingFilteredTableColumnModel now final
   EntityServer, admin moved up to AbstractServer
+  AbstractServer.doConnect() no longer throws ConnectionNotAvailableException
+  AbstractServer.createConnection() refactored from connect()
