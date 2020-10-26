@@ -6466,3 +6466,4 @@
   AbstractServer.createConnection() refactored from connect()
   EntityServer.hasConnectionTimedOut(), removed redundant clientTypeId parameter
   ServerAdmin refactored from EntityServerAdmin, related changes
+  EntityServer, registry moved up to AbstractServer

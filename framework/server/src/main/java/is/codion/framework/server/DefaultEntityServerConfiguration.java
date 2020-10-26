@@ -25,7 +25,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
   private final ServerConfiguration serverConfiguration;
 
-  private final int registryPort;
   private Database database;
   private User adminUser;
   private Integer connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
@@ -37,12 +36,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   private final Map<String, Integer> clientSpecificConnectionTimeouts = new HashMap<>();
 
   /**
-   * @param serverConfiguration the server configuration
+   * @param serverPort the server port
    * @param registryPort the registry port
    */
   DefaultEntityServerConfiguration(final int serverPort, final int registryPort) {
-    this.serverConfiguration = ServerConfiguration.configuration(serverPort);
-    this.registryPort = registryPort;
+    this.serverConfiguration = ServerConfiguration.configuration(serverPort, registryPort);
     this.serverConfiguration.setServerNameProvider(() -> {
       if (database == null) {
         throw new IllegalStateException("Database must be set before initializing server name");
@@ -105,7 +103,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
   @Override
   public int getRegistryPort() {
-    return registryPort;
+    return serverConfiguration.getRegistryPort();
   }
 
   @Override
