@@ -176,7 +176,7 @@ public class AbstractServerTest {
     return configuration;
   }
 
-  private static final class TestServer extends AbstractServer<ServerTest, Remote> {
+  private static final class TestServer extends AbstractServer<ServerTest, ServerAdmin> {
 
     private TestServer() throws RemoteException {
       this(getConfiguration());
@@ -192,7 +192,7 @@ public class AbstractServerTest {
     }
 
     @Override
-    public Remote getServerAdmin(final User user) throws RemoteException, ServerAuthenticationException {
+    public ServerAdmin getServerAdmin(final User user) throws RemoteException, ServerAuthenticationException {
       return null;
     }
 

@@ -26,7 +26,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   private final ServerConfiguration serverConfiguration;
 
   private final int registryPort;
-  private Integer serverAdminPort;
   private Database database;
   private User adminUser;
   private Integer connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
@@ -111,7 +110,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
   @Override
   public Integer getServerAdminPort() {
-    return serverAdminPort;
+    return serverConfiguration.getServerAdminPort();
   }
 
   @Override
@@ -210,8 +209,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public void setAdminPort(final Integer adminPort) {
-    this.serverAdminPort = requireNonNull(adminPort);
+  public void setServerAdminPort(final Integer adminPort) {
+    serverConfiguration.setServerAdminPort(adminPort);
   }
 
   @Override

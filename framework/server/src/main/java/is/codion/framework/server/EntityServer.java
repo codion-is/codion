@@ -11,7 +11,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.event.EventListener;
 import is.codion.common.rmi.client.Clients;
-import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.AbstractServer;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
@@ -48,7 +47,6 @@ import java.util.concurrent.TimeUnit;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 /**
  * A remote server class, responsible for handling requests for AbstractRemoteEntityConnections.
@@ -216,33 +214,11 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   /**
-   * @return info on all connected users
-   */
-  final Collection<User> getUsers() {
-    return getConnections().keySet().stream().map(ConnectionRequest::getUser).collect(toSet());
-  }
-
-  /**
-   * @return info on all connected clients
-   */
-  final Collection<RemoteClient> getClients() {
-    return new ArrayList<>(getConnections().keySet());
-  }
-
-  /**
-   * @param user the user
-   * @return all clients connected with the given user
-   */
-  final Collection<RemoteClient> getClients(final User user) {
-    return getConnections().keySet().stream().filter(remoteClient ->
-            user == null || remoteClient.getUser().equals(user)).collect(toList());
-  }
-
-  /**
    * @param clientTypeId the client type id
    * @return all clients of the given type
    */
-  final Collection<RemoteClient> getClients(final String clientTypeId) {
+  @Override
+  protected final Collection<RemoteClient> getClients(final String clientTypeId) {
     //using the remoteClient from the connection since it contains the correct database user
     return getConnections().values().stream()
             .filter(connection -> connection.getRemoteClient().getClientTypeId().equals(clientTypeId))

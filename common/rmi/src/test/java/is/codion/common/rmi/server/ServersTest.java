@@ -24,7 +24,7 @@ public class ServersTest {
 
   private static final String SERVER_NAME = "ServerUtilTestServer";
 
-  private AbstractServer server;
+  private AbstractServer<Remote, ServerAdmin> server;
 
   @BeforeEach
   public void setUp() throws RemoteException {
@@ -32,11 +32,11 @@ public class ServersTest {
     final ServerConfiguration configuration = ServerConfiguration.configuration(12345);
     configuration.setServerName(SERVER_NAME);
     configuration.setSslEnabled(false);
-    server = new AbstractServer(configuration) {
+    server = new AbstractServer<Remote, ServerAdmin>(configuration) {
       @Override
       protected Remote doConnect(final RemoteClient remoteClient) {return null;}
       @Override
-      public Remote getServerAdmin(final User user) throws RemoteException, ServerAuthenticationException {return null;}
+      public ServerAdmin getServerAdmin(final User user) throws RemoteException, ServerAuthenticationException {return null;}
       @Override
       protected void doDisconnect(final Remote connection) {}
       @Override
@@ -54,7 +54,7 @@ public class ServersTest {
   @Test
   public void getServer() throws RemoteException {
     try {
-      final Server server = Servers.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
+      final Server<Remote, ServerAdmin> server = Servers.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
       assertNotNull(server);
     }
     catch (final NotBoundException e) {

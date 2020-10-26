@@ -7,6 +7,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
+import is.codion.common.rmi.server.ServerAdmin;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.rmi.server.Servers;
@@ -22,7 +23,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   public static final String REMOTE_CLIENT_DOMAIN_TYPE = "codion.client.domainType";
 
-  private Server<RemoteEntityConnection, Remote> server;
+  private Server<RemoteEntityConnection, ServerAdmin> server;
   private ServerInformation serverInformation;
   private boolean truststoreResolved = false;
 
@@ -136,7 +136,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @throws java.rmi.NotBoundException if no server is reachable or if the servers found are not using the specified port
    * @throws java.rmi.RemoteException in case of remote exceptions
    */
-  private Server<RemoteEntityConnection, Remote> getServer() throws RemoteException, NotBoundException {
+  private Server<RemoteEntityConnection, ServerAdmin> getServer() throws RemoteException, NotBoundException {
     boolean unreachable = false;
     try {
       if (this.server != null) {

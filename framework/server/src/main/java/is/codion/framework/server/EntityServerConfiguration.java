@@ -83,11 +83,6 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   int getRegistryPort();
 
   /**
-   * @return the port on which to make the server admin interface accessible
-   */
-  Integer getServerAdminPort();
-
-  /**
    * @return the Database implementation
    */
   Database getDatabase();
@@ -131,11 +126,6 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * @return client specific connection timeouts, mapped to clientTypeId
    */
   Map<String, Integer> getClientSpecificConnectionTimeouts();
-
-  /**
-   * @param adminPort the port on which to make the server admin interface accessible
-   */
-  void setAdminPort(Integer adminPort);
 
   /**
    * @param database the Database implementation
@@ -208,7 +198,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
         configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
       }
     }
-    configuration.setAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
+    configuration.setServerAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
     configuration.setConnectionLimit(SERVER_CONNECTION_LIMIT.get());
     configuration.setDatabase(Databases.getInstance());
     configuration.setDomainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()));

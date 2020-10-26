@@ -59,11 +59,14 @@ is.codion.common.MethodLogger$Entry
 is.codion.common.Text$ComparatorSansSpace
 is.codion.common.db.database.AbstractDatabase$DefaultDatabaseStatistics
 is.codion.common.item.DefaultItem
-is.codion.common.rmi.client.DefaultConnectionRequest
 is.codion.common.rmi.server.Server
+is.codion.common.rmi.server.ServerAdmin
+is.codion.common.rmi.client.DefaultConnectionRequest
 is.codion.common.rmi.server.DefaultServerInformation
 is.codion.common.rmi.server.DefaultClientLog
 is.codion.common.rmi.server.DefaultRemoteClient
+is.codion.common.rmi.server.DefaultServerAdmin$DefaultServerStatistics
+is.codion.common.rmi.server.DefaultServerAdmin$DefaultThreadStatistics
 is.codion.common.rmi.server.exception.ConnectionNotAvailableException
 is.codion.common.rmi.server.exception.LoginException
 is.codion.common.rmi.server.exception.ServerAuthenticationException

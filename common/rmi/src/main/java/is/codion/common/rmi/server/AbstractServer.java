@@ -40,13 +40,15 @@ import static is.codion.common.rmi.server.SerializationWhitelist.isSerialization
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * A default Server implementation.
  * @param <T> the type of remote interface served by this server
  * @param <A> the type of the admin interface this server provides
  */
-public abstract class AbstractServer<T extends Remote, A extends Remote> extends UnicastRemoteObject implements Server<T, A> {
+public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> extends UnicastRemoteObject implements Server<T, A> {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
@@ -233,6 +235,29 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
     shutdownEvent.onEvent();
   }
 
+  /**
+   * @return info on all connected users
+   */
+  final Collection<User> getUsers() {
+    return getConnections().keySet().stream().map(ConnectionRequest::getUser).collect(toSet());
+  }
+
+  /**
+   * @return info on all connected clients
+   */
+  final Collection<RemoteClient> getClients() {
+    return new ArrayList<>(getConnections().keySet());
+  }
+
+  /**
+   * @param user the user
+   * @return all clients connected with the given user
+   */
+  final Collection<RemoteClient> getClients(final User user) {
+    return getConnections().keySet().stream().filter(remoteClient ->
+            user == null || remoteClient.getUser().equals(user)).collect(toList());
+  }
+
   protected final void setAdmin(final A admin) {
     if (this.admin != null) {
       throw new IllegalStateException("Admin has already been set for this server");
@@ -270,6 +295,14 @@ public abstract class AbstractServer<T extends Remote, A extends Remote> extends
    * @throws RemoteException in case of an exception
    */
   protected abstract void doDisconnect(T connection) throws RemoteException;
+
+  /**
+   * @param clientTypeId the client type id
+   * @return all clients of the given type
+   */
+  protected Collection<RemoteClient> getClients(final String clientTypeId) {
+    return getConnections().keySet().stream().filter(client -> Objects.equals(client.getClientTypeId(), clientTypeId)).collect(toList());
+  }
 
   /**
    * Validates the given user credentials

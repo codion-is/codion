@@ -19,7 +19,7 @@ import java.util.UUID;
  * @param <T> the type of remote interface this server supplies to clients
  * @param <A> the type of the admin interface this server supplies
  */
-public interface Server<T extends Remote, A extends Remote> extends Remote {
+public interface Server<T extends Remote, A extends ServerAdmin> extends Remote {
 
   /**
    * Specifies the client host connection parameter

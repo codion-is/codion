@@ -6494,3 +6494,4 @@
   AbstractServer.doConnect() no longer throws ConnectionNotAvailableException
   AbstractServer.createConnection() refactored from connect()
   EntityServer.hasConnectionTimedOut(), removed redundant clientTypeId parameter
+  ServerAdmin refactored from EntityServerAdmin, related changes
