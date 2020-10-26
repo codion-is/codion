@@ -78,11 +78,6 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   PropertyValue<String> SERVER_DOMAIN_MODEL_CLASSES = Configuration.stringValue("codion.server.domain.classes", null);
 
   /**
-   * @return the registry port to use
-   */
-  int getRegistryPort();
-
-  /**
    * @return the Database implementation
    */
   Database getDatabase();

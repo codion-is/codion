@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.ZonedDateTime;
@@ -59,11 +61,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   private final Collection<LoginProxy> sharedLoginProxies = new ArrayList<>();
   private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
 
+  private final ServerConfiguration configuration;
   private final ServerInformation serverInformation;
   private final Event<?> shutdownEvent = Events.event();
   private volatile int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
 
+  private Registry registry;
   private A admin;
 
   /**
@@ -74,6 +78,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   public AbstractServer(final ServerConfiguration configuration) throws RemoteException {
     super(requireNonNull(configuration, "configuration").getServerPort(),
             configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
+    this.configuration = configuration;
     Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
             configuration.getServerPort(), ZonedDateTime.now());
@@ -204,19 +209,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       return;
     }
     shuttingDown = true;
-    try {
-      unexportObject(this, true);
-    }
-    catch (final NoSuchObjectException e) {
-      LOG.error("Exception while unexporting server on shutdown", e);
-    }
-    try {
-      if (admin != null) {
-        unexportObject(admin, true);
-      }
-    }
-    catch (final NoSuchObjectException e) {
-      LOG.error("Exception while unexporting server admin on shutdown", e);
+    unexportSilently(registry);
+    unexportSilently(this);
+    if (admin != null) {
+      unexportSilently(admin);
     }
     for (final UUID clientId : new ArrayList<>(connections.keySet())) {
       try {
@@ -302,6 +298,14 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    */
   protected Collection<RemoteClient> getClients(final String clientTypeId) {
     return getConnections().keySet().stream().filter(client -> Objects.equals(client.getClientTypeId(), clientTypeId)).collect(toList());
+  }
+
+  protected final Registry getRegistry() throws RemoteException {
+    if (registry == null) {
+      this.registry = LocateRegistry.createRegistry(configuration.getRegistryPort());
+    }
+
+    return this.registry;
   }
 
   /**
@@ -391,6 +395,15 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
     catch (final Exception e) {
       LOG.error("Stopping auxiliary server", e);
+    }
+  }
+
+  private static void unexportSilently(final Remote object) {
+    try {
+      unexportObject(object, true);
+    }
+    catch (final NoSuchObjectException e) {
+      LOG.error("Exception while unexporting " + object + " on shutdown", e);
     }
   }
 

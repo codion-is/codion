@@ -29,10 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
-import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
@@ -69,7 +67,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   private final Database database;
   private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
           DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
-  private final Registry registry;
   private final boolean clientLoggingEnabled;
   private final Map<String, Integer> clientTypeConnectionTimeouts = new HashMap<>();
 
@@ -88,7 +85,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     this.configuration = configuration;
     try {
       this.database = requireNonNull(configuration.getDatabase(), "database");
-      this.registry = LocateRegistry.createRegistry(configuration.getRegistryPort());
       this.clientLoggingEnabled = configuration.getClientLoggingEnabled();
       this.domainModels = loadDomainModels(configuration.getDomainModelClassNames());
       setAdmin(initializeServerAdmin(configuration));
@@ -360,7 +356,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param registryPort the registry port
    */
   private void bindToRegistry(final int registryPort) throws RemoteException {
-    registry.rebind(getServerInformation().getServerName(), this);
+    getRegistry().rebind(getServerInformation().getServerName(), this);
     final String connectInfo = getServerInformation().getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
@@ -534,10 +530,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
     @Override
     public void onEvent() {
-      try {
-        unexportObject(registry, true);
-      }
-      catch (final NoSuchObjectException ignored) {/*ignored*/}
       connectionMaintenanceScheduler.stop();
       database.closeConnectionPools();
       database.shutdownEmbedded();

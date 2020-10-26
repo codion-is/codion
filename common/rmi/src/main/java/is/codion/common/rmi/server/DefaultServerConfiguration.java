@@ -5,6 +5,7 @@ package is.codion.common.rmi.server;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultServerConfiguration implements ServerConfiguration {
 
   private final int serverPort;
+  private final int registryPort;
   private final Collection<String> sharedLoginProxyClassNames = new ArrayList<>();
   private final Collection<String> loginProxyClassNames = new HashSet<>();
   private final Collection<String> auxiliaryServerFactoryClassNames = new HashSet<>();
@@ -33,7 +35,12 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private Boolean serializationFilterDryRun = false;
 
   DefaultServerConfiguration(final int serverPort) {
+    this(serverPort, Registry.REGISTRY_PORT);
+  }
+
+  DefaultServerConfiguration(final int serverPort, final int registryPort) {
     this.serverPort = serverPort;
+    this.registryPort = registryPort;
   }
 
   @Override
@@ -48,6 +55,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public int getServerPort() {
     return serverPort;
+  }
+
+  @Override
+  public int getRegistryPort() {
+    return registryPort;
   }
 
   @Override

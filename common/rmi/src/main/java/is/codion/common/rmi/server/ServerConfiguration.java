@@ -148,6 +148,11 @@ public interface ServerConfiguration {
   int getServerPort();
 
   /**
+   * @return the registry port to use
+   */
+  int getRegistryPort();
+
+  /**
    * @return the port on which to make the server admin interface accessible
    */
   Integer getServerAdminPort();
@@ -260,11 +265,20 @@ public interface ServerConfiguration {
   }
 
   /**
+   * @param serverPort the server port
+   * @param registryPort the registry port
+   * @return a default server configuration
+   */
+  static ServerConfiguration configuration(final int serverPort, final int registryPort) {
+    return new DefaultServerConfiguration(serverPort, registryPort);
+  }
+
+  /**
    * @return a configuration according to system properties.
    */
   static ServerConfiguration fromSystemProperties() {
     final DefaultServerConfiguration configuration =
-            new DefaultServerConfiguration(requireNonNull(SERVER_PORT.get(), SERVER_PORT.getPropertyName()));
+            new DefaultServerConfiguration(requireNonNull(SERVER_PORT.get(), SERVER_PORT.getPropertyName()), REGISTRY_PORT.get());
     configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
     configuration.setServerAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
     configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
