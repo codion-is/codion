@@ -23,6 +23,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private final Collection<String> sharedLoginProxyClassNames = new ArrayList<>();
   private final Collection<String> loginProxyClassNames = new HashSet<>();
   private final Collection<String> auxiliaryServerFactoryClassNames = new HashSet<>();
+  private Integer serverAdminPort;
   private boolean sslEnabled = true;
   private String serverName;
   private Supplier<String> serverNameProvider = () -> serverName;
@@ -47,6 +48,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public int getServerPort() {
     return serverPort;
+  }
+
+  @Override
+  public Integer getServerAdminPort() {
+    return serverAdminPort;
   }
 
   @Override
@@ -87,6 +93,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public Boolean getSerializationFilterDryRun() {
     return serializationFilterDryRun;
+  }
+
+  @Override
+  public void setServerAdminPort(final Integer adminPort) {
+    this.serverAdminPort = requireNonNull(adminPort);
   }
 
   @Override

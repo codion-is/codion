@@ -148,6 +148,11 @@ public interface ServerConfiguration {
   int getServerPort();
 
   /**
+   * @return the port on which to make the server admin interface accessible
+   */
+  Integer getServerAdminPort();
+
+  /**
    * @return the shared login proxy classnames
    */
   Collection<String> getSharedLoginProxyClassNames();
@@ -186,6 +191,11 @@ public interface ServerConfiguration {
    * @return true if a serialization filter dry run should be active
    */
   Boolean getSerializationFilterDryRun();
+
+  /**
+   * @param adminPort the port on which to make the server admin interface accessible
+   */
+  void setServerAdminPort(Integer adminPort);
 
   /**
    * @param serverNameProvider the server name provider
@@ -256,6 +266,7 @@ public interface ServerConfiguration {
     final DefaultServerConfiguration configuration =
             new DefaultServerConfiguration(requireNonNull(SERVER_PORT.get(), SERVER_PORT.getPropertyName()));
     configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
+    configuration.setServerAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
     configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
     configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {

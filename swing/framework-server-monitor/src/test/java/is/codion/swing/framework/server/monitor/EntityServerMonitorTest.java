@@ -39,7 +39,7 @@ public class EntityServerMonitorTest {
   @BeforeAll
   public static synchronized void setUp() throws Exception {
     EntityServer.startServer(CONFIGURATION);
-    server = (Server) LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(),
+    server = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(),
             CONFIGURATION.getRegistryPort()).lookup(CONFIGURATION.getServerName());
     admin = server.getServerAdmin(ADMIN_USER);
   }
@@ -92,7 +92,7 @@ public class EntityServerMonitorTest {
     Clients.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(2223, 2221);
-    configuration.setAdminPort(2223);
+    configuration.setServerAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
     configuration.setDomainModelClassNames(Collections.singletonList(TestDomain.class.getName()));

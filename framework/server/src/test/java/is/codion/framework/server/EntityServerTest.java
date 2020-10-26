@@ -317,7 +317,7 @@ public class EntityServerTest {
     ServerConfiguration.KEYSTORE.set("src/main/security/keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
     final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(2223, 2221);
-    configuration.setAdminPort(2223);
+    configuration.setServerAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDatabase(Databases.getInstance());
     configuration.setStartupPoolUsers(singletonList(UNIT_TEST_USER));

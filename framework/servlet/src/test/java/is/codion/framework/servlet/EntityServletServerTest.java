@@ -658,7 +658,7 @@ public class EntityServletServerTest {
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.TRUE);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
     final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(2223, 2221);
-    configuration.setAdminPort(2223);
+    configuration.setServerAdminPort(2223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
     configuration.setDatabase(Databases.getInstance());

@@ -19,7 +19,6 @@ import is.codion.framework.server.EntityServerConfiguration;
 import org.junit.jupiter.api.Test;
 
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +38,7 @@ public final class EmployeeServerTest {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 
     final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(SERVER_PORT, REGISTRY_PORT);
-    configuration.setAdminPort(SERVER_ADMIN_PORT);
+    configuration.setServerAdminPort(SERVER_ADMIN_PORT);
     configuration.setDatabase(Databases.getInstance());
     configuration.setConnectionTimeout(60_000);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
@@ -48,7 +47,7 @@ public final class EmployeeServerTest {
 
     final EmployeeServer employeeServer = new EmployeeServer(configuration);
 
-    final Server<EmployeeService, Remote> remoteServer = Servers.getServer("localhost",
+    final Server<EmployeeService, ?> remoteServer = Servers.getServer("localhost",
             "Employee Server", REGISTRY_PORT, SERVER_PORT);
 
     final UUID clientId = UUID.randomUUID();

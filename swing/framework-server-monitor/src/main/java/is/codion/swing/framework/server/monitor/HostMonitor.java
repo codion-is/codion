@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -149,7 +148,7 @@ public final class HostMonitor {
       }
       for (final String name : boundNames) {
         LOG.debug("HostMonitor found server '{}'", name);
-        final Server<Remote, Remote> server = (Server<Remote, Remote>) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
+        final Server<?, ?> server = (Server<?, ?>) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
         servers.add(server.getServerInformation());
       }
     }
