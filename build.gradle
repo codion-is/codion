@@ -79,6 +79,9 @@ configure(project.frameworkModules) {
         failOnError = false
     }
 
+    //https://github.com/java9-modularity/gradle-modules-plugin/issues/165
+    modularity.disableEffectiveArgumentsAdjustment()
+
     jar {
         manifest {
             attributes(

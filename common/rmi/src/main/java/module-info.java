@@ -3,6 +3,7 @@
  */
 module is.codion.common.rmi {
   requires org.slf4j;
+  requires jdk.management;
   requires transitive java.rmi;
   requires transitive is.codion.common.core;
 

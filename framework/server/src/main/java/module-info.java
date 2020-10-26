@@ -3,7 +3,6 @@
  */
 module is.codion.framework.server {
   requires org.slf4j;
-  requires jdk.management;
   requires transitive is.codion.framework.db.local;
   requires transitive is.codion.framework.db.rmi;
 
