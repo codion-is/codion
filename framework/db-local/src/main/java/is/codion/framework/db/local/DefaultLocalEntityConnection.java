@@ -56,7 +56,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.common.db.connection.DatabaseConnections.createConnection;
 import static is.codion.common.db.database.Database.closeSilently;
 import static is.codion.framework.db.condition.Conditions.condition;
@@ -1252,12 +1251,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static void setParameterValues(final PreparedStatement statement, final List<ColumnProperty<?>> statementProperties,
                                          final List<?> statementValues) throws SQLException {
-    if (nullOrEmpty(statementValues) || statement.getParameterMetaData().getParameterCount() == 0) {
+    if (statementValues.isEmpty()) {
       return;
     }
-    if (statementProperties == null || statementProperties.size() != statementValues.size()) {
-      throw new SQLException("Parameter property value count mismatch: " + (statementProperties == null ?
-              "no properties" : ("expected: " + statementValues.size() + ", got: " + statementProperties.size())));
+    if (statementProperties.size() != statementValues.size()) {
+      throw new SQLException("Parameter property value count mismatch: " +
+              "expected: " + statementValues.size() + ", got: " + statementProperties.size());
     }
 
     for (int i = 0; i < statementProperties.size(); i++) {
