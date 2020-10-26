@@ -6468,3 +6468,4 @@
   ServerAdmin refactored from EntityServerAdmin, related changes
   EntityServer, registry moved up to AbstractServer
   DefaultLocalEntityConnection.setParameterValues() no longer uses statement.getParameterMetaData() to check if no parameters are required, relies on statementValues for that, quite expensive that one, removed a couple of unnecessary null checks as well
+  Database.QUERY_COUNTER_ENABLED configuration value added, for disabling query counting

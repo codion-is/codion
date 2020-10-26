@@ -58,6 +58,13 @@ public interface Database extends ConnectionFactory {
   PropertyValue<Integer> CONNECTION_VALIDITY_CHECK_TIMEOUT = Configuration.integerValue("codion.db.validityCheckTimeout", 2);
 
   /**
+   * Specifies whether database queries should be counted.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  PropertyValue<Boolean> QUERY_COUNTER_ENABLED = Configuration.booleanValue("codion.db.queryCounterEnabled", true);
+
+  /**
    * The constant used to denote the username value in the connection properties
    */
   String USER_PROPERTY = "user";

@@ -33,6 +33,7 @@ public abstract class AbstractDatabase implements Database {
   private final Map<String, ConnectionPool> connectionPools = new HashMap<>();
   private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.get();
   private final QueryCounter queryCounter = new QueryCounter();
+  private final boolean queryCounterEnabled = QUERY_COUNTER_ENABLED.get();
   private final String jdbcUrl;
 
   private ConnectionProvider connectionProvider = new ConnectionProvider() {};
@@ -81,7 +82,9 @@ public abstract class AbstractDatabase implements Database {
 
   @Override
   public final void countQuery(final String query) {
-    queryCounter.count(query);
+    if (queryCounterEnabled) {
+      queryCounter.count(query);
+    }
   }
 
   @Override
