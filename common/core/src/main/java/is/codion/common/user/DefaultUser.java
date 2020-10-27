@@ -19,7 +19,9 @@ final class DefaultUser implements User, Serializable {
   private char[] password;
 
   DefaultUser(final String username, final char[] password) {
-    requireNonNull(username, "username");
+    if (requireNonNull(username, "username").isEmpty()) {
+      throw new IllegalArgumentException("Username must be non-empty");
+    }
     this.username = username;
     setPassword(password);
   }
