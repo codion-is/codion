@@ -1030,6 +1030,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     @Override
     public Builder keyGenerator(final KeyGenerator keyGenerator) {
+      if (!definition.hasPrimaryKey()) {
+        throw new IllegalStateException("KeyGenerator can not be set for an entity without a primary key");
+      }
       definition.keyGenerator = requireNonNull(keyGenerator, "keyGenerator");
       definition.keyGenerated = true;
       return this;
