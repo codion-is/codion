@@ -19,8 +19,7 @@ import java.util.function.Function;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
 import static is.codion.framework.domain.entity.OrderBy.orderBy;
-import static is.codion.framework.domain.property.Properties.foreignKeyProperty;
-import static is.codion.framework.domain.property.Properties.primaryKeyProperty;
+import static is.codion.framework.domain.property.Properties.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityDefinitionTest {
@@ -384,5 +383,19 @@ public class DefaultEntityDefinitionTest {
   public void singleValueConstructorWrongType() {
     assertThrows(IllegalArgumentException.class, () -> new TestDomain().getEntities()
             .getDefinition(TestDomain.Department.TYPE).primaryKey(1L));
+  }
+
+  @Test
+  public void keyGeneratorWithoutPrimaryKey() {
+    final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("keyGeneratorWithoutPrimaryKey");
+    class TestDomain extends DefaultDomain {
+      public TestDomain() {
+        super(DOMAIN_TYPE);
+        define(entityType,
+                columnProperty(entityType.integerAttribute("attribute")))
+                .keyGenerator(KeyGenerators.queried("select 1"));
+      }
+    }
+    assertThrows(IllegalStateException.class, () -> new TestDomain());
   }
 }
