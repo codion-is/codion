@@ -34,9 +34,18 @@ public class UsersTest {
 
   @Test
   public void parseUser() {
-    final User user = Users.parseUser("scott:tiger");
+    User user = Users.parseUser("scott:tiger");
     assertEquals("scott", user.getUsername());
     assertEquals("tiger", String.valueOf(user.getPassword()));
+    user = Users.parseUser(" scott:ti ger");
+    assertEquals("scott", user.getUsername());
+    assertEquals("ti ger", String.valueOf(user.getPassword()));
+    user = Users.parseUser("pete");
+    assertEquals("pete", user.getUsername());
+    assertTrue(String.valueOf(user.getPassword()).isEmpty());
+    user = Users.parseUser(" john ");
+    assertEquals("john", user.getUsername());
+    assertTrue(String.valueOf(user.getPassword()).isEmpty());
   }
 
   @Test
@@ -45,8 +54,8 @@ public class UsersTest {
   }
 
   @Test
-  public void parseUserNoPassword() {
-    assertThrows(IllegalArgumentException.class, () -> Users.parseUser("scott:"));
+  public void parseMultipleDelimiters() {
+    assertThrows(IllegalArgumentException.class, () -> Users.parseUser("scott:tiger:pete"));
   }
 
   @Test

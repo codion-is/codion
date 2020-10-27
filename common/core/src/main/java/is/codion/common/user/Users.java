@@ -32,20 +32,24 @@ public final class Users {
   }
 
   /**
-   * Parses a User from a string, containing the username and password with a ':' as delimiter, i.e. "user:pass".
-   * Both username and password must be non-empty.
+   * Parses a User from a string, containing a username and password with a single ':' as delimiter, i.e. "user:pass"
+   * or "user:" for en empty password. If no delimiter is found the whole string is assumed to be the username
+   * and the password empty. The username portion is trimmed.
    * @param userPassword the username and password string
    * @return a User with the given username and password
    */
   public static User parseUser(final String userPassword) {
     final String[] split = requireNonNull(userPassword).split(":");
+    if (split.length == 1) {
+      return new DefaultUser(split[0].trim(), null);
+    }
     if (split.length != 2) {
-      throw new IllegalArgumentException("Expecting a non-empty username and password with a single ':' as delimiter");
+      throw new IllegalArgumentException("Expecting a username and password with a single ':' as delimiter, multiple delimiters found");
     }
     if (split[0].isEmpty() || split[1].isEmpty()) {
       throw new IllegalArgumentException("Both username and password are required");
     }
 
-    return new DefaultUser(split[0], split[1].toCharArray());
+    return new DefaultUser(split[0].trim(), split[1].toCharArray());
   }
 }
