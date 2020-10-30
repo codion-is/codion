@@ -11,9 +11,31 @@ import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-abstract class AbstractTextComponentValue<V, C extends JTextComponent> extends AbstractComponentValue<V, C> {
+/**
+ * An abstract {@link ComponentValue} implementation for a text component.
+ * Handles value notification.
+ * @param <V> the value type
+ * @param <C> the component type
+ */
+public abstract class AbstractTextComponentValue<V, C extends JTextComponent> extends AbstractComponentValue<V, C> {
 
-  AbstractTextComponentValue(final C component, final Nullable nullable, final UpdateOn updateOn) {
+  /**
+   * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#KEYSTROKE}
+   * update on policy.
+   * @param component the component
+   * @param nullable {@link Nullable#NO} if this value can not be null
+   */
+  public AbstractTextComponentValue(final C component, final Nullable nullable) {
+    this(component, nullable, UpdateOn.KEYSTROKE);
+  }
+
+  /**
+   * Instantiates a new {@link AbstractComponentValue}
+   * @param component the component
+   * @param nullable {@link Nullable#NO} if this value can not be null
+   * @param updateOn the update on policy
+   */
+  public AbstractTextComponentValue(final C component, final Nullable nullable, final UpdateOn updateOn) {
     super(component, nullable);
     if (updateOn == UpdateOn.KEYSTROKE) {
       component.getDocument().addDocumentListener(new NotifyOnContentsChanged());
