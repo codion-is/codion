@@ -31,6 +31,11 @@ final class StateValue implements Value<Boolean>  {
   }
 
   @Override
+  public boolean isNull() {
+    return false;
+  }
+
+  @Override
   public boolean isNullable() {
     return false;
   }

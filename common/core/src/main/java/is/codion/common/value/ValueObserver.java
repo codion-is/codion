@@ -17,6 +17,11 @@ public interface ValueObserver<V> extends EventObserver<V> {
   V get();
 
   /**
+   * @return true if the underlying value is null.
+   */
+  boolean isNull();
+
+  /**
    * If false then get() is guaranteed to never return null.
    * @return true if this value can be null
    */
