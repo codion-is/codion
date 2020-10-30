@@ -7,7 +7,7 @@ import is.codion.common.value.Value;
 
 /**
  * A {@link Value} represented by an input component of some sort.
- * @param <V> the Value type
+ * @param <V> the value type
  * @param <C> the component type
  */
 public interface ComponentValue<V, C> extends Value<V> {

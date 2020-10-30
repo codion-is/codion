@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link ComponentValue} implementation.
- * @param <V> the Value type
+ * @param <V> the value type
  * @param <C> the component type
  */
 public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> implements ComponentValue<V, C> {
