@@ -111,11 +111,6 @@ public class EntityServerTest {
   }
 
   @Test
-  public void getServerAdminEmptyUsername() throws Exception {
-    assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("", "test".toCharArray())));
-  }
-
-  @Test
   public void getServerAdminWrongUsername() throws Exception {
     assertThrows(ServerAuthenticationException.class, () -> server.getServerAdmin(Users.user("test", "test".toCharArray())));
   }

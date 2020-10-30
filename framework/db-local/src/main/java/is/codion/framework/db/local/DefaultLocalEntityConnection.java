@@ -288,7 +288,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           final List<Entity> entitiesToUpdate = entityTypeEntities.getValue();
           for (final Entity entity : entitiesToUpdate) {
             populatePropertiesAndValues(entity, updatableProperties, statementProperties, statementValues,
-                    property -> entity.containsKey(property.getAttribute()) && entity.isModified(property.getAttribute()));
+                    columnProperty -> entity.isModified(columnProperty.getAttribute()));
             if (statementProperties.isEmpty()) {
               throw new SQLException("Unable to update entity " + entity.getEntityType() + ", no modified values found");
             }
