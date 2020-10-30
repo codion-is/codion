@@ -19,6 +19,11 @@ public abstract class AbstractValue<V> implements Value<V> {
   private final Event<V> changeEvent = Events.event();
 
   @Override
+  public final boolean isNull() {
+    return get() == null;
+  }
+
+  @Override
   public final void addListener(final EventListener listener) {
     changeEvent.addListener(listener);
   }

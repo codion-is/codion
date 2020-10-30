@@ -6502,3 +6502,4 @@
   Users.parseUser() now handles users without passwords, necessary for specifying users with empty passwords as system properties
   AbstractTextComponentValue now public
   DefaultLocalEntityConnection.update() removed unnecessary call to entity.containsKey(property.getAttribute()), if attribute is modified then the entity definitely contains a value
+  ValueObserver.isNull() added, implemented in AbstractValue

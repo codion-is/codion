@@ -91,6 +91,11 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
+  public boolean isNull() {
+    return isNullable() && get() == null;
+  }
+
+  @Override
   public boolean isNullable() {
     return !valueClass.isPrimitive();
   }

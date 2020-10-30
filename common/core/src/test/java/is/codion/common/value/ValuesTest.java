@@ -42,7 +42,6 @@ public class ValuesTest {
   @Test
   public void value() {
     final AtomicInteger eventCounter = new AtomicInteger();
-    final AtomicInteger observerCounter = new AtomicInteger();
     final Value<Integer> intValue = Values.value(42, -1);
     assertFalse(intValue.isNullable());
     final ValueObserver<Integer> valueObserver = Values.valueObserver(intValue);
@@ -57,6 +56,7 @@ public class ValuesTest {
     intValue.set(20);
     assertEquals(1, eventCounter.get());
     intValue.set(null);
+    assertFalse(intValue.isNull());
     assertEquals(-1, intValue.get());
     assertEquals(-1, valueObserver.get());
     assertEquals(2, eventCounter.get());
@@ -108,7 +108,9 @@ public class ValuesTest {
 
     uiValue.set(null);
     assertNull(modelValue.get());
+    assertTrue(modelValue.isNull());
     assertNull(uiValue.get());
+    assertTrue(uiValue.isNull());
     assertEquals(3, modelValueEventCounter.get());
     assertEquals(3, uiValueEventCounter.get());
 
@@ -164,6 +166,7 @@ public class ValuesTest {
     stateValue.set(false);
     assertFalse(state.get());
     stateValue.set(null);
+    assertFalse(stateValue.isNull());
     assertFalse(state.get());
     stateValue.set(true);
     assertTrue(state.get());
