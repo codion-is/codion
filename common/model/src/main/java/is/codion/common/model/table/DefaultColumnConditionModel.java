@@ -636,13 +636,11 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
           setEnabled(!equalValues.get().isEmpty());
         }
         else {
-          final boolean upperBoundNull = upperBoundValue.get() == null;
-          final boolean lowerBoundNull = lowerBoundValue.get() == null;
           if (operatorValue.get().getValues().equals(Operator.Values.TWO)) {
-            setEnabled(!lowerBoundNull && !upperBoundNull);
+            setEnabled(!lowerBoundValue.isNull() && !upperBoundValue.isNull());
           }
           else {
-            setEnabled(!upperBoundNull);
+            setEnabled(!upperBoundValue.isNull());
           }
         }
       }
