@@ -268,7 +268,7 @@ public class EntityServerTest {
     provider.disconnect();
     assertEquals("localhost" + " - " + Messages.get(Messages.NOT_CONNECTED), provider.getDescription());
     db3 = provider.getConnection();
-    assertEquals(admin.getServerInfo().getServerName() + "@localhost", provider.getDescription());
+    assertEquals(admin.getServerInformation().getServerName() + "@localhost", provider.getDescription());
     db3.disconnect();
   }
 
@@ -297,7 +297,7 @@ public class EntityServerTest {
     admin.getRequestsPerSecond();
     admin.getThreadStatistics();
     admin.getGcEvents(0);
-    admin.getServerInfo();
+    admin.getServerInformation();
     admin.getSystemProperties();
     admin.getUsedMemory();
     admin.getUsers();

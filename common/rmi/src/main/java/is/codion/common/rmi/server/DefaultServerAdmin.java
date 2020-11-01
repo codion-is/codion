@@ -53,7 +53,7 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   }
 
   @Override
-  public final ServerInformation getServerInfo() {
+  public final ServerInformation getServerInformation() {
     return server.getServerInformation();
   }
 
