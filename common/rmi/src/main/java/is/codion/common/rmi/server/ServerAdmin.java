@@ -64,7 +64,7 @@ public interface ServerAdmin extends Remote {
    * @return static information about the server
    * @throws RemoteException in case of an exception
    */
-  ServerInformation getServerInfo() throws RemoteException;
+  ServerInformation getServerInformation() throws RemoteException;
 
   /**
    * @return the number of service requests per second
