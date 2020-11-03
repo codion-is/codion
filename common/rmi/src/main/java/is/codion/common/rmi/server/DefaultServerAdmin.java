@@ -41,9 +41,9 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
 
   private static final int GC_INFO_MAX_LENGTH = 100;
 
-  private final AbstractServer<?, ? extends ServerAdmin> server;
-  private final LinkedList<GcEvent> gcEventList = new LinkedList<>();
-  private final Util.PropertyWriter propertyWriter = new SystemPropertyWriter();
+  private transient final AbstractServer<?, ? extends ServerAdmin> server;
+  private transient final LinkedList<GcEvent> gcEventList = new LinkedList<>();
+  private transient final Util.PropertyWriter propertyWriter = new SystemPropertyWriter();
 
   public DefaultServerAdmin(final AbstractServer<?, ? extends ServerAdmin> server, final ServerConfiguration configuration) throws RemoteException {
     super(requireNonNull(configuration, "configuration").getServerAdminPort(),
