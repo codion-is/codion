@@ -44,6 +44,7 @@ public class ValuesTest {
     final AtomicInteger eventCounter = new AtomicInteger();
     final Value<Integer> intValue = Values.value(42, -1);
     assertFalse(intValue.isNullable());
+    assertTrue(intValue.getOptional().isPresent());
     final ValueObserver<Integer> valueObserver = Values.valueObserver(intValue);
     intValue.addListener(eventCounter::incrementAndGet);
     intValue.addDataListener(data -> {
@@ -57,6 +58,7 @@ public class ValuesTest {
     assertEquals(1, eventCounter.get());
     intValue.set(null);
     assertFalse(intValue.isNull());
+    assertTrue(intValue.getOptional().isPresent());
     assertEquals(-1, intValue.get());
     assertEquals(-1, valueObserver.get());
     assertEquals(2, eventCounter.get());
@@ -162,6 +164,7 @@ public class ValuesTest {
   public void stateValue() {
     final State state = States.state(true);
     final Value<Boolean> stateValue = Values.stateValue(state);
+    assertTrue(stateValue.getOptional().isPresent());
     assertTrue(stateValue.get());
     stateValue.set(false);
     assertFalse(state.get());
@@ -240,6 +243,7 @@ public class ValuesTest {
     ValueSet<Integer> valueSet = Values.valueSet();
 
     assertFalse(valueSet.isNullable());
+    assertTrue(valueSet.getOptional().isPresent());
 
     assertTrue(valueSet.add(1));
     assertFalse(valueSet.add(1));

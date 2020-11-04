@@ -8,6 +8,8 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 
+import java.util.Optional;
+
 /**
  * A base Value implementation handling everything except the value itself.
  * When extending this class remember to always call {@link #notifyValueChange()}
@@ -17,6 +19,15 @@ import is.codion.common.event.Events;
 public abstract class AbstractValue<V> implements Value<V> {
 
   private final Event<V> changeEvent = Events.event();
+
+  @Override
+  public final Optional<V> getOptional() {
+    if (isNullable()) {
+      return Optional.ofNullable(get());
+    }
+
+    return Optional.of(get());
+  }
 
   @Override
   public final boolean isNull() {

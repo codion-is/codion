@@ -6505,3 +6505,4 @@
   ValueObserver.isNull() added, implemented in AbstractValue
   ServerAdmin.getServerInfo() renamed getServerInformation()
   DefaultServerAdmin bug fixed, fields now transient
+  ValueObserver.getOptional() added

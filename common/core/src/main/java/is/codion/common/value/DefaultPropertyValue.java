@@ -9,6 +9,7 @@ import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -57,6 +58,15 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public final Optional<V> getOptional() {
+    if (isNullable()) {
+      return Optional.ofNullable(get());
+    }
+
+    return Optional.of(get());
   }
 
   @Override
