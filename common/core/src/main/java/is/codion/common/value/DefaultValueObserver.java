@@ -6,6 +6,8 @@ package is.codion.common.value;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 
+import java.util.Optional;
+
 import static java.util.Objects.requireNonNull;
 
 final class DefaultValueObserver<V> implements ValueObserver<V> {
@@ -19,6 +21,15 @@ final class DefaultValueObserver<V> implements ValueObserver<V> {
   @Override
   public V get() {
     return value.get();
+  }
+
+  @Override
+  public Optional<V> getOptional() {
+    if (isNullable()) {
+      return Optional.ofNullable(get());
+    }
+
+    return Optional.of(get());
   }
 
   @Override

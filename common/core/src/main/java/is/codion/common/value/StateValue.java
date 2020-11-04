@@ -7,6 +7,8 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.state.State;
 
+import java.util.Optional;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -28,6 +30,11 @@ final class StateValue implements Value<Boolean>  {
   @Override
   public Boolean get() {
     return state.get();
+  }
+
+  @Override
+  public Optional<Boolean> getOptional() {
+    return Optional.of(state.get());
   }
 
   @Override

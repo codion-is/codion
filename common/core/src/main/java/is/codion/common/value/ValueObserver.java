@@ -5,6 +5,8 @@ package is.codion.common.value;
 
 import is.codion.common.event.EventObserver;
 
+import java.util.Optional;
+
 /**
  * A read only value observer
  * @param <V> the type of the value
@@ -15,6 +17,11 @@ public interface ValueObserver<V> extends EventObserver<V> {
    * @return the value
    */
   V get();
+
+  /**
+   * @return an {@link Optional} wrapping this value.
+   */
+  Optional<V> getOptional();
 
   /**
    * @return true if the underlying value is null.
