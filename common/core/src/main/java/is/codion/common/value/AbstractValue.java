@@ -21,7 +21,7 @@ public abstract class AbstractValue<V> implements Value<V> {
   private final Event<V> changeEvent = Events.event();
 
   @Override
-  public final Optional<V> getOptional() {
+  public final Optional<V> toOptional() {
     if (isNullable()) {
       return Optional.ofNullable(get());
     }
