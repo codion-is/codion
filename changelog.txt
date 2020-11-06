@@ -6506,3 +6506,4 @@
   ServerAdmin.getServerInfo() renamed getServerInformation()
   DefaultServerAdmin bug fixed, fields now transient
   ValueObserver.getOptional() added
+  ValueObserver.getOptional() renamed to toOptional()

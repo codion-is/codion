@@ -21,7 +21,7 @@ public interface ValueObserver<V> extends EventObserver<V> {
   /**
    * @return an {@link Optional} wrapping this value.
    */
-  Optional<V> getOptional();
+  Optional<V> toOptional();
 
   /**
    * @return true if the underlying value is null.

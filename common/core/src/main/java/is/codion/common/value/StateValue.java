@@ -33,7 +33,7 @@ final class StateValue implements Value<Boolean>  {
   }
 
   @Override
-  public Optional<Boolean> getOptional() {
+  public Optional<Boolean> toOptional() {
     return Optional.of(state.get());
   }
 

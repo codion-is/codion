@@ -24,7 +24,7 @@ final class DefaultValueObserver<V> implements ValueObserver<V> {
   }
 
   @Override
-  public Optional<V> getOptional() {
+  public Optional<V> toOptional() {
     if (isNullable()) {
       return Optional.ofNullable(get());
     }

@@ -61,7 +61,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public final Optional<V> getOptional() {
+  public final Optional<V> toOptional() {
     if (isNullable()) {
       return Optional.ofNullable(get());
     }
