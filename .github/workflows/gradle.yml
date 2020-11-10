@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Pull a JavaFX JDK
         run: wget http://static.azul.com/zulu/bin/zulu8.44.0.13-ca-fx-jdk8.0.242-linux_x64.tar.gz
       - name: Set Java
@@ -24,7 +24,7 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Pull a JavaFX JDK
         run: Invoke-WebRequest -Uri "http://static.azul.com/zulu/bin/zulu8.44.0.13-ca-fx-jdk8.0.242-win_x64.zip" -OutFile ./zulu8.44.0.13-ca-fx-jdk8.0.242-win_x64.zip
       - name: Set Java
@@ -38,7 +38,7 @@ jobs:
     runs-on: macOS-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Pull a JavaFX JDK
         run: curl http://static.azul.com/zulu/bin/zulu8.44.0.13-ca-fx-jdk8.0.242-macosx_x64.tar.gz -o ./zulu8.44.0.13-ca-fx-jdk8.0.242-macosx_x64.tar.gz
       - name: Set Java
