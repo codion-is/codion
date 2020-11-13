@@ -37,7 +37,7 @@ import java.util.Map;
  * @see #rollbackTransaction()
  * @see #commitTransaction()
  */
-public interface EntityConnection {
+public interface EntityConnection extends AutoCloseable {
 
   /**
    * @return the underlying domain entities

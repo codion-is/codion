@@ -851,6 +851,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return domain;
   }
 
+  @Override
+  public void close() throws Exception {
+    disconnect();
+  }
+
   /**
    * Selects the given entities for update (if that is supported by the underlying dbms)
    * and checks if they have been modified by comparing the property values to the current values in the database.

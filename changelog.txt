@@ -6507,3 +6507,4 @@
   DefaultServerAdmin bug fixed, fields now transient
   ValueObserver.getOptional() added
   ValueObserver.getOptional() renamed to toOptional()
+  EntityConnection and RemoteEntityConnection now extend AutoClosable
