@@ -122,9 +122,9 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public void disconnect() {
+  public void close() {
     try {
-      handleResponse(execute(createRequest("disconnect")));
+      handleResponse(execute(createRequest("close")));
       closed = true;
     }
     catch (final Exception e) {
