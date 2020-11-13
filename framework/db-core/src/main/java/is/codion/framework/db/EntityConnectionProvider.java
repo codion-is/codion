@@ -16,7 +16,7 @@ import java.util.UUID;
  * Specifies a class responsible for providing a single {@link EntityConnection} instance.
  * {@link #getConnection()} is guaranteed to return a healthy connection or throw an exception.
  */
-public interface EntityConnectionProvider {
+public interface EntityConnectionProvider extends AutoCloseable {
 
   /**
    * Indicates a local database connection
@@ -105,7 +105,7 @@ public interface EntityConnectionProvider {
   /**
    * Logs out, disconnects and performs cleanup if required
    */
-  void disconnect();
+  void close();
 
   /**
    * Disconnects the underlying connection if connected.

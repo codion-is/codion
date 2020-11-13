@@ -50,10 +50,11 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   boolean isConnected() throws RemoteException;
 
   /**
-   * Disconnects this connection
+   * Closes this connection.
    * @throws RemoteException in case of an exception
    */
-  void disconnect() throws RemoteException;
+  @Override
+  void close() throws RemoteException;
 
   /**
    * @throws RemoteException in case of exception

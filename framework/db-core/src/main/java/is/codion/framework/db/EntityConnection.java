@@ -57,7 +57,7 @@ public interface EntityConnection extends AutoCloseable {
   /**
    * Performs a rollback and disconnects this connection
    */
-  void disconnect();
+  void close();
 
   /**
    * @return true if a transaction is open, false otherwise

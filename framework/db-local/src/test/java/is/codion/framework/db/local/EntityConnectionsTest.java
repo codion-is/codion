@@ -55,7 +55,7 @@ public class EntityConnectionsTest {
 
   @AfterAll
   public static void tearDown() {
-    DESTINATION_CONNECTION.disconnect();
+    DESTINATION_CONNECTION.close();
   }
 
   @Test

@@ -90,7 +90,7 @@ public interface DatabaseConnection extends AutoCloseable {
   /**
    * Performs a rollback and disconnects this connection
    */
-  void disconnect();
+  void close();
 
   /**
    * @return the connection user

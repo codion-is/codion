@@ -86,7 +86,7 @@ public class EntityServerTest {
 
     connection.select(condition.selectCondition());
 
-    connection.disconnect();
+    connection.close();
   }
 
   @Test
@@ -245,7 +245,7 @@ public class EntityServerTest {
     final EntityConnection db = provider.getConnection();
     assertNotNull(db);
     assertTrue(db.isConnected());
-    provider.disconnect();
+    provider.close();
 
     //not available until a connection has been requested
     assertEquals(Clients.SERVER_HOST_NAME.get(), provider.getServerHostName());
@@ -254,7 +254,7 @@ public class EntityServerTest {
     assertNotNull(db2);
     assertNotSame(db, db2);
     assertTrue(db2.isConnected());
-    provider.disconnect();
+    provider.close();
 
     EntityConnection db3 = provider.getConnection();
     assertTrue(db3.isConnected());
@@ -263,13 +263,13 @@ public class EntityServerTest {
 
     db3 = provider.getConnection();
     assertTrue(db3.isConnected());
-    db3.disconnect();
+    db3.close();
 
-    provider.disconnect();
+    provider.close();
     assertEquals("localhost" + " - " + Messages.get(Messages.NOT_CONNECTED), provider.getDescription());
     db3 = provider.getConnection();
     assertEquals(admin.getServerInformation().getServerName() + "@localhost", provider.getDescription());
-    db3.disconnect();
+    db3.close();
   }
 
   @Test

@@ -96,6 +96,6 @@ public class StoreDemo {
 
     Dialogs.displayInDialog(null, customerPanel, "Customers");
 
-    connectionProvider.disconnect();
+    connectionProvider.close();
   }
 }

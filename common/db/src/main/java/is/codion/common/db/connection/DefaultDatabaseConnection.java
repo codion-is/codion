@@ -67,11 +67,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   @Override
-  public void close() throws Exception {
-    disconnect();
-  }
-
-  @Override
   public String toString() {
     return getClass().getSimpleName() + ": " + user.getUsername();
   }
@@ -92,14 +87,14 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   @Override
-  public void disconnect() {
+  public void close() {
     try {
       if (connection != null && !connection.isClosed()) {
         connection.rollback();
       }
     }
     catch (final SQLException ex) {
-      System.err.println("DefaultDatabaseConnection.disconnect(), connection invalid");
+      System.err.println("DefaultDatabaseConnection.close(), connection invalid");
     }
     Database.closeSilently(connection);
     connection = null;

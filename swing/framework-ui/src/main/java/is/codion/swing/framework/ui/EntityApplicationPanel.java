@@ -578,7 +578,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       LOG.debug("Exception while saving preferences", e);
     }
     try {
-      applicationModel.getConnectionProvider().disconnect();
+      applicationModel.getConnectionProvider().close();
     }
     catch (final Exception e) {
       LOG.debug("Exception while disconnecting from database", e);
@@ -1436,7 +1436,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private void onStartupException(final JDialog startupDialog, final EntityConnectionProvider connectionProvider, final Throwable e) {
     try {
       if (connectionProvider != null) {
-        connectionProvider.disconnect();
+        connectionProvider.close();
       }
     }
     catch (final Exception ex) {

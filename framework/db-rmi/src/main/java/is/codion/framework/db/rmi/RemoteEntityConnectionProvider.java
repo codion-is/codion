@@ -122,7 +122,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   @Override
-  protected void disconnect(final EntityConnection connection) {
+  protected void close(final EntityConnection connection) {
     try {
       server.disconnect(getClientId());
     }

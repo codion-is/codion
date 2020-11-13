@@ -20,7 +20,7 @@ public final class AbstractEntityConnectionProviderTest {
   private static final Entities ENTITIES = new TestDomain().getEntities();
 
   @Test
-  public void connectDisconnect() {
+  public void connectClose() {
     final EntityConnectionProvider provider = new TestProvider().setUser(UNIT_TEST_USER);
     assertEquals("description", provider.getDescription());
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, provider.getConnectionType());
@@ -29,14 +29,14 @@ public final class AbstractEntityConnectionProviderTest {
 
     final EntityConnection connection1 = provider.getConnection();
     assertTrue(provider.isConnectionValid());
-    provider.disconnect();
+    provider.close();
     assertFalse(provider.isConnectionValid());
 
     final EntityConnection connection2 = provider.getConnection();
     assertTrue(provider.isConnectionValid());
     assertNotEquals(connection1, connection2);
 
-    connection2.disconnect();
+    connection2.close();
     assertFalse(provider.isConnectionValid());
     final EntityConnection connection3 = provider.getConnection();
     assertNotEquals(connection2, connection3);
@@ -71,7 +71,7 @@ public final class AbstractEntityConnectionProviderTest {
               return ENTITIES;
             case "isConnected":
               return connected;
-            case "disconnect": connected = false;
+            case "close": connected = false;
               break;
           }
 
@@ -81,8 +81,8 @@ public final class AbstractEntityConnectionProviderTest {
     }
 
     @Override
-    protected void disconnect(final EntityConnection connection) {
-      connection.disconnect();
+    protected void close(final EntityConnection connection) {
+      connection.close();
     }
 
     @Override

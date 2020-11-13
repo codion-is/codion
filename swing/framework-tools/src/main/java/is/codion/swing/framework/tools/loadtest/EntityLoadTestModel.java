@@ -147,7 +147,7 @@ public abstract class EntityLoadTestModel<M extends EntityApplicationModel> exte
 
   @Override
   protected final void disconnectApplication(final M application) {
-    application.getConnectionProvider().disconnect();
+    application.getConnectionProvider().close();
   }
 
   @Override

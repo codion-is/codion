@@ -376,8 +376,8 @@ public class EntityServletServerTest {
     assertEquals(200, response.getStatusLine().getStatusCode());
     assertFalse(entityObjectMapper.readValue(response.getEntity().getContent(), Boolean.class));
 
-    //disconnect
-    uriBuilder.setPath("disconnect");
+    //close
+    uriBuilder.setPath("close");
     response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()), context);
     response.close();
 
@@ -586,7 +586,7 @@ public class EntityServletServerTest {
     clientIdValue.set(originalClientId);
 
     uriBuilder = createURIBuilder();
-    uriBuilder.setPath("disconnect");
+    uriBuilder.setPath("close");
     response = client.execute(TARGET_HOST, new HttpPost(uriBuilder.build()), context);
     response.close();
 

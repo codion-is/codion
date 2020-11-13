@@ -43,7 +43,7 @@ public class EntityConnectionProviderDemo {
     // the underlying JDBC connection is available in a local connection
     Connection connection = databaseConnection.getConnection();
 
-    connectionProvider.disconnect();
+    connectionProvider.close();
     // end::local[]
   }
 
@@ -63,7 +63,7 @@ public class EntityConnectionProviderDemo {
 
     Entity track = entityConnection.selectSingle(entities.primaryKey(Track.TYPE, 42L));
 
-    connectionProvider.disconnect();
+    connectionProvider.close();
     // end::remote[]
   }
 
@@ -82,7 +82,7 @@ public class EntityConnectionProviderDemo {
 
     entityConnection.selectSingle(entities.primaryKey(Track.TYPE, 42L));
 
-    connectionProvider.disconnect();
+    connectionProvider.close();
     // end::http[]
   }
 }
