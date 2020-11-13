@@ -38,7 +38,7 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.UUID;
 
-abstract class AbstractHttpEntityConnection  implements EntityConnection {
+abstract class AbstractHttpEntityConnection implements EntityConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractHttpEntityConnection.class);
 
@@ -121,6 +121,11 @@ abstract class AbstractHttpEntityConnection  implements EntityConnection {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  public void close() throws Exception {
+    disconnect();
   }
 
   protected final CloseableHttpResponse execute(final HttpUriRequest operation) throws IOException {

@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * A remote EntityConnection.
  */
-public interface RemoteEntityConnection extends Remote {
+public interface RemoteEntityConnection extends Remote, AutoCloseable {
 
   /**
    * @return the underlying domain entities
