@@ -155,7 +155,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     @Override
     protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) {
       try {
-        application.getConnectionProvider().disconnect();
+        application.getConnectionProvider().close();
         Thread.sleep(random.nextInt(1500));
         application.getConnectionProvider().getConnection();
       }

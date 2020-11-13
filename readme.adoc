@@ -248,7 +248,7 @@ public class StoreDemo {
 
     Dialogs.displayInDialog(null, customerPanel, "Customers");
 
-    connectionProvider.disconnect();
+    connectionProvider.close();
   }
 }
 ----
@@ -324,7 +324,7 @@ customer = connection.update(customer);
 
 connection.delete(asList(addressKey, customerKey));
 
-connection.disconnect();
+connection.close();
 ----
 
 Continue exploring on the link:https://codion.is[Codion Web Site].

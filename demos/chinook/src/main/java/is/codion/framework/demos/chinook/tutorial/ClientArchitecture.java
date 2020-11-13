@@ -108,6 +108,6 @@ public final class ClientArchitecture {
     // uncomment the below line to display the panel
 //    displayInDialog(null, artistPanel, "Artists");
 
-    connectionProvider.disconnect();
+    connectionProvider.close();
   }
 }

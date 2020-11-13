@@ -58,7 +58,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   @Override
   public final EntityConnectionProvider setUser(final User user) {
     synchronized (lock) {
-      disconnect();
+      close();
       this.user = user;
 
       return this;
@@ -82,7 +82,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       if (nullOrEmpty(domainClassName)) {
         throw new IllegalArgumentException("Domain class name must be specified");
       }
-      disconnect();
+      close();
       this.domainClassName = domainClassName;
 
       return this;
@@ -102,7 +102,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       if (clientId == null) {
         throw new IllegalArgumentException("Client id must be specified");
       }
-      disconnect();
+      close();
       this.clientId = clientId;
 
       return this;
@@ -123,7 +123,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   @Override
   public final EntityConnectionProvider setClientTypeId(final String clientTypeId) {
     synchronized (lock) {
-      disconnect();
+      close();
       this.clientTypeId = requireNonNull(clientTypeId);
 
       return this;
@@ -140,7 +140,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   @Override
   public final EntityConnectionProvider setClientVersion(final Version clientVersion) {
     synchronized (lock) {
-      disconnect();
+      close();
       this.clientVersion = clientVersion;
 
       return this;
@@ -194,10 +194,10 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final void disconnect() {
+  public final void close() {
     synchronized (lock) {
       if (isConnectionValid()) {
-        disconnect(entityConnection);
+        close(entityConnection);
         entityConnection = null;
       }
     }
@@ -209,10 +209,10 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   protected abstract EntityConnection connect();
 
   /**
-   * Disconnects the given connection
-   * @param connection the connection to be disconnected
+   * Closes the given connection
+   * @param connection the connection to be closed
    */
-  protected abstract void disconnect(EntityConnection connection);
+  protected abstract void close(EntityConnection connection);
 
   protected String getDomainTypeName(final String domainClass) {
     if (domainClass.contains(".")) {

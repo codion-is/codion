@@ -229,6 +229,6 @@ public final class EntitiesTutorial {
 
     modifyingEntities(connectionProvider);
 
-    connectionProvider.disconnect();
+    connectionProvider.close();
   }
 }

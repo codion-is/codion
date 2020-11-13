@@ -43,7 +43,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
   @Override
   protected void disconnectApplication(final EntityConnectionProvider client) {
-    client.disconnect();
+    client.close();
   }
 
   @Override

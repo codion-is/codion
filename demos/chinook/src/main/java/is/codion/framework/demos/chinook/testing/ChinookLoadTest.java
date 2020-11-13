@@ -230,7 +230,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
             @Override
             protected void perform(final ChinookApplicationModel application) throws ScenarioException {
               try {
-                application.getConnectionProvider().disconnect();
+                application.getConnectionProvider().close();
                 Thread.sleep(random.nextInt(1500));
                 application.getConnectionProvider().getConnection();
               }

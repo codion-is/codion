@@ -31,13 +31,13 @@ public class LocalEntityConnectionProviderTest {
     final EntityConnection firstConnection = provider.getConnection();
     assertNotNull(firstConnection);
     assertTrue(firstConnection.isConnected());
-    provider.disconnect();
+    provider.close();
 
     final EntityConnection secondConnection = provider.getConnection();
     assertNotNull(secondConnection);
     assertNotSame(firstConnection, secondConnection);
     assertTrue(secondConnection.isConnected());
-    provider.disconnect();
+    provider.close();
   }
 
   @Test

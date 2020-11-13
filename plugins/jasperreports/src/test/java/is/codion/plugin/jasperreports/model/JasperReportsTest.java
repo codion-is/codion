@@ -49,7 +49,7 @@ public class JasperReportsTest {
 
   @AfterAll
   public static void tearDown() {
-    CONNECTION_PROVIDER.disconnect();
+    CONNECTION_PROVIDER.close();
   }
 
   @Test

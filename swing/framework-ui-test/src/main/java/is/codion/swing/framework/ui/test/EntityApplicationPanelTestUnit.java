@@ -38,7 +38,7 @@ public class EntityApplicationPanelTestUnit {
     EntityApplicationPanel.SHOW_STARTUP_DIALOG.set(false);
     final EntityApplicationPanel panel = createApplicationPanel();
     panel.startApplication(null, null, MaximizeFrame.NO, null, null, DisplayFrame.NO, user);
-    panel.getModel().getConnectionProvider().disconnect();
+    panel.getModel().getConnectionProvider().close();
   }
 
   /**
