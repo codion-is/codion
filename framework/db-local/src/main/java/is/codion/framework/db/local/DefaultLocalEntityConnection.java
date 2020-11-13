@@ -162,7 +162,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public void disconnect() {
+  public void close() {
     synchronized (connection) {
       connection.disconnect();
     }
@@ -849,11 +849,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public Domain getDomain() {
     return domain;
-  }
-
-  @Override
-  public void close() throws Exception {
-    disconnect();
   }
 
   /**

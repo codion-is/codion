@@ -36,7 +36,7 @@ public final class AbstractEntityConnectionProviderTest {
     assertTrue(provider.isConnectionValid());
     assertNotEquals(connection1, connection2);
 
-    connection2.disconnect();
+    connection2.close();
     assertFalse(provider.isConnectionValid());
     final EntityConnection connection3 = provider.getConnection();
     assertNotEquals(connection2, connection3);
@@ -71,7 +71,7 @@ public final class AbstractEntityConnectionProviderTest {
               return ENTITIES;
             case "isConnected":
               return connected;
-            case "disconnect": connected = false;
+            case "close": connected = false;
               break;
           }
 
@@ -82,7 +82,7 @@ public final class AbstractEntityConnectionProviderTest {
 
     @Override
     protected void disconnect(final EntityConnection connection) {
-      connection.disconnect();
+      connection.close();
     }
 
     @Override

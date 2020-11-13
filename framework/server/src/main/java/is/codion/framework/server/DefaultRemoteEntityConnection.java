@@ -284,9 +284,4 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
       return connectionProxy.readBlob(primaryKey, blobAttribute);
     }
   }
-
-  @Override
-  public void close() throws Exception {
-    disconnect();
-  }
 }

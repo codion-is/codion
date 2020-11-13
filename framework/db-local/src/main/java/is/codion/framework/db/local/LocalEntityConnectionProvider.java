@@ -109,7 +109,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   @Override
   protected void disconnect(final EntityConnection connection) {
-    connection.disconnect();
+    connection.close();
     if (database != null && shutdownDatabaseOnDisconnect) {
       database.shutdownEmbedded();
     }

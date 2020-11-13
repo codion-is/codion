@@ -144,7 +144,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
   @Override
   protected final void doDisconnect(final AbstractRemoteEntityConnection connection) throws RemoteException {
-    connection.disconnect();
+    connection.close();
   }
 
   /**

@@ -120,7 +120,7 @@ public class EntityTestUnit {
   @AfterEach
   public final void tearDown() {
     if (connection != null) {
-      connection.disconnect();
+      connection.close();
     }
     doTearDown();
   }

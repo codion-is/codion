@@ -229,7 +229,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     else if (!isConnectionValid()) {
       LOG.info("Previous connection invalid, reconnecting");
       try {//try to disconnect just in case
-        entityConnection.disconnect();
+        entityConnection.close();
       }
       catch (final Exception ignored) {/*ignored*/}
       entityConnection = null;

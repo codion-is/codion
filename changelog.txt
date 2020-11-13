@@ -6479,3 +6479,4 @@
   ValueObserver.getOptional() added
   ValueObserver.getOptional() renamed to toOptional()
   EntityConnection and RemoteEntityConnection now extend AutoClosable
+  EntityConnection.disconnect() replaced with close()

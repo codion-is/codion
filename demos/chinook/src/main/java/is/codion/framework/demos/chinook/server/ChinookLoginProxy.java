@@ -88,8 +88,7 @@ public final class ChinookLoginProxy implements LoginProxy {
   }
 
   private void authenticateUser(final User user) throws LoginException {
-    final EntityConnection connection = getConnectionFromPool();
-    try {
+    try (final EntityConnection connection = getConnectionFromPool()) {
       final int rows = connection.rowCount(condition(Authentication.User.USERNAME)
               .equalTo(user.getUsername()).setCaseSensitive(false)
                       .and(condition(Authentication.User.PASSWORD_HASH)
@@ -100,9 +99,6 @@ public final class ChinookLoginProxy implements LoginProxy {
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
-    }
-    finally {
-      connection.disconnect();//returns the underlying connection to the pool
     }
   }
 

@@ -86,7 +86,7 @@ public class EntityServerTest {
 
     connection.select(condition.selectCondition());
 
-    connection.disconnect();
+    connection.close();
   }
 
   @Test
@@ -263,13 +263,13 @@ public class EntityServerTest {
 
     db3 = provider.getConnection();
     assertTrue(db3.isConnected());
-    db3.disconnect();
+    db3.close();
 
     provider.disconnect();
     assertEquals("localhost" + " - " + Messages.get(Messages.NOT_CONNECTED), provider.getDescription());
     db3 = provider.getConnection();
     assertEquals(admin.getServerInformation().getServerName() + "@localhost", provider.getDescription());
-    db3.disconnect();
+    db3.close();
   }
 
   @Test

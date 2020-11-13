@@ -110,9 +110,9 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
   }
 
   @Override
-  public final void disconnect() {
+  public final void close() {
     try {
-      onResponse(execute(createHttpPost("disconnect")));
+      onResponse(execute(createHttpPost("close")));
       connectionManager.shutdown();
       httpClient.close();
       closed = true;
@@ -121,11 +121,6 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  public void close() throws Exception {
-    disconnect();
   }
 
   protected final CloseableHttpResponse execute(final HttpUriRequest operation) throws IOException {

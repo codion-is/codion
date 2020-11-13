@@ -83,12 +83,12 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @Path("disconnect")
-  public Response disconnect(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
+  @Path("close")
+  public Response close(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
       request.getSession().invalidate();
-      connection.disconnect();
+      connection.close();
 
       return Response.ok().build();
     }

@@ -56,7 +56,7 @@ public final class ClientServer {
     List<Entity> customers = connection.select(condition(Customer.TYPE).selectCondition());
     customers.forEach(System.out::println);
 
-    connection.disconnect();
+    connection.close();
 
     server.shutdown();
     // end::runServer[]
@@ -90,7 +90,7 @@ public final class ClientServer {
     List<Entity> customers = connection.select(condition(Customer.TYPE).selectCondition());
     customers.forEach(System.out::println);
 
-    connection.disconnect();
+    connection.close();
 
     server.shutdown();
     // end::runServerWithHttp[]

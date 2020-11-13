@@ -78,6 +78,6 @@ public class StoreDatabase {
 
     connection.delete(asList(addressKey, customerKey));
 
-    connection.disconnect();
+    connection.close();
   }
 }

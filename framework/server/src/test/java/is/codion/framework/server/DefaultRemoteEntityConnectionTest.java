@@ -57,10 +57,10 @@ public class DefaultRemoteEntityConnectionTest {
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.select(condition).isEmpty());
-    connection.disconnect();
+    connection.close();
     connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238);
     assertTrue(connection.select(condition).size() > 0);
-    connection.disconnect();
+    connection.close();
   }
 
   @Test
@@ -108,7 +108,7 @@ public class DefaultRemoteEntityConnectionTest {
       }
       try {
         if (adapter != null) {
-          adapter.disconnect();
+          adapter.close();
         }
       }
       catch (final Exception ignored) {/*ignored*/}

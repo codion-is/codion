@@ -226,8 +226,8 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  public void disconnect() throws IOException, DatabaseException {
-    connection.disconnect();
+  public void close() throws IOException, DatabaseException {
+    connection.close();
     assertFalse(connection.isConnected());
   }
 

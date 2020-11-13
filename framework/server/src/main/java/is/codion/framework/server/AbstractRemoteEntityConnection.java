@@ -91,9 +91,9 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   /**
    * Disconnects this connection
    */
-  public final void disconnect() {
+  public final void close() {
     synchronized (connectionProxy) {
-      if (connectionHandler.isDisconnected()) {
+      if (connectionHandler.isClosed()) {
         return;
       }
       try {
@@ -102,7 +102,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       catch (final NoSuchObjectException e) {
         LOG.error(e.getMessage(), e);
       }
-      connectionHandler.disconnect();
+      connectionHandler.close();
     }
     disconnectedEvent.onEvent(this);
   }

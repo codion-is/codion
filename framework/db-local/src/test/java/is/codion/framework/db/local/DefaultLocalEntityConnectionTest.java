@@ -66,7 +66,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @AfterEach
   public void tearDown() {
-    connection.disconnect();
+    connection.close();
   }
 
   @Test
@@ -608,8 +608,8 @@ public class DefaultLocalEntityConnectionTest {
       }
     }
     finally {
-      connection.disconnect();
-      connection2.disconnect();
+      connection.close();
+      connection2.close();
     }
   }
 
@@ -644,8 +644,8 @@ public class DefaultLocalEntityConnectionTest {
       }
     }
     finally {
-      connection.disconnect();
-      connection2.disconnect();
+      connection.close();
+      connection2.close();
     }
   }
 
@@ -680,8 +680,8 @@ public class DefaultLocalEntityConnectionTest {
       catch (final DatabaseException e) {
         e.printStackTrace();
       }
-      baseConnection.disconnect();
-      optimisticConnection.disconnect();
+      baseConnection.close();
+      optimisticConnection.close();
     }
   }
 
@@ -713,8 +713,8 @@ public class DefaultLocalEntityConnectionTest {
       }
     }
     finally {
-      baseConnection.disconnect();
-      optimisticConnection.disconnect();
+      baseConnection.close();
+      optimisticConnection.close();
     }
   }
 

@@ -111,7 +111,7 @@ final class EntityConnectionHandler implements InvocationHandler {
   /**
    * Indicates whether or not this remote connection has been disconnected
    */
-  private boolean disconnected = false;
+  private boolean closed = false;
 
   EntityConnectionHandler(final Domain domain, final RemoteClient remoteClient, final Database database) throws DatabaseException {
     this.domain = domain;
@@ -132,7 +132,7 @@ final class EntityConnectionHandler implements InvocationHandler {
       }
     }
     catch (final DatabaseException e) {
-      disconnect();
+      close();
       throw e;
     }
   }
@@ -175,17 +175,17 @@ final class EntityConnectionHandler implements InvocationHandler {
 
   boolean isConnected() {
     if (connectionPool != null) {
-      return !disconnected;
+      return !closed;
     }
 
-    return !disconnected && localEntityConnection != null && localEntityConnection.isConnected();
+    return !closed && localEntityConnection != null && localEntityConnection.isConnected();
   }
 
-  void disconnect() {
-    if (disconnected) {
+  void close() {
+    if (closed) {
       return;
     }
-    disconnected = true;
+    closed = true;
     cleanupLocalConnections();
   }
 
@@ -213,8 +213,8 @@ final class EntityConnectionHandler implements InvocationHandler {
     return active.get();
   }
 
-  boolean isDisconnected() {
-    return disconnected;
+  boolean isClosed() {
+    return closed;
   }
 
   private EntityConnection getConnection() throws DatabaseException {
@@ -252,7 +252,7 @@ final class EntityConnectionHandler implements InvocationHandler {
 
   private EntityConnection getLocalEntityConnection() throws DatabaseException {
     if (!localEntityConnection.isConnected()) {
-      localEntityConnection.disconnect();//just in case
+      localEntityConnection.close();//just in case
       localEntityConnection = createConnection(domain, database, remoteClient.getDatabaseUser());
       localEntityConnection.setMethodLogger(methodLogger);
     }
@@ -300,7 +300,7 @@ final class EntityConnectionHandler implements InvocationHandler {
     }
     if (localEntityConnection != null) {
       rollbackIfRequired(localEntityConnection);
-      localEntityConnection.disconnect();
+      localEntityConnection.close();
       localEntityConnection = null;
     }
   }
