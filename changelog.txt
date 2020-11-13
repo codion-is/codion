@@ -6481,3 +6481,4 @@
   EntityConnection and RemoteEntityConnection now extend AutoClosable
   EntityConnection.disconnect() replaced with close()
   EntityConnectionProvider.disconnect() replaced with close(), now extends AutoClosable
+  DatabaseConnection.disconnect() replaced with close()

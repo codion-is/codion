@@ -38,7 +38,7 @@ public class DefaultDatabaseConnectionTest {
   public void after() {
     try {
       if (dbConnection != null) {
-        dbConnection.disconnect();
+        dbConnection.close();
       }
     }
     catch (final Exception ignored) {/*ignored*/}
@@ -47,7 +47,7 @@ public class DefaultDatabaseConnectionTest {
   @Test
   public void constructorWithConnection() throws DatabaseException, SQLException {
     final Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
-    new DefaultDatabaseConnection(DATABASE, connection).disconnect();
+    new DefaultDatabaseConnection(DATABASE, connection).close();
     assertTrue(connection.isClosed());
   }
 
@@ -95,8 +95,8 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  public void disconnect() throws Exception {
-    dbConnection.disconnect();
+  public void close() throws Exception {
+    dbConnection.close();
     assertFalse(dbConnection.isConnected());
     assertNull(dbConnection.getConnection());
   }

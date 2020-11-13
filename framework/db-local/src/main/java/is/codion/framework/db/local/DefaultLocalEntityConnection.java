@@ -164,7 +164,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public void close() {
     synchronized (connection) {
-      connection.disconnect();
+      connection.close();
     }
   }
 

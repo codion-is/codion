@@ -18,14 +18,14 @@ import is.codion.framework.domain.entity.Entity;
  * EntityConnection implementation based on a local JDBC connection.
  * <pre>
  * Domain domain = new Domain();
- * Database database = new H2Database("pathToDb");
+ * Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:file:/path/to/database");
  * User user = Users.parseUser("scott:tiger");
  *
  * EntityConnection connection = LocalEntityConnections.createConnection(domain, database, user);
  *
  * List&lt;Entity&gt; entities = connection.select(Conditions.selectCondition(Domain.ENTITY_TYPE));
  *
- * connection.disconnect();
+ * connection.close();
  * </pre>
  */
 public interface LocalEntityConnection extends EntityConnection {

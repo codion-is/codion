@@ -50,7 +50,7 @@ public class DefaultRemoteEntityConnectionTest {
   }
 
   @Test
-  public void rollbackOnDisconnect() throws Exception {
+  public void rollbackOnClose() throws Exception {
     final RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Databases.getInstance(), client, 1238);
     final SelectCondition condition = Conditions.condition(TestDomain.T_EMP).selectCondition();
