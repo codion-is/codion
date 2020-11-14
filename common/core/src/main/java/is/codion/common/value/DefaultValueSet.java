@@ -14,16 +14,8 @@ final class DefaultValueSet<V> extends AbstractValue<Set<V>> implements ValueSet
   private final Set<V> values = new HashSet<>();
 
   DefaultValueSet(final Set<V> initialValues) {
+    super(emptySet(), NotifyOnSet.YES);
     values.addAll(requireNonNull(initialValues, "initialValues"));
-  }
-
-  @Override
-  public void set(final Set<V> values) {
-    this.values.clear();
-    if (values != null) {
-      this.values.addAll(values);
-    }
-    notifyValueChange();
   }
 
   @Override
@@ -33,33 +25,25 @@ final class DefaultValueSet<V> extends AbstractValue<Set<V>> implements ValueSet
 
   @Override
   public boolean add(final V value) {
-    final boolean added = values.add(value);
-    if (added) {
-      notifyValueChange();
-    }
+    final Set<V> newValues = new HashSet<>(values);
+    final boolean added = newValues.add(value);
+    set(newValues);
 
     return added;
   }
 
   @Override
   public boolean remove(final V value) {
-    final boolean removed = values.remove(value);
-    if (removed) {
-      notifyValueChange();
-    }
+    final Set<V> newValues = new HashSet<>(values);
+    final boolean removed = newValues.remove(value);
+    set(newValues);
 
     return removed;
   }
 
   @Override
   public void clear() {
-    values.clear();
-    notifyValueChange();
-  }
-
-  @Override
-  public boolean isNullable() {
-    return false;
+    set(emptySet());
   }
 
   @Override
@@ -67,18 +51,20 @@ final class DefaultValueSet<V> extends AbstractValue<Set<V>> implements ValueSet
     return new SingleValueSet<>(this);
   }
 
+  @Override
+  protected void doSet(final Set<V> values) {
+    this.values.clear();
+    this.values.addAll(values);
+  }
+
   private static class SingleValueSet<V> extends AbstractValue<V> {
 
     private final ValueSet<V> valueSet;
 
     private SingleValueSet(final ValueSet<V> valueSet) {
+      super(null, NotifyOnSet.YES);
       this.valueSet = valueSet;
-      valueSet.addListener(this::notifyValueChange);
-    }
-
-    @Override
-    public void set(final V value) {
-      valueSet.set(value == null ? emptySet() : singleton(value));
+      valueSet.addDataListener(set -> set(set.isEmpty() ? null : set.iterator().next()));
     }
 
     @Override
@@ -89,8 +75,8 @@ final class DefaultValueSet<V> extends AbstractValue<Set<V>> implements ValueSet
     }
 
     @Override
-    public boolean isNullable() {
-      return true;
+    protected void doSet(final V value) {
+      valueSet.set(value == null ? emptySet() : singleton(value));
     }
   }
 }

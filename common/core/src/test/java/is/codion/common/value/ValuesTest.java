@@ -40,6 +40,26 @@ public class ValuesTest {
   }
 
   @Test
+  public void validator() {
+    final Value.Validator<Integer> validator = value -> {
+      if (value != null && value > 10) {
+        throw new IllegalArgumentException();
+      }
+    };
+    final Value<Integer> value = Values.value(0, 0);
+    value.set(11);
+    assertThrows(IllegalArgumentException.class, () -> value.setValidator(validator));
+    value.set(1);
+    value.setValidator(validator);
+    value.set(null);
+    assertEquals(0, value.get());
+    assertThrows(IllegalArgumentException.class, () -> value.set(11));
+    value.set(2);
+    assertEquals(2, value.get());
+    assertThrows(IllegalArgumentException.class, () -> value.set(12));
+  }
+
+  @Test
   public void value() {
     final AtomicInteger eventCounter = new AtomicInteger();
     final Value<Integer> intValue = Values.value(42, -1);

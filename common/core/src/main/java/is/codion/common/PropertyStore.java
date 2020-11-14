@@ -293,14 +293,13 @@ public final class PropertyStore {
 
     private final String propertyName;
     private final Function<T, String> encoder;
-    private final T nullValue;
 
     private T value;
 
     private DefaultPropertyValue(final String propertyName, final T defaultValue, final T nullValue,
                                  final Function<String, T> decoder, final Function<T, String> encoder) {
+      super(nullValue);
       this.propertyName = propertyName;
-      this.nullValue = nullValue;
       requireNonNull(decoder, "decoder");
       this.encoder = requireNonNull(encoder, "encoder");
       final String initialValue = getInitialValue(propertyName);
@@ -322,35 +321,26 @@ public final class PropertyStore {
     }
 
     @Override
-    public void set(final T value) {
-      final T newValue = value == null ? nullValue : value;
-      if (!Objects.equals(this.value, newValue)) {
-        this.value = newValue;
-        if (newValue == null) {
-          properties.remove(propertyName);
-          System.clearProperty(propertyName);
-        }
-        else {
-          properties.setProperty(propertyName, encoder.apply(newValue));
-          System.setProperty(propertyName, properties.getProperty(propertyName));
-        }
-        notifyValueChange();
-      }
-    }
-
-    @Override
     public T get() {
       return value;
     }
 
     @Override
-    public boolean isNullable() {
-      return nullValue == null;
+    public String toString() {
+      return propertyName;
     }
 
     @Override
-    public String toString() {
-      return propertyName;
+    protected void doSet(final T value) {
+      this.value = value;
+      if (value == null) {
+        properties.remove(propertyName);
+        System.clearProperty(propertyName);
+      }
+      else {
+        properties.setProperty(propertyName, encoder.apply(value));
+        System.setProperty(propertyName, properties.getProperty(propertyName));
+      }
     }
 
     private String getInitialValue(final String property) {

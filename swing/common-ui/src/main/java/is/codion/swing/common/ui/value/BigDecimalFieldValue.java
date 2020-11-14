@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.value.Nullable;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 
 import java.math.BigDecimal;
@@ -11,7 +10,7 @@ import java.math.BigDecimal;
 final class BigDecimalFieldValue extends AbstractTextComponentValue<BigDecimal, BigDecimalField> {
 
   BigDecimalFieldValue(final BigDecimalField doubleField, final UpdateOn updateOn) {
-    super(doubleField, Nullable.YES, updateOn);
+    super(doubleField, null, updateOn);
   }
 
   @Override

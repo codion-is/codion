@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.value.Nullable;
 import is.codion.swing.common.model.textfield.DocumentAdapter;
 
 import javax.swing.event.DocumentEvent;
@@ -23,20 +22,20 @@ public abstract class AbstractTextComponentValue<V, C extends JTextComponent> ex
    * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#KEYSTROKE}
    * update on policy.
    * @param component the component
-   * @param nullable {@link Nullable#NO} if this value can not be null
+   * @param nullValue the value to use instead of null
    */
-  public AbstractTextComponentValue(final C component, final Nullable nullable) {
-    this(component, nullable, UpdateOn.KEYSTROKE);
+  public AbstractTextComponentValue(final C component, final V nullValue) {
+    this(component, nullValue, UpdateOn.KEYSTROKE);
   }
 
   /**
    * Instantiates a new {@link AbstractComponentValue}
    * @param component the component
-   * @param nullable {@link Nullable#NO} if this value can not be null
+   * @param nullValue the value to use instead of null
    * @param updateOn the update on policy
    */
-  public AbstractTextComponentValue(final C component, final Nullable nullable, final UpdateOn updateOn) {
-    super(component, nullable);
+  public AbstractTextComponentValue(final C component, final V nullValue, final UpdateOn updateOn) {
+    super(component, nullValue);
     if (updateOn == UpdateOn.KEYSTROKE) {
       component.getDocument().addDocumentListener(new NotifyOnContentsChanged());
     }

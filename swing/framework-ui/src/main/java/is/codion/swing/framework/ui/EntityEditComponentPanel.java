@@ -1092,9 +1092,6 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     @Override
-    public void set(final String value) {/*read only*/}
-
-    @Override
     public String get() {
       final Entity value = editModel.getForeignKey(foreignKeyAttribute);
 
@@ -1102,8 +1099,6 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     @Override
-    public boolean isNullable() {
-      return false;
-    }
+    protected void doSet(final String value) {/*read only*/}
   }
 }

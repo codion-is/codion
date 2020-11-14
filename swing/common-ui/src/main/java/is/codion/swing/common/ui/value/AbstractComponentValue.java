@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.value.AbstractValue;
-import is.codion.common.value.Nullable;
 
 import javax.swing.SwingUtilities;
 
@@ -18,24 +17,23 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> implements ComponentValue<V, C> {
 
   private final C component;
-  private final boolean nullable;
 
   /**
    * Instantiates a new nullable {@link AbstractComponentValue}
    * @param component the component
    */
   public AbstractComponentValue(final C component) {
-    this(component, Nullable.YES);
+    this(component, null);
   }
 
   /**
    * Instantiates a new {@link AbstractComponentValue}
    * @param component the component
-   * @param nullable {@link Nullable#NO} if this value can not be null
+   * @param nullValue the value to use instead of null
    */
-  public AbstractComponentValue(final C component, final Nullable nullable) {
+  public AbstractComponentValue(final C component, final V nullValue) {
+    super(nullValue);
     this.component = requireNonNull(component, "component");
-    this.nullable = nullable == Nullable.YES;
   }
 
   @Override
@@ -44,7 +42,12 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
   }
 
   @Override
-  public final void set(final V value) {
+  public final C getComponent() {
+    return component;
+  }
+
+  @Override
+  protected final void doSet(final V value) {
     if (SwingUtilities.isEventDispatchThread()) {
       setComponentValue(component, value);
     }
@@ -60,16 +63,6 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
         throw new RuntimeException(e);
       }
     }
-  }
-
-  @Override
-  public final C getComponent() {
-    return component;
-  }
-
-  @Override
-  public final boolean isNullable() {
-    return nullable;
   }
 
   /**

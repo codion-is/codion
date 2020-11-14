@@ -11,13 +11,9 @@ final class IntervalValue extends AbstractValue<Integer> {
   private final TaskScheduler scheduler;
 
   IntervalValue(final TaskScheduler scheduler) {
+    super(0);
     this.scheduler = scheduler;
     this.scheduler.addIntervalListener(interval -> notifyValueChange());
-  }
-
-  @Override
-  public void set(final Integer value) {
-    scheduler.setInterval(value);
   }
 
   @Override
@@ -26,7 +22,7 @@ final class IntervalValue extends AbstractValue<Integer> {
   }
 
   @Override
-  public boolean isNullable() {
-    return false;
+  protected void doSet(final Integer value) {
+    scheduler.setInterval(value);
   }
 }

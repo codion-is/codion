@@ -3,14 +3,12 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.value.Nullable;
-
 import javax.swing.JTextField;
 
 final class CharacterFieldValue extends AbstractTextComponentValue<Character, JTextField> {
 
   CharacterFieldValue(final JTextField textField, final UpdateOn updateOn) {
-    super(textField, Nullable.YES, updateOn);
+    super(textField, null, updateOn);
   }
 
   @Override

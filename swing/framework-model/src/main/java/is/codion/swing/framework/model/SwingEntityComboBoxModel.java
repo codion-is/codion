@@ -484,16 +484,6 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
 
     /**
-     * Selects the first entity found in the underlying combo box model, which
-     * has the given value associated with the underlying attribute.
-     * @param value the value
-     */
-    @Override
-    public void set(final T value) {
-      setSelectedItem(value == null ? null : finder.findByValue(getVisibleItems(), attribute, value));
-    }
-
-    /**
      * @return the value of the underlying attribute in the selected Entity, null if the selection is empty
      */
     @Override
@@ -506,11 +496,13 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
 
     /**
-     * @return true
+     * Selects the first entity found in the underlying combo box model, which
+     * has the given value associated with the underlying attribute.
+     * @param value the value
      */
     @Override
-    public boolean isNullable() {
-      return true;
+    protected void doSet(final T value) {
+      setSelectedItem(value == null ? null : finder.findByValue(getVisibleItems(), attribute, value));
     }
   }
 }

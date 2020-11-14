@@ -30,4 +30,26 @@ public interface Value<V> extends ValueObserver<V> {
    * @param originalValueObserver the original value to link this value to
    */
   void link(ValueObserver<V> originalValueObserver);
+
+  /**
+   * Sets the validator for this {@Value}.
+   * If null then the default no-op validator is used.
+   * @param validator the validator
+   * @throws IllegalArgumentException in case the current value is invalid
+   */
+  void setValidator(Validator<V> validator);
+
+  /**
+   * A Validator for {@link Value}s.
+   * @param <V> the value type
+   */
+  interface Validator<V> {
+
+    /**
+     * Validates the given value.
+     * @param value the value to validate
+     * @throws IllegalArgumentException in case of an invalid value
+     */
+    void validate(final V value) throws IllegalArgumentException;
+  }
 }

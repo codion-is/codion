@@ -6485,3 +6485,4 @@
   Value.link() inverted, now takes originalValue as parameter so that the value doing the linking mirrors the original value
   Value.link(ValueObserver) added, read-only link (and the reason for the last change)
   ServerMonitor refactoring, no longer binds UI to model via name property values
+  Value.Validator added, related refactoring of DefaultValue and AbstractValue

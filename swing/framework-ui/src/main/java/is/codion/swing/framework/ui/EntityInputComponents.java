@@ -934,19 +934,14 @@ public final class EntityInputComponents {
     }
 
     @Override
-    public void set(final Entity value) {
-      lookupModel.setSelectedEntity(value);
-    }
-
-    @Override
     public Entity get() {
       final List<Entity> selectedEntities = lookupModel.getSelectedEntities();
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
     @Override
-    public boolean isNullable() {
-      return true;
+    protected void doSet(final Entity value) {
+      lookupModel.setSelectedEntity(value);
     }
   }
 }

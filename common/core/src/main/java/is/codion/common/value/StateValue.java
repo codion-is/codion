@@ -77,4 +77,9 @@ final class StateValue implements Value<Boolean>  {
     set(requireNonNull(originalValueObserver, "originalValueObserver").get());
     originalValueObserver.addDataListener(this::set);
   }
+
+  @Override
+  public void setValidator(final Validator<Boolean> validator) {
+    throw new UnsupportedOperationException("Validation not implemented for state values");
+  }
 }
