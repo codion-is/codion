@@ -174,7 +174,7 @@ public final class ControlProvider {
     else {
       buttonModel = new JToggleButton.ToggleButtonModel();
     }
-    value.link(BooleanValues.booleanButtonModelValue(buttonModel));
+    BooleanValues.booleanButtonModelValue(buttonModel).link(value);
     buttonModel.setEnabled(toggleControl.getEnabledObserver().get());
     toggleControl.getEnabledObserver().addDataListener(buttonModel::setEnabled);
     toggleControl.addPropertyChangeListener(changeEvent -> {

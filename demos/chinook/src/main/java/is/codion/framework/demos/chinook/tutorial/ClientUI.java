@@ -51,7 +51,7 @@ public final class ClientUI {
     Value<String> textFieldNameValue = TextValues.textValue(nameField);
 
     // link the two values
-    editModelNameValue.link(textFieldNameValue);
+    textFieldNameValue.link(editModelNameValue);
 
     // add a insert action to the name field
     // so we can insert by pressing Enter
@@ -107,7 +107,7 @@ public final class ClientUI {
     Value<Entity> comboBoxArtistValue = SelectedValues.selectedValue(artistComboBox);
 
     // link the two values
-    editModelArtistValue.link(comboBoxArtistValue);
+    comboBoxArtistValue.link(editModelArtistValue);
 
     // create a field for entering a album title
     JTextField titleField = new JTextField(10);
@@ -119,7 +119,7 @@ public final class ClientUI {
     Value<String> textFieldTitleValue = TextValues.textValue(titleField);
 
     // link the two values
-    editModelNameValue.link(textFieldTitleValue);
+    textFieldTitleValue.link(editModelNameValue);
 
     // add a insert action to the title field
     // so we can insert by pressing Enter

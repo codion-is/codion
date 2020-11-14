@@ -361,23 +361,18 @@ public final class PropertyValues {
     }
 
     @Override
-    public void set(final V v) {
-      stringProperty.set(converter.toString(v));
-    }
-
-    @Override
     public V get() {
       return converter.fromString(stringProperty.get());
     }
 
     @Override
-    public boolean isNullable() {
-      return true;
+    public StringConverter<V> getConverter() {
+      return converter;
     }
 
     @Override
-    public StringConverter<V> getConverter() {
-      return converter;
+    protected void doSet(final V value) {
+      stringProperty.set(converter.toString(value));
     }
   }
 
@@ -391,18 +386,13 @@ public final class PropertyValues {
     }
 
     @Override
-    public void set(final Boolean value) {
-      booleanProperty.set(value);
-    }
-
-    @Override
     public Boolean get() {
       return booleanProperty.get();
     }
 
     @Override
-    public boolean isNullable() {
-      return false;
+    protected void doSet(final Boolean value) {
+      booleanProperty.set(value);
     }
   }
 
@@ -416,18 +406,13 @@ public final class PropertyValues {
     }
 
     @Override
-    public void set(final V value) {
-      selectionModel.select(value);
-    }
-
-    @Override
     public V get() {
       return selectionModel.getSelectedItem();
     }
 
     @Override
-    public boolean isNullable() {
-      return true;
+    protected void doSet(final V value) {
+      selectionModel.select(value);
     }
   }
 
@@ -441,18 +426,18 @@ public final class PropertyValues {
     }
 
     @Override
-    public void set(final T value) {
-      selectionModel.select(Items.item(value));
-    }
-
-    @Override
     public T get() {
-      return selectionModel.getSelectedItem().getValue();
+      final Item<T> selectedItem = selectionModel.getSelectedItem();
+      if (selectedItem == null) {
+        return null;
+      }
+
+      return selectedItem.getValue();
     }
 
     @Override
-    public boolean isNullable() {
-      return true;
+    protected void doSet(final T value) {
+      selectionModel.select(Items.item(value));
     }
   }
 
@@ -466,11 +451,6 @@ public final class PropertyValues {
     }
 
     @Override
-    public void set(final Entity value) {
-      lookupModel.setSelectedEntity(value);
-    }
-
-    @Override
     public Entity get() {
       final List<Entity> selected = lookupModel.getSelectedEntities();
 
@@ -478,8 +458,8 @@ public final class PropertyValues {
     }
 
     @Override
-    public boolean isNullable() {
-      return true;
+    protected void doSet(final Entity value) {
+      lookupModel.setSelectedEntity(value);
     }
   }
 
@@ -493,18 +473,13 @@ public final class PropertyValues {
     }
 
     @Override
-    public void set(final List<Entity> value) {
-      lookupModel.setSelectedEntities(value);
-    }
-
-    @Override
     public List<Entity> get() {
       return lookupModel.getSelectedEntities();
     }
 
     @Override
-    public boolean isNullable() {
-      return false;
+    protected void doSet(final List<Entity> value) {
+      lookupModel.setSelectedEntities(value);
     }
   }
 }

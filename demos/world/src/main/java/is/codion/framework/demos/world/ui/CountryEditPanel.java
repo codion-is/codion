@@ -55,7 +55,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     final DoubleField averageCityPopulationField = averageCityPopulationFieldValue.getComponent();
     averageCityPopulationField.setEditable(false);
     averageCityPopulationField.setFocusable(false);
-    ((CountryEditModel) getEditModel()).getAvarageCityPopulationValue().link(averageCityPopulationFieldValue);
+    averageCityPopulationFieldValue.link(((CountryEditModel) getEditModel()).getAvarageCityPopulationValue());
 
     setLayout(gridLayout(4, 5));
 

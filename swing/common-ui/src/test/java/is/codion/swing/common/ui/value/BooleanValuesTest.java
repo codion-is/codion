@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BooleanValuesTest {
 
   private boolean booleanValue;
-  private final Event booleanValueChangedEvent = Events.event();
+  private final Event<Boolean> booleanValueChangedEvent = Events.event();
 
   public boolean isBooleanValue() {
     return booleanValue;
@@ -31,14 +31,14 @@ public class BooleanValuesTest {
 
   public void setBooleanValue(final boolean booleanValue) {
     this.booleanValue = booleanValue;
-    booleanValueChangedEvent.onEvent();
+    booleanValueChangedEvent.onEvent(booleanValue);
   }
 
   @Test
   public void test() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
-    Values.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent)
-            .link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
+    BooleanValues.booleanButtonModelValue(checkBox.getModel())
+            .link(Values.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent));
     assertFalse(checkBox.isSelected());
     setBooleanValue(true);
     assertTrue(checkBox.isSelected());

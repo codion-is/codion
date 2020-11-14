@@ -68,7 +68,18 @@ final class StateValue implements Value<Boolean>  {
   }
 
   @Override
-  public void link(final Value<Boolean> linkedValue) {
-    new ValueLink<>(this, linkedValue);
+  public void link(final Value<Boolean> originalValue) {
+    new ValueLink<>(this, originalValue);
+  }
+
+  @Override
+  public void link(final ValueObserver<Boolean> originalValueObserver) {
+    set(requireNonNull(originalValueObserver, "originalValueObserver").get());
+    originalValueObserver.addDataListener(this::set);
+  }
+
+  @Override
+  public void setValidator(final Validator<Boolean> validator) {
+    throw new UnsupportedOperationException("Validation not implemented for state values");
   }
 }

@@ -5,12 +5,10 @@ package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.DateFormats;
 import is.codion.common.TaskScheduler;
-import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
-import is.codion.common.event.Events;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
+import is.codion.common.value.Values;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.table.AbstractFilteredTableModel;
@@ -56,7 +54,7 @@ public final class ClientUserMonitor {
   private static final Comparator<User> USER_COMPARATOR = (u1, u2) -> u1.getUsername().compareToIgnoreCase(u2.getUsername());
 
   private final EntityServerAdmin server;
-  private final Event<Integer> connectionTimeoutChangedEvent = Events.event();
+  private final Value<Integer> connectionTimeoutValue;
   private final DefaultListModel<ClientMonitor> clientTypeListModel = new DefaultListModel<>();
   private final DefaultListModel<ClientMonitor> userListModel = new DefaultListModel<>();
   private final UserHistoryTableModel userHistoryTableModel = new UserHistoryTableModel();
@@ -72,6 +70,7 @@ public final class ClientUserMonitor {
    */
   public ClientUserMonitor(final EntityServerAdmin server, final int updateRate) throws RemoteException {
     this.server = server;
+    this.connectionTimeoutValue = Values.value(server.getConnectionTimeout() / THOUSAND);
     this.updateScheduler = new TaskScheduler(() -> {
       try {
         userHistoryTableModel.refresh();
@@ -81,6 +80,7 @@ public final class ClientUserMonitor {
       }
     }, updateRate, 0, TimeUnit.SECONDS).start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
+    bindEvents();
     refresh();
   }
 
@@ -125,6 +125,7 @@ public final class ClientUserMonitor {
     for (final User user : getSortedUsers()) {
       userListModel.addElement(new ClientMonitor(server, null, user));
     }
+    connectionTimeoutValue.set(server.getConnectionTimeout() / THOUSAND);
   }
 
   /**
@@ -163,24 +164,6 @@ public final class ClientUserMonitor {
   }
 
   /**
-   * @return the server timeout for connections in seconds
-   * @throws RemoteException in case of an exception
-   */
-  public int getConnectionTimeout() throws RemoteException {
-    return server.getConnectionTimeout() / THOUSAND;
-  }
-
-  /**
-   * Sets the server connection timeout
-   * @param timeout the timeout in seconds
-   * @throws RemoteException in case of an exception
-   */
-  public void setConnectionTimeout(final int timeout) throws RemoteException {
-    server.setConnectionTimeout(timeout * THOUSAND);
-    connectionTimeoutChangedEvent.onEvent(timeout);
-  }
-
-  /**
    * Resets the user connection history
    */
   public void resetHistory() {
@@ -188,10 +171,10 @@ public final class ClientUserMonitor {
   }
 
   /**
-   * @return an EventObserver notified when the connection timeout is changed
+   * @return a Value linked to the server connection timeout
    */
-  public EventObserver<Integer> getConnectionTimeoutObserver() {
-    return connectionTimeoutChangedEvent.getObserver();
+  public Value<Integer> getConnectionTimeoutValue() {
+    return connectionTimeoutValue;
   }
 
   /**
@@ -213,6 +196,23 @@ public final class ClientUserMonitor {
     users.sort(USER_COMPARATOR);
 
     return users;
+  }
+
+  /**
+   * Sets the server connection timeout
+   * @param timeout the timeout in seconds
+   */
+  private void setConnectionTimeout(final int timeout) {
+    try {
+      server.setConnectionTimeout(timeout * THOUSAND);
+    }
+    catch (final RemoteException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void bindEvents() {
+    connectionTimeoutValue.addDataListener(this::setConnectionTimeout);
   }
 
   private final class UserHistoryTableModel extends AbstractFilteredTableModel<UserInfo, Integer> {

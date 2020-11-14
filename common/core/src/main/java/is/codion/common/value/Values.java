@@ -100,7 +100,7 @@ public final class Values {
    */
   public static State valueState(final Value<Boolean> booleanValue) {
     final State state = States.state();
-    requireNonNull(booleanValue, "booleanValue").link(stateValue(state));
+    stateValue(state).link(requireNonNull(booleanValue, "booleanValue"));
 
     return state;
   }

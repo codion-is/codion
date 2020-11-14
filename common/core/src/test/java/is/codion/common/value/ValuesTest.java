@@ -40,6 +40,26 @@ public class ValuesTest {
   }
 
   @Test
+  public void validator() {
+    final Value.Validator<Integer> validator = value -> {
+      if (value != null && value > 10) {
+        throw new IllegalArgumentException();
+      }
+    };
+    final Value<Integer> value = Values.value(0, 0);
+    value.set(11);
+    assertThrows(IllegalArgumentException.class, () -> value.setValidator(validator));
+    value.set(1);
+    value.setValidator(validator);
+    value.set(null);
+    assertEquals(0, value.get());
+    assertThrows(IllegalArgumentException.class, () -> value.set(11));
+    value.set(2);
+    assertEquals(2, value.get());
+    assertThrows(IllegalArgumentException.class, () -> value.set(12));
+  }
+
+  @Test
   public void value() {
     final AtomicInteger eventCounter = new AtomicInteger();
     final Value<Integer> intValue = Values.value(42, -1);
@@ -91,7 +111,7 @@ public class ValuesTest {
     final AtomicInteger modelValueEventCounter = new AtomicInteger();
     final Value<Integer> modelValue = Values.propertyValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
-    modelValue.link(uiValue);
+    uiValue.link(modelValue);
     modelValue.addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
     uiValue.addListener(uiValueEventCounter::incrementAndGet);
@@ -123,8 +143,8 @@ public class ValuesTest {
 
     final Value<Integer> valueOne = Values.value();
     final Value<Integer> valueTwo = Values.value();
-    valueOne.link(valueTwo);
     valueTwo.link(valueOne);
+    valueOne.link(valueTwo);
     valueOne.set(1);
     assertThrows(IllegalArgumentException.class, () -> valueOne.link(valueOne));
   }
@@ -135,8 +155,7 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.propertyValue(this, "intValue", int.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     assertFalse(modelValue.isNullable());
-    modelValue.addDataListener(uiValue::set);//modelValue.link(uiValue, true);
-    uiValue.set(modelValue.get());
+    uiValue.link(Values.valueObserver(modelValue));
     modelValue.addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
     uiValue.addListener(uiValueEventCounter::incrementAndGet);

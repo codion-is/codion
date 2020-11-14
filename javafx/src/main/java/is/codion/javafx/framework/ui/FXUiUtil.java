@@ -266,19 +266,19 @@ public final class FXUiUtil {
     }
     if (attribute.isLocalDate()) {
       final Value<LocalDate> dateValue = Values.value((LocalDate) defaultValue);
-      dateValue.link(createDateValue((Property<LocalDate>) property, (DatePicker) control));
+      createDateValue((Property<LocalDate>) property, (DatePicker) control).link(dateValue);
 
       return (Value<T>) dateValue;
     }
     if (attribute.isLocalDateTime()) {
       final Value<LocalDateTime> dateTimeValue = Values.value((LocalDateTime) defaultValue);
-      dateTimeValue.link(createTimestampValue((Property<LocalDateTime>) property, (TextField) control));
+      createTimestampValue((Property<LocalDateTime>) property, (TextField) control).link(dateTimeValue);
 
       return (Value<T>) dateTimeValue;
     }
     if (attribute.isLocalTime()) {
       final Value<LocalTime> timeValue = Values.value((LocalTime) defaultValue);
-      timeValue.link(createTimeValue((Property<LocalTime>) property, (TextField) control));
+      createTimeValue((Property<LocalTime>) property, (TextField) control).link(timeValue);
 
       return (Value<T>) timeValue;
     }
@@ -334,7 +334,7 @@ public final class FXUiUtil {
     final ToggleButton button = new ToggleButton();
     final Value<Boolean> checkBoxValue = PropertyValues.booleanPropertyValue(button.selectedProperty());
     final Value<Boolean> stateValue = Values.stateValue(state);
-    stateValue.link(checkBoxValue);
+    checkBoxValue.link(stateValue);
 
     return button;
   }
@@ -348,7 +348,7 @@ public final class FXUiUtil {
     final CheckBox box = new CheckBox();
     final Value<Boolean> checkBoxValue = PropertyValues.booleanPropertyValue(box.selectedProperty());
     final Value<Boolean> stateValue = Values.stateValue(state);
-    stateValue.link(checkBoxValue);
+    checkBoxValue.link(stateValue);
 
     return box;
   }
@@ -402,7 +402,7 @@ public final class FXUiUtil {
   public static CheckBox createCheckBox(final Property<Boolean> property, final FXEntityEditModel editModel,
                                         final StateObserver enabledState) {
     final CheckBox checkBox = createCheckBox(enabledState);
-    editModel.<Boolean>value(property.getAttribute()).link(createBooleanValue(checkBox));
+    createBooleanValue(checkBox).link(editModel.value(property.getAttribute()));
 
     return checkBox;
   }
@@ -436,7 +436,7 @@ public final class FXUiUtil {
   public static TextField createTextField(final Property<String> property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    editModel.<String>value(property.getAttribute()).link(createStringValue(textField));
+    createStringValue(textField).link(editModel.value(property.getAttribute()));
 
     return textField;
   }
@@ -470,7 +470,7 @@ public final class FXUiUtil {
   public static TextField createLongField(final Property<Long> property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    editModel.<Long>value(property.getAttribute()).link(createLongValue(property, textField));
+    createLongValue(property, textField).link(editModel.value(property.getAttribute()));
 
     return textField;
   }
@@ -509,7 +509,7 @@ public final class FXUiUtil {
   public static TextField createIntegerField(final Property<Integer> property, final FXEntityEditModel editModel,
                                              final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    editModel.<Integer>value(property.getAttribute()).link(createIntegerValue(property, textField));
+    createIntegerValue(property, textField).link(editModel.value(property.getAttribute()));
 
     return textField;
   }
@@ -548,7 +548,7 @@ public final class FXUiUtil {
   public static TextField createDoubleField(final Property<Double> property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    editModel.<Double>value(property.getAttribute()).link(createDoubleValue(property, textField));
+    createDoubleValue(property, textField).link(editModel.value(property.getAttribute()));
 
     return textField;
   }
@@ -573,7 +573,7 @@ public final class FXUiUtil {
   public static TextField createBigDecimalField(final Property<BigDecimal> property, final FXEntityEditModel editModel,
                                                 final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    editModel.<BigDecimal>value(property.getAttribute()).link(createBigDecimalValue(property, textField));
+    createBigDecimalValue(property, textField).link(editModel.value(property.getAttribute()));
 
     return textField;
   }
@@ -626,7 +626,7 @@ public final class FXUiUtil {
   public static DatePicker createDatePicker(final Property<LocalDate> property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final DatePicker picker = createDatePicker(enabledState);
-    editModel.<LocalDate>value(property.getAttribute()).link(createDateValue(property, picker));
+    createDateValue(property, picker).link(editModel.value(property.getAttribute()));
 
     return picker;
   }
@@ -693,7 +693,7 @@ public final class FXUiUtil {
                                                     final FXEntityEditModel editModel) {
     final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty.getAttribute());
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
-    editModel.value(foreignKeyProperty.getAttribute()).link(PropertyValues.lookupValue(lookupModel));
+    PropertyValues.lookupValue(lookupModel).link(editModel.value(foreignKeyProperty.getAttribute()));
 
     return lookupField;
   }
@@ -710,8 +710,7 @@ public final class FXUiUtil {
     listModel.refresh();
     final ComboBox<Entity> box = new ComboBox<>(listModel.getSortedList());
     listModel.setSelectionModel(box.getSelectionModel());
-    editModel.<Entity>value(foreignKeyProperty.getAttribute())
-            .link(PropertyValues.selectedValue(box.getSelectionModel()));
+    PropertyValues.selectedValue(box.getSelectionModel()).link(editModel.value(foreignKeyProperty.getAttribute()));
 
     return box;
   }
@@ -726,8 +725,7 @@ public final class FXUiUtil {
   public static <T> ComboBox<Item<T>> createValueListComboBox(final ValueListProperty<T> valueListProperty,
                                                               final FXEntityEditModel editModel) {
     final ComboBox<Item<T>> comboBox = new ComboBox<>(createValueListComboBoxModel(valueListProperty));
-    editModel.<T>value(valueListProperty.getAttribute())
-            .link(PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
+    PropertyValues.selectedItemValue(comboBox.getSelectionModel()).link(editModel.value(valueListProperty.getAttribute()));
     return comboBox;
   }
 

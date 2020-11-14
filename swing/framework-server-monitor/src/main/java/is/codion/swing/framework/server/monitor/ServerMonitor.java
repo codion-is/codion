@@ -8,13 +8,14 @@ import is.codion.common.LoggerProxy;
 import is.codion.common.TaskScheduler;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.EventObserver;
 import is.codion.common.event.Events;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
+import is.codion.common.value.Values;
 import is.codion.framework.server.EntityServerAdmin;
 
 import org.jfree.data.xy.XYDataset;
@@ -50,9 +51,8 @@ public final class ServerMonitor {
   private static final String GC_EVENT_PREFIX = "GC ";
 
   private final Event<?> serverShutDownEvent = Events.event();
-  private final Event<?> statisticsUpdatedEvent = Events.event();
-  private final Event<Object> logLevelChangedEvent = Events.event();
-  private final Event<Integer> connectionLimitChangedEvent = Events.event();
+  private final Value<Object> logLevelValue;
+  private final Value<Integer> connectionLimitValue;
 
   private final String hostName;
   private final ServerInformation serverInformation;
@@ -68,10 +68,10 @@ public final class ServerMonitor {
 
   private final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
 
-  private int connectionCount = 0;
   private boolean shutdown = false;
 
-  private long memoryUsage;
+  private final Value<Integer> connectionCountValue = Values.value(0);
+  private final Value<String> memoryUsageValue = Values.value("");
   private final DefaultTableModel domainListModel = new DomainTableModel();
   private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
@@ -117,6 +117,8 @@ public final class ServerMonitor {
     this.registryPort = registryPort;
     this.serverAdminUser = serverAdminUser;
     this.server = connectServer(serverInformation.getServerName());
+    this.connectionLimitValue = Values.value(this.server.getConnectionLimit());
+    this.logLevelValue = Values.value(this.server.getLogLevel());
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
     this.memoryUsageCollection.addSeries(maxMemorySeries);
     this.memoryUsageCollection.addSeries(allocatedMemorySeries);
@@ -132,6 +134,7 @@ public final class ServerMonitor {
     this.updateScheduler = new TaskScheduler(this::updateStatistics, updateRate, 0, TimeUnit.SECONDS).start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
     refreshDomainList();
+    bindEvents();
   }
 
   /**
@@ -161,15 +164,15 @@ public final class ServerMonitor {
   /**
    * @return the amount of memory being used by the server
    */
-  public String getMemoryUsage() {
-    return MEMORY_USAGE_FORMAT.format(memoryUsage) + " KB";
+  public ValueObserver<String> getMemoryUsageObserver() {
+    return memoryUsageValue;
   }
 
   /**
    * @return the number of connected clients
    */
-  public int getConnectionCount() {
-    return connectionCount;
+  public ValueObserver<Integer> getConnectionCountObserver() {
+    return connectionCountValue;
   }
 
   /**
@@ -187,23 +190,6 @@ public final class ServerMonitor {
   }
 
   /**
-   * @return the connection number limit
-   * @throws RemoteException in case of an exception
-   */
-  public int getConnectionLimit() throws RemoteException {
-    return server.getConnectionLimit();
-  }
-
-  /**
-   * @param value the connection number limit
-   * @throws RemoteException in case of an exception
-   */
-  public void setConnectionLimit(final int value) throws RemoteException {
-    server.setConnectionLimit(value);
-    connectionLimitChangedEvent.onEvent(value);
-  }
-
-  /**
    * @return the available log levels
    */
   public List<Object> getLogLevels() {
@@ -212,23 +198,6 @@ public final class ServerMonitor {
     }
 
     return loggerProxy.getLogLevels();
-  }
-
-  /**
-   * @return the server log level
-   * @throws RemoteException in case of an exception
-   */
-  public Object getLogLevel() throws RemoteException {
-    return server.getLogLevel();
-  }
-
-  /**
-   * @param level the server log level
-   * @throws RemoteException in case of an exception
-   */
-  public void setLogLevel(final Object level) throws RemoteException {
-    server.setLogLevel(level);
-    logLevelChangedEvent.onEvent(level);
   }
 
   /**
@@ -376,22 +345,39 @@ public final class ServerMonitor {
   /**
    * @return a listener notified when the connection number limit is changed
    */
-  public EventObserver<Integer> getConnectionLimitObserver() {
-    return connectionLimitChangedEvent.getObserver();
-  }
-
-  /**
-   * @return a listener notified when the statistics have been updated
-   */
-  public EventObserver getStatisticsUpdatedObserver() {
-    return statisticsUpdatedEvent.getObserver();
+  public Value<Integer> getConnectionLimitValue() {
+    return connectionLimitValue;
   }
 
   /**
    * @return a listener notified when the log level has changed
    */
-  public EventObserver<Object> getLogLevelObserver() {
-    return logLevelChangedEvent.getObserver();
+  public Value<Object> getLogLevelValue() {
+    return logLevelValue;
+  }
+
+  /**
+   * @param value the connection number limit
+   */
+  private void setConnectionLimit(final int value) {
+    try {
+      server.setConnectionLimit(value);
+    }
+    catch (final RemoteException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * @param level the server log level
+   */
+  private void setLogLevel(final Object level) {
+    try {
+      server.setLogLevel(level);
+    }
+    catch (final RemoteException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private EntityServerAdmin connectServer(final String serverName) throws RemoteException, ServerAuthenticationException {
@@ -423,8 +409,9 @@ public final class ServerMonitor {
         final EntityServerAdmin.ServerStatistics statistics = server.getServerStatistics(lastStatisticsUpdateTime);
         final long timestamp = statistics.getTimestamp();
         lastStatisticsUpdateTime = timestamp;
-        connectionCount = statistics.getConnectionCount();
-        memoryUsage = statistics.getUsedMemory();
+        connectionLimitValue.set(statistics.getConnectionLimit());
+        connectionCountValue.set(statistics.getConnectionCount());
+        memoryUsageValue.set(MEMORY_USAGE_FORMAT.format(statistics.getUsedMemory()) + " KB");
         connectionRequestsPerSecondSeries.add(timestamp, statistics.getRequestsPerSecond());
         maxMemorySeries.add(timestamp, statistics.getMaximumMemory() / THOUSAND);
         allocatedMemorySeries.add(timestamp, statistics.getAllocatedMemory() / THOUSAND);
@@ -435,7 +422,6 @@ public final class ServerMonitor {
         connectionLimitSeries.add(timestamp, statistics.getConnectionLimit());
         addThreadStatistics(timestamp, statistics.getThreadStatistics());
         addGCInfo(statistics.getGcEvents());
-        statisticsUpdatedEvent.onEvent();
       }
     }
     catch (final RemoteException ignored) {/*ignored*/}
@@ -465,6 +451,11 @@ public final class ServerMonitor {
       }
       typeSeries.add(event.getTimestamp(), event.getDuration());
     }
+  }
+
+  private void bindEvents() {
+    connectionLimitValue.addDataListener(this::setConnectionLimit);
+    logLevelValue.addDataListener(this::setLogLevel);
   }
 
   private static final class DomainTableModel extends DefaultTableModel {

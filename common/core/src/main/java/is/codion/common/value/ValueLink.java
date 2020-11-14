@@ -23,10 +23,10 @@ final class ValueLink<V> {
 
   /**
    * Instantiates a new ValueLink
-   * @param originalValue the original value
    * @param linkedValue the value to link to the original value
+   * @param originalValue the original value
    */
-  ValueLink(final Value<V> originalValue, final Value<V> linkedValue) {
+  ValueLink(final Value<V> linkedValue, final Value<V> originalValue) {
     if (requireNonNull(originalValue, "originalValue") == requireNonNull(linkedValue, "linkedValue")) {
       throw new IllegalArgumentException("A Value can not be linked to itself");
     }

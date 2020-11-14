@@ -11,6 +11,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.event.Events;
 import is.codion.common.value.Value;
+import is.codion.common.value.Values;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -35,6 +36,12 @@ public final class ConnectionPoolMonitor {
   private final String username;
   private final ConnectionPool connectionPool;
   private ConnectionPoolStatistics poolStatistics;
+
+  private final Value<Integer> pooledConnectionTimeoutValue;
+  private final Value<Integer> pooledCleanupIntervalValue;
+  private final Value<Integer> minimumPoolSizeValue;
+  private final Value<Integer> maximumPoolSizeValue;
+  private final Value<Integer> maximumCheckoutTimeValue;
 
   private final XYSeries poolSizeSeries = new XYSeries("Size");
   private final XYSeries minimumPoolSizeSeries = new XYSeries("Min. size");
@@ -62,6 +69,11 @@ public final class ConnectionPoolMonitor {
   public ConnectionPoolMonitor(final ConnectionPool connectionPool, final int updateRate) {
     this.username = connectionPool.getUser().getUsername();
     this.connectionPool = connectionPool;
+    this.pooledConnectionTimeoutValue = Values.value(connectionPool.getConnectionTimeout() / THOUSAND);
+    this.pooledCleanupIntervalValue = Values.value(connectionPool.getCleanupInterval() / THOUSAND);
+    this.minimumPoolSizeValue = Values.value(connectionPool.getMinimumPoolSize());
+    this.maximumPoolSizeValue = Values.value(connectionPool.getMinimumPoolSize());
+    this.maximumCheckoutTimeValue = Values.value(connectionPool.getMaximumCheckOutTime());
     this.statisticsCollection.addSeries(inPoolSeries);
     this.statisticsCollection.addSeries(inUseSeries);
     this.statisticsCollection.addSeries(poolSizeSeries);
@@ -72,6 +84,7 @@ public final class ConnectionPoolMonitor {
     this.checkOutTimeCollection.addSeries(averageCheckOutTime);
     this.updateScheduler = new TaskScheduler(this::updateStatistics, updateRate, 0, TimeUnit.SECONDS).start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
+    bindEvents();
   }
 
   /**
@@ -91,71 +104,36 @@ public final class ConnectionPoolMonitor {
   /**
    * @return the pool connection timeout in seconds
    */
-  public int getPooledConnectionTimeout() {
-    return connectionPool.getConnectionTimeout() / THOUSAND;
-  }
-
-  /**
-   * @param value the pool connection timeout in seconds
-   */
-  public void setPooledConnectionTimeout(final int value) {
-    connectionPool.setConnectionTimeout(value * THOUSAND);
+  public Value<Integer> getPooledConnectionTimeoutValue() {
+    return pooledConnectionTimeoutValue;
   }
 
   /**
    * @return the pool maintenance interval in seconds
    */
-  public int getPoolCleanupInterval() {
-    return connectionPool.getCleanupInterval() / THOUSAND;
-  }
-
-  /**
-   * @param value the pool maintenance interval in seconds
-   */
-  public void setPoolCleanupInterval(final int value) {
-    connectionPool.setCleanupInterval(value);
+  public Value<Integer> getPoolCleanupIntervalValue() {
+    return pooledCleanupIntervalValue;
   }
 
   /**
    * @return the minimum pool size to maintain
    */
-  public int getMinimumPoolSize() {
-    return connectionPool.getMinimumPoolSize();
-  }
-
-  /**
-   * @param value the minimum pool size to maintain
-   */
-  public void setMinimumPoolSize(final int value) {
-    connectionPool.setMinimumPoolSize(value);
+  public Value<Integer> getMinimumPoolSizeValue() {
+    return minimumPoolSizeValue;
   }
 
   /**
    * @return the maximum allowed pool size
    */
-  public int getMaximumPoolSize() {
-    return connectionPool.getMaximumPoolSize();
-  }
-
-  /**
-   * @param value the maximum allowed pool size
-   */
-  public void setMaximumPoolSize(final int value) {
-    connectionPool.setMaximumPoolSize(value);
+  public Value<Integer> getMaximumPoolSizeValue() {
+    return maximumPoolSizeValue;
   }
 
   /**
    * @return the maximum wait time for a connection
    */
-  public int getMaximumCheckOutTime() {
-    return connectionPool.getMaximumCheckOutTime();
-  }
-
-  /**
-   * @param value the maximum wait time for a connection
-   */
-  public void setMaximumCheckOutTime(final int value) {
-    connectionPool.setMaximumCheckOutTime(value);
+  public Value<Integer> getMaximumCheckOutTimeValue() {
+    return maximumCheckoutTimeValue;
   }
 
   /**
@@ -246,7 +224,7 @@ public final class ConnectionPoolMonitor {
   /**
    * @return EventObserver notified when statistics have been updated
    */
-  public EventObserver getStatisticsObserver() {
+  public EventObserver<?> getStatisticsObserver() {
     return statisticsUpdatedEvent.getObserver();
   }
 
@@ -262,6 +240,26 @@ public final class ConnectionPoolMonitor {
    */
   public void shutdown() {
     updateScheduler.stop();
+  }
+
+  private void setPooledConnectionTimeout(final int value) {
+    connectionPool.setConnectionTimeout(value * THOUSAND);
+  }
+
+  private void setPoolCleanupInterval(final int value) {
+    connectionPool.setCleanupInterval(value * THOUSAND);
+  }
+
+  private void setMinimumPoolSize(final int value) {
+    connectionPool.setMinimumPoolSize(value);
+  }
+
+  private void setMaximumPoolSize(final int value) {
+    connectionPool.setMaximumPoolSize(value);
+  }
+
+  private void setMaximumCheckOutTime(final int value) {
+    connectionPool.setMaximumCheckOutTime(value);
   }
 
   private void updateStatistics() {
@@ -293,6 +291,19 @@ public final class ConnectionPoolMonitor {
       this.snapshotStatisticsCollection.addSeries(snapshotInUseSeries);
       this.snapshotStatisticsCollection.addSeries(snapshotWaitingSeries);
     }
+    pooledConnectionTimeoutValue.set(connectionPool.getConnectionTimeout() / THOUSAND);
+    pooledCleanupIntervalValue.set(connectionPool.getCleanupInterval() / THOUSAND);
+    minimumPoolSizeValue.set(connectionPool.getMinimumPoolSize());
+    maximumPoolSizeValue.set(connectionPool.getMaximumPoolSize());
+    maximumCheckoutTimeValue.set(connectionPool.getMaximumCheckOutTime());
     statisticsUpdatedEvent.onEvent();
+  }
+
+  private void bindEvents() {
+    pooledConnectionTimeoutValue.addDataListener(this::setPooledConnectionTimeout);
+    pooledCleanupIntervalValue.addDataListener(this::setPoolCleanupInterval);
+    minimumPoolSizeValue.addDataListener(this::setMinimumPoolSize);
+    maximumPoolSizeValue.addDataListener(this::setMaximumPoolSize);
+    maximumCheckoutTimeValue.addDataListener(this::setMaximumCheckOutTime);
   }
 }

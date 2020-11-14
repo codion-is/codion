@@ -216,7 +216,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void linkToModel() {
-    model.getSearchStringValue().link(TextValues.textValue(this));
+    TextValues.textValue(this).link(model.getSearchStringValue());
     model.getSearchStringValue().addDataListener(data -> updateColors());
     model.addSelectedEntitiesListener(data -> setCaretPosition(0));
   }
@@ -363,11 +363,11 @@ public final class EntityLookupField extends JTextField {
       }
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(MESSAGES.getString("enable_multiple_search_values"));
-      lookupModel.getMultipleSelectionEnabledValue().link(BooleanValues.booleanButtonModelValue(boxAllowMultipleValues.getModel()));
+      BooleanValues.booleanButtonModelValue(boxAllowMultipleValues.getModel()).link(lookupModel.getMultipleSelectionEnabledValue());
       final SizedDocument document = new SizedDocument();
       document.setMaxLength(1);
       final JTextField multipleValueSeparatorField = new JTextField(document, "", 1);
-      lookupModel.getMultipleItemSeparatorValue().link(TextValues.textValue(multipleValueSeparatorField));
+      TextValues.textValue(multipleValueSeparatorField).link(lookupModel.getMultipleItemSeparatorValue());
 
       final JPanel generalSettingsPanel = new JPanel(Layouts.gridLayout(2, 1));
       generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
@@ -389,11 +389,11 @@ public final class EntityLookupField extends JTextField {
     private static JPanel initializePropertyPanel(final EntityLookupModel.LookupSettings settings) {
       final JPanel panel = new JPanel(Layouts.gridLayout(3, 1));
       final JCheckBox boxCaseSensitive = new JCheckBox(MESSAGES.getString("case_sensitive"));
-      settings.getCaseSensitiveValue().link(BooleanValues.booleanButtonModelValue(boxCaseSensitive.getModel()));
+      BooleanValues.booleanButtonModelValue(boxCaseSensitive.getModel()).link(settings.getCaseSensitiveValue());
       final JCheckBox boxPrefixWildcard = new JCheckBox(MESSAGES.getString("prefix_wildcard"));
-      settings.getWildcardPrefixValue().link(BooleanValues.booleanButtonModelValue(boxPrefixWildcard.getModel()));
+      BooleanValues.booleanButtonModelValue(boxPrefixWildcard.getModel()).link(settings.getWildcardPrefixValue());
       final JCheckBox boxPostfixWildcard = new JCheckBox(MESSAGES.getString("postfix_wildcard"));
-      settings.getWildcardPostfixValue().link(BooleanValues.booleanButtonModelValue(boxPostfixWildcard.getModel()));
+      BooleanValues.booleanButtonModelValue(boxPostfixWildcard.getModel()).link(settings.getWildcardPostfixValue());
 
       panel.add(boxCaseSensitive);
       panel.add(boxPrefixWildcard);

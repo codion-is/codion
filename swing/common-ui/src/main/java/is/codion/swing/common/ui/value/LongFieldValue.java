@@ -9,7 +9,7 @@ import is.codion.swing.common.ui.textfield.LongField;
 final class LongFieldValue extends AbstractTextComponentValue<Long, LongField> {
 
   LongFieldValue(final LongField longField, final Nullable nullable, final UpdateOn updateOn) {
-    super(longField, nullable, updateOn);
+    super(longField, nullable == Nullable.YES ? null : 0L, updateOn);
   }
 
   @Override

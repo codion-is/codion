@@ -1068,13 +1068,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
 
     @Override
-    public void set(final V value) {
+    protected void doSet(final V value) {
       editModel.put(attribute, value);
-    }
-
-    @Override
-    public boolean isNullable() {
-      return true;
     }
   }
 }

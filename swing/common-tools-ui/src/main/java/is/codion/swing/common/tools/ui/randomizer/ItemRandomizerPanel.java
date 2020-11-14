@@ -130,7 +130,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private JCheckBox createEnabledCheckBox(final T item) {
     final JCheckBox enabledBox = new JCheckBox("Enabled");
-    new EnabledModelValue(item).link(new EnabledUIValue(enabledBox.getModel()));
+    new EnabledUIValue(enabledBox.getModel()).link(new EnabledModelValue(item));
 
     return enabledBox;
   }
@@ -142,7 +142,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
-    new WeightModelValue(item).link(new WeightUIValue(spinnerModel));
+    new WeightUIValue(spinnerModel).link(new WeightModelValue(item));
 
     return spinnerModel;
   }
@@ -151,12 +151,8 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     private final T item;
 
     private EnabledModelValue(final T item) {
+      super(false);
       this.item = item;
-    }
-
-    @Override
-    public void set(final Boolean value) {
-      model.setItemEnabled(item, value);
     }
 
     @Override
@@ -165,8 +161,8 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
-    public boolean isNullable() {
-      return false;
+    protected void doSet(final Boolean value) {
+      model.setItemEnabled(item, value);
     }
   }
 
@@ -174,13 +170,9 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     private final ButtonModel buttonModel;
 
     private EnabledUIValue(final ButtonModel buttonModel) {
+      super(false);
       this.buttonModel = buttonModel;
       buttonModel.addItemListener(e -> notifyValueChange());
-    }
-
-    @Override
-    public void set(final Boolean value) {
-      buttonModel.setSelected(value);
     }
 
     @Override
@@ -189,8 +181,8 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
-    public boolean isNullable() {
-      return false;
+    protected void doSet(final Boolean value) {
+      buttonModel.setSelected(value);
     }
   }
 
@@ -198,12 +190,8 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     private final T item;
 
     private WeightModelValue(final T item) {
+      super(0);
       this.item = item;
-    }
-
-    @Override
-    public void set(final Integer value) {
-      model.setWeight(item, value);
     }
 
     @Override
@@ -212,8 +200,8 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
-    public boolean isNullable() {
-      return false;
+    protected void doSet(final Integer value) {
+      model.setWeight(item, value);
     }
   }
 
@@ -221,13 +209,9 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     private final SpinnerNumberModel spinnerModel;
 
     private WeightUIValue(final SpinnerNumberModel spinnerModel) {
+      super(0);
       this.spinnerModel = spinnerModel;
       spinnerModel.addChangeListener(e -> notifyValueChange());
-    }
-
-    @Override
-    public void set(final Integer value) {
-      spinnerModel.setValue(value);
     }
 
     @Override
@@ -236,8 +220,8 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
 
     @Override
-    public boolean isNullable() {
-      return false;
+    protected void doSet(final Integer value) {
+      spinnerModel.setValue(value);
     }
   }
 }

@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.common.Formats;
-import is.codion.common.value.Nullable;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.text.JTextComponent;
@@ -19,7 +18,7 @@ class FormattedTextComponentValue<V, C extends JTextComponent> extends AbstractT
   private final Format format;
 
   FormattedTextComponentValue(final C textComponent, final Format format, final UpdateOn updateOn) {
-    super(textComponent, Nullable.YES, updateOn);
+    super(textComponent, null, updateOn);
     if (textComponent instanceof JFormattedTextField) {
       this.formatter = ((JFormattedTextField) textComponent).getFormatter();
     }

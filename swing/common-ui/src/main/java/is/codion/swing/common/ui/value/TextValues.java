@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.value.Nullable;
 import is.codion.swing.common.ui.textfield.TextInputPanel;
 
 import javax.swing.JTextField;
@@ -32,7 +31,7 @@ public final class TextValues {
    * @return a Value bound to the given component
    */
   public static <C extends JTextComponent> ComponentValue<String, C> textValue(final C textComponent) {
-    return new AbstractTextComponentValue<String, C>(textComponent, Nullable.YES, UpdateOn.KEYSTROKE) {
+    return new AbstractTextComponentValue<String, C>(textComponent, null, UpdateOn.KEYSTROKE) {
       @Override
       protected String getComponentValue(final C component) {
         final String text = component.getText();

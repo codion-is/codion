@@ -3,14 +3,12 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.value.Nullable;
-
 import javax.swing.BoundedRangeModel;
 
 final class IntegerBoundedRangeModelValue extends AbstractComponentValue<Integer, BoundedRangeModel> {
 
   IntegerBoundedRangeModelValue(final BoundedRangeModel rangeModel) {
-    super(rangeModel, Nullable.NO);
+    super(rangeModel, 0);
     rangeModel.addChangeListener(e -> notifyValueChange());
   }
 

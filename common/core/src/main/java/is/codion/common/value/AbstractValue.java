@@ -8,17 +8,53 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 
+import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A base Value implementation handling everything except the value itself.
- * When extending this class remember to always call {@link #notifyValueChange()}
- * when the underlying value changes.
  * @param <V> the value type
  */
 public abstract class AbstractValue<V> implements Value<V> {
 
+  static final Validator<?> NULL_VALIDATOR = (Validator<Object>) value -> {};
+
+  public enum NotifyOnSet {
+    YES, NO
+  }
+
   private final Event<V> changeEvent = Events.event();
+  private final V nullValue;
+  private final boolean notifyOnSet;
+
+  private Validator<V> validator = (Validator<V>) NULL_VALIDATOR;
+
+  public AbstractValue() {
+    this(null);
+  }
+
+  public AbstractValue(final V nullValue) {
+    this(nullValue, NotifyOnSet.NO);
+  }
+
+  public AbstractValue(final V nullValue, final NotifyOnSet notifyOnSet) {
+    this.nullValue = nullValue;
+    this.notifyOnSet = notifyOnSet == NotifyOnSet.YES;
+  }
+
+  @Override
+  public final void set(final V value) {
+    final V actualValue = value == null ? nullValue : value;
+    validator.validate(actualValue);
+    if (!Objects.equals(get(), actualValue)) {
+      doSet(actualValue);
+      if (notifyOnSet) {
+        notifyValueChange();
+      }
+    }
+  }
 
   @Override
   public final Optional<V> toOptional() {
@@ -27,6 +63,11 @@ public abstract class AbstractValue<V> implements Value<V> {
     }
 
     return Optional.of(get());
+  }
+
+  @Override
+  public final boolean isNullable() {
+    return nullValue == null;
   }
 
   @Override
@@ -55,9 +96,27 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   @Override
-  public final void link(final Value<V> linkedValue) {
-    new ValueLink<>(this, linkedValue);
+  public final void link(final Value<V> originalValue) {
+    new ValueLink<>(this, originalValue);
   }
+
+  @Override
+  public final void link(final ValueObserver<V> originalValueObserver) {
+    set(requireNonNull(originalValueObserver, "originalValueObserver").get());
+    originalValueObserver.addDataListener(this::set);
+  }
+
+  @Override
+  public final void setValidator(final Validator<V> validator) {
+    this.validator = validator == null ? (Validator<V>) NULL_VALIDATOR : validator;
+    this.validator.validate(get());
+  }
+
+  /**
+   * Sets the actual internal value.
+   * @param value the value
+   */
+  protected abstract void doSet(final V value);
 
   /**
    * Fires the change event for this value, using the current value, indicating that

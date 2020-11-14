@@ -41,11 +41,11 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   private static final DateTimeFormatter DATE_TIME_FILENAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 
   private final JTextField creationDateField = new JTextField();
+  private final JCheckBox loggingEnabledCheckBox = new JCheckBox("Logging enabled");
   private final JTextArea logArea = new JTextArea();
   private final JTree treeLog = new JTree();
 
   private ClientInstanceMonitor model;
-  private JCheckBox loggingEnabledCheckBox;
 
   /**
    * Instantiates a new ClientInstanceMonitorPanel
@@ -75,7 +75,6 @@ public final class ClientInstanceMonitorPanel extends JPanel {
       else {
         log.append("Disconnected!");
       }
-      loggingEnabledCheckBox.setSelected(model.isLoggingEnabled());
       final LocalDateTime creationDate = model.getCreationDate();
       creationDateField.setText(creationDate == null ? "unknown" : DATE_TIME_FORMATTER.format(creationDate));
       model.refreshLogTreeModel();
@@ -84,16 +83,6 @@ public final class ClientInstanceMonitorPanel extends JPanel {
       creationDateField.setText("");
     }
     logArea.setText(log.toString());
-  }
-
-  public boolean isLoggingEnabled() throws RemoteException {
-    return model != null && model.isLoggingEnabled();
-  }
-
-  public void setLoggingEnabled(final boolean status) throws RemoteException {
-    if (model != null) {
-      model.setLoggingEnabled(status);
-    }
   }
 
   private void initializeUI() {
@@ -105,7 +94,6 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     final JPanel infoBase = new JPanel(Layouts.borderLayout());
     infoBase.setBorder(BorderFactory.createTitledBorder("Connection info"));
     infoBase.add(infoPanel, BorderLayout.CENTER);
-    loggingEnabledCheckBox = new JCheckBox("Logging enabled");
     final JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     settingsPanel.add(loggingEnabledCheckBox);
     settingsPanel.add(new JButton(Controls.control(this::updateView, "Refresh log")));

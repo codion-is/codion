@@ -3,14 +3,12 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.value.Nullable;
-
 import javax.swing.ButtonModel;
 
 final class BooleanButtonModelValue extends AbstractComponentValue<Boolean, ButtonModel> {
 
   BooleanButtonModelValue(final ButtonModel buttonModel) {
-    super(buttonModel, Nullable.NO);
+    super(buttonModel, false);
     buttonModel.addItemListener(itemEvent -> notifyValueChange());
   }
 

@@ -223,7 +223,7 @@ public final class NumericalValues {
   public static SpinnerNumberModel integerValueSpinnerModel(final Object owner, final String propertyName,
                                                             final EventObserver<Integer> valueChangeEvent) {
     final SpinnerNumberModel numberModel = new SpinnerNumberModel();
-    Values.propertyValue(owner, propertyName, int.class, valueChangeEvent).link(integerValue(numberModel));
+    integerValue(numberModel).link(Values.propertyValue(owner, propertyName, int.class, valueChangeEvent));
 
     return numberModel;
   }
@@ -235,7 +235,7 @@ public final class NumericalValues {
    */
   public static SpinnerNumberModel integerValueSpinnerModel(final Value<Integer> integerValue) {
     final SpinnerNumberModel numberModel = new SpinnerNumberModel();
-    integerValue.link(integerValue(numberModel));
+    integerValue(numberModel).link(integerValue);
 
     return numberModel;
   }

@@ -305,7 +305,7 @@ public final class EntityInputComponents {
     requireNonNull(value, VALUE_PARAM_NAME);
     final BooleanComboBoxModel comboBoxModel = new BooleanComboBoxModel();
     final SteppedComboBox<Item<Boolean>> comboBox = new SteppedComboBox<>(comboBoxModel);
-    value.link(SelectedValues.selectedItemValue(comboBox));
+    SelectedValues.selectedItemValue(comboBox).link(value);
     linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
     addComboBoxCompletion(comboBox);
@@ -341,7 +341,7 @@ public final class EntityInputComponents {
     requireNonNull(comboBoxModel, "comboBoxModel");
     comboBoxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
-    value.link(SelectedValues.selectedValue(comboBox));
+    SelectedValues.selectedValue(comboBox).link(value);
     linkToEnabledState(enabledState, comboBox);
     addComboBoxCompletion(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
@@ -375,7 +375,7 @@ public final class EntityInputComponents {
     requireNonNull(lookupModel, "lookupModel");
     requireNonNull(value, VALUE_PARAM_NAME);
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
-    value.link(new LookupUIValue(lookupField.getModel()));
+    new LookupUIValue(lookupField.getModel()).link(value);
     linkToEnabledState(enabledState, lookupField);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
     TextFields.selectAllOnFocusGained(lookupField);
@@ -437,7 +437,7 @@ public final class EntityInputComponents {
     requireNonNull(property, PROPERTY_PARAM_NAME);
     requireNonNull(value, VALUE_PARAM_NAME);
     final SteppedComboBox<Item<T>> comboBox = new SteppedComboBox<>(valueListComboBoxModel);
-    value.link(SelectedValues.selectedItemValue(comboBox));
+    SelectedValues.selectedItemValue(comboBox).link(value);
     linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
     addComboBoxCompletion(comboBox);
@@ -479,7 +479,7 @@ public final class EntityInputComponents {
       throw new IllegalArgumentException("Editable property ComboBox is only implemented for String properties");
     }
     comboBox.setEditable(editable == Editable.YES);
-    value.link(SelectedValues.selectedValue(comboBox));
+    SelectedValues.selectedValue(comboBox).link(value);
     linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
 
@@ -522,15 +522,15 @@ public final class EntityInputComponents {
     final JFormattedTextField textField = (JFormattedTextField) createTextField(property, enabledState,
             DateFormats.getDateMask(formatString), ValueContainsLiterals.YES);
     if (property.getAttribute().isLocalDate()) {
-      ((Value<LocalDate>) value).link(TemporalValues.localDateValue(textField, property.getDateTimeFormatPattern(), updateOn));
+      TemporalValues.localDateValue(textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalDate>) value);
       return (TemporalInputPanel<T>) new LocalDateInputPanel(textField, formatString, calendarButton, enabledState);
     }
     else if (property.getAttribute().isLocalDateTime()) {
-      ((Value<LocalDateTime>) value).link(TemporalValues.localDateTimeValue(textField, property.getDateTimeFormatPattern(), updateOn));
+      TemporalValues.localDateTimeValue(textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalDateTime>) value);
       return (TemporalInputPanel<T>) new LocalDateTimeInputPanel(textField, formatString, calendarButton, enabledState);
     }
     else if (property.getAttribute().isLocalTime()) {
-      ((Value<LocalTime>) value).link(TemporalValues.localTimeValue(textField, property.getDateTimeFormatPattern(), updateOn));
+      TemporalValues.localTimeValue(textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalTime>) value);
       return (TemporalInputPanel<T>) new LocalTimeInputPanel(textField, formatString, enabledState);
     }
 
@@ -608,7 +608,7 @@ public final class EntityInputComponents {
     }
     linkToEnabledState(enabledState, textArea);
 
-    value.link(TextValues.textValue(textArea, null, updateOn));
+    TextValues.textValue(textArea, null, updateOn).link(value);
     textArea.setToolTipText(property.getDescription());
 
     return textArea;
@@ -652,31 +652,31 @@ public final class EntityInputComponents {
     requireNonNull(value, VALUE_PARAM_NAME);
     final JTextField textField = createTextField(property, enabledState, null, null);
     if (property.getAttribute().isString()) {
-      ((Value<String>) value).link(TextValues.textValue(textField, property.getFormat(), updateOn));
+      TextValues.textValue(textField, property.getFormat(), updateOn).link((Value<String>) value);
     }
     else if (property.getAttribute().isCharacter()) {
-      ((Value<Character>) value).link(TextValues.characterValue(textField, updateOn));
+      TextValues.characterValue(textField, updateOn).link((Value<Character>) value);
     }
     else if (property.getAttribute().isInteger()) {
-      ((Value<Integer>) value).link(NumericalValues.integerValue((IntegerField) textField, Nullable.YES, updateOn));
+      NumericalValues.integerValue((IntegerField) textField, Nullable.YES, updateOn).link((Value<Integer>) value);
     }
     else if (property.getAttribute().isDouble()) {
-      ((Value<Double>) value).link(NumericalValues.doubleValue((DoubleField) textField, Nullable.YES, updateOn));
+      NumericalValues.doubleValue((DoubleField) textField, Nullable.YES, updateOn).link((Value<Double>) value);
     }
     else if (property.getAttribute().isBigDecimal()) {
-      ((Value<BigDecimal>) value).link(NumericalValues.bigDecimalValue((BigDecimalField) textField, updateOn));
+      NumericalValues.bigDecimalValue((BigDecimalField) textField, updateOn).link((Value<BigDecimal>) value);
     }
     else if (property.getAttribute().isLong()) {
-      ((Value<Long>) value).link(NumericalValues.longValue((LongField) textField, Nullable.YES, updateOn));
+      NumericalValues.longValue((LongField) textField, Nullable.YES, updateOn).link((Value<Long>) value);
     }
     else if (property.getAttribute().isLocalDate()) {
-      ((Value<LocalDate>) value).link(TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
+      TemporalValues.localDateValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalDate>) value);
     }
     else if (property.getAttribute().isLocalTime()) {
-      ((Value<LocalTime>) value).link(TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
+      TemporalValues.localTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalTime>) value);
     }
     else if (property.getAttribute().isLocalDateTime()) {
-      ((Value<LocalDateTime>) value).link(TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn));
+      TemporalValues.localDateTimeValue((JFormattedTextField) textField, property.getDateTimeFormatPattern(), updateOn).link((Value<LocalDateTime>) value);
     }
     else {
       throw new IllegalArgumentException("Property type does not support text fields: " + property);
@@ -729,7 +729,7 @@ public final class EntityInputComponents {
                                                           final ValueContainsLiterals valueContainsLiterals, final UpdateOn updateOn,
                                                           final StateObserver enabledState) {
     final JFormattedTextField textField = (JFormattedTextField) createTextField(property, enabledState, formatMaskString, valueContainsLiterals);
-    value.link(TextValues.textValue(textField, null, updateOn));
+    TextValues.textValue(textField, null, updateOn).link(value);
 
     return textField;
   }
@@ -875,7 +875,7 @@ public final class EntityInputComponents {
 
   private static JCheckBox initializeCheckBox(final Property<Boolean> property, final Value<Boolean> value,
                                               final StateObserver enabledState, final JCheckBox checkBox) {
-    value.link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
+    BooleanValues.booleanButtonModelValue(checkBox.getModel()).link(value);
     linkToEnabledState(enabledState, checkBox);
     checkBox.setToolTipText(property.getDescription());
 
@@ -934,19 +934,14 @@ public final class EntityInputComponents {
     }
 
     @Override
-    public void set(final Entity value) {
-      lookupModel.setSelectedEntity(value);
-    }
-
-    @Override
     public Entity get() {
       final List<Entity> selectedEntities = lookupModel.getSelectedEntities();
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
     @Override
-    public boolean isNullable() {
-      return true;
+    protected void doSet(final Entity value) {
+      lookupModel.setSelectedEntity(value);
     }
   }
 }

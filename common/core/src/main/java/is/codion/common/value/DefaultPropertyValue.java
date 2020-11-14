@@ -22,6 +22,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   private final Object valueOwner;
   private final Method getMethod;
   private Method setMethod;
+  private Validator<V> validator = (Validator<V>) AbstractValue.NULL_VALIDATOR;
 
   DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class<V> valueClass,
                        final EventObserver<V> changeObserver) {
@@ -74,6 +75,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
     if (setMethod == null) {
       throw new IllegalStateException("Set method for property not found: " + propertyName);
     }
+    validator.validate(value);
     try {
       setMethod.invoke(valueOwner, value);
     }
@@ -131,7 +133,19 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public void link(final Value<V> linkedValue) {
-    new ValueLink<>(this, linkedValue);
+  public void link(final Value<V> originalValue) {
+    new ValueLink<>(this, originalValue);
+  }
+
+  @Override
+  public void link(final ValueObserver<V> originalValueObserver) {
+    set(requireNonNull(originalValueObserver, "originalValueObserver").get());
+    originalValueObserver.addDataListener(this::set);
+  }
+
+  @Override
+  public void setValidator(final Validator<V> validator) {
+    this.validator = validator == null ? (Validator<V>) AbstractValue.NULL_VALIDATOR : validator;
+    this.validator.validate(get());
   }
 }
