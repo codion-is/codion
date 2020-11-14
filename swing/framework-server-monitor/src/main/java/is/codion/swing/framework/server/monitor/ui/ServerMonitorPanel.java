@@ -243,8 +243,7 @@ public final class ServerMonitorPanel extends JPanel {
     final IntegerField connectionCountField = new IntegerField(4);
     connectionCountField.setEditable(false);
     connectionCountField.setHorizontalAlignment(JLabel.CENTER);
-    NumericalValues.integerValue(connectionCountField, Nullable.NO)
-            .link(Values.propertyValue(model, "connectionCount", int.class, model.getStatisticsUpdatedObserver()));
+    NumericalValues.integerValue(connectionCountField, Nullable.NO).link(model.getConnectionCountObserver());
 
     return connectionCountField;
   }
@@ -253,8 +252,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField memoryField = new JTextField(8);
     memoryField.setEditable(false);
     memoryField.setHorizontalAlignment(JLabel.CENTER);
-    TextValues.textValue(memoryField)
-            .link(Values.propertyValue(model, "memoryUsage", String.class, model.getStatisticsUpdatedObserver()));
+    TextValues.textValue(memoryField).link(model.getMemoryUsageObserver());
 
     return memoryField;
   }

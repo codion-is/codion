@@ -15,6 +15,8 @@ import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
+import is.codion.common.value.Values;
 import is.codion.framework.server.EntityServerAdmin;
 
 import org.jfree.data.xy.XYDataset;
@@ -50,7 +52,6 @@ public final class ServerMonitor {
   private static final String GC_EVENT_PREFIX = "GC ";
 
   private final Event<?> serverShutDownEvent = Events.event();
-  private final Event<?> statisticsUpdatedEvent = Events.event();
   private final Event<Object> logLevelChangedEvent = Events.event();
   private final Event<Integer> connectionLimitChangedEvent = Events.event();
 
@@ -68,10 +69,10 @@ public final class ServerMonitor {
 
   private final LoggerProxy loggerProxy = LoggerProxy.createLoggerProxy();
 
-  private int connectionCount = 0;
   private boolean shutdown = false;
 
-  private long memoryUsage;
+  private final Value<Integer> connectionCountValue = Values.value(0);
+  private final Value<String> memoryUsageValue = Values.value("");
   private final DefaultTableModel domainListModel = new DomainTableModel();
   private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
@@ -161,15 +162,15 @@ public final class ServerMonitor {
   /**
    * @return the amount of memory being used by the server
    */
-  public String getMemoryUsage() {
-    return MEMORY_USAGE_FORMAT.format(memoryUsage) + " KB";
+  public ValueObserver<String> getMemoryUsageObserver() {
+    return memoryUsageValue;
   }
 
   /**
    * @return the number of connected clients
    */
-  public int getConnectionCount() {
-    return connectionCount;
+  public ValueObserver<Integer> getConnectionCountObserver() {
+    return connectionCountValue;
   }
 
   /**
@@ -381,13 +382,6 @@ public final class ServerMonitor {
   }
 
   /**
-   * @return a listener notified when the statistics have been updated
-   */
-  public EventObserver getStatisticsUpdatedObserver() {
-    return statisticsUpdatedEvent.getObserver();
-  }
-
-  /**
    * @return a listener notified when the log level has changed
    */
   public EventObserver<Object> getLogLevelObserver() {
@@ -423,8 +417,8 @@ public final class ServerMonitor {
         final EntityServerAdmin.ServerStatistics statistics = server.getServerStatistics(lastStatisticsUpdateTime);
         final long timestamp = statistics.getTimestamp();
         lastStatisticsUpdateTime = timestamp;
-        connectionCount = statistics.getConnectionCount();
-        memoryUsage = statistics.getUsedMemory();
+        connectionCountValue.set(statistics.getConnectionCount());
+        memoryUsageValue.set(MEMORY_USAGE_FORMAT.format(statistics.getUsedMemory()) + " KB");
         connectionRequestsPerSecondSeries.add(timestamp, statistics.getRequestsPerSecond());
         maxMemorySeries.add(timestamp, statistics.getMaximumMemory() / THOUSAND);
         allocatedMemorySeries.add(timestamp, statistics.getAllocatedMemory() / THOUSAND);
@@ -435,7 +429,6 @@ public final class ServerMonitor {
         connectionLimitSeries.add(timestamp, statistics.getConnectionLimit());
         addThreadStatistics(timestamp, statistics.getThreadStatistics());
         addGCInfo(statistics.getGcEvents());
-        statisticsUpdatedEvent.onEvent();
       }
     }
     catch (final RemoteException ignored) {/*ignored*/}

@@ -10,6 +10,8 @@ import is.codion.common.event.Events;
 
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A base Value implementation handling everything except the value itself.
  * When extending this class remember to always call {@link #notifyValueChange()}
@@ -57,6 +59,12 @@ public abstract class AbstractValue<V> implements Value<V> {
   @Override
   public final void link(final Value<V> originalValue) {
     new ValueLink<>(this, originalValue);
+  }
+
+  @Override
+  public void link(final ValueObserver<V> originalValueObserver) {
+    set(requireNonNull(originalValueObserver, "originalValueObserver").get());
+    originalValueObserver.addDataListener(this::set);
   }
 
   /**

@@ -134,4 +134,10 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   public void link(final Value<V> originalValue) {
     new ValueLink<>(this, originalValue);
   }
+
+  @Override
+  public void link(final ValueObserver<V> originalValueObserver) {
+    set(requireNonNull(originalValueObserver, "originalValueObserver").get());
+    originalValueObserver.addDataListener(this::set);
+  }
 }

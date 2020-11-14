@@ -22,4 +22,12 @@ public interface Value<V> extends ValueObserver<V> {
    * @param originalValue the original value to link this value to
    */
   void link(Value<V> originalValue);
+
+  /**
+   * Creates a unidirectional link between this value and the given original value observer,
+   * so that changes in the original value are reflected in this one.
+   * Note that after a call to this method the value of this value the same as the original value.
+   * @param originalValueObserver the original value to link this value to
+   */
+  void link(ValueObserver<V> originalValueObserver);
 }

@@ -71,4 +71,10 @@ final class StateValue implements Value<Boolean>  {
   public void link(final Value<Boolean> originalValue) {
     new ValueLink<>(this, originalValue);
   }
+
+  @Override
+  public void link(final ValueObserver<Boolean> originalValueObserver) {
+    set(requireNonNull(originalValueObserver, "originalValueObserver").get());
+    originalValueObserver.addDataListener(this::set);
+  }
 }
