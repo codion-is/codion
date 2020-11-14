@@ -125,8 +125,7 @@ public final class ServerMonitorPanel extends JPanel {
     serverPanel.add(new JLabel("Connections", JLabel.RIGHT));
     serverPanel.add(initializeConnectionCountField());
     serverPanel.add(new JLabel("limit", JLabel.RIGHT));
-    final JSpinner connectionLimitSpinner = new JSpinner(integerValueSpinnerModel(model, "connectionLimit",
-            model.getConnectionLimitObserver()));
+    final JSpinner connectionLimitSpinner = new JSpinner(integerValueSpinnerModel(model.getConnectionLimitValue()));
     ((JSpinner.DefaultEditor) connectionLimitSpinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     serverPanel.add(connectionLimitSpinner);
     serverPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
@@ -261,8 +260,7 @@ public final class ServerMonitorPanel extends JPanel {
     final DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.getLogLevels().toArray());
 
     final JComboBox<Object> box = new JComboBox<>(comboModel);
-    SelectedValues.selectedValue(box)
-            .link(Values.propertyValue(model, "logLevel", Object.class, model.getLogLevelObserver()));
+    SelectedValues.selectedValue(box).link(model.getLogLevelValue());
 
     return box;
   }

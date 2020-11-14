@@ -4,10 +4,9 @@
 package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.MethodLogger;
-import is.codion.common.event.Event;
-import is.codion.common.event.Events;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.ui.value.BooleanValues;
@@ -29,10 +28,9 @@ public final class ClientInstanceMonitor {
 
   private static final NumberFormat MICROSECOND_FORMAT = NumberFormat.getIntegerInstance();
 
-  private final Event<Boolean> loggingStatusChangedEvent = Events.event();
-
   private final RemoteClient remoteClient;
   private final EntityServerAdmin server;
+  private final Value<Boolean> loggingEnabledValue;
   private final DefaultMutableTreeNode logRootNode = new DefaultMutableTreeNode();
   private final DefaultTreeModel logTreeModel = new DefaultTreeModel(logRootNode);
   private final ButtonModel loggingEnabledButtonModel = new JToggleButton.ToggleButtonModel();
@@ -41,12 +39,14 @@ public final class ClientInstanceMonitor {
    * Instantiates a new {@link ClientInstanceMonitor}, monitoring the given client
    * @param server the server being monitored
    * @param remoteClient the client info
+   * @throws RemoteException in case of an exception
    */
-  public ClientInstanceMonitor(final EntityServerAdmin server, final RemoteClient remoteClient) {
+  public ClientInstanceMonitor(final EntityServerAdmin server, final RemoteClient remoteClient) throws RemoteException {
     this.remoteClient = remoteClient;
     this.server = server;
-    BooleanValues.booleanButtonModelValue(loggingEnabledButtonModel)
-            .link(Values.propertyValue(this, "loggingEnabled", boolean.class, loggingStatusChangedEvent));
+    this.loggingEnabledValue = Values.value(server.isLoggingEnabled(remoteClient.getClientId()));
+    BooleanValues.booleanButtonModelValue(loggingEnabledButtonModel).link(loggingEnabledValue);
+    bindEvents();
   }
 
   /**
@@ -78,23 +78,6 @@ public final class ClientInstanceMonitor {
    */
   public ClientLog getLog() throws RemoteException {
     return server.getClientLog(remoteClient.getClientId());
-  }
-
-  /**
-   * @return true if logging is enabled for this client
-   * @throws RemoteException in case of an exception
-   */
-  public boolean isLoggingEnabled() throws RemoteException {
-    return server.isLoggingEnabled(remoteClient.getClientId());
-  }
-
-  /**
-   * @param status true if logging should be enabled, false otherwise
-   * @throws RemoteException in case of an exception
-   */
-  public void setLoggingEnabled(final boolean status) throws RemoteException {
-    server.setLoggingEnabled(remoteClient.getClientId(), status);
-    loggingStatusChangedEvent.onEvent(status);
   }
 
   /**
@@ -134,6 +117,22 @@ public final class ClientInstanceMonitor {
   @Override
   public String toString() {
     return remoteClient.toString();
+  }
+
+  /**
+   * @param status true if logging should be enabled, false otherwise
+   */
+  private void setLoggingEnabled(final boolean status) {
+    try {
+      server.setLoggingEnabled(remoteClient.getClientId(), status);
+    }
+    catch (final RemoteException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void bindEvents() {
+    loggingEnabledValue.addDataListener(this::setLoggingEnabled);
   }
 
   private static void addSubLog(final DefaultMutableTreeNode entryNode, final List<MethodLogger.Entry> subLog) {

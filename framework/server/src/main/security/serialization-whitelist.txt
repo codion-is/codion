@@ -10,6 +10,7 @@
 [Lnet.sf.jasperreports.engine.JRParameter;
 [Lnet.sf.jasperreports.engine.JRQueryChunk;
 [Lnet.sf.jasperreports.engine.JRVariable;
+ch.qos.logback.classic.Level
 java.lang.Boolean
 java.lang.Character
 java.lang.Double

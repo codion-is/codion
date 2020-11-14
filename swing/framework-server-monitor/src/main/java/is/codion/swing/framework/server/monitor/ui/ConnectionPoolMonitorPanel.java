@@ -146,16 +146,11 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getConfigurationPanel() {
     final JPanel configBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
 
-    final JSpinner timeoutSpinner = new JSpinner(integerValueSpinnerModel(model, "pooledConnectionTimeout",
-            model.getStatisticsObserver()));
-    final JSpinner cleanupIntervalSpinner = new JSpinner(integerValueSpinnerModel(model, "poolCleanupInterval",
-            model.getStatisticsObserver()));
-    final JSpinner maximumSizeSpinner = new JSpinner(integerValueSpinnerModel(model, "maximumPoolSize",
-            model.getStatisticsObserver()));
-    final JSpinner minimumSizeSpinner = new JSpinner(integerValueSpinnerModel(model, "minimumPoolSize",
-            model.getStatisticsObserver()));
-    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(integerValueSpinnerModel(model, "maximumCheckOutTime",
-            model.getStatisticsObserver()));
+    final JSpinner timeoutSpinner = new JSpinner(integerValueSpinnerModel(model.getPooledConnectionTimeoutValue()));
+    final JSpinner cleanupIntervalSpinner = new JSpinner(integerValueSpinnerModel(model.getPoolCleanupIntervalValue()));
+    final JSpinner maximumSizeSpinner = new JSpinner(integerValueSpinnerModel(model.getMaximumPoolSizeValue()));
+    final JSpinner minimumSizeSpinner = new JSpinner(integerValueSpinnerModel(model.getMinimumPoolSizeValue()));
+    final JSpinner maximumCheckOutTimeSpinner = new JSpinner(integerValueSpinnerModel(model.getMaximumCheckOutTimeValue()));
 
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) timeoutSpinner.getEditor()).getTextField().setColumns(3);

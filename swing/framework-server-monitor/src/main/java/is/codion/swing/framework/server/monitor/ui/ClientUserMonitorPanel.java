@@ -96,8 +96,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     actionBase.add(initializeMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Connection timeout (s)"));
-    final JSpinner connectionTimeoutSpinner = new JSpinner(
-            integerValueSpinnerModel(model, "connectionTimeout", model.getConnectionTimeoutObserver()));
+    final JSpinner connectionTimeoutSpinner = new JSpinner(integerValueSpinnerModel(model.getConnectionTimeoutValue()));
     ((JSpinner.DefaultEditor) connectionTimeoutSpinner.getEditor()).getTextField().setColumns(7);
     actionBase.add(connectionTimeoutSpinner);
 
