@@ -65,7 +65,7 @@ public class TemporalValuesTest {
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(format));
     final Value<LocalTime> timePropertyValue = Values.propertyValue(this, "time",
             LocalTime.class, timeValueChangedEvent);
-    timePropertyValue.link(TemporalValues.localTimeValue(textField, format));
+    TemporalValues.localTimeValue(textField, format).link(timePropertyValue);
     assertEquals("__:__", textField.getText());
 
     final LocalTime date = LocalTime.parse("22:42", formatter);
@@ -85,7 +85,7 @@ public class TemporalValuesTest {
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_DOT));
     final Value<LocalDate> datePropertyValue = Values.propertyValue(this, "date",
             LocalDate.class, dateValueChangedEvent);
-    datePropertyValue.link(TemporalValues.localDateValue(textField, DateFormats.SHORT_DOT));
+    TemporalValues.localDateValue(textField, DateFormats.SHORT_DOT).link(datePropertyValue);
     assertEquals("__.__.____", textField.getText());
 
     final LocalDate date = LocalDate.parse("03.10.1975", formatter);
@@ -105,7 +105,7 @@ public class TemporalValuesTest {
     final JFormattedTextField textField = TextFields.createFormattedField(DateFormats.getDateMask(DateFormats.SHORT_TIMESTAMP));
     final Value<LocalDateTime> timestampPropertyValue = Values.propertyValue(this, "timestamp",
             LocalDateTime.class, timestampValueChangedEvent);
-    timestampPropertyValue.link(TemporalValues.localDateTimeValue(textField, DateFormats.SHORT_TIMESTAMP));
+    TemporalValues.localDateTimeValue(textField, DateFormats.SHORT_TIMESTAMP).link(timestampPropertyValue);
     assertEquals("__-__-__ __:__", textField.getText());
 
     final LocalDateTime date = LocalDateTime.parse("03-10-75 10:34", formatter);

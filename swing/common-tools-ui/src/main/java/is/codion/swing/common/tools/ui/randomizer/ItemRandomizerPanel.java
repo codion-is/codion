@@ -130,7 +130,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private JCheckBox createEnabledCheckBox(final T item) {
     final JCheckBox enabledBox = new JCheckBox("Enabled");
-    new EnabledModelValue(item).link(new EnabledUIValue(enabledBox.getModel()));
+    new EnabledUIValue(enabledBox.getModel()).link(new EnabledModelValue(item));
 
     return enabledBox;
   }
@@ -142,7 +142,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
-    new WeightModelValue(item).link(new WeightUIValue(spinnerModel));
+    new WeightUIValue(spinnerModel).link(new WeightModelValue(item));
 
     return spinnerModel;
   }

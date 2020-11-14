@@ -6482,3 +6482,4 @@
   EntityConnection.disconnect() replaced with close()
   EntityConnectionProvider.disconnect() replaced with close(), now extends AutoClosable
   DatabaseConnection.disconnect() replaced with close()
+  Value.link() inverted, now takes originalValue as parameter so that the value doing the linking mirrors the original value

@@ -35,7 +35,7 @@ public class TextValuesTest {
     final JTextField textField = new JTextField();
     final Value<String> stringPropertyValue = Values.propertyValue(this, "stringValue",
             String.class, stringValueChangedEvent);
-    stringPropertyValue.link(TextValues.textValue(textField));
+    TextValues.textValue(textField).link(stringPropertyValue);
     assertNull(this.stringValue);
     assertEquals("", textField.getText());
     setStringValue("hello");
@@ -47,8 +47,8 @@ public class TextValuesTest {
 
     final JTextField textField2 = new JTextField();
     this.stringValue = "test";
-    Values.propertyValue(this, "stringValue",
-            String.class, stringValueChangedEvent).link(TextValues.textValue(textField2));
+    TextValues.textValue(textField2)
+            .link(Values.propertyValue(this, "stringValue", String.class, stringValueChangedEvent));
     assertEquals("test", textField2.getText());
   }
 
@@ -56,8 +56,8 @@ public class TextValuesTest {
   public void nonNullInitialValue() throws Exception {
     stringValue = "name";
     final JTextField textField = new JTextField();
-    Values.propertyValue(this, "stringValue",
-            String.class, stringValueChangedEvent).link(TextValues.textValue(textField));
+    TextValues.textValue(textField)
+            .link(Values.propertyValue(this, "stringValue", String.class, stringValueChangedEvent));
     assertEquals("name", textField.getText());
     textField.setText("darri");
     assertFalse(getStringValue().isEmpty());

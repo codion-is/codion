@@ -100,7 +100,7 @@ public class NumericalValuesTest {  private Long longValue;
     final LongField longField = new LongField();
     final Value<Long> longPropertyValue = Values.propertyValue(this, "longValue",
             Long.class, longValueChangedEvent);
-    longPropertyValue.link(NumericalValues.longValue(longField));
+    NumericalValues.longValue(longField).link(longPropertyValue);
     assertNull(longField.getLong());
     setLongValue(2L);
     assertEquals(2, longField.getLong().longValue());
@@ -115,7 +115,7 @@ public class NumericalValuesTest {  private Long longValue;
     final LongField longField = new LongField();
     final Value<Long> longPrimitivePropertyValue = Values.propertyValue(this, "longPrimitiveValue",
             long.class, longPrimitiveValueChangedEvent);
-    longPrimitivePropertyValue.link(NumericalValues.longValue(longField, Nullable.NO));
+    NumericalValues.longValue(longField, Nullable.NO).link(longPrimitivePropertyValue);
     assertEquals(Long.valueOf(0), longField.getLong());
     setLongPrimitiveValue(2);
     assertEquals(2, longField.getLong().longValue());
@@ -130,7 +130,7 @@ public class NumericalValuesTest {  private Long longValue;
     final IntegerField integerField = new IntegerField();
     final Value<Integer> integerPropertyValue = Values.propertyValue(this, "integerValue",
             Integer.class, integerValueChangedEvent);
-    integerPropertyValue.link(NumericalValues.integerValue(integerField));
+    NumericalValues.integerValue(integerField).link(integerPropertyValue);
     assertNull(integerField.getInteger());
     setIntegerValue(2);
     assertEquals(2, integerField.getInteger().intValue());
@@ -145,7 +145,7 @@ public class NumericalValuesTest {  private Long longValue;
     final IntegerField integerField = new IntegerField();
         final Value<Integer> integerPropertyValue = Values.propertyValue(this, "intValue",
             int.class, intValueChangedEvent);
-    integerPropertyValue.link(NumericalValues.integerValue(integerField, Nullable.NO));
+    NumericalValues.integerValue(integerField, Nullable.NO).link(integerPropertyValue);
     assertEquals((Integer) 0, integerField.getInteger());
     setIntValue(2);
     assertEquals(2, integerField.getInteger().intValue());
@@ -176,7 +176,7 @@ public class NumericalValuesTest {  private Long longValue;
     doubleField.setSeparators('.', ',');
     final Value<Double> doublePropertyValue = Values.propertyValue(this, "doubleValue",
             Double.class, doubleValueChangedEvent);
-    doublePropertyValue.link(NumericalValues.doubleValue(doubleField));
+    NumericalValues.doubleValue(doubleField).link(doublePropertyValue);
     assertNull(doubleField.getDouble());
     setDoubleValue(2.2);
     assertEquals(Double.valueOf(2.2), doubleField.getDouble());
@@ -190,9 +190,9 @@ public class NumericalValuesTest {  private Long longValue;
   public void testDoublePrimitive() throws Exception {
     final DoubleField doubleField = new DoubleField();
     doubleField.setSeparators('.', ',');
-    final Value doublePrimitivePropertyValue = Values.propertyValue(this, "doublePrimitiveValue",
+    final Value<Double> doublePrimitivePropertyValue = Values.propertyValue(this, "doublePrimitiveValue",
             double.class, doublePrimitiveValueValueChangedEvent);
-    doublePrimitivePropertyValue.link(NumericalValues.doubleValue(doubleField, Nullable.NO));
+    NumericalValues.doubleValue(doubleField, Nullable.NO).link(doublePrimitivePropertyValue);
     assertEquals((Double) 0.0, doubleField.getDouble());
     setDoublePrimitiveValue(2.2);
     assertEquals(Double.valueOf(2.2), doubleField.getDouble());

@@ -413,58 +413,58 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
       if (typeClass.equals(Boolean.class)) {
         final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
         checkBox.setHorizontalAlignment(CENTER);
-        ((Value<Boolean>) value).link(BooleanValues.booleanButtonModelValue(checkBox.getModel()));
+        BooleanValues.booleanButtonModelValue(checkBox.getModel()).link((Value<Boolean>) value);
 
         return checkBox;
       }
       if (typeClass.equals(Integer.class)) {
         final IntegerField integerField = new IntegerField((NumberFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        ((Value<Integer>) value).link(NumericalValues.integerValue(integerField));
+        NumericalValues.integerValue(integerField).link((Value<Integer>) value);
 
         return integerField;
       }
       else if (typeClass.equals(Double.class)) {
         final DoubleField doubleField = new DoubleField((DecimalFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        ((Value<Double>) value).link(NumericalValues.doubleValue(doubleField));
+        NumericalValues.doubleValue(doubleField).link((Value<Double>) value);
 
         return doubleField;
       }
       else if (typeClass.equals(BigDecimal.class)) {
         final BigDecimalField bigDecimalField = new BigDecimalField((DecimalFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        ((Value<BigDecimal>) value).link(NumericalValues.bigDecimalValue(bigDecimalField));
+        NumericalValues.bigDecimalValue(bigDecimalField).link((Value<BigDecimal>) value);
 
         return bigDecimalField;
       }
       else if (typeClass.equals(Long.class)) {
         final LongField longField = new LongField((NumberFormat) columnConditionModel.getFormat(), DEFAULT_FIELD_COLUMNS);
-        ((Value<Long>) value).link(NumericalValues.longValue(longField));
+        NumericalValues.longValue(longField).link((Value<Long>) value);
 
         return longField;
       }
       else if (typeClass.equals(LocalTime.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
-        ((Value<LocalTime>) value).link(TemporalValues.localTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()));
+        TemporalValues.localTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()).link((Value<LocalTime>) value);
 
         return formattedField;
       }
       else if (typeClass.equals(LocalDate.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
-        ((Value<LocalDate>) value).link(TemporalValues.localDateValue(formattedField, columnConditionModel.getDateTimeFormatPattern()));
+        TemporalValues.localDateValue(formattedField, columnConditionModel.getDateTimeFormatPattern()).link((Value<LocalDate>) value);
 
         return formattedField;
       }
       else if (typeClass.equals(LocalDateTime.class)) {
         final JFormattedTextField formattedField =
                 TextFields.createFormattedField(DateFormats.getDateMask(columnConditionModel.getDateTimeFormatPattern()));
-        ((Value<LocalDateTime>) value).link(TemporalValues.localDateTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()));
+        TemporalValues.localDateTimeValue(formattedField, columnConditionModel.getDateTimeFormatPattern()).link((Value<LocalDateTime>) value);
 
         return formattedField;
       }
       else if (typeClass.equals(String.class)) {
         final JTextField textField = new JTextField(DEFAULT_FIELD_COLUMNS);
-        ((Value<String>) value).link(TextValues.textValue(textField));
+        TextValues.textValue(textField).link((Value<String>) value);
 
         return textField;
       }
@@ -523,8 +523,8 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     final DefaultComboBoxModel<Operator> comboBoxModel = new DefaultComboBoxModel<>();
     Arrays.stream(Operator.values()).filter(operators::contains).forEach(comboBoxModel::addElement);
     final SteppedComboBox<Operator> comboBox = new SteppedComboBox<>(comboBoxModel);
-    Values.propertyValue(conditionModel, "operator", Operator.class, conditionModel.getOperatorObserver())
-            .link(SelectedValues.selectedValue(comboBox));
+    SelectedValues.selectedValue(comboBox)
+            .link(Values.propertyValue(conditionModel, "operator", Operator.class, conditionModel.getOperatorObserver()));
     comboBox.setRenderer(new OperatorComboBoxRenderer());
 
     return comboBox;

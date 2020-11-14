@@ -977,7 +977,7 @@ public class EntityEditComponentPanel extends JPanel {
     textField.setEditable(false);
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    new ForeignKeyModelValue(getEditModel(), foreignKeyAttribute).link(TextValues.textValue(textField));
+    TextValues.textValue(textField).link(new ForeignKeyModelValue(getEditModel(), foreignKeyAttribute));
     if (TRANSFER_FOCUS_ON_ENTER.get()) {
       transferFocusOnEnter(textField);
     }

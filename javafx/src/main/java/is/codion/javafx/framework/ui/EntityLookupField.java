@@ -99,7 +99,7 @@ public final class EntityLookupField extends TextField {
   }
 
   private void linkToModel() {
-    model.getSearchStringValue().link(PropertyValues.stringPropertyValue(textProperty()));
+    PropertyValues.stringPropertyValue(textProperty()).link(model.getSearchStringValue());
   }
 
   private void selectEntities(final List<Entity> queryResult) {

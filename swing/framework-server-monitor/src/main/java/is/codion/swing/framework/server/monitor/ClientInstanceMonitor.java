@@ -45,8 +45,8 @@ public final class ClientInstanceMonitor {
   public ClientInstanceMonitor(final EntityServerAdmin server, final RemoteClient remoteClient) {
     this.remoteClient = remoteClient;
     this.server = server;
-    Values.propertyValue(this, "loggingEnabled", boolean.class, loggingStatusChangedEvent)
-            .link(BooleanValues.booleanButtonModelValue(loggingEnabledButtonModel));
+    BooleanValues.booleanButtonModelValue(loggingEnabledButtonModel)
+            .link(Values.propertyValue(this, "loggingEnabled", boolean.class, loggingStatusChangedEvent));
   }
 
   /**

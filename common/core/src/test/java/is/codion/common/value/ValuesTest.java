@@ -91,7 +91,7 @@ public class ValuesTest {
     final AtomicInteger modelValueEventCounter = new AtomicInteger();
     final Value<Integer> modelValue = Values.propertyValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
-    modelValue.link(uiValue);
+    uiValue.link(modelValue);
     modelValue.addListener(modelValueEventCounter::incrementAndGet);
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
     uiValue.addListener(uiValueEventCounter::incrementAndGet);
@@ -123,8 +123,8 @@ public class ValuesTest {
 
     final Value<Integer> valueOne = Values.value();
     final Value<Integer> valueTwo = Values.value();
-    valueOne.link(valueTwo);
     valueTwo.link(valueOne);
+    valueOne.link(valueTwo);
     valueOne.set(1);
     assertThrows(IllegalArgumentException.class, () -> valueOne.link(valueOne));
   }

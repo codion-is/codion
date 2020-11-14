@@ -174,7 +174,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel zoomPanel = new JPanel(Layouts.borderLayout());
     final JCheckBox synchronizedZoomCheckBox = new JCheckBox("Synchronize zoom");
-    Values.stateValue(synchronizedZoomState).link(BooleanValues.booleanButtonModelValue(synchronizedZoomCheckBox.getModel()));
+    BooleanValues.booleanButtonModelValue(synchronizedZoomCheckBox.getModel()).link(Values.stateValue(synchronizedZoomState));
     zoomPanel.add(synchronizedZoomCheckBox, BorderLayout.CENTER);
     zoomPanel.add(new JButton(Controls.control(this::resetZoom, "Reset zoom")), BorderLayout.EAST);
     controlPanel.add(zoomPanel);
@@ -243,8 +243,8 @@ public final class ServerMonitorPanel extends JPanel {
     final IntegerField connectionCountField = new IntegerField(4);
     connectionCountField.setEditable(false);
     connectionCountField.setHorizontalAlignment(JLabel.CENTER);
-    Values.propertyValue(model, "connectionCount", int.class, model.getStatisticsUpdatedObserver())
-            .link(NumericalValues.integerValue(connectionCountField, Nullable.NO));
+    NumericalValues.integerValue(connectionCountField, Nullable.NO)
+            .link(Values.propertyValue(model, "connectionCount", int.class, model.getStatisticsUpdatedObserver()));
 
     return connectionCountField;
   }
@@ -253,8 +253,8 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField memoryField = new JTextField(8);
     memoryField.setEditable(false);
     memoryField.setHorizontalAlignment(JLabel.CENTER);
-    Values.propertyValue(model, "memoryUsage", String.class,
-            model.getStatisticsUpdatedObserver()).link(TextValues.textValue(memoryField));
+    TextValues.textValue(memoryField)
+            .link(Values.propertyValue(model, "memoryUsage", String.class, model.getStatisticsUpdatedObserver()));
 
     return memoryField;
   }
@@ -263,8 +263,8 @@ public final class ServerMonitorPanel extends JPanel {
     final DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.getLogLevels().toArray());
 
     final JComboBox<Object> box = new JComboBox<>(comboModel);
-    Values.propertyValue(model, "logLevel", Object.class, model.getLogLevelObserver())
-            .link(SelectedValues.selectedValue(box));
+    SelectedValues.selectedValue(box)
+            .link(Values.propertyValue(model, "logLevel", Object.class, model.getLogLevelObserver()));
 
     return box;
   }
