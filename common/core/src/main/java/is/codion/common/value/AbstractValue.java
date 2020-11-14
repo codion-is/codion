@@ -62,7 +62,7 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   @Override
-  public void link(final ValueObserver<V> originalValueObserver) {
+  public final void link(final ValueObserver<V> originalValueObserver) {
     set(requireNonNull(originalValueObserver, "originalValueObserver").get());
     originalValueObserver.addDataListener(this::set);
   }
