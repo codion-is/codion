@@ -1,5 +1,5 @@
 module is.codion.swing.common.tools.ui {
-  requires jfreechart;
+  requires org.jfree.jfreechart;
   requires transitive is.codion.swing.common.tools;
   requires transitive is.codion.swing.common.ui;
 

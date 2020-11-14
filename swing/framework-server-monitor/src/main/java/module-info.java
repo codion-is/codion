@@ -1,6 +1,6 @@
 module is.codion.swing.framework.server.monitor {
   requires org.slf4j;
-  requires jfreechart;
+  requires org.jfree.jfreechart;
   requires is.codion.framework.server;
   requires is.codion.swing.common.ui;
 

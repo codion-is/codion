@@ -3,7 +3,7 @@ module is.codion.framework.demos.world {
   requires is.codion.swing.plugin.ikonli.foundation;
   requires org.kordamp.ikonli.foundation;
   requires org.kordamp.ikonli.swing;
-  requires jfreechart;
+  requires org.jfree.jfreechart;
 
   exports is.codion.framework.demos.world.domain;
   exports is.codion.framework.demos.world.model
