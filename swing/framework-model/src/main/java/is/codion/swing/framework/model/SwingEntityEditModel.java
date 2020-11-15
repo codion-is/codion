@@ -16,10 +16,10 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.requireNonNull;
 
@@ -32,7 +32,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * Holds the ComboBoxModels used by this {@link EntityEditModel},
    * @see is.codion.common.model.Refreshable
    */
-  private final Map<Attribute<?>, FilteredComboBoxModel<?>> comboBoxModels = new HashMap<>();
+  private final Map<Attribute<?>, FilteredComboBoxModel<?>> comboBoxModels = new ConcurrentHashMap<>();
 
   /**
    * Instantiates a new {@link SwingEntityEditModel} based on the entity identified by {@code entityType}.
