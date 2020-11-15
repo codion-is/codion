@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -35,12 +36,15 @@ public final class PropertyStoreTest {
     Files.write(configFile.toPath(), singletonList(configBuilder.toString()));
     final PropertyStore store = new PropertyStore(configFile);
 
+    final AtomicInteger counter = new AtomicInteger();
     final PropertyValue<String> stringValue = store.propertyValue("string.property", "value");
+    stringValue.addListener(counter::incrementAndGet);
     assertTrue(store.containsProperty("string.property"));
     assertEquals("value", stringValue.get());
     assertEquals("value", System.getProperty(stringValue.getPropertyName()));
     assertSame(stringValue, store.getPropertyValue(stringValue.getPropertyName()));
     stringValue.set(null);
+    assertEquals(1, counter.get());
     assertFalse(store.containsProperty(stringValue.getPropertyName()));
     assertNull(System.getProperty(stringValue.getPropertyName()));
 

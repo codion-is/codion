@@ -6486,3 +6486,4 @@
   Value.link(ValueObserver) added, read-only link (and the reason for the last change)
   ServerMonitor refactoring, no longer binds UI to model via name property values
   Value.Validator added, related refactoring of DefaultValue and AbstractValue
+  PropertyStore.DefaultPropertyValue bug fixed, did not notify on set

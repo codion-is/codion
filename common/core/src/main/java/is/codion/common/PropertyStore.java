@@ -298,7 +298,7 @@ public final class PropertyStore {
 
     private DefaultPropertyValue(final String propertyName, final T defaultValue, final T nullValue,
                                  final Function<String, T> decoder, final Function<T, String> encoder) {
-      super(nullValue);
+      super(nullValue, NotifyOnSet.YES);
       this.propertyName = propertyName;
       requireNonNull(decoder, "decoder");
       this.encoder = requireNonNull(encoder, "encoder");
