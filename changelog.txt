@@ -6516,4 +6516,5 @@
   ServerMonitor refactoring, no longer binds UI to model via name property values
   Value.Validator added, related refactoring of DefaultValue and AbstractValue
   PropertyStore.DefaultPropertyValue bug fixed, did not notify on set
-  SwingEntityEditModel.comboBoxModels is now a ConcurrentHashMap, ran into some inconsitent concurrent modification exceptions when createComboBoxModel() was overridden
+  SwingEntityEditModel.comboBoxModels is now a ConcurrentHashMap, ran into some inconsistent concurrent modification exceptions when createComboBoxModel() was overridden
+  DefaultStateGroup refactored due to intermittent (and very rare) ConcurrentModificationExceptions

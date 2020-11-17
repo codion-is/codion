@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractValue<V> implements Value<V> {
 
-  static final Validator<?> NULL_VALIDATOR = (Validator<Object>) value -> {};
+  static final Validator<?> NULL_VALIDATOR = value -> {};
 
   public enum NotifyOnSet {
     YES, NO

@@ -8,20 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import static java.util.Objects.requireNonNull;
+
 final class DefaultStateGroup implements State.Group {
 
   private final List<WeakReference<State>> members = new ArrayList<>();
 
-  public DefaultStateGroup(final State... states) {
-    if (states != null) {
-      for (final State state : states) {
-        addState(state);
-      }
+  DefaultStateGroup(final State... states) {
+    for (final State state : requireNonNull(states, "states")) {
+      addState(state);
     }
   }
 
   @Override
   public void addState(final State state) {
+    requireNonNull(state, "state");
     synchronized (members) {
       for (final WeakReference<State> reference : members) {
         if (reference.get() == state) {
@@ -31,21 +32,29 @@ final class DefaultStateGroup implements State.Group {
 
       members.add(new WeakReference<>(state));
     }
-    updateAccordingToState(state);
-    state.addListener(() -> updateAccordingToState(state));
+    synchronized (members) {
+      if (state.get()) {
+        disableOthers(state);
+      }
+    }
+    state.addDataListener(value -> {
+      synchronized (members) {
+        if (value) {
+          disableOthers(state);
+        }
+      }
+    });
   }
 
-  private void updateAccordingToState(final State state) {
-    synchronized (members) {
-      final ListIterator<WeakReference<State>> iterator = members.listIterator();
-      while (iterator.hasNext()) {
-        final State memberState = iterator.next().get();
-        if (memberState == null) {//remove this dead weak reference
-          iterator.remove();
-        }
-        else if (state.get() && memberState != state) {
-          memberState.set(false);
-        }
+  private void disableOthers(final State state) {
+    final ListIterator<WeakReference<State>> iterator = members.listIterator();
+    while (iterator.hasNext()) {
+      final State memberState = iterator.next().get();
+      if (memberState == null) {//remove this dead weak reference
+        iterator.remove();
+      }
+      else if (memberState != state) {
+        memberState.set(false);
       }
     }
   }
