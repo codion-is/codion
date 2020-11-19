@@ -16,6 +16,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   private static final String INVALID_AUTHORIZATION_SPECIFICATION = "28000";
   private static final String INTEGRITY_CONSTRAINT_VIOLATION = "23000";
+  private static final String FOREIGN_KEY_VIOLATION = "23503";
   private static final String UNIQUE_CONSTRAINT_ERROR = "23505";
 
   private static final String JDBC_URL_PREFIX = "jdbc:postgresql://";
@@ -53,7 +54,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
 
   @Override
   public boolean isReferentialIntegrityException(final SQLException exception) {
-    return INTEGRITY_CONSTRAINT_VIOLATION.equals(exception.getSQLState());
+    return INTEGRITY_CONSTRAINT_VIOLATION.equals(exception.getSQLState()) || FOREIGN_KEY_VIOLATION.equals(exception.getSQLState());
   }
 
   @Override
