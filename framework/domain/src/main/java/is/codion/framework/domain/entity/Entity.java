@@ -124,7 +124,7 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the value type
    * @return true if a value is mapped to this attribute
    */
-  <T> boolean containsKey(Attribute<T> attribute);
+  <T> boolean containsValue(Attribute<T> attribute);
 
   /**
    * Returns the Entity instance referenced by the given foreign key attribute.
