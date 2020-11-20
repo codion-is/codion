@@ -364,10 +364,10 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final <T> void put(final Attribute<T> attribute, final T value) {
     requireNonNull(attribute, "attribute");
-    final Map<Attribute<?>, Object> dependingValues = getDependingValues(attribute);
+    final Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
     final T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
-      notifyValueEdit(attribute, new DefaultValueChange<>(attribute, value, previousValue), dependingValues);
+      notifyValueEdit(new DefaultValueChange<>(attribute, value, previousValue), dependingValues);
     }
   }
 
@@ -376,9 +376,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     requireNonNull(attribute, PROPERTY);
     T value = null;
     if (entity.containsValue(attribute)) {
-      final Map<Attribute<?>, Object> dependingValues = getDependingValues(attribute);
+      final Map<Attribute<?>, Object> dependingValues = getDependentValues(attribute);
       value = entity.remove(attribute);
-      notifyValueEdit(attribute, new DefaultValueChange<>(attribute, null, value), dependingValues);
+      notifyValueEdit(new DefaultValueChange<>(attribute, null, value), dependingValues);
     }
 
     return value;
@@ -981,30 +981,28 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     afterUpdateEvent.addListener(entitiesChangedEvent);
   }
 
-  private Map<Attribute<?>, Object> getDependingValues(final Attribute<?> attribute) {
-    final Map<Attribute<?>, Object> dependingValues = new HashMap<>();
+  private Map<Attribute<?>, Object> getDependentValues(final Attribute<?> attribute) {
+    final Map<Attribute<?>, Object> dependentValues = new HashMap<>();
     final EntityDefinition entityDefinition = getEntityDefinition();
     entityDefinition.getDerivedAttributes(attribute).forEach(derivedAttribute ->
-            dependingValues.put(derivedAttribute, get(derivedAttribute)));
+            dependentValues.put(derivedAttribute, get(derivedAttribute)));
     entityDefinition.getForeignKeyProperties(attribute).forEach(foreignKeyProperty ->
-            dependingValues.put(foreignKeyProperty.getAttribute(), get(foreignKeyProperty.getAttribute())));
+            dependentValues.put(foreignKeyProperty.getAttribute(), get(foreignKeyProperty.getAttribute())));
     if (entityDefinition.getProperty(attribute) instanceof ForeignKeyProperty) {
       entityDefinition.getForeignKeyProperty((Attribute<Entity>) attribute).getReferences().forEach(reference ->
-              dependingValues.put(reference.getAttribute(), get(reference.getAttribute())));
+              dependentValues.put(reference.getAttribute(), get(reference.getAttribute())));
     }
 
-    return dependingValues;
+    return dependentValues;
   }
 
-  private <T> void notifyValueEdit(final Attribute<T> attribute, final ValueChange<T> valueChange,
-                                   final Map<Attribute<?>, Object> dependendingValues) {
+  private <T> void notifyValueEdit(final ValueChange<T> valueChange, final Map<Attribute<?>, Object> dependentValues) {
     onValueChange(valueChange);
-    getValueEditEvent(attribute).onEvent(valueChange);
-    dependendingValues.forEach((dependingAttribute, previousValue) -> {
-      final Object currentValue = get(dependingAttribute);
+    getValueEditEvent(valueChange.getAttribute()).onEvent(valueChange);
+    dependentValues.forEach((dependentAttribute, previousValue) -> {
+      final Object currentValue = get(dependentAttribute);
       if (!Objects.equals(previousValue, currentValue)) {
-        final Attribute<Object> objectAttribute = (Attribute<Object>) dependingAttribute;
-        notifyValueEdit(objectAttribute, new DefaultValueChange<>(objectAttribute, previousValue, currentValue), emptyMap());
+        notifyValueEdit(new DefaultValueChange<>((Attribute<Object>) dependentAttribute, previousValue, currentValue), emptyMap());
       }
     });
   }
