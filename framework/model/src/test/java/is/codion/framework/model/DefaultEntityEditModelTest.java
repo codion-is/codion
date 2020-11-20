@@ -210,7 +210,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.addBeforeInsertListener(eventDataListener);
     employeeEditModel.addBeforeUpdateListener(eventDataListener);
     final EventListener listener = () -> {};
-    employeeEditModel.addEntitiesChangedListener(listener);
+    employeeEditModel.addEntitiesEditedListener(listener);
     employeeEditModel.addBeforeRefreshListener(listener);
     employeeEditModel.addAfterRefreshListener(listener);
 
@@ -296,7 +296,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.removeBeforeDeleteListener(eventDataListener);
     employeeEditModel.removeBeforeInsertListener(eventDataListener);
     employeeEditModel.removeBeforeUpdateListener(eventDataListener);
-    employeeEditModel.removeEntitiesChangedListener(listener);
+    employeeEditModel.removeEntitiesEditedListener(listener);
     employeeEditModel.removeBeforeRefreshListener(listener);
     employeeEditModel.removeAfterRefreshListener(listener);
   }

@@ -1304,7 +1304,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
     }
     if (tableModel.hasEditModel()) {
-      tableModel.getEditModel().addEntitiesChangedListener(table::repaint);
+      tableModel.getEditModel().addEntitiesEditedListener(table::repaint);
     }
   }
 

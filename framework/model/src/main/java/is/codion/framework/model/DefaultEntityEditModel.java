@@ -59,7 +59,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private final Event<Map<Key, Entity>> afterUpdateEvent = Events.event();
   private final Event<List<Entity>> beforeDeleteEvent = Events.event();
   private final Event<List<Entity>> afterDeleteEvent = Events.event();
-  private final Event<?> entitiesChangedEvent = Events.event();
+  private final Event<?> entitiesEditedEvent = Events.event();
   private final Event<?> beforeRefreshEvent = Events.event();
   private final Event<?> afterRefreshEvent = Events.event();
   private final Event<State> confirmSetEntityEvent = Events.event();
@@ -751,13 +751,13 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void removeEntitiesChangedListener(final EventListener listener) {
-    entitiesChangedEvent.removeListener(listener);
+  public final void removeEntitiesEditedListener(final EventListener listener) {
+    entitiesEditedEvent.removeListener(listener);
   }
 
   @Override
-  public final void addEntitiesChangedListener(final EventListener listener) {
-    entitiesChangedEvent.addListener(listener);
+  public final void addEntitiesEditedListener(final EventListener listener) {
+    entitiesEditedEvent.addListener(listener);
   }
 
   @Override
@@ -976,9 +976,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private void bindEventsInternal() {
-    afterDeleteEvent.addListener(entitiesChangedEvent);
-    afterInsertEvent.addListener(entitiesChangedEvent);
-    afterUpdateEvent.addListener(entitiesChangedEvent);
+    afterDeleteEvent.addListener(entitiesEditedEvent);
+    afterInsertEvent.addListener(entitiesEditedEvent);
+    afterUpdateEvent.addListener(entitiesEditedEvent);
   }
 
   private Map<Attribute<?>, Object> getDependentValues(final Attribute<?> attribute) {

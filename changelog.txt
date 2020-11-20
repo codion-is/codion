@@ -6494,3 +6494,4 @@
   Entity.clearPrimaryKeyValues() renamed clearPrimaryKey()
   Entity.containsKey() renamed containsValue()
   DefaultEntityEditModel, minor refactoring
+  EntityEditModel.add/removeEntitiesChangedListener() renamed add/removeEntitiesEditedListener()
