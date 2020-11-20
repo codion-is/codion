@@ -6490,3 +6490,4 @@
   SwingEntityEditModel.comboBoxModels is now a ConcurrentHashMap, ran into some inconsistent concurrent modification exceptions when createComboBoxModel() was overridden
   DefaultStateGroup refactored due to intermittent (and very rare) ConcurrentModificationExceptions
   PostgreSQLDatabase bug fixed, isReferentialIntegrityException() did not handle FOREIGN_KEY_VIOLATION (23503)
+0.17.1
