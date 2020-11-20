@@ -461,7 +461,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     }
     final Entity toInsert = getEntityCopy();
     if (getEntityDefinition().isKeyGenerated()) {
-      toInsert.clearPrimaryKeyValues();
+      toInsert.clearPrimaryKey();
     }
     toInsert.saveAll();
     final List<Entity> insertedEntities = insertEntities(singletonList(toInsert));

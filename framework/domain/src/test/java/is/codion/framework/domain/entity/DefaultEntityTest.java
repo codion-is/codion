@@ -358,7 +358,7 @@ public class DefaultEntityTest {
     testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
 
-    testEntity.clearPrimaryKeyValues();
+    testEntity.clearPrimaryKey();
     assertTrue(testEntity.getPrimaryKey().isNull());
     assertTrue(testEntity.containsKey(Detail.DATE));
     assertTrue(testEntity.containsKey(Detail.STRING));
