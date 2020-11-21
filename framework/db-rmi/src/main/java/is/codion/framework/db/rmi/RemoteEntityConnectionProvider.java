@@ -144,13 +144,13 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       }//just to check the connection
     }
     catch (final RemoteException e) {
-      LOG.info("{} was unreachable, {} - {} reconnecting...", new Object[] {serverInformation.getServerName(), getUser(), getClientId()});
+      LOG.info("{} was unreachable, {} - {} reconnecting...", serverInformation.getServerName(), getUser(), getClientId());
       unreachable = true;
     }
     if (server == null || unreachable) {
       //if server is not reachable, try to reconnect once and return
       connectToServer();
-      LOG.info("ClientID: {}, {} connected to server: {}", new Object[] {getUser(), getClientId(), serverInformation.getServerName()});
+      LOG.info("ClientID: {}, {} connected to server: {}", getUser(), getClientId(), serverInformation.getServerName());
     }
 
     return this.server;
