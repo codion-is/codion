@@ -296,10 +296,7 @@ public class EntityServerTest {
     admin.getMaxMemory();
     admin.getRequestsPerSecond();
     admin.getThreadStatistics();
-//  todo: EntityServerTest > coverAdmin() FAILED
-//  java.rmi.UnmarshalException at EntityServerTest.java:299
-//  Caused by: java.io.InvalidClassException at EntityServerTest.java:299
-//  admin.getGcEvents(0);
+    admin.getGcEvents(0);
     admin.getServerInformation();
     admin.getSystemProperties();
     admin.getUsedMemory();
