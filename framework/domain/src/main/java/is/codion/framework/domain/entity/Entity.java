@@ -86,7 +86,8 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Saves all the value modifications that have been made.
-   * This value map will be unmodified after a call to this method.
+   * This entity will be unmodified after a call to this method.
+   * @see #isModified()
    */
   void saveAll();
 
@@ -123,7 +124,7 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the value type
    * @return true if a value is mapped to this attribute
    */
-  <T> boolean containsKey(Attribute<T> attribute);
+  <T> boolean containsValue(Attribute<T> attribute);
 
   /**
    * Returns the Entity instance referenced by the given foreign key attribute.
@@ -173,13 +174,13 @@ public interface Entity extends Comparable<Entity> {
    * Clears the primary key values from this entity,
    * current as well as original values if any
    */
-  void clearPrimaryKeyValues();
+  void clearPrimaryKey();
 
   /**
    * Compares all column based values in the given entity to the values in this entity instance.
-   * Returns true if these two entities contain the same column values and the values are equal.
+   * Returns true if these two entities contain values for the same columns and all the values are equal.
    * @param entity the entity to compare to
-   * @return true if all the values in this entity instance are present and equal to the values in the given entity
+   * @return true if all the column based values in this entity instance are present and equal to the values in the given entity
    * @throws IllegalArgumentException in case the entity is not of the same type
    */
   boolean columnValuesEqual(Entity entity);
@@ -187,7 +188,7 @@ public interface Entity extends Comparable<Entity> {
   /**
    * After a call to this method this Entity contains the same values and original values as the source entity.
    * A null argument to this method clears the destination entity of all values and original values.
-   * @param entity the entity to copy or null for clearing the destination map
+   * @param entity the entity to copy or null for clearing all values in this instance
    * @return the affected attributes
    */
   Collection<Attribute<?>> setAs(Entity entity);

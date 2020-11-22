@@ -104,7 +104,7 @@ public final class Servers {
                                                                                                final int requestedServerPort)
           throws RemoteException {
     LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", requested server port: {}, registry port {}",
-            new Object[] {serverHostName, serverNamePrefix, requestedServerPort, registryPort});
+            serverHostName, serverNamePrefix, requestedServerPort, registryPort);
     final List<Server<T, A>> servers = new ArrayList<>();
     final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
     for (final String serverName : registry.list()) {
@@ -136,7 +136,7 @@ public final class Servers {
     final ServerInformation serverInformation = server.getServerInformation();
     if (requestedServerPort != -1 && serverInformation.getServerPort() != requestedServerPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
-              new Object[] {serverInformation.getServerName(), serverInformation.getServerPort(), requestedServerPort});
+              serverInformation.getServerName(), serverInformation.getServerPort(), requestedServerPort);
       return null;
     }
     if (server.connectionsAvailable()) {
@@ -159,5 +159,4 @@ public final class Servers {
       }
     }
   }
-
 }

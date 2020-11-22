@@ -299,7 +299,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
         final boolean connected = connection.isConnected();
         final boolean timedOut = hasConnectionTimedOut(connection);
         if (!connected || timedOut) {
-          LOG.debug("Removing connection {}, connected: {}, timeout: {}", new Object[] {client, connected, timedOut});
+          LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
           disconnect(client.getClientId());
         }
       }

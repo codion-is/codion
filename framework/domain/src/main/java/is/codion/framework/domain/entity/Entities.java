@@ -442,7 +442,7 @@ public interface Entities {
     requireNonNull(entity);
     requireNonNull(comparison);
     requireNonNull(attribute);
-    if (!entity.containsKey(attribute)) {
+    if (!entity.containsValue(attribute)) {
       return true;
     }
 

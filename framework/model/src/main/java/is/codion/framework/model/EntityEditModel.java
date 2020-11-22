@@ -648,13 +648,13 @@ public interface EntityEditModel extends Refreshable {
    * @param listener a listener to be notified each time a entity is modified via this model,
    * updated, inserted or deleted
    */
-  void addEntitiesChangedListener(EventListener listener);
+  void addEntitiesEditedListener(EventListener listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeEntitiesChangedListener(EventListener listener);
+  void removeEntitiesEditedListener(EventListener listener);
 
   /**
    * @param listener a listener notified each time the active entity is about to be set

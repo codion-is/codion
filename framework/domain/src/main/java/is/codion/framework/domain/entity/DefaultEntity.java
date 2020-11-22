@@ -172,7 +172,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public void clearPrimaryKeyValues() {
+  public void clearPrimaryKey() {
     definition.getPrimaryKeyAttributes().forEach(this::remove);
     primaryKey = null;
   }
@@ -258,7 +258,7 @@ final class DefaultEntity implements Entity, Serializable {
 
     return definition.getColumnProperties().stream().allMatch(property -> {
       final Attribute<?> attribute = property.getAttribute();
-      if (containsKey(attribute) != entity.containsKey(attribute)) {
+      if (containsValue(attribute) != entity.containsValue(attribute)) {
         return false;
       }
       if (attribute.isByteArray()) {
@@ -323,7 +323,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public <T> boolean containsKey(final Attribute<T> attribute) {
+  public <T> boolean containsValue(final Attribute<T> attribute) {
     return values.containsKey(requireNonNull(attribute, ATTRIBUTE));
   }
 
