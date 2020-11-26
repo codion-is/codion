@@ -313,8 +313,14 @@ public final class PropertyStore {
 
     @Override
     public T getOrThrow() throws IllegalStateException {
+      return getOrThrow("Required property is missing: " + propertyName);
+    }
+
+    @Override
+    public T getOrThrow(final String message) throws IllegalStateException {
+      requireNonNull(message, "message");
       if (value == null) {
-        throw new IllegalStateException("Required property is missing: " + propertyName);
+        throw new IllegalStateException();
       }
 
       return value;

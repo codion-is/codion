@@ -34,16 +34,12 @@ public interface DatabaseFactory {
 
   /**
    * @return a {@link DatabaseFactory} implementation for {@link Database#DATABASE_URL}
+   * @throws IllegalStateException in case {@link Database#DATABASE_URL} ('codion.db.url') is not specified.
    * @throws IllegalArgumentException in case no such implementation is found
    * @throws SQLException in case loading of the database driver failed
    */
   static DatabaseFactory getInstance() throws SQLException {
-    final String jdbcUrl = Database.DATABASE_URL.get();
-    if (jdbcUrl == null) {
-      throw new IllegalStateException("codion.db.url must be specified before discovering DatabaseFactories");
-    }
-
-    return getInstance(jdbcUrl);
+    return getInstance(Database.DATABASE_URL.getOrThrow("codion.db.url must be specified before discovering DatabaseFactories"));
   }
 
   /**

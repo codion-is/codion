@@ -6495,3 +6495,4 @@
   Entity.containsKey() renamed containsValue()
   DefaultEntityEditModel, minor refactoring
   EntityEditModel.add/removeEntitiesChangedListener() renamed add/removeEntitiesEditedListener()
+  PropertyValue.getOrThrow() overloaded with message parameter
