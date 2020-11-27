@@ -6498,3 +6498,4 @@
   PropertyValue.getOrThrow() overloaded with message parameter
   DefaultDatabaseConnection now throws IllegalStateException when trying to use a closed connection
   Entity.clearPrimaryKey() now returns the Entity instance
+  EntityEditComponentPanel.transferFocusOnEnter field + setter added
