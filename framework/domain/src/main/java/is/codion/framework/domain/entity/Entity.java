@@ -173,8 +173,9 @@ public interface Entity extends Comparable<Entity> {
   /**
    * Clears the primary key values from this entity,
    * current as well as original values if any
+   * @return this Entity instance
    */
-  void clearPrimaryKey();
+  Entity clearPrimaryKey();
 
   /**
    * Compares all column based values in the given entity to the values in this entity instance.

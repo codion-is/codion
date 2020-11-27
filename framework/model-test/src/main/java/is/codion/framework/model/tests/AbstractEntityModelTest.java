@@ -282,8 +282,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     dept.put(TestDomain.DEPARTMENT_NAME, "Name");
     dept.put(TestDomain.DEPARTMENT_LOCATION, "Loc");
 
-    final Entity emp = connectionProvider.getConnection().selectSingle(TestDomain.EMP_ID, 8);
-    emp.clearPrimaryKey();
+    final Entity emp = connectionProvider.getConnection().selectSingle(TestDomain.EMP_ID, 8).clearPrimaryKey();
     emp.put(TestDomain.EMP_NAME, "NewName");
 
     final Model model = createDepartmentModelWithoutDetailModel();
