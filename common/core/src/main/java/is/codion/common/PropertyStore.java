@@ -289,15 +289,15 @@ public final class PropertyStore {
     return propertiesFromFile;
   }
 
-  private final class DefaultPropertyValue<T> extends AbstractValue<T> implements PropertyValue<T> {
+  private final class DefaultPropertyValue<V> extends AbstractValue<V> implements PropertyValue<V> {
 
     private final String propertyName;
-    private final Function<T, String> encoder;
+    private final Function<V, String> encoder;
 
-    private T value;
+    private V value;
 
-    private DefaultPropertyValue(final String propertyName, final T defaultValue, final T nullValue,
-                                 final Function<String, T> decoder, final Function<T, String> encoder) {
+    private DefaultPropertyValue(final String propertyName, final V defaultValue, final V nullValue,
+                                 final Function<String, V> decoder, final Function<V, String> encoder) {
       super(nullValue, NotifyOnSet.YES);
       this.propertyName = propertyName;
       requireNonNull(decoder, "decoder");
@@ -312,16 +312,22 @@ public final class PropertyStore {
     }
 
     @Override
-    public T getOrThrow() throws IllegalStateException {
+    public V getOrThrow() throws IllegalStateException {
+      return getOrThrow("Required property is missing: " + propertyName);
+    }
+
+    @Override
+    public V getOrThrow(final String message) throws IllegalStateException {
+      requireNonNull(message, "message");
       if (value == null) {
-        throw new IllegalStateException("Required property is missing: " + propertyName);
+        throw new IllegalStateException();
       }
 
       return value;
     }
 
     @Override
-    public T get() {
+    public V get() {
       return value;
     }
 
@@ -331,7 +337,7 @@ public final class PropertyStore {
     }
 
     @Override
-    protected void doSet(final T value) {
+    protected void doSet(final V value) {
       this.value = value;
       if (value == null) {
         properties.remove(propertyName);

@@ -99,6 +99,11 @@ public class DefaultDatabaseConnectionTest {
     dbConnection.close();
     assertFalse(dbConnection.isConnected());
     assertNull(dbConnection.getConnection());
+    assertThrows(IllegalStateException.class, () -> dbConnection.beginTransaction());
+    assertThrows(IllegalStateException.class, () -> dbConnection.commitTransaction());
+    assertThrows(IllegalStateException.class, () -> dbConnection.rollbackTransaction());
+    assertThrows(IllegalStateException.class, () -> dbConnection.commit());
+    assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
   }
 
   @Test

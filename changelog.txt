@@ -6524,3 +6524,5 @@
   Entity.containsKey() renamed containsValue()
   DefaultEntityEditModel, minor refactoring
   EntityEditModel.add/removeEntitiesChangedListener() renamed add/removeEntitiesEditedListener()
+  PropertyValue.getOrThrow() overloaded with message parameter
+  DefaultDatabaseConnection now throws IllegalStateException when trying to use a closed connection

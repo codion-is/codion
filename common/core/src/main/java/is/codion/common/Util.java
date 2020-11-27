@@ -24,8 +24,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Util {
 
-  private static final int TEN = 10;
-
   /**
    * The line separator for the current system
    */
@@ -177,7 +175,7 @@ public final class Util {
    * @return the rounded value
    */
   public static Double roundDouble(final Double d, final int places) {
-    return Math.round(d * Math.pow(TEN, places)) / Math.pow(TEN, places);
+    return Math.round(d * Math.pow(10, places)) / Math.pow(10, places);
   }
 
   /**

@@ -98,6 +98,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
     Database.closeSilently(connection);
     connection = null;
+    transactionOpen = false;
   }
 
   @Override
@@ -142,6 +143,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public void beginTransaction() {
+    checkIfClosed();
     if (transactionOpen) {
       throw new IllegalStateException("Transaction already open");
     }
@@ -153,6 +155,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public void rollbackTransaction() {
+    checkIfClosed();
     SQLException exception = null;
     try {
       if (!transactionOpen) {
@@ -173,6 +176,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public void commitTransaction() {
+    checkIfClosed();
     SQLException exception = null;
     try {
       if (!transactionOpen) {
@@ -198,6 +202,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public void commit() throws SQLException {
+    checkIfClosed();
     if (transactionOpen) {
       throw new IllegalStateException("Can not perform a commit during an open transaction, use 'commitTransaction()'");
     }
@@ -219,6 +224,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   @Override
   public void rollback() throws SQLException {
+    checkIfClosed();
     if (transactionOpen) {
       throw new IllegalStateException("Can not perform a rollback during an open transaction, use 'rollbackTransaction()'");
     }
@@ -247,6 +253,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws SQLException thrown if anything goes wrong during the execution
    */
   private <T> List<T> select(final String sql, final ResultPacker<T> resultPacker, final int fetchCount) throws SQLException {
+    checkIfClosed();
     requireNonNull(resultPacker, "resultPacker");
     database.countQuery(requireNonNull(sql, "sql"));
     Statement statement = null;
@@ -288,6 +295,12 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
 
     return null;
+  }
+
+  private void checkIfClosed() {
+    if (connection == null) {
+      throw new IllegalStateException("Connection is closed");
+    }
   }
 
   /**

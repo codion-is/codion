@@ -21,9 +21,9 @@ public interface DatabaseConnection extends AutoCloseable {
   boolean isConnected();
 
   /**
-   * Returns the underlying connection object, use {@link #isConnected()} to verify
-   * that the connection is not null and valid.
-   * @return the underlying connection object
+   * Returns the underlying connection object, null in case this connection has been closed.
+   * Use {@link #isConnected()} to verify that the connection is not null and valid.
+   * @return the underlying connection object, null in case this connection has been closed
    */
   Connection getConnection();
 
@@ -88,7 +88,11 @@ public interface DatabaseConnection extends AutoCloseable {
   void rollback() throws SQLException;
 
   /**
-   * Performs a rollback and disconnects this connection
+   * Performs a rollback and disconnects this connection. The only way to resurrect a closed
+   * connection is by using {@link #setConnection(Connection)}.
+   * Calling this method renders this connection unusable, subsequent calls to methods
+   * using the underlying connection result in a {@link IllegalStateException} being thrown,
+   * that is, until a new {@link Connection} is set via {@link #setConnection(Connection)}.
    */
   void close();
 
