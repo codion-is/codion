@@ -70,7 +70,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().select(condition(Department.TYPE).selectCondition());
+        final List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
         final Entity entity = departments.get(new Random().nextInt(departments.size()));
         entity.put(Department.LOCATION, Text.createRandomString(10, 13));
         client.getConnection().update(entity);
@@ -109,7 +109,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().select(condition(Department.TYPE).selectCondition());
+        final List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
 
         client.getConnection().select(Employee.DEPARTMENT,
                 departments.get(new Random().nextInt(departments.size())).get(Department.ID));
@@ -156,7 +156,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
     @Override
     protected void perform(final EntityConnectionProvider client) throws ScenarioException {
       try {
-        final List<Entity> departments = client.getConnection().select(condition(Department.TYPE).selectCondition());
+        final List<Entity> departments = client.getConnection().select(condition(Department.TYPE));
         final Entity department = departments.get(random.nextInt(departments.size()));
         final Entity employee = client.getEntities().entity(Employee.TYPE);
         employee.put(Employee.DEPARTMENT_FK, department);

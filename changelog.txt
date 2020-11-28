@@ -6499,3 +6499,6 @@
   DefaultDatabaseConnection now throws IllegalStateException when trying to use a closed connection
   Entity.clearPrimaryKey() now returns the Entity instance
   EntityEditComponentPanel.transferFocusOnEnter field + setter added
+  EntityConnection.select() and selectSingle() condition parameter is now Condition instead of SelectCondition
+  LocalEntityConnection.iterator() condition parameter is now Condition instead of SelectCondition
+  SelectConditionDeserializer now handles Condition instances

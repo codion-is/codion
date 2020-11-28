@@ -12,8 +12,8 @@ import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.http.server.ServerHttps;
 import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -130,7 +130,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   public void updateByCondition() throws DatabaseException {
-    final SelectCondition selectCondition = condition(TestDomain.EMP_COMMISSION).isNull().selectCondition();
+    final Condition selectCondition = condition(TestDomain.EMP_COMMISSION).isNull();
 
     final List<Entity> entities = connection.select(selectCondition);
 

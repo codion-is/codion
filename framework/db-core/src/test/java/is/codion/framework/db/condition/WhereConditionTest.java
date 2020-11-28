@@ -202,7 +202,7 @@ public final class WhereConditionTest {
   @Test
   public void selectAllCondition() {
     final EntityDefinition departmentDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
-    final WhereCondition selectCondition = whereCondition(Conditions.condition(TestDomain.T_DEPARTMENT).selectCondition(), departmentDefinition);
+    final WhereCondition selectCondition = whereCondition(Conditions.condition(TestDomain.T_DEPARTMENT), departmentDefinition);
     assertTrue(selectCondition.getValues().isEmpty());
     assertTrue(selectCondition.getColumnProperties().isEmpty());
 

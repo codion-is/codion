@@ -45,23 +45,43 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     final Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
     final SelectCondition selectCondition = condition.selectCondition();
-    selectCondition.setOrderBy(deserializeOrderBy(definition, jsonNode.get("orderBy")));
-    selectCondition.setLimit(jsonNode.get("limit").asInt());
-    selectCondition.setOffset(jsonNode.get("offset").asInt());
-    selectCondition.setFetchCount(jsonNode.get("fetchCount").asInt());
+    final JsonNode orderBy = jsonNode.get("orderBy");
+    if (orderBy != null) {
+      selectCondition.setOrderBy(deserializeOrderBy(definition, orderBy));
+    }
+    final JsonNode limit = jsonNode.get("limit");
+    if (limit != null) {
+      selectCondition.setLimit(limit.asInt());
+    }
+    final JsonNode offset = jsonNode.get("offset");
+    if (offset != null) {
+      selectCondition.setOffset(offset.asInt());
+    }
+    final JsonNode fetchCount = jsonNode.get("fetchCount");
+    if (fetchCount != null) {
+      selectCondition.setFetchCount(fetchCount.asInt());
+    }
     final JsonNode fetchDepth = jsonNode.get("fetchDepth");
-    if (!fetchDepth.isNull()) {
+    if (fetchDepth != null && !fetchDepth.isNull()) {
       selectCondition.setFetchDepth(fetchDepth.asInt());
     }
     final JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
-    for (final ForeignKeyProperty property : definition.getForeignKeyProperties()) {
-      final JsonNode fetchDepthNode = fkFetchDepth.get(property.getAttribute().getName());
-      if (fetchDepthNode != null) {
-        selectCondition.setFetchDepth(property.getAttribute(), fetchDepthNode.asInt());
+    if (fkFetchDepth != null) {
+      for (final ForeignKeyProperty property : definition.getForeignKeyProperties()) {
+        final JsonNode fetchDepthNode = fkFetchDepth.get(property.getAttribute().getName());
+        if (fetchDepthNode != null) {
+          selectCondition.setFetchDepth(property.getAttribute(), fetchDepthNode.asInt());
+        }
       }
     }
-    selectCondition.setForUpdate(jsonNode.get("forUpdate").asBoolean());
-    selectCondition.setSelectAttributes(deserializeSelectAttributes(definition, jsonNode.get("selectAttributes")));
+    final JsonNode forUpdate = jsonNode.get("forUpdate");
+    if (forUpdate != null) {
+      selectCondition.setForUpdate(forUpdate.asBoolean());
+    }
+    final JsonNode selectAttributes = jsonNode.get("selectAttributes");
+    if (selectAttributes != null) {
+      selectCondition.setSelectAttributes(deserializeSelectAttributes(definition, selectAttributes));
+    }
 
     return selectCondition;
   }

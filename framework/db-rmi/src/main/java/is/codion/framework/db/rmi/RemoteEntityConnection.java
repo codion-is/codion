@@ -12,7 +12,6 @@ import is.codion.common.db.reports.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -277,7 +276,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  Entity selectSingle(SelectCondition condition) throws RemoteException, DatabaseException;
+  Entity selectSingle(Condition condition) throws RemoteException, DatabaseException;
 
   /**
    * Returns entities according to {@code keys}
@@ -295,7 +294,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> select(SelectCondition condition) throws RemoteException, DatabaseException;
+  List<Entity> select(Condition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities according to one attribute, using {@code value} as a condition

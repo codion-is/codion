@@ -84,7 +84,7 @@ public class EntityServerTest {
     final Condition condition = Conditions.customCondition(TestDomain.EMP_MGR_CONDITION_TYPE,
             singletonList(TestDomain.EMP_MGR), singletonList(4));
 
-    connection.select(condition.selectCondition());
+    connection.select(condition);
 
     connection.close();
   }

@@ -834,7 +834,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     private static void validatePrimaryKeyProperties(final Map<Attribute<?>, Property<?>> propertyMap) {
-      final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
+      final Set<Integer> usedPrimaryKeyIndexes = new HashSet<>();
       for (final Property<?> property : propertyMap.values()) {
         if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) {
           final Integer index = ((ColumnProperty<?>) property).getPrimaryKeyIndex();
