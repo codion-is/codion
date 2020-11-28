@@ -337,12 +337,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return selectSingle(condition(attribute).equalTo(value).selectCondition());
+    return selectSingle(condition(attribute).equalTo(value));
   }
 
   @Override
   public Entity selectSingle(final Key key) throws DatabaseException {
-    return selectSingle(condition(key).selectCondition());
+    return selectSingle(condition(key));
   }
 
   @Override
@@ -395,7 +395,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
-    return select(condition(attribute).equalTo(values).selectCondition());
+    return select(condition(attribute).equalTo(values));
   }
 
   @Override
