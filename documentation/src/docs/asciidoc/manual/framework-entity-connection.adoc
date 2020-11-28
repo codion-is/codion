@@ -54,7 +54,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting one or more rows.
 
-{url-entity-connection}#select-is.codion.framework.db.condition.SelectCondition-[select(SelectCondition condition)]
+{url-entity-connection}#select-is.codion.framework.db.condition.Condition-[select(Condition condition)]
 
 [source,java,indent=0]
 ----
@@ -79,7 +79,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting single rows.
 
-{url-entity-connection}#selectSingle-is.codion.framework.db.condition.SelectCondition-[selectSingle(SelectCondition condition)]
+{url-entity-connection}#selectSingle-is.codion.framework.db.condition.Condition-[selectSingle(Condition condition)]
 
 [source,java,indent=0]
 ----
