@@ -27,9 +27,9 @@ public interface SelectCondition extends Condition {
   /**
    * Sets the OrderBy for this condition
    * @param orderBy the OrderBy to use when applying this condition
-   * @return this EntitySelectCondition instance
+   * @return this SelectCondition instance
    */
-  SelectCondition setOrderBy(OrderBy orderBy);
+  SelectCondition orderBy(OrderBy orderBy);
 
   /**
    * @return the limit to use for the given condition
@@ -38,9 +38,9 @@ public interface SelectCondition extends Condition {
 
   /**
    * @param limit the limit to use for this condition
-   * @return this EntitySelectCondition instance
+   * @return this SelectCondition instance
    */
-  SelectCondition setLimit(int limit);
+  SelectCondition limit(int limit);
 
   /**
    * @return the offset to use for the given condition
@@ -49,9 +49,9 @@ public interface SelectCondition extends Condition {
 
   /**
    * @param offset the offset to use for this condition
-   * @return this EntitySelectCondition instance
+   * @return this SelectCondition instance
    */
-  SelectCondition setOffset(int offset);
+  SelectCondition offset(int offset);
 
   /**
    * @return true if this select should lock the result for update
@@ -62,10 +62,9 @@ public interface SelectCondition extends Condition {
    * Marks this condition as a select for update query, this means the resulting records
    * will be locked by the given connection until unlocked by running another (non - select for update)
    * query on the same connection or performing an update
-   * @param forUpdate if true then the results should be locked for update
-   * @return this EntitySelectCondition instance
+   * @return this SelectCondition instance
    */
-  SelectCondition setForUpdate(boolean forUpdate);
+  SelectCondition forUpdate();
 
   /**
    * @return the maximum number of records to fetch from the result
@@ -74,9 +73,9 @@ public interface SelectCondition extends Condition {
 
   /**
    * @param fetchCount the maximum number of records to fetch from the result
-   * @return this EntitySelectCondition instance
+   * @return this SelectCondition instance
    */
-  SelectCondition setFetchCount(int fetchCount);
+  SelectCondition fetchCount(int fetchCount);
 
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
@@ -90,9 +89,9 @@ public interface SelectCondition extends Condition {
    * Limit the levels of foreign keys to fetch via the given foreign key property
    * @param foreignKeyAttribute the attribute
    * @param fetchDepth the foreign key fetch depth limit
-   * @return this EntitySelectCondition instance
+   * @return this SelectCondition instance
    */
-  SelectCondition setFetchDepth(Attribute<Entity> foreignKeyAttribute, int fetchDepth);
+  SelectCondition fetchDepth(Attribute<Entity> foreignKeyAttribute, int fetchDepth);
 
   /**
    * @return the global fetch depth limit for this condition, null if none has been specified
@@ -102,9 +101,9 @@ public interface SelectCondition extends Condition {
   /**
    * Limit the levels of foreign keys to fetch
    * @param fetchDepth the foreign key fetch depth limit
-   * @return this EntitySelectCondition instance
+   * @return this SelectCondition instance
    */
-  SelectCondition setFetchDepth(int fetchDepth);
+  SelectCondition fetchDepth(int fetchDepth);
 
   /**
    * Sets the attributes to include in the resulting Entities,
@@ -114,9 +113,9 @@ public interface SelectCondition extends Condition {
    * the primary key attributes.
    * Note that these must be ColumnProperty attributes
    * @param attributes the attributes to include
-   * @return this EntitySelectCondition instance
+   * @return this SelectCondition instance
    */
-  SelectCondition setSelectAttributes(Attribute<?>... attributes);
+  SelectCondition attributes(Attribute<?>... attributes);
 
   /**
    * @return the attributes to include in the query result,

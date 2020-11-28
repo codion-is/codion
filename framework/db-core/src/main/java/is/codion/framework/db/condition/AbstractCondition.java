@@ -36,7 +36,7 @@ abstract class AbstractCondition implements Condition, Serializable {
   }
 
   @Override
-  public final SelectCondition selectCondition() {
+  public final SelectCondition select() {
     if (this instanceof SelectCondition) {
       return (SelectCondition) this;
     }
@@ -45,7 +45,7 @@ abstract class AbstractCondition implements Condition, Serializable {
   }
 
   @Override
-  public final UpdateCondition updateCondition() {
+  public final UpdateCondition update() {
     if (this instanceof UpdateCondition) {
       return (UpdateCondition) this;
     }

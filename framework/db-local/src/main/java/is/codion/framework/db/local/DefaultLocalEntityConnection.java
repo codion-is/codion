@@ -307,7 +307,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          final List<Entity> selected = doSelect(condition(getPrimaryKeys(entitiesToUpdate)).selectCondition());
+          final List<Entity> selected = doSelect(condition(getPrimaryKeys(entitiesToUpdate)).select());
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -493,7 +493,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         final List<Entity> result = new ArrayList<>();
         for (final List<Key> entityTypeKeys : mapKeysToType(keys).values()) {
-          result.addAll(doSelect(condition(entityTypeKeys).selectCondition()));
+          result.addAll(doSelect(condition(entityTypeKeys).select()));
         }
         commitIfTransactionIsNotOpen();
 
@@ -863,9 +863,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void performOptimisticLocking(final Map<EntityType<?>, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
     for (final Map.Entry<EntityType<?>, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
       final List<Key> originalKeys = getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
-      final SelectCondition selectForUpdateCondition = condition(originalKeys).selectCondition();
-      selectForUpdateCondition.setSelectAttributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()));
-      selectForUpdateCondition.setForUpdate(true);
+      final SelectCondition selectForUpdateCondition = condition(originalKeys).select()
+              .attributes(getPrimaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()))
+              .forUpdate();
       final List<Entity> currentEntities = doSelect(selectForUpdateCondition);
       final EntityDefinition definition = domainEntities.getDefinition(entitiesByEntityTypeEntry.getKey());
       final Map<Key, Entity> currentEntitiesByKey = mapToPrimaryKey(currentEntities);
@@ -911,7 +911,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param currentForeignKeyFetchDepth the current foreign key fetch depth
    * @throws SQLException in case of a database exception
    * @see #setLimitFetchDepth(boolean)
-   * @see SelectCondition#setFetchDepth(int)
+   * @see SelectCondition#fetchDepth(int)
    */
   private void setForeignKeys(final List<Entity> entities, final SelectCondition condition,
                               final int currentForeignKeyFetchDepth) throws SQLException {
@@ -934,8 +934,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             }
           }
           else {
-            final SelectCondition referencedEntitiesCondition = condition(referencedKeys).selectCondition()
-                    .setFetchDepth(conditionFetchDepthLimit);
+            final SelectCondition referencedEntitiesCondition = condition(referencedKeys).select()
+                    .fetchDepth(conditionFetchDepthLimit);
             final List<Entity> referencedEntities = doSelect(referencedEntitiesCondition,
                     currentForeignKeyFetchDepth + 1);
             final Map<Key, Entity> referencedEntitiesMappedByKey = mapToPrimaryKey(referencedEntities);
@@ -1249,7 +1249,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static SelectCondition toSelectCondition(final Condition condition) {
-    return condition instanceof SelectCondition ? (SelectCondition) condition : condition.selectCondition();
+    return condition instanceof SelectCondition ? (SelectCondition) condition : condition.select();
   }
 
   private static void setParameterValues(final PreparedStatement statement, final List<ColumnProperty<?>> statementProperties,

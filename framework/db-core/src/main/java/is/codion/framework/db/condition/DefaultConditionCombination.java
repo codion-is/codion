@@ -125,12 +125,12 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public SelectCondition selectCondition() {
+  public SelectCondition select() {
     return new DefaultSelectCondition(this);
   }
 
   @Override
-  public UpdateCondition updateCondition() {
+  public UpdateCondition update() {
     return new DefaultUpdateCondition(this);
   }
 

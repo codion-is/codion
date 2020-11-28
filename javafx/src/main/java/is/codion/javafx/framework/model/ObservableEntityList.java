@@ -310,8 +310,8 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
         condition = condition(entityType);
       }
 
-      return connectionProvider.getConnection().select(condition.selectCondition()
-              .setOrderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
+      return connectionProvider.getConnection().select(condition.select()
+              .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

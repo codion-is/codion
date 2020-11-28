@@ -54,7 +54,7 @@ public final class EntityConnections {
     requireNonNull(includePrimaryKeys, "includePrimaryKeys");
     requireNonNull(entityTypes);
     for (final EntityType<?> entityType : entityTypes) {
-      final List<Entity> entities = source.select(condition(entityType).selectCondition().setFetchDepth(0));
+      final List<Entity> entities = source.select(condition(entityType).select().fetchDepth(0));
       if (includePrimaryKeys == IncludePrimaryKeys.NO) {
         entities.forEach(Entity::clearPrimaryKey);
       }

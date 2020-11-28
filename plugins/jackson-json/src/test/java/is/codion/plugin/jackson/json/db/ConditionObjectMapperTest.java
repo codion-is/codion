@@ -87,15 +87,15 @@ public final class ConditionObjectMapperTest {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
     SelectCondition selectCondition = Conditions.condition(TestDomain.EMP_ID).equalTo(1)
-            .selectCondition()
-            .setOrderBy(OrderBy.orderBy().ascending(TestDomain.EMP_ID).descending(TestDomain.EMP_NAME))
-            .setLimit(2)
-            .setOffset(1)
-            .setFetchCount(3)
-            .setForUpdate(true)
-            .setFetchDepth(2)
-            .setFetchDepth(TestDomain.EMP_DEPARTMENT_FK, 0)
-            .setSelectAttributes(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT);
+            .select()
+            .orderBy(OrderBy.orderBy().ascending(TestDomain.EMP_ID).descending(TestDomain.EMP_NAME))
+            .limit(2)
+            .offset(1)
+            .fetchCount(3)
+            .forUpdate()
+            .fetchDepth(2)
+            .fetchDepth(TestDomain.EMP_DEPARTMENT_FK, 0)
+            .attributes(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT);
 
     String jsonString = mapper.writeValueAsString(selectCondition);
     SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
@@ -112,7 +112,7 @@ public final class ConditionObjectMapperTest {
     assertEquals(selectCondition.getSelectAttributes(), readCondition.getSelectAttributes());
     assertTrue(readCondition.isForUpdate());
 
-    selectCondition = Conditions.condition(TestDomain.EMP_ID).equalTo(1).selectCondition();
+    selectCondition = Conditions.condition(TestDomain.EMP_ID).equalTo(1).select();
 
     jsonString = mapper.writeValueAsString(selectCondition);
     readCondition = mapper.readValue(jsonString, SelectCondition.class);
@@ -131,7 +131,7 @@ public final class ConditionObjectMapperTest {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
     final UpdateCondition condition = Conditions.condition(TestDomain.DEPARTMENT_ID)
-            .between(1, 2).updateCondition()
+            .between(1, 2).update()
             .set(TestDomain.DEPARTMENT_LOCATION, "loc")
             .set(TestDomain.DEPARTMENT_ID, 3);
 
