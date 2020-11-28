@@ -86,7 +86,7 @@ public final class ConditionObjectMapperTest {
   public void selectCondition() throws JsonProcessingException {
     final ConditionObjectMapper mapper = new ConditionObjectMapper(new EntityObjectMapper(entities));
 
-    SelectCondition condition = Conditions.condition(TestDomain.EMP_ID).equalTo(1)
+    SelectCondition selectCondition = Conditions.condition(TestDomain.EMP_ID).equalTo(1)
             .selectCondition()
             .setOrderBy(OrderBy.orderBy().ascending(TestDomain.EMP_ID).descending(TestDomain.EMP_NAME))
             .setLimit(2)
@@ -97,28 +97,33 @@ public final class ConditionObjectMapperTest {
             .setFetchDepth(TestDomain.EMP_DEPARTMENT_FK, 0)
             .setSelectAttributes(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT);
 
-    String jsonString = mapper.writeValueAsString(condition);
+    String jsonString = mapper.writeValueAsString(selectCondition);
     SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
 
-    assertEquals(condition.getCondition().getAttributes(), readCondition.getCondition().getAttributes());
-    assertEquals(condition.getOrderBy().getOrderByAttributes(), readCondition.getOrderBy().getOrderByAttributes());
-    assertEquals(condition.getLimit(), readCondition.getLimit());
-    assertEquals(condition.getOffset(), readCondition.getOffset());
-    assertEquals(condition.getFetchCount(), readCondition.getFetchCount());
-    assertEquals(condition.getFetchDepth(), readCondition.getFetchDepth());
-    for (final ForeignKeyProperty property : entities.getDefinition(condition.getEntityType()).getForeignKeyProperties()) {
-      assertEquals(condition.getFetchDepth(property.getAttribute()), readCondition.getFetchDepth(property.getAttribute()));
+    assertEquals(selectCondition.getCondition().getAttributes(), readCondition.getCondition().getAttributes());
+    assertEquals(selectCondition.getOrderBy().getOrderByAttributes(), readCondition.getOrderBy().getOrderByAttributes());
+    assertEquals(selectCondition.getLimit(), readCondition.getLimit());
+    assertEquals(selectCondition.getOffset(), readCondition.getOffset());
+    assertEquals(selectCondition.getFetchCount(), readCondition.getFetchCount());
+    assertEquals(selectCondition.getFetchDepth(), readCondition.getFetchDepth());
+    for (final ForeignKeyProperty property : entities.getDefinition(selectCondition.getEntityType()).getForeignKeyProperties()) {
+      assertEquals(selectCondition.getFetchDepth(property.getAttribute()), readCondition.getFetchDepth(property.getAttribute()));
     }
-    assertEquals(condition.getSelectAttributes(), readCondition.getSelectAttributes());
+    assertEquals(selectCondition.getSelectAttributes(), readCondition.getSelectAttributes());
     assertTrue(readCondition.isForUpdate());
 
-    condition = Conditions.condition(TestDomain.EMP_ID).equalTo(1).selectCondition();
+    selectCondition = Conditions.condition(TestDomain.EMP_ID).equalTo(1).selectCondition();
 
-    jsonString = mapper.writeValueAsString(condition);
+    jsonString = mapper.writeValueAsString(selectCondition);
     readCondition = mapper.readValue(jsonString, SelectCondition.class);
 
     assertNull(readCondition.getOrderBy());
     assertNull(readCondition.getFetchDepth());
+
+    final Condition condition = Conditions.condition(TestDomain.EMP_ID).equalTo(2);
+    jsonString = mapper.writeValueAsString(condition);
+
+    selectCondition = mapper.readValue(jsonString, SelectCondition.class);
   }
 
   @Test

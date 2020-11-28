@@ -223,9 +223,9 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(getPrimaryKeys(result));
     assertEquals(2, result.size());
     result = connection.select(Conditions.customCondition(Department.DEPARTMENT_CONDITION_TYPE,
-                    asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)).selectCondition());
+                    asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)));
     assertEquals(2, result.size());
-    result = connection.select(Conditions.customCondition(JOINED_QUERY_CONDITION_TYPE).selectCondition());
+    result = connection.select(Conditions.customCondition(JOINED_QUERY_CONDITION_TYPE));
     assertEquals(7, result.size());
 
     final SelectCondition condition = Conditions.customCondition(EMP_NAME_IS_BLAKE_CONDITION_ID).selectCondition();
@@ -273,7 +273,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectFetchCount() throws DatabaseException {
-    List<Entity> departments = connection.select(condition(Department.TYPE).selectCondition());
+    List<Entity> departments = connection.select(condition(Department.TYPE));
     assertEquals(4, departments.size());
     departments = connection.select(condition(Department.TYPE).selectCondition().setFetchCount(0));
     assertTrue(departments.isEmpty());
@@ -318,7 +318,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void selectInvalidColumn() throws Exception {
-    assertThrows(DatabaseException.class, () -> connection.select(Conditions.customCondition(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE).selectCondition()));
+    assertThrows(DatabaseException.class, () -> connection.select(Conditions.customCondition(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE)));
   }
 
   @Test
@@ -345,7 +345,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(sales.get(Department.DNAME), "SALES");
     sales = connection.selectSingle(sales.getPrimaryKey());
     assertEquals(sales.get(Department.DNAME), "SALES");
-    sales = connection.selectSingle(Conditions.customCondition(Department.DEPARTMENT_CONDITION_SALES_TYPE).selectCondition());
+    sales = connection.selectSingle(Conditions.customCondition(Department.DEPARTMENT_CONDITION_SALES_TYPE));
     assertEquals(sales.get(Department.DNAME), "SALES");
 
     Entity king = connection.selectSingle(EMP_NAME, "KING");
@@ -361,7 +361,7 @@ public class DefaultLocalEntityConnectionTest {
     final Condition condition = Conditions.customCondition(EMP_MGR_GREATER_THAN_CONDITION_ID,
             singletonList(EMP_MGR), singletonList(5));
 
-    assertEquals(4, connection.select(condition.selectCondition()).size());
+    assertEquals(4, connection.select(condition).size());
   }
 
   @Test
@@ -516,9 +516,9 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void updateWithCondition() throws DatabaseException {
-    final SelectCondition selectCondition = Conditions.condition(EMP_COMMISSION).isNull().selectCondition();
+    final Condition condition = Conditions.condition(EMP_COMMISSION).isNull();
 
-    final List<Entity> entities = connection.select(selectCondition);
+    final List<Entity> entities = connection.select(condition);
 
     final UpdateCondition updateCondition = Conditions.condition(EMP_COMMISSION).isNull().updateCondition()
             .set(EMP_COMMISSION, 500d)
@@ -526,7 +526,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       connection.update(updateCondition);
-      assertEquals(0, connection.rowCount(selectCondition));
+      assertEquals(0, connection.rowCount(condition));
       final List<Entity> afterUpdate = connection.select(Entities.getPrimaryKeys(entities));
       for (final Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(EMP_COMMISSION));
@@ -581,8 +581,7 @@ public class DefaultLocalEntityConnectionTest {
     final DefaultLocalEntityConnection connection2 = initializeConnection();
     final String originalLocation;
     try {
-      final SelectCondition condition = condition(Department.DNAME).equalTo("SALES").selectCondition();
-      condition.setForUpdate(true);
+      final SelectCondition condition = condition(Department.DNAME).equalTo("SALES").selectCondition().setForUpdate(true);
 
       Entity sales = connection.selectSingle(condition);
       originalLocation = sales.get(Department.LOC);
@@ -596,7 +595,7 @@ public class DefaultLocalEntityConnectionTest {
         connection2.getDatabaseConnection().rollback();
       }
 
-      connection.select(condition(Department.TYPE).selectCondition());//any query will do
+      connection.select(condition(Department.TYPE));//any query will do
 
       try {
         sales = connection2.update(sales);
@@ -620,7 +619,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.setOptimisticLockingEnabled(true);
     final Entity allen;
     try {
-      final SelectCondition condition = condition(EMP_NAME).equalTo("ALLEN").selectCondition();
+      final Condition condition = condition(EMP_NAME).equalTo("ALLEN");
 
       allen = connection.selectSingle(condition);
 
@@ -722,10 +721,10 @@ public class DefaultLocalEntityConnectionTest {
   public void dualIterator() throws Exception {
     final DefaultLocalEntityConnection connection = initializeConnection();
     final ResultIterator<Entity> deptIterator =
-            connection.iterator(condition(Department.TYPE).selectCondition());
+            connection.iterator(condition(Department.TYPE));
     while (deptIterator.hasNext()) {
       final ResultIterator<Entity> empIterator =
-              connection.iterator(condition(EMP_DEPARTMENT_FK).equalTo(deptIterator.next()).selectCondition());
+              connection.iterator(condition(EMP_DEPARTMENT_FK).equalTo(deptIterator.next()));
       while (empIterator.hasNext()) {
         empIterator.next();
       }
@@ -858,10 +857,10 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   public void entityWithoutPrimaryKey() throws DatabaseException {
-    List<Entity> entities = connection.select(condition(T_NO_PK).selectCondition());
+    List<Entity> entities = connection.select(condition(T_NO_PK));
     assertEquals(6, entities.size());
     entities = connection.select(condition(NO_PK_COL1).equalTo(2)
-                    .or(condition(NO_PK_COL3).equalTo("5")).selectCondition());
+                    .or(condition(NO_PK_COL3).equalTo("5")));
     assertEquals(4, entities.size());
   }
 
@@ -870,7 +869,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       connection.beginTransaction();
 
-      final List<Entity> departments = connection.select(condition(Department.TYPE).selectCondition());
+      final List<Entity> departments = connection.select(condition(Department.TYPE));
       Department department = ENTITIES.castTo(Department.TYPE, departments.get(0));
       department.setName("New Name");
 
@@ -878,7 +877,7 @@ public class DefaultLocalEntityConnectionTest {
 
       assertEquals("New Name", department.getName());
 
-      List<Department> departmentsCast = ENTITIES.castTo(Department.TYPE, connection.select(condition(Department.TYPE).selectCondition()));
+      List<Department> departmentsCast = ENTITIES.castTo(Department.TYPE, connection.select(condition(Department.TYPE)));
 
       departmentsCast.forEach(dept -> dept.setName(dept.getName() + "N"));
 

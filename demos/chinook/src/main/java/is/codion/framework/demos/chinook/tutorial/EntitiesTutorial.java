@@ -131,10 +131,9 @@ public final class EntitiesTutorial {
 
     albums.forEach(System.out::println);
 
-    // for more complex queries we use a EntitySelectCondition, provided
-    // by the Conditions factory class.
-    // we create a select condition, where we specify the type of the entity
-    // we're selecting, the attributes we're searching by, the type of condition and the value.
+    // for more complex queries we use a SelectCondition, provided by the Condition class.
+    // we create a condition, where we specify the the attribute we're
+    // searching by, the type of condition and the value.
     SelectCondition artistsCondition = condition(Artist.NAME).equalTo("An%").selectCondition();
 
     // and we set the order by clause

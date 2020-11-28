@@ -53,7 +53,7 @@ public final class ClientServer {
 
     EntityConnection connection = connectionProvider.getConnection();
 
-    List<Entity> customers = connection.select(condition(Customer.TYPE).selectCondition());
+    List<Entity> customers = connection.select(condition(Customer.TYPE));
     customers.forEach(System.out::println);
 
     connection.close();
@@ -87,7 +87,7 @@ public final class ClientServer {
 
     EntityConnection connection = connectionProvider.getConnection();
 
-    List<Entity> customers = connection.select(condition(Customer.TYPE).selectCondition());
+    List<Entity> customers = connection.select(condition(Customer.TYPE));
     customers.forEach(System.out::println);
 
     connection.close();

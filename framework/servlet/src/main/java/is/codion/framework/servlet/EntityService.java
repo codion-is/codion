@@ -9,7 +9,6 @@ import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.reports.ReportType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.entity.Attribute;
@@ -314,7 +313,7 @@ public final class EntityService extends AbstractEntityService {
   public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers) {
     try {
       final RemoteEntityConnection connection = authenticate(request, headers);
-      final SelectCondition selectCondition = deserialize(request);
+      final Condition selectCondition = deserialize(request);
 
       return Response.ok(Serializer.serialize(connection.select(selectCondition))).build();
     }

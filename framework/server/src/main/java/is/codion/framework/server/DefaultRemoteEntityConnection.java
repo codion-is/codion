@@ -12,7 +12,6 @@ import is.codion.common.db.reports.ReportType;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
@@ -230,7 +229,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Entity selectSingle(final SelectCondition condition) throws DatabaseException {
+  public Entity selectSingle(final Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.selectSingle(condition);
     }
@@ -244,7 +243,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public List<Entity> select(final SelectCondition condition) throws DatabaseException {
+  public List<Entity> select(final Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(condition);
     }

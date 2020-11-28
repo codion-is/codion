@@ -10,6 +10,7 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.user.Users;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
@@ -39,15 +40,15 @@ public final class EntityConnectionDemo {
 
   static void selectConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::selectCondition[]
-    SelectCondition condition =
-            condition(Artist.NAME).equalTo("The %").selectCondition();
+    Condition condition =
+            condition(Artist.NAME).equalTo("The %");
 
     List<Entity> artists = connection.select(condition);
 
     condition =
             condition(Album.ARTIST_FK).equalTo(artists)
                     .and(condition(Album.TITLE).notEqualTo("%live%")
-                            .setCaseSensitive(false)).selectCondition();
+                            .setCaseSensitive(false));
 
     List<Entity> nonLiveAlbums = connection.select(condition);
     // end::selectCondition[]
@@ -125,12 +126,12 @@ public final class EntityConnectionDemo {
   static void selectSingleCondition(EntityConnection connection) throws DatabaseException {
     // tag::selectSingleCondition[]
     Entity ironMaiden = connection.selectSingle(
-            condition(Artist.NAME).equalTo("Iron Maiden").selectCondition());
+            condition(Artist.NAME).equalTo("Iron Maiden"));
 
     Entity liveAlbum = connection.selectSingle(
             condition(Album.ARTIST_FK).equalTo(ironMaiden)
                     .and(condition(Album.TITLE).equalTo("%live after%")
-                            .setCaseSensitive(false)).selectCondition());
+                            .setCaseSensitive(false)));
     // end::selectSingleCondition[]
   }
 
@@ -161,7 +162,7 @@ public final class EntityConnectionDemo {
 
   static void selectDependencies(EntityConnection connection) throws DatabaseException {
     // tag::selectDependencies[]
-    List<Entity> employees = connection.select(condition(Employee.TYPE).selectCondition());
+    List<Entity> employees = connection.select(condition(Employee.TYPE));
 
     Map<EntityType<?>, Collection<Entity>> dependencies = connection.selectDependencies(employees);
 

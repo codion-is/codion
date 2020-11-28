@@ -15,7 +15,6 @@ import is.codion.common.db.reports.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
@@ -293,16 +292,16 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return selectSingle(condition(attribute).equalTo(value).selectCondition());
+    return selectSingle(condition(attribute).equalTo(value));
   }
 
   @Override
   public Entity selectSingle(final Key key) throws DatabaseException {
-    return selectSingle(condition(key).selectCondition());
+    return selectSingle(condition(key));
   }
 
   @Override
-  public Entity selectSingle(final SelectCondition condition) throws DatabaseException {
+  public Entity selectSingle(final Condition condition) throws DatabaseException {
     final List<Entity> selected = select(condition);
     if (Util.nullOrEmpty(selected)) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
@@ -331,7 +330,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public List<Entity> select(final SelectCondition condition) throws DatabaseException {
+  public List<Entity> select(final Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
       return onJsonResponse(execute(createHttpPost("select",
@@ -348,12 +347,12 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
-    return select(condition(attribute).equalTo(value).selectCondition());
+    return select(condition(attribute).equalTo(value));
   }
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
-    return select(condition(attribute).equalTo(values).selectCondition());
+    return select(condition(attribute).equalTo(values));
   }
 
   @Override

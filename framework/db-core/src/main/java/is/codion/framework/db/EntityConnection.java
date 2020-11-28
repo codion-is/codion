@@ -11,7 +11,6 @@ import is.codion.common.db.reports.ReportException;
 import is.codion.common.db.reports.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
@@ -260,7 +259,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  Entity selectSingle(SelectCondition condition) throws DatabaseException;
+  Entity selectSingle(Condition condition) throws DatabaseException;
 
   /**
    * Returns entities according to {@code keys}
@@ -276,7 +275,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return entities according to the given condition
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> select(SelectCondition condition) throws DatabaseException;
+  List<Entity> select(Condition condition) throws DatabaseException;
 
   /**
    * Selects entities according to one attribute, using {@code value} as a condition

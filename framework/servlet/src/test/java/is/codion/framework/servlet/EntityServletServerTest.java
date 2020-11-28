@@ -17,7 +17,6 @@ import is.codion.common.value.Values;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -199,7 +198,7 @@ public class EntityServletServerTest {
     response.close();
 
     //select by condition
-    final SelectCondition selectCondition = Conditions.condition(keys).selectCondition();
+    final Condition selectCondition = Conditions.condition(keys);
 
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
@@ -459,7 +458,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     HttpPost httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(TestDomain.T_DEPARTMENT).selectCondition())));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(TestDomain.T_DEPARTMENT))));
     context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
@@ -525,7 +524,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(TestDomain.DEPARTMENT_NAME).equalTo("New name").selectCondition())));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(TestDomain.DEPARTMENT_NAME).equalTo("New name"))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);
@@ -536,7 +535,7 @@ public class EntityServletServerTest {
     uriBuilder = createURIBuilder();
     uriBuilder.setPath("select");
     httpPost = new HttpPost(uriBuilder.build());
-    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getPrimaryKey()).selectCondition())));
+    httpPost.setEntity(new ByteArrayEntity(Serializer.serialize(condition(department.getPrimaryKey()))));
     response = client.execute(TARGET_HOST, httpPost, context);
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryEntities = deserializeResponse(response);

@@ -10,6 +10,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
@@ -23,7 +24,7 @@ import is.codion.framework.domain.entity.Entity;
  *
  * EntityConnection connection = LocalEntityConnections.createConnection(domain, database, user);
  *
- * List&lt;Entity&gt; entities = connection.select(Conditions.selectCondition(Domain.ENTITY_TYPE));
+ * List&lt;Entity&gt; entities = connection.select(Conditions.condition(Domain.ENTITY_TYPE));
  *
  * connection.close();
  * </pre>
@@ -79,7 +80,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * @return an iterator for the given query condition
    * @throws DatabaseException in case of an exception
    */
-  ResultIterator<Entity> iterator(SelectCondition condition) throws DatabaseException;
+  ResultIterator<Entity> iterator(Condition condition) throws DatabaseException;
 
   /**
    * @return true if optimistic locking is enabled

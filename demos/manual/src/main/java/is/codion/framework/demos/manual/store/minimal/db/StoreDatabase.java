@@ -44,7 +44,7 @@ public class StoreDatabase {
             connection.select(Address.CUSTOMER_FK, customersNamedDoe);
 
     List<Entity> customersWithoutEmail =
-            connection.select(condition(Customer.EMAIL).isNull().selectCondition());
+            connection.select(condition(Customer.EMAIL).isNull());
 
     List<String> activeCustomerEmailAddresses =
             connection.select(Customer.EMAIL,
@@ -52,7 +52,7 @@ public class StoreDatabase {
 
     List<Entity> activeCustomersWithEmailAddresses =
             connection.select(condition(Customer.IS_ACTIVE).equalTo(true)
-                    .and(condition(Customer.EMAIL).isNotNull()).selectCondition());
+                    .and(condition(Customer.EMAIL).isNotNull()));
 
     //The domain model entities, a factory for Entity instances.
     Entities entities = connection.getEntities();

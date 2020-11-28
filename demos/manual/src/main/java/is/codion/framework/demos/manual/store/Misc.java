@@ -43,7 +43,7 @@ public final class Misc {
             connection.getEntities().getDefinition(Customer.TYPE);
 
     Iterator<Entity> customerIterator =
-            connection.select(condition(Customer.TYPE).selectCondition()).iterator();
+            connection.select(condition(Customer.TYPE)).iterator();
 
     JasperReportsDataSource<Entity> dataSource =
             new JasperReportsDataSource<>(customerIterator,
