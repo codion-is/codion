@@ -364,8 +364,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   private static final class UpdateTotalsProcedure implements DatabaseProcedure<EntityConnection, Object> {
 
     private static final SelectCondition ALL_INVOICES =
-            condition(Invoice.TYPE).selectCondition()
-                    .setForUpdate(true).setFetchDepth(0);
+            condition(Invoice.TYPE).select()
+                    .forUpdate().fetchDepth(0);
 
     @Override
     public void execute(final EntityConnection entityConnection,
@@ -387,8 +387,8 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       BigDecimal priceIncrease = (BigDecimal) arguments.get(1);
 
       SelectCondition selectCondition =
-              condition(Track.ID).equalTo(trackIds).selectCondition()
-                      .setForUpdate(true);
+              condition(Track.ID).equalTo(trackIds).select()
+                      .forUpdate();
 
       return entityConnection.update(entityConnection.getEntities()
               .castTo(Track.TYPE, entityConnection.select(selectCondition)).stream()

@@ -6531,3 +6531,5 @@
   EntityConnection.select() and selectSingle() condition parameter is now Condition instead of SelectCondition
   LocalEntityConnection.iterator() condition parameter is now Condition instead of SelectCondition
   SelectConditionDeserializer now handles Condition instances
+  Condition.selectCondion() and updateCondition() renamed select() and update() respectively
+  SelectCondition, removed set prefix from setters, redundant parameter from forUpdate()

@@ -74,7 +74,7 @@ public final class EntityConnectionDemo {
     // tag::fetchDepthCondition[]
     SelectCondition selectCondition =
             condition(Track.NAME).equalTo("Bad%")
-                    .selectCondition().setFetchDepth(0);
+                    .select().fetchDepth(0);
 
     List<Entity> tracks = connection.select(selectCondition);
 
@@ -90,7 +90,7 @@ public final class EntityConnectionDemo {
     // tag::fetchDepthConditionForeignKey[]
     SelectCondition selectCondition =
             condition(Track.NAME).equalTo("Bad%")
-                    .selectCondition().setFetchDepth(Track.ALBUM_FK, 0);
+                    .select().fetchDepth(Track.ALBUM_FK, 0);
 
     List<Entity> tracks = connection.select(selectCondition);
 
@@ -205,7 +205,7 @@ public final class EntityConnectionDemo {
 
   static void updateConditionDemo(EntityConnection connection) throws DatabaseException {
     // tag::updateCondition[]
-    UpdateCondition updateCondition = condition(Artist.NAME).equalTo("Azymuth").updateCondition();
+    UpdateCondition updateCondition = condition(Artist.NAME).equalTo("Azymuth").update();
 
     updateCondition.set(Artist.NAME, "Another Name");
 

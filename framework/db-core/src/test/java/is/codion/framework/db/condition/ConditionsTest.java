@@ -26,30 +26,30 @@ public final class ConditionsTest {
   @Test
   public void condition() {
     SelectCondition condition = Conditions.condition(TestDomain.DEPARTMENT_LOCATION).equalTo("New York")
-            .selectCondition().setOrderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
+            .select().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertEquals(-1, condition.getFetchCount());
 
-    condition = Conditions.condition(TestDomain.T_DEPARTMENT).selectCondition().setFetchCount(10);
+    condition = Conditions.condition(TestDomain.T_DEPARTMENT).select().fetchCount(10);
     assertEquals(10, condition.getFetchCount());
   }
 
   @Test
   public void customConditionTest() {
     final SelectCondition condition = Conditions.customCondition(TestDomain.DEPARTMENT_NAME_NOT_NULL_CONDITION_ID)
-            .selectCondition().setOrderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
+            .select().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME));
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getAttributes().isEmpty());
   }
 
   @Test
   public void selectConditionOrderBySameAttribute() {
-    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).selectCondition()
-            .setOrderBy(orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT)));
+    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).select()
+            .orderBy(orderBy().ascending(TestDomain.EMP_DEPARTMENT).descending(TestDomain.EMP_DEPARTMENT)));
   }
 
   @Test
   public void updateConditionDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).updateCondition()
+    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).update()
             .set(TestDomain.EMP_COMMISSION, 123d)
             .set(TestDomain.EMP_COMMISSION, 123d));
   }

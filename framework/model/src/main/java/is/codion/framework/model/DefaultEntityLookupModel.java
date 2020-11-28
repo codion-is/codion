@@ -291,7 +291,7 @@ public final class DefaultEntityLookupModel implements EntityLookupModel {
 
     return (additionalConditionProvider == null ? conditionCombination :
             additionalConditionProvider.getCondition().and(conditionCombination))
-            .selectCondition().setOrderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
+            .select().orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy());
   }
 
   private String prepareLookupText(final String rawLookupText, final LookupSettings lookupSettings) {

@@ -193,7 +193,7 @@ public final class WhereConditionTest {
   public void customConditionTest() {
     final EntityDefinition departmentDefinition = ENTITIES.getDefinition(TestDomain.T_DEPARTMENT);
     final WhereCondition condition = whereCondition(Conditions.customCondition(TestDomain.DEPARTMENT_CONDITION_ID)
-            .selectCondition().setOrderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME)), departmentDefinition);
+            .select().orderBy(orderBy().ascending(TestDomain.DEPARTMENT_NAME)), departmentDefinition);
 
     assertTrue(condition.getValues().isEmpty());
     assertTrue(condition.getColumnProperties().isEmpty());
@@ -213,8 +213,8 @@ public final class WhereConditionTest {
 
   @Test
   public void selectConditionOrderByDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).selectCondition()
-            .setOrderBy(orderBy().ascending(TestDomain.EMP_NAME).descending(TestDomain.EMP_NAME)));
+    assertThrows(IllegalArgumentException.class, () -> Conditions.condition(TestDomain.T_EMP).select()
+            .orderBy(orderBy().ascending(TestDomain.EMP_NAME).descending(TestDomain.EMP_NAME)));
   }
 
   @Test

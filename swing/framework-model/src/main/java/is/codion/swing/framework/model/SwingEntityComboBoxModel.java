@@ -14,7 +14,6 @@ import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -324,16 +323,16 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    */
   protected List<Entity> performQuery() {
     try {
-      final SelectCondition selectCondition;
+      final Condition condition;
       if (selectConditionProvider == null) {
-        selectCondition = condition(entityType).selectCondition();
+        condition = condition(entityType);
       }
       else {
-        selectCondition = selectConditionProvider.getCondition().selectCondition();
+        condition = selectConditionProvider.getCondition();
       }
 
-      return connectionProvider.getConnection().select(selectCondition
-              .setOrderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
+      return connectionProvider.getConnection().select(condition.select()
+              .orderBy(connectionProvider.getEntities().getDefinition(entityType).getOrderBy()));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
