@@ -26,7 +26,7 @@ public interface Value<V> extends ValueObserver<V> {
   /**
    * Creates a unidirectional link between this value and the given original value observer,
    * so that changes in the original value are reflected in this one.
-   * Note that after a call to this method the value of this value the same as the original value.
+   * Note that after a call to this method the value of this value is the same as the original value.
    * @param originalValueObserver the original value to link this value to
    */
   void link(ValueObserver<V> originalValueObserver);

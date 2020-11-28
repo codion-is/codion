@@ -120,7 +120,7 @@ final class Queries {
     final StringBuilder queryBuilder = new StringBuilder(selectQuery);
     final String whereClause = whereCondition.getWhereClause();
     if (whereClause.length() > 0) {
-      queryBuilder.append(containsWhereClause ? " and " : Queries.WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
+      queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
     }
     if (isForUpdate) {
       addForUpdate(queryBuilder, database);

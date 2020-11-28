@@ -7,6 +7,7 @@ import is.codion.common.Conjunction;
 import is.codion.framework.db.TestDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 
 import org.junit.jupiter.api.Test;
 
@@ -79,5 +80,22 @@ public final class ConditionsTest {
     final AttributeCondition<Entity> condition2 = Conditions.condition(TestDomain.DETAIL_MASTER_VIA_CODE_FK).equalTo(master);
     whereCondition = Conditions.whereCondition(condition2, ENTITIES.getDefinition(TestDomain.T_DETAIL));
     assertEquals("master_code = ?", whereCondition.getWhereClause());
+  }
+
+  @Test
+  public void unsupportedOperators() {
+    final EntityDefinition definition = ENTITIES.getDefinition(TestDomain.T_MASTER);
+    final Entity one = ENTITIES.entity(TestDomain.T_MASTER);
+    final Entity two = ENTITIES.entity(TestDomain.T_MASTER);
+
+    assertThrows(IllegalArgumentException.class, () -> Conditions.whereCondition(Conditions.condition(TestDomain.DETAIL_MASTER_FK).between(one, two), definition));
+    assertThrows(IllegalArgumentException.class, () -> Conditions.whereCondition(Conditions.condition(TestDomain.DETAIL_MASTER_FK).betweenExclusive(one, two), definition));
+    assertThrows(IllegalArgumentException.class, () -> Conditions.whereCondition(Conditions.condition(TestDomain.DETAIL_MASTER_FK).notBetween(one, two), definition));
+    assertThrows(IllegalArgumentException.class, () -> Conditions.whereCondition(Conditions.condition(TestDomain.DETAIL_MASTER_FK).notBetweenExclusive(one, two), definition));
+
+    assertThrows(IllegalArgumentException.class, () -> Conditions.whereCondition(Conditions.condition(TestDomain.DETAIL_MASTER_FK).greaterThan(one), definition));
+    assertThrows(IllegalArgumentException.class, () -> Conditions.whereCondition(Conditions.condition(TestDomain.DETAIL_MASTER_FK).lessThan(one), definition));
+    assertThrows(IllegalArgumentException.class, () -> Conditions.whereCondition(Conditions.condition(TestDomain.DETAIL_MASTER_FK).greaterThanOrEqualTo(one), definition));
+    assertThrows(IllegalArgumentException.class, () -> Conditions.whereCondition(Conditions.condition(TestDomain.DETAIL_MASTER_FK).lessThanOrEqualTo(one), definition));
   }
 }

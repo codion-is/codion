@@ -17,7 +17,7 @@ public interface OrderBy {
    */
   OrderBy ascending(Attribute<?>... attributes);
 
-    /**
+  /**
    * Adds a 'descending' order by for the given attributes
    * @param attributes the attributes
    * @return this OrderBy instance

@@ -76,7 +76,7 @@ final class DefaultEntity implements Entity, Serializable {
    * @param primaryKey the primary key
    */
   DefaultEntity(final EntityDefinition definition, final Key primaryKey) {
-    this(definition, createValueMap(primaryKey), null);
+    this(definition, createValueMap(requireNonNull(primaryKey, "primaryKey")), null);
     this.primaryKey = primaryKey;
   }
 
@@ -88,7 +88,7 @@ final class DefaultEntity implements Entity, Serializable {
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
   DefaultEntity(final EntityDefinition definition, final Map<Attribute<?>, Object> values, final Map<Attribute<?>, Object> originalValues) {
-    this.values = validatePropertiesAndValues(definition, values == null ? new HashMap<>() : values);
+    this.values = validatePropertiesAndValues(requireNonNull(definition, "definition"), values == null ? new HashMap<>() : values);
     this.originalValues = validatePropertiesAndValues(definition, originalValues);
     this.definition = definition;
   }
@@ -186,8 +186,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public <T> void save(final Attribute<T> attribute) {
-    requireNonNull(attribute, ATTRIBUTE);
-    removeOriginalValue(attribute);
+    removeOriginalValue(requireNonNull(attribute, ATTRIBUTE));
   }
 
   @Override
@@ -252,8 +251,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public boolean columnValuesEqual(final Entity entity) {
-    requireNonNull(entity, "entity");
-    if (!definition.getEntityType().equals(entity.getEntityType())) {
+    if (!definition.getEntityType().equals(requireNonNull(entity, "entity").getEntityType())) {
       throw new IllegalArgumentException("Entity of type " + definition.getEntityType() +
               " expected, got: " + entity.getEntityType());
     }
@@ -404,7 +402,6 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> T putInternal(final Property<T> property, final T value) {
-    requireNonNull(property, ATTRIBUTE);
     final T newValue = validateAndPrepareForPut(property, value);
     final Attribute<T> attribute = property.getAttribute();
     final boolean initialization = !values.containsKey(attribute);
@@ -756,7 +753,6 @@ final class DefaultEntity implements Entity, Serializable {
 
   private static Map<Attribute<?>, Object> validatePropertiesAndValues(final EntityDefinition definition,
                                                                        final Map<Attribute<?>, Object> propertyValues) {
-    requireNonNull(definition, "definition");
     if (propertyValues != null && !propertyValues.isEmpty()) {
       for (final Map.Entry<Attribute<?>, Object> valueEntry : propertyValues.entrySet()) {
         final Property<Object> property = definition.getProperty((Attribute<Object>) valueEntry.getKey());
@@ -768,7 +764,6 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private static Map<Attribute<?>, Object> createValueMap(final Key primaryKey) {
-    requireNonNull(primaryKey, "primaryKey");
     if (!primaryKey.isPrimaryKey()) {
       throw new IllegalArgumentException("Key " + primaryKey + " is not a primary key");
     }
