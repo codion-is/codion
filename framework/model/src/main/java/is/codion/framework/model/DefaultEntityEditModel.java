@@ -22,6 +22,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -85,7 +86,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds the EntityLookupModels used by this {@link EntityEditModel}
    */
-  private final Map<Attribute<Entity>, EntityLookupModel> entityLookupModels = new HashMap<>();
+  private final Map<ForeignKey, EntityLookupModel> entityLookupModels = new HashMap<>();
 
   /**
    * Holds the edit model values created via {@link #value(Attribute)}
@@ -190,7 +191,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     final Property<T> property = getEntityDefinition().getProperty(attribute);
     if (isPersistValue(attribute)) {
       if (property instanceof ForeignKeyProperty) {
-        return (T) entity.getForeignKey((Attribute<Entity>) attribute);
+        return (T) entity.getForeignKey(((ForeignKeyProperty) property).getAttribute());
       }
 
       return entity.get(attribute);
@@ -314,7 +315,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
       final List<ForeignKeyProperty> foreignKeyProperties = getEntityDefinition()
               .getForeignKeyReferences(entityTypeEntities.getKey());
       for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-        replaceForeignKey(foreignKeyProperty, entityTypeEntities.getValue());
+        replaceForeignKey(foreignKeyProperty.getAttribute(), entityTypeEntities.getValue());
       }
     }
   }
@@ -325,8 +326,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Entity getForeignKey(final Attribute<Entity> foreignKeyAttribute) {
-    return entity.get(foreignKeyAttribute);
+  public final Entity getForeignKey(final ForeignKey foreignKey) {
+    return entity.get(foreignKey);
   }
 
   @Override
@@ -586,15 +587,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean containsLookupModel(final Attribute<Entity> foreignKeyAttribute) {
-    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
-    getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
-    return entityLookupModels.containsKey(foreignKeyAttribute);
+  public final boolean containsLookupModel(final ForeignKey foreignKey) {
+    getEntityDefinition().getForeignKeyProperty(foreignKey);
+    return entityLookupModels.containsKey(foreignKey);
   }
 
   @Override
-  public EntityLookupModel createForeignKeyLookupModel(final Attribute<Entity> foreignKeyAttribute) {
-    final ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
+  public EntityLookupModel createForeignKeyLookupModel(final ForeignKey foreignKey) {
+    final ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKey);
     final Collection<Attribute<String>> searchAttributes = getEntities()
             .getDefinition(property.getReferencedEntityType()).getSearchAttributes();
     if (searchAttributes.isEmpty()) {
@@ -608,10 +608,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityLookupModel getForeignKeyLookupModel(final Attribute<Entity> foreignKeyAttribute) {
-    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
-    getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
-    return entityLookupModels.computeIfAbsent(foreignKeyAttribute, fk -> createForeignKeyLookupModel(foreignKeyAttribute));
+  public final EntityLookupModel getForeignKeyLookupModel(final ForeignKey foreignKey) {
+    getEntityDefinition().getForeignKeyProperty(foreignKey);
+    return entityLookupModels.computeIfAbsent(foreignKey, fk -> createForeignKeyLookupModel(foreignKey));
   }
 
   @Override
@@ -849,16 +848,16 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * For every field referencing the given foreign key values, replaces that foreign key instance with
    * the corresponding entity from {@code values}, useful when property
    * values have been changed in the referenced entity that must be reflected in the edit model.
-   * @param foreignKeyProperty the foreign key property
+   * @param foreignKey the foreign key attribute
    * @param values the foreign key entities
    */
-  protected void replaceForeignKey(final ForeignKeyProperty foreignKeyProperty, final List<Entity> values) {
-    final Entity currentForeignKeyValue = getForeignKey(foreignKeyProperty.getAttribute());
+  protected void replaceForeignKey(final ForeignKey foreignKey, final List<Entity> values) {
+    final Entity currentForeignKeyValue = getForeignKey(foreignKey);
     if (currentForeignKeyValue != null) {
       for (final Entity replacementValue : values) {
         if (currentForeignKeyValue.equals(replacementValue)) {
-          put(foreignKeyProperty.getAttribute(), null);
-          put(foreignKeyProperty.getAttribute(), replacementValue);
+          put(foreignKey, null);
+          put(foreignKey, replacementValue);
         }
       }
     }
@@ -989,7 +988,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     entityDefinition.getForeignKeyProperties(attribute).forEach(foreignKeyProperty ->
             dependentValues.put(foreignKeyProperty.getAttribute(), get(foreignKeyProperty.getAttribute())));
     if (entityDefinition.getProperty(attribute) instanceof ForeignKeyProperty) {
-      entityDefinition.getForeignKeyProperty((Attribute<Entity>) attribute).getReferences().forEach(reference ->
+      entityDefinition.getForeignKeyProperty((ForeignKey) attribute).getReferences().forEach(reference ->
               dependentValues.put(reference.getAttribute(), get(reference.getAttribute())));
     }
 

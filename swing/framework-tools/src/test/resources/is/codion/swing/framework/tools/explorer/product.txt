@@ -2,7 +2,7 @@ public interface Product {
   EntityType<Entity> TYPE = DOMAIN.entityType("petstore.product");
   Attribute<Integer> PRODUCTID = TYPE.integerAttribute("productid");
   Attribute<Integer> CATEGORYID = TYPE.integerAttribute("categoryid");
-  Attribute<Entity> CATEGORY_FK = TYPE.entityAttribute("category_fk");
+  ForeignKeyAttribute CATEGORY_FK = TYPE.foreignKey("category_fk", Product.CATEGORYID, Category.CATEGORYID);
   Attribute<String> NAME = TYPE.stringAttribute("name");
   Attribute<String> DESCRIPTION = TYPE.stringAttribute("description");
   Attribute<String> IMAGEURL = TYPE.stringAttribute("imageurl");
@@ -14,8 +14,7 @@ void product() {
                 .primaryKeyIndex(0),
           columnProperty(Product.CATEGORYID)
                 .nullable(false),
-          foreignKeyProperty(Product.CATEGORY_FK, "Category")
-                .reference(Product.CATEGORYID, Category.CATEGORYID),
+          foreignKeyProperty(Product.CATEGORY_FK, "Category"),
           columnProperty(Product.NAME, "Name")
                 .nullable(false)
                 .maximumLength(25),

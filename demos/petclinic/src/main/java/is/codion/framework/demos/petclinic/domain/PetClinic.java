@@ -69,10 +69,8 @@ public final class PetClinic extends DefaultDomain {
                     .primaryKeyIndex(0),
             columnProperty(VetSpecialty.SPECIALTY)
                     .primaryKeyIndex(1),
-            foreignKeyProperty(VetSpecialty.VET_FK, "Vet")
-                    .reference(VetSpecialty.VET, Vet.ID),
-            foreignKeyProperty(VetSpecialty.SPECIALTY_FK, "Specialty")
-                    .reference(VetSpecialty.SPECIALTY, Specialty.ID))
+            foreignKeyProperty(VetSpecialty.VET_FK, "Vet"),
+            foreignKeyProperty(VetSpecialty.SPECIALTY_FK, "Specialty"))
             .caption("Vet specialties")
             .stringFactory(stringFactory(VetSpecialty.VET_FK).text(" - ")
                     .value(VetSpecialty.SPECIALTY_FK));
@@ -127,12 +125,10 @@ public final class PetClinic extends DefaultDomain {
                     .nullable(false),
             columnProperty(Pet.PET_TYPE_ID)
                     .nullable(false),
-            foreignKeyProperty(Pet.PET_TYPE_FK, "Pet type")
-                    .reference(Pet.PET_TYPE_ID, PetType.ID),
+            foreignKeyProperty(Pet.PET_TYPE_FK, "Pet type"),
             columnProperty(Pet.OWNER_ID)
                     .nullable(false),
-            foreignKeyProperty(Pet.OWNER_FK, "Owner")
-                    .reference(Pet.OWNER_ID, Owner.ID))
+            foreignKeyProperty(Pet.OWNER_FK, "Owner"))
             .keyGenerator(automatic(Pet.TYPE.getName()))
             .caption("Pets")
             .stringFactory(stringFactory(Pet.NAME))
@@ -144,8 +140,7 @@ public final class PetClinic extends DefaultDomain {
             primaryKeyProperty(Visit.ID),
             columnProperty(Visit.PET_ID)
                     .nullable(false),
-            foreignKeyProperty(Visit.PET_FK, "Pet")
-                    .reference(Visit.PET_ID, Pet.ID),
+            foreignKeyProperty(Visit.PET_FK, "Pet"),
             columnProperty(Visit.DATE, "Date")
                     .nullable(false),
             columnProperty(Visit.DESCRIPTION, "Description")

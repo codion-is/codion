@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -102,9 +103,9 @@ public final class Example {
       EntityType<Entity> TYPE = DOMAIN.entityType("store.customer_address");
       Attribute<Integer> ID = TYPE.integerAttribute("id");
       Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
-      Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
+      ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CustomerAddress.CUSTOMER_ID, Customer.ID);
       Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("address_id");
-      Attribute<Entity> ADDRESS_FK = TYPE.entityAttribute("address_fk");
+      ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", CustomerAddress.ADDRESS_ID, Address.ID);
     }
 
     void customerAddress() {
@@ -112,12 +113,10 @@ public final class Example {
               primaryKeyProperty(CustomerAddress.ID),
               columnProperty(CustomerAddress.CUSTOMER_ID)
                       .nullable(false),
-              foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer")
-                      .reference(CustomerAddress.CUSTOMER_ID, Customer.ID),
+              foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer"),
               columnProperty(CustomerAddress.ADDRESS_ID)
                       .nullable(false),
-              foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address")
-                      .reference(CustomerAddress.ADDRESS_ID, Address.ID))
+              foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address"))
               .keyGenerator(automatic("store.customer_address"))
               .caption("Customer address");
     }

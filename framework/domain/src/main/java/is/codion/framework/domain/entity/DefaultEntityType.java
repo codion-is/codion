@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -113,6 +116,34 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   @Override
   public Attribute<byte[]> byteArrayAttribute(final String name) {
     return attribute(name, byte[].class);
+  }
+
+  @Override
+  public <A> ForeignKey foreignKey(final String name, final Attribute<A> attribute, final Attribute<A> referencedAttribute) {
+    return foreignKey(name, Collections.singletonList(new DefaultForeignKey.DefaultReference<>(attribute, referencedAttribute)));
+  }
+
+  @Override
+  public <A, B> ForeignKey foreignKey(final String name, final Attribute<A> firstAttribute, final Attribute<A> firstReferencedAttribute,
+                                      final Attribute<B> secondAttribute, final Attribute<B> secondReferencedAttribute) {
+    return foreignKey(name, Arrays.asList(
+            new DefaultForeignKey.DefaultReference<>(firstAttribute, firstReferencedAttribute),
+            new DefaultForeignKey.DefaultReference<>(secondAttribute, secondReferencedAttribute)));
+  }
+
+  @Override
+  public <A, B, C> ForeignKey foreignKey(final String name, final Attribute<A> firstAattribute, final Attribute<A> firstReferencedAttribute,
+                                         final Attribute<B> secondAttribute, final Attribute<B> secondReferencedAttribute,
+                                         final Attribute<C> thirdAttribute, final Attribute<C> thirdReferencedAttribute) {
+    return foreignKey(name, Arrays.asList(
+            new DefaultForeignKey.DefaultReference<>(firstAattribute, firstReferencedAttribute),
+            new DefaultForeignKey.DefaultReference<>(secondAttribute, secondReferencedAttribute),
+            new DefaultForeignKey.DefaultReference<>(thirdAttribute, thirdReferencedAttribute)));
+  }
+
+  @Override
+  public ForeignKey foreignKey(final String name, final List<ForeignKey.Reference<?>> references) {
+    return new DefaultForeignKey(name, this, references);
   }
 
   @Override

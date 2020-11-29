@@ -27,7 +27,7 @@ final class DomainToString {
     builder.append("public interface ").append(interfaceName).append(" {").append(Util.LINE_SEPARATOR);
     builder.append("  ").append("EntityType<Entity> TYPE = ").append("DOMAIN.entityType(\"")
             .append(definition.getTableName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
-    definition.getProperties().forEach(property -> appendAttribute(builder, property));
+    definition.getProperties().forEach(property -> appendAttribute(builder, property, interfaceName));
     builder.append("}").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
     builder.append("void ").append(getInterfaceName(definition.getTableName(), false)).append("() {").append(Util.LINE_SEPARATOR);
     builder.append("  define(").append(interfaceName).append(".TYPE").append(",").append(Util.LINE_SEPARATOR);
@@ -38,7 +38,7 @@ final class DomainToString {
     return builder.toString();
   }
 
-  private static void appendAttribute(final StringBuilder builder, final Property<?> property) {
+  private static void appendAttribute(final StringBuilder builder, final Property<?> property, final String interfaceName) {
     if (property instanceof ColumnProperty) {
       final ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
       final String typeClassName = columnProperty.getAttribute().getTypeClass().getSimpleName();
@@ -47,9 +47,20 @@ final class DomainToString {
               .append("Attribute(\"").append(columnProperty.getColumnName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
     }
     else if (property instanceof ForeignKeyProperty) {
-      builder.append("  ").append("Attribute<Entity> ")
-              .append(property.getAttribute().getName().toUpperCase()).append(" = TYPE.entityAttribute(\"")
-              .append(property.getAttribute().getName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
+      final ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) property;
+      final List<String> references = new ArrayList<>();
+      foreignKeyProperty.getReferences().forEach(reference -> {
+        final StringBuilder referenceBuilder = new StringBuilder();
+        referenceBuilder.append(interfaceName).append(".")
+                .append(reference.getAttribute().getName().toUpperCase()).append(", ")
+                .append(getInterfaceName(reference.getReferencedAttribute().getEntityType().getName(), true))
+                .append(".").append(reference.getReferencedAttribute().getName().toUpperCase());
+        references.add(referenceBuilder.toString());
+      });
+
+      builder.append("  ").append("ForeignKeyAttribute ")
+              .append(property.getAttribute().getName().toUpperCase()).append(" = TYPE.foreignKey(\"")
+              .append(property.getAttribute().getName().toLowerCase()).append("\", " + String.join(Util.LINE_SEPARATOR, references) + ");").append(Util.LINE_SEPARATOR);
     }
   }
 
@@ -71,19 +82,9 @@ final class DomainToString {
 
   private static String getForeignKeyProperty(final String interfaceName, final ForeignKeyProperty property) {
     final StringBuilder builder = new StringBuilder();
-    final String foreignKeyAttribute = property.getAttribute().getName().toUpperCase();
-    builder.append("          foreignKeyProperty(").append(interfaceName).append(".").append(foreignKeyAttribute)
-            .append(", \"").append(property.getCaption()).append("\")").append(Util.LINE_SEPARATOR);
-    final List<String> references = new ArrayList<>();
-    property.getReferences().forEach(reference -> {
-      final StringBuilder referenceBuilder = new StringBuilder();
-      referenceBuilder.append("                .reference(").append(interfaceName).append(".")
-                    .append(reference.getAttribute().getName().toUpperCase()).append(", ")
-                    .append(getInterfaceName(reference.getReferencedAttribute().getEntityType().getName(), true))
-                    .append(".").append(reference.getReferencedAttribute().getName().toUpperCase()).append(")");
-      references.add(referenceBuilder.toString());
-    });
-    builder.append(String.join(Util.LINE_SEPARATOR, references));
+    final String foreignKey = property.getAttribute().getName().toUpperCase();
+    builder.append("          foreignKeyProperty(").append(interfaceName).append(".").append(foreignKey)
+            .append(", \"").append(property.getCaption()).append("\")");
 
     return builder.toString();
   }

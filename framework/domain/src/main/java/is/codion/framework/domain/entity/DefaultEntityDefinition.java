@@ -444,11 +444,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public ForeignKeyProperty getForeignKeyProperty(final Attribute<Entity> attribute) {
-    requireNonNull(attribute, "attribute");
-    final ForeignKeyProperty property = entityProperties.foreignKeyPropertyMap.get(attribute);
+  public ForeignKeyProperty getForeignKeyProperty(final ForeignKey foreignKey) {
+    requireNonNull(foreignKey, "foreignKey");
+    final ForeignKeyProperty property = entityProperties.foreignKeyPropertyMap.get(foreignKey);
     if (property == null) {
-      throw new IllegalArgumentException("Foreign key attribute: " + attribute + " not found in entity of type: " + entityType);
+      throw new IllegalArgumentException("Foreign key: " + foreignKey + " not found in entity of type: " + entityType);
     }
 
     return property;
@@ -528,11 +528,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public EntityDefinition getForeignDefinition(final Attribute<Entity> foreignKeyAttribute) {
-    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
-    final EntityDefinition definition = foreignEntityDefinitions.get(foreignKeyAttribute);
+  public EntityDefinition getForeignDefinition(final ForeignKey foreignKey) {
+    requireNonNull(foreignKey, "foreignKey");
+    final EntityDefinition definition = foreignEntityDefinitions.get(foreignKey);
     if (definition == null) {
-      throw new IllegalArgumentException("Referenced entity not found for foreign key property: " + foreignKeyAttribute);
+      throw new IllegalArgumentException("Referenced entity not found for foreign key property: " + foreignKey);
     }
 
     return definition;
@@ -544,13 +544,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T> boolean hasDenormalizedProperties(final Attribute<T> foreignKeyAttribute) {
-    return hasDenormalizedProperties && entityProperties.denormalizedProperties.containsKey(foreignKeyAttribute);
+  public boolean hasDenormalizedProperties(final Attribute<Entity> entityAttribute) {
+    return hasDenormalizedProperties && entityProperties.denormalizedProperties.containsKey(entityAttribute);
   }
 
   @Override
-  public <T> List<DenormalizedProperty<?>> getDenormalizedProperties(final Attribute<T> foreignKeyAttribute) {
-    return entityProperties.denormalizedProperties.get(foreignKeyAttribute);
+  public List<DenormalizedProperty<?>> getDenormalizedProperties(final Attribute<Entity> entityAttribute) {
+    return entityProperties.denormalizedProperties.get(entityAttribute);
   }
 
   @Override
@@ -627,32 +627,32 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   /**
    * Returns true if a entity definition has been associated with the given foreign key.
-   * @param foreignKeyAttribute the foreign key attribute
-   * @return true if the referenced entity definition has been set for the given foreign key property
+   * @param foreignKey the foreign key
+   * @return true if the referenced entity definition has been set for the given foreign key
    */
-  boolean hasForeignDefinition(final Attribute<?> foreignKeyAttribute) {
-    return foreignEntityDefinitions.containsKey(foreignKeyAttribute);
+  boolean hasForeignDefinition(final ForeignKey foreignKey) {
+    return foreignEntityDefinitions.containsKey(foreignKey);
   }
 
   /**
    * Associates the given definition with the given foreign key.
-   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKey the foreign key attribute
    * @param definition the entity definition referenced by the given foreign key
    * @throws IllegalStateException in case the foreign definition has already been set
    * @throws IllegalArgumentException in case the definition does not match the foreign key
    */
-  void setForeignDefinition(final Attribute<Entity> foreignKeyAttribute, final EntityDefinition definition) {
-    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+  void setForeignDefinition(final ForeignKey foreignKey, final EntityDefinition definition) {
+    requireNonNull(foreignKey, "foreignKey");
     requireNonNull(definition, "definition");
-    final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKeyAttribute);
-    if (foreignEntityDefinitions.containsKey(foreignKeyAttribute)) {
-      throw new IllegalStateException("Foreign definition has already been set for " + foreignKeyAttribute);
+    final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKey);
+    if (foreignEntityDefinitions.containsKey(foreignKey)) {
+      throw new IllegalStateException("Foreign definition has already been set for " + foreignKey);
     }
     if (!foreignKeyProperty.getReferencedEntityType().equals(definition.getEntityType())) {
       throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.getReferencedEntityType() +
-              " expected for " + foreignKeyAttribute);
+              " expected for " + foreignKey);
     }
-    foreignEntityDefinitions.put(foreignKeyAttribute, definition);
+    foreignEntityDefinitions.put(foreignKey, definition);
   }
 
   /**
@@ -783,12 +783,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final List<ColumnProperty<?>> primaryKeyProperties;
     private final Map<Attribute<?>, ColumnProperty<?>> primaryKeyPropertyMap;
     private final List<ForeignKeyProperty> foreignKeyProperties;
-    private final Map<Attribute<Entity>, ForeignKeyProperty> foreignKeyPropertyMap;
+    private final Map<ForeignKey, ForeignKeyProperty> foreignKeyPropertyMap;
     private final Map<Attribute<?>, List<ForeignKeyProperty>> columnPropertyForeignKeyProperties;
     private final Set<Attribute<?>> foreignKeyColumnAttributes = new HashSet<>();
     private final Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes;
     private final List<TransientProperty<?>> transientProperties;
-    private final Map<Attribute<?>, List<DenormalizedProperty<?>>> denormalizedProperties;
+    private final Map<Attribute<Entity>, List<DenormalizedProperty<?>>> denormalizedProperties;
 
     private EntityProperties(final EntityType<?> entityType, final List<Property.Builder<?>> propertyBuilders) {
       this.entityType = entityType;
@@ -860,8 +860,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       }
     }
 
-    private Map<Attribute<Entity>, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
-      final Map<Attribute<Entity>, ForeignKeyProperty> foreignKeyMap = new HashMap<>(foreignKeyProperties.size());
+    private Map<ForeignKey, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
+      final Map<ForeignKey, ForeignKeyProperty> foreignKeyMap = new HashMap<>(foreignKeyProperties.size());
       foreignKeyProperties.forEach(foreignKeyProperty ->
               foreignKeyMap.put(foreignKeyProperty.getAttribute(), foreignKeyProperty));
 
@@ -879,7 +879,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     private void initializeForeignKeyColumnProperties(final List<ForeignKeyProperty.Builder> builders) {
-      final Map<Attribute<Entity>, List<ColumnProperty<?>>> foreignKeyColumnPropertyMap = new HashMap<>();
+      final Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnPropertyMap = new HashMap<>();
       foreignKeyProperties.forEach(foreignKeyProperty ->
               foreignKeyColumnPropertyMap.put(foreignKeyProperty.getAttribute(),
               foreignKeyProperty.getReferences().stream().map(reference -> {
@@ -932,8 +932,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               !(property instanceof BlobProperty) || !((BlobProperty) property).isEagerlyLoaded()).collect(toList());
     }
 
-    private Map<Attribute<?>, List<DenormalizedProperty<?>>> getDenormalizedProperties() {
-      final Map<Attribute<?>, List<DenormalizedProperty<?>>> map = new HashMap<>(properties.size());
+    private Map<Attribute<Entity>, List<DenormalizedProperty<?>>> getDenormalizedProperties() {
+      final Map<Attribute<Entity>, List<DenormalizedProperty<?>>> map = new HashMap<>(properties.size());
       for (final Property<?> property : properties) {
         if (property instanceof DenormalizedProperty) {
           final DenormalizedProperty<?> denormalizedProperty = (DenormalizedProperty<?>) property;

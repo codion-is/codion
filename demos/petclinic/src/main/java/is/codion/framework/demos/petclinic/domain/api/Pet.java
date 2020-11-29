@@ -6,6 +6,7 @@ package is.codion.framework.demos.petclinic.domain.api;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 
 import java.time.LocalDate;
 
@@ -17,7 +18,7 @@ public interface Pet extends Entity {
   Attribute<String> NAME = TYPE.stringAttribute("name");
   Attribute<LocalDate> BIRTH_DATE = TYPE.localDateAttribute("birth_date");
   Attribute<Integer> PET_TYPE_ID = TYPE.integerAttribute("type_id");
-  Attribute<Entity> PET_TYPE_FK = TYPE.entityAttribute("type_fk");
+  ForeignKey PET_TYPE_FK = TYPE.foreignKey("type_fk", Pet.PET_TYPE_ID, PetType.ID);
   Attribute<Integer> OWNER_ID = TYPE.integerAttribute("owner_id");
-  Attribute<Entity> OWNER_FK = TYPE.entityAttribute("owner_fk");
+  ForeignKey OWNER_FK = TYPE.foreignKey("owner_fk", Pet.OWNER_ID, Owner.ID);
 }

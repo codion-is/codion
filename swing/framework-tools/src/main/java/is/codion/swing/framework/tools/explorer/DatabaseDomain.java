@@ -6,14 +6,14 @@ package is.codion.swing.framework.tools.explorer;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.framework.tools.metadata.Column;
-import is.codion.swing.framework.tools.metadata.ForeignKey;
+import is.codion.swing.framework.tools.metadata.ForeignKeyConstraint;
 import is.codion.swing.framework.tools.metadata.Table;
 
 import java.sql.DatabaseMetaData;
@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.OptionalInt;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.framework.domain.entity.ForeignKey.reference;
+import static java.util.stream.Collectors.toList;
 
 final class DatabaseDomain extends DefaultDomain {
 
@@ -39,7 +41,7 @@ final class DatabaseDomain extends DefaultDomain {
     if (!tableEntityTypes.containsKey(table)) {
       final EntityType<?> entityType = getDomainType().entityType(table.getSchema().getName() + "." + table.getTableName());
       tableEntityTypes.put(table, entityType);
-      table.getForeignKeys().stream().map(ForeignKey::getReferencedTable)
+      table.getForeignKeys().stream().map(ForeignKeyConstraint::getReferencedTable)
               .filter(referencedTable -> !referencedTable.equals(table))
               .forEach(this::defineEntity);
       define(entityType, getPropertyBuilders(table, entityType, new ArrayList<>(table.getForeignKeys())));
@@ -53,14 +55,14 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private List<Property.Builder<?>> getPropertyBuilders(final Table table, final EntityType<?> entityType,
-                                                        final List<ForeignKey> foreignKeys) {
+                                                        final List<ForeignKeyConstraint> foreignKeyConstraints) {
     final List<Property.Builder<?>> builders = new ArrayList<>();
     table.getColumns().forEach(column -> {
       builders.add(getColumnPropertyBuilder(column, entityType));
       if (column.isForeignKeyColumn()) {
-        foreignKeys.stream().filter(key -> isLastKeyColumn(key, column)).findFirst().ifPresent(foreignKey -> {
-          foreignKeys.remove(foreignKey);
-          builders.add(getForeignKeyPropertyBuilder(foreignKey, entityType));
+        foreignKeyConstraints.stream().filter(key -> isLastKeyColumn(key, column)).findFirst().ifPresent(foreignKeyConstraint -> {
+          foreignKeyConstraints.remove(foreignKeyConstraint);
+          builders.add(getForeignKeyPropertyBuilder(foreignKeyConstraint, entityType));
         });
       }
     });
@@ -68,16 +70,18 @@ final class DatabaseDomain extends DefaultDomain {
     return builders;
   }
 
-  private Property.Builder<?> getForeignKeyPropertyBuilder(final ForeignKey foreignKey, final EntityType<?> entityType) {
-    final Table referencedTable = foreignKey.getReferencedTable();
+  private Property.Builder<?> getForeignKeyPropertyBuilder(final ForeignKeyConstraint foreignKeyConstraint, final EntityType<?> entityType) {
+    final Table referencedTable = foreignKeyConstraint.getReferencedTable();
     //todo foreign keys to a table of the same name in different schemas, attribute name clash
-    final Attribute<Entity> attribute = entityType.entityAttribute(referencedTable.getTableName() + "_FK");
-    final String caption = getCaption(referencedTable.getTableName());
-
     final EntityType<?> referencedEntityType = tableEntityTypes.get(referencedTable);
-    final ForeignKeyProperty.Builder builder = Properties.foreignKeyProperty(attribute, caption);
-    foreignKey.getReferences().forEach((column, referencedColumn) ->
-            builder.reference(getAttribute(entityType, column), getAttribute(referencedEntityType, referencedColumn)));
+    final ForeignKey foreignKey = entityType.foreignKey(referencedTable.getTableName() + "_FK",
+            foreignKeyConstraint.getReferences().entrySet().stream().map(entry ->
+                    reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
+                    .collect(toList()));
+    final String caption = getCaption(referencedTable.getTableName());
+    final ForeignKeyProperty.Builder builder = Properties.foreignKeyProperty(foreignKey, caption);
+    foreignKeyConstraint.getReferences().forEach((column, referencedColumn) ->
+            reference(getAttribute(entityType, column), getAttribute(referencedEntityType, referencedColumn)));
 
     return builder;
   }
@@ -124,8 +128,8 @@ final class DatabaseDomain extends DefaultDomain {
     return caption.substring(0, 1).toUpperCase() + caption.substring(1);
   }
 
-  private static boolean isLastKeyColumn(final ForeignKey foreignKey, final Column column) {
-    final OptionalInt lastColumnPosition = foreignKey.getReferences().keySet().stream()
+  private static boolean isLastKeyColumn(final ForeignKeyConstraint foreignKeyConstraint, final Column column) {
+    final OptionalInt lastColumnPosition = foreignKeyConstraint.getReferences().keySet().stream()
             .mapToInt(Column::getPosition).max();
 
     return lastColumnPosition.isPresent() && column.getPosition() == lastColumnPosition.getAsInt();

@@ -11,6 +11,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 
 import java.util.Collection;
@@ -55,18 +56,18 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   Predicate<Entity> getForeignKeyIncludeCondition();
 
   /**
-   * @param foreignKeyAttribute the id of the foreign key property
+   * @param foreignKey the foreign key
    * @return the entity values currently used to filter the contents of this model
    */
-  Collection<Entity> getForeignKeyFilterEntities(Attribute<Entity> foreignKeyAttribute);
+  Collection<Entity> getForeignKeyFilterEntities(ForeignKey foreignKey);
 
   /**
    * Filters this combo box model so that only entities referencing the given foreign key entities
    * via the given foreign key property are shown.
-   * @param foreignKeyAttribute the property id
+   * @param foreignKey the foreign key
    * @param entities the entities
    */
-  void setForeignKeyFilterEntities(Attribute<Entity> foreignKeyAttribute, Collection<Entity> entities);
+  void setForeignKeyFilterEntities(ForeignKey foreignKey, Collection<Entity> entities);
 
   /**
    * Specifies whether foreign key filtering should be strict or not.
@@ -85,36 +86,36 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Returns a combo box model for selecting a foreign key value for filtering this model.
-   * @param foreignKeyAttribute the attribute with which values to create the combo box model
+   * @param foreignKey the foreign key
    * @return a combo box model for selecting a filtering value for this combo box model
    * @see #linkForeignKeyFilterComboBoxModel(Attribute, EntityComboBoxModel)
    */
-  EntityComboBoxModel createForeignKeyFilterComboBoxModel(Attribute<Entity> foreignKeyAttribute);
+  EntityComboBoxModel createForeignKeyFilterComboBoxModel(ForeignKey foreignKey);
 
   /**
    * Returns a combo box model for selecting a foreign key value for using as a condition this model.
    * Note that each time the selection changes in the created model this model is refreshed.
-   * @param foreignKeyAttribute the attribute with which values to create the combo box model
+   * @param foreignKey the foreign key
    * @return a combo box model for selecting a filtering value for this combo box model
    * @see #linkForeignKeyConditionComboBoxModel(Attribute, EntityComboBoxModel)
    */
-  EntityComboBoxModel createForeignKeyConditionComboBoxModel(Attribute<Entity> foreignKeyAttribute);
+  EntityComboBoxModel createForeignKeyConditionComboBoxModel(ForeignKey foreignKey);
 
   /**
    * Links the given combo box model representing master entities to this combo box model
    * so that selection in the master model filters this model according to the selected master entity
-   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKey the foreign key attribute
    * @param foreignKeyModel the combo box model to link
    */
-  void linkForeignKeyFilterComboBoxModel(Attribute<Entity> foreignKeyAttribute, EntityComboBoxModel foreignKeyModel);
+  void linkForeignKeyFilterComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel);
 
   /**
    * Links the given combo box model representing master entities to this combo box model
    * so that selection in the master model refreshes this model with the selected master entity as condition
-   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKey the foreign key attribute
    * @param foreignKeyModel the combo box model to link
    */
-  void linkForeignKeyConditionComboBoxModel(Attribute<Entity> foreignKeyAttribute, EntityComboBoxModel foreignKeyModel);
+  void linkForeignKeyConditionComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel);
 
   /**
    * Selects the entity with the given primary key, if the entity is not available

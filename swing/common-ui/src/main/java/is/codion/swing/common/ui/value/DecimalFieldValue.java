@@ -10,6 +10,9 @@ final class DecimalFieldValue extends AbstractTextComponentValue<Double, DoubleF
 
   DecimalFieldValue(final DoubleField doubleField, final Nullable nullable, final UpdateOn updateOn) {
     super(doubleField, nullable == Nullable.YES ? null : 0d, updateOn);
+    if (!isNullable()) {
+      doubleField.setDouble(0d);
+    }
   }
 
   @Override

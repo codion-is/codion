@@ -53,8 +53,7 @@ public final class WorldImpl extends DefaultDomain {
                     .maximumLength(35),
             columnProperty(City.COUNTRY_CODE)
                     .nullable(false),
-            foreignKeyProperty(City.COUNTRY_FK, "Country")
-                    .reference(City.COUNTRY_CODE, Country.CODE),
+            foreignKeyProperty(City.COUNTRY_FK, "Country"),
             columnProperty(City.DISTRICT, "District")
                     .nullable(false)
                     .maximumLength(20),
@@ -118,8 +117,7 @@ public final class WorldImpl extends DefaultDomain {
                     .maximumLength(60),
             columnProperty(Country.CAPITAL),
             // tag::foreignKeyPropertyCapital[]
-            foreignKeyProperty(Country.CAPITAL_FK, "Capital")
-                    .reference(Country.CAPITAL, City.ID),
+            foreignKeyProperty(Country.CAPITAL_FK, "Capital"),
             // end::foreignKeyPropertyCapital[]
             // tag::denormalizedViewProperty[]
             denormalizedViewProperty(Country.CAPITAL_POPULATION, "Capital pop.",
@@ -154,8 +152,7 @@ public final class WorldImpl extends DefaultDomain {
                     .primaryKeyIndex(1)
                     .updatable(true),
             // end::compositePrimaryKey[]
-            foreignKeyProperty(CountryLanguage.COUNTRY_FK, "Country")
-                    .reference(CountryLanguage.COUNTRY_CODE, Country.CODE),
+            foreignKeyProperty(CountryLanguage.COUNTRY_FK, "Country"),
             // tag::booleanProperty[]
             columnProperty(CountryLanguage.IS_OFFICIAL, "Is official")
                     .columnHasDefaultValue(true)

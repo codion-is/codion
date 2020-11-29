@@ -6,6 +6,7 @@ package is.codion.framework.domain.property;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.ForeignKey;
 
 import java.text.Collator;
 import java.time.LocalDateTime;
@@ -68,21 +69,21 @@ public final class Properties {
 
   /**
    * Instantiates a {@link ForeignKeyProperty.Builder} instance.
-   * @param attribute the attribute
+   * @param foreignKey the foreign key
    * @return a new {@link ForeignKeyProperty.Builder}
    */
-  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute) {
-    return foreignKeyProperty(attribute, null);
+  public static ForeignKeyProperty.Builder foreignKeyProperty(final ForeignKey foreignKey) {
+    return foreignKeyProperty(foreignKey, null);
   }
 
   /**
    * Instantiates a {@link ForeignKeyProperty.Builder} instance.
-   * @param attribute the attribute
+   * @param foreignKey the foreign key
    * @param caption the caption
    * @return a new {@link ForeignKeyProperty.Builder}
    */
-  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute, final String caption) {
-    return new DefaultForeignKeyProperty(attribute, caption).builder();
+  public static ForeignKeyProperty.Builder foreignKeyProperty(final ForeignKey foreignKey, final String caption) {
+    return new DefaultForeignKeyProperty(foreignKey, caption).builder();
   }
 
   /**
@@ -91,20 +92,20 @@ public final class Properties {
    * @param <T> the property type
    * @param attribute the attribute
    * @param caption the caption of this property
-   * @param foreignKeyAttribute the foreign key attribute from which this property gets its value
+   * @param entityAttribute the entity attribute from which this property gets its value
    * @param denormalizedAttribute the property from the referenced entity, from which this property gets its value
    * @return a new {@link TransientProperty.Builder}
    */
   public static <T> TransientProperty.Builder<T> denormalizedViewProperty(final Attribute<T> attribute, final String caption,
-                                                                          final Attribute<Entity> foreignKeyAttribute,
+                                                                          final Attribute<Entity> entityAttribute,
                                                                           final Attribute<T> denormalizedAttribute) {
     final DerivedProperty.Provider<T> valueProvider = sourceValues -> {
-      final Entity foreignKeyValue = sourceValues.get(foreignKeyAttribute);
+      final Entity foreignKeyValue = sourceValues.get(entityAttribute);
 
       return foreignKeyValue == null ? null : foreignKeyValue.get(denormalizedAttribute);
     };
 
-    return new DefaultDerivedProperty<>(attribute, caption, valueProvider, foreignKeyAttribute).builder();
+    return new DefaultDerivedProperty<>(attribute, caption, valueProvider, entityAttribute).builder();
   }
 
   /**

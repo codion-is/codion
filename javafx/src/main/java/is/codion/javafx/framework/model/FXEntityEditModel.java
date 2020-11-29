@@ -4,11 +4,11 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.DefaultEntityEditModel;
 
@@ -48,12 +48,12 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Returns a {@link FXEntityListModel} for the given foreign key attribute. If one does not exist it is created.
-   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKey the foreign key attribute
    * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key property
    * @see #createForeignKeyListModel(ForeignKeyProperty)
    */
-  public final FXEntityListModel getForeignKeyListModel(final Attribute<Entity> foreignKeyAttribute) {
-    return getForeignKeyListModel(getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute));
+  public final FXEntityListModel getForeignKeyListModel(final ForeignKey foreignKey) {
+    return getForeignKeyListModel(getEntityDefinition().getForeignKeyProperty(foreignKey));
   }
 
   /**
@@ -129,7 +129,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
 //            listModel.setSelectedItem(null);
 //          }
         }
-        clearForeignKeyReferences(foreignKeyProperty, entry.getValue());
+        clearForeignKeyReferences(foreignKeyProperty.getAttribute(), entry.getValue());
       }
     }
   }
@@ -139,10 +139,10 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     foreignKeyListModels.values().forEach(FXEntityListModel::refresh);
   }
 
-  private void clearForeignKeyReferences(final ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) {
+  private void clearForeignKeyReferences(final ForeignKey foreignKey, final List<Entity> entities) {
     entities.forEach(entity -> {
-      if (Objects.equals(entity, get(foreignKeyProperty.getAttribute()))) {
-        put(foreignKeyProperty.getAttribute(), null);
+      if (Objects.equals(entity, get(foreignKey))) {
+        put(foreignKey, null);
       }
     });
   }

@@ -139,7 +139,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final Attribute<T> getAttribute() {
+  public Attribute<T> getAttribute() {
     return attribute;
   }
 

@@ -6,28 +6,33 @@ package is.codion.framework.domain.property;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 
-import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
+import java.util.Set;
 
 final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements ForeignKeyProperty {
 
   private static final long serialVersionUID = 1;
 
-  private final List<Reference<?>> references = new ArrayList<>(1);
-  private EntityType<?> referencedEntityType;
+  private final Set<Attribute<?>> readOnlyAttributes = new HashSet<>(1);
+  private final EntityType<?> referencedEntityType;
   private int fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
   private boolean softReference = false;
 
   /**
-   * @param attribute the attribute
+   * @param foreignKey the foreign key
    * @param caption the property caption
    */
-  DefaultForeignKeyProperty(final Attribute<Entity> attribute, final String caption) {
-    super(attribute, caption);
+  DefaultForeignKeyProperty(final ForeignKey foreignKey, final String caption) {
+    super(foreignKey, caption);
+    this.referencedEntityType = foreignKey.getReferences().get(0).getReferencedAttribute().getEntityType();
+  }
+
+  @Override
+  public ForeignKey getAttribute() {
+    return (ForeignKey) super.getAttribute();
   }
 
   @Override
@@ -46,22 +51,18 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   @Override
-  public List<Reference<?>> getReferences() {
-    if (references.isEmpty()) {
-      throw new IllegalStateException("No references defined for foreign key property: " + getAttribute());
-    }
-
-    return references;
+  public boolean isReadOnly(final Attribute<?> referenceAttribute) {
+    return readOnlyAttributes.contains(referenceAttribute);
   }
 
   @Override
-  public <T> Reference<T> getReference(final Attribute<T> attribute) {
-    final Reference<T> reference = findReference(attribute);
-    if (reference == null) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not a foreign key reference attribute");
-    }
+  public List<ForeignKey.Reference<?>> getReferences() {
+    return getAttribute().getReferences();
+  }
 
-    return reference;
+  @Override
+  public <T> ForeignKey.Reference<T> getReference(final Attribute<T> attribute) {
+    return getAttribute().getReference(attribute);
   }
 
   /**
@@ -69,48 +70,6 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
    */
   ForeignKeyProperty.Builder builder() {
     return new DefaultForeignKeyPropertyBuilder(this);
-  }
-
-  private <T> Reference<T> findReference(final Attribute<T> attribute) {
-    for (int i = 0; i < references.size(); i++) {
-      final Reference<?> reference = references.get(i);
-      if (reference.getAttribute().equals(attribute)) {
-        return (Reference<T>) reference;
-      }
-    }
-
-    return null;
-  }
-
-  private static final class DefaultReference<T> implements Reference<T>, Serializable {
-
-    private static final long serialVersionUID = 1;
-
-    private final Attribute<T> attribute;
-    private final Attribute<T> referencedAttribute;
-    private final boolean readOnly;
-
-    private DefaultReference(final Attribute<T> attribute, final Attribute<T> referencedAttribute,
-                             final boolean readOnly) {
-      this.attribute = attribute;
-      this.referencedAttribute = referencedAttribute;
-      this.readOnly = readOnly;
-    }
-
-    @Override
-    public Attribute<T> getAttribute() {
-      return attribute;
-    }
-
-    @Override
-    public Attribute<T> getReferencedAttribute() {
-      return referencedAttribute;
-    }
-
-    @Override
-    public boolean isReadOnly() {
-      return readOnly;
-    }
   }
 
   private static final class DefaultForeignKeyPropertyBuilder
@@ -141,37 +100,12 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     }
 
     @Override
-    public <T> ForeignKeyProperty.Builder reference(final Attribute<T> attribute, final Attribute<T> referencedAttribute) {
-      reference(attribute, referencedAttribute, false);
+    public <T> ForeignKeyProperty.Builder readOnly(final Attribute<T> referenceAttribute) {
+      if (foreignKeyProperty.getAttribute().getReference(referenceAttribute) == null) {
+        throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key");
+      }
+      foreignKeyProperty.readOnlyAttributes.add(referenceAttribute);
       return this;
-    }
-
-    @Override
-    public <T> ForeignKeyProperty.Builder referenceReadOnly(final Attribute<T> attribute, final Attribute<T> referencedAttribute) {
-      reference(attribute, referencedAttribute, true);
-      return this;
-    }
-
-    private <T> void reference(final Attribute<T> attribute, final Attribute<T> referencedAttribute, final boolean readOnly) {
-      if (requireNonNull(attribute, "attribute").equals(requireNonNull(referencedAttribute, "referencedAttribute"))) {
-        throw new IllegalArgumentException("Foreign key attribute can not reference itself");
-      }
-      if (!foreignKeyProperty.getAttribute().getEntityType().equals(attribute.getEntityType())) {
-        throw new IllegalArgumentException("Entity type " + foreignKeyProperty.getAttribute() +
-                " expected, got " + attribute.getEntityType());
-      }
-      if (foreignKeyProperty.referencedEntityType == null) {//the first reference controls the referenced entity type
-        foreignKeyProperty.referencedEntityType = referencedAttribute.getEntityType();
-      }
-      else if (!foreignKeyProperty.referencedEntityType.equals(referencedAttribute.getEntityType())) {
-        throw new IllegalArgumentException("Entity type " + foreignKeyProperty.referencedEntityType +
-                " expected, got " + referencedAttribute.getEntityType());
-      }
-      if (foreignKeyProperty.findReference(attribute) != null) {
-        throw new IllegalArgumentException("Foreign key already contains a reference for attribute: " + attribute);
-      }
-
-      foreignKeyProperty.references.add(new DefaultReference<>(attribute, referencedAttribute, readOnly));
     }
   }
 }

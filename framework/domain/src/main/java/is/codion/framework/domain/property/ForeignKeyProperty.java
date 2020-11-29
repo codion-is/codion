@@ -6,6 +6,7 @@ package is.codion.framework.domain.property;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 
 import java.util.List;
 
@@ -13,6 +14,12 @@ import java.util.List;
  * A property that represents a reference to another entity, typically but not necessarily based on a foreign key.
  */
 public interface ForeignKeyProperty extends Property<Entity> {
+
+  /**
+   * @return the foreign key attribute this property is based on.
+   */
+  @Override
+  ForeignKey getAttribute();
 
   /**
    * @return the type of the entity referenced by this foreign key
@@ -31,38 +38,23 @@ public interface ForeignKeyProperty extends Property<Entity> {
   boolean isSoftReference();
 
   /**
+   * Returns true if the given foreign key reference attribute as read-only, as in, not updated when the foreign key value is set.
+   * @param referenceAttribute the reference attribute
+   * @return true if the given foreign key reference attribute as read-only
+   */
+  boolean isReadOnly(Attribute<?> referenceAttribute);
+
+  /**
    * @return the {@link Reference}s that comprise this key
    */
-  List<Reference<?>> getReferences();
+  List<ForeignKey.Reference<?>> getReferences();
 
   /**
    * @param attribute the attribute
    * @param <T> the attribute type
    * @return the reference that is based on the given attribute
    */
-  <T> Reference<T> getReference(Attribute<T> attribute);
-
-  /**
-   * Represents a foreign key reference between attributes.
-   * @param <T> the attribute type
-   */
-  interface Reference<T> {
-
-    /**
-     * @return the attribute in the detail entity
-     */
-    Attribute<T> getAttribute();
-
-    /**
-     * @return the attribute in the master entity
-     */
-    Attribute<T> getReferencedAttribute();
-
-    /**
-     * @return true if this attribute should not be set when setting the foreign key entity
-     */
-    boolean isReadOnly();
-  }
+  <T> ForeignKey.Reference<T> getReference(Attribute<T> attribute);
 
   /**
    * Provides setters for ForeignKeyProperty properties
@@ -88,21 +80,11 @@ public interface ForeignKeyProperty extends Property<Entity> {
     ForeignKeyProperty.Builder softReference(boolean softReference);
 
     /**
-     * Adds a reference to this foreign key
-     * @param attribute the attribute
-     * @param referencedAttribute the referenced attribute in the foreign entity
+     * Marks the given foreign key reference attribute as read-only, as in, not updated when the foreign key value is set.
+     * @param referenceAttribute the reference attribute
      * @param <T> the attribute type
      * @return this instance
      */
-    <T> ForeignKeyProperty.Builder reference(Attribute<T> attribute, Attribute<T> referencedAttribute);
-
-    /**
-     * Adds a reference to this foreign key, that is not updated when the foreign key value is set
-     * @param attribute the attribute
-     * @param referencedAttribute the referenced attribute in the foreign entity
-     * @param <T> the attribute type
-     * @return this instance
-     */
-    <T> ForeignKeyProperty.Builder referenceReadOnly(Attribute<T> attribute, Attribute<T> referencedAttribute);
+    <T> ForeignKeyProperty.Builder readOnly(Attribute<T> referenceAttribute);
   }
 }

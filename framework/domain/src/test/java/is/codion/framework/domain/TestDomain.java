@@ -8,6 +8,7 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.TransientProperty;
@@ -63,7 +64,10 @@ public class TestDomain extends DefaultDomain {
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = T_COMPOSITE_DETAIL.integerAttribute("master_id");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = T_COMPOSITE_DETAIL.integerAttribute("master_id2");
   public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_3 = T_COMPOSITE_DETAIL.integerAttribute("master_id3");
-  public static final Attribute<Entity> COMPOSITE_DETAIL_MASTER_FK = T_COMPOSITE_DETAIL.entityAttribute("master_fk");
+  public static final ForeignKey COMPOSITE_DETAIL_MASTER_FK = T_COMPOSITE_DETAIL.foreignKey("master_fk",
+          COMPOSITE_DETAIL_MASTER_ID, COMPOSITE_MASTER_ID,
+          COMPOSITE_DETAIL_MASTER_ID_2, COMPOSITE_MASTER_ID_2,
+          COMPOSITE_DETAIL_MASTER_ID_3, COMPOSITE_MASTER_ID_3);
 
   final void compositeDetail() {
     define(T_COMPOSITE_DETAIL,
@@ -71,9 +75,7 @@ public class TestDomain extends DefaultDomain {
             columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1),
             columnProperty(COMPOSITE_DETAIL_MASTER_ID_3).primaryKeyIndex(2),
             foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master")
-                    .reference(COMPOSITE_DETAIL_MASTER_ID, COMPOSITE_MASTER_ID)
-                    .reference(COMPOSITE_DETAIL_MASTER_ID_2, COMPOSITE_MASTER_ID_2)
-                    .referenceReadOnly(COMPOSITE_DETAIL_MASTER_ID_3, COMPOSITE_MASTER_ID_3));
+                    .readOnly(COMPOSITE_DETAIL_MASTER_ID_3));
   }
 
   public interface Master extends Entity {
@@ -118,11 +120,11 @@ public class TestDomain extends DefaultDomain {
     Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
     Attribute<Boolean> BOOLEAN_NULLABLE = TYPE.booleanAttribute("boolean_nullable");
     Attribute<Long> MASTER_ID = TYPE.longAttribute("master_id");
-    Attribute<Entity> MASTER_FK = TYPE.entityAttribute("master_fk");
+    ForeignKey MASTER_FK = TYPE.foreignKey("master2_fk", MASTER_ID, Master.ID);
     Attribute<String> MASTER_NAME = TYPE.stringAttribute("master_name");
     Attribute<Integer> MASTER_CODE = TYPE.integerAttribute("master_code");
     Attribute<Integer> MASTER_CODE_NON_DENORM = TYPE.integerAttribute("master_code_non_denorm");
-    Attribute<Entity> MASTER_VIA_CODE_FK = TYPE.entityAttribute("master_via_code_fk");
+    ForeignKey MASTER_VIA_CODE_FK = TYPE.foreignKey("master_via_code_fk", MASTER_CODE_NON_DENORM, Master.CODE);
     Attribute<Integer> INT_VALUE_LIST = TYPE.integerAttribute("int_value_list");
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
     Attribute<Integer> MASTER_CODE_DENORM = TYPE.integerAttribute("master_code_denorm");
@@ -169,11 +171,9 @@ public class TestDomain extends DefaultDomain {
                     .defaultValue(true),
             columnProperty(Detail.MASTER_ID),
             foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.getName())
-                    .reference(Detail.MASTER_ID, Master.ID)
                     .beanProperty("master"),
             columnProperty(Detail.MASTER_CODE_NON_DENORM),
             foreignKeyProperty(Detail.MASTER_VIA_CODE_FK, Detail.MASTER_FK.getName())
-                    .reference(Detail.MASTER_CODE_NON_DENORM, Master.CODE)
                     .beanProperty("master"),
             denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.getName(), Detail.MASTER_FK, Master.NAME),
             denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.getName(), Detail.MASTER_FK, Master.CODE),
@@ -245,8 +245,8 @@ public class TestDomain extends DefaultDomain {
     Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
     Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
     Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
-    Attribute<Entity> DEPARTMENT_FK = TYPE.entityAttribute("dept_fk");
-    Attribute<Entity> MANAGER_FK = TYPE.entityAttribute("mgr_fk");
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.NO);
+    ForeignKey MANAGER_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
     Attribute<String> DEPARTMENT_NAME = TYPE.stringAttribute("department_name");
     Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
@@ -276,7 +276,6 @@ public class TestDomain extends DefaultDomain {
                     .nullable(false)
                     .beanProperty("deptno"),
             foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.getName())
-                    .reference(Employee.DEPARTMENT, Department.NO)
                     .beanProperty("department"),
             valueListProperty(Employee.JOB, Employee.JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"),
@@ -292,7 +291,6 @@ public class TestDomain extends DefaultDomain {
             columnProperty(Employee.MGR)
                     .beanProperty("mgr"),
             foreignKeyProperty(Employee.MANAGER_FK, Employee.MANAGER_FK.getName())
-                    .reference(Employee.MGR, Employee.ID)
                     .beanProperty("manager"),
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.getName())
                     .updatable(false)

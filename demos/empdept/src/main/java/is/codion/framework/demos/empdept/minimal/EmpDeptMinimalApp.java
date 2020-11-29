@@ -13,6 +13,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -60,12 +61,12 @@ public final class EmpDeptMinimalApp {
     Attribute<Integer> EMPNO = T_EMP.integerAttribute("empno");
     Attribute<String> ENAME = T_EMP.stringAttribute("ename");
     Attribute<Integer> DEPTNO = T_EMP.integerAttribute("deptno");
-    Attribute<Entity> DEPT_FK = T_EMP.entityAttribute("dept_fk");
+    ForeignKey DEPT_FK = T_EMP.foreignKey("dept_fk", Employee.DEPTNO, Department.DEPTNO);
     Attribute<String> JOB = T_EMP.stringAttribute("job");
     Attribute<Double> SAL = T_EMP.doubleAttribute("sal");
     Attribute<Double> COMM = T_EMP.doubleAttribute("comm");
     Attribute<Integer> MGR = T_EMP.integerAttribute("mgr");
-    Attribute<Entity> MGR_FK = T_EMP.entityAttribute("mgr_fk");
+    ForeignKey MGR_FK = T_EMP.foreignKey("mgr_fk", Employee.MGR, Employee.EMPNO);
     Attribute<LocalDate> HIREDATE = T_EMP.localDateAttribute("hiredate");
   }
 
@@ -103,8 +104,7 @@ public final class EmpDeptMinimalApp {
                       .maximumLength(10),
               columnProperty(Employee.DEPTNO)
                       .nullable(false),
-              foreignKeyProperty(Employee.DEPT_FK, "Department")
-                      .reference(Employee.DEPTNO, Department.DEPTNO),
+              foreignKeyProperty(Employee.DEPT_FK, "Department"),
               columnProperty(Employee.JOB, "Job")
                       .nullable(false)
                       .maximumLength(9),
@@ -115,8 +115,7 @@ public final class EmpDeptMinimalApp {
               columnProperty(Employee.COMM, "Commission")
                       .maximumFractionDigits(2),
               columnProperty(Employee.MGR),
-              foreignKeyProperty(Employee.MGR_FK, "Manager")
-                      .reference(Employee.MGR, Employee.EMPNO),
+              foreignKeyProperty(Employee.MGR_FK, "Manager"),
               columnProperty(Employee.HIREDATE, "Hiredate")
                       .nullable(false))
               .keyGenerator(increment("scott.emp", "empno"))
@@ -140,10 +139,9 @@ public final class EmpDeptMinimalApp {
      * so that is only shows managers.
      */
     @Override
-    public SwingEntityComboBoxModel createForeignKeyComboBoxModel(
-            final Attribute<Entity> foreignKeyAttribute) {
-      final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyAttribute);
-      if (foreignKeyAttribute.equals(Employee.MGR_FK)) {
+    public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKey foreignKey) {
+      final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
+      if (foreignKey.equals(Employee.MGR_FK)) {
         comboBoxModel.setSelectConditionProvider(() ->
                 Conditions.condition(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));
         comboBoxModel.refresh();

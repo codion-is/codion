@@ -10,6 +10,9 @@ final class LongFieldValue extends AbstractTextComponentValue<Long, LongField> {
 
   LongFieldValue(final LongField longField, final Nullable nullable, final UpdateOn updateOn) {
     super(longField, nullable == Nullable.YES ? null : 0L, updateOn);
+    if (!isNullable()) {
+      longField.setLong(0L);
+    }
   }
 
   @Override
