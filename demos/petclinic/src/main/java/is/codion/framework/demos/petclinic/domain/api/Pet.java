@@ -14,11 +14,13 @@ import static is.codion.framework.demos.petclinic.domain.api.PetClinicApi.DOMAIN
 
 public interface Pet extends Entity {
   EntityType<Pet> TYPE = DOMAIN.entityType("petclinic.pet", Pet.class);
+
   Attribute<Integer> ID = TYPE.integerAttribute("id");
   Attribute<String> NAME = TYPE.stringAttribute("name");
   Attribute<LocalDate> BIRTH_DATE = TYPE.localDateAttribute("birth_date");
   Attribute<Integer> PET_TYPE_ID = TYPE.integerAttribute("type_id");
-  ForeignKey PET_TYPE_FK = TYPE.foreignKey("type_fk", Pet.PET_TYPE_ID, PetType.ID);
   Attribute<Integer> OWNER_ID = TYPE.integerAttribute("owner_id");
+
+  ForeignKey PET_TYPE_FK = TYPE.foreignKey("type_fk", Pet.PET_TYPE_ID, PetType.ID);
   ForeignKey OWNER_FK = TYPE.foreignKey("owner_fk", Pet.OWNER_ID, Owner.ID);
 }

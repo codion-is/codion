@@ -161,7 +161,7 @@ public interface EntityType<T extends Entity> {
    * @param <C> the third attribute type
    * @return a new {@link ForeignKey}
    */
-  <A, B, C> ForeignKey foreignKey(String name, Attribute<A> firstAattribute, Attribute<A> firstReferencedAttribute,
+  <A, B, C> ForeignKey foreignKey(String name, Attribute<A> firstAttribute, Attribute<A> firstReferencedAttribute,
                                   Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute,
                                   Attribute<C> thirdAttribute, Attribute<C> thirdReferencedAttribute);
   /**

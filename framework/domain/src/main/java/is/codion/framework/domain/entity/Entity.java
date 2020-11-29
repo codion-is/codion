@@ -136,7 +136,7 @@ public interface Entity extends Comparable<Entity> {
    * @return the value of {@code foreignKey},
    * assuming it is an Entity
    * @throws IllegalArgumentException if the attribute is not a foreign key attribute
-   * @see #isLoaded(Attribute)
+   * @see #isLoaded(ForeignKey)
    */
   Entity getForeignKey(ForeignKey foreignKey);
 

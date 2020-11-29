@@ -35,6 +35,7 @@ public final class Petstore extends DefaultDomain {
 
   public interface Address {
     EntityType<Entity> TYPE = DOMAIN.entityType("address");
+
     Attribute<Integer> ID = TYPE.integerAttribute("Address id");
     Attribute<String> STREET_1 = TYPE.stringAttribute("Street 1");
     Attribute<String> STREET_2 = TYPE.stringAttribute("Street 2");
@@ -73,6 +74,7 @@ public final class Petstore extends DefaultDomain {
 
   public interface Category {
     EntityType<Entity> TYPE = DOMAIN.entityType("category");
+
     Attribute<Integer> ID = TYPE.integerAttribute("Category id");
     Attribute<String> NAME = TYPE.stringAttribute("Name");
     Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
@@ -97,12 +99,14 @@ public final class Petstore extends DefaultDomain {
 
   public interface Product {
     EntityType<Entity> TYPE = DOMAIN.entityType("product");
+
     Attribute<Integer> ID = TYPE.integerAttribute("Product id");
     Attribute<Integer> CATEGORY_ID = TYPE.integerAttribute("Category id");
-    ForeignKey CATEGORY_FK = TYPE.foreignKey("Category", Product.CATEGORY_ID, Category.ID);
     Attribute<String> NAME = TYPE.stringAttribute("Name");
     Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
     Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
+
+    ForeignKey CATEGORY_FK = TYPE.foreignKey("Category", Product.CATEGORY_ID, Category.ID);
   }
 
   void product() {
@@ -127,6 +131,7 @@ public final class Petstore extends DefaultDomain {
 
   public interface SellerContactInfo {
     EntityType<Entity> TYPE = DOMAIN.entityType("sellercontactinfo");
+
     Attribute<Integer> ID = TYPE.integerAttribute("Contactinfo id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("First name");
     Attribute<String> LAST_NAME = TYPE.stringAttribute("Last name");
@@ -153,19 +158,21 @@ public final class Petstore extends DefaultDomain {
 
   public interface Item {
     EntityType<Entity> TYPE = DOMAIN.entityType("item");
+
     Attribute<Integer> ID = TYPE.integerAttribute("Item id");
     Attribute<Integer> PRODUCT_ID = TYPE.integerAttribute("Product id");
-    ForeignKey PRODUCT_FK = TYPE.foreignKey("Product", Item.PRODUCT_ID, Product.ID);
     Attribute<String> NAME = TYPE.stringAttribute("Name");
     Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
     Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
     Attribute<String> IMAGE_THUMB_URL = TYPE.stringAttribute("Image thumbnail URL");
     Attribute<BigDecimal> PRICE = TYPE.bigDecimalAttribute("Price");
     Attribute<Integer> CONTACT_INFO_ID = TYPE.integerAttribute("Contactinfo id");
-    ForeignKey CONTACT_INFO_FK = TYPE.foreignKey("Contact info", Item.CONTACT_INFO_ID, SellerContactInfo.ID);
     Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("Address id");
-    ForeignKey ADDRESS_FK = TYPE.foreignKey("Address", Item.ADDRESS_ID, Address.ID);
     Attribute<Boolean> DISABLED = TYPE.booleanAttribute("Disabled");
+
+    ForeignKey PRODUCT_FK = TYPE.foreignKey("Product", Item.PRODUCT_ID, Product.ID);
+    ForeignKey CONTACT_INFO_FK = TYPE.foreignKey("Contact info", Item.CONTACT_INFO_ID, SellerContactInfo.ID);
+    ForeignKey ADDRESS_FK = TYPE.foreignKey("Address", Item.ADDRESS_ID, Address.ID);
   }
 
   void item() {
@@ -203,6 +210,7 @@ public final class Petstore extends DefaultDomain {
 
   public interface Tag {
     EntityType<Entity> TYPE = DOMAIN.entityType("tag");
+
     Attribute<Integer> ID = TYPE.integerAttribute("Tag id");
     Attribute<String> TAG = TYPE.stringAttribute("Tag");
     Attribute<Integer> REFCOUNT = TYPE.integerAttribute("Reference count");
@@ -226,9 +234,11 @@ public final class Petstore extends DefaultDomain {
 
   public interface TagItem {
     EntityType<Entity> TYPE = DOMAIN.entityType("tag_item");
+
     Attribute<Integer> ITEM_ID = TYPE.integerAttribute("Item id");
-    ForeignKey ITEM_FK = TYPE.foreignKey("Item", TagItem.ITEM_ID, Item.ID);
     Attribute<Integer> TAG_ID = TYPE.integerAttribute("Tag id");
+
+    ForeignKey ITEM_FK = TYPE.foreignKey("Item", TagItem.ITEM_ID, Item.ID);
     ForeignKey TAG_FK = TYPE.foreignKey("Tag", TagItem.TAG_ID, Tag.ID);
   }
 

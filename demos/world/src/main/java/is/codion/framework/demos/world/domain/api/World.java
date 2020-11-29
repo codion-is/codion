@@ -28,12 +28,14 @@ public interface World {
 
   interface City extends Entity {
     EntityType<City> TYPE = DOMAIN.entityType("world.city", City.class);
+
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
-    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", City.COUNTRY_CODE, Country.CODE);
     Attribute<String> DISTRICT = TYPE.stringAttribute("district");
     Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
+
+    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", City.COUNTRY_CODE, Country.CODE);
 
     String name();
     Integer population();
@@ -49,6 +51,7 @@ public interface World {
 
   interface Country {
     EntityType<Entity> TYPE = DOMAIN.entityType("world.country");
+
     Attribute<String> CODE = TYPE.stringAttribute("code");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<String> CONTINENT = TYPE.stringAttribute("continent");
@@ -63,22 +66,27 @@ public interface World {
     Attribute<String> GOVERNMENTFORM = TYPE.stringAttribute("governmentform");
     Attribute<String> HEADOFSTATE = TYPE.stringAttribute("headofstate");
     Attribute<Integer> CAPITAL = TYPE.integerAttribute("capital");
-    ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", Country.CAPITAL, City.ID);
     Attribute<String> CODE_2 = TYPE.stringAttribute("code2");
     Attribute<Integer> CAPITAL_POPULATION = TYPE.integerAttribute("capital_population");
     Attribute<Integer> NO_OF_CITIES = TYPE.integerAttribute("no_of_cities");
     Attribute<Integer> NO_OF_LANGUAGES = TYPE.integerAttribute("no_of_languages");
     Attribute<byte[]> FLAG = TYPE.byteArrayAttribute("flag");
+
+    // tag::foreignKeyCapital[]
+    ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", Country.CAPITAL, City.ID);
+    // end::foreignKeyCapital[]
   }
 
   interface CountryLanguage extends Entity {
     EntityType<CountryLanguage> TYPE = DOMAIN.entityType("world.countrylanguage", CountryLanguage.class);
+
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
-    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", CountryLanguage.COUNTRY_CODE, Country.CODE);
     Attribute<String> LANGUAGE = TYPE.stringAttribute("language");
     Attribute<Boolean> IS_OFFICIAL = TYPE.booleanAttribute("isofficial");
     Attribute<Double> PERCENTAGE = TYPE.doubleAttribute("percentage");
     Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
+
+    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", CountryLanguage.COUNTRY_CODE, Country.CODE);
 
     String language();
     Integer noOfSpeakers();
@@ -86,6 +94,7 @@ public interface World {
 
   interface Continent extends Entity {
     EntityType<Continent> TYPE = DOMAIN.entityType("continent", Continent.class);
+
     Attribute<String> NAME = TYPE.stringAttribute("continent");
     Attribute<Integer> SURFACE_AREA = TYPE.integerAttribute("sum(surfacearea)");
     Attribute<Long> POPULATION = TYPE.longAttribute("sum(population)");
@@ -105,6 +114,7 @@ public interface World {
 
   interface Lookup {
     EntityType<Entity> TYPE = DOMAIN.entityType("world.country_city_v");
+
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
     Attribute<String> COUNTRY_NAME = TYPE.stringAttribute("countryname");
     Attribute<String> COUNTRY_CONTINENT = TYPE.stringAttribute("continent");

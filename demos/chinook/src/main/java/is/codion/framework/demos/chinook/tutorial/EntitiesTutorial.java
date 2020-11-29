@@ -49,6 +49,7 @@ public final class EntitiesTutorial {
     // and an Attribute for each column
     public interface Artist {
       EntityType<Entity> TYPE = DOMAIN.entityType("chinook.artist");
+
       Attribute<Integer> ID = TYPE.integerAttribute("artistid");
       Attribute<String> NAME = TYPE.stringAttribute("name");
     }
@@ -57,9 +58,11 @@ public final class EntitiesTutorial {
     // for each column and one for the foreign key relation
     public interface Album {
       EntityType<Entity> TYPE = DOMAIN.entityType("chinook.album");
+
       Attribute<Integer> ID = TYPE.integerAttribute("albumid");
       Attribute<String> TITLE = TYPE.stringAttribute("title");
       Attribute<Integer> ARTIST_ID = TYPE.integerAttribute("artistid");
+
       // create a foreign key attribute referencing the Artist.TYPE, via the Album.ARTIST_ID attribute
       ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
     }
