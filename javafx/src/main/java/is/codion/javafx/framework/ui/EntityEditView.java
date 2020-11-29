@@ -11,7 +11,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.States;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
@@ -166,27 +166,27 @@ public abstract class EntityEditView extends BorderPane {
   protected void validateData() throws ValidationException {}
 
   /**
-   * Creates a {@link EntityLookupField} based on the entities referenced by the given foreign key property
-   * @param foreignKeyAttribute the foreign key attribute
-   * @return a {@link EntityLookupField} based on the given property
+   * Creates a {@link EntityLookupField} based on the entities referenced by the given foreign key
+   * @param foreignKey the foreign key
+   * @return a {@link EntityLookupField} based on the given foreign key
    */
-  protected final EntityLookupField createForeignKeyLookupField(final ForeignKeyAttribute foreignKeyAttribute) {
-    checkControl(foreignKeyAttribute);
+  protected final EntityLookupField createForeignKeyLookupField(final ForeignKey foreignKey) {
+    checkControl(foreignKey);
     return FXUiUtil.createLookupField(getEditModel().getEntityDefinition()
-            .getForeignKeyProperty(foreignKeyAttribute), editModel);
+            .getForeignKeyProperty(foreignKey), editModel);
   }
 
   /**
-   * Creates a {@link ComboBox} based on the entities referenced by the given foreign key property
-   * @param foreignKeyAttribute the foreign key attribute
-   * @return a {@link ComboBox} based on the given property
+   * Creates a {@link ComboBox} based on the entities referenced by the given foreign key
+   * @param foreignKey the foreign key
+   * @return a {@link ComboBox} based on the given foreign key
    */
-  protected final ComboBox<Entity> createForeignKeyComboBox(final ForeignKeyAttribute foreignKeyAttribute) {
-    checkControl(foreignKeyAttribute);
+  protected final ComboBox<Entity> createForeignKeyComboBox(final ForeignKey foreignKey) {
+    checkControl(foreignKey);
     final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(getEditModel()
-            .getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute), editModel);
+            .getEntityDefinition().getForeignKeyProperty(foreignKey), editModel);
 
-    controls.put(foreignKeyAttribute, box);
+    controls.put(foreignKey, box);
 
     return box;
   }

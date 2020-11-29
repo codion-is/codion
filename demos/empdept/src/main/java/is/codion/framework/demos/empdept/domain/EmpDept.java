@@ -9,7 +9,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.plugin.jasperreports.model.JRReportType;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
@@ -68,9 +68,9 @@ public final class EmpDept extends DefaultDomain {
     Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
     Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
     /**Foreign key (reference) attribute for the DEPT column in the table scott.emp*/
-    ForeignKeyAttribute DEPARTMENT_FK = TYPE.foreignKey("dept_fk", Employee.DEPARTMENT, Department.ID);
+    ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", Employee.DEPARTMENT, Department.ID);
     /**Foreign key (reference) attribute for the MGR column in the table scott.emp*/
-    ForeignKeyAttribute MGR_FK = TYPE.foreignKey("mgr_fk", Employee.MGR, Employee.ID);
+    ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", Employee.MGR, Employee.ID);
     /**Attribute for the denormalized department location property*/
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 

@@ -11,13 +11,12 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultForeignKeyAttribute extends DefaultAttribute<Entity> implements ForeignKeyAttribute {
+final class DefaultForeignKey extends DefaultAttribute<Entity> implements ForeignKey {
 
   private final List<Reference<?>> references;
   private final EntityType<?> referencedEntityType;
 
-  DefaultForeignKeyAttribute(final String name, final EntityType<?> entityType,
-                             final List<Reference<?>> references) {
+  DefaultForeignKey(final String name, final EntityType<?> entityType, final List<Reference<?>> references) {
     super(name, Entity.class, entityType);
     final Optional<? extends Attribute<?>> firstReference =
             references.stream().map(Reference::getReferencedAttribute).findFirst();

@@ -14,7 +14,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 
 import java.util.Collection;
 import java.util.List;
@@ -108,10 +108,10 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities,
    * sets the appropriate attribute value in the {@link EntityEditModel} and filters the {@link EntityTableModel}
-   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKey the foreign key
    * @param foreignKeyValues the foreign key values
    */
-  void initialize(ForeignKeyAttribute foreignKeyAttribute, List<Entity> foreignKeyValues);
+  void initialize(ForeignKey foreignKey, List<Entity> foreignKeyValues);
 
   /**
    * Sets the model serving as master model
@@ -186,20 +186,20 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * Indicates that the given detail model is based on the foreign key attribute, this becomes
    * practical when a detail model is based on an entity which contains multiple foreign keys to the
-   * same master entity. When initializing this detail model only the value for that foreignKeyAttribute is set.
-   * If {@code foreignKeyAttribute} is null the association is removed.
+   * same master entity. When initializing this detail model only the value for that foreignKey is set.
+   * If {@code foreignKey} is null the association is removed.
    * @param detailModel the detail model
-   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKey the foreign key
    * @see #initialize(Attribute, List)
    * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
    */
-  void setDetailModelForeignKey(M detailModel, ForeignKeyAttribute foreignKeyAttribute);
+  void setDetailModelForeignKey(M detailModel, ForeignKey foreignKey);
 
   /**
    * @param detailModel the detail model
-   * @return the foreign key attribute the given detail model is based on, null if none has been defined
+   * @return the foreign key the given detail model is based on, null if none has been defined
    */
-  ForeignKeyAttribute getDetailModelForeignKey(M detailModel);
+  ForeignKey getDetailModelForeignKey(M detailModel);
 
   /**
    * Refreshes the detail models.

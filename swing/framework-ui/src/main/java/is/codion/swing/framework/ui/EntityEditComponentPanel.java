@@ -11,7 +11,7 @@ import is.codion.common.value.AbstractValue;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
@@ -921,77 +921,77 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates an EntityComboBox bound to {@code foreignKeyAttribute}
-   * @param foreignKeyAttribute the foreign key attribute to bind to
-   * @return an EntityComboBox bound to the attribute
+   * Creates an EntityComboBox bound to {@code foreignKey}
+   * @param foreignKey the foreign key
+   * @return an EntityComboBox bound to the foreign key
    */
-  protected final EntityComboBox createForeignKeyComboBox(final ForeignKeyAttribute foreignKeyAttribute) {
-    return createForeignKeyComboBox(foreignKeyAttribute, null);
+  protected final EntityComboBox createForeignKeyComboBox(final ForeignKey foreignKey) {
+    return createForeignKeyComboBox(foreignKey, null);
   }
 
   /**
-   * Creates a EntityComboBox bound to {@code foreignKeyAttribute}
-   * @param foreignKeyAttribute the attribute to bind
+   * Creates a EntityComboBox bound to {@code foreignKey}
+   * @param foreignKey the foreign key
    * @param enabledState a state for controlling the enabled state of the component
-   * @return a EntityComboBox bound to the attribute
+   * @return a EntityComboBox bound to the foreign key
    */
-  protected final EntityComboBox createForeignKeyComboBox(final ForeignKeyAttribute foreignKeyAttribute, final StateObserver enabledState) {
+  protected final EntityComboBox createForeignKeyComboBox(final ForeignKey foreignKey, final StateObserver enabledState) {
     final EntityComboBox comboBox = EntityInputComponents.createForeignKeyComboBox(
-            getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute),
-            getEditModel().value(foreignKeyAttribute),
-            getEditModel().getForeignKeyComboBoxModel(foreignKeyAttribute), enabledState);
+            getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey),
+            getEditModel().value(foreignKey),
+            getEditModel().getForeignKeyComboBoxModel(foreignKey), enabledState);
     if (transferFocusOnEnter) {
       //getEditor().getEditorComponent() only required because the combo box is editable, due to AutoCompletion
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
     }
-    setComponent(foreignKeyAttribute, comboBox);
+    setComponent(foreignKey, comboBox);
 
     return comboBox;
   }
 
   /**
-   * Creates an EntityLookupField bound to {@code foreignKeyattribute}
-   * @param foreignKeyAttribute the foreign key attribute to bind
-   * @return an EntityLookupField bound the attribute
+   * Creates an EntityLookupField bound to {@code foreignKey}
+   * @param foreignKey the foreign key
+   * @return an EntityLookupField bound the foreign key
    */
-  protected final EntityLookupField createForeignKeyLookupField(final ForeignKeyAttribute foreignKeyAttribute) {
-    return createForeignKeyLookupField(foreignKeyAttribute, null);
+  protected final EntityLookupField createForeignKeyLookupField(final ForeignKey foreignKey) {
+    return createForeignKeyLookupField(foreignKey, null);
   }
 
   /**
-   * Creates an EntityLookupField bound to {@code foreignKeyattribute}
-   * @param foreignKeyAttribute the foreign key attribute to bind
+   * Creates an EntityLookupField bound to {@code foreignKey}
+   * @param foreignKey the foreign key
    * @param enabledState a state for controlling the enabled state of the component
-   * @return an EntityLookupField bound the attribute
+   * @return an EntityLookupField bound the foreign key
    */
-  protected final EntityLookupField createForeignKeyLookupField(final ForeignKeyAttribute foreignKeyAttribute,
+  protected final EntityLookupField createForeignKeyLookupField(final ForeignKey foreignKey,
                                                                 final StateObserver enabledState) {
     final EntityLookupField lookupField = EntityInputComponents.createForeignKeyLookupField(
-            getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute),
-            getEditModel().value(foreignKeyAttribute),
-            getEditModel().getForeignKeyLookupModel(foreignKeyAttribute), enabledState);
+            getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey),
+            getEditModel().value(foreignKey),
+            getEditModel().getForeignKeyLookupModel(foreignKey), enabledState);
     if (transferFocusOnEnter) {
       lookupField.setTransferFocusOnEnter();
     }
-    setComponent(foreignKeyAttribute, lookupField);
+    setComponent(foreignKey, lookupField);
 
     return lookupField;
   }
 
   /**
-   * Creates an uneditable JTextField bound to {@code foreignKeyAttribute}
-   * @param foreignKeyAttribute the attribute to bind
-   * @return an uneditable JTextField bound to the attribute
+   * Creates an uneditable JTextField bound to {@code foreignKey}
+   * @param foreignKey the foreign key
+   * @return an uneditable JTextField bound to the foreign key
    */
-  protected final JTextField createForeignKeyField(final ForeignKeyAttribute foreignKeyAttribute) {
-    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+  protected final JTextField createForeignKeyField(final ForeignKey foreignKey) {
+    requireNonNull(foreignKey, "foreignKey");
     final ForeignKeyProperty foreignKeyProperty =
-            getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
+            getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey);
     final JTextField textField = new JTextField();
     textField.setEditable(false);
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    TextValues.textValue(textField).link(new ForeignKeyModelValue(getEditModel(), foreignKeyAttribute));
+    TextValues.textValue(textField).link(new ForeignKeyModelValue(getEditModel(), foreignKey));
     if (transferFocusOnEnter) {
       transferFocusOnEnter(textField);
     }
@@ -1097,17 +1097,17 @@ public class EntityEditComponentPanel extends JPanel {
   private static final class ForeignKeyModelValue extends AbstractValue<String> {
 
     private final EntityEditModel editModel;
-    private final ForeignKeyAttribute foreignKeyAttribute;
+    private final ForeignKey foreignKey;
 
-    private ForeignKeyModelValue(final EntityEditModel editModel, final ForeignKeyAttribute foreignKeyAttribute) {
+    private ForeignKeyModelValue(final EntityEditModel editModel, final ForeignKey foreignKey) {
       this.editModel = editModel;
-      this.foreignKeyAttribute = foreignKeyAttribute;
-      editModel.addValueListener(foreignKeyAttribute, valueChange -> notifyValueChange());
+      this.foreignKey = foreignKey;
+      editModel.addValueListener(foreignKey, valueChange -> notifyValueChange());
     }
 
     @Override
     public String get() {
-      final Entity value = editModel.getForeignKey(foreignKeyAttribute);
+      final Entity value = editModel.getForeignKey(foreignKey);
 
       return value == null ? "" : value.toString();
     }

@@ -29,9 +29,8 @@ final class DefaultStringFactoryBuilder implements StringFactory.Builder {
   }
 
   @Override
-  public StringFactory.Builder foreignKeyValue(final ForeignKeyAttribute foreignKeyAttribute,
-                                               final Attribute<?> attribute) {
-    stringFactory.addForeignKeyValue(foreignKeyAttribute, attribute);
+  public StringFactory.Builder foreignKeyValue(final ForeignKey foreignKey, final Attribute<?> attribute) {
+    stringFactory.addForeignKeyValue(foreignKey, attribute);
     return this;
   }
 

@@ -119,31 +119,31 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   }
 
   @Override
-  public <A> ForeignKeyAttribute foreignKey(final String name, final Attribute<A> attribute, final Attribute<A> referencedAttribute) {
-    return foreignKey(name, Collections.singletonList(new DefaultForeignKeyAttribute.DefaultReference<>(attribute, referencedAttribute)));
+  public <A> ForeignKey foreignKey(final String name, final Attribute<A> attribute, final Attribute<A> referencedAttribute) {
+    return foreignKey(name, Collections.singletonList(new DefaultForeignKey.DefaultReference<>(attribute, referencedAttribute)));
   }
 
   @Override
-  public <A, B> ForeignKeyAttribute foreignKey(final String name, final Attribute<A> firstAttribute, final Attribute<A> firstReferencedAttribute,
-                                               final Attribute<B> secondAttribute, final Attribute<B> secondReferencedAttribute) {
+  public <A, B> ForeignKey foreignKey(final String name, final Attribute<A> firstAttribute, final Attribute<A> firstReferencedAttribute,
+                                      final Attribute<B> secondAttribute, final Attribute<B> secondReferencedAttribute) {
     return foreignKey(name, Arrays.asList(
-            new DefaultForeignKeyAttribute.DefaultReference<>(firstAttribute, firstReferencedAttribute),
-            new DefaultForeignKeyAttribute.DefaultReference<>(secondAttribute, secondReferencedAttribute)));
+            new DefaultForeignKey.DefaultReference<>(firstAttribute, firstReferencedAttribute),
+            new DefaultForeignKey.DefaultReference<>(secondAttribute, secondReferencedAttribute)));
   }
 
   @Override
-  public <A, B, C> ForeignKeyAttribute foreignKey(final String name, final Attribute<A> firstAattribute, final Attribute<A> firstReferencedAttribute,
-                                                  final Attribute<B> secondAttribute, final Attribute<B> secondReferencedAttribute,
-                                                  final Attribute<C> thirdAttribute, final Attribute<C> thirdReferencedAttribute) {
+  public <A, B, C> ForeignKey foreignKey(final String name, final Attribute<A> firstAattribute, final Attribute<A> firstReferencedAttribute,
+                                         final Attribute<B> secondAttribute, final Attribute<B> secondReferencedAttribute,
+                                         final Attribute<C> thirdAttribute, final Attribute<C> thirdReferencedAttribute) {
     return foreignKey(name, Arrays.asList(
-            new DefaultForeignKeyAttribute.DefaultReference<>(firstAattribute, firstReferencedAttribute),
-            new DefaultForeignKeyAttribute.DefaultReference<>(secondAttribute, secondReferencedAttribute),
-            new DefaultForeignKeyAttribute.DefaultReference<>(thirdAttribute, thirdReferencedAttribute)));
+            new DefaultForeignKey.DefaultReference<>(firstAattribute, firstReferencedAttribute),
+            new DefaultForeignKey.DefaultReference<>(secondAttribute, secondReferencedAttribute),
+            new DefaultForeignKey.DefaultReference<>(thirdAttribute, thirdReferencedAttribute)));
   }
 
   @Override
-  public ForeignKeyAttribute foreignKey(final String name, final List<ForeignKeyAttribute.Reference<?>> references) {
-    return new DefaultForeignKeyAttribute(name, this, references);
+  public ForeignKey foreignKey(final String name, final List<ForeignKey.Reference<?>> references) {
+    return new DefaultForeignKey(name, this, references);
   }
 
   @Override

@@ -10,7 +10,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -93,21 +93,21 @@ final class EntityPopupMenu extends JPopupMenu {
         final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entity.getEntityType());
         final EntityValidator validator = definition.getValidator();
         for (final ForeignKeyProperty property : fkProperties) {
-          final ForeignKeyAttribute attribute = property.getAttribute();
-          final boolean fkValueNull = entity.isForeignKeyNull(attribute);
-          final boolean isLoaded = entity.isLoaded(attribute);
+          final ForeignKey foreignKey = property.getAttribute();
+          final boolean fkValueNull = entity.isForeignKeyNull(foreignKey);
+          final boolean isLoaded = entity.isLoaded(foreignKey);
           final boolean valid = isValid(validator, entity, definition, property);
-          final boolean modified = entity.isModified(attribute);
+          final boolean modified = entity.isModified(foreignKey);
           final String toolTipText = getForeignKeyAttributeNames(property);
           if (!fkValueNull) {
             final Entity referencedEntity;
             if (isLoaded) {
-              referencedEntity = entity.getForeignKey(attribute);
+              referencedEntity = entity.getForeignKey(foreignKey);
             }
             else {
-              referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedKey(attribute));
-              entity.remove(attribute);
-              entity.put(attribute, referencedEntity);
+              referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedKey(foreignKey));
+              entity.remove(foreignKey);
+              entity.put(foreignKey, referencedEntity);
             }
             final StringBuilder builder = new StringBuilder("[FK").append(isLoaded ? "] " : "+] ")
                     .append(property.getCaption()).append(": ").append(referencedEntity.toString());

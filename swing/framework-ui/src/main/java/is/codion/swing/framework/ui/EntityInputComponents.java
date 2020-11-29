@@ -15,7 +15,7 @@ import is.codion.common.value.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -773,13 +773,13 @@ public final class EntityInputComponents {
   /**
    * Creates a panel containing an EntityComboBox and a button for filtering that combo box based on a foreign key
    * @param entityComboBox the combo box
-   * @param foreignKeyAttribute the foreign key to base the filtering on
+   * @param foreignKey the foreign key to base the filtering on
    * @param filterButtonFocusable if true then the filter button is focusable
    * @return a panel with a combo box and a button
    */
-  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final ForeignKeyAttribute foreignKeyAttribute,
+  public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final ForeignKey foreignKey,
                                                        final ButtonFocusable filterButtonFocusable) {
-    final Control foreignKeyFilterControl = entityComboBox.createForeignKeyFilterControl(foreignKeyAttribute);
+    final Control foreignKeyFilterControl = entityComboBox.createForeignKeyFilterControl(foreignKey);
     if (filterButtonFocusable == ButtonFocusable.YES) {
       return Components.createEastFocusableButtonPanel(entityComboBox, foreignKeyFilterControl);
     }

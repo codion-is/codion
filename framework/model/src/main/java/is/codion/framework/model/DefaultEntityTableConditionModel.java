@@ -24,7 +24,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -366,9 +366,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   private static Condition getForeignKeyCondition(final ForeignKeyConditionModel conditionModel) {
-    final ForeignKeyAttribute attribute = conditionModel.getColumnIdentifier().getAttribute();
+    final ForeignKey foreignKey = conditionModel.getColumnIdentifier().getAttribute();
     final Collection<Entity> values = conditionModel.getEqualValueSet().get();
-    final ForeignKeyConditionBuilder builder = Conditions.condition(attribute);
+    final ForeignKeyConditionBuilder builder = Conditions.condition(foreignKey);
     switch (conditionModel.getOperator()) {
       case EQUAL:
         return values.isEmpty() ? builder.isNull() : builder.equalTo(values);

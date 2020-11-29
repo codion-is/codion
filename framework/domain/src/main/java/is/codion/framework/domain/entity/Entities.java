@@ -231,13 +231,13 @@ public interface Entities {
   /**
    * Returns the keys referenced by the given foreign key
    * @param entities the entities
-   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKey the foreign key
    * @return the keys referenced by the given foreign key
    */
-  static Set<Key> getReferencedKeys(final List<? extends Entity> entities, final ForeignKeyAttribute foreignKeyAttribute) {
+  static Set<Key> getReferencedKeys(final List<? extends Entity> entities, final ForeignKey foreignKey) {
     final Set<Key> keySet = new HashSet<>();
     for (int i = 0; i < entities.size(); i++) {
-      final Key key = entities.get(i).getReferencedKey(foreignKeyAttribute);
+      final Key key = entities.get(i).getReferencedKey(foreignKey);
       if (key != null) {
         keySet.add(key);
       }

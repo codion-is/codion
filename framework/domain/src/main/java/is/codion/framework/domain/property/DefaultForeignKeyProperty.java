@@ -6,7 +6,7 @@ package is.codion.framework.domain.property;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,17 +22,17 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   private boolean softReference = false;
 
   /**
-   * @param attribute the attribute
+   * @param foreignKey the foreign key
    * @param caption the property caption
    */
-  DefaultForeignKeyProperty(final ForeignKeyAttribute attribute, final String caption) {
-    super(attribute, caption);
-    this.referencedEntityType = attribute.getReferences().get(0).getReferencedAttribute().getEntityType();
+  DefaultForeignKeyProperty(final ForeignKey foreignKey, final String caption) {
+    super(foreignKey, caption);
+    this.referencedEntityType = foreignKey.getReferences().get(0).getReferencedAttribute().getEntityType();
   }
 
   @Override
-  public ForeignKeyAttribute getAttribute() {
-    return (ForeignKeyAttribute) super.getAttribute();
+  public ForeignKey getAttribute() {
+    return (ForeignKey) super.getAttribute();
   }
 
   @Override
@@ -56,12 +56,12 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
   }
 
   @Override
-  public List<ForeignKeyAttribute.Reference<?>> getReferences() {
+  public List<ForeignKey.Reference<?>> getReferences() {
     return getAttribute().getReferences();
   }
 
   @Override
-  public <T> ForeignKeyAttribute.Reference<T> getReference(final Attribute<T> attribute) {
+  public <T> ForeignKey.Reference<T> getReference(final Attribute<T> attribute) {
     return getAttribute().getReference(attribute);
   }
 

@@ -82,13 +82,13 @@ public final class StringFactory implements Function<Entity, String>, Serializab
     return this;
   }
 
-  StringFactory addForeignKeyValue(final ForeignKeyAttribute foreignKeyAttribute, final Attribute<?> attribute) {
-    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+  StringFactory addForeignKeyValue(final ForeignKey foreignKey, final Attribute<?> attribute) {
+    requireNonNull(foreignKey, "foreignKey");
     requireNonNull(attribute, ATTRIBUTE_PARAM);
-    if (!attribute.getEntityType().equals(foreignKeyAttribute.getReferencedEntityType())) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + foreignKeyAttribute.getEntityType());
+    if (!attribute.getEntityType().equals(foreignKey.getReferencedEntityType())) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + foreignKey.getEntityType());
     }
-    valueProviders.add(new ForeignKeyValueProvider(foreignKeyAttribute, attribute));
+    valueProviders.add(new ForeignKeyValueProvider(foreignKey, attribute));
     return this;
   }
 
@@ -138,21 +138,21 @@ public final class StringFactory implements Function<Entity, String>, Serializab
 
     private static final long serialVersionUID = 1;
 
-    private final ForeignKeyAttribute foreignKeyAttribute;
+    private final ForeignKey foreignKey;
     private final Attribute<?> attribute;
 
-    private ForeignKeyValueProvider(final ForeignKeyAttribute foreignKeyAttribute, final Attribute<?> attribute) {
-      this.foreignKeyAttribute = foreignKeyAttribute;
+    private ForeignKeyValueProvider(final ForeignKey foreignKey, final Attribute<?> attribute) {
+      this.foreignKey = foreignKey;
       this.attribute = attribute;
     }
 
     @Override
     public String apply(final Entity entity) {
-      if (entity.isNull(foreignKeyAttribute)) {
+      if (entity.isNull(foreignKey)) {
         return "";
       }
 
-      return entity.getForeignKey(foreignKeyAttribute).getAsString(attribute);
+      return entity.getForeignKey(foreignKey).getAsString(attribute);
     }
   }
 
@@ -209,13 +209,13 @@ public final class StringFactory implements Function<Entity, String>, Serializab
     Builder formattedValue(Attribute<?> attribute, Format format);
 
     /**
-     * Adds the value mapped to the given property in the {@link Entity} instance mapped to the given foreignKeyProperty
+     * Adds the value mapped to the given property in the {@link Entity} instance mapped to the given foreign key
      * to this {@link Builder}
-     * @param foreignKeyAttribute the foreign key attribute
+     * @param foreignKey the foreign key
      * @param attribute the attribute in the referenced entity to use
      * @return this {@link Builder} instance
      */
-    Builder foreignKeyValue(ForeignKeyAttribute foreignKeyAttribute, Attribute<?> attribute);
+    Builder foreignKeyValue(ForeignKey foreignKey, Attribute<?> attribute);
 
     /**
      * Adds the given static text to this {@link Builder}

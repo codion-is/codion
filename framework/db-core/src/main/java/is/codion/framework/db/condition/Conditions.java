@@ -11,7 +11,7 @@ import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 
 import java.util.Arrays;
@@ -80,11 +80,11 @@ public final class Conditions {
 
   /**
    * Creates a {@link ForeignKeyConditionBuilder} instance based on the given foreign key attribute.
-   * @param attribute the attribute to base the condition on
+   * @param foreignKey the foreign key to base the condition on
    * @return a {@link ForeignKeyConditionBuilder} instance
    */
-  public static ForeignKeyConditionBuilder condition(final ForeignKeyAttribute attribute) {
-    return new DefaultForeignKeyConditionBuilder(attribute);
+  public static ForeignKeyConditionBuilder condition(final ForeignKey foreignKey) {
+    return new DefaultForeignKeyConditionBuilder(foreignKey);
   }
 
   /**
@@ -189,13 +189,13 @@ public final class Conditions {
     return conditionCombination;
   }
 
-  private static Condition foreignKeyCondition(final ForeignKeyAttribute foreignKeyAttribute,
-                                               final Operator operator, final List<Map<Attribute<?>, Object>> valueMaps) {
-    if (foreignKeyAttribute.getReferences().size() > 1) {
-      return compositeKeyCondition(attributeMap(foreignKeyAttribute), operator, valueMaps);
+  private static Condition foreignKeyCondition(final ForeignKey foreignKey, final Operator operator,
+                                               final List<Map<Attribute<?>, Object>> valueMaps) {
+    if (foreignKey.getReferences().size() > 1) {
+      return compositeKeyCondition(attributeMap(foreignKey), operator, valueMaps);
     }
 
-    final ForeignKeyAttribute.Reference<?> reference = foreignKeyAttribute.getReferences().get(0);
+    final ForeignKey.Reference<?> reference = foreignKey.getReferences().get(0);
     final List<Object> values = valueMaps.stream()
             .map(map -> map.get(reference.getReferencedAttribute())).collect(toList());
     if (operator == EQUAL) {
@@ -223,7 +223,7 @@ public final class Conditions {
     return map;
   }
 
-  private static Map<Attribute<?>, Attribute<?>> attributeMap(final ForeignKeyAttribute foreignKeyProperty) {
+  private static Map<Attribute<?>, Attribute<?>> attributeMap(final ForeignKey foreignKeyProperty) {
     final Map<Attribute<?>, Attribute<?>> map = new HashMap<>(foreignKeyProperty.getReferences().size());
     foreignKeyProperty.getReferences().forEach(reference -> map.put(reference.getAttribute(), reference.getReferencedAttribute()));
 
@@ -273,10 +273,10 @@ public final class Conditions {
 
   private static final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuilder {
 
-    private final ForeignKeyAttribute attribute;
+    private final ForeignKey foreignKey;
 
-    private DefaultForeignKeyConditionBuilder(final ForeignKeyAttribute attribute) {
-      this.attribute = requireNonNull(attribute, "attribute");
+    private DefaultForeignKeyConditionBuilder(final ForeignKey foreignKey) {
+      this.foreignKey = requireNonNull(foreignKey, "foreignKey");
     }
 
     @Override
@@ -291,9 +291,9 @@ public final class Conditions {
 
     @Override
     public Condition equalTo(final Collection<? extends Entity> values) {
-      final List<Attribute<?>> attributes = attribute.getReferences().stream().map(ForeignKeyAttribute.Reference::getReferencedAttribute).collect(toList());
+      final List<Attribute<?>> attributes = foreignKey.getReferences().stream().map(ForeignKey.Reference::getReferencedAttribute).collect(toList());
 
-      return foreignKeyCondition(attribute, EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
+      return foreignKeyCondition(foreignKey, EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
     }
 
     @Override
@@ -308,19 +308,19 @@ public final class Conditions {
 
     @Override
     public Condition notEqualTo(final Collection<? extends Entity> values) {
-      final List<Attribute<?>> attributes = attribute.getReferences().stream().map(ForeignKeyAttribute.Reference::getReferencedAttribute).collect(toList());
+      final List<Attribute<?>> attributes = foreignKey.getReferences().stream().map(ForeignKey.Reference::getReferencedAttribute).collect(toList());
 
-      return foreignKeyCondition(attribute, NOT_EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
+      return foreignKeyCondition(foreignKey, NOT_EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
     }
 
     @Override
     public Condition isNull() {
-      return foreignKeyCondition(attribute, EQUAL, emptyList());
+      return foreignKeyCondition(foreignKey, EQUAL, emptyList());
     }
 
     @Override
     public Condition isNotNull() {
-      return foreignKeyCondition(attribute, NOT_EQUAL, emptyList());
+      return foreignKeyCondition(foreignKey, NOT_EQUAL, emptyList());
     }
   }
 }

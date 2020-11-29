@@ -6,7 +6,7 @@ package is.codion.framework.domain.property;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public interface ForeignKeyProperty extends Property<Entity> {
    * @return the foreign key attribute this property is based on.
    */
   @Override
-  ForeignKeyAttribute getAttribute();
+  ForeignKey getAttribute();
 
   /**
    * @return the type of the entity referenced by this foreign key
@@ -47,14 +47,14 @@ public interface ForeignKeyProperty extends Property<Entity> {
   /**
    * @return the {@link Reference}s that comprise this key
    */
-  List<ForeignKeyAttribute.Reference<?>> getReferences();
+  List<ForeignKey.Reference<?>> getReferences();
 
   /**
    * @param attribute the attribute
    * @param <T> the attribute type
    * @return the reference that is based on the given attribute
    */
-  <T> ForeignKeyAttribute.Reference<T> getReference(Attribute<T> attribute);
+  <T> ForeignKey.Reference<T> getReference(Attribute<T> attribute);
 
   /**
    * Provides setters for ForeignKeyProperty properties

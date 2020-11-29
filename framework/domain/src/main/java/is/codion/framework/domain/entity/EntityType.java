@@ -124,17 +124,17 @@ public interface EntityType<T extends Entity> {
   Attribute<byte[]> byteArrayAttribute(String name);
 
   /**
-   * Creates a new {@link ForeignKeyAttribute} based on the given attributes.
+   * Creates a new {@link ForeignKey} based on the given attributes.
    * @param name the attribute name
    * @param attribute the attribute
    * @param referencedAttribute the referenced attribute
    * @param <A> the attribute type
-   * @return a new {@link ForeignKeyAttribute}
+   * @return a new {@link ForeignKey}
    */
-  <A> ForeignKeyAttribute foreignKey(String name, Attribute<A> attribute, Attribute<A> referencedAttribute);
+  <A> ForeignKey foreignKey(String name, Attribute<A> attribute, Attribute<A> referencedAttribute);
 
   /**
-   * Creates a new {@link ForeignKeyAttribute} based on the given attributes.
+   * Creates a new {@link ForeignKey} based on the given attributes.
    * @param name the attribute name
    * @param firstAttribute the first attribute
    * @param firstReferencedAttribute the first referenced attribute
@@ -142,13 +142,13 @@ public interface EntityType<T extends Entity> {
    * @param secondReferencedAttribute the second referenced attribute
    * @param <A> the first attribute type
    * @param <B> the second attribute type
-   * @return a new {@link ForeignKeyAttribute}
+   * @return a new {@link ForeignKey}
    */
-  <A, B> ForeignKeyAttribute foreignKey(String name, Attribute<A> firstAttribute, Attribute<A> firstReferencedAttribute,
-                                        Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute);
+  <A, B> ForeignKey foreignKey(String name, Attribute<A> firstAttribute, Attribute<A> firstReferencedAttribute,
+                               Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute);
 
   /**
-   * Creates a new {@link ForeignKeyAttribute} based on the given attributes.
+   * Creates a new {@link ForeignKey} based on the given attributes.
    * @param name the attribute name
    * @param firstAttribute the first attribute
    * @param firstReferencedAttribute the first referenced attribute
@@ -159,18 +159,18 @@ public interface EntityType<T extends Entity> {
    * @param <A> the first attribute type
    * @param <B> the second attribute type
    * @param <C> the third attribute type
-   * @return a new {@link ForeignKeyAttribute}
+   * @return a new {@link ForeignKey}
    */
-  <A, B, C> ForeignKeyAttribute foreignKey(String name, Attribute<A> firstAattribute, Attribute<A> firstReferencedAttribute,
-                                           Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute,
-                                           Attribute<C> thirdAttribute, Attribute<C> thirdReferencedAttribute);
+  <A, B, C> ForeignKey foreignKey(String name, Attribute<A> firstAattribute, Attribute<A> firstReferencedAttribute,
+                                  Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute,
+                                  Attribute<C> thirdAttribute, Attribute<C> thirdReferencedAttribute);
   /**
-   * Creates a new {@link ForeignKeyAttribute} based on the given references.
+   * Creates a new {@link ForeignKey} based on the given references.
    * @param name the attribute name
    * @param references the references
-   * @return a new {@link ForeignKeyAttribute}
+   * @return a new {@link ForeignKey}
    */
-  ForeignKeyAttribute foreignKey(String name, List<ForeignKeyAttribute.Reference<?>> references);
+  ForeignKey foreignKey(String name, List<ForeignKey.Reference<?>> references);
 
   /**
    * Instantiates a new {@link ConditionType} for this entity type

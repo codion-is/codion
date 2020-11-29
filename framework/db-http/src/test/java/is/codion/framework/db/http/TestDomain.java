@@ -15,7 +15,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -81,8 +81,8 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
   public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
   public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
-  public static final ForeignKeyAttribute EMP_DEPARTMENT_FK = T_EMP.foreignKey("dept_fk", EMP_DEPARTMENT, DEPARTMENT_ID);
-  public static final ForeignKeyAttribute EMP_MGR_FK = T_EMP.foreignKey("mgr_fk", EMP_MGR, EMP_ID);
+  public static final ForeignKey EMP_DEPARTMENT_FK = T_EMP.foreignKey("dept_fk", EMP_DEPARTMENT, DEPARTMENT_ID);
+  public static final ForeignKey EMP_MGR_FK = T_EMP.foreignKey("mgr_fk", EMP_MGR, EMP_ID);
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
   public static final Attribute<byte[]> EMP_DATA = T_EMP.byteArrayAttribute("data");
 

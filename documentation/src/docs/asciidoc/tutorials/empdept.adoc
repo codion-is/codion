@@ -110,7 +110,7 @@ A class extending *EntityEditPanel* must provide a constructor taking a single *
 include::{dir-source}/is/codion/framework/demos/empdept/ui/DepartmentEditPanel.java[tags=constructor]
 ----
 
-We override the *intializeUI* method to construct the actual UI, used for editing the department entity. The {url-javadoc}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class provides methods for creating all the basic controls required, named *create...*, such as *createTextField(attribute)* or *createForeignKeyComboBox(foreignKeyAttribute)*.
+We override the *intializeUI* method to construct the actual UI, used for editing the department entity. The {url-javadoc}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] class provides methods for creating all the basic controls required, named *create...*, such as *createTextField(attribute)* or *createForeignKeyComboBox(foreignKey)*.
 
 [source,java]
 ----

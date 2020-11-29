@@ -22,7 +22,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -86,7 +86,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds the EntityLookupModels used by this {@link EntityEditModel}
    */
-  private final Map<ForeignKeyAttribute, EntityLookupModel> entityLookupModels = new HashMap<>();
+  private final Map<ForeignKey, EntityLookupModel> entityLookupModels = new HashMap<>();
 
   /**
    * Holds the edit model values created via {@link #value(Attribute)}
@@ -326,8 +326,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Entity getForeignKey(final ForeignKeyAttribute foreignKeyAttribute) {
-    return entity.get(foreignKeyAttribute);
+  public final Entity getForeignKey(final ForeignKey foreignKey) {
+    return entity.get(foreignKey);
   }
 
   @Override
@@ -587,14 +587,14 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean containsLookupModel(final ForeignKeyAttribute foreignKeyAttribute) {
-    getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
-    return entityLookupModels.containsKey(foreignKeyAttribute);
+  public final boolean containsLookupModel(final ForeignKey foreignKey) {
+    getEntityDefinition().getForeignKeyProperty(foreignKey);
+    return entityLookupModels.containsKey(foreignKey);
   }
 
   @Override
-  public EntityLookupModel createForeignKeyLookupModel(final ForeignKeyAttribute foreignKeyAttribute) {
-    final ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
+  public EntityLookupModel createForeignKeyLookupModel(final ForeignKey foreignKey) {
+    final ForeignKeyProperty property = getEntityDefinition().getForeignKeyProperty(foreignKey);
     final Collection<Attribute<String>> searchAttributes = getEntities()
             .getDefinition(property.getReferencedEntityType()).getSearchAttributes();
     if (searchAttributes.isEmpty()) {
@@ -608,9 +608,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final EntityLookupModel getForeignKeyLookupModel(final ForeignKeyAttribute foreignKeyAttribute) {
-    getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
-    return entityLookupModels.computeIfAbsent(foreignKeyAttribute, fk -> createForeignKeyLookupModel(foreignKeyAttribute));
+  public final EntityLookupModel getForeignKeyLookupModel(final ForeignKey foreignKey) {
+    getEntityDefinition().getForeignKeyProperty(foreignKey);
+    return entityLookupModels.computeIfAbsent(foreignKey, fk -> createForeignKeyLookupModel(foreignKey));
   }
 
   @Override
@@ -848,16 +848,16 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
    * For every field referencing the given foreign key values, replaces that foreign key instance with
    * the corresponding entity from {@code values}, useful when property
    * values have been changed in the referenced entity that must be reflected in the edit model.
-   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKey the foreign key attribute
    * @param values the foreign key entities
    */
-  protected void replaceForeignKey(final ForeignKeyAttribute foreignKeyAttribute, final List<Entity> values) {
-    final Entity currentForeignKeyValue = getForeignKey(foreignKeyAttribute);
+  protected void replaceForeignKey(final ForeignKey foreignKey, final List<Entity> values) {
+    final Entity currentForeignKeyValue = getForeignKey(foreignKey);
     if (currentForeignKeyValue != null) {
       for (final Entity replacementValue : values) {
         if (currentForeignKeyValue.equals(replacementValue)) {
-          put(foreignKeyAttribute, null);
-          put(foreignKeyAttribute, replacementValue);
+          put(foreignKey, null);
+          put(foreignKey, replacementValue);
         }
       }
     }
@@ -988,7 +988,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
     entityDefinition.getForeignKeyProperties(attribute).forEach(foreignKeyProperty ->
             dependentValues.put(foreignKeyProperty.getAttribute(), get(foreignKeyProperty.getAttribute())));
     if (entityDefinition.getProperty(attribute) instanceof ForeignKeyProperty) {
-      entityDefinition.getForeignKeyProperty((ForeignKeyAttribute) attribute).getReferences().forEach(reference ->
+      entityDefinition.getForeignKeyProperty((ForeignKey) attribute).getReferences().forEach(reference ->
               dependentValues.put(reference.getAttribute(), get(reference.getAttribute())));
     }
 

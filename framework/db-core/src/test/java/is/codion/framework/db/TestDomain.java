@@ -10,7 +10,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,7 +48,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Integer> MASTER_ID_1 = T_MASTER.integerAttribute("id");
   public static final Attribute<Integer> MASTER_ID_2 = T_MASTER.integerAttribute("id2");
   public static final Attribute<Integer> MASTER_SUPER_ID = T_MASTER.integerAttribute("super_id");
-  public static final ForeignKeyAttribute MASTER_SUPER_FK = T_MASTER.foreignKey("super_fk", MASTER_SUPER_ID, SUPER_ID);
+  public static final ForeignKey MASTER_SUPER_FK = T_MASTER.foreignKey("super_fk", MASTER_SUPER_ID, SUPER_ID);
   public static final Attribute<String> MASTER_NAME = T_MASTER.stringAttribute("name");
   public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
 
@@ -76,11 +76,12 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = T_DETAIL.booleanAttribute("boolean_nullable");
   public static final Attribute<Integer> DETAIL_MASTER_ID_1 = T_DETAIL.integerAttribute("master_id");
   public static final Attribute<Integer> DETAIL_MASTER_ID_2 = T_DETAIL.integerAttribute("master_id_2");
-  public static final ForeignKeyAttribute DETAIL_MASTER_FK = T_DETAIL.foreignKey("master_fk",
-          DETAIL_MASTER_ID_1, MASTER_ID_1, DETAIL_MASTER_ID_2, MASTER_ID_2);
+  public static final ForeignKey DETAIL_MASTER_FK = T_DETAIL.foreignKey("master_fk",
+          DETAIL_MASTER_ID_1, MASTER_ID_1,
+          DETAIL_MASTER_ID_2, MASTER_ID_2);
   public static final Attribute<String> DETAIL_MASTER_NAME = T_DETAIL.stringAttribute("master_name");
   public static final Attribute<Integer> DETAIL_MASTER_CODE = T_DETAIL.integerAttribute("master_code");
-  public static final ForeignKeyAttribute DETAIL_MASTER_VIA_CODE_FK = T_DETAIL.foreignKey("master_via_code_fk", DETAIL_MASTER_CODE, MASTER_CODE);
+  public static final ForeignKey DETAIL_MASTER_VIA_CODE_FK = T_DETAIL.foreignKey("master_via_code_fk", DETAIL_MASTER_CODE, MASTER_CODE);
   public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = T_DETAIL.integerAttribute("int_value_list");
   public static final Attribute<Integer> DETAIL_INT_DERIVED = T_DETAIL.integerAttribute("int_derived");
 
@@ -164,8 +165,8 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
   public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
   public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
-  public static final ForeignKeyAttribute EMP_DEPARTMENT_FK = T_EMP.foreignKey("dept_fk", EMP_DEPARTMENT, DEPARTMENT_ID);
-  public static final ForeignKeyAttribute EMP_MGR_FK = T_EMP.foreignKey("mgr_fk", EMP_MGR, EMP_ID);
+  public static final ForeignKey EMP_DEPARTMENT_FK = T_EMP.foreignKey("dept_fk", EMP_DEPARTMENT, DEPARTMENT_ID);
+  public static final ForeignKey EMP_MGR_FK = T_EMP.foreignKey("mgr_fk", EMP_MGR, EMP_ID);
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
 
   void employee() {

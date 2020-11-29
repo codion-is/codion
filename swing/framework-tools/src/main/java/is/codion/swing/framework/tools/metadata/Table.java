@@ -26,7 +26,7 @@ public final class Table {
   private final String tableName;
   private final List<ForeignKeyColumn> foreignKeyColumns;
   private final Map<String, Column> columns = new LinkedHashMap<>();
-  private final Map<Table, ForeignKey> foreignKeys = new LinkedHashMap<>();
+  private final Map<Table, ForeignKeyConstraint> foreignKeys = new LinkedHashMap<>();
 
   Table(final Schema schema, final String tableName, final List<Column> columns,
         final List<ForeignKeyColumn> foreignKeyColumns) {
@@ -54,7 +54,7 @@ public final class Table {
             .map(ForeignKeyColumn::getPkSchemaName).collect(Collectors.toSet());
   }
 
-  public Collection<ForeignKey> getForeignKeys() {
+  public Collection<ForeignKeyConstraint> getForeignKeys() {
     return unmodifiableCollection(foreignKeys.values());
   }
 
@@ -85,9 +85,9 @@ public final class Table {
   void resolveForeignKeys(final Map<String, Schema> schemas) {
     Util.map(foreignKeyColumns, foreignKeyColumn ->
             getReferencedTable(foreignKeyColumn, schemas)).forEach((referencedTable, fKColumns) -> {
-      final ForeignKey foreignKey = foreignKeys.computeIfAbsent(referencedTable, ForeignKey::new);
+      final ForeignKeyConstraint foreignKeyConstraint = foreignKeys.computeIfAbsent(referencedTable, ForeignKeyConstraint::new);
       fKColumns.forEach(foreignKeyColumn ->
-              foreignKey.addReference(columns.get(foreignKeyColumn.getFkColumnName()),
+              foreignKeyConstraint.addReference(columns.get(foreignKeyColumn.getFkColumnName()),
                       referencedTable.columns.get(foreignKeyColumn.getPkColumnName())));
     });
   }

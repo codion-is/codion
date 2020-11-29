@@ -5,7 +5,7 @@ package is.codion.framework.domain.entity;
 
 import java.util.List;
 
-public interface ForeignKeyAttribute extends Attribute<Entity> {
+public interface ForeignKey extends Attribute<Entity> {
 
   /**
    * @return the entity type referenced by this foreign key
@@ -42,6 +42,6 @@ public interface ForeignKeyAttribute extends Attribute<Entity> {
   }
 
   static <T> Reference<T> reference(final Attribute<T> attribute, final Attribute<T> referencedAttribute) {
-    return new DefaultForeignKeyAttribute.DefaultReference<>(attribute, referencedAttribute);
+    return new DefaultForeignKey.DefaultReference<>(attribute, referencedAttribute);
   }
 }

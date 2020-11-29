@@ -13,7 +13,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -61,12 +61,12 @@ public final class EmpDeptMinimalApp {
     Attribute<Integer> EMPNO = T_EMP.integerAttribute("empno");
     Attribute<String> ENAME = T_EMP.stringAttribute("ename");
     Attribute<Integer> DEPTNO = T_EMP.integerAttribute("deptno");
-    ForeignKeyAttribute DEPT_FK = T_EMP.foreignKey("dept_fk", Employee.DEPTNO, Department.DEPTNO);
+    ForeignKey DEPT_FK = T_EMP.foreignKey("dept_fk", Employee.DEPTNO, Department.DEPTNO);
     Attribute<String> JOB = T_EMP.stringAttribute("job");
     Attribute<Double> SAL = T_EMP.doubleAttribute("sal");
     Attribute<Double> COMM = T_EMP.doubleAttribute("comm");
     Attribute<Integer> MGR = T_EMP.integerAttribute("mgr");
-    ForeignKeyAttribute MGR_FK = T_EMP.foreignKey("mgr_fk", Employee.MGR, Employee.EMPNO);
+    ForeignKey MGR_FK = T_EMP.foreignKey("mgr_fk", Employee.MGR, Employee.EMPNO);
     Attribute<LocalDate> HIREDATE = T_EMP.localDateAttribute("hiredate");
   }
 
@@ -139,10 +139,9 @@ public final class EmpDeptMinimalApp {
      * so that is only shows managers.
      */
     @Override
-    public SwingEntityComboBoxModel createForeignKeyComboBoxModel(
-            final ForeignKeyAttribute foreignKeyAttribute) {
-      final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyAttribute);
-      if (foreignKeyAttribute.equals(Employee.MGR_FK)) {
+    public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKey foreignKey) {
+      final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
+      if (foreignKey.equals(Employee.MGR_FK)) {
         comboBoxModel.setSelectConditionProvider(() ->
                 Conditions.condition(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));
         comboBoxModel.refresh();

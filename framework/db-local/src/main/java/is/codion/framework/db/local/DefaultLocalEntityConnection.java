@@ -33,7 +33,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -453,8 +453,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
-    if (attribute instanceof ForeignKeyAttribute) {
-      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKeyAttribute) attribute);
+    if (attribute instanceof ForeignKey) {
+      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKey) attribute);
 
       return selectSingle(value == null ? conditionBuilder.isNull() : conditionBuilder.equalTo((Entity) value));
     }
@@ -508,8 +508,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
-    if (attribute instanceof ForeignKeyAttribute) {
-      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKeyAttribute) attribute);
+    if (attribute instanceof ForeignKey) {
+      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKey) attribute);
 
       return select(value == null ? conditionBuilder.isNull() : conditionBuilder.equalTo((Entity) value));
     }
@@ -522,8 +522,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
-    if (attribute instanceof ForeignKeyAttribute) {
-      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKeyAttribute) attribute);
+    if (attribute instanceof ForeignKey) {
+      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKey) attribute);
 
       return select(values.isEmpty() ? conditionBuilder.isNull() : conditionBuilder.equalTo((Collection<Entity>) values));
     }
@@ -933,8 +933,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             domainEntities.getDefinition(entities.get(0).getEntityType()).getForeignKeyProperties();
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       final ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
-      final ForeignKeyAttribute foreignKeyAttribute = foreignKeyProperty.getAttribute();
-      Integer conditionFetchDepthLimit = condition.getFetchDepth(foreignKeyAttribute);
+      final ForeignKey foreignKey = foreignKeyProperty.getAttribute();
+      Integer conditionFetchDepthLimit = condition.getFetchDepth(foreignKey);
       if (conditionFetchDepthLimit == null) {//use the default one
         conditionFetchDepthLimit = foreignKeyProperty.getFetchDepth();
       }
@@ -942,10 +942,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               currentForeignKeyFetchDepth < conditionFetchDepthLimit.intValue()) {
         try {
           logAccess("setForeignKeys", foreignKeyProperty);
-          final List<Key> referencedKeys = new ArrayList<>(getReferencedKeys(entities, foreignKeyAttribute));
+          final List<Key> referencedKeys = new ArrayList<>(getReferencedKeys(entities, foreignKey));
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
-              entities.get(j).put(foreignKeyAttribute, null);
+              entities.get(j).put(foreignKey, null);
             }
           }
           else {
@@ -956,8 +956,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             final Map<Key, Entity> referencedEntitiesMappedByKey = mapToPrimaryKey(referencedEntities);
             for (int j = 0; j < entities.size(); j++) {
               final Entity entity = entities.get(j);
-              final Key referencedKey = entity.getReferencedKey(foreignKeyAttribute);
-              entity.put(foreignKeyAttribute, getReferencedEntity(referencedKey, referencedEntitiesMappedByKey));
+              final Key referencedKey = entity.getReferencedKey(foreignKey);
+              entity.put(foreignKey, getReferencedEntity(referencedKey, referencedEntitiesMappedByKey));
             }
           }
         }

@@ -4,7 +4,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 
 /**
  * World domain api, simplified for the manual.
@@ -19,7 +19,7 @@ public interface World {
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
-    ForeignKeyAttribute COUNTRY_FK = TYPE.foreignKey("country_fk", City.COUNTRY_CODE, Country.CODE);
+    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", City.COUNTRY_CODE, Country.CODE);
     Attribute<String> DISTRICT = TYPE.stringAttribute("district");
     Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
   }
@@ -40,7 +40,7 @@ public interface World {
     Attribute<String> GOVERNMENTFORM = TYPE.stringAttribute("governmentform");
     Attribute<String> HEADOFSTATE = TYPE.stringAttribute("headofstate");
     Attribute<Integer> CAPITAL = TYPE.integerAttribute("capital");
-    ForeignKeyAttribute CAPITAL_FK = TYPE.foreignKey("capital_fk", Country.CAPITAL, City.ID);
+    ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", Country.CAPITAL, City.ID);
     Attribute<String> CODE_2 = TYPE.stringAttribute("code2");
     Attribute<Integer> CAPITAL_POPULATION = TYPE.integerAttribute("capital_population");
     Attribute<Integer> NO_OF_CITIES = TYPE.integerAttribute("no_of_cities");
@@ -51,7 +51,7 @@ public interface World {
   interface CountryLanguage extends Entity {
     EntityType<Entity> TYPE = DOMAIN.entityType("world.countrylanguage");
     Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
-    ForeignKeyAttribute COUNTRY_FK = TYPE.foreignKey("country_fk", CountryLanguage.COUNTRY_CODE, Country.CODE);
+    ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", CountryLanguage.COUNTRY_CODE, Country.CODE);
     Attribute<String> LANGUAGE = TYPE.stringAttribute("language");
     Attribute<Boolean> IS_OFFICIAL = TYPE.booleanAttribute("isofficial");
     Attribute<Double> PERCENTAGE = TYPE.doubleAttribute("percentage");

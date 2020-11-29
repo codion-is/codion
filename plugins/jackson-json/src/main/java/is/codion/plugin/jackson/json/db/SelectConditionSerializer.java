@@ -6,7 +6,7 @@ package is.codion.plugin.jackson.json.db;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
@@ -56,10 +56,10 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeFieldName("fkFetchDepth");
     generator.writeStartObject();
     for (final ForeignKeyProperty property : entities.getDefinition(condition.getEntityType()).getForeignKeyProperties()) {
-      final ForeignKeyAttribute attribute = property.getAttribute();
-      final Integer fkFetchDepth = condition.getFetchDepth(attribute);
+      final ForeignKey foreignKey = property.getAttribute();
+      final Integer fkFetchDepth = condition.getFetchDepth(foreignKey);
       if (fkFetchDepth != condition.getFetchDepth()) {
-        generator.writeObjectField(attribute.getName(), fkFetchDepth);
+        generator.writeObjectField(foreignKey.getName(), fkFetchDepth);
       }
     }
     generator.writeEndObject();

@@ -217,10 +217,10 @@ public interface EntityDefinition {
 
   /**
    * Returns the {@link EntityDefinition} of the entity referenced by the given foreign key property.
-   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKey the foreign key
    * @return the definition of the referenced entity
    */
-  EntityDefinition getForeignDefinition(ForeignKeyAttribute foreignKeyAttribute);
+  EntityDefinition getForeignDefinition(ForeignKey foreignKey);
 
   /**
    * @return true if this entity type has any denormalized properties
@@ -228,20 +228,18 @@ public interface EntityDefinition {
   boolean hasDenormalizedProperties();
 
   /**
-   * @param foreignKeyAttribute the id of the foreign key property
-   * @param <T> the attribute type
-   * @return true if this entity type has any denormalized properties associated with the give foreign key
+   * @param entityAttribute the id of the entity attribute
+   * @return true if this entity type has any denormalized properties associated with the give entity attribute
    */
-  <T> boolean hasDenormalizedProperties(Attribute<T> foreignKeyAttribute);
+  boolean hasDenormalizedProperties(Attribute<Entity> entityAttribute);
 
   /**
-   * Retrieves the denormalized properties which values originate from the entity referenced by the given foreign key property
-   * @param foreignKeyAttribute the foreign key attribute
-   * @param <T> the attribute type
+   * Retrieves the denormalized properties which values originate from the entity referenced by the given entity attribute
+   * @param entityAttribute the entity attribute
    * @return a list containing the denormalized properties which values originate from the entity
    * referenced by the given foreign key property
    */
-  <T> List<DenormalizedProperty<?>> getDenormalizedProperties(Attribute<T> foreignKeyAttribute);
+  List<DenormalizedProperty<?>> getDenormalizedProperties(Attribute<Entity> entityAttribute);
 
   /**
    * Returns the attribute with the given name, null if none is found.
@@ -357,11 +355,11 @@ public interface EntityDefinition {
   List<ForeignKeyProperty> getForeignKeyReferences(EntityType<?> foreignEntityType);
 
   /**
-   * @param attribute the attribute
-   * @return the ForeignKeyProperty based on the given attribute
+   * @param foreignKey the foreign key
+   * @return the ForeignKeyProperty based on the given foreign key
    * @throws IllegalArgumentException in case no such property exists
    */
-  ForeignKeyProperty getForeignKeyProperty(ForeignKeyAttribute attribute);
+  ForeignKeyProperty getForeignKeyProperty(ForeignKey foreignKey);
 
   /**
    * @param columnAttribute the column attribute

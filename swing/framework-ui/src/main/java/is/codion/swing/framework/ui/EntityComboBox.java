@@ -5,7 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.swing.common.ui.combobox.MaximumMatch;
@@ -49,28 +49,28 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   /**
    * Creates an Action which displays a dialog for filtering this combo box via a foreign key
-   * @param foreignKeyAttribute the foreign key attribute on which to filter
+   * @param foreignKey the foreign key on which to filter
    * @return a Control for filtering this combo box
    */
-  public Control createForeignKeyFilterControl(final ForeignKeyAttribute foreignKeyAttribute) {
+  public Control createForeignKeyFilterControl(final ForeignKey foreignKey) {
     return Controls.control(() -> {
-      final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKeyAttribute);
-      final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKeyAttribute),
+      final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKey);
+      final int result = JOptionPane.showOptionDialog(EntityComboBox.this, createForeignKeyFilterComboBox(foreignKey),
               MESSAGES.getString("filter_by"), JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.QUESTION_MESSAGE, null, null, null);
       if (result != JOptionPane.OK_OPTION) {
-        getModel().setForeignKeyFilterEntities(foreignKeyAttribute, current);
+        getModel().setForeignKeyFilterEntities(foreignKey, current);
       }
     }, null, null, null, 0, null, frameworkIcons().filter());
   }
 
   /**
    * Creates a EntityComboBox for filtering this combo box via a foreign key
-   * @param foreignKeyAttribute the foreign key attribute on which to filter
+   * @param foreignKey the foreign key on which to filter
    * @return an EntityComboBox for filtering this combo box
    */
-  public EntityComboBox createForeignKeyFilterComboBox(final ForeignKeyAttribute foreignKeyAttribute) {
-    final EntityComboBox comboBox = new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKeyAttribute));
+  public EntityComboBox createForeignKeyFilterComboBox(final ForeignKey foreignKey) {
+    final EntityComboBox comboBox = new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKey));
     MaximumMatch.enable(comboBox);
 
     return comboBox;

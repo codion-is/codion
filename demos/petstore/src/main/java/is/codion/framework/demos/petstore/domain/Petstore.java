@@ -8,7 +8,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 
 import java.math.BigDecimal;
 
@@ -99,7 +99,7 @@ public final class Petstore extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("product");
     Attribute<Integer> ID = TYPE.integerAttribute("Product id");
     Attribute<Integer> CATEGORY_ID = TYPE.integerAttribute("Category id");
-    ForeignKeyAttribute CATEGORY_FK = TYPE.foreignKey("Category", Product.CATEGORY_ID, Category.ID);
+    ForeignKey CATEGORY_FK = TYPE.foreignKey("Category", Product.CATEGORY_ID, Category.ID);
     Attribute<String> NAME = TYPE.stringAttribute("Name");
     Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
     Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
@@ -155,16 +155,16 @@ public final class Petstore extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("item");
     Attribute<Integer> ID = TYPE.integerAttribute("Item id");
     Attribute<Integer> PRODUCT_ID = TYPE.integerAttribute("Product id");
-    ForeignKeyAttribute PRODUCT_FK = TYPE.foreignKey("Product", Item.PRODUCT_ID, Product.ID);
+    ForeignKey PRODUCT_FK = TYPE.foreignKey("Product", Item.PRODUCT_ID, Product.ID);
     Attribute<String> NAME = TYPE.stringAttribute("Name");
     Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
     Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
     Attribute<String> IMAGE_THUMB_URL = TYPE.stringAttribute("Image thumbnail URL");
     Attribute<BigDecimal> PRICE = TYPE.bigDecimalAttribute("Price");
     Attribute<Integer> CONTACT_INFO_ID = TYPE.integerAttribute("Contactinfo id");
-    ForeignKeyAttribute CONTACT_INFO_FK = TYPE.foreignKey("Contact info", Item.CONTACT_INFO_ID, SellerContactInfo.ID);
+    ForeignKey CONTACT_INFO_FK = TYPE.foreignKey("Contact info", Item.CONTACT_INFO_ID, SellerContactInfo.ID);
     Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("Address id");
-    ForeignKeyAttribute ADDRESS_FK = TYPE.foreignKey("Address", Item.ADDRESS_ID, Address.ID);
+    ForeignKey ADDRESS_FK = TYPE.foreignKey("Address", Item.ADDRESS_ID, Address.ID);
     Attribute<Boolean> DISABLED = TYPE.booleanAttribute("Disabled");
   }
 
@@ -227,9 +227,9 @@ public final class Petstore extends DefaultDomain {
   public interface TagItem {
     EntityType<Entity> TYPE = DOMAIN.entityType("tag_item");
     Attribute<Integer> ITEM_ID = TYPE.integerAttribute("Item id");
-    ForeignKeyAttribute ITEM_FK = TYPE.foreignKey("Item", TagItem.ITEM_ID, Item.ID);
+    ForeignKey ITEM_FK = TYPE.foreignKey("Item", TagItem.ITEM_ID, Item.ID);
     Attribute<Integer> TAG_ID = TYPE.integerAttribute("Tag id");
-    ForeignKeyAttribute TAG_FK = TYPE.foreignKey("Tag", TagItem.TAG_ID, Tag.ID);
+    ForeignKey TAG_FK = TYPE.foreignKey("Tag", TagItem.TAG_ID, Tag.ID);
   }
 
   void tagItem() {

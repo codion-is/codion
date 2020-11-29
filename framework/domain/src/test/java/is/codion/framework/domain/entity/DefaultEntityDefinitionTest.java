@@ -203,7 +203,7 @@ public class DefaultEntityDefinitionTest {
     final EntityType<Entity> parent = DOMAIN_TYPE.entityType("parent");
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("testForeignPrimaryKey");
     final Attribute<Integer> integerAttribute = entityType.integerAttribute("attribute");
-    final ForeignKeyAttribute foreignKey = entityType.foreignKey("fkAttribute", integerAttribute, parent.integerAttribute("test"));
+    final ForeignKey foreignKey = entityType.foreignKey("fkAttribute", integerAttribute, parent.integerAttribute("test"));
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);

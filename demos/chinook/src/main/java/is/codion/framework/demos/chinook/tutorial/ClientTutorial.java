@@ -11,7 +11,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -61,7 +61,7 @@ public final class ClientTutorial {
       Attribute<Integer> ID = TYPE.integerAttribute("albumid");
       Attribute<String> TITLE = Artist.TYPE.stringAttribute("title");
       Attribute<Integer> ARTIST_ID = Artist.TYPE.integerAttribute("artistid");
-      ForeignKeyAttribute ARTIST_FK = Artist.TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
+      ForeignKey ARTIST_FK = Artist.TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
     }
 
     public Chinook() {

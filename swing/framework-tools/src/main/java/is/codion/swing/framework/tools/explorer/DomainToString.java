@@ -82,8 +82,8 @@ final class DomainToString {
 
   private static String getForeignKeyProperty(final String interfaceName, final ForeignKeyProperty property) {
     final StringBuilder builder = new StringBuilder();
-    final String foreignKeyAttribute = property.getAttribute().getName().toUpperCase();
-    builder.append("          foreignKeyProperty(").append(interfaceName).append(".").append(foreignKeyAttribute)
+    final String foreignKey = property.getAttribute().getName().toUpperCase();
+    builder.append("          foreignKeyProperty(").append(interfaceName).append(".").append(foreignKey)
             .append(", \"").append(property.getCaption()).append("\")");
 
     return builder.toString();

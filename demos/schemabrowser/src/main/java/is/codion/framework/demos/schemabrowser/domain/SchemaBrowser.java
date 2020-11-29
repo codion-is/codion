@@ -9,7 +9,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 
 import java.sql.SQLException;
 import java.util.Locale;
@@ -64,7 +64,7 @@ public final class SchemaBrowser extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("table");
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("table_name"));
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("table_schema"));
-    ForeignKeyAttribute SCHEMA_FK = TYPE.foreignKey(bundle.getString("table_schema_ref"), Table.SCHEMA, Schema.NAME);
+    ForeignKey SCHEMA_FK = TYPE.foreignKey(bundle.getString("table_schema_ref"), Table.SCHEMA, Schema.NAME);
   }
 
   void defineTable() {
@@ -84,7 +84,7 @@ public final class SchemaBrowser extends DefaultDomain {
     Attribute<String> TABLE_NAME = TYPE.stringAttribute(bundle.getString("column_table_name"));
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("column_name"));
     Attribute<String> DATA_TYPE = TYPE.stringAttribute(bundle.getString("column_data_type"));
-    ForeignKeyAttribute TABLE_FK = TYPE.foreignKey(bundle.getString("column_table_ref"),
+    ForeignKey TABLE_FK = TYPE.foreignKey(bundle.getString("column_table_ref"),
             Column.SCHEMA, Table.SCHEMA,
             Column.TABLE_NAME, Table.NAME);
   }
@@ -108,7 +108,7 @@ public final class SchemaBrowser extends DefaultDomain {
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("constraint_name"));
     Attribute<String> CONSTRAINT_TYPE = TYPE.stringAttribute(bundle.getString("constraint_type"));
     Attribute<String> TABLE_NAME = TYPE.stringAttribute(bundle.getString("constraint_table_name"));
-    ForeignKeyAttribute TABLE_FK = TYPE.foreignKey(bundle.getString("constraint_table_ref"),
+    ForeignKey TABLE_FK = TYPE.foreignKey(bundle.getString("constraint_table_ref"),
             Constraint.SCHEMA, Table.SCHEMA,
             Constraint.TABLE_NAME, Table.NAME);
   }
@@ -133,7 +133,7 @@ public final class SchemaBrowser extends DefaultDomain {
     Attribute<String> TABLE_NAME = TYPE.stringAttribute(bundle.getString("column_constraint_table_name"));
     Attribute<String> COLUMN_NAME = TYPE.stringAttribute(bundle.getString("column_constraint_column_name"));
     Attribute<Integer> POSITION = TYPE.integerAttribute(bundle.getString("column_constraint_position"));
-    ForeignKeyAttribute CONSTRAINT_FK = TYPE.foreignKey(bundle.getString("column_constraint_constraint_ref"),
+    ForeignKey CONSTRAINT_FK = TYPE.foreignKey(bundle.getString("column_constraint_constraint_ref"),
             ColumnConstraint.SCHEMA, Constraint.SCHEMA,
             ColumnConstraint.TABLE_NAME, Constraint.TABLE_NAME,
             ColumnConstraint.CONSTRAINT_NAME, Constraint.NAME);

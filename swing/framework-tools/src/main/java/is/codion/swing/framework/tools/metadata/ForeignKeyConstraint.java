@@ -9,12 +9,12 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-public final class ForeignKey {
+public final class ForeignKeyConstraint {
 
   private final Table referencedTable;
   private final Map<Column, Column> references = new LinkedHashMap<>();
 
-  ForeignKey(final Table referencedTable) {
+  ForeignKeyConstraint(final Table referencedTable) {
     this.referencedTable = requireNonNull(referencedTable);
   }
 

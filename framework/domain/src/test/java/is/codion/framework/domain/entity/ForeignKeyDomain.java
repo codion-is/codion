@@ -34,7 +34,7 @@ class ForeignKeyDomain extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("species_maturity");
     Attribute<Integer> NO = TYPE.integerAttribute("no");
     Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
-    ForeignKeyAttribute SPECIES_FK = TYPE.foreignKey("species_fk", Maturity.SPECIES_NO, Species.NO);
+    ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", Maturity.SPECIES_NO, Species.NO);
   }
 
   void maturity() {
@@ -50,7 +50,7 @@ class ForeignKeyDomain extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("otolith_category");
     Attribute<Integer> NO = TYPE.integerAttribute("no");
     Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
-    ForeignKeyAttribute SPECIES_FK = TYPE.foreignKey("species_fk", OtolithCategory.SPECIES_NO, Species.NO);
+    ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", OtolithCategory.SPECIES_NO, Species.NO);
   }
 
   void otolithCategory() {
@@ -66,13 +66,13 @@ class ForeignKeyDomain extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("otolith");
     Attribute<Integer> STATION_ID = TYPE.integerAttribute("station_id");
     Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
-    ForeignKeyAttribute SPECIES_FK = TYPE.foreignKey("species_fk", Otolith.SPECIES_NO, Species.NO);
+    ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", Otolith.SPECIES_NO, Species.NO);
     Attribute<Integer> MATURITY_NO = TYPE.integerAttribute("maturity_no");
-    ForeignKeyAttribute MATURITY_FK = TYPE.foreignKey("maturity_fk",
+    ForeignKey MATURITY_FK = TYPE.foreignKey("maturity_fk",
             Otolith.MATURITY_NO, Maturity.NO,
             Otolith.SPECIES_NO, Maturity.SPECIES_NO);
     Attribute<Integer> OTOLITH_CATEGORY_NO = TYPE.integerAttribute("otolith_category_no");
-    ForeignKeyAttribute OTOLITH_CATEGORY_FK = TYPE.foreignKey("otolith_category_fk",
+    ForeignKey OTOLITH_CATEGORY_FK = TYPE.foreignKey("otolith_category_fk",
             Otolith.OTOLITH_CATEGORY_NO, OtolithCategory.NO,
             Otolith.SPECIES_NO, OtolithCategory.SPECIES_NO);
   }

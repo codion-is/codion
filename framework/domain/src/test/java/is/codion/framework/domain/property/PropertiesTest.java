@@ -67,13 +67,13 @@ public final class PropertiesTest {
   }
 
   @Test
-  public void foreignKeyAttributeWithoutReferencedAttribute() {
+  public void foreignKeyWithoutReferencedAttribute() {
     final Attribute<Entity> attribute = ENTITY_TYPE.entityAttribute("attribute");
     assertThrows(NullPointerException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute, null));
   }
 
   @Test
-  public void foreignKeyAttributeWithoutReference() {
+  public void foreignKeyWithoutReference() {
     final Attribute<Entity> attribute = ENTITY_TYPE.entityAttribute("attribute");
     assertThrows(NullPointerException.class, () -> ENTITY_TYPE.foreignKey("attribute", null, attribute));
   }

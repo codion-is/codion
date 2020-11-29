@@ -132,29 +132,29 @@ public interface Entity extends Comparable<Entity> {
    * a foreign key value exists but the actual referenced entity has not
    * been loaded, an "empty" entity is returned, containing only the primary
    * key value. Null is returned only if the actual reference attribute is null.
-   * @param foreignKeyAttribute the attribute for which to retrieve the value
-   * @return the value of {@code foreignKeyAttribute},
+   * @param foreignKey the foreign key for which to retrieve the value
+   * @return the value of {@code foreignKey},
    * assuming it is an Entity
    * @throws IllegalArgumentException if the attribute is not a foreign key attribute
    * @see #isLoaded(Attribute)
    */
-  Entity getForeignKey(ForeignKeyAttribute foreignKeyAttribute);
+  Entity getForeignKey(ForeignKey foreignKey);
 
   /**
    * Returns the primary key of the entity referenced by the given {@link Attribute},
    * if the reference is null this method returns null.
-   * @param foreignKeyAttribute the foreign key attribute for which to retrieve the underlying {@link Key}
+   * @param foreignKey the foreign key for which to retrieve the underlying {@link Key}
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
-  Key getReferencedKey(ForeignKeyAttribute foreignKeyAttribute);
+  Key getReferencedKey(ForeignKey foreignKey);
 
   /**
    * Returns true if the value of the given foreign key is null, in case of composite
    * foreign keys a single null value of a non-null attribute is enough.
-   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKey the foreign key
    * @return true if the foreign key value is null
    */
-  boolean isForeignKeyNull(ForeignKeyAttribute foreignKeyAttribute);
+  boolean isForeignKeyNull(ForeignKey foreignKey);
 
   /**
    * @param attribute the attribute
@@ -196,10 +196,10 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Returns true if the entity referenced via the given foreign key attribute has been loaded
-   * @param foreignKeyAttribute the attribute
+   * @param foreignKey the attribute
    * @return true if the reference entity has been loaded
    */
-  boolean isLoaded(ForeignKeyAttribute foreignKeyAttribute);
+  boolean isLoaded(ForeignKey foreignKey);
 
   /**
    * Returns the primary key of this entity.

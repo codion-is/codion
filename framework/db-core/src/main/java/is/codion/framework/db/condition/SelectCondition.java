@@ -4,7 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.List;
@@ -80,18 +80,18 @@ public interface SelectCondition extends Condition {
   /**
    * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
    * should be fetched, -1 no limit and null unspecified (use default).
-   * @param foreignKeyAttribute the foreign key attribute
+   * @param foreignKey the foreign key
    * @return the number of levels of foreign key values to fetch
    */
-  Integer getFetchDepth(ForeignKeyAttribute foreignKeyAttribute);
+  Integer getFetchDepth(ForeignKey foreignKey);
 
   /**
-   * Limit the levels of foreign keys to fetch via the given foreign key property
-   * @param foreignKeyAttribute the attribute
+   * Limit the levels of foreign keys to fetch via the given foreign key
+   * @param foreignKey the foreign key
    * @param fetchDepth the foreign key fetch depth limit
    * @return this SelectCondition instance
    */
-  SelectCondition fetchDepth(ForeignKeyAttribute foreignKeyAttribute, int fetchDepth);
+  SelectCondition fetchDepth(ForeignKey foreignKey, int fetchDepth);
 
   /**
    * @return the global fetch depth limit for this condition, null if none has been specified

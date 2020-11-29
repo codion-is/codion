@@ -17,7 +17,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -103,9 +103,9 @@ public final class Example {
       EntityType<Entity> TYPE = DOMAIN.entityType("store.customer_address");
       Attribute<Integer> ID = TYPE.integerAttribute("id");
       Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
-      ForeignKeyAttribute CUSTOMER_FK = TYPE.foreignKey("customer_fk", CustomerAddress.CUSTOMER_ID, Customer.ID);
+      ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CustomerAddress.CUSTOMER_ID, Customer.ID);
       Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("address_id");
-      ForeignKeyAttribute ADDRESS_FK = TYPE.foreignKey("address_fk", CustomerAddress.ADDRESS_ID, Address.ID);
+      ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", CustomerAddress.ADDRESS_ID, Address.ID);
     }
 
     void customerAddress() {

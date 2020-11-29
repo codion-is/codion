@@ -19,7 +19,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.ForeignKeyAttribute;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
@@ -153,12 +153,12 @@ public interface EntityEditModel extends Refreshable {
   <T> T get(Attribute<T> attribute);
 
   /**
-   * Returns the value associated with the given attribute.
-   * @param foreignKeyAttribute the attribute
+   * Returns the value associated with the given foreign key.
+   * @param foreignKey the foreign key
    * @return the value assuming it is an {@link Entity}
    * @throws ClassCastException in case the value was not an {@link Entity}
    */
-  Entity getForeignKey(ForeignKeyAttribute foreignKeyAttribute);
+  Entity getForeignKey(ForeignKey foreignKey);
 
   /**
    * Returns a Value based on {@code attribute} in this edit model, note that
@@ -256,26 +256,26 @@ public interface EntityEditModel extends Refreshable {
    * Creates a {@link EntityLookupModel} for looking up entities referenced by the given foreign key property,
    * using the search properties defined for that entity type, or if none are defined all string based searchable
    * properties in that entity.
-   * @param foreignKeyAttribute the foreign key attribute for which to create a {@link EntityLookupModel}
+   * @param foreignKey the foreign key for which to create a {@link EntityLookupModel}
    * @return a {@link EntityLookupModel} for looking up entities of the type referenced by the given foreign key attribute,
    * @throws IllegalStateException in case no searchable properties can be found for the entity type referenced by the
    * given foreign key property
    */
-  EntityLookupModel createForeignKeyLookupModel(ForeignKeyAttribute foreignKeyAttribute);
+  EntityLookupModel createForeignKeyLookupModel(ForeignKey foreignKey);
 
   /**
-   * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key property
-   * @param foreignKeyAttribute the attribute
-   * @return true if a {@link EntityLookupModel} has been initialized for the given foreign key property
+   * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key
+   * @param foreignKey the foreign key
+   * @return true if a {@link EntityLookupModel} has been initialized for the given foreign key
    */
-  boolean containsLookupModel(ForeignKeyAttribute foreignKeyAttribute);
+  boolean containsLookupModel(ForeignKey foreignKey);
 
   /**
-   * @param foreignKeyAttribute the attribute for which to retrieve the {@link EntityLookupModel}
-   * @return the {@link EntityLookupModel} associated with the {@code property}, if no lookup model
-   * has been initialized for the given property, a new one is created, associated with the attribute and returned.
+   * @param foreignKey the foreign key for which to retrieve the {@link EntityLookupModel}
+   * @return the {@link EntityLookupModel} associated with the {@code foreignKey}, if no lookup model
+   * has been initialized for the given foreign key, a new one is created, associated with the foreign key and returned.
    */
-  EntityLookupModel getForeignKeyLookupModel(ForeignKeyAttribute foreignKeyAttribute);
+  EntityLookupModel getForeignKeyLookupModel(ForeignKey foreignKey);
 
   /**
    * Returns the default value for the given attribute, used when initializing a new default entity for this edit model.
