@@ -73,11 +73,13 @@ final class DefaultEntity implements Entity, Serializable {
   /**
    * Instantiates a new DefaultEntity
    * @param definition the entity definition
-   * @param primaryKey the primary key
+   * @param key the key
    */
-  DefaultEntity(final EntityDefinition definition, final Key primaryKey) {
-    this(definition, createValueMap(requireNonNull(primaryKey, "primaryKey")), null);
-    this.primaryKey = primaryKey;
+  DefaultEntity(final EntityDefinition definition, final Key key) {
+    this(definition, createValueMap(requireNonNull(key, "key")), null);
+    if (key.isPrimaryKey()) {
+      this.primaryKey = key;
+    }
   }
 
   /**
@@ -153,7 +155,7 @@ final class DefaultEntity implements Entity, Serializable {
     final Entity value = (Entity) values.get(entityAttribute);
     if (value == null) {//possibly not loaded
       final Key referencedKey = getReferencedKey(entityAttribute);
-      if (referencedKey != null && referencedKey.isPrimaryKey()) {
+      if (referencedKey != null) {
         return new DefaultEntity(definition.getForeignDefinition(entityAttribute), referencedKey);
       }
     }
@@ -760,14 +762,11 @@ final class DefaultEntity implements Entity, Serializable {
     return propertyValues;
   }
 
-  private static Map<Attribute<?>, Object> createValueMap(final Key primaryKey) {
-    if (!primaryKey.isPrimaryKey()) {
-      throw new IllegalArgumentException("Key " + primaryKey + " is not a primary key");
-    }
-    final Collection<Attribute<?>> attributes = primaryKey.getAttributes();
+  private static Map<Attribute<?>, Object> createValueMap(final Key key) {
+    final Collection<Attribute<?>> attributes = key.getAttributes();
     final Map<Attribute<?>, Object> values = new HashMap<>(attributes.size());
     for (final Attribute<?> attribute : attributes) {
-      values.put(attribute, primaryKey.get(attribute));
+      values.put(attribute, key.get(attribute));
     }
 
     return values;

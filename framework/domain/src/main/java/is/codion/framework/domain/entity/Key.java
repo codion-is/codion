@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Represents a unique attribute value combination.
+ * Represents a unique attribute value combination for a given entity.
  */
 public interface Key {
 
