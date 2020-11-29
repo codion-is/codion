@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultEntityEditModel;
@@ -82,7 +83,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @return a {@link SwingEntityComboBoxModel} based on the entity referenced by the given foreign key attribute
    * @see #createForeignKeyComboBoxModel(Attribute)
    */
-  public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(final Attribute<Entity> foreignKeyAttribute) {
+  public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(final ForeignKeyAttribute foreignKeyAttribute) {
     getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
 
     return (SwingEntityComboBoxModel) comboBoxModels.computeIfAbsent(foreignKeyAttribute,
@@ -123,7 +124,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * @see FilteredComboBoxModel#COMBO_BOX_NULL_VALUE_ITEM
    * @see Property#isNullable()
    */
-  public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final Attribute<Entity> foreignKeyAttribute) {
+  public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyAttribute foreignKeyAttribute) {
     final ForeignKeyProperty foreignKeyProperty = getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
     final SwingEntityComboBoxModel model =
             new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), getConnectionProvider());
@@ -200,18 +201,18 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  protected void replaceForeignKey(final ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) {
-    super.replaceForeignKey(foreignKeyProperty, entities);
-    if (containsComboBoxModel(foreignKeyProperty.getAttribute())) {
-      final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty.getAttribute());
+  protected void replaceForeignKey(final ForeignKeyAttribute foreignKeyAttribute, final List<Entity> entities) {
+    super.replaceForeignKey(foreignKeyAttribute, entities);
+    if (containsComboBoxModel(foreignKeyAttribute)) {
+      final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyAttribute);
       entities.forEach(foreignKeyValue -> comboBoxModel.replaceItem(foreignKeyValue, foreignKeyValue));
     }
   }
 
-  private void clearForeignKeyReferences(final Attribute<Entity> foreignKeyProperty, final List<Entity> entities) {
+  private void clearForeignKeyReferences(final ForeignKeyAttribute foreignKeyAttribute, final List<Entity> entities) {
     entities.forEach(entity -> {
-      if (Objects.equals(entity, get(foreignKeyProperty))) {
-        put(foreignKeyProperty, null);
+      if (Objects.equals(entity, get(foreignKeyAttribute))) {
+        put(foreignKeyAttribute, null);
       }
     });
   }

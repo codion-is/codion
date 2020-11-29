@@ -6505,3 +6505,4 @@
   Condition.selectCondion() and updateCondition() renamed select() and update() respectively
   SelectCondition, removed set prefix from setters, redundant parameter from forUpdate()
   IntegerFieldValue, DecimalFieldValue, LongFieldValue, bug fixed, did not display initial value when not nullable
+  Major surgery, ForeignKeyAttribute added, references moved from property to attribute, Condition.expand() removed

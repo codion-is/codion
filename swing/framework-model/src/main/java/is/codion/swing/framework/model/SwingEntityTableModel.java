@@ -21,6 +21,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -469,7 +470,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   }
 
   @Override
-  public void setForeignKeyConditionValues(final Attribute<Entity> foreignKeyAttribute, final Collection<Entity> foreignKeyValues) {
+  public void setForeignKeyConditionValues(final ForeignKeyAttribute foreignKeyAttribute, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
     if (tableConditionModel.setEqualConditionValues(foreignKeyAttribute, foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {

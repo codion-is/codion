@@ -19,10 +19,12 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.Conditions;
+import is.codion.framework.db.condition.ForeignKeyConditionBuilder;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -194,7 +196,12 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     final Condition.Combination conditionCombination = Conditions.combination(conjunction);
     for (final ColumnConditionModel<Entity, ? extends Property<?>, ?> conditionModel : conditionModels.values()) {
       if (conditionModel.isEnabled()) {
-        conditionCombination.add(getCondition(conditionModel));
+        if (conditionModel instanceof ForeignKeyConditionModel) {
+          conditionCombination.add(getForeignKeyCondition((ForeignKeyConditionModel) conditionModel));
+        }
+        else {
+          conditionCombination.add(getCondition(conditionModel));
+        }
       }
     }
     if (additionalConditionProvider != null) {
@@ -358,52 +365,55 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     }
   }
 
+  private static Condition getForeignKeyCondition(final ForeignKeyConditionModel conditionModel) {
+    final ForeignKeyAttribute attribute = conditionModel.getColumnIdentifier().getAttribute();
+    final Collection<Entity> values = conditionModel.getEqualValueSet().get();
+    final ForeignKeyConditionBuilder builder = Conditions.condition(attribute);
+    switch (conditionModel.getOperator()) {
+      case EQUAL:
+        return values.isEmpty() ? builder.isNull() : builder.equalTo(values);
+      case NOT_EQUAL:
+        return values.isEmpty() ? builder.isNotNull() : builder.notEqualTo(values);
+      default:
+        throw new IllegalArgumentException("Unsupported operator: " + conditionModel.getOperator() + " for foreign key conditions");
+    }
+  }
+
   private static <T> AttributeCondition<T> getCondition(final ColumnConditionModel<Entity, ?, T> conditionModel) {
     final Collection<T> equalToValues = conditionModel.getEqualValues();
     final AttributeCondition.Builder<T> builder = Conditions.condition(((Property<T>) conditionModel.getColumnIdentifier()).getAttribute());
-    final AttributeCondition<T> condition;
     switch (conditionModel.getOperator()) {
       case EQUAL:
-        condition = equalToValues.isEmpty() ? builder.isNull() : builder.equalTo(equalToValues);
-        if (condition.getAttribute().isString()) {
-          condition.setCaseSensitive(conditionModel.isCaseSensitive());
+        final AttributeCondition<T> equalCondition = equalToValues.isEmpty() ? builder.isNull() : builder.equalTo(equalToValues);
+        if (equalCondition.getAttribute().isString()) {
+          equalCondition.setCaseSensitive(conditionModel.isCaseSensitive());
         }
-        break;
+        return equalCondition;
       case NOT_EQUAL:
-        condition = equalToValues.isEmpty() ? builder.isNotNull() : builder.notEqualTo(equalToValues);
-        if (condition.getAttribute().isString()) {
-          condition.setCaseSensitive(conditionModel.isCaseSensitive());
+        final AttributeCondition<T> notEqualCondition = equalToValues.isEmpty() ? builder.isNotNull() : builder.notEqualTo(equalToValues);
+        if (notEqualCondition.getAttribute().isString()) {
+          notEqualCondition.setCaseSensitive(conditionModel.isCaseSensitive());
         }
-        break;
+        return notEqualCondition;
       case LESS_THAN:
-        condition = builder.lessThan(conditionModel.getUpperBound());
-        break;
+        return builder.lessThan(conditionModel.getUpperBound());
       case LESS_THAN_OR_EQUAL:
-        condition = builder.lessThanOrEqualTo(conditionModel.getUpperBound());
-        break;
+        return builder.lessThanOrEqualTo(conditionModel.getUpperBound());
       case GREATER_THAN:
-        condition = builder.greaterThan(conditionModel.getUpperBound());
-        break;
+        return builder.greaterThan(conditionModel.getUpperBound());
       case GREATER_THAN_OR_EQUAL:
-        condition = builder.greaterThanOrEqualTo(conditionModel.getUpperBound());
-        break;
+        return builder.greaterThanOrEqualTo(conditionModel.getUpperBound());
       case BETWEEN_EXCLUSIVE:
-        condition = builder.betweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
-        break;
+        return builder.betweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
       case BETWEEN:
-        condition = builder.between(conditionModel.getLowerBound(), conditionModel.getUpperBound());
-        break;
+        return builder.between(conditionModel.getLowerBound(), conditionModel.getUpperBound());
       case NOT_BETWEEN_EXCLUSIVE:
-        condition = builder.notBetweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
-        break;
+        return builder.notBetweenExclusive(conditionModel.getLowerBound(), conditionModel.getUpperBound());
       case NOT_BETWEEN:
-        condition = builder.notBetween(conditionModel.getLowerBound(), conditionModel.getUpperBound());
-        break;
+        return builder.notBetween(conditionModel.getLowerBound(), conditionModel.getUpperBound());
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
     }
-
-    return condition;
   }
 
   private static String toString(final ColumnConditionModel<?, ?, ?> conditionModel) {

@@ -13,7 +13,7 @@ import java.util.Objects;
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultAttribute<T> implements Attribute<T>, Serializable {
+class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -33,22 +33,22 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public String getName() {
+  public final String getName() {
     return name;
   }
 
   @Override
-  public Class<T> getTypeClass() {
+  public final Class<T> getTypeClass() {
     return typeClass;
   }
 
   @Override
-  public EntityType<?> getEntityType() {
+  public final EntityType<?> getEntityType() {
     return entityType;
   }
 
   @Override
-  public T validateType(final T value) {
+  public final T validateType(final T value) {
     if (value != null && typeClass != value.getClass() && !typeClass.isAssignableFrom(value.getClass())) {
       throw new IllegalArgumentException("Value of type " + typeClass +
               " expected for property " + this + " in entity " + entityType + ", got: " + value.getClass());
@@ -58,87 +58,87 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public boolean isType(final Class<?> typeClass) {
+  public final boolean isType(final Class<?> typeClass) {
     return this.typeClass == typeClass;
   }
 
   @Override
-  public boolean isNumerical() {
+  public final boolean isNumerical() {
     return isInteger() || isDecimal() || isLong();
   }
 
   @Override
-  public boolean isTemporal() {
+  public final boolean isTemporal() {
     return isLocalDate() || isLocalDateTime() || isLocalTime();
   }
 
   @Override
-  public boolean isLocalDate() {
+  public final boolean isLocalDate() {
     return isType(LocalDate.class);
   }
 
   @Override
-  public boolean isLocalDateTime() {
+  public final boolean isLocalDateTime() {
     return isType(LocalDateTime.class);
   }
 
   @Override
-  public boolean isLocalTime() {
+  public final boolean isLocalTime() {
     return isType(LocalTime.class);
   }
 
   @Override
-  public boolean isCharacter() {
+  public final boolean isCharacter() {
     return isType(Character.class);
   }
 
   @Override
-  public boolean isString() {
+  public final boolean isString() {
     return isType(String.class);
   }
 
   @Override
-  public boolean isLong() {
+  public final boolean isLong() {
     return isType(Long.class);
   }
 
   @Override
-  public boolean isInteger() {
+  public final boolean isInteger() {
     return isType(Integer.class);
   }
 
   @Override
-  public boolean isDouble() {
+  public final boolean isDouble() {
     return isType(Double.class);
   }
 
   @Override
-  public boolean isBigDecimal() {
+  public final boolean isBigDecimal() {
     return isType(BigDecimal.class);
   }
 
   @Override
-  public boolean isDecimal() {
+  public final boolean isDecimal() {
     return isDouble() || isBigDecimal();
   }
 
   @Override
-  public boolean isBoolean() {
+  public final boolean isBoolean() {
     return isType(Boolean.class);
   }
 
   @Override
-  public boolean isByteArray() {
+  public final boolean isByteArray() {
     return isType(byte[].class);
   }
 
   @Override
-  public boolean isEntity() {
+  public final boolean isEntity() {
     return isType(Entity.class);
   }
 
   @Override
-  public boolean equals(final Object object) {
+  public final boolean equals(final Object object) {
     if (this == object) {
       return true;
     }
@@ -151,12 +151,12 @@ final class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return hashCode;
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return entityType.getName() + "." + name;
   }
 }

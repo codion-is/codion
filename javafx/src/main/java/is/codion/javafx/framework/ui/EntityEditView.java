@@ -11,6 +11,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.States;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
@@ -169,7 +170,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param foreignKeyAttribute the foreign key attribute
    * @return a {@link EntityLookupField} based on the given property
    */
-  protected final EntityLookupField createForeignKeyLookupField(final Attribute<Entity> foreignKeyAttribute) {
+  protected final EntityLookupField createForeignKeyLookupField(final ForeignKeyAttribute foreignKeyAttribute) {
     checkControl(foreignKeyAttribute);
     return FXUiUtil.createLookupField(getEditModel().getEntityDefinition()
             .getForeignKeyProperty(foreignKeyAttribute), editModel);
@@ -180,7 +181,7 @@ public abstract class EntityEditView extends BorderPane {
    * @param foreignKeyAttribute the foreign key attribute
    * @return a {@link ComboBox} based on the given property
    */
-  protected final ComboBox<Entity> createForeignKeyComboBox(final Attribute<Entity> foreignKeyAttribute) {
+  protected final ComboBox<Entity> createForeignKeyComboBox(final ForeignKeyAttribute foreignKeyAttribute) {
     checkControl(foreignKeyAttribute);
     final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(getEditModel()
             .getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute), editModel);

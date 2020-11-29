@@ -9,6 +9,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 
 import java.sql.SQLException;
 import java.util.Locale;
@@ -63,14 +64,13 @@ public final class SchemaBrowser extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("table");
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("table_name"));
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("table_schema"));
-    Attribute<Entity> SCHEMA_FK = TYPE.entityAttribute(bundle.getString("table_schema_ref"));
+    ForeignKeyAttribute SCHEMA_FK = TYPE.foreignKey(bundle.getString("table_schema_ref"), Table.SCHEMA, Schema.NAME);
   }
 
   void defineTable() {
     define(Table.TYPE, bundle.getString("t_table"),
             columnProperty(Table.SCHEMA).primaryKeyIndex(0),
-            foreignKeyProperty(Table.SCHEMA_FK, "Schema")
-                    .reference(Table.SCHEMA, Schema.NAME),
+            foreignKeyProperty(Table.SCHEMA_FK, "Schema"),
             primaryKeyProperty(Table.NAME, "Name").primaryKeyIndex(1))
             .orderBy(orderBy().ascending(Table.SCHEMA, Table.NAME))
             .readOnly(true)
@@ -82,18 +82,18 @@ public final class SchemaBrowser extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("column");
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("column_schema"));
     Attribute<String> TABLE_NAME = TYPE.stringAttribute(bundle.getString("column_table_name"));
-    Attribute<Entity> TABLE_FK = TYPE.entityAttribute(bundle.getString("column_table_ref"));
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("column_name"));
     Attribute<String> DATA_TYPE = TYPE.stringAttribute(bundle.getString("column_data_type"));
+    ForeignKeyAttribute TABLE_FK = TYPE.foreignKey(bundle.getString("column_table_ref"),
+            Column.SCHEMA, Table.SCHEMA,
+            Column.TABLE_NAME, Table.NAME);
   }
 
   void defineColumn() {
     define(Column.TYPE, bundle.getString("t_column"),
             columnProperty(Column.SCHEMA).primaryKeyIndex(0),
             columnProperty(Column.TABLE_NAME).primaryKeyIndex(1),
-            foreignKeyProperty(Column.TABLE_FK, "Table")
-                    .reference(Column.SCHEMA, Table.SCHEMA)
-                    .reference(Column.TABLE_NAME, Table.NAME),
+            foreignKeyProperty(Column.TABLE_FK, "Table"),
             primaryKeyProperty(Column.NAME, "Column name").primaryKeyIndex(2),
             columnProperty(Column.DATA_TYPE, "Data type"))
             .orderBy(orderBy().ascending(Column.SCHEMA, Column.TABLE_NAME, Column.NAME))
@@ -107,17 +107,17 @@ public final class SchemaBrowser extends DefaultDomain {
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("constraint_schema"));
     Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("constraint_name"));
     Attribute<String> CONSTRAINT_TYPE = TYPE.stringAttribute(bundle.getString("constraint_type"));
-    Attribute<Entity> TABLE_FK = TYPE.entityAttribute(bundle.getString("constraint_table_ref"));
     Attribute<String> TABLE_NAME = TYPE.stringAttribute(bundle.getString("constraint_table_name"));
+    ForeignKeyAttribute TABLE_FK = TYPE.foreignKey(bundle.getString("constraint_table_ref"),
+            Constraint.SCHEMA, Table.SCHEMA,
+            Constraint.TABLE_NAME, Table.NAME);
   }
 
   void defineConstraint() {
     define(Constraint.TYPE, bundle.getString("t_constraint"),
             columnProperty(Constraint.SCHEMA).primaryKeyIndex(0),
             columnProperty(Constraint.TABLE_NAME).primaryKeyIndex(1),
-            foreignKeyProperty(Constraint.TABLE_FK, "Table")
-                    .reference(Constraint.SCHEMA, Table.SCHEMA)
-                    .reference(Constraint.TABLE_NAME, Table.NAME),
+            foreignKeyProperty(Constraint.TABLE_FK, "Table"),
             primaryKeyProperty(Constraint.NAME, "Constraint name").primaryKeyIndex(2),
             columnProperty(Constraint.CONSTRAINT_TYPE, "Type"))
             .orderBy(orderBy().ascending(Constraint.SCHEMA, Constraint.TABLE_NAME, Constraint.NAME))
@@ -130,10 +130,13 @@ public final class SchemaBrowser extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("column_constraint");
     Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("column_constraint_schema"));
     Attribute<String> CONSTRAINT_NAME = TYPE.stringAttribute(bundle.getString("column_constraint_constraint_name"));
-    Attribute<Entity> CONSTRAINT_FK = TYPE.entityAttribute(bundle.getString("column_constraint_constraint_ref"));
     Attribute<String> TABLE_NAME = TYPE.stringAttribute(bundle.getString("column_constraint_table_name"));
     Attribute<String> COLUMN_NAME = TYPE.stringAttribute(bundle.getString("column_constraint_column_name"));
     Attribute<Integer> POSITION = TYPE.integerAttribute(bundle.getString("column_constraint_position"));
+    ForeignKeyAttribute CONSTRAINT_FK = TYPE.foreignKey(bundle.getString("column_constraint_constraint_ref"),
+            ColumnConstraint.SCHEMA, Constraint.SCHEMA,
+            ColumnConstraint.TABLE_NAME, Constraint.TABLE_NAME,
+            ColumnConstraint.CONSTRAINT_NAME, Constraint.NAME);
   }
 
   void defineColumnConstraint() {
@@ -141,10 +144,7 @@ public final class SchemaBrowser extends DefaultDomain {
             columnProperty(ColumnConstraint.SCHEMA).primaryKeyIndex(0),
             columnProperty(ColumnConstraint.TABLE_NAME).primaryKeyIndex(1),
             columnProperty(ColumnConstraint.CONSTRAINT_NAME).primaryKeyIndex(2),
-            foreignKeyProperty(ColumnConstraint.CONSTRAINT_FK, "Constraint")
-                    .reference(ColumnConstraint.SCHEMA, Constraint.SCHEMA)
-                    .reference(ColumnConstraint.TABLE_NAME, Constraint.TABLE_NAME)
-                    .reference(ColumnConstraint.CONSTRAINT_NAME, Constraint.NAME),
+            foreignKeyProperty(ColumnConstraint.CONSTRAINT_FK, "Constraint"),
             columnProperty(ColumnConstraint.COLUMN_NAME, "Column name"),
             columnProperty(ColumnConstraint.POSITION, "Position"))
             .orderBy(orderBy().ascending(ColumnConstraint.SCHEMA, ColumnConstraint.TABLE_NAME, ColumnConstraint.CONSTRAINT_NAME))

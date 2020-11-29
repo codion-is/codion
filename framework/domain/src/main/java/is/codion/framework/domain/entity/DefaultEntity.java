@@ -58,7 +58,7 @@ final class DefaultEntity implements Entity, Serializable {
   /**
    * Caches the result of {@link #getReferencedKey} method
    */
-  private Map<Attribute<Entity>, Key> referencedKeyCache;
+  private Map<ForeignKeyAttribute, Key> referencedKeyCache;
 
   /**
    * Keep a reference to this frequently referenced object
@@ -149,7 +149,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Entity getForeignKey(final Attribute<Entity> entityAttribute) {
+  public Entity getForeignKey(final ForeignKeyAttribute entityAttribute) {
     final Entity value = (Entity) values.get(entityAttribute);
     if (value == null) {//possibly not loaded
       final Key referencedKey = getReferencedKey(entityAttribute);
@@ -162,7 +162,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public boolean isLoaded(final Attribute<Entity> foreignKeyAttribute) {
+  public boolean isLoaded(final ForeignKeyAttribute foreignKeyAttribute) {
     return values.get(definition.getForeignKeyProperty(foreignKeyAttribute).getAttribute()) != null;
   }
 
@@ -311,8 +311,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Key getReferencedKey(final Attribute<Entity> foreignKeyAttribute) {
-    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+  public Key getReferencedKey(final ForeignKeyAttribute foreignKeyAttribute) {
     final ForeignKeyProperty foreignKeyProperty = definition.getForeignKeyProperty(foreignKeyAttribute);
     final Key cachedReferencedKey = getCachedReferencedKey(foreignKeyProperty.getAttribute());
     if (cachedReferencedKey != null) {
@@ -342,16 +341,15 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public boolean isForeignKeyNull(final Attribute<Entity> foreignKeyAttribute) {
-    requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
+  public boolean isForeignKeyNull(final ForeignKeyAttribute foreignKeyAttribute) {
     final ForeignKeyProperty foreignKeyProperty = definition.getForeignKeyProperty(foreignKeyAttribute);
-    final List<ForeignKeyProperty.Reference<?>> references = foreignKeyProperty.getReferences();
+    final List<ForeignKeyAttribute.Reference<?>> references = foreignKeyProperty.getReferences();
     if (references.size() == 1) {
       return isNull(references.get(0).getAttribute());
     }
     final EntityDefinition foreignDefinition = definition.getForeignDefinition(foreignKeyProperty.getAttribute());
     for (int i = 0; i < references.size(); i++) {
-      final ForeignKeyProperty.Reference<?> reference = references.get(i);
+      final ForeignKeyAttribute.Reference<?> reference = references.get(i);
       final ColumnProperty<?> referencedProperty = foreignDefinition.getColumnProperty(reference.getReferencedAttribute());
       if (!referencedProperty.isNullable() && isNull(reference.getAttribute())) {
         return true;
@@ -463,7 +461,7 @@ final class DefaultEntity implements Entity, Serializable {
               " expected for property " + this + ", got: " + entity.getEntityType());
     }
     property.getReferences().forEach(reference -> {
-      if (reference.isReadOnly() && !Objects.equals(get(reference.getAttribute()), entity.get(reference.getReferencedAttribute()))) {
+      if (property.isReadOnly(reference.getAttribute()) && !Objects.equals(get(reference.getAttribute()), entity.get(reference.getReferencedAttribute()))) {
         throw new IllegalArgumentException("Foreign key " + property + " is not allowed to modify attribute: " + reference.getAttribute());
       }
     });
@@ -480,7 +478,7 @@ final class DefaultEntity implements Entity, Serializable {
     for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties(attribute)) {
       final Entity foreignKeyEntity = get(foreignKeyProperty);
       if (foreignKeyEntity != null) {
-        final ForeignKeyProperty.Reference<T> reference = foreignKeyProperty.getReference(attribute);
+        final ForeignKeyAttribute.Reference<T> reference = foreignKeyProperty.getReference(attribute);
         //if the value isn't equal to the value in the foreign key,
         //that foreign key reference is invalid and is removed
         if (!Objects.equals(value, foreignKeyEntity.get(reference.getReferencedAttribute()))) {
@@ -501,10 +499,10 @@ final class DefaultEntity implements Entity, Serializable {
    */
   private void setForeignKeyValues(final ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity) {
     removeCachedReferencedKey(foreignKeyProperty.getAttribute());
-    final List<ForeignKeyProperty.Reference<?>> references = foreignKeyProperty.getReferences();
+    final List<ForeignKeyAttribute.Reference<?>> references = foreignKeyProperty.getReferences();
     for (int i = 0; i < references.size(); i++) {
-      final ForeignKeyProperty.Reference<?> reference = references.get(i);
-      if (!reference.isReadOnly()) {
+      final ForeignKeyAttribute.Reference<?> reference = references.get(i);
+      if (!foreignKeyProperty.isReadOnly(reference.getAttribute())) {
         final Property<Object> columnProperty = definition.getColumnProperty((Attribute<Object>) reference.getAttribute());
         putInternal(columnProperty, referencedEntity == null ? null : referencedEntity.get(reference.getReferencedAttribute()));
       }
@@ -535,7 +533,7 @@ final class DefaultEntity implements Entity, Serializable {
    */
   private Key initializeAndCacheReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
     final EntityDefinition foreignEntityDefinition = definition.getForeignDefinition(foreignKeyProperty.getAttribute());
-    final List<ForeignKeyProperty.Reference<?>> references = foreignKeyProperty.getReferences();
+    final List<ForeignKeyAttribute.Reference<?>> references = foreignKeyProperty.getReferences();
     if (references.size() > 1) {
       return initializeAndCacheCompositeReferenceKey(foreignKeyProperty, references, foreignEntityDefinition);
     }
@@ -544,11 +542,11 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private Key initializeAndCacheCompositeReferenceKey(final ForeignKeyProperty foreignKeyProperty,
-                                                      final List<ForeignKeyProperty.Reference<?>> references,
+                                                      final List<ForeignKeyAttribute.Reference<?>> references,
                                                       final EntityDefinition foreignEntityDefinition) {
     final Map<Attribute<?>, Object> keyValues = new HashMap<>(references.size());
     for (int i = 0; i < references.size(); i++) {
-      final ForeignKeyProperty.Reference<?> reference = references.get(i);
+      final ForeignKeyAttribute.Reference<?> reference = references.get(i);
       final ColumnProperty<?> referencedProperty = foreignEntityDefinition.getColumnProperty(reference.getReferencedAttribute());
       final Object value = values.get(reference.getAttribute());
       if (value == null && !referencedProperty.isNullable()) {
@@ -564,7 +562,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private Key initializeAndCacheSingleReferenceKey(final ForeignKeyProperty foreignKeyProperty,
-                                                   final ForeignKeyProperty.Reference<?> reference,
+                                                   final ForeignKeyAttribute.Reference<?> reference,
                                                    final EntityDefinition foreignEntityDefinition) {
     final Object value = values.get(reference.getAttribute());
     if (value == null) {
@@ -578,7 +576,7 @@ final class DefaultEntity implements Entity, Serializable {
                     reference.getReferencedAttribute(), value, isPrimaryKey));
   }
 
-  private Key cacheReferencedKey(final Attribute<Entity> foreignKeyAttribute, final Key referencedPrimaryKey) {
+  private Key cacheReferencedKey(final ForeignKeyAttribute foreignKeyAttribute, final Key referencedPrimaryKey) {
     if (referencedKeyCache == null) {
       referencedKeyCache = new HashMap<>();
     }
@@ -587,7 +585,7 @@ final class DefaultEntity implements Entity, Serializable {
     return referencedPrimaryKey;
   }
 
-  private Key getCachedReferencedKey(final Attribute<Entity> foreignKeyAttribute) {
+  private Key getCachedReferencedKey(final ForeignKeyAttribute foreignKeyAttribute) {
     if (referencedKeyCache == null) {
       return null;
     }
@@ -595,7 +593,7 @@ final class DefaultEntity implements Entity, Serializable {
     return referencedKeyCache.get(foreignKeyAttribute);
   }
 
-  private void removeCachedReferencedKey(final Attribute<Entity> foreignKeyAttribute) {
+  private void removeCachedReferencedKey(final ForeignKeyAttribute foreignKeyAttribute) {
     if (referencedKeyCache != null) {
       referencedKeyCache.remove(foreignKeyAttribute);
       if (referencedKeyCache.isEmpty()) {

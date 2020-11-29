@@ -23,6 +23,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.ForeignKeyConditionBuilder;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.condition.WhereCondition;
@@ -32,6 +33,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -451,9 +453,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
-    final AttributeCondition.Builder<T> condition = condition(attribute);
+    if (attribute instanceof ForeignKeyAttribute) {
+      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKeyAttribute) attribute);
 
-    return selectSingle(value == null ? condition.isNull() : condition.equalTo(value));
+      return selectSingle(value == null ? conditionBuilder.isNull() : conditionBuilder.equalTo((Entity) value));
+    }
+    else {
+      final AttributeCondition.Builder<T> conditionBuilder = condition(attribute);
+
+      return selectSingle(value == null ? conditionBuilder.isNull() : conditionBuilder.equalTo(value));
+    }
   }
 
   @Override
@@ -499,16 +508,30 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
-    final AttributeCondition.Builder<T> condition = condition(attribute);
+    if (attribute instanceof ForeignKeyAttribute) {
+      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKeyAttribute) attribute);
 
-    return select(value == null ? condition.isNull() : condition.equalTo(value));
+      return select(value == null ? conditionBuilder.isNull() : conditionBuilder.equalTo((Entity) value));
+    }
+    else {
+      final AttributeCondition.Builder<T> conditionBuilder = condition(attribute);
+
+      return select(value == null ? conditionBuilder.isNull() : conditionBuilder.equalTo(value));
+    }
   }
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
-    final AttributeCondition.Builder<T> condition = condition(attribute);
+    if (attribute instanceof ForeignKeyAttribute) {
+      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKeyAttribute) attribute);
 
-    return select(values == null || values.isEmpty() ? condition.isNull() : condition.equalTo(values));
+      return select(values.isEmpty() ? conditionBuilder.isNull() : conditionBuilder.equalTo((Collection<Entity>) values));
+    }
+    else {
+      final AttributeCondition.Builder<T> conditionBuilder = condition(attribute);
+
+      return select(values.isEmpty() ? conditionBuilder.isNull() : conditionBuilder.equalTo(values));
+    }
   }
 
   @Override
@@ -910,7 +933,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             domainEntities.getDefinition(entities.get(0).getEntityType()).getForeignKeyProperties();
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       final ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
-      final Attribute<Entity> foreignKeyAttribute = foreignKeyProperty.getAttribute();
+      final ForeignKeyAttribute foreignKeyAttribute = foreignKeyProperty.getAttribute();
       Integer conditionFetchDepthLimit = condition.getFetchDepth(foreignKeyAttribute);
       if (conditionFetchDepthLimit == null) {//use the default one
         conditionFetchDepthLimit = foreignKeyProperty.getFetchDepth();

@@ -4,8 +4,8 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   private static final long serialVersionUID = 1;
 
   private final Condition condition;
-  private HashMap<Attribute<?>, Integer> foreignKeyFetchDepths;
+  private HashMap<ForeignKeyAttribute, Integer> foreignKeyFetchDepths;
   private List<Attribute<?>> selectAttributes = emptyList();
 
   private OrderBy orderBy;
@@ -105,7 +105,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   }
 
   @Override
-  public SelectCondition fetchDepth(final Attribute<Entity> foreignKeyAttribute, final int fetchDepth) {
+  public SelectCondition fetchDepth(final ForeignKeyAttribute foreignKeyAttribute, final int fetchDepth) {
     if (foreignKeyFetchDepths == null) {
       foreignKeyFetchDepths = new HashMap<>();
     }
@@ -114,7 +114,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   }
 
   @Override
-  public Integer getFetchDepth(final Attribute<Entity> foreignKeyAttribute) {
+  public Integer getFetchDepth(final ForeignKeyAttribute foreignKeyAttribute) {
     if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKeyAttribute)) {
       return foreignKeyFetchDepths.get(foreignKeyAttribute);
     }

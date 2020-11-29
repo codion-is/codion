@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
@@ -36,10 +37,16 @@ import static is.codion.framework.domain.DomainType.domainType;
 
 public final class EntityEditPanels {
 
+  interface DemoMaster {
+    EntityType<Entity> TYPE = domainType("domainType").entityType("master");
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+  }
+
   interface Demo {
     EntityType<Entity> TYPE = domainType("domainType").entityType("entityType");
     Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
-    Attribute<Entity> FOREIGN_KEY = TYPE.entityAttribute("foreign_key");
+    Attribute<Integer> FOREIGN_ATTRIBUTE = TYPE.integerAttribute("foreign_id");
+    ForeignKeyAttribute FOREIGN_KEY = TYPE.foreignKey("foreign_key", FOREIGN_ATTRIBUTE, DemoMaster.ID);
     Attribute<LocalDate> LOCAL_DATE = TYPE.localDateAttribute("local_date");
     Attribute<Integer> INTEGER = TYPE.integerAttribute("integer");
     Attribute<Long> LONG = TYPE.longAttribute("long");

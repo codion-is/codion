@@ -6,8 +6,8 @@ package is.codion.swing.framework.tools.explorer;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.OptionalInt;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.framework.domain.entity.ForeignKeyAttribute.reference;
+import static java.util.stream.Collectors.toList;
 
 final class DatabaseDomain extends DefaultDomain {
 
@@ -71,13 +73,15 @@ final class DatabaseDomain extends DefaultDomain {
   private Property.Builder<?> getForeignKeyPropertyBuilder(final ForeignKey foreignKey, final EntityType<?> entityType) {
     final Table referencedTable = foreignKey.getReferencedTable();
     //todo foreign keys to a table of the same name in different schemas, attribute name clash
-    final Attribute<Entity> attribute = entityType.entityAttribute(referencedTable.getTableName() + "_FK");
-    final String caption = getCaption(referencedTable.getTableName());
-
     final EntityType<?> referencedEntityType = tableEntityTypes.get(referencedTable);
+    final ForeignKeyAttribute attribute = entityType.foreignKey(referencedTable.getTableName() + "_FK",
+            foreignKey.getReferences().entrySet().stream().map(entry ->
+                    reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
+                    .collect(toList()));
+    final String caption = getCaption(referencedTable.getTableName());
     final ForeignKeyProperty.Builder builder = Properties.foreignKeyProperty(attribute, caption);
     foreignKey.getReferences().forEach((column, referencedColumn) ->
-            builder.reference(getAttribute(entityType, column), getAttribute(referencedEntityType, referencedColumn)));
+            reference(getAttribute(entityType, column), getAttribute(referencedEntityType, referencedColumn)));
 
     return builder;
   }

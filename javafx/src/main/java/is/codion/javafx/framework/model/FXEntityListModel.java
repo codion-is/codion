@@ -18,6 +18,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -186,7 +187,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setForeignKeyConditionValues(final Attribute<Entity> foreignKeyAttribute, final Collection<Entity> entities) {
+  public final void setForeignKeyConditionValues(final ForeignKeyAttribute foreignKeyAttribute, final Collection<Entity> entities) {
     getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
     if (tableConditionModel.setEqualConditionValues(foreignKeyAttribute, entities) && refreshOnForeignKeyConditionValuesSet) {
       refresh();

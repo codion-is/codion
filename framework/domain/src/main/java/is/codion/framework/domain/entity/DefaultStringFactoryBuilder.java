@@ -29,7 +29,7 @@ final class DefaultStringFactoryBuilder implements StringFactory.Builder {
   }
 
   @Override
-  public StringFactory.Builder foreignKeyValue(final Attribute<Entity> foreignKeyAttribute,
+  public StringFactory.Builder foreignKeyValue(final ForeignKeyAttribute foreignKeyAttribute,
                                                final Attribute<?> attribute) {
     stringFactory.addForeignKeyValue(foreignKeyAttribute, attribute);
     return this;

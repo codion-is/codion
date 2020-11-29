@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 /**
  * Defines a Entity type and serves as a Factory for {@link Attribute} instances associated with this entity type.
@@ -121,6 +122,55 @@ public interface EntityType<T extends Entity> {
    * @return a new {@link Attribute}
    */
   Attribute<byte[]> byteArrayAttribute(String name);
+
+  /**
+   * Creates a new {@link ForeignKeyAttribute} based on the given attributes.
+   * @param name the attribute name
+   * @param attribute the attribute
+   * @param referencedAttribute the referenced attribute
+   * @param <A> the attribute type
+   * @return a new {@link ForeignKeyAttribute}
+   */
+  <A> ForeignKeyAttribute foreignKey(String name, Attribute<A> attribute, Attribute<A> referencedAttribute);
+
+  /**
+   * Creates a new {@link ForeignKeyAttribute} based on the given attributes.
+   * @param name the attribute name
+   * @param firstAttribute the first attribute
+   * @param firstReferencedAttribute the first referenced attribute
+   * @param secondAttribute the second attribute
+   * @param secondReferencedAttribute the second referenced attribute
+   * @param <A> the first attribute type
+   * @param <B> the second attribute type
+   * @return a new {@link ForeignKeyAttribute}
+   */
+  <A, B> ForeignKeyAttribute foreignKey(String name, Attribute<A> firstAttribute, Attribute<A> firstReferencedAttribute,
+                                        Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute);
+
+  /**
+   * Creates a new {@link ForeignKeyAttribute} based on the given attributes.
+   * @param name the attribute name
+   * @param firstAttribute the first attribute
+   * @param firstReferencedAttribute the first referenced attribute
+   * @param secondAttribute the second attribute
+   * @param secondReferencedAttribute the third referenced attribute
+   * @param thirdAttribute the second attribute
+   * @param thirdReferencedAttribute the third referenced attribute
+   * @param <A> the first attribute type
+   * @param <B> the second attribute type
+   * @param <C> the third attribute type
+   * @return a new {@link ForeignKeyAttribute}
+   */
+  <A, B, C> ForeignKeyAttribute foreignKey(String name, Attribute<A> firstAattribute, Attribute<A> firstReferencedAttribute,
+                                           Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute,
+                                           Attribute<C> thirdAttribute, Attribute<C> thirdReferencedAttribute);
+  /**
+   * Creates a new {@link ForeignKeyAttribute} based on the given references.
+   * @param name the attribute name
+   * @param references the references
+   * @return a new {@link ForeignKeyAttribute}
+   */
+  ForeignKeyAttribute foreignKey(String name, List<ForeignKeyAttribute.Reference<?>> references);
 
   /**
    * Instantiates a new {@link ConditionType} for this entity type

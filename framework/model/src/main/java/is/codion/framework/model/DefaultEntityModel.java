@@ -9,10 +9,10 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
@@ -72,9 +72,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   private final Set<M> linkedDetailModels = new HashSet<>();
 
   /**
-   * Maps detail models to the foreign key property they are based on
+   * Maps detail models to the foreign key attribute they are based on
    */
-  private final Map<M, Attribute<Entity>> detailModelForeignKeys = new HashMap<>();
+  private final Map<M, ForeignKeyAttribute> detailModelForeignKeys = new HashMap<>();
 
   /**
    * The master model, if any, so that detail models can refer to their masters
@@ -254,7 +254,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void setDetailModelForeignKey(final M detailModel, final Attribute<Entity> foreignKeyAttribute) {
+  public final void setDetailModelForeignKey(final M detailModel, final ForeignKeyAttribute foreignKeyAttribute) {
     requireNonNull(detailModel, "detailModel");
     if (!containsDetailModel(detailModel)) {
       throw new IllegalArgumentException(this + " does not contain detail model: " + detailModel);
@@ -269,7 +269,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final Attribute<Entity> getDetailModelForeignKey(final M detailModel) {
+  public final ForeignKeyAttribute getDetailModelForeignKey(final M detailModel) {
     return detailModelForeignKeys.get(detailModel);
   }
 
@@ -327,7 +327,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void initialize(final Attribute<Entity> foreignKeyAttribute, final List<Entity> foreignKeyValues) {
+  public final void initialize(final ForeignKeyAttribute foreignKeyAttribute, final List<Entity> foreignKeyValues) {
     if (containsTableModel()) {
       tableModel.setForeignKeyConditionValues(foreignKeyAttribute, foreignKeyValues);
     }
@@ -397,7 +397,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * @param foreignKeyAttribute the foreign key attribute referring to the master model doing the initialization
    * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model
    */
-  protected void onInitialization(final Attribute<Entity> foreignKeyAttribute, final List<Entity> foreignKeyValues) {
+  protected void onInitialization(final ForeignKeyAttribute foreignKeyAttribute, final List<Entity> foreignKeyValues) {
     if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
       editModel.put(foreignKeyAttribute, foreignKeyValues.get(0));
     }
@@ -431,7 +431,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     editModel.addForeignKeyValues(insertedEntities);
     editModel.setForeignKeyValues(insertedEntities);
     if (containsTableModel() && searchOnMasterInsert) {
-      Attribute<Entity> foreignKeyAttribute = masterModel.getDetailModelForeignKey((M) this);
+      ForeignKeyAttribute foreignKeyAttribute = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKeyAttribute == null) {
         foreignKeyAttribute = editModel.getEntityDefinition().getForeignKeyReferences(masterModel.getEntityType()).get(0).getAttribute();
       }

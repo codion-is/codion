@@ -444,7 +444,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public ForeignKeyProperty getForeignKeyProperty(final Attribute<Entity> attribute) {
+  public ForeignKeyProperty getForeignKeyProperty(final ForeignKeyAttribute attribute) {
     requireNonNull(attribute, "attribute");
     final ForeignKeyProperty property = entityProperties.foreignKeyPropertyMap.get(attribute);
     if (property == null) {
@@ -528,7 +528,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public EntityDefinition getForeignDefinition(final Attribute<Entity> foreignKeyAttribute) {
+  public EntityDefinition getForeignDefinition(final ForeignKeyAttribute foreignKeyAttribute) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     final EntityDefinition definition = foreignEntityDefinitions.get(foreignKeyAttribute);
     if (definition == null) {
@@ -641,7 +641,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * @throws IllegalStateException in case the foreign definition has already been set
    * @throws IllegalArgumentException in case the definition does not match the foreign key
    */
-  void setForeignDefinition(final Attribute<Entity> foreignKeyAttribute, final EntityDefinition definition) {
+  void setForeignDefinition(final ForeignKeyAttribute foreignKeyAttribute, final EntityDefinition definition) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     requireNonNull(definition, "definition");
     final ForeignKeyProperty foreignKeyProperty = getForeignKeyProperty(foreignKeyAttribute);
@@ -782,7 +782,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final List<ColumnProperty<?>> primaryKeyProperties;
     private final Map<Attribute<?>, ColumnProperty<?>> primaryKeyPropertyMap;
     private final List<ForeignKeyProperty> foreignKeyProperties;
-    private final Map<Attribute<Entity>, ForeignKeyProperty> foreignKeyPropertyMap;
+    private final Map<ForeignKeyAttribute, ForeignKeyProperty> foreignKeyPropertyMap;
     private final Map<Attribute<?>, List<ForeignKeyProperty>> columnPropertyForeignKeyProperties;
     private final Set<Attribute<?>> foreignKeyColumnAttributes = new HashSet<>();
     private final Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes;
@@ -859,8 +859,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       }
     }
 
-    private Map<Attribute<Entity>, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
-      final Map<Attribute<Entity>, ForeignKeyProperty> foreignKeyMap = new HashMap<>(foreignKeyProperties.size());
+    private Map<ForeignKeyAttribute, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
+      final Map<ForeignKeyAttribute, ForeignKeyProperty> foreignKeyMap = new HashMap<>(foreignKeyProperties.size());
       foreignKeyProperties.forEach(foreignKeyProperty ->
               foreignKeyMap.put(foreignKeyProperty.getAttribute(), foreignKeyProperty));
 
@@ -878,7 +878,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     private void initializeForeignKeyColumnProperties(final List<ForeignKeyProperty.Builder> builders) {
-      final Map<Attribute<Entity>, List<ColumnProperty<?>>> foreignKeyColumnPropertyMap = new HashMap<>();
+      final Map<ForeignKeyAttribute, List<ColumnProperty<?>>> foreignKeyColumnPropertyMap = new HashMap<>();
       foreignKeyProperties.forEach(foreignKeyProperty ->
               foreignKeyColumnPropertyMap.put(foreignKeyProperty.getAttribute(),
               foreignKeyProperty.getReferences().stream().map(reference -> {

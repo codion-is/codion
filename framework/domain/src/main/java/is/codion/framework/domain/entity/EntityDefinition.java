@@ -220,7 +220,7 @@ public interface EntityDefinition {
    * @param foreignKeyAttribute the foreign key attribute
    * @return the definition of the referenced entity
    */
-  EntityDefinition getForeignDefinition(Attribute<Entity> foreignKeyAttribute);
+  EntityDefinition getForeignDefinition(ForeignKeyAttribute foreignKeyAttribute);
 
   /**
    * @return true if this entity type has any denormalized properties
@@ -361,7 +361,7 @@ public interface EntityDefinition {
    * @return the ForeignKeyProperty based on the given attribute
    * @throws IllegalArgumentException in case no such property exists
    */
-  ForeignKeyProperty getForeignKeyProperty(Attribute<Entity> attribute);
+  ForeignKeyProperty getForeignKeyProperty(ForeignKeyAttribute attribute);
 
   /**
    * @param columnAttribute the column attribute

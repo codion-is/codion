@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,7 +48,7 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Integer> MASTER_ID_1 = T_MASTER.integerAttribute("id");
   public static final Attribute<Integer> MASTER_ID_2 = T_MASTER.integerAttribute("id2");
   public static final Attribute<Integer> MASTER_SUPER_ID = T_MASTER.integerAttribute("super_id");
-  public static final Attribute<Entity> MASTER_SUPER_FK = T_MASTER.entityAttribute("super_fk");
+  public static final ForeignKeyAttribute MASTER_SUPER_FK = T_MASTER.foreignKey("super_fk", MASTER_SUPER_ID, SUPER_ID);
   public static final Attribute<String> MASTER_NAME = T_MASTER.stringAttribute("name");
   public static final Attribute<Integer> MASTER_CODE = T_MASTER.integerAttribute("code");
 
@@ -56,8 +57,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(MASTER_ID_1).primaryKeyIndex(0),
             columnProperty(MASTER_ID_2).primaryKeyIndex(1),
             columnProperty(MASTER_SUPER_ID),
-            foreignKeyProperty(MASTER_SUPER_FK, "Super")
-                    .reference(MASTER_SUPER_ID, SUPER_ID),
+            foreignKeyProperty(MASTER_SUPER_FK, "Super"),
             columnProperty(MASTER_NAME),
             columnProperty(MASTER_CODE))
             .comparator(Comparator.comparing(o -> o.get(MASTER_CODE)))
@@ -76,10 +76,11 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Boolean> DETAIL_BOOLEAN_NULLABLE = T_DETAIL.booleanAttribute("boolean_nullable");
   public static final Attribute<Integer> DETAIL_MASTER_ID_1 = T_DETAIL.integerAttribute("master_id");
   public static final Attribute<Integer> DETAIL_MASTER_ID_2 = T_DETAIL.integerAttribute("master_id_2");
-  public static final Attribute<Entity> DETAIL_MASTER_FK = T_DETAIL.entityAttribute("master_fk");
+  public static final ForeignKeyAttribute DETAIL_MASTER_FK = T_DETAIL.foreignKey("master_fk",
+          DETAIL_MASTER_ID_1, MASTER_ID_1, DETAIL_MASTER_ID_2, MASTER_ID_2);
   public static final Attribute<String> DETAIL_MASTER_NAME = T_DETAIL.stringAttribute("master_name");
-  public static final Attribute<Entity> DETAIL_MASTER_VIA_CODE_FK = T_DETAIL.entityAttribute("master_via_code_fk");
   public static final Attribute<Integer> DETAIL_MASTER_CODE = T_DETAIL.integerAttribute("master_code");
+  public static final ForeignKeyAttribute DETAIL_MASTER_VIA_CODE_FK = T_DETAIL.foreignKey("master_via_code_fk", DETAIL_MASTER_CODE, MASTER_CODE);
   public static final Attribute<Integer> DETAIL_INT_VALUE_LIST = T_DETAIL.integerAttribute("int_value_list");
   public static final Attribute<Integer> DETAIL_INT_DERIVED = T_DETAIL.integerAttribute("int_derived");
 
@@ -104,11 +105,8 @@ public final class TestDomain extends DefaultDomain {
                     .defaultValue(true),
             columnProperty(DETAIL_MASTER_ID_1),
             columnProperty(DETAIL_MASTER_ID_2),
-            foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName())
-                    .reference(DETAIL_MASTER_ID_1, MASTER_ID_1)
-                    .reference(DETAIL_MASTER_ID_2, MASTER_ID_2),
-            foreignKeyProperty(DETAIL_MASTER_VIA_CODE_FK, DETAIL_MASTER_FK.getName())
-                    .reference(DETAIL_MASTER_CODE, MASTER_CODE),
+            foreignKeyProperty(DETAIL_MASTER_FK, DETAIL_MASTER_FK.getName()),
+            foreignKeyProperty(DETAIL_MASTER_VIA_CODE_FK, DETAIL_MASTER_FK.getName()),
             denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_MASTER_NAME.getName(), DETAIL_MASTER_FK, MASTER_NAME),
             columnProperty(DETAIL_MASTER_CODE, DETAIL_MASTER_CODE.getName()),
             valueListProperty(DETAIL_INT_VALUE_LIST, DETAIL_INT_VALUE_LIST.getName(), ITEMS),
@@ -166,8 +164,8 @@ public final class TestDomain extends DefaultDomain {
   public static final Attribute<Double> EMP_SALARY = T_EMP.doubleAttribute("sal");
   public static final Attribute<Double> EMP_COMMISSION = T_EMP.doubleAttribute("comm");
   public static final Attribute<Integer> EMP_DEPARTMENT = T_EMP.integerAttribute("deptno");
-  public static final Attribute<Entity> EMP_DEPARTMENT_FK = T_EMP.entityAttribute("dept_fk");
-  public static final Attribute<Entity> EMP_MGR_FK = T_EMP.entityAttribute("mgr_fk");
+  public static final ForeignKeyAttribute EMP_DEPARTMENT_FK = T_EMP.foreignKey("dept_fk", EMP_DEPARTMENT, DEPARTMENT_ID);
+  public static final ForeignKeyAttribute EMP_MGR_FK = T_EMP.foreignKey("mgr_fk", EMP_MGR, EMP_ID);
   public static final Attribute<String> EMP_DEPARTMENT_LOCATION = T_EMP.stringAttribute("location");
 
   void employee() {
@@ -177,8 +175,7 @@ public final class TestDomain extends DefaultDomain {
                     .searchProperty(true).columnName("ename").maximumLength(10).nullable(false),
             columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
-            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName())
-                    .reference(EMP_DEPARTMENT, DEPARTMENT_ID),
+            foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName()),
             valueListProperty(EMP_JOB, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),
@@ -187,8 +184,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
                     .minimumValue(100).maximumValue(2000).maximumFractionDigits(2),
             columnProperty(EMP_MGR),
-            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName())
-                    .reference(EMP_MGR, EMP_ID),
+            foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName()),
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName(), EMP_DEPARTMENT_FK, DEPARTMENT_LOCATION)

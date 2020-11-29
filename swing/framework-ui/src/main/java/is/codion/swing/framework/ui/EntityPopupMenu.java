@@ -6,11 +6,11 @@ package is.codion.swing.framework.ui;
 import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
@@ -93,7 +93,7 @@ final class EntityPopupMenu extends JPopupMenu {
         final EntityDefinition definition = connectionProvider.getEntities().getDefinition(entity.getEntityType());
         final EntityValidator validator = definition.getValidator();
         for (final ForeignKeyProperty property : fkProperties) {
-          final Attribute<Entity> attribute = property.getAttribute();
+          final ForeignKeyAttribute attribute = property.getAttribute();
           final boolean fkValueNull = entity.isForeignKeyNull(attribute);
           final boolean isLoaded = entity.isLoaded(attribute);
           final boolean valid = isValid(validator, entity, definition, property);

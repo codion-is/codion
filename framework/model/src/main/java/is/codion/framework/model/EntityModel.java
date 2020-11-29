@@ -14,6 +14,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 
 import java.util.Collection;
 import java.util.List;
@@ -110,7 +111,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param foreignKeyAttribute the foreign key attribute
    * @param foreignKeyValues the foreign key values
    */
-  void initialize(Attribute<Entity> foreignKeyAttribute, List<Entity> foreignKeyValues);
+  void initialize(ForeignKeyAttribute foreignKeyAttribute, List<Entity> foreignKeyValues);
 
   /**
    * Sets the model serving as master model
@@ -192,13 +193,13 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @see #initialize(Attribute, List)
    * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
    */
-  void setDetailModelForeignKey(M detailModel, Attribute<Entity> foreignKeyAttribute);
+  void setDetailModelForeignKey(M detailModel, ForeignKeyAttribute foreignKeyAttribute);
 
   /**
    * @param detailModel the detail model
    * @return the foreign key attribute the given detail model is based on, null if none has been defined
    */
-  Attribute<Entity> getDetailModelForeignKey(M detailModel);
+  ForeignKeyAttribute getDetailModelForeignKey(M detailModel);
 
   /**
    * Refreshes the detail models.

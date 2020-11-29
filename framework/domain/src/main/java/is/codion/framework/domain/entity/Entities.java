@@ -234,7 +234,7 @@ public interface Entities {
    * @param foreignKeyAttribute the foreign key attribute
    * @return the keys referenced by the given foreign key
    */
-  static Set<Key> getReferencedKeys(final List<? extends Entity> entities, final Attribute<Entity> foreignKeyAttribute) {
+  static Set<Key> getReferencedKeys(final List<? extends Entity> entities, final ForeignKeyAttribute foreignKeyAttribute) {
     final Set<Key> keySet = new HashSet<>();
     for (int i = 0; i < entities.size(); i++) {
       final Key key = entities.get(i).getReferencedKey(foreignKeyAttribute);

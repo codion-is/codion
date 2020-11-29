@@ -18,6 +18,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.EntityComboBoxModel;
@@ -80,7 +81,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    * A map of entities used to filter the contents of this model by foreign key value.
    * The key in the map is the attribute of the foreign key property.
    */
-  private final Map<Attribute<Entity>, Set<Entity>> foreignKeyFilterEntities = new HashMap<>();
+  private final Map<ForeignKeyAttribute, Set<Entity>> foreignKeyFilterEntities = new HashMap<>();
 
   private boolean strictForeignKeyFiltering = true;
 
@@ -92,7 +93,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   private final EventDataListener<List<Entity>> deleteListener = new DeleteListener();
 
   private final Predicate<Entity> foreignKeyIncludeCondition = item -> {
-    for (final Map.Entry<Attribute<Entity>, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
+    for (final Map.Entry<ForeignKeyAttribute, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
       final Entity foreignKeyValue = item.getForeignKey(entry.getKey());
       if (foreignKeyValue == null) {
         return !strictForeignKeyFiltering;
@@ -208,7 +209,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final void setForeignKeyFilterEntities(final Attribute<Entity> foreignKeyAttribute, final Collection<Entity> entities) {
+  public final void setForeignKeyFilterEntities(final ForeignKeyAttribute foreignKeyAttribute, final Collection<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
       foreignKeyFilterEntities.remove(foreignKeyAttribute);
     }
@@ -219,7 +220,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final Collection<Entity> getForeignKeyFilterEntities(final Attribute<Entity> foreignKeyAttribute) {
+  public final Collection<Entity> getForeignKeyFilterEntities(final ForeignKeyAttribute foreignKeyAttribute) {
     final Collection<Entity> filterEntities = new ArrayList<>();
     if (foreignKeyFilterEntities.containsKey(foreignKeyAttribute)) {
       filterEntities.addAll(foreignKeyFilterEntities.get(foreignKeyAttribute));
@@ -239,22 +240,22 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final SwingEntityComboBoxModel createForeignKeyFilterComboBoxModel(final Attribute<Entity> foreignKeyAttribute) {
+  public final SwingEntityComboBoxModel createForeignKeyFilterComboBoxModel(final ForeignKeyAttribute foreignKeyAttribute) {
     return createForeignKeyComboBoxModel(foreignKeyAttribute, true);
   }
 
   @Override
-  public final SwingEntityComboBoxModel createForeignKeyConditionComboBoxModel(final Attribute<Entity> foreignKeyAttribute) {
+  public final SwingEntityComboBoxModel createForeignKeyConditionComboBoxModel(final ForeignKeyAttribute foreignKeyAttribute) {
     return createForeignKeyComboBoxModel(foreignKeyAttribute, false);
   }
 
   @Override
-  public final void linkForeignKeyFilterComboBoxModel(final Attribute<Entity> foreignKeyAttribute, final EntityComboBoxModel foreignKeyModel) {
+  public final void linkForeignKeyFilterComboBoxModel(final ForeignKeyAttribute foreignKeyAttribute, final EntityComboBoxModel foreignKeyModel) {
     linkForeignKeyComboBoxModel(foreignKeyAttribute, foreignKeyModel, true);
   }
 
   @Override
-  public final void linkForeignKeyConditionComboBoxModel(final Attribute<Entity> foreignKeyAttribute, final EntityComboBoxModel foreignKeyModel) {
+  public final void linkForeignKeyConditionComboBoxModel(final ForeignKeyAttribute foreignKeyAttribute, final EntityComboBoxModel foreignKeyModel) {
     linkForeignKeyComboBoxModel(foreignKeyAttribute, foreignKeyModel, false);
   }
 
@@ -362,7 +363,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     return -1;
   }
 
-  private SwingEntityComboBoxModel createForeignKeyComboBoxModel(final Attribute<Entity> foreignKeyAttribute, final boolean filter) {
+  private SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyAttribute foreignKeyAttribute, final boolean filter) {
     final ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKeyAttribute);
     final SwingEntityComboBoxModel foreignKeyModel =
             new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityType(), connectionProvider);
@@ -374,7 +375,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
   }
 
-  private void linkForeignKeyComboBoxModel(final Attribute<Entity> foreignKeyAttribute, final EntityComboBoxModel foreignKeyModel,
+  private void linkForeignKeyComboBoxModel(final ForeignKeyAttribute foreignKeyAttribute, final EntityComboBoxModel foreignKeyModel,
                                            final boolean filter) {
     final ForeignKeyProperty foreignKeyProperty = entities.getDefinition(entityType).getForeignKeyProperty(foreignKeyAttribute);
     if (!foreignKeyProperty.getReferencedEntityType().equals(foreignKeyModel.getEntityType())) {
@@ -400,7 +401,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     addRefreshListener(foreignKeyModel::forceRefresh);
   }
 
-  private void linkFilter(final Attribute<Entity> foreignKeyAttribute, final EntityComboBoxModel foreignKeyModel) {
+  private void linkFilter(final ForeignKeyAttribute foreignKeyAttribute, final EntityComboBoxModel foreignKeyModel) {
     final Predicate<Entity> filterAllCondition = item -> false;
     if (strictForeignKeyFiltering) {
       setIncludeCondition(filterAllCondition);
@@ -415,7 +416,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     });
   }
 
-  private void linkCondition(final Attribute<Entity> foreignKeyAttribute, final EntityComboBoxModel foreignKeyModel) {
+  private void linkCondition(final ForeignKeyAttribute foreignKeyAttribute, final EntityComboBoxModel foreignKeyModel) {
     final EventDataListener<Entity> listener = selected -> {
       if (selected == null) {
         setSelectConditionProvider(() -> condition(foreignKeyAttribute).isNull());

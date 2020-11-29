@@ -138,7 +138,7 @@ public interface Entity extends Comparable<Entity> {
    * @throws IllegalArgumentException if the attribute is not a foreign key attribute
    * @see #isLoaded(Attribute)
    */
-  Entity getForeignKey(Attribute<Entity> foreignKeyAttribute);
+  Entity getForeignKey(ForeignKeyAttribute foreignKeyAttribute);
 
   /**
    * Returns the primary key of the entity referenced by the given {@link Attribute},
@@ -146,7 +146,7 @@ public interface Entity extends Comparable<Entity> {
    * @param foreignKeyAttribute the foreign key attribute for which to retrieve the underlying {@link Key}
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
-  Key getReferencedKey(Attribute<Entity> foreignKeyAttribute);
+  Key getReferencedKey(ForeignKeyAttribute foreignKeyAttribute);
 
   /**
    * Returns true if the value of the given foreign key is null, in case of composite
@@ -154,7 +154,7 @@ public interface Entity extends Comparable<Entity> {
    * @param foreignKeyAttribute the foreign key attribute
    * @return true if the foreign key value is null
    */
-  boolean isForeignKeyNull(Attribute<Entity> foreignKeyAttribute);
+  boolean isForeignKeyNull(ForeignKeyAttribute foreignKeyAttribute);
 
   /**
    * @param attribute the attribute
@@ -199,7 +199,7 @@ public interface Entity extends Comparable<Entity> {
    * @param foreignKeyAttribute the attribute
    * @return true if the reference entity has been loaded
    */
-  boolean isLoaded(Attribute<Entity> foreignKeyAttribute);
+  boolean isLoaded(ForeignKeyAttribute foreignKeyAttribute);
 
   /**
    * Returns the primary key of this entity.

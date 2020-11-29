@@ -8,6 +8,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 
 import java.math.BigDecimal;
 
@@ -98,7 +99,7 @@ public final class Petstore extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("product");
     Attribute<Integer> ID = TYPE.integerAttribute("Product id");
     Attribute<Integer> CATEGORY_ID = TYPE.integerAttribute("Category id");
-    Attribute<Entity> CATEGORY_FK = TYPE.entityAttribute("Category");
+    ForeignKeyAttribute CATEGORY_FK = TYPE.foreignKey("Category", Product.CATEGORY_ID, Category.ID);
     Attribute<String> NAME = TYPE.stringAttribute("Name");
     Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
     Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
@@ -110,8 +111,7 @@ public final class Petstore extends DefaultDomain {
                     .columnName("productid"),
             columnProperty(Product.CATEGORY_ID)
                     .columnName("categoryid").nullable(false),
-            foreignKeyProperty(Product.CATEGORY_FK, Product.CATEGORY_FK.getName())
-                    .reference(Product.CATEGORY_ID, Category.ID),
+            foreignKeyProperty(Product.CATEGORY_FK, Product.CATEGORY_FK.getName()),
             columnProperty(Product.NAME, Product.NAME.getName())
                     .columnName("name").maximumLength(25).nullable(false),
             columnProperty(Product.DESCRIPTION, Product.DESCRIPTION.getName())
@@ -155,16 +155,16 @@ public final class Petstore extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("item");
     Attribute<Integer> ID = TYPE.integerAttribute("Item id");
     Attribute<Integer> PRODUCT_ID = TYPE.integerAttribute("Product id");
-    Attribute<Entity> PRODUCT_FK = TYPE.entityAttribute("Product");
+    ForeignKeyAttribute PRODUCT_FK = TYPE.foreignKey("Product", Item.PRODUCT_ID, Product.ID);
     Attribute<String> NAME = TYPE.stringAttribute("Name");
     Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
     Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
     Attribute<String> IMAGE_THUMB_URL = TYPE.stringAttribute("Image thumbnail URL");
     Attribute<BigDecimal> PRICE = TYPE.bigDecimalAttribute("Price");
     Attribute<Integer> CONTACT_INFO_ID = TYPE.integerAttribute("Contactinfo id");
-    Attribute<Entity> CONTACT_INFO_FK = TYPE.entityAttribute("Contact info");
+    ForeignKeyAttribute CONTACT_INFO_FK = TYPE.foreignKey("Contact info", Item.CONTACT_INFO_ID, SellerContactInfo.ID);
     Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("Address id");
-    Attribute<Entity> ADDRESS_FK = TYPE.entityAttribute("Address");
+    ForeignKeyAttribute ADDRESS_FK = TYPE.foreignKey("Address", Item.ADDRESS_ID, Address.ID);
     Attribute<Boolean> DISABLED = TYPE.booleanAttribute("Disabled");
   }
 
@@ -175,7 +175,6 @@ public final class Petstore extends DefaultDomain {
             columnProperty(Item.PRODUCT_ID)
                     .columnName("productid").nullable(false),
             foreignKeyProperty(Item.PRODUCT_FK, Item.PRODUCT_FK.getName())
-                    .reference(Item.PRODUCT_ID, Product.ID)
                     .fetchDepth(2),
             columnProperty(Item.NAME, Item.NAME.getName())
                     .columnName("name").maximumLength(30).nullable(false),
@@ -189,12 +188,10 @@ public final class Petstore extends DefaultDomain {
                     .columnName("price").nullable(false).maximumFractionDigits(2),
             columnProperty(Item.CONTACT_INFO_ID).columnName("contactinfo_contactinfoid")
                     .nullable(false),
-            foreignKeyProperty(Item.CONTACT_INFO_FK, Item.CONTACT_INFO_FK.getName())
-                    .reference(Item.CONTACT_INFO_ID, SellerContactInfo.ID),
+            foreignKeyProperty(Item.CONTACT_INFO_FK, Item.CONTACT_INFO_FK.getName()),
             columnProperty(Item.ADDRESS_ID).columnName("address_addressid")
                     .nullable(false),
-            foreignKeyProperty(Item.ADDRESS_FK, "Address")
-                    .reference(Item.ADDRESS_ID, Address.ID),
+            foreignKeyProperty(Item.ADDRESS_FK, "Address"),
             booleanProperty(Item.DISABLED, Item.DISABLED.getName(), Integer.class, 1, 0)
                     .columnName("disabled").defaultValue(false))
             .keyGenerator(increment("petstore.item", "itemid"))
@@ -230,9 +227,9 @@ public final class Petstore extends DefaultDomain {
   public interface TagItem {
     EntityType<Entity> TYPE = DOMAIN.entityType("tag_item");
     Attribute<Integer> ITEM_ID = TYPE.integerAttribute("Item id");
-    Attribute<Entity> ITEM_FK = TYPE.entityAttribute("Item");
+    ForeignKeyAttribute ITEM_FK = TYPE.foreignKey("Item", TagItem.ITEM_ID, Item.ID);
     Attribute<Integer> TAG_ID = TYPE.integerAttribute("Tag id");
-    Attribute<Entity> TAG_FK = TYPE.entityAttribute("Tag");
+    ForeignKeyAttribute TAG_FK = TYPE.foreignKey("Tag", TagItem.TAG_ID, Tag.ID);
   }
 
   void tagItem() {
@@ -240,12 +237,10 @@ public final class Petstore extends DefaultDomain {
             columnProperty(TagItem.ITEM_ID)
                     .columnName("itemid").primaryKeyIndex(0),
             foreignKeyProperty(TagItem.ITEM_FK, TagItem.ITEM_FK.getName())
-                    .reference(TagItem.ITEM_ID, Item.ID)
                     .fetchDepth(3),
             columnProperty(TagItem.TAG_ID)
                     .columnName("tagid").primaryKeyIndex(1),
-            foreignKeyProperty(TagItem.TAG_FK, TagItem.TAG_FK.getName())
-                    .reference(TagItem.TAG_ID, Tag.ID))
+            foreignKeyProperty(TagItem.TAG_FK, TagItem.TAG_FK.getName()))
             .stringFactory(stringFactory(TagItem.ITEM_FK)
                     .text(" - ").value(TagItem.TAG_FK))
             .caption("Item tags");

@@ -17,6 +17,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.property.Property;
 
 import java.util.List;
@@ -59,7 +60,8 @@ public final class EntitiesTutorial {
       Attribute<Integer> ID = TYPE.integerAttribute("albumid");
       Attribute<String> TITLE = TYPE.stringAttribute("title");
       Attribute<Integer> ARTIST_ID = TYPE.integerAttribute("artistid");
-      Attribute<Entity> ARTIST_FK = TYPE.entityAttribute("artist_fk");
+      // create a foreign key attribute referencing the Artist.TYPE, via the Album.ARTIST_ID attribute
+      ForeignKeyAttribute ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
     }
 
     public Chinook() {
@@ -90,11 +92,8 @@ public final class EntitiesTutorial {
 
       albumId.nullable(false);
 
-      // create a foreign key property referencing the entity identified
-      // by Artist.TYPE, via the Album.ARTIST_ID attribute
       Property.Builder<Entity> albumArtist =
-              foreignKeyProperty(Album.ARTIST_FK, "Artist")
-                      .reference(Album.ARTIST_ID, Artist.ID);
+              foreignKeyProperty(Album.ARTIST_FK, "Artist");
 
       // define an entity based on the table 'chinook.album',
       // with the above properties

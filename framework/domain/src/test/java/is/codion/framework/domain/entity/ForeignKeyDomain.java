@@ -34,7 +34,7 @@ class ForeignKeyDomain extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("species_maturity");
     Attribute<Integer> NO = TYPE.integerAttribute("no");
     Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
-    Attribute<Entity> SPECIES_FK = TYPE.entityAttribute("species_fk");
+    ForeignKeyAttribute SPECIES_FK = TYPE.foreignKey("species_fk", Maturity.SPECIES_NO, Species.NO);
   }
 
   void maturity() {
@@ -43,15 +43,14 @@ class ForeignKeyDomain extends DefaultDomain {
                     .primaryKeyIndex(0),
             columnProperty(Maturity.SPECIES_NO)
                     .primaryKeyIndex(1),
-            foreignKeyProperty(Maturity.SPECIES_FK)
-                    .reference(Maturity.SPECIES_NO, Species.NO));
+            foreignKeyProperty(Maturity.SPECIES_FK));
   }
 
   public interface OtolithCategory {
     EntityType<Entity> TYPE = DOMAIN.entityType("otolith_category");
     Attribute<Integer> NO = TYPE.integerAttribute("no");
     Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
-    Attribute<Entity> SPECIES_FK = TYPE.entityAttribute("species_fk");
+    ForeignKeyAttribute SPECIES_FK = TYPE.foreignKey("species_fk", OtolithCategory.SPECIES_NO, Species.NO);
   }
 
   void otolithCategory() {
@@ -60,19 +59,22 @@ class ForeignKeyDomain extends DefaultDomain {
                     .primaryKeyIndex(0),
             columnProperty(OtolithCategory.SPECIES_NO)
                     .primaryKeyIndex(1),
-            foreignKeyProperty(OtolithCategory.SPECIES_FK)
-                    .reference(OtolithCategory.SPECIES_NO, Species.NO));
+            foreignKeyProperty(OtolithCategory.SPECIES_FK));
   }
 
   public interface Otolith {
     EntityType<Entity> TYPE = DOMAIN.entityType("otolith");
     Attribute<Integer> STATION_ID = TYPE.integerAttribute("station_id");
     Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
-    Attribute<Entity> SPECIES_FK = TYPE.entityAttribute("species_fk");
+    ForeignKeyAttribute SPECIES_FK = TYPE.foreignKey("species_fk", Otolith.SPECIES_NO, Species.NO);
     Attribute<Integer> MATURITY_NO = TYPE.integerAttribute("maturity_no");
-    Attribute<Entity> MATURITY_FK = TYPE.entityAttribute("maturity_fk");
+    ForeignKeyAttribute MATURITY_FK = TYPE.foreignKey("maturity_fk",
+            Otolith.MATURITY_NO, Maturity.NO,
+            Otolith.SPECIES_NO, Maturity.SPECIES_NO);
     Attribute<Integer> OTOLITH_CATEGORY_NO = TYPE.integerAttribute("otolith_category_no");
-    Attribute<Entity> OTOLITH_CATEGORY_FK = TYPE.entityAttribute("otolith_category_fk");
+    ForeignKeyAttribute OTOLITH_CATEGORY_FK = TYPE.foreignKey("otolith_category_fk",
+            Otolith.OTOLITH_CATEGORY_NO, OtolithCategory.NO,
+            Otolith.SPECIES_NO, OtolithCategory.SPECIES_NO);
   }
 
   void otolith() {
@@ -83,15 +85,12 @@ class ForeignKeyDomain extends DefaultDomain {
                     .primaryKeyIndex(1)
                     .updatable(true)
                     .nullable(false),
-            foreignKeyProperty(Otolith.SPECIES_FK)
-                    .reference(Otolith.SPECIES_NO, Species.NO),
+            foreignKeyProperty(Otolith.SPECIES_FK),
             columnProperty(Otolith.MATURITY_NO),
             foreignKeyProperty(Otolith.MATURITY_FK)
-                    .reference(Otolith.MATURITY_NO, Maturity.NO)
-                    .referenceReadOnly(Otolith.SPECIES_NO, Maturity.SPECIES_NO),
+                    .readOnly(Otolith.SPECIES_NO),
             columnProperty(Otolith.OTOLITH_CATEGORY_NO),
             foreignKeyProperty(Otolith.OTOLITH_CATEGORY_FK)
-                    .reference(Otolith.OTOLITH_CATEGORY_NO, OtolithCategory.NO)
-                    .referenceReadOnly(Otolith.SPECIES_NO, OtolithCategory.SPECIES_NO));
+                    .readOnly(Otolith.SPECIES_NO));
   }
 }

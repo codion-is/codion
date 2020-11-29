@@ -19,6 +19,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.Property;
@@ -171,7 +172,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void setEditModel(final TestEntityEditModel editModel) {}
     @Override
-    public void setForeignKeyConditionValues(final Attribute<Entity> foreignKeyAttribute, final Collection<Entity> foreignKeyValues) {}
+    public void setForeignKeyConditionValues(final ForeignKeyAttribute foreignKeyAttribute, final Collection<Entity> foreignKeyValues) {}
     @Override
     public void replaceForeignKeyValues(final EntityType<?> foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {}
     @Override

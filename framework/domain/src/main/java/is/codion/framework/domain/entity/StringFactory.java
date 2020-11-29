@@ -82,9 +82,12 @@ public final class StringFactory implements Function<Entity, String>, Serializab
     return this;
   }
 
-  StringFactory addForeignKeyValue(final Attribute<Entity> foreignKeyAttribute, final Attribute<?> attribute) {
+  StringFactory addForeignKeyValue(final ForeignKeyAttribute foreignKeyAttribute, final Attribute<?> attribute) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     requireNonNull(attribute, ATTRIBUTE_PARAM);
+    if (!attribute.getEntityType().equals(foreignKeyAttribute.getReferencedEntityType())) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + foreignKeyAttribute.getEntityType());
+    }
     valueProviders.add(new ForeignKeyValueProvider(foreignKeyAttribute, attribute));
     return this;
   }
@@ -135,10 +138,10 @@ public final class StringFactory implements Function<Entity, String>, Serializab
 
     private static final long serialVersionUID = 1;
 
-    private final Attribute<Entity> foreignKeyAttribute;
+    private final ForeignKeyAttribute foreignKeyAttribute;
     private final Attribute<?> attribute;
 
-    private ForeignKeyValueProvider(final Attribute<Entity> foreignKeyAttribute, final Attribute<?> attribute) {
+    private ForeignKeyValueProvider(final ForeignKeyAttribute foreignKeyAttribute, final Attribute<?> attribute) {
       this.foreignKeyAttribute = foreignKeyAttribute;
       this.attribute = attribute;
     }
@@ -212,7 +215,7 @@ public final class StringFactory implements Function<Entity, String>, Serializab
      * @param attribute the attribute in the referenced entity to use
      * @return this {@link Builder} instance
      */
-    Builder foreignKeyValue(Attribute<Entity> foreignKeyAttribute, Attribute<?> attribute);
+    Builder foreignKeyValue(ForeignKeyAttribute foreignKeyAttribute, Attribute<?> attribute);
 
     /**
      * Adds the given static text to this {@link Builder}

@@ -200,17 +200,17 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void testForeignPrimaryKey() {
+    final EntityType<Entity> parent = DOMAIN_TYPE.entityType("parent");
     final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("testForeignPrimaryKey");
     final Attribute<Integer> integerAttribute = entityType.integerAttribute("attribute");
-    final EntityType<Entity> parent = DOMAIN_TYPE.entityType("parent");
+    final ForeignKeyAttribute foreignKey = entityType.foreignKey("fkAttribute", integerAttribute, parent.integerAttribute("test"));
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
         setStrictForeignKeys(false);
         define(entityType,
                 primaryKeyProperty(integerAttribute),
-                foreignKeyProperty(entityType.entityAttribute("fkAttribute"), "caption")
-                        .reference(integerAttribute, parent.integerAttribute("test")));
+                foreignKeyProperty(foreignKey, "caption"));
         setStrictForeignKeys(true);
       }
     }

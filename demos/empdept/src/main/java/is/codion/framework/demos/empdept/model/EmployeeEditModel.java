@@ -6,8 +6,7 @@ package is.codion.framework.demos.empdept.model;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Conditions;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
@@ -25,7 +24,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   // tag::createForeignKeyComboBox[]
   /** Providing a custom ComboBoxModel for the manager attribute, which only shows managers and the president */
   @Override
-  public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final Attribute<Entity> foreignKeyAttribute) {
+  public SwingEntityComboBoxModel createForeignKeyComboBoxModel(final ForeignKeyAttribute foreignKeyAttribute) {
     final SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyAttribute);
     if (foreignKeyAttribute.equals(Employee.MGR_FK)) {
       //Customize the null value so that it displays the chosen

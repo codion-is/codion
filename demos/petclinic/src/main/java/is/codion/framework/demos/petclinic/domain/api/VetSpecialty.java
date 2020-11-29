@@ -6,13 +6,14 @@ package is.codion.framework.demos.petclinic.domain.api;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 
 import static is.codion.framework.demos.petclinic.domain.api.PetClinicApi.DOMAIN;
 
 public interface VetSpecialty extends Entity {
   EntityType<VetSpecialty> TYPE = DOMAIN.entityType("petclinic.vet_specialty", VetSpecialty.class);
   Attribute<Integer> VET = TYPE.integerAttribute("vet");
-  Attribute<Entity> VET_FK = TYPE.entityAttribute("vet_fk");
+  ForeignKeyAttribute VET_FK = TYPE.foreignKey("vet_fk", VetSpecialty.VET, Vet.ID);
   Attribute<Integer> SPECIALTY = TYPE.integerAttribute("specialty");
-  Attribute<Entity> SPECIALTY_FK = TYPE.entityAttribute("specialty_fk");
+  ForeignKeyAttribute SPECIALTY_FK = TYPE.foreignKey("specialty_fk", VetSpecialty.SPECIALTY, Specialty.ID);
 }

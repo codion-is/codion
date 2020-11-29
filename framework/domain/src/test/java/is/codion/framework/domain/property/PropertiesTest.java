@@ -32,59 +32,50 @@ public final class PropertiesTest {
 
   @Test
   public void foreignKeyPropertyNonUniqueReferencedAttribute() {
-    final Attribute<Entity> attribute = ENTITY_TYPE.entityAttribute("attribute");
-    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(attribute, "caption").reference(attribute, attribute));
+    final Attribute<Integer> attribute = ENTITY_TYPE.integerAttribute("attr");
+    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute, attribute));
   }
 
   @Test
   public void foreignKeyPropertyDifferentReferenceEntities() {
-    final Attribute<Entity> fkAttribute = ENTITY_TYPE.entityAttribute("attribute");
+    final Attribute<Integer> integerAttribute = ENTITY_TYPE2.integerAttribute("test");
     final Attribute<Integer> attribute1 = ENTITY_TYPE.integerAttribute("attribute1");
     final Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
-    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(fkAttribute, "caption")
-            .reference(attribute1, attribute1)
-            .reference(attribute2, ENTITY_TYPE2.integerAttribute("test")));
+    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute1, attribute1, attribute2, integerAttribute));
   }
 
   @Test
   public void foreignKeyPropertyDifferentReferenceEntities2() {
-    final Attribute<Entity> fkAttribute = ENTITY_TYPE.entityAttribute("attribute");
+    final Attribute<Integer> integerAttribute = ENTITY_TYPE2.integerAttribute("test");
     final Attribute<Integer> attribute1 = ENTITY_TYPE.integerAttribute("attribute1");
     final Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
-    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(fkAttribute, "caption")
-            .reference(attribute1, attribute1)
-            .reference(ENTITY_TYPE2.integerAttribute("test"), attribute2));
+    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute1, attribute1, integerAttribute, attribute2));
   }
 
   @Test
   public void foreignKeyPropertyAttributeFromOtherEntity() {
-    final Attribute<Entity> fkAttribute = ENTITY_TYPE.entityAttribute("attribute");
     final Attribute<Integer> attribute1 = ENTITY_TYPE2.integerAttribute("attribute1");
     final Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
-    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(fkAttribute, "caption")
-            .reference(attribute1, attribute2));
+    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute1, attribute2));
   }
 
   @Test
   public void foreignKeyPropertyDuplicateAttribute() {
-    final Attribute<Entity> fkAttribute = ENTITY_TYPE.entityAttribute("attribute");
     final Attribute<Integer> attribute1 = ENTITY_TYPE.integerAttribute("attribute1");
     final Attribute<Integer> attribute2 = ENTITY_TYPE.integerAttribute("attribute2");
-    assertThrows(IllegalArgumentException.class, () -> foreignKeyProperty(fkAttribute, "caption")
-            .reference(attribute1, attribute2)
-            .reference(attribute1, attribute2));
+    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute1, attribute2, attribute1, attribute2));
   }
 
   @Test
-  public void foreignKeyPropertyWithoutReferencedAttribute() {
+  public void foreignKeyAttributeWithoutReferencedAttribute() {
     final Attribute<Entity> attribute = ENTITY_TYPE.entityAttribute("attribute");
-    assertThrows(NullPointerException.class, () -> foreignKeyProperty(ENTITY_TYPE.entityAttribute("attribute"), "caption").reference(attribute, null));
+    assertThrows(NullPointerException.class, () -> ENTITY_TYPE.foreignKey("attribute", attribute, null));
   }
 
   @Test
-  public void foreignKeyPropertyWithoutAttribute() {
+  public void foreignKeyAttributeWithoutReference() {
     final Attribute<Entity> attribute = ENTITY_TYPE.entityAttribute("attribute");
-    assertThrows(NullPointerException.class, () -> foreignKeyProperty(ENTITY_TYPE.entityAttribute("attribute"), "caption").reference(null, attribute));
+    assertThrows(NullPointerException.class, () -> ENTITY_TYPE.foreignKey("attribute", null, attribute));
   }
 
   @Test

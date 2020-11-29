@@ -19,6 +19,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
@@ -113,7 +114,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param foreignKeyAttribute the foreign key attribute
    * @param foreignKeyValues the entities to use as condition values
    */
-  void setForeignKeyConditionValues(Attribute<Entity> foreignKeyAttribute, Collection<Entity> foreignKeyValues);
+  void setForeignKeyConditionValues(ForeignKeyAttribute foreignKeyAttribute, Collection<Entity> foreignKeyValues);
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary

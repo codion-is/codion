@@ -11,14 +11,13 @@ import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.Key;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Property;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import static is.codion.common.Conjunction.AND;
@@ -77,6 +76,15 @@ public final class Conditions {
     }
 
     return new DefaultAttributeEqualCondition<>((Attribute<?>) firstKey.getAttribute(), getValues(keys));
+  }
+
+  /**
+   * Creates a {@link ForeignKeyConditionBuilder} instance based on the given foreign key attribute.
+   * @param attribute the attribute to base the condition on
+   * @return a {@link ForeignKeyConditionBuilder} instance
+   */
+  public static ForeignKeyConditionBuilder condition(final ForeignKeyAttribute attribute) {
+    return new DefaultForeignKeyConditionBuilder(attribute);
   }
 
   /**
@@ -140,44 +148,7 @@ public final class Conditions {
    * @return a WhereCondition
    */
   public static WhereCondition whereCondition(final Condition condition, final EntityDefinition entityDefinition) {
-    return new DefaultWhereCondition(expand(condition, entityDefinition), entityDefinition);
-  }
-
-  /**
-   * Expands the given condition, that is, transforms attribute conditions based on foreign key
-   * attributes into column based attribute conditions
-   * @param condition the condition
-   * @param definition the entity definition
-   * @return an expanded Condition
-   */
-  private static Condition expand(final Condition condition, final EntityDefinition definition) {
-    requireNonNull(condition, "condition");
-    requireNonNull(definition, "definition");
-    if (condition instanceof Condition.Combination) {
-      final Condition.Combination conditionCombination = (Condition.Combination) condition;
-      final ListIterator<Condition> conditionsIterator = conditionCombination.getConditions().listIterator();
-      while (conditionsIterator.hasNext()) {
-        conditionsIterator.set(expand(conditionsIterator.next(), definition));
-      }
-
-      return condition;
-    }
-    if (condition instanceof SelectCondition) {
-      return expand(((SelectCondition) condition).getCondition(), definition);
-    }
-    if (condition instanceof UpdateCondition) {
-      return expand(((UpdateCondition) condition).getCondition(), definition);
-    }
-    if (condition instanceof AttributeCondition) {
-      final AttributeCondition<?> attributeCondition = (AttributeCondition<?>) condition;
-      final Property<?> property = definition.getProperty(attributeCondition.getAttribute());
-      if (property instanceof ForeignKeyProperty) {
-        return foreignKeyCondition((ForeignKeyProperty) property, attributeCondition.getOperator(),
-                attributeCondition.getValues().stream().map(value -> valueMap((Entity) value)).collect(toList()));
-      }
-    }
-
-    return condition;
+    return new DefaultWhereCondition(condition, entityDefinition);
   }
 
   private static Condition compositeKeyCondition(final Map<Attribute<?>, Attribute<?>> attributes, final Operator operator,
@@ -218,13 +189,13 @@ public final class Conditions {
     return conditionCombination;
   }
 
-  private static Condition foreignKeyCondition(final ForeignKeyProperty foreignKeyProperty,
+  private static Condition foreignKeyCondition(final ForeignKeyAttribute foreignKeyAttribute,
                                                final Operator operator, final List<Map<Attribute<?>, Object>> valueMaps) {
-    if (foreignKeyProperty.getReferences().size() > 1) {
-      return compositeKeyCondition(attributeMap(foreignKeyProperty), operator, valueMaps);
+    if (foreignKeyAttribute.getReferences().size() > 1) {
+      return compositeKeyCondition(attributeMap(foreignKeyAttribute), operator, valueMaps);
     }
 
-    final ForeignKeyProperty.Reference<?> reference = foreignKeyProperty.getReferences().get(0);
+    final ForeignKeyAttribute.Reference<?> reference = foreignKeyAttribute.getReferences().get(0);
     final List<Object> values = valueMaps.stream()
             .map(map -> map.get(reference.getReferencedAttribute())).collect(toList());
     if (operator == EQUAL) {
@@ -252,16 +223,16 @@ public final class Conditions {
     return map;
   }
 
-  private static Map<Attribute<?>, Attribute<?>> attributeMap(final ForeignKeyProperty foreignKeyProperty) {
+  private static Map<Attribute<?>, Attribute<?>> attributeMap(final ForeignKeyAttribute foreignKeyProperty) {
     final Map<Attribute<?>, Attribute<?>> map = new HashMap<>(foreignKeyProperty.getReferences().size());
     foreignKeyProperty.getReferences().forEach(reference -> map.put(reference.getAttribute(), reference.getReferencedAttribute()));
 
     return map;
   }
 
-  private static Map<Attribute<?>, Object> valueMap(final Entity entity) {
+  private static Map<Attribute<?>, Object> valueMap(final Entity entity, final List<Attribute<?>> attributes) {
     final Map<Attribute<?>, Object> values = new HashMap<>();
-    entity.entrySet().forEach(entry -> values.put(entry.getKey(), entry.getValue()));
+    attributes.forEach(attribute -> values.put(attribute, entity.get(attribute)));
 
     return values;
   }
@@ -297,6 +268,59 @@ public final class Conditions {
     @Override
     public String getWhereClause(final EntityDefinition definition) {
       return "";
+    }
+  }
+
+  private static final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuilder {
+
+    private final ForeignKeyAttribute attribute;
+
+    private DefaultForeignKeyConditionBuilder(final ForeignKeyAttribute attribute) {
+      this.attribute = requireNonNull(attribute, "attribute");
+    }
+
+    @Override
+    public Condition equalTo(final Entity value) {
+      return equalTo(singletonList(value));
+    }
+
+    @Override
+    public Condition equalTo(final Entity... values) {
+      return equalTo(Arrays.asList(values));
+    }
+
+    @Override
+    public Condition equalTo(final Collection<? extends Entity> values) {
+      final List<Attribute<?>> attributes = attribute.getReferences().stream().map(ForeignKeyAttribute.Reference::getReferencedAttribute).collect(toList());
+
+      return foreignKeyCondition(attribute, EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
+    }
+
+    @Override
+    public Condition notEqualTo(final Entity value) {
+      return notEqualTo(singletonList(value));
+    }
+
+    @Override
+    public Condition notEqualTo(final Entity... values) {
+      return notEqualTo(Arrays.asList(values));
+    }
+
+    @Override
+    public Condition notEqualTo(final Collection<? extends Entity> values) {
+      final List<Attribute<?>> attributes = attribute.getReferences().stream().map(ForeignKeyAttribute.Reference::getReferencedAttribute).collect(toList());
+
+      return foreignKeyCondition(attribute, NOT_EQUAL, values.stream().map(entity -> valueMap(entity, attributes)).collect(toList()));
+    }
+
+    @Override
+    public Condition isNull() {
+      return foreignKeyCondition(attribute, EQUAL, emptyList());
+    }
+
+    @Override
+    public Condition isNotNull() {
+      return foreignKeyCondition(attribute, NOT_EQUAL, emptyList());
     }
   }
 }

@@ -11,6 +11,7 @@ import is.codion.common.value.AbstractValue;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
@@ -921,12 +922,10 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates an EntityComboBox bound to {@code foreignKeyAttribute}
-   * @param foreignKeyAttribute the foreign key attribute to bind
-   * combination used to create new instances of the entity this EntityComboBox is based on
-   * EntityComboBox is focusable
+   * @param foreignKeyAttribute the foreign key attribute to bind to
    * @return an EntityComboBox bound to the attribute
    */
-  protected final EntityComboBox createForeignKeyComboBox(final Attribute<Entity> foreignKeyAttribute) {
+  protected final EntityComboBox createForeignKeyComboBox(final ForeignKeyAttribute foreignKeyAttribute) {
     return createForeignKeyComboBox(foreignKeyAttribute, null);
   }
 
@@ -936,7 +935,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return a EntityComboBox bound to the attribute
    */
-  protected final EntityComboBox createForeignKeyComboBox(final Attribute<Entity> foreignKeyAttribute, final StateObserver enabledState) {
+  protected final EntityComboBox createForeignKeyComboBox(final ForeignKeyAttribute foreignKeyAttribute, final StateObserver enabledState) {
     final EntityComboBox comboBox = EntityInputComponents.createForeignKeyComboBox(
             getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute),
             getEditModel().value(foreignKeyAttribute),
@@ -955,7 +954,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param foreignKeyAttribute the foreign key attribute to bind
    * @return an EntityLookupField bound the attribute
    */
-  protected final EntityLookupField createForeignKeyLookupField(final Attribute<Entity> foreignKeyAttribute) {
+  protected final EntityLookupField createForeignKeyLookupField(final ForeignKeyAttribute foreignKeyAttribute) {
     return createForeignKeyLookupField(foreignKeyAttribute, null);
   }
 
@@ -965,7 +964,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @return an EntityLookupField bound the attribute
    */
-  protected final EntityLookupField createForeignKeyLookupField(final Attribute<Entity> foreignKeyAttribute,
+  protected final EntityLookupField createForeignKeyLookupField(final ForeignKeyAttribute foreignKeyAttribute,
                                                                 final StateObserver enabledState) {
     final EntityLookupField lookupField = EntityInputComponents.createForeignKeyLookupField(
             getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute),
@@ -984,7 +983,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param foreignKeyAttribute the attribute to bind
    * @return an uneditable JTextField bound to the attribute
    */
-  protected final JTextField createForeignKeyField(final Attribute<Entity> foreignKeyAttribute) {
+  protected final JTextField createForeignKeyField(final ForeignKeyAttribute foreignKeyAttribute) {
     requireNonNull(foreignKeyAttribute, "foreignKeyAttribute");
     final ForeignKeyProperty foreignKeyProperty =
             getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKeyAttribute);
@@ -1098,9 +1097,9 @@ public class EntityEditComponentPanel extends JPanel {
   private static final class ForeignKeyModelValue extends AbstractValue<String> {
 
     private final EntityEditModel editModel;
-    private final Attribute<Entity> foreignKeyAttribute;
+    private final ForeignKeyAttribute foreignKeyAttribute;
 
-    private ForeignKeyModelValue(final EntityEditModel editModel, final Attribute<Entity> foreignKeyAttribute) {
+    private ForeignKeyModelValue(final EntityEditModel editModel, final ForeignKeyAttribute foreignKeyAttribute) {
       this.editModel = editModel;
       this.foreignKeyAttribute = foreignKeyAttribute;
       editModel.addValueListener(foreignKeyAttribute, valueChange -> notifyValueChange());

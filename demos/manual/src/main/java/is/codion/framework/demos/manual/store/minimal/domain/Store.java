@@ -8,6 +8,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerators.automatic;
@@ -31,7 +32,7 @@ public class Store extends DefaultDomain {
     EntityType<Entity> TYPE = DOMAIN.entityType("store.address");
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<Integer> CUSTOMER_ID = TYPE.integerAttribute("customer_id");
-    Attribute<Entity> CUSTOMER_FK = TYPE.entityAttribute("customer_fk");
+    ForeignKeyAttribute CUSTOMER_FK = TYPE.foreignKey("customer_fk", Address.CUSTOMER_ID, Customer.ID);
     Attribute<String> STREET = TYPE.stringAttribute("street");
     Attribute<String> CITY = TYPE.stringAttribute("city");
   }
@@ -58,8 +59,7 @@ public class Store extends DefaultDomain {
             primaryKeyProperty(Address.ID),
             columnProperty(Address.CUSTOMER_ID)
                     .nullable(false),
-            foreignKeyProperty(Address.CUSTOMER_FK, "Customer")
-                    .reference(Address.CUSTOMER_ID, Customer.ID),
+            foreignKeyProperty(Address.CUSTOMER_FK, "Customer"),
             columnProperty(Address.STREET, "Street")
                     .nullable(false).maximumLength(100),
             columnProperty(Address.CITY, "City")

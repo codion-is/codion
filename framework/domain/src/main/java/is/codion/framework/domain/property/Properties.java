@@ -6,6 +6,7 @@ package is.codion.framework.domain.property;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 
 import java.text.Collator;
 import java.time.LocalDateTime;
@@ -71,7 +72,7 @@ public final class Properties {
    * @param attribute the attribute
    * @return a new {@link ForeignKeyProperty.Builder}
    */
-  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute) {
+  public static ForeignKeyProperty.Builder foreignKeyProperty(final ForeignKeyAttribute attribute) {
     return foreignKeyProperty(attribute, null);
   }
 
@@ -81,7 +82,7 @@ public final class Properties {
    * @param caption the caption
    * @return a new {@link ForeignKeyProperty.Builder}
    */
-  public static ForeignKeyProperty.Builder foreignKeyProperty(final Attribute<Entity> attribute, final String caption) {
+  public static ForeignKeyProperty.Builder foreignKeyProperty(final ForeignKeyAttribute attribute, final String caption) {
     return new DefaultForeignKeyProperty(attribute, caption).builder();
   }
 

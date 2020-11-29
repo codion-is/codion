@@ -21,6 +21,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKeyAttribute;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
@@ -344,7 +345,8 @@ public class DomainTest {
 
   @Test
   public void getForeignKeyPropertyInvalid() {
-    assertThrows(IllegalArgumentException.class, () -> entities.getDefinition(Detail.TYPE).getForeignKeyProperty(Detail.TYPE.entityAttribute("bla bla")));
+    final ForeignKeyAttribute attribute = Detail.TYPE.foreignKey("bla bla", Detail.MASTER_ID, Master.ID);
+    assertThrows(IllegalArgumentException.class, () -> entities.getDefinition(Detail.TYPE).getForeignKeyProperty(attribute));
   }
 
   @Test
@@ -500,11 +502,11 @@ public class DomainTest {
       final Attribute<Integer> fkId = entityType.attribute("fk_id", Integer.class);
       final EntityType<Entity> referencedEntityType = DOMAIN.entityType("test.referenced_entity");
       final Attribute<Integer> refId = referencedEntityType.attribute("id", Integer.class);
+      final ForeignKeyAttribute foreignKey = entityType.foreignKey("fk_id_fk", fkId, refId);
       domain.define(entityType,
               Properties.primaryKeyProperty(entityType.attribute("id", Integer.class)),
               Properties.columnProperty(fkId),
-              Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption")
-                      .reference(fkId, refId));
+              Properties.foreignKeyProperty(foreignKey, "caption"));
     });
   }
 
@@ -515,11 +517,11 @@ public class DomainTest {
     final Attribute<Integer> fkId = entityType.attribute("fk_id", Integer.class);
     final EntityType<Entity> referencedEntityType = DOMAIN.entityType("test.referenced_entity");
     final Attribute<Integer> refId = referencedEntityType.attribute("id", Integer.class);
+    final ForeignKeyAttribute foreignKey = entityType.foreignKey("fk_id_fk", fkId, refId);
     domain.define(entityType,
             Properties.primaryKeyProperty(entityType.attribute("id", Integer.class)),
             Properties.columnProperty(fkId),
-            Properties.foreignKeyProperty(entityType.entityAttribute("fk_id_fk"), "caption")
-                    .reference(fkId, refId));
+            Properties.foreignKeyProperty(foreignKey, "caption"));
     domain.setStrictForeignKeys(true);
   }
 
