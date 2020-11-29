@@ -11,6 +11,7 @@ import static is.codion.framework.demos.petclinic.domain.api.PetClinicApi.DOMAIN
 
 public interface Vet extends Entity {
   EntityType<Vet> TYPE = DOMAIN.entityType("petclinic.vet", Vet.class);
+
   Attribute<Integer> ID = TYPE.integerAttribute("id");
   Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
   Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");

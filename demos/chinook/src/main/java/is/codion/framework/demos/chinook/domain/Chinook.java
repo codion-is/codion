@@ -30,6 +30,7 @@ public interface Chinook {
 
   interface Artist {
     EntityType<Entity> TYPE = DOMAIN.entityType("artist@chinook");
+
     Attribute<Long> ID = TYPE.longAttribute("artistid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("number_of_albums");
@@ -38,23 +39,25 @@ public interface Chinook {
 
   interface Album {
     EntityType<Entity> TYPE = DOMAIN.entityType("album@chinook");
+
     Attribute<Long> ID = TYPE.longAttribute("albumid");
     Attribute<String> TITLE = TYPE.stringAttribute("title");
     Attribute<Long> ARTIST_ID = TYPE.longAttribute("artistid");
-    ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", Album.ARTIST_ID, Artist.ID);
     Attribute<byte[]> COVER = TYPE.byteArrayAttribute("cover");
     Attribute<Image> COVERIMAGE = TYPE.attribute("coverimage", Image.class);
     Attribute<Integer> NUMBER_OF_TRACKS = TYPE.integerAttribute("number_of_tracks");
+
+    ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", Album.ARTIST_ID, Artist.ID);
   }
 
   interface Employee {
     EntityType<Entity> TYPE = DOMAIN.entityType("employee@chinook");
+
     Attribute<Long> ID = TYPE.longAttribute("employeeid");
     Attribute<String> LASTNAME = TYPE.stringAttribute("lastname");
     Attribute<String> FIRSTNAME = TYPE.stringAttribute("firstname");
     Attribute<String> TITLE = TYPE.stringAttribute("title");
     Attribute<Long> REPORTSTO = TYPE.longAttribute("reportsto");
-    ForeignKey REPORTSTO_FK = TYPE.foreignKey("reportsto_fk", Employee.REPORTSTO, Employee.ID);
     Attribute<LocalDate> BIRTHDATE = TYPE.localDateAttribute("birthdate");
     Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
     Attribute<String> ADDRESS = TYPE.stringAttribute("address");
@@ -65,10 +68,13 @@ public interface Chinook {
     Attribute<String> PHONE = TYPE.stringAttribute("phone");
     Attribute<String> FAX = TYPE.stringAttribute("fax");
     Attribute<String> EMAIL = TYPE.stringAttribute("email");
+
+    ForeignKey REPORTSTO_FK = TYPE.foreignKey("reportsto_fk", Employee.REPORTSTO, Employee.ID);
   }
 
   interface Customer {
     EntityType<Entity> TYPE = DOMAIN.entityType("customer@chinook");
+
     Attribute<Long> ID = TYPE.longAttribute("customerid");
     Attribute<String> FIRSTNAME = TYPE.stringAttribute("firstname");
     Attribute<String> LASTNAME = TYPE.stringAttribute("lastname");
@@ -82,6 +88,7 @@ public interface Chinook {
     Attribute<String> FAX = TYPE.stringAttribute("fax");
     Attribute<String> EMAIL = TYPE.stringAttribute("email");
     Attribute<Long> SUPPORTREP_ID = TYPE.longAttribute("supportrepid");
+
     ForeignKey SUPPORTREP_FK = TYPE.foreignKey("supportrep_fk", Customer.SUPPORTREP_ID, Employee.ID);
 
     JRReportType REPORT = JasperReports.reportType("customer_report");
@@ -101,20 +108,22 @@ public interface Chinook {
 
   interface Track extends Entity {
     EntityType<Track> TYPE = DOMAIN.entityType("track@chinook", Track.class);
+
     Attribute<Long> ID = TYPE.longAttribute("trackid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
     Attribute<Entity> ARTIST_DENORM = TYPE.entityAttribute("artist_denorm");
     Attribute<Long> ALBUM_ID = TYPE.longAttribute("albumid");
-    ForeignKey ALBUM_FK = TYPE.foreignKey("album_fk", Track.ALBUM_ID, Album.ID);
     Attribute<Long> MEDIATYPE_ID = TYPE.longAttribute("mediatypeid");
-    ForeignKey MEDIATYPE_FK = TYPE.foreignKey("mediatype_fk", MEDIATYPE_ID, MediaType.ID);
     Attribute<Long> GENRE_ID = TYPE.longAttribute("genreid");
-    ForeignKey GENRE_FK = TYPE.foreignKey("genre_fk", Track.GENRE_ID, Genre.ID);
     Attribute<String> COMPOSER = TYPE.stringAttribute("composer");
     Attribute<Integer> MILLISECONDS = TYPE.integerAttribute("milliseconds");
     Attribute<String> MINUTES_SECONDS_DERIVED = TYPE.stringAttribute("minutes_seconds_derived");
     Attribute<Integer> BYTES = TYPE.integerAttribute("bytes");
     Attribute<BigDecimal> UNITPRICE = TYPE.bigDecimalAttribute("unitprice");
+
+    ForeignKey ALBUM_FK = TYPE.foreignKey("album_fk", Track.ALBUM_ID, Album.ID);
+    ForeignKey MEDIATYPE_FK = TYPE.foreignKey("mediatype_fk", MEDIATYPE_ID, MediaType.ID);
+    ForeignKey GENRE_FK = TYPE.foreignKey("genre_fk", Track.GENRE_ID, Genre.ID);
 
     FunctionType<EntityConnection, Object, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price_function");
 
@@ -126,9 +135,9 @@ public interface Chinook {
 
   interface Invoice extends Entity {
     EntityType<Invoice> TYPE = DOMAIN.entityType("invoice@chinook", Invoice.class);
+
     Attribute<Long> ID = TYPE.longAttribute("invoiceid");
     Attribute<Long> CUSTOMER_ID = TYPE.longAttribute("customerid");
-    ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", Invoice.CUSTOMER_ID, Customer.ID);
     Attribute<LocalDateTime> INVOICEDATE = TYPE.localDateTimeAttribute("invoicedate");
     Attribute<String> BILLINGADDRESS = TYPE.stringAttribute("billingaddress");
     Attribute<String> BILLINGCITY = TYPE.stringAttribute("billingcity");
@@ -137,6 +146,8 @@ public interface Chinook {
     Attribute<String> BILLINGPOSTALCODE = TYPE.stringAttribute("billingpostalcode");
     Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
     Attribute<BigDecimal> TOTAL_SUBQUERY = TYPE.bigDecimalAttribute("total_subquery");
+
+    ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", Invoice.CUSTOMER_ID, Customer.ID);
 
     ProcedureType<EntityConnection, Object> UPDATE_TOTALS = procedureType("chinook.update_totals_procedure");
 
@@ -148,31 +159,36 @@ public interface Chinook {
 
   interface InvoiceLine {
     EntityType<Entity> TYPE = DOMAIN.entityType("invoiceline@chinook");
+
     Attribute<Long> ID = TYPE.longAttribute("invoicelineid");
     Attribute<Long> INVOICE_ID = TYPE.longAttribute("invoiceid");
-    ForeignKey INVOICE_FK = TYPE.foreignKey("invoice_fk", InvoiceLine.INVOICE_ID, Invoice.ID);
     Attribute<Long> TRACK_ID = TYPE.longAttribute("trackid");
-    ForeignKey TRACK_FK = TYPE.foreignKey("track_fk", InvoiceLine.TRACK_ID, Track.ID);
     Attribute<BigDecimal> UNITPRICE = TYPE.bigDecimalAttribute("unitprice");
     Attribute<Integer> QUANTITY = TYPE.integerAttribute("quantity");
     Attribute<BigDecimal> TOTAL = TYPE.bigDecimalAttribute("total");
+
+    ForeignKey INVOICE_FK = TYPE.foreignKey("invoice_fk", InvoiceLine.INVOICE_ID, Invoice.ID);
+    ForeignKey TRACK_FK = TYPE.foreignKey("track_fk", InvoiceLine.TRACK_ID, Track.ID);
   }
 
   interface Playlist {
     EntityType<Entity> TYPE = DOMAIN.entityType("playlist@chinook");
+
     Attribute<Long> ID = TYPE.longAttribute("playlistid");
     Attribute<String> NAME = TYPE.stringAttribute("name");
   }
 
   interface PlaylistTrack {
     EntityType<Entity> TYPE = DOMAIN.entityType("playlisttrack@chinook");
+
     Attribute<Long> ID = TYPE.longAttribute("playlisttrackid");
     Attribute<Long> PLAYLIST_ID = TYPE.longAttribute("playlistid");
-    ForeignKey PLAYLIST_FK = TYPE.foreignKey("playlist_fk", PlaylistTrack.PLAYLIST_ID, Playlist.ID);
     Attribute<Long> TRACK_ID = TYPE.longAttribute("trackid");
-    ForeignKey TRACK_FK = TYPE.foreignKey("track_fk", PlaylistTrack.TRACK_ID, Track.ID);
     Attribute<Entity> ALBUM_DENORM = TYPE.entityAttribute("album_denorm");
     Attribute<Entity> ARTIST_DENORM = TYPE.entityAttribute("artist_denorm");
+
+    ForeignKey PLAYLIST_FK = TYPE.foreignKey("playlist_fk", PlaylistTrack.PLAYLIST_ID, Playlist.ID);
+    ForeignKey TRACK_FK = TYPE.foreignKey("track_fk", PlaylistTrack.TRACK_ID, Track.ID);
   }
 
   static Integer getMinutes(final Integer milliseconds) {

@@ -45,7 +45,7 @@ public interface ForeignKeyProperty extends Property<Entity> {
   boolean isReadOnly(Attribute<?> referenceAttribute);
 
   /**
-   * @return the {@link Reference}s that comprise this key
+   * @return the {@link ForeignKey.Reference}s that comprise this key
    */
   List<ForeignKey.Reference<?>> getReferences();
 

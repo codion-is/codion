@@ -10,7 +10,6 @@ import is.codion.common.event.EventListener;
 import is.codion.common.model.Refreshable;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -190,7 +189,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * If {@code foreignKey} is null the association is removed.
    * @param detailModel the detail model
    * @param foreignKey the foreign key
-   * @see #initialize(Attribute, List)
+   * @see #initialize(ForeignKey, List)
    * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
    */
   void setDetailModelForeignKey(M detailModel, ForeignKey foreignKey);

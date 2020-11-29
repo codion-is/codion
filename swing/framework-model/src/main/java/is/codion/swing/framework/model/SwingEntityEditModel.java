@@ -81,7 +81,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
    * Returns a {@link SwingEntityComboBoxModel} for the given foreign key attribute. If one does not exist it is created.
    * @param foreignKey the foreign key attribute
    * @return a {@link SwingEntityComboBoxModel} based on the entity referenced by the given foreign key attribute
-   * @see #createForeignKeyComboBoxModel(Attribute)
+   * @see #createForeignKeyComboBoxModel(ForeignKey)
    */
   public final SwingEntityComboBoxModel getForeignKeyComboBoxModel(final ForeignKey foreignKey) {
     getEntityDefinition().getForeignKeyProperty(foreignKey);

@@ -14,9 +14,11 @@ import static is.codion.framework.demos.petclinic.domain.api.PetClinicApi.DOMAIN
 
 public interface Visit extends Entity {
   EntityType<Visit> TYPE = DOMAIN.entityType("petclinic.visit", Visit.class);
+
   Attribute<Integer> ID = TYPE.integerAttribute("id");
   Attribute<Integer> PET_ID = TYPE.integerAttribute("pet_id");
-  ForeignKey PET_FK = TYPE.foreignKey("pet_fk", Visit.PET_ID, Pet.ID);
   Attribute<LocalDate> DATE = TYPE.localDateAttribute("date");
   Attribute<String> DESCRIPTION = TYPE.stringAttribute("description");
+
+  ForeignKey PET_FK = TYPE.foreignKey("pet_fk", Visit.PET_ID, Pet.ID);
 }

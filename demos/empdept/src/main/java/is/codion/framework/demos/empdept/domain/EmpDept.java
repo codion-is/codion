@@ -39,6 +39,7 @@ public final class EmpDept extends DefaultDomain {
   /** Entity type for the table scott.dept*/
   public interface Department extends Entity {
     EntityType<Department> TYPE = DOMAIN.entityType("scott.dept", Department.class);
+
     /** Attributes for the columns in the scott.dept table*/
     Attribute<Integer> ID = TYPE.integerAttribute("deptno");
     Attribute<String> NAME = TYPE.stringAttribute("dname");
@@ -58,6 +59,7 @@ public final class EmpDept extends DefaultDomain {
   /** Entity type for the table scott.emp*/
   public interface Employee extends Entity {
     EntityType<Employee> TYPE = DOMAIN.entityType("scott.emp", Employee.class);
+
     /** Attributes for the columns in the scott.emp table*/
     Attribute<Integer> ID = TYPE.integerAttribute("empno");
     Attribute<String> NAME = TYPE.stringAttribute("ename");
@@ -67,6 +69,7 @@ public final class EmpDept extends DefaultDomain {
     Attribute<BigDecimal> SALARY = TYPE.bigDecimalAttribute("sal");
     Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
     Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
+
     /**Foreign key (reference) attribute for the DEPT column in the table scott.emp*/
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", Employee.DEPARTMENT, Department.ID);
     /**Foreign key (reference) attribute for the MGR column in the table scott.emp*/

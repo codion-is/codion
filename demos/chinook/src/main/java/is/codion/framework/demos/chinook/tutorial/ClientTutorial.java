@@ -51,6 +51,7 @@ public final class ClientTutorial {
 
     public interface Artist {
       EntityType<Entity> TYPE = DOMAIN.entityType("chinook.artist");
+
       Attribute<Integer> ID = TYPE.integerAttribute("artistid");
       Attribute<String> NAME = TYPE.stringAttribute("name");
       Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("number_of_albums");
@@ -58,9 +59,11 @@ public final class ClientTutorial {
 
     public interface Album {
       EntityType<Entity> TYPE = DOMAIN.entityType("chinook.album");
+
       Attribute<Integer> ID = TYPE.integerAttribute("albumid");
       Attribute<String> TITLE = Artist.TYPE.stringAttribute("title");
       Attribute<Integer> ARTIST_ID = Artist.TYPE.integerAttribute("artistid");
+
       ForeignKey ARTIST_FK = Artist.TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
     }
 

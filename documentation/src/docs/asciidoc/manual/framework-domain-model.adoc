@@ -96,6 +96,13 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 {url-javadoc}/is/codion/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a property used to represent a foreign key relation. These foreign keys refer to a unique key combination of attributes in the referenced entity, usually the primary key attribute(s).
 
+Referring to an entity via a single column key.
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=foreignKeyCapital]
+----
+
 [source,java,indent=0]
 ----
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=foreignKeyPropertyCapital]
@@ -105,21 +112,28 @@ Referring to an entity via a composite key.
 
 [source,java]
 ----
-foreignKeyProperty(Detail.MASTER_FK, "Master")
-        .reference(Detail.MASTER_ID_1, Master.ID_1)
-        .reference(Detail.MASTER_ID_2, Master.ID_2);
+interface Master {
+  EntityType<Entity> TYPE = DOMAIN.entityType("master");
+
+  Attribute<Integer> ID_1 = TYPE.integerAttribute("id1");
+  Attribute<Integer> ID_2 = TYPE.integerAttribute("id2");
+}
+
+interface Detail {
+  EntityType<Entity> TYPE = DOMAIN.entityType("detail");
+
+  Attribute<Integer> MASTER_ID_1 = TYPE.integerAttribute("master_id1");
+  Attribute<Integer> MASTER_ID_2 = TYPE.integerAttribute("master_id2");
+
+  ForeignKey MASTER_FK = TYPE.foreignKey("master",
+          Detail.MASTER_ID_1, Master.ID_1,
+          Detail.MASTER_ID_2, Master.ID_2);
+}
 ----
-
-The above assumes the below master definition.
-
+Given the above, here's how we create a foreignKeyProperty.
 [source,java]
 ----
-define(Master.TYPE,
-    ...
-    columnProperty(Master.ID_1),
-    columnProperty(Master.ID_2)
-    ...
-);
+foreignKeyProperty(Detail.MASTER_FK, "Master");
 ----
 
 === Boolean Properties

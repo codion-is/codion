@@ -48,6 +48,7 @@ public final class EmpDeptMinimalApp {
    */
   interface Department {
     EntityType<Entity> TYPE = DOMAIN.entityType("scott.dept");
+
     Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
     Attribute<String> DNAME = TYPE.stringAttribute("dname");
     Attribute<String> LOC = TYPE.stringAttribute("loc");
@@ -58,16 +59,18 @@ public final class EmpDeptMinimalApp {
    */
   interface Employee {
     EntityType<Entity> T_EMP = DOMAIN.entityType("scott.emp");
+
     Attribute<Integer> EMPNO = T_EMP.integerAttribute("empno");
     Attribute<String> ENAME = T_EMP.stringAttribute("ename");
     Attribute<Integer> DEPTNO = T_EMP.integerAttribute("deptno");
-    ForeignKey DEPT_FK = T_EMP.foreignKey("dept_fk", Employee.DEPTNO, Department.DEPTNO);
     Attribute<String> JOB = T_EMP.stringAttribute("job");
     Attribute<Double> SAL = T_EMP.doubleAttribute("sal");
     Attribute<Double> COMM = T_EMP.doubleAttribute("comm");
     Attribute<Integer> MGR = T_EMP.integerAttribute("mgr");
-    ForeignKey MGR_FK = T_EMP.foreignKey("mgr_fk", Employee.MGR, Employee.EMPNO);
     Attribute<LocalDate> HIREDATE = T_EMP.localDateAttribute("hiredate");
+
+    ForeignKey DEPT_FK = T_EMP.foreignKey("dept_fk", Employee.DEPTNO, Department.DEPTNO);
+    ForeignKey MGR_FK = T_EMP.foreignKey("mgr_fk", Employee.MGR, Employee.EMPNO);
   }
 
   /**

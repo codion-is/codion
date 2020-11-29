@@ -36,6 +36,7 @@ public final class Store extends DefaultDomain {
 
   public interface Address {
     EntityType<Entity> TYPE = STORE.entityType("store.address");
+
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> STREET = TYPE.stringAttribute("street");
     Attribute<String> CITY = TYPE.stringAttribute("city");
@@ -44,6 +45,7 @@ public final class Store extends DefaultDomain {
 
   public interface Customer {
     EntityType<Entity> TYPE = STORE.entityType("store.customer");
+
     Attribute<String> ID = TYPE.stringAttribute("id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
     Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
@@ -53,10 +55,12 @@ public final class Store extends DefaultDomain {
 
   public interface CustomerAddress {
     EntityType<Entity> TYPE = STORE.entityType("store.customer_address");
+
     Attribute<Integer> ID = TYPE.integerAttribute("id");
     Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
-    ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CustomerAddress.CUSTOMER_ID, Customer.ID);
     Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("address_id");
+
+    ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CustomerAddress.CUSTOMER_ID, Customer.ID);
     ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", CustomerAddress.ADDRESS_ID, Address.ID);
   }
 

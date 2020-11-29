@@ -132,11 +132,11 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   }
 
   @Override
-  public <A, B, C> ForeignKey foreignKey(final String name, final Attribute<A> firstAattribute, final Attribute<A> firstReferencedAttribute,
+  public <A, B, C> ForeignKey foreignKey(final String name, final Attribute<A> firstAttribute, final Attribute<A> firstReferencedAttribute,
                                          final Attribute<B> secondAttribute, final Attribute<B> secondReferencedAttribute,
                                          final Attribute<C> thirdAttribute, final Attribute<C> thirdReferencedAttribute) {
     return foreignKey(name, Arrays.asList(
-            new DefaultForeignKey.DefaultReference<>(firstAattribute, firstReferencedAttribute),
+            new DefaultForeignKey.DefaultReference<>(firstAttribute, firstReferencedAttribute),
             new DefaultForeignKey.DefaultReference<>(secondAttribute, secondReferencedAttribute),
             new DefaultForeignKey.DefaultReference<>(thirdAttribute, thirdReferencedAttribute)));
   }
