@@ -19,7 +19,7 @@ public interface Attribute<T> {
   String getName();
 
   /**
-   * @return the Class representing this attribute type
+   * @return the Class representing this attribute
    */
   Class<T> getTypeClass();
 
@@ -31,7 +31,7 @@ public interface Attribute<T> {
   /**
    * @param value the value to validate
    * @return the value
-   * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this property
+   * @throws IllegalArgumentException in case {@code value} is of a type incompatible with this attribute
    */
   T validateType(T value);
 
@@ -42,7 +42,7 @@ public interface Attribute<T> {
   boolean isType(Class<?> typeClass);
 
   /**
-   * @return true if this is a numerical attribute, that is, Integer or Double
+   * @return true if this is a numerical attribute, that is, integer, decimal or long
    */
   boolean isNumerical();
 

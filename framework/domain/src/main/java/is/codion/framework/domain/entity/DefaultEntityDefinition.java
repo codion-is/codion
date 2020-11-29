@@ -574,8 +574,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Entity entity(final Key primaryKey) {
-    return new DefaultEntity(this, primaryKey);
+  public Entity entity(final Key key) {
+    return new DefaultEntity(this, key);
   }
 
   @Override

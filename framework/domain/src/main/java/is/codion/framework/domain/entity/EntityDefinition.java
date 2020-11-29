@@ -382,10 +382,10 @@ public interface EntityDefinition {
 
   /**
    * Creates a new {@link Entity} instance based on this definition
-   * @param primaryKey the primary key
+   * @param key the key
    * @return a new {@link Entity} instance
    */
-  Entity entity(Key primaryKey);
+  Entity entity(Key key);
 
   /**
    * Instantiates a new {@link Entity} using the values provided by {@code valueProvider}.

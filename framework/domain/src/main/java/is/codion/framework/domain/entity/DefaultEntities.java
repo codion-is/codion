@@ -79,8 +79,8 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Entity entity(final Key primaryKey) {
-    return getDefinition(primaryKey.getEntityType()).entity(primaryKey);
+  public final Entity entity(final Key key) {
+    return getDefinition(key.getEntityType()).entity(key);
   }
 
   @Override
