@@ -382,10 +382,15 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
   private static Map<DomainType, Domain> loadDomainModels(final Collection<String> domainModelClassNames) throws Throwable {
     final Map<DomainType, Domain> domains = new HashMap<>();
+    final List<Domain> serviceDomains = Domain.getDomains();
     try {
+      serviceDomains.forEach(domain -> {
+        LOG.info("Server loading and registering domain model '" + domain.getDomainType() + " as a service");
+        domains.put(domain.getDomainType(), domain);
+      });
       for (final String className : domainModelClassNames) {
         LOG.info("Server loading and registering domain model class '" + className + " from classpath");
-        final Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
+        final Domain domain = (Domain) Class.forName(className).getConstructor().newInstance();
         domains.put(domain.getDomainType(), domain);
       }
 

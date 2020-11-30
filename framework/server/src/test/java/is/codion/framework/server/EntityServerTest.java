@@ -319,7 +319,6 @@ public class EntityServerTest {
     configuration.setClientSpecificConnectionTimeouts(singletonMap("ClientTypeID", 10000));
     configuration.setDomainModelClassNames(singletonList("is.codion.framework.server.TestDomain"));
     configuration.setClientLoggingEnabled(true);
-    configuration.setLoginProxyClassNames(singletonList("is.codion.framework.server.TestLoginProxy"));
     configuration.setSslEnabled(true);
     configuration.setSerializationFilterWhitelist("src/test/security/serialization-whitelist-test.txt");
 

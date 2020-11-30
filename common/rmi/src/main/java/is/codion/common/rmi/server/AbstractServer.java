@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -53,8 +52,6 @@ import static java.util.stream.Collectors.toSet;
 public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> extends UnicastRemoteObject implements Server<T, A> {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
-
-  private static final String FROM_CLASSPATH = "' from classpath";
 
   private final Map<UUID, RemoteClientConnection<T>> connections = new ConcurrentHashMap<>();
   private final Map<String, LoginProxy> loginProxies = new HashMap<>();
@@ -84,13 +81,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
             configuration.getServerPort(), ZonedDateTime.now());
     configureSerializationWhitelist(configuration);
     startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());
-    try {
-      sharedLoginProxies.addAll(loadSharedLoginProxies(configuration.getSharedLoginProxyClassNames()));
-      loginProxies.putAll(loadLoginProxies(configuration.getLoginProxyClassNames()));
-    }
-    catch (final ClassNotFoundException e) {
-      throw new RuntimeException(e);
-    }
+    loadLoginProxies();
   }
 
   /**
@@ -419,41 +410,17 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
   }
 
-  private static List<LoginProxy> loadSharedLoginProxies(final Collection<String> sharedLoginProxyClassNames)
-          throws ClassNotFoundException {
-    final List<LoginProxy> loginProxyList = new ArrayList<>();
-    for (final String loginProxyClassName : sharedLoginProxyClassNames) {
-      LOG.info("Server loading login proxy class '" + loginProxyClassName + FROM_CLASSPATH);
-      final Class<LoginProxy> loginProxyClass = (Class<LoginProxy>) Class.forName(loginProxyClassName);
-      try {
-        loginProxyList.add(loginProxyClass.getConstructor().newInstance());
+  private void loadLoginProxies() {
+    LoginProxy.getLoginProxies().forEach(loginProxy -> {
+      final String clientTypeId = loginProxy.getClientTypeId();
+      LOG.info("Server loading " + (clientTypeId == null ? "shared" : "") + " login proxy '" + loginProxy.getClass().getName() + " as service");
+      if (clientTypeId == null) {
+        sharedLoginProxies.add(loginProxy);
       }
-      catch (final Exception ex) {
-        LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
-        throw new RuntimeException(ex);
+      else {
+        loginProxies.put(clientTypeId, loginProxy);
       }
-    }
-
-    return loginProxyList;
-  }
-
-  private static Map<String, LoginProxy> loadLoginProxies(final Collection<String> loginProxyClassNames)
-          throws ClassNotFoundException {
-    final Map<String, LoginProxy> loginProxyMap = new HashMap<>();
-    for (final String loginProxyClassName : loginProxyClassNames) {
-      LOG.info("Server loading login proxy class '" + loginProxyClassName + FROM_CLASSPATH);
-      final Class<LoginProxy> loginProxyClass = (Class<LoginProxy>) Class.forName(loginProxyClassName);
-      try {
-        final LoginProxy proxy = loginProxyClass.getConstructor().newInstance();
-        loginProxyMap.put(proxy.getClientTypeId(), proxy);
-      }
-      catch (final Exception ex) {
-        LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
-        throw new RuntimeException(ex);
-      }
-    }
-
-    return loginProxyMap;
+    });
   }
 
   private static final class RemoteClientConnection<T> {

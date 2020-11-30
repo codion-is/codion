@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -89,10 +88,12 @@ public class AbstractServerTest {
 
   @Test
   public void testLoginProxy() throws RemoteException, ServerException {
+    TestLoginProxy.LOGIN_COUNTER.set(0);
+    TestLoginProxy.LOGOUT_COUNTER.set(0);
+    TestLoginProxy.CLOSE_COUNTER.set(0);
+
     final String clientTypeId = "clientTypeId";
     final ServerConfiguration configuration = getConfiguration();
-    configuration.setLoginProxyClassNames(Collections.singletonList(TestLoginProxy.class.getName()));
-    configuration.setSharedLoginProxyClassNames(Collections.singletonList(TestLoginProxy.class.getName()));
     final TestServer server = new TestServer(configuration);
     final ConnectionRequest connectionRequest = ConnectionRequest.connectionRequest(UNIT_TEST_USER, UUID.randomUUID(), clientTypeId);
     ServerTest connection = server.connect(connectionRequest);
@@ -102,21 +103,21 @@ public class AbstractServerTest {
     server.disconnect(connectionRequest.getClientId());
 
     connection = server.connect(connectionRequest);
-    assertEquals(4, TestLoginProxy.LOGIN_COUNTER.get());
+    assertEquals(2, TestLoginProxy.LOGIN_COUNTER.get());
     assertNotNull(connection);
     assertEquals(connectionRequest.getClientId(), connection.getRemoteClient().getClientId());
 
     server.disconnect(connectionRequest.getClientId());
-    assertEquals(4, TestLoginProxy.LOGOUT_COUNTER.get());
+    assertEquals(2, TestLoginProxy.LOGOUT_COUNTER.get());
 
     connection = server.connect(connectionRequest);
-    assertEquals(6, TestLoginProxy.LOGIN_COUNTER.get());
+    assertEquals(3, TestLoginProxy.LOGIN_COUNTER.get());
     assertNotNull(connection);
     assertEquals(connectionRequest.getClientId(), connection.getRemoteClient().getClientId());
 
     server.shutdown();
-    assertEquals(6, TestLoginProxy.LOGOUT_COUNTER.get());
-    assertEquals(2, TestLoginProxy.CLOSE_COUNTER.get());
+    assertEquals(3, TestLoginProxy.LOGOUT_COUNTER.get());
+    assertEquals(1, TestLoginProxy.CLOSE_COUNTER.get());
   }
 
   @Test
@@ -213,7 +214,7 @@ public class AbstractServerTest {
 
     @Override
     public String getClientTypeId() {
-      return "clientTypeId";
+      return null;
     }
     @Override
     public RemoteClient doLogin(final RemoteClient remoteClient) {

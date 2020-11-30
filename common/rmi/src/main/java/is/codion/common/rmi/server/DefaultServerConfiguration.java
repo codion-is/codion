@@ -8,7 +8,6 @@ import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.function.Supplier;
@@ -22,8 +21,6 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
   private final int serverPort;
   private final int registryPort;
-  private final Collection<String> sharedLoginProxyClassNames = new ArrayList<>();
-  private final Collection<String> loginProxyClassNames = new HashSet<>();
   private final Collection<String> auxiliaryServerFactoryClassNames = new HashSet<>();
   private Integer serverAdminPort;
   private boolean sslEnabled = true;
@@ -65,16 +62,6 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public Integer getServerAdminPort() {
     return serverAdminPort;
-  }
-
-  @Override
-  public Collection<String> getSharedLoginProxyClassNames() {
-    return sharedLoginProxyClassNames;
-  }
-
-  @Override
-  public Collection<String> getLoginProxyClassNames() {
-    return loginProxyClassNames;
   }
 
   @Override
@@ -120,16 +107,6 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public void setServerName(final String serverName) {
     this.serverName = requireNonNull(serverName);
-  }
-
-  @Override
-  public void setSharedLoginProxyClassNames(final Collection<String> sharedLoginProxyClassNames) {
-    this.sharedLoginProxyClassNames.addAll(requireNonNull(sharedLoginProxyClassNames));
-  }
-
-  @Override
-  public void setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
-    this.loginProxyClassNames.addAll(requireNonNull(loginProxyClassNames));
   }
 
   @Override

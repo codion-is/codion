@@ -186,7 +186,6 @@ public interface EntityServerConfiguration extends ServerConfiguration {
             requireNonNull(REGISTRY_PORT.get(), REGISTRY_PORT.toString()));
     configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
     configuration.setSslEnabled(SERVER_CONNECTION_SSL_ENABLED.get());
-    configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
       configuration.setSerializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get());
       if (SERIALIZATION_FILTER_DRYRUN.get() != null) {

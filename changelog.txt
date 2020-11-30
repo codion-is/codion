@@ -6537,3 +6537,4 @@
   Major surgery, ForeignKeyAttribute added, references moved from property to attribute, Condition.expand() removed
   ForeignKeyAttribute renamed to ForeignKey
   EntityDefinition.entity(key), key can be any key, not just the primary key
+  Domain and LoginProxy are now ServiceLoader based, reducing module voes

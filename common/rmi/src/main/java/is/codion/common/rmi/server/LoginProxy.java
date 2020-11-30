@@ -5,13 +5,17 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.rmi.server.exception.LoginException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ServiceLoader;
+
 /**
  * A login proxy.
  */
 public interface LoginProxy {
 
   /**
-   * @return the String identifying the client type for which to use this login proxy
+   * @return the String identifying the client type for which to use this login proxy, null to share between all clients
    */
   String getClientTypeId();
 
@@ -40,4 +44,17 @@ public interface LoginProxy {
    * Any exception thrown by this method is ignored.
    */
   void close();
+
+  /**
+   * @return a list containing all the LoginProxies registered with {@link ServiceLoader}.
+   */
+  static List<LoginProxy> getLoginProxies() {
+    final List<LoginProxy> loginProxies = new ArrayList<>();
+    final ServiceLoader<LoginProxy> loader = ServiceLoader.load(LoginProxy.class);
+    for (final LoginProxy loginProxy : loader) {
+      loginProxies.add(loginProxy);
+    }
+
+    return loginProxies;
+  }
 }

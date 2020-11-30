@@ -130,13 +130,6 @@ public interface ServerConfiguration {
   PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("codion.server.serializationFilterDryRun", false);
 
   /**
-   * Specifies a comma separated list of LoginProxy class names, which should be initialized on server startup,
-   * these classes must be available on the server classpath and contain a parameterless constructor
-   * @see is.codion.common.rmi.server.LoginProxy
-   */
-  PropertyValue<String> SERVER_LOGIN_PROXY_CLASSES = Configuration.stringValue("codion.server.loginProxyClasses", null);
-
-  /**
    * @return the server name
    * @see #setServerNameProvider(Supplier)
    */
@@ -156,16 +149,6 @@ public interface ServerConfiguration {
    * @return the port on which to make the server admin interface accessible
    */
   Integer getServerAdminPort();
-
-  /**
-   * @return the shared login proxy classnames
-   */
-  Collection<String> getSharedLoginProxyClassNames();
-
-  /**
-   * @return the login proxy classnames
-   */
-  Collection<String> getLoginProxyClassNames();
 
   /**
    * @return the class names of auxiliary server factories, providing the servers to run alongside this server
@@ -211,16 +194,6 @@ public interface ServerConfiguration {
    * @param serverName the server name
    */
   void setServerName(String serverName);
-
-  /**
-   * @param sharedLoginProxyClassNames the shared login proxy classnames
-   */
-  void setSharedLoginProxyClassNames(Collection<String> sharedLoginProxyClassNames);
-
-  /**
-   * @param loginProxyClassNames the login proxy classes to initialize on startup
-   */
-  void setLoginProxyClassNames(Collection<String> loginProxyClassNames);
 
   /**
    * @param auxiliaryServerFactoryClassNames the class names of auxiliary server factories,
@@ -282,7 +255,6 @@ public interface ServerConfiguration {
     configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
     configuration.setServerAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
     configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
-    configuration.setLoginProxyClassNames(Text.parseCommaSeparatedValues(SERVER_LOGIN_PROXY_CLASSES.get()));
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
       configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
     }

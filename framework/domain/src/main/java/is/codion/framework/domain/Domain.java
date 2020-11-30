@@ -13,6 +13,10 @@ import is.codion.common.db.reports.Report;
 import is.codion.common.db.reports.ReportType;
 import is.codion.framework.domain.entity.Entities;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ServiceLoader;
+
 /**
  * Represents an application domain model, entities, reports and database operations.
  */
@@ -66,4 +70,49 @@ public interface Domain {
    * @throws DatabaseException in case of an exception
    */
   default void configureConnection(final DatabaseConnection connection) throws DatabaseException {}
+
+  /**
+   * @return a list containing all the Domains registered with {@link ServiceLoader}.
+   */
+  static List<Domain> getDomains() {
+    final List<Domain> domains = new ArrayList<>();
+    final ServiceLoader<Domain> loader = ServiceLoader.load(Domain.class);
+    for (final Domain domain : loader) {
+      domains.add(domain);
+    }
+
+    return domains;
+  }
+
+  /**
+   * @param name the domain name
+   * @return a {@link Domain} implementation with the given name
+   * @throws IllegalArgumentException in case no such implementation is found
+   * @see DomainType#getName()
+   */
+  static Domain getInstanceByName(final String name) {
+    for (final Domain domain : getDomains()) {
+      if (domain.getDomainType().getName().equals(name)) {
+        return domain;
+      }
+    }
+
+    throw new IllegalArgumentException("No Domain with name: " + name + " found");
+  }
+
+  /**
+   * @param className the domain classname
+   * @return a {@link Domain} implementation of the given type
+   * @throws IllegalArgumentException in case no such implementation is found
+   * @see DomainType#getName()
+   */
+  static Domain getInstanceByClassName(final String className) {
+    for (final Domain domain : getDomains()) {
+      if (domain.getClass().getName().equals(className)) {
+        return domain;
+      }
+    }
+
+    throw new IllegalArgumentException("No Domain of type: " + className + " found");
+  }
 }
