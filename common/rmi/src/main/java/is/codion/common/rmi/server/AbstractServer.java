@@ -225,6 +225,16 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     shutdownEvent.onEvent();
   }
 
+  public final void addLoginProxy(final LoginProxy loginProxy) {
+    requireNonNull(loginProxy, "loginProxy");
+    if (loginProxy.getClientTypeId() == null) {
+      sharedLoginProxies.add(loginProxy);
+    }
+    else {
+      loginProxies.put(loginProxy.getClientTypeId(), loginProxy);
+    }
+  }
+
   /**
    * @return info on all connected users
    */
@@ -419,12 +429,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     LoginProxy.getLoginProxies().forEach(loginProxy -> {
       final String clientTypeId = loginProxy.getClientTypeId();
       LOG.info("Server loading " + (clientTypeId == null ? "shared" : "") + " login proxy '" + loginProxy.getClass().getName() + " as service");
-      if (clientTypeId == null) {
-        sharedLoginProxies.add(loginProxy);
-      }
-      else {
-        loginProxies.put(clientTypeId, loginProxy);
-      }
+      addLoginProxy(loginProxy);
     });
   }
 

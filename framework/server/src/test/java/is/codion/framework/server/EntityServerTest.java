@@ -59,7 +59,7 @@ public class EntityServerTest {
   @BeforeAll
   public static synchronized void setUp() throws Exception {
     final String serverName = CONFIGURATION.getServerName();
-    EntityServer.startServer(CONFIGURATION);
+    EntityServer.startServer(CONFIGURATION).addLoginProxy(new TestLoginProxy());
     server = (Server<RemoteEntityConnection, EntityServerAdmin>)
             LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(), CONFIGURATION.getRegistryPort()).lookup(serverName);
     admin = server.getServerAdmin(ADMIN_USER);
