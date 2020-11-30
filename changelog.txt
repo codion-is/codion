@@ -6540,3 +6540,4 @@
   Domain and LoginProxy are now ServiceLoader based, reducing module voes
   AbstractServer.addLoginProxy() added for easier testing
   module-info.java updated with Domain and LoginProxy services
+  AbstractServer now shuts down on startup error

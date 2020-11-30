@@ -75,13 +75,18 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   public AbstractServer(final ServerConfiguration configuration) throws RemoteException {
     super(requireNonNull(configuration, "configuration").getServerPort(),
             configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
-    this.configuration = configuration;
-    Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
-    this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
-            configuration.getServerPort(), ZonedDateTime.now());
-    configureSerializationWhitelist(configuration);
-    startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());
-    loadLoginProxies();
+    try {
+      this.configuration = configuration;
+      Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+      this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
+              configuration.getServerPort(), ZonedDateTime.now());
+      configureSerializationWhitelist(configuration);
+      startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());
+      loadLoginProxies();
+    }
+    catch (final Exception exception) {
+      throw logShutdownAndReturn(new RuntimeException(exception));
+    }
   }
 
   /**
@@ -307,6 +312,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
 
     return this.registry;
+  }
+
+  protected final <T extends Throwable> T logShutdownAndReturn(final T exception) {
+    LOG.error("Exception on server startup", exception);
+    shutdown();
+
+    return exception;
   }
 
   /**

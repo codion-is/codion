@@ -95,7 +95,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       bindToRegistry(configuration.getRegistryPort());
     }
     catch (final Throwable t) {
-      throw logShutdownAndReturn(new RuntimeException(t), this);
+      throw logShutdownAndReturn(new RuntimeException(t));
     }
   }
 
@@ -420,13 +420,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
         database.initializeConnectionPool(poolFactory, user);
       }
     }
-  }
-
-  private static <T extends Throwable> T logShutdownAndReturn(final T exception, final EntityServer server) {
-    LOG.error("Exception on server startup", exception);
-    server.shutdown();
-
-    return exception;
   }
 
   private final class MaintenanceTask implements Runnable {

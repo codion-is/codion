@@ -11,14 +11,20 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.plugin.jasperreports.model.JRReportType;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
+import javax.imageio.ImageIO;
 import java.awt.Image;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Function;
 
 import static is.codion.common.db.operation.FunctionType.functionType;
 import static is.codion.common.db.operation.ProcedureType.procedureType;
@@ -212,5 +218,82 @@ public interface Chinook {
     milliseconds += seconds == null ? 0 : seconds * 1000;
 
     return milliseconds == 0 ? null : milliseconds;
+  }
+
+  final class InvoiceLineTotalProvider
+          implements DerivedProperty.Provider<BigDecimal> {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public BigDecimal get(final DerivedProperty.SourceValues sourceValues) {
+      Integer quantity = sourceValues.get(InvoiceLine.QUANTITY);
+      BigDecimal unitPrice = sourceValues.get(InvoiceLine.UNITPRICE);
+      if (unitPrice == null || quantity == null) {
+        return null;
+      }
+
+      return unitPrice.multiply(BigDecimal.valueOf(quantity));
+    }
+  }
+
+  final class TrackMinSecProvider
+          implements DerivedProperty.Provider<String> {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public String get(final DerivedProperty.SourceValues sourceValues) {
+      Integer milliseconds = sourceValues.get(Track.MILLISECONDS);
+      if (milliseconds == null || milliseconds <= 0) {
+        return "";
+      }
+
+      return getMinutes(milliseconds) + " min " +
+              getSeconds(milliseconds) + " sec";
+    }
+  }
+
+  final class CoverArtImageProvider
+          implements DerivedProperty.Provider<Image> {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public Image get(final DerivedProperty.SourceValues sourceValues) {
+      byte[] bytes = sourceValues.get(Album.COVER);
+      if (bytes == null) {
+        return null;
+      }
+
+      try {
+        return ImageIO.read(new ByteArrayInputStream(bytes));
+      }
+      catch (final IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  final class CustomerStringProvider
+          implements Function<Entity, String>, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    @Override
+    public String apply(final Entity customer) {
+      StringBuilder builder = new StringBuilder();
+      if (customer.isNotNull(Customer.LASTNAME)) {
+        builder.append(customer.get(Customer.LASTNAME));
+      }
+      if (customer.isNotNull(Customer.FIRSTNAME)) {
+        builder.append(", ").append(customer.get(Customer.FIRSTNAME));
+      }
+      if (customer.isNotNull(Customer.EMAIL)) {
+        builder.append(" <").append(customer.get(Customer.EMAIL)).append(">");
+      }
+
+      return builder.toString();
+    }
   }
 }

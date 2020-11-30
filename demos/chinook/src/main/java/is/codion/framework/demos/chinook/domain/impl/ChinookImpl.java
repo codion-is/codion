@@ -11,17 +11,10 @@ import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.DerivedProperty;
 
-import javax.imageio.ImageIO;
-import java.awt.Image;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static is.codion.framework.db.condition.Conditions.condition;
@@ -383,83 +376,6 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
               .castTo(Track.TYPE, entityConnection.select(selectCondition)).stream()
               .map(track -> track.raisePrice(priceIncrease))
               .collect(Collectors.toList()));
-    }
-  }
-
-  private static final class InvoiceLineTotalProvider
-          implements DerivedProperty.Provider<BigDecimal> {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public BigDecimal get(final DerivedProperty.SourceValues sourceValues) {
-      Integer quantity = sourceValues.get(InvoiceLine.QUANTITY);
-      BigDecimal unitPrice = sourceValues.get(InvoiceLine.UNITPRICE);
-      if (unitPrice == null || quantity == null) {
-        return null;
-      }
-
-      return unitPrice.multiply(BigDecimal.valueOf(quantity));
-    }
-  }
-
-  private static final class TrackMinSecProvider
-          implements DerivedProperty.Provider<String> {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public String get(final DerivedProperty.SourceValues sourceValues) {
-      Integer milliseconds = sourceValues.get(Track.MILLISECONDS);
-      if (milliseconds == null || milliseconds <= 0) {
-        return "";
-      }
-
-      return Chinook.getMinutes(milliseconds) + " min " +
-              Chinook.getSeconds(milliseconds) + " sec";
-    }
-  }
-
-  private static final class CoverArtImageProvider
-          implements DerivedProperty.Provider<Image> {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public Image get(final DerivedProperty.SourceValues sourceValues) {
-      byte[] bytes = sourceValues.get(Album.COVER);
-      if (bytes == null) {
-        return null;
-      }
-
-      try {
-        return ImageIO.read(new ByteArrayInputStream(bytes));
-      }
-      catch (final IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
-
-  private static final class CustomerStringProvider
-          implements Function<Entity, String>, Serializable {
-
-    private static final long serialVersionUID = 1;
-
-    @Override
-    public String apply(final Entity customer) {
-      StringBuilder builder = new StringBuilder();
-      if (customer.isNotNull(Customer.LASTNAME)) {
-        builder.append(customer.get(Customer.LASTNAME));
-      }
-      if (customer.isNotNull(Customer.FIRSTNAME)) {
-        builder.append(", ").append(customer.get(Customer.FIRSTNAME));
-      }
-      if (customer.isNotNull(Customer.EMAIL)) {
-        builder.append(" <").append(customer.get(Customer.EMAIL)).append(">");
-      }
-
-      return builder.toString();
     }
   }
 }
