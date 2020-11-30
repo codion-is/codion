@@ -185,6 +185,7 @@ public class AbstractServerTest {
 
     private TestServer(final ServerConfiguration configuration) throws RemoteException {
       super(configuration);
+      addLoginProxy(new TestLoginProxy());
     }
 
     @Override
