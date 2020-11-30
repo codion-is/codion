@@ -43,7 +43,7 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
   public <T> Reference<T> getReference(final Attribute<T> attribute) {
     final Reference<T> reference = findReference(attribute);
     if (reference == null) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not a foreign key reference attribute");
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of foreign key " + getName());
     }
 
     return reference;
