@@ -189,33 +189,6 @@ public final class Conditions {
     return conditionCombination;
   }
 
-  private static Condition foreignKeyCondition(final ForeignKey foreignKey, final Operator operator,
-                                               final List<Map<Attribute<?>, Object>> valueMaps) {
-    if (foreignKey.getReferences().size() > 1) {
-      return compositeKeyCondition(attributeMap(foreignKey), operator, valueMaps);
-    }
-
-    final ForeignKey.Reference<?> reference = foreignKey.getReferences().get(0);
-    final List<Object> values = valueMaps.stream()
-            .map(map -> map.get(reference.getReferencedAttribute())).collect(toList());
-    if (operator == EQUAL) {
-      if (values.isEmpty()) {
-        return condition((Attribute<Object>) reference.getAttribute()).isNull();
-      }
-
-      return condition((Attribute<Object>) reference.getAttribute()).equalTo(values);
-    }
-    if (operator == NOT_EQUAL) {
-      if (values.isEmpty()) {
-        return condition((Attribute<Object>) reference.getAttribute()).isNotNull();
-      }
-
-      return condition((Attribute<Object>) reference.getAttribute()).notEqualTo(values);
-    }
-
-    throw new IllegalArgumentException("Unsupported operator: " + operator);
-  }
-
   private static Map<Attribute<?>, Attribute<?>> attributeMap(final Collection<Attribute<?>> attributes) {
     final Map<Attribute<?>, Attribute<?>> map = new HashMap<>(attributes.size());
     attributes.forEach(attribute -> map.put(attribute, attribute));
@@ -228,13 +201,6 @@ public final class Conditions {
     foreignKeyProperty.getReferences().forEach(reference -> map.put(reference.getAttribute(), reference.getReferencedAttribute()));
 
     return map;
-  }
-
-  private static Map<Attribute<?>, Object> valueMap(final Entity entity, final List<Attribute<?>> attributes) {
-    final Map<Attribute<?>, Object> values = new HashMap<>();
-    attributes.forEach(attribute -> values.put(attribute, entity.get(attribute)));
-
-    return values;
   }
 
   private static Map<Attribute<?>, Object> valueMap(final Key key) {
@@ -322,5 +288,39 @@ public final class Conditions {
     public Condition isNotNull() {
       return foreignKeyCondition(foreignKey, NOT_EQUAL, emptyList());
     }
+  }
+
+  private static Condition foreignKeyCondition(final ForeignKey foreignKey, final Operator operator,
+                                               final List<Map<Attribute<?>, Object>> valueMaps) {
+    if (foreignKey.getReferences().size() > 1) {
+      return compositeKeyCondition(attributeMap(foreignKey), operator, valueMaps);
+    }
+
+    final ForeignKey.Reference<?> reference = foreignKey.getReferences().get(0);
+    final List<Object> values = valueMaps.stream()
+            .map(map -> map.get(reference.getReferencedAttribute())).collect(toList());
+    if (operator == EQUAL) {
+      if (values.isEmpty()) {
+        return condition((Attribute<Object>) reference.getAttribute()).isNull();
+      }
+
+      return condition((Attribute<Object>) reference.getAttribute()).equalTo(values);
+    }
+    if (operator == NOT_EQUAL) {
+      if (values.isEmpty()) {
+        return condition((Attribute<Object>) reference.getAttribute()).isNotNull();
+      }
+
+      return condition((Attribute<Object>) reference.getAttribute()).notEqualTo(values);
+    }
+
+    throw new IllegalArgumentException("Unsupported operator: " + operator);
+  }
+
+  private static Map<Attribute<?>, Object> valueMap(final Entity entity, final List<Attribute<?>> attributes) {
+    final Map<Attribute<?>, Object> values = new HashMap<>();
+    attributes.forEach(attribute -> values.put(attribute, entity.get(attribute)));
+
+    return values;
   }
 }

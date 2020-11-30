@@ -672,7 +672,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(functionType.getName(), arguments == null ? null : arguments, e), e);
+      LOG.error(createLogMessage(functionType.getName(), arguments, e), e);
       throw e;
     }
     finally {
@@ -698,7 +698,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     catch (final DatabaseException e) {
       exception = e;
-      LOG.error(createLogMessage(procedureType.getName(), arguments == null ? null : arguments, e), e);
+      LOG.error(createLogMessage(procedureType.getName(), arguments, e), e);
       throw e;
     }
     finally {

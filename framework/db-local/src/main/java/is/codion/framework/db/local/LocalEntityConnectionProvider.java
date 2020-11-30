@@ -15,6 +15,8 @@ import is.codion.framework.domain.Domain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -73,21 +75,27 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * @return the underlying domain model
    */
   public Domain getDomain() {
-    try {
-      if (domain == null) {
-        try {
-          domain = Domain.getInstanceByClassName(getDomainClassName());
-        }
-        catch (final IllegalArgumentException e) {
-          domain = (Domain) Class.forName(getDomainClassName()).getConstructor().newInstance();
+    if (domain == null) {
+      final String domainClassName = getDomainClassName();
+      final Optional<Domain> optionalDomain = Domain.getInstanceByClassName(domainClassName);
+      if (optionalDomain.isPresent()) {
+        domain = optionalDomain.get();
+      }
+      else {
+        LOG.debug("Domain of type " + domainClassName + " not found in services");
+      }
+      try {
+        if (domain == null) {
+          domain = (Domain) Class.forName(domainClassName).getConstructor().newInstance();
         }
       }
+      catch (final Exception e) {
+        LOG.error("Error when instantiating Domain of type " + domainClassName);
+        throw new RuntimeException(e);
+      }
+    }
 
-      return domain;
-    }
-    catch (final Exception e) {
-      throw new RuntimeException(e);
-    }
+    return domain;
   }
 
   /**
