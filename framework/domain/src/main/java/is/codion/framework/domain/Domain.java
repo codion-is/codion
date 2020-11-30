@@ -15,6 +15,7 @@ import is.codion.framework.domain.entity.Entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 
 /**
@@ -86,33 +87,31 @@ public interface Domain {
 
   /**
    * @param name the domain name
-   * @return a {@link Domain} implementation with the given name
-   * @throws IllegalArgumentException in case no such implementation is found
+   * @return a {@link Domain} implementation with the given name, if found
    * @see DomainType#getName()
    */
-  static Domain getInstanceByName(final String name) {
+  static Optional<Domain> getInstanceByName(final String name) {
     for (final Domain domain : getDomains()) {
       if (domain.getDomainType().getName().equals(name)) {
-        return domain;
+        return Optional.of(domain);
       }
     }
 
-    throw new IllegalArgumentException("No Domain with name: " + name + " found");
+    return Optional.empty();
   }
 
   /**
    * @param className the domain classname
-   * @return a {@link Domain} implementation of the given type
-   * @throws IllegalArgumentException in case no such implementation is found
+   * @return a {@link Domain} implementation of the given type, if found
    * @see DomainType#getName()
    */
-  static Domain getInstanceByClassName(final String className) {
+  static Optional<Domain> getInstanceByClassName(final String className) {
     for (final Domain domain : getDomains()) {
       if (domain.getClass().getName().equals(className)) {
-        return domain;
+        return Optional.of(domain);
       }
     }
 
-    throw new IllegalArgumentException("No Domain of type: " + className + " found");
+    return Optional.empty();
   }
 }

@@ -13,6 +13,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultForeignKey extends DefaultAttribute<Entity> implements ForeignKey {
 
+  private static final long serialVersionUID = 1;
+
   private final List<Reference<?>> references;
   private final EntityType<?> referencedEntityType;
 
