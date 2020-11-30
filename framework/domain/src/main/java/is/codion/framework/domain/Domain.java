@@ -61,7 +61,7 @@ public interface Domain {
   <C, T, R> DatabaseFunction<C, T, R> getFunction(FunctionType<C, T, R> functionType);
 
   /**
-   * Configures a database connection for this domain model, f.ex. adding extensions or properties.
+   * Configures a database connection for this domain model, for example adding extensions or properties.
    * @param connection the connection to configure
    * @throws DatabaseException in case of an exception
    */
