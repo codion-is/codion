@@ -6541,3 +6541,4 @@
   AbstractServer.addLoginProxy() added for easier testing
   module-info.java updated with Domain and LoginProxy services
   AbstractServer now shuts down on startup error
+  SelectConditionDeserializer bug fixed, did not set forUpdate correctly
