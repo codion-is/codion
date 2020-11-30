@@ -21,4 +21,9 @@ module is.codion.framework.demos.chinook {
   //for loading of reports from classpath and accessing default methods in EntityType interfaces
   opens is.codion.framework.demos.chinook.domain
           to is.codion.plugin.jasperreports, is.codion.framework.domain;
+
+  provides is.codion.framework.domain.Domain
+          with is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
+  provides is.codion.common.rmi.server.LoginProxy
+          with is.codion.framework.demos.chinook.server.ChinookLoginProxy;
 }

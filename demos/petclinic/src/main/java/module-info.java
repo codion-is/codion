@@ -8,4 +8,7 @@ module is.codion.framework.demos.petclinic {
           to is.codion.swing.framework.model;
   exports is.codion.framework.demos.petclinic.ui
           to is.codion.swing.framework.ui;
+
+  provides is.codion.framework.domain.Domain
+          with is.codion.framework.demos.petclinic.domain.PetClinic;
 }

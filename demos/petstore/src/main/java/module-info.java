@@ -5,4 +5,7 @@ module is.codion.framework.demos.petstore {
 
   exports is.codion.framework.demos.petstore.ui
           to is.codion.swing.framework.ui;
+
+  provides is.codion.framework.domain.Domain
+          with is.codion.framework.demos.petstore.domain.Petstore;
 }

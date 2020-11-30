@@ -25,4 +25,9 @@ module is.codion.framework.demos.empdept {
   //for loading of reports from classpath
   opens is.codion.framework.demos.empdept.domain
           to is.codion.plugin.jasperreports;
+
+  provides is.codion.framework.domain.Domain
+          with is.codion.framework.demos.empdept.domain.EmpDept;
+  provides is.codion.common.rmi.server.LoginProxy
+          with is.codion.framework.demos.empdept.server.EmpDeptLoginProxy;
 }

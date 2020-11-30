@@ -10,4 +10,6 @@ module is.codion.framework.domain {
   exports is.codion.framework.domain.property;
   exports is.codion.framework.domain;
   exports is.codion.framework.i18n;
+
+  uses is.codion.framework.domain.Domain;
 }

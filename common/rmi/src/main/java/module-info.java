@@ -12,4 +12,5 @@ module is.codion.common.rmi {
   exports is.codion.common.rmi.server.exception;
 
   uses is.codion.common.rmi.server.AuxiliaryServerFactory;
+  uses is.codion.common.rmi.server.LoginProxy;
 }

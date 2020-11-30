@@ -13,4 +13,8 @@ module is.codion.framework.demos.world {
   //for accessing default methods in EntityType interfaces
   opens is.codion.framework.demos.world.domain.api
           to is.codion.framework.domain;
+
+  provides is.codion.framework.domain.Domain
+          with is.codion.framework.demos.world.domain.WorldImpl;
+
 }
