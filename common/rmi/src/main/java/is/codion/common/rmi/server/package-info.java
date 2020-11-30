@@ -13,6 +13,5 @@
  * {@link is.codion.common.rmi.server.ServerConfiguration#AUXILIARY_SERVER_FACTORY_CLASS_NAMES}<br>
  * {@link is.codion.common.rmi.server.ServerConfiguration#SERIALIZATION_FILTER_WHITELIST}<br>
  * {@link is.codion.common.rmi.server.ServerConfiguration#SERIALIZATION_FILTER_DRYRUN}<br>
- * {@link is.codion.common.rmi.server.ServerConfiguration#SERVER_LOGIN_PROXY_CLASSES}<br>
  */
 package is.codion.common.rmi.server;

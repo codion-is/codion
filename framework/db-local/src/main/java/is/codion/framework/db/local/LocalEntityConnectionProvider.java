@@ -75,7 +75,12 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   public Domain getDomain() {
     try {
       if (domain == null) {
-        domain = (Domain) Class.forName(getDomainClassName()).getConstructor().newInstance();
+        try {
+          domain = Domain.getInstanceByClassName(getDomainClassName());
+        }
+        catch (final IllegalArgumentException e) {
+          domain = (Domain) Class.forName(getDomainClassName()).getConstructor().newInstance();
+        }
       }
 
       return domain;

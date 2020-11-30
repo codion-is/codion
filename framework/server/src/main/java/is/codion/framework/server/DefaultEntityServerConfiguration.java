@@ -62,16 +62,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public Collection<String> getSharedLoginProxyClassNames() {
-    return serverConfiguration.getSharedLoginProxyClassNames();
-  }
-
-  @Override
-  public Collection<String> getLoginProxyClassNames() {
-    return serverConfiguration.getLoginProxyClassNames();
-  }
-
-  @Override
   public Collection<String> getAuxiliaryServerFactoryClassNames() {
     return serverConfiguration.getAuxiliaryServerFactoryClassNames();
   }
@@ -164,16 +154,6 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   @Override
   public void setServerName(final String serverName) {
     serverConfiguration.setServerName(serverName);
-  }
-
-  @Override
-  public void setSharedLoginProxyClassNames(final Collection<String> sharedLoginProxyClassNames) {
-    serverConfiguration.setSharedLoginProxyClassNames(sharedLoginProxyClassNames);
-  }
-
-  @Override
-  public void setLoginProxyClassNames(final Collection<String> loginProxyClassNames) {
-    serverConfiguration.setLoginProxyClassNames(loginProxyClassNames);
   }
 
   @Override

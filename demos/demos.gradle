@@ -30,6 +30,7 @@ task domainJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.output
     include '**/domain/**/*'
     include '**/server/**/*'
+    include '**/services/**/*'
     includeEmptyDirs false
 }
 

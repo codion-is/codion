@@ -26,7 +26,7 @@ public final class EmpDeptLoginProxy implements LoginProxy {
 
   @Override
   public String getClientTypeId() {
-    return "is.codion.framework.demos.empdept.client.ui.EmpDeptAppPanel";
+    return "is.codion.framework.demos.empdept.ui.EmpDeptAppPanel";
   }
 
   @Override
