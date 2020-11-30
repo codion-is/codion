@@ -46,19 +46,19 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
 
     final SelectCondition selectCondition = condition.select();
     final JsonNode orderBy = jsonNode.get("orderBy");
-    if (orderBy != null) {
+    if (orderBy != null && !orderBy.isNull()) {
       selectCondition.orderBy(deserializeOrderBy(definition, orderBy));
     }
     final JsonNode limit = jsonNode.get("limit");
-    if (limit != null) {
+    if (limit != null && !limit.isNull()) {
       selectCondition.limit(limit.asInt());
     }
     final JsonNode offset = jsonNode.get("offset");
-    if (offset != null) {
+    if (offset != null && !offset.isNull()) {
       selectCondition.offset(offset.asInt());
     }
     final JsonNode fetchCount = jsonNode.get("fetchCount");
-    if (fetchCount != null) {
+    if (fetchCount != null && !fetchCount.isNull()) {
       selectCondition.fetchCount(fetchCount.asInt());
     }
     final JsonNode fetchDepth = jsonNode.get("fetchDepth");
@@ -66,7 +66,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
       selectCondition.fetchDepth(fetchDepth.asInt());
     }
     final JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
-    if (fkFetchDepth != null) {
+    if (fkFetchDepth != null && !fkFetchDepth.isNull()) {
       for (final ForeignKeyProperty property : definition.getForeignKeyProperties()) {
         final JsonNode fetchDepthNode = fkFetchDepth.get(property.getAttribute().getName());
         if (fetchDepthNode != null) {
@@ -75,11 +75,11 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
       }
     }
     final JsonNode forUpdate = jsonNode.get("forUpdate");
-    if (forUpdate != null) {
+    if (forUpdate != null && !forUpdate.isNull() && forUpdate.asBoolean()) {
       selectCondition.forUpdate();
     }
     final JsonNode selectAttributes = jsonNode.get("selectAttributes");
-    if (selectAttributes != null) {
+    if (selectAttributes != null && !selectAttributes.isNull()) {
       selectCondition.attributes(deserializeSelectAttributes(definition, selectAttributes));
     }
 

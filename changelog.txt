@@ -6511,3 +6511,4 @@
   Domain and LoginProxy are now ServiceLoader based, reducing module voes
   AbstractServer.addLoginProxy() added for easier testing
   AbstractServer now shuts down on startup error
+  SelectConditionDeserializer bug fixed, did not set forUpdate correctly
