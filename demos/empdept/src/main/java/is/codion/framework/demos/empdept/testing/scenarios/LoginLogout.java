@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package is.codion.framework.demos.empdept.testing.scenarios;
+
+import is.codion.framework.demos.empdept.ui.EmpDeptAppPanel;
+import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
+
+import java.util.Random;
+
+// tag::loadTest[]
+public final class LoginLogout extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {
+
+  final Random random = new Random();
+
+  @Override
+  protected void perform(final EmpDeptAppPanel.EmpDeptApplicationModel application) {
+    try {
+      application.getConnectionProvider().close();
+      Thread.sleep(random.nextInt(1500));
+      application.getConnectionProvider().getConnection();
+    }
+    catch (final InterruptedException ignored) {/*ignored*/}
+  }
+
+  @Override
+  public int getDefaultWeight() {
+    return 4;
+  }
+}
+// end::loadTest[]

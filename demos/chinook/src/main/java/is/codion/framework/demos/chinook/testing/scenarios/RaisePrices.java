@@ -1,27 +1,34 @@
+/*
+ * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
-import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.Chinook.Album;
+import is.codion.framework.demos.chinook.domain.Chinook.Artist;
+import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.swing.common.tools.loadtest.ScenarioException;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
+import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.math.BigDecimal;
 
-public final class RaisePrices extends EntityLoadTestModel.AbstractEntityUsageScenario<ChinookApplicationModel> {
+import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRows;
+
+public final class RaisePrices extends AbstractEntityUsageScenario<ChinookApplicationModel> {
 
   @Override
   protected void perform(final ChinookApplicationModel application) throws ScenarioException {
     try {
-      final SwingEntityModel artistModel = application.getEntityModel(Chinook.Artist.TYPE);
+      final SwingEntityModel artistModel = application.getEntityModel(Artist.TYPE);
       artistModel.getTableModel().refresh();
-      EntityLoadTestModel.selectRandomRows(artistModel.getTableModel(), 2);
-      final SwingEntityModel albumModel = artistModel.getDetailModel(Chinook.Album.TYPE);
-      EntityLoadTestModel.selectRandomRows(albumModel.getTableModel(), 0.5);
+      selectRandomRows(artistModel.getTableModel(), 2);
+      final SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
+      selectRandomRows(albumModel.getTableModel(), 0.5);
       final TrackTableModel trackTableModel =
-              (TrackTableModel) albumModel.getDetailModel(Chinook.Track.TYPE).getTableModel();
-      EntityLoadTestModel.selectRandomRows(trackTableModel, 4);
+              (TrackTableModel) albumModel.getDetailModel(Track.TYPE).getTableModel();
+      selectRandomRows(trackTableModel, 4);
       trackTableModel.raisePriceOfSelected(BigDecimal.valueOf(0.01));
     }
     catch (final Exception e) {

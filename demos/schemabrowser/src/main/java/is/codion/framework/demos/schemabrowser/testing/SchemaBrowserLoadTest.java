@@ -17,6 +17,7 @@ import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Table;
 import is.codion.swing.common.tools.loadtest.UsageScenario;
 import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;

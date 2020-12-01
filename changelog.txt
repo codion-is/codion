@@ -6545,3 +6545,4 @@
 0.17.2
   DefaultForeignKey.DefaultReference, bug fixed, constructor null check fixed
   DefaultLocalEntityConnection, some light refactoring
+  AbstractEntityUsageScenario moved up to package level, some demo load test refactoring

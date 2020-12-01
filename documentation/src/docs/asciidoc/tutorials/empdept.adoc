@@ -221,6 +221,31 @@ include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[
 include::{dir-source}/is/codion/framework/demos/empdept/testing/EmpDeptLoadTest.java[tags=loadTest]
 ----
 
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/empdept/testing/scenarios/InsertDepartment.java[tags=loadTest]
+----
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/empdept/testing/scenarios/InsertEmployee.java[tags=loadTest]
+----
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/empdept/testing/scenarios/LoginLogout.java[tags=loadTest]
+----
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/empdept/testing/scenarios/SelectDepartment.java[tags=loadTest]
+----
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/empdept/testing/scenarios/UpdateEmployee.java[tags=loadTest]
+----
+
 == Full Demo Source
 
 === Domain

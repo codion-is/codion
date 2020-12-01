@@ -58,10 +58,10 @@ public class EntityLoadTestModelTest {
   private static final class TestLoadTestModel extends EntityLoadTestModel<DefaultEntityApplicationModel> {
 
     public TestLoadTestModel() {
-      super(UNIT_TEST_USER, asList(new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("1") {
+      super(UNIT_TEST_USER, asList(new AbstractEntityUsageScenario<DefaultEntityApplicationModel>("1") {
         @Override
         protected void perform(final DefaultEntityApplicationModel application) throws ScenarioException {}
-      }, new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("2") {
+      }, new AbstractEntityUsageScenario<DefaultEntityApplicationModel>("2") {
         @Override
         protected void perform(final DefaultEntityApplicationModel application) throws ScenarioException {}
       }));
