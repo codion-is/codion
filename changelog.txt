@@ -6543,3 +6543,4 @@
   AbstractServer now shuts down on startup error
   SelectConditionDeserializer bug fixed, did not set forUpdate correctly
 0.17.2
+  DefaultForeignKey.DefaultReference, bug fixed, constructor null check fixed

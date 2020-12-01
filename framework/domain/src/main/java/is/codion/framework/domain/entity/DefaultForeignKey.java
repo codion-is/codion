@@ -95,11 +95,11 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
     private final Attribute<T> referencedAttribute;
 
     DefaultReference(final Attribute<T> attribute, final Attribute<T> referencedAttribute) {
-      if (attribute.equals(referencedAttribute)) {
+      if (requireNonNull(attribute, "attribute").equals(requireNonNull(referencedAttribute, "referencedAttribute"))) {
         throw new IllegalArgumentException("attribute and referencedAttribute can not be the same");
       }
-      this.attribute = requireNonNull(attribute, "attribute");
-      this.referencedAttribute = requireNonNull(referencedAttribute, "referencedAttribute");
+      this.attribute = attribute;
+      this.referencedAttribute = referencedAttribute;
     }
 
     @Override
