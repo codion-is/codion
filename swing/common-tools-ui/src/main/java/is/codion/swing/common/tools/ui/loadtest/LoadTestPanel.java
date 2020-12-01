@@ -304,7 +304,7 @@ public final class LoadTestPanel<T> extends JPanel {
     numberOfApplicationsChartPanel.setBorder(BorderFactory.createTitledBorder("Application count"));
     memoryUsageChartPanel.setBorder(BorderFactory.createTitledBorder("Memory usage (MB)"));
     systemLoadChartPanel.setBorder(BorderFactory.createTitledBorder("System load"));
-    failureChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario failure rate (%)"));
+    failureChartPanel.setBorder(BorderFactory.createTitledBorder("Scenario run failures per second"));
 
     final JTabbedPane twoTab = new JTabbedPane();
     twoTab.addTab("Scenarios run", usageScenarioChartPanel);
