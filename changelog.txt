@@ -6544,3 +6544,4 @@
   SelectConditionDeserializer bug fixed, did not set forUpdate correctly
 0.17.2
   DefaultForeignKey.DefaultReference, bug fixed, constructor null check fixed
+  DefaultLocalEntityConnection, some light refactoring

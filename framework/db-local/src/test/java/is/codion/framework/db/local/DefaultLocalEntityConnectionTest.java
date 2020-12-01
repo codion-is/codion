@@ -212,6 +212,7 @@ public class DefaultLocalEntityConnectionTest {
   public void selectWhereNull() throws Exception {
     connection.select(EMP_MGR_FK, (Entity) null);
     connection.select(EMP_DATA_LAZY, (byte[]) null);
+    assertThrows(NullPointerException.class, () -> connection.select(EMP_DATA_LAZY, (Collection<byte[]>) null));
   }
 
   @Test

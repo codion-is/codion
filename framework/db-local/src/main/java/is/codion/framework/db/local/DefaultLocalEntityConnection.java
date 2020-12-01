@@ -21,9 +21,7 @@ import is.codion.common.db.result.ResultIterator;
 import is.codion.common.db.result.ResultPacker;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.ForeignKeyConditionBuilder;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.condition.WhereCondition;
@@ -454,15 +452,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public <T> Entity selectSingle(final Attribute<T> attribute, final T value) throws DatabaseException {
     if (attribute instanceof ForeignKey) {
-      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKey) attribute);
-
-      return selectSingle(value == null ? conditionBuilder.isNull() : conditionBuilder.equalTo((Entity) value));
+      return selectSingle(value == null ?
+              condition((ForeignKey) attribute).isNull() :
+              condition((ForeignKey) attribute).equalTo((Entity) value));
     }
-    else {
-      final AttributeCondition.Builder<T> conditionBuilder = condition(attribute);
 
-      return selectSingle(value == null ? conditionBuilder.isNull() : conditionBuilder.equalTo(value));
-    }
+    return selectSingle(value == null ? condition(attribute).isNull() : condition(attribute).equalTo(value));
   }
 
   @Override
@@ -509,29 +504,24 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final T value) throws DatabaseException {
     if (attribute instanceof ForeignKey) {
-      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKey) attribute);
-
-      return select(value == null ? conditionBuilder.isNull() : conditionBuilder.equalTo((Entity) value));
+      return select(value == null ?
+              condition((ForeignKey) attribute).isNull() :
+              condition((ForeignKey) attribute).equalTo((Entity) value));
     }
-    else {
-      final AttributeCondition.Builder<T> conditionBuilder = condition(attribute);
 
-      return select(value == null ? conditionBuilder.isNull() : conditionBuilder.equalTo(value));
-    }
+    return select(value == null ? condition(attribute).isNull() : condition(attribute).equalTo(value));
   }
 
   @Override
   public <T> List<Entity> select(final Attribute<T> attribute, final Collection<T> values) throws DatabaseException {
+    requireNonNull(values, "values");
     if (attribute instanceof ForeignKey) {
-      final ForeignKeyConditionBuilder conditionBuilder = condition((ForeignKey) attribute);
-
-      return select(values.isEmpty() ? conditionBuilder.isNull() : conditionBuilder.equalTo((Collection<Entity>) values));
+      return select(values.isEmpty() ?
+              condition((ForeignKey) attribute).isNull() :
+              condition((ForeignKey) attribute).equalTo((Collection<Entity>) values));
     }
-    else {
-      final AttributeCondition.Builder<T> conditionBuilder = condition(attribute);
 
-      return select(values.isEmpty() ? conditionBuilder.isNull() : conditionBuilder.equalTo(values));
-    }
+    return select(values.isEmpty() ? condition(attribute).isNull() : condition(attribute).equalTo(values));
   }
 
   @Override
