@@ -11,6 +11,7 @@ import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.model.StoreAppModel;
 import is.codion.framework.model.EntityModel;
 import is.codion.swing.common.tools.loadtest.ScenarioException;
+import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import java.util.UUID;
@@ -36,7 +37,7 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
   }
 
   private static class UsageScenario extends
-          EntityLoadTestModel.AbstractEntityUsageScenario<StoreAppModel> {
+          AbstractEntityUsageScenario<StoreAppModel> {
 
     @Override
     protected void perform(StoreAppModel application)

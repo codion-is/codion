@@ -11,7 +11,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.swing.common.tools.loadtest.AbstractUsageScenario;
 import is.codion.swing.common.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.tools.loadtest.UsageScenario;
 
@@ -152,27 +151,4 @@ public abstract class EntityLoadTestModel<M extends EntityApplicationModel> exte
 
   @Override
   protected abstract M initializeApplication();
-
-  /**
-   * An abstract base class for usage scenarios based on EntityApplicationModel instances
-   * @param <M> the application model type used by this usage scenario
-   */
-  public abstract static class AbstractEntityUsageScenario<M extends EntityApplicationModel>
-          extends AbstractUsageScenario<M> {
-
-    /**
-     * Instantiates a new AbstractEntityUsageScenario
-     */
-    public AbstractEntityUsageScenario() {
-      super();
-    }
-
-    /**
-     * Instantiates a new AbstractEntityUsageScenario
-     * @param name the scenario name
-     */
-    public AbstractEntityUsageScenario(final String name) {
-      super(name);
-    }
-  }
 }

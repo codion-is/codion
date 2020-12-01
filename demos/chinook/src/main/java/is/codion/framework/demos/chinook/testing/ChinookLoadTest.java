@@ -23,7 +23,8 @@ import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 
-import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.framework.demos.chinook.domain.Chinook.Genre;
+import static is.codion.framework.demos.chinook.domain.Chinook.Track;
 import static java.util.Arrays.asList;
 
 public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicationModel> {
@@ -41,33 +42,8 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
     final ChinookApplicationModel applicationModel = new ChinookApplicationModel(
             EntityConnectionProviders.connectionProvider().setDomainClassName("is.codion.framework.demos.chinook.domain.impl.ChinookImpl")
                     .setClientTypeId(ChinookAppPanel.class.getName()).setUser(getUser()));
-    /* ARTIST
-     *   ALBUM
-     *     TRACK
-     * GENRE
-     *   GENRETRACK
-     * PLAYLIST
-     *   PLAYLISTTRACK
-     * CUSTOMER
-     *   INVOICE
-     *     INVOICELINE
-     */
-    final SwingEntityModel artistModel = applicationModel.getEntityModel(Artist.TYPE);
-    final SwingEntityModel albumModel = artistModel.getDetailModel(Album.TYPE);
-    final SwingEntityModel trackModel = albumModel.getDetailModel(Track.TYPE);
-    artistModel.addLinkedDetailModel(albumModel);
-    albumModel.addLinkedDetailModel(trackModel);
 
-    final SwingEntityModel playlistModel = applicationModel.getEntityModel(Playlist.TYPE);
-    final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(PlaylistTrack.TYPE);
-    playlistModel.addLinkedDetailModel(playlistTrackModel);
-
-    final SwingEntityModel customerModel = applicationModel.getEntityModel(Customer.TYPE);
-    final SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
-    final SwingEntityModel invoicelineModel = invoiceModel.getDetailModel(InvoiceLine.TYPE);
-    customerModel.addLinkedDetailModel(invoiceModel);
-    invoiceModel.addLinkedDetailModel(invoicelineModel);
-
+    /* Add a Genre model used in the ViewGenre scenario */
     final SwingEntityModel genreModel = new SwingEntityModel(Genre.TYPE, applicationModel.getConnectionProvider());
     final SwingEntityModel genreTrackModel = new SwingEntityModel(Track.TYPE, applicationModel.getConnectionProvider());
     genreModel.addDetailModel(genreTrackModel);

@@ -97,6 +97,9 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
 
     public EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
+      final SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
+      departmentModel.addDetailModel(new SwingEntityModel(Employee.TYPE, connectionProvider));
+      addEntityModel(departmentModel);
     }
   }
   // end::applicationModel[]
