@@ -6517,3 +6517,4 @@
   DefaultLocalEntityConnection, some light refactoring
   AbstractEntityUsageScenario moved up to package level, some demo load test refactoring
   LoadTestPanel, incorrect chart caption fixed
+  DomainToString, bug fixed, had not been updated according to latest domain model changes

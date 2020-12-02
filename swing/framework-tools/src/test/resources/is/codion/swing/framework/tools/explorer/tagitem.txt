@@ -1,9 +1,11 @@
 public interface TagItem {
   EntityType<Entity> TYPE = DOMAIN.entityType("petstore.tag_item");
+
   Attribute<Integer> TAGID = TYPE.integerAttribute("tagid");
-  ForeignKeyAttribute TAG_FK = TYPE.foreignKey("tag_fk", TagItem.TAGID, Tag.TAGID);
   Attribute<Integer> ITEMID = TYPE.integerAttribute("itemid");
-  ForeignKeyAttribute ITEM_FK = TYPE.foreignKey("item_fk", TagItem.ITEMID, Item.ITEMID);
+
+  ForeignKey TAG_FK = TYPE.foreignKey("tag_fk", TagItem.TAGID, Tag.TAGID);
+  ForeignKey ITEM_FK = TYPE.foreignKey("item_fk", TagItem.ITEMID, Item.ITEMID);
 }
 
 void tagItem() {

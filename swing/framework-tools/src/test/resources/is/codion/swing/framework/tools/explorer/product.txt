@@ -1,11 +1,13 @@
 public interface Product {
   EntityType<Entity> TYPE = DOMAIN.entityType("petstore.product");
+
   Attribute<Integer> PRODUCTID = TYPE.integerAttribute("productid");
   Attribute<Integer> CATEGORYID = TYPE.integerAttribute("categoryid");
-  ForeignKeyAttribute CATEGORY_FK = TYPE.foreignKey("category_fk", Product.CATEGORYID, Category.CATEGORYID);
   Attribute<String> NAME = TYPE.stringAttribute("name");
   Attribute<String> DESCRIPTION = TYPE.stringAttribute("description");
   Attribute<String> IMAGEURL = TYPE.stringAttribute("imageurl");
+
+  ForeignKey CATEGORY_FK = TYPE.foreignKey("category_fk", Product.CATEGORYID, Category.CATEGORYID);
 }
 
 void product() {
