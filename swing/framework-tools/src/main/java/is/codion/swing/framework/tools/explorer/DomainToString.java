@@ -14,6 +14,7 @@ import is.codion.framework.domain.property.Property;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static is.codion.common.Util.nullOrEmpty;
 
@@ -26,8 +27,16 @@ final class DomainToString {
     final String interfaceName = getInterfaceName(definition.getTableName(), true);
     builder.append("public interface ").append(interfaceName).append(" {").append(Util.LINE_SEPARATOR);
     builder.append("  ").append("EntityType<Entity> TYPE = ").append("DOMAIN.entityType(\"")
-            .append(definition.getTableName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR);
-    definition.getProperties().forEach(property -> appendAttribute(builder, property, interfaceName));
+            .append(definition.getTableName().toLowerCase()).append("\");").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+    final List<Property<?>> columnProperties =
+            definition.getProperties().stream().filter(property -> property instanceof ColumnProperty).collect(Collectors.toList());
+    columnProperties.forEach(property -> appendAttribute(builder, property, interfaceName));
+    final List<Property<?>> foreignKeyProperties =
+            definition.getProperties().stream().filter(property -> property instanceof ForeignKeyProperty).collect(Collectors.toList());
+    if (!foreignKeyProperties.isEmpty()) {
+      builder.append(Util.LINE_SEPARATOR);
+      foreignKeyProperties.forEach(property -> appendAttribute(builder, property, interfaceName));
+    }
     builder.append("}").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
     builder.append("void ").append(getInterfaceName(definition.getTableName(), false)).append("() {").append(Util.LINE_SEPARATOR);
     builder.append("  define(").append(interfaceName).append(".TYPE").append(",").append(Util.LINE_SEPARATOR);
@@ -58,7 +67,7 @@ final class DomainToString {
         references.add(referenceBuilder.toString());
       });
 
-      builder.append("  ").append("ForeignKeyAttribute ")
+      builder.append("  ").append("ForeignKey ")
               .append(property.getAttribute().getName().toUpperCase()).append(" = TYPE.foreignKey(\"")
               .append(property.getAttribute().getName().toLowerCase()).append("\", " + String.join(Util.LINE_SEPARATOR, references) + ");").append(Util.LINE_SEPARATOR);
     }
