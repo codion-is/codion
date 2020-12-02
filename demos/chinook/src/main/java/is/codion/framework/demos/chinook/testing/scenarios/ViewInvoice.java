@@ -3,8 +3,8 @@
  */
 package is.codion.framework.demos.chinook.testing.scenarios;
 
-import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
+import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.swing.common.tools.loadtest.ScenarioException;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -20,7 +20,7 @@ public final class ViewInvoice extends AbstractEntityUsageScenario<ChinookApplic
       final SwingEntityModel customerModel = application.getEntityModel(Customer.TYPE);
       customerModel.getTableModel().refresh();
       selectRandomRow(customerModel.getTableModel());
-      final SwingEntityModel invoiceModel = customerModel.getDetailModel(Chinook.Invoice.TYPE);
+      final SwingEntityModel invoiceModel = customerModel.getDetailModel(Invoice.TYPE);
       selectRandomRow(invoiceModel.getTableModel());
     }
     catch (final Exception e) {
