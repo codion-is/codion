@@ -35,11 +35,11 @@ public final class PetClinic extends DefaultDomain {
     define(Vet.TYPE,
             primaryKeyProperty(Vet.ID),
             columnProperty(Vet.FIRST_NAME, "First name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(Vet.LAST_NAME, "Last name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .maximumLength(30)
                     .nullable(false))
             .keyGenerator(automatic(Vet.TYPE.getName()))
@@ -47,20 +47,20 @@ public final class PetClinic extends DefaultDomain {
             .stringFactory(stringFactory(Vet.LAST_NAME)
                     .text(", ").value(Vet.FIRST_NAME))
             .orderBy(orderBy().ascending(Vet.LAST_NAME, Vet.FIRST_NAME))
-            .smallDataset(true);
+            .smallDataset();
   }
 
   private void specialty() {
     define(Specialty.TYPE,
             primaryKeyProperty(Specialty.ID),
             columnProperty(Specialty.NAME, "Name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .maximumLength(80)
                     .nullable(false))
             .keyGenerator(automatic(Specialty.TYPE.getName()))
             .caption("Specialties")
             .stringFactory(stringFactory(Specialty.NAME))
-            .smallDataset(true);
+            .smallDataset();
   }
 
   private void vetSpecialty() {
@@ -80,25 +80,25 @@ public final class PetClinic extends DefaultDomain {
     define(PetType.TYPE,
             primaryKeyProperty(PetType.ID),
             columnProperty(PetType.NAME, "Name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .maximumLength(80)
                     .nullable(false))
             .keyGenerator(automatic(PetType.TYPE.getName()))
             .caption("Pet types")
             .stringFactory(stringFactory(PetType.NAME))
             .orderBy(orderBy().ascending(PetType.NAME))
-            .smallDataset(true);
+            .smallDataset();
   }
 
   private void owner() {
     define(Owner.TYPE,
             primaryKeyProperty(Owner.ID),
             columnProperty(Owner.FIRST_NAME, "First name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(Owner.LAST_NAME, "Last name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(Owner.ADDRESS, "Address")
@@ -118,7 +118,7 @@ public final class PetClinic extends DefaultDomain {
     define(Pet.TYPE,
             primaryKeyProperty(Pet.ID),
             columnProperty(Pet.NAME, "Name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .maximumLength(30)
                     .nullable(false),
             columnProperty(Pet.BIRTH_DATE, "Birth date")

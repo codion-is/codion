@@ -53,8 +53,8 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
     }
 
     @Override
-    public ColumnProperty.Builder<T> readOnly(final boolean readOnly) {
-      throw new UnsupportedOperationException("Subquery properties are always read only");
+    public ColumnProperty.Builder<T> readOnly() {
+      throw new UnsupportedOperationException("Subquery properties are read only by default");
     }
 
     @Override

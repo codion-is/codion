@@ -45,7 +45,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     define(Artist.TYPE, "chinook.artist",
             primaryKeyProperty(Artist.ID),
             columnProperty(Artist.NAME, "Name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160),
@@ -75,12 +75,12 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             foreignKeyProperty(Album.ARTIST_FK, "Artist")
                     .preferredColumnWidth(160),
             columnProperty(Album.TITLE, "Title")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(160)
                     .preferredColumnWidth(160),
             blobProperty(Album.COVER, "Cover")
-                    .eagerlyLoaded(true),
+                    .eagerlyLoaded(),
             derivedProperty(Album.COVERIMAGE, null,
                     new CoverArtImageProvider(), Album.COVER),
             subqueryProperty(Album.NUMBER_OF_TRACKS, "Tracks",
@@ -97,11 +97,11 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     define(Employee.TYPE, "chinook.employee",
             primaryKeyProperty(Employee.ID),
             columnProperty(Employee.LASTNAME, "Last name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(20),
             columnProperty(Employee.FIRSTNAME, "First name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(20),
             columnProperty(Employee.TITLE, "Title")
@@ -125,7 +125,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Employee.FAX, "Fax")
                     .maximumLength(24),
             columnProperty(Employee.EMAIL, "Email")
-                    .searchProperty(true)
+                    .searchProperty()
                     .maximumLength(60))
             .keyGenerator(automatic("chinook.employee"))
             .orderBy(orderBy().ascending(Employee.LASTNAME, Employee.FIRSTNAME))
@@ -138,11 +138,11 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     define(Customer.TYPE, "chinook.customer",
             primaryKeyProperty(Customer.ID),
             columnProperty(Customer.LASTNAME, "Last name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(20),
             columnProperty(Customer.FIRSTNAME, "First name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(40),
             columnProperty(Customer.COMPANY, "Company")
@@ -162,7 +162,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Customer.FAX, "Fax")
                     .maximumLength(24),
             columnProperty(Customer.EMAIL, "Email")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(60),
             columnProperty(Customer.SUPPORTREP_ID),
@@ -179,14 +179,14 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     define(Genre.TYPE, "chinook.genre",
             primaryKeyProperty(Genre.ID),
             columnProperty(Genre.NAME, "Name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160))
             .keyGenerator(automatic("chinook.genre"))
             .orderBy(orderBy().ascending(Genre.NAME))
             .stringFactory(stringFactory(Genre.NAME))
-            .smallDataset(true)
+            .smallDataset()
             .caption("Genres");
   }
 
@@ -199,7 +199,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .preferredColumnWidth(160))
             .keyGenerator(automatic("chinook.mediatype"))
             .stringFactory(stringFactory(MediaType.NAME))
-            .smallDataset(true)
+            .smallDataset()
             .caption("Media types");
   }
 
@@ -216,7 +216,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .preferredColumnWidth(160),
             // end::fetchDepth2[]
             columnProperty(Track.NAME, "Name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(200)
                     .preferredColumnWidth(160),
@@ -267,7 +267,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .maximumLength(10),
             columnProperty(Invoice.TOTAL, "Total")
                     .maximumFractionDigits(2)
-                    .hidden(true),
+                    .hidden(),
             subqueryProperty(Invoice.TOTAL_SUBQUERY, "Calculated total",
                     "select sum(unitprice * quantity) from chinook.invoiceline " +
                             "where invoiceid = invoice.invoiceid")
@@ -309,7 +309,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     define(Playlist.TYPE, "chinook.playlist",
             primaryKeyProperty(Playlist.ID),
             columnProperty(Playlist.NAME, "Name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(120)
                     .preferredColumnWidth(160))

@@ -1011,20 +1011,20 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public Builder smallDataset(final boolean smallDataset) {
-      definition.smallDataset = smallDataset;
+    public Builder smallDataset() {
+      definition.smallDataset = true;
       return this;
     }
 
     @Override
-    public Builder staticData(final boolean staticData) {
-      definition.staticData = staticData;
+    public Builder staticData() {
+      definition.staticData = true;
       return this;
     }
 
     @Override
-    public Builder readOnly(final boolean readOnly) {
-      definition.readOnly = readOnly;
+    public Builder readOnly() {
+      definition.readOnly = true;
       return this;
     }
 

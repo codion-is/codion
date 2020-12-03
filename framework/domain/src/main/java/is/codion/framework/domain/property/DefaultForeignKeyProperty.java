@@ -94,8 +94,8 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     }
 
     @Override
-    public ForeignKeyProperty.Builder softReference(final boolean softReference) {
-      foreignKeyProperty.softReference = softReference;
+    public ForeignKeyProperty.Builder softReference() {
+      foreignKeyProperty.softReference = true;
       return this;
     }
 

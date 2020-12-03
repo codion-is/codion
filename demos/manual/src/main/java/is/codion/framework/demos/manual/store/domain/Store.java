@@ -84,7 +84,7 @@ public final class Store extends DefaultDomain {
                     .nullable(false).maximumLength(40),
             columnProperty(Customer.EMAIL, "Email"),
             columnProperty(Customer.IS_ACTIVE, "Is active")
-                    .columnHasDefaultValue(true).defaultValue(true))
+                    .columnHasDefaultValue().defaultValue(true))
             .keyGenerator(new UUIDKeyGenerator())
             .stringFactory(new CustomerToString())
             .caption("Customer");
@@ -100,11 +100,11 @@ public final class Store extends DefaultDomain {
             columnProperty(Address.CITY, "City")
                     .nullable(false).maximumLength(50),
             columnProperty(Address.VALID, "Valid")
-                    .columnHasDefaultValue(true).nullable(false))
+                    .columnHasDefaultValue().nullable(false))
             .stringFactory(stringFactory(Address.STREET)
                     .text(", ").value(Address.CITY))
             .keyGenerator(automatic("store.address"))
-            .smallDataset(true)
+            .smallDataset()
             .caption("Address");
     // end::address[]
   }

@@ -121,7 +121,7 @@ public final class TestDomain extends DefaultDomain {
             }, DETAIL_INT))
             .selectTableName(DETAIL_SELECT_TABLE_NAME.getName())
             .orderBy(orderBy().ascending(DETAIL_STRING))
-            .smallDataset(true)
+            .smallDataset()
             .stringFactory(stringFactory(DETAIL_STRING));
   }
 
@@ -139,10 +139,10 @@ public final class TestDomain extends DefaultDomain {
             primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.getName())
                     .updatable(true).nullable(false),
             columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.getName())
-                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
+                    .searchProperty().preferredColumnWidth(120).maximumLength(14).nullable(false),
             columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13))
-            .smallDataset(true)
+            .smallDataset()
             .orderBy(orderBy().ascending(DEPARTMENT_NAME))
             .stringFactory(stringFactory(DEPARTMENT_NAME))
             .conditionProvider(DEPARTMENT_CONDITION_ID, (attributes, values) -> {
@@ -173,13 +173,13 @@ public final class TestDomain extends DefaultDomain {
     define(T_EMP, "scott.emp",
             primaryKeyProperty(EMP_ID, EMP_ID.getName()).columnName("empno"),
             columnProperty(EMP_NAME, EMP_NAME.getName())
-                    .searchProperty(true).columnName("ename").maximumLength(10).nullable(false),
+                    .searchProperty().columnName("ename").maximumLength(10).nullable(false),
             columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName()),
             valueListProperty(EMP_JOB, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .searchProperty(true),
+                    .searchProperty(),
             columnProperty(EMP_SALARY, EMP_SALARY.getName())
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())

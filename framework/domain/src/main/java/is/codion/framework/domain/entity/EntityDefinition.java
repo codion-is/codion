@@ -252,7 +252,7 @@ public interface EntityDefinition {
   /**
    * Returns the attributes to search by when searching for entities of this type by a string value
    * @return the attributes to use when searching by string
-   * @see ColumnProperty.Builder#searchProperty(boolean)
+   * @see #searchProperty()
    */
   Collection<Attribute<String>> getSearchAttributes();
 
@@ -395,7 +395,7 @@ public interface EntityDefinition {
    * skipped unless the property itself has a default value, which then overrides the columns default value.
    * @param valueProvider provides the default value for a given property
    * @return the populated entity
-   * @see ColumnProperty.Builder#columnHasDefaultValue(boolean)
+   * @see #columnHasDefaultValue()
    * @see ColumnProperty.Builder#defaultValue(Object)
    */
   Entity entity(Function<Attribute<?>, Object> valueProvider);
@@ -496,30 +496,25 @@ public interface EntityDefinition {
     Builder caption(String caption);
 
     /**
-     * Specifies whether or not this entity should be regarded as based on a small dataset,
+     * Specifies that this entity should be regarded as based on a small dataset,
      * which primarily means that combo box models can be based on this entity.
-     * This is false by default.
-     * @param smallDataset true if the underlying table is small enough for displaying the contents in a combo box
      * @return this {@link Builder} instance
      */
-    Builder smallDataset(boolean smallDataset);
+    Builder smallDataset();
 
     /**
-     * Specifies whether or not this entity should be regarded as based on a static dataset, that is,
+     * Specifies that this entity should be regarded as based on a static dataset, that is,
      * one that changes only infrequently.
-     * This is false by default.
-     * @param staticData true if the underlying table data is static
      * @return this {@link Builder} instance
      */
-    Builder staticData(boolean staticData);
+    Builder staticData();
 
     /**
-     * Sets the read only value, if true then it should not be possible to
+     * Specifies that this entity should be read-only, that it should not be possible to
      * insert, update or delete entities of this type
-     * @param readOnly true if this entity type should be read only
      * @return this {@link Builder} instance
      */
-    Builder readOnly(boolean readOnly);
+    Builder readOnly();
 
     /**
      * Sets the primary key generator
@@ -553,7 +548,7 @@ public interface EntityDefinition {
      * @return this {@link Builder} instance
      * @throws IllegalStateException in case a group by clause has already been set,
      * for example automatically, based on grouping properties
-     * @see ColumnProperty.Builder#groupingColumn(boolean)
+     * @see #groupingColumn()
      */
     Builder groupByClause(String groupByClause);
 

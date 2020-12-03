@@ -48,7 +48,7 @@ public final class WorldImpl extends DefaultDomain {
     define(City.TYPE,
             primaryKeyProperty(City.ID),
             columnProperty(City.NAME, "Name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(35),
             columnProperty(City.COUNTRY_CODE)
@@ -79,7 +79,7 @@ public final class WorldImpl extends DefaultDomain {
                     .maximumLength(3),
             // end::primaryKey[]
             columnProperty(Country.NAME, "Name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .nullable(false)
                     .maximumLength(52),
             valueListProperty(Country.CONTINENT, "Continent", World.CONTINENTS)
@@ -132,7 +132,7 @@ public final class WorldImpl extends DefaultDomain {
                     "select count(*) from world.countrylanguage where countrycode = code"),
             // tag::blobProperty[]
             blobProperty(Country.FLAG, "Flag")
-                    .eagerlyLoaded(true),
+                    .eagerlyLoaded(),
             // end::blobProperty[]
             columnProperty(Country.CODE_2, "Code2")
                     .nullable(false)
@@ -155,7 +155,7 @@ public final class WorldImpl extends DefaultDomain {
             foreignKeyProperty(CountryLanguage.COUNTRY_FK, "Country"),
             // tag::booleanProperty[]
             columnProperty(CountryLanguage.IS_OFFICIAL, "Is official")
-                    .columnHasDefaultValue(true)
+                    .columnHasDefaultValue()
                     .nullable(false),
             // end::booleanProperty[]
             // tag::derivedProperty[]
@@ -198,38 +198,38 @@ public final class WorldImpl extends DefaultDomain {
             columnProperty(Lookup.CITY_POPULATION, "City population")
                     .numberFormatGrouping(true))
             .orderBy(orderBy().ascending(Lookup.COUNTRY_NAME).descending(Lookup.CITY_POPULATION))
-            .readOnly(true)
+            .readOnly()
             .caption("Lookup");
   }
 
   void continent() {
     define(Continent.TYPE, "world.country",
             columnProperty(Continent.NAME, "Continent")
-                    .groupingColumn(true)
+                    .groupingColumn()
                     .beanProperty("name"),
             columnProperty(Continent.SURFACE_AREA, "Surface area")
-                    .aggregateColumn(true)
+                    .aggregateColumn()
                     .numberFormatGrouping(true)
                     .beanProperty("surfaceArea"),
             columnProperty(Continent.POPULATION, "Population")
-                    .aggregateColumn(true)
+                    .aggregateColumn()
                     .numberFormatGrouping(true)
                     .beanProperty("population"),
             columnProperty(Continent.MIN_LIFE_EXPECTANCY, "Min. life expectancy")
-                    .aggregateColumn(true)
+                    .aggregateColumn()
                     .beanProperty("minLifeExpectancy"),
             columnProperty(Continent.MAX_LIFE_EXPECTANCY, "Max. life expectancy")
-                    .aggregateColumn(true)
+                    .aggregateColumn()
                     .beanProperty("maxLifeExpectancy"),
             columnProperty(Continent.MIN_INDEPENDENCE_YEAR, "Min. ind. year")
-                    .aggregateColumn(true),
+                    .aggregateColumn(),
             columnProperty(Continent.MAX_INDEPENDENCE_YEAR, "Max. ind. year")
-                    .aggregateColumn(true),
+                    .aggregateColumn(),
             columnProperty(Continent.GNP, "GNP")
-                    .aggregateColumn(true)
+                    .aggregateColumn()
                     .numberFormatGrouping(true)
                     .beanProperty("gnp"))
-            .readOnly(true)
+            .readOnly()
             .caption("Continent");
   }
 

@@ -177,7 +177,7 @@ public interface ColumnProperty<T> extends Property<T> {
     ColumnProperty.Builder<T> defaultValueSupplier(Supplier<T> supplier);
 
     @Override
-    ColumnProperty.Builder<T> hidden(boolean hidden);
+    ColumnProperty.Builder<T> hidden();
 
     @Override
     ColumnProperty.Builder<T> maximumValue(double maximumValue);
@@ -232,10 +232,10 @@ public interface ColumnProperty<T> extends Property<T> {
     ColumnProperty.Builder<T> columnName(String columnName);
 
     /**
-     * @param readOnly specifies whether this property should be included during insert and update operations
+     * Specifies that this property should not be included during insert and update operations
      * @return this instance
      */
-    ColumnProperty.Builder<T> readOnly(boolean readOnly);
+    ColumnProperty.Builder<T> readOnly();
 
     /**
      * @param insertable specifies whether this property should be included during insert operations
@@ -250,15 +250,15 @@ public interface ColumnProperty<T> extends Property<T> {
     ColumnProperty.Builder<T> updatable(boolean updatable);
 
     /**
-     * @param columnHasDefaultValue specifies whether or not the underlying column has a default value
+     * Specifies that the underlying table column has a default value
      * @return this instance
      */
-    ColumnProperty.Builder<T> columnHasDefaultValue(boolean columnHasDefaultValue);
+    ColumnProperty.Builder<T> columnHasDefaultValue();
 
     /**
      * Sets the zero based primary key index of this property.
      * Note that setting the primary key index renders this property non-null and non-updatable by default,
-     * these can be reverted by setting it as updatable after setting the primary key index.
+     * these can be reverted by setting it as updatable and/or nullable after setting the primary key index.
      * @param index the zero based index
      * @return this instance
      * @throws IllegalArgumentException in case index is a negative number
@@ -268,32 +268,31 @@ public interface ColumnProperty<T> extends Property<T> {
     ColumnProperty.Builder<T> primaryKeyIndex(int index);
 
     /**
-     * @param groupingColumn true if this column should be used in a group by clause
+     * Specifies that this column should be used in a group by clause
      * @throws IllegalStateException in case the column has already been defined as an aggregate column
      * @return this instance
      */
-    ColumnProperty.Builder<T> groupingColumn(boolean groupingColumn);
+    ColumnProperty.Builder<T> groupingColumn();
 
     /**
-     * @param aggregateColumn true if this column is an aggregate function column
+     * Specifies that this column is an aggregate function column
      * @throws IllegalStateException in case the column has already been defined as a grouping column
      * @return this instance
      */
-    ColumnProperty.Builder<T> aggregateColumn(boolean aggregateColumn);
+    ColumnProperty.Builder<T> aggregateColumn();
 
     /**
-     * @param selectable false if this property should not be included in select queries
+     * Specifies that this property should not be included in select queries
      * @return this instance
      */
-    ColumnProperty.Builder<T> selectable(boolean selectable);
+    ColumnProperty.Builder<T> nonSelectable();
 
     /**
-     * If true then this property is included when searching for an entity by a string value.
+     * Specifies that this property is included when searching for an entity by a string value.
      * Only applicable to properties of type {@link java.sql.Types#VARCHAR}.
-     * @param searchProperty if true then this becomes a default search property.
-     * @throws IllegalStateException in case this property is not of the type Types.VARCHAR
+     * @throws IllegalStateException in case this property type is not String
      * @return this instance
      */
-    ColumnProperty.Builder<T> searchProperty(boolean searchProperty);
+    ColumnProperty.Builder<T> searchProperty();
   }
 }

@@ -130,7 +130,7 @@ public final class EmpDept extends DefaultDomain {
                     .preferredColumnWidth(150)
                     .maximumLength(13)
                     .beanProperty("location"))
-            .smallDataset(true)
+            .smallDataset()
             .orderBy(orderBy().ascending(Department.NAME))
             .stringFactory(stringFactory(Department.NAME))
             .caption("Departments");
@@ -144,7 +144,7 @@ public final class EmpDept extends DefaultDomain {
             primaryKeyProperty(Employee.ID, "Employee no.")
                     .beanProperty("id"),
             columnProperty(Employee.NAME, "Name")
-                    .searchProperty(true)
+                    .searchProperty()
                     .maximumLength(10)
                     .nullable(false)
                     .beanProperty("name"),

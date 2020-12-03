@@ -41,7 +41,7 @@ public class DefaultEntityDefinitionTest {
                 Properties.columnProperty(name))
                 .selectQuery("select * from dual", false)
                 .orderBy(orderBy().descending(name))
-                .readOnly(true).selectTableName("selectTableName").groupByClause("name")
+                .readOnly().selectTableName("selectTableName").groupByClause("name")
                 .stringFactory(stringFactory).comparator(comparator);
       }
     }
@@ -133,9 +133,9 @@ public class DefaultEntityDefinitionTest {
       public TestDomain() {
         super(DOMAIN_TYPE);
         define(entityType,
-                primaryKeyProperty(entityType.integerAttribute("p0")).aggregateColumn(true),
-                Properties.columnProperty(entityType.integerAttribute("p1")).groupingColumn(true),
-                Properties.columnProperty(entityType.integerAttribute("p2")).groupingColumn(true));
+                primaryKeyProperty(entityType.integerAttribute("p0")).aggregateColumn(),
+                Properties.columnProperty(entityType.integerAttribute("p1")).groupingColumn(),
+                Properties.columnProperty(entityType.integerAttribute("p2")).groupingColumn());
       }
     }
     final Domain domain = new TestDomain();
@@ -151,9 +151,9 @@ public class DefaultEntityDefinitionTest {
         super(DOMAIN_TYPE);
         final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("testSetGroupByClauseWithGroupingProperties");
         define(entityType,
-                primaryKeyProperty(entityType.integerAttribute("p0")).aggregateColumn(true),
-                Properties.columnProperty(entityType.integerAttribute("p1")).groupingColumn(true),
-                Properties.columnProperty(entityType.integerAttribute("p2")).groupingColumn(true)).groupByClause("p1, p2");
+                primaryKeyProperty(entityType.integerAttribute("p0")).aggregateColumn(),
+                Properties.columnProperty(entityType.integerAttribute("p1")).groupingColumn(),
+                Properties.columnProperty(entityType.integerAttribute("p2")).groupingColumn()).groupByClause("p1, p2");
       }
     }
     assertThrows(IllegalStateException.class, () -> new TestDomain());

@@ -6518,3 +6518,5 @@
   AbstractEntityUsageScenario moved up to package level, some demo load test refactoring
   LoadTestPanel, incorrect chart caption fixed
   DomainToString, bug fixed, had not been updated according to latest domain model changes
+  EntityDefinition.Builder, removed redundant boolean parameters from a few setters
+  Property.Builder and descendants, removed redundant boolean parameters from a few setters

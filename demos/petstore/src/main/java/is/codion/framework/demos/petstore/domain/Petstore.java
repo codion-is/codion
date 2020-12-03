@@ -90,7 +90,7 @@ public final class Petstore extends DefaultDomain {
             columnProperty(Category.DESCRIPTION, Category.DESCRIPTION.getName())
                     .columnName("description").maximumLength(255).nullable(false),
             columnProperty(Category.IMAGE_URL, Category.IMAGE_URL.getName())
-                    .columnName("imageurl").hidden(true))
+                    .columnName("imageurl").hidden())
             .keyGenerator(increment("petstore.category", "categoryid"))
             .orderBy(orderBy().ascending(Category.NAME))
             .stringFactory(stringFactory(Category.NAME))
@@ -121,7 +121,7 @@ public final class Petstore extends DefaultDomain {
             columnProperty(Product.DESCRIPTION, Product.DESCRIPTION.getName())
                     .columnName("description").maximumLength(255).nullable(false),
             columnProperty(Product.IMAGE_URL, Product.IMAGE_URL.getName())
-                    .columnName("imageurl").maximumLength(55).hidden(true))
+                    .columnName("imageurl").maximumLength(55).hidden())
             .keyGenerator(increment("petstore.product", "productid"))
             .orderBy(orderBy().ascending(Product.NAME))
             .stringFactory(stringFactory(Product.CATEGORY_FK)
@@ -143,9 +143,9 @@ public final class Petstore extends DefaultDomain {
             primaryKeyProperty(SellerContactInfo.ID)
                     .columnName("contactinfoid"),
             columnProperty(SellerContactInfo.FIRST_NAME, SellerContactInfo.FIRST_NAME.getName())
-                    .searchProperty(true).columnName("firstname").maximumLength(24).nullable(false),
+                    .searchProperty().columnName("firstname").maximumLength(24).nullable(false),
             columnProperty(SellerContactInfo.LAST_NAME, SellerContactInfo.LAST_NAME.getName())
-                    .searchProperty(true).columnName("lastname").maximumLength(24).nullable(false),
+                    .searchProperty().columnName("lastname").maximumLength(24).nullable(false),
             columnProperty(SellerContactInfo.EMAIL, SellerContactInfo.EMAIL.getName())
                     .columnName("email").maximumLength(24).nullable(false))
             .keyGenerator(increment("petstore.sellercontactinfo", "contactinfoid"))
@@ -188,9 +188,9 @@ public final class Petstore extends DefaultDomain {
             columnProperty(Item.DESCRIPTION, Item.DESCRIPTION.getName())
                     .columnName("description").maximumLength(500).nullable(false),
             columnProperty(Item.IMAGE_URL, Item.IMAGE_URL.getName())
-                    .columnName("imageurl").maximumLength(55).hidden(true),
+                    .columnName("imageurl").maximumLength(55).hidden(),
             columnProperty(Item.IMAGE_THUMB_URL, Item.IMAGE_THUMB_URL.getName())
-                    .columnName("imagethumburl").maximumLength(55).hidden(true),
+                    .columnName("imagethumburl").maximumLength(55).hidden(),
             columnProperty(Item.PRICE, Item.PRICE.getName())
                     .columnName("price").nullable(false).maximumFractionDigits(2),
             columnProperty(Item.CONTACT_INFO_ID).columnName("contactinfo_contactinfoid")

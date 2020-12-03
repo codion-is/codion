@@ -9,8 +9,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.framework.tools.metadata.Column;
 import is.codion.swing.framework.tools.metadata.ForeignKeyConstraint;
@@ -26,6 +24,7 @@ import java.util.OptionalInt;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.framework.domain.entity.ForeignKey.reference;
+import static is.codion.framework.domain.property.Properties.*;
 import static java.util.stream.Collectors.toList;
 
 final class DatabaseDomain extends DefaultDomain {
@@ -78,12 +77,8 @@ final class DatabaseDomain extends DefaultDomain {
             foreignKeyConstraint.getReferences().entrySet().stream().map(entry ->
                     reference(getAttribute(entityType, entry.getKey()), getAttribute(referencedEntityType, entry.getValue())))
                     .collect(toList()));
-    final String caption = getCaption(referencedTable.getTableName());
-    final ForeignKeyProperty.Builder builder = Properties.foreignKeyProperty(foreignKey, caption);
-    foreignKeyConstraint.getReferences().forEach((column, referencedColumn) ->
-            reference(getAttribute(entityType, column), getAttribute(referencedEntityType, referencedColumn)));
 
-    return builder;
+    return foreignKeyProperty(foreignKey, getCaption(referencedTable.getTableName()));
   }
 
   private static ColumnProperty.Builder<?> getColumnPropertyBuilder(final Column column, final EntityType<?> entityType) {
@@ -91,10 +86,10 @@ final class DatabaseDomain extends DefaultDomain {
     final Attribute<?> attribute = getAttribute(entityType, column);
     final ColumnProperty.Builder<?> builder;
     if (attribute.isByteArray()) {
-      builder = Properties.blobProperty((Attribute<byte[]>) attribute, caption).eagerlyLoaded(false);
+      builder = blobProperty((Attribute<byte[]>) attribute, caption);
     }
     else {
-      builder = Properties.columnProperty(attribute, caption);
+      builder = columnProperty(attribute, caption);
     }
     if (column.isPrimaryKeyColumn()) {
       builder.primaryKeyIndex(column.getPrimaryKeyIndex() - 1);
@@ -109,7 +104,7 @@ final class DatabaseDomain extends DefaultDomain {
       builder.maximumFractionDigits(column.getDecimalDigits());
     }
     if (!column.isPrimaryKeyColumn() && column.hasDefaultValue()) {
-      builder.columnHasDefaultValue(true);
+      builder.columnHasDefaultValue();
     }
     if (!nullOrEmpty(column.getComment())) {
       builder.description(column.getComment());
