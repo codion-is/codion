@@ -252,7 +252,7 @@ public interface EntityDefinition {
   /**
    * Returns the attributes to search by when searching for entities of this type by a string value
    * @return the attributes to use when searching by string
-   * @see #searchProperty()
+   * @see ColumnProperty.Builder#searchProperty()
    */
   Collection<Attribute<String>> getSearchAttributes();
 
@@ -395,7 +395,7 @@ public interface EntityDefinition {
    * skipped unless the property itself has a default value, which then overrides the columns default value.
    * @param valueProvider provides the default value for a given property
    * @return the populated entity
-   * @see #columnHasDefaultValue()
+   * @see ColumnProperty.Builder#columnHasDefaultValue()
    * @see ColumnProperty.Builder#defaultValue(Object)
    */
   Entity entity(Function<Attribute<?>, Object> valueProvider);
@@ -548,7 +548,7 @@ public interface EntityDefinition {
      * @return this {@link Builder} instance
      * @throws IllegalStateException in case a group by clause has already been set,
      * for example automatically, based on grouping properties
-     * @see #groupingColumn()
+     * @see ColumnProperty.Builder#groupingColumn()
      */
     Builder groupByClause(String groupByClause);
 
