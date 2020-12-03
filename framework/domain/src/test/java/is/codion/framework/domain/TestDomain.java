@@ -155,19 +155,19 @@ public class TestDomain extends DefaultDomain {
                     .beanProperty("id"),
             columnProperty(Detail.INT, Detail.INT.getName()),
             columnProperty(Detail.DOUBLE, Detail.DOUBLE.getName())
-                    .columnHasDefaultValue(true)
+                    .columnHasDefaultValue()
                     .beanProperty("double"),
             columnProperty(Detail.STRING, "Detail string")
-                    .selectable(false),
+                    .nonSelectable(),
             columnProperty(Detail.DATE, Detail.DATE.getName())
-                    .columnHasDefaultValue(true),
+                    .columnHasDefaultValue(),
             columnProperty(Detail.TIMESTAMP, Detail.TIMESTAMP.getName()),
             columnProperty(Detail.BOOLEAN, Detail.BOOLEAN.getName())
                     .nullable(false)
                     .defaultValue(true)
                     .description("A boolean property"),
             columnProperty(Detail.BOOLEAN_NULLABLE, Detail.BOOLEAN_NULLABLE.getName())
-                    .columnHasDefaultValue(true)
+                    .columnHasDefaultValue()
                     .defaultValue(true),
             columnProperty(Detail.MASTER_ID),
             foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.getName())
@@ -193,7 +193,7 @@ public class TestDomain extends DefaultDomain {
             .keyGenerator(queried("select id from dual"))
             .orderBy(orderBy().ascending(Detail.STRING))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
-            .smallDataset(true)
+            .smallDataset()
             .stringFactory(stringFactory(Detail.STRING));
   }
 
@@ -218,18 +218,17 @@ public class TestDomain extends DefaultDomain {
                     .updatable(true).nullable(false)
                     .beanProperty("deptNo"),
             columnProperty(Department.NAME, Department.NAME.getName())
-                    .searchProperty(true)
+                    .searchProperty()
                     .preferredColumnWidth(120).maximumLength(14).nullable(false)
                     .beanProperty("name"),
             columnProperty(Department.LOCATION, Department.LOCATION.getName())
                     .preferredColumnWidth(150).maximumLength(13)
                     .beanProperty("location"),
             booleanProperty(Department.ACTIVE, null, Integer.class, 1, 0)
-                    .readOnly(true)
+                    .readOnly()
                     .beanProperty("active"),
-            blobProperty(Department.DATA)
-                    .eagerlyLoaded(false))
-            .smallDataset(true)
+            blobProperty(Department.DATA))
+            .smallDataset()
             .orderBy(orderBy().ascending(Department.NAME))
             .stringFactory(stringFactory(Department.NAME))
             .caption("Department");
@@ -269,7 +268,7 @@ public class TestDomain extends DefaultDomain {
                     .columnName("empno")
                     .beanProperty("id"),
             columnProperty(Employee.NAME, Employee.NAME.getName())
-                    .searchProperty(true)
+                    .searchProperty()
                     .columnName("ename").maximumLength(10).nullable(false)
                     .beanProperty("name"),
             columnProperty(Employee.DEPARTMENT)
@@ -280,7 +279,7 @@ public class TestDomain extends DefaultDomain {
             valueListProperty(Employee.JOB, Employee.JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .searchProperty(true)
+                    .searchProperty()
                     .beanProperty("job"),
             columnProperty(Employee.SALARY, Employee.SALARY.getName())
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2)
@@ -301,7 +300,7 @@ public class TestDomain extends DefaultDomain {
                     .preferredColumnWidth(100),
             derivedProperty(Employee.DEPARTMENT_NAME, null, new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
             blobProperty(Employee.DATA, "Data")
-                    .eagerlyLoaded(true))
+                    .eagerlyLoaded())
             .keyGenerator(increment("scott.emp", "empno"))
             .orderBy(orderBy().ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(stringFactory(Employee.NAME))

@@ -73,11 +73,11 @@ public interface ForeignKeyProperty extends Property<Entity> {
     ForeignKeyProperty.Builder fetchDepth(int fetchDepth);
 
     /**
-     * @param softReference true if this foreign key is not based on a physical (table) foreign key
+     * Specifies that this foreign key is not based on a physical (table) foreign key
      * and should not prevent deletion
      * @return this instance
      */
-    ForeignKeyProperty.Builder softReference(boolean softReference);
+    ForeignKeyProperty.Builder softReference();
 
     /**
      * Marks the given foreign key reference attribute as read-only, as in, not updated when the foreign key value is set.

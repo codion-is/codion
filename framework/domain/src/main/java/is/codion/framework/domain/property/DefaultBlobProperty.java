@@ -13,7 +13,7 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
 
   DefaultBlobProperty(final Attribute<byte[]> attribute, final String caption) {
     super(attribute, caption);
-    builder().hidden(true);
+    builder().hidden();
   }
 
   @Override
@@ -44,8 +44,8 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
     }
 
     @Override
-    public BlobProperty.Builder eagerlyLoaded(final boolean eagerlyLoaded) {
-      blobProperty.eagerlyLoaded = eagerlyLoaded;
+    public BlobProperty.Builder eagerlyLoaded() {
+      blobProperty.eagerlyLoaded = true;
       return this;
     }
   }

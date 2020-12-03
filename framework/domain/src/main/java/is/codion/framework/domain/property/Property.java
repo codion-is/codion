@@ -228,10 +228,10 @@ public interface Property<T> {
     Property.Builder<T> defaultValueSupplier(Supplier<T> supplier);
 
     /**
-     * @param hidden specifies whether this property should hidden in table views
+     * Specifies that this property should be hidden in table views
      * @return this instance
      */
-    Property.Builder<T> hidden(boolean hidden);
+    Property.Builder<T> hidden();
 
     /**
      * Sets the maximum allowed value for this property, only applicable to numerical properties

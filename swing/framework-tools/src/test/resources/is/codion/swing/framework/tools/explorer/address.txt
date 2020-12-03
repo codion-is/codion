@@ -36,6 +36,5 @@ void address() {
                 .nullable(false)
                 .maximumFractionDigits(2),
           blobProperty(Address.IMAGE, "Image")
-                .eagerlyLoaded(false)
   );
 }

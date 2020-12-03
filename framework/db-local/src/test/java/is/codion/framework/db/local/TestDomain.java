@@ -93,12 +93,12 @@ public final class TestDomain extends DefaultDomain {
                     .updatable(true).nullable(false)
                     .beanProperty("id"),
             columnProperty(Department.DNAME, Department.DNAME.getName())
-                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false)
+                    .searchProperty().preferredColumnWidth(120).maximumLength(14).nullable(false)
                     .beanProperty("name"),
             columnProperty(Department.LOC, Department.LOC.getName())
                     .preferredColumnWidth(150).maximumLength(13)
                     .beanProperty("location"))
-            .smallDataset(true)
+            .smallDataset()
             .stringFactory(stringFactory(Department.DNAME))
             .conditionProvider(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {
               final StringBuilder builder = new StringBuilder("deptno in (");
@@ -135,13 +135,13 @@ public final class TestDomain extends DefaultDomain {
     define(T_EMP,
             primaryKeyProperty(EMP_ID, EMP_ID.getName()),
             columnProperty(EMP_NAME, EMP_NAME.getName())
-                    .searchProperty(true).maximumLength(10).nullable(false),
+                    .searchProperty().maximumLength(10).nullable(false),
             columnProperty(EMP_DEPARTMENT)
                     .nullable(false),
             foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK.getName()),
             valueListProperty(EMP_JOB, EMP_JOB.getName(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .searchProperty(true),
+                    .searchProperty(),
             columnProperty(EMP_SALARY, EMP_SALARY.getName())
                     .nullable(false).minimumValue(1000).maximumValue(10000).maximumFractionDigits(2),
             columnProperty(EMP_COMMISSION, EMP_COMMISSION.getName())
@@ -149,14 +149,14 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EMP_MGR),
             foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK.getName())
                     //not really soft, just for testing purposes
-                    .softReference(true),
+                    .softReference(),
             columnProperty(EMP_HIREDATE, EMP_HIREDATE.getName())
                     .nullable(false),
             columnProperty(EMP_HIRETIME, EMP_HIRETIME.getName()),
             denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, Department.LOC.getName(), EMP_DEPARTMENT_FK, Department.LOC).preferredColumnWidth(100),
             columnProperty(EMP_DATA_LAZY),
             blobProperty(EMP_DATA)
-                    .eagerlyLoaded(true))
+                    .eagerlyLoaded())
             .stringFactory(stringFactory(EMP_NAME))
             .keyGenerator(increment("scott.emp", "empno"))
             .conditionProvider(EMP_NAME_IS_BLAKE_CONDITION_ID, (attributes, values) -> "ename = 'BLAKE'")
@@ -218,7 +218,7 @@ public final class TestDomain extends DefaultDomain {
     define(GROUP_BY_QUERY_ENTITY_TYPE, "scott.emp",
             columnProperty(GROUP_BY_QUERY_ENTITY_TYPE.stringAttribute("job"))
                     .primaryKeyIndex(0)
-                    .groupingColumn(true))
+                    .groupingColumn())
             .havingClause("job <> 'PRESIDENT'");
   }
 

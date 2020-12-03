@@ -108,16 +108,15 @@ final class DomainToString {
     else {
       builder.append(")");
     }
-    if (property.getAttribute().isByteArray()) {
-      builder.append(Util.LINE_SEPARATOR).append("                .eagerlyLoaded(").append(((BlobProperty) property)
-              .isEagerlyLoaded()).append(")");
+    if (property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
+      builder.append(Util.LINE_SEPARATOR).append("                .eagerlyLoaded()");
     }
     if (property.isPrimaryKeyColumn()) {
       builder.append(Util.LINE_SEPARATOR).append("                .primaryKeyIndex(")
               .append(property.getPrimaryKeyIndex()).append(")");
     }
     if (property.columnHasDefaultValue()) {
-      builder.append(Util.LINE_SEPARATOR).append("                .columnHasDefaultValue(true)");
+      builder.append(Util.LINE_SEPARATOR).append("                .columnHasDefaultValue()");
     }
     if (!property.isNullable() && !property.isPrimaryKeyColumn()) {
       builder.append(Util.LINE_SEPARATOR).append("                .nullable(false)");

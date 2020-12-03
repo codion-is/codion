@@ -446,8 +446,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> hidden(final boolean hidden) {
-      super.hidden(hidden);
+    public final ColumnProperty.Builder<T> hidden() {
+      super.hidden();
       return this;
     }
 
@@ -549,15 +549,15 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> columnHasDefaultValue(final boolean columnHasDefaultValue) {
-      columnProperty.columnHasDefaultValue = columnHasDefaultValue;
+    public final ColumnProperty.Builder<T> columnHasDefaultValue() {
+      columnProperty.columnHasDefaultValue = true;
       return this;
     }
 
     @Override
-    public ColumnProperty.Builder<T> readOnly(final boolean readOnly) {
-      columnProperty.insertable = !readOnly;
-      columnProperty.updatable = !readOnly;
+    public ColumnProperty.Builder<T> readOnly() {
+      columnProperty.insertable = false;
+      columnProperty.updatable = false;
       return this;
     }
 
@@ -585,35 +585,35 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> groupingColumn(final boolean groupingColumn) {
+    public final ColumnProperty.Builder<T> groupingColumn() {
       if (columnProperty.aggregateColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is an aggregate column");
       }
-      columnProperty.groupingColumn = groupingColumn;
+      columnProperty.groupingColumn = true;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T> aggregateColumn(final boolean aggregateColumn) {
+    public final ColumnProperty.Builder<T> aggregateColumn() {
       if (columnProperty.groupingColumn) {
         throw new IllegalStateException(columnProperty.columnName + " is a grouping column");
       }
-      columnProperty.aggregateColumn = aggregateColumn;
+      columnProperty.aggregateColumn = true;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T> selectable(final boolean selectable) {
-      columnProperty.selectable = selectable;
+    public final ColumnProperty.Builder<T> nonSelectable() {
+      columnProperty.selectable = false;
       return this;
     }
 
     @Override
-    public final ColumnProperty.Builder<T> searchProperty(final boolean searchProperty) {
-      if (searchProperty && columnProperty.columnType != Types.VARCHAR) {
+    public final ColumnProperty.Builder<T> searchProperty() {
+      if (columnProperty.columnType != Types.VARCHAR) {
         throw new IllegalStateException("Search properties must be of type Types.VARCHAR");
       }
-      columnProperty.searchProperty = searchProperty;
+      columnProperty.searchProperty = true;
       return this;
     }
   }
