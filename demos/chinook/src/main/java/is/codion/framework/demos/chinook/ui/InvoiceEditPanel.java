@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
+import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
 import is.codion.swing.common.ui.time.TemporalInputPanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -72,7 +73,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     final JPanel centerBasePanel = new JPanel(borderLayout());
     centerBasePanel.add(centerPanel, BorderLayout.CENTER);
 
-    invoiceLinePanel.setBorder(BorderFactory.createTitledBorder("Invoice lines"));
+    invoiceLinePanel.setBorder(BorderFactory.createTitledBorder(getEditModel().getEntities().getDefinition(InvoiceLine.TYPE).getCaption()));
 
     setLayout(borderLayout());
     add(centerBasePanel, BorderLayout.CENTER);

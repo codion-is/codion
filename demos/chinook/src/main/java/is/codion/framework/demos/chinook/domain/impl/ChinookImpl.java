@@ -350,28 +350,35 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   }
 
   void invoiceLine() {
+    final String bundleName = InvoiceLine.class.getName();
+
     define(InvoiceLine.TYPE, "chinook.invoiceline",
             primaryKeyProperty(InvoiceLine.ID),
             columnProperty(InvoiceLine.INVOICE_ID),
             // tag::fetchDepth0[]
-            foreignKeyProperty(InvoiceLine.INVOICE_FK, "Invoice")
+            foreignKeyProperty(InvoiceLine.INVOICE_FK)
                     .fetchDepth(0)
-                    .nullable(false),
+                    .nullable(false)
+                    .captionResource(bundleName),
             columnProperty(InvoiceLine.TRACK_ID),
             // end::fetchDepth0[]
-            foreignKeyProperty(InvoiceLine.TRACK_FK, "Track")
+            foreignKeyProperty(InvoiceLine.TRACK_FK)
                     .nullable(false)
-                    .preferredColumnWidth(100),
-            denormalizedProperty(InvoiceLine.UNITPRICE, "Unit price",
+                    .preferredColumnWidth(100)
+                    .captionResource(bundleName),
+            denormalizedProperty(InvoiceLine.UNITPRICE,
                     InvoiceLine.TRACK_FK, Track.UNITPRICE)
-                    .nullable(false),
-            columnProperty(InvoiceLine.QUANTITY, "Quantity")
                     .nullable(false)
-                    .defaultValue(1),
-            derivedProperty(InvoiceLine.TOTAL, "Total", new InvoiceLineTotalProvider(),
-                    InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE))
+                    .captionResource(bundleName),
+            columnProperty(InvoiceLine.QUANTITY)
+                    .nullable(false)
+                    .defaultValue(1)
+                    .captionResource(bundleName),
+            derivedProperty(InvoiceLine.TOTAL, new InvoiceLineTotalProvider(),
+                    InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
+                    .captionResource(bundleName))
             .keyGenerator(automatic("chinook.invoiceline"))
-            .caption("Invoice lines");
+            .captionResource(bundleName);
   }
 
   void playlist() {
