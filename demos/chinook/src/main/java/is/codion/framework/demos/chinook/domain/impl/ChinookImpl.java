@@ -305,34 +305,46 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   }
 
   void invoice() {
+    final String bundleName = Invoice.class.getName();
+
     define(Invoice.TYPE, "chinook.invoice",
-            primaryKeyProperty(Invoice.ID, "Invoice no."),
+            primaryKeyProperty(Invoice.ID)
+                    .captionResource(bundleName),
             columnProperty(Invoice.CUSTOMER_ID)
                     .nullable(false),
-            foreignKeyProperty(Invoice.CUSTOMER_FK, "Customer"),
-            columnProperty(Invoice.INVOICEDATE, "Date/time")
-                    .nullable(false),
-            columnProperty(Invoice.BILLINGADDRESS, "Billing address")
-                    .maximumLength(70),
-            columnProperty(Invoice.BILLINGCITY, "Billing city")
-                    .maximumLength(40),
-            columnProperty(Invoice.BILLINGSTATE, "Billing state")
-                    .maximumLength(40),
-            columnProperty(Invoice.BILLINGCOUNTRY, "Billing country")
-                    .maximumLength(40),
-            columnProperty(Invoice.BILLINGPOSTALCODE, "Billing postal code")
-                    .maximumLength(10),
-            columnProperty(Invoice.TOTAL, "Total")
+            foreignKeyProperty(Invoice.CUSTOMER_FK)
+                    .captionResource(bundleName),
+            columnProperty(Invoice.INVOICEDATE)
+                    .nullable(false)
+                    .captionResource(bundleName),
+            columnProperty(Invoice.BILLINGADDRESS)
+                    .maximumLength(70)
+                    .captionResource(bundleName),
+            columnProperty(Invoice.BILLINGCITY)
+                    .maximumLength(40)
+                    .captionResource(bundleName),
+            columnProperty(Invoice.BILLINGSTATE)
+                    .maximumLength(40)
+                    .captionResource(bundleName),
+            columnProperty(Invoice.BILLINGCOUNTRY)
+                    .maximumLength(40)
+                    .captionResource(bundleName),
+            columnProperty(Invoice.BILLINGPOSTALCODE)
+                    .maximumLength(10)
+                    .captionResource(bundleName),
+            columnProperty(Invoice.TOTAL)
                     .maximumFractionDigits(2)
+                    .captionResource(bundleName)
                     .hidden(),
-            subqueryProperty(Invoice.TOTAL_SUBQUERY, "Calculated total",
+            subqueryProperty(Invoice.TOTAL_SUBQUERY,
                     "select sum(unitprice * quantity) from chinook.invoiceline " +
                             "where invoiceid = invoice.invoiceid")
-                    .maximumFractionDigits(2))
+                    .maximumFractionDigits(2)
+                    .captionResource(bundleName))
             .keyGenerator(automatic("chinook.invoice"))
             .orderBy(orderBy().ascending(Invoice.CUSTOMER_ID).descending(Invoice.INVOICEDATE))
             .stringFactory(stringFactory(Invoice.ID))
-            .caption("Invoices");
+            .captionResource(bundleName);
 
     defineProcedure(Invoice.UPDATE_TOTALS, new UpdateTotalsProcedure());
   }
