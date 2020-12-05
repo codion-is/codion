@@ -80,14 +80,14 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Album.ARTIST_ID)
                     .nullable(false),
             foreignKeyProperty(Album.ARTIST_FK)
-                    .captionResource(bundleName)
-                    .preferredColumnWidth(160),
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName),
             columnProperty(Album.TITLE)
-                    .captionResource(bundleName)
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(160)
-                    .preferredColumnWidth(160),
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName),
             blobProperty(Album.COVER)
                     .eagerlyLoaded(),
             derivedProperty(Album.COVERIMAGE,
