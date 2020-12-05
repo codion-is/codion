@@ -207,6 +207,27 @@ public interface Property<T> {
     Property<T> get();
 
     /**
+     * Specifies the resource bundle from which to retrieve the caption
+     * for this property, assuming the resource key is the attribute name ({@link Attribute#getName()}).
+     * Note that this sets the property to be not hidden.
+     * @param resourceBundleName the name of the resource bundle
+     * @return this instance
+     * @throws IllegalStateException in case the caption has already been set
+     */
+    Property.Builder<T> captionResource(String resourceBundleName);
+
+    /**
+     * Specifies the resource bundle from which to retrieve the caption
+     * for this property, using the given resource key.
+     * Note that this sets the property to be not hidden.
+     * @param resourceBundleName the name of the resource bundle
+     * @param resourceKey the resource bundle key
+     * @return this instance
+     * @throws IllegalStateException in case the caption has already been set
+     */
+    Property.Builder<T> captionResource(String resourceBundleName, String resourceKey);
+
+    /**
      * Sets the bean name property to associate with this property
      * @param beanProperty the bean property name
      * @return this instance

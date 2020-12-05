@@ -54,17 +54,17 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
 
     @Override
     public ColumnProperty.Builder<T> readOnly() {
-      throw new UnsupportedOperationException("Subquery properties are read only by default");
+      throw new UnsupportedOperationException("Subquery properties are read only by default: " + property.getAttribute());
     }
 
     @Override
     public SubqueryProperty.Builder<T> insertable(final boolean insertable) {
-      throw new UnsupportedOperationException("Subquery properties are never insertable");
+      throw new UnsupportedOperationException("Subquery properties are never insertable: " + property.getAttribute());
     }
 
     @Override
     public SubqueryProperty.Builder<T> updatable(final boolean updatable) {
-      throw new UnsupportedOperationException("Subquery properties are never updatable");
+      throw new UnsupportedOperationException("Subquery properties are never updatable: " + property.getAttribute());
     }
   }
 }

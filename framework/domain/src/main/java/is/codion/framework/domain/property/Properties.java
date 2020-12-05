@@ -157,7 +157,18 @@ public final class Properties {
   }
 
   /**
-   * Creates a new {@link ColumnProperty.Builder} instance, based on a sub-query.
+   * Creates a new {@link ColumnProperty.Builder} instance, based on a subquery.
+   * @param attribute the attribute
+   * @param subquery the sql query
+   * @param <T> the property type
+   * @return a new {@link ColumnProperty.Builder}
+   */
+  public static <T> ColumnProperty.Builder<T> subqueryProperty(final Attribute<T> attribute, final String subquery) {
+    return subqueryProperty(attribute, null, subquery);
+  }
+
+  /**
+   * Creates a new {@link ColumnProperty.Builder} instance, based on a subquery.
    * @param attribute the attribute
    * @param caption the property caption
    * @param subquery the sql query
@@ -167,6 +178,17 @@ public final class Properties {
   public static <T> ColumnProperty.Builder<T> subqueryProperty(final Attribute<T> attribute, final String caption,
                                                                final String subquery) {
     return new DefaultSubqueryProperty<>(attribute, caption, subquery).builder();
+  }
+
+  /**
+   * Creates a new {@link ColumnProperty.Builder} instance, based on the given items.
+   * @param attribute the attribute
+   * @param validItems the Items representing all the valid values for this property
+   * @param <T> the property type
+   * @return a new {@link ColumnProperty.Builder}
+   */
+  public static <T> ColumnProperty.Builder<T> valueListProperty(final Attribute<T> attribute, final List<Item<T>> validItems) {
+    return valueListProperty(attribute, null, validItems);
   }
 
   /**

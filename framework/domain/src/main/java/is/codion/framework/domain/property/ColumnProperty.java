@@ -162,10 +162,14 @@ public interface ColumnProperty<T> extends Property<T> {
    */
   interface Builder<T> extends Property.Builder<T> {
 
-    /**
-     * @return the property
-     */
+    @Override
     ColumnProperty<T> get();
+
+    @Override
+    ColumnProperty.Builder<T> captionResource(String resourceBundleName);
+
+    @Override
+    ColumnProperty.Builder<T> captionResource(String resourceBundleName, String resourceKey);
 
     @Override
     ColumnProperty.Builder<T> beanProperty(String beanProperty);

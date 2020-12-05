@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.common.Serializer;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
@@ -12,8 +13,10 @@ import is.codion.framework.domain.property.Properties;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
@@ -397,5 +400,28 @@ public class DefaultEntityDefinitionTest {
       }
     }
     assertThrows(IllegalStateException.class, () -> new TestDomain());
+  }
+
+  @Test
+  public void i18n() throws IOException, ClassNotFoundException {
+    final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("i18n");
+    class TestDomain extends DefaultDomain {
+      public TestDomain() {
+        super(DOMAIN_TYPE);
+        define(entityType, primaryKeyProperty(entityType.integerAttribute("attribute")))
+                .captionResource(DefaultEntityDefinitionTest.class.getName(), "test");
+      }
+    }
+    final Domain domain = new TestDomain();
+
+    EntityDefinition definition = domain.getEntities().getDefinition(entityType);
+
+    Locale.setDefault(new Locale("en", "EN"));
+    assertEquals("Test", definition.getCaption());
+
+    definition = Serializer.deserialize(Serializer.serialize(definition));
+
+    Locale.setDefault(new Locale("is", "IS"));
+    assertEquals("Prufa", definition.getCaption());
   }
 }

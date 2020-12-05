@@ -496,6 +496,23 @@ public interface EntityDefinition {
     Builder caption(String caption);
 
     /**
+     * Specifies the resource bundle from which to retrieve the caption
+     * for this entity, assuming the resource key is the entity type name ({@link EntityType#getName()}).
+     * @param resourceBundleName the name of the resource bundle containing the caption for this entity
+     * @return this {@link Builder} instance
+     */
+    Builder captionResource(String resourceBundleName);
+
+    /**
+     * Specifies the resource bundle from which to retrieve the caption
+     * for this entity, using the given resource key.
+     * @param resourceBundleName the name of the resource bundle
+     * @param resourceKey the resource bundle key
+     * @return this {@link Builder} instance
+     */
+    Builder captionResource(String resourceBundleName, String resourceKey);
+
+    /**
      * Specifies that this entity should be regarded as based on a small dataset,
      * which primarily means that combo box models can be based on this entity.
      * @return this {@link Builder} instance
