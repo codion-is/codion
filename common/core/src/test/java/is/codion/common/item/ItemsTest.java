@@ -8,14 +8,14 @@ import is.codion.common.Serializer;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ItemsTest {
 
   @Test
-  public void test() throws IOException, ClassNotFoundException {
+  public void item() throws IOException, ClassNotFoundException {
     final Item<String> item = Items.item("hello", "world");
     assertEquals("hello", item.getValue());
     assertEquals("world", item.getCaption());
@@ -38,5 +38,19 @@ public class ItemsTest {
     //just make sure its ok post serialization
     final Item<String> deser = Serializer.deserialize(Serializer.serialize(item));
     deser.compareTo(item);
+  }
+
+  @Test
+  public void itemI18n() {
+    assertThrows(NullPointerException.class, () -> Items.itemI18n("value", null, "item"));
+    assertThrows(NullPointerException.class, () -> Items.itemI18n("value", ItemsTest.class.getName(), null));
+
+    Item<String> item = Items.itemI18n("value", ItemsTest.class.getName(), "item");
+    Locale.setDefault(new Locale("is", "IS"));
+    assertEquals("Gildi", item.getCaption());
+
+    item = Items.itemI18n("value", ItemsTest.class.getName(), "item");
+    Locale.setDefault(new Locale("en", "EN"));
+    assertEquals("Item", item.getCaption());
   }
 }

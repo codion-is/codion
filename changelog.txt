@@ -6520,3 +6520,4 @@
   DomainToString, bug fixed, had not been updated according to latest domain model changes
   EntityDefinition.Builder, removed redundant boolean parameters from a few setters
   Property.Builder and descendants, removed redundant boolean parameters from a few setters
+  ItemI18n added along with Items.itemI18n()

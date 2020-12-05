@@ -8,7 +8,7 @@ package is.codion.common.item;
  */
 public final class Items {
 
-  private static final Item<Object> NULL_ITEM = new DefaultItem<>(null, "");
+  private static final Item<?> NULL_ITEM = new DefaultItem<>(null, "");
 
   private Items() {}
 
@@ -36,5 +36,19 @@ public final class Items {
    */
   public static <T> Item<T> item(final T value, final String caption) {
     return new DefaultItem<>(value, caption);
+  }
+
+  /**
+   * Instantiates a new Item, which gets its caption from a resource bundle.
+   * Note that the caption is cached, so that changing the {@link java.util.Locale} after the
+   * first time {@link Item#getCaption} is called will not change the caption.
+   * @param value the value, may be null
+   * @param resourceBundleName the resource bundle name
+   * @param resourceBundleKey the resource bundle key for the item caption
+   * @param <T> the value type
+   * @return an Item based on the given value and resource bundle
+   */
+  public static <T> Item<T> itemI18n(final T value, final String resourceBundleName, final String resourceBundleKey) {
+    return new ItemI18n<>(value, resourceBundleName, resourceBundleKey);
   }
 }
