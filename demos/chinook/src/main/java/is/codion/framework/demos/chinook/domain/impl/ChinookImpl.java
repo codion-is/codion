@@ -216,31 +216,37 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   }
 
   void genre() {
+    final String bundleName = Genre.class.getName();
+
     define(Genre.TYPE, "chinook.genre",
             primaryKeyProperty(Genre.ID),
-            columnProperty(Genre.NAME, "Name")
+            columnProperty(Genre.NAME)
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(120)
-                    .preferredColumnWidth(160))
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName))
             .keyGenerator(automatic("chinook.genre"))
             .orderBy(orderBy().ascending(Genre.NAME))
             .stringFactory(stringFactory(Genre.NAME))
             .smallDataset()
-            .caption("Genres");
+            .captionResource(bundleName);
   }
 
   void mediaType() {
+    final String bundleName = MediaType.class.getName();
+
     define(MediaType.TYPE, "chinook.mediatype",
             primaryKeyProperty(MediaType.ID),
-            columnProperty(MediaType.NAME, "Name")
+            columnProperty(MediaType.NAME)
                     .nullable(false)
                     .maximumLength(120)
-                    .preferredColumnWidth(160))
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName))
             .keyGenerator(automatic("chinook.mediatype"))
             .stringFactory(stringFactory(MediaType.NAME))
             .smallDataset()
-            .caption("Media types");
+            .captionResource(bundleName);
   }
 
   void track() {
