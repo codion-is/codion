@@ -104,44 +104,60 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   }
 
   void employee() {
+    final String bundleName = Employee.class.getName();
+
     define(Employee.TYPE, "chinook.employee",
             primaryKeyProperty(Employee.ID),
-            columnProperty(Employee.LASTNAME, "Last name")
+            columnProperty(Employee.LASTNAME)
                     .searchProperty()
                     .nullable(false)
-                    .maximumLength(20),
-            columnProperty(Employee.FIRSTNAME, "First name")
+                    .maximumLength(20)
+                    .captionResource(bundleName),
+            columnProperty(Employee.FIRSTNAME)
                     .searchProperty()
                     .nullable(false)
-                    .maximumLength(20),
-            columnProperty(Employee.TITLE, "Title")
-                    .maximumLength(30),
+                    .maximumLength(20)
+                    .captionResource(bundleName),
+            columnProperty(Employee.TITLE)
+                    .maximumLength(30)
+                    .captionResource(bundleName),
             columnProperty(Employee.REPORTSTO),
-            foreignKeyProperty(Employee.REPORTSTO_FK, "Reports to"),
-            columnProperty(Employee.BIRTHDATE, "Birthdate"),
-            columnProperty(Employee.HIREDATE, "Hiredate"),
-            columnProperty(Employee.ADDRESS, "Address")
-                    .maximumLength(70),
-            columnProperty(Employee.CITY, "City")
-                    .maximumLength(40),
-            columnProperty(Employee.STATE, "State")
-                    .maximumLength(40),
-            columnProperty(Employee.COUNTRY, "Country")
-                    .maximumLength(40),
-            columnProperty(Employee.POSTALCODE, "Postal code")
-                    .maximumLength(10),
-            columnProperty(Employee.PHONE, "Phone")
-                    .maximumLength(24),
-            columnProperty(Employee.FAX, "Fax")
-                    .maximumLength(24),
-            columnProperty(Employee.EMAIL, "Email")
+            foreignKeyProperty(Employee.REPORTSTO_FK)
+                    .captionResource(bundleName),
+            columnProperty(Employee.BIRTHDATE)
+                    .captionResource(bundleName),
+            columnProperty(Employee.HIREDATE)
+                    .captionResource(bundleName),
+            columnProperty(Employee.ADDRESS)
+                    .maximumLength(70)
+                    .captionResource(bundleName),
+            columnProperty(Employee.CITY)
+                    .maximumLength(40)
+                    .captionResource(bundleName),
+            columnProperty(Employee.STATE)
+                    .maximumLength(40)
+                    .captionResource(bundleName),
+            columnProperty(Employee.COUNTRY)
+                    .maximumLength(40)
+                    .captionResource(bundleName),
+            columnProperty(Employee.POSTALCODE)
+                    .maximumLength(10)
+                    .captionResource(bundleName),
+            columnProperty(Employee.PHONE)
+                    .maximumLength(24)
+                    .captionResource(bundleName),
+            columnProperty(Employee.FAX)
+                    .maximumLength(24)
+                    .captionResource(bundleName),
+            columnProperty(Employee.EMAIL)
                     .searchProperty()
-                    .maximumLength(60))
+                    .maximumLength(60)
+                    .captionResource(bundleName))
             .keyGenerator(automatic("chinook.employee"))
             .orderBy(orderBy().ascending(Employee.LASTNAME, Employee.FIRSTNAME))
             .stringFactory(stringFactory(Employee.LASTNAME)
                     .text(", ").value(Employee.FIRSTNAME))
-            .caption("Employees");
+            .captionResource(bundleName);
   }
 
   void customer() {
