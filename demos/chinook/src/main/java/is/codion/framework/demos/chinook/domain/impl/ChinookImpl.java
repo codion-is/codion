@@ -42,55 +42,65 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   }
 
   void artist() {
+    final String bundleName = Artist.class.getName();
+
     define(Artist.TYPE, "chinook.artist",
             primaryKeyProperty(Artist.ID),
-            columnProperty(Artist.NAME, "Name")
+            columnProperty(Artist.NAME)
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(120)
-                    .preferredColumnWidth(160),
-            subqueryProperty(Artist.NUMBER_OF_ALBUMS, "Albums",
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName),
+            subqueryProperty(Artist.NUMBER_OF_ALBUMS,
                     "select count(*) " +
                             "from chinook.album " +
-                            "where album.artistid = artist.artistid"),
-            subqueryProperty(Artist.NUMBER_OF_TRACKS, "Tracks",
+                            "where album.artistid = artist.artistid")
+                    .captionResource(bundleName),
+            subqueryProperty(Artist.NUMBER_OF_TRACKS,
                     "select count(*) " +
                             "from chinook.track " +
                             "where track.albumid in (" +
                             "  select albumid " +
                             "  from chinook.album " +
                             "  where album.artistid = artist.artistid" +
-                            ")"))
+                            ")")
+                    .captionResource(bundleName))
             .keyGenerator(automatic("chinook.artist"))
             .orderBy(orderBy().ascending(Artist.NAME))
             .stringFactory(stringFactory(Artist.NAME))
-            .caption("Artists");
+            .captionResource(bundleName);
   }
 
   void album() {
+    final String bundleName = Album.class.getName();
+
     define(Album.TYPE, "chinook.album",
             primaryKeyProperty(Album.ID),
             columnProperty(Album.ARTIST_ID)
                     .nullable(false),
-            foreignKeyProperty(Album.ARTIST_FK, "Artist")
+            foreignKeyProperty(Album.ARTIST_FK)
+                    .captionResource(bundleName)
                     .preferredColumnWidth(160),
-            columnProperty(Album.TITLE, "Title")
+            columnProperty(Album.TITLE)
+                    .captionResource(bundleName)
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(160)
                     .preferredColumnWidth(160),
-            blobProperty(Album.COVER, "Cover")
+            blobProperty(Album.COVER)
                     .eagerlyLoaded(),
-            derivedProperty(Album.COVERIMAGE, null,
+            derivedProperty(Album.COVERIMAGE,
                     new CoverArtImageProvider(), Album.COVER),
-            subqueryProperty(Album.NUMBER_OF_TRACKS, "Tracks",
+            subqueryProperty(Album.NUMBER_OF_TRACKS,
                     "select count(*) " +
                             "from chinook.track " +
-                            "where track.albumid = album.albumid"))
+                            "where track.albumid = album.albumid")
+                    .captionResource(bundleName))
             .keyGenerator(automatic("chinook.album"))
             .orderBy(orderBy().ascending(Album.ARTIST_ID, Album.TITLE))
             .stringFactory(stringFactory(Album.TITLE))
-            .caption("Albums");
+            .captionResource(bundleName);
   }
 
   void employee() {

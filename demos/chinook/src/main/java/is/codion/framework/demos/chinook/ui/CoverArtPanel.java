@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
@@ -27,6 +28,13 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
  * A panel for displaying a cover image, based on a byte array.
  */
 final class CoverArtPanel extends JPanel {
+
+  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(CoverArtPanel.class.getName());
+
+  private static final String COVER = "cover";
+  private static final String SELECT_COVER = "select_cover";
+  private static final String REMOVE_COVER = "remove_cover";
+  private static final String SELECT_IMAGE = "select_image";
 
   private final NavigableImagePanel imagePanel;
   private final Value<byte[]> imageBytesValue;
@@ -44,12 +52,12 @@ final class CoverArtPanel extends JPanel {
 
   private void initializePanel() {
     final JPanel coverPanel = new JPanel(borderLayout());
-    coverPanel.setBorder(BorderFactory.createTitledBorder("Cover"));
+    coverPanel.setBorder(BorderFactory.createTitledBorder(BUNDLE.getString(COVER)));
     coverPanel.add(imagePanel, BorderLayout.CENTER);
 
     final JPanel coverButtonPanel = new JPanel(gridLayout(1, 2));
-    coverButtonPanel.add(new JButton(Controls.control(this::setCover, "Select cover...")));
-    coverButtonPanel.add(new JButton(Controls.control(this::removeCover, "Remove cover")));
+    coverButtonPanel.add(new JButton(Controls.control(this::setCover, BUNDLE.getString(SELECT_COVER))));
+    coverButtonPanel.add(new JButton(Controls.control(this::removeCover, BUNDLE.getString(REMOVE_COVER))));
 
     add(coverPanel, BorderLayout.CENTER);
     add(coverButtonPanel, BorderLayout.SOUTH);
@@ -60,7 +68,7 @@ final class CoverArtPanel extends JPanel {
   }
 
   private void setCover() throws IOException {
-    final File coverFile = Dialogs.selectFile(this, null, "Select image");
+    final File coverFile = Dialogs.selectFile(this, null, BUNDLE.getString(SELECT_IMAGE));
     imageBytesValue.set(Files.readAllBytes(coverFile.toPath()));
   }
 
