@@ -402,7 +402,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     @Override
     public Property.Builder<T> beanProperty(final String beanProperty) {
       if (nullOrEmpty(beanProperty)) {
-        throw new IllegalArgumentException("beanProperty must be a non-empty string");
+        throw new IllegalArgumentException("beanProperty must be a non-empty string: " + property.attribute);
       }
       property.beanProperty = beanProperty;
       return this;
@@ -437,10 +437,10 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     @Override
     public Property.Builder<T> maximumLength(final int maxLength) {
       if (!property.attribute.isString()) {
-        throw new IllegalStateException("maximumLength is only applicable to string properties");
+        throw new IllegalStateException("maximumLength is only applicable to string properties: " + property.attribute);
       }
       if (maxLength <= 0) {
-        throw new IllegalArgumentException("Maximum length must be a positive integer");
+        throw new IllegalArgumentException("Maximum length must be a positive integer: " + property.attribute);
       }
       property.maximumLength = maxLength;
       return this;
@@ -449,10 +449,10 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     @Override
     public Property.Builder<T> maximumValue(final double maximumValue) {
       if (!property.attribute.isNumerical()) {
-        throw new IllegalStateException("maximumValue is only applicable to numerical properties");
+        throw new IllegalStateException("maximumValue is only applicable to numerical properties: " + property.attribute);
       }
       if (property.minimumValue != null && property.minimumValue > maximumValue) {
-        throw new IllegalArgumentException("Maximum value must be larger than minimum value");
+        throw new IllegalArgumentException("Maximum value must be larger than minimum value: " + property.attribute);
       }
       property.maximumValue = maximumValue;
       return this;
@@ -464,7 +464,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
         throw new IllegalStateException("minimumValue is only applicable to numerical properties");
       }
       if (property.maximumValue != null && property.maximumValue < minimumValue) {
-        throw new IllegalArgumentException("Minimum value must be smaller than maximum value");
+        throw new IllegalArgumentException("Minimum value must be smaller than maximum value: " + property.attribute);
       }
       property.minimumValue = minimumValue;
       return this;
@@ -473,7 +473,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     @Override
     public Property.Builder<T> numberFormatGrouping(final boolean numberFormatGrouping) {
       if (!property.attribute.isNumerical()) {
-        throw new IllegalStateException("numberFormatGrouping is only applicable to numerical properties");
+        throw new IllegalStateException("numberFormatGrouping is only applicable to numerical properties: " + property.attribute);
       }
       ((NumberFormat) property.format).setGroupingUsed(numberFormatGrouping);
       return this;
@@ -524,7 +524,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     @Override
     public Property.Builder<T> maximumFractionDigits(final int maximumFractionDigits) {
      if (!property.attribute.isDecimal()) {
-        throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties");
+        throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties: " + property.attribute);
       }
       ((NumberFormat) property.format).setMaximumFractionDigits(maximumFractionDigits);
       return this;
@@ -533,7 +533,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     @Override
     public Property.Builder<T> bigDecimalRoundingMode(final RoundingMode roundingMode) {
       if (!property.attribute.isBigDecimal()) {
-        throw new IllegalStateException("bigDecimalRoundingMode is only applicable to BigDecimal properties");
+        throw new IllegalStateException("bigDecimalRoundingMode is only applicable to BigDecimal properties: " + property.attribute);
       }
       property.bigDecimalRoundingMode = requireNonNull(roundingMode, "roundingMode");
       return this;

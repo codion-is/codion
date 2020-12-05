@@ -102,7 +102,7 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     @Override
     public <T> ForeignKeyProperty.Builder readOnly(final Attribute<T> referenceAttribute) {
       if (foreignKeyProperty.getAttribute().getReference(referenceAttribute) == null) {
-        throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key");
+        throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key: " + property.getAttribute());
       }
       foreignKeyProperty.readOnlyAttributes.add(referenceAttribute);
       return this;

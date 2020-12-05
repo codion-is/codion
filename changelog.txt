@@ -6523,3 +6523,4 @@
   ItemI18n added along with Items.itemI18n()
   Property and EntityDefinition, captionResource() implemented
   Properties.valueListProperty() and subqueryProperty() overloaded without caption parameter
+  Property.Builder and descendants, added attribute to error messages

@@ -588,7 +588,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final ColumnProperty.Builder<T> primaryKeyIndex(final int index) {
       if (index < 0) {
-        throw new IllegalArgumentException("Primary key index must be at least 0");
+        throw new IllegalArgumentException("Primary key index must be at least 0: " + property.getAttribute());
       }
       columnProperty.primaryKeyIndex = index;
       nullable(false);
@@ -599,7 +599,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final ColumnProperty.Builder<T> groupingColumn() {
       if (columnProperty.aggregateColumn) {
-        throw new IllegalStateException(columnProperty.columnName + " is an aggregate column");
+        throw new IllegalStateException(columnProperty.columnName + " is an aggregate column: " + property.getAttribute());
       }
       columnProperty.groupingColumn = true;
       return this;
@@ -608,7 +608,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final ColumnProperty.Builder<T> aggregateColumn() {
       if (columnProperty.groupingColumn) {
-        throw new IllegalStateException(columnProperty.columnName + " is a grouping column");
+        throw new IllegalStateException(columnProperty.columnName + " is a grouping column: " + property.getAttribute());
       }
       columnProperty.aggregateColumn = true;
       return this;
@@ -623,7 +623,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     @Override
     public final ColumnProperty.Builder<T> searchProperty() {
       if (columnProperty.columnType != Types.VARCHAR) {
-        throw new IllegalStateException("Search properties must be of type Types.VARCHAR");
+        throw new IllegalStateException("Search properties must be of type Types.VARCHAR: " + property.getAttribute());
       }
       columnProperty.searchProperty = true;
       return this;
