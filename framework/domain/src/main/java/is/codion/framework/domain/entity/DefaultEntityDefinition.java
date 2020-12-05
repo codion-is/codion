@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -265,7 +264,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   public String getCaption() {
     if (resourceKey != null) {
       if (resourceCaption == null) {
-        resourceCaption = ResourceBundle.getBundle(resourceBundleName, Locale.getDefault()).getString(resourceKey);
+        resourceCaption = ResourceBundle.getBundle(resourceBundleName).getString(resourceKey);
       }
 
       return resourceCaption;

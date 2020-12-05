@@ -6525,3 +6525,4 @@
   Properties.valueListProperty() and subqueryProperty() overloaded without caption parameter
   Property.Builder and descendants, added attribute to error messages
   Properties.derivedProperty() overloaded without caption parameter
+  Redundant usages of Locale.getDefault() removed
