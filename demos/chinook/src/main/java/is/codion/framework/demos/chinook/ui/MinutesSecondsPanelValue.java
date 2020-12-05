@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.value.AbstractComponentValue;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.KeyEvents.transferFocusOnEnter;
@@ -37,6 +38,8 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
 
   static final class MinutesSecondsPanel extends JPanel {
 
+    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(MinutesSecondsPanel.class.getName());
+
     private final IntegerField minutesField = new IntegerField(2);
     private final IntegerField secondsField = new IntegerField(2);
 
@@ -48,8 +51,8 @@ final class MinutesSecondsPanelValue extends AbstractComponentValue<Integer, Min
       selectAllOnFocusGained(minutesField);
       selectAllOnFocusGained(secondsField);
       final JPanel northPanel = new JPanel(gridLayout(1, 2));
-      northPanel.add(new JLabel("Min."));
-      northPanel.add(new JLabel("Sec."));
+      northPanel.add(new JLabel(BUNDLE.getString("min")));
+      northPanel.add(new JLabel(BUNDLE.getString("sec")));
       final JPanel centerPanel = new JPanel(gridLayout(1, 2));
       centerPanel.add(minutesField);
       centerPanel.add(secondsField);
