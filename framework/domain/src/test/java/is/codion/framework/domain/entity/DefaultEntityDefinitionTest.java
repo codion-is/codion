@@ -114,7 +114,7 @@ public class DefaultEntityDefinitionTest {
                 primaryKeyProperty(entityType.integerAttribute("id")),
                 Properties.columnProperty(name),
                 Properties.columnProperty(info),
-                Properties.derivedProperty(derived, null, linkedValues ->
+                Properties.derivedProperty(derived, linkedValues ->
                         linkedValues.get(name).toString() + linkedValues.get(info), name, info));
       }
     }

@@ -112,6 +112,22 @@ public final class Properties {
    * Instantiates a {@link TransientProperty.Builder} instance, which value is derived from
    * or more linked property values.
    * @param attribute the attribute
+   * @param valueProvider a {@link DerivedProperty.Provider} instance responsible for deriving the value
+   * @param linkedAttributes the ids of the properties from which this property derives its value
+   * @param <T> the property type
+   * @return a new {@link TransientProperty.Builder}
+   * @throws IllegalArgumentException in case no linked property ids are provided
+   */
+  public static <T> TransientProperty.Builder<T> derivedProperty(final Attribute<T> attribute,
+                                                                 final DerivedProperty.Provider<T> valueProvider,
+                                                                 final Attribute<?>... linkedAttributes) {
+    return derivedProperty(attribute, null, valueProvider, linkedAttributes);
+  }
+
+  /**
+   * Instantiates a {@link TransientProperty.Builder} instance, which value is derived from
+   * or more linked property values.
+   * @param attribute the attribute
    * @param caption the caption
    * @param valueProvider a {@link DerivedProperty.Provider} instance responsible for deriving the value
    * @param linkedAttributes the ids of the properties from which this property derives its value
