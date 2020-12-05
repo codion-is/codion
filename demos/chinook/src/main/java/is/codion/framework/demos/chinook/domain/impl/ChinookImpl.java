@@ -382,41 +382,50 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   }
 
   void playlist() {
+    final String bundleName = Playlist.class.getName();
+
     define(Playlist.TYPE, "chinook.playlist",
             primaryKeyProperty(Playlist.ID),
-            columnProperty(Playlist.NAME, "Name")
+            columnProperty(Playlist.NAME)
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(120)
-                    .preferredColumnWidth(160))
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName))
             .keyGenerator(automatic("chinook.playlist"))
             .orderBy(orderBy().ascending(Playlist.NAME))
             .stringFactory(stringFactory(Playlist.NAME))
-            .caption("Playlists");
+            .captionResource(bundleName);
   }
 
   void playlistTrack() {
+    final String bundleName = PlaylistTrack.class.getName();
+
     define(PlaylistTrack.TYPE, "chinook.playlisttrack",
             primaryKeyProperty(PlaylistTrack.ID),
             columnProperty(PlaylistTrack.PLAYLIST_ID)
                     .nullable(false),
-            foreignKeyProperty(PlaylistTrack.PLAYLIST_FK, "Playlist")
-                    .preferredColumnWidth(120),
-            denormalizedViewProperty(PlaylistTrack.ARTIST_DENORM, "Artist",
+            foreignKeyProperty(PlaylistTrack.PLAYLIST_FK)
+                    .preferredColumnWidth(120)
+                    .captionResource(bundleName),
+            denormalizedViewProperty(PlaylistTrack.ARTIST_DENORM,
                     PlaylistTrack.ALBUM_DENORM, Album.ARTIST_FK)
-                    .preferredColumnWidth(160),
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName),
             columnProperty(PlaylistTrack.TRACK_ID)
                     .nullable(false),
-            foreignKeyProperty(PlaylistTrack.TRACK_FK, "Track")
+            foreignKeyProperty(PlaylistTrack.TRACK_FK)
                     .fetchDepth(3)
-                    .preferredColumnWidth(160),
-            denormalizedViewProperty(PlaylistTrack.ALBUM_DENORM, "Album",
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName),
+            denormalizedViewProperty(PlaylistTrack.ALBUM_DENORM,
                     PlaylistTrack.TRACK_FK, Track.ALBUM_FK)
-                    .preferredColumnWidth(160))
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName))
             .keyGenerator(automatic("chinook.playlisttrack"))
             .stringFactory(stringFactory(PlaylistTrack.PLAYLIST_FK)
                     .text(" - ").value(PlaylistTrack.TRACK_FK))
-            .caption("Playlist tracks");
+            .captionResource(bundleName);
   }
 
   private static final class UpdateTotalsProcedure implements DatabaseProcedure<EntityConnection, Object> {
