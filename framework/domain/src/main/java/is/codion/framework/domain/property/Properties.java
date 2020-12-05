@@ -91,6 +91,21 @@ public final class Properties {
    * entity referenced via a foreign key.
    * @param <T> the property type
    * @param attribute the attribute
+   * @param entityAttribute the entity attribute from which this property gets its value
+   * @param denormalizedAttribute the property from the referenced entity, from which this property gets its value
+   * @return a new {@link TransientProperty.Builder}
+   */
+  public static <T> TransientProperty.Builder<T> denormalizedViewProperty(final Attribute<T> attribute,
+                                                                          final Attribute<Entity> entityAttribute,
+                                                                          final Attribute<T> denormalizedAttribute) {
+    return denormalizedViewProperty(attribute, null, entityAttribute, denormalizedAttribute);
+  }
+
+  /**
+   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from a
+   * entity referenced via a foreign key.
+   * @param <T> the property type
+   * @param attribute the attribute
    * @param caption the caption of this property
    * @param entityAttribute the entity attribute from which this property gets its value
    * @param denormalizedAttribute the property from the referenced entity, from which this property gets its value

@@ -6556,3 +6556,4 @@
   Property.Builder and descendants, added attribute to error messages
   Properties.derivedProperty() overloaded without caption parameter
   Redundant usages of Locale.getDefault() removed
+  Properties.denormalizedViewProperty() overloaded without caption parameter

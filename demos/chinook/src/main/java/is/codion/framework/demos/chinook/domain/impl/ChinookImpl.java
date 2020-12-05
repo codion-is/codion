@@ -214,45 +214,56 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   }
 
   void track() {
+    final String bundleName = Track.class.getName();
+
     define(Track.TYPE, "chinook.track",
             primaryKeyProperty(Track.ID),
-            denormalizedViewProperty(Track.ARTIST_DENORM, "Artist",
+            denormalizedViewProperty(Track.ARTIST_DENORM,
                     Track.ALBUM_FK, Album.ARTIST_FK)
-                    .preferredColumnWidth(160),
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName),
             columnProperty(Track.ALBUM_ID),
             // tag::fetchDepth2[]
-            foreignKeyProperty(Track.ALBUM_FK, "Album")
+            foreignKeyProperty(Track.ALBUM_FK)
                     .fetchDepth(2)
-                    .preferredColumnWidth(160),
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName),
             // end::fetchDepth2[]
-            columnProperty(Track.NAME, "Name")
+            columnProperty(Track.NAME)
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(200)
-                    .preferredColumnWidth(160),
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName),
             columnProperty(Track.GENRE_ID),
-            foreignKeyProperty(Track.GENRE_FK, "Genre"),
-            columnProperty(Track.COMPOSER, "Composer")
+            foreignKeyProperty(Track.GENRE_FK)
+                    .captionResource(bundleName),
+            columnProperty(Track.COMPOSER)
                     .maximumLength(220)
-                    .preferredColumnWidth(160),
+                    .preferredColumnWidth(160)
+                    .captionResource(bundleName),
             columnProperty(Track.MEDIATYPE_ID)
                     .nullable(false),
-            foreignKeyProperty(Track.MEDIATYPE_FK, "Media type"),
-            columnProperty(Track.MILLISECONDS, "Duration (ms)")
+            foreignKeyProperty(Track.MEDIATYPE_FK)
+                    .captionResource(bundleName),
+            columnProperty(Track.MILLISECONDS)
                     .nullable(false)
-                    .format(NumberFormat.getIntegerInstance()),
-            derivedProperty(Track.MINUTES_SECONDS_DERIVED, "Duration (min/sec)",
+                    .format(NumberFormat.getIntegerInstance())
+                    .captionResource(bundleName),
+            derivedProperty(Track.MINUTES_SECONDS_DERIVED,
                     new TrackMinSecProvider(), Track.MILLISECONDS),
-            columnProperty(Track.BYTES, "Bytes")
-                    .format(NumberFormat.getIntegerInstance()),
-            columnProperty(Track.UNITPRICE, "Price")
+            columnProperty(Track.BYTES)
+                    .format(NumberFormat.getIntegerInstance())
+                    .captionResource(bundleName),
+            columnProperty(Track.UNITPRICE)
                     .nullable(false)
                     .maximumFractionDigits(2)
-                    .beanProperty("unitPrice"))
+                    .beanProperty("unitPrice")
+                    .captionResource(bundleName))
             .keyGenerator(automatic("chinook.track"))
             .orderBy(orderBy().ascending(Track.NAME))
             .stringFactory(stringFactory(Track.NAME))
-            .caption("Tracks");
+            .captionResource(bundleName);
 
     defineFunction(Track.RAISE_PRICE, new RaisePriceFunction());
   }
