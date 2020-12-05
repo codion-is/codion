@@ -298,7 +298,7 @@ public class TestDomain extends DefaultDomain {
                     .beanProperty("hiredate"),
             denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.getName(), Employee.DEPARTMENT_FK, Department.LOCATION)
                     .preferredColumnWidth(100),
-            derivedProperty(Employee.DEPARTMENT_NAME, null, new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
+            derivedProperty(Employee.DEPARTMENT_NAME, new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
             blobProperty(Employee.DATA, "Data")
                     .eagerlyLoaded())
             .keyGenerator(increment("scott.emp", "empno"))

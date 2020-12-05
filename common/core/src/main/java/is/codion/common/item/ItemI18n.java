@@ -3,7 +3,6 @@
  */
 package is.codion.common.item;
 
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static java.util.Objects.requireNonNull;
@@ -26,7 +25,7 @@ final class ItemI18n<T> extends AbstractItem<T> {
   @Override
   public String getCaption() {
     if (caption == null) {
-      caption = ResourceBundle.getBundle(resourceBundleName, Locale.getDefault()).getString(resourceBundleKey);
+      caption = ResourceBundle.getBundle(resourceBundleName).getString(resourceBundleKey);
     }
 
     return caption;

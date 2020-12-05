@@ -17,7 +17,6 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
@@ -257,7 +256,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   public final String getCaption() {
     if (resourceKey != null) {
       if (resourceCaption == null) {
-        resourceCaption = ResourceBundle.getBundle(resourceBundleName, Locale.getDefault()).getString(resourceKey);
+        resourceCaption = ResourceBundle.getBundle(resourceBundleName).getString(resourceKey);
       }
 
       return resourceCaption;
