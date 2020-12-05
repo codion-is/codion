@@ -161,42 +161,56 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   }
 
   void customer() {
+    final String bundleName = Customer.class.getName();
+
     define(Customer.TYPE, "chinook.customer",
             primaryKeyProperty(Customer.ID),
-            columnProperty(Customer.LASTNAME, "Last name")
+            columnProperty(Customer.LASTNAME)
                     .searchProperty()
                     .nullable(false)
-                    .maximumLength(20),
-            columnProperty(Customer.FIRSTNAME, "First name")
+                    .maximumLength(20)
+                    .captionResource(bundleName),
+            columnProperty(Customer.FIRSTNAME)
                     .searchProperty()
                     .nullable(false)
-                    .maximumLength(40),
-            columnProperty(Customer.COMPANY, "Company")
-                    .maximumLength(80),
-            columnProperty(Customer.ADDRESS, "Address")
-                    .maximumLength(70),
-            columnProperty(Customer.CITY, "City")
-                    .maximumLength(40),
-            columnProperty(Customer.STATE, "State")
-                    .maximumLength(40),
-            columnProperty(Customer.COUNTRY, "Country")
-                    .maximumLength(40),
-            columnProperty(Customer.POSTALCODE, "Postal code")
-                    .maximumLength(10),
-            columnProperty(Customer.PHONE, "Phone")
-                    .maximumLength(24),
-            columnProperty(Customer.FAX, "Fax")
-                    .maximumLength(24),
-            columnProperty(Customer.EMAIL, "Email")
+                    .maximumLength(40)
+                    .captionResource(bundleName),
+            columnProperty(Customer.COMPANY)
+                    .maximumLength(80)
+                    .captionResource(bundleName),
+            columnProperty(Customer.ADDRESS)
+                    .maximumLength(70)
+                    .captionResource(bundleName),
+            columnProperty(Customer.CITY)
+                    .maximumLength(40)
+                    .captionResource(bundleName),
+            columnProperty(Customer.STATE)
+                    .maximumLength(40)
+                    .captionResource(bundleName),
+            columnProperty(Customer.COUNTRY)
+                    .maximumLength(40)
+                    .captionResource(bundleName),
+            columnProperty(Customer.POSTALCODE)
+                    .maximumLength(10)
+                    .captionResource(bundleName),
+            columnProperty(Customer.PHONE)
+                    .maximumLength(24)
+                    .captionResource(bundleName),
+            columnProperty(Customer.FAX)
+                    .maximumLength(24)
+                    .captionResource(bundleName),
+            columnProperty(Customer.EMAIL)
                     .searchProperty()
                     .nullable(false)
-                    .maximumLength(60),
+                    .maximumLength(60)
+                    .captionResource(bundleName),
             columnProperty(Customer.SUPPORTREP_ID),
-            foreignKeyProperty(Customer.SUPPORTREP_FK, "Support rep"))
+            foreignKeyProperty(Customer.SUPPORTREP_FK)
+                    .captionResource(bundleName))
             .keyGenerator(automatic("chinook.customer"))
             .orderBy(orderBy().ascending(Customer.LASTNAME, Customer.FIRSTNAME))
             .stringFactory(new CustomerStringProvider())
-            .caption("Customers");
+            .captionResource(bundleName);
 
     defineReport(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
   }
