@@ -17,6 +17,8 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
@@ -53,6 +55,21 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
    * The default value supplier for this property
    */
   private Supplier<T> defaultValueSupplier = (Supplier<T>) DEFAULT_VALUE_SUPPLIER;
+
+  /**
+   * The name of the resource bundle to use, if any
+   */
+  private String resourceBundleName;
+
+  /**
+   * The resource bundle key specifying the caption
+   */
+  private String resourceKey;
+
+  /**
+   * The caption from the resource bundle, if any
+   */
+  private transient String resourceCaption;
 
   /**
    * True if the value of this property is allowed to be null
@@ -238,6 +255,14 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
   @Override
   public final String getCaption() {
+    if (resourceKey != null) {
+      if (resourceCaption == null) {
+        resourceCaption = ResourceBundle.getBundle(resourceBundleName, Locale.getDefault()).getString(resourceKey);
+      }
+
+      return resourceCaption;
+    }
+
     return caption == null ? attribute.getName() : caption;
   }
 
@@ -356,6 +381,22 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     @Override
     public Property<T> get() {
       return property;
+    }
+
+    @Override
+    public Builder<T> captionResource(final String resourceBundleName) {
+      return captionResource(resourceBundleName, property.attribute.getName());
+    }
+
+    @Override
+    public Property.Builder<T> captionResource(final String resourceBundleName, final String resourceKey) {
+      if (property.caption != null) {
+        throw new IllegalStateException("Caption has already been set for property: " + property.attribute);
+      }
+      property.resourceBundleName = requireNonNull(resourceBundleName, "resourceBundleName");
+      property.resourceKey = requireNonNull(resourceKey, "resourceKey");
+      property.hidden = false;
+      return this;
     }
 
     @Override

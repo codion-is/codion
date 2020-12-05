@@ -6521,3 +6521,5 @@
   EntityDefinition.Builder, removed redundant boolean parameters from a few setters
   Property.Builder and descendants, removed redundant boolean parameters from a few setters
   ItemI18n added along with Items.itemI18n()
+  Property and EntityDefinition, captionResource() implemented
+  Properties.valueListProperty() and subqueryProperty() overloaded without caption parameter

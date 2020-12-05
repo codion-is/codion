@@ -27,8 +27,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -76,6 +78,21 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * The caption to use for the entity type
    */
   private String caption;
+
+  /**
+   * The name of the resource bundle to use, if any
+   */
+  private String resourceBundleName;
+
+  /**
+   * The resource bundle key specifying the caption
+   */
+  private String resourceKey;
+
+  /**
+   * The caption from the resource bundle, if any
+   */
+  private transient String resourceCaption;
 
   /**
    * Holds the order by clause
@@ -197,7 +214,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     this.entityProperties = new EntityProperties(entityType, propertyBuilders);
     this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
     this.groupByClause = initializeGroupByClause();
-    this.caption = entityType.getName();
     resolveEntityClassMethods();
   }
 
@@ -247,7 +263,15 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public String getCaption() {
-    return caption;
+    if (resourceKey != null) {
+      if (resourceCaption == null) {
+        resourceCaption = ResourceBundle.getBundle(resourceBundleName, Locale.getDefault()).getString(resourceKey);
+      }
+
+      return resourceCaption;
+    }
+
+    return caption == null ? entityType.getName() : caption;
   }
 
   @Override
@@ -1007,6 +1031,21 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     @Override
     public Builder caption(final String caption) {
       definition.caption = requireNonNull(caption, "caption");
+      return this;
+    }
+
+    @Override
+    public Builder captionResource(final String resourceBundleName) {
+      return captionResource(resourceBundleName, definition.entityType.getName());
+    }
+
+    @Override
+    public Builder captionResource(final String resourceBundleName, final String resourceKey) {
+      if (definition.caption != null) {
+        throw new IllegalStateException("Caption has already been set for this entity");
+      }
+      definition.resourceBundleName = requireNonNull(resourceBundleName, "resourceBundleName");
+      definition.resourceKey = requireNonNull(resourceKey, "resourceKey");
       return this;
     }
 

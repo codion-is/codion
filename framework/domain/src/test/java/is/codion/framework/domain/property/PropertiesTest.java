@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.DateFormats;
+import is.codion.common.Serializer;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -11,9 +12,11 @@ import is.codion.framework.domain.entity.EntityType;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import static is.codion.framework.domain.property.Properties.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -194,5 +197,20 @@ public final class PropertiesTest {
   @Test
   public void searchPropertyNonVarchar() {
     assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("property")).searchProperty());
+  }
+
+  @Test
+  public void i18n() throws IOException, ClassNotFoundException {
+    Property<Integer> property =
+            columnProperty(ENTITY_TYPE.integerAttribute("i18n"))
+                    .captionResource(PropertiesTest.class.getName(), "test").get();
+
+    Locale.setDefault(new Locale("en", "EN"));
+    assertEquals("Test", property.getCaption());
+
+    property = Serializer.deserialize(Serializer.serialize(property));
+
+    Locale.setDefault(new Locale("is", "IS"));
+    assertEquals("Prufa", property.getCaption());
   }
 }
