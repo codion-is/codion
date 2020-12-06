@@ -31,6 +31,11 @@ public interface EntityType<T extends Entity> {
   Class<T> getEntityClass();
 
   /**
+   * @return the name of the resource bundle, containing captions for this entity type, if any
+   */
+  String getResourceBundleName();
+
+  /**
    * Creates a new {@link Attribute}, associated with this EntityType.
    * @param name the attribute name
    * @param typeClass the class representing the attribute value type

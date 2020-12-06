@@ -54,6 +54,19 @@ final class DefaultDomainType implements DomainType, Serializable {
   }
 
   @Override
+  public <T extends Entity> EntityType<T> entityType(final String name, final String resourceBundleName) {
+    return (EntityType<T>) entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
+            EntityTypes.entityType(entityTypeName, this.domainName, resourceBundleName));
+  }
+
+  @Override
+  public <T extends Entity> EntityType<T> entityType(final String name, final Class<T> entityClass,
+                                                     final String resourceBundleName) {
+    return (EntityType<T>) entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
+            EntityTypes.entityType(entityTypeName, this.domainName, entityClass, resourceBundleName));
+  }
+
+  @Override
   public boolean contains(final EntityType<?> entityType) {
     return entityTypes.containsKey(requireNonNull(entityType).getName());
   }

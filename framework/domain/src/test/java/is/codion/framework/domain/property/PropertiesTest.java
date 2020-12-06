@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class PropertiesTest {
 
   private static final DomainType DOMAIN_TYPE = DomainType.domainType("domainType");
-  private static final EntityType<Entity> ENTITY_TYPE = DOMAIN_TYPE.entityType("entityType");
+  private static final EntityType<Entity> ENTITY_TYPE = DOMAIN_TYPE.entityType("entityType", PropertiesTest.class.getName());
   private static final EntityType<Entity> ENTITY_TYPE2 = DOMAIN_TYPE.entityType("entityType2");
 
   @Test
@@ -203,7 +203,7 @@ public final class PropertiesTest {
   public void i18n() throws IOException, ClassNotFoundException {
     Property<Integer> property =
             columnProperty(ENTITY_TYPE.integerAttribute("i18n"))
-                    .captionResource(PropertiesTest.class.getName(), "test").get();
+                    .captionResourceKey("test").get();
 
     Locale.setDefault(new Locale("en", "EN"));
     assertEquals("Test", property.getCaption());

@@ -42,21 +42,17 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   }
 
   void artist() {
-    final String bundleName = Artist.class.getName();
-
     define(Artist.TYPE, "chinook.artist",
             primaryKeyProperty(Artist.ID),
             columnProperty(Artist.NAME)
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(120)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName),
+                    .preferredColumnWidth(160),
             subqueryProperty(Artist.NUMBER_OF_ALBUMS,
                     "select count(*) " +
                             "from chinook.album " +
-                            "where album.artistid = artist.artistid")
-                    .captionResource(bundleName),
+                            "where album.artistid = artist.artistid"),
             subqueryProperty(Artist.NUMBER_OF_TRACKS,
                     "select count(*) " +
                             "from chinook.track " +
@@ -64,30 +60,24 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                             "  select albumid " +
                             "  from chinook.album " +
                             "  where album.artistid = artist.artistid" +
-                            ")")
-                    .captionResource(bundleName))
+                            ")"))
             .keyGenerator(automatic("chinook.artist"))
             .orderBy(orderBy().ascending(Artist.NAME))
-            .stringFactory(stringFactory(Artist.NAME))
-            .captionResource(bundleName);
+            .stringFactory(stringFactory(Artist.NAME));
   }
 
   void album() {
-    final String bundleName = Album.class.getName();
-
     define(Album.TYPE, "chinook.album",
             primaryKeyProperty(Album.ID),
             columnProperty(Album.ARTIST_ID)
                     .nullable(false),
             foreignKeyProperty(Album.ARTIST_FK)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName),
+                    .preferredColumnWidth(160),
             columnProperty(Album.TITLE)
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(160)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName),
+                    .preferredColumnWidth(160),
             blobProperty(Album.COVER)
                     .eagerlyLoaded(),
             derivedProperty(Album.COVERIMAGE,
@@ -95,337 +85,251 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             subqueryProperty(Album.NUMBER_OF_TRACKS,
                     "select count(*) " +
                             "from chinook.track " +
-                            "where track.albumid = album.albumid")
-                    .captionResource(bundleName))
+                            "where track.albumid = album.albumid"))
             .keyGenerator(automatic("chinook.album"))
             .orderBy(orderBy().ascending(Album.ARTIST_ID, Album.TITLE))
-            .stringFactory(stringFactory(Album.TITLE))
-            .captionResource(bundleName);
+            .stringFactory(stringFactory(Album.TITLE));
   }
 
   void employee() {
-    final String bundleName = Employee.class.getName();
-
     define(Employee.TYPE, "chinook.employee",
             primaryKeyProperty(Employee.ID),
             columnProperty(Employee.LASTNAME)
                     .searchProperty()
                     .nullable(false)
-                    .maximumLength(20)
-                    .captionResource(bundleName),
+                    .maximumLength(20),
             columnProperty(Employee.FIRSTNAME)
                     .searchProperty()
                     .nullable(false)
-                    .maximumLength(20)
-                    .captionResource(bundleName),
+                    .maximumLength(20),
             columnProperty(Employee.TITLE)
-                    .maximumLength(30)
-                    .captionResource(bundleName),
+                    .maximumLength(30),
             columnProperty(Employee.REPORTSTO),
-            foreignKeyProperty(Employee.REPORTSTO_FK)
-                    .captionResource(bundleName),
-            columnProperty(Employee.BIRTHDATE)
-                    .captionResource(bundleName),
-            columnProperty(Employee.HIREDATE)
-                    .captionResource(bundleName),
+            foreignKeyProperty(Employee.REPORTSTO_FK),
+            columnProperty(Employee.BIRTHDATE),
+            columnProperty(Employee.HIREDATE),
             columnProperty(Employee.ADDRESS)
-                    .maximumLength(70)
-                    .captionResource(bundleName),
+                    .maximumLength(70),
             columnProperty(Employee.CITY)
-                    .maximumLength(40)
-                    .captionResource(bundleName),
+                    .maximumLength(40),
             columnProperty(Employee.STATE)
-                    .maximumLength(40)
-                    .captionResource(bundleName),
+                    .maximumLength(40),
             columnProperty(Employee.COUNTRY)
-                    .maximumLength(40)
-                    .captionResource(bundleName),
+                    .maximumLength(40),
             columnProperty(Employee.POSTALCODE)
-                    .maximumLength(10)
-                    .captionResource(bundleName),
+                    .maximumLength(10),
             columnProperty(Employee.PHONE)
-                    .maximumLength(24)
-                    .captionResource(bundleName),
+                    .maximumLength(24),
             columnProperty(Employee.FAX)
-                    .maximumLength(24)
-                    .captionResource(bundleName),
+                    .maximumLength(24),
             columnProperty(Employee.EMAIL)
                     .searchProperty()
-                    .maximumLength(60)
-                    .captionResource(bundleName))
+                    .maximumLength(60))
             .keyGenerator(automatic("chinook.employee"))
             .orderBy(orderBy().ascending(Employee.LASTNAME, Employee.FIRSTNAME))
             .stringFactory(stringFactory(Employee.LASTNAME)
-                    .text(", ").value(Employee.FIRSTNAME))
-            .captionResource(bundleName);
+                    .text(", ").value(Employee.FIRSTNAME));
   }
 
   void customer() {
-    final String bundleName = Customer.class.getName();
-
     define(Customer.TYPE, "chinook.customer",
             primaryKeyProperty(Customer.ID),
             columnProperty(Customer.LASTNAME)
                     .searchProperty()
                     .nullable(false)
-                    .maximumLength(20)
-                    .captionResource(bundleName),
+                    .maximumLength(20),
             columnProperty(Customer.FIRSTNAME)
                     .searchProperty()
                     .nullable(false)
-                    .maximumLength(40)
-                    .captionResource(bundleName),
+                    .maximumLength(40),
             columnProperty(Customer.COMPANY)
-                    .maximumLength(80)
-                    .captionResource(bundleName),
+                    .maximumLength(80),
             columnProperty(Customer.ADDRESS)
-                    .maximumLength(70)
-                    .captionResource(bundleName),
+                    .maximumLength(70),
             columnProperty(Customer.CITY)
-                    .maximumLength(40)
-                    .captionResource(bundleName),
+                    .maximumLength(40),
             columnProperty(Customer.STATE)
-                    .maximumLength(40)
-                    .captionResource(bundleName),
+                    .maximumLength(40),
             columnProperty(Customer.COUNTRY)
-                    .maximumLength(40)
-                    .captionResource(bundleName),
+                    .maximumLength(40),
             columnProperty(Customer.POSTALCODE)
-                    .maximumLength(10)
-                    .captionResource(bundleName),
+                    .maximumLength(10),
             columnProperty(Customer.PHONE)
-                    .maximumLength(24)
-                    .captionResource(bundleName),
+                    .maximumLength(24),
             columnProperty(Customer.FAX)
-                    .maximumLength(24)
-                    .captionResource(bundleName),
+                    .maximumLength(24),
             columnProperty(Customer.EMAIL)
                     .searchProperty()
                     .nullable(false)
-                    .maximumLength(60)
-                    .captionResource(bundleName),
+                    .maximumLength(60),
             columnProperty(Customer.SUPPORTREP_ID),
-            foreignKeyProperty(Customer.SUPPORTREP_FK)
-                    .captionResource(bundleName))
+            foreignKeyProperty(Customer.SUPPORTREP_FK))
             .keyGenerator(automatic("chinook.customer"))
             .orderBy(orderBy().ascending(Customer.LASTNAME, Customer.FIRSTNAME))
-            .stringFactory(new CustomerStringProvider())
-            .captionResource(bundleName);
+            .stringFactory(new CustomerStringProvider());
 
     defineReport(Customer.REPORT, classPathReport(Chinook.class, "customer_report.jasper"));
   }
 
   void genre() {
-    final String bundleName = Genre.class.getName();
-
     define(Genre.TYPE, "chinook.genre",
             primaryKeyProperty(Genre.ID),
             columnProperty(Genre.NAME)
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(120)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName))
+                    .preferredColumnWidth(160))
             .keyGenerator(automatic("chinook.genre"))
             .orderBy(orderBy().ascending(Genre.NAME))
             .stringFactory(stringFactory(Genre.NAME))
-            .smallDataset()
-            .captionResource(bundleName);
+            .smallDataset();
   }
 
   void mediaType() {
-    final String bundleName = MediaType.class.getName();
-
     define(MediaType.TYPE, "chinook.mediatype",
             primaryKeyProperty(MediaType.ID),
             columnProperty(MediaType.NAME)
                     .nullable(false)
                     .maximumLength(120)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName))
+                    .preferredColumnWidth(160))
             .keyGenerator(automatic("chinook.mediatype"))
             .stringFactory(stringFactory(MediaType.NAME))
-            .smallDataset()
-            .captionResource(bundleName);
+            .smallDataset();
   }
 
   void track() {
-    final String bundleName = Track.class.getName();
-
     define(Track.TYPE, "chinook.track",
             primaryKeyProperty(Track.ID),
             denormalizedViewProperty(Track.ARTIST_DENORM,
                     Track.ALBUM_FK, Album.ARTIST_FK)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName),
+                    .preferredColumnWidth(160),
             columnProperty(Track.ALBUM_ID),
             // tag::fetchDepth2[]
             foreignKeyProperty(Track.ALBUM_FK)
                     .fetchDepth(2)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName),
+                    .preferredColumnWidth(160),
             // end::fetchDepth2[]
             columnProperty(Track.NAME)
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(200)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName),
+                    .preferredColumnWidth(160),
             columnProperty(Track.GENRE_ID),
-            foreignKeyProperty(Track.GENRE_FK)
-                    .captionResource(bundleName),
+            foreignKeyProperty(Track.GENRE_FK),
             columnProperty(Track.COMPOSER)
                     .maximumLength(220)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName),
+                    .preferredColumnWidth(160),
             columnProperty(Track.MEDIATYPE_ID)
                     .nullable(false),
-            foreignKeyProperty(Track.MEDIATYPE_FK)
-                    .captionResource(bundleName),
+            foreignKeyProperty(Track.MEDIATYPE_FK),
             columnProperty(Track.MILLISECONDS)
                     .nullable(false)
-                    .format(NumberFormat.getIntegerInstance())
-                    .captionResource(bundleName),
+                    .format(NumberFormat.getIntegerInstance()),
             derivedProperty(Track.MINUTES_SECONDS_DERIVED,
                     new TrackMinSecProvider(), Track.MILLISECONDS),
             columnProperty(Track.BYTES)
-                    .format(NumberFormat.getIntegerInstance())
-                    .captionResource(bundleName),
+                    .format(NumberFormat.getIntegerInstance()),
             columnProperty(Track.UNITPRICE)
                     .nullable(false)
                     .maximumFractionDigits(2)
-                    .beanProperty("unitPrice")
-                    .captionResource(bundleName))
+                    .beanProperty("unitPrice"))
             .keyGenerator(automatic("chinook.track"))
             .orderBy(orderBy().ascending(Track.NAME))
-            .stringFactory(stringFactory(Track.NAME))
-            .captionResource(bundleName);
+            .stringFactory(stringFactory(Track.NAME));
 
     defineFunction(Track.RAISE_PRICE, new RaisePriceFunction());
   }
 
   void invoice() {
-    final String bundleName = Invoice.class.getName();
-
     define(Invoice.TYPE, "chinook.invoice",
-            primaryKeyProperty(Invoice.ID)
-                    .captionResource(bundleName),
+            primaryKeyProperty(Invoice.ID),
             columnProperty(Invoice.CUSTOMER_ID)
                     .nullable(false),
-            foreignKeyProperty(Invoice.CUSTOMER_FK)
-                    .captionResource(bundleName),
+            foreignKeyProperty(Invoice.CUSTOMER_FK),
             columnProperty(Invoice.INVOICEDATE)
-                    .nullable(false)
-                    .captionResource(bundleName),
+                    .nullable(false),
             columnProperty(Invoice.BILLINGADDRESS)
-                    .maximumLength(70)
-                    .captionResource(bundleName),
+                    .maximumLength(70),
             columnProperty(Invoice.BILLINGCITY)
-                    .maximumLength(40)
-                    .captionResource(bundleName),
+                    .maximumLength(40),
             columnProperty(Invoice.BILLINGSTATE)
-                    .maximumLength(40)
-                    .captionResource(bundleName),
+                    .maximumLength(40),
             columnProperty(Invoice.BILLINGCOUNTRY)
-                    .maximumLength(40)
-                    .captionResource(bundleName),
+                    .maximumLength(40),
             columnProperty(Invoice.BILLINGPOSTALCODE)
-                    .maximumLength(10)
-                    .captionResource(bundleName),
+                    .maximumLength(10),
             columnProperty(Invoice.TOTAL)
                     .maximumFractionDigits(2)
-                    .captionResource(bundleName)
                     .hidden(),
             subqueryProperty(Invoice.TOTAL_SUBQUERY,
                     "select sum(unitprice * quantity) from chinook.invoiceline " +
                             "where invoiceid = invoice.invoiceid")
-                    .maximumFractionDigits(2)
-                    .captionResource(bundleName))
+                    .maximumFractionDigits(2))
             .keyGenerator(automatic("chinook.invoice"))
             .orderBy(orderBy().ascending(Invoice.CUSTOMER_ID).descending(Invoice.INVOICEDATE))
-            .stringFactory(stringFactory(Invoice.ID))
-            .captionResource(bundleName);
+            .stringFactory(stringFactory(Invoice.ID));
 
     defineProcedure(Invoice.UPDATE_TOTALS, new UpdateTotalsProcedure());
   }
 
   void invoiceLine() {
-    final String bundleName = InvoiceLine.class.getName();
-
     define(InvoiceLine.TYPE, "chinook.invoiceline",
             primaryKeyProperty(InvoiceLine.ID),
             columnProperty(InvoiceLine.INVOICE_ID),
             // tag::fetchDepth0[]
             foreignKeyProperty(InvoiceLine.INVOICE_FK)
                     .fetchDepth(0)
-                    .nullable(false)
-                    .captionResource(bundleName),
+                    .nullable(false),
             columnProperty(InvoiceLine.TRACK_ID),
             // end::fetchDepth0[]
             foreignKeyProperty(InvoiceLine.TRACK_FK)
                     .nullable(false)
-                    .preferredColumnWidth(100)
-                    .captionResource(bundleName),
+                    .preferredColumnWidth(100),
             denormalizedProperty(InvoiceLine.UNITPRICE,
                     InvoiceLine.TRACK_FK, Track.UNITPRICE)
-                    .nullable(false)
-                    .captionResource(bundleName),
+                    .nullable(false),
             columnProperty(InvoiceLine.QUANTITY)
                     .nullable(false)
-                    .defaultValue(1)
-                    .captionResource(bundleName),
+                    .defaultValue(1),
             derivedProperty(InvoiceLine.TOTAL, new InvoiceLineTotalProvider(),
-                    InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE)
-                    .captionResource(bundleName))
-            .keyGenerator(automatic("chinook.invoiceline"))
-            .captionResource(bundleName);
+                    InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE))
+            .keyGenerator(automatic("chinook.invoiceline"));
   }
 
   void playlist() {
-    final String bundleName = Playlist.class.getName();
-
     define(Playlist.TYPE, "chinook.playlist",
             primaryKeyProperty(Playlist.ID),
             columnProperty(Playlist.NAME)
                     .searchProperty()
                     .nullable(false)
                     .maximumLength(120)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName))
+                    .preferredColumnWidth(160))
             .keyGenerator(automatic("chinook.playlist"))
             .orderBy(orderBy().ascending(Playlist.NAME))
-            .stringFactory(stringFactory(Playlist.NAME))
-            .captionResource(bundleName);
+            .stringFactory(stringFactory(Playlist.NAME));
   }
 
   void playlistTrack() {
-    final String bundleName = PlaylistTrack.class.getName();
-
     define(PlaylistTrack.TYPE, "chinook.playlisttrack",
             primaryKeyProperty(PlaylistTrack.ID),
             columnProperty(PlaylistTrack.PLAYLIST_ID)
                     .nullable(false),
             foreignKeyProperty(PlaylistTrack.PLAYLIST_FK)
-                    .preferredColumnWidth(120)
-                    .captionResource(bundleName),
+                    .preferredColumnWidth(120),
             denormalizedViewProperty(PlaylistTrack.ARTIST_DENORM,
                     PlaylistTrack.ALBUM_DENORM, Album.ARTIST_FK)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName),
+                    .preferredColumnWidth(160),
             columnProperty(PlaylistTrack.TRACK_ID)
                     .nullable(false),
             foreignKeyProperty(PlaylistTrack.TRACK_FK)
                     .fetchDepth(3)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName),
+                    .preferredColumnWidth(160),
             denormalizedViewProperty(PlaylistTrack.ALBUM_DENORM,
                     PlaylistTrack.TRACK_FK, Track.ALBUM_FK)
-                    .preferredColumnWidth(160)
-                    .captionResource(bundleName))
+                    .preferredColumnWidth(160))
             .keyGenerator(automatic("chinook.playlisttrack"))
             .stringFactory(stringFactory(PlaylistTrack.PLAYLIST_FK)
-                    .text(" - ").value(PlaylistTrack.TRACK_FK))
-            .captionResource(bundleName);
+                    .text(" - ").value(PlaylistTrack.TRACK_FK));
   }
 
   private static final class UpdateTotalsProcedure implements DatabaseProcedure<EntityConnection, Object> {

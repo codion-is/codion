@@ -6557,3 +6557,4 @@
   Properties.derivedProperty() overloaded without caption parameter
   Redundant usages of Locale.getDefault() removed
   Properties.denormalizedViewProperty() overloaded without caption parameter
+  EntityType.resourceBundleName added, removed from Property and EntityDefinition, resourceKey renamed captionResourceKey

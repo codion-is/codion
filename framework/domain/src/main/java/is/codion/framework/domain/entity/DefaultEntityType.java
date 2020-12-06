@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -23,9 +24,11 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   private final String domainName;
   private final String name;
   private final Class<T> entityClass;
+  private final String resourceBundleName;
   private final int hashCode;
 
-  DefaultEntityType(final String domainName, final String typeName, final Class<T> entityClass) {
+  DefaultEntityType(final String domainName, final String typeName, final Class<T> entityClass,
+                    final String resourceBundleName) {
     if (nullOrEmpty(typeName)) {
       throw new IllegalArgumentException("typeName must be a non-empty string");
     }
@@ -35,6 +38,7 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
     this.domainName = domainName;
     this.name = typeName;
     this.entityClass = requireNonNull(entityClass, "entityClass");
+    this.resourceBundleName = resourceBundleName == null ? null : ResourceBundle.getBundle(resourceBundleName).getBaseBundleName();
     this.hashCode = Objects.hash(typeName, domainName);
   }
 
@@ -51,6 +55,11 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
   @Override
   public Class<T> getEntityClass() {
     return entityClass;
+  }
+
+  @Override
+  public String getResourceBundleName() {
+    return resourceBundleName;
   }
 
   @Override
