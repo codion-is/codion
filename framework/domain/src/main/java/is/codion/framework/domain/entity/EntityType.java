@@ -174,6 +174,7 @@ public interface EntityType<T extends Entity> {
    * @param name the attribute name
    * @param references the references
    * @return a new {@link ForeignKey}
+   * @see ForeignKey#reference(Attribute, Attribute)
    */
   ForeignKey foreignKey(String name, List<ForeignKey.Reference<?>> references);
 
