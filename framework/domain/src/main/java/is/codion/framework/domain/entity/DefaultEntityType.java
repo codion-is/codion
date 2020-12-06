@@ -38,7 +38,10 @@ final class DefaultEntityType<T extends Entity> implements EntityType<T>, Serial
     this.domainName = domainName;
     this.name = typeName;
     this.entityClass = requireNonNull(entityClass, "entityClass");
-    this.resourceBundleName = resourceBundleName == null ? null : ResourceBundle.getBundle(resourceBundleName).getBaseBundleName();
+    if (resourceBundleName != null) {
+      ResourceBundle.getBundle(resourceBundleName);
+    }
+    this.resourceBundleName = resourceBundleName;
     this.hashCode = Objects.hash(typeName, domainName);
   }
 
