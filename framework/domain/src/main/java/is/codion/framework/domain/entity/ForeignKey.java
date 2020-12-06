@@ -41,6 +41,13 @@ public interface ForeignKey extends Attribute<Entity> {
     Attribute<T> getReferencedAttribute();
   }
 
+  /**
+   * Returns a new {@link Reference} based on the given attributes.
+   * @param attribute the local attribute
+   * @param referencedAttribute the referenced attribute
+   * @param <T> the attribute type
+   * @return a new {@link Reference} based on the given attributes
+   */
   static <T> Reference<T> reference(final Attribute<T> attribute, final Attribute<T> referencedAttribute) {
     return new DefaultForeignKey.DefaultReference<>(attribute, referencedAttribute);
   }
