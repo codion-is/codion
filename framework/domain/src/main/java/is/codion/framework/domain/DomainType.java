@@ -38,6 +38,27 @@ public interface DomainType {
   <T extends Entity> EntityType<T> entityType(String name, Class<T> entityClass);
 
   /**
+   * Instantiates a {@link EntityType} associated with this domain type.
+   * If this entity type has been defined previously that instance is returned.
+   * @param name the entity type name
+   * @param resourceBundleName the name of a resource bundle to use for captions, if any
+   * @param <T> the Entity type
+   * @return a {@link EntityType} with the given name
+   */
+  <T extends Entity> EntityType<T> entityType(String name, String resourceBundleName);
+
+  /**
+   * Instantiates a {@link EntityType} associated with this domain type.
+   * If this entity type has been defined previously that instance is returned.
+   * @param name the entity type name
+   * @param entityClass the entity representation class
+   * @param resourceBundleName the name of a resource bundle to use for captions, if any
+   * @param <T> the Entity type
+   * @return a {@link EntityType} with the given name
+   */
+  <T extends Entity> EntityType<T> entityType(String name, Class<T> entityClass, String resourceBundleName);
+
+  /**
    * @param entityType the entity type
    * @return true if this domain type contains the given entity type
    */

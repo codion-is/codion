@@ -440,14 +440,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public ColumnProperty.Builder<T> captionResource(final String resourceBundleName) {
-      super.captionResource(resourceBundleName);
-      return this;
-    }
-
-    @Override
-    public ColumnProperty.Builder<T> captionResource(final String resourceBundleName, final String resourceKey) {
-      super.captionResource(resourceBundleName, resourceKey);
+    public ColumnProperty.Builder<T> captionResourceKey(final String captionResourceKey) {
+      super.captionResourceKey(captionResourceKey);
       return this;
     }
 

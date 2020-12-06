@@ -56,14 +56,9 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   private Supplier<T> defaultValueSupplier = (Supplier<T>) DEFAULT_VALUE_SUPPLIER;
 
   /**
-   * The name of the resource bundle to use, if any
-   */
-  private String resourceBundleName;
-
-  /**
    * The resource bundle key specifying the caption
    */
-  private String resourceKey;
+  private String captionResourceKey;
 
   /**
    * The caption from the resource bundle, if any
@@ -143,10 +138,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     requireNonNull(attribute, "attribute");
     this.attribute = attribute;
     this.caption = caption;
-    this.hidden = caption == null;
     this.format = initializeDefaultFormat();
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
     this.beanProperty = Text.underscoreToCamelCase(attribute.getName());
+    this.captionResourceKey = attribute.getName();
+    this.hidden = caption == null && attribute.getEntityType().getResourceBundleName() == null;
   }
 
   @Override
@@ -254,12 +250,15 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
   @Override
   public final String getCaption() {
-    if (resourceKey != null) {
+    if (attribute.getEntityType().getResourceBundleName() != null) {
       if (resourceCaption == null) {
-        resourceCaption = ResourceBundle.getBundle(resourceBundleName).getString(resourceKey);
+        final ResourceBundle bundle = ResourceBundle.getBundle(attribute.getEntityType().getResourceBundleName());
+        resourceCaption = bundle.containsKey(captionResourceKey) ? bundle.getString(captionResourceKey) : "";
       }
 
-      return resourceCaption;
+      if (!resourceCaption.isEmpty()) {
+        return resourceCaption;
+      }
     }
 
     return caption == null ? attribute.getName() : caption;
@@ -383,17 +382,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public Builder<T> captionResource(final String resourceBundleName) {
-      return captionResource(resourceBundleName, property.attribute.getName());
-    }
-
-    @Override
-    public Property.Builder<T> captionResource(final String resourceBundleName, final String resourceKey) {
+    public Builder<T> captionResourceKey(final String captionResourceKey) {
       if (property.caption != null) {
         throw new IllegalStateException("Caption has already been set for property: " + property.attribute);
       }
-      property.resourceBundleName = requireNonNull(resourceBundleName, "resourceBundleName");
-      property.resourceKey = requireNonNull(resourceKey, "resourceKey");
+      property.captionResourceKey = requireNonNull(captionResourceKey, "captionResourceKey");
       property.hidden = false;
       return this;
     }
@@ -522,7 +515,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
     @Override
     public Property.Builder<T> maximumFractionDigits(final int maximumFractionDigits) {
-     if (!property.attribute.isDecimal()) {
+      if (!property.attribute.isDecimal()) {
         throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties: " + property.attribute);
       }
       ((NumberFormat) property.format).setMaximumFractionDigits(maximumFractionDigits);

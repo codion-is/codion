@@ -404,12 +404,12 @@ public class DefaultEntityDefinitionTest {
 
   @Test
   public void i18n() throws IOException, ClassNotFoundException {
-    final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("i18n");
+    final EntityType<Entity> entityType = DOMAIN_TYPE.entityType("i18n", DefaultEntityDefinitionTest.class.getName());
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
         define(entityType, primaryKeyProperty(entityType.integerAttribute("attribute")))
-                .captionResource(DefaultEntityDefinitionTest.class.getName(), "test");
+                .captionResourceKey("test");
       }
     }
     final Domain domain = new TestDomain();

@@ -496,21 +496,12 @@ public interface EntityDefinition {
     Builder caption(String caption);
 
     /**
-     * Specifies the resource bundle from which to retrieve the caption
-     * for this entity, assuming the resource key is the entity type name ({@link EntityType#getName()}).
-     * @param resourceBundleName the name of the resource bundle containing the caption for this entity
+     * Specifies the resource bundle key associated with the caption.
+     * @param captionResourceKey the name of the resource bundle key associated with the caption for this entity
      * @return this {@link Builder} instance
+     * @see EntityType#getResourceBundleName()
      */
-    Builder captionResource(String resourceBundleName);
-
-    /**
-     * Specifies the resource bundle from which to retrieve the caption
-     * for this entity, using the given resource key.
-     * @param resourceBundleName the name of the resource bundle
-     * @param resourceKey the resource bundle key
-     * @return this {@link Builder} instance
-     */
-    Builder captionResource(String resourceBundleName, String resourceKey);
+    Builder captionResourceKey(String captionResourceKey);
 
     /**
      * Specifies that this entity should be regarded as based on a small dataset,
