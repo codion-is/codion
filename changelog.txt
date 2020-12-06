@@ -6558,3 +6558,4 @@
   Redundant usages of Locale.getDefault() removed
   Properties.denormalizedViewProperty() overloaded without caption parameter
   EntityType.resourceBundleName added, removed from Property and EntityDefinition, resourceKey renamed captionResourceKey
+0.17.3
