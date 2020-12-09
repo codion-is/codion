@@ -4,6 +4,7 @@
 package is.codion.common.value;
 
 import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -323,5 +324,34 @@ public class ValuesTest {
 
     valueSet.clear();
     assertNull(value.get());
+  }
+
+  @Test
+  public void valueSetEvents() {
+    final ValueSet<Integer> valueSet = Values.valueSet();
+    final Value<Integer> value = valueSet.value();
+
+    final AtomicInteger valueEventCounter = new AtomicInteger();
+    final EventDataListener<Integer> listener = integer -> valueEventCounter.incrementAndGet();
+    value.addDataListener(listener);
+
+    final AtomicInteger valueSetEventCounter = new AtomicInteger();
+    final EventDataListener<Set<Integer>> setListener = integers -> valueSetEventCounter.incrementAndGet();
+    valueSet.addDataListener(setListener);
+
+    valueSet.add(1);
+
+    assertEquals(1, valueEventCounter.get());
+    assertEquals(1, valueSetEventCounter.get());
+
+    value.set(2);
+
+    assertEquals(2, valueEventCounter.get());
+    assertEquals(2, valueSetEventCounter.get());
+
+    valueSet.clear();
+
+    assertEquals(3, valueEventCounter.get());
+    assertEquals(3, valueSetEventCounter.get());
   }
 }
