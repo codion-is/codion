@@ -212,5 +212,11 @@ public final class PropertiesTest {
 
     Locale.setDefault(new Locale("is", "IS"));
     assertEquals("Prufa", property.getCaption());
+
+    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE2.integerAttribute("i18n"))
+                    .captionResourceKey("key"));
+
+    assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("i18n"))
+                    .captionResourceKey("invalid_key"));
   }
 }

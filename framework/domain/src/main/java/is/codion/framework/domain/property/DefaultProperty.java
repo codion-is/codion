@@ -17,6 +17,7 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.function.Supplier;
 
@@ -142,7 +143,7 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     this.dateTimeFormatPattern = getDefaultDateTimeFormatPattern();
     this.beanProperty = Text.underscoreToCamelCase(attribute.getName());
     this.captionResourceKey = attribute.getName();
-    this.hidden = caption == null && attribute.getEntityType().getResourceBundleName() == null;
+    this.hidden = caption == null && resourceNotFound(attribute.getEntityType().getResourceBundleName(), captionResourceKey);
   }
 
   @Override
@@ -343,6 +344,20 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     return null;
   }
 
+  private static boolean resourceNotFound(final String resourceBundleName, final String captionResourceKey) {
+    if (resourceBundleName == null) {
+      return true;
+    }
+    try {
+      ResourceBundle.getBundle(resourceBundleName).getString(captionResourceKey);
+
+      return false;
+    }
+    catch (final MissingResourceException e) {
+      return true;
+    }
+  }
+
   static class DefaultValueSupplier<T> implements Supplier<T>, Serializable {
 
     private static final long serialVersionUID = 1;
@@ -386,7 +401,14 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
       if (property.caption != null) {
         throw new IllegalStateException("Caption has already been set for property: " + property.attribute);
       }
-      property.captionResourceKey = requireNonNull(captionResourceKey, "captionResourceKey");
+      final String resourceBundleName = property.attribute.getEntityType().getResourceBundleName();
+      if (resourceBundleName == null) {
+        throw new IllegalStateException("No resource bundle specified for entity: " + property.attribute.getEntityType());
+      }
+      if (resourceNotFound(resourceBundleName, requireNonNull(captionResourceKey, "captionResourceKey"))) {
+        throw new IllegalArgumentException("Resource " + captionResourceKey + " not found in bundle: " + resourceBundleName);
+      }
+      property.captionResourceKey = captionResourceKey;
       property.hidden = false;
       return this;
     }

@@ -6559,3 +6559,4 @@
   Properties.denormalizedViewProperty() overloaded without caption parameter
   EntityType.resourceBundleName added, removed from Property and EntityDefinition, resourceKey renamed captionResourceKey
 0.17.3
+  DefaultProperty bug fix, did not validate resources properly and therefore messed up the initial hidden value
