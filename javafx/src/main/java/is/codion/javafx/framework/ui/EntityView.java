@@ -4,7 +4,7 @@
 package is.codion.javafx.framework.ui;
 
 import is.codion.framework.model.EntityModel;
-import is.codion.javafx.framework.model.FXEntityListModel;
+import is.codion.javafx.framework.model.FXEntityModel;
 
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -41,7 +41,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   }
 
   private final String caption;
-  private final EntityModel model;
+  private final FXEntityModel model;
   private final EntityEditView editView;
   private final EntityTableView tableView;
   private final List<EntityView> detailViews = new ArrayList<>();
@@ -57,46 +57,46 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * Instantiates a new {@link EntityView} with no {@link EntityEditView} and a default {@link EntityTableView}
    * @param model the {@link EntityModel} to base this view on
    */
-  public EntityView(final EntityModel model) {
+  public EntityView(final FXEntityModel model) {
     this(model, (EntityEditView) null);
   }
 
   /**
    * Instantiates a new {@link EntityView} with the given {@link EntityEditView} and a default {@link EntityTableView}
-   * @param model the {@link EntityModel} to base this view on
+   * @param model the {@link FXEntityModel} to base this view on
    * @param editView the editView
    */
-  public EntityView(final EntityModel model, final EntityEditView editView) {
-    this(model, editView, new EntityTableView((FXEntityListModel) model.getTableModel()));
+  public EntityView(final FXEntityModel model, final EntityEditView editView) {
+    this(model, editView, new EntityTableView(model.getTableModel()));
   }
 
   /**
    * Instantiates a new {@link EntityView} with no {@link EntityEditView} and the given {@link EntityTableView}
-   * @param model the {@link EntityModel} to base this view on
+   * @param model the {@link FXEntityModel} to base this view on
    * @param tableView the tableView
    */
-  public EntityView(final EntityModel model, final EntityTableView tableView) {
+  public EntityView(final FXEntityModel model, final EntityTableView tableView) {
     this(model, null, tableView);
   }
 
   /**
    * Instantiates a new {@link EntityView} with the given {@link EntityEditView} and {@link EntityTableView}
-   * @param model the {@link EntityModel} to base this view on
+   * @param model the {@link FXEntityModel} to base this view on
    * @param editView the editView
    * @param tableView the tableView
    */
-  public EntityView(final EntityModel model, final EntityEditView editView, final EntityTableView tableView) {
+  public EntityView(final FXEntityModel model, final EntityEditView editView, final EntityTableView tableView) {
     this(model.getEditModel().getEntityDefinition().getCaption(), model, editView, tableView);
   }
 
   /**
    * Instantiates a new {@link EntityView} with the given {@link EntityEditView} and {@link EntityTableView}
    * @param caption the view caption
-   * @param model the {@link EntityModel} to base this view on
+   * @param model the {@link FXEntityModel} to base this view on
    * @param editView the editView
    * @param tableView the tableView
    */
-  public EntityView(final String caption, final EntityModel model, final EntityEditView editView, final EntityTableView tableView) {
+  public EntityView(final String caption, final FXEntityModel model, final EntityEditView editView, final EntityTableView tableView) {
     this.caption = caption;
     this.model = model;
     this.editView = editView;
@@ -105,9 +105,9 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   }
 
   /**
-   * @return the underlying {@link EntityModel}
+   * @return the underlying {@link FXEntityModel}
    */
-  public final EntityModel getModel() {
+  public final FXEntityModel getModel() {
     return model;
   }
 
@@ -341,7 +341,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
       getTabbedDetailPanel().initializePanel();
     }
 
-    final EntityModel entityModel = getModel();
+    final FXEntityModel entityModel = getModel();
     if (state == PanelState.HIDDEN) {
       entityModel.removeLinkedDetailModel(getTabbedDetailPanel().model);
     }

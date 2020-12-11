@@ -10,6 +10,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.EntityConnectionProviders;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
+import is.codion.javafx.framework.model.FXEntityApplicationModel;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -29,9 +30,10 @@ import java.util.List;
 
 /**
  * A root application View.
- * @param <M> the type of {@link EntityApplicationModel} used by this application view
+ * @param <M> the type of {@link FXEntityApplicationModel} used by this application view
  */
-public abstract class EntityApplicationView<M extends EntityApplicationModel> extends Application implements ViewTreeNode<EntityView> {
+public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
+        extends Application implements ViewTreeNode<EntityView> {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationView.class);
 
