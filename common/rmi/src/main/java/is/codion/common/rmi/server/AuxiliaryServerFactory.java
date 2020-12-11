@@ -10,7 +10,9 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Provides a {@link AuxiliaryServer} implementation.
- * @param <T> the server type
+ * @param <C> the remote connection type provided by the parent server
+ * @param <A> the admin connection type provided by the parent server
+ * @param <T> the parent server type
  */
 public interface AuxiliaryServerFactory<C extends Remote, A extends ServerAdmin, T extends AuxiliaryServer> {
 
@@ -24,6 +26,8 @@ public interface AuxiliaryServerFactory<C extends Remote, A extends ServerAdmin,
   /**
    * Returns the {@link AuxiliaryServerFactory} implementation found by the {@link ServiceLoader} of the given type.
    * @param classname the classname of the required auxiliary server factory
+   * @param <C> the remote connection type provided by the parent server
+   * @param <A> the admin connection type provided by the parent server
    * @param <T> the auxiliary server type
    * @return a {@link AuxiliaryServerFactory} implementation of the given type from the {@link ServiceLoader}.
    * @throws IllegalStateException in case no such {@link AuxiliaryServerFactory} implementation is available.
