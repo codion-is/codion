@@ -152,11 +152,12 @@ public interface EntityTableConditionModel extends Refreshable {
 
   /**
    * The filter model associated with {@code attribute}
+   * @param <C> the property type
    * @param <T> the column value type
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} for the {@code attribute}, null if none is found
    */
-  <T> ColumnConditionModel<Entity, Property<T>, T> getFilterModel(Attribute<T> attribute);
+  <C extends Property<T>, T> ColumnConditionModel<Entity, C, T> getFilterModel(Attribute<T> attribute);
 
   /**
    * @param attribute column attribute

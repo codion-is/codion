@@ -40,7 +40,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   /**
    * The comparators used to compare column values
    */
-  private final Map<C, Comparator> columnComparators = new HashMap<>();
+  private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
 
   /**
    * Fired when a column sorting state changes
@@ -209,8 +209,8 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
         comparison = 1;
       }
       else {
-        comparison = columnComparators.computeIfAbsent(columnIdentifier,
-                k -> initializeColumnComparator(columnIdentifier)).compare(valueOne, valueTwo);
+        comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(columnIdentifier,
+                k -> initializeColumnComparator(columnIdentifier))).compare(valueOne, valueTwo);
       }
       if (comparison != 0) {
         return directive == SortingDirective.DESCENDING ? -comparison : comparison;

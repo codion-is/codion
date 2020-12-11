@@ -16,10 +16,10 @@ import java.util.UUID;
 
 /**
  * A server for serving remote interfaces
- * @param <T> the type of remote interface this server supplies to clients
+ * @param <C> the type of remote interface this server supplies to clients
  * @param <A> the type of the admin interface this server supplies
  */
-public interface Server<T extends Remote, A extends ServerAdmin> extends Remote {
+public interface Server<C extends Remote, A extends ServerAdmin> extends Remote {
 
   /**
    * Specifies the client host connection parameter
@@ -35,7 +35,7 @@ public interface Server<T extends Remote, A extends ServerAdmin> extends Remote 
    * @throws LoginException in case the login fails
    * @throws ConnectionValidationException in case connection validation fails
    */
-  T connect(ConnectionRequest connectionRequest) throws RemoteException,
+  C connect(ConnectionRequest connectionRequest) throws RemoteException,
           ConnectionNotAvailableException, LoginException, ConnectionValidationException;
 
   /**

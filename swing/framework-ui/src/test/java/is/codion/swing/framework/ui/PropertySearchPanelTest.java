@@ -30,7 +30,7 @@ public class PropertySearchPanelTest {
                     property.getFormat(), property.getDateTimeFormatPattern());
     conditionModel.setEqualValue("DALLAS");
     conditionModel.setOperator(Operator.EQUAL);
-    PropertyConditionPanel<String> searchPanel = new PropertyConditionPanel<>(conditionModel);
+    PropertyConditionPanel<ColumnProperty<String>, String> searchPanel = new PropertyConditionPanel<>(conditionModel);
     assertEquals("DALLAS", ((JTextField) searchPanel.getEqualField()).getText());
 
     conditionModel.setLowerBound("A");

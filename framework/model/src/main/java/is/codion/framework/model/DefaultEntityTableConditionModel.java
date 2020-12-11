@@ -96,9 +96,9 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public <T> ColumnConditionModel<Entity, Property<T>, T> getFilterModel(final Attribute<T> attribute) {
+  public <C extends Property<T>, T> ColumnConditionModel<Entity, C, T> getFilterModel(final Attribute<T> attribute) {
     if (filterModels.containsKey(attribute)) {
-      return (ColumnConditionModel) filterModels.get(attribute);
+      return (ColumnConditionModel<Entity, C, T>) filterModels.get(attribute);
     }
 
     throw new IllegalArgumentException("No property filter model found for attribute " + attribute);

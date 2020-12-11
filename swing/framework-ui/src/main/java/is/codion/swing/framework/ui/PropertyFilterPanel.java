@@ -11,19 +11,20 @@ import is.codion.swing.common.ui.table.ColumnConditionPanel;
 
 /**
  * A column filter panel based on properties.
+ * @param <C> the property type
  * @param <T> the column value type
  */
-public final class PropertyFilterPanel<T> extends ColumnConditionPanel<Entity, Property<T>, T> {
+public final class PropertyFilterPanel<C extends Property<T>, T> extends ColumnConditionPanel<Entity, C, T> {
 
   /**
    * Instantiates a new PropertyFilterPanel.
    * @param model the model to base this panel on
    */
-  public PropertyFilterPanel(final ColumnConditionModel<Entity, Property<T>, T> model) {
+  public PropertyFilterPanel(final ColumnConditionModel<Entity, C, T> model) {
     super(model, ToggleAdvancedButton.YES, getOperators(model));
   }
 
-  private static <T> Operator[] getOperators(final ColumnConditionModel<Entity, Property<T>, T> model) {
+  private static <C extends Property<T>, T> Operator[] getOperators(final ColumnConditionModel<Entity, C, T> model) {
     if (model.getColumnIdentifier().getAttribute().isBoolean()) {
       return new Operator[] {Operator.EQUAL};
     }
