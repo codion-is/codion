@@ -304,13 +304,13 @@ public final class EntityTableConditionPanel extends JPanel {
      * @param propertyConditionModel the {@link ColumnConditionModel} for which to create a condition panel
      * @return a ColumnConditionPanel based on the given model
      */
-    private static ColumnConditionPanel<Entity, ? extends Property<?>, ?> initializeConditionPanel(
-            final ColumnConditionModel<Entity, ? extends Property<?>, ?> propertyConditionModel) {
+    private static <C extends Property<T>, T> ColumnConditionPanel<Entity, C, T> initializeConditionPanel(
+            final ColumnConditionModel<Entity, C, T> propertyConditionModel) {
       if (propertyConditionModel instanceof ForeignKeyConditionModel) {
-        return new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel);
+        return (ColumnConditionPanel<Entity, C, T>) new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel);
       }
 
-      return new PropertyConditionPanel(propertyConditionModel);
+      return new PropertyConditionPanel<>(propertyConditionModel);
     }
   }
 }

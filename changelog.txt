@@ -6532,3 +6532,4 @@
   DefaultProperty bug fix, did not validate resources properly and therefore messed up the initial hidden value
   DefaultValueSet.SingleValueSet bug fixed, did not notify on set
   AuxiliaryServerFactory, added a couple of type parameters, Server, type parameter renamed
+  PropertyConditionPanel, added type parameter for the column type instead of incorrectly hard-coding ColumnProperty

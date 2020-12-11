@@ -6,7 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.db.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 
 import javax.swing.JCheckBox;
@@ -15,19 +15,20 @@ import javax.swing.SwingConstants;
 
 /**
  * A column condition panel based on the Property class.
+ * @param <C> the property type
  * @param <T> the column value type
  */
-public final class PropertyConditionPanel<T> extends ColumnConditionPanel<Entity, ColumnProperty<T>, T> {
+public final class PropertyConditionPanel<C extends Property<T>, T> extends ColumnConditionPanel<Entity, C, T> {
 
   /**
    * Instantiates a new PropertyConditionPanel.
    * @param model the model to base this panel on
    */
-  public PropertyConditionPanel(final ColumnConditionModel<Entity, ColumnProperty<T>, T> model) {
+  public PropertyConditionPanel(final ColumnConditionModel<Entity, C, T> model) {
     super(model, ToggleAdvancedButton.NO, new PropertyBoundFieldProvider<>(model), getOperators(model));
   }
 
-  private static <T> Operator[] getOperators(final ColumnConditionModel<Entity, ColumnProperty<T>, T> model) {
+  private static <C extends Property<T>, T> Operator[] getOperators(final ColumnConditionModel<Entity, C, T> model) {
     if (model.getColumnIdentifier().getAttribute().isBoolean()) {
       return new Operator[] {Operator.EQUAL};
     }
@@ -35,11 +36,11 @@ public final class PropertyConditionPanel<T> extends ColumnConditionPanel<Entity
     return Operator.values();
   }
 
-  private static final class PropertyBoundFieldProvider<T> implements BoundFieldProvider {
+  private static final class PropertyBoundFieldProvider<C extends Property<T>, T> implements BoundFieldProvider {
 
-    private final ColumnConditionModel<Entity, ColumnProperty<T>, T> model;
+    private final ColumnConditionModel<Entity, C, T> model;
 
-    private PropertyBoundFieldProvider(final ColumnConditionModel<Entity, ColumnProperty<T>, T> model) {
+    private PropertyBoundFieldProvider(final ColumnConditionModel<Entity, C, T> model) {
       this.model = model;
     }
 
