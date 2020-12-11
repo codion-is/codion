@@ -7,13 +7,12 @@ import is.codion.common.http.server.HttpServer;
 import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.rmi.server.AuxiliaryServer;
 import is.codion.common.rmi.server.Server;
+import is.codion.common.rmi.server.ServerAdmin;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.glassfish.jersey.servlet.ServletContainer;
-
-import java.rmi.Remote;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,7 +28,7 @@ public final class EntityServletServer extends HttpServer implements AuxiliarySe
    * @see HttpServerConfiguration#HTTP_SERVER_PORT
    * @see HttpServerConfiguration#HTTP_SERVER_SECURE
    */
-  EntityServletServer(final Server<RemoteEntityConnection, ? extends Remote> server) {
+  EntityServletServer(final Server<RemoteEntityConnection, ? extends ServerAdmin> server) {
     this(server, HttpServerConfiguration.fromSystemProperties());
   }
 
@@ -38,7 +37,7 @@ public final class EntityServletServer extends HttpServer implements AuxiliarySe
    * @param server the parent server
    * @param configuration the server configuration
    */
-  EntityServletServer(final Server<RemoteEntityConnection, ? extends Remote> server, final HttpServerConfiguration configuration) {
+  EntityServletServer(final Server<RemoteEntityConnection, ? extends ServerAdmin> server, final HttpServerConfiguration configuration) {
     super(configuration);
     requireNonNull(server, "server");
     EntityService.setServer(server);

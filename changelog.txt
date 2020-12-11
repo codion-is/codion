@@ -6531,3 +6531,4 @@
 0.17.3
   DefaultProperty bug fix, did not validate resources properly and therefore messed up the initial hidden value
   DefaultValueSet.SingleValueSet bug fixed, did not notify on set
+  AuxiliaryServerFactory, added a couple of type parameters, Server, type parameter renamed

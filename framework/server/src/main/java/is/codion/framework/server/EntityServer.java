@@ -217,8 +217,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   protected final Collection<RemoteClient> getClients(final String clientTypeId) {
     //using the remoteClient from the connection since it contains the correct database user
     return getConnections().values().stream()
-            .filter(connection -> connection.getRemoteClient().getClientTypeId().equals(clientTypeId))
-            .map(AbstractRemoteEntityConnection::getRemoteClient).collect(toList());
+            .map(AbstractRemoteEntityConnection::getRemoteClient)
+            .filter(remoteClient -> remoteClient.getClientTypeId().equals(clientTypeId)).collect(toList());
   }
 
   /**

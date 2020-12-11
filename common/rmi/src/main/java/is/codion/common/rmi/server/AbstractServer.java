@@ -362,7 +362,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   private void startAuxiliaryServers(final Collection<String> auxiliaryServerProviderClassNames) {
     try {
       for (final String auxiliaryServerProviderClassName : auxiliaryServerProviderClassNames) {
-        final AuxiliaryServerFactory<?> auxiliaryServerFactory = getAuxiliaryServerProvider(auxiliaryServerProviderClassName);
+        final AuxiliaryServerFactory<T, A, ?> auxiliaryServerFactory = getAuxiliaryServerProvider(auxiliaryServerProviderClassName);
         final AuxiliaryServer auxiliaryServer = auxiliaryServerFactory.createServer(this);
         auxiliaryServers.add(auxiliaryServer);
         final Callable<?> starter = () -> startAuxiliaryServer(auxiliaryServer);
