@@ -151,12 +151,12 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Entity getForeignKey(final ForeignKey entityAttribute) {
-    final Entity value = (Entity) values.get(entityAttribute);
+  public Entity getForeignKey(final ForeignKey foreignKey) {
+    final Entity value = (Entity) values.get(foreignKey);
     if (value == null) {//possibly not loaded
-      final Key referencedKey = getReferencedKey(entityAttribute);
+      final Key referencedKey = getReferencedKey(foreignKey);
       if (referencedKey != null) {
-        return new DefaultEntity(definition.getForeignDefinition(entityAttribute), referencedKey);
+        return new DefaultEntity(definition.getForeignDefinition(foreignKey), referencedKey);
       }
     }
 
