@@ -49,7 +49,7 @@ abstract class AbstractEntityService extends Application {
 
   private static Server<RemoteEntityConnection, ? extends Remote> server;
 
-  protected static RemoteEntityConnection authenticate(final HttpServletRequest request, final HttpHeaders headers) throws RemoteException, ServerException {
+  protected final RemoteEntityConnection authenticate(final HttpServletRequest request, final HttpHeaders headers) throws RemoteException, ServerException {
     if (server == null) {
       throw new IllegalStateException("EntityServer has not been set for EntityService");
     }
