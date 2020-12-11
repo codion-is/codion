@@ -24,11 +24,12 @@ public final class LookupTableModel extends SwingEntityTableModel {
   }
 
   private void configureConditionModels() {
-    getTableConditionModel().getConditionModels().stream().filter(model ->
-            model.getColumnIdentifier().getAttribute().isString()).forEach(this::configureConditionModel);
+    getTableConditionModel().getConditionModels().stream()
+            .filter(model -> model.getColumnIdentifier().getAttribute().isString())
+            .forEach(LookupTableModel::configureConditionModel);
   }
 
-  private void configureConditionModel(ColumnConditionModel<?, ?, ?> model) {
+  private static void configureConditionModel(ColumnConditionModel<?, ?, ?> model) {
     model.setCaseSensitive(false);
     model.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
   }

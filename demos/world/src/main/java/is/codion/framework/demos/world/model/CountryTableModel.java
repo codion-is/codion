@@ -37,13 +37,9 @@ public final class CountryTableModel extends SwingEntityTableModel {
   }
 
   private void configureConditionModels() {
-    getTableConditionModel().getConditionModels().stream().filter(model ->
-            model.getColumnIdentifier().getAttribute().isString()).forEach(this::configureConditionModel);
-  }
-
-  private void configureConditionModel(ColumnConditionModel<?, ?, ?> model) {
-    model.setCaseSensitive(false);
-    model.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
+    getTableConditionModel().getConditionModels().stream()
+            .filter(model -> model.getColumnIdentifier().getAttribute().isString())
+            .forEach(CountryTableModel::configureConditionModel);
   }
 
   private void bindEvents() {
@@ -72,5 +68,10 @@ public final class CountryTableModel extends SwingEntityTableModel {
     catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static void configureConditionModel(ColumnConditionModel<?, ?, ?> model) {
+    model.setCaseSensitive(false);
+    model.setAutomaticWildcard(AutomaticWildcard.PREFIX_AND_POSTFIX);
   }
 }

@@ -80,7 +80,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
     add(invoiceLinePanel, BorderLayout.EAST);
   }
 
-  private void configureCustomerLookup(final EntityLookupField customerField) {
+  private static void configureCustomerLookup(final EntityLookupField customerField) {
     final EntityLookupField.TableSelectionProvider customerSelectionProvider =
             new EntityLookupField.TableSelectionProvider(customerField.getModel());
     final SwingEntityTableModel tableModel = customerSelectionProvider.getTable().getModel();
