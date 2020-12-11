@@ -43,7 +43,7 @@ class Introduction {
   }
   // end::storeApi[]
   // tag::storeImpl[]
-  public class StoreImpl extends DefaultDomain {
+  public static class StoreImpl extends DefaultDomain {
 
     public StoreImpl() {
       super(Store.DOMAIN);

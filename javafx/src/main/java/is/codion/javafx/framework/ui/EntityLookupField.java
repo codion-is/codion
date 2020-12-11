@@ -114,11 +114,6 @@ public final class EntityLookupField extends TextField {
     Platform.runLater(() -> model.setSelectedEntities(FXUiUtil.selectValues(queryResult, singleSelection)));
   }
 
-  private void showEmptyResultMessage() {
-    Platform.runLater(new Alert(Alert.AlertType.INFORMATION,
-            FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION), ButtonType.OK)::showAndWait);
-  }
-
   private void updateColors() {
 //    final boolean validBackground = model.searchStringRepresentsSelected() || (searchHint != null && searchHint.isHintTextVisible());
 //    setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
@@ -134,6 +129,11 @@ public final class EntityLookupField extends TextField {
       }
       updateColors();
     }
+  }
+
+  private static void showEmptyResultMessage() {
+    Platform.runLater(new Alert(Alert.AlertType.INFORMATION,
+            FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CONDITION), ButtonType.OK)::showAndWait);
   }
 
   private class LookupKeyHandler implements EventHandler<KeyEvent> {
