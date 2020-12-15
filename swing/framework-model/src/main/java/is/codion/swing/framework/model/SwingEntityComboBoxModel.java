@@ -260,14 +260,13 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
   }
 
   @Override
-  public final Value<Integer> integerValueSelector(final Attribute<Integer> attribute) {
-    return integerValueSelector(attribute, (theEntities, theAttribute, value) ->
-            theEntities.stream().filter(entity ->
-                    Objects.equals(value, entity.get(attribute))).findFirst().orElse(null));
+  public <T> Value<T> valueSelector(final Attribute<T> attribute) {
+    return valueSelector(attribute, (entities, theAttribute, value) -> entities.stream().filter(entity ->
+                Objects.equals(value, entity.get(theAttribute))).findFirst().orElse(null));
   }
 
   @Override
-  public final Value<Integer> integerValueSelector(final Attribute<Integer> attribute, final Finder<Integer> finder) {
+  public <T> Value<T> valueSelector(final Attribute<T> attribute, final Finder<T> finder) {
     return new SelectorValue<>(attribute, finder);
   }
 

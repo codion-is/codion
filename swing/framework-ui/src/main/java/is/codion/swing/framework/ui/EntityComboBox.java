@@ -16,10 +16,12 @@ import is.codion.swing.common.ui.textfield.IntegerField;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.common.ui.value.AbstractComponentValue;
 import is.codion.swing.common.ui.value.NumericalValues;
+import is.codion.swing.common.ui.value.TextValues;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
@@ -84,7 +86,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(attribute));
+    NumericalValues.integerValue(integerField).link(getModel().valueSelector(attribute));
 
     return integerField;
   }
@@ -98,9 +100,36 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerValue(integerField).link(getModel().integerValueSelector(attribute, finder));
+    NumericalValues.integerValue(integerField).link(getModel().valueSelector(attribute, finder));
 
     return integerField;
+  }
+
+  /**
+   * Creates a {@link JTextField} which value is bound to the selected value in this combo box
+   * @param attribute the attribute
+   * @return a {@link JTextField} bound to the selected value
+   */
+  public JTextField textFieldSelector(final Attribute<String> attribute) {
+    final JTextField textField = new JTextField(2);
+    TextFields.selectAllOnFocusGained(textField);
+    TextValues.textValue(textField).link(getModel().valueSelector(attribute));
+
+    return textField;
+  }
+
+  /**
+   * Creates a {@link JTextField} which value is bound to the selected value in this combo box
+   * @param attribute the attribute
+   * @param finder responsible for finding the item to select by value
+   * @return a {@link JTextField} bound to the selected value
+   */
+  public JTextField textFieldSelector(final Attribute<String> attribute, final EntityComboBoxModel.Finder<String> finder) {
+    final JTextField textField = new IntegerField(2);
+    TextFields.selectAllOnFocusGained(textField);
+    TextValues.textValue(textField).link(getModel().valueSelector(attribute, finder));
+
+    return textField;
   }
 
   private JPopupMenu initializePopupMenu() {
