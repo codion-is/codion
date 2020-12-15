@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.Util;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
@@ -90,8 +89,8 @@ final class DefaultEntity implements Entity, Serializable {
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
   DefaultEntity(final EntityDefinition definition, final Map<Attribute<?>, Object> values, final Map<Attribute<?>, Object> originalValues) {
-    this.values = validatePropertiesAndValues(requireNonNull(definition, "definition"), values == null ? new HashMap<>() : values);
-    this.originalValues = validatePropertiesAndValues(definition, originalValues);
+    this.values = validate(requireNonNull(definition, "definition"), values == null ? new HashMap<>() : new HashMap<>(values));
+    this.originalValues = validate(definition, originalValues == null ? null : new HashMap<>(originalValues));
     this.definition = definition;
   }
 
@@ -362,9 +361,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   private void clear() {
     values.clear();
-    if (originalValues != null) {
-      originalValues = null;
-    }
+    originalValues = null;
     primaryKey = null;
     referencedKeyCache = null;
     toString = null;
@@ -651,7 +648,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private boolean isModifiedInternal(final boolean overrideModifiesEntity) {
-    return !Util.nullOrEmpty(originalValues) && writablePropertiesModified(overrideModifiesEntity);
+    return originalValues != null && writablePropertiesModified(overrideModifiesEntity);
   }
 
   private boolean writablePropertiesModified(final boolean overrideModifiesEntity) {
@@ -750,16 +747,15 @@ final class DefaultEntity implements Entity, Serializable {
     }
   }
 
-  private static Map<Attribute<?>, Object> validatePropertiesAndValues(final EntityDefinition definition,
-                                                                       final Map<Attribute<?>, Object> propertyValues) {
-    if (propertyValues != null && !propertyValues.isEmpty()) {
-      for (final Map.Entry<Attribute<?>, Object> valueEntry : propertyValues.entrySet()) {
+  private static Map<Attribute<?>, Object> validate(final EntityDefinition definition, final Map<Attribute<?>, Object> values) {
+    if (values != null && !values.isEmpty()) {
+      for (final Map.Entry<Attribute<?>, Object> valueEntry : values.entrySet()) {
         final Property<Object> property = definition.getProperty((Attribute<Object>) valueEntry.getKey());
         property.getAttribute().validateType(valueEntry.getValue());
       }
     }
 
-    return propertyValues;
+    return values;
   }
 
   private static Map<Attribute<?>, Object> createValueMap(final Key key) {
