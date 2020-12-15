@@ -176,7 +176,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param attribute the attribute
    * @return a {@link Value} for selecting items by attribute value
    */
-  <T> Value<T> valueSelector(Attribute<T> attribute);
+  <T> Value<T> selectorValue(Attribute<T> attribute);
 
   /**
    * Creates a {@link Value} linked to the selected entity via the value of the given attribute.
@@ -185,7 +185,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param finder responsible for finding the entity by value
    * @return a {@link Value} for selecting items by attribute value
    */
-  <T> Value<T> valueSelector(Attribute<T> attribute, Finder<T> finder);
+  <T> Value<T> selectorValue(Attribute<T> attribute, Finder<T> finder);
 
   /**
    * @param listener a listener to be notified each time this model is refreshed

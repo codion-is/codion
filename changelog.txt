@@ -6570,3 +6570,4 @@
   SwingEntityComboBoxModel.SelectorValue now validates the attribute using the above during construction
   EntityComboBoxModel.valueSelector() added, integerValueSelector() removed, related refactoring
   EntityComboBox.stringFieldSelector() added
+  EntityComboBoxModel.valueSelector() renamed to selectorValue()
