@@ -478,7 +478,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
      * @param finder the Finder instance responsible for finding the entity by value
      */
     private SelectorValue(final Attribute<T> attribute, final EntityComboBoxModel.Finder<T> finder) {
-      this.attribute = requireNonNull(attribute);
+      if (!entities.getDefinition(getEntityType()).containsAttribute(attribute)) {
+        throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + getEntityType());
+      }
+      this.attribute = attribute;
       this.finder = requireNonNull(finder);
       addSelectionListener(selected -> notifyValueChange());
     }

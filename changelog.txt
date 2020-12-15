@@ -6536,3 +6536,5 @@
   PropertyFilterPanel, added type parameter for the column type instead of hard-coding Property
   EntityView.model field changed from EntityModel to FXEntityModel, plus minor fixes
 0.17.4
+  EntityDefinition.containsAttribute(attribute) added
+  SwingEntityComboBoxModel.SelectorValue now validates the attribute using the above during construction

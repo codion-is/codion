@@ -242,6 +242,12 @@ public interface EntityDefinition {
   List<DenormalizedProperty<?>> getDenormalizedProperties(Attribute<Entity> entityAttribute);
 
   /**
+   * @param attribute the attribute
+   * @return true if this entity definition contains the given attribute
+   */
+  boolean containsAttribute(Attribute<?> attribute);
+
+  /**
    * Returns the attribute with the given name, null if none is found.
    * @param attributeName the name of the attribute to fetch
    * @param <T> the attribute type
