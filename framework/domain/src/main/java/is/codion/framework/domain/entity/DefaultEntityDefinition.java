@@ -338,8 +338,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
+  public boolean containsAttribute(final Attribute<?> attribute) {
+    return entityProperties.propertyMap.containsKey(requireNonNull(attribute));
+  }
+
+  @Override
   public <T> Attribute<T> getAttribute(final String attributeName) {
-    return (Attribute<T>) entityProperties.attributeMap.get(attributeName);
+    return (Attribute<T>) entityProperties.attributeMap.get(requireNonNull(attributeName));
   }
 
   @Override
