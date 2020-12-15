@@ -86,7 +86,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerValue(integerField).link(getModel().valueSelector(attribute));
+    NumericalValues.integerValue(integerField).link(getModel().selectorValue(attribute));
 
     return integerField;
   }
@@ -100,7 +100,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public IntegerField integerFieldSelector(final Attribute<Integer> attribute, final EntityComboBoxModel.Finder<Integer> finder) {
     final IntegerField integerField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(integerField);
-    NumericalValues.integerValue(integerField).link(getModel().valueSelector(attribute, finder));
+    NumericalValues.integerValue(integerField).link(getModel().selectorValue(attribute, finder));
 
     return integerField;
   }
@@ -113,7 +113,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public JTextField textFieldSelector(final Attribute<String> attribute) {
     final JTextField textField = new JTextField(2);
     TextFields.selectAllOnFocusGained(textField);
-    TextValues.textValue(textField).link(getModel().valueSelector(attribute));
+    TextValues.textValue(textField).link(getModel().selectorValue(attribute));
 
     return textField;
   }
@@ -127,7 +127,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   public JTextField textFieldSelector(final Attribute<String> attribute, final EntityComboBoxModel.Finder<String> finder) {
     final JTextField textField = new IntegerField(2);
     TextFields.selectAllOnFocusGained(textField);
-    TextValues.textValue(textField).link(getModel().valueSelector(attribute, finder));
+    TextValues.textValue(textField).link(getModel().selectorValue(attribute, finder));
 
     return textField;
   }
