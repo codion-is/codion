@@ -259,7 +259,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
       else if (method.getParameterCount() == 1) {
         final Attribute<?> attribute = definition.getSetterAttribute(method);
         if (attribute != null) {
-          return setValue(args[0], attribute);
+          return setValue(attribute, args[0]);
         }
       }
       if (method.isDefault()) {
@@ -280,7 +280,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
       return optional ? Optional.ofNullable(value) : value;
     }
 
-    private Object setValue(final Object value, final Attribute<?> attribute) {
+    private Object setValue(final Attribute<?> attribute, final Object value) {
       entity.put((Attribute<Object>) attribute, value);
 
       return null;

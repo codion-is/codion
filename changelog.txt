@@ -6541,3 +6541,4 @@
   EntityComboBoxModel.valueSelector() added, integerValueSelector() removed, related refactoring
   EntityComboBox.stringFieldSelector() added
   EntityComboBoxModel.valueSelector() renamed to selectorValue()
+  DefaultEntity constructor now uses defensive copying for values and original values
