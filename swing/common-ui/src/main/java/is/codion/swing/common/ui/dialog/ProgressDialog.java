@@ -104,6 +104,6 @@ public class ProgressDialog extends JDialog {
   }
 
   private static JPanel initializeButtonPanel(final ControlList buttonControls) {
-    return Controls.createHorizontalButtonPanel(buttonControls);
+    return Controls.horizontalButtonPanel(buttonControls);
   }
 }

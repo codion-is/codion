@@ -429,7 +429,7 @@ public final class Controls {
    * @param controls the control list
    * @return the button panel
    */
-  public static JPanel createVerticalButtonPanel(final ControlList controls) {
+  public static JPanel verticalButtonPanel(final ControlList controls) {
     final JPanel panel = new JPanel(Layouts.gridLayout(0, 1));
     controls.getActions().forEach(new ButtonControlHandler(panel, true));
 
@@ -441,7 +441,7 @@ public final class Controls {
    * @param controls the control list
    * @return the button panel
    */
-  public static JPanel createHorizontalButtonPanel(final ControlList controls) {
+  public static JPanel horizontalButtonPanel(final ControlList controls) {
     final JPanel panel = new JPanel(Layouts.gridLayout(1, 0));
     controls.getActions().forEach(new ButtonControlHandler(panel, false));
 
@@ -453,8 +453,8 @@ public final class Controls {
    * @param controls the control list
    * @return a popup menu based on the given controls
    */
-  public static JPopupMenu createPopupMenu(final ControlList controls) {
-    return createMenu(controls).getPopupMenu();
+  public static JPopupMenu popupMenu(final ControlList controls) {
+    return menu(controls).getPopupMenu();
   }
 
   /**
@@ -462,7 +462,7 @@ public final class Controls {
    * @param controls the control list
    * @return a menu based on the given controls
    */
-  public static JMenu createMenu(final ControlList controls) {
+  public static JMenu menu(final ControlList controls) {
     final MenuControlHandler controlHandler = new MenuControlHandler(controls);
     controls.getActions().forEach(controlHandler);
 
@@ -473,9 +473,9 @@ public final class Controls {
    * @param toggleControl the toggle control
    * @return a check box menu item based on the control
    */
-  public static JCheckBoxMenuItem createCheckBoxMenuItem(final ToggleControl toggleControl) {
+  public static JCheckBoxMenuItem checkBoxMenuItem(final ToggleControl toggleControl) {
     final JCheckBoxMenuItem item = new JCheckBoxMenuItem(toggleControl);
-    item.setModel(createButtonModel(toggleControl));
+    item.setModel(buttonModel(toggleControl));
 
     return item;
   }
@@ -484,9 +484,9 @@ public final class Controls {
    * @param toggleControl the toggle control
    * @return a radio button menu item based on the control
    */
-  public static JRadioButtonMenuItem createRadioButtonMenuItem(final ToggleControl toggleControl) {
+  public static JRadioButtonMenuItem radioButtonMenuItem(final ToggleControl toggleControl) {
     final JRadioButtonMenuItem item = new JRadioButtonMenuItem(toggleControl);
-    item.setModel(createButtonModel(toggleControl));
+    item.setModel(buttonModel(toggleControl));
 
     return item;
   }
@@ -497,7 +497,7 @@ public final class Controls {
    * @param orientation the toolbar orientation
    * @return a toolbar based on the given controls
    */
-  public static JToolBar createToolBar(final ControlList controls, final int orientation) {
+  public static JToolBar toolBar(final ControlList controls, final int orientation) {
     final JToolBar toolBar = new JToolBar(orientation);
     populateToolBar(toolBar, controls);
 
@@ -517,7 +517,7 @@ public final class Controls {
    * @param controls the controls
    * @return a menu bar based on the given controls
    */
-  public static JMenuBar createMenuBar(final List<ControlList> controls) {
+  public static JMenuBar menuBar(final List<ControlList> controls) {
     final JMenuBar menuBar = new JMenuBar();
     controls.forEach(controlList -> populateMenuBar(menuBar, controlList));
 
@@ -528,7 +528,7 @@ public final class Controls {
    * @param controls the controls
    * @return a menu bar based on the given controls
    */
-  public static JMenuBar createMenuBar(final ControlList controls) {
+  public static JMenuBar menuBar(final ControlList controls) {
     final JMenuBar menuBar = new JMenuBar();
     controls.getControlLists().forEach(subControlList -> populateMenuBar(menuBar, subControlList));
 
@@ -541,7 +541,7 @@ public final class Controls {
    * @return the menu bar with the added controls
    */
   public static JMenuBar populateMenuBar(final JMenuBar menuBar, final ControlList controls) {
-    menuBar.add(createMenu(controls));
+    menuBar.add(menu(controls));
 
     return menuBar;
   }
@@ -552,7 +552,7 @@ public final class Controls {
    * @param toggleControl the toggle control on which to base the button model
    * @return a button model
    */
-  public static ButtonModel createButtonModel(final ToggleControl toggleControl) {
+  public static ButtonModel buttonModel(final ToggleControl toggleControl) {
     requireNonNull(toggleControl, "toggleControl");
     final Value<Boolean> value = toggleControl.getValue();
     final ButtonModel buttonModel;
@@ -579,8 +579,8 @@ public final class Controls {
    * @param toggleControl the toggle control
    * @return a check box
    */
-  public static JCheckBox createCheckBox(final ToggleControl toggleControl) {
-    final ButtonModel buttonModel = createButtonModel(toggleControl);
+  public static JCheckBox checkBox(final ToggleControl toggleControl) {
+    final ButtonModel buttonModel = buttonModel(toggleControl);
     if (buttonModel instanceof NullableToggleButtonModel) {
       return new NullableCheckBox((NullableToggleButtonModel) buttonModel, toggleControl.getName());
     }
@@ -597,10 +597,10 @@ public final class Controls {
    * @param toggleControl the toggle control
    * @return a toggle button
    */
-  public static JToggleButton createToggleButton(final ToggleControl toggleControl) {
+  public static JToggleButton toggleButton(final ToggleControl toggleControl) {
     requireNonNull(toggleControl, "toggleControl");
     final JToggleButton toggleButton = new JToggleButton(toggleControl);
-    toggleButton.setModel(createButtonModel(toggleControl));
+    toggleButton.setModel(buttonModel(toggleControl));
     toggleButton.setText(toggleControl.getName());
     toggleButton.setMnemonic(toggleControl.getMnemonic());
 
@@ -625,27 +625,12 @@ public final class Controls {
       }
     }
 
-    /**
-     * Creates a separator
-     */
     abstract void onSeparator();
 
-    /**
-     * Creates a component based on the given control
-     * @param control the control
-     */
     abstract void onControl(Control control);
 
-    /**
-     * Creates a component based on the given control list
-     * @param controls the control list
-     */
     abstract void onControlList(ControlList controls);
 
-    /**
-     * Creates a component base on the given action
-     * @param action the action
-     */
     abstract void onAction(Action action);
   }
 
@@ -667,7 +652,7 @@ public final class Controls {
     @Override
     public void onControl(final Control control) {
       if (control instanceof ToggleControl) {
-        panel.add(createCheckBox((ToggleControl) control));
+        panel.add(checkBox((ToggleControl) control));
       }
       else {
         panel.add(new JButton(control));
@@ -676,7 +661,7 @@ public final class Controls {
 
     @Override
     public void onControlList(final ControlList controls) {
-      panel.add(vertical ? createVerticalButtonPanel(controls) : createHorizontalButtonPanel(controls));
+      panel.add(vertical ? verticalButtonPanel(controls) : horizontalButtonPanel(controls));
     }
 
     @Override
@@ -718,7 +703,7 @@ public final class Controls {
     @Override
     public void onControl(final Control control) {
       if (control instanceof ToggleControl) {
-        menu.add(createCheckBoxMenuItem((ToggleControl) control));
+        menu.add(checkBoxMenuItem((ToggleControl) control));
       }
       else {
         menu.add(control);
@@ -754,7 +739,7 @@ public final class Controls {
     @Override
     public void onControl(final Control control) {
       if (control instanceof ToggleControl) {
-        toolbar.add(createToggleButton((ToggleControl) control));
+        toolbar.add(toggleButton((ToggleControl) control));
       }
       else {
         toolbar.add(control);

@@ -89,6 +89,6 @@ public final class ClientMonitorPanel extends JPanel {
       }
     }, "Disconnect"));
 
-    return Controls.createPopupMenu(controls);
+    return Controls.popupMenu(controls);
   }
 }

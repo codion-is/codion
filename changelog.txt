@@ -6543,3 +6543,4 @@
   EntityComboBoxModel.valueSelector() renamed to selectorValue()
   DefaultEntity constructor now uses defensive copying for values and original values
   ControlProvider merged with Controls
+  Controls, create prefix removed from method names, test cleanup

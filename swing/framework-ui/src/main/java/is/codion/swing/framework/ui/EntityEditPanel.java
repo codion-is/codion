@@ -399,7 +399,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     if (controlPanelControls.isEmpty()) {
       return null;
     }
-    return Controls.createToolBar(controlPanelControls, orientation);
+    return Controls.toolBar(controlPanelControls, orientation);
   }
 
   /**
@@ -753,12 +753,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     }
     if (horizontal) {
       final JPanel panel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-      panel.add(Controls.createHorizontalButtonPanel(controlPanelControls));
+      panel.add(Controls.horizontalButtonPanel(controlPanelControls));
 
       return panel;
     }
     final JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.add(Controls.createVerticalButtonPanel(controlPanelControls), BorderLayout.NORTH);
+    panel.add(Controls.verticalButtonPanel(controlPanelControls), BorderLayout.NORTH);
 
     return panel;
   }

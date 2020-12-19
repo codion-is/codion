@@ -253,7 +253,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeChartControlPanel() {
     final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2, FixRowHeights.YES, FixColumnWidths.NO));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(Controls.createCheckBox(Controls.toggleControl(loadTestModel, "collectChartData",
+    controlPanel.add(Controls.checkBox(Controls.toggleControl(loadTestModel, "collectChartData",
             "Collect chart data", loadTestModel.collectChartDataObserver())));
     controlPanel.add(new JButton(Controls.control(loadTestModel::resetChartData, "Reset")));
 
@@ -355,7 +355,7 @@ public final class LoadTestPanel<T> extends JPanel {
     thinkTimePanel.add(maxThinkTimeSpinner);
     thinkTimePanel.add(new JLabel("Min. think time", JLabel.CENTER));
     thinkTimePanel.add(minThinkTimeSpinner);
-    thinkTimePanel.add(Controls.createToggleButton(pauseControl));
+    thinkTimePanel.add(Controls.toggleButton(pauseControl));
 
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
 

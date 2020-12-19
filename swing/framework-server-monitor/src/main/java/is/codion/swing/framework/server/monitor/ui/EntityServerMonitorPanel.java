@@ -126,7 +126,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public void showFrame() {
     monitorFrame = new JFrame();
     monitorFrame.setIconImage(icons().logoRed().getImage());
-    monitorFrame.setJMenuBar(Controls.createMenuBar(initializeMainMenuControls()));
+    monitorFrame.setJMenuBar(Controls.menuBar(initializeMainMenuControls()));
     monitorFrame.setTitle("Codion Server Monitor");
     monitorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     monitorFrame.getContentPane().add(this);

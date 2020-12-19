@@ -215,7 +215,7 @@ final class ExceptionDialog extends JDialog {
     rightButtonPanel.add(printButton);
     rightButtonPanel.add(saveButton);
     rightButtonPanel.add(closeButton);
-    leftButtonPanel.add(Controls.createCheckBox(detailsControl));
+    leftButtonPanel.add(Controls.checkBox(detailsControl));
 
     baseButtonPanel.add(leftButtonPanel, BorderLayout.WEST);
     baseButtonPanel.add(rightButtonPanel, BorderLayout.CENTER);

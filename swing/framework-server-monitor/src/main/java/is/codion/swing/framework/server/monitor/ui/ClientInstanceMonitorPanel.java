@@ -101,7 +101,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
     logArea.setLineWrap(false);
     logArea.setEditable(false);
-    logArea.setComponentPopupMenu(Controls.createPopupMenu(
+    logArea.setComponentPopupMenu(Controls.popupMenu(
             Controls.controlList(Controls.control(this::saveLogToFile, "Save to file..."))));
     final JScrollPane scrollPane = new JScrollPane(logArea);
 

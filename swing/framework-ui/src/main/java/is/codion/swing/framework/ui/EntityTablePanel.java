@@ -1151,7 +1151,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected JToolBar initializeSouthToolBar() {
     final ControlList toolbarControlList = getToolBarControls(additionalToolBarControls);
     if (toolbarControlList != null) {
-      final JToolBar southToolBar = Controls.createToolBar(toolbarControlList, JToolBar.HORIZONTAL);
+      final JToolBar southToolBar = Controls.toolBar(toolbarControlList, JToolBar.HORIZONTAL);
       for (final Component component : southToolBar.getComponents()) {
         component.setPreferredSize(TOOLBAR_BUTTON_SIZE);
       }
@@ -1334,7 +1334,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       return;
     }
 
-    final JPopupMenu popupMenu = Controls.createPopupMenu(popupControls);
+    final JPopupMenu popupMenu = Controls.popupMenu(popupControls);
     table.setComponentPopupMenu(popupMenu);
     table.getTableHeader().setComponentPopupMenu(popupMenu);
     if (table.getParent() != null) {

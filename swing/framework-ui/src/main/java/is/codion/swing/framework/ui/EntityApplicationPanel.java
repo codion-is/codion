@@ -1282,7 +1282,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #getMainMenuControls()
    */
   protected JMenuBar initializeMenuBar() {
-    return Controls.createMenuBar(getMainMenuControls());
+    return Controls.menuBar(getMainMenuControls());
   }
 
   /**
