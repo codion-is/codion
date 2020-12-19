@@ -33,7 +33,6 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.ControlProvider;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
@@ -1152,7 +1151,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   protected JToolBar initializeSouthToolBar() {
     final ControlList toolbarControlList = getToolBarControls(additionalToolBarControls);
     if (toolbarControlList != null) {
-      final JToolBar southToolBar = ControlProvider.createToolBar(toolbarControlList, JToolBar.HORIZONTAL);
+      final JToolBar southToolBar = Controls.createToolBar(toolbarControlList, JToolBar.HORIZONTAL);
       for (final Component component : southToolBar.getComponents()) {
         component.setPreferredSize(TOOLBAR_BUTTON_SIZE);
       }
@@ -1335,7 +1334,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       return;
     }
 
-    final JPopupMenu popupMenu = ControlProvider.createPopupMenu(popupControls);
+    final JPopupMenu popupMenu = Controls.createPopupMenu(popupControls);
     table.setComponentPopupMenu(popupMenu);
     table.getTableHeader().setComponentPopupMenu(popupMenu);
     if (table.getParent() != null) {

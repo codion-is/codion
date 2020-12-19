@@ -15,7 +15,6 @@ import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.control.ControlProvider;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
@@ -254,7 +253,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeChartControlPanel() {
     final JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2, FixRowHeights.YES, FixColumnWidths.NO));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(ControlProvider.createCheckBox(Controls.toggleControl(loadTestModel, "collectChartData",
+    controlPanel.add(Controls.createCheckBox(Controls.toggleControl(loadTestModel, "collectChartData",
             "Collect chart data", loadTestModel.collectChartDataObserver())));
     controlPanel.add(new JButton(Controls.control(loadTestModel::resetChartData, "Reset")));
 
@@ -356,7 +355,7 @@ public final class LoadTestPanel<T> extends JPanel {
     thinkTimePanel.add(maxThinkTimeSpinner);
     thinkTimePanel.add(new JLabel("Min. think time", JLabel.CENTER));
     thinkTimePanel.add(minThinkTimeSpinner);
-    thinkTimePanel.add(ControlProvider.createToggleButton(pauseControl));
+    thinkTimePanel.add(Controls.createToggleButton(pauseControl));
 
     thinkTimePanel.setBorder(BorderFactory.createTitledBorder("Activity"));
 
