@@ -125,8 +125,10 @@ public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel
   @Override
   public void setSelectedIndexes(final Collection<Integer> indexes) {
     checkIndexes(indexes);
+    setValueIsAdjusting(true);
     clearSelection();
     addSelectedIndexes(indexes);
+    setValueIsAdjusting(false);
   }
 
   @Override

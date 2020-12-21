@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.table.TableColumn;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -85,5 +86,23 @@ public class SwingTableSelectionModelTest {
     testModel.setSelectionMode(SINGLE_SELECTION);
     assertTrue(testModel.getSingleSelectionModeState().get());
     assertEquals(SINGLE_SELECTION, testModel.getSelectionMode());
+  }
+
+  @Test
+  public void events() {
+    final AtomicInteger emptyCounter = new AtomicInteger();
+    testModel.getSelectionEmptyObserver().addListener(emptyCounter::incrementAndGet);
+    testModel.setSelectedIndex(0);
+    assertEquals(1, emptyCounter.get());
+    testModel.addSelectedIndex(1);
+    assertEquals(1, emptyCounter.get());
+    testModel.setSelectedIndexes(asList(1, 2));
+    assertEquals(1, emptyCounter.get());
+    testModel.addSelectionInterval(0, 1);
+    assertEquals(1, emptyCounter.get());
+    testModel.moveSelectionDown();
+    assertEquals(1, emptyCounter.get());
+    testModel.clearSelection();
+    assertEquals(2, emptyCounter.get());
   }
 }

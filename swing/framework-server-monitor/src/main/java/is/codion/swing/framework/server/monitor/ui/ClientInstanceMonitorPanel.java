@@ -7,7 +7,6 @@ import is.codion.common.DateFormats;
 import is.codion.common.MethodLogger;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.user.User;
-import is.codion.swing.common.ui.control.ControlProvider;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -102,7 +101,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
     logArea.setLineWrap(false);
     logArea.setEditable(false);
-    logArea.setComponentPopupMenu(ControlProvider.createPopupMenu(
+    logArea.setComponentPopupMenu(Controls.popupMenu(
             Controls.controlList(Controls.control(this::saveLogToFile, "Save to file..."))));
     final JScrollPane scrollPane = new JScrollPane(logArea);
 

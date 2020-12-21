@@ -4,7 +4,6 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.ControlProvider;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
@@ -90,6 +89,6 @@ public final class ClientMonitorPanel extends JPanel {
       }
     }, "Disconnect"));
 
-    return ControlProvider.createPopupMenu(controls);
+    return Controls.popupMenu(controls);
   }
 }

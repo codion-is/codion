@@ -19,7 +19,6 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
-import is.codion.swing.common.ui.control.ControlProvider;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.DefaultDialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
@@ -400,7 +399,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     if (controlPanelControls.isEmpty()) {
       return null;
     }
-    return ControlProvider.createToolBar(controlPanelControls, orientation);
+    return Controls.toolBar(controlPanelControls, orientation);
   }
 
   /**
@@ -754,12 +753,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel implement
     }
     if (horizontal) {
       final JPanel panel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-      panel.add(ControlProvider.createHorizontalButtonPanel(controlPanelControls));
+      panel.add(Controls.horizontalButtonPanel(controlPanelControls));
 
       return panel;
     }
     final JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.add(ControlProvider.createVerticalButtonPanel(controlPanelControls), BorderLayout.NORTH);
+    panel.add(Controls.verticalButtonPanel(controlPanelControls), BorderLayout.NORTH);
 
     return panel;
   }

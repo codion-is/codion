@@ -488,7 +488,7 @@ public final class AbstractFilteredTableModelTest {
     assertFalse(selectionModel.getMultipleSelectionObserver().get());
     assertEquals(2, selectionModel.getSelectedIndex());
     selectionModel.moveSelectionDown();
-    assertEquals(12, events.get());
+    assertEquals(8, events.get());
     assertEquals(3, selectionModel.getSelectedIndex());
     selectionModel.moveSelectionUp();
     selectionModel.moveSelectionUp();

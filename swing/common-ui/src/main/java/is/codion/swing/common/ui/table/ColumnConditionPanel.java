@@ -18,7 +18,6 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
-import is.codion.swing.common.ui.control.ControlProvider;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout.FixColumnWidths;
@@ -155,11 +154,11 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
     this.equalField = equalField;
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
-    this.toggleEnabledButton = ControlProvider.createToggleButton(
+    this.toggleEnabledButton = Controls.toggleButton(
             Controls.toggleControl(conditionModel, "enabled", null, conditionModel.getEnabledObserver()));
     this.toggleEnabledButton.setIcon(icons().filter());
     if (toggleAdvancedButton == ToggleAdvancedButton.YES) {
-      this.toggleAdvancedButton = ControlProvider.createToggleButton(Controls.toggleControl(advancedConditionState));
+      this.toggleAdvancedButton = Controls.toggleButton(Controls.toggleControl(advancedConditionState));
       this.toggleAdvancedButton.setIcon(icons().configure());
     }
     else {

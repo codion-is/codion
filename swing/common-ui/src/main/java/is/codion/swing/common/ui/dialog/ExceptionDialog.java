@@ -14,7 +14,6 @@ import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ControlProvider;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
@@ -216,7 +215,7 @@ final class ExceptionDialog extends JDialog {
     rightButtonPanel.add(printButton);
     rightButtonPanel.add(saveButton);
     rightButtonPanel.add(closeButton);
-    leftButtonPanel.add(ControlProvider.createCheckBox(detailsControl));
+    leftButtonPanel.add(Controls.checkBox(detailsControl));
 
     baseButtonPanel.add(leftButtonPanel, BorderLayout.WEST);
     baseButtonPanel.add(rightButtonPanel, BorderLayout.CENTER);
