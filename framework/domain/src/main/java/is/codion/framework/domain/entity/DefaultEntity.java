@@ -164,7 +164,8 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public boolean isLoaded(final ForeignKey foreignKey) {
-    return values.get(definition.getForeignKeyProperty(foreignKey).getAttribute()) != null;
+    definition.getForeignKeyProperty(foreignKey);
+    return values.get(foreignKey) != null;
   }
 
   @Override
@@ -313,13 +314,13 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public Key getReferencedKey(final ForeignKey foreignKey) {
-    final ForeignKeyProperty foreignKeyProperty = definition.getForeignKeyProperty(foreignKey);
-    final Key cachedReferencedKey = getCachedReferencedKey(foreignKeyProperty.getAttribute());
+    definition.getForeignKeyProperty(foreignKey);
+    final Key cachedReferencedKey = getCachedReferencedKey(foreignKey);
     if (cachedReferencedKey != null) {
       return cachedReferencedKey;
     }
 
-    return initializeAndCacheReferencedKey(foreignKeyProperty);
+    return initializeAndCacheReferencedKey(foreignKey);
   }
 
   @Override
@@ -476,12 +477,12 @@ final class DefaultEntity implements Entity, Serializable {
     for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties(attribute)) {
       final Entity foreignKeyEntity = get(foreignKeyProperty);
       if (foreignKeyEntity != null) {
-        final ForeignKey.Reference<T> reference = foreignKeyProperty.getReference(attribute);
+        final ForeignKey foreignKey = foreignKeyProperty.getAttribute();
         //if the value isn't equal to the value in the foreign key,
         //that foreign key reference is invalid and is removed
-        if (!Objects.equals(value, foreignKeyEntity.get(reference.getReferencedAttribute()))) {
-          remove(foreignKeyProperty.getAttribute());
-          removeCachedReferencedKey(foreignKeyProperty.getAttribute());
+        if (!Objects.equals(value, foreignKeyEntity.get(foreignKey.getReference(attribute).getReferencedAttribute()))) {
+          remove(foreignKey);
+          removeCachedReferencedKey(foreignKey);
         }
       }
     }
@@ -526,20 +527,20 @@ final class DefaultEntity implements Entity, Serializable {
 
   /**
    * Creates and caches the primary key referenced by the given foreign key
-   * @param foreignKeyProperty the foreign key
+   * @param foreignKey the foreign key
    * @return the referenced primary key or null if a valid key can not be created (null values for non-nullable properties)
    */
-  private Key initializeAndCacheReferencedKey(final ForeignKeyProperty foreignKeyProperty) {
-    final EntityDefinition foreignEntityDefinition = definition.getForeignDefinition(foreignKeyProperty.getAttribute());
-    final List<ForeignKey.Reference<?>> references = foreignKeyProperty.getReferences();
+  private Key initializeAndCacheReferencedKey(final ForeignKey foreignKey) {
+    final EntityDefinition foreignEntityDefinition = definition.getForeignDefinition(foreignKey);
+    final List<ForeignKey.Reference<?>> references = foreignKey.getReferences();
     if (references.size() > 1) {
-      return initializeAndCacheCompositeReferenceKey(foreignKeyProperty, references, foreignEntityDefinition);
+      return initializeAndCacheCompositeReferenceKey(foreignKey, references, foreignEntityDefinition);
     }
 
-    return initializeAndCacheSingleReferenceKey(foreignKeyProperty, references.get(0), foreignEntityDefinition);
+    return initializeAndCacheSingleReferenceKey(foreignKey, references.get(0), foreignEntityDefinition);
   }
 
-  private Key initializeAndCacheCompositeReferenceKey(final ForeignKeyProperty foreignKeyProperty,
+  private Key initializeAndCacheCompositeReferenceKey(final ForeignKey foreignKey,
                                                       final List<ForeignKey.Reference<?>> references,
                                                       final EntityDefinition foreignEntityDefinition) {
     final Map<Attribute<?>, Object> keyValues = new HashMap<>(references.size());
@@ -556,10 +557,10 @@ final class DefaultEntity implements Entity, Serializable {
     final List<Attribute<?>> primaryKeyAttributes = foreignEntityDefinition.getPrimaryKeyAttributes();
     final boolean isPrimaryKey = referencedAttributes.size() == primaryKeyAttributes.size() && referencedAttributes.containsAll(primaryKeyAttributes);
 
-    return cacheReferencedKey(foreignKeyProperty.getAttribute(), new DefaultKey(foreignEntityDefinition, keyValues, isPrimaryKey));
+    return cacheReferencedKey(foreignKey, new DefaultKey(foreignEntityDefinition, keyValues, isPrimaryKey));
   }
 
-  private Key initializeAndCacheSingleReferenceKey(final ForeignKeyProperty foreignKeyProperty,
+  private Key initializeAndCacheSingleReferenceKey(final ForeignKey foreignKey,
                                                    final ForeignKey.Reference<?> reference,
                                                    final EntityDefinition foreignEntityDefinition) {
     final Object value = values.get(reference.getAttribute());
@@ -569,8 +570,8 @@ final class DefaultEntity implements Entity, Serializable {
 
     final boolean isPrimaryKey = reference.getReferencedAttribute().equals(foreignEntityDefinition.getPrimaryKeyAttributes().get(0));
 
-    return cacheReferencedKey(foreignKeyProperty.getAttribute(),
-            new DefaultKey(definition.getForeignDefinition(foreignKeyProperty.getAttribute()),
+    return cacheReferencedKey(foreignKey,
+            new DefaultKey(definition.getForeignDefinition(foreignKey),
                     reference.getReferencedAttribute(), value, isPrimaryKey));
   }
 
@@ -750,8 +751,7 @@ final class DefaultEntity implements Entity, Serializable {
   private static Map<Attribute<?>, Object> validate(final EntityDefinition definition, final Map<Attribute<?>, Object> values) {
     if (values != null && !values.isEmpty()) {
       for (final Map.Entry<Attribute<?>, Object> valueEntry : values.entrySet()) {
-        final Property<Object> property = definition.getProperty((Attribute<Object>) valueEntry.getKey());
-        property.getAttribute().validateType(valueEntry.getValue());
+        definition.getProperty((Attribute<Object>) valueEntry.getKey()).getAttribute().validateType(valueEntry.getValue());
       }
     }
 

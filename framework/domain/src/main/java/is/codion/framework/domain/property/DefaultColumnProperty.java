@@ -624,8 +624,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
     @Override
     public final ColumnProperty.Builder<T> searchProperty() {
-      if (columnProperty.columnType != Types.VARCHAR) {
-        throw new IllegalStateException("Search properties must be of type Types.VARCHAR: " + property.getAttribute());
+      if (!columnProperty.getAttribute().isString()) {
+        throw new IllegalStateException("Search properties must be String based: " + property.getAttribute());
       }
       columnProperty.searchProperty = true;
       return this;

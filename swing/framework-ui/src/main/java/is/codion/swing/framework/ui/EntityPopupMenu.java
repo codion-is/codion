@@ -98,7 +98,7 @@ final class EntityPopupMenu extends JPopupMenu {
           final boolean isLoaded = entity.isLoaded(foreignKey);
           final boolean valid = isValid(validator, entity, definition, property);
           final boolean modified = entity.isModified(foreignKey);
-          final String toolTipText = getForeignKeyAttributeNames(property);
+          final String toolTipText = getForeignKeyAttributeNames(foreignKey);
           if (!fkValueNull) {
             final Entity referencedEntity;
             if (isLoaded) {
@@ -138,8 +138,8 @@ final class EntityPopupMenu extends JPopupMenu {
     }
   }
 
-  private static String getForeignKeyAttributeNames(final ForeignKeyProperty foreignKeyProperty) {
-    return foreignKeyProperty.getReferences().stream().map(reference -> reference.getAttribute().getName()).collect(joining(", "));
+  private static String getForeignKeyAttributeNames(final ForeignKey foreignKey) {
+    return foreignKey.getReferences().stream().map(reference -> reference.getAttribute().getName()).collect(joining(", "));
   }
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property<?>> properties,

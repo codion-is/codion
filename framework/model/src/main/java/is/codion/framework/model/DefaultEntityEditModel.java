@@ -985,8 +985,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
             dependentValues.put(derivedAttribute, get(derivedAttribute)));
     entityDefinition.getForeignKeyProperties(attribute).forEach(foreignKeyProperty ->
             dependentValues.put(foreignKeyProperty.getAttribute(), get(foreignKeyProperty.getAttribute())));
-    if (entityDefinition.getProperty(attribute) instanceof ForeignKeyProperty) {
-      entityDefinition.getForeignKeyProperty((ForeignKey) attribute).getReferences().forEach(reference ->
+    if (attribute instanceof ForeignKey) {
+      ((ForeignKey) attribute).getReferences().forEach(reference ->
               dependentValues.put(reference.getAttribute(), get(reference.getAttribute())));
     }
 

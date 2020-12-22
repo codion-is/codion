@@ -835,7 +835,7 @@ public class EntityEditComponentPanel extends JPanel {
       transferFocusOnEnter((JComponent) box.getEditor().getEditorComponent());
       transferFocusOnEnter(box);
     }
-    setComponent(property.getAttribute(), box);
+    setComponent(attribute, box);
 
     return box;
   }
@@ -995,7 +995,7 @@ public class EntityEditComponentPanel extends JPanel {
     if (transferFocusOnEnter) {
       transferFocusOnEnter(textField);
     }
-    setComponent(foreignKeyProperty.getAttribute(), textField);
+    setComponent(foreignKey, textField);
 
     return textField;
   }

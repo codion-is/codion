@@ -60,11 +60,6 @@ final class DefaultForeignKeyProperty extends DefaultProperty<Entity> implements
     return getAttribute().getReferences();
   }
 
-  @Override
-  public <T> ForeignKey.Reference<T> getReference(final Attribute<T> attribute) {
-    return getAttribute().getReference(attribute);
-  }
-
   /**
    * @return a builder for this property instance
    */

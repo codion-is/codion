@@ -170,7 +170,7 @@ class DefaultKey implements Key, Serializable {
   @Override
   public <T> T get(final Attribute<T> attribute) {
     if (!values.containsKey(attribute)) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of this key");
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of key: " + definition.getEntityType());
     }
 
     return (T) values.get(definition.getColumnProperty(attribute).getAttribute());
