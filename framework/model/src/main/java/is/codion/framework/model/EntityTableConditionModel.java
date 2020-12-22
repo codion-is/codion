@@ -76,13 +76,13 @@ public interface EntityTableConditionModel extends Refreshable {
   boolean isConditionEnabled(Attribute<?> attribute);
 
   /**
-   * Enables the search for the given property
+   * Enables the search for the given attribute, if the condition model is not locked.
    * @param attribute the attribute for which to enable the search
    */
   void enable(Attribute<?> attribute);
 
   /**
-   * Disables the search for the given property
+   * Disables the search for the given attribute, if the condition model is not locked.
    * @param attribute the attribute for which to disable the search
    */
   void disable(Attribute<?> attribute);

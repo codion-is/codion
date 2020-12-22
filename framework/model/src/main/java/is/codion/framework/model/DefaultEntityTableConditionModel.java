@@ -261,14 +261,20 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   @Override
   public void enable(final Attribute<?> attribute) {
     if (containsConditionModel(attribute)) {
-      getConditionModel(attribute).setEnabled(true);
+      final ColumnConditionModel<?, ?, ?> conditionModel = getConditionModel(attribute);
+      if (!conditionModel.isLocked()) {
+        conditionModel.setEnabled(true);
+      }
     }
   }
 
   @Override
   public void disable(final Attribute<?> attribute) {
     if (containsConditionModel(attribute)) {
-      getConditionModel(attribute).setEnabled(false);
+      final ColumnConditionModel<?, ?, ?> conditionModel = getConditionModel(attribute);
+      if (!conditionModel.isLocked()) {
+        conditionModel.setEnabled(false);
+      }
     }
   }
 
@@ -334,7 +340,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       for (final Property<?> property : connectionProvider.getEntities().getDefinition(entityType).getProperties()) {
         if (!property.isHidden()) {
           final ColumnConditionModel<Entity, Property<?>, ?> filterModel = filterModelProvider.createFilterModel(property);
-          this.filterModels.put(filterModel.getColumnIdentifier().getAttribute(), filterModel);
+          filterModels.put(filterModel.getColumnIdentifier().getAttribute(), filterModel);
         }
       }
     }
@@ -347,7 +353,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
         final ColumnConditionModel<Entity, ColumnProperty<?>, ?> conditionModel =
                 conditionModelFactory.createColumnConditionModel(columnProperty);
         if (conditionModel != null) {
-          this.conditionModels.put(conditionModel.getColumnIdentifier().getAttribute(), conditionModel);
+          conditionModels.put(conditionModel.getColumnIdentifier().getAttribute(), conditionModel);
         }
       }
     }
@@ -360,7 +366,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       final ColumnConditionModel<Entity, ForeignKeyProperty, Entity> conditionModel =
               conditionModelProvider.createForeignKeyConditionModel(foreignKeyProperty, connectionProvider);
       if (conditionModel != null) {
-        this.conditionModels.put(conditionModel.getColumnIdentifier().getAttribute(), conditionModel);
+        conditionModels.put(conditionModel.getColumnIdentifier().getAttribute(), conditionModel);
       }
     }
   }
