@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class FXEntityEditModel extends DefaultEntityEditModel {
 
-  private final Map<ForeignKeyProperty, FXEntityListModel> foreignKeyListModels = new HashMap<>();
+  private final Map<ForeignKey, FXEntityListModel> foreignKeyListModels = new HashMap<>();
 
   /**
    * Instantiates a new {@link FXEntityEditModel} based on the entity identified by {@code entityType}.
@@ -65,7 +65,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   public final FXEntityListModel getForeignKeyListModel(final ForeignKeyProperty foreignKeyProperty) {
     requireNonNull(foreignKeyProperty);
 
-    return foreignKeyListModels.computeIfAbsent(foreignKeyProperty, k -> createForeignKeyListModel(foreignKeyProperty));
+    return foreignKeyListModels.computeIfAbsent(foreignKeyProperty.getAttribute(), k -> createForeignKeyListModel(foreignKeyProperty));
   }
 
   /**
@@ -96,8 +96,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   public void addForeignKeyValues(final List<Entity> entities) {
     final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
-      for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
-        final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
+      for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
+        final FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
         if (listModel != null) {
           listModel.addAll(entry.getValue());
         }
@@ -113,8 +113,8 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   public void removeForeignKeyValues(final List<Entity> entities) {
     final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
-      for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
-        final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
+      for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
+        final FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
         if (listModel != null) {
           listModel.removeAll(entry.getValue());
           //todo
@@ -129,7 +129,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
 //            listModel.setSelectedItem(null);
 //          }
         }
-        clearForeignKeyReferences(foreignKeyProperty.getAttribute(), entry.getValue());
+        clearForeignKeyReferences(foreignKey, entry.getValue());
       }
     }
   }

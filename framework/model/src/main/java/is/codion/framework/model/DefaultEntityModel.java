@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -319,10 +318,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final void initialize(final EntityType<?> foreignKeyEntityType, final List<Entity> foreignKeyValues) {
-    final List<ForeignKeyProperty> foreignKeyProperties =
-            editModel.getEntityDefinition().getForeignKeyReferences(foreignKeyEntityType);
-    if (!foreignKeyProperties.isEmpty()) {
-      initialize(foreignKeyProperties.get(0).getAttribute(), foreignKeyValues);
+    final List<ForeignKey> foreignKey = editModel.getEntityDefinition().getForeignKeys(foreignKeyEntityType);
+    if (!foreignKey.isEmpty()) {
+      initialize(foreignKey.get(0), foreignKeyValues);
     }
   }
 
@@ -433,7 +431,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (containsTableModel() && searchOnMasterInsert) {
       ForeignKey foreignKey = masterModel.getDetailModelForeignKey((M) this);
       if (foreignKey == null) {
-        foreignKey = editModel.getEntityDefinition().getForeignKeyReferences(masterModel.getEntityType()).get(0).getAttribute();
+        foreignKey = editModel.getEntityDefinition().getForeignKeys(masterModel.getEntityType()).get(0);
       }
       tableModel.setForeignKeyConditionValues(foreignKey, insertedEntities);
     }

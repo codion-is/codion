@@ -312,10 +312,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final void replaceForeignKeyValues(final Collection<Entity> entities) {
     final Map<EntityType<?>, List<Entity>> entitiesByEntityType = Entities.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
-      final List<ForeignKeyProperty> foreignKeyProperties = getEntityDefinition()
-              .getForeignKeyReferences(entityTypeEntities.getKey());
-      for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-        replaceForeignKey(foreignKeyProperty.getAttribute(), entityTypeEntities.getValue());
+      final List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(entityTypeEntities.getKey());
+      for (final ForeignKey foreignKey : foreignKeys) {
+        replaceForeignKey(foreignKey, entityTypeEntities.getValue());
       }
     }
   }
@@ -349,10 +348,9 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   public final void setForeignKeyValues(final Collection<Entity> entities) {
     final Map<EntityType<?>, List<Entity>> entitiesByEntityType = Entities.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
-      for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition()
-              .getForeignKeyReferences(entityTypeEntities.getKey())) {
+      for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entityTypeEntities.getKey())) {
         //todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
-        put(foreignKeyProperty.getAttribute(), entityTypeEntities.getValue().iterator().next());
+        put(foreignKey, entityTypeEntities.getValue().iterator().next());
       }
     }
   }

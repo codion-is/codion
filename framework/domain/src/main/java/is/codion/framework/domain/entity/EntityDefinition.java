@@ -354,11 +354,11 @@ public interface EntityDefinition {
   List<ColumnProperty<?>> getSelectableColumnProperties(List<Attribute<?>> attributes);
 
   /**
-   * Returns the foreign key properties referencing entities of the given type
-   * @param foreignEntityType the id of the referenced entity
-   * @return a List containing the properties, an empty list is returned in case no foreign key references are found
+   * Returns the foreign keys referencing entities of the given type
+   * @param referencedEntityType the referenced entity type
+   * @return a List containing the foreign keys, an empty list is returned in case no foreign keys are found
    */
-  List<ForeignKeyProperty> getForeignKeyReferences(EntityType<?> foreignEntityType);
+  List<ForeignKey> getForeignKeys(EntityType<?> referencedEntityType);
 
   /**
    * @param foreignKey the foreign key

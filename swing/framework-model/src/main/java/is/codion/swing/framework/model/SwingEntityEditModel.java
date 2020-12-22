@@ -158,9 +158,9 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   public final void addForeignKeyValues(final List<Entity> entities) {
     final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
-      for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
-        if (containsComboBoxModel(foreignKeyProperty.getAttribute())) {
-          final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty.getAttribute());
+      for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
+        if (containsComboBoxModel(foreignKey)) {
+          final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKey);
           for (final Entity inserted : entry.getValue()) {
             comboBoxModel.addItem(inserted);
           }
@@ -173,9 +173,9 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   public final void removeForeignKeyValues(final List<Entity> entities) {
     final Map<EntityType<?>, List<Entity>> mapped = Entities.mapToType(entities);
     for (final Map.Entry<EntityType<?>, List<Entity>> entry : mapped.entrySet()) {
-      for (final ForeignKeyProperty foreignKeyProperty : getEntityDefinition().getForeignKeyReferences(entry.getKey())) {
-        if (containsComboBoxModel(foreignKeyProperty.getAttribute())) {
-          final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKeyProperty.getAttribute());
+      for (final ForeignKey foreignKey : getEntityDefinition().getForeignKeys(entry.getKey())) {
+        if (containsComboBoxModel(foreignKey)) {
+          final SwingEntityComboBoxModel comboBoxModel = getForeignKeyComboBoxModel(foreignKey);
           final Entity selectedEntity = comboBoxModel.getSelectedValue();
           for (final Entity deletedEntity : entry.getValue()) {
             comboBoxModel.removeItem(deletedEntity);
@@ -190,7 +190,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
             comboBoxModel.setSelectedItem(null);
           }
         }
-        clearForeignKeyReferences(foreignKeyProperty.getAttribute(), entry.getValue());
+        clearForeignKeyReferences(foreignKey, entry.getValue());
       }
     }
   }
