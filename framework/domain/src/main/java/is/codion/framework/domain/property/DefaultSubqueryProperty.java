@@ -19,8 +19,7 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
    */
   DefaultSubqueryProperty(final Attribute<T> attribute, final String caption, final String subquery) {
     super(attribute, caption);
-    super.setInsertable(false);
-    super.setUpdatable(false);
+    super.readOnly();
     this.subquery = subquery;
   }
 
@@ -54,6 +53,11 @@ final class DefaultSubqueryProperty<T> extends DefaultColumnProperty<T> implemen
 
     @Override
     public ColumnProperty.Builder<T> readOnly() {
+      throw new UnsupportedOperationException("Subquery properties are read only by default: " + property.getAttribute());
+    }
+
+    @Override
+    public ColumnProperty.Builder<T> readOnly(final boolean readOnly) {
       throw new UnsupportedOperationException("Subquery properties are read only by default: " + property.getAttribute());
     }
 

@@ -6576,3 +6576,12 @@
   Controls, create prefix removed from method names, test cleanup
   SwingTableSelectionModel.setSelectedIndexes() now sets valueIsAdjusting so that the empty selection state is not enabled/disabled during the set
   EntityDefinition.getForeignKeyProperties() renamed getForeignKeys(), now returns List<ForeignKey>
+  Property.Builder.hidden(boolean) and ColumnProperty.Builder.readOnly(boolean) added
+  EntityComponentValues.createComponentValue(), Property parameter changed to Attribute
+  Entities.getModifiedColumnProperties() renamed getModifiedColumnAttributes(), now returns Attributes instead of ColumnProperties
+  EntityDefinition.getForeignKeys() added and used where applicable
+  EntityDefinition.isUpdatable() parameter is now ForeignKey
+  DefaultEntityTableConditionModel.disable(Attribute) now only disables if the condition model is not locked
+  FxUiUtil.createForeignKeyComboBox() and createLookupField() now take ForeignKey as parameter
+  EntityEditView.createForeignKeyLookupField() bug fixed, did not associate the component with the attribute
+  ForeignKeyProperty.getReference(Attribute) removed, some minor changes

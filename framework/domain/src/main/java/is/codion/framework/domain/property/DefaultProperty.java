@@ -424,7 +424,12 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
 
     @Override
     public Property.Builder<T> hidden() {
-      property.hidden = true;
+      return hidden(true);
+    }
+
+    @Override
+    public Builder<T> hidden(final boolean hidden) {
+      property.hidden = hidden;
       return this;
     }
 

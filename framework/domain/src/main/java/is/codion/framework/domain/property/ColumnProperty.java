@@ -181,6 +181,9 @@ public interface ColumnProperty<T> extends Property<T> {
     ColumnProperty.Builder<T> hidden();
 
     @Override
+    ColumnProperty.Builder<T> hidden(boolean hidden);
+
+    @Override
     ColumnProperty.Builder<T> maximumValue(double maximumValue);
 
     @Override
@@ -237,6 +240,13 @@ public interface ColumnProperty<T> extends Property<T> {
      * @return this instance
      */
     ColumnProperty.Builder<T> readOnly();
+
+    /**
+     * Specifies whether this property should be included during insert and update operations
+     * @param readOnly true if this property should be read-only
+     * @return this instance
+     */
+    ColumnProperty.Builder<T> readOnly(boolean readOnly);
 
     /**
      * @param insertable specifies whether this property should be included during insert operations

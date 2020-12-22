@@ -216,6 +216,11 @@ public interface EntityDefinition {
   List<ForeignKeyProperty> getForeignKeyProperties();
 
   /**
+   * @return all foreign keys for this entity type
+   */
+  Collection<ForeignKey> getForeignKeys();
+
+  /**
    * Returns the {@link EntityDefinition} of the entity referenced by the given foreign key property.
    * @param foreignKey the foreign key
    * @return the definition of the referenced entity
@@ -333,10 +338,10 @@ public interface EntityDefinition {
   List<Property<?>> getUpdatableProperties();
 
   /**
-   * @param foreignKeyProperty the foreign key property
+   * @param foreignKey the foreign key
    * @return true if all the underlying properties are updatable
    */
-  boolean isUpdatable(ForeignKeyProperty foreignKeyProperty);
+  boolean isUpdatable(ForeignKey foreignKey);
 
   /**
    * @param attribute the attribute

@@ -631,8 +631,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
           return true;
         }
       }
-      for (final ForeignKeyProperty property : entityDefinition.getForeignKeyProperties()) {
-        if (valueModified(property.getAttribute())) {
+      for (final ForeignKey foreignKey : entityDefinition.getForeignKeys()) {
+        if (valueModified(foreignKey)) {
           return true;
         }
       }
@@ -968,7 +968,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private void initializePersistentValues() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
-      getEntityDefinition().getForeignKeyProperties().forEach(property -> setPersistValue(property.getAttribute(), true));
+      getEntityDefinition().getForeignKeys().forEach(foreignKey -> setPersistValue(foreignKey, true));
     }
   }
 
@@ -985,8 +985,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
             dependentValues.put(derivedAttribute, get(derivedAttribute)));
     entityDefinition.getForeignKeyProperties(attribute).forEach(foreignKeyProperty ->
             dependentValues.put(foreignKeyProperty.getAttribute(), get(foreignKeyProperty.getAttribute())));
-    if (entityDefinition.getProperty(attribute) instanceof ForeignKeyProperty) {
-      entityDefinition.getForeignKeyProperty((ForeignKey) attribute).getReferences().forEach(reference ->
+    if (attribute instanceof ForeignKey) {
+      ((ForeignKey) attribute).getReferences().forEach(reference ->
               dependentValues.put(reference.getAttribute(), get(reference.getAttribute())));
     }
 

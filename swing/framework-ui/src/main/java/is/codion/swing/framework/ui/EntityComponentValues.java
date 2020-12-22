@@ -5,7 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.swing.common.ui.time.LocalDateInputPanel;
@@ -37,26 +37,26 @@ public class EntityComponentValues {
 
   /**
    * Provides value input components for multiple entity update, override to supply
-   * specific {@link ComponentValue} implementations for properties.
+   * specific {@link ComponentValue} implementations for attributes.
    * Remember to return with a call to super.getComponentValue() after handling your case.
-   * @param property the property for which to get the ComponentValue
+   * @param attribute the attribute for which to get the ComponentValue
    * @param editModel the edit model used to create foreign key input models
    * @param initialValue the initial value to display
-   * @param <T> the property type
+   * @param <T> the attribute type
    * @param <C> the component type
-   * @return the ComponentValue handling input for {@code property}
+   * @return the ComponentValue handling input for {@code attribute}
    */
-  public <T, C extends JComponent> ComponentValue<T, C> createComponentValue(final Property<T> property, final SwingEntityEditModel editModel,
+  public <T, C extends JComponent> ComponentValue<T, C> createComponentValue(final Attribute<T> attribute, final SwingEntityEditModel editModel,
                                                                              final T initialValue) {
-    requireNonNull(property, "property");
+    requireNonNull(attribute, "attribute");
     requireNonNull(editModel, "editModel");
-    if (property instanceof ForeignKeyProperty) {
-      return (ComponentValue<T, C>) createEntityComponentValue((ForeignKeyProperty) property, editModel, (Entity) initialValue);
+    if (attribute instanceof ForeignKey) {
+      return (ComponentValue<T, C>) createEntityComponentValue((ForeignKey) attribute, editModel, (Entity) initialValue);
     }
+    final Property<T> property = editModel.getEntityDefinition().getProperty(attribute);
     if (property instanceof ValueListProperty) {
       return (ComponentValue<T, C>) SelectedValues.selectedItemValue(initialValue, ((ValueListProperty<T>) property).getValues());
     }
-    final Attribute<?> attribute = property.getAttribute();
     if (attribute.isBoolean()) {
       return (ComponentValue<T, C>) BooleanValues.booleanComboBoxValue((Boolean) initialValue);
     }
@@ -95,22 +95,20 @@ public class EntityComponentValues {
   }
 
   /**
-   * Creates a {@link ComponentValue} for the given foreign key property
-   * @param foreignKeyProperty the property
+   * Creates a {@link ComponentValue} for the given foreign key
+   * @param foreignKey the foreign key
    * @param editModel the edit model involved in the updating
    * @param initialValue the current value to initialize the ComponentValue with
    * @param <T> the component type
    * @return a Entity InputProvider
    */
-  protected <T extends JComponent> ComponentValue<Entity, T> createEntityComponentValue(final ForeignKeyProperty foreignKeyProperty,
+  protected <T extends JComponent> ComponentValue<Entity, T> createEntityComponentValue(final ForeignKey foreignKey,
                                                                                         final SwingEntityEditModel editModel,
                                                                                         final Entity initialValue) {
-    if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKeyProperty.getReferencedEntityType()).isSmallDataset()) {
-      return (ComponentValue<Entity, T>) new EntityComboBox.ComponentValue(
-              editModel.createForeignKeyComboBoxModel(foreignKeyProperty.getAttribute()), initialValue);
+    if (editModel.getConnectionProvider().getEntities().getDefinition(foreignKey.getReferencedEntityType()).isSmallDataset()) {
+      return (ComponentValue<Entity, T>) new EntityComboBox.ComponentValue(editModel.createForeignKeyComboBoxModel(foreignKey), initialValue);
     }
 
-    return (ComponentValue<Entity, T>) new EntityLookupField.ComponentValue(
-            editModel.createForeignKeyLookupModel(foreignKeyProperty.getAttribute()), initialValue);
+    return (ComponentValue<Entity, T>) new EntityLookupField.ComponentValue(editModel.createForeignKeyLookupModel(foreignKey), initialValue);
   }
 }

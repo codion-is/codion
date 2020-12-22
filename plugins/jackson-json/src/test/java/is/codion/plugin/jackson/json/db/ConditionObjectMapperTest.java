@@ -10,8 +10,8 @@ import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.plugin.jackson.json.TestDomain;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
@@ -106,8 +106,8 @@ public final class ConditionObjectMapperTest {
     assertEquals(selectCondition.getOffset(), readCondition.getOffset());
     assertEquals(selectCondition.getFetchCount(), readCondition.getFetchCount());
     assertEquals(selectCondition.getFetchDepth(), readCondition.getFetchDepth());
-    for (final ForeignKeyProperty property : entities.getDefinition(selectCondition.getEntityType()).getForeignKeyProperties()) {
-      assertEquals(selectCondition.getFetchDepth(property.getAttribute()), readCondition.getFetchDepth(property.getAttribute()));
+    for (final ForeignKey foreignKey : entities.getDefinition(selectCondition.getEntityType()).getForeignKeys()) {
+      assertEquals(selectCondition.getFetchDepth(foreignKey), readCondition.getFetchDepth(foreignKey));
     }
     assertEquals(selectCondition.getSelectAttributes(), readCondition.getSelectAttributes());
     assertTrue(readCondition.isForUpdate());

@@ -882,7 +882,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED_EXCEPTION)
                   + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
         }
-        final List<ColumnProperty<?>> modified = getModifiedColumnProperties(definition, entity, current);
+        final List<Attribute<?>> modified = getModifiedColumnAttributes(definition, entity, current);
         if (!modified.isEmpty()) {
           throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
         }
@@ -1306,12 +1306,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static String createModifiedExceptionMessage(final Entity entity, final Entity modified,
-                                                       final Collection<ColumnProperty<?>> modifiedProperties) {
+                                                       final Collection<Attribute<?>> modifiedAttributes) {
     final StringBuilder builder = new StringBuilder(MESSAGES.getString(RECORD_MODIFIED_EXCEPTION))
             .append(", ").append(entity.getEntityType());
-    for (final ColumnProperty<?> property : modifiedProperties) {
-      builder.append(" \n").append(property).append(": ").append(entity.getOriginal(property.getAttribute()))
-              .append(" -> ").append(modified.get(property.getAttribute()));
+    for (final Attribute<?> attribute : modifiedAttributes) {
+      builder.append(" \n").append(attribute).append(": ").append(entity.getOriginal(attribute))
+              .append(" -> ").append(modified.get(attribute));
     }
 
     return builder.toString();

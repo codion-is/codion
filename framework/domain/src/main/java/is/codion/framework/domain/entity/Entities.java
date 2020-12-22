@@ -6,6 +6,7 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.Property;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -192,16 +193,16 @@ public interface Entities {
   }
 
   /**
-   * Returns all updatable {@link ColumnProperty}s which value is missing or the original value differs from the one in the comparison
+   * Returns all updatable {@link Attribute}s which value is missing or the original value differs from the one in the comparison
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
    * Note that only eagerly loaded blob values are included in this comparison.
    * @param definition the entity definition
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
-   * @return the updatable column properties which values differ from the ones in the comparison entity
+   * @return the updatable column attributes which values differ from the ones in the comparison entity
    * @see BlobProperty#isEagerlyLoaded()
    */
-  static List<ColumnProperty<?>> getModifiedColumnProperties(final EntityDefinition definition, final Entity entity, final Entity comparison) {
+  static List<Attribute<?>> getModifiedColumnAttributes(final EntityDefinition definition, final Entity entity, final Entity comparison) {
     requireNonNull(definition);
     requireNonNull(entity);
     requireNonNull(comparison);
@@ -210,7 +211,7 @@ public interface Entities {
       final boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
 
       return updatableColumnProperty && !lazilyLoadedBlobProperty && isValueMissingOrModified(entity, comparison, property.getAttribute());
-    }).map(property -> (ColumnProperty<?>) property).collect(toList());
+    }).map(Property::getAttribute).collect(toList());
   }
 
   /**

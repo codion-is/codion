@@ -657,7 +657,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
     final Entities entities = applicationModel.getEntities();
     for (final EntityDefinition definition : entities.getDefinitions()) {
-      if (definition.getForeignKeyProperties().isEmpty() || referencesOnlySelf(applicationModel.getEntities(), definition.getEntityType())) {
+      if (definition.getForeignKeys().isEmpty() || referencesOnlySelf(applicationModel.getEntities(), definition.getEntityType())) {
         root.add(new EntityDependencyTreeNode(definition.getEntityType(), entities));
       }
     }
@@ -1551,8 +1551,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private static boolean referencesOnlySelf(final Entities entities, final EntityType<?> entityType) {
-    return entities.getDefinition(entityType).getForeignKeyProperties().stream()
-            .allMatch(fkProperty -> fkProperty.getReferencedEntityType().equals(entityType));
+    return entities.getDefinition(entityType).getForeignKeys().stream()
+            .allMatch(foreignKey -> foreignKey.getReferencedEntityType().equals(entityType));
   }
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {

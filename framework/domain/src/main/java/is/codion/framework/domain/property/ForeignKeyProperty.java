@@ -50,13 +50,6 @@ public interface ForeignKeyProperty extends Property<Entity> {
   List<ForeignKey.Reference<?>> getReferences();
 
   /**
-   * @param attribute the attribute
-   * @param <T> the attribute type
-   * @return the reference that is based on the given attribute
-   */
-  <T> ForeignKey.Reference<T> getReference(Attribute<T> attribute);
-
-  /**
    * Provides setters for ForeignKeyProperty properties
    */
   interface Builder extends Property.Builder<Entity> {
