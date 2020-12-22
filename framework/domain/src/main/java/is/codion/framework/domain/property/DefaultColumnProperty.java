@@ -136,12 +136,9 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     return (ResultPacker<T>) resultPacker;
   }
 
-  protected final void setInsertable(final boolean insertable) {
-    this.insertable = insertable;
-  }
-
-  protected final void setUpdatable(final boolean updatable) {
-    this.updatable = updatable;
+  protected final void readOnly() {
+    this.insertable = false;
+    this.updatable = false;
   }
 
   /**
@@ -458,6 +455,12 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
+    public final ColumnProperty.Builder<T> hidden(final boolean hidden) {
+      super.hidden(hidden);
+      return this;
+    }
+
+    @Override
     public final ColumnProperty.Builder<T> defaultValue(final T defaultValue) {
       return defaultValueSupplier(new DefaultValueSupplier<>(defaultValue));
     }
@@ -562,8 +565,13 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
     @Override
     public ColumnProperty.Builder<T> readOnly() {
-      columnProperty.insertable = false;
-      columnProperty.updatable = false;
+      return readOnly(true);
+    }
+
+    @Override
+    public ColumnProperty.Builder<T> readOnly(final boolean readOnly) {
+      columnProperty.insertable = !readOnly;
+      columnProperty.updatable = !readOnly;
       return this;
     }
 

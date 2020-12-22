@@ -6546,3 +6546,4 @@
   Controls, create prefix removed from method names, test cleanup
   SwingTableSelectionModel.setSelectedIndexes() now sets valueIsAdjusting so that the empty selection state is not enabled/disabled during the set
   EntityDefinition.getForeignKeyProperties() renamed getForeignKeys(), now returns List<ForeignKey>
+  Property.Builder.hidden(boolean) and ColumnProperty.Builder.readOnly(boolean) added

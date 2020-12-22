@@ -245,6 +245,13 @@ public interface Property<T> {
     Property.Builder<T> hidden();
 
     /**
+     * Specifies whether this property should be hidden in table views
+     * @param hidden true if this property should be hidden
+     * @return this instance
+     */
+    Property.Builder<T> hidden(boolean hidden);
+
+    /**
      * Sets the maximum allowed value for this property, only applicable to numerical properties
      * @param maximumValue the maximum allowed value
      * @return this instance
