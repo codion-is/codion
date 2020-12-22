@@ -456,18 +456,19 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public List<ColumnProperty<?>> getSelectableColumnProperties(final List<Attribute<?>> attributes) {
-    final List<ColumnProperty<?>> theProperties = new ArrayList<>(attributes.size());
+    final List<ColumnProperty<?>> selectables = new ArrayList<>(requireNonNull(attributes, "attributes").size());
     for (int i = 0; i < attributes.size(); i++) {
-      theProperties.add(getSelectableColumnProperty(attributes.get(i)));
+      selectables.add(getSelectableColumnProperty(attributes.get(i)));
     }
 
-    return theProperties;
+    return selectables;
   }
 
   @Override
-  public List<ForeignKeyProperty> getForeignKeyReferences(final EntityType<?> foreignEntityType) {
-    return getForeignKeyProperties().stream().filter(foreignKeyProperty ->
-            foreignKeyProperty.getReferencedEntityType().equals(foreignEntityType)).collect(toList());
+  public List<ForeignKey> getForeignKeys(final EntityType<?> referencedEntityType) {
+    requireNonNull(referencedEntityType, "referencedEntityType");
+    return getForeignKeyProperties().stream().map(ForeignKeyProperty::getAttribute).filter(foreignKey ->
+            foreignKey.getReferencedEntityType().equals(referencedEntityType)).collect(toList());
   }
 
   @Override

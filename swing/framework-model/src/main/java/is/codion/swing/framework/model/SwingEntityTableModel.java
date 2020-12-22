@@ -481,13 +481,12 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final void replaceForeignKeyValues(final EntityType<?> foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKeyValues, "foreignKeyValues");
-    final List<ForeignKeyProperty> foreignKeyProperties =
-            getEntityDefinition().getForeignKeyReferences(requireNonNull(foreignKeyEntityType, "foreignKeyEntityType"));
+    final List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(requireNonNull(foreignKeyEntityType, "foreignKeyEntityType"));
     boolean changed = false;
     for (final Entity entity : getItems()) {
-      for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      for (final ForeignKey foreignKey : foreignKeys) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
-          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getAttribute());
+          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKey);
           if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
             currentForeignKeyValue.setAs(foreignKeyValue);
             changed = true;

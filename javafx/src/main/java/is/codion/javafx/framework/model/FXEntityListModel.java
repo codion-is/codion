@@ -22,7 +22,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultEntityTableConditionModel;
 import is.codion.framework.model.EntityModel;
@@ -211,12 +210,11 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   @Override
   public final void replaceForeignKeyValues(final EntityType<?> foreignKeyEntityType, final Collection<Entity> foreignKeyValues) {
-    final List<ForeignKeyProperty> foreignKeyProperties =
-            getEntityDefinition().getForeignKeyReferences(foreignKeyEntityType);
+    final List<ForeignKey> foreignKeys = getEntityDefinition().getForeignKeys(foreignKeyEntityType);
     for (final Entity entity : getItems()) {
-      for (final ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      for (final ForeignKey foreignKey : foreignKeys) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
-          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getAttribute());
+          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKey);
           if (Objects.equals(currentForeignKeyValue, foreignKeyValue)) {
             currentForeignKeyValue.setAs(foreignKeyValue);
           }

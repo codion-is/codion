@@ -29,7 +29,6 @@ import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DenormalizedProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Properties;
 import is.codion.framework.domain.property.Property;
 
@@ -329,13 +328,13 @@ public class DomainTest {
   }
 
   @Test
-  public void getForeignKeyReferences() {
+  public void getForeignKeys() {
     final EntityDefinition definition = entities.getDefinition(Detail.TYPE);
-    List<ForeignKeyProperty> foreignKeyProperties = definition.getForeignKeyReferences(Employee.TYPE);
-    assertEquals(0, foreignKeyProperties.size());
-    foreignKeyProperties = definition.getForeignKeyReferences(Master.TYPE);
-    assertEquals(2, foreignKeyProperties.size());
-    assertTrue(foreignKeyProperties.contains(definition.getProperty(Detail.MASTER_FK)));
+    List<ForeignKey> foreignKeys = definition.getForeignKeys(Employee.TYPE);
+    assertEquals(0, foreignKeys.size());
+    foreignKeys = definition.getForeignKeys(Master.TYPE);
+    assertEquals(2, foreignKeys.size());
+    assertTrue(foreignKeys.contains(Detail.MASTER_FK));
   }
 
   @Test
