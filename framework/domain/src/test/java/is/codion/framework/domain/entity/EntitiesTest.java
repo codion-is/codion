@@ -10,7 +10,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 
 import org.junit.jupiter.api.Test;
@@ -80,7 +79,7 @@ public final class EntitiesTest {
   }
 
   @Test
-  public void getModifiedColumnProperties() {
+  public void getModifiedColumnAttributes() {
     final Entity entity = entities.entity(TestDomain.Department.TYPE);
     entity.put(TestDomain.Department.NO, 1);
     entity.put(TestDomain.Department.LOCATION, "Location");
@@ -94,9 +93,6 @@ public final class EntitiesTest {
     current.put(TestDomain.Department.LOCATION, "Location");
     current.put(TestDomain.Department.NAME, "Name");
 
-    final Property<Integer> departmentId = entities.getDefinition(TestDomain.Department.TYPE).getProperty(TestDomain.Department.NO);
-    final Property<String> departmentLocation = entities.getDefinition(TestDomain.Department.TYPE).getProperty(TestDomain.Department.LOCATION);
-
     assertFalse(Entities.isValueMissingOrModified(current, entity, TestDomain.Department.NO));
     assertFalse(Entities.isValueMissingOrModified(current, entity, TestDomain.Department.LOCATION));
     assertFalse(Entities.isValueMissingOrModified(current, entity, TestDomain.Department.NAME));
@@ -104,38 +100,38 @@ public final class EntitiesTest {
     current.put(TestDomain.Department.NO, 2);
     current.saveAll();
     assertTrue(Entities.isValueMissingOrModified(current, entity, TestDomain.Department.NO));
-    assertEquals(departmentId, Entities.getModifiedColumnProperties(definition, current, entity).iterator().next());
+    assertEquals(TestDomain.Department.NO, Entities.getModifiedColumnAttributes(definition, current, entity).iterator().next());
     final Integer id = current.remove(TestDomain.Department.NO);
     assertEquals(2, id);
     current.saveAll();
     assertTrue(Entities.isValueMissingOrModified(current, entity, TestDomain.Department.NO));
-    assertEquals(departmentId, Entities.getModifiedColumnProperties(definition, current, entity).iterator().next());
+    assertEquals(TestDomain.Department.NO, Entities.getModifiedColumnAttributes(definition, current, entity).iterator().next());
     current.put(TestDomain.Department.NO, 1);
     current.saveAll();
     assertFalse(Entities.isValueMissingOrModified(current, entity, TestDomain.Department.NO));
-    assertTrue(Entities.getModifiedColumnProperties(definition, current, entity).isEmpty());
+    assertTrue(Entities.getModifiedColumnAttributes(definition, current, entity).isEmpty());
 
     current.put(TestDomain.Department.LOCATION, "New location");
     current.saveAll();
     assertTrue(Entities.isValueMissingOrModified(current, entity, TestDomain.Department.LOCATION));
-    assertEquals(departmentLocation, Entities.getModifiedColumnProperties(definition, current, entity).iterator().next());
+    assertEquals(TestDomain.Department.LOCATION, Entities.getModifiedColumnAttributes(definition, current, entity).iterator().next());
     current.remove(TestDomain.Department.LOCATION);
     current.saveAll();
     assertTrue(Entities.isValueMissingOrModified(current, entity, TestDomain.Department.LOCATION));
-    assertEquals(departmentLocation, Entities.getModifiedColumnProperties(definition, current, entity).iterator().next());
+    assertEquals(TestDomain.Department.LOCATION, Entities.getModifiedColumnAttributes(definition, current, entity).iterator().next());
     current.put(TestDomain.Department.LOCATION, "Location");
     current.saveAll();
     assertFalse(Entities.isValueMissingOrModified(current, entity, TestDomain.Department.LOCATION));
-    assertTrue(Entities.getModifiedColumnProperties(definition, current, entity).isEmpty());
+    assertTrue(Entities.getModifiedColumnAttributes(definition, current, entity).isEmpty());
 
     entity.put(TestDomain.Department.LOCATION, "new loc");
     entity.put(TestDomain.Department.NAME, "new name");
 
-    assertEquals(2, Entities.getModifiedColumnProperties(definition, current, entity).size());
+    assertEquals(2, Entities.getModifiedColumnAttributes(definition, current, entity).size());
   }
 
   @Test
-  public void getModifiedColumnPropertiesWithBlob() {
+  public void getModifiedColumnAttributesWithBlob() {
     final Random random = new Random();
     final byte[] bytes = new byte[1024];
     random.nextBytes(bytes);
@@ -153,8 +149,8 @@ public final class EntitiesTest {
     final Entity emp2 = entities.copyEntity(emp1);
     emp2.put(TestDomain.Employee.DATA, modifiedBytes);
 
-    List<ColumnProperty<?>> modifiedProperties = Entities.getModifiedColumnProperties(definition, emp1, emp2);
-    assertTrue(modifiedProperties.contains(entities.getDefinition(TestDomain.Employee.TYPE).getColumnProperty(TestDomain.Employee.DATA)));
+    List<Attribute<?>> modifiedAttributes = Entities.getModifiedColumnAttributes(definition, emp1, emp2);
+    assertTrue(modifiedAttributes.contains(TestDomain.Employee.DATA));
 
     //lazy loaded blob
     final Entity dept1 = entities.entity(TestDomain.Department.TYPE);
@@ -168,16 +164,16 @@ public final class EntitiesTest {
 
     final EntityDefinition departmentDefinition = entities.getDefinition(TestDomain.Department.TYPE);
 
-    modifiedProperties = Entities.getModifiedColumnProperties(departmentDefinition, dept1, dept2);
-    assertFalse(modifiedProperties.contains(departmentDefinition.getColumnProperty(TestDomain.Department.DATA)));
+    modifiedAttributes = Entities.getModifiedColumnAttributes(departmentDefinition, dept1, dept2);
+    assertFalse(modifiedAttributes.contains(TestDomain.Department.DATA));
 
     dept2.put(TestDomain.Department.LOCATION, "new loc");
-    modifiedProperties = Entities.getModifiedColumnProperties(departmentDefinition, dept1, dept2);
-    assertTrue(modifiedProperties.contains(departmentDefinition.getColumnProperty(TestDomain.Department.LOCATION)));
+    modifiedAttributes = Entities.getModifiedColumnAttributes(departmentDefinition, dept1, dept2);
+    assertTrue(modifiedAttributes.contains(TestDomain.Department.LOCATION));
 
     dept2.remove(TestDomain.Department.DATA);
-    modifiedProperties = Entities.getModifiedColumnProperties(departmentDefinition, dept1, dept2);
-    assertFalse(modifiedProperties.contains(departmentDefinition.getColumnProperty(TestDomain.Department.DATA)));
+    modifiedAttributes = Entities.getModifiedColumnAttributes(departmentDefinition, dept1, dept2);
+    assertFalse(modifiedAttributes.contains(TestDomain.Department.DATA));
   }
 
   @Test
