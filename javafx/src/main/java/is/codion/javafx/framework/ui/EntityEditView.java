@@ -172,8 +172,12 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final EntityLookupField createForeignKeyLookupField(final ForeignKey foreignKey) {
     checkControl(foreignKey);
-    return FXUiUtil.createLookupField(getEditModel().getEntityDefinition()
-            .getForeignKeyProperty(foreignKey), editModel);
+    getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey);
+    final EntityLookupField lookupField = FXUiUtil.createLookupField(foreignKey, editModel);
+
+    controls.put(foreignKey, lookupField);
+
+    return lookupField;
   }
 
   /**
@@ -183,8 +187,8 @@ public abstract class EntityEditView extends BorderPane {
    */
   protected final ComboBox<Entity> createForeignKeyComboBox(final ForeignKey foreignKey) {
     checkControl(foreignKey);
-    final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(getEditModel()
-            .getEntityDefinition().getForeignKeyProperty(foreignKey), editModel);
+    getEditModel().getEntityDefinition().getForeignKeyProperty(foreignKey);
+    final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(foreignKey, editModel);
 
     controls.put(foreignKey, box);
 

@@ -17,6 +17,7 @@ import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
@@ -684,33 +685,31 @@ public final class FXUiUtil {
   }
 
   /**
-   * Instantiates a {@link EntityLookupField} based on the given property and linked to the given edit model
-   * @param foreignKeyProperty the foreign key property
+   * Instantiates a {@link EntityLookupField} based on the given foreign key and linked to the given edit model
+   * @param foreignKey the foreign key
    * @param editModel the edit model
    * @return a {@link EntityLookupField} based on the given property
    */
-  public static EntityLookupField createLookupField(final ForeignKeyProperty foreignKeyProperty,
-                                                    final FXEntityEditModel editModel) {
-    final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty.getAttribute());
+  public static EntityLookupField createLookupField(final ForeignKey foreignKey, final FXEntityEditModel editModel) {
+    final EntityLookupModel lookupModel = requireNonNull(editModel).getForeignKeyLookupModel(requireNonNull(foreignKey));
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
-    PropertyValues.lookupValue(lookupModel).link(editModel.value(foreignKeyProperty.getAttribute()));
+    PropertyValues.lookupValue(lookupModel).link(editModel.value(foreignKey));
 
     return lookupField;
   }
 
   /**
-   * Instantiates a {@link ComboBox} based on the given property and linked to the given edit model
-   * @param foreignKeyProperty the foreign key property
+   * Instantiates a {@link ComboBox} based on the given foreign key and linked to the given edit model
+   * @param foreignKey the foreign key
    * @param editModel the edit model
    * @return a {@link ComboBox} based on the given property
    */
-  public static ComboBox<Entity> createForeignKeyComboBox(final ForeignKeyProperty foreignKeyProperty,
-                                                          final FXEntityEditModel editModel) {
-    final FXEntityListModel listModel = editModel.getForeignKeyListModel(foreignKeyProperty);
+  public static ComboBox<Entity> createForeignKeyComboBox(final ForeignKey foreignKey, final FXEntityEditModel editModel) {
+    final FXEntityListModel listModel = requireNonNull(editModel).getForeignKeyListModel(requireNonNull(foreignKey));
     listModel.refresh();
     final ComboBox<Entity> box = new ComboBox<>(listModel.getSortedList());
     listModel.setSelectionModel(box.getSelectionModel());
-    PropertyValues.selectedValue(box.getSelectionModel()).link(editModel.value(foreignKeyProperty.getAttribute()));
+    PropertyValues.selectedValue(box.getSelectionModel()).link(editModel.value(foreignKey));
 
     return box;
   }

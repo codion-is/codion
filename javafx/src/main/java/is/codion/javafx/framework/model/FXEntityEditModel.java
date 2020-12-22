@@ -9,7 +9,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.DefaultEntityEditModel;
 
 import java.util.HashMap;
@@ -47,40 +46,23 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
-   * Returns a {@link FXEntityListModel} for the given foreign key attribute. If one does not exist it is created.
-   * @param foreignKey the foreign key attribute
-   * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key property
-   * @see #createForeignKeyListModel(ForeignKeyProperty)
+   * Returns a {@link FXEntityListModel} for the given foreign key. If one does not exist it is created.
+   * @param foreignKey the foreign key
+   * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key
    */
   public final FXEntityListModel getForeignKeyListModel(final ForeignKey foreignKey) {
-    return getForeignKeyListModel(getEntityDefinition().getForeignKeyProperty(foreignKey));
+    requireNonNull(foreignKey);
+    return foreignKeyListModels.computeIfAbsent(foreignKey, k -> createForeignKeyListModel(foreignKey));
   }
 
   /**
-   * Returns a {@link FXEntityListModel} for the given foreign key property. If one does not exist it is created.
-   * @param foreignKeyProperty the foreign key property
-   * @return a {@link FXEntityListModel} based on the entity referenced by the given foreign key property
-   * @see #createForeignKeyListModel(ForeignKeyProperty)
+   * Creates a {@link FXEntityListModel} based on the given foreign key
+   * @param foreignKey the foreign key
+   * @return a new {@link FXEntityListModel} based on the given
    */
-  public final FXEntityListModel getForeignKeyListModel(final ForeignKeyProperty foreignKeyProperty) {
-    requireNonNull(foreignKeyProperty);
-
-    return foreignKeyListModels.computeIfAbsent(foreignKeyProperty.getAttribute(), k -> createForeignKeyListModel(foreignKeyProperty));
-  }
-
-  /**
-   * Creates a {@link FXEntityListModel} based on the given foreign key property
-   * @param foreignKeyProperty the foreign key property
-   * @return a new {@link FXEntityListModel} based on the given property
-   */
-  public FXEntityListModel createForeignKeyListModel(final ForeignKeyProperty foreignKeyProperty) {
-    requireNonNull(foreignKeyProperty);
-    return new FXEntityListModel(foreignKeyProperty.getReferencedEntityType(), getConnectionProvider());
-    //todo
-//    if (getValidator().isNullable(getEntity(), foreignKeyProperty.getAttribute())) {
-//      model.setNullValue(Domain.createToStringEntity(foreignKeyProperty.getForeignEntityType(),
-//              (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM)));
-//    }
+  public FXEntityListModel createForeignKeyListModel(final ForeignKey foreignKey) {
+    requireNonNull(foreignKey);
+    return new FXEntityListModel(foreignKey.getReferencedEntityType(), getConnectionProvider());
   }
 
   @Override
