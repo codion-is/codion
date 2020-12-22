@@ -9,8 +9,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -67,10 +67,10 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     }
     final JsonNode fkFetchDepth = jsonNode.get("fkFetchDepth");
     if (fkFetchDepth != null && !fkFetchDepth.isNull()) {
-      for (final ForeignKeyProperty property : definition.getForeignKeyProperties()) {
-        final JsonNode fetchDepthNode = fkFetchDepth.get(property.getAttribute().getName());
+      for (final ForeignKey foreignKey : definition.getForeignKeys()) {
+        final JsonNode fetchDepthNode = fkFetchDepth.get(foreignKey.getName());
         if (fetchDepthNode != null) {
-          selectCondition.fetchDepth(property.getAttribute(), fetchDepthNode.asInt());
+          selectCondition.fetchDepth(foreignKey, fetchDepthNode.asInt());
         }
       }
     }

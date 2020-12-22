@@ -6549,3 +6549,4 @@
   Property.Builder.hidden(boolean) and ColumnProperty.Builder.readOnly(boolean) added
   EntityComponentValues.createComponentValue(), Property parameter changed to Attribute
   Entities.getModifiedColumnProperties() renamed getModifiedColumnAttributes(), now returns Attributes instead of ColumnProperties
+  EntityDefinition.getForeignKeys() added and used where applicable

@@ -4,7 +4,6 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.io.IOException;
@@ -131,10 +130,10 @@ public abstract class DefaultEntities implements Entities, Serializable {
     requireNonNull(entity, "entity");
     final Entity copy = entity(entity.getEntityType());
     copy.setAs(entity);
-    for (final ForeignKeyProperty foreignKeyProperty : getDefinition(entity.getEntityType()).getForeignKeyProperties()) {
-      final Entity foreignKeyValue = entity.get(foreignKeyProperty.getAttribute());
+    for (final ForeignKey foreignKey : getDefinition(entity.getEntityType()).getForeignKeys()) {
+      final Entity foreignKeyValue = entity.get(foreignKey);
       if (foreignKeyValue != null) {
-        entity.put(foreignKeyProperty.getAttribute(), deepCopyEntity(foreignKeyValue));
+        entity.put(foreignKey, deepCopyEntity(foreignKeyValue));
       }
     }
 
@@ -205,14 +204,14 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   private void validateForeignKeyProperties(final EntityDefinition definition) {
-    for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
+    for (final ForeignKey foreignKey : definition.getForeignKeys()) {
       final EntityType<?> entityType = definition.getEntityType();
-      if (!entityType.equals(foreignKeyProperty.getReferencedEntityType()) && strictForeignKeys) {
-        final EntityDefinition foreignEntity = entityDefinitions.get(foreignKeyProperty.getReferencedEntityType());
+      if (!entityType.equals(foreignKey.getReferencedEntityType()) && strictForeignKeys) {
+        final EntityDefinition foreignEntity = entityDefinitions.get(foreignKey.getReferencedEntityType());
         if (foreignEntity == null) {
-          throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getReferencedEntityType()
+          throw new IllegalArgumentException("Entity '" + foreignKey.getReferencedEntityType()
                   + "' referenced by entity '" + entityType + "' via foreign key property '"
-                  + foreignKeyProperty.getAttribute() + "' has not been defined");
+                  + foreignKey + "' has not been defined");
         }
       }
     }
@@ -220,9 +219,8 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   private void populateForeignDefinitions() {
     for (final DefaultEntityDefinition definition : entityDefinitions.values()) {
-      for (final ForeignKeyProperty foreignKeyProperty : definition.getForeignKeyProperties()) {
-        final ForeignKey foreignKey = foreignKeyProperty.getAttribute();
-        final EntityDefinition referencedDefinition = entityDefinitions.get(foreignKeyProperty.getReferencedEntityType());
+      for (final ForeignKey foreignKey : definition.getForeignKeys()) {
+        final EntityDefinition referencedDefinition = entityDefinitions.get(foreignKey.getReferencedEntityType());
         if (referencedDefinition != null && !definition.hasForeignDefinition(foreignKey)) {
           definition.setForeignDefinition(foreignKey, referencedDefinition);
         }

@@ -631,8 +631,8 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
           return true;
         }
       }
-      for (final ForeignKeyProperty property : entityDefinition.getForeignKeyProperties()) {
-        if (valueModified(property.getAttribute())) {
+      for (final ForeignKey foreignKey : entityDefinition.getForeignKeys()) {
+        if (valueModified(foreignKey)) {
           return true;
         }
       }
@@ -968,7 +968,7 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
 
   private void initializePersistentValues() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
-      getEntityDefinition().getForeignKeyProperties().forEach(property -> setPersistValue(property.getAttribute(), true));
+      getEntityDefinition().getForeignKeys().forEach(foreignKey -> setPersistValue(foreignKey, true));
     }
   }
 

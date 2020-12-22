@@ -467,7 +467,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public List<ForeignKey> getForeignKeys(final EntityType<?> referencedEntityType) {
     requireNonNull(referencedEntityType, "referencedEntityType");
-    return getForeignKeyProperties().stream().map(ForeignKeyProperty::getAttribute).filter(foreignKey ->
+    return getForeignKeys().stream().filter(foreignKey ->
             foreignKey.getReferencedEntityType().equals(referencedEntityType)).collect(toList());
   }
 
@@ -553,6 +553,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public List<ForeignKeyProperty> getForeignKeyProperties() {
     return entityProperties.foreignKeyProperties;
+  }
+
+  @Override
+  public Collection<ForeignKey> getForeignKeys() {
+    return entityProperties.foreignKeyPropertyMap.keySet();
   }
 
   @Override
@@ -888,11 +893,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     private Map<ForeignKey, ForeignKeyProperty> initializeForeignKeyPropertyMap() {
-      final Map<ForeignKey, ForeignKeyProperty> foreignKeyMap = new HashMap<>(foreignKeyProperties.size());
+      final Map<ForeignKey, ForeignKeyProperty> foreignKeyMap = new LinkedHashMap<>(foreignKeyProperties.size());
       foreignKeyProperties.forEach(foreignKeyProperty ->
               foreignKeyMap.put(foreignKeyProperty.getAttribute(), foreignKeyProperty));
 
-      return foreignKeyMap;
+      return unmodifiableMap(foreignKeyMap);
     }
 
     private Map<Attribute<?>, List<ForeignKeyProperty>> initializeColumnPropertyForeignKeyProperties() {

@@ -19,6 +19,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -36,6 +37,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -312,8 +314,11 @@ public class EntityTestUnit {
   private Map<EntityType<?>, Entity> initializeReferencedEntities(final EntityType<?> entityType,
                                                                   final Map<EntityType<?>, Entity> foreignKeyEntities)
           throws DatabaseException {
-    for (final ForeignKeyProperty foreignKeyProperty : getEntities().getDefinition(entityType).getForeignKeyProperties()) {
-      final EntityType<?> referencedEntityType = foreignKeyProperty.getReferencedEntityType();
+    final List<ForeignKey> foreignKeys = new ArrayList<>(getEntities().getDefinition(entityType).getForeignKeys());
+    //we have to start with non-self-referential ones
+    foreignKeys.sort((fk1, fk2) -> !fk1.getReferencedEntityType().equals(entityType) ? -1 : 1);
+    for (final ForeignKey foreignKey : foreignKeys) {
+      final EntityType<?> referencedEntityType = foreignKey.getReferencedEntityType();
       if (!foreignKeyEntities.containsKey(referencedEntityType)) {
         if (!Objects.equals(entityType, referencedEntityType)) {
           foreignKeyEntities.put(referencedEntityType, null);//short circuit recursion, value replaced below

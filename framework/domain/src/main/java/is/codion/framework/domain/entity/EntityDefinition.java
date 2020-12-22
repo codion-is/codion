@@ -216,6 +216,11 @@ public interface EntityDefinition {
   List<ForeignKeyProperty> getForeignKeyProperties();
 
   /**
+   * @return all foreign keys for this entity type
+   */
+  Collection<ForeignKey> getForeignKeys();
+
+  /**
    * Returns the {@link EntityDefinition} of the entity referenced by the given foreign key property.
    * @param foreignKey the foreign key
    * @return the definition of the referenced entity
