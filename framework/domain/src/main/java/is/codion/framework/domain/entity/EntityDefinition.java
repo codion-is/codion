@@ -338,10 +338,10 @@ public interface EntityDefinition {
   List<Property<?>> getUpdatableProperties();
 
   /**
-   * @param foreignKeyProperty the foreign key property
+   * @param foreignKey the foreign key
    * @return true if all the underlying properties are updatable
    */
-  boolean isUpdatable(ForeignKeyProperty foreignKeyProperty);
+  boolean isUpdatable(ForeignKey foreignKey);
 
   /**
    * @param attribute the attribute

@@ -6550,3 +6550,4 @@
   EntityComponentValues.createComponentValue(), Property parameter changed to Attribute
   Entities.getModifiedColumnProperties() renamed getModifiedColumnAttributes(), now returns Attributes instead of ColumnProperties
   EntityDefinition.getForeignKeys() added and used where applicable
+  EntityDefinition.isUpdatable() parameter is now ForeignKey
