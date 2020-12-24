@@ -6557,3 +6557,4 @@
   ForeignKeyProperty.getReference(Attribute) removed, some minor changes
   ValueLink, some refactoring
   EntityServer, connection maintenance moved up to AbstractServer, some light refactoring
+  ServerConfiguration.CONNECTION_MAINTENANCE_INTERVAL_MS added

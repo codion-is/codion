@@ -20,7 +20,9 @@ import static java.util.Objects.requireNonNull;
  */
 public interface ServerConfiguration {
 
-  int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120000;
+  int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120_000;
+
+  int DEFAULT_CONNECTION_MAINTENANCE_INTERVAL = 30_000;
 
   /**
    * The system property key for specifying a ssl keystore
@@ -130,6 +132,13 @@ public interface ServerConfiguration {
   PropertyValue<Boolean> SERIALIZATION_FILTER_DRYRUN = Configuration.booleanValue("codion.server.serializationFilterDryRun", false);
 
   /**
+   * Specifies the interval between server connection maintenance runs, in milliseconds.<br>
+   * Value type: Integer<br>
+   * Default value: 30_000ms (30 seconds)
+   */
+  PropertyValue<Integer> CONNECTION_MAINTENANCE_INTERVAL_MS = Configuration.integerValue("codion.server.connectionMaintenanceIntervalMs", DEFAULT_CONNECTION_MAINTENANCE_INTERVAL);
+
+  /**
    * @return the server name
    * @see #setServerNameProvider(Supplier)
    */
@@ -181,6 +190,11 @@ public interface ServerConfiguration {
   Boolean getSerializationFilterDryRun();
 
   /**
+   * @return the interval between server connection maintenance runs, in milliseconds.
+   */
+  Integer getConnectionMaintenanceInterval();
+
+  /**
    * @param adminPort the port on which to make the server admin interface accessible
    */
   void setServerAdminPort(Integer adminPort);
@@ -230,6 +244,11 @@ public interface ServerConfiguration {
   void setSerializationFilterDryRun(Boolean serializationFilterDryRun);
 
   /**
+   * @param connectionMaintenanceIntervalMs the interval between server connection maintenance runs, in milliseconds.
+   */
+  void setConnectionMaintenanceIntervalMs(Integer connectionMaintenanceIntervalMs);
+
+  /**
    * @param serverPort the server port
    * @return a default server configuration
    */
@@ -255,6 +274,7 @@ public interface ServerConfiguration {
     configuration.setAuxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()));
     configuration.setServerAdminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()));
     configuration.setSslEnabled(ServerConfiguration.SERVER_CONNECTION_SSL_ENABLED.get());
+    configuration.setConnectionMaintenanceIntervalMs(ServerConfiguration.CONNECTION_MAINTENANCE_INTERVAL_MS.get());
     if (SERIALIZATION_FILTER_WHITELIST.get() != null) {
       configuration.setSerializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
     }
