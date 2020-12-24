@@ -594,7 +594,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
    * @param <T> the property type
-   * @see EntityComponentValues#createComponentValue(Property, SwingEntityEditModel, Object)
+   * @see EntityComponentValues#createComponentValue(Attribute, SwingEntityEditModel, Object)
    */
   public final <T> void updateSelectedEntities(final Property<T> propertyToUpdate) {
     if (tableModel.getSelectionModel().isSelectionEmpty()) {
