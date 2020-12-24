@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -200,6 +201,9 @@ public class AbstractServerTest {
 
     @Override
     protected void doDisconnect(final ServerTest connection) {}
+
+    @Override
+    protected void maintainConnections(final Collection<ClientConnection<ServerTest>> connections) throws RemoteException {}
 
     @Override
     public int getServerLoad() {

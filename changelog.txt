@@ -6556,3 +6556,4 @@
   EntityEditView.createForeignKeyLookupField() bug fixed, did not associate the component with the attribute
   ForeignKeyProperty.getReference(Attribute) removed, some minor changes
   ValueLink, some refactoring
+  EntityServer, connection maintenance moved up to AbstractServer, some light refactoring

@@ -3,7 +3,6 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.TaskScheduler;
 import is.codion.common.Util;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.AuthenticationException;
@@ -40,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -60,13 +58,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   protected static final String SHUTDOWN = "shutdown";
   protected static final String RESTART = "restart";
 
-  private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
-
   private final EntityServerConfiguration configuration;
   private final Map<DomainType, Domain> domainModels;
   private final Database database;
-  private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
-          DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
   private final boolean clientLoggingEnabled;
   private final Map<String, Integer> clientTypeConnectionTimeouts = new HashMap<>();
 
@@ -209,10 +203,21 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     return database.getStatistics();
   }
 
-  /**
-   * @param clientTypeId the client type id
-   * @return all clients of the given type
-   */
+  @Override
+  protected final void maintainConnections(final Collection<ClientConnection<AbstractRemoteEntityConnection>> connections) throws RemoteException {
+    for (final ClientConnection<AbstractRemoteEntityConnection> client : connections) {
+      final AbstractRemoteEntityConnection connection = client.getConnection();
+      if (!connection.isActive()) {
+        final boolean connected = connection.isConnected();
+        final boolean timedOut = hasConnectionTimedOut(connection);
+        if (!connected || timedOut) {
+          LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
+          disconnect(client.getRemoteClient().getClientId());
+        }
+      }
+    }
+  }
+
   @Override
   protected final Collection<RemoteClient> getClients(final String clientTypeId) {
     //using the remoteClient from the connection since it contains the correct database user
@@ -233,20 +238,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
 
     return definitions;
-  }
-
-  /**
-   * @return the maintenance check interval in ms
-   */
-  final int getMaintenanceInterval() {
-    return connectionMaintenanceScheduler.getInterval();
-  }
-
-  /**
-   * @param maintenanceInterval the new maintenance interval in ms
-   */
-  final void setMaintenanceInterval(final int maintenanceInterval) {
-    connectionMaintenanceScheduler.setInterval(maintenanceInterval);
   }
 
   /**
@@ -288,28 +279,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   /**
-   * Disconnects clients that have exceeded the idle timeout.
-   * @throws RemoteException in case of an exception
-   */
-  final void maintainConnections() throws RemoteException {
-    final List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
-    for (final RemoteClient client : clients) {
-      final AbstractRemoteEntityConnection connection = getConnection(client.getClientId());
-      if (!connection.isActive()) {
-        final boolean connected = connection.isConnected();
-        final boolean timedOut = hasConnectionTimedOut(connection);
-        if (!connected || timedOut) {
-          LOG.debug("Removing connection {}, connected: {}, timeout: {}", client, connected, timedOut);
-          disconnect(client.getClientId());
-        }
-      }
-    }
-  }
-
-  /**
    * @param timedOutOnly if true only connections that have timed out are culled
    * @throws RemoteException in case of an exception
-   * @see #hasConnectionTimedOut(String, AbstractRemoteEntityConnection)
+   * @see #hasConnectionTimedOut(AbstractRemoteEntityConnection)
    */
   final void disconnectClients(final boolean timedOutOnly) throws RemoteException {
     final List<RemoteClient> clients = new ArrayList<>(getConnections().keySet());
@@ -422,20 +394,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
   }
 
-  private final class MaintenanceTask implements Runnable {
-    @Override
-    public void run() {
-      try {
-        if (getConnectionCount() > 0) {
-          maintainConnections();
-        }
-      }
-      catch (final Exception e) {
-        LOG.error("Exception while maintaining connections", e);
-      }
-    }
-  }
-
   /**
    * Starts the server, using the configuration from system properties.
    * @return the server instance
@@ -528,7 +486,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
     @Override
     public void onEvent() {
-      connectionMaintenanceScheduler.stop();
       database.closeConnectionPools();
       database.shutdownEmbedded();
     }

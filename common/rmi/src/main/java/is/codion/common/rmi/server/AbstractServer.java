@@ -3,6 +3,7 @@
  */
 package is.codion.common.rmi.server;
 
+import is.codion.common.TaskScheduler;
 import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
@@ -35,11 +36,13 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import static is.codion.common.rmi.server.AuxiliaryServerFactory.getAuxiliaryServerProvider;
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import static java.util.stream.Collectors.toList;
@@ -55,11 +58,14 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
   private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = Util.onClasspath("sun.misc.ObjectInputFilter");
+  private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30_000;
 
-  private final Map<UUID, RemoteClientConnection<T>> connections = new ConcurrentHashMap<>();
+  private final Map<UUID, ClientConnection<T>> connections = new ConcurrentHashMap<>();
   private final Map<String, LoginProxy> loginProxies = new HashMap<>();
   private final Collection<LoginProxy> sharedLoginProxies = new ArrayList<>();
   private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
+  private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
+          DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
 
   private final ServerConfiguration configuration;
   private final ServerInformation serverInformation;
@@ -78,9 +84,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   public AbstractServer(final ServerConfiguration configuration) throws RemoteException {
     super(requireNonNull(configuration, "configuration").getServerPort(),
             configuration.getRmiClientSocketFactory(), configuration.getRmiServerSocketFactory());
+    Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     try {
       this.configuration = configuration;
-      Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
       this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
               configuration.getServerPort(), ZonedDateTime.now());
       configureSerializationWhitelist(configuration);
@@ -97,8 +103,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    */
   public final Map<RemoteClient, T> getConnections() {
     final Map<RemoteClient, T> clients = new HashMap<>();
-    for (final RemoteClientConnection<T> remoteClientConnection : connections.values()) {
-      clients.put(remoteClientConnection.getClient(), remoteClientConnection.getConnection());
+    for (final ClientConnection<T> clientConnection : connections.values()) {
+      clients.put(clientConnection.getRemoteClient(), clientConnection.getConnection());
     }
 
     return clients;
@@ -109,7 +115,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return the connection associated with the given client, null if none exists
    */
   public final T getConnection(final UUID clientId) {
-    final RemoteClientConnection<T> clientConnection = connections.get(requireNonNull(clientId, "clientId"));
+    final ClientConnection<T> clientConnection = connections.get(requireNonNull(clientId, "clientId"));
     if (clientConnection != null) {
       return clientConnection.getConnection();
     }
@@ -140,6 +146,20 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     this.connectionLimit = connectionLimit;
   }
 
+  /**
+   * @return the maintenance check interval in ms
+   */
+  public final int getMaintenanceInterval() {
+    return connectionMaintenanceScheduler.getInterval();
+  }
+
+  /**
+   * @param maintenanceInterval the new maintenance interval in ms
+   */
+  public final void setMaintenanceInterval(final int maintenanceInterval) {
+    connectionMaintenanceScheduler.setInterval(maintenanceInterval);
+  }
+
   @Override
   public final ServerInformation getServerInformation() {
     return serverInformation;
@@ -161,12 +181,12 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     requireNonNull(connectionRequest.getClientId(), "clientId");
     requireNonNull(connectionRequest.getClientTypeId(), "clientTypeId");
     synchronized (connections) {
-      final RemoteClientConnection<T> remoteClientConnection = connections.get(connectionRequest.getClientId());
-      if (remoteClientConnection != null) {
-        validateUserCredentials(connectionRequest.getUser(), remoteClientConnection.getClient().getUser());
+      final ClientConnection<T> clientConnection = connections.get(connectionRequest.getClientId());
+      if (clientConnection != null) {
+        validateUserCredentials(connectionRequest.getUser(), clientConnection.getRemoteClient().getUser());
         LOG.debug("Active connection exists {}", connectionRequest);
 
-        return remoteClientConnection.getConnection();
+        return clientConnection.getConnection();
       }
 
       if (maximumNumberOfConnectionsReached()) {
@@ -185,10 +205,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       return;
     }
 
-    final RemoteClientConnection<T> remoteClientConnection = connections.remove(requireNonNull(clientId, "clientId"));
-    if (remoteClientConnection != null) {
-      doDisconnect(remoteClientConnection.getConnection());
-      final RemoteClient remoteClient = remoteClientConnection.getClient();
+    final ClientConnection<T> clientConnection = connections.remove(requireNonNull(clientId, "clientId"));
+    if (clientConnection != null) {
+      doDisconnect(clientConnection.getConnection());
+      final RemoteClient remoteClient = clientConnection.getRemoteClient();
       for (final LoginProxy loginProxy : sharedLoginProxies) {
         loginProxy.doLogout(remoteClient);
       }
@@ -208,6 +228,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       return;
     }
     shuttingDown = true;
+    connectionMaintenanceScheduler.stop();
     unexportSilently(registry);
     unexportSilently(this);
     if (admin != null) {
@@ -302,6 +323,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   protected abstract void doDisconnect(T connection) throws RemoteException;
 
   /**
+   * Maintains the given connections, that is, disconnects inactive or invalid connections, if required.
+   * @throws RemoteException in case of an exception
+   * @param connections all current connections
+   */
+  protected abstract void maintainConnections(final Collection<ClientConnection<T>> connections) throws RemoteException;
+
+  /**
    * @param clientTypeId the client type id
    * @return all clients of the given type
    */
@@ -342,7 +370,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
   }
 
-  private RemoteClientConnection<T> createConnection(final ConnectionRequest connectionRequest) throws LoginException, RemoteException {
+  private ClientConnection<T> createConnection(final ConnectionRequest connectionRequest) throws LoginException, RemoteException {
     RemoteClient remoteClient = remoteClient(connectionRequest);
     setClientHost(remoteClient, (String) connectionRequest.getParameters().get(CLIENT_HOST_KEY));
     for (final LoginProxy loginProxy : sharedLoginProxies) {
@@ -353,10 +381,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     if (clientLoginProxy != null) {
       remoteClient = clientLoginProxy.doLogin(remoteClient);
     }
-    final RemoteClientConnection<T> remoteClientConnection = new RemoteClientConnection<>(remoteClient, doConnect(remoteClient));
-    connections.put(remoteClient.getClientId(), remoteClientConnection);
+    final ClientConnection<T> clientConnection = new ClientConnection<>(remoteClient, doConnect(remoteClient));
+    connections.put(remoteClient.getClientId(), clientConnection);
 
-    return remoteClientConnection;
+    return clientConnection;
   }
 
   private void startAuxiliaryServers(final Collection<String> auxiliaryServerProviderClassNames) {
@@ -445,22 +473,37 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     });
   }
 
-  private static final class RemoteClientConnection<T> {
+  protected static final class ClientConnection<T> {
 
     private final RemoteClient client;
     private final T connection;
 
-    private RemoteClientConnection(final RemoteClient client, final T connection) {
+    private ClientConnection(final RemoteClient client, final T connection) {
       this.client = client;
       this.connection = connection;
     }
 
-    private RemoteClient getClient() {
+    public RemoteClient getRemoteClient() {
       return client;
     }
 
-    private T getConnection() {
+    public T getConnection() {
       return connection;
+    }
+  }
+
+  private final class MaintenanceTask implements Runnable {
+
+    @Override
+    public void run() {
+      try {
+        if (getConnectionCount() > 0) {
+          maintainConnections(unmodifiableCollection(connections.values()));
+        }
+      }
+      catch (final Exception e) {
+        LOG.error("Exception while maintaining connections", e);
+      }
     }
   }
 
