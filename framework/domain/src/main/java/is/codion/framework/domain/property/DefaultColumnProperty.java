@@ -83,7 +83,7 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
 
   @Override
   public final boolean isUpdatable() {
-    return this.updatable;
+    return updatable;
   }
 
   @Override
@@ -137,8 +137,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
   }
 
   protected final void readOnly() {
-    this.insertable = false;
-    this.updatable = false;
+    insertable = false;
+    updatable = false;
   }
 
   /**
