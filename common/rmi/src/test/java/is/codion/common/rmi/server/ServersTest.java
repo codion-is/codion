@@ -15,6 +15,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.UUID;
 
 import static java.util.Collections.emptyList;
@@ -39,6 +40,8 @@ public class ServersTest {
       public ServerAdmin getServerAdmin(final User user) throws RemoteException, ServerAuthenticationException {return null;}
       @Override
       protected void doDisconnect(final Remote connection) {}
+      @Override
+      protected void maintainConnections(final Collection<ClientConnection<Remote>> connections) throws RemoteException {}
       @Override
       public int getServerLoad() {return 0;}
     };

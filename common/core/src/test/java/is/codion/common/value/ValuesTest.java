@@ -354,4 +354,37 @@ public class ValuesTest {
     assertEquals(3, valueEventCounter.get());
     assertEquals(3, valueSetEventCounter.get());
   }
+
+  @Test
+  public void valueLinks() {
+    final Value<Integer> value1 = Values.value();
+    final Value<Integer> value2 = Values.value();
+    final Value<Integer> value3 = Values.value();
+    final Value<Integer> value4 = Values.value();
+
+    value1.link(value2);
+    value2.link(value3);
+    value3.link(value4);
+
+    value1.set(1);
+    assertEquals(1, value2.get());
+    assertEquals(1, value3.get());
+    assertEquals(1, value4.get());
+
+    value4.set(2);
+    assertEquals(2, value1.get());
+    assertEquals(2, value2.get());
+    assertEquals(2, value3.get());
+
+    value4.link(value1);
+    value3.set(3);
+    assertEquals(3, value1.get());
+    assertEquals(3, value2.get());
+    assertEquals(3, value4.get());
+
+    value2.set(4);
+    assertEquals(4, value1.get());
+    assertEquals(4, value3.get());
+    assertEquals(4, value4.get());
+  }
 }

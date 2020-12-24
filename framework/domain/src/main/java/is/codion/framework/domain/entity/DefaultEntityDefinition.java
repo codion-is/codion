@@ -48,6 +48,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static final long serialVersionUID = 1;
 
   private static final String METHOD = "method";
+  private static final String ATTRIBUTE = "attribute";
 
   /**
    * The domain name
@@ -366,7 +367,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public <T> Property<T> getProperty(final Attribute<T> attribute) {
-    requireNonNull(attribute, "attribute");
+    requireNonNull(attribute, ATTRIBUTE);
     final Property<T> property = (Property<T>) entityProperties.propertyMap.get(attribute);
     if (property == null) {
       throw new IllegalArgumentException("Property '" + attribute + "' not found in entity: " + entityType);
@@ -377,10 +378,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public <T> ColumnProperty<T> getPrimaryKeyProperty(final Attribute<T> attribute) {
-    requireNonNull(attribute, "attribute");
+    requireNonNull(attribute, ATTRIBUTE);
     final ColumnProperty<T> property = (ColumnProperty<T>) entityProperties.primaryKeyPropertyMap.get(attribute);
     if (property == null) {
-      throw new IllegalArgumentException("Primary key property " + attribute + " not found in entity: " + entityType);
+      throw new IllegalArgumentException("Primary key attribute " + attribute + " not found in entity: " + entityType);
     }
 
     return property;
