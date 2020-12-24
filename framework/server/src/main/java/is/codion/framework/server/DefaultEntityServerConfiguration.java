@@ -92,6 +92,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
+  public Integer getConnectionMaintenanceInterval() {
+    return serverConfiguration.getConnectionMaintenanceInterval();
+  }
+
+  @Override
   public int getRegistryPort() {
     return serverConfiguration.getRegistryPort();
   }
@@ -184,6 +189,11 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   @Override
   public void setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
     serverConfiguration.setSerializationFilterDryRun(serializationFilterDryRun);
+  }
+
+  @Override
+  public void setConnectionMaintenanceIntervalMs(final Integer connectionMaintenanceIntervalMs) {
+    serverConfiguration.setConnectionMaintenanceIntervalMs(connectionMaintenanceIntervalMs);
   }
 
   @Override

@@ -30,6 +30,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
   private String serializationFilterWhitelist;
   private Boolean serializationFilterDryRun = false;
+  private Integer connectionMaintenanceIntervalMs = DEFAULT_CONNECTION_MAINTENANCE_INTERVAL;
 
   DefaultServerConfiguration(final int serverPort) {
     this(serverPort, Registry.REGISTRY_PORT);
@@ -95,6 +96,11 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
+  public Integer getConnectionMaintenanceInterval() {
+    return connectionMaintenanceIntervalMs;
+  }
+
+  @Override
   public void setServerAdminPort(final Integer adminPort) {
     this.serverAdminPort = requireNonNull(adminPort);
   }
@@ -145,5 +151,10 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public void setSerializationFilterDryRun(final Boolean serializationFilterDryRun) {
     this.serializationFilterDryRun = requireNonNull(serializationFilterDryRun);
+  }
+
+  @Override
+  public void setConnectionMaintenanceIntervalMs(final Integer connectionMaintenanceIntervalMs) {
+    this.connectionMaintenanceIntervalMs = connectionMaintenanceIntervalMs;
   }
 }

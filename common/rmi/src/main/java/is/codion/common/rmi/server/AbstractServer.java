@@ -57,14 +57,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-  private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30_000;
-
   private final Map<UUID, ClientConnection<T>> connections = new ConcurrentHashMap<>();
   private final Map<String, LoginProxy> loginProxies = new HashMap<>();
   private final Collection<LoginProxy> sharedLoginProxies = new ArrayList<>();
   private final Collection<AuxiliaryServer> auxiliaryServers = new ArrayList<>();
-  private final TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
-          DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
+  private final TaskScheduler connectionMaintenanceScheduler;
 
   private final ServerConfiguration configuration;
   private final ServerInformation serverInformation;
@@ -88,6 +85,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       this.configuration = configuration;
       this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
               configuration.getServerPort(), ZonedDateTime.now());
+      this.connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
+              configuration.getConnectionMaintenanceInterval(), configuration.getConnectionMaintenanceInterval(), TimeUnit.MILLISECONDS).start();
       configureSerializationWhitelist(configuration);
       startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());
       loadLoginProxies();
