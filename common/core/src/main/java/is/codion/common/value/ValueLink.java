@@ -11,6 +11,9 @@ import static java.util.Objects.requireNonNull;
  */
 final class ValueLink<V> {
 
+  private final Value<V> linkedValue;
+  private final Value<V> originalValue;
+
   /**
    * True while the linked value is being updated
    */
@@ -30,16 +33,14 @@ final class ValueLink<V> {
     if (requireNonNull(originalValue, "originalValue") == requireNonNull(linkedValue, "linkedValue")) {
       throw new IllegalArgumentException("A Value can not be linked to itself");
     }
+    this.linkedValue = linkedValue;
+    this.originalValue = originalValue;
     linkedValue.set(originalValue.get());
-    bindEvents(originalValue, linkedValue);
+    originalValue.addListener(this::updateLinkedValue);
+    linkedValue.addListener(this::updateOriginalValue);
   }
 
-  private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue) {
-    originalValue.addListener(() -> updateLinkedValue(originalValue, linkedValue));
-    linkedValue.addListener(() -> updateOriginalValue(originalValue, linkedValue));
-  }
-
-  private void updateOriginalValue(final Value<V> originalValue, final Value<V> linkedValue) {
+  private void updateOriginalValue() {
     if (!isUpdatingLinked) {
       try {
         isUpdatingOriginal = true;
@@ -51,7 +52,7 @@ final class ValueLink<V> {
     }
   }
 
-  private void updateLinkedValue(final Value<V> originalValue, final Value<V> linkedValue) {
+  private void updateLinkedValue() {
     if (!isUpdatingOriginal) {
       try {
         isUpdatingLinked = true;
