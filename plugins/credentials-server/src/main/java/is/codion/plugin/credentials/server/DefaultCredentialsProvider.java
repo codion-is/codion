@@ -28,12 +28,17 @@ public final class DefaultCredentialsProvider implements CredentialsProvider {
 
   @Override
   public User getCredentials(final UUID authenticationToken) {
+    return getCredentials(authenticationToken, Registry.REGISTRY_PORT);
+  }
+
+  @Override
+  public User getCredentials(final UUID authenticationToken, final int registryPort) {
     LOG.debug("DefaultCredentialsProvider.getCredentials(" + authenticationToken + ")");
     if (authenticationToken == null) {
       return null;
     }
     try {
-      final Remote credentialsService = Servers.getRegistry(Registry.REGISTRY_PORT).lookup(CredentialsService.class.getSimpleName());
+      final Remote credentialsService = Servers.getRegistry(registryPort).lookup(CredentialsService.class.getSimpleName());
       LOG.debug("CredentialsService found: " + credentialsService);
 
       return ((CredentialsService) credentialsService).getUser(requireNonNull(authenticationToken, AUTHENTICATION_TOKEN_PREFIX));

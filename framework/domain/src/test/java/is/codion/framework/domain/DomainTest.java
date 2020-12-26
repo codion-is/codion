@@ -212,7 +212,7 @@ public class DomainTest {
 
     Key key = entities.primaryKey(entityType);
     assertEquals(0, key.hashCode());
-    assertTrue(key.isCompositeKey());
+    assertEquals(3, key.getAttributes().size());
     assertTrue(key.isNull());
 
     assertThrows(IllegalStateException.class, () -> entities.primaryKey(entityType).withValue(1));

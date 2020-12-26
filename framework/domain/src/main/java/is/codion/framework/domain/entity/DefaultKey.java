@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static java.util.Collections.singletonMap;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class representing a unique key for entities.
@@ -50,11 +50,6 @@ class DefaultKey implements Key, Serializable {
   private boolean singleIntegerKey;
 
   /**
-   * true if this key consists of multiple attributes
-   */
-  private boolean compositeKey = false;
-
-  /**
    * Caching the hash code
    */
   private Integer cachedHashCode = null;
@@ -70,7 +65,7 @@ class DefaultKey implements Key, Serializable {
   private EntityDefinition definition;
 
   /**
-   * Instantiates a new DefaultKey based on the given attributes, with the associated values initialized to null
+   * Instantiates a new DefaultKey based on the given attributes, with the associated values as null
    * @param definition the entity definition
    * @param attributes the attributes comprising this key
    * @param primaryKey true if this key represents a primary key
@@ -91,32 +86,20 @@ class DefaultKey implements Key, Serializable {
   }
 
   /**
-   * Instantiates a new DefaultKey for the given values
+   * Instantiates a new DefaultKey with the given values
    * @param definition the entity definition
    * @param values the values associated with their respective attributes
    * @param primaryKey true if this key represents a primary key
    */
   DefaultKey(final EntityDefinition definition, final Map<Attribute<?>, Object> values, final boolean primaryKey) {
     values.forEach((attribute, value) -> ((Attribute<Object>) attribute).validateType(value));
-    this.values = new HashMap<>(values);
+    this.values = unmodifiableMap(values);
     this.attributes = unmodifiableList(new ArrayList<>(values.keySet()));
     this.definition = definition;
     this.primaryKey = primaryKey;
     if (!this.attributes.isEmpty()) {
-      this.compositeKey = attributes.size() > 1;
-      this.singleIntegerKey = !compositeKey && attributes.get(0).isInteger();
+      this.singleIntegerKey = attributes.size() == 1 && attributes.get(0).isInteger();
     }
-  }
-
-  private DefaultKey(final EntityDefinition definition, final List<Attribute<?>> attributes,
-                     final Map<Attribute<?>, Object> values, final boolean primaryKey,
-                     final boolean compositeKey, final boolean singleIntegerKey) {
-    this.definition = definition;
-    this.attributes = attributes;
-    this.values = values;
-    this.primaryKey = primaryKey;
-    this.compositeKey = compositeKey;
-    this.singleIntegerKey = singleIntegerKey;
   }
 
   @Override
@@ -136,7 +119,7 @@ class DefaultKey implements Key, Serializable {
 
   @Override
   public <T> Attribute<T> getAttribute() {
-    if (compositeKey) {
+    if (attributes.size() > 1) {
       throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
     }
 
@@ -145,12 +128,16 @@ class DefaultKey implements Key, Serializable {
 
   @Override
   public <T> Key withValue(final T value) {
-    return new DefaultKey(definition, attributes, values, primaryKey, compositeKey, singleIntegerKey).putInternal(value);
+    if (attributes.size() > 1) {
+      throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
+    }
+
+    return withValue((Attribute<T>) attributes.get(0), value);
   }
 
   @Override
   public <T> T get() {
-    if (compositeKey) {
+    if (attributes.size() > 1) {
       throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
     }
 
@@ -164,7 +151,13 @@ class DefaultKey implements Key, Serializable {
 
   @Override
   public <T> Key withValue(final Attribute<T> attribute, final T value) {
-    return new DefaultKey(definition, attributes, values, primaryKey, compositeKey, singleIntegerKey).putInternal(attribute, value);
+    if (!values.containsKey(requireNonNull(attribute))) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of this key");
+    }
+    final Map<Attribute<?>, Object> newKeyValues = new HashMap<>(values);
+    newKeyValues.put(attribute, value);
+
+    return new DefaultKey(definition, newKeyValues, primaryKey);
   }
 
   @Override
@@ -195,11 +188,6 @@ class DefaultKey implements Key, Serializable {
     return stringBuilder.toString();
   }
 
-  @Override
-  public boolean isCompositeKey() {
-    return compositeKey;
-  }
-
   /**
    * Keys are equal if all attributes and their associated values are equal.
    * Empty and null keys are only equal to themselves.
@@ -220,7 +208,7 @@ class DefaultKey implements Key, Serializable {
         return false;
       }
 
-      if (!compositeKey && !otherKey.compositeKey) {
+      if (attributes.size() == 1 && otherKey.attributes.size() == 1) {
         final Attribute<?> attribute = attributes.get(0);
         final Attribute<?> otherAttribute = otherKey.attributes.get(0);
 
@@ -238,14 +226,20 @@ class DefaultKey implements Key, Serializable {
    */
   @Override
   public int hashCode() {
-    updateHashCode();
+    if (hashCodeDirty) {
+      cachedHashCode = computeHashCode();
+      hashCodeDirty = false;
+    }
 
     return cachedHashCode == null ? 0 : cachedHashCode;
   }
 
   @Override
   public boolean isNull() {
-    updateHashCode();
+    if (hashCodeDirty) {
+      cachedHashCode = computeHashCode();
+      hashCodeDirty = false;
+    }
 
     return cachedHashCode == null;
   }
@@ -265,45 +259,11 @@ class DefaultKey implements Key, Serializable {
     return !isNull(attribute);
   }
 
-  private <T> Key putInternal(final T value) {
-    if (compositeKey) {
-      throw new IllegalStateException(COMPOSITE_KEY_MESSAGE);
-    }
-
-    return putInternal((Attribute<T>) attributes.get(0), value);
-  }
-
-  private <T> Key putInternal(final Attribute<T> attribute, final T value) {
-    if (!values.containsKey(attribute)) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of this key");
-    }
-    values.put(attribute, definition.getColumnProperty(attribute).prepareValue(attribute.validateType(value)));
-    if (singleIntegerKey) {
-      cachedHashCode = (Integer) value;
-      hashCodeDirty = false;
-    }
-    else {
-      hashCodeDirty = true;
-    }
-
-    return this;
-  }
-
-  /**
-   * Updates the cached hashCode in case it is dirty
-   */
-  private void updateHashCode() {
-    if (hashCodeDirty) {
-      cachedHashCode = computeHashCode();
-      hashCodeDirty = false;
-    }
-  }
-
   private Integer computeHashCode() {
     if (values.size() == 0) {
       return null;
     }
-    if (compositeKey) {
+    if (attributes.size() > 1) {
       return computeMultipleValueHashCode();
     }
 
@@ -359,19 +319,18 @@ class DefaultKey implements Key, Serializable {
     }
     primaryKey = stream.readBoolean();
     final int attributeCount = stream.readInt();
-    values = new HashMap<>();
+    values = new HashMap<>(attributeCount);
     for (int i = 0; i < attributeCount; i++) {
       final Attribute<Object> attribute = definition.getAttribute((String) stream.readObject());
       values.put(attribute, attribute.validateType(stream.readObject()));
     }
     attributes = new ArrayList<>(values.keySet());
-    compositeKey = attributeCount > 1;
-    singleIntegerKey = !compositeKey && attributes.get(0).isInteger();
+    singleIntegerKey = attributeCount == 1 && attributes.get(0).isInteger();
     hashCodeDirty = true;
   }
 
   private static Map<Attribute<?>, Object> createNullValueMap(final List<Attribute<?>> attributes) {
-    final Map<Attribute<?>, Object> values = new HashMap<>();
+    final Map<Attribute<?>, Object> values = new HashMap<>(attributes.size());
     for (final Attribute<?> attribute : attributes) {
       values.put(attribute, null);
     }

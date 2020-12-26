@@ -52,7 +52,7 @@ public final class Conditions {
    * @return a condition based on the given key
    */
   public static Condition condition(final Key key) {
-    if (requireNonNull(key).isCompositeKey()) {
+    if (requireNonNull(key).getAttributes().size() > 1) {
       return singleCompositeCondition(attributeMap(key.getAttributes()), EQUAL, valueMap(key));
     }
 
@@ -70,7 +70,7 @@ public final class Conditions {
       throw new IllegalArgumentException("No keys specified for key condition");
     }
     final Key firstKey = keys.get(0);
-    if (firstKey.isCompositeKey()) {
+    if (firstKey.getAttributes().size() > 1) {
       return compositeKeyCondition(attributeMap(firstKey.getAttributes()), EQUAL,
               keys.stream().map(Conditions::valueMap).collect(toList()));
     }
