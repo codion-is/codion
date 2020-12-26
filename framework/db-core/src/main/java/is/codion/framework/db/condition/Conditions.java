@@ -141,16 +141,6 @@ public final class Conditions {
     return new DefaultCustomCondition(conditionType, attributes, values);
   }
 
-  /**
-   * Creates a {@link WhereCondition} for the given {@link Condition}.
-   * @param condition the condition
-   * @param entityDefinition the definition
-   * @return a WhereCondition
-   */
-  public static WhereCondition whereCondition(final Condition condition, final EntityDefinition entityDefinition) {
-    return new DefaultWhereCondition(condition, entityDefinition);
-  }
-
   private static Condition compositeKeyCondition(final Map<Attribute<?>, Attribute<?>> attributes, final Operator operator,
                                                  final List<Map<Attribute<?>, Object>> valueMaps) {
     if (valueMaps.size() == 1) {

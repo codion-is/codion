@@ -6,7 +6,6 @@ package is.codion.framework.db.local;
 import is.codion.common.db.database.Database;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
-import is.codion.framework.db.condition.WhereCondition;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -103,11 +102,9 @@ final class Queries {
     return queryBuilder.toString();
   }
 
-  static String selectQuery(final String columnsClause, final Condition entityCondition,
-                            final WhereCondition whereCondition, final EntityDefinition entityDefinition,
-                            final Database database) {
-    final boolean isForUpdate = entityCondition instanceof SelectCondition &&
-            ((SelectCondition) entityCondition).isForUpdate();
+  static String selectQuery(final String columnsClause, final Condition condition,
+                            final EntityDefinition entityDefinition, final Database database) {
+    final boolean isForUpdate = condition instanceof SelectCondition && ((SelectCondition) condition).isForUpdate();
     boolean containsWhereClause = false;
     String selectQuery = entityDefinition.getSelectQuery();
     if (selectQuery == null) {
@@ -118,7 +115,7 @@ final class Queries {
     }
 
     final StringBuilder queryBuilder = new StringBuilder(selectQuery);
-    final String whereClause = whereCondition.getWhereClause();
+    final String whereClause = condition.getWhereClause(entityDefinition);
     if (whereClause.length() > 0) {
       queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX_POSTFIX).append(whereClause);
     }
@@ -126,7 +123,7 @@ final class Queries {
       addForUpdate(queryBuilder, database);
     }
     else {
-      addGroupHavingOrderByAndLimitClauses(queryBuilder, entityCondition, entityDefinition);
+      addGroupHavingOrderByAndLimitClauses(queryBuilder, condition, entityDefinition);
     }
 
     return queryBuilder.toString();
