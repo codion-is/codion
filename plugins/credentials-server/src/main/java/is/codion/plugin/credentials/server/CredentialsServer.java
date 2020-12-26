@@ -51,18 +51,33 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
   private final int tokenValidity;
 
   /**
-   * Starts a server on the given port
+   * Starts a server on the given port using the default registry port (1099).
    * @param port the port
    * @param tokenValidity the number of milliseconds a token is valid
    * @param cleanupInterval the expired token cleanup interval in milliseconds
    * @throws RemoteException in case of a communication error
    * @throws AlreadyBoundException if a credential server is already running
    */
-  public CredentialsServer(final int port, final int tokenValidity, final int cleanupInterval) throws AlreadyBoundException, RemoteException {
+  public CredentialsServer(final int port, final int tokenValidity,
+                           final int cleanupInterval) throws AlreadyBoundException, RemoteException {
+    this(port, Registry.REGISTRY_PORT, tokenValidity, cleanupInterval);
+  }
+
+  /**
+   * Starts a server on the given port
+   * @param port the port
+   * @param registryPort the registry port
+   * @param tokenValidity the number of milliseconds a token is valid
+   * @param cleanupInterval the expired token cleanup interval in milliseconds
+   * @throws RemoteException in case of a communication error
+   * @throws AlreadyBoundException if a credential server is already running
+   */
+  public CredentialsServer(final int port, final int registryPort, final int tokenValidity,
+                           final int cleanupInterval) throws AlreadyBoundException, RemoteException {
     super(port);
     this.tokenValidity = tokenValidity;
     this.expiredCleaner = new TaskScheduler(this::removeExpired, cleanupInterval, TimeUnit.MILLISECONDS).start();
-    this.registry = Servers.initializeRegistry(Registry.REGISTRY_PORT);
+    this.registry = Servers.initializeRegistry(registryPort);
     this.registry.bind(CredentialsService.class.getSimpleName(), this);
   }
 

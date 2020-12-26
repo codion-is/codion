@@ -40,12 +40,21 @@ public interface CredentialsProvider {
   }
 
   /**
-   * Performs a authentication lookup.
+   * Performs a authentication lookup, using the default registry port (1099).
    * @param authenticationToken the authentication token
    * @return the User credentials associated with the {@code authenticationToken}, null if authenticationToken
    * was null, the user credentials were not found, have expired or if no authentication service is running
    */
   User getCredentials(UUID authenticationToken);
+
+  /**
+   * Performs a authentication lookup.
+   * @param authenticationToken the authentication token
+   * @param registryPort the port of the credentials server registry
+   * @return the User credentials associated with the {@code authenticationToken}, null if authenticationToken
+   * was null, the user credentials were not found, have expired or if no authentication service is running
+   */
+  User getCredentials(UUID authenticationToken, int registryPort);
 
   /**
    * Returns the first {@link CredentialsProvider} implementation service found.
