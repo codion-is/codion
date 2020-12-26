@@ -54,11 +54,6 @@ public interface Key {
   <T> boolean isNotNull(Attribute<T> attribute);
 
   /**
-   * @return true if this key is comprised of multiple attributes.
-   */
-  boolean isCompositeKey();
-
-  /**
    * Returns this keys attribute. Note that this method throws an exception if this key is a composite key.
    * @param <T> the attribute type
    * @return the key attribute, useful for single attribute keys

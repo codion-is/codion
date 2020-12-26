@@ -6559,3 +6559,4 @@
   EntityServer, connection maintenance moved up to AbstractServer, some light refactoring
   ServerConfiguration.CONNECTION_MAINTENANCE_INTERVAL_MS added
   WhereCondition removed
+  Key.isCompositeKey() removed, DefaultKey refactored
