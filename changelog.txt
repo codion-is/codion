@@ -6563,3 +6563,4 @@
   CredentialsServer, registryPort constructor parameter added, CredentialsProvider.getCredentials() overloaded with registryPort parameter
   StringFactory refactored
   DefaultForeignKey refactored
+  AbstractServer constructor now exits gracefully on Throwable
