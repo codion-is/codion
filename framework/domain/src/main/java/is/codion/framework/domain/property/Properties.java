@@ -87,8 +87,7 @@ public final class Properties {
   }
 
   /**
-   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from a
-   * entity referenced via a foreign key.
+   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from a entity attribute.
    * @param <T> the property type
    * @param attribute the attribute
    * @param entityAttribute the entity attribute from which this property gets its value
@@ -102,8 +101,7 @@ public final class Properties {
   }
 
   /**
-   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from a
-   * entity referenced via a foreign key.
+   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from a entity attribute.
    * @param <T> the property type
    * @param attribute the attribute
    * @param caption the caption of this property
@@ -124,11 +122,10 @@ public final class Properties {
   }
 
   /**
-   * Instantiates a {@link TransientProperty.Builder} instance, which value is derived from
-   * or more linked property values.
+   * Instantiates a {@link TransientProperty.Builder} instance, which value is derived from one or more linked attributes.
    * @param attribute the attribute
    * @param valueProvider a {@link DerivedProperty.Provider} instance responsible for deriving the value
-   * @param linkedAttributes the ids of the properties from which this property derives its value
+   * @param linkedAttributes the attributes from which this property derives its value
    * @param <T> the property type
    * @return a new {@link TransientProperty.Builder}
    * @throws IllegalArgumentException in case no linked property ids are provided
@@ -140,8 +137,7 @@ public final class Properties {
   }
 
   /**
-   * Instantiates a {@link TransientProperty.Builder} instance, which value is derived from
-   * or more linked property values.
+   * Instantiates a {@link TransientProperty.Builder} instance, which value is derived from one or more linked attributes.
    * @param attribute the attribute
    * @param caption the caption
    * @param valueProvider a {@link DerivedProperty.Provider} instance responsible for deriving the value
@@ -157,11 +153,10 @@ public final class Properties {
   }
 
   /**
-   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from
-   * a entity referenced by a foreign key.
-   * @param attribute the attribute, in case of database properties this should be the underlying column name
-   * @param entityAttribute the id of the foreign key reference which owns the attribute which value to mirror
-   * @param denormalizedAttribute the attribute from which this property should get its value
+   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from a entity attribute.
+   * @param attribute the attribute to base this property on
+   * @param entityAttribute the entity attribute owning the attribute which value to mirror
+   * @param denormalizedAttribute the attribute from which this attribute should get its value
    * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder}
    */
@@ -172,12 +167,11 @@ public final class Properties {
   }
 
   /**
-   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from
-   * a entity referenced by a foreign key.
-   * @param attribute the attribute, in case of database properties this should be the underlying column name
+   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from a entity attribute.
+   * @param attribute the attribute to base this property on
    * @param caption the property caption
-   * @param entityAttribute the id of the foreign key reference which owns the attribute which value to mirror
-   * @param denormalizedAttribute the property from which this attribute should get its value
+   * @param entityAttribute the entity attribute owning the attribute which value to mirror
+   * @param denormalizedAttribute the attribute from which this attribute should get its value
    * @param <T> the property type
    * @return a new {@link ColumnProperty.Builder}
    */
@@ -384,8 +378,8 @@ public final class Properties {
   /**
    * Creates a new {@link ColumnProperty.ValueConverter} instance for converting a column value
    * representing a boolean value to and from an actual Boolean.
-   * @param trueValue the value used to represent 'true' in the underlying database, can be null
-   * @param falseValue the value used to represent 'false' in the underlying database, can be null
+   * @param trueValue the value used to represent 'true' in the underlying database, may not be null
+   * @param falseValue the value used to represent 'false' in the underlying database, may not be null
    * @param <T> the type of the value used to represent a boolean
    * @return a value converter for converting an underlying database representation
    * of a boolean value into an actual Boolean
