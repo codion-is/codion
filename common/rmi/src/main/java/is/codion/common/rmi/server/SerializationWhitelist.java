@@ -39,7 +39,7 @@ public final class SerializationWhitelist {
   public static void configure(final String whitelistFile) {
     if (!nullOrEmpty(whitelistFile)) {
       ObjectInputFilter.Config.setSerialFilter(new SerializationFilter(whitelistFile));
-      LOG.debug("Serialization filter whitelist set: " + whitelistFile);
+      LOG.info("Serialization filter whitelist set: " + whitelistFile);
     }
   }
 
@@ -50,7 +50,7 @@ public final class SerializationWhitelist {
   public static void configureDryRun(final String dryRunFile) {
     if (!nullOrEmpty(dryRunFile)) {
       ObjectInputFilter.Config.setSerialFilter(new SerializationFilterDryRun(dryRunFile));
-      LOG.debug("Serialization filter whitelist set for dry-run: " + dryRunFile);
+      LOG.info("Serialization filter whitelist set for dry-run: " + dryRunFile);
     }
   }
 

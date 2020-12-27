@@ -422,6 +422,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   private static Object startAuxiliaryServer(final AuxiliaryServer server) throws Exception {
     try {
       server.startServer();
+      LOG.info("Auxiliary server started: " + server);
 
       return null;
     }
@@ -434,6 +435,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   private static void stopAuxiliaryServer(final AuxiliaryServer server) {
     try {
       server.stopServer();
+      LOG.info("Auxiliary server stopped: " + server);
     }
     catch (final Exception e) {
       LOG.error("Stopping auxiliary server", e);
