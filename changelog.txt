@@ -6561,3 +6561,4 @@
   WhereCondition removed
   Key.isCompositeKey() removed, DefaultKey refactored
   CredentialsServer, registryPort constructor parameter added, CredentialsProvider.getCredentials() overloaded with registryPort parameter
+  StringFactory refactored

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,10 +36,10 @@ public class StringFactoryTest {
 
     final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(DateFormats.SHORT_TIMESTAMP);
 
-    StringFactory employeeToString = new StringFactory(Employee.NAME)
-            .addText(" (department: ").addValue(Employee.DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION).addText(", hiredate: ")
-            .addFormattedValue(Employee.HIREDATE, dateFormat.toFormat()).addText(")");
+    Function<Entity, String> employeeToString = StringFactory.stringFactory(Employee.NAME)
+            .text(" (department: ").value(Employee.DEPARTMENT_FK).text(", location: ")
+            .foreignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION).text(", hiredate: ")
+            .formattedValue(Employee.HIREDATE, dateFormat.toFormat()).text(")").get();
 
     assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.apply(employee));
 
@@ -49,10 +50,10 @@ public class StringFactoryTest {
     employee.put(Employee.NAME, null);
     employee.put(Employee.HIREDATE, null);
 
-    employeeToString = new StringFactory(Employee.NAME)
-            .addText(" (department: ").addValue(Employee.DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION).addText(", hiredate: ")
-            .addFormattedValue(Employee.HIREDATE, dateFormat.toFormat()).addText(")");
+    employeeToString = StringFactory.stringFactory(Employee.NAME)
+            .text(" (department: ").value(Employee.DEPARTMENT_FK).text(", location: ")
+            .foreignKeyValue(Employee.DEPARTMENT_FK, Department.LOCATION).text(", hiredate: ")
+            .formattedValue(Employee.HIREDATE, dateFormat.toFormat()).text(")").get();
 
     assertEquals(" (department: , location: , hiredate: )", employeeToString.apply(employee));
   }
