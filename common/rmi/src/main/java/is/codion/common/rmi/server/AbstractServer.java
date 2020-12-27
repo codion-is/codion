@@ -470,7 +470,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   private void loadLoginProxies() {
     LoginProxy.getLoginProxies().forEach(loginProxy -> {
       final String clientTypeId = loginProxy.getClientTypeId();
-      LOG.info("Server loading " + (clientTypeId == null ? "shared" : "") + " login proxy '" + loginProxy.getClass().getName() + " as service");
+      LOG.info("Server loading " + (clientTypeId == null ? "shared" : "") + "login proxy '" + loginProxy.getClass().getName() + "' as service");
       addLoginProxy(loginProxy);
     });
   }
