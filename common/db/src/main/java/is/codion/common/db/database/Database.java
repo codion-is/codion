@@ -75,7 +75,7 @@ public interface Database extends ConnectionFactory {
   String PASSWORD_PROPERTY = "password";
 
   /**
-   * The default connection login timeout
+   * The default connection login timeout in seconds.
    * @see java.sql.DriverManager#setLoginTimeout(int)
    */
   int DEFAULT_LOGIN_TIMEOUT = 2;

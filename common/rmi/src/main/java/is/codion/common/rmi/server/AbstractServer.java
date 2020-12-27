@@ -91,7 +91,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());
       loadLoginProxies();
     }
-    catch (final Exception exception) {
+    catch (final Throwable exception) {
       throw logShutdownAndReturn(new RuntimeException(exception));
     }
   }

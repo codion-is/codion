@@ -16,20 +16,15 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
   private static final long serialVersionUID = 1;
 
   private final List<Reference<?>> references;
-  private final EntityType<?> referencedEntityType;
 
   DefaultForeignKey(final String name, final EntityType<?> entityType, final List<Reference<?>> references) {
     super(name, Entity.class, entityType);
-    final Optional<? extends Attribute<?>> firstReference =
-            references.stream().map(Reference::getReferencedAttribute).findFirst();
-    this.referencedEntityType = firstReference.orElseThrow(() ->
-            new IllegalArgumentException("No references provided for foreign key")).getEntityType();
     this.references = validate(requireNonNull(references));
   }
 
   @Override
   public EntityType<?> getReferencedEntityType() {
-    return referencedEntityType;
+    return references.get(0).getReferencedAttribute().getEntityType();
   }
 
   @Override
@@ -65,6 +60,10 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
   }
 
   private List<Reference<?>> validate(final List<Reference<?>> references) {
+    if (references.isEmpty()) {
+      throw new IllegalArgumentException("No references provided for foreign key: " + getName());
+    }
+    final EntityType<?> referencedEntityType = references.get(0).getReferencedAttribute().getEntityType();
     final List<Reference<?>> referenceList = new ArrayList<>(references.size());
     for (final Reference<?> reference : references) {
       if (!getEntityType().equals(reference.getAttribute().getEntityType())) {
@@ -75,9 +74,9 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
         throw new IllegalArgumentException("Entity type " + referencedEntityType +
                 " expected, got " + reference.getReferencedAttribute().getEntityType());
       }
-      final Optional<Reference<?>> first =
+      final Optional<Reference<?>> existing =
               referenceList.stream().filter(existingReference -> existingReference.getAttribute().equals(reference.getAttribute())).findFirst();
-      if (first.isPresent()) {
+      if (existing.isPresent()) {
         throw new IllegalArgumentException("Foreign key already contains a reference for attribute: " + reference.getAttribute());
       }
 
