@@ -6564,3 +6564,4 @@
   StringFactory refactored
   DefaultForeignKey refactored
   AbstractServer constructor now exits gracefully on Throwable
+  AbstractTableColumnSyncPanel refactored and renamed AbstractTableColumnComponentPanel

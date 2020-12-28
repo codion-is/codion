@@ -13,13 +13,13 @@ import javax.swing.table.TableColumn;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AbstractTableColumnSyncPanelTest {
+public class AbstractTableColumnComponentPanelTest {
 
   private final TableColumnSyncPanelImpl panel;
-  private final SwingFilteredTableColumnModel columnModel;
+  private final SwingFilteredTableColumnModel<?, ?> columnModel;
 
-  public AbstractTableColumnSyncPanelTest() {
-    columnModel = new SwingFilteredTableColumnModel(asList(new TableColumn(0, 20), new TableColumn(2, 20)), null);
+  public AbstractTableColumnComponentPanelTest() {
+    columnModel = new SwingFilteredTableColumnModel<>(asList(new TableColumn(0, 20), new TableColumn(2, 20)), null);
     panel = new TableColumnSyncPanelImpl(columnModel);
   }
 
@@ -28,17 +28,17 @@ public class AbstractTableColumnSyncPanelTest {
     panel.setVerticalFillerWidth(20);
     final TableColumn col = new TableColumn(3, 20);
     columnModel.addColumn(col);
-    assertTrue(panel.getColumnPanels().containsKey(col));
+    assertTrue(panel.getColumnComponents().containsKey(col));
   }
 
-  private static class TableColumnSyncPanelImpl extends AbstractTableColumnSyncPanel {
+  private static class TableColumnSyncPanelImpl extends AbstractTableColumnComponentPanel<JPanel> {
 
-    private TableColumnSyncPanelImpl(final SwingFilteredTableColumnModel columnModel) {
+    private TableColumnSyncPanelImpl(final SwingFilteredTableColumnModel<?, ?> columnModel) {
       super(columnModel);
     }
 
     @Override
-    protected JPanel initializeColumnPanel(final TableColumn column) {
+    protected JPanel initializeComponent(final TableColumn column) {
       return new JPanel();
     }
   }

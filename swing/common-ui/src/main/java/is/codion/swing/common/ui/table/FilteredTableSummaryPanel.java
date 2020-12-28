@@ -15,7 +15,7 @@ import javax.swing.table.TableColumn;
  * A UI component for showing column summary panels for numerical columns in a FilteredTableModel.
  * @param <C> the column identifier
  */
-public final class FilteredTableSummaryPanel<C> extends AbstractTableColumnSyncPanel {
+public final class FilteredTableSummaryPanel<C> extends AbstractTableColumnComponentPanel<JPanel> {
 
   private final FilteredTableModel<?, C, ?> tableModel;
 
@@ -30,7 +30,7 @@ public final class FilteredTableSummaryPanel<C> extends AbstractTableColumnSyncP
   }
 
   @Override
-  protected JPanel initializeColumnPanel(final TableColumn column) {
+  protected JPanel initializeComponent(final TableColumn column) {
     final ColumnSummaryModel columnSummaryModel = tableModel.getColumnSummaryModel((C) column.getIdentifier());
     if (columnSummaryModel == null) {
       return new JPanel();
