@@ -16,7 +16,6 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.ForeignKeyConditionModel;
-import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.ControlList;
@@ -24,8 +23,8 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
-import is.codion.swing.common.ui.table.AbstractTableColumnComponentPanel;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.table.TableColumnComponentPanel;
 import is.codion.swing.common.ui.value.TextValues;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -38,7 +37,9 @@ import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.framework.ui.icons.FrameworkIcons.frameworkIcons;
@@ -63,11 +64,12 @@ public final class EntityTableConditionPanel extends JPanel {
 
   /**
    * Instantiates a new EntityTableConditionPanel with a default condition panel setup, based on
-   * an {@link AbstractTableColumnComponentPanel} containing {@link PropertyConditionPanel}s
+   * an {@link TableColumnComponentPanel} containing {@link PropertyConditionPanel}s
    * @param tableModel the table model
    */
   public EntityTableConditionPanel(final SwingEntityTableModel tableModel) {
-    this(tableModel, new ConditionColumnSyncPanel(tableModel), initializeSimpleConditionPanel(tableModel.getTableConditionModel()));
+    this(tableModel, new TableColumnComponentPanel<>(tableModel.getColumnModel(), createPropertyConditionPanels(tableModel)),
+            initializeSimpleConditionPanel(tableModel.getTableConditionModel()));
   }
 
   /**
@@ -105,8 +107,8 @@ public final class EntityTableConditionPanel extends JPanel {
    * does not apply when simple search is enabled
    */
   public void setAdvanced(final boolean advanced) {
-    if (advancedConditionPanel instanceof AbstractTableColumnComponentPanel) {
-      ((AbstractTableColumnComponentPanel<JPanel>) advancedConditionPanel).getColumnComponents().forEach((column, panel) -> {
+    if (advancedConditionPanel instanceof TableColumnComponentPanel) {
+      ((TableColumnComponentPanel<JPanel>) advancedConditionPanel).getColumnComponents().forEach((column, panel) -> {
         if (panel instanceof ColumnConditionPanel) {
           ((ColumnConditionPanel<Entity, ?, ?>) panel).setAdvanced(advanced);
         }
@@ -123,8 +125,8 @@ public final class EntityTableConditionPanel extends JPanel {
    * does not apply when simple search is enabled
    */
   public boolean isAdvanced() {
-    if (advancedConditionPanel instanceof AbstractTableColumnComponentPanel) {
-      for (final JPanel conditionPanel : ((AbstractTableColumnComponentPanel<JPanel>) advancedConditionPanel).getColumnComponents().values()) {
+    if (advancedConditionPanel instanceof TableColumnComponentPanel) {
+      for (final JPanel conditionPanel : ((TableColumnComponentPanel<JPanel>) advancedConditionPanel).getColumnComponents().values()) {
         if (conditionPanel instanceof ColumnConditionPanel) {
           return ((ColumnConditionPanel<Entity, ?, ?>) conditionPanel).isAdvanced();
         }
@@ -138,7 +140,7 @@ public final class EntityTableConditionPanel extends JPanel {
    * @return true if this panel has an advanced view which can be toggled on/off
    */
   public boolean canToggleAdvanced() {
-    return advancedConditionPanel instanceof AbstractTableColumnComponentPanel || (advancedConditionPanel != null && simpleConditionPanel != null);
+    return advancedConditionPanel instanceof TableColumnComponentPanel || (advancedConditionPanel != null && simpleConditionPanel != null);
   }
 
   /**
@@ -146,9 +148,9 @@ public final class EntityTableConditionPanel extends JPanel {
    * if only one condition panel is available that one is selected automatically.
    */
   public void selectConditionPanel() {
-    if (advancedConditionPanel instanceof AbstractTableColumnComponentPanel) {
+    if (advancedConditionPanel instanceof TableColumnComponentPanel) {
       final List<Property<?>> conditionProperties = new ArrayList<>();
-      ((AbstractTableColumnComponentPanel<JPanel>) advancedConditionPanel).getColumnComponents().forEach((column, panel) -> {
+      ((TableColumnComponentPanel<JPanel>) advancedConditionPanel).getColumnComponents().forEach((column, panel) -> {
         if (panel instanceof ColumnConditionPanel) {
           conditionProperties.add((Property<?>) column.getIdentifier());
         }
@@ -172,8 +174,8 @@ public final class EntityTableConditionPanel extends JPanel {
    * for custom search panels
    */
   public void addFocusGainedListener(final EventDataListener<Property<?>> listener) {
-    if (advancedConditionPanel instanceof AbstractTableColumnComponentPanel) {
-      ((AbstractTableColumnComponentPanel<JPanel>) advancedConditionPanel).getColumnComponents().forEach((column, panel) -> {
+    if (advancedConditionPanel instanceof TableColumnComponentPanel) {
+      ((TableColumnComponentPanel<JPanel>) advancedConditionPanel).getColumnComponents().forEach((column, panel) -> {
         if (panel instanceof ColumnConditionPanel) {
           ((ColumnConditionPanel<?, Property<?>, ?>) panel).addFocusGainedListener(listener);
         }
@@ -211,11 +213,11 @@ public final class EntityTableConditionPanel extends JPanel {
    * @return the condition panel associated with the given property, null if none is specified
    */
   public ColumnConditionPanel<Entity, Property<?>, ?> getConditionPanel(final Attribute<?> attribute) {
-    if (advancedConditionPanel instanceof AbstractTableColumnComponentPanel) {
+    if (advancedConditionPanel instanceof TableColumnComponentPanel) {
       for (final TableColumn column : columns) {
         final Property<?> property = (Property<?>) column.getIdentifier();
         if (property.getAttribute().equals(attribute)) {
-          return (ColumnConditionPanel<Entity, Property<?>, ?>) ((AbstractTableColumnComponentPanel<JPanel>) advancedConditionPanel).getColumnComponents().get(column);
+          return (ColumnConditionPanel<Entity, Property<?>, ?>) ((TableColumnComponentPanel<JPanel>) advancedConditionPanel).getColumnComponents().get(column);
         }
       }
     }
@@ -273,44 +275,35 @@ public final class EntityTableConditionPanel extends JPanel {
     return panel;
   }
 
-  private static final class ConditionColumnSyncPanel extends AbstractTableColumnComponentPanel<JPanel> {
-
-    private final EntityTableConditionModel conditionModel;
-
-    private ConditionColumnSyncPanel(final SwingEntityTableModel tableModel) {
-      super(tableModel.getColumnModel());
-      this.conditionModel = tableModel.getTableConditionModel();
-      setVerticalFillerWidth(Components.getPreferredScrollBarWidth());
-      resetPanel();
-    }
-
-    @Override
-    protected JPanel initializeComponent(final TableColumn column) {
+  private static Map<TableColumn, JPanel> createPropertyConditionPanels(final SwingEntityTableModel tableModel) {
+    final Map<TableColumn, JPanel> components = new HashMap<>();
+    final EntityTableConditionModel conditionModel = tableModel.getTableConditionModel();
+    tableModel.getColumnModel().getAllColumns().forEach(column -> {
       final Property<?> property = (Property<?>) column.getIdentifier();
       try {
         if (conditionModel.containsConditionModel(property.getAttribute())) {
-          return initializeConditionPanel(conditionModel.getConditionModel(property.getAttribute()));
+          components.put(column, initializeConditionPanel(conditionModel.getConditionModel(property.getAttribute())));
         }
       }
       catch (final IllegalArgumentException e) {
-        //Input component not available for property type
+        components.put(column, new JPanel());
       }
+    });
 
-      return new JPanel();
+    return components;
+  }
+
+  /**
+   * Initializes a ColumnConditionPanel for the given model
+   * @param propertyConditionModel the {@link ColumnConditionModel} for which to create a condition panel
+   * @return a ColumnConditionPanel based on the given model
+   */
+  private static <C extends Property<T>, T> ColumnConditionPanel<Entity, C, T> initializeConditionPanel(
+          final ColumnConditionModel<Entity, C, T> propertyConditionModel) {
+    if (propertyConditionModel instanceof ForeignKeyConditionModel) {
+      return (ColumnConditionPanel<Entity, C, T>) new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel);
     }
 
-    /**
-     * Initializes a ColumnConditionPanel for the given model
-     * @param propertyConditionModel the {@link ColumnConditionModel} for which to create a condition panel
-     * @return a ColumnConditionPanel based on the given model
-     */
-    private static <C extends Property<T>, T> ColumnConditionPanel<Entity, C, T> initializeConditionPanel(
-            final ColumnConditionModel<Entity, C, T> propertyConditionModel) {
-      if (propertyConditionModel instanceof ForeignKeyConditionModel) {
-        return (ColumnConditionPanel<Entity, C, T>) new ForeignKeyConditionPanel((ForeignKeyConditionModel) propertyConditionModel);
-      }
-
-      return new PropertyConditionPanel<>(propertyConditionModel);
-    }
+    return new PropertyConditionPanel<>(propertyConditionModel);
   }
 }
