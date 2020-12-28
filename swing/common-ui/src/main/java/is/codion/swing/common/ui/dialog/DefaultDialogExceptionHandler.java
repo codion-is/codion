@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A default DialogExceptionHandler implementation
@@ -33,6 +34,7 @@ public final class DefaultDialogExceptionHandler implements DialogExceptionHandl
 
   @Override
   public void displayException(final Throwable exception, final Window dialogParent) {
+    requireNonNull(exception);
     final Throwable rootCause = unwrapExceptions(exception, asList(RemoteException.class, RuntimeException.class,
             InvocationTargetException.class, ExceptionInInitializerError.class, UndeclaredThrowableException.class));
     if (rootCause instanceof CancelException) {

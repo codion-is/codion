@@ -102,7 +102,7 @@ import static java.util.Objects.requireNonNull;
  * The default layout is as follows
  * <pre>
  *  ____________________________________________________
- * |                searchPanel                         |
+ * |                conditionPanel                      |
  * |____________________________________________________|
  * |                                                    |
  * |                                                    |
@@ -119,7 +119,7 @@ import static java.util.Objects.requireNonNull;
  * |                southPanel                          |
  * |____________________________________________________|
  * </pre>
- * The search and summary panels can be hidden
+ * The condition and summary panels can be hidden
  * Note that {@link #initializePanel()} must be called to initialize this panel before displaying it.
  * @see EntityTableModel
  */
@@ -274,7 +274,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
-   * @param conditionPanel the condition panel
+   * @param conditionPanel the condition panel, if any
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableConditionPanel conditionPanel) {
     this(tableModel, new EntityComponentValues(), conditionPanel);
@@ -284,11 +284,11 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
    * @param componentValues the component value provider for this table panel
-   * @param conditionPanel the condition panel
+   * @param conditionPanel the condition panel, if any
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityComponentValues componentValues,
                           final EntityTableConditionPanel conditionPanel) {
-    this.tableModel = tableModel;
+    this.tableModel = requireNonNull(tableModel, "tableModel");
     this.table = createFilteredTable();
     this.tableScrollPane = new JScrollPane(table);
     this.componentValues = requireNonNull(componentValues, "componentValues");
@@ -334,7 +334,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final void addPopupControls(final ControlList additionalPopupControls) {
     checkIfInitialized();
-    this.additionalPopupControls.add(additionalPopupControls);
+    this.additionalPopupControls.add(requireNonNull(additionalPopupControls));
   }
 
   /**
@@ -344,7 +344,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final void addToolBarControls(final ControlList additionalToolBarControls) {
     checkIfInitialized();
-    this.additionalToolBarControls.add(additionalToolBarControls);
+    this.additionalToolBarControls.add(requireNonNull(additionalToolBarControls));
   }
 
   /**
@@ -487,7 +487,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param referentialIntegrityErrorHandling the action to take on a referential integrity error on delete
    */
   public final void setReferentialIntegrityErrorHandling(final ReferentialIntegrityErrorHandling referentialIntegrityErrorHandling) {
-    this.referentialIntegrityErrorHandling = referentialIntegrityErrorHandling;
+    this.referentialIntegrityErrorHandling = requireNonNull(referentialIntegrityErrorHandling);
   }
 
   @Override
@@ -501,7 +501,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @throws IllegalArgumentException in case no control is associated with the given control code
    */
   public final Control getControl(final String controlCode) {
-    if (!controlMap.containsKey(controlCode)) {
+    if (!controlMap.containsKey(requireNonNull(controlCode))) {
       throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
     }
 
@@ -600,6 +600,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @see EntityComponentValues#createComponentValue(Attribute, SwingEntityEditModel, Object)
    */
   public final <T> void updateSelectedEntities(final Property<T> propertyToUpdate) {
+    requireNonNull(propertyToUpdate);
     if (tableModel.getSelectionModel().isSelectionEmpty()) {
       return;
     }
@@ -721,6 +722,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   @Override
   public final void displayException(final Throwable throwable, final Window dialogParent) {
+    requireNonNull(throwable);
     DefaultDialogExceptionHandler.getInstance().displayException(throwable, dialogParent);
   }
 
@@ -808,6 +810,9 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public static void showDependenciesDialog(final Collection<Entity> entities, final EntityConnectionProvider connectionProvider,
                                             final JComponent dialogParent) {
+    requireNonNull(entities);
+    requireNonNull(connectionProvider);
+    requireNonNull(dialogParent);
     try {
       final Map<EntityType<?>, Collection<Entity>> dependencies = connectionProvider.getConnection().selectDependencies(entities);
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, MESSAGES.getString("delete_dependent_records"));
@@ -951,6 +956,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param control the control to associate with {@code controlCode}
    */
   protected final void setControl(final String controlCode, final Control control) {
+    requireNonNull(controlCode);
     if (control == null) {
       controlMap.remove(controlCode);
     }
@@ -960,6 +966,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   }
 
   protected ControlList getToolBarControls(final List<ControlList> additionalToolBarControlLists) {
+    requireNonNull(additionalToolBarControlLists);
     final ControlList toolbarControls = Controls.controlList();
     if (controlMap.containsKey(TOGGLE_SUMMARY_PANEL)) {
       toolbarControls.add(controlMap.get(TOGGLE_SUMMARY_PANEL));
@@ -992,6 +999,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * if no popup menu should be included
    */
   protected ControlList getPopupControls(final List<ControlList> additionalPopupControls) {
+    requireNonNull(additionalPopupControls);
     final ControlList popupControls = Controls.controlList();
     popupControls.add(controlMap.get(REFRESH));
     popupControls.add(controlMap.get(CLEAR));
