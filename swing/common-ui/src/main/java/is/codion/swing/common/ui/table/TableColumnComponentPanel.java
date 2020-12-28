@@ -30,6 +30,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A panel that synchronizes child component sizes and positions to table columns.
+ * @param <T> the component type
  */
 public final class TableColumnComponentPanel<T extends JComponent> extends JPanel {
 

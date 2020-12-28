@@ -32,7 +32,7 @@ import static java.util.stream.Collectors.joining;
  */
 public final class StringFactory {
 
-  private StringFactory() {};
+  private StringFactory() {}
 
   /**
    * @return a {@link Builder} instance for configuring a string factory {@link Function} for entities.

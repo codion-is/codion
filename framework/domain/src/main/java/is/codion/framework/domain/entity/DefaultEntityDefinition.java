@@ -49,6 +49,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   private static final String METHOD = "method";
   private static final String ATTRIBUTE = "attribute";
+  private static final String ATTRIBUTES = "attributes";
 
   /**
    * The domain name
@@ -389,7 +390,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public List<Property<?>> getProperties(final Collection<Attribute<?>> attributes) {
-    requireNonNull(attributes, "attributes");
+    requireNonNull(attributes, ATTRIBUTES);
 
     return attributes.stream().map(this::getProperty).collect(toList());
   }
@@ -406,7 +407,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public List<ColumnProperty<?>> getColumnProperties(final List<Attribute<?>> attributes) {
-    requireNonNull(attributes, "attributes");
+    requireNonNull(attributes, ATTRIBUTES);
     final List<ColumnProperty<?>> theProperties = new ArrayList<>(attributes.size());
     for (int i = 0; i < attributes.size(); i++) {
       theProperties.add(getColumnProperty(attributes.get(i)));
@@ -458,7 +459,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public List<ColumnProperty<?>> getSelectableColumnProperties(final List<Attribute<?>> attributes) {
-    final List<ColumnProperty<?>> selectables = new ArrayList<>(requireNonNull(attributes, "attributes").size());
+    final List<ColumnProperty<?>> selectables = new ArrayList<>(requireNonNull(attributes, ATTRIBUTES).size());
     for (int i = 0; i < attributes.size(); i++) {
       selectables.add(getSelectableColumnProperty(attributes.get(i)));
     }
