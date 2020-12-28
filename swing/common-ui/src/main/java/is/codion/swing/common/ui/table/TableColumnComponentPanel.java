@@ -45,7 +45,6 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
    * Instantiates a new AbstractTableColumnSyncPanel.
    * @param columnModel the column model
    * @param columnComponents the column components mapped to their respective column
-   * @param verticalFillerWidth the width of a vertical fill component
    */
   public TableColumnComponentPanel(final SwingFilteredTableColumnModel<?, ?> columnModel,
                                    final Map<TableColumn, T> columnComponents) {
