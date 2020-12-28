@@ -1,0 +1,55 @@
+/*
+ * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package is.codion.swing.common.ui.table;
+
+import is.codion.swing.common.model.table.SwingFilteredTableColumnModel;
+
+import org.junit.jupiter.api.Test;
+
+import javax.swing.JPanel;
+import javax.swing.table.TableColumn;
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class TableColumnComponentPanelTest {
+
+  private final TableColumnComponentPanel<JPanel> panel;
+  private final SwingFilteredTableColumnModel<?, Integer> columnModel;
+
+  private final TableColumn column0 = new TableColumn(0, 20);
+  private final TableColumn column1 = new TableColumn(1, 20);
+  private final TableColumn column2 = new TableColumn(2, 20);
+
+  public TableColumnComponentPanelTest() {
+    column0.setIdentifier(0);
+    column1.setIdentifier(1);
+    column2.setIdentifier(2);
+
+    columnModel = new SwingFilteredTableColumnModel<>(asList(column0, column1, column2), null);
+    columnModel.hideColumn(1);
+    panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
+    assertTrue(panel.getColumnComponents().containsKey(column1));
+  }
+
+  @Test
+  public void showColumn() {
+    assertNull(panel.getColumnComponents().get(column1).getParent());
+    columnModel.showColumn(1);
+    assertNotNull(panel.getColumnComponents().get(column1).getParent());
+    columnModel.hideColumn(2);
+    assertNull(panel.getColumnComponents().get(column2).getParent());
+    columnModel.showColumn(2);
+    assertNotNull(panel.getColumnComponents().get(column2).getParent());
+  }
+
+  private static Map<TableColumn, JPanel> createColumnComponents(final SwingFilteredTableColumnModel<?, ?> columnModel) {
+    final Map<TableColumn, JPanel> columnComponents = new HashMap<>();
+    columnModel.getAllColumns().forEach(column -> columnComponents.put(column, new JPanel()));
+
+    return columnComponents;
+  }
+}

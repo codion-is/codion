@@ -14,6 +14,7 @@ import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.state.StateObserver;
 import is.codion.common.state.States;
 import is.codion.common.value.PropertyValue;
@@ -29,6 +30,7 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityTableModel;
+import is.codion.swing.common.model.table.AbstractFilteredTableModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
@@ -39,9 +41,10 @@ import is.codion.swing.common.ui.dialog.DialogExceptionHandler;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.Modal;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.table.ColumnSummaryPanel;
 import is.codion.swing.common.ui.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.table.FilteredTable;
-import is.codion.swing.common.ui.table.FilteredTableSummaryPanel;
+import is.codion.swing.common.ui.table.TableColumnComponentPanel;
 import is.codion.swing.common.ui.value.ComponentValuePanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -206,7 +209,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final JScrollPane conditionScrollPane;
 
-  private final FilteredTableSummaryPanel<Property<?>> summaryPanel;
+  private final TableColumnComponentPanel<JPanel> summaryPanel;
 
   private final JScrollPane summaryScrollPane;
 
@@ -291,7 +294,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
     this.componentValues = requireNonNull(componentValues, "componentValues");
     this.conditionPanel = conditionPanel;
     this.conditionScrollPane = conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
-    this.summaryPanel = new FilteredTableSummaryPanel<>(tableModel);
+    this.summaryPanel = new TableColumnComponentPanel<>(tableModel.getColumnModel(), createColumnSummaryPanels(tableModel));
     this.summaryScrollPane = createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
     this.tablePanel.add(tableScrollPane, BorderLayout.CENTER);
     this.tablePanel.add(summaryScrollPane, BorderLayout.SOUTH);
@@ -1407,6 +1410,16 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
       hideWaitCursor(dialogParent);
     }
     Dialogs.displayInDialog(getParentWindow(dialogParent), dependenciesPanel, title);
+  }
+
+  private static Map<TableColumn, JPanel> createColumnSummaryPanels(final AbstractFilteredTableModel<?, Property<?>> tableModel) {
+    final Map<TableColumn, JPanel> components = new HashMap<>();
+    tableModel.getColumnModel().getAllColumns().forEach(column -> {
+      final ColumnSummaryModel columnSummaryModel = tableModel.getColumnSummaryModel((Property<?>) column.getIdentifier());
+      components.put(column, columnSummaryModel == null ? new JPanel() : new ColumnSummaryPanel(columnSummaryModel));
+    });
+
+    return components;
   }
 
   private static JScrollPane createHiddenLinkedScrollPane(final JScrollPane masterScrollPane, final JPanel panel) {
