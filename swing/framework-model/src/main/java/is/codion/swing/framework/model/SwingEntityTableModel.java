@@ -149,7 +149,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
    * @param connectionProvider the db provider
    */
   public SwingEntityTableModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, new SwingEntityTableSortModel(connectionProvider.getEntities(), entityType),
+    this(entityType, requireNonNull(connectionProvider), new SwingEntityTableSortModel(connectionProvider.getEntities(), entityType),
             new DefaultEntityTableConditionModel(entityType, connectionProvider,
                     new DefaultFilterModelFactory(), new SwingConditionModelFactory()));
   }
@@ -172,7 +172,7 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
               + ", tableModel: " + entityType);
     }
     this.entityType = entityType;
-    this.entityDefinition = connectionProvider.getEntities().getDefinition(entityType);
+    this.entityDefinition = requireNonNull(connectionProvider).getEntities().getDefinition(entityType);
     this.connectionProvider = connectionProvider;
     this.tableConditionModel = tableConditionModel;
     bindEventsInternal();
