@@ -58,6 +58,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
   private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = Util.onClasspath("sun.misc.ObjectInputFilter");
+  private static final String CLIENT_ID = "clientId";
 
   private final Map<UUID, ClientConnection<T>> connections = new ConcurrentHashMap<>();
   private final Map<String, LoginProxy> loginProxies = new HashMap<>();
@@ -115,7 +116,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return the connection associated with the given client, null if none exists
    */
   public final T getConnection(final UUID clientId) {
-    final ClientConnection<T> clientConnection = connections.get(requireNonNull(clientId, "clientId"));
+    final ClientConnection<T> clientConnection = connections.get(requireNonNull(clientId, CLIENT_ID));
     if (clientConnection != null) {
       return clientConnection.getConnection();
     }
@@ -178,7 +179,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
     requireNonNull(connectionRequest, "connectionRequest");
     requireNonNull(connectionRequest.getUser(), "user");
-    requireNonNull(connectionRequest.getClientId(), "clientId");
+    requireNonNull(connectionRequest.getClientId(), CLIENT_ID);
     requireNonNull(connectionRequest.getClientTypeId(), "clientTypeId");
     synchronized (connections) {
       final ClientConnection<T> clientConnection = connections.get(connectionRequest.getClientId());
@@ -205,7 +206,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       return;
     }
 
-    final ClientConnection<T> clientConnection = connections.remove(requireNonNull(clientId, "clientId"));
+    final ClientConnection<T> clientConnection = connections.remove(requireNonNull(clientId, CLIENT_ID));
     if (clientConnection != null) {
       doDisconnect(clientConnection.getConnection());
       final RemoteClient remoteClient = clientConnection.getRemoteClient();
