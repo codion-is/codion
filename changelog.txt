@@ -6567,3 +6567,4 @@
   AbstractTableColumnSyncPanel refactored and renamed AbstractTableColumnComponentPanel
   AbstractTableColumnComponentPanel refactored further, no longer abstract and renamed TableColumnComponentPanel
   TableColumnComponentPanel refactored even further
+  DefaultColumnConditionModel.getEqualValues() bug fixed, did not add wildcards

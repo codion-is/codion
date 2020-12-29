@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -154,7 +155,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   @Override
   public Collection<T> getEqualValues() {
-    return equalValues.get();
+    return equalValues.get().stream().map(this::getBoundValue).collect(Collectors.toList());
   }
 
   @Override
@@ -395,19 +396,19 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     return (Comparable<T>) row;
   }
 
-  private T getBoundValue(final Object upperBound) {
+  private T getBoundValue(final Object bound) {
     if (typeClass.equals(String.class)) {
-      if (upperBound == null || (upperBound instanceof String && ((String) upperBound).length() == 0)) {
+      if (bound == null || (bound instanceof String && ((String) bound).length() == 0)) {
         return null;
       }
-      if (upperBound instanceof Collection) {
-        return (T) upperBound;
+      if (bound instanceof Collection) {
+        return (T) bound;
       }
 
-      return (T) addWildcard((String) upperBound);
+      return (T) addWildcard((String) bound);
     }
 
-    return (T) upperBound;
+    return (T) bound;
   }
 
   private boolean includeEqual(final Comparable<T> comparable) {
