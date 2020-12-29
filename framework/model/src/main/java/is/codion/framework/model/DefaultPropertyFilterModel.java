@@ -18,21 +18,19 @@ public final class DefaultPropertyFilterModel<T> extends DefaultColumnConditionM
    * @param property the property
    */
   public DefaultPropertyFilterModel(final Property<T> property) {
-    super(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(), property.getFormat(), property.getDateTimeFormatPattern());
-  }
+    super(property, property.getAttribute().getTypeClass(), Property.WILDCARD_CHARACTER.get(),
+            property.getFormat(), property.getDateTimeFormatPattern());
+    setComparableFunction(row -> {
+      if (row.isNull(property.getAttribute())) {
+        return null;
+      }
 
-  @Override
-  protected Comparable<T> getComparable(final Entity row) {
-    if (row.isNull(getColumnIdentifier().getAttribute())) {
-      return null;
-    }
+      final Object value = row.get(property.getAttribute());
+      if (value instanceof Entity) {
+        return (Comparable<T>) value.toString();
+      }
 
-    final Property<?> property = getColumnIdentifier();
-    final Object value = row.get(property.getAttribute());
-    if (value instanceof Entity) {
-      return (Comparable<T>) value.toString();
-    }
-
-    return (Comparable<T>) value;
+      return (Comparable<T>) value;
+    });
   }
 }
