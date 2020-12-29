@@ -8,7 +8,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.ForeignKeyConditionModel;
-import is.codion.swing.common.ui.combobox.MaximumMatch;
+import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.textfield.TextFields;
 import is.codion.swing.framework.model.SwingEntityComboBoxModel;
@@ -57,7 +57,7 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
         final SwingEntityComboBoxModel boxModel = ((SwingForeignKeyConditionModel) model).getEntityComboBoxModel();
         boxModel.refresh();
 
-        return MaximumMatch.enable(new EntityComboBox(boxModel));
+        return Completion.maximumMatch(new EntityComboBox(boxModel));
       }
 
       return TextFields.selectAllOnFocusGained(new EntityLookupField(((ForeignKeyConditionModel) model).getEntityLookupModel()));

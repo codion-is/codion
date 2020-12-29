@@ -77,13 +77,8 @@ public final class AbstractFilteredTableModelTest {
   private static TestAbstractFilteredTableModel createTestModel(final Comparator<String> customComparator) {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnConditionModel<List<String>, Integer, String> filterModel =
-            new DefaultColumnConditionModel<List<String>, Integer, String>(0, String.class, "%") {
-              @Override
-              protected Comparable<String> getComparable(final List<String> row) {
-                return row.get(0);
-              }
-            };
+    final ColumnConditionModel<List<String>, Integer, String> filterModel = new DefaultColumnConditionModel<>(0, String.class, "%");
+    filterModel.setComparableFunction(row -> row.get(0));
     return new TestAbstractFilteredTableModel(new AbstractTableSortModel<List<String>, Integer>(singletonList(column)) {
       @Override
       public Class<?> getColumnClass(final Integer columnIdentifier) {

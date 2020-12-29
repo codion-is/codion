@@ -11,6 +11,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.Normalizer;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A base class for auto completion and maximum match
  * @author Thomas Bierhance
@@ -27,9 +29,9 @@ class CompletionDocument extends PlainDocument {
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
 
-  protected CompletionDocument(final JComboBox<?> comboBox, final Normalize normalize) {
-    this.comboBox = comboBox;
-    this.normalize = normalize == Normalize.YES;
+  protected CompletionDocument(final JComboBox<?> comboBox, final boolean normalize) {
+    this.comboBox = requireNonNull(comboBox);
+    this.normalize = normalize;
     model = comboBox.getModel();
     editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
     if (editor.getDocument() instanceof CompletionDocument) {

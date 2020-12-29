@@ -6602,3 +6602,5 @@
   MaximumMatch, AutoComplete.enable() combobox type parameter added
   Text.underscoreToCamelCase() bug fixed, did not respect case of strings containing no underscores
   DomainToString bug fixed, relied on the above bug to function correctly
+  MaximumMatch and AutoCompletion merged into Completion, related refactoring
+  DefaultColumnConditionModel.getComparable() function replaced with comparableFunction field, some finals added

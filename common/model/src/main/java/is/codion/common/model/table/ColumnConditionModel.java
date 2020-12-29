@@ -15,6 +15,7 @@ import is.codion.common.value.ValueSet;
 
 import java.text.Format;
 import java.util.Collection;
+import java.util.function.Function;
 
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
@@ -128,6 +129,13 @@ public interface ColumnConditionModel<R, K, T> {
    * @return the data type this condition model is based on
    */
   Class<T> getTypeClass();
+
+  /**
+   * The default implementation simply returns the row, assuming it is a Comparable instance.
+   * @param comparableFunction the function converting from a Row object to a Comparable for the underlying column
+   * @return a Comparable from the given row to compare with this condition model's value.
+   */
+  void setComparableFunction(Function<R, Comparable<T>> comparableFunction);
 
   /**
    * Sets the values used when the {@link Operator#EQUAL} is enabled.

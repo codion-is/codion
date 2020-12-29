@@ -26,8 +26,7 @@ import is.codion.swing.common.model.combobox.BooleanComboBoxModel;
 import is.codion.swing.common.model.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Components;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.combobox.AutoCompletion;
-import is.codion.swing.common.ui.combobox.MaximumMatch;
+import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
@@ -87,8 +86,8 @@ public final class EntityInputComponents {
 
   /**
    * Specifies whether maximum match or autocomplete is used for comboboxes,
-   * {@link #COMPLETION_MODE_MAXIMUM_MATCH} for {@link MaximumMatch}
-   * and {@link #COMPLETION_MODE_AUTOCOMPLETE} for {@link AutoCompletion}.<br>
+   * {@link #COMPLETION_MODE_MAXIMUM_MATCH} for maximum match
+   * and {@link #COMPLETION_MODE_AUTOCOMPLETE} for auto completion.<br>
    * Value type:String<br>
    * Default value: {@link #COMPLETION_MODE_MAXIMUM_MATCH}
    */
@@ -99,6 +98,7 @@ public final class EntityInputComponents {
    * @see EntityInputComponents#COMBO_BOX_COMPLETION_MODE
    */
   public static final String COMPLETION_MODE_AUTOCOMPLETE = "auto";
+
   /**
    * Specifies the default horizontal alignment used in labels<br>
    * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)<br>
@@ -916,10 +916,10 @@ public final class EntityInputComponents {
     final String completionMode = COMBO_BOX_COMPLETION_MODE.get();
     switch (completionMode) {
       case COMPLETION_MODE_AUTOCOMPLETE:
-        AutoCompletion.enable(comboBox);
+        Completion.autoComplete(comboBox);
         break;
       case COMPLETION_MODE_MAXIMUM_MATCH:
-        MaximumMatch.enable(comboBox);
+        Completion.maximumMatch(comboBox);
         break;
       default:
         throw new IllegalArgumentException("Unknown completion mode: " + completionMode);

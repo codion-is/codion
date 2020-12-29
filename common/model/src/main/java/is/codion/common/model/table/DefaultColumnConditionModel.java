@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -49,6 +50,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   private final Format format;
   private final String dateTimeFormatPattern;
 
+  private Function<R, Comparable<T>> comparableFunction = value -> (Comparable<T>) value;
   private boolean autoEnable = true;
   private AutomaticWildcard automaticWildcard;
   private boolean caseSensitive = CASE_SENSITIVE.get();
@@ -119,7 +121,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   @Override
-  public String getDateTimeFormatPattern() {
+  public final String getDateTimeFormatPattern() {
     return dateTimeFormatPattern;
   }
 
@@ -139,22 +141,27 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   @Override
+  public final void setComparableFunction(final Function<R, Comparable<T>> comparableFunction) {
+    this.comparableFunction = requireNonNull(comparableFunction);
+  }
+
+  @Override
   public final void setEqualValue(final T value) {
     equalValues.set(value == null ? Collections.emptySet() : Collections.singleton(value));
   }
 
   @Override
-  public T getEqualValue() {
+  public final T getEqualValue() {
     return getBoundValue(equalValues.get().isEmpty() ? null : equalValues.get().iterator().next());
   }
 
   @Override
-  public void setEqualValues(final Collection<T> values) {
+  public final void setEqualValues(final Collection<T> values) {
     equalValues.set(values == null ? Collections.emptySet() : new HashSet<>(values));
   }
 
   @Override
-  public Collection<T> getEqualValues() {
+  public final Collection<T> getEqualValues() {
     return equalValues.get().stream().map(this::getBoundValue).collect(Collectors.toList());
   }
 
@@ -256,17 +263,17 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   @Override
-  public ValueSet<T> getEqualValueSet() {
+  public final ValueSet<T> getEqualValueSet() {
     return equalValues;
   }
 
   @Override
-  public Value<T> getLowerBoundValue() {
+  public final Value<T> getLowerBoundValue() {
     return lowerBoundValue;
   }
 
   @Override
-  public Value<T> getUpperBoundValue() {
+  public final Value<T> getUpperBoundValue() {
     return upperBoundValue;
   }
 
@@ -286,12 +293,12 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   @Override
-  public void addEqualsValueListener(final EventListener listener) {
+  public final void addEqualsValueListener(final EventListener listener) {
     equalValues.addListener(listener);
   }
 
   @Override
-  public void removeEqualsValueListener(final EventListener listener) {
+  public final void removeEqualsValueListener(final EventListener listener) {
     equalValues.removeListener(listener);
   }
 
@@ -352,7 +359,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   @Override
   public final boolean include(final R row) {
-    return !enabledState.get() || include(getComparable(row));
+    return !enabledState.get() || include(comparableFunction.apply(row));
   }
 
   @Override
@@ -385,15 +392,6 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
       default:
         throw new IllegalArgumentException("Undefined operator: " + operatorValue.get());
     }
-  }
-
-  /**
-   * This default implementation simply returns the row, assuming it is a Comparable instance.
-   * @param row the row
-   * @return a Comparable from the given row to compare with this condition model's value.
-   */
-  protected Comparable<T> getComparable(final R row) {
-    return (Comparable<T>) row;
   }
 
   private T getBoundValue(final Object bound) {

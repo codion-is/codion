@@ -18,7 +18,7 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.ValueListProperty;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.checkbox.NullableCheckBox;
-import is.codion.swing.common.ui.combobox.MaximumMatch;
+import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -740,7 +740,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param maximumMatch true if maximum match should be used
    * @param <T> the attribute type
    * @return a SteppedComboBox bound the the attribute
-   * @see is.codion.swing.common.ui.combobox.MaximumMatch
+   * @see is.codion.swing.common.ui.combobox.Completion
    */
   protected final <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
                                                         final boolean maximumMatch) {
@@ -755,7 +755,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param enabledState a state for controlling the enabled state of the component
    * @param <T> the attribute type
    * @return a SteppedComboBox bound the the attribute
-   * @see is.codion.swing.common.ui.combobox.MaximumMatch
+   * @see is.codion.swing.common.ui.combobox.Completion
    */
   protected final <T> SteppedComboBox<T> createComboBox(final Attribute<T> attribute, final ComboBoxModel<T> comboBoxModel,
                                                         final boolean maximumMatch, final StateObserver enabledState) {
@@ -763,7 +763,7 @@ public class EntityEditComponentPanel extends JPanel {
             getEditModel().getEntityDefinition().getProperty(attribute),
             getEditModel().value(attribute), comboBoxModel, enabledState);
     if (maximumMatch) {
-      MaximumMatch.enable(comboBox);
+      Completion.maximumMatch(comboBox);
     }
     if (transferFocusOnEnter) {
       transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());

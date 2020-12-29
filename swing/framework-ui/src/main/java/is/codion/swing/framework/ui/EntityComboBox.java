@@ -8,7 +8,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityComboBoxModel;
-import is.codion.swing.common.ui.combobox.MaximumMatch;
+import is.codion.swing.common.ui.combobox.Completion;
 import is.codion.swing.common.ui.combobox.SteppedComboBox;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -72,7 +72,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return an EntityComboBox for filtering this combo box
    */
   public EntityComboBox createForeignKeyFilterComboBox(final ForeignKey foreignKey) {
-    return MaximumMatch.enable(new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKey)));
+    return Completion.maximumMatch(new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKey)));
   }
 
   /**
