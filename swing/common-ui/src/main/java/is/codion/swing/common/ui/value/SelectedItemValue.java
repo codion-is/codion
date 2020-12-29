@@ -65,8 +65,7 @@ final class SelectedItemValue<T> extends AbstractComponentValue<T, JComboBox<Ite
 
   private static <T> JComboBox<Item<T>> createComboBox(final T currentValue, final List<Item<T>> values) {
     final ItemComboBoxModel<T> boxModel = new ItemComboBoxModel<>(values);
-    final JComboBox<Item<T>> box = new SteppedComboBox<>(boxModel);
-    MaximumMatch.enable(box);
+    final JComboBox<Item<T>> box = MaximumMatch.enable(new SteppedComboBox<>(boxModel));
     final Item<T> currentItem = Items.item(currentValue, "");
     final int currentValueIndex = values.indexOf(currentItem);
     if (currentValueIndex >= 0) {

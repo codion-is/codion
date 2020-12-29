@@ -39,7 +39,7 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
   private final Box.Filler scrollBarFiller;
   private final JPanel basePanel;
   private final Map<TableColumn, T> columnComponents;
-  private final Map<TableColumn, JComponent> nullComponents = new HashMap<>(0);
+  private final Map<TableColumn, JPanel> nullComponents = new HashMap<>(0);
 
   /**
    * Instantiates a new AbstractTableColumnSyncPanel.
@@ -48,23 +48,25 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
    */
   public TableColumnComponentPanel(final SwingFilteredTableColumnModel<?, ?> columnModel,
                                    final Map<TableColumn, T> columnComponents) {
-    requireNonNull(columnModel);
-    requireNonNull(columnComponents);
-    setLayout(new BorderLayout());
-    this.basePanel = new JPanel(new FlexibleGridLayout(1, 0, 0, 0));
-    this.columnModel = columnModel;
+    this.columnModel = requireNonNull(columnModel);
     this.columns = columnModel.getAllColumns();
-    this.columnModel.addColumnModelListener(new SyncColumnModelListener());
-    final Dimension fillerSize = new Dimension(Components.getPreferredScrollBarWidth(), 0);
-    this.scrollBarFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
-    this.columnComponents = Collections.unmodifiableMap(columnComponents);
-    columnModel.getAllColumns().forEach(column -> {
+    requireNonNull(columnComponents).forEach((column, component) -> {
+      if (!columns.contains(column)) {
+        throw new IllegalArgumentException("Column with model index " + column.getModelIndex() + " is not part of column model");
+      }
+    });
+    columns.forEach(column -> {
       if (!columnComponents.containsKey(column)) {
         nullComponents.put(column, new JPanel());
       }
     });
+    this.columnComponents = Collections.unmodifiableMap(columnComponents);
+    this.basePanel = new JPanel(new FlexibleGridLayout(1, 0, 0, 0));
+    final Dimension fillerSize = new Dimension(Components.getPreferredScrollBarWidth(), 0);
+    this.scrollBarFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
+    setLayout(new BorderLayout());
     add(basePanel, BorderLayout.WEST);
-    bindColumnAndPanelSizes();
+    bindColumnAndComponentSizes();
     resetPanel();
   }
 
@@ -86,7 +88,8 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
     repaint();
   }
 
-  private void bindColumnAndPanelSizes() {
+  private void bindColumnAndComponentSizes() {
+    columnModel.addColumnModelListener(new SyncColumnModelListener());
     for (final TableColumn column : columns) {
       final JComponent component = getColumnComponent(column);
       component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));

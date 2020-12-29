@@ -6596,3 +6596,7 @@
   AbstractServer constructor now exits gracefully on Throwable
   AbstractTableColumnSyncPanel refactored and renamed AbstractTableColumnComponentPanel
   AbstractTableColumnComponentPanel refactored further, no longer abstract and renamed TableColumnComponentPanel
+  TableColumnComponentPanel refactored even further
+  DefaultColumnConditionModel.getEqualValues() bug fixed, did not add wildcards
+  AbstractEntityTableCondition panel split from EntityTableConditionPanel, EntityTableSimpleConditionPanel added, related refactoring
+  MaximumMatch, AutoComplete.enable() combobox type parameter added

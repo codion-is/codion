@@ -15,6 +15,7 @@ import is.codion.common.event.Events;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.state.States;
 import is.codion.common.value.PropertyValue;
@@ -205,7 +206,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
 
   private final EntityComponentValues componentValues;
 
-  private final EntityTableConditionPanel conditionPanel;
+  private final AbstractEntityTableConditionPanel conditionPanel;
 
   private final JScrollPane conditionScrollPane;
 
@@ -268,7 +269,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel) {
-    this(tableModel, new EntityTableConditionPanel(tableModel));
+    this(tableModel, new EntityComponentValues());
   }
 
   /**
@@ -276,8 +277,18 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param tableModel the EntityTableModel instance
    * @param conditionPanel the condition panel, if any
    */
-  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableConditionPanel conditionPanel) {
+  public EntityTablePanel(final SwingEntityTableModel tableModel, final AbstractEntityTableConditionPanel conditionPanel) {
     this(tableModel, new EntityComponentValues(), conditionPanel);
+  }
+
+  /**
+   * Initializes a new EntityTablePanel instance
+   * @param tableModel the EntityTableModel instance
+   * @param componentValues the component value provider for this table panel
+   */
+  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityComponentValues componentValues) {
+    this(tableModel, componentValues, new EntityTableConditionPanel(tableModel.getTableConditionModel(),
+            tableModel.getColumnModel(), tableModel::refresh, tableModel.getQueryConditionRequiredState()));
   }
 
   /**
@@ -287,7 +298,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    * @param conditionPanel the condition panel, if any
    */
   public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityComponentValues componentValues,
-                          final EntityTableConditionPanel conditionPanel) {
+                          final AbstractEntityTableConditionPanel conditionPanel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.table = createFilteredTable();
     this.tableScrollPane = new JScrollPane(table);
@@ -422,7 +433,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
   /**
    * @return the condition panel being used by this EntityTablePanel
    */
-  public final EntityTableConditionPanel getConditionPanel() {
+  public final AbstractEntityTableConditionPanel getConditionPanel() {
     return conditionPanel;
   }
 
@@ -431,16 +442,17 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
    */
   public final void toggleConditionPanel() {
     if (conditionPanel.canToggleAdvanced()) {
+      final State advancedState = conditionPanel.getAdvancedState();
       if (isConditionPanelVisible()) {
-        if (conditionPanel.isAdvanced()) {
+        if (advancedState.get()) {
           setConditionPanelVisible(false);
         }
         else {
-          conditionPanel.setAdvanced(true);
+          advancedState.set(true);
         }
       }
       else {
-        conditionPanel.setAdvanced(false);
+        advancedState.set(false);
         setConditionPanelVisible(true);
       }
     }
@@ -1371,7 +1383,7 @@ public class EntityTablePanel extends JPanel implements DialogExceptionHandler {
         controls.add(getControl(CONDITION_PANEL_VISIBLE));
       }
       final ControlList searchPanelControls = conditionPanel.getControls();
-      if (searchPanelControls != null) {
+      if (searchPanelControls != null && !searchPanelControls.isEmpty()) {
         controls.addAll(searchPanelControls);
       }
       if (!controls.isEmpty()) {

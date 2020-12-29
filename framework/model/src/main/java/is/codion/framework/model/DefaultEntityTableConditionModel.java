@@ -6,15 +6,14 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.Util;
 import is.codion.common.db.Operator;
-import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.EventObserver;
-import is.codion.common.event.Events;
 import is.codion.common.model.Refreshable;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.state.States;
+import is.codion.common.value.Value;
+import is.codion.common.value.Values;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
@@ -44,36 +43,29 @@ import static java.util.stream.Collectors.joining;
 public final class DefaultEntityTableConditionModel implements EntityTableConditionModel {
 
   private final State conditionChangedState = States.state();
-  private final Event<String> simpleConditionStringChangedEvent = Events.event();
-  private final Event<?> simpleSearchPerformedEvent = Events.event();
-
   private final EntityType<?> entityType;
   private final EntityConnectionProvider connectionProvider;
   private final Map<Attribute<?>, ColumnConditionModel<Entity, Property<?>, ?>> filterModels = new LinkedHashMap<>();
   private final Map<Attribute<?>, ColumnConditionModel<Entity, ? extends Property<?>, ?>> conditionModels = new HashMap<>();
+  private final Value<String> simpleConditionStringValue = Values.value();
   private Condition.Provider additionalConditionProvider;
   private Conjunction conjunction = Conjunction.AND;
   private String rememberedCondition = "";
-  private String simpleConditionString = "";
 
   /**
    * Instantiates a new DefaultEntityTableConditionModel
    * @param entityType the id of the underlying entity
-   * @param connectionProvider a EntityConnectionProvider instance, required if the searchable properties include
-   * foreign key properties
-   * @param filterModelFactory provides the column filter models for this table condition model
+   * @param connectionProvider a EntityConnectionProvider instance
+   * @param filterModelFactory provides the column filter models for this table condition model, null if not required
    * @param conditionModelFactory provides the column condition models for this table condition model
    */
   public DefaultEntityTableConditionModel(final EntityType<?> entityType, final EntityConnectionProvider connectionProvider,
                                           final FilterModelFactory filterModelFactory,
                                           final ConditionModelFactory conditionModelFactory) {
-    requireNonNull(entityType, "entityType");
-    requireNonNull(connectionProvider, "connectionProvider");
-    requireNonNull(conditionModelFactory, "conditionModelFactory");
-    this.entityType = entityType;
-    this.connectionProvider = connectionProvider;
+    this.entityType = requireNonNull(entityType, "entityType");
+    this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+    initializePropertyConditionModels(entityType, requireNonNull(conditionModelFactory, "conditionModelFactory"));
     initializeFilterModels(entityType, filterModelFactory);
-    initializePropertyConditionModels(entityType, conditionModelFactory);
     initializeForeignKeyConditionModels(entityType, connectionProvider, conditionModelFactory);
     rememberCondition();
     bindEvents();
@@ -222,30 +214,8 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public String getSimpleConditionString() {
-    return simpleConditionString;
-  }
-
-  @Override
-  public void setSimpleConditionString(final String simpleConditionString) {
-    this.simpleConditionString = simpleConditionString == null ? "" : simpleConditionString;
-    clearConditionModels();
-    if (this.simpleConditionString.length() != 0) {
-      setConditionString(this.simpleConditionString);
-    }
-    simpleConditionStringChangedEvent.onEvent(this.simpleConditionString);
-  }
-
-  @Override
-  public void performSimpleSearch() {
-    final Conjunction previousConjunction = getConjunction();
-    try {
-      setConjunction(Conjunction.OR);
-      simpleSearchPerformedEvent.onEvent();
-    }
-    finally {
-      setConjunction(previousConjunction);
-    }
+  public Value<String> getSimpleConditionStringValue() {
+    return simpleConditionStringValue;
   }
 
   @Override
@@ -279,11 +249,6 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
   }
 
   @Override
-  public EventObserver<String> getSimpleConditionStringObserver() {
-    return simpleConditionStringChangedEvent.getObserver();
-  }
-
-  @Override
   public StateObserver getConditionObserver() {
     return conditionChangedState.getObserver();
   }
@@ -298,21 +263,17 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
     conditionChangedState.removeListener(listener);
   }
 
-  @Override
-  public void addSimpleConditionListener(final EventListener listener) {
-    simpleSearchPerformedEvent.addListener(listener);
-  }
-
-  @Override
-  public void removeSimpleConditionListener(final EventListener listener) {
-    simpleSearchPerformedEvent.removeListener(listener);
-  }
-
   private void bindEvents() {
     for (final ColumnConditionModel<?, ?, ?> conditionModel : conditionModels.values()) {
       conditionModel.addConditionChangedListener(() ->
               conditionChangedState.set(!rememberedCondition.equals(getConditionsString())));
     }
+    simpleConditionStringValue.addDataListener(conditionString -> {
+      clearConditionModels();
+      if (!Util.nullOrEmpty(conditionString)) {
+        setConditionString(conditionString);
+      }
+    });
   }
 
   private void setConditionString(final String searchString) {
@@ -322,7 +283,7 @@ public final class DefaultEntityTableConditionModel implements EntityTableCondit
       final ColumnConditionModel<?, ?, String> conditionModel = getConditionModel(searchAttribute);
       conditionModel.setCaseSensitive(false);
       conditionModel.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
-      conditionModel.setUpperBound(searchString);
+      conditionModel.setEqualValue(searchString);
       conditionModel.setOperator(Operator.EQUAL);
       conditionModel.setEnabled(true);
     }

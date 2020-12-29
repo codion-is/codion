@@ -63,6 +63,9 @@ public class DefaultColumnConditionModelTest {
     assertEquals(1, equalToCounter.get());
     assertEquals("test", model.getEqualValue());
 
+    model.setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard.PREFIX_AND_POSTFIX);
+    assertEquals("%test%", model.getEqualValues().iterator().next());
+
     model.clearCondition();
     assertEquals(1, clearCounter.get());
 

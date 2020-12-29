@@ -6,14 +6,13 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.db.Operator;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.EventObserver;
 import is.codion.common.model.Refreshable;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.Value;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.Property;
 
@@ -166,38 +165,19 @@ public interface EntityTableConditionModel extends Refreshable {
   boolean isFilterEnabled(Attribute<?> attribute);
 
   /**
-   * @return the text used when performing a simple search
-   * @see #performSimpleSearch()
-   */
-  String getSimpleConditionString();
-
-  /**
-   * Note that calling this method may (and probably will) change the automatic prefix and case sensetivity settings of
+   * Note that modifying this value may (and probably will) change the automatic prefix and case sensetivity settings of
    * the underlying {@link ColumnConditionModel}s
-   * @param simpleSearchText the text to use next time a simple search is performed
-   * @see #performSimpleSearch()
    * @see ColumnConditionModel#setCaseSensitive(boolean)
    * @see ColumnConditionModel#setAutomaticWildcard(ColumnConditionModel.AutomaticWildcard)
+   * @return the value used when performing a simple search.
    */
-  void setSimpleConditionString(String simpleSearchText);
-
-  /**
-   * Uses the simpleSearchText as a basis for a wildcard search on all String based condition models,
-   * or the condition models representing the search attributes for the underlying entity
-   * @see EntityDefinition#getSearchAttributes()
-   */
-  void performSimpleSearch();
+  Value<String> getSimpleConditionStringValue();
 
   /**
    * @return a StateObserver indicating if the search condition has changed since it was last remembered
    * @see #rememberCondition()
    */
   StateObserver getConditionObserver();
-
-  /**
-   * @return an EventObserver notified each time the simple search text changes
-   */
-  EventObserver<String> getSimpleConditionStringObserver();
 
   /**
    * @param listener a listener notified each time the search condition changes
@@ -208,14 +188,4 @@ public interface EntityTableConditionModel extends Refreshable {
    * @param listener the listener to remove
    */
   void removeConditionListener(EventListener listener);
-
-  /**
-   * @param listener a listener notified each time a simple search is performed
-   */
-  void addSimpleConditionListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeSimpleConditionListener(EventListener listener);
 }

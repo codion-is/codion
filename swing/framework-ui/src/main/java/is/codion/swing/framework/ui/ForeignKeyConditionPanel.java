@@ -17,7 +17,7 @@ import is.codion.swing.framework.model.SwingForeignKeyConditionModel;
 import javax.swing.JComponent;
 
 /**
- * A column condition panel based on foreign key properties.
+ * A column condition panel based on a foreign key.
  */
 public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity, ForeignKeyProperty, Entity> {
 
@@ -56,10 +56,8 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
       if (model instanceof SwingForeignKeyConditionModel) {
         final SwingEntityComboBoxModel boxModel = ((SwingForeignKeyConditionModel) model).getEntityComboBoxModel();
         boxModel.refresh();
-        final EntityComboBox field = new EntityComboBox(boxModel);
-        MaximumMatch.enable(field);
 
-        return field;
+        return MaximumMatch.enable(new EntityComboBox(boxModel));
       }
 
       return TextFields.selectAllOnFocusGained(new EntityLookupField(((ForeignKeyConditionModel) model).getEntityLookupModel()));
