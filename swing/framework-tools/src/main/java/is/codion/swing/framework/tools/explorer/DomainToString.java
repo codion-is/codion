@@ -150,7 +150,7 @@ final class DomainToString {
   }
 
   private static String getInterfaceName(final String tableName, final boolean uppercase) {
-    String name = tableName;
+    String name = tableName.toLowerCase();
     if (name.contains(".")) {
       name = name.substring(name.lastIndexOf('.') + 1);
     }

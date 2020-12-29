@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -280,17 +281,20 @@ public final class Text {
 
   /**
    * Converts a string with underscores into a camelCaseString.
-   * Just don't use this, it's not bulletproof.
+   * Just don't use this, it's far from bulletproof.
    * @param text the text
    * @return a camelCase version of the given text
    */
   public static String underscoreToCamelCase(final String text) {
-    final String string = requireNonNull(text).toLowerCase();
+    if (!requireNonNull(text, "text").contains("_")) {
+      return text;
+    }
     final StringBuilder builder = new StringBuilder();
     boolean firstDone = false;
-    final String[] strings = string.split("_");
-    if (strings.length == 1) {
-      return string;
+    final List<String> strings = Arrays.stream(text.toLowerCase().split("_"))
+            .filter(string -> !string.isEmpty()).collect(Collectors.toList());
+    if (strings.size() == 1) {
+      return strings.get(0);
     }
     for (final String split : strings) {
       if (!firstDone) {
