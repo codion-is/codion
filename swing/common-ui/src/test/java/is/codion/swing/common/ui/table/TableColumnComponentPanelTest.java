@@ -17,26 +17,34 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TableColumnComponentPanelTest {
 
-  private final TableColumnComponentPanel<JPanel> panel;
-  private final SwingFilteredTableColumnModel<?, Integer> columnModel;
-
-  private final TableColumn column0 = new TableColumn(0, 20);
-  private final TableColumn column1 = new TableColumn(1, 20);
-  private final TableColumn column2 = new TableColumn(2, 20);
+  private final TableColumn column0 = new TableColumn(0);
+  private final TableColumn column1 = new TableColumn(1);
+  private final TableColumn column2 = new TableColumn(2);
 
   public TableColumnComponentPanelTest() {
     column0.setIdentifier(0);
     column1.setIdentifier(1);
     column2.setIdentifier(2);
+  }
 
-    columnModel = new SwingFilteredTableColumnModel<>(asList(column0, column1, column2), null);
-    columnModel.hideColumn(1);
-    panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
-    assertTrue(panel.getColumnComponents().containsKey(column1));
+  @Test
+  public void wrongColumn() {
+    final SwingFilteredTableColumnModel<?, Integer> columnModel =
+            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2), null);
+    final Map<TableColumn, JPanel> columnComponents = createColumnComponents(columnModel);
+    columnComponents.put(new TableColumn(3), new JPanel());
+    assertThrows(IllegalArgumentException.class, () -> new TableColumnComponentPanel<>(columnModel, columnComponents));
   }
 
   @Test
   public void showColumn() {
+    final SwingFilteredTableColumnModel<?, Integer> columnModel =
+            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2), null);
+    columnModel.hideColumn(1);
+
+    final TableColumnComponentPanel<JPanel> panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
+    assertTrue(panel.getColumnComponents().containsKey(column1));
+
     assertNull(panel.getColumnComponents().get(column1).getParent());
     columnModel.showColumn(1);
     assertNotNull(panel.getColumnComponents().get(column1).getParent());
@@ -44,6 +52,19 @@ public class TableColumnComponentPanelTest {
     assertNull(panel.getColumnComponents().get(column2).getParent());
     columnModel.showColumn(2);
     assertNotNull(panel.getColumnComponents().get(column2).getParent());
+  }
+
+  @Test
+  public void width() {
+    final SwingFilteredTableColumnModel<?, Integer> columnModel =
+            new SwingFilteredTableColumnModel<>(asList(column0, column1, column2), null);
+    final TableColumnComponentPanel<JPanel> panel = new TableColumnComponentPanel<>(columnModel, createColumnComponents(columnModel));
+    column0.setWidth(100);
+    assertEquals(100, panel.getColumnComponents().get(column0).getPreferredSize().width);
+    column1.setWidth(90);
+    assertEquals(90, panel.getColumnComponents().get(column1).getPreferredSize().width);
+    column2.setWidth(80);
+    assertEquals(80, panel.getColumnComponents().get(column2).getPreferredSize().width);
   }
 
   private static Map<TableColumn, JPanel> createColumnComponents(final SwingFilteredTableColumnModel<?, ?> columnModel) {
