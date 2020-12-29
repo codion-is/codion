@@ -9,11 +9,11 @@ import javax.swing.JComboBox;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class CompletionDocumentTest {
+public final class CompletionTest {
 
   @Test
   public void setTwice() {
-    final JComboBox<?> comboBox = MaximumMatch.enable(new JComboBox<>());
-    assertThrows(IllegalStateException.class,() -> MaximumMatch.enable(comboBox));
+    final JComboBox<?> comboBox = Completion.maximumMatch(new JComboBox<>());
+    assertThrows(IllegalStateException.class,() -> Completion.maximumMatch(comboBox));
   }
 }
