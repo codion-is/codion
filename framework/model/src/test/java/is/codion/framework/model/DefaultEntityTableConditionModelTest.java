@@ -160,14 +160,14 @@ public class DefaultEntityTableConditionModelTest {
   public void testSimpleSearchString() {
     final String value = "test";
     final String wildcard = Property.WILDCARD_CHARACTER.get();
-    conditionModel.setSimpleConditionString(value);
+    conditionModel.getSimpleConditionStringValue().set(value);
     for (final ColumnConditionModel<?, ?, ?> model : conditionModel.getConditionModels()) {
       if (model.getTypeClass().equals(String.class)) {
-        assertEquals(wildcard + value + wildcard, model.getUpperBound());
+        assertEquals(wildcard + value + wildcard, model.getEqualValue());
         assertTrue(model.isEnabled());
       }
     }
-    conditionModel.setSimpleConditionString(null);
+    conditionModel.getSimpleConditionStringValue().set(null);
     for (final ColumnConditionModel<?, ?, ?> model : conditionModel.getConditionModels()) {
       if (model.getTypeClass().equals(String.class)) {
         assertNull(model.getUpperBound());

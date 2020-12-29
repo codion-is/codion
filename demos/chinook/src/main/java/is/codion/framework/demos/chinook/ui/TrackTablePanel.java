@@ -19,7 +19,6 @@ import is.codion.swing.common.ui.value.NumericalValues;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityComponentValues;
-import is.codion.swing.framework.ui.EntityTableConditionPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JComponent;
@@ -29,7 +28,7 @@ import java.util.List;
 public class TrackTablePanel extends EntityTablePanel {
 
   public TrackTablePanel(final SwingEntityTableModel tableModel) {
-    super(tableModel, new TrackComponentValues(), new EntityTableConditionPanel(tableModel));
+    super(tableModel, new TrackComponentValues());
   }
 
   @Override

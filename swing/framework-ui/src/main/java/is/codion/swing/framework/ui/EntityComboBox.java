@@ -72,10 +72,7 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    * @return an EntityComboBox for filtering this combo box
    */
   public EntityComboBox createForeignKeyFilterComboBox(final ForeignKey foreignKey) {
-    final EntityComboBox comboBox = new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKey));
-    MaximumMatch.enable(comboBox);
-
-    return comboBox;
+    return MaximumMatch.enable(new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKey)));
   }
 
   /**
