@@ -20,6 +20,7 @@ public final class AutoCompletion extends CompletionDocument {
   }
 
   /**
+   * Enables {@link AutoCompletion} on the given combobox
    * @param comboBox the combobox on which to enable autocompletion
    * @param <C> the combobox type
    * @param <T> the type
@@ -30,6 +31,7 @@ public final class AutoCompletion extends CompletionDocument {
   }
 
   /**
+   * Enables {@link AutoCompletion} on the given combobox
    * @param comboBox the combobox on which to enable autocompletion
    * @param normalize if YES then accented characters are normalized before matching
    * @param <C> the combobox type

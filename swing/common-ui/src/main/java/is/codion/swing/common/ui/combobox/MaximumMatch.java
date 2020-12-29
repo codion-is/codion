@@ -22,6 +22,7 @@ public final class MaximumMatch extends CompletionDocument {
   }
 
   /**
+   * Enables {@link MaximumMatch} on the given combobox
    * @param comboBox the combobox on which to enable maximum match
    * @param <C> the combobox type
    * @param <T> the type
@@ -32,6 +33,7 @@ public final class MaximumMatch extends CompletionDocument {
   }
 
   /**
+   * Enables {@link MaximumMatch} on the given combobox
    * @param comboBox the combobox on which to enable maximum match
    * @param normalize if YES then accented characters are normalized before matching
    * @param <C> the combobox type

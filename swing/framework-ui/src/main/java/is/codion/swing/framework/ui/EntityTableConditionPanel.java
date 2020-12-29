@@ -73,6 +73,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   /**
    * @return true if this panel has an advanced view which can be toggled on/off
    */
+  @Override
   public boolean canToggleAdvanced() {
     return true;
   }
@@ -81,6 +82,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * Allows the user to select one of the available condition panels for keyboard input focus,
    * if only one condition panel is available that one is selected automatically.
    */
+  @Override
   public void selectConditionPanel() {
     final List<Property<?>> conditionProperties = new ArrayList<>();
     conditionPanel.getColumnComponents().forEach((column, panel) -> {
@@ -93,9 +95,9 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
       final Property<?> property = conditionProperties.size() == 1 ? conditionProperties.get(0) :
               Dialogs.selectValue(this, conditionProperties, Messages.get(Messages.SELECT_INPUT_FIELD));
       if (property != null) {
-        final ColumnConditionPanel<Entity, Property<?>, ?> conditionPanel = getConditionPanel(property.getAttribute());
-        if (conditionPanel != null) {
-          conditionPanel.requestInputFocus();
+        final ColumnConditionPanel<Entity, Property<?>, ?> panel = getConditionPanel(property.getAttribute());
+        if (panel != null) {
+          panel.requestInputFocus();
         }
       }
     }
@@ -105,6 +107,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @param listener a listener notified when a condition panel receives focus, note this does not apply
    * for custom search panels
    */
+  @Override
   public void addFocusGainedListener(final EventDataListener<Property<?>> listener) {
     conditionPanel.getColumnComponents().values().forEach(panel -> ((ColumnConditionPanel<?, Property<?>, ?>) panel).addFocusGainedListener(listener));
   }
@@ -112,6 +115,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   /**
    * @return the controls provided by this condition panel, for toggling the advanced mode and clearing the condition
    */
+  @Override
   public ControlList getControls() {
     final ControlList controls = Controls.controlList(FrameworkMessages.get(FrameworkMessages.SEARCH));
     controls.setIcon(frameworkIcons().filter());
