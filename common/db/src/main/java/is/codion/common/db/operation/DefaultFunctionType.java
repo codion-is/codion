@@ -22,7 +22,7 @@ final class DefaultFunctionType<C, T, R> implements FunctionType<C, T, R>, Seria
 
   @Override
   public R execute(final C connection, final DatabaseFunction<C, T, R> function, final List<T> arguments) throws DatabaseException {
-    return function.execute(connection, arguments);
+    return requireNonNull(function, "function").execute(connection, arguments);
   }
 
   @Override
