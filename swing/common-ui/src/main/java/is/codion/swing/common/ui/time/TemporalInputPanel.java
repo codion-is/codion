@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.time;
 
-import is.codion.common.DateParser;
+import is.codion.common.DateTimeParser;
 import is.codion.common.Util;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.Components;
@@ -45,21 +45,21 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   private final JFormattedTextField inputField;
   private final String dateFormat;
   private final DateTimeFormatter formatter;
-  private final DateParser<T> dateParser;
+  private final DateTimeParser<T> dateTimeParser;
 
   /**
    * Instantiates a new TemporalInputPanel.
    * @param inputField the input field
    * @param dateFormat the date format
-   * @param dateParser the dateParser
+   * @param dateTimeParser the dateTimeParser
    * @param enabledState a StateObserver controlling the enabled state of the input field and button
    */
   public TemporalInputPanel(final JFormattedTextField inputField, final String dateFormat,
-                            final DateParser<T> dateParser, final StateObserver enabledState) {
+                            final DateTimeParser<T> dateTimeParser, final StateObserver enabledState) {
     super(new BorderLayout());
     this.inputField = requireNonNull(inputField, "inputField");
     this.dateFormat = requireNonNull(dateFormat, "dateFormat");
-    this.dateParser = requireNonNull(dateParser, "dateParser");
+    this.dateTimeParser = requireNonNull(dateTimeParser, "dateTimeParser");
     this.formatter = DateTimeFormatter.ofPattern(dateFormat);
     add(inputField, BorderLayout.CENTER);
     addFocusListener(new InputFocusAdapter(inputField));
@@ -82,7 +82,7 @@ public class TemporalInputPanel<T extends Temporal> extends JPanel {
   public final T getTemporal() throws DateTimeParseException {
     final String text = inputField.getText();
     if (!text.contains("_")) {
-      return dateParser.parse(text, formatter);
+      return dateTimeParser.parse(text, formatter);
     }
 
     return null;

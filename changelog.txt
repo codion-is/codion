@@ -6581,3 +6581,4 @@
   DefaultMethodLogger renamed and DefaultMethodLogger.DefaultEntry added
   ClientMonitorPanel bug fixed, refactored
   ColumnConditionPanel.BoundFieldProvider renamed BoundFieldFactory, some methods renamed
+  DateParser renamed DateTimeParser

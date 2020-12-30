@@ -11,7 +11,7 @@ import java.time.temporal.Temporal;
  * Parses a Temporal value from text with a provided formatter
  * @param <T> the Temporal type
  */
-public interface DateParser<T extends Temporal> {
+public interface DateTimeParser<T extends Temporal> {
 
   /**
    * Parses the given text with the given formatter
