@@ -133,7 +133,6 @@ public interface ColumnConditionModel<R, K, T> {
   /**
    * The default implementation simply returns the row, assuming it is a Comparable instance.
    * @param comparableFunction the function converting from a Row object to a Comparable for the underlying column
-   * @return a Comparable from the given row to compare with this condition model's value.
    */
   void setComparableFunction(Function<R, Comparable<T>> comparableFunction);
 

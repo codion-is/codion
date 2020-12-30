@@ -3,10 +3,10 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.MethodLogger;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPool;
+import is.codion.common.logging.MethodLogger;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
@@ -36,6 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static is.codion.common.logging.MethodLogger.methodLogger;
 import static is.codion.framework.db.local.LocalEntityConnections.createConnection;
 
 final class EntityConnectionHandler implements InvocationHandler {
@@ -118,7 +119,7 @@ final class EntityConnectionHandler implements InvocationHandler {
     this.remoteClient = remoteClient;
     this.connectionPool = database.getConnectionPool(remoteClient.getDatabaseUser().getUsername());
     this.database = database;
-    this.methodLogger = new MethodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(), new EntityArgumentToString(domain.getEntities()));
+    this.methodLogger = methodLogger(LocalEntityConnection.CONNECTION_LOG_SIZE.get(), new EntityArgumentToString(domain.getEntities()));
     this.logIdentifier = remoteClient.getUser().getUsername().toLowerCase() + "@" + remoteClient.getClientTypeId();
     this.userDescription = "Remote user: " + remoteClient.getUser().getUsername() + ", database user: " + remoteClient.getDatabaseUser().getUsername();
     try {

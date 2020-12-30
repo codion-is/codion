@@ -4,10 +4,10 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.Configuration;
-import is.codion.common.MethodLogger;
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.result.ResultIterator;
+import is.codion.common.logging.MethodLogger;
 import is.codion.common.value.PropertyValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;

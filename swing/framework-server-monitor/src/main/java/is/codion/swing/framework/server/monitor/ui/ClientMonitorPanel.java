@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
+import is.codion.common.rmi.server.RemoteClient;
 import is.codion.swing.common.ui.control.ControlList;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -25,22 +26,20 @@ import java.rmi.RemoteException;
 public final class ClientMonitorPanel extends JPanel {
 
   private ClientMonitor model;
-  private final ClientInstanceMonitorPanel clientInstancePanel;
-  private final JList<ClientInstanceMonitor> clientInstanceList = new JList<>();
+  private final JList<RemoteClient> clientList = new JList<>();
 
   /**
    * Instantiates a new ClientMonitorPanel
    * @throws RemoteException in case of an exception
    */
   public ClientMonitorPanel() throws RemoteException {
-    this.clientInstancePanel = new ClientInstanceMonitorPanel();
     initializeUI();
   }
 
   public void setModel(final ClientMonitor model) {
     this.model = model;
     if (model != null) {
-      clientInstanceList.setModel(model.getClientInstanceListModel());
+      clientList.setModel(model.getRemoteClientListModel());
     }
   }
 
@@ -51,41 +50,46 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    setLayout(Layouts.borderLayout());
-    clientInstanceList.getSelectionModel().addListSelectionListener(e -> {
+    clientList.setComponentPopupMenu(initializePopupMenu());
+
+    final JPanel clientInstanceBase = new JPanel(Layouts.borderLayout());
+    final JScrollPane clientInstanceScroller = new JScrollPane(clientList);
+    clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
+    clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
+    clientInstanceBase.add(new JButton(Controls.control(this::refresh, "Refresh")), BorderLayout.SOUTH);
+
+    final JPanel clientInstancePanel = new JPanel(Layouts.borderLayout());
+    final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    splitPane.setOneTouchExpandable(true);
+    splitPane.setContinuousLayout(true);
+    splitPane.setLeftComponent(clientInstanceBase);
+    splitPane.setRightComponent(clientInstancePanel);
+
+    clientList.getSelectionModel().addListSelectionListener(e -> {
+      clientInstancePanel.removeAll();
       try {
-        final ClientInstanceMonitor clientMonitor = clientInstanceList.getSelectedValue();
-        if (clientMonitor != null) {
-          clientInstancePanel.setModel(clientMonitor);
-          repaint();
+        final RemoteClient remoteClient = clientList.getSelectedValue();
+        if (model != null && remoteClient != null) {
+          final ClientInstanceMonitorPanel clientMonitor = new ClientInstanceMonitorPanel(new ClientInstanceMonitor(model.getServer(), remoteClient));
+          clientInstancePanel.add(clientMonitor, BorderLayout.CENTER);
         }
+        revalidate();
+        repaint();
       }
       catch (final RemoteException ex) {
         throw new RuntimeException(ex);
       }
     });
-    clientInstanceList.setComponentPopupMenu(initializePopupMenu());
-
-    final JPanel clientInstanceBase = new JPanel(Layouts.borderLayout());
-    final JScrollPane clientInstanceScroller = new JScrollPane(clientInstanceList);
-    clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
-    clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
-    clientInstanceBase.add(new JButton(Controls.control(this::refresh, "Refresh")), BorderLayout.SOUTH);
-
-    final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    splitPane.setOneTouchExpandable(true);
-    splitPane.setLeftComponent(clientInstanceBase);
-    splitPane.setRightComponent(clientInstancePanel);
-
+    setLayout(Layouts.borderLayout());
     add(splitPane, BorderLayout.CENTER);
   }
 
   private JPopupMenu initializePopupMenu() {
     final ControlList controls = Controls.controlList();
     controls.add(Controls.control(() -> {
-      for (final ClientInstanceMonitor clientMonitor : clientInstanceList.getSelectedValuesList()) {
-        clientMonitor.disconnect();
-        model.getClientInstanceListModel().removeElement(clientMonitor);
+      for (final RemoteClient remoteClient : clientList.getSelectedValuesList()) {
+        model.getServer().disconnect(remoteClient.getClientId());
+        model.getRemoteClientListModel().removeElement(remoteClient);
       }
     }, "Disconnect"));
 
