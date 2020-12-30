@@ -119,20 +119,20 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
                               final Operator... operators) {
-    this(conditionModel, toggleAdvancedButton, new DefaultBoundFieldProvider<>(conditionModel), operators);
+    this(conditionModel, toggleAdvancedButton, new DefaultBoundFieldFactory<>(conditionModel), operators);
   }
 
   /**
    * Instantiates a new ColumnConditionPanel.
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
-   * @param boundFieldProvider the input field provider
+   * @param boundFieldFactory the input field factory
    * @param operators the search operators available to this condition panel
    */
   public ColumnConditionPanel(final ColumnConditionModel<R, C, T> conditionModel, final ToggleAdvancedButton toggleAdvancedButton,
-                              final BoundFieldProvider boundFieldProvider, final Operator... operators) {
-    this(conditionModel, toggleAdvancedButton, boundFieldProvider.initializeEqualValueField(),
-            boundFieldProvider.initializeUpperBoundField(), boundFieldProvider.initializeLowerBoundField(), operators);
+                              final BoundFieldFactory boundFieldFactory, final Operator... operators) {
+    this(conditionModel, toggleAdvancedButton, boundFieldFactory.createEqualField(),
+            boundFieldFactory.createUpperBoundField(), boundFieldFactory.createLowerBoundField(), operators);
   }
 
   /**
@@ -358,56 +358,55 @@ public class ColumnConditionPanel<R, C, T> extends JPanel {
   /**
    * Provides a equal, upper and lower bound input fields for a ColumnConditionPanel
    */
-  public interface BoundFieldProvider {
+  public interface BoundFieldFactory {
 
     /**
      * @return the equal value field
      */
-    JComponent initializeEqualValueField();
+    JComponent createEqualField();
 
     /**
      * @return a upper bound input field
      */
-    JComponent initializeUpperBoundField();
+    JComponent createUpperBoundField();
 
     /**
      * @return a lower bound input field
      */
-    JComponent initializeLowerBoundField();
+    JComponent createLowerBoundField();
   }
 
-  private static final class DefaultBoundFieldProvider<T> implements BoundFieldProvider {
+  private static final class DefaultBoundFieldFactory<T> implements BoundFieldFactory {
 
     private final ColumnConditionModel<?, ?, T> columnConditionModel;
 
-    private DefaultBoundFieldProvider(final ColumnConditionModel<?, ?, T> columnConditionModel) {
-      requireNonNull(columnConditionModel, "columnConditionModel");
-      this.columnConditionModel = columnConditionModel;
+    private DefaultBoundFieldFactory(final ColumnConditionModel<?, ?, T> columnConditionModel) {
+      this.columnConditionModel = requireNonNull(columnConditionModel, "columnConditionModel");
     }
 
-    public JComponent initializeEqualValueField() {
-      return initializeField(columnConditionModel.getEqualValueSet().value());
+    public JComponent createEqualField() {
+      return createField(columnConditionModel.getEqualValueSet().value());
     }
 
     @Override
-    public JComponent initializeUpperBoundField() {
+    public JComponent createUpperBoundField() {
       if (columnConditionModel.getTypeClass().equals(Boolean.class)) {
         return null;//no lower bound field required for boolean values
       }
 
-      return initializeField(columnConditionModel.getUpperBoundValue());
+      return createField(columnConditionModel.getUpperBoundValue());
     }
 
     @Override
-    public JComponent initializeLowerBoundField() {
+    public JComponent createLowerBoundField() {
       if (columnConditionModel.getTypeClass().equals(Boolean.class)) {
         return null;//no lower bound field required for boolean values
       }
 
-      return initializeField(columnConditionModel.getLowerBoundValue());
+      return createField(columnConditionModel.getLowerBoundValue());
     }
 
-    private JComponent initializeField(final Value<?> value) {
+    private JComponent createField(final Value<?> value) {
       final Class<?> typeClass = columnConditionModel.getTypeClass();
       if (typeClass.equals(Boolean.class)) {
         final NullableCheckBox checkBox = new NullableCheckBox(new NullableToggleButtonModel());
