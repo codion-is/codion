@@ -981,8 +981,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       statement = prepareStatement(selectQuery);
       resultSet = executeStatement(statement, selectQuery, selectCondition, entityDefinition);
 
-      return new EntityResultIterator(statement, resultSet, new EntityResultPacker(
-              entityDefinition, propertiesToSelect), selectCondition.getFetchCount());
+      return new EntityResultIterator(statement, resultSet,
+              new EntityResultPacker(entityDefinition, propertiesToSelect), selectCondition.getFetchCount());
     }
     catch (final SQLException e) {
       closeSilently(resultSet);
@@ -1254,12 +1254,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     for (int i = 0; i < statementProperties.size(); i++) {
-      setParameterValue(statement, i + 1, statementValues.get(i), (ColumnProperty<Object>) statementProperties.get(i));
+      setParameterValue(statement, (ColumnProperty<Object>) statementProperties.get(i), statementValues.get(i), i + 1);
     }
   }
 
-  private static void setParameterValue(final PreparedStatement statement, final int parameterIndex,
-                                        final Object value, final ColumnProperty<Object> property) throws SQLException {
+  private static void setParameterValue(final PreparedStatement statement, final ColumnProperty<Object> property,
+                                        final Object value, final int parameterIndex) throws SQLException {
     final Object columnValue = property.toColumnValue(value, statement);
     try {
       if (columnValue == null) {

@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.value;
 
-import is.codion.common.DateParser;
+import is.codion.common.DateTimeParser;
 
 import javax.swing.JFormattedTextField;
 import java.time.format.DateTimeFormatter;
@@ -13,13 +13,13 @@ import java.time.temporal.Temporal;
 final class TemporalFieldValue<V extends Temporal> extends FormattedTextComponentValue<V, JFormattedTextField> {
 
   private final DateTimeFormatter formatter;
-  private final DateParser<V> dateParser;
+  private final DateTimeParser<V> dateTimeParser;
 
   TemporalFieldValue(final JFormattedTextField textComponent, final String dateFormat,
-                     final UpdateOn updateOn, final DateParser<V> dateParser) {
+                     final UpdateOn updateOn, final DateTimeParser<V> dateTimeParser) {
     super(textComponent, null, updateOn);
     this.formatter = DateTimeFormatter.ofPattern(dateFormat);
-    this.dateParser = dateParser;
+    this.dateTimeParser = dateTimeParser;
   }
 
   @Override
@@ -30,7 +30,7 @@ final class TemporalFieldValue<V extends Temporal> extends FormattedTextComponen
   @Override
   protected V parseValueFromText(final String text) {
     try {
-      return dateParser.parse(text, formatter);
+      return dateTimeParser.parse(text, formatter);
     }
     catch (final DateTimeParseException e) {
       return null;

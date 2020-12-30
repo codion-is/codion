@@ -22,7 +22,7 @@ final class DefaultProcedureType<C, T> implements ProcedureType<C, T>, Serializa
 
   @Override
   public void execute(final C connection, final DatabaseProcedure<C, T> procedure, final List<T> arguments) throws DatabaseException {
-    procedure.execute(connection, arguments);
+    requireNonNull(procedure, "procedure").execute(connection, arguments);
   }
 
   @Override

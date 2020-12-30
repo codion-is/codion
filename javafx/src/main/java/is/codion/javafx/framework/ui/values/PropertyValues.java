@@ -3,7 +3,7 @@
  */
 package is.codion.javafx.framework.ui.values;
 
-import is.codion.common.DateParser;
+import is.codion.common.DateTimeParser;
 import is.codion.common.item.Item;
 import is.codion.common.item.Items;
 import is.codion.common.value.AbstractValue;
@@ -319,9 +319,9 @@ public final class PropertyValues {
   private static final class DateConverter<T extends Temporal> extends StringConverter<T> {
 
     private final DateTimeFormatter dateFormatter;
-    private final DateParser<T> parser;
+    private final DateTimeParser<T> parser;
 
-    private DateConverter(final DateTimeFormatter dateFormatter, final DateParser<T> parser) {
+    private DateConverter(final DateTimeFormatter dateFormatter, final DateTimeParser<T> parser) {
       this.dateFormatter = dateFormatter;
       this.parser = parser;
     }

@@ -27,6 +27,13 @@ public interface ProcedureType<C, T> {
    */
   void execute(C connection, DatabaseProcedure<C, T> procedure, List<T> arguments) throws DatabaseException;
 
+  /**
+   * Creates a {@link ProcedureType} with the given name and types.
+   * @param name
+   * @param <C> the connection type
+   * @param <T> the procedure argument type
+   * @return a new {@link ProcedureType}
+   */
   static <C, T> ProcedureType<C, T> procedureType(final String name) {
     return new DefaultProcedureType<>(name);
   }
