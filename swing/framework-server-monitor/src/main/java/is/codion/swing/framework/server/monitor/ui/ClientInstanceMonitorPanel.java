@@ -43,24 +43,19 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DateFormats.FULL_TIMESTAMP);
   private static final DateTimeFormatter DATE_TIME_FILENAME_FORMATTER = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 
+  private final ClientInstanceMonitor model;
+
   private final JTextField creationDateField = new JTextField();
   private final JCheckBox loggingEnabledCheckBox = new JCheckBox("Logging enabled");
   private final JTextArea logArea = new JTextArea();
   private final JTree treeLog = new JTree();
   private final JTextField searchField = new JTextField(12);
 
-  private ClientInstanceMonitor model;
-
   /**
    * Instantiates a new ClientInstanceMonitorPanel
    * @throws RemoteException in case of an exception
    */
-  public ClientInstanceMonitorPanel() throws RemoteException {
-    initializeUI();
-    updateView();
-  }
-
-  public void setModel(final ClientInstanceMonitor model) throws RemoteException {
+  public ClientInstanceMonitorPanel(final ClientInstanceMonitor model) throws RemoteException {
     this.model = model;
     loggingEnabledCheckBox.setModel(model.getLoggingEnabledButtonModel());
     logArea.setDocument(model.getLogDocument());
@@ -77,14 +72,13 @@ public final class ClientInstanceMonitorPanel extends JPanel {
         }
       }
     });
+    initializeUI();
     updateView();
   }
 
   public void updateView() throws RemoteException {
     creationDateField.setText(model == null ? "" : DATE_TIME_FORMATTER.format(model.getCreationDate()));
-    if (model != null) {
-      model.refreshLog();
-    }
+    model.refreshLog();
   }
 
   private void initializeUI() {
@@ -128,15 +122,11 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   private void scrollToNextSearchPosition() {
-    if (model != null) {
-      model.nextSearchPosition();
-    }
+    model.nextSearchPosition();
   }
 
   private void scrollToPreviousSearchPosition() {
-    if (model != null) {
-      model.previousSearchPosition();
-    }
+    model.previousSearchPosition();
   }
 
   private void saveLogToFile() throws IOException {

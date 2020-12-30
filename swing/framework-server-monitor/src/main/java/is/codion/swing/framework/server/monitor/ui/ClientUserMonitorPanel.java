@@ -110,6 +110,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     splitPane.setOneTouchExpandable(true);
+    splitPane.setContinuousLayout(true);
 
     splitPane.setLeftComponent(clientTypeBase);
 

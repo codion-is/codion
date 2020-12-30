@@ -23,7 +23,7 @@ public final class ClientMonitor {
   private final String clientTypeId;
   private final User user;
 
-  private final DefaultListModel<ClientInstanceMonitor> clientInstanceListModel = new DefaultListModel<>();
+  private final DefaultListModel<RemoteClient> clientInstanceListModel = new DefaultListModel<>();
 
   /**
    * Instantiates a new {@link ClientMonitor}
@@ -48,15 +48,19 @@ public final class ClientMonitor {
     final List<RemoteClient> clients = new ArrayList<>(clientTypeId == null ? server.getClients(user) : server.getClients(clientTypeId));
     clients.sort(CLIENT_INFO_COMPARATOR);
     for (final RemoteClient client : clients) {
-      clientInstanceListModel.addElement(new ClientInstanceMonitor(server, client));
+      clientInstanceListModel.addElement(client);
     }
   }
 
   /**
    * @return the ListModel for displaying the client instances
    */
-  public DefaultListModel<ClientInstanceMonitor> getClientInstanceListModel() {
+  public DefaultListModel<RemoteClient> getRemoteClientListModel() {
     return clientInstanceListModel;
+  }
+
+  public EntityServerAdmin getServer() {
+    return server;
   }
 
   /**
