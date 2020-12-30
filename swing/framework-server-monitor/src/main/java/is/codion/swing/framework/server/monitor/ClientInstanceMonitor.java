@@ -3,8 +3,8 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.common.MethodLogger;
 import is.codion.common.Util;
+import is.codion.common.logging.MethodLogger;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.value.Value;

@@ -3,9 +3,9 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.MethodLogger;
 import is.codion.common.db.database.Databases;
 import is.codion.common.i18n.Messages;
+import is.codion.common.logging.MethodLogger;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.ClientLog;

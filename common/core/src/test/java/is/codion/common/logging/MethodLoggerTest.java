@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common;
+package is.codion.common.logging;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ public class MethodLoggerTest {
 
   @Test
   public void test() throws Exception {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = MethodLogger.methodLogger(10);
     assertFalse(logger.isEnabled());
     logger.setEnabled(true);
 
@@ -34,7 +34,7 @@ public class MethodLoggerTest {
 
   @Test
   public void serialize() throws IOException, ClassNotFoundException {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logAccess("method2");
@@ -48,7 +48,7 @@ public class MethodLoggerTest {
 
   @Test
   public void enableDisable() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = MethodLogger.methodLogger(10);
     assertFalse(logger.isEnabled());
     logger.logAccess("method");
 
@@ -66,7 +66,7 @@ public class MethodLoggerTest {
 
   @Test
   public void singleLevelLogging() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logExit("method");
@@ -87,7 +87,7 @@ public class MethodLoggerTest {
 
   @Test
   public void twoLevelLogging() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method", new Object[] {"param1", "param2"});
     logger.logAccess("subMethod");
@@ -110,7 +110,7 @@ public class MethodLoggerTest {
 
   @Test
   public void twoLevelLoggingSameMethodName() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logAccess("method");
@@ -133,7 +133,7 @@ public class MethodLoggerTest {
 
   @Test
   public void threeLevelLogging() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("one");
     logger.logAccess("two");
@@ -172,7 +172,7 @@ public class MethodLoggerTest {
 
   @Test
   public void exitBeforeAccess() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logExit("method");
@@ -181,7 +181,7 @@ public class MethodLoggerTest {
 
   @Test
   public void wrongMethodName() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("method");
     assertThrows(IllegalStateException.class, () -> logger.logExit("anotherMethod"));
@@ -189,7 +189,7 @@ public class MethodLoggerTest {
 
   @Test
   public void appendLogEntry() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = MethodLogger.methodLogger(10);
     logger.setEnabled(true);
     logger.logAccess("one");
     logger.logAccess("two");

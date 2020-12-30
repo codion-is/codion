@@ -3,7 +3,7 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.MethodLogger;
+import is.codion.common.logging.MethodLogger;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

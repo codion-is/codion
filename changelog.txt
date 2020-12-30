@@ -6577,3 +6577,5 @@
   MethodLogger, some renaming
   ClientInstanceMonitor, ClientInstanceMonitorPanel, log text area now searchable
   Changed some server ports for unit testing, so that unit tests can be run while the server is running on the same machine
+  MethodLogger and MethodLogger.Entry now interfaces, moved to logging package
+  DefaultMethodLogger renamed and DefaultMethodLogger.DefaultEntry added

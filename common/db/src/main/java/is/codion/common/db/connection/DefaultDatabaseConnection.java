@@ -3,10 +3,10 @@
  */
 package is.codion.common.db.connection;
 
-import is.codion.common.MethodLogger;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.result.ResultPacker;
+import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
 

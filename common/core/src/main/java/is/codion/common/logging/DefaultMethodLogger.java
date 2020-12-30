@@ -1,7 +1,9 @@
 /*
  * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common;
+package is.codion.common.logging;
+
+import is.codion.common.Text;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -10,7 +12,6 @@ import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -20,83 +21,50 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static java.util.Arrays.stream;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
 
 /**
- * A method call logger allowing logging of nested method calls.
  * TODO this class should be able to handle/recover from incorrect usage, not crash the application
  */
-public final class MethodLogger {
+final class DefaultMethodLogger implements MethodLogger {
 
-  private final Deque<Entry> callStack = new LinkedList<>();
+  private final Deque<DefaultEntry> callStack = new LinkedList<>();
   private final LinkedList<Entry> entries = new LinkedList<>();
   private final Function<Object, String> argumentStringProvider;
   private final int maxSize;
 
-  private boolean enabled;
+  private boolean enabled = false;
 
-  /**
-   * Instantiates a new MethodLogger, disabled by default.
-   * @param maxSize the maximum log size
-   */
-  public MethodLogger(final int maxSize) {
-    this(maxSize, new ArgumentToString());
-  }
-
-  /**
-   * Instantiates a new MethodLogger, disabled by default.
-   * @param maxSize the maximum log size
-   * @param argumentStringProvider responsible for providing String representations of method arguments
-   */
-  public MethodLogger(final int maxSize, final Function<Object, String> argumentStringProvider) {
+  DefaultMethodLogger(final int maxSize, final Function<Object, String> argumentStringProvider) {
     this.maxSize = maxSize;
-    this.argumentStringProvider = requireNonNull(argumentStringProvider);
+    this.argumentStringProvider = requireNonNull(argumentStringProvider, "argumentStringProvider");
   }
 
-  /**
-   * @param method the method being accessed
-   */
+  @Override
   public synchronized void logAccess(final String method) {
     if (enabled) {
-      callStack.push(new Entry(method, null));
+      callStack.push(new DefaultEntry(method, null));
     }
   }
 
-  /**
-   * @param method the method being accessed
-   * @param argument the method argument, can be a Object, a collection or an array
-   */
+  @Override
   public synchronized void logAccess(final String method, final Object argument) {
     if (enabled) {
-      callStack.push(new Entry(method, argumentStringProvider.apply(argument)));
+      callStack.push(new DefaultEntry(method, argumentStringProvider.apply(argument)));
     }
   }
 
-  /**
-   * @param method the method being exited
-   * @return the Entry
-   */
+  @Override
   public Entry logExit(final String method) {
     return logExit(method, null);
   }
 
-  /**
-   * @param method the method being exited
-   * @param exception the exception, if any
-   * @return the Entry
-   */
+  @Override
   public Entry logExit(final String method, final Throwable exception) {
     return logExit(method, exception, null);
   }
 
-  /**
-   * @param method the method being exited
-   * @param exception the exception, if any
-   * @param exitMessage the message to associate with exiting the method
-   * @return the Entry, or null if this logger is not enabled
-   */
+  @Override
   public synchronized Entry logExit(final String method, final Throwable exception, final String exitMessage) {
     if (!enabled) {
       return null;
@@ -104,7 +72,7 @@ public final class MethodLogger {
     if (callStack.isEmpty()) {
       throw new IllegalStateException("Call stack is empty when trying to log method exit: " + method);
     }
-    final Entry entry = callStack.pop();
+    final DefaultEntry entry = callStack.pop();
     if (!entry.getMethod().equals(method)) {//todo pop until found or empty?
       throw new IllegalStateException("Expecting method " + entry.getMethod() + " but got " + method + " when trying to log method exit");
     }
@@ -124,101 +92,27 @@ public final class MethodLogger {
     return entry;
   }
 
-  /**
-   * @return true if this logger is enabled
-   */
+  @Override
   public synchronized boolean isEnabled() {
     return enabled;
   }
 
-  /**
-   * @param enabled true to enable this logger
-   */
+  @Override
   public synchronized void setEnabled(final boolean enabled) {
     this.enabled = enabled;
     entries.clear();
     callStack.clear();
   }
 
-  /**
-   * @return an unmodifiable view of the log entries
-   */
+  @Override
   public synchronized List<Entry> getEntries() {
     return Collections.unmodifiableList(entries);
   }
 
-  /**
-   * Provides String representations of method arguments.
-   */
-  public static class ArgumentToString implements Function<Object, String> {
-
-    private static final String BRACKET_OPEN = "[";
-    private static final String BRACKET_CLOSE = "]";
-
-    @Override
-    public final String apply(final Object object) {
-      return toString(object);
-    }
-
-    /**
-     * Returns a String representation of the given object.
-     * @param object the object
-     * @return a String representation of the given object
-     */
-    protected String toString(final Object object) {
-      if (object == null) {
-        return "";
-      }
-      if (object instanceof List) {
-        return toString((List<?>) object);
-      }
-      if (object instanceof Collection) {
-        return toString((Collection<?>) object);
-      }
-      if (object.getClass().isArray()) {
-        return toString((Object[]) object);
-      }
-
-      return object.toString();
-    }
-
-    private String toString(final List<?> arguments) {
-      if (arguments.isEmpty()) {
-        return "";
-      }
-      if (arguments.size() == 1) {
-        return toString(arguments.get(0));
-      }
-
-      return BRACKET_OPEN + arguments.stream().map(this::toString).collect(joining(", ")) + BRACKET_CLOSE;
-    }
-
-    private String toString(final Collection<?> arguments) {
-      if (arguments.isEmpty()) {
-        return "";
-      }
-
-      return BRACKET_OPEN + arguments.stream().map(this::toString).collect(joining(", ")) + BRACKET_CLOSE;
-    }
-
-    private String toString(final Object[] arguments) {
-      if (arguments.length == 0) {
-        return "";
-      }
-      if (arguments.length == 1) {
-        return toString(arguments[0]);
-      }
-
-      return BRACKET_OPEN + stream(arguments).map(this::toString).collect(joining(", ")) + BRACKET_CLOSE;
-    }
-  }
-
-  /**
-   * A log entry
-   */
-  public static final class Entry implements Serializable {
+  private static final class DefaultEntry implements Entry, Serializable {
 
     private static final long serialVersionUID = 1;
+
     private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     private static final NumberFormat MICROSECONDS_FORMAT = NumberFormat.getIntegerInstance();
 
@@ -237,7 +131,7 @@ public final class MethodLogger {
      * @param method the method being logged
      * @param accessMessage the message associated with accessing the method
      */
-    public Entry(final String method, final String accessMessage) {
+    private DefaultEntry(final String method, final String accessMessage) {
       this(method, accessMessage, System.currentTimeMillis(), System.nanoTime());
     }
 
@@ -248,70 +142,57 @@ public final class MethodLogger {
      * @param accessTime the time to associate with accessing the method
      * @param accessTimeNano the nano time to associate with accessing the method
      */
-    public Entry(final String method, final String accessMessage, final long accessTime, final long accessTimeNano) {
+    private DefaultEntry(final String method, final String accessMessage, final long accessTime, final long accessTimeNano) {
       this.method = method;
       this.accessTime = accessTime;
       this.accessTimeNano = accessTimeNano;
       this.accessMessage = accessMessage;
     }
 
-    /**
-     * @return true if this log entry contains child log entries
-     */
+    @Override
     public boolean hasChildEntries() {
       return !childEntries.isEmpty();
     }
 
-    /**
-     * @return the child log entries
-     */
+    @Override
     public List<Entry> getChildEntries() {
       return Collections.unmodifiableList(childEntries);
     }
 
-    /**
-     * @return the name of the method logged by this entry
-     */
+    @Override
     public String getMethod() {
       return method;
     }
 
-    /**
-     * @return true if the exit time has been set for this entry
-     */
+    @Override
     public boolean isComplete() {
       return exitTime != 0;
     }
 
-    /**
-     * @return the method access time
-     */
+    @Override
     public long getAccessTime() {
       return accessTime;
     }
 
-    /**
-     * @return the exit time
-     */
+    @Override
     public long getExitTime() {
       return exitTime;
     }
 
-    /**
-     * @return the access message
-     */
+    @Override
     public String getAccessMessage() {
       return accessMessage;
     }
 
-    /**
-     * Returns the duration of the method call this entry represents in nanoseconds,
-     * this value is 0 or undefined until {@code setExitTime()}
-     * has been called, this can be checked via {@code isComplete()}.
-     * @return the duration of the method call this entry represents
-     */
+    @Override
     public long getDuration() {
       return exitTimeNano - accessTimeNano;
+    }
+
+    @Override
+    public void append(final StringBuilder builder) {
+      builder.append(toString()).append("\n");
+      appendLogEntries(builder, getChildEntries(), 1);
     }
 
     @Override
@@ -319,21 +200,8 @@ public final class MethodLogger {
       return toString(0);
     }
 
-    /**
-     * Appends this logger entry along with any child-entries to the given StringBuilder.
-     * @param builder the StringBuilder to append to.
-     */
-    public void append(final StringBuilder builder) {
-      builder.append(toString(0)).append("\n");
-      appendLogEntries(builder, getChildEntries(), 1);
-    }
-
-    /**
-     * Returns a string representation of this log entry.
-     * @param indentation the number of tab indents to prefix the string with
-     * @return a string representation of this log entry
-     */
-    private String toString(final int indentation) {
+    @Override
+    public String toString(final int indentation) {
       final String indentString = indentation > 0 ? Text.padString("", indentation, '\t', Text.Alignment.RIGHT) : "";
       final StringBuilder stringBuilder = new StringBuilder();
       final LocalDateTime accessDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(accessTime), TimeZone.getDefault().toZoneId());
@@ -361,7 +229,7 @@ public final class MethodLogger {
      * @param childEntry the child entry to add
      */
     private void addChildEntry(final Entry childEntry) {
-      this.childEntries.addLast(childEntry);
+      childEntries.addLast(childEntry);
     }
 
     /**
@@ -403,11 +271,9 @@ public final class MethodLogger {
      * @param indentationLevel the indentation to use for the given log entries
      */
     private static void appendLogEntries(final StringBuilder log, final List<Entry> entries, final int indentationLevel) {
-      if (entries != null) {
-        for (final MethodLogger.Entry entry : entries) {
-          log.append(entry.toString(indentationLevel)).append("\n");
-          appendLogEntries(log, entry.getChildEntries(), indentationLevel + 1);
-        }
+      for (final Entry entry : entries) {
+        log.append(entry.toString(indentationLevel)).append("\n");
+        appendLogEntries(log, entry.getChildEntries(), indentationLevel + 1);
       }
     }
 
