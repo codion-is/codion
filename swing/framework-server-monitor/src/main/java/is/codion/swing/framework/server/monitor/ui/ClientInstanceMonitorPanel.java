@@ -4,12 +4,10 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.DateFormats;
-import is.codion.common.MethodLogger;
-import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.user.User;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.value.TextValues;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
@@ -23,13 +21,19 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
+import javax.swing.text.BadLocationException;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
+import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
+import static is.codion.swing.common.ui.control.Controls.*;
 
 /**
  * A ClientInstanceMonitorPanel
@@ -43,6 +47,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   private final JCheckBox loggingEnabledCheckBox = new JCheckBox("Logging enabled");
   private final JTextArea logArea = new JTextArea();
   private final JTree treeLog = new JTree();
+  private final JTextField searchField = new JTextField(12);
 
   private ClientInstanceMonitor model;
 
@@ -58,30 +63,28 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   public void setModel(final ClientInstanceMonitor model) throws RemoteException {
     this.model = model;
     loggingEnabledCheckBox.setModel(model.getLoggingEnabledButtonModel());
+    logArea.setDocument(model.getLogDocument());
+    logArea.setHighlighter(model.getLogHighlighter());
     treeLog.setModel(model.getLogTreeModel());
+    model.getSearchStringValue().link(TextValues.textValue(searchField));
+    model.getCurrentSearchTextPosition().addDataListener(currentSearchPosition -> {
+      if (currentSearchPosition != null) {
+        try {
+          logArea.scrollRectToVisible(logArea.modelToView(currentSearchPosition));
+        }
+        catch (final BadLocationException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    });
     updateView();
   }
 
   public void updateView() throws RemoteException {
-    final StringBuilder log = new StringBuilder();
+    creationDateField.setText(model == null ? "" : DATE_TIME_FORMATTER.format(model.getCreationDate()));
     if (model != null) {
-      final ClientLog serverLog = model.getLog();
-      if (serverLog != null) {
-        for (final MethodLogger.Entry entry : serverLog.getEntries()) {
-          entry.append(log);
-        }
-      }
-      else {
-        log.append("Disconnected!");
-      }
-      final LocalDateTime creationDate = model.getCreationDate();
-      creationDateField.setText(creationDate == null ? "unknown" : DATE_TIME_FORMATTER.format(creationDate));
-      model.refreshLogTreeModel();
+      model.refreshLog();
     }
-    else {
-      creationDateField.setText("");
-    }
-    logArea.setText(log.toString());
   }
 
   private void initializeUI() {
@@ -95,24 +98,45 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     infoBase.add(infoPanel, BorderLayout.CENTER);
     final JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
     settingsPanel.add(loggingEnabledCheckBox);
-    settingsPanel.add(new JButton(Controls.control(this::updateView, "Refresh log")));
+    settingsPanel.add(new JButton(control(this::updateView, "Refresh log")));
     infoBase.add(settingsPanel, BorderLayout.EAST);
     add(infoBase, BorderLayout.NORTH);
 
     logArea.setLineWrap(false);
     logArea.setEditable(false);
-    logArea.setComponentPopupMenu(Controls.popupMenu(
-            Controls.controlList(Controls.control(this::saveLogToFile, "Save to file..."))));
-    final JScrollPane scrollPane = new JScrollPane(logArea);
+    logArea.setComponentPopupMenu(popupMenu(controlList(control(this::saveLogToFile, "Save to file..."))));
+
+    addKeyEvent(searchField, KeyEvent.VK_DOWN, 0, 0, ON_KEY_PRESSED, control(this::scrollToNextSearchPosition));
+    addKeyEvent(searchField, KeyEvent.VK_UP, 0, 0, ON_KEY_PRESSED, control(this::scrollToPreviousSearchPosition));
+
+    final JPanel searchPanel = new JPanel(Layouts.borderLayout());
+    searchPanel.add(new JLabel("Search"), BorderLayout.WEST);
+    searchPanel.add(searchField, BorderLayout.CENTER);
+
+    final JPanel textLogPanel = new JPanel(Layouts.borderLayout());
+    textLogPanel.add(new JScrollPane(logArea), BorderLayout.CENTER);
+    textLogPanel.add(searchPanel, BorderLayout.SOUTH);
 
     treeLog.setRootVisible(false);
     final JScrollPane treeScrollPane = new JScrollPane(treeLog);
 
     final JTabbedPane logPane = new JTabbedPane(SwingConstants.TOP);
-    logPane.add(scrollPane, "Text");
+    logPane.add(textLogPanel, "Text");
     logPane.add(treeScrollPane, "Tree");
 
     add(logPane, BorderLayout.CENTER);
+  }
+
+  private void scrollToNextSearchPosition() {
+    if (model != null) {
+      model.nextSearchPosition();
+    }
+  }
+
+  private void scrollToPreviousSearchPosition() {
+    if (model != null) {
+      model.previousSearchPosition();
+    }
   }
 
   private void saveLogToFile() throws IOException {

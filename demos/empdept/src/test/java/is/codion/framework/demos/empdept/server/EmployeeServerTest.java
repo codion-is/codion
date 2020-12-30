@@ -28,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class EmployeeServerTest {
 
-  public static final int REGISTRY_PORT = 2221;
-  public static final int SERVER_PORT = 2223;
-  public static final int SERVER_ADMIN_PORT = 2224;
+  public static final int REGISTRY_PORT = 3221;
+  public static final int SERVER_PORT = 3223;
+  public static final int SERVER_ADMIN_PORT = 3224;
 
   @Test
   public void test() throws RemoteException, NotBoundException, LoginException,

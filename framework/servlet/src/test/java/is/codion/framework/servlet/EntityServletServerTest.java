@@ -656,8 +656,8 @@ public class EntityServletServerTest {
     HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(ServerHttps.TRUE);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(2223, 2221);
-    configuration.setServerAdminPort(2223);
+    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(3223, 3221);
+    configuration.setServerAdminPort(3223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
     configuration.setDatabase(Databases.getInstance());

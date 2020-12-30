@@ -311,8 +311,8 @@ public class EntityServerTest {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     ServerConfiguration.KEYSTORE.set("src/main/security/keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
-    final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(2223, 2221);
-    configuration.setServerAdminPort(2223);
+    final DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(3223, 3221);
+    configuration.setServerAdminPort(3223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setDatabase(Databases.getInstance());
     configuration.setStartupPoolUsers(singletonList(UNIT_TEST_USER));
