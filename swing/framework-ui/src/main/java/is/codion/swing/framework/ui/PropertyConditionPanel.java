@@ -13,6 +13,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 
+import static is.codion.swing.framework.ui.EntityInputComponents.createInputComponent;
+import static java.util.Objects.requireNonNull;
+
 /**
  * A column condition panel based on the Property class.
  * @param <C> the property type
@@ -22,10 +25,11 @@ public final class PropertyConditionPanel<C extends Property<T>, T> extends Colu
 
   /**
    * Instantiates a new PropertyConditionPanel.
-   * @param model the model to base this panel on
+   * @param columnConditionModel the model to base this panel on
    */
-  public PropertyConditionPanel(final ColumnConditionModel<Entity, C, T> model) {
-    super(model, ToggleAdvancedButton.NO, new PropertyBoundFieldProvider<>(model), getOperators(model));
+  public PropertyConditionPanel(final ColumnConditionModel<Entity, C, T> columnConditionModel) {
+    super(columnConditionModel, ToggleAdvancedButton.NO,
+            new PropertyBoundFieldFactory<>(columnConditionModel), getOperators(columnConditionModel));
   }
 
   private static <C extends Property<T>, T> Operator[] getOperators(final ColumnConditionModel<Entity, C, T> model) {
@@ -36,17 +40,17 @@ public final class PropertyConditionPanel<C extends Property<T>, T> extends Colu
     return Operator.values();
   }
 
-  private static final class PropertyBoundFieldProvider<C extends Property<T>, T> implements BoundFieldProvider {
+  private static final class PropertyBoundFieldFactory<C extends Property<T>, T> implements BoundFieldFactory {
 
-    private final ColumnConditionModel<Entity, C, T> model;
+    private final ColumnConditionModel<Entity, C, T> conditionModel;
 
-    private PropertyBoundFieldProvider(final ColumnConditionModel<Entity, C, T> model) {
-      this.model = model;
+    private PropertyBoundFieldFactory(final ColumnConditionModel<Entity, C, T> conditionModel) {
+      this.conditionModel = requireNonNull(conditionModel);
     }
 
     @Override
-    public JComponent initializeEqualValueField() {
-      final JComponent component = EntityInputComponents.createInputComponent(model.getColumnIdentifier(), model.getEqualValueSet().value());
+    public JComponent createEqualField() {
+      final JComponent component = createInputComponent(conditionModel.getColumnIdentifier(), conditionModel.getEqualValueSet().value());
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }
@@ -55,8 +59,12 @@ public final class PropertyConditionPanel<C extends Property<T>, T> extends Colu
     }
 
     @Override
-    public JComponent initializeUpperBoundField() {
-      final JComponent component = EntityInputComponents.createInputComponent(model.getColumnIdentifier(), model.getUpperBoundValue());
+    public JComponent createUpperBoundField() {
+      if (conditionModel.getTypeClass().equals(Boolean.class)) {
+        return null;//no upper bound field required for booleans
+      }
+
+      final JComponent component = createInputComponent(conditionModel.getColumnIdentifier(), conditionModel.getUpperBoundValue());
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }
@@ -65,12 +73,12 @@ public final class PropertyConditionPanel<C extends Property<T>, T> extends Colu
     }
 
     @Override
-    public JComponent initializeLowerBoundField() {
-      if (model.getTypeClass().equals(Boolean.class)) {
+    public JComponent createLowerBoundField() {
+      if (conditionModel.getTypeClass().equals(Boolean.class)) {
         return null;//no lower bound field required for booleans
       }
 
-      final JComponent component = EntityInputComponents.createInputComponent(model.getColumnIdentifier(), model.getLowerBoundValue());
+      final JComponent component = createInputComponent(conditionModel.getColumnIdentifier(), conditionModel.getLowerBoundValue());
       if (component instanceof JCheckBox) {
         ((JCheckBox) component).setHorizontalAlignment(SwingConstants.CENTER);
       }

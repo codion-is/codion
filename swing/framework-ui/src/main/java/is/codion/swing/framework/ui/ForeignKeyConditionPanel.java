@@ -23,36 +23,37 @@ public final class ForeignKeyConditionPanel extends ColumnConditionPanel<Entity,
 
   /**
    * Instantiates a new ForeignKeyConditionPanel.
-   * @param model the model to base this panel on
+   * @param foreignKeyConditionModel the model to base this panel on
    */
-  public ForeignKeyConditionPanel(final ForeignKeyConditionModel model) {
-    super(model, ToggleAdvancedButton.NO, new ForeignKeyBoundFieldProvider(model), Operator.EQUAL, Operator.NOT_EQUAL);
+  public ForeignKeyConditionPanel(final ForeignKeyConditionModel foreignKeyConditionModel) {
+    super(foreignKeyConditionModel, ToggleAdvancedButton.NO,
+            new ForeignKeyBoundFieldFactory(foreignKeyConditionModel), Operator.EQUAL, Operator.NOT_EQUAL);
   }
 
-  private static final class ForeignKeyBoundFieldProvider implements BoundFieldProvider {
+  private static final class ForeignKeyBoundFieldFactory implements BoundFieldFactory {
 
     private final ColumnConditionModel<Entity, ForeignKeyProperty, Entity> model;
 
-    private ForeignKeyBoundFieldProvider(final ColumnConditionModel<Entity, ForeignKeyProperty, Entity> model) {
+    private ForeignKeyBoundFieldFactory(final ColumnConditionModel<Entity, ForeignKeyProperty, Entity> model) {
       this.model = model;
     }
 
     @Override
-    public JComponent initializeEqualValueField() {
-      return initializeForeignKeyField();
+    public JComponent createEqualField() {
+      return createForeignKeyField();
     }
 
     @Override
-    public JComponent initializeUpperBoundField() {
+    public JComponent createUpperBoundField() {
       return null;
     }
 
     @Override
-    public JComponent initializeLowerBoundField() {
+    public JComponent createLowerBoundField() {
       return null;
     }
 
-    private JComponent initializeForeignKeyField() {
+    private JComponent createForeignKeyField() {
       if (model instanceof SwingForeignKeyConditionModel) {
         final SwingEntityComboBoxModel boxModel = ((SwingForeignKeyConditionModel) model).getEntityComboBoxModel();
         boxModel.refresh();
