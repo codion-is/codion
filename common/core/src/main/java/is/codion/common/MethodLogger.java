@@ -118,7 +118,7 @@ public final class MethodLogger {
       entries.addLast(entry);
     }
     else {
-      callStack.peek().addSubEntry(entry);
+      callStack.peek().addChildEntry(entry);
     }
 
     return entry;
@@ -222,7 +222,7 @@ public final class MethodLogger {
     private static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     private static final NumberFormat MICROSECONDS_FORMAT = NumberFormat.getIntegerInstance();
 
-    private final LinkedList<Entry> subEntries = new LinkedList<>();
+    private final LinkedList<Entry> childEntries = new LinkedList<>();
     private final String method;
     private final String accessMessage;
     private final long accessTime;
@@ -256,17 +256,17 @@ public final class MethodLogger {
     }
 
     /**
-     * @return true if this log entry contains sub log entries
+     * @return true if this log entry contains child log entries
      */
-    public boolean containsSubLog() {
-      return !subEntries.isEmpty();
+    public boolean hasChildEntries() {
+      return !childEntries.isEmpty();
     }
 
     /**
-     * @return the sub log entries
+     * @return the child log entries
      */
-    public List<Entry> getSubLog() {
-      return Collections.unmodifiableList(subEntries);
+    public List<Entry> getChildEntries() {
+      return Collections.unmodifiableList(childEntries);
     }
 
     /**
@@ -320,12 +320,12 @@ public final class MethodLogger {
     }
 
     /**
-     * Appends this logger entry along with any sub-entries to the given StringBuilder.
+     * Appends this logger entry along with any child-entries to the given StringBuilder.
      * @param builder the StringBuilder to append to.
      */
     public void append(final StringBuilder builder) {
       builder.append(toString(0)).append("\n");
-      appendLogEntries(builder, getSubLog(), 1);
+      appendLogEntries(builder, getChildEntries(), 1);
     }
 
     /**
@@ -357,11 +357,11 @@ public final class MethodLogger {
     }
 
     /**
-     * Adds a sub entry to this log entry
-     * @param subEntry the sub entry to add
+     * Adds a child entry to this log entry
+     * @param childEntry the child entry to add
      */
-    private void addSubEntry(final Entry subEntry) {
-      this.subEntries.addLast(subEntry);
+    private void addChildEntry(final Entry childEntry) {
+      this.childEntries.addLast(childEntry);
     }
 
     /**
@@ -406,7 +406,7 @@ public final class MethodLogger {
       if (entries != null) {
         for (final MethodLogger.Entry entry : entries) {
           log.append(entry.toString(indentationLevel)).append("\n");
-          appendLogEntries(log, entry.getSubLog(), indentationLevel + 1);
+          appendLogEntries(log, entry.getChildEntries(), indentationLevel + 1);
         }
       }
     }

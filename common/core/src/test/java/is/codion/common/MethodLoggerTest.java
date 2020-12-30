@@ -100,12 +100,12 @@ public class MethodLoggerTest {
 
     final MethodLogger.Entry lastEntry = logger.getEntries().get(0);
     assertEquals("method", lastEntry.getMethod());
-    assertTrue(lastEntry.containsSubLog());
-    final List<MethodLogger.Entry> subLog = lastEntry.getSubLog();
+    assertTrue(lastEntry.hasChildEntries());
+    final List<MethodLogger.Entry> subLog = lastEntry.getChildEntries();
     assertEquals(2, subLog.size());
     final MethodLogger.Entry subEntry = subLog.get(0);
     assertEquals("subMethod", subEntry.getMethod());
-    assertFalse(subEntry.containsSubLog());
+    assertFalse(subEntry.hasChildEntries());
   }
 
   @Test
@@ -123,12 +123,12 @@ public class MethodLoggerTest {
 
     final MethodLogger.Entry lastEntry = logger.getEntries().get(0);
     assertEquals("method", lastEntry.getMethod());
-    assertTrue(lastEntry.containsSubLog());
-    final List<MethodLogger.Entry> subLog = lastEntry.getSubLog();
+    assertTrue(lastEntry.hasChildEntries());
+    final List<MethodLogger.Entry> subLog = lastEntry.getChildEntries();
     assertEquals(2, subLog.size());
     final MethodLogger.Entry subEntry = subLog.get(0);
     assertEquals("method", subEntry.getMethod());
-    assertFalse(subEntry.containsSubLog());
+    assertFalse(subEntry.hasChildEntries());
   }
 
   @Test
@@ -150,24 +150,24 @@ public class MethodLoggerTest {
 
     final MethodLogger.Entry entry = logger.getEntries().get(0);
     assertEquals("one", entry.getMethod());
-    assertTrue(entry.containsSubLog());
-    final List<MethodLogger.Entry> subLog = entry.getSubLog();
+    assertTrue(entry.hasChildEntries());
+    final List<MethodLogger.Entry> subLog = entry.getChildEntries();
     assertEquals(2, subLog.size());
     final MethodLogger.Entry subEntry1 = subLog.get(0);
     assertEquals("two", subEntry1.getMethod());
-    assertTrue(entry.containsSubLog());
+    assertTrue(entry.hasChildEntries());
     final MethodLogger.Entry subEntry2 = subLog.get(1);
     assertEquals("two2", subEntry2.getMethod());
-    assertTrue(entry.containsSubLog());
+    assertTrue(entry.hasChildEntries());
 
-    final List<MethodLogger.Entry> subSubLog = subEntry1.getSubLog();
+    final List<MethodLogger.Entry> subSubLog = subEntry1.getChildEntries();
     final MethodLogger.Entry subSubEntry = subSubLog.get(0);
     assertEquals("three", subSubEntry.getMethod());
-    assertFalse(subSubEntry.containsSubLog());
-    final List<MethodLogger.Entry> subSubLog2 = subEntry2.getSubLog();
+    assertFalse(subSubEntry.hasChildEntries());
+    final List<MethodLogger.Entry> subSubLog2 = subEntry2.getChildEntries();
     final MethodLogger.Entry subSubEntry2 = subSubLog2.get(0);
     assertEquals("three2", subSubEntry2.getMethod());
-    assertFalse(subSubEntry2.containsSubLog());
+    assertFalse(subSubEntry2.hasChildEntries());
   }
 
   @Test

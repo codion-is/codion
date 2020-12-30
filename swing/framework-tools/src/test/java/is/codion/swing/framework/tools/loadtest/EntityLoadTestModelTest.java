@@ -135,8 +135,8 @@ public class EntityLoadTestModelTest {
   private static EntityServerConfiguration configure() {
     Clients.SERVER_HOST_NAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
-    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(2223, 2221);
-    configuration.setServerAdminPort(2223);
+    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(3223, 3221);
+    configuration.setServerAdminPort(3223);
     configuration.setAdminUser(Users.parseUser("scott:tiger"));
     configuration.setStartupPoolUsers(Collections.singletonList(UNIT_TEST_USER));
     configuration.setClientSpecificConnectionTimeouts(Collections.singletonMap("ClientTypeID", 10000));

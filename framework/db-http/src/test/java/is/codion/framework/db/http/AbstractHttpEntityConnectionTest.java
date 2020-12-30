@@ -274,8 +274,8 @@ abstract class AbstractHttpEntityConnectionTest {
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(ClientHttps.TRUE);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "../../framework/server/src/main/security/all_permissions.policy");
-    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(2223, 2221);
-    configuration.setServerAdminPort(2223);
+    final EntityServerConfiguration configuration = EntityServerConfiguration.configuration(3223, 3221);
+    configuration.setServerAdminPort(3223);
     configuration.setDatabase(Databases.getInstance());
     configuration.setDomainModelClassNames(singletonList(TestDomain.class.getName()));
     configuration.setSslEnabled(false);
