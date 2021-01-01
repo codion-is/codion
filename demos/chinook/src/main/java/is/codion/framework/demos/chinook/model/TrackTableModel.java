@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2020, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package is.codion.framework.demos.chinook.model;
 
