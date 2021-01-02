@@ -15,7 +15,10 @@ public class ItemRandomizerPanelTest {
 
   @Test
   public void test() {
-    final ItemRandomizer<String> model = new ItemRandomizerModel<>(5, "one", "two", "three");
+    final ItemRandomizer<String> model = new ItemRandomizerModel<>();
+    model.addItem("one", 5);
+    model.addItem("two", 5);
+    model.addItem("three", 5);
     final ItemRandomizerPanel<String> panel = new ItemRandomizerPanel<>(model);
     assertEquals(model, panel.getModel());
   }

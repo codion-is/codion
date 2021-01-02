@@ -148,6 +148,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   }
 
   private final class EnabledModelValue extends AbstractValue<Boolean> {
+
     private final T item;
 
     private EnabledModelValue(final T item) {
@@ -167,6 +168,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   }
 
   private static final class EnabledUIValue extends AbstractValue<Boolean> {
+
     private final ButtonModel buttonModel;
 
     private EnabledUIValue(final ButtonModel buttonModel) {
@@ -187,6 +189,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   }
 
   private final class WeightModelValue extends AbstractValue<Integer> {
+
     private final T item;
 
     private WeightModelValue(final T item) {
@@ -206,6 +209,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   }
 
   private static final class WeightUIValue extends AbstractValue<Integer> {
+
     private final SpinnerNumberModel spinnerModel;
 
     private WeightUIValue(final SpinnerNumberModel spinnerModel) {

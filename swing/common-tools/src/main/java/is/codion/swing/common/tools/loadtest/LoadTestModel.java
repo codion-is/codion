@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.tools.loadtest;
 
+import is.codion.common.Conjunction;
 import is.codion.common.Memory;
 import is.codion.common.TaskScheduler;
 import is.codion.common.Util;
@@ -10,6 +11,8 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.event.Events;
+import is.codion.common.state.State;
+import is.codion.common.state.States;
 import is.codion.common.user.User;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.randomizer.ItemRandomizerModel;
@@ -55,8 +58,11 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private static final double HUNDRED = 100d;
   private static final int MINIMUM_NUMBER_OF_THREADS = 12;
 
-  private final Event<Boolean> pausedChangedEvent = Events.event();
-  private final Event<Boolean> collectChartDataChangedEvent = Events.event();
+  private final State pausedState = States.state();
+  private final State collectChartDataState = States.state();
+  private final State chartUpdateSchedulerEnabledState =
+          States.combination(Conjunction.AND, pausedState.getReversedObserver(), collectChartDataState);
+
   private final Event<Integer> maximumThinkTimeChangedEvent = Events.event();
   private final Event<Integer> minimumThinkTimeChangedEvent = Events.event();
   private final Event<Integer> loginDelayFactorChangedEvent = Events.event();
@@ -71,8 +77,6 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private User user;
 
   private volatile boolean shuttingDown = false;
-  private volatile boolean paused = false;
-  private volatile boolean collectChartData = false;
 
   private final Deque<ApplicationRunner> applications = new ConcurrentLinkedDeque<>();
   private final Map<String, UsageScenario<T>> usageScenarios = new HashMap<>();
@@ -80,7 +84,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private final ScheduledExecutorService scheduledExecutor =
           newScheduledThreadPool(Math.max(MINIMUM_NUMBER_OF_THREADS, Runtime.getRuntime().availableProcessors() * 2));
   private final Counter counter = new Counter();
-  private final TaskScheduler updateChartDataScheduler;
+  private final TaskScheduler chartUpdateScheduler;
 
   private final XYSeries scenariosRunSeries = new XYSeries("Total");
   private final XYSeries delayedScenarioRunsSeries = new XYSeries("Warn. time exceeded");
@@ -131,20 +135,11 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     this.minimumThinkTime = maximumThinkTime / 2;
     this.loginDelayFactor = loginDelayFactor;
     this.applicationBatchSize = applicationBatchSize;
-    for (final UsageScenario<T> scenario : usageScenarios) {
-      this.usageScenarios.put(scenario.getName(), scenario);
-    }
+    usageScenarios.forEach(scenario -> this.usageScenarios.put(scenario.getName(), scenario));
     this.scenarioChooser = initializeScenarioChooser();
-    initializeChartData();
-    this.updateChartDataScheduler = new TaskScheduler(() -> {
-      if (shuttingDown || paused) {
-        return;
-      }
-      counter.updateRequestsPerSecond();
-      if (collectChartData && !paused) {
-        updateChartData();
-      }
-    }, DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
+    initializeChartModels();
+    this.chartUpdateScheduler = new TaskScheduler(new ChartUpdateTask(), DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS);
+    bindEvents();
   }
 
   @Override
@@ -260,12 +255,12 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   @Override
   public final int getUpdateInterval() {
-    return updateChartDataScheduler.getInterval();
+    return chartUpdateScheduler.getInterval();
   }
 
   @Override
   public final void setUpdateInterval(final int updateInterval) {
-    updateChartDataScheduler.setInterval(updateInterval);
+    chartUpdateScheduler.setInterval(updateInterval);
   }
 
   @Override
@@ -311,33 +306,20 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   @Override
-  public final boolean isPaused() {
-    return this.paused;
+  public final State getPausedState() {
+    return pausedState;
   }
 
   @Override
-  public final void setPaused(final boolean paused) {
-    this.paused = paused;
-    pausedChangedEvent.onEvent(this.paused);
-  }
-
-  @Override
-  public final boolean isCollectChartData() {
-    return collectChartData;
-  }
-
-  @Override
-  public final void setCollectChartData(final boolean collectChartData) {
-    this.collectChartData = collectChartData;
-    collectChartDataChangedEvent.onEvent(this.collectChartData);
+  public final State getCollectChartDataState() {
+    return collectChartDataState;
   }
 
   @Override
   public final void shutdown() {
     shuttingDown = true;
-    updateChartDataScheduler.stop();
+    chartUpdateScheduler.stop();
     scheduledExecutor.shutdown();
-    paused = false;
     synchronized (applications) {
       while (!applications.isEmpty()) {
         applications.pop().stop();
@@ -417,16 +399,6 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     return minimumThinkTimeChangedEvent.getObserver();
   }
 
-  @Override
-  public final EventObserver<Boolean> getPauseObserver() {
-    return pausedChangedEvent.getObserver();
-  }
-
-  @Override
-  public final EventObserver<Boolean> collectChartDataObserver() {
-    return collectChartDataChangedEvent.getObserver();
-  }
-
   /**
    * Runs the scenario with the given name on the given application
    * @param usageScenario the scenario to run
@@ -473,7 +445,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     return model;
   }
 
-  private void initializeChartData() {
+  private void initializeChartModels() {
     thinkTimeCollection.addSeries(minimumThinkTimeSeries);
     thinkTimeCollection.addSeries(maximumThinkTimeSeries);
     numberOfApplicationsCollection.addSeries(numberOfApplicationsSeries);
@@ -521,6 +493,17 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     }
   }
 
+  private void bindEvents() {
+    chartUpdateSchedulerEnabledState.addDataListener(active -> {
+      if (active) {
+        chartUpdateScheduler.start();
+      }
+      else {
+        chartUpdateScheduler.stop();
+      }
+    });
+  }
+
   private static double getSystemCpuLoad() {
     return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad();
   }
@@ -545,7 +528,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
           application = initializeApplication();
           LOG.debug("LoadTestModel initialized application: {}", application);
         }
-        if (!stopped && !paused) {
+        if (!stopped && !pausedState.get()) {
           runRandomScenario(application);
         }
         if (stopped) {
@@ -569,17 +552,20 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
         runScenario(scenario, application);
       }
       finally {
-        counter.incrementWorkRequests();
-        int maximumTime = 0;
-        final long workTimeMillis = (System.nanoTime() - currentTimeNano) / NANO_IN_MILLI;
-        if (scenario != null) {
-          counter.addScenarioDuration(scenario.getName(), (int) workTimeMillis);
-          maximumTime = scenario.getMaximumTime();
-        }
-        if (maximumTime > 0 && workTimeMillis > maximumTime) {
-          counter.incrementDelayedWorkRequests();
-        }
+        counter.addScenarioDuration(scenario, (int) ((System.nanoTime() - currentTimeNano) / NANO_IN_MILLI));
       }
+    }
+  }
+
+  private final class ChartUpdateTask implements Runnable {
+
+    @Override
+    public void run() {
+      if (shuttingDown) {
+        return;
+      }
+      counter.updateRequestsPerSecond();
+      updateChartData();
     }
   }
 
@@ -648,21 +634,14 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       return usageScenarioRates.get(scenarioName);
     }
 
-    private void addScenarioDuration(final String scenarioName, final int duration) {
+    private void addScenarioDuration(final UsageScenario<T> scenario, final int duration) {
       synchronized (scenarioDurations) {
-        if (!scenarioDurations.containsKey(scenarioName)) {
-          scenarioDurations.put(scenarioName, new LinkedList<>());
+        scenarioDurations.computeIfAbsent(scenario.getName(), scenarioName -> new LinkedList<>()).add(duration);
+        workRequestCounter++;
+        if (scenario.getMaximumTime() > 0 && duration > scenario.getMaximumTime()) {
+          delayedWorkRequestCounter++;
         }
-        scenarioDurations.get(scenarioName).add(duration);
       }
-    }
-
-    private void incrementWorkRequests() {
-      workRequestCounter++;
-    }
-
-    private void incrementDelayedWorkRequests() {
-      delayedWorkRequestCounter++;
     }
 
     private void updateRequestsPerSecond() {

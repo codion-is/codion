@@ -3,10 +3,6 @@
  */
 package is.codion.swing.common.tools.randomizer;
 
-import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
-import is.codion.common.event.Events;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -18,16 +14,6 @@ import java.util.Random;
 public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
   /**
-   * An Event fired when a weight value has changed
-   */
-  private final Event<Integer> weightsChangedEvent = Events.event();
-
-  /**
-   * An Event fired when the enabled status of an item has changed
-   */
-  private final Event<Boolean> enabledChangedEvent = Events.event();
-
-  /**
    * The items contained in this model
    */
   private final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>();
@@ -37,26 +23,6 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
    */
   private final Random random = new Random();
 
-  /**
-   * Instantiates a new empty RandomItemModel.
-   */
-  public ItemRandomizerModel() {
-    this(0);
-  }
-
-  /**
-   * Instantiates a new RandomItemModel with the given items.
-   * @param defaultWeight the default weight to assign to each initial item
-   * @param items the items to add to this model
-   */
-  public ItemRandomizerModel(final int defaultWeight, final T... items) {
-    if (items != null) {
-      for (final T item : items) {
-        this.items.add(new DefaultRandomItem<>(item, defaultWeight));
-      }
-    }
-  }
-
   @Override
   public void addItem(final T item, final int weight) {
     items.add(new DefaultRandomItem<>(item, weight));
@@ -64,22 +30,17 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
   @Override
   public void incrementWeight(final T item) {
-    final RandomItem<T> randomItem = getRandomItem(item);
-    randomItem.incrementWeight();
-    weightsChangedEvent.onEvent(randomItem.getWeight());
+    getRandomItem(item).incrementWeight();
   }
 
   @Override
   public void decrementWeight(final T item) {
-    final RandomItem<T> randomItem = getRandomItem(item);
-    randomItem.decrementWeight();
-    weightsChangedEvent.onEvent(randomItem.getWeight());
+    getRandomItem(item).decrementWeight();
   }
 
   @Override
   public void setWeight(final T item, final int weight) {
     getRandomItem(item).setWeight(weight);
-    weightsChangedEvent.onEvent(weight);
   }
 
   @Override
@@ -90,7 +51,6 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   @Override
   public final void setItemEnabled(final T item, final boolean enabled) {
     getRandomItem(item).setEnabled(enabled);
-    enabledChangedEvent.onEvent(enabled);
   }
 
   @Override
@@ -109,16 +69,6 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   @Override
-  public final EventObserver<Integer> getWeightsObserver() {
-    return weightsChangedEvent.getObserver();
-  }
-
-  @Override
-  public final EventObserver<Boolean> getEnabledObserver() {
-    return enabledChangedEvent.getObserver();
-  }
-
-  @Override
   public final T getRandomItem() {
     final int totalWeights = getTotalWeights();
     if (totalWeights == 0) {
@@ -134,7 +84,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
       }
     }
 
-    throw new IllegalArgumentException("getRandomItem did not find an item");
+    throw new IllegalStateException("getRandomItem() did not find an item");
   }
 
   @Override
@@ -166,20 +116,6 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     }
 
     throw new IllegalArgumentException("Item not found: " + item + ": " + item.getClass());
-  }
-
-  /**
-   * Notifies this model that the item weights have changed.
-   */
-  protected final void fireWeightsChangedEvent() {
-    weightsChangedEvent.onEvent();
-  }
-
-  /**
-   * @return a Random instance.
-   */
-  protected final Random getRandom() {
-    return random;
   }
 
   private int getTotalWeights() {

@@ -88,11 +88,10 @@ public class EntityLoadTestModelTest {
   public void testLoadTesting() throws Exception {
     final TestLoadTestModel loadTest = new TestLoadTestModel();
 
-    loadTest.setCollectChartData(true);
+    loadTest.getCollectChartDataState().set(true);
     loadTest.setUpdateInterval(350);
     loadTest.setLoginDelayFactor(0);
 
-    assertTrue(loadTest.isCollectChartData());
     assertEquals(350, loadTest.getUpdateInterval());
     assertEquals(0, loadTest.getLoginDelayFactor());
 
@@ -116,8 +115,7 @@ public class EntityLoadTestModelTest {
     assertEquals(0, loadTest.getUsageScenario("1").getUnsuccessfulRunCount());
     assertEquals(0, loadTest.getUsageScenario("2").getTotalRunCount());
 
-    loadTest.setPaused(true);
-    assertTrue(loadTest.isPaused());
+    loadTest.getPausedState().set(true);
 
     loadTest.resetChartData();
 
@@ -128,7 +126,6 @@ public class EntityLoadTestModelTest {
 
     Thread.sleep(500);
 
-    assertFalse(loadTest.isPaused());
     assertEquals(0, loadTest.getApplicationCount());
   }
 

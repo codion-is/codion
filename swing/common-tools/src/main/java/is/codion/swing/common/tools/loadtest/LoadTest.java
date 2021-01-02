@@ -4,6 +4,7 @@
 package is.codion.swing.common.tools.loadtest;
 
 import is.codion.common.event.EventObserver;
+import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 
@@ -95,14 +96,9 @@ public interface LoadTest<T> {
   void setApplicationBatchSize(int applicationBatchSize);
 
   /**
-   * @return true if the load testing is paused
+   * @return the state controlling the paused state of this load test
    */
-  boolean isPaused();
-
-  /**
-   * @param paused true if load testing should be paused
-   */
-  void setPaused(boolean paused);
+  State getPausedState();
 
   /**
    * @return the maximum number of milliseconds that should pass between work requests
@@ -139,14 +135,9 @@ public interface LoadTest<T> {
   void setLoginDelayFactor(int loginDelayFactor);
 
   /**
-   * @return true if chart data is being collected
+   * @return the state controlling whether this load test collects chart data
    */
-  boolean isCollectChartData();
-
-  /**
-   * @param collectChartData true if chart data should be collected
-   */
-  void setCollectChartData(boolean collectChartData);
+  State getCollectChartDataState();
 
   /**
    * @return an observer notified each time the application count changes
@@ -212,11 +203,6 @@ public interface LoadTest<T> {
   XYDataset getUsageScenarioFailureDataset();
 
   /**
-   * @return an observer notified each time the collect chart data state changes
-   */
-  EventObserver<Boolean> collectChartDataObserver();
-
-  /**
    * @return an observer notified each time the maximum think time changes
    */
   EventObserver<Integer> maximumThinkTimeObserver();
@@ -225,11 +211,6 @@ public interface LoadTest<T> {
    * @return an observer notified each time the minimum think time changes
    */
   EventObserver<Integer> getMinimumThinkTimeObserver();
-
-  /**
-   * @return an observer notified each time the paused state changes
-   */
-  EventObserver<Boolean> getPauseObserver();
 
   /**
    * @return the randomizer used to select scenarios
