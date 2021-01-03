@@ -362,6 +362,11 @@ public class ValuesTest {
     final Value<Integer> value1 = Values.value();
     final Value<Integer> value2 = Values.value();
     final Value<Integer> value3 = Values.value();
+    value3.addValidator(value -> {
+      if (value != null && value > 4) {
+        throw new IllegalArgumentException();
+      }
+    });
     final Value<Integer> value4 = Values.value();
 
     value1.link(value2);
@@ -388,5 +393,10 @@ public class ValuesTest {
     assertEquals(4, value1.get());
     assertEquals(4, value3.get());
     assertEquals(4, value4.get());
+
+    assertThrows(IllegalArgumentException.class, () -> value1.set(5));
+    assertThrows(IllegalArgumentException.class, () -> value2.set(5));
+    assertThrows(IllegalArgumentException.class, () -> value3.set(5));
+    assertThrows(IllegalArgumentException.class, () -> value4.set(5));
   }
 }

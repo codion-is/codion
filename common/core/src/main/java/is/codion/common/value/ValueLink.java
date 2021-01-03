@@ -39,34 +39,22 @@ final class ValueLink<V> {
     this.linkedValue = linkedValue;
     this.originalValue = originalValue;
     linkedValue.set(originalValue.get());
-    originalValue.addListener(this::updateLinkedWithRollback);
-    linkedValue.addListener(this::updateOriginalWithRollback);
+    originalValue.addListener(this::updateLinkedValue);
+    linkedValue.addListener(this::updateOriginalValue);
     combineValidators(linkedValue, originalValue);
-  }
-
-  private void updateLinkedWithRollback() {
-    try {
-      updateLinkedValue();
-    }
-    catch (final IllegalArgumentException e) {
-      updateOriginalValue();
-    }
-  }
-
-  private void updateOriginalWithRollback() {
-    try {
-      updateOriginalValue();
-    }
-    catch (final IllegalArgumentException e) {
-      updateLinkedValue();
-    }
   }
 
   private void updateOriginalValue() {
     if (!isUpdatingLinked) {
       try {
         isUpdatingOriginal = true;
-        originalValue.set(linkedValue.get());
+        try {
+          originalValue.set(linkedValue.get());
+        }
+        catch (final IllegalArgumentException e) {
+          linkedValue.set(originalValue.get());
+          throw e;
+        }
       }
       finally {
         isUpdatingOriginal = false;
@@ -78,7 +66,13 @@ final class ValueLink<V> {
     if (!isUpdatingOriginal) {
       try {
         isUpdatingLinked = true;
-        linkedValue.set(originalValue.get());
+        try {
+          linkedValue.set(originalValue.get());
+        }
+        catch (final IllegalArgumentException e) {
+          originalValue.set(linkedValue.get());
+          throw e;
+        }
       }
       finally {
         isUpdatingLinked = false;
@@ -89,10 +83,10 @@ final class ValueLink<V> {
   private void combineValidators(final Value<V> linkedValue, final Value<V> originalValue) {
     try {
       final List<Value.Validator<V>> originalValidators = new ArrayList<>(originalValue.getValidators());
-      final List<Value.Validator<V>> linkedValidators = new ArrayList<>(originalValue.getValidators());
+      final List<Value.Validator<V>> linkedValidators = new ArrayList<>(linkedValue.getValidators());
       originalValidators.forEach(linkedValue::addValidator);
       linkedValidators.forEach(originalValue::addValidator);
     }
-    catch (final UnsupportedOperationException e) {/*Not supported*/}
+    catch (final UnsupportedOperationException e) {/*Not supported, StateValue for example*/}
   }
 }
