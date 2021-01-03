@@ -79,7 +79,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   public void updateView() throws RemoteException {
-    creationDateField.setText(model == null ? "" : DATE_TIME_FORMATTER.format(model.getCreationDate()));
+    creationDateField.setText(DATE_TIME_FORMATTER.format(model.getCreationDate()));
     model.refreshLog();
   }
 
