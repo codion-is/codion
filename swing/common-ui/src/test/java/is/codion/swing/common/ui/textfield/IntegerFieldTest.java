@@ -42,7 +42,7 @@ public class IntegerFieldTest {
 
     integerField.setRange(0, Integer.MAX_VALUE);
 
-    final DecimalFormat decimalFormat = (DecimalFormat) ((NumberField.NumberDocument<Integer>) integerField.getDocument()).getFormat();
+    final DecimalFormat decimalFormat = (DecimalFormat) ((NumberDocument<Integer>) integerField.getDocument()).getFormat();
     decimalFormat.setGroupingSize(3);
     decimalFormat.setGroupingUsed(true);
     integerField.setSeparators(',', '.');

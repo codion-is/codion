@@ -4,13 +4,17 @@
 package is.codion.swing.common.ui.textfield;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 
-final class DecimalDocument<T extends Number> extends NumberField.NumberDocument<T> {
+import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.ParseResult.parseResult;
+import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
+
+final class DecimalDocument<T extends Number> extends NumberDocument<T> {
 
   static final int MAXIMUM_FRACTION_DIGITS = 340;
 
   DecimalDocument(final DecimalFormat format) {
-    super(new DecimalDocumentFilter<>(format));
+    super(parsingDocumentFilter(new DecimalDocumentParser<>(format), new NumberRangeValidator<>()));
   }
 
   int getMaximumFractionDigits() {
@@ -25,5 +29,27 @@ final class DecimalDocument<T extends Number> extends NumberField.NumberDocument
     }
     getFormat().setMaximumFractionDigits(maximumFractionDigits == -1 ? MAXIMUM_FRACTION_DIGITS : maximumFractionDigits);
     setText("");
+  }
+
+  /* Automatically adds a 0 in front of a decimal separator, when it's the first character entered*/
+  private static final class DecimalDocumentParser<T extends Number> extends NumberParser<T> {
+
+    private DecimalDocumentParser(final DecimalFormat format) {
+      super(format);
+    }
+
+    @Override
+    public ParsingDocumentFilter.ParseResult<T> parse(final String string) {
+      final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
+      if (string.equals(Character.toString(decimalSeparator))) {
+        try {
+          //use the format for the correct type
+          return parseResult("0" + decimalSeparator, (T) getFormat().parse("0"), 1);
+        }
+        catch (final ParseException e) {/*Wont happen*/}
+      }
+
+      return super.parse(string);
+    }
   }
 }

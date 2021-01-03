@@ -8,15 +8,17 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JTextArea;
 import javax.swing.text.AbstractDocument;
 
+import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
+import static is.codion.swing.common.ui.textfield.StringLengthValidator.stringLengthValidator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class LengthDocumentFilterTest {
+public class StringLengthValidatorTest {
 
   @Test
   public void insert() {
     final JTextArea textArea = new JTextArea();
-    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new LengthDocumentFilter(10));
+    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(parsingDocumentFilter(stringLengthValidator(10)));
     final String text8 = "12345678";
     textArea.setText(text8);
     assertEquals(text8, textArea.getText());
@@ -30,7 +32,7 @@ public class LengthDocumentFilterTest {
   @Test
   public void replace() {
     final JTextArea textArea = new JTextArea();
-    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new LengthDocumentFilter(10));
+    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(parsingDocumentFilter(stringLengthValidator(10)));
     final String text8 = "12345678";
     textArea.setText(text8);
     textArea.replaceRange("90", 8, 8);

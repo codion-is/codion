@@ -6586,3 +6586,4 @@
   Value.getValidator() added
   ParsingDocumentFilter added, major overhaul of validation and document filters such as ValidationDocumentFilter
   ValidationDocumentFilter merged into ParsingDocumentFilter
+  ParsingDocumentFilter now final, ParsingDocumentFilter.Parser added, related refactoring

@@ -7,6 +7,10 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.util.Locale;
 
+import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.ParseResult.parseResult;
+import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
+import static is.codion.swing.common.ui.textfield.StringLengthValidator.stringLengthValidator;
+
 /**
  * A Document implementation which allows for setting the max text length and automatic conversion to upper or lower case.
  */
@@ -23,7 +27,7 @@ public final class SizedDocument extends PlainDocument {
    * Instantiates a new SizedDocument
    */
   public SizedDocument() {
-    super.setDocumentFilter(new CaseDocumentFilter());
+    super.setDocumentFilter(parsingDocumentFilter(new CaseParser(), stringLengthValidator()));
   }
 
   /**
@@ -40,39 +44,39 @@ public final class SizedDocument extends PlainDocument {
    * @param documentCase the case setting
    */
   public void setDocumentCase(final DocumentCase documentCase) {
-    ((CaseDocumentFilter) getDocumentFilter()).setDocumentCase(documentCase);
+    ((CaseParser) ((ParsingDocumentFilter<String>) getDocumentFilter()).getParser()).setDocumentCase(documentCase);
   }
 
   /**
    * @return the document case setting
    */
   public DocumentCase getDocumentCase() {
-    return ((CaseDocumentFilter) getDocumentFilter()).documentCase;
+    return ((CaseParser) ((ParsingDocumentFilter<String>) getDocumentFilter()).getParser()).documentCase;
   }
 
   /**
    * @return the maximum length of the text to allow, -1 if unlimited
    */
   public int getMaxLength() {
-    return ((CaseDocumentFilter) getDocumentFilter()).getMaxLength();
+    return ((StringLengthValidator) ((ParsingDocumentFilter<String>) getDocumentFilter()).getValidators().get(0)).getMaxLength();
   }
 
   /**
    * @param maxLength the maximum length of the text to allow, -1 if unlimited
    */
   public void setMaxLength(final int maxLength) {
-    ((CaseDocumentFilter) getDocumentFilter()).setMaxLength(maxLength);
+    ((StringLengthValidator) ((ParsingDocumentFilter<String>) getDocumentFilter()).getValidators().get(0)).setMaxLength(maxLength);
   }
 
   /**
    * A DocumentFilter controlling both case and maximum length of the document content
    */
-  private static final class CaseDocumentFilter extends LengthDocumentFilter {
+  private static final class CaseParser implements ParsingDocumentFilter.Parser<String> {
 
     private DocumentCase documentCase = DocumentCase.NONE;
 
     @Override
-    protected ParseResult<String> parse(final String text) {
+    public ParsingDocumentFilter.ParseResult<String> parse(final String text) {
       final String correctedText = setCase(text);
 
       return parseResult(correctedText, correctedText);
