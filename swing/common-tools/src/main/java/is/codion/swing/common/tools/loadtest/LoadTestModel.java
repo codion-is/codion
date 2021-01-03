@@ -474,7 +474,9 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
         runScenario(scenario, application);
       }
       finally {
-        counter.addScenarioDuration(scenario, (int) ((System.nanoTime() - currentTimeNano) / NANO_IN_MILLI));
+        if (scenario != null) {
+          counter.addScenarioDuration(scenario, (int) ((System.nanoTime() - currentTimeNano) / NANO_IN_MILLI));
+        }
       }
     }
   }

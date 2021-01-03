@@ -34,6 +34,7 @@ import java.time.format.DateTimeFormatter;
 import static is.codion.swing.common.ui.KeyEvents.KeyTrigger.ON_KEY_PRESSED;
 import static is.codion.swing.common.ui.KeyEvents.addKeyEvent;
 import static is.codion.swing.common.ui.control.Controls.*;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A ClientInstanceMonitorPanel
@@ -57,7 +58,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
    * @throws RemoteException in case of an exception
    */
   public ClientInstanceMonitorPanel(final ClientInstanceMonitor model) throws RemoteException {
-    this.model = model;
+    this.model = requireNonNull(model);
     loggingEnabledCheckBox.setModel(model.getLoggingEnabledButtonModel());
     logArea.setDocument(model.getLogDocument());
     logArea.setHighlighter(model.getLogHighlighter());
