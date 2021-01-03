@@ -90,6 +90,7 @@ public final class ParsingDocumentFilter<T> extends DocumentFilter {
   /**
    * Instantiates a String based new {@link ParsingDocumentFilter} without a validator
    * and using the default string parser.
+   * @return a new document filter
    */
   public static ParsingDocumentFilter<String> parsingDocumentFilter() {
     return new ParsingDocumentFilter<>(STRING_PARSER);
@@ -98,6 +99,7 @@ public final class ParsingDocumentFilter<T> extends DocumentFilter {
   /**
    * Instantiates a new {@link ParsingDocumentFilter} without a validator.
    * @param parser the parser
+   * @return a new document filter
    */
   public static <T> ParsingDocumentFilter<T> parsingDocumentFilter(final Parser<T> parser) {
     return new ParsingDocumentFilter<>(parser);
@@ -106,6 +108,7 @@ public final class ParsingDocumentFilter<T> extends DocumentFilter {
   /**
    * Instantiates a new String based {@link ParsingDocumentFilter} with the given validator.
    * @param validator the validator
+   * @return a new document filter
    */
   public static ParsingDocumentFilter<String> parsingDocumentFilter(final Value.Validator<String> validator) {
     return new ParsingDocumentFilter<>(STRING_PARSER, validator);
@@ -115,6 +118,7 @@ public final class ParsingDocumentFilter<T> extends DocumentFilter {
    * Instantiates a new {@link ParsingDocumentFilter} with the given validator.
    * @param parser the parser
    * @param validator the validator
+   * @return a new document filter
    */
   public static <T> ParsingDocumentFilter<T> parsingDocumentFilter(final Parser<T> parser, final Value.Validator<T> validator) {
     return new ParsingDocumentFilter<>(parser, validator);
