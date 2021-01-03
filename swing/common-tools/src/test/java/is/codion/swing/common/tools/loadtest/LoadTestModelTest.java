@@ -52,7 +52,7 @@ public class LoadTestModelTest {
   @Test
   public void setApplicationBatchSizeNegative() {
     final TestLoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.setApplicationBatchSize(-5));
+    assertThrows(IllegalArgumentException.class, () -> model.getApplicationBatchSizeValue().set(-5));
   }
 
   @Test
@@ -64,19 +64,19 @@ public class LoadTestModelTest {
   @Test
   public void setLoginDelayFactorNegative() {
     final TestLoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.setLoginDelayFactor(-1));
+    assertThrows(IllegalArgumentException.class, () -> model.getLoginDelayFactorValue().set(-1));
   }
 
   @Test
   public void setMinimumThinkTimeNegative() {
     final TestLoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.setMinimumThinkTime(-1));
+    assertThrows(IllegalArgumentException.class, () -> model.getMinimumThinkTimeValue().set(-1));
   }
 
   @Test
   public void setMaximumThinkTimeNegative() {
     final TestLoadTestModel model = new TestLoadTestModel(Users.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.setMaximumThinkTime(-1));
+    assertThrows(IllegalArgumentException.class, () -> model.getMaximumThinkTimeValue().set(-1));
   }
 
   @Test
@@ -88,33 +88,28 @@ public class LoadTestModelTest {
   @Test
   public void test() throws Exception {
     final TestLoadTestModel model = new TestLoadTestModel(UNIT_TEST_USER, 50, 2, 2);
-    assertEquals(2, model.getApplicationBatchSize());
+    assertEquals(2, model.getApplicationBatchSizeValue().get());
     model.getCollectChartDataState().set(true);
-
-    assertNotNull(model.applicationBatchSizeObserver());
-    assertNotNull(model.applicationCountObserver());
-    assertNotNull(model.maximumThinkTimeObserver());
-    assertNotNull(model.getMinimumThinkTimeObserver());
 
     assertNotNull(model.getMemoryUsageDataset());
     assertNotNull(model.getNumberOfApplicationsDataset());
     assertNotNull(model.getThinkTimeDataset());
     assertNotNull(model.getUsageScenarioDataset());
 
-    assertEquals(2, model.getLoginDelayFactor());
-    model.setLoginDelayFactor(3);
-    assertEquals(3, model.getLoginDelayFactor());
+    assertEquals(2, model.getLoginDelayFactorValue().get());
+    model.getLoginDelayFactorValue().set(3);
+    assertEquals(3, model.getLoginDelayFactorValue().get());
     assertEquals(LoadTestModel.DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, model.getUpdateInterval());
-    assertEquals(2, model.getApplicationBatchSize());
+    assertEquals(2, model.getApplicationBatchSizeValue().get());
 
-    assertEquals(25, model.getMinimumThinkTime());
-    assertEquals(50, model.getMaximumThinkTime());
-    model.setMaximumThinkTime(40);
-    model.setMinimumThinkTime(20);
-    assertEquals(20, model.getMinimumThinkTime());
-    assertEquals(40, model.getMaximumThinkTime());
+    assertEquals(25, model.getMinimumThinkTimeValue().get());
+    assertEquals(50, model.getMaximumThinkTimeValue().get());
+    model.getMaximumThinkTimeValue().set(40);
+    model.getMinimumThinkTimeValue().set(20);
+    assertEquals(20, model.getMinimumThinkTimeValue().get());
+    assertEquals(40, model.getMaximumThinkTimeValue().get());
 
-    model.setApplicationBatchSize(5);
+    model.getApplicationBatchSizeValue().set(5);
     assertTrue(model.getUsageScenarios().contains(SCENARIO.getName()));
     model.setUser(UNIT_TEST_USER);
     assertEquals(UNIT_TEST_USER, model.getUser());

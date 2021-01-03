@@ -7,7 +7,6 @@ import is.codion.common.Util;
 import is.codion.common.user.User;
 import is.codion.common.user.Users;
 import is.codion.common.value.Nullable;
-import is.codion.common.value.Values;
 import is.codion.swing.common.tools.loadtest.LoadTest;
 import is.codion.swing.common.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.tools.loadtest.UsageScenario;
@@ -204,14 +203,11 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntegerField applicationCountField = new IntegerField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    NumericalValues.integerValue(applicationCountField, Nullable.NO)
-            .link(Values.propertyValue(loadTestModel, "applicationCount", int.class,
-                    loadTestModel.applicationCountObserver()));
+    NumericalValues.integerValue(applicationCountField, Nullable.NO).link(loadTestModel.applicationCountObserver());
     final JPanel applicationPanel = new JPanel(Layouts.borderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
-    final JSpinner batchSizeSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(loadTestModel, "applicationBatchSize",
-            loadTestModel.applicationBatchSizeObserver()));
+    final JSpinner batchSizeSpinner = new JSpinner(NumericalValues.integerValueSpinnerModel(loadTestModel.getApplicationBatchSizeValue()));
     batchSizeSpinner.setToolTipText("Application batch size");
     ((JSpinner.DefaultEditor) batchSizeSpinner.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) batchSizeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
@@ -332,14 +328,12 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel initializeActivityPanel() {
-    final SpinnerNumberModel maxSpinnerModel = NumericalValues.integerValueSpinnerModel(loadTestModel, "maximumThinkTime",
-            loadTestModel.maximumThinkTimeObserver());
+    final SpinnerNumberModel maxSpinnerModel = NumericalValues.integerValueSpinnerModel(loadTestModel.getMaximumThinkTimeValue());
     maxSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
     final JSpinner maxThinkTimeSpinner = new JSpinner(maxSpinnerModel);
     ((JSpinner.DefaultEditor) maxThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
-    final SpinnerNumberModel minSpinnerModel = NumericalValues.integerValueSpinnerModel(loadTestModel, "minimumThinkTime",
-            loadTestModel.getMinimumThinkTimeObserver());
+    final SpinnerNumberModel minSpinnerModel = NumericalValues.integerValueSpinnerModel(loadTestModel.getMinimumThinkTimeValue());
     minSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
     final JSpinner minThinkTimeSpinner = new JSpinner(minSpinnerModel);
     ((JSpinner.DefaultEditor) minThinkTimeSpinner.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);

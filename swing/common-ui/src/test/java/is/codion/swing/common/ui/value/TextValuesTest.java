@@ -30,6 +30,31 @@ public class TextValuesTest {
   }
 
   @Test
+  public void valueLink() {
+    final Value<String> textValue = Values.value("start");
+    textValue.setValidator(text -> {
+      if (text != null && text.equals("nono")) {
+        throw new IllegalArgumentException();
+      }
+    });
+    final Value<String> textFieldValue = TextValues.textValue();
+    textFieldValue.link(textValue);
+
+    assertEquals("start", textFieldValue.get());
+
+    textFieldValue.set("testing");
+    assertEquals("testing", textValue.get());
+
+    assertThrows(IllegalArgumentException.class, () -> textFieldValue.set("nono"));
+    assertEquals("testing", textFieldValue.get());
+
+    textValue.set("hello");
+    assertEquals("hello", textFieldValue.get());
+
+    assertThrows(IllegalArgumentException.class, () -> textValue.set("nono"));
+  }
+
+  @Test
   public void nullInitialValue() throws Exception {
     stringValue = null;
     final JTextField textField = new JTextField();

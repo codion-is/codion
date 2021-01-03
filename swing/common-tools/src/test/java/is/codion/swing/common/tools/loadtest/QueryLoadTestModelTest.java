@@ -35,10 +35,10 @@ public final class QueryLoadTestModelTest {
   public void test() throws DatabaseException {
     final QueryLoadTestModel loadTest = new QueryLoadTestModel(createTestDatabaseInstance(), UNIT_TEST_USER,
             asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
-    loadTest.setMinimumThinkTime(10);
-    loadTest.setMaximumThinkTime(30);
-    loadTest.setLoginDelayFactor(0);
-    loadTest.setApplicationBatchSize(6);
+    loadTest.getMinimumThinkTimeValue().set(10);
+    loadTest.getMaximumThinkTimeValue().set(30);
+    loadTest.getLoginDelayFactorValue().set(1);
+    loadTest.getApplicationBatchSizeValue().set(6);
     loadTest.addApplicationBatch();
     try {
       Thread.sleep(1500);

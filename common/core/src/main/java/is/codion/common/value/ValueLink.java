@@ -36,8 +36,27 @@ final class ValueLink<V> {
     this.linkedValue = linkedValue;
     this.originalValue = originalValue;
     linkedValue.set(originalValue.get());
-    originalValue.addListener(this::updateLinkedValue);
-    linkedValue.addListener(this::updateOriginalValue);
+    originalValue.addListener(this::updateLinkedWithRollback);
+    linkedValue.addListener(this::updateOriginalWithRollback);
+    combineValidators(linkedValue, originalValue);
+  }
+
+  private void updateLinkedWithRollback() {
+    try {
+      updateLinkedValue();
+    }
+    catch (final IllegalArgumentException e) {
+      updateOriginalValue();
+    }
+  }
+
+  private void updateOriginalWithRollback() {
+    try {
+      updateOriginalValue();
+    }
+    catch (final IllegalArgumentException e) {
+      updateLinkedValue();
+    }
   }
 
   private void updateOriginalValue() {
@@ -62,5 +81,21 @@ final class ValueLink<V> {
         isUpdatingLinked = false;
       }
     }
+  }
+
+  private void combineValidators(final Value<V> linkedValue, final Value<V> originalValue) {
+    try {
+      final Value.Validator<V> originalValidator = originalValue.getValidator();
+      final Value.Validator<V> linkedValidator = originalValue.getValidator();
+      linkedValue.setValidator(value -> {
+        originalValidator.validate(value);
+        linkedValidator.validate(value);
+      });
+      originalValue.setValidator(value -> {
+        linkedValidator.validate(value);
+        originalValidator.validate(value);
+      });
+    }
+    catch (final UnsupportedOperationException e) {/*Not supported*/}
   }
 }
