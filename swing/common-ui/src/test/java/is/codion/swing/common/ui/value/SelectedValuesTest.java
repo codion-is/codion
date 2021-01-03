@@ -17,8 +17,7 @@ import java.util.List;
 
 import static is.codion.common.item.Items.item;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SelectedValuesTest {
 
@@ -39,7 +38,7 @@ public class SelectedValuesTest {
     assertEquals("b", box.getSelectedItem());
     box.setSelectedItem("d");
     assertEquals("d", box.getSelectedItem());
-    box.setSelectedItem("s");
+    assertThrows(IllegalArgumentException.class, () -> box.setSelectedItem("s"));
     assertEquals("d", box.getSelectedItem());
   }
 
