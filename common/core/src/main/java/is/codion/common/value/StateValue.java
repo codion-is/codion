@@ -7,6 +7,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.state.State;
 
+import java.util.Collection;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -79,12 +80,12 @@ final class StateValue implements Value<Boolean>  {
   }
 
   @Override
-  public void setValidator(final Validator<Boolean> validator) {
+  public void addValidator(final Validator<Boolean> validator) {
     throw new UnsupportedOperationException("Validation not implemented for state values");
   }
 
   @Override
-  public Validator<Boolean> getValidator() {
+  public Collection<Validator<Boolean>> getValidators() {
     throw new UnsupportedOperationException("Validation not implemented for state values");
   }
 }

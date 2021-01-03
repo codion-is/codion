@@ -49,9 +49,11 @@ public class ValuesTest {
     };
     final Value<Integer> value = Values.value(0, 0);
     value.set(11);
-    assertThrows(IllegalArgumentException.class, () -> value.setValidator(validator));
+    assertThrows(IllegalArgumentException.class, () -> value.addValidator(validator));
     value.set(1);
-    value.setValidator(validator);
+    value.addValidator(validator);
+    value.addValidator(validator);
+    assertEquals(1, value.getValidators().size());
     value.set(null);
     assertEquals(0, value.get());
     assertThrows(IllegalArgumentException.class, () -> value.set(11));

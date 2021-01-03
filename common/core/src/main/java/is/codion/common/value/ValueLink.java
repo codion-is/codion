@@ -3,6 +3,9 @@
  */
 package is.codion.common.value;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -85,16 +88,10 @@ final class ValueLink<V> {
 
   private void combineValidators(final Value<V> linkedValue, final Value<V> originalValue) {
     try {
-      final Value.Validator<V> originalValidator = originalValue.getValidator();
-      final Value.Validator<V> linkedValidator = originalValue.getValidator();
-      linkedValue.setValidator(value -> {
-        originalValidator.validate(value);
-        linkedValidator.validate(value);
-      });
-      originalValue.setValidator(value -> {
-        linkedValidator.validate(value);
-        originalValidator.validate(value);
-      });
+      final List<Value.Validator<V>> originalValidators = new ArrayList<>(originalValue.getValidators());
+      final List<Value.Validator<V>> linkedValidators = new ArrayList<>(originalValue.getValidators());
+      originalValidators.forEach(linkedValue::addValidator);
+      linkedValidators.forEach(originalValue::addValidator);
     }
     catch (final UnsupportedOperationException e) {/*Not supported*/}
   }

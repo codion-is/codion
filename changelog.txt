@@ -6590,3 +6590,4 @@
   ValueLink now rollbacks on invalid value, combines validators (room for improvement)
   LoadTest, replaced property based values with Value, now that validation with ValueLink is possible
   ConnectionPoolMonitor.collectSnapshotStatistics property replace with a Value
+  Value.setValidator() replaced with addValidator(), used in ValueLink

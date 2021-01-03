@@ -133,10 +133,10 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     this.applicationBatchSizeValue = Values.value(applicationBatchSize);
     this.minimumThinkTimeValue = Values.value(maximumThinkTime / 2);
     this.maximumThinkTimeValue = Values.value(maximumThinkTime);
-    this.loginDelayFactorValue.setValidator(new PositiveIntegerValidator(1));
-    this.applicationBatchSizeValue.setValidator(new PositiveIntegerValidator(1));
-    this.minimumThinkTimeValue.setValidator(new MinimumThinkTimeValidator());
-    this.maximumThinkTimeValue.setValidator(new MaximumThinkTimeValidator());
+    this.loginDelayFactorValue.addValidator(new PositiveIntegerValidator(1));
+    this.applicationBatchSizeValue.addValidator(new PositiveIntegerValidator(1));
+    this.minimumThinkTimeValue.addValidator(new MinimumThinkTimeValidator());
+    this.maximumThinkTimeValue.addValidator(new MaximumThinkTimeValidator());
     usageScenarios.forEach(scenario -> this.usageScenarios.put(scenario.getName(), scenario));
     this.scenarioChooser = initializeScenarioChooser();
     initializeChartModels();

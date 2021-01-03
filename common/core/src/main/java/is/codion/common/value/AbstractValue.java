@@ -8,9 +8,13 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -19,8 +23,6 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractValue<V> implements Value<V> {
 
-  static final Validator<?> NULL_VALIDATOR = value -> {};
-
   public enum NotifyOnSet {
     YES, NO
   }
@@ -28,8 +30,7 @@ public abstract class AbstractValue<V> implements Value<V> {
   private final Event<V> changeEvent = Events.event();
   private final V nullValue;
   private final boolean notifyOnSet;
-
-  private Validator<V> validator = (Validator<V>) NULL_VALIDATOR;
+  private final Set<Validator<V>> validators = new LinkedHashSet<>(0);
 
   public AbstractValue() {
     this(null);
@@ -47,7 +48,7 @@ public abstract class AbstractValue<V> implements Value<V> {
   @Override
   public final void set(final V value) {
     final V actualValue = value == null ? nullValue : value;
-    validator.validate(actualValue);
+    validators.forEach(validator -> validator.validate(actualValue));
     if (!Objects.equals(get(), actualValue)) {
       doSet(actualValue);
       if (notifyOnSet) {
@@ -107,14 +108,14 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   @Override
-  public final void setValidator(final Validator<V> validator) {
-    this.validator = validator == null ? (Validator<V>) NULL_VALIDATOR : validator;
-    this.validator.validate(get());
+  public final void addValidator(final Validator<V> validator) {
+    requireNonNull(validator, "validator").validate(get());
+    validators.add(validator);
   }
 
   @Override
-  public final Validator<V> getValidator() {
-    return validator;
+  public final Collection<Validator<V>> getValidators() {
+    return unmodifiableSet(validators);
   }
 
   /**

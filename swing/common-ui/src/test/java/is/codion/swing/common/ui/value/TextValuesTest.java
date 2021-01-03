@@ -32,7 +32,7 @@ public class TextValuesTest {
   @Test
   public void valueLink() {
     final Value<String> textValue = Values.value("start");
-    textValue.setValidator(text -> {
+    textValue.addValidator(text -> {
       if (text != null && text.equals("nono")) {
         throw new IllegalArgumentException();
       }

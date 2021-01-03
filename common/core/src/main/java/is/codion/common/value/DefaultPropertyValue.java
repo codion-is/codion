@@ -9,9 +9,13 @@ import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultPropertyValue<V> implements PropertyValue<V> {
@@ -21,8 +25,9 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   private final Class<V> valueClass;
   private final Object valueOwner;
   private final Method getMethod;
+  private final Set<Validator<V>> validators = new LinkedHashSet<>(0);
+
   private Method setMethod;
-  private Validator<V> validator = (Validator<V>) AbstractValue.NULL_VALIDATOR;
 
   DefaultPropertyValue(final Object valueOwner, final String propertyName, final Class<V> valueClass,
                        final EventObserver<V> changeObserver) {
@@ -75,7 +80,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
     if (setMethod == null) {
       throw new IllegalStateException("Set method for property not found: " + propertyName);
     }
-    validator.validate(value);
+    validators.forEach(validator -> validator.validate(value));
     try {
       setMethod.invoke(valueOwner, value);
     }
@@ -150,13 +155,13 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
-  public void setValidator(final Validator<V> validator) {
-    this.validator = validator == null ? (Validator<V>) AbstractValue.NULL_VALIDATOR : validator;
-    this.validator.validate(get());
+  public void addValidator(final Validator<V> validator) {
+    requireNonNull(validator, "validator").validate(get());
+    validators.add(validator);
   }
 
   @Override
-  public Validator<V> getValidator() {
-    return validator;
+  public Collection<Validator<V>> getValidators() {
+    return unmodifiableSet(validators);
   }
 }
