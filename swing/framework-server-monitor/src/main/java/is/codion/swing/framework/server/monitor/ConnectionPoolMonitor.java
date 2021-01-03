@@ -10,6 +10,8 @@ import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.event.Events;
+import is.codion.common.state.State;
+import is.codion.common.state.States;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
 
@@ -31,7 +33,6 @@ public final class ConnectionPoolMonitor {
   private static final int THOUSAND = 1000;
 
   private final Event<?> statisticsUpdatedEvent = Events.event();
-  private final Event<Boolean> collectSnapshotStatisticsChangedEvent = Events.event();
 
   private final String username;
   private final ConnectionPool connectionPool;
@@ -42,6 +43,7 @@ public final class ConnectionPoolMonitor {
   private final Value<Integer> minimumPoolSizeValue;
   private final Value<Integer> maximumPoolSizeValue;
   private final Value<Integer> maximumCheckoutTimeValue;
+  private final State collectSnapshotStatisticsState = States.state();
 
   private final XYSeries poolSizeSeries = new XYSeries("Size");
   private final XYSeries minimumPoolSizeSeries = new XYSeries("Min. size");
@@ -200,25 +202,10 @@ public final class ConnectionPoolMonitor {
   }
 
   /**
-   * @param collectSnapshotStatistics true if snapshot stats should be collected
+   * @return the State controlling whether snapshot statistics are collected
    */
-  public void setCollectSnapshotStatistics(final boolean collectSnapshotStatistics) {
-    connectionPool.setCollectSnapshotStatistics(collectSnapshotStatistics);
-    collectSnapshotStatisticsChangedEvent.onEvent(collectSnapshotStatistics);
-  }
-
-  /**
-   * @return true if snapshot stats are being collected
-   */
-  public boolean isCollectSnapshotStatistics() {
-    return connectionPool.isCollectSnapshotStatistics();
-  }
-
-  /**
-   * @return EventObserver notified when snapshot stats collection status is changed
-   */
-  public EventObserver<Boolean> getCollectSnapshotStatisticsObserver() {
-    return collectSnapshotStatisticsChangedEvent.getObserver();
+  public State getCollectSnapshotStatisticsState() {
+    return collectSnapshotStatisticsState;
   }
 
   /**
@@ -305,5 +292,6 @@ public final class ConnectionPoolMonitor {
     minimumPoolSizeValue.addDataListener(this::setMinimumPoolSize);
     maximumPoolSizeValue.addDataListener(this::setMaximumPoolSize);
     maximumCheckoutTimeValue.addDataListener(this::setMaximumCheckOutTime);
+    collectSnapshotStatisticsState.addDataListener(connectionPool::setCollectSnapshotStatistics);
   }
 }
