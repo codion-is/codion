@@ -8,34 +8,37 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JTextArea;
 import javax.swing.text.AbstractDocument;
 
+import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
+import static is.codion.swing.common.ui.textfield.StringLengthValidator.stringLengthValidator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class LengthDocumentFilterTest {
+public class StringLengthValidatorTest {
 
   @Test
   public void insert() {
     final JTextArea textArea = new JTextArea();
-    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new LengthDocumentFilter(10));
+    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(parsingDocumentFilter(stringLengthValidator(10)));
     final String text8 = "12345678";
     textArea.setText(text8);
     assertEquals(text8, textArea.getText());
     textArea.insert("90", 8);
     final String text10 = "1234567890";
     assertEquals(text10, textArea.getText());
-    textArea.insert(text10, 10);
+    assertThrows(IllegalArgumentException.class, () -> textArea.insert(text10, 10));
     assertEquals(text10, textArea.getText());
   }
 
   @Test
   public void replace() {
     final JTextArea textArea = new JTextArea();
-    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new LengthDocumentFilter(10));
+    ((AbstractDocument) textArea.getDocument()).setDocumentFilter(parsingDocumentFilter(stringLengthValidator(10)));
     final String text8 = "12345678";
     textArea.setText(text8);
     textArea.replaceRange("90", 8, 8);
     final String text10 = "1234567890";
     assertEquals(text10, textArea.getText());
-    textArea.replaceRange("ab", 4, 4);
+    assertThrows(IllegalArgumentException.class, () -> textArea.replaceRange("ab", 4, 4));
     assertEquals(text10, textArea.getText());
   }
 }

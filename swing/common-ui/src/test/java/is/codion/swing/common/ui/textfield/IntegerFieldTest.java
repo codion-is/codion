@@ -10,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class IntegerFieldTest {
 
@@ -30,18 +31,18 @@ public class IntegerFieldTest {
     assertEquals(0, (int) integerField.getMinimumValue());
     assertEquals(10, (int) integerField.getMaximumValue());
 
-    integerField.setInteger(100);
+    assertThrows(IllegalArgumentException.class, () -> integerField.setInteger(100));
     assertEquals("", integerField.getText());
     integerField.setInteger(9);
     assertEquals("9", integerField.getText());
-    integerField.setInteger(-1);
+    assertThrows(IllegalArgumentException.class, () -> integerField.setInteger(-1));
     assertEquals("", integerField.getText());
-    integerField.setInteger(-10);
+    assertThrows(IllegalArgumentException.class, () -> integerField.setInteger(-10));
     assertEquals("", integerField.getText());
 
     integerField.setRange(0, Integer.MAX_VALUE);
 
-    final DecimalFormat decimalFormat = (DecimalFormat) ((NumberField.NumberDocument) integerField.getDocument()).getFormat();
+    final DecimalFormat decimalFormat = (DecimalFormat) ((NumberDocument<Integer>) integerField.getDocument()).getFormat();
     decimalFormat.setGroupingSize(3);
     decimalFormat.setGroupingUsed(true);
     integerField.setSeparators(',', '.');

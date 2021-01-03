@@ -3,11 +3,13 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.util.Locale;
+
+import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.ParseResult.parseResult;
+import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
+import static is.codion.swing.common.ui.textfield.StringLengthValidator.stringLengthValidator;
 
 /**
  * A Document implementation which allows for setting the max text length and automatic conversion to upper or lower case.
@@ -25,7 +27,7 @@ public final class SizedDocument extends PlainDocument {
    * Instantiates a new SizedDocument
    */
   public SizedDocument() {
-    super.setDocumentFilter(new SizedDocumentFilter());
+    super.setDocumentFilter(parsingDocumentFilter(new CaseParser(), stringLengthValidator()));
   }
 
   /**
@@ -42,53 +44,42 @@ public final class SizedDocument extends PlainDocument {
    * @param documentCase the case setting
    */
   public void setDocumentCase(final DocumentCase documentCase) {
-    ((SizedDocumentFilter) getDocumentFilter()).setDocumentCase(documentCase);
+    ((CaseParser) ((ParsingDocumentFilter<String>) getDocumentFilter()).getParser()).setDocumentCase(documentCase);
   }
 
   /**
    * @return the document case setting
    */
   public DocumentCase getDocumentCase() {
-    return ((SizedDocumentFilter) getDocumentFilter()).documentCase;
+    return ((CaseParser) ((ParsingDocumentFilter<String>) getDocumentFilter()).getParser()).documentCase;
   }
 
   /**
    * @return the maximum length of the text to allow, -1 if unlimited
    */
   public int getMaxLength() {
-    return ((SizedDocumentFilter) getDocumentFilter()).maxLength;
+    return ((StringLengthValidator) ((ParsingDocumentFilter<String>) getDocumentFilter()).getValidators().get(0)).getMaxLength();
   }
 
   /**
    * @param maxLength the maximum length of the text to allow, -1 if unlimited
    */
   public void setMaxLength(final int maxLength) {
-    ((SizedDocumentFilter) getDocumentFilter()).setMaxLength(maxLength);
+    ((StringLengthValidator) ((ParsingDocumentFilter<String>) getDocumentFilter()).getValidators().get(0)).setMaxLength(maxLength);
   }
 
   /**
    * A DocumentFilter controlling both case and maximum length of the document content
    */
-  private static final class SizedDocumentFilter extends DocumentFilter {
+  private static final class CaseParser implements ParsingDocumentFilter.Parser<String> {
 
     private DocumentCase documentCase = DocumentCase.NONE;
-    private int maxLength = -1;
 
     @Override
-    public void insertString(final FilterBypass filterBypass, final int offset, final String string,
-                             final AttributeSet attributeSet) throws BadLocationException {
-      replace(filterBypass, offset, 0, string, attributeSet);
-    }
+    public ParsingDocumentFilter.ParseResult<String> parse(final String text) {
+      final String correctedText = setCase(text);
 
-    @Override
-    public void replace(final FilterBypass filterBypass, final int offset, final int length, final String string,
-                        final AttributeSet attributeSet) throws BadLocationException {
-      final String caseFixed = setCase(string);
-      final StringBuilder builder = new StringBuilder(filterBypass.getDocument().getText(0, filterBypass.getDocument().getLength()));
-      builder.replace(offset, offset + length, caseFixed);
-      if (maxLength < 0 || builder.length() <= maxLength) {
-        super.replace(filterBypass, offset, length, caseFixed, attributeSet);
-      }
+      return parseResult(correctedText, correctedText);
     }
 
     /**
@@ -96,13 +87,6 @@ public final class SizedDocument extends PlainDocument {
      */
     private void setDocumentCase(final DocumentCase documentCase) {
       this.documentCase = documentCase == null ? DocumentCase.NONE : documentCase;
-    }
-
-    /**
-     * @param maxLength the maximum length of the text to allow, -1 if unlimited
-     */
-    private void setMaxLength(final int maxLength) {
-      this.maxLength = maxLength < 0 ? -1 : maxLength;
     }
 
     private String setCase(final String string) {

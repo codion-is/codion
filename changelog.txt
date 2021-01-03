@@ -6612,3 +6612,12 @@
   ClientMonitorPanel bug fixed, refactored
   ColumnConditionPanel.BoundFieldProvider renamed BoundFieldFactory, some methods renamed
   DateParser renamed DateTimeParser
+  LoadTest and LoadTestModel refactored
+  Value.getValidator() added
+  ParsingDocumentFilter added, major overhaul of validation and document filters such as ValidationDocumentFilter
+  ValidationDocumentFilter merged into ParsingDocumentFilter
+  ParsingDocumentFilter now final, ParsingDocumentFilter.Parser added, related refactoring
+  ValueLink now rollbacks on invalid value, combines validators (room for improvement)
+  LoadTest, replaced property based values with Value, now that validation with ValueLink is possible
+  ConnectionPoolMonitor.collectSnapshotStatistics property replace with a Value
+  Value.setValidator() replaced with addValidator(), used in ValueLink

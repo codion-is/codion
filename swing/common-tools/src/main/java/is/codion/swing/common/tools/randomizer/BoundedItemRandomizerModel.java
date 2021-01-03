@@ -66,7 +66,6 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
       decrementWeight(randomItem);
       getRandomItem(item).incrementWeight();
     }
-    fireWeightsChangedEvent();
   }
 
   @Override
@@ -80,7 +79,6 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
       incrementWeight(randomItem);
       randomItem.decrementWeight();
     }
-    fireWeightsChangedEvent();
   }
 
   @Override

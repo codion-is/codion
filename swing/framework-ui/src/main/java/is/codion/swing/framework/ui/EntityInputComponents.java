@@ -32,7 +32,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.textfield.BigDecimalField;
 import is.codion.swing.common.ui.textfield.DoubleField;
 import is.codion.swing.common.ui.textfield.IntegerField;
-import is.codion.swing.common.ui.textfield.LengthDocumentFilter;
 import is.codion.swing.common.ui.textfield.LongField;
 import is.codion.swing.common.ui.textfield.SizedDocument;
 import is.codion.swing.common.ui.textfield.TextFields;
@@ -71,6 +70,8 @@ import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.util.List;
 
+import static is.codion.swing.common.ui.textfield.ParsingDocumentFilter.parsingDocumentFilter;
+import static is.codion.swing.common.ui.textfield.StringLengthValidator.stringLengthValidator;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -605,7 +606,8 @@ public final class EntityInputComponents {
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
     if (property.getMaximumLength() > 0) {
-      ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new LengthDocumentFilter(property.getMaximumLength()));
+      ((AbstractDocument) textArea.getDocument()).setDocumentFilter(
+              parsingDocumentFilter(stringLengthValidator(property.getMaximumLength())));
     }
     linkToEnabledState(enabledState, textArea);
 

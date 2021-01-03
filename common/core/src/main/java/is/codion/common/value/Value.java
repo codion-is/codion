@@ -3,6 +3,8 @@
  */
 package is.codion.common.value;
 
+import java.util.Collection;
+
 /**
  * A wrapper class for setting and getting a value
  * @param <V> the type of the value
@@ -32,12 +34,17 @@ public interface Value<V> extends ValueObserver<V> {
   void link(ValueObserver<V> originalValueObserver);
 
   /**
-   * Sets the validator for this {@link Value}.
-   * If null then the default no-op validator is used.
+   * Adds a validator to this {@link Value}.
+   * Adding the same validator again has no effect.
    * @param validator the validator
-   * @throws IllegalArgumentException in case the current value is invalid
+   * @throws IllegalArgumentException in case the current value is invalid according to the validator
    */
-  void setValidator(Validator<V> validator);
+  void addValidator(Validator<V> validator);
+
+  /**
+   * @return the validators
+   */
+  Collection<Validator<V>> getValidators();
 
   /**
    * A Validator for {@link Value}s.

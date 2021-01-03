@@ -3,6 +3,9 @@
  */
 package is.codion.common.value;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -36,8 +39,27 @@ final class ValueLink<V> {
     this.linkedValue = linkedValue;
     this.originalValue = originalValue;
     linkedValue.set(originalValue.get());
-    originalValue.addListener(this::updateLinkedValue);
-    linkedValue.addListener(this::updateOriginalValue);
+    originalValue.addListener(this::updateLinkedWithRollback);
+    linkedValue.addListener(this::updateOriginalWithRollback);
+    combineValidators(linkedValue, originalValue);
+  }
+
+  private void updateLinkedWithRollback() {
+    try {
+      updateLinkedValue();
+    }
+    catch (final IllegalArgumentException e) {
+      updateOriginalValue();
+    }
+  }
+
+  private void updateOriginalWithRollback() {
+    try {
+      updateOriginalValue();
+    }
+    catch (final IllegalArgumentException e) {
+      updateLinkedValue();
+    }
   }
 
   private void updateOriginalValue() {
@@ -62,5 +84,15 @@ final class ValueLink<V> {
         isUpdatingLinked = false;
       }
     }
+  }
+
+  private void combineValidators(final Value<V> linkedValue, final Value<V> originalValue) {
+    try {
+      final List<Value.Validator<V>> originalValidators = new ArrayList<>(originalValue.getValidators());
+      final List<Value.Validator<V>> linkedValidators = new ArrayList<>(originalValue.getValidators());
+      originalValidators.forEach(linkedValue::addValidator);
+      linkedValidators.forEach(originalValue::addValidator);
+    }
+    catch (final UnsupportedOperationException e) {/*Not supported*/}
   }
 }

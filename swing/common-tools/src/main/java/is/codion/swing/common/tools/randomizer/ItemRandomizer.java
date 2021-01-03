@@ -3,12 +3,10 @@
  */
 package is.codion.swing.common.tools.randomizer;
 
-import is.codion.common.event.EventObserver;
-
 import java.util.Collection;
 
 /**
- * ItemRandomizer provides a way for randomly choosing an item based on a weight value.
+ * ItemRandomizer provides a way to randomly choose an item based on a weight value.
  *
  * <pre>
  * Object one = new Object();
@@ -45,16 +43,6 @@ public interface ItemRandomizer<T> {
    * @return the item weight
    */
   int getWeight(T item);
-
-  /**
-   * @return an EventObserver which fires each time a weight has been changed.
-   */
-  EventObserver<Integer> getWeightsObserver();
-
-  /**
-   * @return an EventObserver which fires each time the enabled status of an item has been changed.
-   */
-  EventObserver<Boolean> getEnabledObserver();
 
   /**
    * Sets the weight of the given item

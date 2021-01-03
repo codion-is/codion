@@ -26,6 +26,24 @@ public class SelectedValuesTest {
   private final Event<String> selectedItemChangedEvent = Events.event();
 
   @Test
+  public void selectedItemValueLinkValidate() throws Exception {
+    final Value<String> originalValue = Values.value("b");
+    originalValue.addValidator(value -> {
+      if (value != null && value.equals("s")) {
+        throw new IllegalArgumentException();
+      }
+    });
+    final JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
+    SelectedValues.selectedValue(box).link(originalValue);
+
+    assertEquals("b", box.getSelectedItem());
+    box.setSelectedItem("d");
+    assertEquals("d", box.getSelectedItem());
+    box.setSelectedItem("s");
+    assertEquals("d", box.getSelectedItem());
+  }
+
+  @Test
   public void selectedItemValueLink() throws Exception {
     final JComboBox<String> box = new JComboBox<>(new String[] {"b", "d", "s"});
     SelectedValues.selectedValue(box).link(Values.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent));

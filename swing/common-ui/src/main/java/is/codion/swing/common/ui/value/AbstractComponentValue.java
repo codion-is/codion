@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.value;
 import is.codion.common.value.AbstractValue;
 
 import javax.swing.SwingUtilities;
+import java.lang.reflect.InvocationTargetException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -58,6 +59,17 @@ public abstract class AbstractComponentValue<V, C> extends AbstractValue<V> impl
       catch (final InterruptedException ex) {
         Thread.currentThread().interrupt();
         throw new RuntimeException(ex);
+      }
+      catch (final InvocationTargetException e) {
+        final Throwable cause = e.getCause();
+        if (cause instanceof RuntimeException) {
+          throw (RuntimeException) cause;
+        }
+
+        throw new RuntimeException(cause);
+      }
+      catch (final RuntimeException e) {
+        throw e;
       }
       catch (final Exception e) {
         throw new RuntimeException(e);

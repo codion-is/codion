@@ -202,7 +202,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
     final JCheckBox collectSnapshotCheckBox = new JCheckBox("Snapshot");
     BooleanValues.booleanButtonModelValue(collectSnapshotCheckBox.getModel())
-            .link(Values.propertyValue(model, "collectSnapshotStatistics", boolean.class, model.getCollectSnapshotStatisticsObserver()));
+            .link(Values.stateValue(model.getCollectSnapshotStatisticsState()));
     collectSnapshotCheckBox.setMaximumSize(TextFields.getPreferredTextFieldSize());
     chartConfig.add(collectSnapshotCheckBox);
 

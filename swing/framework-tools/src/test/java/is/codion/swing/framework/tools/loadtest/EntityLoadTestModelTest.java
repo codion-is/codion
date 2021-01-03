@@ -76,7 +76,7 @@ public class EntityLoadTestModelTest {
 
   @Test
   public void setLoginDelayFactorNegative() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().setLoginDelayFactor(-1));
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().getLoginDelayFactorValue().set(-1));
   }
 
   @Test
@@ -88,22 +88,21 @@ public class EntityLoadTestModelTest {
   public void testLoadTesting() throws Exception {
     final TestLoadTestModel loadTest = new TestLoadTestModel();
 
-    loadTest.setCollectChartData(true);
+    loadTest.getCollectChartDataState().set(true);
     loadTest.setUpdateInterval(350);
-    loadTest.setLoginDelayFactor(0);
+    loadTest.getLoginDelayFactorValue().set(1);
 
-    assertTrue(loadTest.isCollectChartData());
     assertEquals(350, loadTest.getUpdateInterval());
-    assertEquals(0, loadTest.getLoginDelayFactor());
+    assertEquals(1, loadTest.getLoginDelayFactorValue().get());
 
     loadTest.setWeight("1", 1);
     loadTest.setWeight("2", 0);
 
-    loadTest.setMaximumThinkTime(100);
-    loadTest.setMinimumThinkTime(50);
+    loadTest.getMinimumThinkTimeValue().set(50);
+    loadTest.getMaximumThinkTimeValue().set(100);
 
-    loadTest.setApplicationBatchSize(2);
-    assertEquals(2, loadTest.getApplicationBatchSize());
+    loadTest.getApplicationBatchSizeValue().set(2);
+    assertEquals(2, loadTest.getApplicationBatchSizeValue().get());
 
     loadTest.addApplicationBatch();
 
@@ -116,19 +115,17 @@ public class EntityLoadTestModelTest {
     assertEquals(0, loadTest.getUsageScenario("1").getUnsuccessfulRunCount());
     assertEquals(0, loadTest.getUsageScenario("2").getTotalRunCount());
 
-    loadTest.setPaused(true);
-    assertTrue(loadTest.isPaused());
+    loadTest.getPausedState().set(true);
 
     loadTest.resetChartData();
 
-    loadTest.setApplicationBatchSize(1);
+    loadTest.getApplicationBatchSizeValue().set(1);
     loadTest.removeApplicationBatch();
     assertEquals(1, loadTest.getApplicationCount());
     loadTest.shutdown();
 
     Thread.sleep(500);
 
-    assertFalse(loadTest.isPaused());
     assertEquals(0, loadTest.getApplicationCount());
   }
 

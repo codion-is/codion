@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SizedDocumentTest {
 
@@ -26,7 +27,7 @@ public class SizedDocumentTest {
     textField.setText("hellohello");
     assertEquals("hellohello", textField.getText());
 
-    textField.setText("hellohellohello");//invalid
+    assertThrows(IllegalArgumentException.class, () -> textField.setText("hellohellohello"));//invalid
     assertEquals("hellohello", textField.getText());
 
     document.setDocumentCase(SizedDocument.DocumentCase.UPPERCASE);

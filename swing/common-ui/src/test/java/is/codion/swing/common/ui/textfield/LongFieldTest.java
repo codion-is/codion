@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.textfield;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LongFieldTest {
 
@@ -27,12 +28,12 @@ public class LongFieldTest {
     assertEquals(10, (int) longField.getMaximumValue());
 
     longField.setText("");
-    longField.setLong(100L);
+    assertThrows(IllegalArgumentException.class, () -> longField.setLong(100L));
     assertEquals("", longField.getText());
     longField.setLong(9L);
     assertEquals("9", longField.getText());
     longField.setText("");
-    longField.setLong(-1L);
+    assertThrows(IllegalArgumentException.class, () -> longField.setLong(-1L));
     assertEquals("", longField.getText());
   }
 }

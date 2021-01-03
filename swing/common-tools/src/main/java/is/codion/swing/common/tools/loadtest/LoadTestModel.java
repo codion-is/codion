@@ -3,14 +3,19 @@
  */
 package is.codion.swing.common.tools.loadtest;
 
+import is.codion.common.Conjunction;
 import is.codion.common.Memory;
 import is.codion.common.TaskScheduler;
 import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.event.EventObserver;
 import is.codion.common.event.Events;
+import is.codion.common.state.State;
+import is.codion.common.state.States;
 import is.codion.common.user.User;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
+import is.codion.common.value.Values;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 import is.codion.swing.common.tools.randomizer.ItemRandomizerModel;
 
@@ -55,24 +60,21 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private static final double HUNDRED = 100d;
   private static final int MINIMUM_NUMBER_OF_THREADS = 12;
 
-  private final Event<Boolean> pausedChangedEvent = Events.event();
-  private final Event<Boolean> collectChartDataChangedEvent = Events.event();
-  private final Event<Integer> maximumThinkTimeChangedEvent = Events.event();
-  private final Event<Integer> minimumThinkTimeChangedEvent = Events.event();
-  private final Event<Integer> loginDelayFactorChangedEvent = Events.event();
-  private final Event<Integer> applicationCountChangedEvent = Events.event();
-  private final Event<Integer> applicationBatchSizeChangedEvent = Events.event();
+  private final State pausedState = States.state();
+  private final State collectChartDataState = States.state();
+  private final State chartUpdateSchedulerEnabledState =
+          States.combination(Conjunction.AND, pausedState.getReversedObserver(), collectChartDataState);
+
+  private final Value<Integer> loginDelayFactorValue;
+  private final Value<Integer> applicationBatchSizeValue;
+  private final Value<Integer> maximumThinkTimeValue;
+  private final Value<Integer> minimumThinkTimeValue;
+  private final Value<Integer> applicationCountValue = Values.value();
   private final Event<?> shutdownEvent = Events.event();
 
-  private int maximumThinkTime;
-  private int minimumThinkTime;
-  private int loginDelayFactor;
-  private int applicationBatchSize;
   private User user;
 
   private volatile boolean shuttingDown = false;
-  private volatile boolean paused = false;
-  private volatile boolean collectChartData = false;
 
   private final Deque<ApplicationRunner> applications = new ConcurrentLinkedDeque<>();
   private final Map<String, UsageScenario<T>> usageScenarios = new HashMap<>();
@@ -80,7 +82,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private final ScheduledExecutorService scheduledExecutor =
           newScheduledThreadPool(Math.max(MINIMUM_NUMBER_OF_THREADS, Runtime.getRuntime().availableProcessors() * 2));
   private final Counter counter = new Counter();
-  private final TaskScheduler updateChartDataScheduler;
+  private final TaskScheduler chartUpdateScheduler;
 
   private final XYSeries scenariosRunSeries = new XYSeries("Total");
   private final XYSeries delayedScenarioRunsSeries = new XYSeries("Warn. time exceeded");
@@ -127,24 +129,19 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       throw new IllegalArgumentException("Application batch size must be a positive integer");
     }
     this.user = user;
-    this.maximumThinkTime = maximumThinkTime;
-    this.minimumThinkTime = maximumThinkTime / 2;
-    this.loginDelayFactor = loginDelayFactor;
-    this.applicationBatchSize = applicationBatchSize;
-    for (final UsageScenario<T> scenario : usageScenarios) {
-      this.usageScenarios.put(scenario.getName(), scenario);
-    }
+    this.loginDelayFactorValue = Values.value(loginDelayFactor);
+    this.applicationBatchSizeValue = Values.value(applicationBatchSize);
+    this.minimumThinkTimeValue = Values.value(maximumThinkTime / 2);
+    this.maximumThinkTimeValue = Values.value(maximumThinkTime);
+    this.loginDelayFactorValue.addValidator(new PositiveIntegerValidator(1));
+    this.applicationBatchSizeValue.addValidator(new PositiveIntegerValidator(1));
+    this.minimumThinkTimeValue.addValidator(new MinimumThinkTimeValidator());
+    this.maximumThinkTimeValue.addValidator(new MaximumThinkTimeValidator());
+    usageScenarios.forEach(scenario -> this.usageScenarios.put(scenario.getName(), scenario));
     this.scenarioChooser = initializeScenarioChooser();
-    initializeChartData();
-    this.updateChartDataScheduler = new TaskScheduler(() -> {
-      if (shuttingDown || paused) {
-        return;
-      }
-      counter.updateRequestsPerSecond();
-      if (collectChartData && !paused) {
-        updateChartData();
-      }
-    }, DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
+    initializeChartModels();
+    this.chartUpdateScheduler = new TaskScheduler(new ChartUpdateTask(), DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS);
+    bindEvents();
   }
 
   @Override
@@ -260,12 +257,12 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   @Override
   public final int getUpdateInterval() {
-    return updateChartDataScheduler.getInterval();
+    return chartUpdateScheduler.getInterval();
   }
 
   @Override
   public final void setUpdateInterval(final int updateInterval) {
-    updateChartDataScheduler.setInterval(updateInterval);
+    chartUpdateScheduler.setInterval(updateInterval);
   }
 
   @Override
@@ -274,70 +271,47 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   @Override
-  public final int getApplicationBatchSize() {
-    return applicationBatchSize;
-  }
-
-  @Override
-  public final void setApplicationBatchSize(final int applicationBatchSize) {
-    if (applicationBatchSize <= 0) {
-      throw new IllegalArgumentException("Application batch size must be a positive integer");
-    }
-
-    this.applicationBatchSize = applicationBatchSize;
-    applicationBatchSizeChangedEvent.onEvent(this.applicationBatchSize);
+  public final Value<Integer> getApplicationBatchSizeValue() {
+    return applicationBatchSizeValue;
   }
 
   @Override
   public final void addApplicationBatch() {
-    for (int i = 0; i < applicationBatchSize; i++) {
+    for (int i = 0; i < applicationBatchSizeValue.get(); i++) {
       final ApplicationRunner runner = new ApplicationRunner();
       applications.push(runner);
-      applicationCountChangedEvent.onEvent();
       int initialDelay = getThinkTime();
-      if (loginDelayFactor > 0) {
-        initialDelay *= loginDelayFactor;
+      if (loginDelayFactorValue.get() > 0) {
+        initialDelay *= loginDelayFactorValue.get();
       }
       scheduledExecutor.schedule(runner, initialDelay, TimeUnit.MILLISECONDS);
     }
+    applicationCountValue.set(applications.size());
   }
 
   @Override
   public final void removeApplicationBatch() {
-    for (int i = 0; i < applicationBatchSize && !applications.isEmpty(); i++) {
+    for (int i = 0; i < applicationBatchSizeValue.get() && !applications.isEmpty(); i++) {
       applications.pop().stop();
     }
-    applicationCountChangedEvent.onEvent(applications.size());
+    applicationCountValue.set(applications.size());
   }
 
   @Override
-  public final boolean isPaused() {
-    return this.paused;
+  public final State getPausedState() {
+    return pausedState;
   }
 
   @Override
-  public final void setPaused(final boolean paused) {
-    this.paused = paused;
-    pausedChangedEvent.onEvent(this.paused);
-  }
-
-  @Override
-  public final boolean isCollectChartData() {
-    return collectChartData;
-  }
-
-  @Override
-  public final void setCollectChartData(final boolean collectChartData) {
-    this.collectChartData = collectChartData;
-    collectChartDataChangedEvent.onEvent(this.collectChartData);
+  public final State getCollectChartDataState() {
+    return collectChartDataState;
   }
 
   @Override
   public final void shutdown() {
     shuttingDown = true;
-    updateChartDataScheduler.stop();
+    chartUpdateScheduler.stop();
     scheduledExecutor.shutdown();
-    paused = false;
     synchronized (applications) {
       while (!applications.isEmpty()) {
         applications.pop().stop();
@@ -353,78 +327,23 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   @Override
-  public final int getMaximumThinkTime() {
-    return this.maximumThinkTime;
+  public final Value<Integer> getMaximumThinkTimeValue() {
+    return maximumThinkTimeValue;
   }
 
   @Override
-  public final void setMaximumThinkTime(final int maximumThinkTime) {
-    if (maximumThinkTime <= 0) {
-      throw new IllegalArgumentException("Maximum think time must be a positive integer");
-    }
-
-    this.maximumThinkTime = maximumThinkTime;
-    maximumThinkTimeChangedEvent.onEvent(this.maximumThinkTime);
+  public final Value<Integer> getMinimumThinkTimeValue() {
+    return minimumThinkTimeValue;
   }
 
   @Override
-  public final int getMinimumThinkTime() {
-    return this.minimumThinkTime;
+  public final Value<Integer> getLoginDelayFactorValue() {
+    return loginDelayFactorValue;
   }
 
   @Override
-  public final void setMinimumThinkTime(final int minimumThinkTime) {
-    if (minimumThinkTime < 0) {
-      throw new IllegalArgumentException("Minimum think time must be a positive integer");
-    }
-
-    this.minimumThinkTime = minimumThinkTime;
-    minimumThinkTimeChangedEvent.onEvent(this.minimumThinkTime);
-  }
-
-  @Override
-  public final int getLoginDelayFactor() {
-    return this.loginDelayFactor;
-  }
-
-  @Override
-  public final void setLoginDelayFactor(final int loginDelayFactor) {
-    if (loginDelayFactor < 0) {
-      throw new IllegalArgumentException("Login delay factor must be a positive integer");
-    }
-
-    this.loginDelayFactor = loginDelayFactor;
-    loginDelayFactorChangedEvent.onEvent(this.loginDelayFactor);
-  }
-
-  @Override
-  public final EventObserver<Integer> applicationBatchSizeObserver() {
-    return applicationBatchSizeChangedEvent.getObserver();
-  }
-
-  @Override
-  public final EventObserver<Integer> applicationCountObserver() {
-    return applicationCountChangedEvent.getObserver();
-  }
-
-  @Override
-  public final EventObserver<Integer> maximumThinkTimeObserver() {
-    return maximumThinkTimeChangedEvent.getObserver();
-  }
-
-  @Override
-  public final EventObserver<Integer> getMinimumThinkTimeObserver() {
-    return minimumThinkTimeChangedEvent.getObserver();
-  }
-
-  @Override
-  public final EventObserver<Boolean> getPauseObserver() {
-    return pausedChangedEvent.getObserver();
-  }
-
-  @Override
-  public final EventObserver<Boolean> collectChartDataObserver() {
-    return collectChartDataChangedEvent.getObserver();
+  public final ValueObserver<Integer> applicationCountObserver() {
+    return Values.valueObserver(applicationCountValue);
   }
 
   /**
@@ -460,8 +379,8 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
    * @see #setMaximumThinkTime(int)
    */
   protected final int getThinkTime() {
-    final int time = minimumThinkTime - maximumThinkTime;
-    return time > 0 ? RANDOM.nextInt(time) + minimumThinkTime : minimumThinkTime;
+    final int time = minimumThinkTimeValue.get() - maximumThinkTimeValue.get();
+    return time > 0 ? RANDOM.nextInt(time) + minimumThinkTimeValue.get() : minimumThinkTimeValue.get();
   }
 
   private ItemRandomizer<UsageScenario<T>> initializeScenarioChooser() {
@@ -473,7 +392,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     return model;
   }
 
-  private void initializeChartData() {
+  private void initializeChartModels() {
     thinkTimeCollection.addSeries(minimumThinkTimeSeries);
     thinkTimeCollection.addSeries(maximumThinkTimeSeries);
     numberOfApplicationsCollection.addSeries(numberOfApplicationsSeries);
@@ -499,8 +418,8 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private void updateChartData() {
     final long time = System.currentTimeMillis();
     delayedScenarioRunsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
-    minimumThinkTimeSeries.add(time, minimumThinkTime);
-    maximumThinkTimeSeries.add(time, maximumThinkTime);
+    minimumThinkTimeSeries.add(time, minimumThinkTimeValue.get());
+    maximumThinkTimeSeries.add(time, maximumThinkTimeValue.get());
     numberOfApplicationsSeries.add(time, applications.size());
     allocatedMemoryCollection.add(time, Memory.getAllocatedMemory() / THOUSAND);
     usedMemoryCollection.add(time, Memory.getUsedMemory() / THOUSAND);
@@ -519,6 +438,17 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     for (final XYSeries series : failureSeries) {
       series.add(time, counter.getScenarioFailureRate((String) series.getKey()));
     }
+  }
+
+  private void bindEvents() {
+    chartUpdateSchedulerEnabledState.addDataListener(active -> {
+      if (active) {
+        chartUpdateScheduler.start();
+      }
+      else {
+        chartUpdateScheduler.stop();
+      }
+    });
   }
 
   private static double getSystemCpuLoad() {
@@ -545,7 +475,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
           application = initializeApplication();
           LOG.debug("LoadTestModel initialized application: {}", application);
         }
-        if (!stopped && !paused) {
+        if (!stopped && !pausedState.get()) {
           runRandomScenario(application);
         }
         if (stopped) {
@@ -569,17 +499,20 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
         runScenario(scenario, application);
       }
       finally {
-        counter.incrementWorkRequests();
-        int maximumTime = 0;
-        final long workTimeMillis = (System.nanoTime() - currentTimeNano) / NANO_IN_MILLI;
-        if (scenario != null) {
-          counter.addScenarioDuration(scenario.getName(), (int) workTimeMillis);
-          maximumTime = scenario.getMaximumTime();
-        }
-        if (maximumTime > 0 && workTimeMillis > maximumTime) {
-          counter.incrementDelayedWorkRequests();
-        }
+        counter.addScenarioDuration(scenario, (int) ((System.nanoTime() - currentTimeNano) / NANO_IN_MILLI));
       }
+    }
+  }
+
+  private final class ChartUpdateTask implements Runnable {
+
+    @Override
+    public void run() {
+      if (shuttingDown) {
+        return;
+      }
+      counter.updateRequestsPerSecond();
+      updateChartData();
     }
   }
 
@@ -648,21 +581,14 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       return usageScenarioRates.get(scenarioName);
     }
 
-    private void addScenarioDuration(final String scenarioName, final int duration) {
+    private void addScenarioDuration(final UsageScenario<T> scenario, final int duration) {
       synchronized (scenarioDurations) {
-        if (!scenarioDurations.containsKey(scenarioName)) {
-          scenarioDurations.put(scenarioName, new LinkedList<>());
+        scenarioDurations.computeIfAbsent(scenario.getName(), scenarioName -> new LinkedList<>()).add(duration);
+        workRequestCounter++;
+        if (scenario.getMaximumTime() > 0 && duration > scenario.getMaximumTime()) {
+          delayedWorkRequestCounter++;
         }
-        scenarioDurations.get(scenarioName).add(duration);
       }
-    }
-
-    private void incrementWorkRequests() {
-      workRequestCounter++;
-    }
-
-    private void incrementDelayedWorkRequests() {
-      delayedWorkRequestCounter++;
     }
 
     private void updateRequestsPerSecond() {
@@ -717,6 +643,52 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       delayedWorkRequestCounter = 0;
       synchronized (scenarioDurations) {
         scenarioDurations.clear();
+      }
+    }
+  }
+
+  private static class PositiveIntegerValidator implements Value.Validator<Integer> {
+
+    private final int minimumValue;
+
+    private PositiveIntegerValidator(final int minimumValue) {
+      this.minimumValue = minimumValue;
+    }
+
+    @Override
+    public void validate(final Integer value) throws IllegalArgumentException {
+      if (value == null || value < minimumValue) {
+        throw new IllegalArgumentException("Value must be a positive integer");
+      }
+    }
+  }
+
+  private final class MinimumThinkTimeValidator extends PositiveIntegerValidator {
+
+    private MinimumThinkTimeValidator() {
+      super(0);
+    }
+
+    @Override
+    public void validate(final Integer value) throws IllegalArgumentException {
+      super.validate(value);
+      if (value > maximumThinkTimeValue.get()) {
+        throw new IllegalArgumentException("Minimum think time must be equal to or below maximum think time");
+      }
+    }
+  }
+
+  private final class MaximumThinkTimeValidator extends PositiveIntegerValidator {
+
+    private MaximumThinkTimeValidator() {
+      super(0);
+    }
+
+    @Override
+    public void validate(final Integer value) throws IllegalArgumentException {
+      super.validate(value);
+      if (value < minimumThinkTimeValue.get()) {
+        throw new IllegalArgumentException("Maximum think time must be equal to or exceed minimum think time");
       }
     }
   }

@@ -3,8 +3,10 @@
  */
 package is.codion.swing.common.tools.loadtest;
 
-import is.codion.common.event.EventObserver;
+import is.codion.common.state.State;
 import is.codion.common.user.User;
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
 
 import org.jfree.data.xy.IntervalXYDataset;
@@ -85,78 +87,41 @@ public interface LoadTest<T> {
   int getApplicationCount();
 
   /**
-   * @return the number of applications to initialize per batch
+   * @return the Value controlling the number of applications to initialize per batch
    */
-  int getApplicationBatchSize();
+  Value<Integer> getApplicationBatchSizeValue();
 
   /**
-   * @param applicationBatchSize the number of applications to initialize per batch
+   * @return the state controlling the paused state of this load test
    */
-  void setApplicationBatchSize(int applicationBatchSize);
+  State getPausedState();
 
   /**
-   * @return true if the load testing is paused
+   * @return the Value controlling the maximum number of milliseconds that should pass between work requests
    */
-  boolean isPaused();
+  Value<Integer> getMaximumThinkTimeValue();
 
   /**
-   * @param paused true if load testing should be paused
+   * @return the Value controlling the minimum number of milliseconds that should pass between work requests
    */
-  void setPaused(boolean paused);
+  Value<Integer> getMinimumThinkTimeValue();
 
   /**
-   * @return the maximum number of milliseconds that should pass between work requests
-   */
-  int getMaximumThinkTime();
-
-  /**
-   * @param maximumThinkTime the maximum number of milliseconds that should pass between work requests
-   */
-  void setMaximumThinkTime(int maximumThinkTime);
-
-  /**
-   * @return the minimum number of milliseconds that should pass between work requests
-   */
-  int getMinimumThinkTime();
-
-  /**
-   * @param minimumThinkTime the minimum number of milliseconds that should pass between work requests
-   */
-  void setMinimumThinkTime(int minimumThinkTime);
-
-  /**
-   * Sets the with which to multiply the think time when logging in, this helps
+   * This value controls the factor with which to multiply the think time when logging in, this helps
    * spread the application logins when creating a batch of application.
-   * @return the number with which to multiply the think time when logging in
+   * @return the Value controlling the factor with which to multiply the think time when logging in
    */
-  int getLoginDelayFactor();
+  Value<Integer> getLoginDelayFactorValue();
 
   /**
-   * Sets the with which to multiply the think time when logging in, this helps
-   * spread the application logins when creating a batch of application.
-   * @param loginDelayFactor the number with which to multiply the think time when logging in
+   * @return the state controlling whether this load test collects chart data
    */
-  void setLoginDelayFactor(int loginDelayFactor);
-
-  /**
-   * @return true if chart data is being collected
-   */
-  boolean isCollectChartData();
-
-  /**
-   * @param collectChartData true if chart data should be collected
-   */
-  void setCollectChartData(boolean collectChartData);
+  State getCollectChartDataState();
 
   /**
    * @return an observer notified each time the application count changes
    */
-  EventObserver<Integer> applicationCountObserver();
-
-  /**
-   * @return an observer notified each time the application batch size changes
-   */
-  EventObserver<Integer> applicationBatchSizeObserver();
+  ValueObserver<Integer> applicationCountObserver();
 
   /**
    * Adds a batch of applications.
@@ -210,26 +175,6 @@ public interface LoadTest<T> {
    * @return a dataset plotting the failure rate of each usage scenario
    */
   XYDataset getUsageScenarioFailureDataset();
-
-  /**
-   * @return an observer notified each time the collect chart data state changes
-   */
-  EventObserver<Boolean> collectChartDataObserver();
-
-  /**
-   * @return an observer notified each time the maximum think time changes
-   */
-  EventObserver<Integer> maximumThinkTimeObserver();
-
-  /**
-   * @return an observer notified each time the minimum think time changes
-   */
-  EventObserver<Integer> getMinimumThinkTimeObserver();
-
-  /**
-   * @return an observer notified each time the paused state changes
-   */
-  EventObserver<Boolean> getPauseObserver();
 
   /**
    * @return the randomizer used to select scenarios

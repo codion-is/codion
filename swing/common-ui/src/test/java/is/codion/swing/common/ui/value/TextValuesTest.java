@@ -30,6 +30,31 @@ public class TextValuesTest {
   }
 
   @Test
+  public void valueLink() {
+    final Value<String> textValue = Values.value("start");
+    textValue.addValidator(text -> {
+      if (text != null && text.equals("nono")) {
+        throw new IllegalArgumentException();
+      }
+    });
+    final Value<String> textFieldValue = TextValues.textValue();
+    textFieldValue.link(textValue);
+
+    assertEquals("start", textFieldValue.get());
+
+    textFieldValue.set("testing");
+    assertEquals("testing", textValue.get());
+
+    assertThrows(IllegalArgumentException.class, () -> textFieldValue.set("nono"));
+    assertEquals("testing", textFieldValue.get());
+
+    textValue.set("hello");
+    assertEquals("hello", textFieldValue.get());
+
+    assertThrows(IllegalArgumentException.class, () -> textValue.set("nono"));
+  }
+
+  @Test
   public void nullInitialValue() throws Exception {
     stringValue = null;
     final JTextField textField = new JTextField();
@@ -71,8 +96,10 @@ public class TextValuesTest {
   @Test
   public void textValueField() {
     final String value = "hello";
-    ComponentValue<String, TextInputPanel> componentValue = TextValues.textValue("none", value, 2);
-    assertNull(componentValue.get());
+    assertThrows(IllegalArgumentException.class, () -> TextValues.textValue("none", value, 2));
+
+    ComponentValue<String, TextInputPanel> componentValue = TextValues.textValue("none", value, 5);
+    assertEquals(value, componentValue.get());
 
     componentValue = TextValues.textValue("none", value, 10);
     assertEquals(value, componentValue.get());
@@ -85,6 +112,11 @@ public class TextValuesTest {
 
     componentValue.getComponent().setText("");
     assertNull(componentValue.get());
+
+    assertThrows(IllegalArgumentException.class, () -> TextValues.textValue("none", null, 10)
+            .getComponent().setText("asdfasdfasdfasdfasdf"));
+
+    assertThrows(IllegalArgumentException.class, () -> TextValues.textValue("none", null, 10).set("asdfasdfasdfasdfasdf"));
   }
 
   @Test
