@@ -3,54 +3,61 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.DocumentFilter;
+import is.codion.common.value.Value;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Base class for simple text field validation
  */
-public abstract class ValidationDocumentFilter extends DocumentFilter {
+public abstract class ValidationDocumentFilter<T> extends ParsingDocumentFilter<T> {
 
-  @Override
-  public final void insertString(final FilterBypass filterBypass, final int offset, final String string,
-                                 final AttributeSet attributeSet) throws BadLocationException {
-    final Document document = filterBypass.getDocument();
-    final StringBuilder builder = new StringBuilder();
-    builder.append(document.getText(0, document.getLength()));
-    builder.insert(offset, string);
-    if (isValid(builder.toString())) {
-      super.insertString(filterBypass, offset, string, attributeSet);
-    }
-  }
+  private final List<Value.Validator<T>> validators = new ArrayList<>(0);
 
-  @Override
-  public final void replace(final FilterBypass filterBypass, final int offset, final int length, final String text,
-                            final AttributeSet attributeSet) throws BadLocationException {
-    final Document document = filterBypass.getDocument();
-    final StringBuilder builder = new StringBuilder();
-    builder.append(document.getText(0, document.getLength()));
-    builder.replace(offset, offset + length, text);
-    if (isValid(builder.toString())) {
-      super.replace(filterBypass, offset, length, text, attributeSet);
-    }
-  }
+  /**
+   * Instantiates a new {@link ValidationDocumentFilter} without a validator.
+   */
+  public ValidationDocumentFilter() {}
 
-  @Override
-  public final void remove(final FilterBypass filterBypass, final int offset, final int length) throws BadLocationException {
-    final Document document = filterBypass.getDocument();
-    final StringBuilder builder = new StringBuilder();
-    builder.append(document.getText(0, document.getLength()));
-    builder.delete(offset, offset + length);
-    if (isValid(builder.toString())) {
-      super.remove(filterBypass, offset, length);
-    }
+  /**
+   * Instantiates a new {@link ValidationDocumentFilter} with the given validator.
+   * @param validator the validator
+   */
+  public ValidationDocumentFilter(final Value.Validator<T> validator) {
+    addValidator(validator);
   }
 
   /**
-   * @param text the text to check
-   * @return true if the given text is valid
+   * Adds a validator to this validation document
+   * @param validator the validator to add
    */
-  protected abstract boolean isValid(String text);
+  public final void addValidator(final Value.Validator<T> validator) {
+    validators.add(requireNonNull(validator, "validator"));
+  }
+
+  @Override
+  protected final ParseResult<T> parse(final String text) {
+    final ParseResult<T> parseResult = parseValue(text);
+    if (parseResult.successful()) {
+      validate(parseResult.getValue());
+
+      return parseResult;
+    }
+
+    return parseResult(parseResult.getText(), null, parseResult.getCharactersAdded(), false);
+  }
+
+  /**
+   * Performs the value parsing, if successful the resulting value will be validated
+   * @param text the text to parse
+   * @return the parse result
+   */
+  protected abstract ParseResult<T> parseValue(final String text);
+
+  private void validate(final T value) throws IllegalArgumentException {
+    validators.forEach(validator -> validator.validate(value));
+  }
 }

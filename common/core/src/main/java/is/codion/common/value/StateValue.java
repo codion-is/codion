@@ -82,4 +82,9 @@ final class StateValue implements Value<Boolean>  {
   public void setValidator(final Validator<Boolean> validator) {
     throw new UnsupportedOperationException("Validation not implemented for state values");
   }
+
+  @Override
+  public Validator<Boolean> getValidator() {
+    throw new UnsupportedOperationException("Validation not implemented for state values");
+  }
 }

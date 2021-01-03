@@ -154,4 +154,9 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
     this.validator = validator == null ? (Validator<V>) AbstractValue.NULL_VALIDATOR : validator;
     this.validator.validate(get());
   }
+
+  @Override
+  public Validator<V> getValidator() {
+    return validator;
+  }
 }

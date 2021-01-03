@@ -71,8 +71,10 @@ public class TextValuesTest {
   @Test
   public void textValueField() {
     final String value = "hello";
-    ComponentValue<String, TextInputPanel> componentValue = TextValues.textValue("none", value, 2);
-    assertNull(componentValue.get());
+    assertThrows(IllegalArgumentException.class, () -> TextValues.textValue("none", value, 2));
+
+    ComponentValue<String, TextInputPanel> componentValue = TextValues.textValue("none", value, 5);
+    assertEquals(value, componentValue.get());
 
     componentValue = TextValues.textValue("none", value, 10);
     assertEquals(value, componentValue.get());
@@ -85,6 +87,11 @@ public class TextValuesTest {
 
     componentValue.getComponent().setText("");
     assertNull(componentValue.get());
+
+    assertThrows(IllegalArgumentException.class, () -> TextValues.textValue("none", null, 10)
+            .getComponent().setText("asdfasdfasdfasdfasdf"));
+
+    assertThrows(IllegalArgumentException.class, () -> TextValues.textValue("none", null, 10).set("asdfasdfasdfasdfasdf"));
   }
 
   @Test

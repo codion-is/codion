@@ -12,12 +12,12 @@ final class DecimalDocumentFilter<T extends Number> extends NumberField.NumberDo
   }
 
   @Override
-  protected NumberField.FormatResult format(final String string) {
+  protected ParseResult<T> parseValue(final String string) {
     final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
     if (string.equals(Character.toString(decimalSeparator))) {
-      return new NumberField.FormatResult(1, "0" + decimalSeparator);
+      return parseResult("0" + decimalSeparator, (T) Double.valueOf(0d), 1);
     }
 
-    return super.format(string);
+    return super.parseValue(string);
   }
 }

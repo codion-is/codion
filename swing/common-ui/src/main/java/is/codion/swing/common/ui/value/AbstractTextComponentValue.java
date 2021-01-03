@@ -4,8 +4,11 @@
 package is.codion.swing.common.ui.value;
 
 import is.codion.swing.common.model.textfield.DocumentAdapter;
+import is.codion.swing.common.ui.textfield.ValidationDocumentFilter;
 
 import javax.swing.event.DocumentEvent;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.DocumentFilter;
 import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -36,6 +39,10 @@ public abstract class AbstractTextComponentValue<V, C extends JTextComponent> ex
    */
   public AbstractTextComponentValue(final C component, final V nullValue, final UpdateOn updateOn) {
     super(component, nullValue);
+    final DocumentFilter documentFilter = ((AbstractDocument) component.getDocument()).getDocumentFilter();
+    if (documentFilter instanceof ValidationDocumentFilter) {
+      ((ValidationDocumentFilter<V>) documentFilter).addValidator(value -> getValidator().validate(value));
+    }
     if (updateOn == UpdateOn.KEYSTROKE) {
       component.getDocument().addDocumentListener(new NotifyOnContentsChanged());
     }

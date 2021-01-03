@@ -112,6 +112,11 @@ public abstract class AbstractValue<V> implements Value<V> {
     this.validator.validate(get());
   }
 
+  @Override
+  public final Validator<V> getValidator() {
+    return validator;
+  }
+
   /**
    * Sets the actual internal value.
    * @param value the value

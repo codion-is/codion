@@ -6583,3 +6583,5 @@
   ColumnConditionPanel.BoundFieldProvider renamed BoundFieldFactory, some methods renamed
   DateParser renamed DateTimeParser
   LoadTest and LoadTestModel refactored
+  Value.getValidator() added
+  ParsingDocumentFilter added, major overhaul of validation and document filters such as ValidationDocumentFilter

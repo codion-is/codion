@@ -5,12 +5,11 @@ package is.codion.swing.common.ui.textfield;
 
 import is.codion.common.Configuration;
 import is.codion.common.value.PropertyValue;
+import is.codion.common.value.Value;
 
 import javax.swing.JTextField;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
-import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.awt.event.KeyAdapter;
@@ -20,14 +19,18 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.ParsePosition;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * A text field for numbers.
  * @param <T> the Number type
  */
 public class NumberField<T extends Number> extends JTextField {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(NumberField.class.getName());
 
   /**
    * Specifies whether NumberFields disable grouping by default.<br>
@@ -210,13 +213,11 @@ public class NumberField<T extends Number> extends JTextField {
   /**
    * A DocumentFilter for restricting input to numerical values
    */
-  protected static class NumberDocumentFilter<T extends Number> extends DocumentFilter {
+  protected static class NumberDocumentFilter<T extends Number> extends ValidationDocumentFilter<T> {
 
     private static final String MINUS_SIGN = "-";
 
     private final NumberFormat format;
-
-    private Caret caret;
 
     private double minimumValue = Double.NEGATIVE_INFINITY;
     private double maximumValue = Double.POSITIVE_INFINITY;
@@ -224,48 +225,20 @@ public class NumberField<T extends Number> extends JTextField {
     protected NumberDocumentFilter(final NumberFormat format) {
       this.format = format;
       this.format.setRoundingMode(RoundingMode.DOWN);
+      addValidator(new RangeValidator());
     }
 
-    @Override
-    public final void insertString(final FilterBypass filterBypass, final int offset, final String string,
-                                   final AttributeSet attributeSet) throws BadLocationException {
-      replace(filterBypass, offset, 0, string, attributeSet);
-    }
-
-    @Override
-    public final void remove(final FilterBypass filterBypass, final int offset, final int length) throws BadLocationException {
-      replace(filterBypass, offset, length, "", null);
-    }
-
-    @Override
-    public final void replace(final FilterBypass filterBypass, final int offset, final int length, final String string,
-                              final AttributeSet attributeSet) throws BadLocationException {
-      final Document document = filterBypass.getDocument();
-      final StringBuilder numberBuilder = new StringBuilder(document.getText(0, document.getLength()));
-      numberBuilder.replace(offset, offset + length, string);
-      final FormatResult formatResult = format(numberBuilder.toString());
-      if (formatResult != null) {
-        super.replace(filterBypass, 0, document.getLength(), formatResult.formatted, attributeSet);
-        if (caret != null) {
-          try {
-            caret.setDot(offset + string.length() + formatResult.added);
-          }
-          catch (final NullPointerException e) {
-            e.printStackTrace();
-            //Yeah, here's a hack, this error occurs occasionally, within DefaultCaret.setDot(),
-            //probably EDT related, so I'll suppress it until I understand what's going on
-          }
-        }
-      }
-    }
-
-    protected FormatResult format(final String string) {
+    protected ParseResult<T> parseValue(final String string) {
       if (string.isEmpty() || MINUS_SIGN.equals(string)) {
-        return new FormatResult(0, string);
+        try {
+          //using format.parse() for the correct type
+          return parseResult(string, (T) format.parse("0"));
+        }
+        catch (final ParseException e) {/*Wont happen*/}
       }
 
-      final Number parsedNumber = parseNumber(string);
-      if (parsedNumber != null && isWithinRange(parsedNumber.doubleValue())) {
+      final T parsedNumber = parseNumber(string);
+      if (parsedNumber != null) {
         String formattedNumber = format.format(parsedNumber);
         //handle trailing decimal symbol and trailing decimal zeros
         if (format instanceof DecimalFormat) {
@@ -280,10 +253,10 @@ public class NumberField<T extends Number> extends JTextField {
           }
         }
 
-        return new FormatResult(countAddedGroupingSeparators(string, formattedNumber), formattedNumber);
+        return parseResult(formattedNumber, parsedNumber, countAddedGroupingSeparators(string, formattedNumber));
       }
 
-      return null;
+      return parseResult(string, null, 0, false);
     }
 
     /**
@@ -301,14 +274,6 @@ public class NumberField<T extends Number> extends JTextField {
     private void setRange(final double min, final double max) {
       this.minimumValue = min;
       this.maximumValue = max;
-    }
-
-    /**
-     * Sets the caret, necessary for keeping the correct caret position when editing
-     * @param caret the text field caret
-     */
-    private void setCaret(final Caret caret) {
-      this.caret = caret;
     }
 
     /**
@@ -379,15 +344,14 @@ public class NumberField<T extends Number> extends JTextField {
 
       return counter;
     }
-  }
 
-  protected static final class FormatResult {
-    private final int added;
-    private final String formatted;
-
-    protected FormatResult(final int added, final String formatted) {
-      this.added = added;
-      this.formatted = formatted;
+    private final class RangeValidator implements Value.Validator<T> {
+      @Override
+      public void validate(final T value) throws IllegalArgumentException {
+        if (!isWithinRange(value.doubleValue())) {
+          throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + " " + minimumValue + " - " + maximumValue);
+        }
+      }
     }
   }
 

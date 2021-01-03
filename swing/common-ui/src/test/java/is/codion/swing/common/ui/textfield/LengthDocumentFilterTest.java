@@ -9,6 +9,7 @@ import javax.swing.JTextArea;
 import javax.swing.text.AbstractDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LengthDocumentFilterTest {
 
@@ -22,7 +23,7 @@ public class LengthDocumentFilterTest {
     textArea.insert("90", 8);
     final String text10 = "1234567890";
     assertEquals(text10, textArea.getText());
-    textArea.insert(text10, 10);
+    assertThrows(IllegalArgumentException.class, () -> textArea.insert(text10, 10));
     assertEquals(text10, textArea.getText());
   }
 
@@ -35,7 +36,7 @@ public class LengthDocumentFilterTest {
     textArea.replaceRange("90", 8, 8);
     final String text10 = "1234567890";
     assertEquals(text10, textArea.getText());
-    textArea.replaceRange("ab", 4, 4);
+    assertThrows(IllegalArgumentException.class, () -> textArea.replaceRange("ab", 4, 4));
     assertEquals(text10, textArea.getText());
   }
 }

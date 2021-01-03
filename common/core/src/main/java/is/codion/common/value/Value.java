@@ -40,6 +40,11 @@ public interface Value<V> extends ValueObserver<V> {
   void setValidator(Validator<V> validator);
 
   /**
+   * @return the validator
+   */
+  Validator<V> getValidator();
+
+  /**
    * A Validator for {@link Value}s.
    * @param <V> the value type
    */

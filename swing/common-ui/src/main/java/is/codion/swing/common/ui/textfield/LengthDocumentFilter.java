@@ -3,35 +3,58 @@
  */
 package is.codion.swing.common.ui.textfield;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DocumentFilter;
+import is.codion.common.value.Value;
+
+import java.util.ResourceBundle;
 
 /**
  * A DocumentFilter restricting the maximum length of the string the document can contain
  */
-public final class LengthDocumentFilter extends DocumentFilter {
+public class LengthDocumentFilter extends ValidationDocumentFilter<String> {
 
-  private final int maxLength;
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LengthDocumentFilter.class.getName());
+
+  private int maxLength;
+
+  /**
+   */
+  public LengthDocumentFilter() {
+    this(-1);
+  }
 
   /**
    * @param maxLength the maximum length of the string the document can contain
    */
   public LengthDocumentFilter(final int maxLength) {
-    this.maxLength = maxLength;
+    setMaxLength(maxLength);
+    addValidator(new LengthValidator());
+  }
+
+  /**
+   * @return the max length used by this filter
+   */
+  public final int getMaxLength() {
+    return maxLength;
+  }
+
+  /**
+   * @param maxLength the maximum length of the text to allow, -1 if unlimited
+   */
+  public final void setMaxLength(final int maxLength) {
+    this.maxLength = maxLength < 0 ? -1 : maxLength;
   }
 
   @Override
-  public void insertString(final FilterBypass fb, final int offs, final String str, final AttributeSet a) throws BadLocationException {
-    if ((fb.getDocument().getLength() + str.length()) <= maxLength) {
-      super.insertString(fb, offs, str, a);
-    }
+  protected ParseResult<String> parseValue(final String text) {
+    return parseResult(text, text, 0, true);
   }
 
-  @Override
-  public void replace(final FilterBypass fb, final int offs, final int length, final String str, final AttributeSet a) throws BadLocationException {
-    if ((fb.getDocument().getLength() + str.length() - length) <= maxLength) {
-      super.replace(fb, offs, length, str, a);
+  private final class LengthValidator implements Value.Validator<String> {
+    @Override
+    public void validate(final String text) throws IllegalArgumentException {
+      if (maxLength >= 0 && text.length() > maxLength) {
+        throw new IllegalArgumentException(MESSAGES.getString("length_exceeds_maximum") + " " + maxLength);
+      }
     }
   }
 }
