@@ -12,19 +12,19 @@ import javax.swing.text.BadLocationException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class ValidationDocumentFilterTest {
+public final class ParsingDocumentFilterTest {
 
   @Test
   public void test() throws BadLocationException {
     final JTextField textField = new JTextField();
     final AbstractDocument document = (AbstractDocument) textField.getDocument();
-    final ValidationDocumentFilter<String> validationFilter = new ValidationDocumentFilter<String>(value -> {
+    final ParsingDocumentFilter<String> validationFilter = new ParsingDocumentFilter<String>(value -> {
       if (!value.contains("42")) {
         throw new IllegalArgumentException();
       }
     }) {
       @Override
-      protected ParseResult<String> parseValue(final String text) {
+      protected ParseResult<String> parse(final String text) {
         return parseResult(text, text);
       }
     };

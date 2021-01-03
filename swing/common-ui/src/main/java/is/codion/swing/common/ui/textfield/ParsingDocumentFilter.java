@@ -3,19 +3,48 @@
  */
 package is.codion.swing.common.ui.textfield;
 
+import is.codion.common.value.Value;
+
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
- * A DocumentFilter which parses a value from the document text.
+ * A DocumentFilter which parses a value from the document text and allowes for validation of the parsed value.
  * @param <T> the value type
  */
 public abstract class ParsingDocumentFilter<T> extends DocumentFilter {
 
+  private final List<Value.Validator<T>> validators = new ArrayList<>(0);
+
   private Caret caret;
+
+  /**
+   * Instantiates a new {@link ParsingDocumentFilter} without a validator.
+   */
+  public ParsingDocumentFilter() {}
+
+  /**
+   * Instantiates a new {@link ParsingDocumentFilter} with the given validator.
+   * @param validator the validator
+   */
+  public ParsingDocumentFilter(final Value.Validator<T> validator) {
+    addValidator(validator);
+  }
+
+  /**
+   * Adds a validator to this validation document
+   * @param validator the validator to add
+   */
+  public final void addValidator(final Value.Validator<T> validator) {
+    validators.add(requireNonNull(validator, "validator"));
+  }
 
   @Override
   public final void insertString(final FilterBypass filterBypass, final int offset, final String string,
@@ -36,6 +65,7 @@ public abstract class ParsingDocumentFilter<T> extends DocumentFilter {
     builder.replace(offset, offset + length, text);
     final ParseResult<T> parseResult = parse(builder.toString());
     if (parseResult.successful()) {
+      validators.forEach(validator -> validator.validate(parseResult.getValue()));
       super.replace(filterBypass, 0, document.getLength(), parseResult.getText(), attributeSet);
       if (caret != null) {
         try {

@@ -213,7 +213,7 @@ public class NumberField<T extends Number> extends JTextField {
   /**
    * A DocumentFilter for restricting input to numerical values
    */
-  protected static class NumberDocumentFilter<T extends Number> extends ValidationDocumentFilter<T> {
+  protected static class NumberDocumentFilter<T extends Number> extends ParsingDocumentFilter<T> {
 
     private static final String MINUS_SIGN = "-";
 
@@ -228,7 +228,7 @@ public class NumberField<T extends Number> extends JTextField {
       addValidator(new RangeValidator());
     }
 
-    protected ParseResult<T> parseValue(final String string) {
+    protected ParseResult<T> parse(final String string) {
       if (string.isEmpty() || MINUS_SIGN.equals(string)) {
         try {
           //using format.parse() for the correct type

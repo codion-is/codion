@@ -72,7 +72,7 @@ public final class SizedDocument extends PlainDocument {
     private DocumentCase documentCase = DocumentCase.NONE;
 
     @Override
-    protected ParseResult<String> parseValue(final String text) {
+    protected ParseResult<String> parse(final String text) {
       final String correctedText = setCase(text);
 
       return parseResult(correctedText, correctedText);

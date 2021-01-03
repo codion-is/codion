@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 /**
  * A DocumentFilter restricting the maximum length of the string the document can contain
  */
-public class LengthDocumentFilter extends ValidationDocumentFilter<String> {
+public class LengthDocumentFilter extends ParsingDocumentFilter<String> {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LengthDocumentFilter.class.getName());
 
@@ -45,7 +45,7 @@ public class LengthDocumentFilter extends ValidationDocumentFilter<String> {
   }
 
   @Override
-  protected ParseResult<String> parseValue(final String text) {
+  protected ParseResult<String> parse(final String text) {
     return parseResult(text, text, 0, true);
   }
 
