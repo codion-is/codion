@@ -53,6 +53,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
   /**
    * Instantiates a new ClientInstanceMonitorPanel
+   * @param model the model
    * @throws RemoteException in case of an exception
    */
   public ClientInstanceMonitorPanel(final ClientInstanceMonitor model) throws RemoteException {

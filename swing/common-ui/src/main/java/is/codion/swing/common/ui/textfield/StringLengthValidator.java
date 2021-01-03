@@ -35,7 +35,7 @@ public final class StringLengthValidator implements Value.Validator<String> {
   }
 
   @Override
-  public void validate(final String text) throws IllegalArgumentException {
+  public void validate(final String text) {
     if (maxLength >= 0 && text.length() > maxLength) {
       throw new IllegalArgumentException(MESSAGES.getString("length_exceeds_maximum") + " " + maxLength);
     }

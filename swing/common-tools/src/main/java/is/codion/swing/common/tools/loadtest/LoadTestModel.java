@@ -415,31 +415,6 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     usageScenarioCollection.addSeries(delayedScenarioRunsSeries);
   }
 
-  private void updateChartData() {
-    final long time = System.currentTimeMillis();
-    delayedScenarioRunsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
-    minimumThinkTimeSeries.add(time, minimumThinkTimeValue.get());
-    maximumThinkTimeSeries.add(time, maximumThinkTimeValue.get());
-    numberOfApplicationsSeries.add(time, applications.size());
-    allocatedMemoryCollection.add(time, Memory.getAllocatedMemory() / THOUSAND);
-    usedMemoryCollection.add(time, Memory.getUsedMemory() / THOUSAND);
-    maxMemoryCollection.add(time, Memory.getMaxMemory() / THOUSAND);
-    systemLoadSeries.add(time, getSystemCpuLoad() * HUNDRED);
-    processLoadSeries.add(time, getProcessCpuLoad() * HUNDRED);
-    scenariosRunSeries.add(time, counter.getWorkRequestsPerSecond());
-    for (final XYSeries series : usageSeries) {
-      series.add(time, counter.getScenarioRate((String) series.getKey()));
-    }
-    for (final YIntervalSeries series : durationSeries.values()) {
-      final String scenario = (String) series.getKey();
-      series.add(time, counter.getAverageScenarioDuration(scenario),
-              counter.getMinimumScenarioDuration(scenario), counter.getMaximumScenarioDuration(scenario));
-    }
-    for (final XYSeries series : failureSeries) {
-      series.add(time, counter.getScenarioFailureRate((String) series.getKey()));
-    }
-  }
-
   private void bindEvents() {
     chartUpdateSchedulerEnabledState.addDataListener(active -> {
       if (active) {
@@ -513,6 +488,31 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       }
       counter.updateRequestsPerSecond();
       updateChartData();
+    }
+
+    private void updateChartData() {
+      final long time = System.currentTimeMillis();
+      delayedScenarioRunsSeries.add(time, counter.getDelayedWorkRequestsPerSecond());
+      minimumThinkTimeSeries.add(time, minimumThinkTimeValue.get());
+      maximumThinkTimeSeries.add(time, maximumThinkTimeValue.get());
+      numberOfApplicationsSeries.add(time, applications.size());
+      allocatedMemoryCollection.add(time, Memory.getAllocatedMemory() / THOUSAND);
+      usedMemoryCollection.add(time, Memory.getUsedMemory() / THOUSAND);
+      maxMemoryCollection.add(time, Memory.getMaxMemory() / THOUSAND);
+      systemLoadSeries.add(time, getSystemCpuLoad() * HUNDRED);
+      processLoadSeries.add(time, getProcessCpuLoad() * HUNDRED);
+      scenariosRunSeries.add(time, counter.getWorkRequestsPerSecond());
+      for (final XYSeries series : usageSeries) {
+        series.add(time, counter.getScenarioRate((String) series.getKey()));
+      }
+      for (final YIntervalSeries series : durationSeries.values()) {
+        final String scenario = (String) series.getKey();
+        series.add(time, counter.getAverageScenarioDuration(scenario),
+                counter.getMinimumScenarioDuration(scenario), counter.getMaximumScenarioDuration(scenario));
+      }
+      for (final XYSeries series : failureSeries) {
+        series.add(time, counter.getScenarioFailureRate((String) series.getKey()));
+      }
     }
   }
 
@@ -656,7 +656,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     }
 
     @Override
-    public void validate(final Integer value) throws IllegalArgumentException {
+    public void validate(final Integer value) {
       if (value == null || value < minimumValue) {
         throw new IllegalArgumentException("Value must be a positive integer");
       }
@@ -670,7 +670,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     }
 
     @Override
-    public void validate(final Integer value) throws IllegalArgumentException {
+    public void validate(final Integer value) {
       super.validate(value);
       if (value > maximumThinkTimeValue.get()) {
         throw new IllegalArgumentException("Minimum think time must be equal to or below maximum think time");
@@ -685,7 +685,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     }
 
     @Override
-    public void validate(final Integer value) throws IllegalArgumentException {
+    public void validate(final Integer value) {
       super.validate(value);
       if (value < minimumThinkTimeValue.get()) {
         throw new IllegalArgumentException("Maximum think time must be equal to or exceed minimum think time");

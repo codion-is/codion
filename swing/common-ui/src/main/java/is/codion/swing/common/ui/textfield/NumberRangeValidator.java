@@ -15,7 +15,7 @@ final class NumberRangeValidator<T extends Number> implements Value.Validator<T>
   private double maximumValue = Double.POSITIVE_INFINITY;
 
   @Override
-  public void validate(final T value) throws IllegalArgumentException {
+  public void validate(final T value) {
     if (!isWithinRange(value.doubleValue())) {
       throw new IllegalArgumentException(MESSAGES.getString("value_outside_range") + " " + minimumValue + " - " + maximumValue);
     }
