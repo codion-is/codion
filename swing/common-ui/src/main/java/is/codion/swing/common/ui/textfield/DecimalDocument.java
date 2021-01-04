@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.textfield;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
@@ -13,8 +14,11 @@ final class DecimalDocument<T extends Number> extends NumberDocument<T> {
 
   static final int MAXIMUM_FRACTION_DIGITS = 340;
 
-  DecimalDocument(final DecimalFormat format) {
-    super(parsingDocumentFilter(new DecimalDocumentParser<>(format), new NumberRangeValidator<>()));
+  DecimalDocument(final DecimalFormat format, final boolean parseBigDecimal) {
+    super(parsingDocumentFilter(new DecimalDocumentParser<>(format, parseBigDecimal), new NumberRangeValidator<>()));
+    if (parseBigDecimal) {
+      format.setParseBigDecimal(true);
+    }
   }
 
   int getMaximumFractionDigits() {
@@ -31,11 +35,11 @@ final class DecimalDocument<T extends Number> extends NumberDocument<T> {
     setText("");
   }
 
-  /* Automatically adds a 0 in front of a decimal separator, when it's the first character entered*/
+  /* Automatically adds a 0 in front of a decimal separator, when it's the first character entered */
   private static final class DecimalDocumentParser<T extends Number> extends NumberParser<T> {
 
-    private DecimalDocumentParser(final DecimalFormat format) {
-      super(format);
+    private DecimalDocumentParser(final DecimalFormat format, final boolean parseBigDecimal) {
+      super(format, parseBigDecimal ? (Class<T>) BigDecimal.class : (Class<T>) Double.class);
     }
 
     @Override

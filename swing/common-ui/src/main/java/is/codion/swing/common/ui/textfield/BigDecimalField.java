@@ -45,8 +45,7 @@ public final class BigDecimalField extends NumberField<BigDecimal> {
    * @param columns the number of columns
    */
   public BigDecimalField(final DecimalFormat format, final int columns) {
-    super(new DecimalDocument<>(format), columns);
-    ((DecimalFormat) getTypedDocument().getFormat()).setParseBigDecimal(true);
+    super(new DecimalDocument<>(format, true), columns);
   }
 
   /**
