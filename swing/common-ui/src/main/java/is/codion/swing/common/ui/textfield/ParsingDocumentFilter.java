@@ -99,6 +99,7 @@ public final class ParsingDocumentFilter<T> extends DocumentFilter {
   /**
    * Instantiates a new {@link ParsingDocumentFilter} without a validator.
    * @param parser the parser
+   * @param <T> the value type
    * @return a new document filter
    */
   public static <T> ParsingDocumentFilter<T> parsingDocumentFilter(final Parser<T> parser) {
@@ -118,6 +119,7 @@ public final class ParsingDocumentFilter<T> extends DocumentFilter {
    * Instantiates a new {@link ParsingDocumentFilter} with the given validator.
    * @param parser the parser
    * @param validator the validator
+   * @param <T> the value type
    * @return a new document filter
    */
   public static <T> ParsingDocumentFilter<T> parsingDocumentFilter(final Parser<T> parser, final Value.Validator<T> validator) {

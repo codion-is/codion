@@ -29,7 +29,7 @@ public interface ProcedureType<C, T> {
 
   /**
    * Creates a {@link ProcedureType} with the given name and types.
-   * @param name
+   * @param name the name
    * @param <C> the connection type
    * @param <T> the procedure argument type
    * @return a new {@link ProcedureType}

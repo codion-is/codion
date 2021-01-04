@@ -375,8 +375,8 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   /**
    * @return a random think time in milliseconds based on the values of minimumThinkTime and maximumThinkTime
-   * @see #setMinimumThinkTime(int)
-   * @see #setMaximumThinkTime(int)
+   * @see #getMinimumThinkTimeValue()
+   * @see #getMaximumThinkTimeValue()
    */
   protected final int getThinkTime() {
     final int time = minimumThinkTimeValue.get() - maximumThinkTimeValue.get();

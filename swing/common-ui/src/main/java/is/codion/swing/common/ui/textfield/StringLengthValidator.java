@@ -8,7 +8,7 @@ import is.codion.common.value.Value;
 import java.util.ResourceBundle;
 
 /**
- * A {@link Validator} restricting the maximum length of a string value.
+ * A {@link Value.Validator} restricting the maximum length of a string value.
  */
 public final class StringLengthValidator implements Value.Validator<String> {
 

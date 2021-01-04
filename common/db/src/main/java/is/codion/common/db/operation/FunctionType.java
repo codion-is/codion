@@ -31,7 +31,7 @@ public interface FunctionType<C, T, R> {
 
   /**
    * Creates a {@link FunctionType} with the given name and types.
-   * @param name
+   * @param name the name
    * @param <C> the connection type
    * @param <T> the function argument type
    * @param <R> the function result type
