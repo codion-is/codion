@@ -42,7 +42,7 @@ public final class DoubleField extends NumberField<Double> {
    * @param columns the number of columns
    */
   public DoubleField(final DecimalFormat format, final int columns) {
-    super(new DecimalDocument<>(format), columns);
+    super(new DecimalDocument<>(format, false), columns);
   }
 
   /**
