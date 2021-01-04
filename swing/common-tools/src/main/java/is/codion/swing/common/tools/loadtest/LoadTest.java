@@ -125,13 +125,13 @@ public interface LoadTest<T> {
 
   /**
    * Adds a batch of applications.
-   * @see #setApplicationBatchSize(int)
+   * @see #getApplicationBatchSizeValue()
    */
   void addApplicationBatch();
 
   /**
    * Removes one batch of applications.
-   * @see #setApplicationBatchSize(int)
+   * @see #getApplicationBatchSizeValue()
    */
   void removeApplicationBatch();
 
