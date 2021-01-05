@@ -6623,3 +6623,4 @@
   Value.setValidator() replaced with addValidator(), used in ValueLink
   ValueLink now throws IllegalArgumentException forward after rolling the change back to the last valid value
   NumberParser, type class field added, now returns the correct type
+  DefaultDomain.addEntities() added, replaces domain extension functionality

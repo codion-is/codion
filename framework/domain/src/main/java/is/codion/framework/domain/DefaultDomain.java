@@ -157,6 +157,14 @@ public abstract class DefaultDomain implements Domain {
     entities.setStrictForeignKeysInternal(strictForeignKeys);
   }
 
+  /**
+   * Adds the entities from the given domain to this domain.
+   * @param domain the domain model which entities to add
+   */
+  protected final void addEntities(final Domain domain) {
+    domain.getEntities().getDefinitions().forEach(entities::addDefinition);
+  }
+
   private static final class DomainEntities extends DefaultEntities {
 
     private static final long serialVersionUID = 1;
@@ -168,6 +176,11 @@ public abstract class DefaultDomain implements Domain {
     protected EntityDefinition.Builder defineInternal(final EntityType<?> entityType, final String tableName,
                                                       final Property.Builder<?>... propertyBuilders) {
       return super.define(entityType, tableName, propertyBuilders);
+    }
+
+    @Override
+    protected void addDefinition(final EntityDefinition definition) {
+      super.addDefinition(definition);
     }
 
     private void setStrictForeignKeysInternal(final boolean strictForeignKeys) {
