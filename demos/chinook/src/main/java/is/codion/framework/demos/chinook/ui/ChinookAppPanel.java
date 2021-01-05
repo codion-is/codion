@@ -178,9 +178,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   private void updateInvoiceTotals() {
-    runWithProgressBar(this, bundle.getString(UPDATING_TOTALS),
-            bundle.getString(TOTALS_UPDATED), bundle.getString(UPDATING_TOTALS_FAILED),
-            getModel()::updateInvoiceTotals);
+    runWithProgressBar(this, getModel()::updateInvoiceTotals, bundle.getString(UPDATING_TOTALS),
+            bundle.getString(TOTALS_UPDATED), bundle.getString(UPDATING_TOTALS_FAILED));
   }
 
   private void selectLanguage() {

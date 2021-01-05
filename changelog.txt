@@ -6595,3 +6595,4 @@
   NumberParser, type class field added, now returns the correct type
   DefaultDomain.addEntities() added, replaces domain extension functionality
   DefaultDomain.addEntities() bug fixed, no longer tries to add entities which the domain already contains
+  ProgressWorker.runWithProgressBar() reordered parameters for consistency, task always second
