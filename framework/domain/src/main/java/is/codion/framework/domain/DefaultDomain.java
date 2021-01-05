@@ -158,11 +158,15 @@ public abstract class DefaultDomain implements Domain {
   }
 
   /**
-   * Adds the entities from the given domain to this domain.
+   * Adds all the entities from the given domain to this domain.
    * @param domain the domain model which entities to add
    */
   protected final void addEntities(final Domain domain) {
-    domain.getEntities().getDefinitions().forEach(entities::addDefinition);
+    domain.getEntities().getDefinitions().forEach(definition -> {
+      if (!entities.contains(definition.getEntityType())) {
+        entities.addDefinition(definition);
+      }
+    });
   }
 
   private static final class DomainEntities extends DefaultEntities {
