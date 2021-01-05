@@ -40,8 +40,7 @@ public final class LookupTablePanel extends EntityTablePanel {
 
   private void exportCSV() throws IOException {
     File fileToSave = selectFileToSave(this, null, "export.csv");
-    runWithProgressBar(this, "Exporting data",
-            "Export successful", "Export failed",
-            () -> ((LookupTableModel) getTableModel()).exportCSV(fileToSave));
+    runWithProgressBar(this, () -> ((LookupTableModel) getTableModel()).exportCSV(fileToSave),
+            "Exporting data", "Export successful", "Export failed");
   }
 }
