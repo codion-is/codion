@@ -65,20 +65,6 @@ public interface DomainType {
   boolean contains(EntityType<?> entityType);
 
   /**
-   * Returns a {@link DomainType} which extends this one, sharing entity definitions.
-   * @param domainClass the domain class
-   * @return an extended {@link DomainType}
-   */
-  DomainType extend(final Class<?> domainClass);
-
-  /**
-   * Returns a {@link DomainType} which extends this one, sharing entity definitions.
-   * @param domainName the domain name
-   * @return an extended {@link DomainType}
-   */
-  DomainType extend(final String domainName);
-
-  /**
    * Returns a new {@link DomainType} using the given classes simple name as domain name.
    * @param domainClass the domain class
    * @return a {@link DomainType}

@@ -23,18 +23,13 @@ final class DefaultDomainType implements DomainType, Serializable {
   private static final Map<String, DefaultDomainType> DOMAIN_TYPES = new ConcurrentHashMap<>();
 
   private final String domainName;
-  private final Map<String, EntityType<?>> entityTypes;
+  private final Map<String, EntityType<?>> entityTypes = new ConcurrentHashMap<>();
 
   private DefaultDomainType(final String domainName) {
-    this(null, domainName);
-  }
-
-  private DefaultDomainType(final DefaultDomainType domainToExtend, final String domainName) {
     if (nullOrEmpty(domainName)) {
       throw new IllegalArgumentException("domainName must be a non-empty string");
     }
     this.domainName = domainName;
-    this.entityTypes = domainToExtend == null ? new ConcurrentHashMap<>() : domainToExtend.entityTypes;
   }
 
   @Override
@@ -69,16 +64,6 @@ final class DefaultDomainType implements DomainType, Serializable {
   @Override
   public boolean contains(final EntityType<?> entityType) {
     return entityTypes.containsKey(requireNonNull(entityType).getName());
-  }
-
-  @Override
-  public DomainType extend(final Class<?> domainClass) {
-    return extend(requireNonNull(domainClass, "domainClass").getSimpleName());
-  }
-
-  @Override
-  public DomainType extend(final String domainName) {
-    return getOrExtendDomainType(this, requireNonNull(domainName, "domainName"));
   }
 
   @Override
@@ -120,10 +105,5 @@ final class DefaultDomainType implements DomainType, Serializable {
     }
 
     return domainType;
-  }
-
-  private static DomainType getOrExtendDomainType(final DomainType domainToExtend, final String domainName) {
-    return DOMAIN_TYPES.computeIfAbsent(domainName, name ->
-            new DefaultDomainType((DefaultDomainType) getDomainType(domainToExtend.getName()), domainName));
   }
 }

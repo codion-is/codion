@@ -6,16 +6,20 @@ package is.codion.framework.domain;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 
 import static is.codion.framework.domain.property.Properties.columnProperty;
+import static is.codion.framework.domain.property.Properties.foreignKeyProperty;
 
-public class TestDomainExtended extends TestDomain {
+public final class TestDomainExtended extends DefaultDomain {
 
-  public static final DomainType DOMAIN = TestDomain.DOMAIN.extend(TestDomainExtended.class);
+  public static final DomainType DOMAIN = DomainType.domainType(TestDomainExtended.class);
 
   public static final EntityType<Entity> T_EXTENDED = DOMAIN.entityType("extended.entity");
   public static final Attribute<Integer> EXTENDED_ID = T_EXTENDED.integerAttribute("id");
   public static final Attribute<String> EXTENDED_NAME = T_EXTENDED.stringAttribute("name");
+  public static final Attribute<Integer> EXTENDED_DEPT_ID = T_EXTENDED.integerAttribute("dept_id");
+  public static final ForeignKey EXTENDED_DEPT_FK = T_EXTENDED.foreignKey("dept_fk", EXTENDED_DEPT_ID, TestDomain.Department.NO);
 
   public TestDomainExtended() {
     this(DOMAIN);
@@ -23,18 +27,21 @@ public class TestDomainExtended extends TestDomain {
 
   public TestDomainExtended(final DomainType domainType) {
     super(domainType);
+    addEntities(new TestDomain());
     extended();
   }
 
   final void extended() {
     define(T_EXTENDED,
             columnProperty(EXTENDED_ID).primaryKeyIndex(0),
-            columnProperty(EXTENDED_NAME));
+            columnProperty(EXTENDED_NAME),
+            columnProperty(EXTENDED_DEPT_ID),
+            foreignKeyProperty(EXTENDED_DEPT_FK));
   }
 
-  public static final class TestDomainSecondExtenion extends TestDomainExtended {
+  public static final class TestDomainSecondExtenion extends DefaultDomain {
 
-    public static final DomainType DOMAIN = TestDomainExtended.DOMAIN.extend(TestDomainSecondExtenion.class);
+    public static final DomainType DOMAIN = DomainType.domainType(TestDomainSecondExtenion.class);
 
     public static final EntityType<Entity> T_SECOND_EXTENDED = DOMAIN.entityType("extended.second_entity");
     public static final Attribute<Integer> EXTENDED_ID = T_SECOND_EXTENDED.integerAttribute("id");
@@ -42,6 +49,7 @@ public class TestDomainExtended extends TestDomain {
 
     public TestDomainSecondExtenion() {
       super(DOMAIN);
+      addEntities(new TestDomainExtended());
       extendedSecond();
     }
 

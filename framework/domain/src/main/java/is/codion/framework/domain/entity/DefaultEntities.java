@@ -193,13 +193,13 @@ public abstract class DefaultEntities implements Entities, Serializable {
     return definitionBuilder;
   }
 
-  private void addDefinition(final DefaultEntityDefinition definition) {
+  protected void addDefinition(final EntityDefinition definition) {
     if (entityDefinitions.containsKey(definition.getEntityType())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
               definition.getEntityType() + ", for table: " + definition.getTableName());
     }
     validateForeignKeyProperties(definition);
-    entityDefinitions.put(definition.getEntityType(), definition);
+    entityDefinitions.put(definition.getEntityType(), (DefaultEntityDefinition) definition);
     populateForeignDefinitions();
   }
 
