@@ -39,15 +39,15 @@ public final class TestDomainExtended extends DefaultDomain {
             foreignKeyProperty(EXTENDED_DEPT_FK));
   }
 
-  public static final class TestDomainSecondExtenion extends DefaultDomain {
+  public static final class TestDomainSecondExtension extends DefaultDomain {
 
-    public static final DomainType DOMAIN = DomainType.domainType(TestDomainSecondExtenion.class);
+    public static final DomainType DOMAIN = DomainType.domainType(TestDomainSecondExtension.class);
 
     public static final EntityType<Entity> T_SECOND_EXTENDED = DOMAIN.entityType("extended.second_entity");
     public static final Attribute<Integer> EXTENDED_ID = T_SECOND_EXTENDED.integerAttribute("id");
     public static final Attribute<String> EXTENDED_NAME = T_SECOND_EXTENDED.stringAttribute("name");
 
-    public TestDomainSecondExtenion() {
+    public TestDomainSecondExtension() {
       super(DOMAIN);
       addEntities(new TestDomainExtended());
       extendedSecond();
@@ -55,6 +55,27 @@ public final class TestDomainExtended extends DefaultDomain {
 
     final void extendedSecond() {
       define(T_SECOND_EXTENDED,
+              columnProperty(EXTENDED_ID).primaryKeyIndex(0),
+              columnProperty(EXTENDED_NAME));
+    }
+  }
+
+  public static final class TestDomainThirdExtension extends DefaultDomain {
+
+    public static final DomainType DOMAIN = DomainType.domainType(TestDomainThirdExtension.class);
+
+    public static final EntityType<Entity> T_THIRD_EXTENDED = DOMAIN.entityType("extended.second_entity");
+    public static final Attribute<Integer> EXTENDED_ID = T_THIRD_EXTENDED.integerAttribute("id");
+    public static final Attribute<String> EXTENDED_NAME = T_THIRD_EXTENDED.stringAttribute("name");
+
+    public TestDomainThirdExtension() {
+      super(DOMAIN);
+      addEntities(new TestDomainSecondExtension());
+      extendedThird();
+    }
+
+    final void extendedThird() {
+      define(T_THIRD_EXTENDED,
               columnProperty(EXTENDED_ID).primaryKeyIndex(0),
               columnProperty(EXTENDED_NAME));
     }

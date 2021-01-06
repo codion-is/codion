@@ -7,7 +7,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.Property;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -25,6 +24,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class EntityDeserializer extends StdDeserializer<Entity> {
 
@@ -32,6 +32,7 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
 
   private final Entities entities;
   private final EntityObjectMapper mapper;
+  private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
 
   EntityDeserializer(final Entities entities, final EntityObjectMapper mapper) {
     super(Entity.class);
@@ -42,9 +43,9 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   @Override
   public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityNode = parser.getCodec().readTree(parser);
-
-    final EntityType<?> entityType = entities.getDomainType().entityType(entityNode.get("entityType").asText());
-    final EntityDefinition definition = entities.getDefinition(entityType);
+    final EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entityTypeName ->
+            entities.getDefinition(entityTypeName)
+                    .orElseThrow(() -> new IllegalArgumentException("Entity type with name '" + entityTypeName + "' not found")));
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
   }
