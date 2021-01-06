@@ -159,12 +159,15 @@ public abstract class DefaultDomain implements Domain {
 
   /**
    * Adds all the entities from the given domain to this domain.
+   * Note that the entity type names must be unique.
    * @param domain the domain model which entities to add
+   * @throws IllegalArgumentException in case a non-unique entity type name is encountered
+   * @see EntityType#getName()
    */
   protected final void addEntities(final Domain domain) {
     domain.getEntities().getDefinitions().forEach(definition -> {
       if (!entities.contains(definition.getEntityType())) {
-        entities.addDefinition(definition);
+        entities.addDefinitionInternal(definition);
       }
     });
   }
@@ -182,8 +185,7 @@ public abstract class DefaultDomain implements Domain {
       return super.define(entityType, tableName, propertyBuilders);
     }
 
-    @Override
-    protected void addDefinition(final EntityDefinition definition) {
+    private void addDefinitionInternal(final EntityDefinition definition) {
       super.addDefinition(definition);
     }
 

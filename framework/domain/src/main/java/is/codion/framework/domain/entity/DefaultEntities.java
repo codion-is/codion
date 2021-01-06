@@ -63,6 +63,16 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
+  public final Optional<EntityDefinition> getDefinition(final String entityTypeName) {
+    requireNonNull(entityTypeName, "entityTypeName");
+
+    return entityDefinitions.values().stream()
+            .filter(definition -> definition.getEntityType().getName().equals(entityTypeName))
+            .map(definition -> (EntityDefinition) definition)
+            .findAny();
+  }
+
+  @Override
   public final boolean contains(final EntityType<?> entityType) {
     return entityDefinitions.containsKey(requireNonNull(entityType));
   }
@@ -196,6 +206,10 @@ public abstract class DefaultEntities implements Entities, Serializable {
   protected void addDefinition(final EntityDefinition definition) {
     if (entityDefinitions.containsKey(definition.getEntityType())) {
       throw new IllegalArgumentException("Entity has already been defined: " +
+              definition.getEntityType() + ", for table: " + definition.getTableName());
+    }
+    if (getDefinition(definition.getEntityType().getName()).isPresent()) {
+      throw new IllegalArgumentException("Entity with the same entity type name has already been defined: " +
               definition.getEntityType() + ", for table: " + definition.getTableName());
     }
     validateForeignKeyProperties(definition);

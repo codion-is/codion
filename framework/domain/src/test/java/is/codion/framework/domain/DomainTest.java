@@ -793,13 +793,16 @@ public class DomainTest {
 
     entities.entity(TestDomain.T_COMPOSITE_MASTER);
 
-    final TestDomainExtended.TestDomainSecondExtenion second = new TestDomainExtended.TestDomainSecondExtenion();
+    final TestDomainExtended.TestDomainSecondExtension second = new TestDomainExtended.TestDomainSecondExtension();
     entities = second.getEntities();
 
-    entities.entity(TestDomainExtended.TestDomainSecondExtenion.T_SECOND_EXTENDED);
+    entities.entity(TestDomainExtended.TestDomainSecondExtension.T_SECOND_EXTENDED);
 
     entities.entity(TestDomainExtended.T_EXTENDED);
 
     entities.entity(TestDomain.T_COMPOSITE_MASTER);
+
+    //entity type name clash
+    assertThrows(IllegalArgumentException.class, TestDomainExtended.TestDomainThirdExtension::new);
   }
 }
