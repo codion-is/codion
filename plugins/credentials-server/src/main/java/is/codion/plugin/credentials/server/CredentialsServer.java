@@ -4,8 +4,8 @@
 package is.codion.plugin.credentials.server;
 
 import is.codion.common.CredentialsProvider;
-import is.codion.common.TaskScheduler;
 import is.codion.common.rmi.server.Servers;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 
 import org.slf4j.Logger;
@@ -21,6 +21,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+
+import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 
 /**
  * A simple credentials server for one-time authentication tokens for applications running on localhost.
@@ -76,7 +78,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
                            final int cleanupInterval) throws AlreadyBoundException, RemoteException {
     super(port);
     this.tokenValidity = tokenValidity;
-    this.expiredCleaner = new TaskScheduler(this::removeExpired, cleanupInterval, TimeUnit.MILLISECONDS).start();
+    this.expiredCleaner = taskScheduler(this::removeExpired, cleanupInterval, TimeUnit.MILLISECONDS).start();
     this.registry = Servers.initializeRegistry(registryPort);
     this.registry.bind(CredentialsService.class.getSimpleName(), this);
   }

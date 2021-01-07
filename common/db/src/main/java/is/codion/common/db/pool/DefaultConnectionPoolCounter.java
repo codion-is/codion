@@ -3,7 +3,7 @@
  */
 package is.codion.common.db.pool;
 
-import is.codion.common.TaskScheduler;
+import is.codion.common.scheduler.TaskScheduler;
 
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 
 /**
  * A connection pool statistics collector.
@@ -27,7 +29,7 @@ final class DefaultConnectionPoolCounter {
   private final LinkedList<Integer> checkOutTimes = new LinkedList<>();
   private final LinkedList<ConnectionPoolState> snapshotStatistics = new LinkedList<>();
   private boolean collectSnapshotStatistics = false;
-  private final TaskScheduler snapshotStatisticsCollector = new TaskScheduler(new StatisticsCollector(),
+  private final TaskScheduler snapshotStatisticsCollector = taskScheduler(new StatisticsCollector(),
           SNAPSHOT_COLLECTION_INTERVAL_MS, TimeUnit.MILLISECONDS);
 
   private final AtomicLong resetDate = new AtomicLong(creationDate);

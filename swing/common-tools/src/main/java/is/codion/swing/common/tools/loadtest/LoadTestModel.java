@@ -5,11 +5,11 @@ package is.codion.swing.common.tools.loadtest;
 
 import is.codion.common.Conjunction;
 import is.codion.common.Memory;
-import is.codion.common.TaskScheduler;
 import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.state.States;
 import is.codion.common.user.User;
@@ -40,6 +40,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
@@ -140,7 +141,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     usageScenarios.forEach(scenario -> this.usageScenarios.put(scenario.getName(), scenario));
     this.scenarioChooser = initializeScenarioChooser();
     initializeChartModels();
-    this.chartUpdateScheduler = new TaskScheduler(new ChartUpdateTask(), DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS);
+    this.chartUpdateScheduler = taskScheduler(new ChartUpdateTask(), DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS);
     bindEvents();
   }
 

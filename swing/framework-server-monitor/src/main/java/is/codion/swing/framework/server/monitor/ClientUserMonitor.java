@@ -4,8 +4,8 @@
 package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.DateFormats;
-import is.codion.common.TaskScheduler;
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.Values;
@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -76,7 +77,7 @@ public final class ClientUserMonitor {
         throw new IllegalArgumentException("Connection timeout must be a positive integer");
       }
     });
-    this.updateScheduler = new TaskScheduler(() -> {
+    this.updateScheduler = taskScheduler(() -> {
       try {
         userHistoryTableModel.refresh();
       }

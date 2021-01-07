@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui;
 
 import is.codion.common.Memory;
-import is.codion.common.TaskScheduler;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.event.Events;
@@ -54,6 +53,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
+import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -337,7 +337,7 @@ public final class Components {
     final JTextField textField = new JTextField(8);
     textField.setEditable(false);
     textField.setHorizontalAlignment(JTextField.CENTER);
-    new TaskScheduler(() -> SwingUtilities.invokeLater(() ->
+    taskScheduler(() -> SwingUtilities.invokeLater(() ->
             textField.setText(Memory.getMemoryUsage())), updateIntervalMilliseconds, 0, TimeUnit.MILLISECONDS).start();
 
     return textField;

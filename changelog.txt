@@ -6640,3 +6640,4 @@
   ClientUserMonitor, validation added to UI bound value
   ServerMonitor, validation added to UI bound value
   ConnectionPoolMonitor bug fixed, snapshot state not initialized correctly
+  TaskScheduler now interface, moved to scheduler package
