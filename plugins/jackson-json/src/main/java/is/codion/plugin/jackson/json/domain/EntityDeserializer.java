@@ -31,26 +31,19 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
   private static final long serialVersionUID = 1;
 
   private final Entities entities;
-  private final EntityObjectMapper mapper;
+  private final EntityObjectMapper entityObjectMapper;
   private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
 
-  EntityDeserializer(final Entities entities, final EntityObjectMapper mapper) {
+  EntityDeserializer(final Entities entities, final EntityObjectMapper entityObjectMapper) {
     super(Entity.class);
     this.entities = entities;
-    this.mapper = mapper;
+    this.entityObjectMapper = entityObjectMapper;
   }
 
   @Override
   public Entity deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final JsonNode entityNode = parser.getCodec().readTree(parser);
-    final EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entityTypeName -> {
-      final EntityDefinition entityDefinition = entities.getDefinition(entityTypeName);
-      if (entityDefinition == null) {
-        throw new IllegalArgumentException("Entity type with name '" + entityTypeName + "' not found");
-      }
-
-      return entityDefinition;
-    });
+    final EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entities::getDefinition);
 
     return definition.entity(getValueMap(entityNode, definition), getOriginalValueMap(entityNode, definition));
   }
@@ -132,6 +125,6 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
    * @throws JsonProcessingException in case of an error
    */
   private Object parseValue(final Attribute<?> attribute, final JsonNode jsonNode) throws JsonProcessingException {
-    return parseValue(mapper, attribute, jsonNode);
+    return parseValue(entityObjectMapper, attribute, jsonNode);
   }
 }
