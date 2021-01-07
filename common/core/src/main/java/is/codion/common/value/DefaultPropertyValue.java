@@ -3,7 +3,6 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.Util;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
@@ -40,14 +39,14 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
     try {
       this.valueOwner = requireNonNull(valueOwner, "valueOwner");
       this.changeEvent = requireNonNull(changeObserver);
-      this.getMethod = Util.getGetMethod(valueClass, propertyName, valueOwner);
+      this.getMethod = getGetMethod(valueClass, propertyName, valueOwner.getClass());
     }
     catch (final NoSuchMethodException e) {
       throw new IllegalArgumentException("Get method for property " + propertyName + ", type: " + valueClass +
               " not found in class " + valueOwner.getClass().getName(), e);
     }
     try {
-      this.setMethod = Util.getSetMethod(valueClass, propertyName, valueOwner);
+      this.setMethod = getSetMethod(valueClass, propertyName, valueOwner.getClass());
     }
     catch (final NoSuchMethodException ignored) {/*ignored*/
       this.setMethod = null;
@@ -174,5 +173,36 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   @Override
   public Collection<Validator<V>> getValidators() {
     return unmodifiableSet(validators);
+  }
+
+  static Method getSetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
+    if (requireNonNull(property, "property").isEmpty()) {
+      throw new IllegalArgumentException("Property must be specified");
+    }
+
+    return requireNonNull(ownerClass, "ownerClass").getMethod("set" +
+            Character.toUpperCase(property.charAt(0)) + property.substring(1), requireNonNull(valueType, "valueType"));
+  }
+
+  static Method getGetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
+    requireNonNull(valueType, "valueType");
+    requireNonNull(property, "property");
+    requireNonNull(ownerClass, "ownerClass");
+    if (property.length() == 0) {
+      throw new IllegalArgumentException("Property must be specified");
+    }
+    final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
+    if (valueType.equals(boolean.class) || valueType.equals(Boolean.class)) {
+      try {
+        return ownerClass.getMethod("is" + propertyName);
+      }
+      catch (final NoSuchMethodException ignored) {/*ignored*/}
+      try {
+        return ownerClass.getMethod(propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1));
+      }
+      catch (final NoSuchMethodException ignored) {/*ignored*/}
+    }
+
+    return ownerClass.getMethod("get" + propertyName);
   }
 }
