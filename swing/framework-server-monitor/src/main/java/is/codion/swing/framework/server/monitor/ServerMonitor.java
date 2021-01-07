@@ -119,7 +119,7 @@ public final class ServerMonitor {
     this.server = connectServer(serverInformation.getServerName());
     this.connectionLimitValue = Values.value(this.server.getConnectionLimit());
     this.connectionLimitValue.addValidator(value -> {
-      if (value == null || value < 0) {
+      if (value == null || value < -1) {
         throw new IllegalArgumentException("Connection limit must be -1 or above");
       }
     });
