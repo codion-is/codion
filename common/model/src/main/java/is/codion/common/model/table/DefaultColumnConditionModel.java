@@ -578,8 +578,8 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
   }
 
   private String addWildcard(final String value) {
-    //only use wildcard for EQUAL_TO and NOT_EQUAL_TO
-    if (operatorValue.get().equals(Operator.EQUAL) || operatorValue.get().equals(Operator.NOT_EQUAL)) {
+    //only use wildcard for EQUAL and NOT_EQUAL
+    if (operatorValue.is(Operator.EQUAL) || operatorValue.is(Operator.NOT_EQUAL)) {
       switch (automaticWildcard) {
         case PREFIX_AND_POSTFIX:
           return wildcard + value + wildcard;
@@ -631,15 +631,15 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
     @Override
     public void onEvent() {
       if (autoEnable) {
-        if (operatorValue.get().equals(Operator.EQUAL) || operatorValue.get().equals(Operator.NOT_EQUAL)) {
-          setEnabled(!equalValues.get().isEmpty());
+        if (operatorValue.is(Operator.EQUAL) || operatorValue.is(Operator.NOT_EQUAL)) {
+          setEnabled(equalValues.isNotEmpty());
         }
         else {
           if (operatorValue.get().getValues().equals(Operator.Values.TWO)) {
-            setEnabled(!lowerBoundValue.isNull() && !upperBoundValue.isNull());
+            setEnabled(lowerBoundValue.isNotNull() && upperBoundValue.isNotNull());
           }
           else {
-            setEnabled(!upperBoundValue.isNull());
+            setEnabled(upperBoundValue.isNotNull());
           }
         }
       }

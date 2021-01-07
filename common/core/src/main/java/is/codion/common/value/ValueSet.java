@@ -26,6 +26,16 @@ public interface ValueSet<V> extends Value<Set<V>> {
   boolean remove(V value);
 
   /**
+   * @return true if this value set is empty
+   */
+  boolean isEmpty();
+
+  /**
+   * @return true if this value set is not empty
+   */
+  boolean isNotEmpty();
+
+  /**
    * Clears all values from this ValueSet.
    */
   void clear();

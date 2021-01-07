@@ -11,6 +11,7 @@ import is.codion.common.event.EventObserver;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -119,8 +120,18 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
   }
 
   @Override
+  public boolean isNotNull() {
+    return !isNull();
+  }
+
+  @Override
   public boolean isNullable() {
     return !valueClass.isPrimitive();
+  }
+
+  @Override
+  public boolean is(final V value) {
+    return Objects.equals(get(), value);
   }
 
   @Override

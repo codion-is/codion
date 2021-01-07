@@ -48,7 +48,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public DomainType getDomainType() {
+  public final DomainType getDomainType() {
     return domainType;
   }
 

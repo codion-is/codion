@@ -77,6 +77,16 @@ public abstract class AbstractValue<V> implements Value<V> {
   }
 
   @Override
+  public final boolean isNotNull() {
+    return !isNull();
+  }
+
+  @Override
+  public final boolean is(final V value) {
+    return Objects.equals(get(), value);
+  }
+
+  @Override
   public final void addListener(final EventListener listener) {
     changeEvent.addListener(listener);
   }

@@ -152,7 +152,7 @@ public final class ClientInstanceMonitor {
   public void nextSearchPosition() {
     if (!searchTextPositions.isEmpty()) {
       clearCurrentSearchHighlight();
-      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.get().equals(searchTextPositions.size() - 1)) {
+      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.is(searchTextPositions.size() - 1)) {
         currentSearchTextPositionIndex.set(0);
       }
       else {
@@ -165,7 +165,7 @@ public final class ClientInstanceMonitor {
   public void previousSearchPosition() {
     if (!searchTextPositions.isEmpty()) {
       clearCurrentSearchHighlight();
-      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.get().equals(0)) {
+      if (currentSearchTextPositionIndex.isNull() || currentSearchTextPositionIndex.is(0)) {
         currentSearchTextPositionIndex.set(searchTextPositions.size() - 1);
       }
       else {
@@ -234,7 +234,7 @@ public final class ClientInstanceMonitor {
   }
 
   private void clearCurrentSearchHighlight() {
-    if (!currentSearchTextPositionIndex.isNull()) {
+    if (currentSearchTextPositionIndex.isNotNull()) {
       final MatchPosition matchPosition = searchTextPositions.get(currentSearchTextPositionIndex.get());
       try {
         logHighlighter.removeHighlight(matchPosition.highlightTag);
