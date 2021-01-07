@@ -8,6 +8,7 @@ import is.codion.common.event.EventDataListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -52,7 +53,7 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
   public void addState(final StateObserver state) {
     requireNonNull(state, "state");
     synchronized (lock) {
-      if (findListener(state) == null) {
+      if (!findListener(state).isPresent()) {
         final boolean value = get();
         stateListeners.add(new StateCombinationListener(state));
         ((DefaultStateObserver) getObserver()).notifyObservers(value, get());
@@ -65,12 +66,11 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
     requireNonNull(state, "state");
     synchronized (lock) {
       final boolean value = get();
-      final StateCombinationListener listener = findListener(state);
-      if (listener != null) {
+      findListener(state).ifPresent(listener -> {
         state.removeDataListener(listener);
         stateListeners.remove(listener);
         ((DefaultStateObserver) getObserver()).notifyObservers(value, get());
-      }
+      });
     }
   }
 
@@ -103,8 +103,8 @@ final class DefaultStateCombination extends DefaultState implements State.Combin
     return conjunction == Conjunction.AND;
   }
 
-  private StateCombinationListener findListener(final StateObserver state) {
-    return stateListeners.stream().filter(listener -> listener.getState().equals(state)).findFirst().orElse(null);
+  private Optional<StateCombinationListener> findListener(final StateObserver state) {
+    return stateListeners.stream().filter(listener -> listener.getState().equals(state)).findFirst();
   }
 
   private final class StateCombinationListener implements EventDataListener<Boolean> {

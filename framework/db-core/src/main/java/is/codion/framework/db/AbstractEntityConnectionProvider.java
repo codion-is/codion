@@ -186,7 +186,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       if (user == null) {
         throw new IllegalStateException("No user set");
       }
-
       validateConnection();
 
       return entityConnection;

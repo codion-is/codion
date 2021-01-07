@@ -725,12 +725,8 @@ final class DefaultEntity implements Entity, Serializable {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final Entities entities = DefaultEntities.getEntities((String) stream.readObject());
-    final EntityType<Entity> entityType = entities.getDomainType().entityType((String) stream.readObject());
+    definition = entities.getDefinition((String) stream.readObject());
     final boolean isModified = stream.readBoolean();
-    definition = entities.getDefinition(entityType);
-    if (definition == null) {
-      throw new IllegalArgumentException("Undefined entity: " + entityType);
-    }
     values = new HashMap<>();
     final List<Property<?>> properties = definition.getProperties();
     for (int i = 0; i < properties.size(); i++) {

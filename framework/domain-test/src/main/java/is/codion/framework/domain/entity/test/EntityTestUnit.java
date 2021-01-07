@@ -445,12 +445,7 @@ public class EntityTestUnit {
   }
 
   private static User initializeDefaultUser() {
-    final String testUser = TEST_USER.get();
-    if (testUser == null) {
-      throw new IllegalStateException("Required property not available: " + TEST_USER.getPropertyName());
-    }
-
-    return Users.parseUser(testUser);
+    return Users.parseUser(TEST_USER.getOrThrow());
   }
 
   private static void populateEntity(final Entities entities, final Entity entity, final Collection<ColumnProperty<?>> properties,

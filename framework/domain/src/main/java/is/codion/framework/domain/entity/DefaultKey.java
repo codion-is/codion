@@ -312,11 +312,7 @@ class DefaultKey implements Key, Serializable {
 
   private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
     final Entities entities = DefaultEntities.getEntities((String) stream.readObject());
-    final EntityType<Entity> entityType = entities.getDomainType().entityType((String) stream.readObject());
-    definition = entities.getDefinition(entityType);
-    if (definition == null) {
-      throw new IllegalArgumentException("Undefined entity: " + entityType);
-    }
+    definition = entities.getDefinition((String) stream.readObject());
     primaryKey = stream.readBoolean();
     final int attributeCount = stream.readInt();
     values = new HashMap<>(attributeCount);
