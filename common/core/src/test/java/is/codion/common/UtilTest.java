@@ -5,13 +5,10 @@ package is.codion.common;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,15 +44,8 @@ public final class UtilTest {
 
   @Test
   public void nullOrEmpty() {
-    assertTrue(Util.nullOrEmpty((Collection[]) null));
-    assertTrue(Util.nullOrEmpty(singletonList(""), null));
-    assertTrue(Util.nullOrEmpty(singletonList(""), emptyList()));
-
     final Map<Integer, String> map = new HashMap<>();
     map.put(1, "1");
-    assertTrue(Util.nullOrEmpty((Map[]) null));
-    assertTrue(Util.nullOrEmpty(map, null));
-    assertTrue(Util.nullOrEmpty(map, Collections.emptyMap()));
 
     assertTrue(Util.nullOrEmpty((String[]) null));
     assertTrue(Util.nullOrEmpty("sadf", null));
