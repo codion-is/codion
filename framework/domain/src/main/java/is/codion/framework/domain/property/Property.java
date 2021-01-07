@@ -31,13 +31,13 @@ public interface Property<T> {
   PropertyValue<Integer> MAXIMUM_FRACTION_DIGITS = Configuration.integerValue("codion.domain.maximumFractionDigits", DEFAULT_MAXIMUM_FRACTION_DIGITS);
 
   /**
-   * Specifies the default rounding mode used for BigDecimal property values<br>
+   * Specifies the default rounding mode used for decimal property values<br>
    * Value type: {@link RoundingMode}<br>
    * Default value: {@link RoundingMode#HALF_EVEN}<br>
    * @see #MAXIMUM_FRACTION_DIGITS
-   * @see Property.Builder#bigDecimalRoundingMode(RoundingMode)
+   * @see Property.Builder#decimalRoundingMode(RoundingMode)
    */
-  PropertyValue<RoundingMode> BIG_DECIMAL_ROUNDING_MODE = Configuration.enumValue("codion.domain.bigDecimalRoundingMode", RoundingMode.class, RoundingMode.HALF_EVEN);
+  PropertyValue<RoundingMode> DECIMAL_ROUNDING_MODE = Configuration.enumValue("codion.domain.decimalRoundingMode", RoundingMode.class, RoundingMode.HALF_EVEN);
 
   /**
    * The date format pattern to use when showing time values in tables and when creating default time input fields<br>
@@ -150,14 +150,16 @@ public interface Property<T> {
   /**
    * @return the maximum number of fraction digits to use for this property value,
    * only applicable to properties based on Types.DOUBLE and Types.DECIMAL
+   * @see #getDecimalRoundingMode()
    */
   int getMaximumFractionDigits();
 
   /**
-   * @return the rounding mode to use when working with BigDecimal
-   * @see #BIG_DECIMAL_ROUNDING_MODE
+   * @return the rounding mode to use when working with decimal values
+   * @see #DECIMAL_ROUNDING_MODE
+   * @see #getMaximumFractionDigits()
    */
-  RoundingMode getBigDecimalRoundingMode();
+  RoundingMode getDecimalRoundingMode();
 
   /**
    * @return the preferred column width of this property in pixels when presented in a table, 0 if none has been specified
@@ -272,16 +274,18 @@ public interface Property<T> {
      * @param maximumFractionDigits the maximum fraction digits
      * @return this instance
      * @throws IllegalStateException in case the underlying attribute is not a decimal type
+     * @see #decimalRoundingMode(RoundingMode)
      */
     Property.Builder<T> maximumFractionDigits(int maximumFractionDigits);
 
     /**
-     * Sets the rounding mode to use when working with BigDecimal
-     * @param bigDecimalRoundingMode the rounding mode
+     * Sets the rounding mode to use when working with decimals
+     * @param decimalRoundingMode the rounding mode
      * @return this instance
-     * @throws IllegalStateException in case the underlying attribute is not of type BigDecimal
+     * @throws IllegalStateException in case the underlying attribute is not a decimal
+     * @see #maximumFractionDigits(int)
      */
-    Property.Builder<T> bigDecimalRoundingMode(RoundingMode bigDecimalRoundingMode);
+    Property.Builder<T> decimalRoundingMode(RoundingMode decimalRoundingMode);
 
     /**
      * Specifies whether to use number grouping when presenting the value associated with this property.
