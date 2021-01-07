@@ -6,7 +6,6 @@ package is.codion.plugin.jackson.json.domain;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ColumnProperty;
 
@@ -20,6 +19,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static is.codion.plugin.jackson.json.domain.EntityDeserializer.parseValue;
 
 final class EntityKeyDeserializer extends StdDeserializer<Key> {
 
@@ -27,6 +29,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Key> {
 
   private final Entities entities;
   private final EntityObjectMapper entityObjectMapper;
+  private final Map<String, EntityDefinition> definitions = new ConcurrentHashMap<>();
 
   EntityKeyDeserializer(final Entities entities, final EntityObjectMapper entityObjectMapper) {
     super(Key.class);
@@ -38,18 +41,17 @@ final class EntityKeyDeserializer extends StdDeserializer<Key> {
   public Key deserialize(final JsonParser parser, final DeserializationContext ctxt) throws IOException {
     final ObjectCodec codec = parser.getCodec();
     final JsonNode node = codec.readTree(parser);
-    final EntityType<?> entityType = entities.getDomainType().entityType(node.get("entityType").asText());
-    final EntityDefinition definition = entities.getDefinition(entityType);
+    final EntityDefinition definition = definitions.computeIfAbsent(node.get("entityType").asText(), entities::getDefinition);
     final JsonNode values = node.get("values");
     final Map<Attribute<?>, Object> valueMap = new HashMap<>();
     final Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       final Map.Entry<String, JsonNode> field = fields.next();
       final ColumnProperty<Object> property = definition.getColumnProperty(definition.getAttribute(field.getKey()));
-      valueMap.put(property.getAttribute(), EntityDeserializer.parseValue(entityObjectMapper, property.getAttribute(), field.getValue()));
+      valueMap.put(property.getAttribute(), parseValue(entityObjectMapper, property.getAttribute(), field.getValue()));
     }
 
-    Key key = entities.primaryKey(entityType);
+    Key key = entities.primaryKey(definition.getEntityType());
     for (final Map.Entry<Attribute<?>, Object> entry : valueMap.entrySet()) {
       key = key.withValue((Attribute<Object>) entry.getKey(), entry.getValue());
     }
