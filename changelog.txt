@@ -6630,3 +6630,6 @@
   DefaultEntities now prevents adding entity types from other domains when entity type names clash
   Entities.getDefinition(entityTypeName) added
   EntityDeserializer now uses the above to find entity definitions when deserializing
+  Value.isNotNull() and is() added
+  ValueSet.isEmpty() and isNotEmpty() added
+  PropertyStore bug fixed, getOrThrow(message) did not use the message

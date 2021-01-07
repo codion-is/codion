@@ -8,6 +8,7 @@ import is.codion.common.event.EventListener;
 import is.codion.common.state.State;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -44,8 +45,18 @@ final class StateValue implements Value<Boolean>  {
   }
 
   @Override
+  public boolean isNotNull() {
+    return !isNull();
+  }
+
+  @Override
   public boolean isNullable() {
     return false;
+  }
+
+  @Override
+  public boolean is(final Boolean value) {
+    return Objects.equals(get(), value);
   }
 
   @Override

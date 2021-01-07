@@ -68,6 +68,7 @@ public class ValuesTest {
     final Value<Integer> intValue = Values.value(42, -1);
     assertFalse(intValue.isNullable());
     assertTrue(intValue.toOptional().isPresent());
+    assertTrue(intValue.is(42));
     final ValueObserver<Integer> valueObserver = Values.valueObserver(intValue);
     intValue.addListener(eventCounter::incrementAndGet);
     intValue.addDataListener(data -> {
@@ -79,8 +80,11 @@ public class ValuesTest {
     assertEquals(0, eventCounter.get());
     intValue.set(20);
     assertEquals(1, eventCounter.get());
+    assertTrue(intValue.is(20));
     intValue.set(null);
+    assertTrue(intValue.is(-1));
     assertFalse(intValue.isNull());
+    assertTrue(intValue.isNotNull());
     assertTrue(intValue.toOptional().isPresent());
     assertEquals(-1, intValue.get());
     assertEquals(-1, valueObserver.get());
@@ -139,6 +143,8 @@ public class ValuesTest {
     uiValue.set(null);
     assertNull(modelValue.get());
     assertTrue(modelValue.isNull());
+    assertFalse(modelValue.isNotNull());
+    assertTrue(modelValue.is(null));
     assertNull(uiValue.get());
     assertTrue(uiValue.isNull());
     assertEquals(3, modelValueEventCounter.get());
@@ -197,6 +203,7 @@ public class ValuesTest {
     assertFalse(state.get());
     stateValue.set(null);
     assertFalse(stateValue.isNull());
+    assertTrue(stateValue.isNotNull());
     assertFalse(state.get());
     stateValue.set(true);
     assertTrue(state.get());
@@ -268,6 +275,8 @@ public class ValuesTest {
   @Test
   public void valueSet() {
     ValueSet<Integer> valueSet = Values.valueSet();
+    assertTrue(valueSet.isEmpty());
+    assertFalse(valueSet.isNotEmpty());
 
     assertFalse(valueSet.isNullable());
     assertTrue(valueSet.toOptional().isPresent());
@@ -282,7 +291,10 @@ public class ValuesTest {
     initialValues.add(2);
 
     valueSet = Values.valueSet(initialValues);
+    assertFalse(valueSet.isEmpty());
+    assertTrue(valueSet.isNotEmpty());
     assertEquals(initialValues, valueSet.get());
+    assertTrue(valueSet.is(initialValues));
 
     assertFalse(valueSet.add(1));
     assertFalse(valueSet.add(2));
@@ -296,6 +308,8 @@ public class ValuesTest {
     assertTrue(valueSet.add(3));
 
     valueSet.clear();
+    assertTrue(valueSet.isEmpty());
+    assertFalse(valueSet.isNotEmpty());
     assertTrue(valueSet.add(3));
     assertFalse(valueSet.remove(1));
     assertFalse(valueSet.remove(2));

@@ -320,7 +320,7 @@ public final class PropertyStore {
     public V getOrThrow(final String message) throws IllegalStateException {
       requireNonNull(message, "message");
       if (value == null) {
-        throw new IllegalStateException();
+        throw new IllegalStateException(message);
       }
 
       return value;

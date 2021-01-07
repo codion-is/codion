@@ -42,6 +42,16 @@ final class DefaultValueSet<V> extends AbstractValue<Set<V>> implements ValueSet
   }
 
   @Override
+  public boolean isEmpty() {
+    return values.isEmpty();
+  }
+
+  @Override
+  public boolean isNotEmpty() {
+    return !isEmpty();
+  }
+
+  @Override
   public void clear() {
     set(emptySet());
   }
