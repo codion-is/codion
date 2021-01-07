@@ -6607,3 +6607,4 @@
   DefaultEntities.entityDefinitions key is now String (entityTypeName) instead of EntityType
   DefaultEntity and DefaultKey bug fixed, deserialization did not work with combined domain models, since it used the EntityType created from domain and name
   ConnectionPoolMonitor, validation added to UI bound values
+  ClientUserMonitor, validation added to UI bound value
