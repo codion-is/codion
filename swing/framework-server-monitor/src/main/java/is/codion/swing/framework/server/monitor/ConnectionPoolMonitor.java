@@ -43,7 +43,7 @@ public final class ConnectionPoolMonitor {
   private final Value<Integer> minimumPoolSizeValue;
   private final Value<Integer> maximumPoolSizeValue;
   private final Value<Integer> maximumCheckoutTimeValue;
-  private final State collectSnapshotStatisticsState = States.state();
+  private final State collectSnapshotStatisticsState;
 
   private final XYSeries poolSizeSeries = new XYSeries("Size");
   private final XYSeries minimumPoolSizeSeries = new XYSeries("Min. size");
@@ -76,6 +76,7 @@ public final class ConnectionPoolMonitor {
     this.minimumPoolSizeValue = Values.value(connectionPool.getMinimumPoolSize());
     this.maximumPoolSizeValue = Values.value(connectionPool.getMinimumPoolSize());
     this.maximumCheckoutTimeValue = Values.value(connectionPool.getMaximumCheckOutTime());
+    this.collectSnapshotStatisticsState = States.state(connectionPool.isCollectSnapshotStatistics());
 
     this.pooledConnectionTimeoutValue.addValidator(new MinimumValidator(0));
     this.pooledCleanupIntervalValue.addValidator(new MinimumValidator(0));

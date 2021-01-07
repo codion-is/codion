@@ -6609,3 +6609,4 @@
   ConnectionPoolMonitor, validation added to UI bound values
   ClientUserMonitor, validation added to UI bound value
   ServerMonitor, validation added to UI bound value
+  ConnectionPoolMonitor bug fixed, snapshot state not initialized correctly
