@@ -120,9 +120,9 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   private String dateTimeFormatPattern;
 
   /**
-   * The rounding mode to use when working with BigDecimal
+   * The rounding mode to use when working with decimal numbers
    */
-  private RoundingMode bigDecimalRoundingMode = BIG_DECIMAL_ROUNDING_MODE.get();
+  private RoundingMode decimalRoundingMode = DECIMAL_ROUNDING_MODE.get();
 
   /**
    * The DateTimeFormatter to use, based on dateTimeFormatPattern
@@ -245,8 +245,8 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
-  public final RoundingMode getBigDecimalRoundingMode() {
-    return bigDecimalRoundingMode;
+  public final RoundingMode getDecimalRoundingMode() {
+    return decimalRoundingMode;
   }
 
   @Override
@@ -286,10 +286,10 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
   @Override
   public final T prepareValue(final T value) {
     if (value instanceof Double) {
-      return (T) Util.roundDouble((Double) value, getMaximumFractionDigits());
+      return (T) Util.roundDouble((Double) value, getMaximumFractionDigits(), decimalRoundingMode);
     }
     if (value instanceof BigDecimal) {
-      return (T) ((BigDecimal) value).setScale(getMaximumFractionDigits(), bigDecimalRoundingMode).stripTrailingZeros();
+      return (T) ((BigDecimal) value).setScale(getMaximumFractionDigits(), decimalRoundingMode).stripTrailingZeros();
     }
 
     return value;
@@ -550,11 +550,11 @@ abstract class DefaultProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public Property.Builder<T> bigDecimalRoundingMode(final RoundingMode roundingMode) {
-      if (!property.attribute.isBigDecimal()) {
-        throw new IllegalStateException("bigDecimalRoundingMode is only applicable to BigDecimal properties: " + property.attribute);
+    public Property.Builder<T> decimalRoundingMode(final RoundingMode decimalRoundingMode) {
+      if (!property.attribute.isDecimal()) {
+        throw new IllegalStateException("decimalRoundingMode is only applicable to decimal properties: " + property.attribute);
       }
-      property.bigDecimalRoundingMode = requireNonNull(roundingMode, "roundingMode");
+      property.decimalRoundingMode = requireNonNull(decimalRoundingMode, "decimalRoundingMode");
       return this;
     }
   }

@@ -3,7 +3,8 @@
  */
 package is.codion.common;
 
-import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -169,13 +170,28 @@ public final class Util {
   }
 
   /**
-   * Rounds the given double to {@code places} decimal places
-   * @param d the double to round
+   * Rounds the given double to {@code places} decimal places, using {@link RoundingMode.HALF_UP}.
+   * @param d the double to round, null result in a null return value
    * @param places the number of decimal places
    * @return the rounded value
    */
   public static Double roundDouble(final Double d, final int places) {
-    return Math.round(d * Math.pow(10, places)) / Math.pow(10, places);
+    return roundDouble(d, places, RoundingMode.HALF_UP);
+  }
+
+  /**
+   * Rounds the given double to {@code places} decimal places.
+   * @param d the double to round, null result in a null return value
+   * @param places the number of decimal places
+   * @return the rounded value
+   */
+  public static Double roundDouble(final Double d, final int places, final RoundingMode roundingMode) {
+    try {
+      return d == null ? null : new BigDecimal(Double.toString(d)).setScale(places, roundingMode).doubleValue();
+    }
+    catch (final NumberFormatException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -227,76 +243,5 @@ public final class Util {
      * @return the value
      */
     String writeValue(String property, String value);
-  }
-
-  /**
-   * Returns the {@link Method} representing the setter for the given property in the given class.
-   * @param valueType the class of the value for the given property
-   * @param property the name of the property for which to retrieve the set method
-   * @param valueOwner an instance
-   * @return the method used to set the value of the linked property
-   * @throws NoSuchMethodException if the method does not exist in the owner class
-   */
-  public static Method getSetMethod(final Class<?> valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    return getSetMethod(valueType, property, requireNonNull(valueOwner, "valueOwner").getClass());
-  }
-
-  /**
-   * Returns the {@link Method} representing the setter for the given property in the given class.
-   * @param valueType the class of the value for the given property
-   * @param property the name of the property for which to retrieve the set method
-   * @param ownerClass the class
-   * @return the method used to set the value of the linked property
-   * @throws NoSuchMethodException if the method does not exist in the owner class
-   */
-  public static Method getSetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
-    if (requireNonNull(property, "property").length() == 0) {
-      throw new IllegalArgumentException("Property must be specified");
-    }
-
-    return requireNonNull(ownerClass, "ownerClass").getMethod("set" +
-            Character.toUpperCase(property.charAt(0)) + property.substring(1), requireNonNull(valueType, "valueType"));
-  }
-
-  /**
-   * Returns the {@link Method} representing the getter for the given property in the given class.
-   * @param valueType the class of the value for the given property
-   * @param property the name of the property for which to retrieve the get method
-   * @param valueOwner an instance
-   * @return the method used to get the value of the linked property
-   * @throws NoSuchMethodException if the method does not exist in the owner class
-   */
-  public static Method getGetMethod(final Class<?> valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    return getGetMethod(valueType, property, requireNonNull(valueOwner, "valueOwner").getClass());
-  }
-
-  /**
-   * Returns the {@link Method} representing the getter for the given property in the given class.
-   * @param valueType the class of the value for the given property
-   * @param property the name of the property for which to retrieve the get method
-   * @param ownerClass the class
-   * @return the method used to get the value of the linked property
-   * @throws NoSuchMethodException if the method does not exist in the owner class
-   */
-  public static Method getGetMethod(final Class<?> valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
-    requireNonNull(valueType, "valueType");
-    requireNonNull(property, "property");
-    requireNonNull(ownerClass, "ownerClass");
-    if (property.length() == 0) {
-      throw new IllegalArgumentException("Property must be specified");
-    }
-    final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
-    if (valueType.equals(boolean.class) || valueType.equals(Boolean.class)) {
-      try {
-        return ownerClass.getMethod("is" + propertyName);
-      }
-      catch (final NoSuchMethodException ignored) {/*ignored*/}
-      try {
-        return ownerClass.getMethod(propertyName.substring(0, 1).toLowerCase() + propertyName.substring(1));
-      }
-      catch (final NoSuchMethodException ignored) {/*ignored*/}
-    }
-
-    return ownerClass.getMethod("get" + propertyName);
   }
 }

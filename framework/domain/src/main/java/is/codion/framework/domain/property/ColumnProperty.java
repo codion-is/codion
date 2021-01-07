@@ -193,7 +193,7 @@ public interface ColumnProperty<T> extends Property<T> {
     ColumnProperty.Builder<T> maximumFractionDigits(int maximumFractionDigits);
 
     @Override
-    ColumnProperty.Builder<T> bigDecimalRoundingMode(RoundingMode bigDecimalRoundingMode);
+    ColumnProperty.Builder<T> decimalRoundingMode(RoundingMode decimalRoundingMode);
 
     @Override
     ColumnProperty.Builder<T> numberFormatGrouping(boolean numberFormatGrouping);

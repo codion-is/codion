@@ -538,8 +538,8 @@ class DefaultColumnProperty<T> extends DefaultProperty<T> implements ColumnPrope
     }
 
     @Override
-    public final ColumnProperty.Builder<T> bigDecimalRoundingMode(final RoundingMode roundingMode) {
-      super.bigDecimalRoundingMode(roundingMode);
+    public final ColumnProperty.Builder<T> decimalRoundingMode(final RoundingMode decimalRoundingMode) {
+      super.decimalRoundingMode(decimalRoundingMode);
       return this;
     }
 

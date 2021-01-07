@@ -5,7 +5,6 @@ package is.codion.common;
 
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,55 +27,6 @@ public final class UtilTest {
     assertEquals(Double.valueOf(5.12346), Double.valueOf(Util.roundDouble(d, 5)));
     assertEquals(Double.valueOf(5.123457), Double.valueOf(Util.roundDouble(d, 6)));
     assertEquals(Double.valueOf(5.1234567), Double.valueOf(Util.roundDouble(d, 7)));
-  }
-
-  @Test
-  public void getGetMethod() throws NoSuchMethodException {
-    final Bean bean = new Bean();
-    Method getMethod = Util.getGetMethod(boolean.class, "booleanValue", bean);
-    assertEquals("isBooleanValue", getMethod.getName());
-    getMethod = Util.getGetMethod(int.class, "intValue", bean);
-    assertEquals("getIntValue", getMethod.getName());
-  }
-
-  @Test
-  public void getGetMethodBoolean() throws NoSuchMethodException {
-    final Bean bean = new Bean();
-    final Method getMethod = Util.getGetMethod(boolean.class, "anotherBooleanValue", bean);
-    assertEquals("getAnotherBooleanValue", getMethod.getName());
-  }
-
-  @Test
-  public void getSetMethod() throws NoSuchMethodException {
-    final Bean bean = new Bean();
-    Method setMethod = Util.getSetMethod(boolean.class, "booleanValue", bean);
-    assertEquals("setBooleanValue", setMethod.getName());
-    setMethod = Util.getSetMethod(int.class, "intValue", bean);
-    assertEquals("setIntValue", setMethod.getName());
-  }
-
-  @Test
-  public void getGetMethodInvalidMethod() throws NoSuchMethodException {
-    final Bean bean = new Bean();
-    assertThrows(NoSuchMethodException.class, () -> Util.getGetMethod(boolean.class, "invalidValue", bean));
-  }
-
-  @Test
-  public void getSetMethodInvalidMethod() throws NoSuchMethodException {
-    final Bean bean = new Bean();
-    assertThrows(NoSuchMethodException.class, () -> Util.getSetMethod(boolean.class, "invalidValue", bean));
-  }
-
-  @Test
-  public void getSetMethodNoProperty() throws NoSuchMethodException {
-    final Bean bean = new Bean();
-    assertThrows(IllegalArgumentException.class, () -> Util.getSetMethod(boolean.class, "", bean));
-  }
-
-  @Test
-  public void getGetMethodNoProperty() throws NoSuchMethodException {
-    final Bean bean = new Bean();
-    assertThrows(IllegalArgumentException.class, () -> Util.getGetMethod(boolean.class, "", bean));
   }
 
   @Test
@@ -118,31 +68,5 @@ public final class UtilTest {
     assertFalse(Util.nullOrEmpty("asdf", "wefs"));
 
     assertFalse(Util.nullOrEmpty(map));
-  }
-
-  public static final class Bean {
-    boolean booleanValue;
-    boolean anotherBooleanValue;
-    int intValue;
-
-    public boolean isBooleanValue() {
-      return booleanValue;
-    }
-
-    public void setBooleanValue(final boolean booleanValue) {
-      this.booleanValue = booleanValue;
-    }
-
-    public boolean getAnotherBooleanValue() {
-      return anotherBooleanValue;
-    }
-
-    public int getIntValue() {
-      return intValue;
-    }
-
-    public void setIntValue(final int intValue) {
-      this.intValue = intValue;
-    }
   }
 }

@@ -97,8 +97,8 @@ public final class PropertiesTest {
   }
 
   @Test
-  public void nonBigDecimalWithRoundingMode() {
-    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.doubleAttribute("attribute")).bigDecimalRoundingMode(RoundingMode.CEILING));
+  public void nonDecimalWithRoundingMode() {
+    assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("attribute")).decimalRoundingMode(RoundingMode.CEILING));
   }
 
   @Test
