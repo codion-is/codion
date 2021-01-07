@@ -1,13 +1,14 @@
 /*
  * Copyright (c) 2004 - 2021, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common;
+package is.codion.common.scheduler;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TaskSchedulerTest {
@@ -16,38 +17,38 @@ public class TaskSchedulerTest {
 
   @Test
   public void constructorNegativeInterval() {
-    assertThrows(IllegalArgumentException.class, () -> new TaskScheduler(runnable, -1, TimeUnit.SECONDS));
+    assertThrows(IllegalArgumentException.class, () -> taskScheduler(runnable, -1, TimeUnit.SECONDS));
   }
 
   @Test
   public void constructorNegativeInitialDelay() {
-    assertThrows(IllegalArgumentException.class, () -> new TaskScheduler(runnable, 1, -1, TimeUnit.SECONDS));
+    assertThrows(IllegalArgumentException.class, () -> taskScheduler(runnable, 1, -1, TimeUnit.SECONDS));
   }
 
   @Test
   public void constructorNullTask() {
-    assertThrows(NullPointerException.class, () -> new TaskScheduler(null, 1, 1, TimeUnit.SECONDS));
+    assertThrows(NullPointerException.class, () -> taskScheduler(null, 1, 1, TimeUnit.SECONDS));
   }
 
   @Test
   public void constructorNullTimUnit() {
-    assertThrows(NullPointerException.class, () -> new TaskScheduler(runnable, 1, 1, null));
+    assertThrows(NullPointerException.class, () -> taskScheduler(runnable, 1, 1, null));
   }
 
   @Test
   public void constructorNullThreadFactory() {
-    assertThrows(NullPointerException.class, () -> new TaskScheduler(runnable, 1, 1, TimeUnit.SECONDS, null));
+    assertThrows(NullPointerException.class, () -> taskScheduler(runnable, 1, 1, TimeUnit.SECONDS, null));
   }
 
   @Test
   public void setIntervalNegative() {
-    assertThrows(IllegalArgumentException.class, () -> new TaskScheduler(runnable, 1, TimeUnit.SECONDS).setInterval(-1));
+    assertThrows(IllegalArgumentException.class, () -> taskScheduler(runnable, 1, TimeUnit.SECONDS).setInterval(-1));
   }
 
   @Test
   public void startStop() throws InterruptedException {
     final AtomicInteger counter = new AtomicInteger();
-    final TaskScheduler scheduler = new TaskScheduler(counter::incrementAndGet, 1, TimeUnit.MILLISECONDS);
+    final TaskScheduler scheduler = taskScheduler(counter::incrementAndGet, 1, TimeUnit.MILLISECONDS);
     assertFalse(scheduler.isRunning());
     scheduler.start();
     assertTrue(scheduler.isRunning());

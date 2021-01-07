@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.common.TaskScheduler;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.value.AbstractValue;
 
 final class IntervalValue extends AbstractValue<Integer> {

@@ -3,7 +3,6 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.TaskScheduler;
 import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
@@ -13,6 +12,7 @@ import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.ConnectionValidationException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 
 import org.slf4j.Logger;
@@ -42,6 +42,7 @@ import static is.codion.common.rmi.server.AuxiliaryServerFactory.getAuxiliarySer
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
+import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
@@ -88,7 +89,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       this.configuration = configuration;
       this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.getServerName(),
               configuration.getServerPort(), ZonedDateTime.now());
-      this.connectionMaintenanceScheduler = new TaskScheduler(new MaintenanceTask(),
+      this.connectionMaintenanceScheduler = taskScheduler(new MaintenanceTask(),
               configuration.getConnectionMaintenanceInterval(), configuration.getConnectionMaintenanceInterval(), TimeUnit.MILLISECONDS).start();
       configureSerializationWhitelist(configuration);
       startAuxiliaryServers(configuration.getAuxiliaryServerFactoryClassNames());

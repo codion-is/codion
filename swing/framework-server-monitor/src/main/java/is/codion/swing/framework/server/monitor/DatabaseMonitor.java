@@ -3,8 +3,8 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.common.TaskScheduler;
 import is.codion.common.db.database.Database;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.value.Value;
 import is.codion.framework.server.EntityServerAdmin;
 
@@ -14,6 +14,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
+
+import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 
 /**
  * A DatabaseMonitor
@@ -45,7 +47,7 @@ public final class DatabaseMonitor {
     this.queriesPerSecondCollection.addSeries(insertsPerSecond);
     this.queriesPerSecondCollection.addSeries(updatesPerSecond);
     this.queriesPerSecondCollection.addSeries(deletesPerSecond);
-    this.updateScheduler = new TaskScheduler(() -> {
+    this.updateScheduler = taskScheduler(() -> {
       try {
         updateStatistics();
       }

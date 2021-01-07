@@ -5,13 +5,13 @@ package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.DateFormats;
 import is.codion.common.LoggerProxy;
-import is.codion.common.TaskScheduler;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
 import is.codion.common.event.Events;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Collections.emptyList;
 
 /**
@@ -136,7 +137,7 @@ public final class ServerMonitor {
     this.systemLoadCollection.addSeries(processLoadSeries);
     this.databaseMonitor = new DatabaseMonitor(server, updateRate);
     this.clientMonitor = new ClientUserMonitor(server, updateRate);
-    this.updateScheduler = new TaskScheduler(this::updateStatistics, updateRate, 0, TimeUnit.SECONDS).start();
+    this.updateScheduler = taskScheduler(this::updateStatistics, updateRate, 0, TimeUnit.SECONDS).start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
     refreshDomainList();
     bindEvents();

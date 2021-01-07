@@ -3,13 +3,13 @@
  */
 package is.codion.swing.framework.server.monitor;
 
-import is.codion.common.TaskScheduler;
 import is.codion.common.db.pool.ConnectionPool;
 import is.codion.common.db.pool.ConnectionPoolState;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventObserver;
 import is.codion.common.event.Events;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.state.States;
 import is.codion.common.value.Value;
@@ -24,6 +24,8 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 
 /**
  * A ConnectionPoolMonitor
@@ -92,7 +94,7 @@ public final class ConnectionPoolMonitor {
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
     this.connectionRequestsPerSecondCollection.addSeries(failedRequestsPerSecond);
     this.checkOutTimeCollection.addSeries(averageCheckOutTime);
-    this.updateScheduler = new TaskScheduler(this::updateStatistics, updateRate, 0, TimeUnit.SECONDS).start();
+    this.updateScheduler = taskScheduler(this::updateStatistics, updateRate, 0, TimeUnit.SECONDS).start();
     this.updateIntervalValue = new IntervalValue(updateScheduler);
     bindEvents();
   }

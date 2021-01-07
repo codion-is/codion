@@ -3,10 +3,10 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.TaskScheduler;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.Events;
+import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.state.States;
@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static is.codion.common.scheduler.TaskScheduler.taskScheduler;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -38,7 +39,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   private final State connectionValidState = States.state();
   private final Event<User> loginEvent = Events.event();
   private final Event<User> logoutEvent = Events.event();
-  private final TaskScheduler validityCheckScheduler = new TaskScheduler(this::checkConnectionValidity,
+  private final TaskScheduler validityCheckScheduler = taskScheduler(this::checkConnectionValidity,
           VALIDITY_CHECK_INTERVAL_SECONDS, VALIDITY_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS);
   private final List<M> entityModels = new ArrayList<>();
 
