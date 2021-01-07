@@ -118,6 +118,11 @@ public final class ServerMonitor {
     this.serverAdminUser = serverAdminUser;
     this.server = connectServer(serverInformation.getServerName());
     this.connectionLimitValue = Values.value(this.server.getConnectionLimit());
+    this.connectionLimitValue.addValidator(value -> {
+      if (value == null || value < 0) {
+        throw new IllegalArgumentException("Connection limit must be -1 or above");
+      }
+    });
     this.logLevelValue = Values.value(this.server.getLogLevel());
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
     this.memoryUsageCollection.addSeries(maxMemorySeries);
