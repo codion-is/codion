@@ -3,6 +3,8 @@
  */
 package is.codion.common;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -168,13 +170,28 @@ public final class Util {
   }
 
   /**
-   * Rounds the given double to {@code places} decimal places
-   * @param d the double to round
+   * Rounds the given double to {@code places} decimal places, using {@link RoundingMode.HALF_UP}.
+   * @param d the double to round, null result in a null return value
    * @param places the number of decimal places
    * @return the rounded value
    */
   public static Double roundDouble(final Double d, final int places) {
-    return Math.round(d * Math.pow(10, places)) / Math.pow(10, places);
+    return roundDouble(d, places, RoundingMode.HALF_UP);
+  }
+
+  /**
+   * Rounds the given double to {@code places} decimal places.
+   * @param d the double to round, null result in a null return value
+   * @param places the number of decimal places
+   * @return the rounded value
+   */
+  public static Double roundDouble(final Double d, final int places, final RoundingMode roundingMode) {
+    try {
+      return d == null ? null : new BigDecimal(Double.toString(d)).setScale(places, roundingMode).doubleValue();
+    }
+    catch (final NumberFormatException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
