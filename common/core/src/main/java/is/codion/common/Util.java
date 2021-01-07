@@ -26,23 +26,24 @@ import static java.util.Objects.requireNonNull;
 public final class Util {
 
   /**
-   * The line separator for the current system
+   * The line separator for the current system, specified by the 'line.separator' system property
    */
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
   /**
-   * The file separator for the current system
+   * The file separator for the current system, specified by the 'file.separator' system property
    */
   public static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
   /**
-   * The path separator for the current system
+   * The path separator for the current system, specified by the 'path.separator' system property
    */
   public static final String PATH_SEPARATOR = System.getProperty("path.separator");
 
   private Util() {}
 
   /**
+   * Returns true if the given string is null or empty.
    * @param string the string to check
    * @return true if the given string is null or empty, false otherwise
    */
@@ -51,6 +52,7 @@ public final class Util {
   }
 
   /**
+   * Returns true if any of the given strings is null or empty.
    * @param strings the strings to check
    * @return true if one of the given strings is null or empty or if no arguments are provided, false otherwise
    */
@@ -65,6 +67,24 @@ public final class Util {
     }
 
     return false;
+  }
+
+  /**
+   * Returns true if the given map is null or empty.
+   * @param map the map to check
+   * @return true if the given map is null or empty, false otherwise
+   */
+  public static boolean nullOrEmpty(final Map<?, ?> map) {
+    return map == null || map.isEmpty();
+  }
+
+  /**
+   * Returns true if the given collection is null or empty.
+   * @param collection the collection to check
+   * @return true if the given collection is null or empty, false otherwise
+   */
+  public static boolean nullOrEmpty(final Collection<?> collection) {
+    return collection == null || collection.isEmpty();
   }
 
   /**
@@ -130,50 +150,10 @@ public final class Util {
   }
 
   /**
-   * @param maps the maps to check
-   * @return true if one of the given maps is null or empty or if no arguments are provided, false otherwise
-   */
-  public static boolean nullOrEmpty(final Map<?, ?>... maps) {
-    if (maps == null) {
-      return true;
-    }
-
-    return Arrays.stream(maps).anyMatch(Util::nullOrEmpty);
-  }
-
-  /**
-   * @param map the map to check
-   * @return true if the given map is null or empty, false otherwise
-   */
-  public static boolean nullOrEmpty(final Map<?, ?> map) {
-    return map == null || map.isEmpty();
-  }
-
-  /**
-   * @param collections the collections to check
-   * @return true if one of the given collections is null or empty or if no arguments are provided, false otherwise
-   */
-  public static boolean nullOrEmpty(final Collection<?>... collections) {
-    if (collections == null) {
-      return true;
-    }
-
-    return Arrays.stream(collections).anyMatch(Util::nullOrEmpty);
-  }
-
-  /**
-   * @param collection the collection to check
-   * @return true if the given collection is null or empty, false otherwise
-   */
-  public static boolean nullOrEmpty(final Collection<?> collection) {
-    return collection == null || collection.isEmpty();
-  }
-
-  /**
    * Rounds the given double to {@code places} decimal places, using {@link RoundingMode.HALF_UP}.
-   * @param d the double to round, null result in a null return value
+   * @param d the double to round, null results in a null return value
    * @param places the number of decimal places
-   * @return the rounded value
+   * @return the rounded value or null if the parameter value was null
    */
   public static Double roundDouble(final Double d, final int places) {
     return roundDouble(d, places, RoundingMode.HALF_UP);
@@ -181,9 +161,9 @@ public final class Util {
 
   /**
    * Rounds the given double to {@code places} decimal places.
-   * @param d the double to round, null result in a null return value
+   * @param d the double to round, null results in a null return value
    * @param places the number of decimal places
-   * @return the rounded value
+   * @return the rounded value or null if the parameter value was null
    */
   public static Double roundDouble(final Double d, final int places, final RoundingMode roundingMode) {
     try {
