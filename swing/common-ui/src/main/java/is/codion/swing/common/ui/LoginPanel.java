@@ -147,7 +147,7 @@ public final class LoginPanel extends JPanel {
     centerPanel.add(basePanel);
     setLayout(Layouts.borderLayout());
     add(centerPanel, BorderLayout.CENTER);
-    if (usernameField.getText().length() == 0) {
+    if (usernameField.getText().isEmpty()) {
       Components.addInitialFocusHack(usernameField, Controls.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
     }
     else {

@@ -6614,3 +6614,4 @@
   Util.getSetMethod() and getGetMethod() moved to DefaultPropertyValue and privatized
   Util.roundDouble() now uses BigDecimal, overloaded with roundingMode parameter
   Property.BIG_DECIMAL_ROUNDING_MODE renamed DECIMAL_ROUNDING_MODE, now used for doubles as well
+  String.length() == 0 replaced with isEmpty()

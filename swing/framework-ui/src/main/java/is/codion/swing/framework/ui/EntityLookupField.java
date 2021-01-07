@@ -238,7 +238,7 @@ public final class EntityLookupField extends JTextField {
       @Override
       public void focusLost(final FocusEvent e) {
         if (!e.isTemporary()) {
-          if (getText().length() == 0) {
+          if (getText().isEmpty()) {
             getModel().setSelectedEntity(null);
           }
           else if (!searchHint.isHintTextVisible() && !performingLookup && !model.searchStringRepresentsSelected()) {

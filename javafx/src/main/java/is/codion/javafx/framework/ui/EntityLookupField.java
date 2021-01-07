@@ -121,7 +121,7 @@ public final class EntityLookupField extends TextField {
 
   private void onFocusChanged(final Boolean hasFocus) {
     if (!hasFocus) {
-      if (getText().length() == 0) {
+      if (getText().isEmpty()) {
         getModel().setSelectedEntity(null);
       }
       else if (!performingLookup && !model.searchStringRepresentsSelected()) {

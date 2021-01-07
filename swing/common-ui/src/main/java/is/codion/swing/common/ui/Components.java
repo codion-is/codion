@@ -441,7 +441,7 @@ public final class Components {
       final String data = (String) transferSupport.getTransferable().getTransferData(nixFileDataFlavor);
       for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens(); ) {
         final String token = st.nextToken().trim();
-        if (token.startsWith("#") || token.length() == 0) {// comment line, by RFC 2483
+        if (token.startsWith("#") || token.isEmpty()) {// comment line, by RFC 2483
           continue;
         }
 

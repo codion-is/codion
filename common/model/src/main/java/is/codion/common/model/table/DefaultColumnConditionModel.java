@@ -396,7 +396,7 @@ public class DefaultColumnConditionModel<R, K, T> implements ColumnConditionMode
 
   private T getBoundValue(final Object bound) {
     if (typeClass.equals(String.class)) {
-      if (bound == null || (bound instanceof String && ((String) bound).length() == 0)) {
+      if (bound == null || (bound instanceof String && ((String) bound).isEmpty())) {
         return null;
       }
       if (bound instanceof Collection) {
