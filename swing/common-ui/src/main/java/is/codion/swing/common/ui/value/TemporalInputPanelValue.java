@@ -26,7 +26,7 @@ final class TemporalInputPanelValue<V extends Temporal> extends AbstractComponen
   protected V getComponentValue(final TemporalInputPanel<V> component) {
     try {
       final String dateText = component.getInputField().getText();
-      if (dateText.length() == 0) {
+      if (dateText.isEmpty()) {
         return null;
       }
       if (!dateText.contains("_")) {

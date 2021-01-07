@@ -188,7 +188,7 @@ final class DefaultPropertyValue<V> implements PropertyValue<V> {
     requireNonNull(valueType, "valueType");
     requireNonNull(property, "property");
     requireNonNull(ownerClass, "ownerClass");
-    if (property.length() == 0) {
+    if (property.isEmpty()) {
       throw new IllegalArgumentException("Property must be specified");
     }
     final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
